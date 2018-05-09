@@ -372,7 +372,7 @@ namespace non_player
             weaponChances.has_bite = BODY.HasFangs();
             weaponChances.has_claws = BODY.HasClaws();
             weaponChances.has_fists = (BODY.HasArms() && BODY.HasFingers());
-            weaponChances.has_tendrils = BODY.HasTendrils();
+            weaponChances.has_tentacles = BODY.HasTentacles();
 
             weaponChances.has_breath = BODY.HasBreath()
                 && ((CHARACTER_PTR->Role() == creature::role::Firebrand)
@@ -511,9 +511,9 @@ namespace non_player
                     weaponChances.has_fists = true;
                 }
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsTendrils())
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsTentacles())
                 {
-                    weaponChances.has_tendrils = true;
+                    weaponChances.has_tentacles = true;
                 }
 
                 if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBreath())
@@ -554,8 +554,9 @@ namespace non_player
                     }
                     else
                     {
-                        typicalKnifePrimaryMaterials[material::Steel] = 0.9f;
+                        typicalKnifePrimaryMaterials[material::Steel] = 0.87f;
                         typicalKnifePrimaryMaterials[material::Iron] = 0.1f;
+                        typicalKnifePrimaryMaterials[material::Platinum] = 0.03f;
                     }
 
                     PopulateWeaponMaterials(
@@ -776,7 +777,7 @@ namespace non_player
 
                         if (WHIP_TYPE == weapon::whip_type::Bullwhip)
                         {
-                            typicalWhipPrimaryMaterials[material::HardLeather] = 1.0f;
+                            typicalWhipPrimaryMaterials[material::Leather] = 1.0f;
                         }
                         else
                         {
@@ -854,7 +855,7 @@ namespace non_player
                             PROFILE,
                             CHARACTER_PTR,
                             false,
-                            item::material::HardLeather);
+                            item::material::Leather);
 
                         break;
                     }
@@ -995,8 +996,8 @@ namespace non_player
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
             float & clothChance,
-            float & softleatherChance,
-            float & hardleatherChance)
+            float & leatherChance,
+            float & silkChance)
         {
             std::ostringstream ss;
             ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
@@ -1023,28 +1024,28 @@ namespace non_player
                 chanceSubTotal += clothChance;
             }
 
-            softleatherChance = GetFloatFromGameDataFile(
-                WEARABLE_STR_BASE + "-wearable-soft-leather", CHANCE_MIN, CHANCE_MAX);
+            leatherChance = GetFloatFromGameDataFile(
+                WEARABLE_STR_BASE + "-wearable-leather", CHANCE_MIN, CHANCE_MAX);
 
-            if (softleatherChance < 0.0f)
+            if (leatherChance < 0.0f)
             {
-                materialWithChanceRemaining = item::material::SoftLeather;
+                materialWithChanceRemaining = item::material::Leather;
             }
             else
             {
-                chanceSubTotal += softleatherChance;
+                chanceSubTotal += leatherChance;
             }
 
-            hardleatherChance = GetFloatFromGameDataFile(
-                WEARABLE_STR_BASE + "-wearable-hard-leather", CHANCE_MIN, CHANCE_MAX);
+            silkChance = GetFloatFromGameDataFile(
+                WEARABLE_STR_BASE + "-wearable-silk", CHANCE_MIN, CHANCE_MAX);
 
-            if (hardleatherChance < 0.0f)
+            if (silkChance < 0.0f)
             {
-                materialWithChanceRemaining = item::material::HardLeather;
+                materialWithChanceRemaining = item::material::Silk;
             }
             else
             {
-                chanceSubTotal += hardleatherChance;
+                chanceSubTotal += silkChance;
             }
 
             // set the chance for the material with the remaining chance
@@ -1054,13 +1055,13 @@ namespace non_player
             }
             else
             {
-                if (item::material::SoftLeather == materialWithChanceRemaining)
+                if (item::material::Leather == materialWithChanceRemaining)
                 {
-                    softleatherChance = 1.0f - chanceSubTotal;
+                    leatherChance = 1.0f - chanceSubTotal;
                 }
                 else
                 {
-                    hardleatherChance = 1.0f - chanceSubTotal;
+                    silkChance = 1.0f - chanceSubTotal;
                 }
             }
 
@@ -1068,14 +1069,14 @@ namespace non_player
             // chance of more valuable materials
             auto const RANK_RATIO{ CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
 
-            hardleatherChance += RANK_RATIO;
-            softleatherChance += RANK_RATIO * 0.5f;
+            silkChance += RANK_RATIO;
+            leatherChance += RANK_RATIO * 0.5f;
             clothChance -= RANK_RATIO;
 
             // enfore the min/max after all adjustments
             ChanceFactory::ForceMinMax(clothChance, CHANCE_MIN, CHANCE_MAX);
-            ChanceFactory::ForceMinMax(softleatherChance, CHANCE_MIN, CHANCE_MAX);
-            ChanceFactory::ForceMinMax(hardleatherChance, CHANCE_MIN, CHANCE_MAX);
+            ChanceFactory::ForceMinMax(leatherChance, CHANCE_MIN, CHANCE_MAX);
+            ChanceFactory::ForceMinMax(silkChance, CHANCE_MIN, CHANCE_MAX);
         }
 
         void ChanceFactory::Make_ClothingMaterialChancesPrimary(
@@ -1091,16 +1092,16 @@ namespace non_player
 
             // determine the final chances for each possible primary material type,
             // which for clothing are restricted to cloth, soft leather, and hard leather
-            auto clothChance(0.0f);
-            auto softleatherChance(0.0f);
-            auto hardleatherChance(0.0f);
+            auto clothChance{ 0.0f };
+            auto leatherChance{ 0.0f };
+            auto silkChance{ 0.0f };
 
             LookupClothingMaterialChances(
-                PROFILE, CHARACTER_PTR, clothChance, softleatherChance, hardleatherChance);
+                PROFILE, CHARACTER_PTR, clothChance, leatherChance, silkChance);
 
             itemChancesBase.mat_map_pri[item::material::Cloth] = clothChance;
-            itemChancesBase.mat_map_pri[item::material::SoftLeather] = softleatherChance;
-            itemChancesBase.mat_map_pri[item::material::HardLeather] = hardleatherChance;
+            itemChancesBase.mat_map_pri[item::material::Leather] = leatherChance;
+            itemChancesBase.mat_map_pri[item::material::Silk] = silkChance;
         }
 
         void ChanceFactory::Make_MaterialChancesPrimary(

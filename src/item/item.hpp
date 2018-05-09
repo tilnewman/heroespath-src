@@ -117,6 +117,7 @@ namespace item
         {
             return ((category_ & CATEGORY) > 0);
         }
+
         bool HasWeaponType(const weapon_type::Enum WEAPON_TYPE) const
         {
             return ((weaponInfo_.Type() & WEAPON_TYPE) > 0);
@@ -130,7 +131,6 @@ namespace item
         bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
         bool IsBodypart() const { return (category_ & category::BodyPart); }
         bool IsArmor() const { return (armorInfo_.IsTypeValid()); }
-
         bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }
 
         bool IsSet() const
@@ -157,33 +157,18 @@ namespace item
 
         bool IsRigid() const { return material::IsRigid(materialPri_); }
 
-        bool ContainsSpirit() const { return material::ContainsSpirit(materialPri_, materialSec_); }
-
         bool IsBloody() const { return material::IsBloody(materialPri_, materialSec_); }
-
-        bool ContainsFlesh() const { return material::ContainsFlesh(materialPri_, materialSec_); }
 
         float FireDamageRatio() const
         {
             return material::FireDamageRatio(materialPri_, materialSec_);
         }
 
-        bool ContainsMetal() const { return material::ContainsMetal(materialPri_, materialSec_); }
-
         bool IsMetal() const { return material::IsMetal(materialPri_); }
-
-        bool IsStone() const { return material::IsStone(materialPri_); }
-
-        bool ContiansPrecious() const
-        {
-            return material::ContiansPrecious(materialPri_, materialSec_);
-        }
 
         creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
 
-        bool IsJeweled() const { return material::IsJewel(materialSec_); }
-
-        bool IsJeweledRing() const { return ((miscType_ == misc_type::Ring) && IsJeweled()); }
+        bool IsJeweled() const { return material::IsFancyJewel(materialSec_); }
 
         bool IsPixie() const { return isPixie_; }
 

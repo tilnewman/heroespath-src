@@ -69,11 +69,6 @@ namespace item
     {
         enum Enum
         {
-            // every material must be only one of IsSolid(), IsLiquid(), IsGas(), or IsSpirit()
-
-            // IsBendy() is mutually exclusive with IsRigid() and niether will be true if
-            // IsSolid()==false
-
             // Use Nothing as default instead of Error so that an Item's
             // materialSec_ can be Nothing.
             Nothing = 0,
@@ -89,14 +84,17 @@ namespace item
             Paper,
             Glass,
             Feather,
-            Fur,
             Hair,
-            Flesh,
+            DriedFlesh,
             Rope,
+
+            // garment types
             Cloth,
-            Hide,
-            SoftLeather,
-            HardLeather,
+            Silk,
+            Hide, // used a the skin material for many creatures
+            Leather, // similar to hide but more processed and strong
+            Fur,
+
             Plant,
             Claw,
             Scales,
@@ -123,115 +121,84 @@ namespace item
             Diamond,
             Count
         };
-        /*
-        Glass,
-        Cloth,
-        SoftLeather,
-        HardLeather,
-        Claw,
-        Scales,
-        Horn,
-        Bone,
-        Tooth,
-        Wood,
 
-        Stone,
-        Obsidian,
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
 
-        Pearl,
+        static const std::pair<Enum, Enum> SkinMaterial(const creature::race::Enum);
 
-        Jade,
-        Amethyst,
-        Emerald,
-        Ruby,
-        Lazuli,
-        Sapphire,
-        Diamond,
+        static Armor_t ArmorRatingBonus(const Enum MATERIAL_PRIMARY, const Enum MATERIAL_SEC);
 
-        Tin, // 18 /  7.3 -modulus of rigidity / density
-        Bronze, // 45 /  7.5
-        Iron, // 41 /  7.8
-        Steel, // 77 /  8.0
-        Silver, // 48 / 10.5
-        Gold, // 27 / 19.3
-        Platinum, // 82 / 21.5
-        */
+        static Armor_t ArmorRatingBonusPri(const Enum MATERIAL_PRI);
+        static Armor_t ArmorRatingBonusSec(const Enum MATERIAL_SEC);
 
-        static const std::string ToString(const material::Enum);
-        static const std::string Name(const material::Enum);
+        static Coin_t PriceAdj(const Enum MATERIAL_PRIMARY, const Enum MATERIAL_SEC);
 
-        static void Setup();
+        static Coin_t PriceAdjPri(const Enum MATERIAL_PRI);
+        static Coin_t PriceAdjSec(const Enum MATERIAL_SEC);
 
-        static material::Enum SkinMaterial(const creature::race::Enum);
+        static float WeightMult(const Enum MATEIAL_PRIMARY, const Enum MATERIAL_SEC);
 
-        static Armor_t
-            ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static float WeightMultPri(const Enum MATERIAL_PRI);
+        static float WeightMultSec(const Enum MATERIAL_SEC);
 
-        static Armor_t ArmorRatingBonusPri(const material::Enum MATERIAL_PRI);
-        static Armor_t ArmorRatingBonusSec(const material::Enum MATERIAL_SEC);
+        static int EnchantmentBonus(
+            const material::Enum MATERIAL_PRIMARY, const material::Enum MATERIAL_SECONDARY);
 
-        static Coin_t
-            PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static float EnchantmentBonusRatio(const Enum);
 
-        static Coin_t PriceAdjPri(const material::Enum MATERIAL_PRI);
-        static Coin_t PriceAdjSec(const material::Enum MATERIAL_SEC);
+        // solid/liquid/gas/spirit are complete and mutually exclusive
+        static bool IsSolid(const Enum);
+        static bool IsLiquid(const Enum);
+        static bool IsGas(const Enum);
+        static bool IsSpirit(const Enum);
 
-        static float
-            WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
+        // i.e. paper/rope/fur/leather/etc.
+        static bool IsBendy(const Enum);
 
-        static float WeightMultPri(const material::Enum MATERIAL_PRI);
-        static float WeightMultSec(const material::Enum MATERIAL_SEC);
+        // all IsSolid() and not IsBendy()
+        static bool IsRigid(const Enum);
 
-        static int EnchantmentBonus(const material::Enum);
-        static float EnchantmentBonusRatio(const material::Enum);
+        static bool IsBloody(const Enum PRIMARY, const Enum SEC = Nothing);
 
-        static bool
-            IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static float FireDamageRatio(const Enum PRIMARY, const Enum SEC = Nothing);
 
-        static bool IsSolid(const material::Enum MATERIAL);
-        static bool IsLiquid(const material::Enum MATERIAL);
-        static bool IsGas(const material::Enum MATERIAL);
-        static bool IsSpirit(const material::Enum MATERIAL);
-        static bool IsBendy(const material::Enum MATERIAL);
-        static bool IsRigid(const material::Enum MATERIAL);
+        static bool IsMetal(const Enum);
 
-        static bool
-            ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        // Amethyst/Emerald/Ruby/Sapphire/Diamond
+        static bool IsFancyJewel(const Enum);
 
-        static bool
-            IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        // Silver/Gold
+        static bool IsFancyMetal(const Enum);
 
-        static bool
-            ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        // Obsidian/Pearl/Jade/Lazuli
+        static bool IsFancyOpaque(const Enum);
 
-        static float
-            FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        // Claw/Bone/Tooth/Scales
+        // some other tribal-like secondary materials to consider: Fur/DriedFlesh/Hide/Horn
+        static bool IsFancyTribal(const Enum);
 
-        static bool IsMetal(const material::Enum MATERIAL);
-        static bool ContainsMetal(const material::Enum PRI, const material::Enum SEC);
-        static bool IsStone(const material::Enum PRI);
-        static bool IsPrecious(const material::Enum MATERIAL);
+        // all of the four 'fancy' categories above are mutually exclusive, this combines them
+        static bool IsFancy(const Enum);
 
-        static bool ContiansPrecious(
-            const material::Enum PRI, const material::Enum SEC = material::Nothing);
-
-        static bool IsJewel(const material::Enum MATERIAL);
-
-        static bool
-            ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-
-        bool static IsLeather(const material::Enum M)
+        static bool IsFancyJewelOrJade(const Enum MATERIAL)
         {
-            return ((M == material::SoftLeather) || (M == material::HardLeather));
+            return (IsFancyJewel(MATERIAL) || (MATERIAL == Jade));
         }
-        bool static IsClothOrLeather(const material::Enum M)
+
+        static bool IsGarmentType(const Enum MATERIAL)
         {
-            return ((M == material::Cloth) || IsLeather(M));
+            return (
+                (MATERIAL == Fur) || (MATERIAL == Cloth) || (MATERIAL == Silk) || (MATERIAL == Hide)
+                || (MATERIAL == Leather));
         }
+
+        static bool RequiresAnPrefix(const Enum);
     };
 
     using MaterialVec_t = std::vector<material::Enum>;
-    using MaterialVecPair_t = std::pair<MaterialVec_t, MaterialVec_t>;
+    using MaterialPair_t = std::pair<material::Enum, material::Enum>;
+    using MaterialPairVec_t = std::vector<MaterialPair_t>;
 
     struct element_type
     {
@@ -384,7 +351,7 @@ namespace item
             Charm_Mask,
             CameoPin, // SaintCameoPin
             Cape, // GeneralsCape, KingsCape, CommandersCape
-            Cat, // CrystalCat
+            Cat, // GlassCat
             Chains, // SpecterChains
             Chimes, // CrystalChimes
             Cloak, // ShadeCloak
@@ -448,7 +415,7 @@ namespace item
             Tongue, // BasiliskTonge
             Tooth, // CobraTooth
             Tooth_Necklace, // SharkToothNecklace, VampiresToothNecklace
-            Troll_Figure, // CopperTroll
+            Troll_Figure, // BronzeTroll
             Trophy, // BleedingTrophy,
             Tuning_Fork,
             Turtle_Shell,
@@ -601,8 +568,8 @@ namespace item
             ChimeraBone,
             CobraTooth,
             CommandersCape,
-            CopperTroll,
-            CrystalCat,
+            BronzeTroll,
+            GlassCat,
             CrystalChimes,
             CyclopsEye,
             DemonDiary,
@@ -787,28 +754,28 @@ namespace item
         enum Enum : unsigned int
         {
             NotAWeapon = 0,
+
+            // all weapons are either Melee or Projectile
             Melee = 1 << 0,
             Projectile = 1 << 1,
-            Bladed = 1 << 2,
-            Pointed = 1 << 3,
-            Claws = 1 << 4,
-            Bite = 1 << 5,
-            Sword = 1 << 6,
-            Axe = 1 << 7,
-            Whip = 1 << 8,
-            Blowpipe = 1 << 9,
-            Bow = 1 << 10,
-            Crossbow = 1 << 11,
-            Spear = 1 << 12,
-            Knife = 1 << 13,
-            Club = 1 << 14,
-            Staff = 1 << 15,
-            Sling = 1 << 16,
-            BladedStaff = 1 << 17,
-            Fists = 1 << 18,
-            Tendrils = 1 << 19,
-            Breath = 1 << 20,
-            Last = Breath
+
+            BodyPart = 1 << 2,
+
+            // allows combat verbs slice/cut/slash/etc
+            Bladed = 1 << 3,
+
+            // allows combat verbs stab/etc
+            Pointed = 1 << 4,
+
+            Sword = 1 << 5,
+            Axe = 1 << 6,
+            Whip = 1 << 7,
+            Knife = 1 << 8,
+            Club = 1 << 9,
+            Staff = 1 << 10,
+            BladedStaff = 1 << 11,
+
+            Last = BladedStaff
         };
 
         static const std::string ToString(
@@ -855,7 +822,7 @@ namespace item
         {
             Fists = 0,
             Claws,
-            Tendrils,
+            Tentacles,
             Bite,
             Breath,
             Skin,
@@ -863,7 +830,31 @@ namespace item
         };
 
         static const std::string ToString(const body_part::Enum);
-        static weapon_type::Enum WeaponType(const body_part::Enum);
+    };
+
+    // Responsible for defining the relationship between an item's name and materials.
+    struct name_material_type
+    {
+        enum Enum
+        {
+            Misc = 0,
+            BodyPart,
+            Decoration,
+            Handle,
+            Reinforced,
+            ReinforcedWithBase,
+            Tipped,
+            Claspped,
+            ClasppedWithBase,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+
+        static bool IsSecondaryMaterialOfNothingRequired(const Enum TYPE)
+        {
+            return ((TYPE == Decoration) || (TYPE == Reinforced) || (TYPE == ReinforcedWithBase));
+        }
     };
 
 } // namespace item

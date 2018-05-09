@@ -32,6 +32,7 @@
 #include "misc/vector-map.hpp"
 #include "misc/vectors.hpp"
 
+#include <iomanip>
 #include <numeric>
 #include <string>
 #include <vector>
@@ -75,6 +76,11 @@ namespace item
                 , scores_()
                 , religiousScores_()
                 , miscCount_(0)
+                , elementalCount(0)
+                , scoresSet_()
+                , scoresNamed_()
+                , scoresUnique_()
+                , elementScoreMap_()
             {}
 
             virtual ~Report() = default;
@@ -98,7 +104,16 @@ namespace item
             std::vector<std::size_t> religiousScores_;
             std::size_t miscCount_{ 0 };
             std::size_t elementalCount{ 0 };
+            mutable std::vector<std::size_t> scoresSet_;
+            mutable std::vector<std::size_t> scoresNamed_;
+            mutable std::vector<std::size_t> scoresUnique_;
             mutable misc::VectorMap<element_type::Enum, std::vector<std::size_t>> elementScoreMap_;
+        };
+
+        struct SpecificItemInfo
+        {
+            std::vector<std::size_t> scores;
+            MaterialPairVec_t material_pairs;
         };
 
         class WeaponOrArmorReport : public Report
@@ -119,7 +134,7 @@ namespace item
         protected:
             bool isWeaponReport_;
             mutable misc::VectorMap<std::string, Report> reportMap_;
-            mutable misc::VectorMap<std::string, std::vector<std::size_t>> specificScoreMap_;
+            mutable misc::VectorMap<std::string, SpecificItemInfo> specificMap_;
         };
 
         class StandardSetReport : public Report
@@ -162,7 +177,7 @@ namespace item
             if (DENOMINATOR > 0)
             {
                 std::ostringstream ss;
-                ss << ((WILL_WRAP) ? "(" : "") << std::setprecision(DIGITS)
+                ss << ((WILL_WRAP) ? "(" : "") << std::setw(DIGITS + 2) << std::setprecision(DIGITS)
                    << ((POSTFIX == "%") ? 100.0 : 1.0) * DivideAsDouble(NUMERATOR, DENOMINATOR)
                    << std::setprecision(0) << POSTFIX << ((WILL_WRAP) ? ")" : "");
 
@@ -213,8 +228,9 @@ namespace item
 
             std::ostringstream ss;
 
-            ss << ", " << NAME << "=[" << MIN_MAX_AVG_SUM.min << ", " << MIN_MAX_AVG_SUM.avg << ", "
-               << MIN_MAX_AVG_SUM.max << "](" << MIN_MAX_AVG_SUM.sum << "sum)("
+            ss << ", " << std::setw(12) << NAME << "=[" << std::setw(4) << MIN_MAX_AVG_SUM.min
+               << ", " << std::setw(4) << MIN_MAX_AVG_SUM.avg << ", " << std::setw(4)
+               << MIN_MAX_AVG_SUM.max << "](" << std::setw(9) << MIN_MAX_AVG_SUM.sum << "sum)("
                << misc::Vector::StandardDeviation(VALUES, VALUES.size(), MIN_MAX_AVG_SUM.avg)
                << "std)";
 

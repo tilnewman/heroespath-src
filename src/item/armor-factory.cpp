@@ -71,43 +71,41 @@ namespace item
         const ItemPtr_t ArmorFactory::Make(
             const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR)
         {
+            // TODO move to MaterialFactory
+            auto const MATERIALS_PAIR{ material::SkinMaterial(CREATURE_PTR->Race()) };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (DoesCreatureRequireSkinArmor(CREATURE_PTR)),
+                ((MATERIALS_PAIR.first != material::Count)
+                 && (MATERIALS_PAIR.first != material::Nothing)),
                 "item::armor::ArmorFactory::Make(body_part="
                     << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
                     << ", creature={" << CREATURE_PTR->ToString()
-                    << "}) but that creature does not require skin armor.");
-
-            auto const MATERIAL{ material::SkinMaterial(CREATURE_PTR->Race()) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                ((MATERIAL != material::Count) && (MATERIAL != material::Nothing)),
-                "item::armor::ArmorFactory::Make(body_part="
-                    << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
-                    << ", creature={" << CREATURE_PTR->ToString()
-                    << "}) but that creature's skin material was invalid.");
+                    << "}) but that creature's skin material (material::SkinMaterial()) was "
+                       "invalid: pri="
+                    << ((MATERIALS_PAIR.first == material::Count)
+                            ? "Count"
+                            : material::ToString(MATERIALS_PAIR.first))
+                    << ", sec="
+                    << ((MATERIALS_PAIR.second == material::Count)
+                            ? "Count"
+                            : material::ToString(MATERIALS_PAIR.second))
+                    << ".");
 
             const ArmorTypeWrapper ARMOR_TYPE_WRAPPER{ BODY_PART };
 
             auto const ARMOR_RATING{ Armor_t::Make(
-                material::ArmorRatingBonusPri(MATERIAL).As<int>()
+                material::ArmorRatingBonusPri(MATERIALS_PAIR.first).As<int>()
                 + CREATURE_PTR->Rank().As<int>()) };
 
             auto const WEIGHT{ Weight_t::Make(
-                10.0f * material::WeightMult(MATERIAL, material::Nothing)) };
-
-            std::ostringstream nameSS;
-            nameSS << CREATURE_PTR->RaceName() << "'s " << material::Name(MATERIAL) << " Skin";
-
-            std::ostringstream descSS;
-            descSS << "tough skin made of " << material::Name(MATERIAL);
+                10.0f * material::WeightMult(MATERIALS_PAIR.first, MATERIALS_PAIR.second)) };
 
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
-                nameSS.str(),
-                descSS.str(),
+                MakeArmorBodyPartName(MATERIALS_PAIR, CREATURE_PTR),
+                MakeArmorBodyPartDescription(MATERIALS_PAIR),
                 static_cast<category::Enum>(ItemProfile::CategoryArmor() | category::BodyPart),
-                MATERIAL,
-                material::Nothing,
+                MATERIALS_PAIR.first,
+                MATERIALS_PAIR.second,
                 0_coin,
                 WEIGHT,
                 0_health,

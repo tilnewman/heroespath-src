@@ -434,21 +434,21 @@ namespace sfml_util
             {
                 return "sylavin";
             }
-            case TendrilHit1:
+            case TentacleHit1:
             {
-                return "tendril-hit-1";
+                return "tentacle-hit-1";
             }
-            case TendrilHit2:
+            case TentacleHit2:
             {
-                return "tendril-hit-2";
+                return "tentacle-hit-2";
             }
-            case TendrilHit3:
+            case TentacleHit3:
             {
-                return "tendril-hit-3";
+                return "tentacle-hit-3";
             }
-            case TendrilHit4:
+            case TentacleHit4:
             {
-                return "tendril-hit-4";
+                return "tentacle-hit-4";
             }
             case WhipHit:
             {
@@ -1488,12 +1488,12 @@ namespace sfml_util
             {
                 return "sound-effects/combat/breath-hit";
             }
-            case TendrilHit1:
-            case TendrilHit2:
-            case TendrilHit3:
-            case TendrilHit4:
+            case TentacleHit1:
+            case TentacleHit2:
+            case TentacleHit3:
+            case TentacleHit4:
             {
-                return "sound-effects/combat/tendril-hit";
+                return "sound-effects/combat/tentacle-hit";
             }
             case WhipHit:
             {

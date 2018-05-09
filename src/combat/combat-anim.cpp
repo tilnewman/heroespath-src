@@ -255,19 +255,20 @@ namespace combat
         // establish the game data file path key to the projectile image
         const std::string PATH_KEY_BASE_STR{ "media-images-combat-" };
         std::string pathKey{ PATH_KEY_BASE_STR + "dart" };
-        if (WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
+        if (WEAPON_PTR->WeaponInfo().IsBow())
         {
             std::ostringstream ss;
             ss << PATH_KEY_BASE_STR << "arrow" << misc::random::Int(1, 3);
             pathKey = ss.str();
         }
-        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
+        else if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
         {
             std::ostringstream ss;
             ss << PATH_KEY_BASE_STR << "stone" << misc::random::Int(1, 4);
             pathKey = ss.str();
         }
-        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow)
+        else if (
+            WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Crossbow)
         {
             pathKey = PATH_KEY_BASE_STR + "arrow4";
         }
@@ -285,12 +286,13 @@ namespace combat
         // this is the scale for Sling projectiles (stones)
         auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
-            || (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
+        if (WEAPON_PTR->WeaponInfo().IsBow()
+            || (WEAPON_PTR->WeaponInfo().ProjectileType()
+                == item::weapon::projectile_type::Crossbow))
         {
             scale = sfml_util::MapByRes(0.3f, 2.0f);
         }
-        else if (WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
+        else if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
         {
             scale = sfml_util::MapByRes(0.05f, 1.0f);
         }

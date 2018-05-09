@@ -263,6 +263,17 @@ namespace item
         return count;
     }
 
+    bool Inventory::HasCoverTypeEquipped(const armor::cover_type::Enum COVER_TYPE) const
+    {
+        return std::find_if(
+                   std::begin(equippedItemsPVec_),
+                   std::end(equippedItemsPVec_),
+                   [COVER_TYPE](auto const & ITEM_PTR) {
+                       return (ITEM_PTR->ArmorInfo().CoverType() == COVER_TYPE);
+                   })
+            != std::end(equippedItemsPVec_);
+    }
+
     bool Inventory::HasMusicalInstrumentEquipped() const
     {
         return (

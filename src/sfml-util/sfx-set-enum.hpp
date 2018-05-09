@@ -55,7 +55,7 @@ namespace sfml_util
             ProjectileMiss,
             MeleeMiss,
             FistHit,
-            TendrilHit,
+            TentacleHit,
             WhipHit,
             WhipMiss,
             MaterialHitMetal,

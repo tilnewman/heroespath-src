@@ -32,6 +32,7 @@
 #include "creature/enchantment-factory.hpp"
 #include "creature/race-enum.hpp"
 #include "item/armor-factory.hpp"
+#include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
@@ -226,7 +227,7 @@ namespace item
         // score based on material and element_type is not added here because all unique items are
         // also misc items and SetMisc() will add those score bonuses
         score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-            UNIQUE_TYPE, MATERIAL_PRIMARY);
+            UNIQUE_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
 
         score_ += 750_score;
 
@@ -237,6 +238,27 @@ namespace item
             MATERIAL_SECONDARY,
             set_type::NotASet,
             ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetMisc(
+        const misc_type::Enum MISC_TYPE,
+        const bool IS_PIXIE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const creature::SummonInfo & SUMMON_INFO)
+    {
+        ItemProfileThinFactory factory;
+
+        SetMisc(
+            factory.MakeMisc(MISC_TYPE),
+            IS_PIXIE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            SUMMON_INFO);
     }
 
     void ItemProfile::SetMisc(
@@ -307,7 +329,7 @@ namespace item
                     << ") element_type wasn't None but the misc_type was not equippable.");
 
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-                ELEMENT_TYPE, misc_type::IsWeapon(MISC_TYPE), MATERIAL_PRIMARY);
+                ELEMENT_TYPE, misc_type::IsWeapon(MISC_TYPE), MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
 
         if (MISC_TYPE == misc_type::Cape)
@@ -362,6 +384,399 @@ namespace item
         {
             SetSummonInfoAndAdjustScore(SUMMON_INFO);
         }
+    }
+
+    void ItemProfile::SetShield(
+        const armor::shield_type::Enum SHIELD_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetShield(
+            factory.MakeArmorSpecific(SHIELD_TYPE),
+            SHIELD_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetHelm(
+        const armor::helm_type::Enum HELM_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetHelm(
+            factory.MakeArmorSpecific(HELM_TYPE),
+            HELM_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetCover(
+        const armor::cover_type::Enum COVER_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE,
+        const misc_type::Enum MISC_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetCover(
+            factory.MakeArmorSpecific(COVER_TYPE, MISC_TYPE),
+            COVER_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE,
+            MISC_TYPE);
+    }
+
+    void ItemProfile::SetAventail(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Aventail, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
+    }
+
+    void ItemProfile::SetBracer(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Bracers, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetShirt(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Shirt, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetBoots(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Boots, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetPants(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Pants, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetGauntlets(
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetArmorWithBaseTypeHelper(
+            factory.MakeArmorNonSpecific(armor_type::Gauntlets, BASE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetSword(
+        const weapon::sword_type::Enum SWORD_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetSword(
+            factory.MakeWeaponSpecific(SWORD_TYPE),
+            SWORD_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetAxe(
+        const weapon::axe_type::Enum AXE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetAxe(
+            factory.MakeWeaponSpecific(AXE_TYPE),
+            AXE_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetClub(
+        const weapon::club_type::Enum CLUB_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetClub(
+            factory.MakeWeaponSpecific(CLUB_TYPE),
+            CLUB_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetWhip(
+        const weapon::whip_type::Enum WHIP_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetWhip(
+            factory.MakeWeaponSpecific(WHIP_TYPE),
+            WHIP_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetProjectile(
+        const weapon::projectile_type::Enum PROJECTILE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetProjectile(
+            factory.MakeWeaponSpecific(PROJECTILE_TYPE),
+            PROJECTILE_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetKnife(
+        const sfml_util::Size::Enum SIZE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetKnife(
+            factory.MakeWeaponKnifeOrDagger(false, SIZE),
+            SIZE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetDagger(
+        const sfml_util::Size::Enum SIZE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetDagger(
+            factory.MakeWeaponKnifeOrDagger(true, SIZE),
+            SIZE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
+    }
+
+    void ItemProfile::SetQuarterStaff(
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetQuarterStaff(
+            factory.MakeWeaponStaffOrQuarterstaff(true),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE);
+    }
+
+    void ItemProfile::SetStaff(
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const misc_type::Enum MISC_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetStaff(
+            factory.MakeWeaponStaffOrQuarterstaff(false, MISC_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            MISC_TYPE);
+    }
+
+    void ItemProfile::SetBladedStaff(
+        const weapon::bladedstaff_type::Enum BLADEDSTAFF_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const misc_type::Enum MISC_TYPE)
+    {
+        ItemProfileThinFactory factory;
+
+        SetBladedStaff(
+            factory.MakeWeaponSpecific(BLADEDSTAFF_TYPE, MISC_TYPE),
+            BLADEDSTAFF_TYPE,
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            MISC_TYPE);
     }
 
     void ItemProfile::SetArmorWithBaseTypeHelper(
@@ -470,10 +885,10 @@ namespace item
             return (
                 ScoreHelper::Score(MATERIAL_PRI, MATERIAL_SEC)
                 + creature::EnchantmentFactory::Instance()->TreasureScore(
-                      NAMED_TYPE, MATERIAL_PRI, IS_WEAPON, !IS_WEAPON)
+                      NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
                 + creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE)
                 + creature::EnchantmentFactory::Instance()->TreasureScore(
-                      ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI));
+                      ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
         }
     }
 

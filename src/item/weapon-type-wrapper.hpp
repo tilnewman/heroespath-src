@@ -82,11 +82,57 @@ namespace item
 
             const std::string ToString() const;
 
+            // IsBodyPart(), IsBlowpipe(), HasHandle(), IsPole() are complete and
+            // mutually exclusive
+
+            bool IsBodyPart() const
+            {
+                auto const BODY_PART_TYPE{ BodyPartType() };
+                return (BODY_PART_TYPE != body_part::Count) && (BODY_PART_TYPE != body_part::Skin);
+            }
+
+            bool IsBlowpipe() const { return (ProjectileType() == projectile_type::Blowpipe); }
+
+            bool HasHandle() const
+            {
+                return (IsBodyPart() == false) && (ProjectileType() != projectile_type::Blowpipe)
+                    && ((type_ & weapon_type::Staff) == 0) && (IsBladedStaff() == false);
+            }
+
+            bool IsPole() const { return ((type_ & weapon_type::Staff) || IsBladedStaff()); }
+
+            bool CanBeReinforced() const
+            {
+                return (IsBodyPart() == false) && (IsSpear() || (type_ & weapon_type::Staff));
+            }
+
+            bool WillBeDescribedAsOneSolidMaterial() const
+            {
+                return (
+                    (type_ & weapon_type::Knife) || IsSpear() || (type_ & weapon_type::Staff)
+                    || (SwordType() == sword_type::Falcata) || (ClubType() == club_type::Mace)
+                    || (ProjectileType() == projectile_type::Blowpipe));
+            }
+
             bool IsTypeValid() const { return (type_ != weapon_type::NotAWeapon); }
 
             weapon_type::Enum Type() const { return type_; }
 
             const ElementEnumVec_t ElementTypes() const { return elementTypes_; }
+
+            bool IsBow() const
+            {
+                return (ProjectileType() == projectile_type::Shortbow)
+                    || (ProjectileType() == projectile_type::Longbow)
+                    || (ProjectileType() == projectile_type::CompositeBow);
+            }
+
+            bool IsSpear() const
+            {
+                return (
+                    (BladedStaffType() == bladedstaff_type::Spear)
+                    || (BladedStaffType() == bladedstaff_type::ShortSpear));
+            }
 
             bool IsStaff() const
             {
@@ -100,45 +146,15 @@ namespace item
                     && boost::get<bool>(variant_);
             }
 
-            bool IsBodyPart() const
-            {
-                return (IsBite() || IsClaws() || IsFists() || IsTendrils() || IsBreath());
-            }
+            bool IsBite() const { return (BodyPartType() == body_part::Bite); }
 
-            bool IsBite() const
-            {
-                return (
-                    GetSpecificTypeIfValid<body_part>(weapon_type::Bite, BODY_PART_INDEX)
-                    != body_part::Count);
-            }
+            bool IsClaws() const { return (BodyPartType() == body_part::Claws); }
 
-            bool IsClaws() const
-            {
-                return (
-                    GetSpecificTypeIfValid<body_part>(weapon_type::Claws, BODY_PART_INDEX)
-                    != body_part::Count);
-            }
+            bool IsFists() const { return (BodyPartType() == body_part::Fists); }
 
-            bool IsFists() const
-            {
-                return (
-                    GetSpecificTypeIfValid<body_part>(weapon_type::Fists, BODY_PART_INDEX)
-                    != body_part::Count);
-            }
+            bool IsTentacles() const { return (BodyPartType() == body_part::Tentacles); }
 
-            bool IsTendrils() const
-            {
-                return (
-                    GetSpecificTypeIfValid<body_part>(weapon_type::Tendrils, BODY_PART_INDEX)
-                    != body_part::Count);
-            }
-
-            bool IsBreath() const
-            {
-                return (
-                    GetSpecificTypeIfValid<body_part>(weapon_type::Breath, BODY_PART_INDEX)
-                    != body_part::Count);
-            }
+            bool IsBreath() const { return (BodyPartType() == body_part::Breath); }
 
             bool IsKnife() const
             {
@@ -221,6 +237,11 @@ namespace item
                     weapon_type::BladedStaff, BLADEDSTAFF_INDEX);
             }
 
+            body_part::Enum BodyPartType() const
+            {
+                return GetSpecificTypeIfValid<body_part>(weapon_type::BodyPart, BODY_PART_INDEX);
+            }
+
             const std::string
                 ImageFilename(const std::string & SEPARATOR, const std::string & EXTENSION) const;
 
@@ -251,6 +272,8 @@ namespace item
                 }
             }
 
+            name_material_type::Enum NameMaterialType() const;
+
             friend bool operator==(const WeaponTypeWrapper & L, const WeaponTypeWrapper & R);
             friend bool operator<(const WeaponTypeWrapper & L, const WeaponTypeWrapper & R);
 
@@ -268,8 +291,6 @@ namespace item
                     return T::Count;
                 }
             }
-
-            bool SetupWithBodypartName(const std::string & SYSTEM_NAME_LOWERCASE);
 
             bool SetupWithKnifeOrDaggerName(
                 const std::string & SYSTEM_NAME_LOWERCASE, const sfml_util::Size::Enum SIZE);

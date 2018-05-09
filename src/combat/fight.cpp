@@ -1234,7 +1234,7 @@ namespace combat
 
         // If weapon is fist and creature attacking is wearing gauntlets, then triple the damage.
         Health_t extraDamage{ 0_health };
-        if (WEAPON_PTR->WeaponType() & item::weapon_type::Fists)
+        if (WEAPON_PTR->WeaponInfo().IsFists())
         {
             for (auto const & NEXT_ITEM_PTR : CREATURE_ATTACKING_PTR->Inventory().ItemsEquipped())
             {
@@ -1248,8 +1248,7 @@ namespace combat
         }
 
         // If weapon is bite and creature has fangs, then tripple the damage.
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bite)
-            && (CREATURE_ATTACKING_PTR->Body().HasFangs()))
+        if (WEAPON_PTR->WeaponInfo().IsBite() && (CREATURE_ATTACKING_PTR->Body().HasFangs()))
         {
             extraDamage = DAMAGE_FROM_WEAPON_RAW;
         }

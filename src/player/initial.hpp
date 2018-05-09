@@ -60,7 +60,6 @@ namespace player
         static Health_t GetStartingHealth(const creature::CreaturePtr_t);
         static void SetStartingHealth(const creature::CreaturePtr_t);
         static void SetStartingMana(const creature::CreaturePtr_t);
-        static item::material::Enum HardOrSoftLeatherRand();
 
         static void
             EnsureItemAddedAndEquipped(const creature::CreaturePtr_t, const item::ItemPtr_t);

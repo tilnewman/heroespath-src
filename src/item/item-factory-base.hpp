@@ -56,9 +56,19 @@ namespace item
         ItemFactoryBase & operator=(ItemFactoryBase &&) = delete;
         ItemFactoryBase() = delete;
 
-        static bool DoesCreatureRequireSkinArmor(const creature::CreaturePtr_t);
-
     protected:
+        static const std::string MakeWeaponBodyPartName(
+            const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME);
+
+        static const std::string MakeWeaponBodyPartDescription(
+            const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR);
+
+        static const std::string MakeArmorBodyPartName(
+            const MaterialPair_t & MATERIALS_PAIR, const creature::CreaturePtr_t CREATURE_PTR);
+
+        static const std::string
+            MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR);
+
         static const std::string MakeNonBodyPartName(const ItemProfile & PROFILE);
 
         static const std::string
@@ -75,17 +85,16 @@ namespace item
 
         static Coin_t TreasureScoreToCoins(const Score_t &);
 
+    private:
+        static const std::string PrefixAOrAn(const material::Enum);
         static const std::string RandomCoatedPhrase();
         static const std::string RandomCoatedAdjective();
-        static const std::string RandomJeweledAdjective();
-        static const std::string RandomAdornedAdjective();
-        static const std::string RandomChainNoun();
+        static const std::string JeweledAdjective();
+        static const std::string AdornedAdjective();
         static const std::string RandomClaspNoun();
 
-    private:
         static bool IsNonEmptyWithoutTrailingSpace(std::ostringstream &);
-        static void AppendSpaceIfNeeded(std::ostringstream &);
-        static const std::string AppendSpaceIfNeededInline(std::ostringstream &);
+        static const std::string AppendSpaceIfNeeded(std::ostringstream &);
 
         enum class PhraseType
         {
@@ -93,38 +102,30 @@ namespace item
             Desc
         };
 
+        static const std::string ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE);
+
         static void
             AppendBlessedOrCursedIfNeeded(const ItemProfile & PROFILE, std::ostringstream &);
 
         static void AppendPixiePhraseIfNeeded(
             const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream &);
 
-        static bool IsArmorItemWithClasp(const ItemProfile &);
+        static const std::string SeccondaryMaterialPhrase(const ItemProfile &);
 
-        static const std::string
-            SeccondaryMaterialPhraseWhenAfter(const ItemProfile &, const PhraseType);
+        static const std::string SecondaryMaterialPhraseDecoration(
+            const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
 
-        static const std::string SecondaryMaterialPhraseStandard(
-            const ItemProfile &, const std::string & SECONDARY_MATERIAL_NAME);
+        static const std::string SecondaryMaterialPhraseHandle(
+            const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
 
-        static const std::string SecondaryMaterialSpecificNoun(const ItemProfile &);
+        static const std::string SecondaryMaterialPhraseReinforced(
+            const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
 
-        static const std::string SecondaryMaterialPhraseForBladedStaffs(
-            const ItemProfile &, const std::string & SECONDARY_MATERIAL_NAME);
+        static const std::string SecondaryMaterialPhraseTipped(
+            const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
 
-        static const std::string SecondaryMaterialPhraseForClaspedArmor(
-            const ItemProfile &, const std::string & SECONDARY_MATERIAL_NAME);
-
-        static const std::string SecondaryMaterialPhraseWithSpecificNoun(
-            const ItemProfile &,
-            const std::string & SECONDARY_MATERIAL_NAME,
-            const std::string & NOUN);
-
-        static const std::string SecondaryMaterialPhraseForItemsWithNonFleshEyes(
-            const ItemProfile &, const std::string & SECONDARY_MATERIAL_NAME);
-
-        static const std::string SecondaryMaterialPhraseForShields(
-            const ItemProfile &, const std::string & SECONDARY_MATERIAL_NAME);
+        static const std::string SecondaryMaterialPhraseClasped(
+            const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
     };
 
 } // namespace item

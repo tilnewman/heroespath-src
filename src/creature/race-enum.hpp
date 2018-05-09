@@ -83,7 +83,7 @@ namespace creature
             LizardWalker,
             Minotaur,
             Ogre,
-            Plant,
+            Plant, //************************
             Shade,
             Skeleton,
             Beetle,

@@ -226,11 +226,11 @@ namespace sfml_util
                                    sound_effect::FistHit7,
                                    sound_effect::FistHit8 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TendrilHit)]
-            = SfxSet(SfxEnumVec_t{ sound_effect::TendrilHit1,
-                                   sound_effect::TendrilHit2,
-                                   sound_effect::TendrilHit3,
-                                   sound_effect::TendrilHit4 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TentacleHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::TentacleHit1,
+                                   sound_effect::TentacleHit2,
+                                   sound_effect::TentacleHit3,
+                                   sound_effect::TentacleHit4 });
 
         sfxSetVec_[static_cast<std::size_t>(sound_effect_set::WhipHit)]
             = SfxSet(SfxEnumVec_t{ sound_effect::WhipHit });

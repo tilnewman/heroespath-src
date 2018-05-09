@@ -281,6 +281,19 @@ namespace item
                 ++elementalCount;
                 elementScoreMap_[PROFILE.ElementType()].emplace_back(NORMAL_SCORE);
             }
+
+            if (PROFILE.IsSet())
+            {
+                scoresSet_.emplace_back(NORMAL_SCORE);
+            }
+            else if (PROFILE.IsNamed())
+            {
+                scoresNamed_.emplace_back(NORMAL_SCORE);
+            }
+            else if (PROFILE.IsUnique())
+            {
+                scoresUnique_.emplace_back(NORMAL_SCORE);
+            }
         }
 
         return WILL_ADD;
@@ -315,7 +328,12 @@ namespace item
     {
         std::ostringstream ss;
 
-        ss << std::quoted(description_) << ReportCountPhrase(SOURCE_PROFILES.normal_count)
+        if (WILL_LIMIT_TO_ONE_LINE == false)
+        {
+            ss << std::setw(20) << std::quoted(description_);
+        }
+
+        ss << ReportCountPhrase(SOURCE_PROFILES.normal_count)
            << SumPhrase("score", scores_, SOURCE_PROFILES.normal_score_sum);
 
         if (WILL_LIMIT_TO_ONE_LINE == false)
@@ -360,8 +378,9 @@ namespace item
 
                 auto const AVERAGE{ static_cast<std::size_t>(DivideAsDouble(sum, CHUNK_SIZE)) };
 
-                ss << "\n-\t[" << ((MIN_DEFAULT == min) ? 0 : min) << ", " << AVERAGE << ", " << max
-                   << "]";
+                ss << "\n-\t[" << std::setw(4) << ((MIN_DEFAULT == min) ? 0 : min) << ", "
+                   << std::setw(4) << AVERAGE << ", " << std::setw(4) << max
+                   << "]\trange=" << (max - min) << "\tavg=" << AVERAGE;
             }
             ss << "\n---(" << CHUNK_SIZE << ")---";
 
@@ -379,6 +398,28 @@ namespace item
                 ss << '\n' << CountPhrase("misc", miscCount_, Count());
             }
 
+            auto appendScoresSubReport{ [&](const std::string & NAME,
+                                            std::vector<std::size_t> & scores) {
+                if (scores.empty() == false)
+                {
+                    std::sort(std::begin(scores), std::end(scores));
+
+                    misc::Vector::MinMaxAvgSum<std::size_t> stats(scores);
+
+                    ss << '\n'
+                       << std::setw(10) << NAME << "count=" << std::setw(8) << scores.size()
+                       << PercentToString(scores.size(), SOURCE_PROFILES.normal_count, true) << "["
+                       << std::setw(4) << stats.min << ", " << std::setw(4) << stats.avg << ", "
+                       << std::setw(4) << stats.max << "]("
+                       << misc::Vector::StandardDeviation(scores, scores.size(), stats.avg)
+                       << "std)";
+                }
+            } };
+
+            appendScoresSubReport("Set", scoresSet_);
+            appendScoresSubReport("Named", scoresNamed_);
+            appendScoresSubReport("Unique", scoresUnique_);
+
             if (elementalCount > 0)
             {
                 auto const SCORES_SUM{ misc::Vector::SumVec(scores_) };
@@ -392,8 +433,9 @@ namespace item
                         std::begin(elementTypeScoreVecPair.second),
                         std::end(elementTypeScoreVecPair.second));
 
-                    ss << "\n\t" << element_type::ToString(elementTypeScoreVecPair.first, true, "/")
-                       << "\t\tcount=" << elementTypeScoreVecPair.second.size()
+                    ss << "\n\t" << std::setw(20)
+                       << element_type::ToString(elementTypeScoreVecPair.first, true, "/")
+                       << "\t\tcount=" << std::setw(7) << elementTypeScoreVecPair.second.size()
                        << PercentToString(elementTypeScoreVecPair.second.size(), elementalCount)
                        << SumPhrase("", elementTypeScoreVecPair.second, SCORES_SUM);
                 }
@@ -407,7 +449,7 @@ namespace item
         ItemProfilesReporter::Report::ReportCountPhrase(const std::size_t COUNT_COMPARED_WITH) const
     {
         std::ostringstream ss;
-        ss << ", " << description_ << "_count=" << Count()
+        ss << ", " << std::setw(16) << description_ << "_count=" << std::setw(8) << Count()
            << PercentToString(Count(), COUNT_COMPARED_WITH);
 
         return ss.str();
@@ -422,15 +464,25 @@ namespace item
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.WeaponInfo().GeneralName()].Add(PROFILE, true);
-                specificScoreMap_[PROFILE.WeaponInfo().SpecificName()].emplace_back(
-                    PROFILE.TreasureScore().As<std::size_t>());
+
+                auto & specificItemInfo{ specificMap_[PROFILE.WeaponInfo().SpecificName()] };
+
+                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().As<std::size_t>());
+
+                specificItemInfo.material_pairs.emplace_back(
+                    PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
             }
             else if ((false == isWeaponReport_) && PROFILE.IsArmor())
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.ArmorInfo().GeneralName()].Add(PROFILE, true);
-                specificScoreMap_[PROFILE.ArmorInfo().SpecificName()].emplace_back(
-                    PROFILE.TreasureScore().As<std::size_t>());
+
+                auto & specificItemInfo{ specificMap_[PROFILE.ArmorInfo().SpecificName()] };
+
+                specificItemInfo.scores.emplace_back(PROFILE.TreasureScore().As<std::size_t>());
+
+                specificItemInfo.material_pairs.emplace_back(
+                    PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
             }
         }
 
@@ -455,15 +507,75 @@ namespace item
             ss << '\n' << stringReportPair.second.Make(SUB_REPORT_SOURCES, true);
         }
 
-        for (auto & specificNameScoresPair : specificScoreMap_)
+        ss << "\n\n";
+
+        for (auto & specificNameScoresPair : specificMap_)
         {
-            std::sort(
-                std::begin(specificNameScoresPair.second), std::end(specificNameScoresPair.second));
-            ss << "\n\t" << specificNameScoresPair.first
-               << " count=" << specificNameScoresPair.second.size()
-               << PercentToString(
-                      specificNameScoresPair.second.size(), SUB_REPORT_SOURCES.normal_count)
-               << SumPhrase("", specificNameScoresPair.second, SUB_REPORT_SOURCES.normal_score_sum);
+            auto const NAME{ specificNameScoresPair.first };
+
+            auto & scores{ specificNameScoresPair.second.scores };
+            std::sort(std::begin(scores), std::end(scores));
+
+            ss << "\n\t" << std::setw(20) << NAME << " count=" << std::setw(7) << scores.size()
+               << std::setw(6) << PercentToString(scores.size(), SUB_REPORT_SOURCES.normal_count)
+               << SumPhrase("", scores, SUB_REPORT_SOURCES.normal_score_sum);
+
+            auto & materialPairs{ specificNameScoresPair.second.material_pairs };
+
+            misc::VectorMap<material::Enum, MaterialVec_t> primaryToSecondariesMap;
+
+            for (auto const & MATERIAL_PAIR : materialPairs)
+            {
+                primaryToSecondariesMap[MATERIAL_PAIR.first].emplace_back(MATERIAL_PAIR.second);
+            }
+
+            for (auto & primaryToSecondariesPair : primaryToSecondariesMap)
+            {
+                auto & secondaries{ primaryToSecondariesPair.second };
+
+                std::sort(std::begin(secondaries), std::end(secondaries));
+
+                secondaries.erase(
+                    std::unique(std::begin(secondaries), std::end(secondaries)),
+                    std::end(secondaries));
+            }
+
+            misc::VectorMap<MaterialVec_t, MaterialVec_t> secondariesToPrimariesMap;
+
+            for (auto & primaryToSecondariesPair : primaryToSecondariesMap)
+            {
+                secondariesToPrimariesMap[primaryToSecondariesPair.second].emplace_back(
+                    primaryToSecondariesPair.first);
+            }
+
+            for (auto & secondariesToPrimariesPair : secondariesToPrimariesMap)
+            {
+                auto & primaries{ secondariesToPrimariesPair.second };
+
+                std::sort(std::begin(primaries), std::end(primaries));
+
+                primaries.erase(
+                    std::unique(std::begin(primaries), std::end(primaries)), std::end(primaries));
+            }
+
+            auto materialVecToString{ [](const MaterialVec_t & MATERIALS) {
+                std::ostringstream matVecSS;
+                matVecSS << "(";
+                for (auto const MATERIAL : MATERIALS)
+                {
+                    matVecSS << material::ToString(MATERIAL) << ",";
+                }
+                matVecSS << ")";
+                return matVecSS.str();
+            } };
+
+            for (auto const & SECONDARIES_PRIMARIES_PAIR : secondariesToPrimariesMap)
+            {
+                ss << "\n\t\t" << std::setw(30)
+                   << materialVecToString(SECONDARIES_PRIMARIES_PAIR.second) << std::setw(10)
+                   << "\t\t" << std::setw(30)
+                   << materialVecToString(SECONDARIES_PRIMARIES_PAIR.first);
+            }
         }
 
         return ss.str();

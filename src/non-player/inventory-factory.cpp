@@ -115,7 +115,8 @@ namespace non_player
         {
             IItemPVecPair_t itemsPtrVecPair;
 
-            if (item::ItemFactory::DoesCreatureRequireSkinArmor(CHARACTER_PTR))
+            if (item::material::SkinMaterial(CHARACTER_PTR->Race()).first
+                != item::material::Nothing)
             {
                 itemsPtrVecPair.first.emplace_back(
                     item::ItemFactory::Make(item::body_part::Skin, CHARACTER_PTR));
@@ -836,20 +837,11 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
                     break;
                 }
-                case weapon_type::Bite:
-                case weapon_type::Breath:
                 case weapon_type::Bladed:
-                case weapon_type::Claws:
-                case weapon_type::Fists:
                 case weapon_type::Melee:
                 case weapon_type::NotAWeapon:
                 case weapon_type::Pointed:
-                case weapon_type::Tendrils:
-                case weapon_type::Crossbow:
-                case weapon_type::Blowpipe:
-                case weapon_type::Bow:
-                case weapon_type::Spear:
-                case weapon_type::Sling:
+                case weapon_type::BodyPart:
                 default:
                 {
                     std::ostringstream ss;
@@ -1205,10 +1197,10 @@ namespace non_player
                     item::ItemFactory::Make(item::body_part::Fists, CHARACTER_PTR));
             }
 
-            if (CHANCES.has_tendrils && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
+            if (CHANCES.has_tentacles && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Tendrils, CHARACTER_PTR));
+                    item::ItemFactory::Make(item::body_part::Tentacles, CHARACTER_PTR));
             }
 
             if (CHANCES.has_breath

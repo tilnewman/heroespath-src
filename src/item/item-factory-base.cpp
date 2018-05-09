@@ -41,10 +41,46 @@ namespace heroespath
 namespace item
 {
 
-    bool ItemFactoryBase::DoesCreatureRequireSkinArmor(const creature::CreaturePtr_t CREATURE_PTR)
+    const std::string ItemFactoryBase::MakeWeaponBodyPartName(
+        const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME)
     {
-        auto const SKIN_MATERIAL{ material::SkinMaterial(CREATURE_PTR->Race()) };
-        return ((SKIN_MATERIAL != material::Count) && (SKIN_MATERIAL != material::Nothing));
+        return CREATURE_PTR->RaceName() + " " + READABLE_NAME;
+    }
+
+    const std::string ItemFactoryBase::MakeWeaponBodyPartDescription(
+        const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        return BASE_DESCRIPTION + " " + creature::race::Name(CREATURE_PTR->Race());
+    }
+
+    const std::string ItemFactoryBase::MakeArmorBodyPartName(
+        const MaterialPair_t & MATERIALS_PAIR, const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        std::ostringstream ss;
+        ss << CREATURE_PTR->RaceName() << "'s ";
+
+        if (MATERIALS_PAIR.second != material::Nothing)
+        {
+            ss << material::Name(MATERIALS_PAIR.second) << " covered ";
+        }
+
+        ss << material::Name(MATERIALS_PAIR.first);
+
+        return ss.str();
+    }
+
+    const std::string
+        ItemFactoryBase::MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR)
+    {
+        std::ostringstream ss;
+        ss << "tough skin made of " << material::Name(MATERIALS_PAIR.first);
+
+        if (MATERIALS_PAIR.second != material::Nothing)
+        {
+            ss << " and " << material::Name(MATERIALS_PAIR.second);
+        }
+
+        return ss.str();
     }
 
     const std::string ItemFactoryBase::MakeNonBodyPartName(const ItemProfile & PROFILE)
@@ -65,20 +101,25 @@ namespace item
             }
         }() };
 
-        if (PROFILE.IsUnique())
+        if (PROFILE.IsSet())
         {
-            ss << AppendSpaceIfNeededInline(ss) << unique_type::Name(PROFILE.UniqueType());
+            ss << AppendSpaceIfNeeded(ss) << set_type::Name(PROFILE.SetType()) << " "
+               << PROFILE.ReadableName();
+        }
+        else if (PROFILE.IsUnique())
+        {
+            ss << AppendSpaceIfNeeded(ss) << unique_type::Name(PROFILE.UniqueType());
         }
         else
         {
             auto const NAME_TO_USE{ [&]() {
-                if (PROFILE.IsSet())
-                {
-                    return set_type::Name(PROFILE.SetType()) + " " + PROFILE.ReadableName();
-                }
-                else if (PROFILE.IsNamed())
+                if (PROFILE.IsNamed())
                 {
                     return named_type::Name(PROFILE.NamedType()) + " " + PROFILE.ReadableName();
+                }
+                else if (PROFILE.IsArmor())
+                {
+                    return PROFILE.ArmorInfo().ReadableNameWithoutBase();
                 }
                 else
                 {
@@ -86,25 +127,17 @@ namespace item
                 }
             }() };
 
-            ss << AppendSpaceIfNeededInline(ss) << material::Name(PROFILE.MaterialPrimary());
+            ss << AppendSpaceIfNeeded(ss) << material::Name(PROFILE.MaterialPrimary())
+               << ArmorBaseTypeNamePrefix(PROFILE);
 
-            auto const SECONDARY_MATERIAL_PHRASE_WHEN_AFTER{ SeccondaryMaterialPhraseWhenAfter(
-                PROFILE, PhraseType::Name) };
+            auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PROFILE) };
 
-            if (SECONDARY_MATERIAL_PHRASE_WHEN_AFTER.empty())
+            if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary()))
             {
-                if (PROFILE.MaterialSecondary() != material::Nothing)
-                {
-                    ss << " and " << material::Name(PROFILE.MaterialSecondary());
-                }
+                ss << " and " << material::Name(PROFILE.MaterialSecondary());
+            }
 
-                ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR;
-            }
-            else
-            {
-                ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR << " "
-                   << SECONDARY_MATERIAL_PHRASE_WHEN_AFTER;
-            }
+            ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR << SECONDARY_MATERIAL_PHRASE;
         }
 
         // there is a chance for doubled spaces in the logic above
@@ -114,7 +147,9 @@ namespace item
 
         if (ba::contains(result, "  "))
         {
-            ba::replace_all(result, "  ", " ");
+            M_HP_LOG_ERR(
+                "The following name had double spaces: \"" << result << "\".  profile={"
+                                                           << PROFILE.ToString() << "}");
         }
 
         return result;
@@ -135,12 +170,11 @@ namespace item
         AppendBlessedOrCursedIfNeeded(PROFILE, ss);
         AppendPixiePhraseIfNeeded(PROFILE, PhraseType::Desc, ss);
 
-        AppendSpaceIfNeeded(ss);
-        ss << AppendSpaceIfNeededInline(ss) << BASE_DESC;
+        ss << AppendSpaceIfNeeded(ss) << BASE_DESC;
 
         if (PROFILE.IsSet())
         {
-            ss << ", an enchanted " << PROFILE.ReadableName() << " from the "
+            ss << ", an enchanted " << PROFILE.ReadableName() << " from "
                << set_type::Name(PROFILE.SetType()) << " Set";
         }
         else if (PROFILE.IsNamed())
@@ -153,26 +187,23 @@ namespace item
             ss << ", known as a " << unique_type::Name(PROFILE.UniqueType());
         }
 
-        ss << ", made of " << material::Name(PROFILE.MaterialPrimary());
+        ss << ", made of " << material::Name(PROFILE.MaterialPrimary())
+           << ArmorBaseTypeNamePrefix(PROFILE);
 
-        auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhraseWhenAfter(
-            PROFILE, PhraseType::Desc) };
+        auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PROFILE) };
 
-        if (SECONDARY_MATERIAL_PHRASE.empty())
-        {
-            if (PROFILE.MaterialSecondary() != material::Nothing)
-            {
-                ss << " and " << material::Name(PROFILE.MaterialSecondary());
-            }
-        }
-        else
+        if (SECONDARY_MATERIAL_PHRASE.empty() == false)
         {
             ss << SECONDARY_MATERIAL_PHRASE;
+        }
+        else if (material::IsSolid(PROFILE.MaterialSecondary()))
+        {
+            ss << " and " << material::Name(PROFILE.MaterialSecondary());
         }
 
         if (PROFILE.IsElemental())
         {
-            ss << " and pulsing with the magic " << element_type::Name(PROFILE.ElementType());
+            ss << ", and pulsing with the magic " << element_type::Name(PROFILE.ElementType());
         }
 
         if (PROFILE.SummonInfo().CanSummon())
@@ -186,14 +217,18 @@ namespace item
 
         namespace ba = boost::algorithm;
 
-        if (ba::contains(result, "and and"))
-        {
-            ba::replace_all(result, "and and", "and");
-        }
-
         if (ba::contains(result, "  "))
         {
-            ba::replace_all(result, "  ", " ");
+            M_HP_LOG_ERR(
+                "The following name had double spaces: \"" << result << "\".  profile={"
+                                                           << PROFILE.ToString() << "}");
+        }
+
+        if (ba::contains(result, "and and"))
+        {
+            M_HP_LOG_ERR(
+                "The following name had a double 'and': \"" << result << "\".  profile={"
+                                                            << PROFILE.ToString() << "}");
         }
 
         return result;
@@ -251,14 +286,28 @@ namespace item
         return BASE_ARMOR_RATING
             + material::ArmorRatingBonus(
                    PROFILE.MaterialPrimary(),
-                   ((IsArmorItemWithClasp(PROFILE)) ? material::Nothing
-                                                    : PROFILE.MaterialSecondary()));
+                   (((PROFILE.NameMaterialType() == name_material_type::Claspped)
+                     || (PROFILE.NameMaterialType() == name_material_type::ClasppedWithBase))
+                        ? material::Nothing
+                        : PROFILE.MaterialSecondary()));
     }
 
     Coin_t ItemFactoryBase::TreasureScoreToCoins(const Score_t & TREASURE_SCORE)
     {
         // For now Treasure Score equals the price in coins
         return Coin_t(TREASURE_SCORE.As<int>());
+    }
+
+    const std::string ItemFactoryBase::PrefixAOrAn(const material::Enum MATERIAL)
+    {
+        if (material::RequiresAnPrefix(MATERIAL))
+        {
+            return "an";
+        }
+        else
+        {
+            return "a";
+        }
     }
 
     const std::string ItemFactoryBase::RandomCoatedPhrase()
@@ -297,58 +346,9 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::RandomJeweledAdjective()
-    {
-        if (misc::random::Bool())
-        {
-            return "jeweled";
-        }
-        else
-        {
-            return "gemmed";
-        }
-    }
+    const std::string ItemFactoryBase::JeweledAdjective() { return "jeweled"; }
 
-    const std::string ItemFactoryBase::RandomAdornedAdjective()
-    {
-        auto const RAND{ misc::random::Int(2) };
-        if (RAND == 0)
-        {
-            return "adorned";
-        }
-        else if (RAND == 1)
-        {
-            return "decorated";
-        }
-        else
-        {
-            return "trimmed";
-        }
-    }
-
-    const std::string ItemFactoryBase::RandomChainNoun()
-    {
-        switch (misc::random::Int(3))
-        {
-            case 1:
-            {
-                return "tie";
-            }
-            case 2:
-            {
-                return "tether";
-            }
-            case 3:
-            {
-                return "fastener";
-            }
-            case 0:
-            default:
-            {
-                return "chain";
-            }
-        }
-    }
+    const std::string ItemFactoryBase::AdornedAdjective() { return "adorned"; }
 
     const std::string ItemFactoryBase::RandomClaspNoun()
     {
@@ -376,15 +376,7 @@ namespace item
         return ((CURRENT_STR.empty() == false) && (CURRENT_STR.at(CURRENT_STR.size() - 1) != ' '));
     }
 
-    void ItemFactoryBase::AppendSpaceIfNeeded(std::ostringstream & ss)
-    {
-        if (IsNonEmptyWithoutTrailingSpace(ss))
-        {
-            ss << " ";
-        }
-    }
-
-    const std::string ItemFactoryBase::AppendSpaceIfNeededInline(std::ostringstream & ss)
+    const std::string ItemFactoryBase::AppendSpaceIfNeeded(std::ostringstream & ss)
     {
         if (IsNonEmptyWithoutTrailingSpace(ss))
         {
@@ -401,7 +393,7 @@ namespace item
     {
         if (PROFILE.IsPixie())
         {
-            AppendSpaceIfNeeded(ss);
+            ss << AppendSpaceIfNeeded(ss);
 
             if (PHRASE_TYPE == PhraseType::Name)
             {
@@ -411,6 +403,20 @@ namespace item
             {
                 ss << "Pixie sized";
             }
+        }
+    }
+
+    const std::string ItemFactoryBase::ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE)
+    {
+        auto const BASE_TYPE{ PROFILE.ArmorInfo().BaseType() };
+        if (PROFILE.IsArmor()
+            && ((BASE_TYPE == armor::base_type::Mail) || (BASE_TYPE == armor::base_type::Plate)))
+        {
+            return " " + armor::base_type::ToString(BASE_TYPE);
+        }
+        else
+        {
+            return "";
         }
     }
 
@@ -436,97 +442,99 @@ namespace item
 
             if (BLESSED_OR_CURSED.empty() == false)
             {
-                AppendSpaceIfNeeded(ss);
-                ss << BLESSED_OR_CURSED;
+                ss << AppendSpaceIfNeeded(ss) << BLESSED_OR_CURSED;
             }
         }
     }
 
-    bool ItemFactoryBase::IsArmorItemWithClasp(const ItemProfile & PROFILE)
+    const std::string ItemFactoryBase::SeccondaryMaterialPhrase(const ItemProfile & PROFILE)
     {
-        return (
-            (PROFILE.ArmorType() == armor_type::Covering) || PROFILE.ArmorInfo().IsPants()
-            || PROFILE.ArmorInfo().IsShirt() || PROFILE.ArmorInfo().IsAventail());
+        auto const SECONDARY_MATERIAL{ PROFILE.MaterialSecondary() };
+        auto const SECONDARY_MATERIAL_NAME{ material::Name(SECONDARY_MATERIAL) };
+
+        if ((SECONDARY_MATERIAL == material::Nothing) || material::IsGas(SECONDARY_MATERIAL))
+        {
+            return "";
+        }
+        else if (material::IsLiquid(SECONDARY_MATERIAL))
+        {
+            return " " + RandomCoatedAdjective() + " with " + SECONDARY_MATERIAL_NAME;
+        }
+        else if (material::IsSpirit(SECONDARY_MATERIAL))
+        {
+            return " with a ghostly glow";
+        }
+        else
+        {
+            // at this point the material must be solid
+            switch (PROFILE.NameMaterialType())
+            {
+                case name_material_type::Decoration:
+                {
+                    return SecondaryMaterialPhraseDecoration(
+                        SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
+                }
+                case name_material_type::Handle:
+                {
+                    return SecondaryMaterialPhraseHandle(
+                        SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
+                }
+                case name_material_type::Reinforced:
+                case name_material_type::ReinforcedWithBase:
+                {
+                    return SecondaryMaterialPhraseReinforced(
+                        SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
+                }
+                case name_material_type::Tipped:
+                {
+                    return SecondaryMaterialPhraseTipped(
+                        SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
+                }
+                case name_material_type::Claspped:
+                case name_material_type::ClasppedWithBase:
+                {
+                    return SecondaryMaterialPhraseClasped(
+                        SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
+                }
+                case name_material_type::Misc:
+                {
+                    if (misc_type::HasNonFleshEyes(PROFILE.MiscType())
+                        && (SECONDARY_MATERIAL != material::DriedFlesh))
+                    {
+                        return " with " + SECONDARY_MATERIAL_NAME + " eyes";
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+
+                case name_material_type::BodyPart:
+                case name_material_type::Count:
+                default:
+                {
+                    return "";
+                }
+            }
+        }
     }
 
-    const std::string ItemFactoryBase::SeccondaryMaterialPhraseWhenAfter(
-        const ItemProfile & PROFILE, const PhraseType)
+    const std::string ItemFactoryBase::SecondaryMaterialPhraseDecoration(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
     {
-        std::ostringstream ss;
-
-        if (PROFILE.MaterialSecondary() != material::Nothing)
+        if (material::IsFancyJewel(SECONDARY_MATERIAL))
         {
-            auto const SECONDARY_MATERIAL_NAME{ material::Name(PROFILE.MaterialSecondary()) };
-
-            auto const SECONDARY_MATERIAL_SPECIFIC_NOUN{ SecondaryMaterialSpecificNoun(PROFILE) };
-
-            if (SECONDARY_MATERIAL_SPECIFIC_NOUN.empty() == false)
-            {
-                ss << SecondaryMaterialPhraseWithSpecificNoun(
-                    PROFILE, SECONDARY_MATERIAL_NAME, SECONDARY_MATERIAL_SPECIFIC_NOUN);
-            }
-            else if (PROFILE.WeaponInfo().IsBladedStaff())
-            {
-                ss << SecondaryMaterialPhraseForBladedStaffs(PROFILE, SECONDARY_MATERIAL_NAME);
-            }
-            else if (IsArmorItemWithClasp(PROFILE))
-            {
-                ss << SecondaryMaterialPhraseForClaspedArmor(PROFILE, SECONDARY_MATERIAL_NAME);
-            }
-            else if (misc_type::HasNonFleshEyes(PROFILE.MiscType()))
-            {
-                ss << SecondaryMaterialPhraseForItemsWithNonFleshEyes(
-                    PROFILE, SECONDARY_MATERIAL_NAME);
-            }
-            else if (PROFILE.ArmorInfo().IsShield())
-            {
-                ss << SecondaryMaterialPhraseForShields(PROFILE, SECONDARY_MATERIAL_NAME);
-            }
-            else
-            {
-                ss << SecondaryMaterialPhraseStandard(PROFILE, SECONDARY_MATERIAL_NAME);
-            }
+            return " " + JeweledAdjective() + " with " + SECONDARY_MATERIAL_NAME;
         }
-
-        return ss.str();
-    }
-
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseStandard(
-        const ItemProfile & PROFILE, const std::string & SECONDARY_MATERIAL_NAME)
-    {
-        std::ostringstream ss;
-
-        if (material::IsJewel(PROFILE.MaterialSecondary()))
+        else if (material::IsFancyMetal(SECONDARY_MATERIAL))
         {
-            ss << " " << RandomJeweledAdjective() << " with " << SECONDARY_MATERIAL_NAME;
+            return " with " + SECONDARY_MATERIAL_NAME + " filigree";
         }
-        else if (material::IsPrecious(PROFILE.MaterialSecondary()))
+        else if (
+            material::IsFancyOpaque(SECONDARY_MATERIAL)
+            || material::IsFancyTribal(SECONDARY_MATERIAL))
         {
-            // at this point we know MATERIAL_SEC is either
-            // silver/gold/platinum/pearl/obsidian, one of the "adorned" materials
-            ss << " " << RandomAdornedAdjective() << " with " << SECONDARY_MATERIAL_NAME;
-        }
-        else if (material::IsLiquid(PROFILE.MaterialSecondary()))
-        {
-            ss << " " << RandomCoatedAdjective() << " with " << SECONDARY_MATERIAL_NAME;
-        }
-        else if (material::IsSpirit(PROFILE.MaterialSecondary()))
-        {
-            ss << " with a ghostly glow";
-        }
-
-        return ss.str();
-    }
-
-    const std::string ItemFactoryBase::SecondaryMaterialSpecificNoun(const ItemProfile & PROFILE)
-    {
-        if (PROFILE.WeaponInfo().IsWhip())
-        {
-            return "handle";
-        }
-        else if (PROFILE.WeaponInfo().IsProjectile())
-        {
-            return "grip";
+            return " " + AdornedAdjective() + " with " + SECONDARY_MATERIAL_NAME;
         }
         else
         {
@@ -534,143 +542,52 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseForBladedStaffs(
-        const ItemProfile & PROFILE, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemFactoryBase::SecondaryMaterialPhraseHandle(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
     {
-        std::ostringstream ss;
-        ss << " ";
+        return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME
+            + " handle";
+    }
 
-        if (material::IsJewel(PROFILE.MaterialSecondary()))
+    const std::string ItemFactoryBase::SecondaryMaterialPhraseReinforced(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
+    {
+        if (material::IsMetal(SECONDARY_MATERIAL))
         {
-            ss << RandomJeweledAdjective() << " with";
-        }
-        else if (PROFILE.MaterialSecondary() == material::Pearl)
-        {
-            ss << RandomAdornedAdjective() << " with";
-        }
-        else if (material::IsRigid(PROFILE.MaterialSecondary()))
-        {
-            if (PROFILE.WeaponType() & weapon_type::Spear)
-            {
-                ss << "and tipped with";
-            }
-            else
-            {
-                ss << "and bladed with";
-            }
-        }
-        else if (material::IsLiquid(PROFILE.MaterialSecondary()))
-        {
-            ss << "and coated in";
+            return " reinforced with " + SECONDARY_MATERIAL_NAME;
         }
         else
         {
-            ss << "and";
+            return SecondaryMaterialPhraseDecoration(SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
         }
-
-        ss << " " << SECONDARY_MATERIAL_NAME;
-
-        return ss.str();
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseForClaspedArmor(
-        const ItemProfile & PROFILE, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemFactoryBase::SecondaryMaterialPhraseTipped(
+        const material::Enum, const std::string & SECONDARY_MATERIAL_NAME)
     {
-        std::ostringstream ss;
-
-        if (material::IsJewel(PROFILE.MaterialSecondary()))
-        {
-            ss << " "
-               << "with a " << SECONDARY_MATERIAL_NAME << " " << RandomJeweledAdjective() << " "
-               << RandomClaspNoun();
-        }
-        else if (material::IsMetal(PROFILE.MaterialSecondary()))
-        {
-            ss << " with a " << SECONDARY_MATERIAL_NAME << " " << RandomChainNoun();
-        }
-        else if (material::IsLiquid(PROFILE.MaterialSecondary()))
-        {
-            ss << " " << RandomCoatedPhrase() << " " << SECONDARY_MATERIAL_NAME;
-        }
-        else if (material::IsSolid(PROFILE.MaterialSecondary()))
-        {
-            ss << " with a " << SECONDARY_MATERIAL_NAME << " " << RandomClaspNoun();
-        }
-        else if (material::IsSpirit(PROFILE.MaterialSecondary()))
-        {
-            ss << " with a " << RandomClaspNoun() << " that has a ghostly glow";
-        }
-
-        return ss.str();
+        return " tipped with " + SECONDARY_MATERIAL_NAME;
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseWithSpecificNoun(
-        const ItemProfile & PROFILE,
-        const std::string & SECONDARY_MATERIAL_NAME,
-        const std::string & NOUN)
+    const std::string ItemFactoryBase::SecondaryMaterialPhraseClasped(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
     {
-        std::ostringstream ss;
-
-        ss << " with a ";
-
-        if (material::IsRigid(PROFILE.MaterialSecondary()))
+        if (material::IsFancyJewel(SECONDARY_MATERIAL))
         {
-            ss << SECONDARY_MATERIAL_NAME;
-
-            if (material::IsJewel(PROFILE.MaterialSecondary()))
-            {
-                ss << " " << RandomJeweledAdjective();
-            }
-            else if (material::IsPrecious(PROFILE.MaterialSecondary()))
-            {
-                // at this point we know MATERIAL_SEC is either
-                // silver/gold/platinum/pearl/obsidian, one of the "adorned" materials
-                ss << " " << RandomAdornedAdjective();
-            }
-
-            ss << " " << NOUN;
+            return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME + " "
+                + JeweledAdjective() + " clasp";
+        }
+        else if (
+            material::IsFancyOpaque(SECONDARY_MATERIAL)
+            || material::IsFancyTribal(SECONDARY_MATERIAL))
+        {
+            return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME + " "
+                + AdornedAdjective() + " clasp";
         }
         else
         {
-            ss << SECONDARY_MATERIAL_NAME << " coated " << NOUN;
+            return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME
+                + " clasp";
         }
-
-        return ss.str();
-    }
-
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseForItemsWithNonFleshEyes(
-        const ItemProfile & PROFILE, const std::string & SECONDARY_MATERIAL_NAME)
-    {
-        if (material::IsSolid(PROFILE.MaterialSecondary())
-            && (PROFILE.MaterialSecondary() != material::Flesh))
-        {
-            return " with " + SECONDARY_MATERIAL_NAME + " eyes";
-        }
-        else
-        {
-            return "";
-        }
-    }
-
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseForShields(
-        const ItemProfile & PROFILE, const std::string & SECONDARY_MATERIAL_NAME)
-    {
-        std::ostringstream ss;
-
-        if (material::IsJewel(PROFILE.MaterialSecondary()))
-        {
-            ss << " " << RandomJeweledAdjective() << " with " << SECONDARY_MATERIAL_NAME;
-        }
-        else if (material::IsRigid(PROFILE.MaterialSecondary()))
-        {
-            ss << " reinforced with " << SECONDARY_MATERIAL_NAME;
-        }
-        else if (material::IsLiquid(PROFILE.MaterialSecondary()))
-        {
-            ss << " " << RandomCoatedAdjective() << " with " << SECONDARY_MATERIAL_NAME;
-        }
-
-        return ss.str();
     }
 
 } // namespace item

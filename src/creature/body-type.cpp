@@ -50,7 +50,7 @@ namespace creature
         const bool HAS_TAIL,
         const bool HAS_SPIKES,
         const bool HAS_HORNS,
-        const std::size_t NUM_TENDRILS,
+        const std::size_t NUM_TENTACLES,
         const bool HAS_BREATH)
         : has_wings_(HAS_WINGS)
         , has_fangs_(HAS_FANGS)
@@ -64,7 +64,7 @@ namespace creature
         , num_legs_(NUM_LEGS)
         , num_heads_(NUM_HEADS)
         , num_eyes_(NUM_EYES)
-        , num_tendrils_(NUM_TENDRILS)
+        , num_tentacles_(NUM_TENTACLES)
     {}
 
     const std::string BodyType::ToString() const
@@ -171,9 +171,9 @@ namespace creature
             ss << " with a tail";
         }
 
-        if (num_tendrils_ > 0)
+        if (num_tentacles_ > 0)
         {
-            ss << " with " << num_tendrils_ << " tendrils";
+            ss << " with " << num_tentacles_ << " tentacles";
         }
 
         ss << ".";
@@ -497,7 +497,7 @@ namespace creature
                    L.num_legs_,
                    L.num_heads_,
                    L.num_eyes_,
-                   L.num_tendrils_)
+                   L.num_tentacles_)
             < std::tie(
                    R.has_wings_,
                    R.has_fangs_,
@@ -511,7 +511,7 @@ namespace creature
                    R.num_legs_,
                    R.num_heads_,
                    R.num_eyes_,
-                   R.num_tendrils_);
+                   R.num_tentacles_);
     }
 
     bool operator==(const BodyType & L, const BodyType & R)
@@ -529,7 +529,7 @@ namespace creature
                    L.num_legs_,
                    L.num_heads_,
                    L.num_eyes_,
-                   L.num_tendrils_)
+                   L.num_tentacles_)
             == std::tie(
                    R.has_wings_,
                    R.has_fangs_,
@@ -543,7 +543,7 @@ namespace creature
                    R.num_legs_,
                    R.num_heads_,
                    R.num_eyes_,
-                   R.num_tendrils_);
+                   R.num_tentacles_);
     }
 
 } // namespace creature

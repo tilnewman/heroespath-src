@@ -111,6 +111,7 @@ namespace item
             const WeaponDetails WEAPON_DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_DETAILS_NAME) };
 
+            // TODO move into MaterialsFactory
             auto const MATERIALS{ [BODY_PART]() {
                 if (BODY_PART == body_part::Bite)
                 {
@@ -126,17 +127,17 @@ namespace item
                 }
                 else if (BODY_PART == body_part::Fists)
                 {
-                    return std::make_pair(material::Bone, material::Flesh);
+                    return std::make_pair(material::Bone, material::Hide);
                 }
-                else // tendrils
+                else // tentacles
                 {
-                    return std::make_pair(material::Flesh, material::Nothing);
+                    return std::make_pair(material::Plant, material::Nothing);
                 }
             }() };
 
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
-                CREATURE_PTR->RaceName() + " " + WEAPON_TYPE_WRAPPER.ReadableName(),
-                WEAPON_DETAILS.description + " " + creature::race::Name(CREATURE_PTR->Race()),
+                MakeWeaponBodyPartName(CREATURE_PTR, WEAPON_TYPE_WRAPPER.ReadableName()),
+                MakeWeaponBodyPartDescription(WEAPON_DETAILS.description, CREATURE_PTR),
                 ItemProfile::CategoryWeaponBodypart(BODY_PART),
                 MATERIALS.first,
                 MATERIALS.second,

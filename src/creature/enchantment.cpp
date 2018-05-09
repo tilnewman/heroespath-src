@@ -127,6 +127,12 @@ namespace creature
             case UseEffectType::CrystalChimes:
             {
                 /*TODO*/
+
+                // auto const MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY,
+                // MATERIAL_SECONDARY) }; above will range from 0-20 -add 10 to that and now you have
+                // how much mana is restored when used. this enchantment will need to set it's own
+                // EFFECTS_STR based on these numbers
+
                 break;
             }
             case UseEffectType::GoldenGong:

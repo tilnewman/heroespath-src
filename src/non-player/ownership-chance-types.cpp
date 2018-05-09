@@ -284,7 +284,7 @@ namespace non_player
                 const bool HAS_CLAWS,
                 const bool HAS_BITE,
                 const bool HAS_FISTS,
-                const bool HAS_TENDRILS,
+                const bool HAS_TENTACLES,
                 const bool HAS_BREATH,
                 const KnifeItemChances & KNIFE,
                 const StaffItemChances & STAFF,
@@ -297,7 +297,7 @@ namespace non_player
                 : has_claws(HAS_CLAWS)
                 , has_bite(HAS_BITE)
                 , has_fists(HAS_FISTS)
-                , has_tendrils(HAS_TENDRILS)
+                , has_tentacles(HAS_TENTACLES)
                 , has_breath(HAS_BREATH)
                 , knife(KNIFE)
                 , staff(STAFF)

@@ -99,8 +99,8 @@ namespace item
 
     Score_t ScoreHelper::Score(const material::Enum PRI, const material::Enum SEC)
     {
-        auto const BONUS_PRI{ material::EnchantmentBonus(PRI) };
-        auto const BONUS_SEC{ material::EnchantmentBonus(SEC) };
+        auto const BONUS_PRI{ material::EnchantmentBonus(PRI, material::Nothing) };
+        auto const BONUS_SEC{ material::EnchantmentBonus(SEC, material::Nothing) };
         return Score_t(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
     }
 

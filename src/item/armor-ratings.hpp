@@ -55,12 +55,11 @@ namespace item
         static void Setup();
 
         static Armor_t FullyClothedCloth() { return clothesCloth_; }
-        static Armor_t FullyClothedSoftLeather() { return clothesSoftLeather_; }
-        static Armor_t FullyClothedHardLeather() { return clothesHardLeather_; }
-        static Armor_t ArmoredLesserSoftLeather() { return armoredLesserSoftLeather_; }
+        static Armor_t FullyClothedLeather() { return clothesLeather_; }
+        static Armor_t ArmoredLesserLeather() { return armoredLesserLeather_; }
         static Armor_t ArmoredLesserSteel() { return armoredLesserSteel_; }
         static Armor_t ArmoredLesserDiamond() { return armoredLesserDiamond_; }
-        static Armor_t ArmoredGreaterSoftLeather() { return armoredGreaterSoftLeather_; }
+        static Armor_t ArmoredGreaterLeather() { return armoredGreaterLeather_; }
         static Armor_t ArmoredGreaterSteel() { return armoredGreaterSteel_; }
         static Armor_t ArmoredGreaterDiamond() { return armoredGreaterDiamond_; }
 
@@ -71,12 +70,11 @@ namespace item
         static Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &);
 
         static Armor_t clothesCloth_;
-        static Armor_t clothesSoftLeather_;
-        static Armor_t clothesHardLeather_;
-        static Armor_t armoredLesserSoftLeather_;
+        static Armor_t clothesLeather_;
+        static Armor_t armoredLesserLeather_;
         static Armor_t armoredLesserSteel_;
         static Armor_t armoredLesserDiamond_;
-        static Armor_t armoredGreaterSoftLeather_;
+        static Armor_t armoredGreaterLeather_;
         static Armor_t armoredGreaterSteel_;
         static Armor_t armoredGreaterDiamond_;
     };

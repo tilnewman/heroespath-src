@@ -73,6 +73,18 @@ namespace item
             const std::string ReadableName() const { return readableName_; }
             const std::string DetailsKeyName() const;
 
+            const std::string ReadableNameWithoutBase() const
+            {
+                if (BaseType() == armor::base_type::Count)
+                {
+                    return ReadableName();
+                }
+                else
+                {
+                    return GeneralName();
+                }
+            }
+
             const std::string ToString() const;
 
             bool IsTypeValid() const { return (armor_type::NotArmor != type_); }
@@ -157,6 +169,8 @@ namespace item
             bool IsGeneralNameAlmostSpecificName() const;
 
             static const std::vector<ArmorTypeWrapper> MakeCompleteSet();
+
+            name_material_type::Enum NameMaterialType() const;
 
             friend bool operator==(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R);
             friend bool operator<(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R);

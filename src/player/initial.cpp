@@ -102,8 +102,7 @@ namespace player
             {
                 ItemProfile helmProfile;
 
-                helmProfile.SetHelm(
-                    armor::helm_type::Great, HardOrSoftLeatherRand(), material::Nothing);
+                helmProfile.SetHelm(armor::helm_type::Great, material::Leather, material::Nothing);
 
                 EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(helmProfile));
             }
@@ -346,18 +345,6 @@ namespace player
         }
     }
 
-    item::material::Enum Initial::HardOrSoftLeatherRand()
-    {
-        if (misc::random::Bool())
-        {
-            return item::material::SoftLeather;
-        }
-        else
-        {
-            return item::material::HardLeather;
-        }
-    }
-
     void Initial::EnsureItemAddedAndEquipped(
         const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR)
     {
@@ -386,8 +373,8 @@ namespace player
 
         profile.SetBoots(
             armor::base_type::Plain,
-            HardOrSoftLeatherRand(),
-            material::Nothing,
+            material::Leather,
+            material::Tin,
             named_type::NotNamed,
             set_type::NotASet,
             element_type::None,
@@ -404,8 +391,8 @@ namespace player
 
         profile.SetShirt(
             armor::base_type::Plain,
-            HardOrSoftLeatherRand(),
-            material::Nothing,
+            material::Leather,
+            material::Tin,
             named_type::NotNamed,
             set_type::NotASet,
             element_type::None,
@@ -422,8 +409,8 @@ namespace player
 
         profile.SetPants(
             armor::base_type::Plain,
-            HardOrSoftLeatherRand(),
-            material::Nothing,
+            material::Leather,
+            material::Tin,
             named_type::NotNamed,
             set_type::NotASet,
             element_type::None,

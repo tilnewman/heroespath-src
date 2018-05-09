@@ -109,9 +109,9 @@ namespace sfml_util
             {
                 return "FistHit";
             }
-            case TendrilHit:
+            case TentacleHit:
             {
-                return "TendrilHit";
+                return "TentacleHit";
             }
             case WhipHit:
             {

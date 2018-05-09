@@ -2496,13 +2496,13 @@ namespace item
             {
                 return "CommandersCape";
             }
-            case CopperTroll:
+            case BronzeTroll:
             {
-                return "CopperTroll";
+                return "BronzeTroll";
             }
-            case CrystalCat:
+            case GlassCat:
             {
-                return "CrystalCat";
+                return "GlassCat";
             }
             case CrystalChimes:
             {
@@ -3018,11 +3018,11 @@ namespace item
             {
                 return "Commander's Cape";
             }
-            case CopperTroll:
+            case BronzeTroll:
             {
-                return "Copper Troll";
+                return "Bronze Troll";
             }
-            case CrystalCat:
+            case GlassCat:
             {
                 return "Crystal Cat";
             }
@@ -3540,11 +3540,11 @@ namespace item
             {
                 return misc_type::Cape;
             }
-            case CopperTroll:
+            case BronzeTroll:
             {
                 return misc_type::Troll_Figure;
             }
-            case CrystalCat:
+            case GlassCat:
             {
                 return misc_type::Cat;
             }
@@ -4028,8 +4028,8 @@ namespace item
             case ChimeraBone:
             case CobraTooth:
             case CommandersCape:
-            case CopperTroll:
-            case CrystalCat:
+            case BronzeTroll:
+            case GlassCat:
             case CyclopsEye:
             case DemonDiary:
             case DruidLeaf:
@@ -4311,11 +4311,11 @@ namespace item
             {
                 return 0.0f;
             }
-            case CopperTroll:
+            case BronzeTroll:
             {
                 return 0.0f;
             }
-            case CrystalCat:
+            case GlassCat:
             {
                 return 0.0f;
             }
@@ -5085,13 +5085,13 @@ namespace item
             {
                 return "Wood";
             }
-            case HardLeather:
+            case Leather:
             {
-                return "HardLeather";
+                return "Leather";
             }
-            case SoftLeather:
+            case Silk:
             {
-                return "SoftLeather";
+                return "Silk";
             }
             case Bone:
             {
@@ -5117,9 +5117,9 @@ namespace item
             {
                 return "Plant";
             }
-            case Flesh:
+            case DriedFlesh:
             {
-                return "Flesh";
+                return "DriedFlesh";
             }
             case Hide:
             {
@@ -5257,13 +5257,9 @@ namespace item
 
     const std::string material::Name(const item::material::Enum MATERIAL_TYPE)
     {
-        if (MATERIAL_TYPE == material::SoftLeather)
+        if (MATERIAL_TYPE == material::DriedFlesh)
         {
-            return "Soft-Leather";
-        }
-        else if (MATERIAL_TYPE == material::HardLeather)
-        {
-            return "Hard-Leather";
+            return "Dried Flesh";
         }
         else
         {
@@ -5291,59 +5287,56 @@ namespace item
             case Paper:
             case Glass:
             case Feather:
-            case Fur:
             case Hair:
+            case Rope:
             {
                 return 0_armor;
             }
-            case Flesh:
+            case Cloth:
             {
                 return 1_armor;
             }
-            case Rope:
-            case Cloth:
+            case Silk:
             {
                 return 2_armor;
             }
             case Hide:
             {
+                return 4_armor;
+            }
+            case DriedFlesh:
+            {
                 return 5_armor;
             }
-            case SoftLeather:
+            case Leather:
             {
-                return 6_armor;
+                return 7_armor;
             }
-            case HardLeather:
+            case Fur:
             {
-                return 10_armor;
+                return 9_armor;
             }
             case Plant:
             {
                 return 11_armor;
             }
             case Claw:
+            case Horn:
             {
                 return 12_armor;
             }
-            case Scales:
+            case Bone:
+            case Tooth:
             {
                 return 13_armor;
             }
-            case Horn:
-            {
-                return 14_armor;
-            }
-            case Bone:
+            case Wood:
             {
                 return 15_armor;
             }
-            case Tooth:
+            case Scales:
             {
-                return 16_armor;
-            }
-            case Wood:
-            {
-                return 17_armor;
+                return 18_armor;
             }
             case Stone:
             {
@@ -5491,9 +5484,9 @@ namespace item
             {
                 return 0_coin;
             }
-            case Flesh:
+            case DriedFlesh:
             {
-                return 0_coin;
+                return 4_coin;
             }
             case Rope:
             {
@@ -5503,15 +5496,15 @@ namespace item
             {
                 return 0_coin;
             }
+            case Silk:
+            {
+                return 16_coin;
+            }
             case Hide:
             {
                 return 7_coin;
             }
-            case SoftLeather:
-            {
-                return 5_coin;
-            }
-            case HardLeather:
+            case Leather:
             {
                 return 10_coin;
             }
@@ -5654,13 +5647,13 @@ namespace item
             {
                 return 0.9f;
             }
-            case SoftLeather:
+            case Silk:
             {
-                return 1.0f;
+                return 0.8f;
             }
-            case HardLeather:
+            case Leather:
             {
-                return 1.1f;
+                return 1.05f;
             }
             case Rope:
             {
@@ -5698,7 +5691,7 @@ namespace item
             {
                 return 1.55f;
             }
-            case Flesh:
+            case DriedFlesh:
             {
                 return 1.6f;
             }
@@ -5819,10 +5812,27 @@ namespace item
         return WeightMultPri(MATERIAL_SEC) / 10.0f;
     }
 
-    int material::EnchantmentBonus(const material::Enum MATERIAL)
+    int material::EnchantmentBonus(
+        const material::Enum MATERIAL_PRIMARY, const material::Enum MATERIAL_SECONDARY)
     {
         // the enchantment factory has been setup to work with values that range from [0,20]
-        return static_cast<int>(EnchantmentBonusRatio(MATERIAL) * 20.0f);
+        auto const RANGE{ 20.0f };
+
+        // these two ratios should add up to 1.0f
+        auto const PRIMARY_RATIO{ 0.75f };
+        auto const SECONDARY_RATIO{ 0.25f };
+
+        if (MATERIAL_SECONDARY == material::Nothing)
+        {
+            return static_cast<int>(EnchantmentBonusRatio(MATERIAL_PRIMARY) * RANGE);
+        }
+        else
+        {
+            return static_cast<int>(
+                ((EnchantmentBonusRatio(MATERIAL_PRIMARY) * PRIMARY_RATIO)
+                 + (EnchantmentBonusRatio(MATERIAL_SECONDARY) * SECONDARY_RATIO))
+                * RANGE);
+        }
     }
 
     float material::EnchantmentBonusRatio(const material::Enum MATERIAL)
@@ -5831,36 +5841,42 @@ namespace item
         switch (MATERIAL)
         {
             // this is the standard set that runs the full range of values
-            case Flesh:     { return 0.05f; }
-            case Glass:     { return 0.25f; }
-            case Blood:     { return 0.5f;  }
-            case Spirit:    { return 1.0f;  }
+            case Glass:     { return 0.1f;  }
+            case DriedFlesh:{ return 0.5f;  }
+            case Blood:     { return 0.85f; }
+            case Spirit:    { return 1.25f; }//extra bonus for spirit is intentional
 
-            // this is the "cool" set that should range from about 10% to 40%
-            case Claw:      { return 0.05f; }
-            case Bone:      { return 0.1f;  }
-            case Tooth:     { return 0.2f;  }
-            case Scales:    { return 0.3f;  }
-            case Obsidian:  { return 0.4f;  }
+            // this is the "tribal" set that should range from about 5% to 50%
+            case Leather:   { return 0.05f;  }
+            case Stone:     { return 0.1f;   }
+            case Fur:       { return 0.136f; }
+            case Horn:      { return 0.172f; }
+            case Hide:      { return 0.23f;  }
+            case Silk:      { return 0.262f; }
+            case Claw:      { return 0.28f;  }
+            case Tooth:     { return 0.33f;  }
+            case Scales:    { return 0.38f;  }
+            case Bone:      { return 0.45f;  }
+            case Obsidian:  { return 0.5f;   }
 
-            // the metal set should run almost the full range, but stop short of diamond's value
-            case Tin:       { return 0.05f; }
-            case Bronze:    { return 0.1f;  }
-            case Iron:      { return 0.2f;  }
-            case Steel:     { return 0.35f; }
-            case Silver:    { return 0.6f;  }
-            case Gold:      { return 0.8f;  }
-            case Platinum:  { return 0.85f; }
+            // the jewel set should start where tribal left off (50%) and reach 100% with diamond
+            case Jade:      { return 0.5f;  }
+            case Amethyst:  { return 0.55f; }
+            case Emerald:   { return 0.6f;  }
+            case Lazuli:    { return 0.68f; }
+            case Pearl:     { return 0.76f; }
+            case Ruby:      { return 0.84f; }
+            case Sapphire:  { return 0.92f; }
+            case Diamond:   { return 1.0f;  }
 
-            // the jewel set should start higher than 10% and reach just uner 100% with diamond
-            case Jade:      { return 0.15f; }
-            case Amethyst:  { return 0.25f; }
-            case Lazuli:    { return 0.35f; }
-            case Pearl:     { return 0.45f; }
-            case Emerald:   { return 0.55f; }
-            case Ruby:      { return 0.65f; }
-            case Sapphire:  { return 0.75f; }
-            case Diamond:   { return 0.9f;  }
+            // the metal set varies wildly, but should stop short of diamond's value
+            case Tin:       { return 0.05f;  }
+            case Iron:      { return 0.09f;  }
+            case Steel:     { return 0.11f;  }
+            case Bronze:    { return 0.333f; }
+            case Silver:    { return 0.666f; }
+            case Gold:      { return 0.8f;   }
+            case Platinum:  { return 0.85f;   }
 
             // all others are 0%
             case Nothing:
@@ -5870,17 +5886,11 @@ namespace item
             case Dirt:
             case Acid:
             case Paper:
-            case Fur:
             case Hair:
             case Rope:
             case Cloth:
-            case Hide:
-            case SoftLeather:
-            case HardLeather:
             case Plant:
-            case Horn:
             case Wood:
-            case Stone:
             case Count:
             default:
             {
@@ -5890,18 +5900,23 @@ namespace item
         // clang-format on
     }
 
-    material::Enum material::SkinMaterial(const creature::race::Enum RACE)
+    // TODO move to MaterialFactory
+    const MaterialPair_t material::SkinMaterial(const creature::race::Enum RACE)
     {
         // keep in sync with ItemImageMachine::GetSkinImageFilename()
 
-        if ((RACE == creature::race::Wolfen) || (RACE == creature::race::ThreeHeadedHound)
-            || (RACE == creature::race::Troll) || (RACE == creature::race::Minotaur)
-            || (RACE == creature::race::Boar) || (RACE == creature::race::Lion)
-            || (RACE == creature::race::LionBoar) || (RACE == creature::race::Ramonaut)
-            || (RACE == creature::race::Werebear) || (RACE == creature::race::Wereboar)
+        if ((RACE == creature::race::Wolfen) || (RACE == creature::race::Troll)
+            || (RACE == creature::race::Boar) || (RACE == creature::race::LionBoar)
+            || (RACE == creature::race::Ramonaut) || (RACE == creature::race::Wereboar))
+        {
+            return std::make_pair(material::Hide, material::Nothing);
+        }
+        else if (
+            (RACE == creature::race::ThreeHeadedHound) || (RACE == creature::race::Minotaur)
+            || (RACE == creature::race::Lion) || (RACE == creature::race::Werebear)
             || (RACE == creature::race::Werewolf))
         {
-            return material::Hide;
+            return std::make_pair(material::Hide, material::Fur);
         }
         else if (
             (RACE == creature::race::Dragon) || (RACE == creature::race::Hydra)
@@ -5909,28 +5924,23 @@ namespace item
             || (RACE == creature::race::Serpent) || (RACE == creature::race::Cobra)
             || (RACE == creature::race::Wyvern))
         {
-            return material::Scales;
+            return std::make_pair(material::Scales, material::Nothing);
         }
         else if (RACE == creature::race::Plant)
         {
-            return material::Plant;
+            return std::make_pair(material::Plant, material::Nothing);
         }
         else
         {
-            return material::Nothing;
+            return std::make_pair(material::Nothing, material::Nothing);
         }
-    }
-
-    bool material::IsMagical(const material::Enum PRI, const material::Enum SEC)
-    {
-        return ContainsSpirit(PRI, SEC);
     }
 
     bool material::IsSolid(const material::Enum MATERIAL)
     {
         return (
-            (IsLiquid(MATERIAL) == false) && (IsGas(MATERIAL) == false)
-            && (IsSpirit(MATERIAL) == false));
+            (MATERIAL != material::Nothing) && (IsLiquid(MATERIAL) == false)
+            && (IsGas(MATERIAL) == false) && (IsSpirit(MATERIAL) == false));
     }
 
     bool material::IsLiquid(const material::Enum MATERIAL)
@@ -5950,9 +5960,9 @@ namespace item
     bool material::IsBendy(const material::Enum MATERIAL)
     {
         return (
-            (MATERIAL == material::SoftLeather) || (MATERIAL == material::HardLeather)
+            (MATERIAL == material::Leather) || (MATERIAL == material::Silk)
             || (MATERIAL == material::Dirt) || (MATERIAL == material::Plant)
-            || (MATERIAL == material::Flesh) || (MATERIAL == material::Hide)
+            || (MATERIAL == material::DriedFlesh) || (MATERIAL == material::Hide)
             || (MATERIAL == material::Feather) || (MATERIAL == material::Fur)
             || (MATERIAL == material::Hair) || (MATERIAL == material::Paper)
             || (MATERIAL == material::Rope) || (MATERIAL == material::Cloth));
@@ -5963,19 +5973,9 @@ namespace item
         return (IsSolid(MATERIAL) && (IsBendy(MATERIAL) == false));
     }
 
-    bool material::ContainsSpirit(const material::Enum PRI, const material::Enum SEC)
-    {
-        return ((PRI == material::Spirit) || (SEC == material::Spirit));
-    }
-
     bool material::IsBloody(const material::Enum PRI, const material::Enum SEC)
     {
         return ((PRI == material::Blood) || (SEC == material::Blood));
-    }
-
-    bool material::ContainsFlesh(const material::Enum PRI, const material::Enum SEC)
-    {
-        return ((PRI == material::Flesh) || (SEC == material::Flesh));
     }
 
     float material::FireDamageRatio(const material::Enum PRI, const material::Enum SEC)
@@ -5992,14 +5992,14 @@ namespace item
                 fireDamageRatio = 0.5f;
                 break;
             }
-            case material::HardLeather:
+            case material::Leather:
             {
-                fireDamageRatio = 0.7f;
+                fireDamageRatio = 0.6f;
                 break;
             }
-            case material::SoftLeather:
+            case material::Silk:
             {
-                fireDamageRatio = 0.75f;
+                fireDamageRatio = 0.9f;
                 break;
             }
             case material::Bone:
@@ -6032,14 +6032,14 @@ namespace item
                 fireDamageRatio = 0.85f;
                 break;
             }
-            case material::Flesh:
+            case material::DriedFlesh:
             {
-                fireDamageRatio = 0.9f;
+                fireDamageRatio = 0.75f;
                 break;
             }
             case material::Hide:
             {
-                fireDamageRatio = 0.77f;
+                fireDamageRatio = 0.87f;
                 break;
             }
             case material::Feather:
@@ -6213,14 +6213,14 @@ namespace item
                 fireDamageRatio += 0.2f;
                 break;
             }
-            case material::HardLeather:
+            case material::Leather:
             {
                 fireDamageRatio += 0.1f;
                 break;
             }
-            case material::SoftLeather:
+            case material::Silk:
             {
-                fireDamageRatio += 0.1f;
+                fireDamageRatio += 0.27f;
                 break;
             }
             case material::Bone:
@@ -6253,14 +6253,14 @@ namespace item
                 fireDamageRatio += 0.4f;
                 break;
             }
-            case material::Flesh:
+            case material::DriedFlesh:
             {
-                fireDamageRatio += 0.4f;
+                fireDamageRatio += 0.1f;
                 break;
             }
             case material::Hide:
             {
-                fireDamageRatio += 0.1f;
+                fireDamageRatio += 0.3f;
                 break;
             }
             case material::Feather:
@@ -6443,44 +6443,44 @@ namespace item
             || (MATERIAL == material::Platinum));
     }
 
-    bool material::ContainsMetal(const material::Enum PRI, const material::Enum SEC)
-    {
-        return IsMetal(PRI) || IsMetal(SEC);
-    }
-
-    bool material::IsStone(const material::Enum PRI)
+    bool material::IsFancyJewel(const material::Enum MATERIAL)
     {
         return (
-            (PRI == material::Stone) || (PRI == material::Jade) || (PRI == material::Obsidian)
-            || (PRI == material::Amethyst) || (PRI == material::Emerald) || (PRI == material::Ruby)
-            || (PRI == material::Lazuli) || (PRI == material::Sapphire));
+            (MATERIAL == Amethyst) || (MATERIAL == Emerald) || (MATERIAL == Ruby)
+            || (MATERIAL == Sapphire) || (MATERIAL == Diamond));
     }
 
-    bool material::IsPrecious(const material::Enum MATERIAL)
+    bool material::IsFancyMetal(const material::Enum MATERIAL)
+    {
+        return ((MATERIAL == Silver) || (MATERIAL == Gold));
+    }
+
+    bool material::IsFancyOpaque(const material::Enum MATERIAL)
     {
         return (
-            IsJewel(MATERIAL) || (MATERIAL == material::Obsidian) || (MATERIAL == material::Pearl)
-            || (MATERIAL == material::Silver) || (MATERIAL == material::Gold)
-            || (MATERIAL == material::Platinum));
+            (MATERIAL == material::Obsidian) || (MATERIAL == material::Pearl)
+            || (MATERIAL == material::Jade) || (MATERIAL == material::Lazuli));
     }
 
-    bool material::ContiansPrecious(const material::Enum PRI, const material::Enum SEC)
-    {
-        return IsPrecious(PRI) || IsPrecious(SEC);
-    }
-
-    bool material::IsJewel(const material::Enum MATERIAL)
+    bool material::IsFancyTribal(const material::Enum MATERIAL)
     {
         return (
-            (MATERIAL == material::Amethyst) || (MATERIAL == material::Jade)
-            || (MATERIAL == material::Emerald) || (MATERIAL == material::Ruby)
-            || (MATERIAL == material::Sapphire) || (MATERIAL == material::Lazuli)
-            || (MATERIAL == material::Diamond));
+            (MATERIAL == Claw) || (MATERIAL == Bone) || (MATERIAL == Tooth)
+            || (MATERIAL == Scales));
     }
 
-    bool material::ContainsJewel(const material::Enum PRI, const material::Enum SEC)
+    bool material::IsFancy(const Enum MATERIAL)
     {
-        return IsJewel(PRI) || IsJewel(SEC);
+        return (
+            IsFancyJewel(MATERIAL) || IsFancyMetal(MATERIAL) || IsFancyOpaque(MATERIAL)
+            || IsFancyTribal(MATERIAL));
+    }
+
+    bool material::RequiresAnPrefix(const Enum MATERIAL)
+    {
+        return (
+            (MATERIAL == Obsidian) || (MATERIAL == Iron) || (MATERIAL == Amethyst)
+            || (MATERIAL == Emerald));
     }
 
     const std::string weapon_type::ToString(
@@ -6494,91 +6494,32 @@ namespace item
         }
         else
         {
-            if (WEAPON_TYPE & weapon_type::Bladed)
-            {
-                ss << "Bladed";
-            }
-            if (WEAPON_TYPE & weapon_type::Melee)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Melee";
-            }
-            if (WEAPON_TYPE & weapon_type::Projectile)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Projectile";
-            }
-            if (WEAPON_TYPE & weapon_type::Pointed)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Pointed";
-            }
-            if (WEAPON_TYPE & weapon_type::Claws)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Claws";
-            }
-            if (WEAPON_TYPE & weapon_type::Bite)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << ((IS_READBLE) ? "Jaws" : "Bite");
-            }
-            if (WEAPON_TYPE & weapon_type::Sword)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Sword";
-            }
-            if (WEAPON_TYPE & weapon_type::Axe)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Axe";
-            }
-            if (WEAPON_TYPE & weapon_type::Whip)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Whip";
-            }
-            if (WEAPON_TYPE & weapon_type::Blowpipe)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Blowpipe";
-            }
-            if (WEAPON_TYPE & weapon_type::Bow)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Bow";
-            }
-            if (WEAPON_TYPE & weapon_type::Crossbow)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Crossbow";
-            }
-            if (WEAPON_TYPE & weapon_type::Spear)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Spear";
-            }
-            if (WEAPON_TYPE & weapon_type::Knife)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Knife";
-            }
-            if (WEAPON_TYPE & weapon_type::Club)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Club";
-            }
-            if (WEAPON_TYPE & weapon_type::Staff)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Staff";
-            }
-            if (WEAPON_TYPE & weapon_type::Sling)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Sling";
-            }
-            if (WEAPON_TYPE & weapon_type::BladedStaff)
-            {
-                ss << ((ss.str().empty()) ? "" : "/")
-                   << ((IS_READBLE) ? "Bladed Staff" : "BladedStaff");
-            }
-            if (WEAPON_TYPE & weapon_type::Fists)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Fists";
-            }
-            if (WEAPON_TYPE & weapon_type::Tendrils)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Tendrils";
-            }
-            if (WEAPON_TYPE & weapon_type::Breath)
-            {
-                ss << ((ss.str().empty()) ? "" : "/") << "Breath";
-            }
+            auto appendNameIfBitSet{ [&](const weapon_type::Enum WEAPON_TYPE_BIT,
+                                         const std::string & NAME) {
+                if (WEAPON_TYPE & WEAPON_TYPE_BIT)
+                {
+                    if (ss.str().empty() == false)
+                    {
+                        ss << "/";
+                    }
+
+                    ss << NAME;
+                }
+            } };
+
+            appendNameIfBitSet(weapon_type::BodyPart, "BodyPart");
+            appendNameIfBitSet(weapon_type::Sword, "Sword");
+            appendNameIfBitSet(weapon_type::Axe, "Axe");
+            appendNameIfBitSet(weapon_type::Whip, "Whip");
+            appendNameIfBitSet(weapon_type::Knife, "Knife");
+            appendNameIfBitSet(weapon_type::Club, "Club");
+            appendNameIfBitSet(weapon_type::Staff, "Staff");
+            appendNameIfBitSet(
+                weapon_type::BladedStaff, ((IS_READBLE) ? "Bladed Staff" : "BladedStaff"));
+            appendNameIfBitSet(weapon_type::Melee, "Melee");
+            appendNameIfBitSet(weapon_type::Projectile, "Projectile");
+            appendNameIfBitSet(weapon_type::Bladed, "Bladed");
+            appendNameIfBitSet(weapon_type::Pointed, "Pointed");
         }
 
         if (ss.str().empty())
@@ -6723,9 +6664,9 @@ namespace item
             {
                 return "Claws";
             }
-            case Tendrils:
+            case Tentacles:
             {
-                return "Tendrils";
+                return "Tentacles";
             }
             case Bite:
             {
@@ -6749,35 +6690,54 @@ namespace item
         }
     }
 
-    weapon_type::Enum body_part::WeaponType(const body_part::Enum BODY_PART)
+    const std::string
+        name_material_type::ToString(const name_material_type::Enum NAME_MATERIAL_TYPE)
     {
-        switch (BODY_PART)
+        switch (NAME_MATERIAL_TYPE)
         {
-            case Fists:
+            case name_material_type::Misc:
             {
-                return weapon_type::Fists;
+                return "Misc";
             }
-            case Claws:
+            case name_material_type::BodyPart:
             {
-                return weapon_type::Claws;
+                return "BodyPart";
             }
-            case Tendrils:
+            case name_material_type::Decoration:
             {
-                return weapon_type::Tendrils;
+                return "Decoration";
             }
-            case Bite:
+            case name_material_type::Handle:
             {
-                return weapon_type::Bite;
+                return "Handle";
             }
-            case Breath:
+            case name_material_type::Reinforced:
             {
-                return weapon_type::Breath;
+                return "Reinforced";
             }
-            case Skin:
-            case Count:
+            case name_material_type::ReinforcedWithBase:
+            {
+                return "ReinforcedWithBase:";
+            }
+            case name_material_type::Tipped:
+            {
+                return "Tipped";
+            }
+            case name_material_type::Claspped:
+            {
+                return "Claspped";
+            }
+            case name_material_type::ClasppedWithBase:
+            {
+                return "ClasppedWithBase";
+            }
+            case name_material_type::Count:
             default:
             {
-                return weapon_type::NotAWeapon;
+                std::ostringstream ss;
+                ss << "item::name_material_type::ToString(" << NAME_MATERIAL_TYPE
+                   << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
             }
         }
     }

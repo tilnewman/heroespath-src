@@ -299,9 +299,10 @@ namespace item
 
     bool operator<(const Item & L, const Item & R)
     {
+        // name_ and desc_ contain random adjectives so don't include them in comparisons
+        // image filename is generated entirely by other members, so don't include in comparisons
+
         if (std::tie(
-                L.name_,
-                L.desc_,
                 L.price_,
                 L.weight_,
                 L.damageMin_,
@@ -312,7 +313,6 @@ namespace item
                 L.miscType_,
                 L.materialPri_,
                 L.materialSec_,
-                L.imageFilename_,
                 L.weaponInfo_,
                 L.armorInfo_,
                 L.isPixie_,
@@ -322,8 +322,6 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             < std::tie(
-                  R.name_,
-                  R.desc_,
                   R.price_,
                   R.weight_,
                   R.damageMin_,
@@ -334,7 +332,6 @@ namespace item
                   R.miscType_,
                   R.materialPri_,
                   R.materialSec_,
-                  R.imageFilename_,
                   R.weaponInfo_,
                   R.armorInfo_,
                   R.isPixie_,
@@ -352,9 +349,10 @@ namespace item
 
     bool operator==(const Item & L, const Item & R)
     {
+        // name_ and desc_ contain random adjectives so don't include them in comparisons
+        // image filename is generated entirely by other members, so don't include in comparisons
+
         if (std::tie(
-                L.name_,
-                L.desc_,
                 L.price_,
                 L.weight_,
                 L.damageMin_,
@@ -365,7 +363,6 @@ namespace item
                 L.miscType_,
                 L.materialPri_,
                 L.materialSec_,
-                L.imageFilename_,
                 L.weaponInfo_,
                 L.armorInfo_,
                 L.isPixie_,
@@ -375,8 +372,6 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             != std::tie(
-                   R.name_,
-                   R.desc_,
                    R.price_,
                    R.weight_,
                    R.damageMin_,
@@ -387,7 +382,6 @@ namespace item
                    R.miscType_,
                    R.materialPri_,
                    R.materialSec_,
-                   R.imageFilename_,
                    R.weaponInfo_,
                    R.armorInfo_,
                    R.isPixie_,

@@ -43,26 +43,24 @@ namespace item
 {
 
     Armor_t ArmorRatings::clothesCloth_(0_armor);
-    Armor_t ArmorRatings::clothesSoftLeather_(0_armor);
-    Armor_t ArmorRatings::clothesHardLeather_(0_armor);
-    Armor_t ArmorRatings::armoredLesserSoftLeather_(0_armor);
+    Armor_t ArmorRatings::clothesLeather_(0_armor);
+    Armor_t ArmorRatings::armoredLesserLeather_(0_armor);
     Armor_t ArmorRatings::armoredLesserSteel_(0_armor);
     Armor_t ArmorRatings::armoredLesserDiamond_(0_armor);
-    Armor_t ArmorRatings::armoredGreaterSoftLeather_(0_armor);
+    Armor_t ArmorRatings::armoredGreaterLeather_(0_armor);
     Armor_t ArmorRatings::armoredGreaterSteel_(0_armor);
     Armor_t ArmorRatings::armoredGreaterDiamond_(0_armor);
 
     void ArmorRatings::Setup()
     {
         clothesCloth_ = ClothesSetRating(item::material::Cloth);
-        clothesSoftLeather_ = ClothesSetRating(item::material::SoftLeather);
-        clothesHardLeather_ = ClothesSetRating(item::material::HardLeather);
+        clothesLeather_ = ClothesSetRating(item::material::Leather);
 
-        armoredLesserSoftLeather_ = LesserArmorSetRating(item::material::SoftLeather);
+        armoredLesserLeather_ = LesserArmorSetRating(item::material::Leather);
         armoredLesserSteel_ = LesserArmorSetRating(item::material::Steel);
         armoredLesserDiamond_ = LesserArmorSetRating(item::material::Diamond);
 
-        armoredGreaterSoftLeather_ = GreaterArmorSetRating(item::material::SoftLeather);
+        armoredGreaterLeather_ = GreaterArmorSetRating(item::material::Leather);
         armoredGreaterSteel_ = GreaterArmorSetRating(item::material::Steel);
         armoredGreaterDiamond_ = GreaterArmorSetRating(item::material::Diamond);
     }
@@ -109,19 +107,19 @@ namespace item
         ItemProfile shieldProfile;
         shieldProfile.SetShield(
             shield_type::Buckler,
-            ((PRIMARY_MATERIAL == material::SoftLeather) ? material::Wood : PRIMARY_MATERIAL));
+            ((PRIMARY_MATERIAL == material::Leather) ? material::Wood : PRIMARY_MATERIAL));
 
         itemPVec.emplace_back(ItemFactory::Make(shieldProfile));
 
         ItemProfile helmProfile;
         helmProfile.SetHelm(
-            ((PRIMARY_MATERIAL == material::SoftLeather) ? helm_type::Leather : helm_type::Kettle),
+            ((PRIMARY_MATERIAL == material::Leather) ? helm_type::Leather : helm_type::Kettle),
             PRIMARY_MATERIAL);
 
         itemPVec.emplace_back(ItemFactory::Make(helmProfile));
 
         auto const BASE_TYPE{ (
-            (PRIMARY_MATERIAL == material::SoftLeather) ? base_type::Plain : base_type::Mail) };
+            (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Mail) };
 
         ItemProfile glovesProfile;
         glovesProfile.SetGauntlets(BASE_TYPE, PRIMARY_MATERIAL);
@@ -148,7 +146,7 @@ namespace item
         itemPVec.emplace_back(ItemFactory::Make(bracerProfile));
 
         ItemProfile cloakProfile;
-        cloakProfile.SetCover(cover_type::Cloak, material::SoftLeather);
+        cloakProfile.SetCover(cover_type::Cloak, material::Leather);
         itemPVec.emplace_back(ItemFactory::Make(cloakProfile));
 
         return GetTotalArmorRatingAndFree(itemPVec);
@@ -163,19 +161,19 @@ namespace item
         ItemProfile shieldProfile;
         shieldProfile.SetShield(
             shield_type::Pavis,
-            ((PRIMARY_MATERIAL == material::SoftLeather) ? material::Wood : PRIMARY_MATERIAL));
+            ((PRIMARY_MATERIAL == material::Leather) ? material::Wood : PRIMARY_MATERIAL));
 
         itemPVec.emplace_back(ItemFactory::Make(shieldProfile));
 
         ItemProfile helmProfile;
         helmProfile.SetHelm(
-            ((PRIMARY_MATERIAL == material::SoftLeather) ? helm_type::Leather : helm_type::Great),
+            ((PRIMARY_MATERIAL == material::Leather) ? helm_type::Leather : helm_type::Great),
             PRIMARY_MATERIAL);
 
         itemPVec.emplace_back(ItemFactory::Make(helmProfile));
 
         auto const BASE_TYPE{ (
-            (PRIMARY_MATERIAL == material::SoftLeather) ? base_type::Plain : base_type::Plate) };
+            (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Plate) };
 
         ItemProfile glovesProfile;
         glovesProfile.SetGauntlets(BASE_TYPE, PRIMARY_MATERIAL);
@@ -202,7 +200,7 @@ namespace item
         itemPVec.emplace_back(ItemFactory::Make(bracerProfile));
 
         ItemProfile cloakProfile;
-        cloakProfile.SetCover(cover_type::Cloak, material::HardLeather);
+        cloakProfile.SetCover(cover_type::Cloak, material::Leather);
         itemPVec.emplace_back(ItemFactory::Make(cloakProfile));
 
         return GetTotalArmorRatingAndFree(itemPVec);

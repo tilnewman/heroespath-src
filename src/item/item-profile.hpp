@@ -99,9 +99,13 @@ namespace item
 
         void SetSummonInfoAndAdjustScore(const creature::SummonInfo &);
 
-        bool IsWeapon() const { return thinProfile_.WeaponInfo().IsTypeValid(); }
+        bool IsWeapon() const { return thinProfile_.IsWeapon(); }
+        bool IsArmor() const { return thinProfile_.IsArmor(); }
 
-        bool IsArmor() const { return thinProfile_.ArmorInfo().IsTypeValid(); }
+        name_material_type::Enum NameMaterialType() const
+        {
+            return thinProfile_.NameMaterialType();
+        }
 
         bool IsNonMagicalWeaponOrArmor() const
         {
@@ -153,17 +157,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo())
-        {
-            SetMisc(
-                ItemProfileThin::MakeMisc(MISC_TYPE),
-                IS_PIXIE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                SUMMON_INFO);
-        }
+            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
 
         void SetMisc(
             const ItemProfileThin & THIN_PROFILE,
@@ -180,17 +174,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetShield(
-                ItemProfileThin::MakeArmorSpecific(SHIELD_TYPE),
-                SHIELD_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetShield(
             const ItemProfileThin & THIN_PROFILE,
@@ -219,17 +203,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetHelm(
-                ItemProfileThin::MakeArmorSpecific(HELM_TYPE),
-                HELM_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetHelm(
             const ItemProfileThin & THIN_PROFILE,
@@ -259,19 +233,7 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
             const bool IS_PIXIE = false,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
-        {
-            SetCover(
-                ItemProfileThin::MakeArmorSpecific(COVER_TYPE, MISC_TYPE),
-                COVER_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE,
-                MISC_TYPE);
-        }
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         void SetCover(
             const ItemProfileThin & THIN_PROFILE,
@@ -321,17 +283,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Aventail, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                false);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetBracer(
             const ItemProfileThin & THIN_PROFILE,
@@ -359,17 +311,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Bracers, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetShirt(
             const ItemProfileThin & THIN_PROFILE,
@@ -397,17 +339,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Shirt, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetBoots(
             const ItemProfileThin & THIN_PROFILE,
@@ -435,17 +367,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Boots, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetPants(
             const ItemProfileThin & THIN_PROFILE,
@@ -473,17 +395,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Pants, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetGauntlets(
             const ItemProfileThin & THIN_PROFILE,
@@ -511,17 +423,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetArmorWithBaseTypeHelper(
-                ItemProfileThin::MakeArmorNonSpecific(armor_type::Gauntlets, BASE_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetSword(
             const weapon::sword_type::Enum SWORD_TYPE,
@@ -529,17 +431,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetSword(
-                ItemProfileThin::MakeWeaponSpecific(SWORD_TYPE),
-                SWORD_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetSword(
             const ItemProfileThin & THIN_PROFILE,
@@ -566,17 +458,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetAxe(
-                ItemProfileThin::MakeWeaponSpecific(AXE_TYPE),
-                AXE_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetAxe(
             const ItemProfileThin & THIN_PROFILE,
@@ -603,17 +485,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetClub(
-                ItemProfileThin::MakeWeaponSpecific(CLUB_TYPE),
-                CLUB_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetClub(
             const ItemProfileThin & THIN_PROFILE,
@@ -640,17 +512,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetWhip(
-                ItemProfileThin::MakeWeaponSpecific(WHIP_TYPE),
-                WHIP_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetWhip(
             const ItemProfileThin & THIN_PROFILE,
@@ -677,17 +539,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetProjectile(
-                ItemProfileThin::MakeWeaponSpecific(PROJECTILE_TYPE),
-                PROJECTILE_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetProjectile(
             const ItemProfileThin & THIN_PROFILE,
@@ -717,18 +569,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetKnife(
-                ItemProfileThin::MakeWeaponKnifeOrDagger(false, SIZE),
-                SIZE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetKnife(
             const ItemProfileThin & THIN_PROFILE,
@@ -758,18 +599,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false)
-        {
-            SetDagger(
-                ItemProfileThin::MakeWeaponKnifeOrDagger(true, SIZE),
-                SIZE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                IS_PIXIE);
-        }
+            const bool IS_PIXIE = false);
 
         void SetDagger(
             const ItemProfileThin & THIN_PROFILE,
@@ -797,16 +627,7 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
-        {
-            SetQuarterStaff(
-                ItemProfileThin::MakeWeaponStaffOrQuarterstaff(true),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-        }
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetQuarterStaff(
             const ItemProfileThin & THIN_PROFILE,
@@ -832,17 +653,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
-        {
-            SetStaff(
-                ItemProfileThin::MakeWeaponStaffOrQuarterstaff(false, MISC_TYPE),
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                MISC_TYPE);
-        }
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         void SetStaff(
             const ItemProfileThin & THIN_PROFILE,
@@ -872,18 +683,7 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
-        {
-            SetBladedStaff(
-                ItemProfileThin::MakeWeaponSpecific(BLADEDSTAFF_TYPE, MISC_TYPE),
-                BLADEDSTAFF_TYPE,
-                MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                MISC_TYPE);
-        }
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         void SetBladedStaff(
             const ItemProfileThin & THIN_PROFILE,

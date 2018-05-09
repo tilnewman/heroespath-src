@@ -46,6 +46,7 @@ namespace heroespath
 {
 namespace item
 {
+    struct ItemProfileThinFactory;
 
     class ItemProfileThin;
     using ItemProfileThinVec_t = std::vector<ItemProfileThin>;
@@ -60,6 +61,8 @@ namespace item
     // are the sfml_util::Size for weapons and the armor::base_type for armor.
     class ItemProfileThin
     {
+        friend ItemProfileThinFactory;
+
         // valid instances can only be constructed with the static Make() functions below
     private:
         explicit ItemProfileThin(
@@ -95,141 +98,10 @@ namespace item
         const std::string ReadableName() const;
         const std::string SystemName() const;
 
+        name_material_type::Enum NameMaterialType() const;
+
         friend bool operator==(const ItemProfileThin & L, const ItemProfileThin & R);
         friend bool operator<(const ItemProfileThin & L, const ItemProfileThin & R);
-
-        static const ItemProfileThin MakeArmorNonSpecific(
-            const armor_type::Enum ARMOR_TYPE,
-            const armor::base_type::Enum BASE_TYPE = armor::base_type::Count,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
-
-        template <typename SpecificArmor_t>
-        static const ItemProfileThin MakeArmorSpecific(
-            const SpecificArmor_t SPECIFIC_ARMOR_TYPE,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (std::is_same<SpecificArmor_t, armor::shield_type::Enum>::value
-                 || std::is_same<SpecificArmor_t, armor::helm_type::Enum>::value
-                 || std::is_same<SpecificArmor_t, armor::cover_type::Enum>::value),
-                "item::ItemProfileThin::MakeArmorSpecificAll<"
-                    << boost::typeindex::type_id<SpecificArmor_t>().pretty_name()
-                    << ">() but that type is not one of the specific armor types. "
-                       "(shield/helm/cover)");
-
-            return ItemProfileThin(armor::ArmorTypeWrapper(SPECIFIC_ARMOR_TYPE), MISC_TYPE);
-        }
-
-        template <typename SpecificArmorEnum_t>
-        static const ItemProfileThinVec_t MakeArmorSpecificAll()
-        {
-            ItemProfileThinVec_t thinProfiles;
-            thinProfiles.reserve(static_cast<std::size_t>(SpecificArmorEnum_t::Count));
-
-            for (int i(0); i < SpecificArmorEnum_t::Count; ++i)
-            {
-                thinProfiles.emplace_back(MakeArmorSpecific<typename SpecificArmorEnum_t::Enum>(
-                    static_cast<typename SpecificArmorEnum_t::Enum>(i)));
-            }
-
-            return thinProfiles;
-        }
-
-        static const ItemProfileThinVec_t MakeArmorNonSpecificAll(const armor_type::Enum ARMOR_TYPE)
-        {
-            ItemProfileThinVec_t thinProfiles;
-
-            for (int i(0); i < armor::base_type::Count; ++i)
-            {
-                auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
-                thinProfiles.emplace_back(MakeArmorNonSpecific(ARMOR_TYPE, BASE_TYPE));
-            }
-
-            return thinProfiles;
-        }
-
-        static const ItemProfileThinVec_t
-            MakeArmorNonSpecificAll(const armor::base_type::Enum BASE_TYPE)
-        {
-            ItemProfileThinVec_t thinProfiles;
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Aventail, BASE_TYPE));
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Boots, BASE_TYPE));
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Bracers, BASE_TYPE));
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Gauntlets, BASE_TYPE));
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Pants, BASE_TYPE));
-            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Shirt, BASE_TYPE));
-            return thinProfiles;
-        }
-
-        static const ItemProfileThinVec_t MakeArmorNonSpecificAll()
-        {
-            ItemProfileThinVec_t thinProfiles;
-
-            for (int i(0); i < armor::base_type::Count; ++i)
-            {
-                auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
-
-                for (auto const & THIN_PROFILE : MakeArmorNonSpecificAll(BASE_TYPE))
-                {
-                    thinProfiles.emplace_back(THIN_PROFILE);
-                }
-            }
-
-            return thinProfiles;
-        }
-
-        static const ItemProfileThin MakeWeaponStaffOrQuarterstaff(
-            const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
-
-        template <typename SpecificWeapon_t>
-        static const ItemProfileThin MakeWeaponSpecific(
-            const SpecificWeapon_t SPECIFIC_WEAPON_TYPE,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
-        {
-            return MakeWeapon(weapon::WeaponTypeWrapper(SPECIFIC_WEAPON_TYPE), MISC_TYPE);
-        }
-
-        static const ItemProfileThinVec_t MakeWeaponOfTypeAll(const weapon_type::Enum WEAPON_TYPE)
-        {
-            ItemProfileThinVec_t thinProfiles;
-            for (auto const & WEAPON_TYPE_WRAPPER : weapon::WeaponTypeWrapper::MakeCompleteSet())
-            {
-                // skip body parts
-                if ((WEAPON_TYPE_WRAPPER.IsBodyPart() == false)
-                    && (WEAPON_TYPE_WRAPPER.Type() & WEAPON_TYPE))
-                {
-                    thinProfiles.emplace_back(ItemProfileThin::MakeWeapon(WEAPON_TYPE_WRAPPER));
-                }
-            }
-            return thinProfiles;
-        }
-
-        template <typename SpecificWeaponEnum_t>
-        static const ItemProfileThinVec_t MakeWeaponSpecificAll()
-        {
-            ItemProfileThinVec_t thinProfiles;
-            thinProfiles.reserve(static_cast<std::size_t>(SpecificWeaponEnum_t::Count));
-
-            for (int i(0); i < SpecificWeaponEnum_t::Count; ++i)
-            {
-                thinProfiles.emplace_back(MakeWeaponSpecific<typename SpecificWeaponEnum_t::Enum>(
-                    static_cast<typename SpecificWeaponEnum_t::Enum>(i)));
-            }
-
-            return thinProfiles;
-        }
-
-        static const ItemProfileThin MakeWeaponKnifeOrDagger(
-            const bool IS_DAGGER, const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium);
-
-        static const ItemProfileThinVec_t MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER);
-
-        static const ItemProfileThin MakeMisc(const misc_type::Enum MISC_TYPE);
-
-    private:
-        static const ItemProfileThin MakeWeapon(
-            const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
     private:
         weapon::WeaponTypeWrapper weaponInfo_;

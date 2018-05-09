@@ -236,10 +236,10 @@ namespace item
             }
 
             misc::VectorMap<std::string, std::string> namesMap;
-            namesMap[generalName_] += "generalName_\\";
-            namesMap[specificName_] += "specificName_\\";
-            namesMap[systemName_] += "systemName_\\";
-            namesMap[readableName_] += "readableName_\\";
+            namesMap[boost::algorithm::erase_all_copy(generalName_, " ")] += "general\\";
+            namesMap[boost::algorithm::erase_all_copy(specificName_, " ")] += "specific\\";
+            namesMap[boost::algorithm::erase_all_copy(systemName_, " ")] += "system\\";
+            namesMap[boost::algorithm::erase_all_copy(readableName_, " ")] += "readable\\";
 
             std::ostringstream ss;
             for (auto const & VALUE_NAME_PAIR : namesMap)
@@ -345,6 +345,35 @@ namespace item
             MakeSpecificSetWithoutBaseType<cover_type>(wrappers);
             MakeSpecificSetsWithBaseType(wrappers);
             return wrappers;
+        }
+
+        name_material_type::Enum ArmorTypeWrapper::NameMaterialType() const
+        {
+            if (IsSkin())
+            {
+                return name_material_type::BodyPart;
+            }
+            else if (IsCover())
+            {
+                return name_material_type::Claspped;
+            }
+            else if (IsShield() || IsHelm())
+            {
+                return name_material_type::Reinforced;
+            }
+            else if (IsGauntlets())
+            {
+                return name_material_type::ReinforcedWithBase;
+            }
+            else if (IsBoots() || IsShirt() || IsPants() || IsBracers() || IsAventail())
+            {
+                return name_material_type::ClasppedWithBase;
+            }
+            else
+            {
+                // should never get here if valid
+                return name_material_type::Count;
+            }
         }
 
         void

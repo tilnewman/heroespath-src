@@ -4025,17 +4025,18 @@ namespace stage
     CombatStage::TurnActionPhase
         CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t WEAPON_PTR) const
     {
-        if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
+        if (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling)
         {
             return TurnActionPhase::ShootSling;
         }
         else if (
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
-            || (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
+            WEAPON_PTR->WeaponInfo().IsBow()
+            || WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Crossbow)
         {
             return TurnActionPhase::ShootArrow;
         }
-        else if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe))
+        else if (
+            WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
         {
             return TurnActionPhase::ShootBlowpipe;
         }

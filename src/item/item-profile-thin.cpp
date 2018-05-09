@@ -120,60 +120,25 @@ namespace item
         }
     }
 
-    const ItemProfileThin ItemProfileThin::MakeArmorNonSpecific(
-        const armor_type::Enum ARMOR_TYPE,
-        const armor::base_type::Enum BASE_TYPE,
-        const misc_type::Enum MISC_TYPE)
+    name_material_type::Enum ItemProfileThin::NameMaterialType() const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
-             && (ARMOR_TYPE != armor_type::Helm)),
-            "item::ItemProfileThin::MakeArmorNonSpecific(armor_type="
-                << armor_type::ToString(ARMOR_TYPE) << ", base_type="
-                << ((BASE_TYPE == armor::base_type::Count) ? "Count"
-                                                           : armor::base_type::ToString(BASE_TYPE))
-                << ", misc_type="
-                << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
-                << ") but the armor_type given IS a SPECIFIC type.");
-
-        return ItemProfileThin(armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE), MISC_TYPE);
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeWeapon(
-        const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER, const misc_type::Enum MISC_TYPE)
-    {
-        return ItemProfileThin(WEAPON_TYPE_WRAPPER, MISC_TYPE);
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeWeaponStaffOrQuarterstaff(
-        const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE)
-    {
-        return ItemProfileThin(weapon::WeaponTypeWrapper(IS_QUARTERSTAFF), MISC_TYPE);
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeWeaponKnifeOrDagger(
-        const bool IS_DAGGER, const sfml_util::Size::Enum SIZE)
-    {
-        return ItemProfileThin(weapon::WeaponTypeWrapper(IS_DAGGER, SIZE));
-    }
-
-    const ItemProfileThinVec_t ItemProfileThin::MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER)
-    {
-        ItemProfileThinVec_t thinProfiles;
-        thinProfiles.reserve(static_cast<std::size_t>(sfml_util::Size::Count));
-
-        for (int i(0); i < sfml_util::Size::Count; ++i)
+        if (IsWeapon())
         {
-            thinProfiles.emplace_back(
-                MakeWeaponKnifeOrDagger(IS_DAGGER, static_cast<sfml_util::Size::Enum>(i)));
+            return weaponInfo_.NameMaterialType();
         }
-
-        return thinProfiles;
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeMisc(const misc_type::Enum MISC_TYPE)
-    {
-        return ItemProfileThin(MISC_TYPE);
+        else if (IsArmor())
+        {
+            return armorInfo_.NameMaterialType();
+        }
+        else if (IsMisc())
+        {
+            return name_material_type::Misc;
+        }
+        else
+        {
+            // should never get here if valid
+            return name_material_type::Count;
+        }
     }
 
 } // namespace item

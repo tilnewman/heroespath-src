@@ -89,7 +89,10 @@ namespace creature
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
 
-        Score_t TreasureScore(const item::unique_type::Enum, const item::material::Enum) const;
+        Score_t TreasureScore(
+            const item::unique_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
         Score_t TreasureScore(
             const item::misc_type::Enum,
@@ -100,12 +103,16 @@ namespace creature
 
         Score_t TreasureScore(
             const item::named_type::Enum,
-            const item::material::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
 
         Score_t TreasureScore(
-            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
+            const item::element_type::Enum,
+            const bool IS_WEAPON,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
     private:
         const EnchantmentPtr_t Make(
@@ -115,11 +122,15 @@ namespace creature
 
         const EnchantmentPtr_t Make(const Enchantment &) const;
 
-        const std::vector<Enchantment>
-            MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
+        const std::vector<Enchantment> MakeFromUniqueType(
+            const item::unique_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
-        const EnchantmentPVec_t
-            NewFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
+        const EnchantmentPVec_t NewFromUniqueType(
+            const item::unique_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
         const Enchantment MakeFromMiscType(
             const item::misc_type::Enum,
@@ -138,20 +149,28 @@ namespace creature
         const EnchantmentPtr_t NewFromSetCompleteType(const item::set_type::Enum) const;
 
         const Enchantment MakeFromElementType(
-            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
+            const item::element_type::Enum,
+            const bool IS_WEAPON,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
         const EnchantmentPtr_t NewFromElementType(
-            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
+            const item::element_type::Enum,
+            const bool IS_WEAPON,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
         const Enchantment MakeFromNamedType(
             const item::named_type::Enum,
-            const item::material::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
 
         const EnchantmentPtr_t NewFromNamedType(
             const item::named_type::Enum,
-            const item::material::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
 

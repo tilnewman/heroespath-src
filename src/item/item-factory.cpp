@@ -301,18 +301,166 @@ namespace item
             randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ Random Item Names and Descriptions To "
                                  "Verify ~~~~~~~~~~~~~~~~~~~~";
 
-            auto const COUNT{ 10 };
-            for (int i(0); i < COUNT; ++i)
-            {
-                auto const & PROFILE{ misc::Vector::SelectRandom(NORMAL_PROFILES) };
-                auto itemPtr{ Make(PROFILE) };
+            auto appendProfileNamesIf{ [&](auto ifLambda,
+                                           const std::string & CATEGORY_NAME = "",
+                                           const std::size_t COUNT_TO_DISPLAY = 1) {
+                ItemProfileVec_t profiles;
+                profiles.reserve(50000);
 
-                randNameAndDescSS << "\n\n\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
-                                  << itemPtr->Desc() << "\"\n\tItem={" << itemPtr->ToString()
-                                  << "}";
+                for (auto const & PROFILE : NORMAL_PROFILES)
+                {
+                    if (ifLambda(PROFILE))
+                    {
+                        profiles.emplace_back(PROFILE);
+                    }
+                }
 
-                ItemWarehouse::Access().Free(itemPtr);
-            }
+                if (COUNT_TO_DISPLAY > 1)
+                {
+                    randNameAndDescSS << "\n~~~" << COUNT_TO_DISPLAY << " " << CATEGORY_NAME
+                                      << ":\n";
+                }
+                else
+                {
+                    randNameAndDescSS << '\n';
+                }
+
+                for (std::size_t i(0); i < COUNT_TO_DISPLAY; ++i)
+                {
+                    auto const & PROFILE{ misc::Vector::SelectRandom(NORMAL_PROFILES) };
+                    auto itemPtr{ Make(PROFILE) };
+
+                    randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
+                                      << itemPtr->Desc() << "\"\n\tItem={" << itemPtr->ToString()
+                                      << "}\n\n";
+
+                    ItemWarehouse::Access().Free(itemPtr);
+                }
+
+                if (COUNT_TO_DISPLAY > 1)
+                {
+                    randNameAndDescSS << "~~~\n\n";
+                }
+                else
+                {
+                    randNameAndDescSS << "\n\n";
+                }
+            } };
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsArmor(); }, "Armor");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsMisc(); }, "Misc");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsSet(); }, "Sets");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsNamed(); }, "Named");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsUnique(); }, "Unique");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsElemental(); }, "Element");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsAxe(); }, "Axe", 3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsBladedStaff(); },
+                "BladedStaff",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsClub(); },
+                "Club",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsProjectile(); },
+                "Projectile",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsSword(); },
+                "Sword",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsWhip(); },
+                "Whip",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsKnife(); },
+                "Knife",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsDagger(); },
+                "Dagger",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsStaff(); },
+                "Staff",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsAventail(); },
+                "Aventail",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsBoots(); },
+                "Boots",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsBracers(); },
+                "Bracers",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsCover(); },
+                "Covering",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsGauntlets(); },
+                "Gauntlets",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsHelm(); },
+                "Helm",
+                10);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsPants(); },
+                "Pants",
+                3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsShield(); },
+                "Shield",
+                10);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsShirt(); },
+                "Shirt",
+                3);
 
             randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~\n\n";
 
@@ -432,17 +580,9 @@ namespace item
         if (ITEM_PTR->ArmorInfo().HelmType() == armor::helm_type::Leather)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->MaterialPrimary() == material::HardLeather),
+                (ITEM_PTR->MaterialPrimary() == material::Leather),
                 makeErrorReportPrefix()
                     << "Leather Helm had a primary material that was not hard leather.");
-        }
-
-        if (ITEM_PTR->WeaponInfo().WhipType() == weapon::whip_type::Bullwhip)
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->MaterialPrimary() == material::HardLeather),
-                makeErrorReportPrefix()
-                    << "bull whip with a primary material that was not hard leather.");
         }
 
         // every unique_type is also a misc_type
@@ -522,53 +662,120 @@ namespace item
             makeErrorReportPrefix()
                 << "BaseName (\"" << ITEM_PTR->BaseName() << "\") was empty or invalid.");
 
-        if (ITEM_PTR->IsWeapon())
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->WeaponInfo().IsTypeValid()),
-                makeErrorReportPrefix() << "IsWeapon() but WeaponInfo().IsValid()==false.");
-        }
-
         if (ITEM_PTR->IsArmor())
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (ITEM_PTR->ArmorInfo().IsTypeValid()),
                 makeErrorReportPrefix() << "IsArmor() but ArmorInfo().IsValid()==false.");
-        }
 
-        if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
-        {
-            if ((ITEM_PTR->MaterialPrimary() == material::Cloth)
-                || (ITEM_PTR->MaterialPrimary() == material::SoftLeather)
-                || (ITEM_PTR->MaterialPrimary() == material::HardLeather))
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Count)
+                 && (ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Misc)),
+                makeErrorReportPrefix()
+                    << "armor had invalid name_material_type="
+                    << ((ITEM_PTR->ArmorInfo().NameMaterialType() == name_material_type::Count)
+                            ? "Count"
+                            : name_material_type::ToString(
+                                  ITEM_PTR->ArmorInfo().NameMaterialType()))
+                    << ".");
+
+            if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITEM_PTR->ArmorInfo().SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
-                    makeErrorReportPrefix()
-                        << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
-                        << " which means gloves but all the names did not equal \""
-                        << armor::ArmorTypeWrapper::GLOVES_NAME_
-                        << "\".  ArmorTypeWrapper::SpecificName()=\""
-                        << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITEM_PTR->ArmorInfo().SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
-                    makeErrorReportPrefix()
-                        << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
-                        << " which means gloves but all the names did not equal \""
-                        << armor::ArmorTypeWrapper::GLOVES_NAME_
-                        << "\".  ArmorTypeWrapper::SpecificName()=\""
-                        << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                if (material::IsGarmentType(ITEM_PTR->MaterialPrimary()))
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (ITEM_PTR->ArmorInfo().SpecificName()
+                         == armor::ArmorTypeWrapper::GLOVES_NAME_),
+                        makeErrorReportPrefix()
+                            << "gauntles with primary material "
+                            << material::ToString(ITEM_PTR->MaterialPrimary())
+                            << " which means gloves but all the names did not equal \""
+                            << armor::ArmorTypeWrapper::GLOVES_NAME_
+                            << "\".  ArmorTypeWrapper::SpecificName()=\""
+                            << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                }
+                else
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (ITEM_PTR->ArmorInfo().SpecificName()
+                         != armor::ArmorTypeWrapper::GLOVES_NAME_),
+                        makeErrorReportPrefix() << "gauntles with primary material "
+                                                << material::ToString(ITEM_PTR->MaterialPrimary())
+                                                << " which means gauntlets and NOT gloves but the "
+                                                   "ArmorTypeWrapper::SpecificName()=\""
+                                                << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                }
             }
-            else
+
+            if (ITEM_PTR->ArmorType() != armor_type::Skin)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITEM_PTR->ArmorInfo().SpecificName() != armor::ArmorTypeWrapper::GLOVES_NAME_),
-                    makeErrorReportPrefix()
-                        << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
-                        << " which means gauntlets and NOT gloves but the "
-                           "ArmorTypeWrapper::SpecificName()=\""
-                        << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+                auto const IS_SPECIFIC_ARMOR_TYPE{ (
+                    (ITEM_PTR->ArmorType() == armor_type::Covering)
+                    || (ITEM_PTR->ArmorType() == armor_type::Helm)
+                    || (ITEM_PTR->ArmorType() == armor_type::Shield)) };
+
+                if (IS_SPECIFIC_ARMOR_TYPE)
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Count),
+                        makeErrorReportPrefix()
+                            << "armor is specific armor_type="
+                            << armor_type::ToString(ITEM_PTR->ArmorType())
+                            << " but had an invalid base_type="
+                            << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
+                }
+                else
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (ITEM_PTR->ArmorInfo().BaseType() != armor::base_type::Count),
+                        makeErrorReportPrefix()
+                            << "armor is non-specific armor_type="
+                            << armor_type::ToString(ITEM_PTR->ArmorType())
+                            << " but had a base_type="
+                            << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
+
+                    if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plain)
+                    {
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            ((ITEM_PTR->MaterialPrimary() == material::Cloth)
+                             || (ITEM_PTR->MaterialPrimary() == material::Leather)
+                             || (ITEM_PTR->MaterialPrimary() == material::Silk)
+                             || (ITEM_PTR->MaterialPrimary() == material::Fur)
+                             || (ITEM_PTR->MaterialPrimary() == material::Hide)),
+                            makeErrorReportPrefix()
+                                << "armor is non-specific armor_type="
+                                << armor_type::ToString(ITEM_PTR->ArmorType())
+                                << " with base_type=Plain but the primary material was not one of "
+                                   "the "
+                                   "valid 'plain' materials.  It was "
+                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                    }
+                    else if (
+                        (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Mail)
+                        || (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plate))
+                    {
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (material::IsMetal(ITEM_PTR->MaterialPrimary())),
+                            makeErrorReportPrefix()
+                                << "armor is non-specific armor_type="
+                                << armor_type::ToString(ITEM_PTR->ArmorType()) << " with base_type="
+                                << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType())
+                                << " but the primary material was not metal.  It was "
+                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                    }
+                    else if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Scale)
+                    {
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (ITEM_PTR->MaterialPrimary() == material::Scales),
+                            makeErrorReportPrefix()
+                                << "armor is non-specific armor_type="
+                                << armor_type::ToString(ITEM_PTR->ArmorType())
+                                << " with base_type=Scale but the primary material was not Scales. "
+                                   " It "
+                                   "was "
+                                << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
+                    }
+                }
             }
         }
 
@@ -617,70 +824,45 @@ namespace item
                     << ".");
         }
 
-        if ((ITEM_PTR->IsArmor()) && (ITEM_PTR->ArmorType() != armor_type::Skin))
+        if (ITEM_PTR->IsWeapon())
         {
-            auto const IS_SPECIFIC_ARMOR_TYPE{ (
-                (ITEM_PTR->ArmorType() == armor_type::Covering)
-                || (ITEM_PTR->ArmorType() == armor_type::Helm)
-                || (ITEM_PTR->ArmorType() == armor_type::Shield)) };
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->WeaponInfo().IsTypeValid()),
+                makeErrorReportPrefix() << "IsWeapon() but WeaponInfo().IsValid()==false.");
 
-            if (IS_SPECIFIC_ARMOR_TYPE)
-            {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Count),
-                    makeErrorReportPrefix()
-                        << "armor is specific armor_type="
-                        << armor_type::ToString(ITEM_PTR->ArmorType())
-                        << " but had an invalid base_type="
-                        << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
-            }
-            else
-            {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITEM_PTR->ArmorInfo().BaseType() != armor::base_type::Count),
-                    makeErrorReportPrefix()
-                        << "armor is non-specific armor_type="
-                        << armor_type::ToString(ITEM_PTR->ArmorType()) << " but had a base_type="
-                        << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()) << ".");
+            int typeCounter{ 0 };
+            auto incrementIf{ [&](const bool WILL_INCREMENT) {
+                if (WILL_INCREMENT)
+                {
+                    ++typeCounter;
+                }
+            } };
 
-                if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plain)
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        ((ITEM_PTR->MaterialPrimary() == material::Cloth)
-                         || (ITEM_PTR->MaterialPrimary() == material::SoftLeather)
-                         || (ITEM_PTR->MaterialPrimary() == material::HardLeather)),
-                        makeErrorReportPrefix()
-                            << "armor is non-specific armor_type="
-                            << armor_type::ToString(ITEM_PTR->ArmorType())
-                            << " with base_type=Plain but the primary material was not one of the "
-                               "valid 'plain' materials.  It was "
-                            << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
-                }
-                else if (
-                    (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Mail)
-                    || (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plate))
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        (material::IsMetal(ITEM_PTR->MaterialPrimary())),
-                        makeErrorReportPrefix()
-                            << "armor is non-specific armor_type="
-                            << armor_type::ToString(ITEM_PTR->ArmorType()) << " with base_type="
-                            << armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType())
-                            << " but the primary material was not metal.  It was "
-                            << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
-                }
-                else if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Scale)
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        (ITEM_PTR->MaterialPrimary() == material::Scales),
-                        makeErrorReportPrefix()
-                            << "armor is non-specific armor_type="
-                            << armor_type::ToString(ITEM_PTR->ArmorType())
-                            << " with base_type=Scale but the primary material was not Scales.  It "
-                               "was "
-                            << material::ToString(ITEM_PTR->MaterialPrimary()) << ".");
-                }
-            }
+            incrementIf(ITEM_PTR->WeaponInfo().IsBodyPart());
+            incrementIf(ITEM_PTR->WeaponInfo().IsBlowpipe());
+            incrementIf(ITEM_PTR->WeaponInfo().HasHandle());
+            incrementIf(ITEM_PTR->WeaponInfo().IsPole());
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (1 == typeCounter),
+                makeErrorReportPrefix()
+                    << "weapon was not one of four states thought to be complete and mutually "
+                       "exclusive:  IsBodyPart()="
+                    << std::boolalpha << ITEM_PTR->WeaponInfo().IsBodyPart()
+                    << ", IsBlowpipe()=" << ITEM_PTR->WeaponInfo().IsBlowpipe()
+                    << ", HasSmallHandle()=" << ITEM_PTR->WeaponInfo().HasHandle()
+                    << ", HasLargeHandle()=" << ITEM_PTR->WeaponInfo().IsPole() << ".");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->WeaponInfo().NameMaterialType() != name_material_type::Count)
+                 && (ITEM_PTR->WeaponInfo().NameMaterialType() != name_material_type::Misc)),
+                makeErrorReportPrefix()
+                    << "weapon had invalid name_material_type="
+                    << ((ITEM_PTR->WeaponInfo().NameMaterialType() == name_material_type::Count)
+                            ? "Count"
+                            : name_material_type::ToString(
+                                  ITEM_PTR->WeaponInfo().NameMaterialType()))
+                    << ".");
         }
 
         auto const IS_MISC{ ITEM_PTR->IsMisc() };

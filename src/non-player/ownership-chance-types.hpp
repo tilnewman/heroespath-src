@@ -442,7 +442,7 @@ namespace non_player
                     const bool HAS_CLAWS = false,
                     const bool HAS_BITE = false,
                     const bool HAS_FISTS = false,
-                    const bool HAS_TENDRILS = false,
+                    const bool HAS_TENTACLES = false,
                     const bool HAS_BREATH = false,
                     const KnifeItemChances & KNIFE = KnifeItemChances(),
                     const StaffItemChances & STAFF = StaffItemChances(),
@@ -458,7 +458,7 @@ namespace non_player
                 bool has_claws;
                 bool has_bite;
                 bool has_fists;
-                bool has_tendrils;
+                bool has_tentacles;
                 bool has_breath;
 
                 KnifeItemChances knife;

@@ -57,7 +57,7 @@ namespace creature
             const bool HAS_TAIL = false,
             const bool HAS_SPIKES = false,
             const bool HAS_HORNS = false,
-            const std::size_t NUM_TENDRILS = 0,
+            const std::size_t NUM_TENTACLES = 0,
             const bool HAS_BREATH = false);
 
     public:
@@ -65,7 +65,7 @@ namespace creature
         auto NumArms() const { return num_arms_; }
         auto NumLegs() const { return num_legs_; }
         auto NumEyes() const { return num_eyes_; }
-        auto NumTendrils() const { return num_tendrils_; }
+        auto NumTentacles() const { return num_tentacles_; }
 
         auto HasHead() const { return (num_heads_ > 0); }
         auto HasArms() const { return (num_arms_ > 0); }
@@ -76,7 +76,7 @@ namespace creature
         auto HasEyes() const { return (num_eyes_ > 0); }
         auto HasFingers() const { return has_fingers_; }
         auto HasTail() const { return has_tail_; }
-        auto HasTendrils() const { return (num_tendrils_ > 0); }
+        auto HasTentacles() const { return (num_tentacles_ > 0); }
         auto HasSpikes() const { return has_spikes_; }
         auto HasHorns() const { return has_horns_; }
         auto HasBreath() const { return has_breath_; }
@@ -126,7 +126,7 @@ namespace creature
         std::size_t num_legs_;
         std::size_t num_heads_;
         std::size_t num_eyes_;
-        std::size_t num_tendrils_;
+        std::size_t num_tentacles_;
 
     private:
         friend class boost::serialization::access;
@@ -144,7 +144,7 @@ namespace creature
             ar & num_legs_;
             ar & num_heads_;
             ar & num_eyes_;
-            ar & num_tendrils_;
+            ar & num_tentacles_;
         }
     };
 

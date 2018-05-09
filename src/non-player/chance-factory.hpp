@@ -134,8 +134,8 @@ namespace non_player
                 const Profile & PROFILE,
                 const creature::CreaturePtr_t CHARACTER_PTR,
                 float & clothChance,
-                float & softleatherChance,
-                float & hardleatherChance);
+                float & leatherChance,
+                float & silkChance);
 
             // returns a float < 0.0f if the value found was 'remaining'
             static float
