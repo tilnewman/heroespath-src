@@ -29,6 +29,7 @@
 //
 #include "item/item-profile-thin.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/vector-map.hpp"
 
 #include <initializer_list>
 #include <vector>
@@ -120,6 +121,7 @@ namespace item
         MaterialVec_t fancyClasp_;
         MaterialVec_t mailArmorMetals_;
         MaterialVec_t nonFleshEyesWithNothing_;
+        misc::VectorMap<material::Enum, MaterialVec_t> invalidMetalsMap_;
     };
 
 } // namespace item

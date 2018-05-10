@@ -115,15 +115,12 @@ namespace item
             auto const NAME_TO_USE{ [&]() {
                 if (PROFILE.IsNamed())
                 {
-                    return named_type::Name(PROFILE.NamedType()) + " " + PROFILE.ReadableName();
-                }
-                else if (PROFILE.IsArmor())
-                {
-                    return PROFILE.ArmorInfo().ReadableNameWithoutBase();
+                    return named_type::Name(PROFILE.NamedType()) + " "
+                        + ReadableNameWithoutArmorBaseType(PROFILE);
                 }
                 else
                 {
-                    return PROFILE.ReadableName();
+                    return ReadableNameWithoutArmorBaseType(PROFILE);
                 }
             }() };
 
@@ -180,7 +177,7 @@ namespace item
         else if (PROFILE.IsNamed())
         {
             ss << ", known as the " << named_type::Name(PROFILE.NamedType()) << " "
-               << PROFILE.ReadableName();
+               << ReadableNameWithoutArmorBaseType(PROFILE);
         }
         else if (PROFILE.IsUnique())
         {
@@ -208,7 +205,7 @@ namespace item
 
         if (PROFILE.SummonInfo().CanSummon())
         {
-            ss << ", used to summon " << creature::race::Name(PROFILE.SummonInfo().Race()) << " "
+            ss << ", used to summon a " << creature::race::Name(PROFILE.SummonInfo().Race()) << " "
                << creature::role::Name(PROFILE.SummonInfo().Role());
         }
 
@@ -296,6 +293,18 @@ namespace item
     {
         // For now Treasure Score equals the price in coins
         return Coin_t(TREASURE_SCORE.As<int>());
+    }
+
+    const std::string ItemFactoryBase::ReadableNameWithoutArmorBaseType(const ItemProfile & PROFILE)
+    {
+        if (PROFILE.IsArmor())
+        {
+            return PROFILE.ArmorInfo().ReadableNameWithoutBase();
+        }
+        else
+        {
+            return PROFILE.ReadableName();
+        }
     }
 
     const std::string ItemFactoryBase::PrefixAOrAn(const material::Enum MATERIAL)

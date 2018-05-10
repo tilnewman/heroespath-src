@@ -86,6 +86,7 @@ namespace item
         static Coin_t TreasureScoreToCoins(const Score_t &);
 
     private:
+        static const std::string ReadableNameWithoutArmorBaseType(const ItemProfile &);
         static const std::string PrefixAOrAn(const material::Enum);
         static const std::string RandomCoatedPhrase();
         static const std::string RandomCoatedAdjective();

@@ -84,7 +84,23 @@ namespace item
                              material::Steel,
                              material::Silver })
         , nonFleshEyesWithNothing_(Combine(fancyJewel_, { material::Nothing }))
-    {}
+        , invalidMetalsMap_()
+    {
+        invalidMetalsMap_[material::Tin] = {};
+        invalidMetalsMap_[material::Bronze] = { material::Tin };
+        invalidMetalsMap_[material::Iron] = { material::Tin, material::Bronze };
+        invalidMetalsMap_[material::Steel] = { material::Tin, material::Bronze, material::Iron };
+
+        invalidMetalsMap_[material::Silver]
+            = { material::Tin, material::Bronze, material::Iron, material::Steel };
+
+        invalidMetalsMap_[material::Gold]
+            = { material::Tin, material::Bronze, material::Iron, material::Steel };
+
+        invalidMetalsMap_[material::Platinum] = {
+            material::Tin, material::Bronze, material::Iron, material::Steel, material::Silver
+        };
+    }
 
     const MaterialPairVec_t MaterialFactory::MakeForEquipment(
         const ItemProfileThin & THIN_PROFILE,
@@ -115,17 +131,56 @@ namespace item
             LimitForNamedType(THIN_PROFILE, NAMED_TYPE, materialPairs);
         }
 
+        // remove metal combinations that don't make sense "gold adorned with tin" etc.
+        if ((THIN_PROFILE.NameMaterialType() == name_material_type::Reinforced)
+            || (THIN_PROFILE.NameMaterialType() == name_material_type::ReinforcedWithBase)
+            || (THIN_PROFILE.NameMaterialType() == name_material_type::Tipped)
+            || (THIN_PROFILE.NameMaterialType() == name_material_type::Claspped)
+            || (THIN_PROFILE.NameMaterialType() == name_material_type::ClasppedWithBase))
+        {
+            materialPairs.erase(
+                std::remove_if(
+                    std::begin(materialPairs),
+                    std::end(materialPairs),
+                    [&](const MaterialPair_t & MATERIAL_PAIR) {
+                        if (material::IsMetal(MATERIAL_PAIR.first))
+                        {
+                            if (MATERIAL_PAIR.second == material::Wood)
+                            {
+                                return true;
+                            }
+                            else if (material::IsMetal(MATERIAL_PAIR.second))
+                            {
+                                auto const & INVALID_SECONDARIES{
+                                    invalidMetalsMap_[MATERIAL_PAIR.first]
+                                };
+
+                                return (
+                                    std::find(
+                                        std::begin(INVALID_SECONDARIES),
+                                        std::end(INVALID_SECONDARIES),
+                                        MATERIAL_PAIR.second)
+                                    != std::end(INVALID_SECONDARIES));
+                            }
+                        }
+
+                        return false;
+                    }),
+                std::end(materialPairs));
+        }
+
         try
         {
-            // even though set_types and named_types are magical, they are very specific about their
-            // materials so there is no need to pass true=WILL_REMOVE_LAME_MATERIALS
+            // even though set_types and named_types are magical, they are very specific about
+            // their materials so there is no need to pass true=WILL_REMOVE_LAME_MATERIALS
             CleanupMaterialPairVectorAndEnsureNotEmpty(materialPairs, false);
         }
         catch (const std::exception & EXCEPTION)
         {
             std::ostringstream ss;
             ss << EXCEPTION.what()
-               << " --this was thrown during item::MaterialFactory::MakeForEquipment(thin_profile={"
+               << " --this was thrown during "
+                  "item::MaterialFactory::MakeForEquipment(thin_profile={"
                << THIN_PROFILE.ToString() << "}, named_type=" << named_type::ToString(NAMED_TYPE)
                << ", set_type=" << set_type::ToString(SET_TYPE) << ")";
 

@@ -291,7 +291,7 @@ namespace item
 
         if (IsMagical())
         {
-            ss << "*";
+            ss << " *";
         }
 
         return ss.str();
