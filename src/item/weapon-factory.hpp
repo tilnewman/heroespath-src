@@ -32,7 +32,6 @@
 #include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/size-enum.hpp"
 
 #include <memory>
 #include <string>

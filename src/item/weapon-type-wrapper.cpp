@@ -47,8 +47,7 @@ namespace item
         const std::string WeaponTypeWrapper::QUARTERSTAFF_NAME_{ "Quarterstaff" };
         const std::string WeaponTypeWrapper::BOW_GENERAL_NAME_{ "Bow" };
 
-        WeaponTypeWrapper::WeaponTypeWrapper(
-            const std::string & SYSTEM_NAME, const sfml_util::Size::Enum KNIFE_OR_DAGGER_SIZE)
+        WeaponTypeWrapper::WeaponTypeWrapper(const std::string & SYSTEM_NAME)
             : generalName_("")
             , specificName_("")
             , systemName_(SYSTEM_NAME)
@@ -82,8 +81,7 @@ namespace item
                 variant_ = false;
                 SetNamesAndVerify("'name' constructor when name=Staff");
             }
-            else if (
-                false == SetupWithKnifeOrDaggerName(SYSTEM_NAME_LOWERCASE, KNIFE_OR_DAGGER_SIZE))
+            else if (false == SetupWithKnifeOrDaggerName(SYSTEM_NAME_LOWERCASE))
             {
                 if (false
                     == SetupWithSpecificTypeName<sword_type>(
@@ -121,10 +119,6 @@ namespace item
 
             std::ostringstream errorSS;
             errorSS << "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\"" << SYSTEM_NAME
-                    << "\", size=\""
-                    << ((KNIFE_OR_DAGGER_SIZE == sfml_util::Size::Count)
-                            ? "Count"
-                            : sfml_util::Size::ToString(KNIFE_OR_DAGGER_SIZE))
                     << "\") ";
 
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -133,25 +127,20 @@ namespace item
                               << ToString());
         }
 
-        WeaponTypeWrapper::WeaponTypeWrapper(const bool IS_DAGGER, const sfml_util::Size::Enum SIZE)
+        WeaponTypeWrapper::WeaponTypeWrapper(const KnifeOrDagger, const bool IS_DAGGER)
             : generalName_("")
             , specificName_("")
             , systemName_("")
             , readableName_("")
             , type_(weapon_type::Knife)
             , isDagger_(IS_DAGGER)
-            , variant_(SIZE)
+            , variant_()
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (SIZE != sfml_util::Size::Count),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(is_dagger="
-                    << std::boolalpha << IS_DAGGER << ", size=Count) -size can't be Count");
-
-            SetNamesAndVerify("after is_dagger constructor");
+            SetNamesAndVerify("after knife/dagger constructor");
         }
 
-        WeaponTypeWrapper::WeaponTypeWrapper(const bool IS_QUARTERSTAFF)
+        WeaponTypeWrapper::WeaponTypeWrapper(const StaffOrQuarterstaff, const bool IS_QUARTERSTAFF)
             : generalName_("")
             , specificName_("")
             , systemName_("")
@@ -319,8 +308,7 @@ namespace item
                << ((IsStaff()) ? "Staff," : "") << ((IsQuarterstaff()) ? "Quarterstaff," : "")
                << ((IsBodyPart()) ? (body_part::ToString(BodyPartType()) + ",") : "")
                << ((IsBite()) ? "Bite," : "") << ((IsFists()) ? "Fists," : "")
-               << ((IsKnife()) ? "Knife-" + sfml_util::Size::ToString(Size()) + "," : "")
-               << ((IsDagger()) ? "Dagger-" + sfml_util::Size::ToString(Size()) + "," : "")
+               << ((IsKnife()) ? "Knife," : "") << ((IsDagger()) ? "Dagger," : "")
                << ((IsSword()) ? sword_type::ToString(SwordType()) + "," : "")
                << ((IsAxe()) ? axe_type::ToString(AxeType()) + "," : "")
                << ((IsClub()) ? club_type::ToString(ClubType()) + "," : "")
@@ -398,21 +386,15 @@ namespace item
         {
             std::vector<WeaponTypeWrapper> wrappers;
 
-            wrappers.emplace_back(WeaponTypeWrapper(false));
-            wrappers.emplace_back(WeaponTypeWrapper(true));
+            wrappers.emplace_back(WeaponTypeWrapper(StaffOrQuarterstaff(), false));
+            wrappers.emplace_back(WeaponTypeWrapper(StaffOrQuarterstaff(), true));
             wrappers.emplace_back(WeaponTypeWrapper(body_part::Bite));
             wrappers.emplace_back(WeaponTypeWrapper(body_part::Claws));
             wrappers.emplace_back(WeaponTypeWrapper(body_part::Fists));
             wrappers.emplace_back(WeaponTypeWrapper(body_part::Tentacles));
             wrappers.emplace_back(WeaponTypeWrapper(body_part::Breath));
-
-            for (int i(0); i < sfml_util::Size::Count; ++i)
-            {
-                auto const SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
-                wrappers.emplace_back(WeaponTypeWrapper(false, SIZE_ENUM));
-                wrappers.emplace_back(WeaponTypeWrapper(true, SIZE_ENUM));
-            }
-
+            wrappers.emplace_back(WeaponTypeWrapper(KnifeOrDagger(), false));
+            wrappers.emplace_back(WeaponTypeWrapper(KnifeOrDagger(), true));
             AppendSpecificSet<sword_type>(wrappers);
             AppendSpecificSet<axe_type>(wrappers);
             AppendSpecificSet<club_type>(wrappers);
@@ -457,14 +439,9 @@ namespace item
             }
         }
 
-        bool WeaponTypeWrapper::SetupWithKnifeOrDaggerName(
-            const std::string & SYSTEM_NAME_LOWERCASE, const sfml_util::Size::Enum SIZE)
+        bool
+            WeaponTypeWrapper::SetupWithKnifeOrDaggerName(const std::string & SYSTEM_NAME_LOWERCASE)
         {
-            if (SIZE == sfml_util::Size::Count)
-            {
-                return false;
-            }
-
             auto const KNIFE_NAME{ weapon_type::ToString(weapon_type::Knife) };
 
             auto const IS_KNIFE{ SYSTEM_NAME_LOWERCASE
@@ -477,7 +454,6 @@ namespace item
             {
                 type_ = weapon_type::Knife;
                 isDagger_ = IS_DAGGER;
-                variant_ = SIZE;
                 SetNamesAndVerify("'name' constructor when name=Knife/Dagger");
                 return true;
             }
@@ -825,16 +801,7 @@ namespace item
                         generalName_ = DAGGER_NAME_;
                         specificName_ = DAGGER_NAME_;
                         systemName_ = DAGGER_NAME_;
-
-                        auto const SIZE{ Size() };
-                        if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
-                        {
-                            readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
-                        }
-                        else
-                        {
-                            readableName_ = generalName_;
-                        }
+                        readableName_ = DAGGER_NAME_;
 
                         elementTypes_ = element_type::AllCombinations(
                             element_type::Fire | element_type::Frost | element_type::Honor);
@@ -844,16 +811,7 @@ namespace item
                         generalName_ = weapon_type::Name(type_);
                         specificName_ = generalName_;
                         systemName_ = weapon_type::ToString(type_, false);
-
-                        auto const SIZE{ Size() };
-                        if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
-                        {
-                            readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
-                        }
-                        else
-                        {
-                            readableName_ = generalName_;
-                        }
+                        readableName_ = generalName_;
 
                         elementTypes_ = element_type::AllCombinations(
                             element_type::Fire | element_type::Frost | element_type::Shadow);
@@ -1008,8 +966,7 @@ namespace item
             }
             else if (type_ & weapon_type::Knife)
             {
-                return (variant_.which() == SIZE_INDEX)
-                    && (sfml_util::Size::Count != boost::get<sfml_util::Size::Enum>(variant_));
+                return true;
             }
             else if (type_ & weapon_type::Staff)
             {

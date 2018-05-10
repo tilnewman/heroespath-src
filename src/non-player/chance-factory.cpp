@@ -533,12 +533,6 @@ namespace non_player
 
                     weaponChances.knife.is_dagger = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger();
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Size() == sfml_util::Size::Count)
-                    {
-                        Make_KnifeOrDaggerSizeChances(
-                            CHARACTER_PTR->RankClass(), weaponChances.knife.size_map);
-                    }
-
                     chance::MaterialChanceMap_t typicalKnifePrimaryMaterials;
                     if (PROFILE.complexityType == complexity_type::Simple)
                     {
@@ -1535,49 +1529,6 @@ namespace non_player
             return clothingChances;
         }
 
-        void ChanceFactory::Make_KnifeOrDaggerSizeChances(
-            const creature::rank_class::Enum RANK_CLASS,
-            chance::SizeChanceMap_t & sizeChanceMap_OutParam)
-        {
-            switch (RANK_CLASS)
-            {
-                case creature::rank_class::Novice:
-                {
-                    sizeChanceMap_OutParam[sfml_util::Size::Small] = 0.9f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Medium] = 0.1f;
-                    break;
-                }
-                case creature::rank_class::Trainee:
-                {
-                    sizeChanceMap_OutParam[sfml_util::Size::Small] = 0.45f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Medium] = 0.45f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Large] = 0.1f;
-                    break;
-                }
-                case creature::rank_class::Skilled:
-                {
-                    sizeChanceMap_OutParam[sfml_util::Size::Small] = 0.1f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Medium] = 0.45f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Large] = 0.45f;
-                    break;
-                }
-                case creature::rank_class::Expert:
-                {
-                    sizeChanceMap_OutParam[sfml_util::Size::Medium] = 0.1f;
-                    sizeChanceMap_OutParam[sfml_util::Size::Large] = 0.9f;
-                    break;
-                }
-                case creature::rank_class::Master:
-                case creature::rank_class::GrandMaster:
-                case creature::rank_class::Count:
-                default:
-                {
-                    sizeChanceMap_OutParam[sfml_util::Size::Large] = 1.0f;
-                    break;
-                }
-            }
-        }
-
         void ChanceFactory::PopulateWeaponMaterials(
             const std::string & WEAPON_NAME,
             const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
@@ -1977,23 +1928,7 @@ namespace non_player
                         auto const WEAPON_NAME{ partsVec[0] };
                         auto const CHANCE_STR{ partsVec[1] };
 
-                        // parse weapon name and type, if knife or dagger then assume size is medium
-                        auto const IS_WEAPON_NAME_KNIFE{
-                            boost::algorithm::to_lower_copy(
-                                item::weapon_type::Name(item::weapon_type::Knife))
-                            == boost::algorithm::to_lower_copy(WEAPON_NAME)
-                        };
-                        auto const IS_WEAPON_NAME_DAGGER{
-                            boost::algorithm::to_lower_copy(
-                                item::weapon::WeaponTypeWrapper::DAGGER_NAME_)
-                            == boost::algorithm::to_lower_copy(WEAPON_NAME)
-                        };
-
-                        const item::weapon::WeaponTypeWrapper WEAPON_INFO(
-                            WEAPON_NAME,
-                            ((IS_WEAPON_NAME_KNIFE || IS_WEAPON_NAME_DAGGER)
-                                 ? sfml_util::Size::Medium
-                                 : sfml_util::Size::Count));
+                        const item::weapon::WeaponTypeWrapper WEAPON_INFO(WEAPON_NAME);
 
                         // parse weapon chance
                         float chance(0.0f);

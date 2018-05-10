@@ -31,7 +31,6 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/size-enum.hpp"
 #include "stats/traits-set.hpp"
 
 namespace heroespath
@@ -56,8 +55,8 @@ namespace item
         static Score_t Score(const weapon::sword_type::Enum);
         static Score_t Score(const weapon::whip_type::Enum);
 
-        static Score_t ScoreKnife(const sfml_util::Size::Enum);
-        static Score_t ScoreDagger(const sfml_util::Size::Enum);
+        static Score_t ScoreKnife();
+        static Score_t ScoreDagger();
         static Score_t ScoreStaff();
         static Score_t ScoreQuarterStaff();
 

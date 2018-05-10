@@ -192,9 +192,6 @@ namespace non_player
             static const chance::MaterialChanceMap_t Make_MaterialChanceMapPrecious();
             static const chance::MaterialChanceMap_t Make_MaterialChanceMapMetal();
 
-            static void Make_KnifeOrDaggerSizeChances(
-                const creature::rank_class::Enum, chance::SizeChanceMap_t &);
-
             static void PopulateWeaponMaterials(
                 const std::string & WEAPON_NAME,
                 const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,

@@ -177,7 +177,6 @@ namespace player
                 ItemProfile daggerProfile;
 
                 daggerProfile.SetKnife(
-                    sfml_util::Size::Small,
                     material::Steel,
                     material::Wood,
                     named_type::NotNamed,

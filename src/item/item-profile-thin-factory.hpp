@@ -93,7 +93,10 @@ namespace item
         const ItemProfileThin MakeWeaponStaffOrQuarterstaff(
             const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const
         {
-            return ItemProfileThin(weapon::WeaponTypeWrapper(IS_QUARTERSTAFF), MISC_TYPE);
+            return ItemProfileThin(
+                weapon::WeaponTypeWrapper(
+                    weapon::WeaponTypeWrapper::StaffOrQuarterstaff(), IS_QUARTERSTAFF),
+                MISC_TYPE);
         }
 
         template <typename SpecificWeapon_t>
@@ -121,10 +124,10 @@ namespace item
             return thinProfiles;
         }
 
-        const ItemProfileThin MakeWeaponKnifeOrDagger(
-            const bool IS_DAGGER, const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium) const
+        const ItemProfileThin MakeWeaponKnifeOrDagger(const bool IS_DAGGER) const
         {
-            return ItemProfileThin(weapon::WeaponTypeWrapper(IS_DAGGER, SIZE));
+            return ItemProfileThin(
+                weapon::WeaponTypeWrapper(weapon::WeaponTypeWrapper::KnifeOrDagger(), IS_DAGGER));
         }
 
         const ItemProfileThinVec_t MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER) const;

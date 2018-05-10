@@ -31,7 +31,6 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-type-wrapper.hpp"
-#include "sfml-util/size-enum.hpp"
 
 #include <boost/type_index.hpp>
 

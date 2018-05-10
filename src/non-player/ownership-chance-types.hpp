@@ -37,7 +37,6 @@
 #include "misc/random.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/size-enum.hpp"
 #include "stats/trait.hpp"
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
@@ -60,7 +59,6 @@ namespace non_player
             // custom types
             using MaterialVec_t = std::vector<item::material::Enum>;
             using CountChanceMap_t = misc::VectorMap<std::size_t, float>;
-            using SizeChanceMap_t = misc::VectorMap<sfml_util::Size::Enum, float>;
             using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
             using ArmorTypeChanceMap_t = misc::VectorMap<item::armor::base_type::Enum, float>;
 
@@ -245,8 +243,10 @@ namespace non_player
             using ClubChanceMap_t = misc::VectorMap<item::weapon::club_type::Enum, ItemChances>;
             using WhipChanceMap_t = misc::VectorMap<item::weapon::whip_type::Enum, ItemChances>;
             using SwordChanceMap_t = misc::VectorMap<item::weapon::sword_type::Enum, ItemChances>;
+
             using ProjectileChanceMap_t
                 = misc::VectorMap<item::weapon::projectile_type::Enum, ItemChances>;
+
             using BladedStaffChanceMap_t
                 = misc::VectorMap<item::weapon::bladedstaff_type::Enum, ItemChances>;
 
@@ -410,14 +410,12 @@ namespace non_player
                     const float CHANCE_OWNED = 0.0f,
                     const float CHANCE_EQUIPPED = 0.0f,
                     const float IS_DAGGER = 0.0f,
-                    const SizeChanceMap_t & SIZE_MAP = SizeChanceMap_t(),
                     const MaterialChanceMap_t & MAT_CH_MAP_PRI = MaterialChanceMap_t(),
                     const MaterialChanceMap_t & MAT_CH_MAP_SEC = MaterialChanceMap_t());
 
                 static KnifeItemChances NoKnife() { return KnifeItemChances(); }
 
                 float is_dagger;
-                SizeChanceMap_t size_map;
             };
 
             // A wrapper holding all the information needed to determine what kind of staff a

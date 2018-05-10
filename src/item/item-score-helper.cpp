@@ -324,29 +324,9 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::ScoreKnife(const sfml_util::Size::Enum SIZE)
-    {
-        if (SIZE == sfml_util::Size::Small)
-        {
-            return 20_score;
-        }
-        else
-        {
-            return 25_score;
-        }
-    }
+    Score_t ScoreHelper::ScoreKnife() { return 22_score; }
 
-    Score_t ScoreHelper::ScoreDagger(const sfml_util::Size::Enum SIZE)
-    {
-        if (SIZE == sfml_util::Size::Small)
-        {
-            return 30_score;
-        }
-        else
-        {
-            return 35_score;
-        }
-    }
+    Score_t ScoreHelper::ScoreDagger() { return 33_score; }
 
     Score_t ScoreHelper::ScoreStaff() { return 25_score; }
 

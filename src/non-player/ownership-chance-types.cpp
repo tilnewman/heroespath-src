@@ -247,12 +247,10 @@ namespace non_player
                 const float CHANCE_OWNED,
                 const float IS_EQUIPPED,
                 const float IS_DAGGER,
-                const SizeChanceMap_t & SIZE_MAP,
                 const MaterialChanceMap_t & MAT_CH_MAP_PRI,
                 const MaterialChanceMap_t & MAT_CH_MAP_SEC)
                 : ItemChances(CHANCE_OWNED, IS_EQUIPPED, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
                 , is_dagger(IS_DAGGER)
-                , size_map(SIZE_MAP)
             {}
 
             StaffItemChances::StaffItemChances(

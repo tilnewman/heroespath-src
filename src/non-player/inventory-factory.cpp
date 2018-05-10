@@ -567,51 +567,19 @@ namespace non_player
             {
                 case weapon_type::Knife:
                 {
-                    // determine which size the knife/dagger will be
-                    auto const RAND{ misc::random::Float() };
-                    auto knifeSize{ sfml_util::Size::Large };
-
-                    auto chanceOfSmall{ 0.0f };
-                    auto const WAS_SMALL_FOUND{ WEAPON_CHANCES.knife.size_map.Find(
-                        sfml_util::Size::Small, chanceOfSmall) };
-
-                    if (WAS_SMALL_FOUND && (RAND < chanceOfSmall))
-                    {
-                        knifeSize = sfml_util::Size::Small;
-                    }
-                    else
-                    {
-                        auto chanceOfMedium{ 0.0f };
-                        if (WEAPON_CHANCES.knife.size_map.Find(
-                                sfml_util::Size::Medium, chanceOfMedium))
-                        {
-                            if (WAS_SMALL_FOUND)
-                            {
-                                chanceOfMedium += chanceOfSmall;
-                            }
-
-                            if (RAND < chanceOfMedium)
-                            {
-                                knifeSize = sfml_util::Size::Medium;
-                            }
-                        }
-                    }
-
                     auto const IS_DAGGER{ misc::random::Float() < WEAPON_CHANCES.knife.is_dagger };
 
-                    // prevent adding a dagger if invalid
-                    if (WEAPON_CHANCES.knife.size_map.Empty()
-                        || WEAPON_CHANCES.knife.mat_map_pri.Empty())
+                    ItemProfile profile;
+
+                    // prevent adding a knife/dagger if invalid
+                    if (WEAPON_CHANCES.knife.mat_map_pri.Empty())
                     {
                         break;
                     }
 
-                    ItemProfile profile;
-
                     if (IS_DAGGER)
                     {
                         profile.SetDagger(
-                            knifeSize,
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
                             WEAPON_CHANCES.knife.RandomMaterialSec(),
                             named_type::NotNamed,
@@ -622,7 +590,6 @@ namespace non_player
                     else
                     {
                         profile.SetKnife(
-                            knifeSize,
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
                             WEAPON_CHANCES.knife.RandomMaterialSec(),
                             named_type::NotNamed,

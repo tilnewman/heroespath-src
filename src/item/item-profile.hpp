@@ -83,8 +83,6 @@ namespace item
 
         bool IsQuestItem() const { return misc_type::IsQuestItem(thinProfile_.MiscType()); }
 
-        sfml_util::Size::Enum Size() const { return thinProfile_.WeaponInfo().Size(); }
-
         material::Enum MaterialPrimary() const { return matPri_; }
         material::Enum MaterialSecondary() const { return matSec_; }
 
@@ -565,7 +563,6 @@ namespace item
         }
 
         void SetKnife(
-            const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
@@ -575,7 +572,6 @@ namespace item
 
         void SetKnife(
             const ItemProfileThin & THIN_PROFILE,
-            const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
@@ -585,7 +581,7 @@ namespace item
         {
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreKnife(SIZE),
+                ScoreHelper::ScoreKnife(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -595,7 +591,6 @@ namespace item
         }
 
         void SetDagger(
-            const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
@@ -605,7 +600,6 @@ namespace item
 
         void SetDagger(
             const ItemProfileThin & THIN_PROFILE,
-            const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
@@ -615,7 +609,7 @@ namespace item
         {
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreDagger(SIZE),
+                ScoreHelper::ScoreDagger(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,

@@ -51,33 +51,19 @@ namespace item
         {
             auto const WEAPON_TYPE_WRAPPER{ PROFILE.WeaponInfo() };
 
-            WeaponDetails weaponDetails{ WeaponDetailLoader::LookupWeaponDetails(
+            auto const WEAPON_DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
-
-            if (PROFILE.WeaponInfo().IsKnife() || PROFILE.WeaponInfo().IsDagger())
-            {
-                if (PROFILE.Size() == sfml_util::Size::Small)
-                {
-                    weaponDetails.damage_min -= 1_health;
-                    weaponDetails.damage_max -= 1_health;
-                }
-                else if (PROFILE.Size() == sfml_util::Size::Large)
-                {
-                    weaponDetails.damage_min += 1_health;
-                    weaponDetails.damage_max += 1_health;
-                }
-            }
 
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 MakeNonBodyPartName(PROFILE),
-                MakeNonBodyPartDescription(PROFILE, weaponDetails.description),
+                MakeNonBodyPartDescription(PROFILE, WEAPON_DETAILS.description),
                 PROFILE.Category(),
                 PROFILE.MaterialPrimary(),
                 PROFILE.MaterialSecondary(),
-                CalculatePrice(PROFILE, weaponDetails.price),
-                CalculateWeight(PROFILE, weaponDetails.weight),
-                weaponDetails.damage_min,
-                weaponDetails.damage_max,
+                CalculatePrice(PROFILE, WEAPON_DETAILS.price),
+                CalculateWeight(PROFILE, WEAPON_DETAILS.weight),
+                WEAPON_DETAILS.damage_min,
+                WEAPON_DETAILS.damage_max,
                 0_armor,
                 TypeWrapper(PROFILE),
                 WEAPON_TYPE_WRAPPER,

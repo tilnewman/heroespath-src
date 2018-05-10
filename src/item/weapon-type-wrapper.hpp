@@ -30,7 +30,6 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
-#include "sfml-util/size-enum.hpp"
 
 #include <boost/type_index.hpp>
 #include <boost/variant.hpp>
@@ -54,17 +53,21 @@ namespace item
         class WeaponTypeWrapper
         {
         public:
+            struct KnifeOrDagger
+            {};
+
+            struct StaffOrQuarterstaff
+            {};
+
             // use for default construction or to construct from a weapon's unqiue name ("Knife" and
             // "Dagger" must also specify the size)
-            explicit WeaponTypeWrapper(
-                const std::string & SYSTEM_NAME = "",
-                const sfml_util::Size::Enum KNIFE_SIZE = sfml_util::Size::Count);
+            explicit WeaponTypeWrapper(const std::string & SYSTEM_NAME = "");
 
             // use to create knives and daggers
-            WeaponTypeWrapper(const bool IS_DAGGER, const sfml_util::Size::Enum SIZE);
+            WeaponTypeWrapper(const KnifeOrDagger, const bool IS_DAGGER);
 
             // use to create staffs
-            explicit WeaponTypeWrapper(const bool IS_QUARTERSTAFF);
+            explicit WeaponTypeWrapper(const StaffOrQuarterstaff, const bool IS_QUARTERSTAFF);
 
             explicit WeaponTypeWrapper(const body_part::Enum);
             explicit WeaponTypeWrapper(const sword_type::Enum);
@@ -156,17 +159,9 @@ namespace item
 
             bool IsBreath() const { return (BodyPartType() == body_part::Breath); }
 
-            bool IsKnife() const
-            {
-                return (weapon_type::Knife & type_) && (Size() != sfml_util::Size::Count)
-                    && (isDagger_ == false);
-            }
+            bool IsKnife() const { return ((weapon_type::Knife & type_) && (isDagger_ == false)); }
 
-            bool IsDagger() const
-            {
-                return (weapon_type::Knife & type_) && (Size() != sfml_util::Size::Count)
-                    && isDagger_;
-            }
+            bool IsDagger() const { return ((weapon_type::Knife & type_) && isDagger_); }
 
             bool IsSword() const
             {
@@ -198,11 +193,6 @@ namespace item
             {
                 return (weapon_type::BladedStaff & type_)
                     && (BladedStaffType() != bladedstaff_type::Count);
-            }
-
-            sfml_util::Size::Enum Size() const
-            {
-                return GetSpecificTypeIfValid<sfml_util::Size>(weapon_type::Knife, SIZE_INDEX);
             }
 
             sword_type::Enum SwordType() const
@@ -292,8 +282,7 @@ namespace item
                 }
             }
 
-            bool SetupWithKnifeOrDaggerName(
-                const std::string & SYSTEM_NAME_LOWERCASE, const sfml_util::Size::Enum SIZE);
+            bool SetupWithKnifeOrDaggerName(const std::string & SYSTEM_NAME_LOWERCASE);
 
             template <typename T>
             bool SetupWithSpecificTypeName(
@@ -359,7 +348,6 @@ namespace item
 
             boost::variant<
                 bool, // is quarterstaff
-                sfml_util::Size::Enum, // if knife or dagger then must NOT be sfml_util::Size::Count
                 sword_type::Enum,
                 axe_type::Enum,
                 club_type::Enum,
@@ -374,14 +362,13 @@ namespace item
             ElementEnumVec_t elementTypes_;
 
             static const int QUARTERSTAFF_INDEX = 0;
-            static const int SIZE_INDEX = 1;
-            static const int SWORD_INDEX = 2;
-            static const int AXE_INDEX = 3;
-            static const int CLUB_INDEX = 4;
-            static const int WHIP_INDEX = 5;
-            static const int PROJECTILE_INDEX = 6;
-            static const int BLADEDSTAFF_INDEX = 7;
-            static const int BODY_PART_INDEX = 8;
+            static const int SWORD_INDEX = 1;
+            static const int AXE_INDEX = 2;
+            static const int CLUB_INDEX = 3;
+            static const int WHIP_INDEX = 4;
+            static const int PROJECTILE_INDEX = 5;
+            static const int BLADEDSTAFF_INDEX = 6;
+            static const int BODY_PART_INDEX = 7;
 
         private:
             friend class boost::serialization::access;

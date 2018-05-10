@@ -359,14 +359,14 @@ namespace item
             case named_type::Thugs:
             case named_type::Knaves:
             {
-                return { MakeWeaponKnifeOrDagger(false, sfml_util::Size::Large) };
+                return { MakeWeaponKnifeOrDagger(false) };
             }
 
             case named_type::Thief:
             case named_type::Muggers:
             case named_type::Pirate:
             {
-                return { MakeWeaponKnifeOrDagger(true, sfml_util::Size::Large) };
+                return { MakeWeaponKnifeOrDagger(true) };
             }
 
             case named_type::Focus:
@@ -413,25 +413,23 @@ namespace item
             case named_type::Twilight:
             case named_type::Dusk:
             {
-                ItemProfileThinVec_t thinProfiles{
-                    MakeWeaponKnifeOrDagger(true, sfml_util::Size::Large),
-                    MakeWeaponKnifeOrDagger(false, sfml_util::Size::Large),
-                    MakeWeaponSpecific(sword_type::Cutlass),
-                    MakeWeaponSpecific(sword_type::Falcata),
-                    MakeWeaponSpecific(sword_type::Rapier),
-                    MakeWeaponSpecific(sword_type::Saber),
-                    MakeWeaponSpecific(sword_type::Flamberg),
-                    MakeWeaponSpecific(axe_type::Handaxe),
-                    MakeWeaponSpecific(axe_type::Sickle),
-                    MakeWeaponSpecific(axe_type::Battleaxe),
-                    MakeWeaponSpecific(axe_type::Waraxe),
-                    MakeWeaponSpecific(club_type::Spiked),
-                    MakeWeaponSpecific(club_type::Maul),
-                    MakeWeaponSpecific(bladedstaff_type::ShortSpear),
-                    MakeWeaponSpecific(bladedstaff_type::Spear),
-                    MakeWeaponSpecific(bladedstaff_type::Pike),
-                    MakeWeaponSpecific(bladedstaff_type::Scythe)
-                };
+                ItemProfileThinVec_t thinProfiles{ MakeWeaponKnifeOrDagger(true),
+                                                   MakeWeaponKnifeOrDagger(false),
+                                                   MakeWeaponSpecific(sword_type::Cutlass),
+                                                   MakeWeaponSpecific(sword_type::Falcata),
+                                                   MakeWeaponSpecific(sword_type::Rapier),
+                                                   MakeWeaponSpecific(sword_type::Saber),
+                                                   MakeWeaponSpecific(sword_type::Flamberg),
+                                                   MakeWeaponSpecific(axe_type::Handaxe),
+                                                   MakeWeaponSpecific(axe_type::Sickle),
+                                                   MakeWeaponSpecific(axe_type::Battleaxe),
+                                                   MakeWeaponSpecific(axe_type::Waraxe),
+                                                   MakeWeaponSpecific(club_type::Spiked),
+                                                   MakeWeaponSpecific(club_type::Maul),
+                                                   MakeWeaponSpecific(bladedstaff_type::ShortSpear),
+                                                   MakeWeaponSpecific(bladedstaff_type::Spear),
+                                                   MakeWeaponSpecific(bladedstaff_type::Pike),
+                                                   MakeWeaponSpecific(bladedstaff_type::Scythe) };
 
                 misc::Vector::AppendMove(
                     MakeWeaponOfTypeAll(weapon_type::Projectile), thinProfiles);
@@ -1208,16 +1206,7 @@ namespace item
     const ItemProfileThinVec_t
         ItemProfileThinFactory::MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER) const
     {
-        ItemProfileThinVec_t thinProfiles;
-        thinProfiles.reserve(static_cast<std::size_t>(sfml_util::Size::Count));
-
-        for (int i(0); i < sfml_util::Size::Count; ++i)
-        {
-            thinProfiles.emplace_back(
-                MakeWeaponKnifeOrDagger(IS_DAGGER, static_cast<sfml_util::Size::Enum>(i)));
-        }
-
-        return thinProfiles;
+        return { MakeWeaponKnifeOrDagger(IS_DAGGER) };
     }
 
 } // namespace item

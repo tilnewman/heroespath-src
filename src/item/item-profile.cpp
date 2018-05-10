@@ -688,7 +688,6 @@ namespace item
     }
 
     void ItemProfile::SetKnife(
-        const sfml_util::Size::Enum SIZE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
@@ -699,8 +698,7 @@ namespace item
         ItemProfileThinFactory factory;
 
         SetKnife(
-            factory.MakeWeaponKnifeOrDagger(false, SIZE),
-            SIZE,
+            factory.MakeWeaponKnifeOrDagger(false),
             MATERIAL_PRIMARY,
             MATERIAL_SECONDARY,
             NAMED_TYPE,
@@ -710,7 +708,6 @@ namespace item
     }
 
     void ItemProfile::SetDagger(
-        const sfml_util::Size::Enum SIZE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
@@ -721,8 +718,7 @@ namespace item
         ItemProfileThinFactory factory;
 
         SetDagger(
-            factory.MakeWeaponKnifeOrDagger(true, SIZE),
-            SIZE,
+            factory.MakeWeaponKnifeOrDagger(true),
             MATERIAL_PRIMARY,
             MATERIAL_SECONDARY,
             NAMED_TYPE,

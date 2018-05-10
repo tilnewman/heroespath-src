@@ -31,7 +31,6 @@
 #include "item/item-type-wrapper.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/size-enum.hpp"
 
 #include <memory>
 #include <string>

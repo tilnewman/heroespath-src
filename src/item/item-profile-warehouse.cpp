@@ -720,7 +720,6 @@ namespace item
             {
                 profile.SetKnife(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().Size(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
@@ -730,7 +729,6 @@ namespace item
 
                 profilePixie.SetKnife(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().Size(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
@@ -742,7 +740,6 @@ namespace item
             {
                 profile.SetDagger(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().Size(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
@@ -752,7 +749,6 @@ namespace item
 
                 profilePixie.SetDagger(
                     THIN_PROFILE,
-                    THIN_PROFILE.WeaponInfo().Size(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
