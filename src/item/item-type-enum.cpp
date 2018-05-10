@@ -1222,7 +1222,7 @@ namespace item
             || IsMusicalInstrument(MISC_TYPE));
     }
 
-    bool misc_type::HasOnlyPixieVersion(const misc_type::Enum MISC_TYPE) { return false; }
+    bool misc_type::HasOnlyPixieVersion(const misc_type::Enum) { return false; }
 
     bool misc_type::MustBePixieVersionForPixiesToEquip(const Enum MISC_TYPE)
     {
@@ -5436,8 +5436,8 @@ namespace item
         auto const SEC_MATERIAL_ARMOR_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-item-secondary-material-armor-adj-ratio") };
 
-        return Armor_t(static_cast<Armor_t::type>(
-            ArmorRatingBonusPri(MATERIAL_SEC).As<float>() * SEC_MATERIAL_ARMOR_ADJ_RATIO));
+        return Armor_t::Make(
+            ArmorRatingBonusPri(MATERIAL_SEC).As<float>() * SEC_MATERIAL_ARMOR_ADJ_RATIO);
     }
 
     Coin_t material::PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)

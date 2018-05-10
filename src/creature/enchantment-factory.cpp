@@ -273,7 +273,7 @@ namespace creature
         // the additional 750 is to raise the score of all elemental items
         return MakeFromElementType(ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
                    .TreasureScore()
-            + (750_score * Score_t(item::element_type::ValidTypeCounter(ELEMENT_TYPE)));
+            + (750_score * Score_t::Make(item::element_type::ValidTypeCounter(ELEMENT_TYPE)));
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(
@@ -644,7 +644,7 @@ namespace creature
                         static_cast<game::Phase::Enum>(
                             game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
                     "", // set by the Enchantment object
-                    1600_score + Score_t(50 * MAT_BONUS),
+                    1600_score + Score_t::Make(50 * MAT_BONUS),
                     Enchantment::UseEffectType::CrystalChimes) };
             }
             case unique_type::CyclopsEye:

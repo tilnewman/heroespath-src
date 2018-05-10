@@ -118,8 +118,7 @@ namespace item
             (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5
         };
 
-        score_ += Score_t(
-            static_cast<Score_t::type>(std::sqrt((CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)));
+        score_ += Score_t::Make(std::sqrt((CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0));
     }
 
     const std::string ItemProfile::ToString() const

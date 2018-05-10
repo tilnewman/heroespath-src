@@ -48,10 +48,17 @@ namespace misc
 
         virtual ~StrongNumericType() = default;
 
-        template <typename FromType_t>
-        static StrongNumericType<T, Parameter_t> Make(const FromType_t FROM_VALUE)
+        template <typename From_t>
+        static StrongNumericType<T, Parameter_t> Make(const From_t FROM_VALUE)
         {
             return StrongNumericType<T, Parameter_t>(static_cast<T>(FROM_VALUE));
+        }
+
+        template <typename From_t, typename Phantom_t>
+        static StrongNumericType<T, Parameter_t>
+            Make(const StrongNumericType<From_t, Phantom_t> FROM_STRONG_NUMERIC_TYPE)
+        {
+            return StrongNumericType<T, Parameter_t>(FROM_STRONG_NUMERIC_TYPE.template As<T>());
         }
 
         template <typename AsType_t>

@@ -111,107 +111,56 @@ using Row_t = misc::StrongNumericType<std::size_t, RowTag>;
 using Column_t = misc::StrongNumericType<std::size_t, ColumnTag>;
 
 // user defined literals
-inline Coin_t operator"" _coin(unsigned long long coins)
-{
-    return Coin_t(static_cast<Coin_t::type>(coins));
-}
+inline Coin_t operator"" _coin(unsigned long long coins) { return Coin_t::Make(coins); }
 
-inline Gem_t operator"" _gem(unsigned long long gems)
-{
-    return Gem_t(static_cast<Gem_t::type>(gems));
-}
+inline Gem_t operator"" _gem(unsigned long long gems) { return Gem_t::Make(gems); }
 
 inline MeteorShard_t operator"" _mshard(unsigned long long mshards)
 {
-    return MeteorShard_t(static_cast<MeteorShard_t::type>(mshards));
+    return MeteorShard_t::Make(mshards);
 }
 
-inline Experience_t operator"" _exp(unsigned long long exp)
-{
-    return Experience_t(static_cast<Experience_t::type>(exp));
-}
+inline Experience_t operator"" _exp(unsigned long long exp) { return Experience_t::Make(exp); }
 
-inline Health_t operator"" _health(unsigned long long health)
-{
-    return Health_t(static_cast<Health_t::type>(health));
-}
+inline Health_t operator"" _health(unsigned long long health) { return Health_t::Make(health); }
 
-inline Rank_t operator"" _rank(unsigned long long rank)
-{
-    return Rank_t(static_cast<Rank_t::type>(rank));
-}
+inline Rank_t operator"" _rank(unsigned long long rank) { return Rank_t::Make(rank); }
 
-inline Mana_t operator"" _mana(unsigned long long mana)
-{
-    return Mana_t(static_cast<Mana_t::type>(mana));
-}
+inline Mana_t operator"" _mana(unsigned long long mana) { return Mana_t::Make(mana); }
 
-inline Weight_t operator"" _weight(unsigned long long weight)
-{
-    return Weight_t(static_cast<Weight_t::type>(weight));
-}
+inline Weight_t operator"" _weight(unsigned long long weight) { return Weight_t::Make(weight); }
 
-inline Armor_t operator"" _armor(unsigned long long armor)
-{
-    return Armor_t(static_cast<Armor_t::type>(armor));
-}
+inline Armor_t operator"" _armor(unsigned long long armor) { return Armor_t::Make(armor); }
 
-inline Score_t operator"" _score(unsigned long long score)
-{
-    return Score_t(static_cast<Score_t::type>(score));
-}
+inline Score_t operator"" _score(unsigned long long score) { return Score_t::Make(score); }
 
 inline Strength_t operator"" _str(unsigned long long strength)
 {
-    return Strength_t(static_cast<Strength_t::type>(strength));
+    return Strength_t::Make(strength);
 }
 
 inline Accuracy_t operator"" _acc(unsigned long long accuracy)
 {
-    return Accuracy_t(static_cast<Accuracy_t::type>(accuracy));
+    return Accuracy_t::Make(accuracy);
 }
 
-inline Charm_t operator"" _cha(unsigned long long charm)
-{
-    return Charm_t(static_cast<Charm_t::type>(charm));
-}
+inline Charm_t operator"" _cha(unsigned long long charm) { return Charm_t::Make(charm); }
 
-inline Luck_t operator"" _lck(unsigned long long luck)
-{
-    return Luck_t(static_cast<Luck_t::type>(luck));
-}
+inline Luck_t operator"" _lck(unsigned long long luck) { return Luck_t::Make(luck); }
 
-inline Speed_t operator"" _spd(unsigned long long speed)
-{
-    return Speed_t(static_cast<Speed_t::type>(speed));
-}
+inline Speed_t operator"" _spd(unsigned long long speed) { return Speed_t::Make(speed); }
 
-inline Intell_t operator"" _int(unsigned long long intell)
-{
-    return Intell_t(static_cast<Intell_t::type>(intell));
-}
+inline Intell_t operator"" _int(unsigned long long intell) { return Intell_t::Make(intell); }
 
-inline ID_t operator"" _id(unsigned long long id) { return ID_t(static_cast<ID_t::type>(id)); }
+inline ID_t operator"" _id(unsigned long long id) { return ID_t::Make(id); }
 
-inline Index_t operator"" _index(unsigned long long index)
-{
-    return Index_t(static_cast<Index_t::type>(index));
-}
+inline Index_t operator"" _index(unsigned long long index) { return Index_t::Make(index); }
 
-inline Count_t operator"" _count(unsigned long long count)
-{
-    return Count_t(static_cast<Count_t::type>(count));
-}
+inline Count_t operator"" _count(unsigned long long count) { return Count_t::Make(count); }
 
-inline Row_t operator"" _row(unsigned long long row)
-{
-    return Row_t(static_cast<Row_t::type>(row));
-}
+inline Row_t operator"" _row(unsigned long long row) { return Row_t::Make(row); }
 
-inline Column_t operator"" _column(unsigned long long column)
-{
-    return Column_t(static_cast<Column_t::type>(column));
-}
+inline Column_t operator"" _column(unsigned long long column) { return Column_t::Make(column); }
 
 // commonly container types
 using IDVec_t = std::vector<ID_t>;

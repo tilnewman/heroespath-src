@@ -91,7 +91,7 @@ namespace item
                 traitScore /= 4;
             }
 
-            score += Score_t(traitScore);
+            score += Score_t::Make(traitScore);
         }
 
         return score;
@@ -101,7 +101,7 @@ namespace item
     {
         auto const BONUS_PRI{ material::EnchantmentBonus(PRI, material::Nothing) };
         auto const BONUS_SEC{ material::EnchantmentBonus(SEC, material::Nothing) };
-        return Score_t(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
+        return Score_t::Make(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
     }
 
     Score_t ScoreHelper::Score(const weapon::axe_type::Enum AXE_TYPE)

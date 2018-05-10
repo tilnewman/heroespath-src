@@ -69,8 +69,8 @@ namespace item
     {
         auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
-        itemCache_OutParam.coins = Coin_t(TREASURE_SCORES.Coin().As<int>());
-        itemCache_OutParam.gems = Gem_t(TREASURE_SCORES.Gem().As<int>());
+        itemCache_OutParam.coins = Coin_t::Make(TREASURE_SCORES.Coin());
+        itemCache_OutParam.gems = Gem_t::Make(TREASURE_SCORES.Gem());
 
         SelectItems(TREASURE_SCORES.Magic(), false, itemCache_OutParam);
         SelectItems(TREASURE_SCORES.Religious(), true, itemCache_OutParam);
@@ -110,8 +110,9 @@ namespace item
         }
         else
         {
-            auto const LOCKBOX_COIN_SUM_MAX{ Score_t(game::GameDataFile::Instance()->GetCopyInt(
-                "heroespath-treasure-lockbox-coin-max")) };
+            auto const LOCKBOX_COIN_SUM_MAX{ Score_t::Make(
+                game::GameDataFile::Instance()->GetCopyInt(
+                    "heroespath-treasure-lockbox-coin-max")) };
 
             return (
                 (TREASURE_SCORES.Coin() > LOCKBOX_COIN_SUM_MAX) ? TreasureImage::ChestClosed
@@ -169,7 +170,7 @@ namespace item
             scores.Coin().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
-        auto const COIN{ Score_t(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
+        auto const COIN{ Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
         auto const GEM_BASE{ static_cast<int>(
             scores.Gem().As<float>()
@@ -179,7 +180,7 @@ namespace item
             scores.Gem().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
-        auto const GEM{ Score_t(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
+        auto const GEM{ Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
         auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
             scores.Magic().As<float>()
@@ -189,7 +190,7 @@ namespace item
             scores.Magic().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
-        auto const MAGIC{ Score_t(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
+        auto const MAGIC{ Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
         auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
             scores.Religious().As<float>()
@@ -199,7 +200,8 @@ namespace item
             scores.Religious().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
-        auto const RELIGIOUS{ Score_t(RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
+        auto const RELIGIOUS{ Score_t::Make(
+            RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
 
         return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
     }

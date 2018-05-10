@@ -124,7 +124,7 @@ namespace combat
         auto const TOTAL_DAMAGE{ RANDOM_DAMAGE
                                  + (SQRT_RANDOM_DAMAGE * SQRT_AVG_PLAYER_RANK_MINUS_ONE) };
 
-        return Health_t(static_cast<Health_t::type>(TOTAL_DAMAGE));
+        return Health_t::Make(TOTAL_DAMAGE);
     }
 
     int Trap::Severity() const
@@ -152,7 +152,7 @@ namespace combat
             rankSum += CHARACTER_PTR->Rank();
         }
 
-        return rankSum / Rank_t(static_cast<int>(CHARACTER_PTRS.size()));
+        return rankSum / Rank_t::Make(CHARACTER_PTRS.size());
     }
 
 } // namespace combat

@@ -191,8 +191,8 @@ namespace song
                                                            stats::Traits::MagicEffect))
                                                    / 100.0f };
 
-                auto const MANA_GAIN_ORIG{ Mana_t(static_cast<Mana_t::type>(
-                    10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS))) };
+                auto const MANA_GAIN_ORIG{ Mana_t::Make(
+                    10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS)) };
 
                 auto const MANA_GAIN_MAX{ CREATURE_LISTENING_PTR->ManaMissing() };
 

@@ -92,7 +92,7 @@ namespace item
 
         Score_t ReligiousScore() const
         {
-            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religiousRatio_));
+            return Score_t::Make(score_.As<float>() * religiousRatio_);
         }
 
         bool IsReligious() const { return (0.0f < religiousRatio_); }

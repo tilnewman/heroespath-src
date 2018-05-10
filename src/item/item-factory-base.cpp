@@ -223,7 +223,7 @@ namespace item
 
         if (PROFILE.IsPixie())
         {
-            price = Coin_t(static_cast<Coin_t::type>(price.As<float>() * 1.5f));
+            price = Coin_t::Make(price.As<float>() * 1.5f);
         }
 
         return price;
@@ -271,7 +271,7 @@ namespace item
     Coin_t ItemFactoryBase::TreasureScoreToCoins(const Score_t & TREASURE_SCORE)
     {
         // For now Treasure Score equals the price in coins
-        return Coin_t(TREASURE_SCORE.As<int>());
+        return Coin_t::Make(TREASURE_SCORE);
     }
 
     const std::string ItemFactoryBase::HandledNamePrefix(const ItemProfile & PROFILE)

@@ -3200,7 +3200,7 @@ namespace stage
             .PlayRandom();
 
         creaturePtr_->CoinsAdj(Coin_t(static_cast<int>(COUNT) * -1));
-        creatureToGiveToPtr->CoinsAdj(Coin_t(static_cast<Coin_t::type>(COUNT)));
+        creatureToGiveToPtr->CoinsAdj(Coin_t::Make(COUNT));
 
         std::ostringstream ss;
         ss << COUNT << " coins taken from " << creaturePtr_->Name() << " and given to "

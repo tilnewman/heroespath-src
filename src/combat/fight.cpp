@@ -167,7 +167,7 @@ namespace combat
         auto const IS_NONPLAYER_CHARACTER{ CREATURE_DEFENDING_PTR->IsPlayerCharacter() == false };
 
         auto const IS_DAMAGE_DOUBLE{ (
-            DAMAGE_ABS > Health_t(CREATURE_DEFENDING_PTR->HealthNormal() * 2_health)) };
+            DAMAGE_ABS > Health_t::Make(CREATURE_DEFENDING_PTR->HealthNormal() * 2_health)) };
 
         auto const WILL_DAMAGE_KILL{ (DAMAGE_ABS >= CREATURE_DEFENDING_PTR->HealthCurrent()) };
 
@@ -1259,7 +1259,7 @@ namespace combat
         auto const RANK_DAMAGE_BONUS_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-rank-damage-bonus-ratio") };
 
-        const Health_t DAMAGE_FROM_RANK{ static_cast<Health_t::type>(
+        auto const DAMAGE_FROM_RANK{ Health_t::Make(
             CREATURE_ATTACKING_PTR->Rank().As<float>() * RANK_DAMAGE_BONUS_ADJ_RATIO) };
 
         // If strength stat is at or over the min of STAT_FLOOR,
@@ -1277,8 +1277,8 @@ namespace combat
             auto const STR_BONUS_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
 
-            damageFromStrength += Health_t(static_cast<Health_t::type>(
-                static_cast<float>(RAND_STR_STAT) * STR_BONUS_ADJ_RATIO));
+            damageFromStrength
+                += Health_t::Make(static_cast<float>(RAND_STR_STAT) * STR_BONUS_ADJ_RATIO);
 
             damageFromStrength -= Health_t(STAT_FLOOR);
 
@@ -1365,10 +1365,10 @@ namespace combat
             }
         }
 
-        damageFinal -= Health_t(static_cast<Health_t::type>(
+        damageFinal -= Health_t::Make(
             damageFinal.As<float>()
             * (armorRatingToUse.As<float>()
-               / item::ArmorRatings::ArmoredGreaterDiamond().As<float>())));
+               / item::ArmorRatings::ArmoredGreaterDiamond().As<float>()));
 
         // check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0_health) && (damageFinal <= 0_health))
@@ -1392,8 +1392,7 @@ namespace combat
                 auto const PIXIE_DAMAGE_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
                     "heroespath-fight-pixie-damage-adj-ratio") };
 
-                damageFinal = Health_t(
-                    static_cast<Health_t::type>(damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO));
+                damageFinal = Health_t::Make(damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO);
             }
         }
 
