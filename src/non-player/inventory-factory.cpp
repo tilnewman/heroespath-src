@@ -140,20 +140,31 @@ namespace non_player
             bool hasTwoHandedWeapons{ false };
 
             {
-                auto const WEAPON_ITEMS_PVEC_PAIR{ MakeItemSet_Weapons(
-                    CHANCES.weapon, CHARACTER_PTR) };
+                auto weaponItemsPVecPair{ MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR) };
+
+                // if pixie then only pixie valid weapons
+                if (CHARACTER_PTR->IsPixie())
+                {
+                    auto hasNoPixieVersion{ [](auto const ITEM_PTR) {
+                        return (
+                            ((ITEM_PTR->WeaponInfo().Type() & item::weapon_type::Knife) == 0)
+                            && (ITEM_PTR->WeaponInfo().IsStaff() == false));
+                    } };
+
+                    RemoveItemsAndFree(weaponItemsPVecPair.first, hasNoPixieVersion);
+                }
 
                 std::copy(
-                    WEAPON_ITEMS_PVEC_PAIR.first.begin(),
-                    WEAPON_ITEMS_PVEC_PAIR.first.end(),
+                    weaponItemsPVecPair.first.begin(),
+                    weaponItemsPVecPair.first.end(),
                     back_inserter(itemsPtrVecPair.first));
 
                 std::copy(
-                    WEAPON_ITEMS_PVEC_PAIR.second.begin(),
-                    WEAPON_ITEMS_PVEC_PAIR.second.end(),
+                    weaponItemsPVecPair.second.begin(),
+                    weaponItemsPVecPair.second.end(),
                     back_inserter(itemsPtrVecPair.second));
 
-                hasTwoHandedWeapons = ContainsTwoHandedWeapon(WEAPON_ITEMS_PVEC_PAIR.first);
+                hasTwoHandedWeapons = ContainsTwoHandedWeapon(weaponItemsPVecPair.first);
             }
 
             {
@@ -189,6 +200,20 @@ namespace non_player
                     RemoveArmorTypeFromVecAndFree(
                         item::armor_type::Gauntlets, itemsPtrVecPair.first);
                 }
+            }
+
+            // if pixie then only pixie valid armor
+            if (CHARACTER_PTR->IsPixie())
+            {
+                // helm/shield/aventail/plate
+                auto hasNoPixieVersion{ [](auto const ITEM_PTR) {
+                    return (
+                        ITEM_PTR->ArmorInfo().IsShield() || ITEM_PTR->ArmorInfo().IsHelm()
+                        || ITEM_PTR->ArmorInfo().IsAventail()
+                        || (ITEM_PTR->ArmorInfo().BaseType() == item::armor::base_type::Plate));
+                } };
+
+                RemoveItemsAndFree(armorItemsPVecPair.first, hasNoPixieVersion);
             }
 
             // no vests on beasts
@@ -629,7 +654,9 @@ namespace non_player
                             WEAPON_CHANCES.staff.RandomMaterialSec(),
                             named_type::NotNamed,
                             set_type::NotASet,
-                            element_type::None);
+                            element_type::None,
+                            misc_type::NotMisc,
+                            CHARACTER_PTR->IsPixie());
                     }
 
                     itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));

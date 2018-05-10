@@ -172,6 +172,8 @@ namespace item
 
         bool IsPixie() const { return isPixie_; }
 
+        bool MustBePixieVersionForPixiesToEquip() const;
+
         const creature::EnchantmentPVec_t & Enchantments() const { return enchantmentsPVec_; }
 
         void AddCategory(const category::Enum E)

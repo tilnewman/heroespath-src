@@ -1216,12 +1216,25 @@ namespace item
 
     bool misc_type::HasPixieVersion(const Enum MISC_TYPE)
     {
-        return ((MISC_TYPE == Bell) || IsMusicalInstrument(MISC_TYPE));
+        return (
+            (MISC_TYPE == Armband) || (MISC_TYPE == Cape) || (MISC_TYPE == Cloak)
+            || (MISC_TYPE == Ghost_Sheet) || (MISC_TYPE == Robe) || (MISC_TYPE == Shroud)
+            || IsMusicalInstrument(MISC_TYPE));
     }
 
-    bool misc_type::HasOnlyPixieVersion(const misc_type::Enum MISC_TYPE)
+    bool misc_type::HasOnlyPixieVersion(const misc_type::Enum MISC_TYPE) { return false; }
+
+    bool misc_type::MustBePixieVersionForPixiesToEquip(const Enum MISC_TYPE)
     {
-        return (MISC_TYPE == Bell);
+        return (
+            IsMusicalInstrument(MISC_TYPE) || (MISC_TYPE == Armband) || (MISC_TYPE == Cape)
+            || (MISC_TYPE == Cloak) || (MISC_TYPE == Ghost_Sheet) || (MISC_TYPE == Robe)
+            || (MISC_TYPE == Shroud) || (MISC_TYPE == Staff) ||
+
+            // these items must be pixie for pixies to equip, but there are no pixie versions of
+            // these items so pixies can never equip them.
+            (MISC_TYPE == Gong) || (MISC_TYPE == Headdress) || (MISC_TYPE == Horn)
+            || (MISC_TYPE == Warhorse_Marionette));
     }
 
     float misc_type::ReligiousRatio(const misc_type::Enum MISC_TYPE)

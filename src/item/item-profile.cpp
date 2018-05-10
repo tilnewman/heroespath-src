@@ -90,6 +90,18 @@ namespace item
         }
     }
 
+    bool ItemProfile::MustBePixieVersionForPixiesToEquip() const
+    {
+        if (IsWeapon() || IsArmor())
+        {
+            return true;
+        }
+        else // assume must be misc
+        {
+            return misc_type::MustBePixieVersionForPixiesToEquip(MiscType());
+        }
+    }
+
     void ItemProfile::SetSummonInfoAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
     {
         summonInfo_ = SUMMON_INFO;
@@ -366,7 +378,8 @@ namespace item
                 named_type::NotNamed,
                 SET_TYPE,
                 ELEMENT_TYPE,
-                MISC_TYPE);
+                MISC_TYPE,
+                true);
         }
         else if (MISC_TYPE == misc_type::Scythe)
         {
@@ -743,7 +756,8 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE,
-        const misc_type::Enum MISC_TYPE)
+        const misc_type::Enum MISC_TYPE,
+        const bool IS_PIXIE)
     {
         ItemProfileThinFactory factory;
 
@@ -754,7 +768,8 @@ namespace item
             NAMED_TYPE,
             SET_TYPE,
             ELEMENT_TYPE,
-            MISC_TYPE);
+            MISC_TYPE,
+            IS_PIXIE);
     }
 
     void ItemProfile::SetBladedStaff(

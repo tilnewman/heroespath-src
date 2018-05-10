@@ -80,6 +80,7 @@ namespace item
                 , scoresSet_()
                 , scoresNamed_()
                 , scoresUnique_()
+                , scoresPixie_()
                 , elementScoreMap_()
             {}
 
@@ -107,6 +108,7 @@ namespace item
             mutable std::vector<std::size_t> scoresSet_;
             mutable std::vector<std::size_t> scoresNamed_;
             mutable std::vector<std::size_t> scoresUnique_;
+            mutable std::vector<std::size_t> scoresPixie_;
             mutable misc::VectorMap<element_type::Enum, std::vector<std::size_t>> elementScoreMap_;
         };
 

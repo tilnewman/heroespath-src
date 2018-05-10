@@ -303,7 +303,7 @@ namespace item
 
             auto appendProfileNamesIf{ [&](auto ifLambda,
                                            const std::string & CATEGORY_NAME = "",
-                                           const std::size_t COUNT_TO_DISPLAY = 1) {
+                                           const std::size_t COUNT_TO_DISPLAY = 10) {
                 ItemProfileVec_t profiles;
                 profiles.reserve(50000);
 
@@ -327,7 +327,7 @@ namespace item
 
                 for (std::size_t i(0); i < COUNT_TO_DISPLAY; ++i)
                 {
-                    auto const & PROFILE{ misc::Vector::SelectRandom(NORMAL_PROFILES) };
+                    auto const & PROFILE{ misc::Vector::SelectRandom(profiles) };
                     auto itemPtr{ Make(PROFILE) };
 
                     randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
@@ -348,12 +348,6 @@ namespace item
             } };
 
             appendProfileNamesIf(
-                [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
-
-            appendProfileNamesIf(
-                [](const ItemProfile & PROFILE) { return PROFILE.IsArmor(); }, "Armor");
-
-            appendProfileNamesIf(
                 [](const ItemProfile & PROFILE) { return PROFILE.IsMisc(); }, "Misc");
 
             appendProfileNamesIf(
@@ -367,9 +361,6 @@ namespace item
 
             appendProfileNamesIf(
                 [](const ItemProfile & PROFILE) { return PROFILE.IsElemental(); }, "Element");
-
-            appendProfileNamesIf(
-                [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
 
             appendProfileNamesIf(
                 [](const ItemProfile & PROFILE) { return PROFILE.IsWeapon(); }, "Weapons");
@@ -416,6 +407,9 @@ namespace item
                 [](const ItemProfile & PROFILE) { return PROFILE.WeaponInfo().IsStaff(); },
                 "Staff",
                 3);
+
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsArmor(); }, "Armor");
 
             appendProfileNamesIf(
                 [](const ItemProfile & PROFILE) { return PROFILE.ArmorInfo().IsAventail(); },

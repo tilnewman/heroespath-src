@@ -147,6 +147,18 @@ namespace item
 
     const std::string Item::BaseName() const { return ComposeName(ReadableName()); }
 
+    bool Item::MustBePixieVersionForPixiesToEquip() const
+    {
+        if (IsWeapon() || IsArmor())
+        {
+            return true;
+        }
+        else // assume must be misc
+        {
+            return misc_type::MustBePixieVersionForPixiesToEquip(MiscType());
+        }
+    }
+
     const std::string Item::ToString() const
     {
         std::ostringstream ss;

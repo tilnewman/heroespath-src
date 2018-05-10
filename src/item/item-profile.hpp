@@ -79,6 +79,8 @@ namespace item
 
         bool IsPixie() const { return isPixie_; }
 
+        bool MustBePixieVersionForPixiesToEquip() const;
+
         bool IsQuestItem() const { return misc_type::IsQuestItem(thinProfile_.MiscType()); }
 
         sfml_util::Size::Enum Size() const { return thinProfile_.WeaponInfo().Size(); }
@@ -653,7 +655,8 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc,
+            const bool IS_PIXIE = false);
 
         void SetStaff(
             const ItemProfileThin & THIN_PROFILE,
@@ -662,7 +665,8 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc,
+            const bool IS_PIXIE = false)
         {
             SetWeaponHelper(
                 THIN_PROFILE,
@@ -672,7 +676,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE,
-                false,
+                IS_PIXIE,
                 MISC_TYPE);
         }
 

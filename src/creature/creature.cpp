@@ -593,7 +593,7 @@ namespace creature
 
         if (ITEM_PTR->HasCategoryType(item::category::Broken))
         {
-            return "Can't equip the " + ITEM_PTR->Name() + " because it is broken.";
+            return "Can't equip because it is broken.";
         }
         else if (ITEM_PTR->HasCategoryType(item::category::Equippable) == false)
         {
@@ -611,6 +611,30 @@ namespace creature
             }
 
             return ss.str();
+        }
+        else if (
+            IsPixie() && (ITEM_PTR->IsPixie() == false)
+            && (ITEM_PTR->MustBePixieVersionForPixiesToEquip()))
+        {
+            std::ostringstream ss;
+            ss << "Can't equip because it is not made for pixies.";
+
+            if (ITEM_PTR->MustBePixieVersionForPixiesToEquip()
+                && item::misc_type::HasPixieVersion(ITEM_PTR->MiscType()))
+            {
+                ss << "  Pixies can never equip this item because none are made for pixies.";
+            }
+            else
+            {
+                ss << "  This kind of item must be "
+                      "specially made for a pixie before it can be equipped.";
+            }
+
+            return ss.str();
+        }
+        else if ((IsPixie() == false) && ITEM_PTR->IsPixie())
+        {
+            return "Can't equip because it is a mini verson made only for Pixies.";
         }
 
         const std::string SEP(", ");

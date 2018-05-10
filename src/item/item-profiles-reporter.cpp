@@ -294,6 +294,11 @@ namespace item
             {
                 scoresUnique_.emplace_back(NORMAL_SCORE);
             }
+
+            if (PROFILE.IsPixie())
+            {
+                scoresPixie_.emplace_back(NORMAL_SCORE);
+            }
         }
 
         return WILL_ADD;
@@ -419,6 +424,7 @@ namespace item
             appendScoresSubReport("Set", scoresSet_);
             appendScoresSubReport("Named", scoresNamed_);
             appendScoresSubReport("Unique", scoresUnique_);
+            appendScoresSubReport("Pixie", scoresPixie_);
 
             if (elementalCount > 0)
             {

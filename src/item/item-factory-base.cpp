@@ -124,32 +124,30 @@ namespace item
                 }
             }() };
 
-            ss << AppendSpaceIfNeeded(ss) << material::Name(PROFILE.MaterialPrimary())
-               << ArmorBaseTypeNamePrefix(PROFILE);
+            auto const IS_COVER_ARMOR_MADE_OF_CLOTH{
+                (PROFILE.ArmorInfo().IsCover() && (PROFILE.MaterialSecondary() == material::Cloth))
+            };
+
+            if (IS_COVER_ARMOR_MADE_OF_CLOTH == false)
+            {
+                ss << AppendSpaceIfNeeded(ss) << material::Name(PROFILE.MaterialPrimary())
+                   << ArmorBaseTypeNamePrefix(PROFILE) << HandledNamePrefix(PROFILE);
+            }
 
             auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PROFILE) };
 
-            if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary()))
+            if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary())
+                && (IS_COVER_ARMOR_MADE_OF_CLOTH == false))
             {
-                ss << " and " << material::Name(PROFILE.MaterialSecondary());
+                ss << AppendSpaceIfNeeded(ss) << "and "
+                   << material::Name(PROFILE.MaterialSecondary());
             }
 
-            ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR << SECONDARY_MATERIAL_PHRASE;
+            ss << AppendSpaceIfNeeded(ss) << NAME_TO_USE << ELEMENT_TYPE_STR
+               << SECONDARY_MATERIAL_PHRASE;
         }
 
-        // there is a chance for doubled spaces in the logic above
-        auto result{ ss.str() };
-
-        namespace ba = boost::algorithm;
-
-        if (ba::contains(result, "  "))
-        {
-            M_HP_LOG_ERR(
-                "The following name had double spaces: \"" << result << "\".  profile={"
-                                                           << PROFILE.ToString() << "}");
-        }
-
-        return result;
+        return ss.str();
     }
 
     const std::string ItemFactoryBase::MakeNonBodyPartDescription(
@@ -209,26 +207,7 @@ namespace item
                << creature::role::Name(PROFILE.SummonInfo().Role());
         }
 
-        // there is a chance for doubled "and"s and spaces in the logic above
-        auto result{ ss.str() };
-
-        namespace ba = boost::algorithm;
-
-        if (ba::contains(result, "  "))
-        {
-            M_HP_LOG_ERR(
-                "The following name had double spaces: \"" << result << "\".  profile={"
-                                                           << PROFILE.ToString() << "}");
-        }
-
-        if (ba::contains(result, "and and"))
-        {
-            M_HP_LOG_ERR(
-                "The following name had a double 'and': \"" << result << "\".  profile={"
-                                                            << PROFILE.ToString() << "}");
-        }
-
-        return result;
+        return ss.str();
     }
 
     Coin_t
@@ -293,6 +272,19 @@ namespace item
     {
         // For now Treasure Score equals the price in coins
         return Coin_t(TREASURE_SCORE.As<int>());
+    }
+
+    const std::string ItemFactoryBase::HandledNamePrefix(const ItemProfile & PROFILE)
+    {
+        if ((PROFILE.WeaponInfo().WhipType() == weapon::whip_type::Bullwhip)
+            || (PROFILE.WeaponInfo().ProjectileType() == weapon::projectile_type::Sling))
+        {
+            return "handled ";
+        }
+        else
+        {
+            return "";
+        }
     }
 
     const std::string ItemFactoryBase::ReadableNameWithoutArmorBaseType(const ItemProfile & PROFILE)

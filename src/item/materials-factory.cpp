@@ -86,9 +86,9 @@ namespace item
         , nonFleshEyesWithNothing_(Combine(fancyJewel_, { material::Nothing }))
         , invalidMetalsMap_()
     {
-        invalidMetalsMap_[material::Tin] = {};
-        invalidMetalsMap_[material::Bronze] = { material::Tin };
-        invalidMetalsMap_[material::Iron] = { material::Tin, material::Bronze };
+        invalidMetalsMap_[material::Tin] = { material::Bronze, material::Iron, material::Steel };
+        invalidMetalsMap_[material::Bronze] = { material::Tin, material::Iron, material::Steel };
+        invalidMetalsMap_[material::Iron] = { material::Tin, material::Bronze, material::Steel };
         invalidMetalsMap_[material::Steel] = { material::Tin, material::Bronze, material::Iron };
 
         invalidMetalsMap_[material::Silver]
@@ -1732,7 +1732,8 @@ namespace item
                                                   material::Lazuli,
                                                   material::Silk,
                                                   material::Fur,
-                                                  material::Tin });
+                                                  material::Tin,
+                                                  material::Platinum });
 
                 break;
             }

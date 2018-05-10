@@ -383,9 +383,9 @@ namespace item
 
             if (misc_type::HasPixieVersion(MISC_TYPE))
             {
-                ItemProfile pixieProfile;
+                ItemProfile profilePixie;
 
-                pixieProfile.SetUniqueThenSetMisc(
+                profilePixie.SetUniqueThenSetMisc(
                     UNIQUE_TYPE,
                     MISC_TYPE,
                     MATERIAL_PAIR.first,
@@ -393,7 +393,7 @@ namespace item
                     ELEMENT_TYPE,
                     true);
 
-                AppendToEitherNormalOrReligiousVector(pixieProfile);
+                AppendToEitherNormalOrReligiousVector(profilePixie);
             }
         }
     }
@@ -411,12 +411,13 @@ namespace item
             return;
         }
 
+        ItemProfile profile;
+        ItemProfile profilePixie;
+
         if (THIN_PROFILE.IsMisc())
         {
             if (misc_type::HasOnlyPixieVersion(THIN_PROFILE.MiscType()) == false)
             {
-                ItemProfile profile;
-
                 profile.SetMisc(
                     THIN_PROFILE, false, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
 
@@ -425,21 +426,17 @@ namespace item
 
             if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
             {
-                ItemProfile pixieProfile;
-
-                pixieProfile.SetMisc(
+                profilePixie.SetMisc(
                     THIN_PROFILE, true, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
 
-                AppendToEitherNormalOrReligiousVector(pixieProfile);
+                AppendToEitherNormalOrReligiousVector(profilePixie);
             }
 
             return;
         }
-        else if (THIN_PROFILE.IsArmor())
-        {
-            ItemProfile profile;
-            ItemProfile profilePixie;
 
+        if (THIN_PROFILE.IsArmor())
+        {
             // can't use THIN_PROFILE.ArmorInfo().Is_() functions here because some thin profiles
             // are missing their base_types, so use THIN_PROFILE.ArmorInfo().Type() instead which is
             // always valid
@@ -627,7 +624,7 @@ namespace item
             }
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (profile.ArmorType() != armor_type::NotArmor),
+                (profile.IsArmor()),
                 "ItemProfileWarehouse::MakeForEquipment(thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
                     << ((NAMED_TYPE == named_type::Count) ? "Count"
@@ -641,19 +638,20 @@ namespace item
 
             AppendToEitherNormalOrReligiousVector(profile);
 
-            if (profilePixie.ArmorType() != armor_type::NotArmor)
+            // only knights can equip plate armor, and knights can't be pixies...
+            if (profilePixie.IsArmor()
+                && (profilePixie.ArmorInfo().BaseType() != armor::base_type::Plate))
             {
                 AppendToEitherNormalOrReligiousVector(profilePixie);
             }
 
             return;
         }
-        else if (THIN_PROFILE.IsWeapon())
+
+        if (THIN_PROFILE.IsWeapon())
         {
             if (THIN_PROFILE.WeaponInfo().IsSword())
             {
-                ItemProfile profile;
-
                 profile.SetSword(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().SwordType(),
@@ -662,14 +660,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsAxe())
             {
-                ItemProfile profile;
-
                 profile.SetAxe(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().AxeType(),
@@ -678,14 +671,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsClub())
             {
-                ItemProfile profile;
-
                 profile.SetClub(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().ClubType(),
@@ -694,14 +682,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsWhip())
             {
-                ItemProfile profile;
-
                 profile.SetWhip(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().WhipType(),
@@ -710,14 +693,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsProjectile())
             {
-                ItemProfile profile;
-
                 profile.SetProjectile(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().ProjectileType(),
@@ -726,14 +704,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
             {
-                ItemProfile profile;
-
                 profile.SetBladedStaff(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().BladedStaffType(),
@@ -742,14 +715,9 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsKnife())
             {
-                ItemProfile profile;
-
                 profile.SetKnife(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().Size(),
@@ -760,10 +728,6 @@ namespace item
                     ELEMENT_TYPE,
                     false);
 
-                AppendToEitherNormalOrReligiousVector(profile);
-
-                ItemProfile profilePixie;
-
                 profilePixie.SetKnife(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().Size(),
@@ -773,15 +737,9 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-
-                AppendToEitherNormalOrReligiousVector(profilePixie);
-
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsDagger())
             {
-                ItemProfile profile;
-
                 profile.SetDagger(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().Size(),
@@ -792,10 +750,6 @@ namespace item
                     ELEMENT_TYPE,
                     false);
 
-                AppendToEitherNormalOrReligiousVector(profile);
-
-                ItemProfile profilePixie;
-
                 profilePixie.SetDagger(
                     THIN_PROFILE,
                     THIN_PROFILE.WeaponInfo().Size(),
@@ -805,31 +759,56 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-
-                AppendToEitherNormalOrReligiousVector(profilePixie);
-
-                return;
             }
             else if (THIN_PROFILE.WeaponInfo().IsStaff())
             {
-                ItemProfile profile;
-
                 profile.SetStaff(
-                    THIN_PROFILE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    misc_type::NotMisc,
+                    false);
 
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
+                profilePixie.SetStaff(
+                    THIN_PROFILE,
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    misc_type::NotMisc,
+                    true);
             }
             else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
             {
-                ItemProfile profile;
-
                 profile.SetQuarterStaff(
                     THIN_PROFILE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-                return;
             }
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (profile.IsWeapon()),
+                "ItemProfileWarehouse::MakeForEquipment(thin_profile="
+                    << THIN_PROFILE.ToString() << ", named_type="
+                    << ((NAMED_TYPE == named_type::Count) ? "Count"
+                                                          : named_type::ToString(NAMED_TYPE))
+                    << ", set_type="
+                    << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
+                    << ", mat_pri=" << material::ToString(MATERIAL_PRI)
+                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
+                    << ") was unable to find the type of the given weapon.");
+
+            AppendToEitherNormalOrReligiousVector(profile);
+
+            if (profilePixie.IsWeapon())
+            {
+                AppendToEitherNormalOrReligiousVector(profilePixie);
+            }
+
+            return;
         }
 
         std::ostringstream ss;
@@ -841,7 +820,7 @@ namespace item
            << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
            << ", mat_pri=" << material::ToString(MATERIAL_PRI)
            << ", mat_sec=" << material::ToString(MATERIAL_SEC)
-           << ") was unable to find the type of the given weapon or armor.";
+           << ") was unable to find the type of the given item profile.";
 
         throw std::runtime_error(ss.str());
     }
@@ -873,9 +852,9 @@ namespace item
 
             if (misc_type::HasPixieVersion(MISC_TYPE))
             {
-                ItemProfile pixieProfile;
+                ItemProfile profilePixie;
 
-                pixieProfile.SetMisc(
+                profilePixie.SetMisc(
                     MISC_TYPE,
                     true,
                     MATERIAL_PAIR.first,
@@ -884,7 +863,7 @@ namespace item
                     ELEMENT_TYPE,
                     SUMMON_INFO);
 
-                AppendToEitherNormalOrReligiousVector(pixieProfile);
+                AppendToEitherNormalOrReligiousVector(profilePixie);
             }
         }
     }

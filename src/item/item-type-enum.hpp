@@ -469,6 +469,7 @@ namespace item
         static bool IsOrdinary(const Enum);
         static bool HasPixieVersion(const Enum);
         static bool HasOnlyPixieVersion(const Enum);
+        static bool MustBePixieVersionForPixiesToEquip(const Enum);
         static float ReligiousRatio(const Enum);
         static bool HasNonFleshEyes(const Enum);
         static bool IsBlessed(const Enum);
