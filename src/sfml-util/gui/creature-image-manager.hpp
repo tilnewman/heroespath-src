@@ -92,6 +92,7 @@ namespace sfml_util
                 const bool WILL_FACE_RIGHT = false);
 
             static const std::string MakeFullPathFromFilename(const std::string & FILENAME);
+            static const std::vector<std::string> AllFilenames();
         };
 
     } // namespace gui

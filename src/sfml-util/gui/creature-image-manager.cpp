@@ -61,6 +61,8 @@ namespace sfml_util
                     "sfml_util::gui::CreatureImageManager::Test() Starting Tests...");
             }
 
+            static auto allFilenames{ AllFilenames() };
+
             static auto raceIndex{ 0 };
             static auto roleIndex{ 0 };
             static auto sexIndex{ 0 };
@@ -131,6 +133,13 @@ namespace sfml_util
 
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
+                                    allFilenames.erase(
+                                        std::remove(
+                                            std::begin(allFilenames),
+                                            std::end(allFilenames),
+                                            FILENAMES.at(fileIndex)),
+                                        std::end(allFilenames));
+
                                     ++fileIndex;
                                     return false;
                                 }
@@ -184,6 +193,13 @@ namespace sfml_util
 
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
+                                    allFilenames.erase(
+                                        std::remove(
+                                            std::begin(allFilenames),
+                                            std::end(allFilenames),
+                                            FILENAMES.at(fileIndex)),
+                                        std::end(allFilenames));
+
                                     ++fileIndex;
                                     return false;
                                 }
@@ -227,6 +243,13 @@ namespace sfml_util
 
                                 game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
+                                allFilenames.erase(
+                                    std::remove(
+                                        std::begin(allFilenames),
+                                        std::end(allFilenames),
+                                        FILENAMES.at(fileIndex)),
+                                    std::end(allFilenames));
+
                                 ++fileIndex;
                                 return false;
                             }
@@ -247,6 +270,14 @@ namespace sfml_util
                 roleIndex = 0;
                 ++raceIndex;
                 return false;
+            }
+
+            for (auto const & FILENAME : allFilenames)
+            {
+                M_HP_LOG_WRN(
+                    "sfml_util::gui::CreatureImageManager::Test() found the following item image "
+                    "unused: "
+                    << FILENAME);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -1706,6 +1737,31 @@ namespace sfml_util
             return bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(FILENAME))
                 .normalize()
                 .string();
+        }
+
+        const std::vector<std::string> CreatureImageManager::AllFilenames()
+        {
+            std::vector<std::string> filenames;
+
+            namespace bfs = boost::filesystem;
+
+            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
+                "media-images-creatures-dir") };
+
+            for (auto const & PATH : bfs::path(IMAGES_DIR))
+            {
+                if (bfs::is_regular_file(PATH))
+                {
+                    namespace ba = boost::algorithm;
+
+                    if (ba::ends_with(PATH.leaf().string(), ".png"))
+                    {
+                        filenames.emplace_back(PATH.leaf().string());
+                    }
+                }
+            }
+
+            return filenames;
         }
 
     } // namespace gui
