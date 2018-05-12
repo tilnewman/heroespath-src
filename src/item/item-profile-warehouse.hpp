@@ -68,16 +68,19 @@ namespace item
         void Setup();
 
         void Setup_StandardEquipment();
-        void Setup_UniqueItems();
         void Setup_MiscItems();
         void Setup_NamedEquipment();
         void Setup_SetEquipment();
         void Setup_SummoningItems();
 
-        bool IsSetup() const { return (profiles_.empty() == false); }
+        const ItemProfileVec_t & GetNormalProfiles() const { return profiles_; }
 
-        const ItemProfileVec_t & GetNormalProfiles();
-        const ItemProfileVec_t & GetReligiousProfiles();
+        const ItemProfileVec_t & GetReligiousProfiles() const { return religiousProfiles_; }
+
+        const misc::VectorMap<misc_type::Enum, ItemProfile> & GetQuestProfiles() const
+        {
+            return questItemProfilesMap_;
+        }
 
     private:
         const ElementEnumVec_t ElementTypesIncludingNone(
@@ -89,9 +92,6 @@ namespace item
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum = named_type::NotNamed,
             const set_type::Enum = set_type::NotASet);
-
-        void MakeLoopOverMaterialsForUnique(
-            const unique_type::Enum UNIQUE_TYPE, const element_type::Enum ELEMENT_TYPE);
 
         void MakeForEquipment(
             const ItemProfileThin & THIN_PROFILE,
@@ -106,9 +106,13 @@ namespace item
             const element_type::Enum ELEMENT_TYPE,
             const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
 
-        void AppendToEitherNormalOrReligiousVector(const ItemProfile & PROFILE)
+        void AppendToCorrectProfileCollection(const ItemProfile & PROFILE)
         {
-            if (PROFILE.IsReligious())
+            if (misc_type::IsQuestItem(PROFILE.MiscType()))
+            {
+                questItemProfilesMap_[PROFILE.MiscType()] = PROFILE;
+            }
+            else if (PROFILE.IsReligious())
             {
                 religiousProfiles_.emplace_back(PROFILE);
             }
@@ -128,6 +132,8 @@ namespace item
         // deciding which items to give the players after defeating creatures in combet.
         ItemProfileVec_t profiles_;
         ItemProfileVec_t religiousProfiles_;
+
+        misc::VectorMap<misc_type::Enum, ItemProfile> questItemProfilesMap_;
     };
 
 } // namespace item

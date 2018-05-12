@@ -38,7 +38,6 @@ namespace item
 
     TypeWrapper::TypeWrapper()
         : element(element_type::None)
-        , unique(unique_type::NotUnique)
         , name(named_type::NotNamed)
         , set(set_type::NotASet)
         , misc(misc_type::NotMisc)
@@ -48,7 +47,6 @@ namespace item
 
     TypeWrapper::TypeWrapper(const ItemProfile & ITEM_PROFILE)
         : element(ITEM_PROFILE.ElementType())
-        , unique(ITEM_PROFILE.UniqueType())
         , name(ITEM_PROFILE.NamedType())
         , set(ITEM_PROFILE.SetType())
         , misc(ITEM_PROFILE.MiscType())

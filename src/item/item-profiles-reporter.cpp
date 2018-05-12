@@ -97,7 +97,6 @@ namespace item
         //
         WeaponOrArmorReport standardWeaponReport(true, "-standard");
         WeaponOrArmorReport standardArmorReport(false, "-standard");
-        Report ordinaryMiscReport("ordinary_misc");
         StandardSetReport weaponOrArmorMisc("weapon_or_armor_misc");
         StandardSetReport magicalReport("magical");
         Report summoningReport("summoning");
@@ -138,7 +137,6 @@ namespace item
             standardArmorReport.Add(
                 PROFILE, (PROFILE.IsNonMagicalWeaponOrArmor() && PROFILE.IsArmor()));
 
-            ordinaryMiscReport.Add(PROFILE, misc_type::IsOrdinary(PROFILE.MiscType()));
             magicalReport.Add(PROFILE, PROFILE.IsMagical());
             summoningReport.Add(PROFILE, PROFILE.SummonInfo().CanSummon());
             uniqueReport.Add(PROFILE, PROFILE.IsUnique());
@@ -190,12 +188,11 @@ namespace item
         ss << allReport.ToString(SOURCE_PROFILES) << weaponReport.ToString(SOURCE_PROFILES)
            << standardWeaponReport.ToString(SOURCE_PROFILES)
            << armorReport.ToString(SOURCE_PROFILES) << standardArmorReport.ToString(SOURCE_PROFILES)
-           << miscReport.ToString(SOURCE_PROFILES) << ordinaryMiscReport.ToString(SOURCE_PROFILES)
-           << weaponOrArmorMisc.ToString(SOURCE_PROFILES) << magicalReport.ToString(SOURCE_PROFILES)
-           << summoningReport.ToString(SOURCE_PROFILES) << uniqueReport.ToString(SOURCE_PROFILES)
-           << setReport.ToString(SOURCE_PROFILES) << namedReport.ToString(SOURCE_PROFILES)
-           << elementReport.ToString(SOURCE_PROFILES) << religiousReport.ToString(SOURCE_PROFILES)
-           << pixieReport.ToString(SOURCE_PROFILES);
+           << miscReport.ToString(SOURCE_PROFILES) << weaponOrArmorMisc.ToString(SOURCE_PROFILES)
+           << magicalReport.ToString(SOURCE_PROFILES) << summoningReport.ToString(SOURCE_PROFILES)
+           << uniqueReport.ToString(SOURCE_PROFILES) << setReport.ToString(SOURCE_PROFILES)
+           << namedReport.ToString(SOURCE_PROFILES) << elementReport.ToString(SOURCE_PROFILES)
+           << religiousReport.ToString(SOURCE_PROFILES) << pixieReport.ToString(SOURCE_PROFILES);
 
         const std::size_t MIN_MAX_DISPLAY_COUNT{ 10 };
         {

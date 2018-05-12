@@ -193,195 +193,7 @@ namespace item
     const MaterialPairVec_t MaterialFactory::MakeForMiscType(
         const misc_type::Enum MISC_TYPE, const bool IS_MAGICAL) const
     {
-        MaterialPairVec_t materialPairs;
-
-        if (MISC_TYPE == misc_type::LockPicks)
-        {
-            // leave bone/silver/gold/platinum for set_types
-            materialPairs = MakePairs(Combine(
-                { material::Tin, material::Bronze, material::Iron, material::Steel },
-                { material::Obsidian, material::Tooth }));
-        }
-        else if (
-            (MISC_TYPE == misc_type::Spider_Eggs) || (MISC_TYPE == misc_type::Litch_Hand)
-            || (MISC_TYPE == misc_type::Egg) || (MISC_TYPE == misc_type::Embryo)
-            || (MISC_TYPE == misc_type::Petrified_Snake))
-        {
-            materialPairs = MakePairs(material::DriedFlesh);
-        }
-        else if ((MISC_TYPE == misc_type::Wand) || (MISC_TYPE == misc_type::Staff))
-        {
-            // leave pri=Bone/Tooth/Obsidian/Jade and sec=Diamond for set_types
-            materialPairs = MakePairs(
-                { material::Claw, material::Horn, material::Wood, material::Stone },
-                Combine(
-                    fancyJewelWithoutDiamond_,
-                    { material::Silver, material::Gold, material::Nothing }));
-        }
-        else if (MISC_TYPE == misc_type::Angel_Braid)
-        {
-            materialPairs = MakePairs({ material::Hair }, { material::Spirit });
-        }
-        else if (MISC_TYPE == misc_type::DrumLute)
-        {
-            // leave sec=diamond for set_types
-            materialPairs = MakePairs(
-                { material::Wood },
-                Combine(fancyJewelWithoutDiamond_, fancyMetal_, { material::Nothing }));
-        }
-        else if (MISC_TYPE == misc_type::Figurine_Blessed)
-        {
-            materialPairs = MakePairs(
-                { material::Wood, material::Pearl, material::Glass }, nonFleshEyesWithNothing_);
-        }
-        else if (MISC_TYPE == misc_type::Figurine_Cursed)
-        {
-            materialPairs = MakePairs(
-                { material::Stone, material::Bone, material::Obsidian }, nonFleshEyesWithNothing_);
-        }
-        else if ((MISC_TYPE == misc_type::Puppet_Blessed) || (MISC_TYPE == misc_type::Doll_Blessed))
-        {
-            materialPairs = MakePairs({ material::Wood }, nonFleshEyesWithNothing_);
-        }
-        else if ((MISC_TYPE == misc_type::Puppet_Cursed) || (MISC_TYPE == misc_type::Doll_Cursed))
-        {
-            materialPairs = MakePairs({ material::Bone }, nonFleshEyesWithNothing_);
-        }
-        else if (MISC_TYPE == misc_type::Bust)
-        {
-            materialPairs = MakePairs({ material::Stone }, nonFleshEyesWithNothing_);
-        }
-        else if (MISC_TYPE == misc_type::Dried_Head)
-        {
-            materialPairs = MakePairs({ material::DriedFlesh }, nonFleshEyesWithNothing_);
-        }
-        else if (MISC_TYPE == misc_type::Goblet)
-        {
-            materialPairs = MakePairs(
-                { material::Tin, material::Bronze, material::Silver, material::Gold },
-                AppendNothingCopy(fancyJewel_));
-        }
-        else if (MISC_TYPE == misc_type::Seeds)
-        {
-            materialPairs = MakePairs(material::Plant);
-        }
-        else if (MISC_TYPE == misc_type::Mummy_Hand)
-        {
-            materialPairs = MakePairs(material::DriedFlesh);
-        }
-        else if (MISC_TYPE == misc_type::Shard)
-        {
-            materialPairs = MakePairs(fancyJewel_);
-        }
-        else if (MISC_TYPE == misc_type::Orb)
-        {
-            materialPairs
-                = MakePairs(fancyJewel_, { material::Wood, material::Stone, material::Obsidian });
-        }
-        else if (MISC_TYPE == misc_type::Scepter)
-        {
-            materialPairs = MakePairs(
-                { material::Wood,
-                  material::Bone,
-                  material::Jade,
-                  material::Bronze,
-                  material::Silver,
-                  material::Gold,
-                  material::Glass },
-                Combine(fancyJewel_, fancyTribal_, { material::Nothing }));
-        }
-        else if (MISC_TYPE == misc_type::Icicle)
-        {
-            materialPairs = MakePairs({ material::Glass }, { material::Spirit });
-        }
-        else if (MISC_TYPE == misc_type::Golem_Finger)
-        {
-            materialPairs = MakePairs(material::Stone);
-        }
-        else if (MISC_TYPE == misc_type::Unicorn_Horn)
-        {
-            materialPairs = MakePairs({ material::Horn }, { material::Spirit });
-        }
-        else if (MISC_TYPE == misc_type::Devil_Horn)
-        {
-            materialPairs = MakePairs({ material::Horn }, { material::Spirit });
-        }
-        else if (
-            (MISC_TYPE == misc_type::Recorder) || (MISC_TYPE == misc_type::Viol)
-            || (MISC_TYPE == misc_type::Pipe_And_Tabor) || (MISC_TYPE == misc_type::Lyre)
-            || (MISC_TYPE == misc_type::Hurdy_Gurdy))
-        {
-            // leave sec=Diamond for set_types
-            materialPairs = MakePairs(
-                { material::Wood },
-                Combine(fancyJewelWithoutDiamond_, fancyMetal_, { material::Nothing }));
-        }
-        else if (MISC_TYPE == misc_type::Ring)
-        {
-            // leave DriedFlesh for set_types
-            materialPairs = MakePairs(
-                Combine(
-                    { material::Glass,
-                      material::Claw,
-                      material::Bone,
-                      material::Wood,
-                      material::Stone,
-                      material::Jade },
-                    metal_),
-                AppendNothingCopy(fancyJewel_));
-        }
-        else if (MISC_TYPE == misc_type::Summoning_Statue)
-        {
-            materialPairs = MakePairs(
-                { material::DriedFlesh,
-                  material::Bone,
-                  material::Wood,
-                  material::Stone,
-                  material::Jade,
-                  material::Bronze },
-                Combine(fancyJewel_, fancyMetal_));
-        }
-        else if (MISC_TYPE == misc_type::Key)
-        {
-            materialPairs = MakePairs({ material::Bone,
-                                        material::Wood,
-                                        material::Stone,
-                                        material::Obsidian,
-                                        material::Jade,
-                                        material::Bronze,
-                                        material::Iron,
-                                        material::Silver,
-                                        material::Gold,
-                                        material::Platinum });
-        }
-        else if (MISC_TYPE == misc_type::Mirror)
-        {
-            materialPairs = MakePairs({ material::Bone,
-                                        material::Wood,
-                                        material::Stone,
-                                        material::Obsidian,
-                                        material::Jade,
-                                        material::Silver });
-        }
-        else if (MISC_TYPE == misc_type::Doll)
-        {
-            materialPairs
-                = MakePairs({ material::Cloth, material::Silk }, AppendNothingCopy(fancyJewel_));
-        }
-        else if (MISC_TYPE == misc_type::Pendant)
-        {
-            materialPairs = MakePairs(
-                { material::Glass,
-                  material::Bone,
-                  material::Wood,
-                  material::Stone,
-                  material::Obsidian,
-                  material::Jade,
-                  material::Bronze,
-                  material::Silver,
-                  material::Gold },
-                fancyJewel_);
-        }
+        MaterialPairVec_t materialPairs{ MakeForMiscInner(MISC_TYPE) };
 
         try
         {
@@ -401,302 +213,286 @@ namespace item
         return materialPairs;
     }
 
-    const MaterialPairVec_t
-        MaterialFactory::MakeForUniqueType(const unique_type::Enum UNIQUE_TYPE) const
+    const MaterialPairVec_t MaterialFactory::MakeForMiscInner(const misc_type::Enum MISC_TYPE) const
     {
-        MaterialPairVec_t materialPairs;
-
-        switch (UNIQUE_TYPE)
+        switch (MISC_TYPE)
         {
-            case unique_type::BasiliskTonge:
+            // quest items first, be specific with these because there is only one of each
+            case misc_type::AngelBraid:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs({ material::Hair }, { material::Spirit });
             }
-            case unique_type::BerserkersBeard:
+            case misc_type::Crumhorn:
             {
-                materialPairs = MakePairs(material::Hair);
-                break;
+                return MakePairs(material::Bone);
             }
-            case unique_type::BishopsHanky:
+            case misc_type::DevilHorn:
             {
-                materialPairs = MakePairs(material::Cloth);
-                break;
+                return MakePairs({ material::Horn }, { material::Spirit });
             }
-            case unique_type::BleedingTrophy:
+            case misc_type::GolemFinger:
             {
-                materialPairs = MakePairs({ material::Gold }, { material::Blood });
-                break;
+                return MakePairs(material::Stone);
             }
-            case unique_type::BloodyDragonScale:
+            case misc_type::HurdyGurdy:
             {
-                materialPairs = MakePairs({ material::Scales }, { material::Blood });
-                break;
+                return MakePairs({ material::Wood }, { material::Ruby });
             }
-            case unique_type::BottleOfBansheeScreams:
+            case misc_type::Icicle:
             {
-                materialPairs = MakePairs({ material::Glass }, { material::Spirit });
-                break;
+                return MakePairs(material::Glass);
             }
-            case unique_type::BraceletCrown:
-            case unique_type::BraceletFeather:
-            case unique_type::BraceletFist:
-            case unique_type::BraceletHourglass:
-            case unique_type::BraceletKey:
-            case unique_type::BraceletMask:
+            case misc_type::LitchHand:
             {
-                materialPairs = MakePairs({ material::Bronze,
-                                            material::Silver,
-                                            material::Gold,
-                                            material::Platinum,
-                                            material::Bone,
-                                            material::Tooth,
-                                            material::Jade });
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::Lyre:
+            {
+                return MakePairs({ material::Gold }, { material::Diamond });
+            }
+            case misc_type::MummyHand:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::PetrifiedSnake:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::PipeAndTabor:
+            {
+                return MakePairs({ material::Wood }, { material::Diamond });
+            }
+            case misc_type::Recorder:
+            {
+                return MakePairs({ material::Wood }, { material::Pearl });
+            }
+            case misc_type::UnicornHorn:
+            {
+                return MakePairs({ material::Horn }, { material::Spirit });
+            }
+            case misc_type::Viol:
+            {
+                return MakePairs({ material::Wood }, { material::Obsidian });
+            }
 
-                break;
-            }
-            case unique_type::BroochCrown:
-            case unique_type::BroochFeather:
-            case unique_type::BroochFist:
-            case unique_type::BroochHourglass:
-            case unique_type::BroochKey:
-            case unique_type::BroochMask:
+            // unique items, so again, be specific
+            case misc_type::BasiliskTonge:
             {
-                materialPairs = MakePairs(
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::BerserkersBeard:
+            {
+                return MakePairs(material::Hair);
+            }
+            case misc_type::BishopsHanky:
+            {
+                return MakePairs(material::Cloth);
+            }
+            case misc_type::BleedingTrophy:
+            {
+                return MakePairs({ material::Gold }, { material::Blood });
+            }
+            case misc_type::BloodyDragonScale:
+            {
+                return MakePairs({ material::Scales }, { material::Blood });
+            }
+            case misc_type::BottleOfBansheeScreams:
+            {
+                return MakePairs({ material::Glass }, { material::Spirit });
+            }
+            case misc_type::BronzeTroll:
+            {
+                return MakePairs(material::Bronze);
+            }
+            case misc_type::Brooch_Crown:
+            case misc_type::Brooch_Feather:
+            case misc_type::Brooch_Fist:
+            case misc_type::Brooch_Hourglass:
+            case misc_type::Brooch_Key:
+            case misc_type::Brooch_Mask:
+            {
+                return MakePairs(
                     { material::Bronze, material::Silver, material::Gold, material::Platinum });
-
-                break;
             }
-            case unique_type::BurialShroud:
+            case misc_type::BurialShroud:
             {
-                materialPairs = MakePairs(material::Cloth);
-                break;
+                return MakePairs(material::Cloth);
             }
-            case unique_type::CharmCrown:
-            case unique_type::CharmFeather:
-            case unique_type::CharmFist:
-            case unique_type::CharmHourglass:
-            case unique_type::CharmKey:
-            case unique_type::CharmMask:
+            case misc_type::CapeCommanders:
             {
-                materialPairs = MakePairs({ material::Bronze,
-                                            material::Silver,
-                                            material::Gold,
-                                            material::Platinum,
-                                            material::Jade });
-
-                break;
+                return MakePairs({ material::Cloth }, { material::Silver });
             }
-            case unique_type::ChimeraBone:
+            case misc_type::CapeGenerals:
             {
-                materialPairs = MakePairs(material::Bone);
-                break;
+                return MakePairs({ material::Silk }, { material::Gold });
             }
-            case unique_type::CobraTooth:
+            case misc_type::CapeKings:
             {
-                materialPairs = MakePairs(material::Tooth);
-                break;
+                return MakePairs({ material::Silk }, { material::Diamond });
             }
-            case unique_type::CommandersCape:
+            case misc_type::Charm_Crown:
+            case misc_type::Charm_Feather:
+            case misc_type::Charm_Fist:
+            case misc_type::Charm_Hourglass:
+            case misc_type::Charm_Key:
+            case misc_type::Charm_Mask:
             {
-                materialPairs = MakePairs({ material::Cloth }, { material::Silver });
-                break;
+                return MakePairs({ material::Bronze,
+                                   material::Silver,
+                                   material::Gold,
+                                   material::Platinum,
+                                   material::Jade });
             }
-            case unique_type::BronzeTroll:
+            case misc_type::ChimeraBone:
             {
-                materialPairs = MakePairs(material::Bronze);
-                break;
+                return MakePairs(material::Bone);
             }
-            case unique_type::GlassCat:
+            case misc_type::CobraTooth:
             {
-                materialPairs = MakePairs(material::Glass);
-                break;
+                return MakePairs(material::Tooth);
             }
-            case unique_type::CrystalChimes:
+            case misc_type::CrystalChimes:
             {
-                materialPairs = MakePairs(fancyJewel_);
-                break;
+                return MakePairs(fancyJewel_);
             }
-            case unique_type::CyclopsEye:
+            case misc_type::DemonDiary:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Paper);
             }
-            case unique_type::DemonDiary:
+            case misc_type::DoveBloodVial:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                return MakePairs(material::Glass);
             }
-            case unique_type::DoveBloodVial:
+            case misc_type::DragonToothWhistle:
             {
-                materialPairs = MakePairs(material::Glass);
-                break;
+                return MakePairs(material::Tooth);
             }
-            case unique_type::DragonToothWhistle:
+            case misc_type::DriedFrog:
+            case misc_type::DriedGecko:
+            case misc_type::DriedIguana:
+            case misc_type::DriedLizard:
+            case misc_type::DriedSalamander:
+            case misc_type::DriedSkink:
+            case misc_type::DriedToad:
             {
-                materialPairs = MakePairs(material::Tooth);
-                break;
+                return MakePairs(material::DriedFlesh);
             }
-            case unique_type::DriedFrog:
-            case unique_type::DriedGecko:
-            case unique_type::DriedIguana:
-            case unique_type::DriedLizard:
-            case unique_type::DriedSalamander:
-            case unique_type::DriedSkink:
-            case unique_type::DriedToad:
-            case unique_type::DriedTurtle:
+            case misc_type::DruidLeaf:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Plant);
             }
-            case unique_type::DruidLeaf:
+            case misc_type::EvilRabbitsFoot:
             {
-                materialPairs = MakePairs(material::Plant);
-                break;
+                return MakePairs({ material::Bone }, { material::Fur });
             }
-            case unique_type::EvilRabbitsFoot:
+            case misc_type::ExoticGoldenGong:
             {
-                materialPairs = MakePairs({ material::Bone }, { material::Fur });
-
-                break;
+                return MakePairs({ material::Gold }, { material::Wood });
             }
-            case unique_type::ExoticGoldenGong:
+            case misc_type::EyeCyclops:
             {
-                materialPairs = MakePairs({ material::Gold }, { material::Wood });
-                break;
+                return MakePairs(material::DriedFlesh);
             }
-            case unique_type::FanaticsFlag:
+            case misc_type::EyeGiantOwl:
             {
-                materialPairs = MakePairs(material::Hide);
-                break;
+                return MakePairs(material::DriedFlesh);
             }
-            case unique_type::FriarsChronicle:
+            case misc_type::EyeHawk:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                return MakePairs(material::Silver);
             }
-            case unique_type::FuneralRecord:
+            case misc_type::FlagFanatics:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                return MakePairs(material::Hide);
             }
-            case unique_type::GeneralsCape:
+            case misc_type::FlagRegalCaptains:
             {
-                materialPairs = MakePairs({ material::Silk }, { material::Gold });
-                break;
+                return MakePairs(material::Silk);
             }
-            case unique_type::GhostSheet:
+            case misc_type::FlagTribal:
             {
-                materialPairs = MakePairs({ material::Cloth }, { material::Blood });
-                break;
+                return MakePairs(material::Hide);
             }
-            case unique_type::GiantOwlEye:
+            case misc_type::FriarsChronicle:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Paper);
             }
-            case unique_type::GriffinFeather:
+            case misc_type::FuneralRecord:
             {
-                materialPairs = MakePairs(material::Feather);
-                break;
+                return MakePairs(material::Paper);
             }
-            case unique_type::HangmansNoose:
+            case misc_type::GhostSheet:
             {
-                materialPairs = MakePairs(material::Rope);
-                break;
+                return MakePairs({ material::Cloth }, { material::Blood });
             }
-            case unique_type::HawkEye:
+            case misc_type::GlassCat:
             {
-                materialPairs = MakePairs(material::Silver);
-                break;
+                return MakePairs(material::Glass);
             }
-            case unique_type::HobgoblinNose:
+            case misc_type::GriffinFeather:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Feather);
             }
-            case unique_type::HoboRing:
+            case misc_type::HangmansNoose:
             {
-                materialPairs = MakePairs(material::Tin);
-                break;
+                return MakePairs(material::Rope);
             }
-            case unique_type::HolyEpic:
+            case misc_type::HobgoblinNose:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                return MakePairs(material::DriedFlesh);
             }
-            case unique_type::HornOfTheHorde:
+            case misc_type::HolyEpic:
             {
-                materialPairs = MakePairs(material::Bronze);
-                break;
+                return MakePairs(material::Paper);
             }
-            case unique_type::ImpTail:
+            case misc_type::HornOfTheHorde:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Bronze);
             }
-            case unique_type::IslanderHeaddress:
+            case misc_type::ImpTail:
             {
-                materialPairs = MakePairs({ material::Wood }, { material::Feather });
-                break;
+                return MakePairs(material::DriedFlesh);
             }
-            case unique_type::JeweledAnkhNecklace:
+            case misc_type::IslanderHeaddress:
             {
-                materialPairs = MakePairs(
-                    { material::Stone, material::Bone, material::Obsidian }, fancyJewel_);
-
-                break;
+                return MakePairs({ material::Wood }, { material::Feather });
             }
-            case unique_type::JeweledArmband:
+            case misc_type::JeweledArmband:
             {
-                materialPairs = MakePairs(
+                return MakePairs(
                     { material::Bronze, material::Silver, material::Gold }, fancyJewel_);
-
-                break;
             }
-            case unique_type::JeweledHandbag:
+            case misc_type::JeweledHandbag:
             {
-                materialPairs = MakePairs({ material::Silk }, fancyJewel_);
-                break;
+                return MakePairs({ material::Silk }, fancyJewel_);
             }
-            case unique_type::JeweledPrincessVeil:
+            case misc_type::JeweledPrincessVeil:
             {
-                materialPairs = MakePairs({ material::Silver }, fancyJewel_);
-                break;
+                return MakePairs({ material::Silver }, fancyJewel_);
             }
-            case unique_type::KingsCape:
+            case misc_type::LastRitesScroll:
             {
-                materialPairs = MakePairs({ material::Silk }, { material::Diamond });
-                break;
+                return MakePairs(material::Paper);
             }
-            case unique_type::LastRitesScroll:
+            case misc_type::MacabreManuscript:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                return MakePairs({ material::Paper }, { material::Blood });
             }
-            case unique_type::MacabreManuscript:
+            case misc_type::MadRatJuju:
             {
-                materialPairs = MakePairs({ material::Paper }, { material::Blood });
-                break;
+                return MakePairs({ material::Bronze }, { material::Pearl });
             }
-            case unique_type::MadRatJuju:
+            case misc_type::MagicHorseshoe:
             {
-                materialPairs = MakePairs({ material::Bronze }, { material::Pearl });
-                break;
+                return MakePairs(material::Iron);
             }
-            case unique_type::MagicHorseshoe:
+            case misc_type::MagnifyingGlass:
             {
-                materialPairs = MakePairs(material::Iron);
-                break;
+                return MakePairs({ material::Silver }, { material::Glass });
             }
-            case unique_type::MagnifyingGlass:
+            case misc_type::ManaAmulet:
             {
-                materialPairs = MakePairs({ material::Silver }, { material::Glass });
-                break;
-            }
-            case unique_type::ManaAmulet:
-            {
-                materialPairs = MakePairs(
+                return MakePairs(
                     { material::Glass,
                       material::Bone,
                       material::Wood,
@@ -707,274 +503,356 @@ namespace item
                       material::Silver,
                       material::Gold },
                     fancyJewel_);
+            }
+            case misc_type::MaskMourners:
+            {
+                return MakePairs({ material::Wood }, { material::Obsidian });
+            }
+            case misc_type::MaskRascal:
+            {
+                return MakePairs(material::Wood);
+            }
+            case misc_type::MinotaurHide:
+            {
+                return MakePairs({ material::Hide }, { material::Fur });
+            }
+            case misc_type::MortuaryOrnament:
+            {
+                return MakePairs(material::Bronze);
+            }
+            case misc_type::NecklaceJeweledAnkh:
+            {
+                return MakePairs(
+                    { material::Stone, material::Bone, material::Obsidian }, fancyJewel_);
+            }
+            case misc_type::NecklaceSharkTooth:
+            {
+                return MakePairs(material::Tooth);
+            }
+            case misc_type::NecklaceVampiresTooth:
+            {
+                return MakePairs(material::Tooth);
+            }
+            case misc_type::PantherPaw:
+            {
+                return MakePairs({ material::DriedFlesh }, { material::Fur });
+            }
+            case misc_type::Pin_Crown:
+            case misc_type::Pin_Feather:
+            case misc_type::Pin_Fist:
+            case misc_type::Pin_Hourglass:
+            case misc_type::Pin_Key:
+            case misc_type::Pin_Mask:
+            {
+                return MakePairs({ material::Iron,
+                                   material::Bronze,
+                                   material::Silver,
+                                   material::Gold,
+                                   material::Platinum });
+            }
+            case misc_type::PixieBell:
+            {
+                return MakePairs(material::Silver);
+            }
+            case misc_type::RattlesnakeTail:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::RavenClaw:
+            {
+                return MakePairs(material::Claw);
+            }
+            case misc_type::ReaperScythe:
+            {
+                return MakePairs({ material::Wood }, { material::Steel });
+            }
+            case misc_type::RequiemRegister:
+            {
+                return MakePairs(material::Paper);
+            }
+            case misc_type::RingHobo:
+            {
+                return MakePairs(material::Tin);
+            }
+            case misc_type::RingMendicant:
+            {
+                return MakePairs(material::Iron);
+            }
+            case misc_type::RingMonk:
+            {
+                return MakePairs(material::Silver);
+            }
+            case misc_type::RingPriest:
+            {
+                return MakePairs({ material::Gold }, { material::Pearl });
+            }
+            case misc_type::RoyalScoutSpyglass:
+            {
+                return MakePairs({ material::Silver }, { material::Glass });
+            }
+            case misc_type::SaintCameoPin:
+            {
+                return MakePairs({ material::Silver }, { material::Pearl });
+            }
+            case misc_type::SaintsJournal:
+            {
+                return MakePairs(material::Paper);
+            }
+            case misc_type::SanguineRelic:
+            {
+                return MakePairs({ material::Bronze }, { material::Blood });
+            }
+            case misc_type::ScoundrelSack:
+            {
+                return MakePairs(material::Leather);
+            }
+            case misc_type::SepultureDecoration:
+            {
+                return MakePairs({ material::Wood }, { material::Bronze });
+            }
+            case misc_type::ShadeCloak:
+            {
+                return MakePairs(material::Cloth);
+            }
+            case misc_type::ShamanRainmaker:
+            {
+                return MakePairs(material::Wood);
+            }
+            case misc_type::SirenConch:
+            {
+                return MakePairs(material::Jade);
+            }
+            case misc_type::SpecterChains:
+            {
+                return MakePairs(material::Iron);
+            }
+            case misc_type::SpecterRobe:
+            {
+                return MakePairs(material::Cloth);
+            }
+            case misc_type::SpiderEggs:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::SprintersLegtie:
+            {
+                return MakePairs(material::Leather);
+            }
+            case misc_type::SwindlersBag:
+            {
+                return MakePairs(material::Leather);
+            }
+            case misc_type::TricksterPouch:
+            {
+                return MakePairs(material::Leather);
+            }
+            case misc_type::TuningFork:
+            {
+                return MakePairs(material::Silver);
+            }
+            case misc_type::TurtleShell:
+            {
+                return MakePairs(material::Bone);
+            }
+            case misc_type::VultureGizzard:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::WarhorseMarionette:
+            {
+                return MakePairs(material::Wood);
+            }
+            case misc_type::WarTrumpet:
+            {
+                return MakePairs(material::Silver);
+            }
+            case misc_type::WeaselTotem:
+            {
+                return MakePairs(material::Wood);
+            }
+            case misc_type::WolfenFur:
+            {
+                return MakePairs(material::Fur);
+            }
+            case misc_type::WraithTalisman:
+            {
+                return MakePairs({ material::Wood }, { material::Obsidian });
+            }
 
-                break;
-            }
-            case unique_type::MendicantRing:
+            // standalone items
+            case misc_type::Bust:
             {
-                materialPairs = MakePairs(material::Iron);
-                break;
+                return MakePairs({ material::Stone }, nonFleshEyesWithNothing_);
             }
-            case unique_type::MinotaurHide:
+            case misc_type::Doll:
             {
-                materialPairs = MakePairs({ material::Hide }, { material::Fur });
-                break;
+                return MakePairs(
+                    { material::Cloth, material::Silk }, AppendNothingCopy(fancyJewel_));
             }
-            case unique_type::MonkRing:
+            case misc_type::PuppetBlessed:
+            case misc_type::DollBlessed:
             {
-                materialPairs = MakePairs(material::Silver);
+                return MakePairs({ material::Wood }, nonFleshEyesWithNothing_);
+            }
+            case misc_type::PuppetCursed:
+            case misc_type::DollCursed:
+            {
+                return MakePairs({ material::Bone }, nonFleshEyesWithNothing_);
+            }
+            case misc_type::DriedHead:
+            {
+                return MakePairs({ material::DriedFlesh }, nonFleshEyesWithNothing_);
+            }
+            case misc_type::DrumLute:
+            {
+                // NOT a quest item
+                // some Drumlutes are made by set_types and those materials are set below
+                // leave sec=silver/amethyst/diamond for set_types
+                return MakePairs(
+                    { material::Wood },
+                    Combine({ material::Emerald,
+                              material::Ruby,
+                              material::Sapphire,
+                              material::Gold,
+                              material::Nothing }));
+            }
+            case misc_type::Egg:
+            case misc_type::Embryo:
+            {
+                return MakePairs(material::DriedFlesh);
+            }
+            case misc_type::FigurineBlessed:
+            {
+                return MakePairs(
+                    { material::Wood, material::Pearl, material::Glass }, nonFleshEyesWithNothing_);
+            }
+            case misc_type::FigurineCursed:
+            {
+                return MakePairs(
+                    { material::Stone, material::Bone, material::Obsidian },
+                    nonFleshEyesWithNothing_);
+            }
 
-                break;
-            }
-            case unique_type::MortuaryOrnament:
+            case misc_type::Goblet:
             {
-                materialPairs = MakePairs(material::Bronze);
-
-                break;
+                return MakePairs(
+                    { material::Tin, material::Bronze, material::Silver, material::Gold },
+                    AppendNothingCopy(fancyJewel_));
             }
-            case unique_type::MournersMask:
+            case misc_type::Key:
             {
-                materialPairs = MakePairs({ material::Wood }, { material::Obsidian });
-
-                break;
+                return MakePairs({ material::Bone,
+                                   material::Wood,
+                                   material::Stone,
+                                   material::Obsidian,
+                                   material::Jade,
+                                   material::Bronze,
+                                   material::Iron,
+                                   material::Silver,
+                                   material::Gold,
+                                   material::Platinum });
             }
-            case unique_type::PantherPaw:
+            case misc_type::LockPicks:
             {
-                materialPairs = MakePairs({ material::DriedFlesh }, { material::Fur });
-                break;
+                // leave bone/silver/gold/platinum for set_types
+                return MakePairs(Combine(
+                    { material::Tin, material::Bronze, material::Iron, material::Steel },
+                    { material::Obsidian, material::Tooth }));
             }
-            case unique_type::PinCrown:
-            case unique_type::PinFeather:
-            case unique_type::PinFist:
-            case unique_type::PinHourglass:
-            case unique_type::PinKey:
-            case unique_type::PinMask:
+            case misc_type::Mirror:
             {
-                materialPairs = MakePairs({ material::Iron,
-                                            material::Bronze,
-                                            material::Silver,
-                                            material::Gold,
-                                            material::Platinum });
-
-                break;
+                return MakePairs({ material::Bone,
+                                   material::Wood,
+                                   material::Stone,
+                                   material::Obsidian,
+                                   material::Jade,
+                                   material::Silver });
             }
-            case unique_type::PixieBell:
+            case misc_type::Orb:
             {
-                materialPairs = MakePairs(material::Silver);
-                break;
+                return MakePairs(
+                    fancyJewel_, { material::Wood, material::Stone, material::Obsidian });
             }
-            case unique_type::PriestRing:
+            case misc_type::Pendant:
             {
-                materialPairs = MakePairs({ material::Gold }, { material::Pearl });
-                break;
+                return MakePairs(
+                    { material::Glass,
+                      material::Bone,
+                      material::Wood,
+                      material::Stone,
+                      material::Obsidian,
+                      material::Jade,
+                      material::Bronze,
+                      material::Silver,
+                      material::Gold },
+                    fancyJewel_);
             }
-            case unique_type::RascalMask:
+            case misc_type::Scepter:
             {
-                materialPairs = MakePairs(material::Wood);
-                break;
+                return MakePairs(
+                    { material::Wood,
+                      material::Bone,
+                      material::Jade,
+                      material::Bronze,
+                      material::Silver,
+                      material::Gold,
+                      material::Glass },
+                    Combine(fancyJewel_, fancyTribal_, { material::Nothing }));
             }
-            case unique_type::RattlesnakeTail:
+            case misc_type::Seeds:
             {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
+                return MakePairs(material::Plant);
             }
-            case unique_type::RavenClaw:
+            case misc_type::Shard:
             {
-                materialPairs = MakePairs(material::Claw);
-                break;
+                return MakePairs(fancyJewel_);
             }
-            case unique_type::RazorFingerclaw:
+            case misc_type::Staff:
             {
-                materialPairs = MakePairs(material::Steel);
-                break;
+                return MakePairs(
+                    { material::Claw, material::Horn, material::Wood, material::Stone },
+                    AppendNothingCopy(fancyReinforced_));
             }
-            case unique_type::ReaperScythe:
+            case misc_type::SummoningStatue:
             {
-                materialPairs = MakePairs({ material::Wood }, { material::Steel });
-                break;
+                return MakePairs(
+                    { material::Bone,
+                      material::Wood,
+                      material::Stone,
+                      material::Jade,
+                      material::Bronze },
+                    Combine(fancyJewel_, fancyMetal_));
             }
-            case unique_type::RegalCaptainsFlag:
+            case misc_type::Wand:
             {
-                materialPairs = MakePairs(material::Silk);
-                break;
+                // leave pri=Bone/Tooth/Obsidian/Jade and sec=Diamond for set_types
+                return MakePairs(
+                    { material::Claw, material::Horn, material::Wood, material::Stone },
+                    Combine(
+                        fancyJewelWithoutDiamond_,
+                        { material::Silver, material::Gold, material::Nothing }));
             }
-            case unique_type::RequiemRegister:
+            case misc_type::Ring:
             {
-                materialPairs = MakePairs(material::Paper);
-                break;
+                // leave DriedFlesh for set_types
+                return MakePairs(
+                    Combine(
+                        { material::Glass,
+                          material::Claw,
+                          material::Bone,
+                          material::Wood,
+                          material::Stone,
+                          material::Jade },
+                        metal_),
+                    AppendNothingCopy(fancyJewel_));
             }
-            case unique_type::RoyalScoutSpyglass:
-            {
-                materialPairs = MakePairs({ material::Silver }, { material::Glass });
-                break;
-            }
-            case unique_type::SaintCameoPin:
-            {
-                materialPairs = MakePairs({ material::Silver }, { material::Pearl });
-                break;
-            }
-            case unique_type::SaintsJournal:
-            {
-                materialPairs = MakePairs(material::Paper);
-                break;
-            }
-            case unique_type::SanguineRelic:
-            {
-                materialPairs = MakePairs({ material::Bronze }, { material::Blood });
-                break;
-            }
-            case unique_type::ScorpionStingerFingerclaw:
-            {
-                materialPairs = MakePairs(material::Steel);
-                break;
-            }
-            case unique_type::ScoundrelSack:
-            {
-                materialPairs = MakePairs(material::Leather);
-                break;
-            }
-            case unique_type::SepultureDecoration:
-            {
-                materialPairs = MakePairs({ material::Wood }, { material::Bronze });
-                break;
-            }
-            case unique_type::ShadeCloak:
-            {
-                materialPairs = MakePairs(material::Cloth);
-                break;
-            }
-            case unique_type::ShamanRainmaker:
-            {
-                materialPairs = MakePairs(material::Wood);
-                break;
-            }
-            case unique_type::SharkToothNecklace:
-            {
-                materialPairs = MakePairs(material::Tooth);
-                break;
-            }
-            case unique_type::SignetCrown:
-            case unique_type::SignetFeather:
-            case unique_type::SignetFist:
-            case unique_type::SignetHourglass:
-            case unique_type::SignetKey:
-            case unique_type::SignetMask:
-            {
-                materialPairs = MakePairs({ material::Iron,
-                                            material::Bronze,
-                                            material::Silver,
-                                            material::Gold,
-                                            material::Platinum });
-
-                break;
-            }
-            case unique_type::SirenConch:
-            {
-                materialPairs = MakePairs(material::Jade);
-                break;
-            }
-            case unique_type::SpecterChains:
-            {
-                materialPairs = MakePairs(material::Iron);
-                break;
-            }
-            case unique_type::SpecterRobe:
-            {
-                materialPairs = MakePairs(material::Cloth);
-                break;
-            }
-            case unique_type::SprintersLegtie:
-            {
-                materialPairs = MakePairs(material::Leather);
-                break;
-            }
-            case unique_type::SwindlersBag:
-            {
-                materialPairs = MakePairs(material::Leather);
-                break;
-            }
-            case unique_type::TribalFlag:
-            {
-                materialPairs = MakePairs(material::Hide);
-                break;
-            }
-            case unique_type::TricksterPouch:
-            {
-                materialPairs = MakePairs(material::Leather);
-                break;
-            }
-            case unique_type::TuningFork:
-            {
-                materialPairs = MakePairs(material::Silver);
-                break;
-            }
-            case unique_type::TurtleShell:
-            {
-                materialPairs = MakePairs(material::Bone);
-                break;
-            }
-            case unique_type::VampiresToothNecklace:
-            {
-                materialPairs = MakePairs(material::Tooth);
-                break;
-            }
-            case unique_type::ViperFangFingerclaw:
-            {
-                materialPairs = MakePairs(material::Steel);
-                break;
-            }
-            case unique_type::VultureGizzard:
-            {
-                materialPairs = MakePairs(material::DriedFlesh);
-                break;
-            }
-            case unique_type::WarhorseMarionette:
-            {
-                materialPairs = MakePairs(material::Wood);
-                break;
-            }
-            case unique_type::WarTrumpet:
-            {
-                materialPairs = MakePairs(material::Silver);
-                break;
-            }
-            case unique_type::WeaselTotem:
-            {
-                materialPairs = MakePairs(material::Wood);
-                break;
-            }
-            case unique_type::WolfenFur:
-            {
-                materialPairs = MakePairs(material::Fur);
-                break;
-            }
-            case unique_type::WraithTalisman:
-            {
-                materialPairs = MakePairs({ material::Wood }, { material::Obsidian });
-
-                break;
-            }
-            case unique_type::NotUnique:
-            case unique_type::Count:
+            case misc_type::NotMisc:
+            case misc_type::Count:
             default:
-            {}
+            {
+                return {};
+            }
         }
-
-        try
-        {
-            CleanupMaterialPairVectorAndEnsureNotEmpty(materialPairs, true);
-        }
-        catch (const std::exception & EXCEPTION)
-        {
-            std::ostringstream ss;
-            ss << EXCEPTION.what()
-               << " --this was thrown during item::MaterialFactory::MakeForUnique(unique_type="
-               << unique_type::ToString(UNIQUE_TYPE) << ")";
-
-            throw std::runtime_error(ss.str());
-        }
-
-        return materialPairs;
     }
 
     const MaterialPairVec_t

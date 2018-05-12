@@ -54,9 +54,8 @@ namespace item
         const MaterialPairVec_t
             MakeForMiscType(const misc_type::Enum MISC_TYPE, const bool IS_MAGICAL) const;
 
-        const MaterialPairVec_t MakeForUniqueType(const unique_type::Enum UNIQUE_TyPE) const;
-
     private:
+        const MaterialPairVec_t MakeForMiscInner(const misc_type::Enum MISC_TYPE) const;
         const MaterialPairVec_t MakeForWeapon(const ItemProfileThin & THIN_PROFILE) const;
         const MaterialPairVec_t MakeForArmor(const ItemProfileThin & THIN_PROFILE) const;
 

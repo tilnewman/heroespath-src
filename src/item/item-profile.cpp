@@ -50,7 +50,6 @@ namespace item
         , religiousRatio_(0.0f)
         , category_(category::None)
         , thinProfile_()
-        , unique_(unique_type::NotUnique)
         , set_(set_type::NotASet)
         , named_(named_type::NotNamed)
         , element_(element_type::None)
@@ -156,12 +155,6 @@ namespace item
             ss << ", mat_sec=" << material::ToString(matSec_);
         }
 
-        if (unique_type::NotUnique != unique_)
-        {
-            ss << ", unique_type="
-               << ((unique_type::Count == unique_) ? "Count" : unique_type::ToString(unique_));
-        }
-
         if (set_type::NotASet != set_)
         {
             ss << ", set_type=" << ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
@@ -188,67 +181,6 @@ namespace item
         }
 
         return ss.str();
-    }
-
-    void ItemProfile::SetUniqueThenSetMisc(
-        const unique_type::Enum UNIQUE_TYPE,
-        const misc_type::Enum MISC_TYPE,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((UNIQUE_TYPE != unique_type::Count) && (UNIQUE_TYPE != unique_type::NotUnique)),
-            "item::ItemProfile::SetUnique(unique_type=Count/NotMisc, mat_pri="
-                << material::ToString(MATERIAL_PRIMARY)
-                << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY)
-                << ", element_type=" << element_type::ToString(ELEMENT_TYPE, true)
-                << ") the unique_type was not valid.");
-
-        unique_ = UNIQUE_TYPE;
-        matPri_ = MATERIAL_PRIMARY;
-        matSec_ = MATERIAL_SECONDARY;
-
-        // there are no pixie unique items
-        isPixie_ = false;
-
-        religiousRatio_ = unique_type::ReligiousRatio(UNIQUE_TYPE);
-        element_ = ELEMENT_TYPE;
-
-        if (UNIQUE_TYPE == unique_type::MagnifyingGlass)
-        {
-            category_ = static_cast<category::Enum>(category_ | category::ShowsEnemyInfo);
-        }
-
-        if (unique_type::IsUseable(UNIQUE_TYPE))
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Useable);
-        }
-
-        /*
-         * TODO these items are not really made into weapons yet
-         *
-        auto const IS_WEAPON{ (
-            (UNIQUE_TYPE == unique_type::ViperFangFingerclaw)
-            || (UNIQUE_TYPE == unique_type::ScorpionStingerFingerclaw)
-            || (UNIQUE_TYPE == unique_type::RazorFingerclaw)) };
-            */
-
-        // score based on material and element_type is not added here because all unique items are
-        // also misc items and SetMisc() will add those score bonuses
-        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-            UNIQUE_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
-
-        score_ += 750_score;
-
-        SetMisc(
-            MISC_TYPE,
-            IS_PIXIE,
-            MATERIAL_PRIMARY,
-            MATERIAL_SECONDARY,
-            set_type::NotASet,
-            ELEMENT_TYPE);
     }
 
     void ItemProfile::SetMisc(
@@ -281,33 +213,28 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        using namespace item;
-
         auto const MISC_TYPE{ THIN_PROFILE.MiscType() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((MISC_TYPE != misc_type::Count) && (MISC_TYPE != misc_type::NotMisc)),
-            "item::ItemProfile::SetMisc(misc_type=Count/NotMisc, is_pixie="
-                << std::boolalpha << IS_PIXIE
-                << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
-                << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
-                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                << ", element_type=" << element_type::ToString(ELEMENT_TYPE, true)
-                << ") the misc_type was not valid.");
+        element_ = ELEMENT_TYPE;
+
+        if (MISC_TYPE == misc_type::MagnifyingGlass)
+        {
+            category_ = static_cast<category::Enum>(category_ | category::ShowsEnemyInfo);
+        }
 
         if (misc_type::IsUseable(MISC_TYPE))
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
         }
 
-        if (misc_type::IsEquippable(MISC_TYPE))
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        }
-
         if (misc_type::IsWearable(MISC_TYPE))
         {
             category_ = static_cast<category::Enum>(category_ | category::Wearable);
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+        }
+        else if (misc_type::IsEquippable(MISC_TYPE))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
         }
 
         thinProfile_ = THIN_PROFILE;
@@ -327,6 +254,11 @@ namespace item
         score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
             MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
 
+        if (misc_type::IsUnique(MISC_TYPE))
+        {
+            score_ += 200_score;
+        }
+
         if (ELEMENT_TYPE != element_type::None)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -343,7 +275,8 @@ namespace item
                 ELEMENT_TYPE, misc_type::IsWeapon(MISC_TYPE), MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
 
-        if (MISC_TYPE == misc_type::Cape)
+        if ((MISC_TYPE == misc_type::CapeCommanders) || (MISC_TYPE == misc_type::CapeGenerals)
+            || (MISC_TYPE == misc_type::CapeKings))
         {
             SetCover(
                 armor::cover_type::Cape,
@@ -356,11 +289,23 @@ namespace item
                 MISC_TYPE);
         }
         else if (
-            (MISC_TYPE == misc_type::Cloak) || (MISC_TYPE == misc_type::Ghost_Sheet)
-            || (MISC_TYPE == misc_type::Robe) || (MISC_TYPE == misc_type::Shroud))
+            (MISC_TYPE == misc_type::ShadeCloak) || (MISC_TYPE == misc_type::GhostSheet)
+            || (MISC_TYPE == misc_type::BurialShroud))
         {
             SetCover(
                 armor::cover_type::Cloak,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                named_type::NotNamed,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE,
+                MISC_TYPE);
+        }
+        else if (MISC_TYPE == misc_type::SpecterRobe)
+        {
+            SetCover(
+                armor::cover_type::Robe,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 named_type::NotNamed,
@@ -378,9 +323,9 @@ namespace item
                 SET_TYPE,
                 ELEMENT_TYPE,
                 MISC_TYPE,
-                true);
+                IS_PIXIE);
         }
-        else if (MISC_TYPE == misc_type::Scythe)
+        else if (MISC_TYPE == misc_type::ReaperScythe)
         {
             SetBladedStaff(
                 weapon::bladedstaff_type::Scythe,

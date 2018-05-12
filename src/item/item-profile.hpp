@@ -71,7 +71,6 @@ namespace item
         category::Enum Category() const { return category_; }
         armor_type::Enum ArmorType() const { return thinProfile_.ArmorInfo().Type(); }
         weapon_type::Enum WeaponType() const { return thinProfile_.WeaponInfo().Type(); }
-        unique_type::Enum UniqueType() const { return unique_; }
         misc_type::Enum MiscType() const { return thinProfile_.MiscType(); }
         set_type::Enum SetType() const { return set_; }
         named_type::Enum NamedType() const { return named_; }
@@ -122,10 +121,7 @@ namespace item
             return ((MiscType() != misc_type::Count) && (MiscType() != misc_type::NotMisc));
         }
 
-        bool IsUnique() const
-        {
-            return ((unique_ != unique_type::Count) && (unique_ != unique_type::NotUnique));
-        }
+        bool IsUnique() const { return misc_type::IsUnique(thinProfile_.MiscType()); }
 
         bool IsNamed() const
         {
@@ -141,14 +137,6 @@ namespace item
         const armor::ArmorTypeWrapper & ArmorInfo() const { return thinProfile_.ArmorInfo(); }
 
         const std::string ToString() const;
-
-        void SetUniqueThenSetMisc(
-            const unique_type::Enum UNIQUE_TYPE,
-            const misc_type::Enum MISC_TYPE,
-            const material::Enum MATERIAL_PRIMARY,
-            const material::Enum MATERIAL_SECONDARY,
-            const element_type::Enum ELEMENT_TYPE,
-            const bool IS_PIXIE);
 
         void SetMisc(
             const misc_type::Enum MISC_TYPE,
@@ -801,7 +789,6 @@ namespace item
 
         category::Enum category_;
         ItemProfileThin thinProfile_;
-        unique_type::Enum unique_;
         set_type::Enum set_;
         named_type::Enum named_;
         element_type::Enum element_;
@@ -824,7 +811,6 @@ namespace item
         return std::tie(
                    L.category_,
                    L.thinProfile_,
-                   L.unique_,
                    L.set_,
                    L.named_,
                    L.element_,
@@ -836,7 +822,6 @@ namespace item
             == std::tie(
                    R.category_,
                    R.thinProfile_,
-                   R.unique_,
                    R.set_,
                    R.named_,
                    R.element_,
@@ -860,7 +845,6 @@ namespace item
         return std::tie(
                    L.thinProfile_,
                    L.category_,
-                   L.unique_,
                    L.set_,
                    L.named_,
                    L.element_,
@@ -872,7 +856,6 @@ namespace item
             < std::tie(
                    R.thinProfile_,
                    R.category_,
-                   R.unique_,
                    R.set_,
                    R.named_,
                    R.element_,

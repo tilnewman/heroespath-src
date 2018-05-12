@@ -767,7 +767,7 @@ namespace item
                          MakeArmorNonSpecific(armor_type::Shirt, armor::base_type::Plain),
                          MakeArmorNonSpecific(armor_type::Gauntlets, armor::base_type::Plain),
                          MakeArmorSpecific(armor::cover_type::Robe),
-                         MakeMisc(misc_type::Litch_Hand) };
+                         MakeMisc(misc_type::LitchHand) };
             }
 
             case set_type::TheSages:
@@ -804,7 +804,7 @@ namespace item
                          MakeArmorNonSpecific(armor_type::Shirt, armor::base_type::Plain),
                          MakeArmorNonSpecific(armor_type::Gauntlets, armor::base_type::Plain),
                          MakeArmorSpecific(armor::cover_type::Robe),
-                         MakeMisc(misc_type::Angel_Braid) };
+                         MakeMisc(misc_type::AngelBraid) };
             }
 
             case set_type::TheBalladeers:

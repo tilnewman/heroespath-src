@@ -244,73 +244,91 @@ namespace item
             {
                 return "NotMisc";
             }
-            case Amulet:
+
+            case AngelBraid:
             {
-                return "Amulet";
+                return "AngelBraid";
             }
-            case Ankh_Necklace:
+            case Crumhorn:
             {
-                return "Ankh_Necklace";
+                return "Crumhorn";
             }
-            case Armband:
+            case DevilHorn:
             {
-                return "Armband";
+                return "DevilHorn";
             }
-            case Bag:
+            case GolemFinger:
             {
-                return "Bag";
+                return "GolemFinger";
             }
-            case Beard:
+            case HurdyGurdy:
             {
-                return "Beard";
+                return "HurdyGurdy";
             }
-            case Bell:
+            case Icicle:
             {
-                return "Bell";
+                return "Icicle";
             }
-            case Bird_Claw:
+            case LitchHand:
             {
-                return "Bird_Claw";
+                return "LitchHand";
             }
-            case Bone:
+            case Lyre:
             {
-                return "Bone";
+                return "Lyre";
             }
-            case Bone_Whistle:
+            case MummyHand:
             {
-                return "Bone_Whistle";
+                return "MummyHand";
             }
-            case Book:
+            case PetrifiedSnake:
             {
-                return "Book";
+                return "PetrifiedSnake";
             }
-            case Bracelet_Crown:
+            case PipeAndTabor:
             {
-                return "Bracelet_Crown";
+                return "PipeAndTabor";
             }
-            case Bracelet_Feather:
+            case Recorder:
             {
-                return "Bracelet_Feather";
+                return "Recorder";
             }
-            case Bracelet_Fist:
+            case UnicornHorn:
             {
-                return "Bracelet_Fist";
+                return "UnicornHorn";
             }
-            case Bracelet_Hourglass:
+            case Viol:
             {
-                return "Bracelet_Hourglass";
+                return "Viol";
             }
-            case Bracelet_Key:
+
+            case BasiliskTonge:
             {
-                return "Bracelet_Key";
+                return "BasiliskTonge";
             }
-            case Bracelet_Mask:
+            case BerserkersBeard:
             {
-                return "Bracelet_Mask";
+                return "BerserkersBeard";
             }
-            case Angel_Braid:
+            case BishopsHanky:
             {
-                return "Angel_Braid";
+                return "BishopsHanky";
+            }
+            case BleedingTrophy:
+            {
+                return "BleedingTrophy";
+            }
+            case BloodyDragonScale:
+            {
+                return "BloodyDragonScale";
+            }
+            case BottleOfBansheeScreams:
+            {
+                return "BottleOfBansheeScreams";
+            }
+            case BronzeTroll:
+            {
+                return "BronzeTroll";
             }
             case Brooch_Crown:
             {
@@ -336,25 +354,21 @@ namespace item
             {
                 return "Brooch_Mask";
             }
-            case Bust:
+            case BurialShroud:
             {
-                return "Bust";
+                return "BurialShroud";
             }
-            case CameoPin:
+            case CapeCommanders:
             {
-                return "CameoPin";
+                return "CapeCommanders";
             }
-            case Cape:
+            case CapeGenerals:
             {
-                return "Cape";
+                return "CapeGenerals";
             }
-            case Cat:
+            case CapeKings:
             {
-                return "Cat";
-            }
-            case Chains:
-            {
-                return "Chains";
+                return "CapeKings";
             }
             case Charm_Crown:
             {
@@ -380,221 +394,205 @@ namespace item
             {
                 return "Charm_Mask";
             }
-            case Chimes:
+            case ChimeraBone:
             {
-                return "Chimes";
+                return "ChimeraBone";
             }
-            case Cloak:
+            case CobraTooth:
             {
-                return "Cloak";
+                return "CobraTooth";
             }
-            case Conch:
+            case CrystalChimes:
             {
-                return "Conch";
+                return "CrystalChimes";
             }
-            case Crumhorn:
+            case DemonDiary:
             {
-                return "Crumhorn";
+                return "DemonDiary";
             }
-            case Devil_Horn:
+            case DoveBloodVial:
             {
-                return "Devil_Horn";
+                return "DoveBloodVial";
             }
-            case Doll:
+            case DragonToothWhistle:
             {
-                return "Doll";
+                return "DragonToothWhistle";
             }
-            case Doll_Blessed:
+            case DriedFrog:
             {
-                return "Doll_Blessed";
+                return "DriedFrog";
             }
-            case Doll_Cursed:
+            case DriedGecko:
             {
-                return "Doll_Cursed";
+                return "DriedGecko";
             }
-            case Dried_Head:
+            case DriedIguana:
             {
-                return "Dried_Head";
+                return "DriedIguana";
             }
-            case DrumLute:
+            case DriedLizard:
             {
-                return "DrumLute";
+                return "DriedLizard";
             }
-            case Egg:
+            case DriedSalamander:
             {
-                return "Egg";
+                return "DriedSalamander";
             }
-            case Embryo:
+            case DriedSkink:
             {
-                return "Embryo";
+                return "DriedSkink";
             }
-            case Eye:
+            case DriedToad:
             {
-                return "Eye";
+                return "DriedToad";
             }
-            case Feather:
+            case DruidLeaf:
             {
-                return "Feather";
+                return "DruidLeaf";
             }
-            case Figurine_Blessed:
+            case EvilRabbitsFoot:
             {
-                return "Figurine_Blessed";
+                return "EvilRabbitsFoot";
             }
-            case Figurine_Cursed:
+            case ExoticGoldenGong:
             {
-                return "Figurine_Cursed";
+                return "ExoticGoldenGong";
             }
-            case Golem_Finger:
+            case EyeCyclops:
             {
-                return "Golem_Finger";
+                return "EyeCyclops";
             }
-            case Fingerclaw:
+            case EyeGiantOwl:
             {
-                return "Fingerclaw";
+                return "EyeGiantOwl";
             }
-            case Flag:
+            case EyeHawk:
             {
-                return "Flag";
+                return "EyeHawk";
             }
-            case Frog:
+            case FlagFanatics:
             {
-                return "Frog";
+                return "FlagFanatics";
             }
-            case Gecko:
+            case FlagRegalCaptains:
             {
-                return "Gecko";
+                return "FlagRegalCaptains";
             }
-            case Ghost_Sheet:
+            case FlagTribal:
             {
-                return "Ghost_Sheet";
+                return "FlagTribal";
             }
-            case Gizzard:
+            case FriarsChronicle:
             {
-                return "Gizzard";
+                return "FriarsChronicle";
             }
-            case Goblet:
+            case FuneralRecord:
             {
-                return "Goblet";
+                return "FuneralRecord";
             }
-            case Gong:
+            case GhostSheet:
             {
-                return "Gong";
+                return "GhostSheet";
             }
-            case Grave_Ornament:
+            case GlassCat:
             {
-                return "Grave_Ornament";
+                return "GlassCat";
             }
-            case Handbag:
+            case GriffinFeather:
             {
-                return "Handbag";
+                return "GriffinFeather";
             }
-            case Hanky:
+            case HangmansNoose:
             {
-                return "Hanky";
+                return "HangmansNoose";
             }
-            case Headdress:
+            case HobgoblinNose:
             {
-                return "Headdress";
+                return "HobgoblinNose";
             }
-            case Hide:
+            case HolyEpic:
             {
-                return "Hide";
+                return "HolyEpic";
             }
-            case Horn:
+            case HornOfTheHorde:
             {
-                return "Horn";
+                return "HornOfTheHorde";
             }
-            case Horseshoe:
+            case ImpTail:
             {
-                return "Horseshoe";
+                return "ImpTail";
             }
-            case Hurdy_Gurdy:
+            case IslanderHeaddress:
             {
-                return "Hurdy_Gurdy";
+                return "IslanderHeaddress";
             }
-            case Icicle:
+            case JeweledArmband:
             {
-                return "Icicle";
+                return "JeweledArmband";
             }
-            case Iguana:
+            case JeweledHandbag:
             {
-                return "Iguana";
+                return "JeweledHandbag";
             }
-            case Imp_Tail:
+            case JeweledPrincessVeil:
             {
-                return "Imp_Tail";
+                return "JeweledPrincessVeil";
             }
-            case Key:
+            case LastRitesScroll:
             {
-                return "Key";
+                return "LastRitesScroll";
             }
-            case Leaf:
+            case MacabreManuscript:
             {
-                return "Leaf";
+                return "MacabreManuscript";
             }
-            case Legtie:
+            case MadRatJuju:
             {
-                return "Legtie";
+                return "MadRatJuju";
             }
-            case Litch_Hand:
+            case MagicHorseshoe:
             {
-                return "Litch_Hand";
+                return "MagicHorseshoe";
             }
-            case Lizard:
+            case MagnifyingGlass:
             {
-                return "Lizard";
+                return "MagnifyingGlass";
             }
-            case LockPicks:
+            case ManaAmulet:
             {
-                return "LockPicks";
+                return "ManaAmulet";
             }
-            case Lyre:
+            case MaskMourners:
             {
-                return "Lyre";
+                return "MaskMourners";
             }
-            case Magnifying_Glass:
+            case MaskRascal:
             {
-                return "Magnifying_Glass";
+                return "MaskRascal";
             }
-            case Mask:
+            case MinotaurHide:
             {
-                return "Mask";
+                return "MinotaurHide";
             }
-            case Mirror:
+            case MortuaryOrnament:
             {
-                return "Mirror";
+                return "MortuaryOrnament";
             }
-            case Mummy_Hand:
+            case NecklaceJeweledAnkh:
             {
-                return "Mummy_Hand";
+                return "NecklaceJeweledAnkh";
             }
-            case Necklace:
+            case NecklaceSharkTooth:
             {
-                return "Necklace";
+                return "NecklaceSharkTooth";
             }
-            case Noose:
+            case NecklaceVampiresTooth:
             {
-                return "Noose";
+                return "NecklaceVampiresTooth";
             }
-            case Nose:
+            case PantherPaw:
             {
-                return "Nose";
-            }
-            case Orb:
-            {
-                return "Orb";
-            }
-            case Paw:
-            {
-                return "Paw";
-            }
-            case Pendant:
-            {
-                return "Pendant";
-            }
-            case Petrified_Snake:
-            {
-                return "Petrified_Snake";
+                return "PantherPaw";
             }
             case Pin_Crown:
             {
@@ -620,73 +618,213 @@ namespace item
             {
                 return "Pin_Mask";
             }
-            case Pipe_And_Tabor:
+            case PixieBell:
             {
-                return "Pipe_And_Tabor";
+                return "PixieBell";
             }
-            case Potion:
+            case RattlesnakeTail:
             {
-                return "Potion";
+                return "RattlesnakeTail";
             }
-            case Puppet_Blessed:
+            case RavenClaw:
             {
-                return "Puppet_Blessed";
+                return "RavenClaw";
             }
-            case Puppet_Cursed:
+            case ReaperScythe:
             {
-                return "Puppet_Cursed";
+                return "ReaperScythe";
             }
-            case Rabbit_Foot:
+            case RequiemRegister:
             {
-                return "Rabbit_Foot";
+                return "RequiemRegister";
             }
-            case Rainmaker:
+            case RingHobo:
             {
-                return "Rainmaker";
+                return "RingHobo";
             }
-            case Rat_Juju:
+            case RingMendicant:
             {
-                return "Rat_Juju";
+                return "RingMendicant";
             }
-            case Rattlesnake_Tail:
+            case RingMonk:
             {
-                return "Rattlesnake_Tail";
+                return "RingMonk";
             }
-            case Recorder:
+            case RingPriest:
             {
-                return "Recorder";
+                return "RingPriest";
             }
-            case Relic:
+            case RoyalScoutSpyglass:
             {
-                return "Relic";
+                return "RoyalScoutSpyglass";
+            }
+            case SaintCameoPin:
+            {
+                return "SaintCameoPin";
+            }
+            case SaintsJournal:
+            {
+                return "SaintsJournal";
+            }
+            case SanguineRelic:
+            {
+                return "SanguineRelic";
+            }
+            case ScoundrelSack:
+            {
+                return "ScoundrelSack";
+            }
+            case SepultureDecoration:
+            {
+                return "SepultureDecoration";
+            }
+            case ShadeCloak:
+            {
+                return "ShadeCloak";
+            }
+            case ShamanRainmaker:
+            {
+                return "ShamanRainmaker";
+            }
+            case SirenConch:
+            {
+                return "SirenConch";
+            }
+            case SpecterChains:
+            {
+                return "SpecterChains";
+            }
+            case SpecterRobe:
+            {
+                return "SpecterRobe";
+            }
+            case SpiderEggs:
+            {
+                return "SpiderEggs";
+            }
+            case SprintersLegtie:
+            {
+                return "SprintersLegtie";
+            }
+            case SwindlersBag:
+            {
+                return "SwindlersBag";
+            }
+            case TricksterPouch:
+            {
+                return "TricksterPouch";
+            }
+            case TuningFork:
+            {
+                return "TuningFork";
+            }
+            case TurtleShell:
+            {
+                return "TurtleShell";
+            }
+            case VultureGizzard:
+            {
+                return "VultureGizzard";
+            }
+            case WarhorseMarionette:
+            {
+                return "WarhorseMarionette";
+            }
+            case WarTrumpet:
+            {
+                return "WarTrumpet";
+            }
+            case WeaselTotem:
+            {
+                return "WeaselTotem";
+            }
+            case WolfenFur:
+            {
+                return "WolfenFur";
+            }
+            case WraithTalisman:
+            {
+                return "WraithTalisman";
+            }
+            case Bust:
+            {
+                return "Bust";
+            }
+            case Doll:
+            {
+                return "Doll";
+            }
+            case DollBlessed:
+            {
+                return "DollBlessed";
+            }
+            case DollCursed:
+            {
+                return "DollCursed";
+            }
+            case DriedHead:
+            {
+                return "DriedHead";
+            }
+            case DrumLute:
+            {
+                return "DrumLute";
+            }
+            case Egg:
+            {
+                return "Egg";
+            }
+            case Embryo:
+            {
+                return "Embryo";
+            }
+            case FigurineBlessed:
+            {
+                return "FigurineBlessed";
+            }
+            case FigurineCursed:
+            {
+                return "FigurineCursed";
+            }
+            case Goblet:
+            {
+                return "Goblet";
+            }
+            case Key:
+            {
+                return "Key";
+            }
+            case LockPicks:
+            {
+                return "LockPicks";
+            }
+            case Mirror:
+            {
+                return "Mirror";
+            }
+            case Orb:
+            {
+                return "Orb";
+            }
+            case Pendant:
+            {
+                return "Pendant";
+            }
+            case PuppetBlessed:
+            {
+                return "PuppetBlessed";
+            }
+            case PuppetCursed:
+            {
+                return "PuppetCursed";
             }
             case Ring:
             {
                 return "Ring";
             }
-            case Robe:
-            {
-                return "Robe";
-            }
-            case Salamander:
-            {
-                return "Salamander";
-            }
-            case Scales:
-            {
-                return "Scales";
-            }
             case Scepter:
             {
                 return "Scepter";
-            }
-            case Scroll:
-            {
-                return "Scroll";
-            }
-            case Scythe:
-            {
-                return "Scythe";
             }
             case Seeds:
             {
@@ -696,121 +834,17 @@ namespace item
             {
                 return "Shard";
             }
-            case Shark_Tooth_Necklace:
-            {
-                return "Shark_Tooth_Necklace";
-            }
-            case Shroud:
-            {
-                return "Shroud";
-            }
-            case Signet_Crown:
-            {
-                return "Signet_Crown";
-            }
-            case Signet_Feather:
-            {
-                return "Signet_Feather";
-            }
-            case Signet_Fist:
-            {
-                return "Signet_Fist";
-            }
-            case Signet_Hourglass:
-            {
-                return "Signet_Hourglass";
-            }
-            case Signet_Key:
-            {
-                return "Signet_Key";
-            }
-            case Signet_Mask:
-            {
-                return "Signet_Mask";
-            }
-            case Skink:
-            {
-                return "Skink";
-            }
-            case Spider_Eggs:
-            {
-                return "Spider_Eggs";
-            }
-            case Spyglass:
-            {
-                return "Spyglass";
-            }
             case Staff:
             {
                 return "Staff";
             }
-            case Summoning_Statue:
+            case SummoningStatue:
             {
-                return "Summoning_Statue";
-            }
-            case Talisman:
-            {
-                return "Talisman";
-            }
-            case Tome:
-            {
-                return "Tome";
-            }
-            case Tongue:
-            {
-                return "Tongue";
-            }
-            case Tooth:
-            {
-                return "Tooth";
-            }
-            case Tooth_Necklace:
-            {
-                return "Tooth_Necklace";
-            }
-            case Troll_Figure:
-            {
-                return "Troll_Figure";
-            }
-            case Trophy:
-            {
-                return "Trophy";
-            }
-            case Tuning_Fork:
-            {
-                return "Tuning_Fork";
-            }
-            case Turtle_Shell:
-            {
-                return "Turtle_Shell";
-            }
-            case Unicorn_Horn:
-            {
-                return "Unicorn_Horn";
-            }
-            case Veil:
-            {
-                return "Veil";
-            }
-            case Viol:
-            {
-                return "Viol";
+                return "SummoningStatue";
             }
             case Wand:
             {
                 return "Wand";
-            }
-            case Warhorse_Marionette:
-            {
-                return "Warhorse_Marionette";
-            }
-            case Weasel_Totem:
-            {
-                return "Weasel_Totem";
-            }
-            case Wolfen_Fur:
-            {
-                return "Wolfen_Fur";
             }
             case Count:
             default:
@@ -827,73 +861,134 @@ namespace item
         switch (E)
         {
             case NotMisc:
-            case Angel_Braid:
+            {
+                return "NotMisc";
+            }
+
+            case AngelBraid:
             {
                 return "Angel Braid";
             }
-            case Ankh_Necklace:
+            case Crumhorn:
             {
-                return "Ankh Necklace";
+                return "Crumhorn";
             }
-            case Bird_Claw:
+            case DevilHorn:
             {
-                return "Raven Claw";
+                return "Devil Horn";
             }
-            case Bone_Whistle:
+            case GolemFinger:
             {
-                return "Dragon Bone Whistle";
+                return "Golem Finger";
             }
-            case Bracelet_Crown:
+            case HurdyGurdy:
             {
-                return "Crown Emblem Bracelet";
+                return "Hannibal's Hurdy Gurdy";
             }
-            case Bracelet_Feather:
+            case Icicle:
             {
-                return "Feather Emblem Bracelet";
+                return "Icicle";
             }
-            case Bracelet_Fist:
+            case LitchHand:
             {
-                return "Fist Emblem Bracelet";
+                return "Litch Hand";
             }
-            case Bracelet_Hourglass:
+            case Lyre:
             {
-                return "Hourglass Emblem Bracelet";
+                return "Satyr's Lyre";
             }
-            case Bracelet_Key:
+            case MummyHand:
             {
-                return "Key Emblem Bracelet";
+                return "Mummy Hand";
             }
-            case Bracelet_Mask:
+            case PetrifiedSnake:
             {
-                return "Mask Emblem Bracelet";
+                return "Petrified Snake";
+            }
+            case PipeAndTabor:
+            {
+                return "Puritan's Pipe And Tabor";
+            }
+            case Recorder:
+            {
+                return "Reverend's Recorder";
+            }
+            case UnicornHorn:
+            {
+                return "Unicorn Horn";
+            }
+            case Viol:
+            {
+                return "Villain's Viol";
+            }
+
+            case BasiliskTonge:
+            {
+                return "Basilisk Tonge";
+            }
+            case BerserkersBeard:
+            {
+                return "Berserker's Beard";
+            }
+            case BishopsHanky:
+            {
+                return "Bishop's Hanky";
+            }
+            case BleedingTrophy:
+            {
+                return "Bleeding Trophy";
+            }
+            case BloodyDragonScale:
+            {
+                return "Bloody Dragon Scale";
+            }
+            case BottleOfBansheeScreams:
+            {
+                return "Bottle Of Banshee Screams";
+            }
+            case BronzeTroll:
+            {
+                return "Bronze Troll";
             }
             case Brooch_Crown:
             {
-                return "Crown Emblem Brooch";
+                return "Crown Brooch";
             }
             case Brooch_Feather:
             {
-                return "Feather Emblem Brooch";
+                return "Feather Brooch";
             }
             case Brooch_Fist:
             {
-                return "Fist Emblem Brooch";
+                return "Fist Brooch";
             }
             case Brooch_Hourglass:
             {
-                return "Hourglass Emblem Brooch";
+                return "Hourglass Brooch";
             }
             case Brooch_Key:
             {
-                return "Key Emblem Brooch";
+                return "Key Brooch";
             }
             case Brooch_Mask:
             {
-                return "Mask Emblem Brooch";
+                return "Mask Brooch";
             }
-            case CameoPin:
+            case BurialShroud:
             {
-                return "Cameo Pin";
+                return "Burial Shroud";
+            }
+            case CapeCommanders:
+            {
+                return "Commander's Cape";
+            }
+            case CapeGenerals:
+            {
+                return "General's Cape";
+            }
+            case CapeKings:
+            {
+                return "King's Cape";
             }
             case Charm_Crown:
             {
@@ -919,257 +1014,459 @@ namespace item
             {
                 return "Mask Charm";
             }
-            case Devil_Horn:
+            case ChimeraBone:
             {
-                return "Devil Horn";
+                return "Chimera Bone";
             }
-            case Doll_Blessed:
+            case CobraTooth:
             {
-                return "Doll";
+                return "Cobra Tooth";
             }
-            case Doll_Cursed:
+            case CrystalChimes:
             {
-                return "Doll";
+                return "Crystal CrystalChimes";
             }
-            case Dried_Head:
+            case DemonDiary:
             {
-                return "Dried Head";
+                return "Demon's Diary";
             }
-            case Figurine_Blessed:
+            case DoveBloodVial:
             {
-                return "Figurine";
+                return "Dove Blood Vial";
             }
-            case Figurine_Cursed:
+            case DragonToothWhistle:
             {
-                return "Figurine";
+                return "Dragon Tooth Whistle";
             }
-            case Ghost_Sheet:
+            case DriedFrog:
+            {
+                return "Dried Frog";
+            }
+            case DriedGecko:
+            {
+                return "Dried Gecko";
+            }
+            case DriedIguana:
+            {
+                return "Dried Iguana";
+            }
+            case DriedLizard:
+            {
+                return "Dried Lizard";
+            }
+            case DriedSalamander:
+            {
+                return "Dried Salamander";
+            }
+            case DriedSkink:
+            {
+                return "Dried Skink";
+            }
+            case DriedToad:
+            {
+                return "Dried Toad";
+            }
+            case DruidLeaf:
+            {
+                return "Druid Leaf";
+            }
+            case EvilRabbitsFoot:
+            {
+                return "Evil Rabbits Foot";
+            }
+            case ExoticGoldenGong:
+            {
+                return "Exotic Golden Gong";
+            }
+            case EyeCyclops:
+            {
+                return "Cyclop's Eye";
+            }
+            case EyeGiantOwl:
+            {
+                return "Giant Owl Eye";
+            }
+            case EyeHawk:
+            {
+                return "Hawk Eye";
+            }
+            case FlagFanatics:
+            {
+                return "Fanatic's Flag";
+            }
+            case FlagRegalCaptains:
+            {
+                return "Regal Captain's Flag";
+            }
+            case FlagTribal:
+            {
+                return "Tribal Flag";
+            }
+            case FriarsChronicle:
+            {
+                return "Friar's Chronicle";
+            }
+            case FuneralRecord:
+            {
+                return "Funeral Record";
+            }
+            case GhostSheet:
             {
                 return "Ghost Sheet";
             }
-            case Golem_Finger:
+            case GlassCat:
             {
-                return "Golem Finger";
+                return "Glass Cat";
             }
-            case Grave_Ornament:
+            case GriffinFeather:
             {
-                return "Grave Ornament";
+                return "Griffin Feather";
             }
-            case Hurdy_Gurdy:
+            case HangmansNoose:
             {
-                return "Hurdy-Gurdy";
+                return "Hangman's Noose";
             }
-            case Imp_Tail:
+            case HobgoblinNose:
+            {
+                return "Hobgoblin Nose";
+            }
+            case HolyEpic:
+            {
+                return "Holy Epic";
+            }
+            case HornOfTheHorde:
+            {
+                return "Horn of The Horde";
+            }
+            case ImpTail:
             {
                 return "Imp Tail";
             }
-            case Litch_Hand:
+            case IslanderHeaddress:
             {
-                return "Litch Hand";
+                return "Islander Headdress";
             }
-            case Magnifying_Glass:
+            case JeweledArmband:
+            {
+                return "Armband";
+            }
+            case JeweledHandbag:
+            {
+                return "Handbag";
+            }
+            case JeweledPrincessVeil:
+            {
+                return "Princess Veil";
+            }
+            case LastRitesScroll:
+            {
+                return "Last Rites Scroll";
+            }
+            case MacabreManuscript:
+            {
+                return "Macabre Manuscript";
+            }
+            case MadRatJuju:
+            {
+                return "Mad Rat Juju";
+            }
+            case MagicHorseshoe:
+            {
+                return "Magic Horseshoe";
+            }
+            case MagnifyingGlass:
             {
                 return "Magnifying Glass";
             }
-            case Petrified_Snake:
+            case ManaAmulet:
             {
-                return "Petrified Snake";
+                return "Mana Amulet";
             }
-            case Pin_Crown:
+            case MaskMourners:
             {
-                return "Crown Emblem Pin";
+                return "Mourner's Mask";
             }
-            case Pin_Feather:
+            case MaskRascal:
             {
-                return "Feather Emblem Pin";
+                return "Rascal Mask";
             }
-            case Pin_Fist:
+            case MinotaurHide:
             {
-                return "Fist Emblem Pin";
+                return "Minotaur Hide";
             }
-            case Pin_Hourglass:
+            case MortuaryOrnament:
             {
-                return "Hourglass Emblem Pin";
+                return "Mortuary Ornament";
             }
-            case Pin_Key:
+            case NecklaceJeweledAnkh:
             {
-                return "Key Emblem Pin";
+                return "Ankh Necklace ";
             }
-            case Pin_Mask:
-            {
-                return "Mask Emblem Pin";
-            }
-            case Pipe_And_Tabor:
-            {
-                return "Pipe and Tabor";
-            }
-            case Puppet_Blessed:
-            {
-                return "Puppet";
-            }
-            case Puppet_Cursed:
-            {
-                return "Puppet";
-            }
-            case Rabbit_Foot:
-            {
-                return "Rabbit Foot";
-            }
-            case Rat_Juju:
-            {
-                return "Rat Juju";
-            }
-            case Rattlesnake_Tail:
-            {
-                return "Rattlesnake Tail";
-            }
-            case Shark_Tooth_Necklace:
+            case NecklaceSharkTooth:
             {
                 return "Shark Tooth Necklace";
             }
-            case Signet_Crown:
+            case NecklaceVampiresTooth:
             {
-                return "Crown Signet";
+                return "Vampire's Tooth Necklace";
             }
-            case Signet_Feather:
+            case PantherPaw:
             {
-                return "Feather Signet";
+                return "Panther Paw";
             }
-            case Signet_Fist:
+            case Pin_Crown:
             {
-                return "Fist Signet";
+                return "Crown Pin";
             }
-            case Signet_Hourglass:
+            case Pin_Feather:
             {
-                return "Hourglass Signet";
+                return "Feather Pin";
             }
-            case Signet_Key:
+            case Pin_Fist:
             {
-                return "Key Signet";
+                return "Fist Pin";
             }
-            case Signet_Mask:
+            case Pin_Hourglass:
             {
-                return "Mask Signet";
+                return "Hourglass Pin";
             }
-            case Spider_Eggs:
+            case Pin_Key:
+            {
+                return "Key Pin";
+            }
+            case Pin_Mask:
+            {
+                return "Mask Pin";
+            }
+            case PixieBell:
+            {
+                return "Pixie Bell";
+            }
+            case RattlesnakeTail:
+            {
+                return "Rattlesnake Tail";
+            }
+            case RavenClaw:
+            {
+                return "Raven Claw";
+            }
+            case ReaperScythe:
+            {
+                return "Reaper Scythe";
+            }
+            case RequiemRegister:
+            {
+                return "Requiem Register";
+            }
+            case RingHobo:
+            {
+                return "Hobo Ring";
+            }
+            case RingMendicant:
+            {
+                return "Mendicant Ring";
+            }
+            case RingMonk:
+            {
+                return "Monk Ring";
+            }
+            case RingPriest:
+            {
+                return "PriestRing";
+            }
+            case RoyalScoutSpyglass:
+            {
+                return "Royal Scout Spyglass";
+            }
+            case SaintCameoPin:
+            {
+                return "Saint Cameo Pin";
+            }
+            case SaintsJournal:
+            {
+                return "Saint's Journal";
+            }
+            case SanguineRelic:
+            {
+                return "Sanguine Relic";
+            }
+            case ScoundrelSack:
+            {
+                return "Scoundrel Sack";
+            }
+            case SepultureDecoration:
+            {
+                return "Sepulture Decoration";
+            }
+            case ShadeCloak:
+            {
+                return "Shade Cloak";
+            }
+            case ShamanRainmaker:
+            {
+                return "Shaman Rainmaker";
+            }
+            case SirenConch:
+            {
+                return "Siren Conch";
+            }
+            case SpecterChains:
+            {
+                return "Specter Chains";
+            }
+            case SpecterRobe:
+            {
+                return "Specter Robe";
+            }
+            case SpiderEggs:
             {
                 return "Spider Eggs";
             }
-            case Summoning_Statue:
+            case SprintersLegtie:
             {
-                return "Summoning Statue";
+                return "Sprinter's Legtie";
             }
-            case Tooth_Necklace:
+            case SwindlersBag:
             {
-                return "Vampire Tooth Necklace";
+                return "Swindler's Bag";
             }
-            case Troll_Figure:
+            case TricksterPouch:
             {
-                return "Troll Figure";
+                return "Trickster Pouch";
             }
-            case Tuning_Fork:
+            case TuningFork:
             {
                 return "Tuning Fork";
             }
-            case Turtle_Shell:
+            case TurtleShell:
             {
                 return "Turtle Shell";
             }
-            case Unicorn_Horn:
+            case VultureGizzard:
             {
-                return "Unicorn Horn";
+                return "Vulture Gizzard";
             }
-            case Warhorse_Marionette:
+            case WarhorseMarionette:
             {
                 return "Warhorse Marionette";
             }
-            case Weasel_Totem:
+            case WarTrumpet:
+            {
+                return "War Trumpet";
+            }
+            case WeaselTotem:
             {
                 return "Weasel Totem";
             }
-            case Wolfen_Fur:
+            case WolfenFur:
             {
                 return "Wolfen Fur";
             }
-            case Amulet:
-            case Armband:
-            case Bag:
-            case Beard:
-            case Bell:
-            case Bone:
-            case Book:
+            case WraithTalisman:
+            {
+                return "Wraith Talisman";
+            }
             case Bust:
-            case Cape:
-            case Cat:
-            case Chains:
-            case Chimes:
-            case Cloak:
-            case Conch:
-            case Crumhorn:
+            {
+                return "Bust";
+            }
             case Doll:
+            {
+                return "Doll";
+            }
+            case DollBlessed:
+            {
+                return "Doll";
+            }
+            case DollCursed:
+            {
+                return "Doll";
+            }
+            case DriedHead:
+            {
+                return "Dried Head";
+            }
             case DrumLute:
-            case Embryo:
+            {
+                return "Drumlute";
+            }
             case Egg:
-            case Eye:
-            case Feather:
-            case Fingerclaw:
-            case Flag:
-            case Frog:
-            case Gecko:
-            case Gizzard:
+            {
+                return "Egg";
+            }
+            case Embryo:
+            {
+                return "Embryo";
+            }
+            case FigurineBlessed:
+            {
+                return "Figurine";
+            }
+            case FigurineCursed:
+            {
+                return "Figurine";
+            }
             case Goblet:
-            case Gong:
-            case Handbag:
-            case Hanky:
-            case Headdress:
-            case Hide:
-            case Horn:
-            case Horseshoe:
-            case Icicle:
-            case Iguana:
+            {
+                return "Goblet";
+            }
             case Key:
-            case Leaf:
-            case Legtie:
-            case Lizard:
+            {
+                return "Key";
+            }
             case LockPicks:
-            case Lyre:
-            case Mask:
+            {
+                return "Lockpicks";
+            }
             case Mirror:
-            case Mummy_Hand:
-            case Necklace:
-            case Noose:
-            case Nose:
+            {
+                return "Mirror";
+            }
             case Orb:
-            case Paw:
+            {
+                return "Orb";
+            }
             case Pendant:
-            case Potion:
-            case Rainmaker:
-            case Recorder:
-            case Relic:
+            {
+                return "Pendant";
+            }
+            case PuppetBlessed:
+            {
+                return "Puppet";
+            }
+            case PuppetCursed:
+            {
+                return "Puppet";
+            }
             case Ring:
-            case Robe:
-            case Salamander:
-            case Scales:
+            {
+                return "Ring";
+            }
             case Scepter:
-            case Scroll:
-            case Scythe:
+            {
+                return "Scepter";
+            }
             case Seeds:
-            case Skink:
+            {
+                return "Seeds";
+            }
             case Shard:
-            case Shroud:
-            case Spyglass:
+            {
+                return "Shard";
+            }
             case Staff:
-            case Talisman:
-            case Tome:
-            case Tongue:
-            case Tooth:
-            case Trophy:
-            case Veil:
-            case Viol:
+            {
+                return "Staff";
+            }
+            case SummoningStatue:
+            {
+                return "Summoning Statue";
+            }
             case Wand:
             {
-                return misc_type::ToString(E);
+                return "Wand";
             }
+
             case Count:
             default:
             {
@@ -1180,46 +1477,45 @@ namespace item
         }
     }
 
-    bool misc_type::IsMusicalInstrument(const Enum MISC_TYPE)
+    bool misc_type::IsQuestItem(const Enum MISC_TYPE)
     {
         return (
-            (MISC_TYPE == DrumLute) || (MISC_TYPE == Crumhorn) || (MISC_TYPE == Hurdy_Gurdy)
-            || (MISC_TYPE == Lyre) || (MISC_TYPE == Pipe_And_Tabor) || (MISC_TYPE == Recorder)
-            || (MISC_TYPE == Viol));
-    }
-
-    bool misc_type::IsSummoning(const Enum MISC_TYPE)
-    {
-        return (
-            (MISC_TYPE == Egg) || (MISC_TYPE == Embryo) || (MISC_TYPE == Seeds)
-            || (MISC_TYPE == Summoning_Statue) || ((MISC_TYPE == Spider_Eggs)));
+            (MISC_TYPE == AngelBraid) || (MISC_TYPE == Crumhorn) || (MISC_TYPE == DevilHorn)
+            || (MISC_TYPE == GolemFinger) || (MISC_TYPE == HurdyGurdy) || (MISC_TYPE == Icicle)
+            || (MISC_TYPE == LitchHand) || (MISC_TYPE == Lyre) || (MISC_TYPE == MummyHand)
+            || (MISC_TYPE == PetrifiedSnake) || (MISC_TYPE == PipeAndTabor)
+            || (MISC_TYPE == Recorder) || (MISC_TYPE == UnicornHorn) || (MISC_TYPE == Viol));
     }
 
     bool misc_type::IsStandalone(const misc_type::Enum MISC_TYPE)
     {
-        // keep in sync with misc_type::Materials() and ItemProfile::SetMisc()
         return (
-            IsSummoning(MISC_TYPE) || IsBlessed(MISC_TYPE) || IsCursed(MISC_TYPE)
-            || IsOrdinary(MISC_TYPE));
+            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == DollBlessed)
+            || (MISC_TYPE == DollCursed) || (MISC_TYPE == DriedHead) || (MISC_TYPE == DrumLute)
+            || (MISC_TYPE == Egg) || (MISC_TYPE == Embryo) || (MISC_TYPE == FigurineBlessed)
+            || (MISC_TYPE == FigurineCursed) || (MISC_TYPE == Goblet) || (MISC_TYPE == Key)
+            || (MISC_TYPE == LockPicks) || (MISC_TYPE == Mirror) || (MISC_TYPE == Orb)
+            || (MISC_TYPE == Pendant) || (MISC_TYPE == PuppetBlessed) || (MISC_TYPE == PuppetCursed)
+            || (MISC_TYPE == Ring) || (MISC_TYPE == Scepter) || (MISC_TYPE == Seeds)
+            || (MISC_TYPE == Shard) || (MISC_TYPE == Staff) || (MISC_TYPE == SummoningStatue)
+            || (MISC_TYPE == Wand));
     }
 
-    bool misc_type::IsOrdinary(const Enum MISC_TYPE)
+    bool misc_type::IsUnique(const Enum MISC_TYPE)
     {
-        // keep in sync with misc_type::Materials() and ItemProfile::SetMisc()
         return (
-            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == DrumLute)
-            || (MISC_TYPE == Goblet) || (MISC_TYPE == Key) || (MISC_TYPE == LockPicks)
-            || (MISC_TYPE == Mirror) || (MISC_TYPE == Orb) || (MISC_TYPE == Pendant)
-            || (MISC_TYPE == Ring) || (MISC_TYPE == Scepter) || (MISC_TYPE == Shard)
-            || (MISC_TYPE == Wand));
+            (MISC_TYPE != NotMisc) && (MISC_TYPE != Count) && (IsQuestItem(MISC_TYPE) == false)
+            && (IsStandalone(MISC_TYPE) == false));
     }
 
     bool misc_type::HasPixieVersion(const Enum MISC_TYPE)
     {
         return (
-            (MISC_TYPE == Armband) || (MISC_TYPE == Cape) || (MISC_TYPE == Cloak)
-            || (MISC_TYPE == Ghost_Sheet) || (MISC_TYPE == Robe) || (MISC_TYPE == Shroud)
-            || IsMusicalInstrument(MISC_TYPE));
+            (MISC_TYPE == JeweledArmband) || (MISC_TYPE == CapeCommanders)
+            || (MISC_TYPE == CapeKings) || (MISC_TYPE == CapeGenerals) || (MISC_TYPE == ShadeCloak)
+            || (MISC_TYPE == GhostSheet) || (MISC_TYPE == SpecterRobe)
+            || (MISC_TYPE == BurialShroud) || IsMusicalInstrument(MISC_TYPE)
+            || (MISC_TYPE == Staff));
     }
 
     bool misc_type::HasOnlyPixieVersion(const misc_type::Enum) { return false; }
@@ -1227,41 +1523,69 @@ namespace item
     bool misc_type::MustBePixieVersionForPixiesToEquip(const Enum MISC_TYPE)
     {
         return (
-            IsMusicalInstrument(MISC_TYPE) || (MISC_TYPE == Armband) || (MISC_TYPE == Cape)
-            || (MISC_TYPE == Cloak) || (MISC_TYPE == Ghost_Sheet) || (MISC_TYPE == Robe)
-            || (MISC_TYPE == Shroud) || (MISC_TYPE == Staff) ||
+            IsMusicalInstrument(MISC_TYPE) || (MISC_TYPE == JeweledArmband)
+            || (MISC_TYPE == CapeCommanders) || (MISC_TYPE == CapeKings)
+            || (MISC_TYPE == CapeGenerals) || (MISC_TYPE == ShadeCloak) || (MISC_TYPE == GhostSheet)
+            || (MISC_TYPE == SpecterRobe) || (MISC_TYPE == BurialShroud) || (MISC_TYPE == Staff) ||
 
             // these items must be pixie for pixies to equip, but there are no pixie versions of
             // these items so pixies can never equip them.
-            (MISC_TYPE == Gong) || (MISC_TYPE == Headdress) || (MISC_TYPE == Horn)
-            || (MISC_TYPE == Warhorse_Marionette));
+            (MISC_TYPE == ExoticGoldenGong) || (MISC_TYPE == IslanderHeaddress)
+            || (MISC_TYPE == HornOfTheHorde) || (MISC_TYPE == WarTrumpet)
+            || (MISC_TYPE == WarhorseMarionette));
     }
 
     float misc_type::ReligiousRatio(const misc_type::Enum MISC_TYPE)
     {
-        if (MISC_TYPE == Figurine_Blessed)
+        if ((MISC_TYPE == SpecterChains) || (MISC_TYPE == DoveBloodVial))
         {
-            return 0.9f;
+            return 0.1f;
         }
-        else if (MISC_TYPE == Figurine_Cursed)
+        else if ((MISC_TYPE == SpecterRobe) || (MISC_TYPE == ManaAmulet))
         {
-            return 0.9f;
+            return 0.2f;
         }
-        else if (MISC_TYPE == Doll_Blessed)
+        else if (
+            (MISC_TYPE == ShadeCloak) || (MISC_TYPE == SanguineRelic)
+            || (MISC_TYPE == EvilRabbitsFoot) || (MISC_TYPE == BleedingTrophy)
+            || (MISC_TYPE == WraithTalisman))
         {
-            return 0.9f;
-        }
-        else if (MISC_TYPE == Doll_Cursed)
-        {
-            return 0.9f;
+            return 0.5f;
         }
         else if (MISC_TYPE == Bust)
         {
             return 0.6f;
         }
-        else if (MISC_TYPE == Dried_Head)
+        else if (MISC_TYPE == SepultureDecoration)
+        {
+            return 0.65f;
+        }
+        else if (
+            (MISC_TYPE == RingMendicant) || (MISC_TYPE == DriedHead) || (MISC_TYPE == DemonDiary)
+            || (MISC_TYPE == MacabreManuscript))
         {
             return 0.75f;
+        }
+        else if (
+            (MISC_TYPE == BurialShroud) || (MISC_TYPE == MortuaryOrnament)
+            || (MISC_TYPE == GhostSheet) || (MISC_TYPE == FuneralRecord)
+            || (MISC_TYPE == FriarsChronicle))
+        {
+            return 0.8f;
+        }
+        else if (
+            (MISC_TYPE == SaintsJournal) || (MISC_TYPE == SaintCameoPin)
+            || (MISC_TYPE == RequiemRegister) || (MISC_TYPE == RingMonk)
+            || (MISC_TYPE == LastRitesScroll) || (MISC_TYPE == HolyEpic) || (MISC_TYPE == DruidLeaf)
+            || (MISC_TYPE == ShamanRainmaker) || (MISC_TYPE == FigurineBlessed)
+            || (MISC_TYPE == FigurineCursed) || (MISC_TYPE == DollBlessed)
+            || (MISC_TYPE == DollCursed))
+        {
+            return 0.9f;
+        }
+        else if ((MISC_TYPE == RingPriest) || (MISC_TYPE == BishopsHanky))
+        {
+            return 0.99f;
         }
         else
         {
@@ -1272,684 +1596,386 @@ namespace item
     bool misc_type::HasNonFleshEyes(const misc_type::Enum MISC_TYPE)
     {
         return (
-            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == Doll_Blessed)
-            || (MISC_TYPE == Doll_Cursed) || (MISC_TYPE == Figurine_Blessed)
-            || (MISC_TYPE == Figurine_Cursed) || (MISC_TYPE == Puppet_Blessed)
-            || (MISC_TYPE == Puppet_Cursed) || (MISC_TYPE == Rat_Juju)
-            || (MISC_TYPE == Summoning_Statue) || (MISC_TYPE == Talisman)
-            || (MISC_TYPE == Troll_Figure) || (MISC_TYPE == Weasel_Totem)
-            || (MISC_TYPE == Dried_Head)); // yeah it's flesh but what the hell having special
-                                           // eyes is cool (oh and it's not edible so it's okay)
+            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == DollBlessed)
+            || (MISC_TYPE == DollCursed) || (MISC_TYPE == FigurineBlessed)
+            || (MISC_TYPE == FigurineCursed) || (MISC_TYPE == PuppetBlessed)
+            || (MISC_TYPE == PuppetCursed) || (MISC_TYPE == MadRatJuju)
+            || (MISC_TYPE == SummoningStatue) || (MISC_TYPE == WraithTalisman)
+            || (MISC_TYPE == BronzeTroll) || (MISC_TYPE == WeaselTotem)
+            || (MISC_TYPE == DriedHead)); // yeah it's flesh but what the hell having special
+                                          // eyes is cool (oh and it's not edible so it's okay)
     }
 
     bool misc_type::IsBlessed(const misc_type::Enum E)
     {
         return (
-            (E == Doll_Blessed) || (E == Figurine_Blessed) || (E == Puppet_Blessed) || (E == Bust));
+            (E == DollBlessed) || (E == FigurineBlessed) || (E == PuppetBlessed) || (E == Bust));
     }
 
     bool misc_type::IsCursed(const misc_type::Enum E)
     {
         return (
-            (E == Doll_Cursed) || (E == Figurine_Cursed) || (E == Puppet_Cursed)
-            || (E == Dried_Head));
+            (E == DollCursed) || (E == FigurineCursed) || (E == PuppetCursed) || (E == DriedHead));
     }
 
     Weight_t misc_type::Weight(const misc_type::Enum MISC_TYPE)
     {
-        // keep in sync with misc_type::IsStandalone()
-
+        // clang-format off
         switch (MISC_TYPE)
         {
-            case Amulet:
-            {
-                return 30_weight;
-            }
-            case Ankh_Necklace:
-            {
-                return 24_weight;
-            }
-            case Armband:
-            {
-                return 40_weight;
-            }
-            case Bag:
-            {
-                return 20_weight;
-            }
-            case Beard:
-            {
-                return 7_weight;
-            }
-            case Bell:
-            {
-                return 35_weight;
-            }
-            case Bird_Claw:
-            {
-                return 4_weight;
-            }
-            case Bone:
-            {
-                return 32_weight;
-            }
-            case Bone_Whistle:
-            {
-                return 8_weight;
-            }
-            case Book:
-            {
-                return 60_weight;
-            }
-            case Bracelet_Crown:
-            case Bracelet_Feather:
-            case Bracelet_Fist:
-            case Bracelet_Hourglass:
-            case Bracelet_Key:
-            case Bracelet_Mask:
-            {
-                return 33_weight;
-            }
-            case Angel_Braid:
-            {
-                return 8_weight;
-            }
-            case Brooch_Crown:
-            case Brooch_Feather:
-            case Brooch_Fist:
-            case Brooch_Hourglass:
-            case Brooch_Key:
-            case Brooch_Mask:
-            {
-                return 29_weight;
-            }
-            case Bust:
-            {
-                return 200_weight;
-            }
-            case CameoPin:
-            {
-                return 21_weight;
-            }
-            case Cape:
-            {
-                return 57_weight;
-            }
-            case Cat:
-            {
-                return 236_weight;
-            }
-            case Chains:
-            {
-                return 300_weight;
-            }
-            case Charm_Crown:
-            case Charm_Feather:
-            case Charm_Fist:
-            case Charm_Hourglass:
-            case Charm_Key:
-            case Charm_Mask:
-            {
-                return 31_weight;
-            }
-            case Chimes:
-            {
-                return 58_weight;
-            }
-            case Cloak:
-            {
-                return 111_weight;
-            }
-            case Conch:
-            {
-                return 49_weight;
-            }
-            case Crumhorn:
-            {
-                return 47_weight;
-            }
-            case Devil_Horn:
-            {
-                return 85_weight;
-            }
-            case Doll:
-            case Doll_Blessed:
-            case Doll_Cursed:
-            {
-                return 28_weight;
-            }
-            case Dried_Head:
-            {
-                return 65_weight;
-            }
-            case DrumLute:
-            {
-                return 364_weight;
-            }
-            case Egg:
-            {
-                return 153_weight;
-            }
-            case Embryo:
-            {
-                return 41_weight;
-            }
-            case Eye:
-            {
-                return 31_weight;
-            }
-            case Feather:
-            {
-                return 1_weight;
-            }
-            case Figurine_Blessed:
-            case Figurine_Cursed:
-            {
-                return 38_weight;
-            }
-            case Golem_Finger:
-            {
-                return 51_weight;
-            }
-            case Fingerclaw:
-            {
-                return 19_weight;
-            }
-            case Flag:
-            {
-                return 56_weight;
-            }
-            case Frog:
-            {
-                return 47_weight;
-            }
-            case Gecko:
-            {
-                return 46_weight;
-            }
-            case Ghost_Sheet:
-            {
-                return 56_weight;
-            }
-            case Gizzard:
-            {
-                return 53_weight;
-            }
-            case Goblet:
-            {
-                return 50_weight;
-            }
-            case Gong:
-            {
-                return 255_weight;
-            }
-            case Grave_Ornament:
-            {
-                return 77_weight;
-            }
-            case Handbag:
-            {
-                return 27_weight;
-            }
-            case Hanky:
-            {
-                return 13_weight;
-            }
-            case Headdress:
-            {
-                return 68_weight;
-            }
-            case Hide:
-            {
-                return 101_weight;
-            }
-            case Horn:
-            {
-                return 48_weight;
-            }
-            case Horseshoe:
-            {
-                return 47_weight;
-            }
-            case Hurdy_Gurdy:
-            {
-                return 446_weight;
-            }
-            case Icicle:
-            {
-                return 26_weight;
-            }
-            case Iguana:
-            {
-                return 44_weight;
-            }
-            case Imp_Tail:
-            {
-                return 52_weight;
-            }
-            case Key:
-            {
-                return 36_weight;
-            }
-            case Leaf:
-            {
-                return 1_weight;
-            }
-            case Legtie:
-            {
-                return 11_weight;
-            }
-            case Litch_Hand:
-            {
-                return 37_weight;
-            }
-            case Lizard:
-            {
-                return 43_weight;
-            }
-            case LockPicks:
-            {
-                return 33_weight;
-            }
-            case Lyre:
-            {
-                return 54_weight;
-            }
-            case Magnifying_Glass:
-            {
-                return 48_weight;
-            }
-            case Mask:
-            {
-                return 57_weight;
-            }
-            case Mirror:
-            {
-                return 47_weight;
-            }
-            case Mummy_Hand:
-            {
-                return 38_weight;
-            }
-            case Necklace:
-            {
-                return 21_weight;
-            }
-            case Noose:
-            {
-                return 29_weight;
-            }
-            case Nose:
-            {
-                return 13_weight;
-            }
-            case Orb:
-            {
-                return 87_weight;
-            }
-            case Paw:
-            {
-                return 10_weight;
-            }
-            case Pendant:
-            {
-                return 26_weight;
-            }
-            case Petrified_Snake:
-            {
-                return 32_weight;
-            }
-            case Pin_Crown:
-            case Pin_Feather:
-            case Pin_Fist:
-            case Pin_Hourglass:
-            case Pin_Key:
-            case Pin_Mask:
-            {
-                return 16_weight;
-            }
-            case Pipe_And_Tabor:
-            {
-                return 127_weight;
-            }
-            case Potion:
-            {
-                return 95_weight;
-            }
-            case Puppet_Blessed:
-            case Puppet_Cursed:
-            {
-                return 38_weight;
-            }
-            case Rabbit_Foot:
-            {
-                return 22_weight;
-            }
-            case Rainmaker:
-            {
-                return 43_weight;
-            }
-            case Rat_Juju:
-            {
-                return 25_weight;
-            }
-            case Rattlesnake_Tail:
-            {
-                return 11_weight;
-            }
-            case Recorder:
-            {
-                return 36_weight;
-            }
-            case Relic:
-            {
-                return 57_weight;
-            }
-            case Ring:
-            {
-                return 12_weight;
-            }
-            case Robe:
-            {
-                return 159_weight;
-            }
-            case Salamander:
-            {
-                return 48_weight;
-            }
-            case Scales:
-            {
-                return 122_weight;
-            }
-            case Scepter:
-            {
-                return 48_weight;
-            }
-            case Scroll:
-            {
-                return 33_weight;
-            }
-            case Scythe:
-            {
-                return 413_weight;
-            }
-            case Seeds:
-            {
-                return 12_weight;
-            }
-            case Shard:
-            {
-                return 49_weight;
-            }
-            case Shark_Tooth_Necklace:
-            {
-                return 22_weight;
-            }
-            case Shroud:
-            {
-                return 166_weight;
-            }
-            case Signet_Crown:
-            case Signet_Feather:
-            case Signet_Fist:
-            case Signet_Hourglass:
-            case Signet_Key:
-            case Signet_Mask:
-            {
-                return 35_weight;
-            }
-            case Skink:
-            {
-                return 45_weight;
-            }
-            case Spider_Eggs:
-            {
-                return 12_weight;
-            }
-            case Spyglass:
-            {
-                return 62_weight;
-            }
-            case Staff:
-            {
-                return 277_weight;
-            }
-            case Summoning_Statue:
-            {
-                return 38_weight;
-            }
-            case Talisman:
-            {
-                return 32_weight;
-            }
-            case Tome:
-            {
-                return 70_weight;
-            }
-            case Tongue:
-            {
-                return 34_weight;
-            }
-            case Tooth:
-            {
-                return 5_weight;
-            }
-            case Tooth_Necklace:
-            {
-                return 22_weight;
-            }
-            case Troll_Figure:
-            {
-                return 39_weight;
-            }
-            case Trophy:
-            {
-                return 137_weight;
-            }
-            case Tuning_Fork:
-            {
-                return 18_weight;
-            }
-            case Turtle_Shell:
-            {
-                return 59_weight;
-            }
-            case Unicorn_Horn:
-            {
-                return 28_weight;
-            }
-            case Veil:
-            {
-                return 39_weight;
-            }
-            case Viol:
-            {
-                return 233_weight;
-            }
-            case Wand:
-            {
-                return 15_weight;
-            }
-            case Warhorse_Marionette:
-            {
-                return 433_weight;
-            }
-            case Weasel_Totem:
-            {
-                return 43_weight;
-            }
-            case Wolfen_Fur:
-            {
-                return 91_weight;
-            }
+            case DruidLeaf:             { return 1_weight;   }
+            case GriffinFeather:        { return 2_weight;   }
+            case CobraTooth:            { return 3_weight;   }
+            case AngelBraid:            { return 4_weight;   }
+            case BerserkersBeard:       { return 5_weight;   }
+            case RattlesnakeTail:       { return 6_weight;   }
+            case RavenClaw:             { return 6_weight;   }
+            case EyeHawk:               { return 7_weight;   }
+            case EyeGiantOwl:           { return 8_weight;   }
+            case EyeCyclops:            { return 9_weight;   }
+            case BishopsHanky:          { return 9_weight;   }
+            case EvilRabbitsFoot:       { return 9_weight;   }
+            case HobgoblinNose:         { return 10_weight;  }
+            case PantherPaw:            { return 10_weight;  }
+            case DragonToothWhistle:    { return 10_weight;  }
+            case Ring:                  { return 10_weight;  }
+            case RingHobo:              { return 11_weight;  }
+            case RingMendicant:         { return 11_weight;  }
+            case RingMonk:              { return 11_weight;  }
+            case RingPriest:            { return 11_weight;  }
+            case Pin_Crown:             { return 11_weight;  }
+            case Pin_Feather:           { return 11_weight;  }
+            case Pin_Fist:              { return 11_weight;  }
+            case Pin_Hourglass:         { return 11_weight;  }
+            case Pin_Key:               { return 11_weight;  }
+            case Pin_Mask:              { return 11_weight;  }
+            case SaintCameoPin:         { return 11_weight;  }
+            case NecklaceJeweledAnkh:   { return 12_weight;  }
+            case NecklaceSharkTooth:    { return 12_weight;  }
+            case NecklaceVampiresTooth: { return 12_weight;  }
+            case Brooch_Crown:          { return 15_weight;  }
+            case Brooch_Feather:        { return 15_weight;  }
+            case Brooch_Fist:           { return 15_weight;  }
+            case Brooch_Hourglass:      { return 15_weight;  }
+            case Brooch_Key:            { return 15_weight;  }
+            case Brooch_Mask:           { return 15_weight;  }
+            case Charm_Crown:           { return 17_weight;  }
+            case Charm_Feather:         { return 17_weight;  }
+            case Charm_Fist:            { return 17_weight;  }
+            case Charm_Hourglass:       { return 17_weight;  }
+            case Charm_Key:             { return 17_weight;  }
+            case Charm_Mask:            { return 17_weight;  }
+            case Seeds:                 { return 18_weight;  }
+            case Wand:                  { return 20_weight;  }
+            case MummyHand:             { return 25_weight;  }
+            case LitchHand:             { return 25_weight;  }
+            case Icicle:                { return 26_weight;  }
+            case UnicornHorn:           { return 27_weight;  }
+            case DevilHorn:             { return 28_weight;  }
+            case Scepter:               { return 29_weight;  }//intentinoally set low
+            case FlagFanatics:          { return 30_weight;  }
+            case FlagTribal:            { return 30_weight;  }
+            case FlagRegalCaptains:     { return 30_weight;  }
+            case MadRatJuju:            { return 31_weight;  }
+            case Pendant:               { return 31_weight;  }
+            case ManaAmulet:            { return 33_weight;  }
+            case WeaselTotem:           { return 33_weight;  }
+            case SprintersLegtie:       { return 33_weight;  }
+            case HangmansNoose:         { return 34_weight;  }
+            case JeweledPrincessVeil:   { return 35_weight;  }
+            case Doll:                  { return 35_weight;  }
+            case DollCursed:            { return 35_weight;  }
+            case PuppetCursed:          { return 35_weight;  }
+            case DollBlessed:           { return 35_weight;  }
+            case FigurineBlessed:       { return 35_weight;  }
+            case PuppetBlessed:         { return 35_weight;  }
+            case FigurineCursed:        { return 35_weight;  }
+            case Recorder:              { return 36_weight;  }
+            case SirenConch:            { return 36_weight;  }
+            case TurtleShell:           { return 36_weight;  }
+            case Embryo:                { return 36_weight;  }
+            case ChimeraBone:           { return 37_weight;  }
+            case DriedIguana:           { return 38_weight;  }
+            case DriedSkink:            { return 38_weight;  }
+            case DriedGecko:            { return 38_weight;  }
+            case DriedLizard:           { return 38_weight;  }
+            case DriedFrog:             { return 38_weight;  }
+            case DriedSalamander:       { return 38_weight;  }
+            case DriedToad:             { return 38_weight;  }
+            case PetrifiedSnake:        { return 38_weight;  }
+            case BasiliskTonge:         { return 38_weight;  }
+            case VultureGizzard:        { return 38_weight;  }
+            case ImpTail:               { return 39_weight;  }
+            case BloodyDragonScale:     { return 39_weight;  }
+            case DriedHead:             { return 40_weight;  }
+            case MaskRascal:            { return 40_weight;  }
+            case MaskMourners:          { return 40_weight;  }
+            case TuningFork:            { return 50_weight;  }
+            case Key:                   { return 50_weight;  }
+            case LockPicks:             { return 55_weight;  }
+            case PixieBell:             { return 55_weight;  }
+            case ScoundrelSack:         { return 60_weight;  }
+            case SwindlersBag:          { return 60_weight;  }
+            case TricksterPouch:        { return 60_weight;  }
+            case JeweledHandbag:        { return 60_weight;  }
+            case DoveBloodVial:         { return 62_weight;  }
+            case BottleOfBansheeScreams:{ return 62_weight;  }
+            case Mirror:                { return 63_weight;  }
+            case MagnifyingGlass:       { return 64_weight;  }
+            case JeweledArmband:        { return 65_weight;  }
+            case LastRitesScroll:       { return 65_weight;  }
+            case ShamanRainmaker:       { return 65_weight;  }
+            case CapeCommanders:        { return 66_weight;  }
+            case CapeGenerals:          { return 66_weight;  }
+            case CapeKings:             { return 66_weight;  }
+            case WolfenFur:             { return 70_weight;  }
+            case MinotaurHide:          { return 70_weight;  }
+            case WraithTalisman:        { return 75_weight;  }
+            case SepultureDecoration:   { return 75_weight;  }
+            case MortuaryOrnament:      { return 75_weight;  }
+            case BleedingTrophy:        { return 75_weight;  }
+            case SanguineRelic:         { return 75_weight;  }
+            case GlassCat:              { return 75_weight;  }
+            case Goblet:                { return 78_weight;  }
+            case GhostSheet:            { return 80_weight;  }
+            case ShadeCloak:            { return 80_weight;  }
+            case SpecterRobe:           { return 80_weight;  }
+            case BurialShroud:          { return 80_weight;  }
+            case FuneralRecord:         { return 120_weight; }
+            case MacabreManuscript:     { return 120_weight; }
+            case RequiemRegister:       { return 120_weight; }
+            case DemonDiary:            { return 120_weight; }
+            case SaintsJournal:         { return 120_weight; }
+            case FriarsChronicle:       { return 120_weight; }
+            case HolyEpic:              { return 120_weight; }
+            case MagicHorseshoe:        { return 130_weight; }
+            case GolemFinger:           { return 140_weight; }
+            case Shard:                 { return 140_weight; }
+            case Crumhorn:              { return 140_weight; }
+            case Staff:                 { return 150_weight; }
+            case SummoningStatue:       { return 160_weight; }
+            case BronzeTroll:           { return 160_weight; }
+            case RoyalScoutSpyglass:    { return 160_weight; }
+            case Orb:                   { return 160_weight; }
+            case Bust:                  { return 165_weight; }
+            case Egg:                   { return 200_weight; }
+            case SpiderEggs:            { return 200_weight; }
+            case Lyre:                  { return 205_weight; }
+            case CrystalChimes:         { return 205_weight; }
+            case IslanderHeaddress:     { return 210_weight; }
+            case PipeAndTabor:          { return 220_weight; }
+            case Viol:                  { return 230_weight; }
+            case DrumLute:              { return 250_weight; }
+            case ReaperScythe:          { return 260_weight; }
+            case HurdyGurdy:            { return 280_weight; }
+            case WarTrumpet:            { return 300_weight; }
+            case HornOfTheHorde:        { return 300_weight; }
+            case WarhorseMarionette:    { return 320_weight; }
+            case SpecterChains:         { return 400_weight; }
+            case ExoticGoldenGong:      { return 450_weight; }
             case NotMisc:
             case Count:
             default:
             {
-                return 0_weight;
+                std::ostringstream ss;
+                ss << "item::misc_type::Weight(" << MISC_TYPE << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
             }
         }
+        // clang-format on
     }
 
     bool misc_type::IsUseable(const misc_type::Enum MISC_TYPE)
     {
         return (
-            IsSummoning(MISC_TYPE) || (MISC_TYPE == Bell) || (MISC_TYPE == Bone_Whistle)
-            || (MISC_TYPE == Chimes) || (MISC_TYPE == Gong) || (MISC_TYPE == Key)
-            || (MISC_TYPE == Magnifying_Glass) || (MISC_TYPE == Potion) || (MISC_TYPE == Rainmaker)
-            || (MISC_TYPE == Chains));
+            IsSummoning(MISC_TYPE) || (MISC_TYPE == CrystalChimes) || (MISC_TYPE == DoveBloodVial)
+            || (MISC_TYPE == DragonToothWhistle) || (MISC_TYPE == DriedFrog)
+            || (MISC_TYPE == DriedGecko) || (MISC_TYPE == DriedIguana) || (MISC_TYPE == DriedLizard)
+            || (MISC_TYPE == DriedSalamander) || (MISC_TYPE == DriedSkink)
+            || (MISC_TYPE == DriedToad) || (MISC_TYPE == ExoticGoldenGong)
+            || (MISC_TYPE == MagnifyingGlass) || (MISC_TYPE == PixieBell)
+            || (MISC_TYPE == ShamanRainmaker) || (MISC_TYPE == SpecterChains)
+            || (MISC_TYPE == VultureGizzard) || (MISC_TYPE == WarTrumpet)
+            || (MISC_TYPE == WraithTalisman) || (MISC_TYPE == PixieBell)
+            || (MISC_TYPE == DragonToothWhistle) || (MISC_TYPE == CrystalChimes)
+            || (MISC_TYPE == ExoticGoldenGong) || (MISC_TYPE == Key)
+            || (MISC_TYPE == MagnifyingGlass) || (MISC_TYPE == DoveBloodVial)
+            || (MISC_TYPE == BottleOfBansheeScreams) || (MISC_TYPE == ShamanRainmaker)
+            || (MISC_TYPE == SpecterChains));
+    }
+
+    bool misc_type::IsMusicalInstrument(const Enum MISC_TYPE)
+    {
+        return (
+            (MISC_TYPE == DrumLute) || (MISC_TYPE == Crumhorn) || (MISC_TYPE == HurdyGurdy)
+            || (MISC_TYPE == Lyre) || (MISC_TYPE == PipeAndTabor) || (MISC_TYPE == Recorder)
+            || (MISC_TYPE == Viol));
+    }
+
+    bool misc_type::IsSummoning(const Enum MISC_TYPE)
+    {
+        return (
+            (MISC_TYPE == Egg) || (MISC_TYPE == Embryo) || (MISC_TYPE == Seeds)
+            || (MISC_TYPE == SummoningStatue) || ((MISC_TYPE == SpiderEggs)));
     }
 
     bool misc_type::IsWearable(const Enum MISC_TYPE)
     {
         switch (MISC_TYPE)
         {
-            case Amulet:
-            case Ankh_Necklace:
-            case Armband:
-            case Bracelet_Crown:
-            case Bracelet_Feather:
-            case Bracelet_Fist:
-            case Bracelet_Hourglass:
-            case Bracelet_Key:
-            case Bracelet_Mask:
+            case BerserkersBeard:
             case Brooch_Crown:
             case Brooch_Feather:
             case Brooch_Fist:
             case Brooch_Hourglass:
             case Brooch_Key:
             case Brooch_Mask:
-            case CameoPin:
-            case Cape:
+            case BurialShroud:
+            case CapeCommanders:
+            case CapeGenerals:
+            case CapeKings:
             case Charm_Crown:
             case Charm_Feather:
             case Charm_Fist:
             case Charm_Hourglass:
             case Charm_Key:
             case Charm_Mask:
-            case Cloak:
-            case Fingerclaw:
-            case Ghost_Sheet:
-            case Headdress:
-            case Legtie:
-            case Mask:
-            case Necklace:
-            case Pendant:
+            case DruidLeaf:
+            case GhostSheet:
+            case HangmansNoose:
+            case IslanderHeaddress:
+            case JeweledArmband:
+            case JeweledPrincessVeil:
+            case ManaAmulet:
+            case MaskMourners:
+            case MaskRascal:
+            case NecklaceJeweledAnkh:
+            case NecklaceSharkTooth:
+            case NecklaceVampiresTooth:
             case Pin_Crown:
             case Pin_Feather:
             case Pin_Fist:
             case Pin_Hourglass:
             case Pin_Key:
             case Pin_Mask:
+            case RingHobo:
+            case RingMendicant:
+            case RingMonk:
+            case RingPriest:
+            case SaintCameoPin:
+            case ShadeCloak:
+            case SpecterRobe:
+            case SprintersLegtie:
+            case Pendant:
             case Ring:
-            case Robe:
-            case Shark_Tooth_Necklace:
-            case Shroud:
-            case Signet_Crown:
-            case Signet_Feather:
-            case Signet_Fist:
-            case Signet_Hourglass:
-            case Signet_Key:
-            case Signet_Mask:
-            case Tooth_Necklace:
-            case Veil:
-
             {
                 return true;
             }
-            case Viol:
-            case Wand:
-            case Wolfen_Fur:
-            case Troll_Figure:
-            case Unicorn_Horn:
-            case Staff:
-            case Scythe:
-            case Shard:
-            case Scepter:
-            case Pipe_And_Tabor:
-            case Rabbit_Foot:
-            case Recorder:
-            case Hide:
-            case Litch_Hand:
-            case LockPicks:
-            case Lyre:
-            case Mummy_Hand:
-            case Hurdy_Gurdy:
-            case Icicle:
-            case Conch:
+            case AngelBraid:
             case Crumhorn:
-            case Devil_Horn:
-            case DrumLute:
-            case Golem_Finger:
-            case Angel_Braid:
-            case Bag:
-            case Beard:
-            case Bell:
-            case Bird_Claw:
-            case Bone:
-            case Bone_Whistle:
-            case Book:
-            case Bust:
-            case Cat:
-            case Chains:
-            case Chimes:
-            case Doll:
-            case Doll_Blessed:
-            case Doll_Cursed:
-            case Dried_Head:
-            case Embryo:
-            case Egg:
-            case Eye:
-            case Feather:
-            case Figurine_Blessed:
-            case Figurine_Cursed:
-            case Flag:
-            case Frog:
-            case Gecko:
-            case Gizzard:
-            case Goblet:
-            case Gong:
-            case Grave_Ornament:
-            case Handbag:
-            case Hanky:
-            case Horn:
-            case Horseshoe:
-            case Iguana:
-            case Imp_Tail:
-            case Key:
-            case Leaf:
-            case Lizard:
-            case Magnifying_Glass:
-            case Mirror:
-            case Noose:
-            case Nose:
-            case Orb:
-            case Paw:
-            case Petrified_Snake:
-            case Potion:
-            case Puppet_Blessed:
-            case Puppet_Cursed:
-            case Rainmaker:
-            case Rat_Juju:
-            case Rattlesnake_Tail:
-            case Relic:
-            case Salamander:
-            case Scales:
-            case Scroll:
+            case DevilHorn:
+            case GolemFinger:
+            case HurdyGurdy:
+            case Icicle:
+            case LitchHand:
+            case Lyre:
+            case MummyHand:
+            case PetrifiedSnake:
+            case PipeAndTabor:
+            case Recorder:
+            case UnicornHorn:
+            case Viol:
+            case BasiliskTonge:
+            case BishopsHanky:
+            case BleedingTrophy:
+            case BloodyDragonScale:
+            case BottleOfBansheeScreams:
+            case BronzeTroll:
+            case ChimeraBone:
+            case CobraTooth:
+            case CrystalChimes:
+            case DemonDiary:
+            case DoveBloodVial:
+            case DragonToothWhistle:
+            case DriedFrog:
+            case DriedGecko:
+            case DriedIguana:
+            case DriedLizard:
+            case DriedSalamander:
+            case DriedSkink:
+            case DriedToad:
+            case EvilRabbitsFoot:
+            case ExoticGoldenGong:
+            case EyeCyclops:
+            case EyeGiantOwl:
+            case EyeHawk:
+            case FlagFanatics:
+            case FlagRegalCaptains:
+            case FlagTribal:
+            case FriarsChronicle:
+            case FuneralRecord:
+            case GlassCat:
+            case GriffinFeather:
+            case MadRatJuju:
+            case HobgoblinNose:
+            case HolyEpic:
+            case HornOfTheHorde:
+            case ImpTail:
+            case JeweledHandbag:
+            case LastRitesScroll:
+            case MacabreManuscript:
+            case MagicHorseshoe:
+            case MagnifyingGlass:
+            case MinotaurHide:
+            case MortuaryOrnament:
+            case PantherPaw:
+            case PixieBell:
+            case RattlesnakeTail:
+            case RavenClaw:
+            case ReaperScythe:
+            case RequiemRegister:
+            case RoyalScoutSpyglass:
+            case SaintsJournal:
+            case SanguineRelic:
+            case ScoundrelSack:
+            case SepultureDecoration:
+            case ShamanRainmaker:
+            case SirenConch:
+            case SpecterChains:
             case Seeds:
-            case Skink:
-            case Spider_Eggs:
-            case Spyglass:
-            case Summoning_Statue:
-            case Talisman:
-            case Tome:
-            case Tongue:
-            case Tooth:
-            case Trophy:
-            case Tuning_Fork:
-            case Turtle_Shell:
-            case Warhorse_Marionette:
-            case Weasel_Totem:
+            case SwindlersBag:
+            case SpiderEggs:
+            case TricksterPouch:
+            case TuningFork:
+            case TurtleShell:
+            case VultureGizzard:
+            case WarhorseMarionette:
+            case WarTrumpet:
+            case WeaselTotem:
+            case WolfenFur:
+            case WraithTalisman:
+            case Bust:
+            case Doll:
+            case DollBlessed:
+            case DollCursed:
+            case DriedHead:
+            case DrumLute:
+            case Egg:
+            case Embryo:
+            case FigurineBlessed:
+            case FigurineCursed:
+            case Goblet:
+            case Key:
+            case LockPicks:
+            case Mirror:
+            case Orb:
+            case PuppetBlessed:
+            case PuppetCursed:
+            case Scepter:
+            case SummoningStatue:
+            case Wand:
+            case Shard:
+            case Staff:
             case NotMisc:
             case Count:
             default:
@@ -1961,62 +1987,54 @@ namespace item
 
     bool misc_type::IsEquippable(const Enum MISC_TYPE)
     {
-        if (IsMusicalInstrument(MISC_TYPE) || IsWearable(MISC_TYPE))
-        {
-            return true;
-        }
-        else
-        {
-            return (
-                (MISC_TYPE == Angel_Braid) || (MISC_TYPE == Devil_Horn)
-                || (MISC_TYPE == Ghost_Sheet) || (MISC_TYPE == Icicle) || (MISC_TYPE == Mummy_Hand)
-                || (MISC_TYPE == Litch_Hand) || (MISC_TYPE == Scepter) || (MISC_TYPE == Scythe)
-                || (MISC_TYPE == Shard) || (MISC_TYPE == Staff) || (MISC_TYPE == Unicorn_Horn)
-                || (MISC_TYPE == Wand));
-        }
-    }
-
-    bool misc_type::IsQuestItem(const Enum MISC_TYPE)
-    {
-        if (IsMusicalInstrument(MISC_TYPE) && (MISC_TYPE != DrumLute))
-        {
-            return true;
-        }
-        else
-        {
-            return (
-                (MISC_TYPE == Petrified_Snake) || (MISC_TYPE == Mummy_Hand) || (MISC_TYPE == Icicle)
-                || (MISC_TYPE == Unicorn_Horn) || (MISC_TYPE == Devil_Horn)
-                || (MISC_TYPE == Angel_Braid));
-        }
+        return (
+            IsMusicalInstrument(MISC_TYPE) || IsWearable(MISC_TYPE) || AllowsCasting(MISC_TYPE)
+            || IsWeapon(MISC_TYPE) || IsArmor(MISC_TYPE));
     }
 
     bool misc_type::AllowsCasting(const Enum MISC_TYPE)
     {
         return (
-            IsBlessed(MISC_TYPE) || IsCursed(MISC_TYPE) || (MISC_TYPE == Petrified_Snake)
-            || (MISC_TYPE == Mummy_Hand) || (MISC_TYPE == Wand) || (MISC_TYPE == Shard)
-            || (MISC_TYPE == Icicle) || (MISC_TYPE == Devil_Horn) || (MISC_TYPE == Orb)
-            || (MISC_TYPE == Scepter) || (MISC_TYPE == Unicorn_Horn) || (MISC_TYPE == Litch_Hand));
+            (MISC_TYPE == AngelBraid) || (MISC_TYPE == DevilHorn) || (MISC_TYPE == GolemFinger)
+            || (MISC_TYPE == Icicle) || (MISC_TYPE == LitchHand) || (MISC_TYPE == MummyHand)
+            || (MISC_TYPE == PetrifiedSnake) || (MISC_TYPE == UnicornHorn) || (MISC_TYPE == Orb)
+            || (MISC_TYPE == Scepter) || (MISC_TYPE == Wand) || (MISC_TYPE == Shard)
+            || (MISC_TYPE == Staff));
     }
 
     bool misc_type::IsWeapon(const Enum MISC_TYPE)
     {
-        return (MISC_TYPE == Scythe) || (MISC_TYPE == Staff);
+        return (MISC_TYPE == ReaperScythe) || (MISC_TYPE == Staff);
     }
 
     bool misc_type::IsArmor(const Enum MISC_TYPE)
     {
-        return (MISC_TYPE == Cape) || (MISC_TYPE == Cloak) || (MISC_TYPE == Ghost_Sheet)
-            || (MISC_TYPE == Robe) || (MISC_TYPE == Shroud);
+        return (
+            (MISC_TYPE == BurialShroud) || (MISC_TYPE == CapeCommanders)
+            || (MISC_TYPE == CapeGenerals) || (MISC_TYPE == CapeKings) || (MISC_TYPE == GhostSheet)
+            || (MISC_TYPE == ShadeCloak) || (MISC_TYPE == SpecterRobe));
     }
 
-    const ElementEnumVec_t misc_type::ElementTypes(const Enum, const bool WILL_INCLUDE_NONE)
+    const ElementEnumVec_t
+        misc_type::ElementTypes(const Enum MISC_TYPE, const bool WILL_INCLUDE_NONE)
     {
         ElementEnumVec_t elementTypes;
 
-        // currently there are no elemental misc types but that will change when unique_type is
-        // eliminated and it's values are brought into misc_type
+        if ((MISC_TYPE == CapeCommanders) || (MISC_TYPE == CapeGenerals) || (MISC_TYPE == CapeKings)
+            || (MISC_TYPE == SaintCameoPin))
+        {
+            elementTypes = { element_type::Honor };
+        }
+        else if (MISC_TYPE == JeweledPrincessVeil)
+        {
+            elementTypes = { element_type::Honor, element_type::Shadow };
+        }
+        else if ((MISC_TYPE == JeweledArmband) || (MISC_TYPE == ManaAmulet))
+        {
+            elementTypes = {
+                element_type::Fire, element_type::Frost, element_type::Honor, element_type::Shadow
+            };
+        }
 
         if (WILL_INCLUDE_NONE)
         {
@@ -2385,2268 +2403,6 @@ namespace item
                 std::ostringstream ssErr;
                 ssErr << "item::set_type::Role(" << E << ")_InvalidValueError";
                 throw std::range_error(ssErr.str());
-            }
-        }
-    }
-
-    const std::string unique_type::ToString(const Enum E)
-    {
-        switch (E)
-        {
-            case NotUnique:
-            {
-                return "NotUnqiue";
-            }
-            case BasiliskTonge:
-            {
-                return "BasiliskTonge";
-            }
-            case BerserkersBeard:
-            {
-                return "BerserkersBeard";
-            }
-            case BishopsHanky:
-            {
-                return "BishopsHanky";
-            }
-            case BleedingTrophy:
-            {
-                return "BleedingTrophy";
-            }
-            case BloodyDragonScale:
-            {
-                return "BloodyDragonScale";
-            }
-            case BottleOfBansheeScreams:
-            {
-                return "BottleOfBansheeScreams";
-            }
-            case BraceletCrown:
-            {
-                return "BraceletCrown";
-            }
-            case BraceletFeather:
-            {
-                return "BraceletFeather";
-            }
-            case BraceletFist:
-            {
-                return "BraceletFist";
-            }
-            case BraceletHourglass:
-            {
-                return "BraceletHourglass";
-            }
-            case BraceletKey:
-            {
-                return "BraceletKey";
-            }
-            case BraceletMask:
-            {
-                return "BraceletMask";
-            }
-            case BroochCrown:
-            {
-                return "BroochCrown";
-            }
-            case BroochFeather:
-            {
-                return "BroochFeather";
-            }
-            case BroochFist:
-            {
-                return "BroochFist";
-            }
-            case BroochHourglass:
-            {
-                return "BroochHourglass";
-            }
-            case BroochKey:
-            {
-                return "BroochKey";
-            }
-            case BroochMask:
-            {
-                return "BroochMask";
-            }
-            case BurialShroud:
-            {
-                return "BurialShroud";
-            }
-            case CharmCrown:
-            {
-                return "CharmCrown";
-            }
-            case CharmFeather:
-            {
-                return "CharmFeather";
-            }
-            case CharmFist:
-            {
-                return "CharmFist";
-            }
-            case CharmHourglass:
-            {
-                return "CharmHourglass";
-            }
-            case CharmKey:
-            {
-                return "CharmKey";
-            }
-            case CharmMask:
-            {
-                return "CharmMask";
-            }
-            case ChimeraBone:
-            {
-                return "ChimeraBone";
-            }
-            case CobraTooth:
-            {
-                return "CobraTooth";
-            }
-            case CommandersCape:
-            {
-                return "CommandersCape";
-            }
-            case BronzeTroll:
-            {
-                return "BronzeTroll";
-            }
-            case GlassCat:
-            {
-                return "GlassCat";
-            }
-            case CrystalChimes:
-            {
-                return "CrystalChimes";
-            }
-            case CyclopsEye:
-            {
-                return "CyclopsEye";
-            }
-            case DemonDiary:
-            {
-                return "DemonDiary";
-            }
-            case DoveBloodVial:
-            {
-                return "DoveBloodVial";
-            }
-            case DragonToothWhistle:
-            {
-                return "DragonToothWhistle";
-            }
-            case DriedFrog:
-            {
-                return "DriedFrog";
-            }
-            case DriedGecko:
-            {
-                return "DriedGecko";
-            }
-            case DriedIguana:
-            {
-                return "DriedIguana";
-            }
-            case DriedLizard:
-            {
-                return "DriedLizard";
-            }
-            case DriedSalamander:
-            {
-                return "DriedSalamander";
-            }
-            case DriedSkink:
-            {
-                return "DriedSkink";
-            }
-            case DriedToad:
-            {
-                return "DriedToad";
-            }
-            case DriedTurtle:
-            {
-                return "DriedTurtle";
-            }
-            case DruidLeaf:
-            {
-                return "DruidLeaf";
-            }
-            case EvilRabbitsFoot:
-            {
-                return "EvilRabbitsFoot";
-            }
-            case ExoticGoldenGong:
-            {
-                return "ExoticGoldenGong";
-            }
-            case FanaticsFlag:
-            {
-                return "FanaticsFlag";
-            }
-            case FriarsChronicle:
-            {
-                return "FriarsChronicle";
-            }
-            case FuneralRecord:
-            {
-                return "FuneralRecord";
-            }
-            case GeneralsCape:
-            {
-                return "GeneralsCape";
-            }
-            case GhostSheet:
-            {
-                return "GhostSheet";
-            }
-            case GiantOwlEye:
-            {
-                return "GiantOwlEye";
-            }
-            case GriffinFeather:
-            {
-                return "GriffinFeather";
-            }
-            case HangmansNoose:
-            {
-                return "HangmansNoose";
-            }
-            case HawkEye:
-            {
-                return "HawkEye";
-            }
-            case HobgoblinNose:
-            {
-                return "HobgoblinNose";
-            }
-            case HoboRing:
-            {
-                return "HoboRing";
-            }
-            case HolyEpic:
-            {
-                return "HolyEpic";
-            }
-            case HornOfTheHorde:
-            {
-                return "HornOfTheHorde";
-            }
-            case ImpTail:
-            {
-                return "ImpTail";
-            }
-            case IslanderHeaddress:
-            {
-                return "IslanderHeaddress";
-            }
-            case JeweledAnkhNecklace:
-            {
-                return "JeweledAnkhNecklace";
-            }
-            case JeweledArmband:
-            {
-                return "JeweledArmband";
-            }
-            case JeweledHandbag:
-            {
-                return "JeweledHandbag";
-            }
-            case JeweledPrincessVeil:
-            {
-                return "JeweledPrincessVeil";
-            }
-            case KingsCape:
-            {
-                return "KingsCape";
-            }
-            case LastRitesScroll:
-            {
-                return "LastRitesScroll";
-            }
-            case MacabreManuscript:
-            {
-                return "MacabreManuscript";
-            }
-            case MadRatJuju:
-            {
-                return "MadRatJuju";
-            }
-            case MagicHorseshoe:
-            {
-                return "MagicHorseshoe";
-            }
-            case MagnifyingGlass:
-            {
-                return "MagnifyingGlass";
-            }
-            case ManaAmulet:
-            {
-                return "ManaAmulet";
-            }
-            case MendicantRing:
-            {
-                return "MendicantRing";
-            }
-            case MinotaurHide:
-            {
-                return "MinotaurHide";
-            }
-            case MonkRing:
-            {
-                return "MonkRing";
-            }
-            case MortuaryOrnament:
-            {
-                return "MortuaryOrnament";
-            }
-            case MournersMask:
-            {
-                return "MournersMask";
-            }
-            case PantherPaw:
-            {
-                return "PantherPaw";
-            }
-            case PinCrown:
-            {
-                return "PinCrown";
-            }
-            case PinFeather:
-            {
-                return "PinFeather";
-            }
-            case PinFist:
-            {
-                return "PinFist";
-            }
-            case PinHourglass:
-            {
-                return "PinHourglass";
-            }
-            case PinKey:
-            {
-                return "PinKey";
-            }
-            case PinMask:
-            {
-                return "PinMask";
-            }
-            case PixieBell:
-            {
-                return "PixieBell";
-            }
-            case PriestRing:
-            {
-                return "PriestRing";
-            }
-            case RascalMask:
-            {
-                return "RascalMask";
-            }
-            case RattlesnakeTail:
-            {
-                return "RattlesnakeTail";
-            }
-            case RavenClaw:
-            {
-                return "RavenClaw";
-            }
-            case RazorFingerclaw:
-            {
-                return "RazorFingerclaw";
-            }
-            case ReaperScythe:
-            {
-                return "ReaperScythe";
-            }
-            case RegalCaptainsFlag:
-            {
-                return "RegalCaptainsFlag";
-            }
-            case RequiemRegister:
-            {
-                return "RequiemRegister";
-            }
-            case RoyalScoutSpyglass:
-            {
-                return "RoyalScoutSpyglass";
-            }
-            case SaintCameoPin:
-            {
-                return "SaintCameoPin";
-            }
-            case SaintsJournal:
-            {
-                return "SaintsJournal";
-            }
-            case SanguineRelic:
-            {
-                return "SanguineRelic";
-            }
-            case ScorpionStingerFingerclaw:
-            {
-                return "ScorpionStingerFingerclaw";
-            }
-            case ScoundrelSack:
-            {
-                return "ScoundrelSack";
-            }
-            case SepultureDecoration:
-            {
-                return "SepultureDecoration";
-            }
-            case ShadeCloak:
-            {
-                return "ShadeCloak";
-            }
-            case ShamanRainmaker:
-            {
-                return "ShamanRainmaker";
-            }
-            case SharkToothNecklace:
-            {
-                return "SharkToothNecklace";
-            }
-            case SignetCrown:
-            {
-                return "SignetCrown";
-            }
-            case SignetFeather:
-            {
-                return "SignetFeather";
-            }
-            case SignetFist:
-            {
-                return "SignetFist";
-            }
-            case SignetHourglass:
-            {
-                return "SignetHourglass";
-            }
-            case SignetKey:
-            {
-                return "SignetKey";
-            }
-            case SignetMask:
-            {
-                return "SignetMask";
-            }
-            case SirenConch:
-            {
-                return "SirenConch";
-            }
-            case SpecterChains:
-            {
-                return "SpecterChains";
-            }
-            case SpecterRobe:
-            {
-                return "SpecterRobe";
-            }
-            case SprintersLegtie:
-            {
-                return "SprintersLegtie";
-            }
-            case SwindlersBag:
-            {
-                return "SwindlersBag";
-            }
-            case TribalFlag:
-            {
-                return "TribalFlag";
-            }
-            case TricksterPouch:
-            {
-                return "TricksterPouch";
-            }
-            case TuningFork:
-            {
-                return "TuningFork";
-            }
-            case TurtleShell:
-            {
-                return "TurtleShell";
-            }
-            case VampiresToothNecklace:
-            {
-                return "VampiresToothNecklace";
-            }
-            case ViperFangFingerclaw:
-            {
-                return "ViperFangFingerclaw";
-            }
-            case VultureGizzard:
-            {
-                return "VultureGizzard";
-            }
-            case WarhorseMarionette:
-            {
-                return "WarhorseMarionette";
-            }
-            case WarTrumpet:
-            {
-                return "WarTrumpet";
-            }
-            case WeaselTotem:
-            {
-                return "WeaselTotem";
-            }
-            case WolfenFur:
-            {
-                return "WolfenFur";
-            }
-            case WraithTalisman:
-            {
-                return "WraithTalisman";
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ssErr;
-                ssErr << "item::unique_type::ToString(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
-            }
-        }
-    }
-
-    const std::string unique_type::Name(const Enum E)
-    {
-        switch (E)
-        {
-            case NotUnique:
-            {
-                return "NotUnqiue";
-            }
-            case BasiliskTonge:
-            {
-                return "Basilisk Tonge";
-            }
-            case BerserkersBeard:
-            {
-                return "Berserker's Beard";
-            }
-            case BishopsHanky:
-            {
-                return "Bishop's Hanky";
-            }
-            case BleedingTrophy:
-            {
-                return "Bleeding Trophy";
-            }
-            case BloodyDragonScale:
-            {
-                return "Bloody Dragon Scale";
-            }
-            case BottleOfBansheeScreams:
-            {
-                return "Bottle Of Banshee Screams";
-            }
-            case BraceletCrown:
-            {
-                return "Crown Emblem Bracelet";
-            }
-            case BraceletFeather:
-            {
-                return "Feather Emblem Bracelet";
-            }
-            case BraceletFist:
-            {
-                return "Fist Emblem Bracelet";
-            }
-            case BraceletHourglass:
-            {
-                return "Hourglass Emblem Bracelet";
-            }
-            case BraceletKey:
-            {
-                return "Key Emblem Bracelet";
-            }
-            case BraceletMask:
-            {
-                return "Mask Emblem Bracelet";
-            }
-            case BroochCrown:
-            {
-                return "Crown Emblem Brooch";
-            }
-            case BroochFeather:
-            {
-                return "Feather Emblem Brooch";
-            }
-            case BroochFist:
-            {
-                return "Fist Emblem Brooch";
-            }
-            case BroochHourglass:
-            {
-                return "Hourglass Emblem Brooch";
-            }
-            case BroochKey:
-            {
-                return "Key Emblem Brooch";
-            }
-            case BroochMask:
-            {
-                return "Mask Emblem Brooch";
-            }
-            case BurialShroud:
-            {
-                return "Burial Shroud";
-            }
-            case CharmCrown:
-            {
-                return "Crown Charm";
-            }
-            case CharmFeather:
-            {
-                return "Feather Charm";
-            }
-            case CharmFist:
-            {
-                return "Fist Charm";
-            }
-            case CharmHourglass:
-            {
-                return "Hourglass Charm";
-            }
-            case CharmKey:
-            {
-                return "Key Charm";
-            }
-            case CharmMask:
-            {
-                return "Mask Charm";
-            }
-            case ChimeraBone:
-            {
-                return "Chimera Bone";
-            }
-            case CobraTooth:
-            {
-                return "Cobra Tooth";
-            }
-            case CommandersCape:
-            {
-                return "Commander's Cape";
-            }
-            case BronzeTroll:
-            {
-                return "Bronze Troll";
-            }
-            case GlassCat:
-            {
-                return "Crystal Cat";
-            }
-            case CrystalChimes:
-            {
-                return "Crystal Chimes";
-            }
-            case CyclopsEye:
-            {
-                return "Cyclops Eye";
-            }
-            case DemonDiary:
-            {
-                return "Demon Diary";
-            }
-            case DoveBloodVial:
-            {
-                return "Dove Blood Vial";
-            }
-            case DragonToothWhistle:
-            {
-                return "Dragon Tooth Whistle";
-            }
-            case DriedFrog:
-            {
-                return "Dried Frog";
-            }
-            case DriedGecko:
-            {
-                return "Dried Gecko";
-            }
-            case DriedIguana:
-            {
-                return "Dried Iguana";
-            }
-            case DriedLizard:
-            {
-                return "Dried Lizard";
-            }
-            case DriedSalamander:
-            {
-                return "Dried Salamander";
-            }
-            case DriedSkink:
-            {
-                return "Dried Skink";
-            }
-            case DriedToad:
-            {
-                return "Dried Toad";
-            }
-            case DriedTurtle:
-            {
-                return "Dried Turtle";
-            }
-            case DruidLeaf:
-            {
-                return "Druid Leaf";
-            }
-            case EvilRabbitsFoot:
-            {
-                return "Evil Rabbit's Foot";
-            }
-            case ExoticGoldenGong:
-            {
-                return "Exotic Golden Gong";
-            }
-            case FanaticsFlag:
-            {
-                return "Fanatic's Flag";
-            }
-            case FriarsChronicle:
-            {
-                return "Friar's Chronicle";
-            }
-            case FuneralRecord:
-            {
-                return "Funeral Record";
-            }
-            case GeneralsCape:
-            {
-                return "General's Cape";
-            }
-            case GhostSheet:
-            {
-                return "Ghost Sheet";
-            }
-            case GiantOwlEye:
-            {
-                return "Giant Owl Eye";
-            }
-            case GriffinFeather:
-            {
-                return "Griffin Feather";
-            }
-            case HangmansNoose:
-            {
-                return "Hangman's Noose";
-            }
-            case HawkEye:
-            {
-                return "Hawk Eye";
-            }
-            case HobgoblinNose:
-            {
-                return "Hobgoblin Nose";
-            }
-            case HoboRing:
-            {
-                return "Hobo Ring";
-            }
-            case HolyEpic:
-            {
-                return "Holy Epic";
-            }
-            case HornOfTheHorde:
-            {
-                return "Horn Of The Horde";
-            }
-            case ImpTail:
-            {
-                return "Imp Tail";
-            }
-            case IslanderHeaddress:
-            {
-                return "Islander Headdress";
-            }
-            case JeweledAnkhNecklace:
-            {
-                return "Jeweled Ankh Necklace";
-            }
-            case JeweledArmband:
-            {
-                return "Jeweled Armband";
-            }
-            case JeweledHandbag:
-            {
-                return "Jeweled Handbag";
-            }
-            case JeweledPrincessVeil:
-            {
-                return "Jeweled Princess Veil";
-            }
-            case KingsCape:
-            {
-                return "King's Cape";
-            }
-            case LastRitesScroll:
-            {
-                return "Last Rites Scroll";
-            }
-            case MacabreManuscript:
-            {
-                return "Macabre Manuscript";
-            }
-            case MadRatJuju:
-            {
-                return "Mad Rat Juju";
-            }
-            case MagicHorseshoe:
-            {
-                return "Magic Horseshoe";
-            }
-            case MagnifyingGlass:
-            {
-                return "Magnifying Glass";
-            }
-            case ManaAmulet:
-            {
-                return "Mana Amulet";
-            }
-            case MendicantRing:
-            {
-                return "Mendicant Ring";
-            }
-            case MinotaurHide:
-            {
-                return "Minotaur Hide";
-            }
-            case MonkRing:
-            {
-                return "Monk Ring";
-            }
-            case MortuaryOrnament:
-            {
-                return "Mortuary Ornament";
-            }
-            case MournersMask:
-            {
-                return "Mourner's Mask";
-            }
-            case PantherPaw:
-            {
-                return "Panther Paw";
-            }
-            case PinCrown:
-            {
-                return "Crown Emblem Pin";
-            }
-            case PinFeather:
-            {
-                return "Feather Emblem Pin";
-            }
-            case PinFist:
-            {
-                return "Fist Emblem Pin";
-            }
-            case PinHourglass:
-            {
-                return "Hourglass Emblem Pin";
-            }
-            case PinKey:
-            {
-                return "Key Emblem Pin";
-            }
-            case PinMask:
-            {
-                return "Mask Emblem Pin";
-            }
-            case PixieBell:
-            {
-                return "Pixie Bell";
-            }
-            case PriestRing:
-            {
-                return "Priest Ring";
-            }
-            case RascalMask:
-            {
-                return "Rascal Mask";
-            }
-            case RattlesnakeTail:
-            {
-                return "Rattlesnake Tail";
-            }
-            case RavenClaw:
-            {
-                return "Raven Claw";
-            }
-            case RazorFingerclaw:
-            {
-                return "Razor Fingerclaw";
-            }
-            case ReaperScythe:
-            {
-                return "Reaper Scythe";
-            }
-            case RegalCaptainsFlag:
-            {
-                return "Regal Captain's Flag";
-            }
-            case RequiemRegister:
-            {
-                return "Requiem Register";
-            }
-            case RoyalScoutSpyglass:
-            {
-                return "Royal Scout Spyglass";
-            }
-            case SaintCameoPin:
-            {
-                return "Saint Cameo Pin";
-            }
-            case SaintsJournal:
-            {
-                return "Saint's Journal";
-            }
-            case SanguineRelic:
-            {
-                return "Sanguine Relic";
-            }
-            case ScorpionStingerFingerclaw:
-            {
-                return "Scorpion Stinger Fingerclaw";
-            }
-            case ScoundrelSack:
-            {
-                return "Scoundrel Sack";
-            }
-            case SepultureDecoration:
-            {
-                return "Sepulture Decoration";
-            }
-            case ShadeCloak:
-            {
-                return "Shade Cloak";
-            }
-            case ShamanRainmaker:
-            {
-                return "Shaman Rainmaker";
-            }
-            case SharkToothNecklace:
-            {
-                return "Shark Tooth Necklace";
-            }
-            case SignetCrown:
-            {
-                return "Crown Signet";
-            }
-            case SignetFeather:
-            {
-                return "Feather Signet";
-            }
-            case SignetFist:
-            {
-                return "Fist Signet";
-            }
-            case SignetHourglass:
-            {
-                return "Hourglass Signet";
-            }
-            case SignetKey:
-            {
-                return "Key Signet";
-            }
-            case SignetMask:
-            {
-                return "Mask Signet";
-            }
-            case SirenConch:
-            {
-                return "Siren Conch";
-            }
-            case SpecterChains:
-            {
-                return "Specter Chains";
-            }
-            case SpecterRobe:
-            {
-                return "Specter Robe";
-            }
-            case SprintersLegtie:
-            {
-                return "Sprinter's Legtie";
-            }
-            case SwindlersBag:
-            {
-                return "Swindler's Bag";
-            }
-            case TribalFlag:
-            {
-                return "Tribal Flag";
-            }
-            case TricksterPouch:
-            {
-                return "Trickster Pouch";
-            }
-            case TuningFork:
-            {
-                return "Tuning Fork";
-            }
-            case TurtleShell:
-            {
-                return "Turtle Shell";
-            }
-            case VampiresToothNecklace:
-            {
-                return "Vampire's Tooth Necklace";
-            }
-            case ViperFangFingerclaw:
-            {
-                return "Viper Fang Fingerclaw";
-            }
-            case VultureGizzard:
-            {
-                return "Vulture Gizzard";
-            }
-            case WarhorseMarionette:
-            {
-                return "Warhorse Marionette";
-            }
-            case WarTrumpet:
-            {
-                return "War Trumpet";
-            }
-            case WeaselTotem:
-            {
-                return "Weasel Totem";
-            }
-            case WolfenFur:
-            {
-                return "Wolfen Fur";
-            }
-            case WraithTalisman:
-            {
-                return "Wraith Talisman";
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ssErr;
-                ssErr << "item::unique_type::Name(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
-            }
-        }
-    }
-
-    misc_type::Enum unique_type::MiscType(const Enum E)
-    {
-        switch (E)
-        {
-            case NotUnique:
-            {
-                return misc_type::NotMisc;
-            }
-            case BasiliskTonge:
-            {
-                return misc_type::Tongue;
-            }
-            case BerserkersBeard:
-            {
-                return misc_type::Beard;
-            }
-            case BishopsHanky:
-            {
-                return misc_type::Hanky;
-            }
-            case BleedingTrophy:
-            {
-                return misc_type::Trophy;
-            }
-            case BloodyDragonScale:
-            {
-                return misc_type::Scales;
-            }
-            case BottleOfBansheeScreams:
-            {
-                return misc_type::Potion;
-            }
-            case BraceletCrown:
-            {
-                return misc_type::Bracelet_Crown;
-            }
-            case BraceletFeather:
-            {
-                return misc_type::Bracelet_Feather;
-            }
-            case BraceletFist:
-            {
-                return misc_type::Bracelet_Fist;
-            }
-            case BraceletHourglass:
-            {
-                return misc_type::Bracelet_Hourglass;
-            }
-            case BraceletKey:
-            {
-                return misc_type::Bracelet_Key;
-            }
-            case BraceletMask:
-            {
-                return misc_type::Bracelet_Mask;
-            }
-            case BroochCrown:
-            {
-                return misc_type::Brooch_Crown;
-            }
-            case BroochFeather:
-            {
-                return misc_type::Brooch_Feather;
-            }
-            case BroochFist:
-            {
-                return misc_type::Brooch_Fist;
-            }
-            case BroochHourglass:
-            {
-                return misc_type::Brooch_Hourglass;
-            }
-            case BroochKey:
-            {
-                return misc_type::Brooch_Key;
-            }
-            case BroochMask:
-            {
-                return misc_type::Brooch_Mask;
-            }
-            case BurialShroud:
-            {
-                return misc_type::Shroud;
-            }
-            case CharmCrown:
-            {
-                return misc_type::Charm_Crown;
-            }
-            case CharmFeather:
-            {
-                return misc_type::Charm_Feather;
-            }
-            case CharmFist:
-            {
-                return misc_type::Charm_Fist;
-            }
-            case CharmHourglass:
-            {
-                return misc_type::Charm_Hourglass;
-            }
-            case CharmKey:
-            {
-                return misc_type::Charm_Key;
-            }
-            case CharmMask:
-            {
-                return misc_type::Charm_Mask;
-            }
-            case ChimeraBone:
-            {
-                return misc_type::Bone;
-            }
-            case CobraTooth:
-            {
-                return misc_type::Tooth;
-            }
-            case CommandersCape:
-            {
-                return misc_type::Cape;
-            }
-            case BronzeTroll:
-            {
-                return misc_type::Troll_Figure;
-            }
-            case GlassCat:
-            {
-                return misc_type::Cat;
-            }
-            case CrystalChimes:
-            {
-                return misc_type::Chimes;
-            }
-            case CyclopsEye:
-            {
-                return misc_type::Eye;
-            }
-            case DemonDiary:
-            {
-                return misc_type::Tome;
-            }
-            case DoveBloodVial:
-            {
-                return misc_type::Potion;
-            }
-            case DragonToothWhistle:
-            {
-                return misc_type::Bone_Whistle;
-            }
-            case DriedFrog:
-            {
-                return misc_type::Frog;
-            }
-            case DriedGecko:
-            {
-                return misc_type::Gecko;
-            }
-            case DriedIguana:
-            {
-                return misc_type::Iguana;
-            }
-            case DriedLizard:
-            {
-                return misc_type::Lizard;
-            }
-            case DriedSalamander:
-            {
-                return misc_type::Salamander;
-            }
-            case DriedSkink:
-            {
-                return misc_type::Skink;
-            }
-            case DriedToad:
-            {
-                return misc_type::Frog;
-            }
-            case DriedTurtle:
-            {
-                return misc_type::Turtle_Shell;
-            }
-            case DruidLeaf:
-            {
-                return misc_type::Leaf;
-            }
-            case EvilRabbitsFoot:
-            {
-                return misc_type::Rabbit_Foot;
-            }
-            case ExoticGoldenGong:
-            {
-                return misc_type::Gong;
-            }
-            case FanaticsFlag:
-            {
-                return misc_type::Flag;
-            }
-            case FriarsChronicle:
-            {
-                return misc_type::Book;
-            }
-            case FuneralRecord:
-            {
-                return misc_type::Scroll;
-            }
-            case GeneralsCape:
-            {
-                return misc_type::Cape;
-            }
-            case GhostSheet:
-            {
-                return misc_type::Ghost_Sheet;
-            }
-            case GiantOwlEye:
-            {
-                return misc_type::Eye;
-            }
-            case GriffinFeather:
-            {
-                return misc_type::Feather;
-            }
-            case HangmansNoose:
-            {
-                return misc_type::Noose;
-            }
-            case HawkEye:
-            {
-                return misc_type::Eye;
-            }
-            case HobgoblinNose:
-            {
-                return misc_type::Nose;
-            }
-            case HoboRing:
-            {
-                return misc_type::Ring;
-            }
-            case HolyEpic:
-            {
-                return misc_type::Book;
-            }
-            case HornOfTheHorde:
-            {
-                return misc_type::Horn;
-            }
-            case ImpTail:
-            {
-                return misc_type::Imp_Tail;
-            }
-            case IslanderHeaddress:
-            {
-                return misc_type::Headdress;
-            }
-            case JeweledAnkhNecklace:
-            {
-                return misc_type::Ankh_Necklace;
-            }
-            case JeweledArmband:
-            {
-                return misc_type::Armband;
-            }
-            case JeweledHandbag:
-            {
-                return misc_type::Handbag;
-            }
-            case JeweledPrincessVeil:
-            {
-                return misc_type::Veil;
-            }
-            case KingsCape:
-            {
-                return misc_type::Cape;
-            }
-            case LastRitesScroll:
-            {
-                return misc_type::Scroll;
-            }
-            case MacabreManuscript:
-            {
-                return misc_type::Book;
-            }
-            case MadRatJuju:
-            {
-                return misc_type::Rat_Juju;
-            }
-            case MagicHorseshoe:
-            {
-                return misc_type::Horseshoe;
-            }
-            case MagnifyingGlass:
-            {
-                return misc_type::Magnifying_Glass;
-            }
-            case ManaAmulet:
-            {
-                return misc_type::Amulet;
-            }
-            case MendicantRing:
-            {
-                return misc_type::Ring;
-            }
-            case MinotaurHide:
-            {
-                return misc_type::Hide;
-            }
-            case MonkRing:
-            {
-                return misc_type::Ring;
-            }
-            case MortuaryOrnament:
-            {
-                return misc_type::Grave_Ornament;
-            }
-            case MournersMask:
-            {
-                return misc_type::Mask;
-            }
-            case PantherPaw:
-            {
-                return misc_type::Paw;
-            }
-            case PinCrown:
-            {
-                return misc_type::Pin_Crown;
-            }
-            case PinFeather:
-            {
-                return misc_type::Pin_Feather;
-            }
-            case PinFist:
-            {
-                return misc_type::Pin_Fist;
-            }
-            case PinHourglass:
-            {
-                return misc_type::Pin_Hourglass;
-            }
-            case PinKey:
-            {
-                return misc_type::Pin_Key;
-            }
-            case PinMask:
-            {
-                return misc_type::Pin_Mask;
-            }
-            case PixieBell:
-            {
-                return misc_type::Bell;
-            }
-            case PriestRing:
-            {
-                return misc_type::Ring;
-            }
-            case RascalMask:
-            {
-                return misc_type::Mask;
-            }
-            case RattlesnakeTail:
-            {
-                return misc_type::Rattlesnake_Tail;
-            }
-            case RavenClaw:
-            {
-                return misc_type::Bird_Claw;
-            }
-            case RazorFingerclaw:
-            {
-                return misc_type::Fingerclaw;
-            }
-            case ReaperScythe:
-            {
-                return misc_type::Scythe;
-            }
-            case RegalCaptainsFlag:
-            {
-                return misc_type::Flag;
-            }
-            case RequiemRegister:
-            {
-                return misc_type::Book;
-            }
-            case RoyalScoutSpyglass:
-            {
-                return misc_type::Spyglass;
-            }
-            case SaintCameoPin:
-            {
-                return misc_type::CameoPin;
-            }
-            case SaintsJournal:
-            {
-                return misc_type::Book;
-            }
-            case SanguineRelic:
-            {
-                return misc_type::Relic;
-            }
-            case ScorpionStingerFingerclaw:
-            {
-                return misc_type::Fingerclaw;
-            }
-            case ScoundrelSack:
-            {
-                return misc_type::Bag;
-            }
-            case SepultureDecoration:
-            {
-                return misc_type::Grave_Ornament;
-            }
-            case ShadeCloak:
-            {
-                return misc_type::Cloak;
-            }
-            case ShamanRainmaker:
-            {
-                return misc_type::Rainmaker;
-            }
-            case SharkToothNecklace:
-            {
-                return misc_type::Shark_Tooth_Necklace;
-            }
-            case SignetCrown:
-            {
-                return misc_type::Signet_Crown;
-            }
-            case SignetFeather:
-            {
-                return misc_type::Signet_Feather;
-            }
-            case SignetFist:
-            {
-                return misc_type::Signet_Fist;
-            }
-            case SignetHourglass:
-            {
-                return misc_type::Signet_Hourglass;
-            }
-            case SignetKey:
-            {
-                return misc_type::Signet_Key;
-            }
-            case SignetMask:
-            {
-                return misc_type::Signet_Mask;
-            }
-            case SirenConch:
-            {
-                return misc_type::Conch;
-            }
-            case SpecterChains:
-            {
-                return misc_type::Chains;
-            }
-            case SpecterRobe:
-            {
-                return misc_type::Robe;
-            }
-            case SprintersLegtie:
-            {
-                return misc_type::Legtie;
-            }
-            case SwindlersBag:
-            {
-                return misc_type::Bag;
-            }
-            case TribalFlag:
-            {
-                return misc_type::Flag;
-            }
-            case TricksterPouch:
-            {
-                return misc_type::Bag;
-            }
-            case TuningFork:
-            {
-                return misc_type::Tuning_Fork;
-            }
-            case TurtleShell:
-            {
-                return misc_type::Turtle_Shell;
-            }
-            case VampiresToothNecklace:
-            {
-                return misc_type::Tooth_Necklace;
-            }
-            case ViperFangFingerclaw:
-            {
-                return misc_type::Fingerclaw;
-            }
-            case VultureGizzard:
-            {
-                return misc_type::Gizzard;
-            }
-            case WarhorseMarionette:
-            {
-                return misc_type::Warhorse_Marionette;
-            }
-            case WarTrumpet:
-            {
-                return misc_type::Horn;
-            }
-            case WeaselTotem:
-            {
-                return misc_type::Weasel_Totem;
-            }
-            case WolfenFur:
-            {
-                return misc_type::Wolfen_Fur;
-            }
-            case WraithTalisman:
-            {
-                return misc_type::Talisman;
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ssErr;
-                ssErr << "item::unique_type::MiscType(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
-            }
-        }
-    }
-
-    const ElementEnumVec_t
-        unique_type::ElementTypes(const unique_type::Enum UNIQUE_TYPE, const bool WILL_INCLUDE_NONE)
-    {
-        ElementEnumVec_t elementTypes;
-
-        if ((UNIQUE_TYPE == CommandersCape) || (UNIQUE_TYPE == GeneralsCape)
-            || (UNIQUE_TYPE == KingsCape) || (UNIQUE_TYPE == SaintCameoPin))
-        {
-            elementTypes = { element_type::Honor };
-        }
-        else if (UNIQUE_TYPE == JeweledPrincessVeil)
-        {
-            elementTypes = { element_type::Honor, element_type::Shadow };
-        }
-        else if (
-            (UNIQUE_TYPE == unique_type::JeweledArmband)
-            || (UNIQUE_TYPE == unique_type::ManaAmulet))
-        {
-            elementTypes = {
-                element_type::Fire, element_type::Frost, element_type::Honor, element_type::Shadow
-            };
-        }
-
-        if (WILL_INCLUDE_NONE)
-        {
-            elementTypes.emplace_back(element_type::None);
-        }
-
-        return elementTypes;
-    }
-
-    bool unique_type::IsUseable(const unique_type::Enum E)
-    {
-        switch (E)
-        {
-            case CrystalChimes:
-            case DoveBloodVial:
-            case DragonToothWhistle:
-            case DriedFrog:
-            case DriedGecko:
-            case DriedIguana:
-            case DriedLizard:
-            case DriedSalamander:
-            case DriedSkink:
-            case DriedToad:
-            case DriedTurtle:
-            case ExoticGoldenGong:
-            case MagnifyingGlass:
-            case PixieBell:
-            case ShamanRainmaker:
-            case SpecterChains:
-            case VultureGizzard:
-            case WarTrumpet:
-            case WraithTalisman:
-            {
-                return true;
-            }
-            case NotUnique:
-            case BasiliskTonge:
-            case BerserkersBeard:
-            case BishopsHanky:
-            case BleedingTrophy:
-            case BloodyDragonScale:
-            case BottleOfBansheeScreams:
-            case BraceletCrown:
-            case BraceletFeather:
-            case BraceletFist:
-            case BraceletHourglass:
-            case BraceletKey:
-            case BraceletMask:
-            case BroochCrown:
-            case BroochFeather:
-            case BroochFist:
-            case BroochHourglass:
-            case BroochKey:
-            case BroochMask:
-            case BurialShroud:
-            case CharmCrown:
-            case CharmFeather:
-            case CharmFist:
-            case CharmHourglass:
-            case CharmKey:
-            case CharmMask:
-            case ChimeraBone:
-            case CobraTooth:
-            case CommandersCape:
-            case BronzeTroll:
-            case GlassCat:
-            case CyclopsEye:
-            case DemonDiary:
-            case DruidLeaf:
-            case EvilRabbitsFoot:
-            case FanaticsFlag:
-            case FriarsChronicle:
-            case FuneralRecord:
-            case GeneralsCape:
-            case GhostSheet:
-            case GiantOwlEye:
-            case GriffinFeather:
-            case HangmansNoose:
-            case HawkEye:
-            case HobgoblinNose:
-            case HoboRing:
-            case HolyEpic:
-            case HornOfTheHorde:
-            case ImpTail:
-            case IslanderHeaddress:
-            case JeweledAnkhNecklace:
-            case JeweledArmband:
-            case JeweledHandbag:
-            case JeweledPrincessVeil:
-            case KingsCape:
-            case LastRitesScroll:
-            case MacabreManuscript:
-            case MadRatJuju:
-            case MagicHorseshoe:
-            case ManaAmulet:
-            case MendicantRing:
-            case MinotaurHide:
-            case MonkRing:
-            case MortuaryOrnament:
-            case MournersMask:
-            case PantherPaw:
-            case PinCrown:
-            case PinFeather:
-            case PinFist:
-            case PinHourglass:
-            case PinKey:
-            case PinMask:
-            case PriestRing:
-            case RascalMask:
-            case RattlesnakeTail:
-            case RavenClaw:
-            case RazorFingerclaw:
-            case ReaperScythe:
-            case RegalCaptainsFlag:
-            case RequiemRegister:
-            case RoyalScoutSpyglass:
-            case SaintCameoPin:
-            case SaintsJournal:
-            case SanguineRelic:
-            case ScorpionStingerFingerclaw:
-            case ScoundrelSack:
-            case SepultureDecoration:
-            case ShadeCloak:
-            case SharkToothNecklace:
-            case SignetCrown:
-            case SignetFeather:
-            case SignetFist:
-            case SignetHourglass:
-            case SignetKey:
-            case SignetMask:
-            case SirenConch:
-            case SpecterRobe:
-            case SprintersLegtie:
-            case SwindlersBag:
-            case TribalFlag:
-            case TricksterPouch:
-            case TuningFork:
-            case TurtleShell:
-            case VampiresToothNecklace:
-            case ViperFangFingerclaw:
-            case WarhorseMarionette:
-            case WeaselTotem:
-            case WolfenFur:
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
-
-    float unique_type::ReligiousRatio(const unique_type::Enum E)
-    {
-        switch (E)
-        {
-            case NotUnique:
-            {
-                return 0.0f;
-            }
-            case CrystalChimes:
-            {
-                return 0.0f;
-            }
-            case DoveBloodVial:
-            {
-                return 0.1f;
-            }
-            case DragonToothWhistle:
-            {
-                return 0.0f;
-            }
-            case DriedFrog:
-            {
-                return 0.0f;
-            }
-            case DriedGecko:
-            {
-                return 0.0f;
-            }
-            case DriedIguana:
-            {
-                return 0.0f;
-            }
-            case DriedLizard:
-            {
-                return 0.0f;
-            }
-            case DriedSalamander:
-            {
-                return 0.0f;
-            }
-            case DriedSkink:
-            {
-                return 0.0f;
-            }
-            case DriedToad:
-            {
-                return 0.0f;
-            }
-            case DriedTurtle:
-            {
-                return 0.0f;
-            }
-            case ExoticGoldenGong:
-            {
-                return 0.0f;
-            }
-            case MagnifyingGlass:
-            {
-                return 0.0f;
-            }
-            case PixieBell:
-            {
-                return 0.0f;
-            }
-            case ShamanRainmaker:
-            {
-                return 0.9f;
-            }
-            case SpecterChains:
-            {
-                return 0.1f;
-            }
-            case VultureGizzard:
-            {
-                return 0.0f;
-            }
-            case WarTrumpet:
-            {
-                return 0.0f;
-            }
-            case WraithTalisman:
-            {
-                return 0.5f;
-            }
-            case BasiliskTonge:
-            {
-                return 0.0f;
-            }
-            case BerserkersBeard:
-            {
-                return 0.0f;
-            }
-            case BishopsHanky:
-            {
-                return 0.99f;
-            }
-            case BleedingTrophy:
-            {
-                return 0.5f;
-            }
-            case BloodyDragonScale:
-            {
-                return 0.0f;
-            }
-            case BottleOfBansheeScreams:
-            {
-                return 0.0f;
-            }
-            case BraceletCrown:
-            {
-                return 0.0f;
-            }
-            case BraceletFeather:
-            {
-                return 0.0f;
-            }
-            case BraceletFist:
-            {
-                return 0.0f;
-            }
-            case BraceletHourglass:
-            {
-                return 0.0f;
-            }
-            case BraceletKey:
-            {
-                return 0.0f;
-            }
-            case BraceletMask:
-            {
-                return 0.0f;
-            }
-            case BroochCrown:
-            {
-                return 0.0f;
-            }
-            case BroochFeather:
-            {
-                return 0.0f;
-            }
-            case BroochFist:
-            {
-                return 0.0f;
-            }
-            case BroochHourglass:
-            {
-                return 0.0f;
-            }
-            case BroochKey:
-            {
-                return 0.0f;
-            }
-            case BroochMask:
-            {
-                return 0.0f;
-            }
-            case BurialShroud:
-            {
-                return 0.8f;
-            }
-            case CharmCrown:
-            {
-                return 0.0f;
-            }
-            case CharmFeather:
-            {
-                return 0.0f;
-            }
-            case CharmFist:
-            {
-                return 0.0f;
-            }
-            case CharmHourglass:
-            {
-                return 0.0f;
-            }
-            case CharmKey:
-            {
-                return 0.0f;
-            }
-            case CharmMask:
-            {
-                return 0.0f;
-            }
-            case ChimeraBone:
-            {
-                return 0.0f;
-            }
-            case CobraTooth:
-            {
-                return 0.0f;
-            }
-            case CommandersCape:
-            {
-                return 0.0f;
-            }
-            case BronzeTroll:
-            {
-                return 0.0f;
-            }
-            case GlassCat:
-            {
-                return 0.0f;
-            }
-            case CyclopsEye:
-            {
-                return 0.0f;
-            }
-            case DemonDiary:
-            {
-                return 0.75f;
-            }
-            case DruidLeaf:
-            {
-                return 0.9f;
-            }
-            case EvilRabbitsFoot:
-            {
-                return 0.5f;
-            }
-            case FanaticsFlag:
-            {
-                return 0.0f;
-            }
-            case FriarsChronicle:
-            {
-                return 0.8f;
-            }
-            case FuneralRecord:
-            {
-                return 0.8f;
-            }
-            case GeneralsCape:
-            {
-                return 0.0f;
-            }
-            case GhostSheet:
-            {
-                return 0.8f;
-            }
-            case GiantOwlEye:
-            {
-                return 0.0f;
-            }
-            case GriffinFeather:
-            {
-                return 0.0f;
-            }
-            case HangmansNoose:
-            {
-                return 0.0f;
-            }
-            case HawkEye:
-            {
-                return 0.0f;
-            }
-            case HobgoblinNose:
-            {
-                return 0.0f;
-            }
-            case HoboRing:
-            {
-                return 0.0f;
-            }
-            case HolyEpic:
-            {
-                return 0.9f;
-            }
-            case HornOfTheHorde:
-            {
-                return 0.0f;
-            }
-            case ImpTail:
-            {
-                return 0.0f;
-            }
-            case IslanderHeaddress:
-            {
-                return 0.0f;
-            }
-            case JeweledAnkhNecklace:
-            {
-                return 0.0f;
-            }
-            case JeweledArmband:
-            {
-                return 0.0f;
-            }
-            case JeweledHandbag:
-            {
-                return 0.0f;
-            }
-            case JeweledPrincessVeil:
-            {
-                return 0.0f;
-            }
-            case KingsCape:
-            {
-                return 0.0f;
-            }
-            case LastRitesScroll:
-            {
-                return 0.9f;
-            }
-            case MacabreManuscript:
-            {
-                return 0.75f;
-            }
-            case MadRatJuju:
-            {
-                return 0.0f;
-            }
-            case MagicHorseshoe:
-            {
-                return 0.0f;
-            }
-            case ManaAmulet:
-            {
-                return 0.2f;
-            }
-            case MendicantRing:
-            {
-                return 0.75f;
-            }
-            case MinotaurHide:
-            {
-                return 0.0f;
-            }
-            case MonkRing:
-            {
-                return 0.9f;
-            }
-            case MortuaryOrnament:
-            {
-                return 0.8f;
-            }
-            case MournersMask:
-            {
-                return 0.0f;
-            }
-            case PantherPaw:
-            {
-                return 0.0f;
-            }
-            case PinCrown:
-            {
-                return 0.0f;
-            }
-            case PinFeather:
-            {
-                return 0.0f;
-            }
-            case PinFist:
-            {
-                return 0.0f;
-            }
-            case PinHourglass:
-            {
-                return 0.0f;
-            }
-            case PinKey:
-            {
-                return 0.0f;
-            }
-            case PinMask:
-            {
-                return 0.0f;
-            }
-            case PriestRing:
-            {
-                return 0.99f;
-            }
-            case RascalMask:
-            {
-                return 0.0f;
-            }
-            case RattlesnakeTail:
-            {
-                return 0.0f;
-            }
-            case RavenClaw:
-            {
-                return 0.0f;
-            }
-            case RazorFingerclaw:
-            {
-                return 0.0f;
-            }
-            case ReaperScythe:
-            {
-                return 0.0f;
-            }
-            case RegalCaptainsFlag:
-            {
-                return 0.0f;
-            }
-            case RequiemRegister:
-            {
-                return 0.9f;
-            }
-            case RoyalScoutSpyglass:
-            {
-                return 0.0f;
-            }
-            case SaintCameoPin:
-            {
-                return 0.9f;
-            }
-            case SaintsJournal:
-            {
-                return 0.9f;
-            }
-            case SanguineRelic:
-            {
-                return 0.5f;
-            }
-            case ScorpionStingerFingerclaw:
-            {
-                return 0.0f;
-            }
-            case ScoundrelSack:
-            {
-                return 0.0f;
-            }
-            case SepultureDecoration:
-            {
-                return 0.65f;
-            }
-            case ShadeCloak:
-            {
-                return 0.5f;
-            }
-            case SharkToothNecklace:
-            {
-                return 0.0f;
-            }
-            case SignetCrown:
-            {
-                return 0.0f;
-            }
-            case SignetFeather:
-            {
-                return 0.0f;
-            }
-            case SignetFist:
-            {
-                return 0.0f;
-            }
-            case SignetHourglass:
-            {
-                return 0.0f;
-            }
-            case SignetKey:
-            {
-                return 0.0f;
-            }
-            case SignetMask:
-            {
-                return 0.0f;
-            }
-            case SirenConch:
-            {
-                return 0.0f;
-            }
-            case SpecterRobe:
-            {
-                return 0.2f;
-            }
-            case SprintersLegtie:
-            {
-                return 0.0f;
-            }
-            case SwindlersBag:
-            {
-                return 0.0f;
-            }
-            case TribalFlag:
-            {
-                return 0.0f;
-            }
-            case TricksterPouch:
-            {
-                return 0.0f;
-            }
-            case TuningFork:
-            {
-                return 0.0f;
-            }
-            case TurtleShell:
-            {
-                return 0.0f;
-            }
-            case VampiresToothNecklace:
-            {
-                return 0.0f;
-            }
-            case ViperFangFingerclaw:
-            {
-                return 0.0f;
-            }
-            case WarhorseMarionette:
-            {
-                return 0.0f;
-            }
-            case WeaselTotem:
-            {
-                return 0.0f;
-            }
-            case WolfenFur:
-            {
-                return 0.0f;
-            }
-            case Count:
-            {
-                return 0.0f;
-            }
-            default:
-            {
-                return 0.0f;
             }
         }
     }
@@ -5852,44 +3608,44 @@ namespace item
     {
         // clang-format off
         switch (MATERIAL)
-        {
+                       {
             // this is the standard set that runs the full range of values
-            case Glass:     { return 0.1f;  }
+            case Glass:                    { return 0.1f;  }
             case DriedFlesh:{ return 0.5f;  }
-            case Blood:     { return 0.85f; }
-            case Spirit:    { return 1.25f; }//extra bonus for spirit is intentional
+            case Blood:                    { return 0.85f; }
+            case Spirit:                   { return 1.25f; }//extra bonus for spirit is intentional
 
             // this is the "tribal" set that should range from about 5% to 50%
-            case Leather:   { return 0.05f;  }
-            case Stone:     { return 0.1f;   }
-            case Fur:       { return 0.136f; }
-            case Horn:      { return 0.172f; }
-            case Hide:      { return 0.23f;  }
-            case Silk:      { return 0.262f; }
-            case Claw:      { return 0.28f;  }
-            case Tooth:     { return 0.33f;  }
-            case Scales:    { return 0.38f;  }
-            case Bone:      { return 0.45f;  }
-            case Obsidian:  { return 0.5f;   }
+            case Leather:                  { return 0.05f;  }
+            case Stone:                    { return 0.1f;   }
+            case Fur:                      { return 0.136f; }
+            case Horn:                     { return 0.172f; }
+            case Hide:                     { return 0.23f;  }
+            case Silk:                     { return 0.262f; }
+            case Claw:                     { return 0.28f;  }
+            case Tooth:                    { return 0.33f;  }
+            case Scales:                   { return 0.38f;  }
+            case Bone:                     { return 0.45f;  }
+            case Obsidian:                 { return 0.5f;   }
 
             // the jewel set should start where tribal left off (50%) and reach 100% with diamond
-            case Jade:      { return 0.5f;  }
-            case Amethyst:  { return 0.55f; }
-            case Emerald:   { return 0.6f;  }
-            case Lazuli:    { return 0.68f; }
-            case Pearl:     { return 0.76f; }
-            case Ruby:      { return 0.84f; }
-            case Sapphire:  { return 0.92f; }
-            case Diamond:   { return 1.0f;  }
+            case Jade:                     { return 0.5f;  }
+            case Amethyst:                 { return 0.55f; }
+            case Emerald:                  { return 0.6f;  }
+            case Lazuli:                   { return 0.68f; }
+            case Pearl:                    { return 0.76f; }
+            case Ruby:                     { return 0.84f; }
+            case Sapphire:                 { return 0.92f; }
+            case Diamond:                  { return 1.0f;  }
 
             // the metal set varies wildly, but should stop short of diamond's value
-            case Tin:       { return 0.05f;  }
-            case Iron:      { return 0.09f;  }
-            case Steel:     { return 0.11f;  }
-            case Bronze:    { return 0.333f; }
-            case Silver:    { return 0.666f; }
-            case Gold:      { return 0.8f;   }
-            case Platinum:  { return 0.85f;   }
+            case Tin:                      { return 0.05f;  }
+            case Iron:                     { return 0.09f;  }
+            case Steel:                    { return 0.11f;  }
+            case Bronze:                   { return 0.333f; }
+            case Silver:                   { return 0.666f; }
+            case Gold:                     { return 0.8f;   }
+            case Platinum:                 { return 0.85f;   }
 
             // all others are 0%
             case Nothing:
@@ -5906,7 +3662,7 @@ namespace item
             case Wood:
             case Count:
             default:
-            {
+                           {
                 return 0.0f;
             }
         }
@@ -6527,8 +4283,10 @@ namespace item
             appendNameIfBitSet(weapon_type::Knife, "Knife");
             appendNameIfBitSet(weapon_type::Club, "Club");
             appendNameIfBitSet(weapon_type::Staff, "Staff");
+
             appendNameIfBitSet(
                 weapon_type::BladedStaff, ((IS_READBLE) ? "Bladed Staff" : "BladedStaff"));
+
             appendNameIfBitSet(weapon_type::Melee, "Melee");
             appendNameIfBitSet(weapon_type::Projectile, "Projectile");
             appendNameIfBitSet(weapon_type::Bladed, "Bladed");

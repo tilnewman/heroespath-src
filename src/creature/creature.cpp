@@ -706,11 +706,26 @@ namespace creature
                                   << "Can't equip more than one ring per hand.";
             }
 
-            if ((MISC_TYPE == item::misc_type::Mask)
-                && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Mask) > 0))
+            if ((MISC_TYPE == item::misc_type::MaskMourners)
+                || (MISC_TYPE == item::misc_type::MaskRascal))
             {
-                equipFailReasonSS << separatorIfNotEmpty(equipFailReasonSS)
-                                  << "Can't equip more than one mask at the same time.";
+                std::size_t equippedMaskCount{ 0 };
+
+                if (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::MaskMourners))
+                {
+                    ++equippedMaskCount;
+                }
+
+                if (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::MaskRascal))
+                {
+                    ++equippedMaskCount;
+                }
+
+                if (Body().NumHeads() <= equippedMaskCount)
+                {
+                    equipFailReasonSS << separatorIfNotEmpty(equipFailReasonSS)
+                                      << "Can only equip one mask per head.";
+                }
             }
 
             if ((MISC_TYPE == item::misc_type::Ring) && (Body().HasFingers() == false))

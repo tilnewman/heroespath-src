@@ -101,7 +101,6 @@ namespace item
         weapon_type::Enum WeaponType() const { return weaponInfo_.Type(); }
         armor_type::Enum ArmorType() const { return armorInfo_.Type(); }
         misc_type::Enum MiscType() const { return miscType_; }
-        unique_type::Enum UniqueType() const { return uniqueType_; }
         set_type::Enum SetType() const { return setType_; }
         named_type::Enum NamedType() const { return namedType_; }
         element_type::Enum ElementType() const { return elementType_; }
@@ -148,10 +147,7 @@ namespace item
             return (misc_type::Count != miscType_) && (misc_type::NotMisc != miscType_);
         }
 
-        bool IsUnique() const
-        {
-            return (uniqueType_ != unique_type::Count) && (uniqueType_ != unique_type::NotUnique);
-        }
+        bool IsUnique() const { return misc_type::IsUnique(miscType_); }
 
         bool IsElemental() const { return (elementType_ != element_type::None); }
 
@@ -222,7 +218,6 @@ namespace item
         weapon::WeaponTypeWrapper weaponInfo_;
         armor::ArmorTypeWrapper armorInfo_;
         bool isPixie_;
-        unique_type::Enum uniqueType_;
         set_type::Enum setType_;
         named_type::Enum namedType_;
         element_type::Enum elementType_;
@@ -257,7 +252,6 @@ namespace item
             ar & weaponInfo_;
             ar & armorInfo_;
             ar & isPixie_;
-            ar & uniqueType_;
             ar & setType_;
             ar & namedType_;
             ar & elementType_;

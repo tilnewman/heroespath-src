@@ -304,178 +304,186 @@ namespace item
         {
             NotMisc = 0,
 
-            // quest items (all musical instruments except for the DrumLute are quest items)
-            Angel_Braid,
+            // quest items
+            // all musical instruments except for the DrumLute are quest items
+            AngelBraid,
             Crumhorn,
-            Devil_Horn,
-            Golem_Finger,
-            Hurdy_Gurdy,
+            DevilHorn,
+            GolemFinger,
+            HurdyGurdy,
             Icicle,
-            Litch_Hand,
+            LitchHand,
             Lyre,
-            Mummy_Hand,
-            Petrified_Snake,
-            Pipe_And_Tabor,
+            MummyHand,
+            PetrifiedSnake,
+            PipeAndTabor,
             Recorder,
-            Unicorn_Horn,
+            UnicornHorn,
             Viol,
 
-            // exclusively unique items
-            Amulet, // ManaAmulet
-            Ankh_Necklace, // JeweledAnkhNeclace
-            Armband, // JeweledArmband
-            Bag, // ScoundrelSack, SwindlersBag, TricksterPouch
-            Beard, // BerserkersBeard
-            Bell, // PixieBell
-            Bird_Claw, // RavenClaw
-            Bone, // ChimeraBone
-            Bone_Whistle, // DragonToothWhistle
-            Book, // FriarsChronicle, HolyEpic, MacabreManuscript, RequiemRegister, SaintsJournal
-            Bracelet_Crown,
-            Bracelet_Feather,
-            Bracelet_Fist,
-            Bracelet_Hourglass,
-            Bracelet_Key,
-            Bracelet_Mask,
+            // unique items
+            BasiliskTonge,
+            BerserkersBeard,
+            BishopsHanky,
+            BleedingTrophy,
+            BloodyDragonScale,
+            BottleOfBansheeScreams,
+            BronzeTroll,
             Brooch_Crown,
             Brooch_Feather,
             Brooch_Fist,
             Brooch_Hourglass,
             Brooch_Key,
             Brooch_Mask,
+            BurialShroud,
+            CapeCommanders,
+            CapeGenerals,
+            CapeKings,
             Charm_Crown,
             Charm_Feather,
             Charm_Fist,
             Charm_Hourglass,
             Charm_Key,
             Charm_Mask,
-            CameoPin, // SaintCameoPin
-            Cape, // GeneralsCape, KingsCape, CommandersCape
-            Cat, // GlassCat
-            Chains, // SpecterChains
-            Chimes, // CrystalChimes
-            Cloak, // ShadeCloak
-            Conch, // SirenConch
-            Eye, // CyclopsEye, GiantOwlEye, HawkEye
-            Feather, // GriffinFeather
-            Flag, // FanaticsFlag, RegalCaptainsFlag, TribalFlag
-            Frog, // DriedFrog, DriedToad
-            Gecko, // DriedGecko
-            Ghost_Sheet,
-            Gizzard, // VultureGizzard
-            Gong, // ExoticGoldenGong
-            Grave_Ornament, // SepultureDecoration, MortuaryOrnament
-            Handbag, // JeweledHandbag
-            Hanky, // BishopsHanky
-            Headdress, // IslanderHeaddress
-            Hide, // MinotaurHide  ***this is NOT used for skin materials
-            Horn, // HornOfTheHorde, WarTrumpet
-            Horseshoe, // MagicHorseshoe
-            Iguana, // DriedIguana
-            Imp_Tail,
-            Leaf, // DruidLeaf
-            Legtie, // SprintersLegtie
-            Lizard, // DriedLizard
-            Magnifying_Glass,
-            Mask, // RascalMask, MournersMask
-            Necklace, // JeweledAnkhNecklace, SharkToothNecklace, VampiresToothNecklace
-            Noose, // HangmansNoose  *** TODO make this effect when worn not held...sweet...
-            Nose, // HobgoblinNose
-            Paw, // PantherPaw
+            ChimeraBone,
+            CobraTooth,
+            CrystalChimes,
+            DemonDiary,
+            DoveBloodVial,
+            DragonToothWhistle,
+            DriedFrog,
+            DriedGecko,
+            DriedIguana,
+            DriedLizard,
+            DriedSalamander,
+            DriedSkink,
+            DriedToad,
+            DruidLeaf,
+            EvilRabbitsFoot,
+            ExoticGoldenGong,
+            EyeCyclops,
+            EyeGiantOwl,
+            EyeHawk,
+            FlagFanatics,
+            FlagRegalCaptains,
+            FlagTribal,
+            FriarsChronicle,
+            FuneralRecord,
+            GhostSheet,
+            GlassCat,
+            GriffinFeather,
+            HangmansNoose,
+            HobgoblinNose,
+            HolyEpic,
+            HornOfTheHorde,
+            ImpTail,
+            IslanderHeaddress,
+            JeweledArmband,
+            JeweledHandbag,
+            JeweledPrincessVeil,
+            LastRitesScroll,
+            MacabreManuscript,
+            MadRatJuju,
+            MagicHorseshoe,
+            MagnifyingGlass,
+            ManaAmulet,
+            MaskMourners,
+            MaskRascal,
+            MinotaurHide,
+            MortuaryOrnament,
+            NecklaceJeweledAnkh,
+            NecklaceSharkTooth,
+            NecklaceVampiresTooth,
+            PantherPaw,
             Pin_Crown,
             Pin_Feather,
             Pin_Fist,
             Pin_Hourglass,
             Pin_Key,
             Pin_Mask,
-            Potion, // DoveBloodVial, BottleOfBansheeScreams
-            Rabbit_Foot, // EvilRabbitsFoot
-            Rainmaker, // ShamanRainmaker
-            Rat_Juju, // MadRatJuju
-            Rattlesnake_Tail,
-            Relic, // SanguineRelic
-            Ring, // HoboRing, MendicantRing, MonkRing, PriestRing
-            Robe, // SpecterRobe
-            Salamander, // DriedSalamander
-            Scales, // BloodyDragonScale
-            Scroll, // FuneralRecord, LastRitesScroll
-            Scythe, // ReaperScythe
-            Shroud, // BurialShroud
-            Signet_Crown,
-            Signet_Feather,
-            Signet_Fist,
-            Signet_Hourglass,
-            Signet_Key,
-            Signet_Mask,
-            Skink, // DriedSkink
-            Shark_Tooth_Necklace, // SharkToothNecklace
-            Spyglass, // RoyalScoutSpyglass
-            Talisman, // WraithTalisman
-            Tome, // DemonDiary
-            Tongue, // BasiliskTonge
-            Tooth, // CobraTooth
-            Tooth_Necklace, // SharkToothNecklace, VampiresToothNecklace
-            Troll_Figure, // BronzeTroll
-            Trophy, // BleedingTrophy,
-            Tuning_Fork,
-            Turtle_Shell,
-            Veil, // JeweledPrincessVeil
-            Warhorse_Marionette,
-            Weasel_Totem,
-            Wolfen_Fur,
+            PixieBell,
+            RattlesnakeTail,
+            RavenClaw,
+            ReaperScythe,
+            RequiemRegister,
+            RingHobo,
+            RingMendicant,
+            RingMonk,
+            RingPriest,
+            RoyalScoutSpyglass,
+            SaintCameoPin,
+            SaintsJournal,
+            SanguineRelic,
+            ScoundrelSack,
+            SepultureDecoration,
+            ShadeCloak,
+            ShamanRainmaker,
+            SirenConch,
+            SpecterChains,
+            SpecterRobe,
+            SpiderEggs,
+            SprintersLegtie,
+            SwindlersBag,
+            TricksterPouch,
+            TuningFork,
+            TurtleShell,
+            VultureGizzard,
+            WarhorseMarionette,
+            WarTrumpet,
+            WeaselTotem,
+            WolfenFur,
+            WraithTalisman,
 
             // standalone items
             Bust,
             Doll,
-            Doll_Blessed,
-            Doll_Cursed,
-            Dried_Head,
+            DollBlessed,
+            DollCursed,
+            DriedHead,
             DrumLute, // the only musical instrument that is not a quest item
-            Embryo,
             Egg,
-            Figurine_Blessed,
-            Figurine_Cursed,
+            Embryo,
+            FigurineBlessed,
+            FigurineCursed,
             Goblet,
             Key,
             LockPicks,
             Mirror,
             Orb,
             Pendant,
-            Puppet_Blessed,
-            Puppet_Cursed,
-            // Ring  -both a standalone item and a unique item, see Ring above
+            PuppetBlessed,
+            PuppetCursed,
+            Ring,
             Scepter,
             Seeds,
             Shard,
-            Spider_Eggs,
             Staff,
-            Summoning_Statue,
+            SummoningStatue,
             Wand,
-
-            // TODO these need to be implemented as weapon_type
-            Fingerclaw,
 
             Count
         };
 
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
-        static bool IsMusicalInstrument(const Enum);
 
-        // summoning works by "using" the item
-        static bool IsSummoning(const Enum);
-
+        // these three functions are complete and mutually exclusive
+        static bool IsQuestItem(const Enum);
         static bool IsStandalone(const Enum);
-        static bool IsOrdinary(const Enum);
+        static bool IsUnique(const Enum);
+
         static bool HasPixieVersion(const Enum);
         static bool HasOnlyPixieVersion(const Enum);
         static bool MustBePixieVersionForPixiesToEquip(const Enum);
+
         static float ReligiousRatio(const Enum);
         static bool HasNonFleshEyes(const Enum);
         static bool IsBlessed(const Enum);
         static bool IsCursed(const Enum);
         static Weight_t Weight(const Enum);
         static bool IsUseable(const Enum);
+        static bool IsMusicalInstrument(const Enum);
+        static bool IsSummoning(const Enum);
 
         // these two are not mutually exclusive, all wearable are equippable because creature
         // inventories only understand equipped vs held, wearable is just a way to display more
@@ -484,10 +492,11 @@ namespace item
         static bool IsWearable(const Enum);
         static bool IsEquippable(const Enum);
 
-        static bool IsQuestItem(const Enum);
         static bool AllowsCasting(const Enum);
+
         static bool IsWeapon(const Enum);
         static bool IsArmor(const Enum);
+
         static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
@@ -534,148 +543,6 @@ namespace item
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
         static creature::role::Enum Role(const Enum);
-    };
-
-    struct unique_type
-    {
-        enum Enum
-        {
-            NotUnique = 0,
-            BasiliskTonge,
-            BerserkersBeard,
-            BishopsHanky,
-            BleedingTrophy,
-            BloodyDragonScale,
-            BottleOfBansheeScreams,
-            BraceletCrown,
-            BraceletFeather,
-            BraceletFist,
-            BraceletHourglass,
-            BraceletKey,
-            BraceletMask,
-            BroochCrown,
-            BroochFeather,
-            BroochFist,
-            BroochHourglass,
-            BroochKey,
-            BroochMask,
-            BurialShroud,
-            CharmCrown,
-            CharmFeather,
-            CharmFist,
-            CharmHourglass,
-            CharmKey,
-            CharmMask,
-            ChimeraBone,
-            CobraTooth,
-            CommandersCape,
-            BronzeTroll,
-            GlassCat,
-            CrystalChimes,
-            CyclopsEye,
-            DemonDiary,
-            DoveBloodVial,
-            DragonToothWhistle,
-            DriedFrog,
-            DriedGecko,
-            DriedIguana,
-            DriedLizard,
-            DriedSalamander,
-            DriedSkink,
-            DriedToad,
-            DriedTurtle,
-            DruidLeaf,
-            EvilRabbitsFoot,
-            ExoticGoldenGong,
-            FanaticsFlag,
-            FriarsChronicle,
-            FuneralRecord,
-            GeneralsCape,
-            GhostSheet,
-            GiantOwlEye,
-            GriffinFeather,
-            HangmansNoose,
-            HawkEye,
-            HobgoblinNose,
-            HoboRing,
-            HolyEpic,
-            HornOfTheHorde,
-            ImpTail,
-            IslanderHeaddress,
-            JeweledAnkhNecklace,
-            JeweledArmband,
-            JeweledHandbag,
-            JeweledPrincessVeil,
-            KingsCape,
-            LastRitesScroll,
-            MacabreManuscript,
-            MadRatJuju,
-            MagicHorseshoe,
-            MagnifyingGlass,
-            ManaAmulet,
-            MendicantRing,
-            MinotaurHide,
-            MonkRing,
-            MortuaryOrnament,
-            MournersMask,
-            PantherPaw,
-            PinCrown,
-            PinFeather,
-            PinFist,
-            PinHourglass,
-            PinKey,
-            PinMask,
-            PixieBell,
-            PriestRing,
-            RascalMask,
-            RattlesnakeTail,
-            RavenClaw,
-            RazorFingerclaw,
-            ReaperScythe,
-            RegalCaptainsFlag,
-            RequiemRegister,
-            RoyalScoutSpyglass,
-            SaintCameoPin,
-            SaintsJournal,
-            SanguineRelic,
-            ScorpionStingerFingerclaw,
-            ScoundrelSack,
-            SepultureDecoration,
-            ShadeCloak,
-            ShamanRainmaker,
-            SharkToothNecklace,
-            SignetCrown,
-            SignetFeather,
-            SignetFist,
-            SignetHourglass,
-            SignetKey,
-            SignetMask,
-            SirenConch,
-            SpecterChains,
-            SpecterRobe,
-            SprintersLegtie,
-            SwindlersBag,
-            TribalFlag,
-            TricksterPouch,
-            TuningFork,
-            TurtleShell,
-            VampiresToothNecklace,
-            ViperFangFingerclaw,
-            VultureGizzard,
-            WarhorseMarionette,
-            WarTrumpet,
-            WeaselTotem,
-            WolfenFur,
-            WraithTalisman,
-            Count
-        };
-
-        static const std::string ToString(const Enum);
-        static const std::string Name(const Enum);
-        static misc_type::Enum MiscType(const Enum);
-        static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
-        static bool IsUseable(const Enum);
-        static float ReligiousRatio(const Enum);
     };
 
     struct named_type

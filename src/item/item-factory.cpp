@@ -75,67 +75,76 @@ namespace item
             didPostItemProfileCreationStart = true;
         }
 
-        static auto const & NORMAL_PROFILES{
-            ItemProfileWarehouse::Instance()->GetNormalProfiles()
-        };
+        static item::ItemProfileVec_t profiles;
 
-        static auto const & RELIGIOUS_PROFILES{
-            ItemProfileWarehouse::Instance()->GetReligiousProfiles()
-        };
-
-        static auto didLogTotalItemProfileCount{ false };
-        if (false == didLogTotalItemProfileCount)
+        static auto hasCreatedAllProfilesVector{ false };
+        if (false == hasCreatedAllProfilesVector)
         {
-            didLogTotalItemProfileCount = true;
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ItemProfileWarehouse::Instance()->GetNormalProfiles().empty() == false),
+                "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
 
-            std::ostringstream totalCountReportSS;
-
-            totalCountReportSS
-                << "item::ItemFactory::Test() ItemProfile creation finished.  Created "
-                << NORMAL_PROFILES.size() + RELIGIOUS_PROFILES.size() << " profiles.";
-
-            game::LoopManager::Instance()->TestingStrAppend(totalCountReportSS.str());
-        }
-
-        static auto hasTestedForDuplicatesNormal{ false };
-        if (false == hasTestedForDuplicatesNormal)
-        {
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Normal Profiles Duplicate Test.  Please "
-                "wait...");
-
-            static item::ItemProfileVec_t duplicates;
-
-            for (auto iter(std::begin(NORMAL_PROFILES)); iter != std::end(NORMAL_PROFILES); ++iter)
+            for (auto const & PROFILE : ItemProfileWarehouse::Instance()->GetNormalProfiles())
             {
-                auto const NEXT_ITER{ std::next(iter, 1) };
-                if (NEXT_ITER == std::end(NORMAL_PROFILES))
-                {
-                    break;
-                }
-                else
-                {
-                    if ((*iter) == (*NEXT_ITER))
-                    {
-                        duplicates.emplace_back(*iter);
-                    }
-                }
+                profiles.emplace_back(PROFILE);
             }
 
-            if (duplicates.empty() == false)
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ItemProfileWarehouse::Instance()->GetReligiousProfiles().empty() == false),
+                "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
+
+            for (auto const & PROFILE : ItemProfileWarehouse::Instance()->GetReligiousProfiles())
+            {
+                profiles.emplace_back(PROFILE);
+            }
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ItemProfileWarehouse::Instance()->GetQuestProfiles().Empty() == false),
+                "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
+
+            for (auto const & MISCENUM_PROFILE_PAIR :
+                 ItemProfileWarehouse::Instance()->GetQuestProfiles())
+            {
+                profiles.emplace_back(MISCENUM_PROFILE_PAIR.second);
+            }
+
+            hasCreatedAllProfilesVector = true;
+        }
+
+        static auto hasTestedForDuplicates{ false };
+        if (false == hasTestedForDuplicates)
+        {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Duplicate Test.  Please "
+                "wait...");
+
+            std::sort(std::begin(profiles), std::end(profiles));
+
+            auto const FIRST_DUPLICATE_PROFILE_ITER{ std::unique(
+                std::begin(profiles), std::end(profiles)) };
+
+            item::ItemProfileVec_t duplicateProfiles;
+            std::copy(
+                FIRST_DUPLICATE_PROFILE_ITER,
+                std::end(profiles),
+                std::back_inserter(duplicateProfiles));
+
+            if (duplicateProfiles.empty() == false)
             {
                 const std::size_t DUPLICATE_COUNT_TO_DISPLAY{ 10 };
+
                 M_HP_LOG_ERR(
                     "item::ItemFactory::Test() Normal Profiles Duplicate Test FAILED.  "
-                    << duplicates.size() << " duplicates found.  Here are the first "
+                    << duplicateProfiles.size() << " duplicates found.  Here are the first "
                     << DUPLICATE_COUNT_TO_DISPLAY << ":");
 
                 for (std::size_t i(0); i < DUPLICATE_COUNT_TO_DISPLAY; ++i)
                 {
-                    if (i < duplicates.size())
+                    if (i < duplicateProfiles.size())
                     {
                         M_HP_LOG_ERR(
-                            "\t DUPLICATE PROFILE={" << duplicates.at(i).ToString() << "}\n");
+                            "\t DUPLICATE PROFILE={" << duplicateProfiles.at(i).ToString()
+                                                     << "}\n");
                     }
                     else
                     {
@@ -145,130 +154,38 @@ namespace item
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Normal Profiles Duplicate Test finished.");
+                "item::ItemFactory::Test() Duplicate Test finished.");
 
-            hasTestedForDuplicatesNormal = true;
+            hasTestedForDuplicates = true;
             return false;
         }
-
-        static auto hasTestedForDuplicatesReligious{ false };
-        if (false == hasTestedForDuplicatesReligious)
-        {
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Religious Profiles Duplicate Test.  Please "
-                "wait...");
-
-            for (auto iter(std::begin(RELIGIOUS_PROFILES)); iter != std::end(RELIGIOUS_PROFILES);
-                 ++iter)
-            {
-                auto const NEXT_ITER{ std::next(iter, 1) };
-                if (NEXT_ITER == std::end(RELIGIOUS_PROFILES))
-                {
-                    break;
-                }
-                else
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        ((*iter) != (*NEXT_ITER)),
-                        "item::ItemFactory::Test() Religious Profiles Duplicate Test failed for "
-                        "profile1={"
-                            << iter->ToString() << "} and profile2=" << NEXT_ITER->ToString()
-                            << "}.");
-                }
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Religious Profiles Duplicate Test finished.");
-
-            hasTestedForDuplicatesReligious = true;
-            return false;
-        }
-
-        static const std::size_t REPORT_STATUS_EVERY{ 10000 };
-        static std::size_t testIndex{ 0 };
 
         static misc::VectorMap<std::string, item::ItemProfile> imageFilenameProfileMap;
         imageFilenameProfileMap.Reserve(600); // there were 556 item images as of 2018-5-1
 
-        static auto didTestNormal{ false };
-        if (false == didTestNormal)
+        static auto hasCreatedAndTestedAll{ false };
+        if (false == hasCreatedAndTestedAll)
         {
-            for (; testIndex < NORMAL_PROFILES.size();)
+            for (auto const & PROFILE : profiles)
             {
-                auto const & PROFILE{ NORMAL_PROFILES[testIndex] };
-
                 auto itemPtr{ Make(PROFILE) };
                 TestItem(itemPtr, PROFILE);
                 imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImageFilename(), PROFILE);
                 ItemWarehouse::Access().Free(itemPtr);
-
-                if ((++testIndex % REPORT_STATUS_EVERY) == 0)
-                {
-                    // the occasional sort will help keep this VectorMap's operations fast
-                    imageFilenameProfileMap.Sort();
-
-                    std::ostringstream statusReportSS;
-                    statusReportSS
-                        << "item::ItemFactory::Test() Making and Testing each normal item.  "
-                        << std::setprecision(2)
-                        << 100.0
-                            * (static_cast<double>(testIndex)
-                               / static_cast<double>(NORMAL_PROFILES.size()))
-                        << "%.  Please wait...";
-
-                    game::LoopManager::Instance()->TestingStrAppend(statusReportSS.str());
-
-                    return false;
-                }
             }
 
-            testIndex = 0;
-            didTestNormal = true;
-            return false;
-        }
-
-        static auto didTestReligious{ false };
-        if (false == didTestReligious)
-        {
-            for (; testIndex < RELIGIOUS_PROFILES.size();)
-            {
-                auto const & PROFILE{ RELIGIOUS_PROFILES[testIndex] };
-
-                auto itemPtr{ Make(PROFILE) };
-                TestItem(itemPtr, PROFILE);
-                imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImageFilename(), PROFILE);
-                ItemWarehouse::Access().Free(itemPtr);
-
-                if ((++testIndex % REPORT_STATUS_EVERY) == 0)
-                {
-                    std::ostringstream statusReportSS;
-                    statusReportSS
-                        << "item::ItemFactory::Test() Making and Testing each religious item.  "
-                        << std::setprecision(2)
-                        << 100.0
-                            * (static_cast<double>(testIndex)
-                               / static_cast<double>(RELIGIOUS_PROFILES.size()))
-                        << "%.  Please wait...";
-
-                    game::LoopManager::Instance()->TestingStrAppend(statusReportSS.str());
-                    return false;
-                }
-            }
-
-            didTestReligious = true;
+            hasCreatedAndTestedAll = true;
             return false;
         }
 
         static auto didTestImages{ false };
         if (false == didTestImages)
         {
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Images Test.  Please "
-                "wait...");
+            std::ostringstream ss;
+            ss << "item::ItemFactory::Test() Starting Images Test.  ("
+               << imageFilenameProfileMap.Size() << ")  Please wait...";
 
-            M_HP_LOG_DBG(
-                "item::ItemFactory::Test() Starting Images Test of "
-                << imageFilenameProfileMap.Size() << " unique filenames.");
+            game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
             sfml_util::gui::ItemImageMachine itemImageMachine;
 
@@ -303,21 +220,24 @@ namespace item
 
             auto appendProfileNamesIf{ [&](auto ifLambda,
                                            const std::string & CATEGORY_NAME = "",
-                                           const std::size_t COUNT_TO_DISPLAY = 10) {
-                ItemProfileVec_t profiles;
-                profiles.reserve(50000);
+                                           const std::size_t ORIG_COUNT_TO_DISPLAY = 10) {
+                ItemProfileVec_t tempProfiles;
+                tempProfiles.reserve(50000);
 
-                for (auto const & PROFILE : NORMAL_PROFILES)
+                for (auto const & PROFILE : profiles)
                 {
                     if (ifLambda(PROFILE))
                     {
-                        profiles.emplace_back(PROFILE);
+                        tempProfiles.emplace_back(PROFILE);
                     }
                 }
 
-                if (COUNT_TO_DISPLAY > 1)
+                auto const ACTUAL_COUNT_TO_DISPLAY{ (
+                    (ORIG_COUNT_TO_DISPLAY == 0) ? tempProfiles.size() : ORIG_COUNT_TO_DISPLAY) };
+
+                if (ACTUAL_COUNT_TO_DISPLAY > 1)
                 {
-                    randNameAndDescSS << "\n~~~" << COUNT_TO_DISPLAY << " " << CATEGORY_NAME
+                    randNameAndDescSS << "\n~~~" << ACTUAL_COUNT_TO_DISPLAY << " " << CATEGORY_NAME
                                       << ":\n";
                 }
                 else
@@ -325,9 +245,9 @@ namespace item
                     randNameAndDescSS << '\n';
                 }
 
-                for (std::size_t i(0); i < COUNT_TO_DISPLAY; ++i)
+                for (std::size_t i(0); i < ACTUAL_COUNT_TO_DISPLAY; ++i)
                 {
-                    auto const & PROFILE{ misc::Vector::SelectRandom(profiles) };
+                    auto const & PROFILE{ misc::Vector::SelectRandom(tempProfiles) };
                     auto itemPtr{ Make(PROFILE) };
 
                     randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
@@ -337,7 +257,7 @@ namespace item
                     ItemWarehouse::Access().Free(itemPtr);
                 }
 
-                if (COUNT_TO_DISPLAY > 1)
+                if (ACTUAL_COUNT_TO_DISPLAY > 1)
                 {
                     randNameAndDescSS << "~~~\n\n";
                 }
@@ -456,6 +376,9 @@ namespace item
                 "Shirt",
                 3);
 
+            appendProfileNamesIf(
+                [](const ItemProfile & PROFILE) { return PROFILE.IsUnique(); }, "Unique", 10);
+
             randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~\n\n";
 
             M_HP_LOG_DBG(randNameAndDescSS.str());
@@ -527,14 +450,6 @@ namespace item
             makeErrorReportPrefix() << "named_type was Count.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR->UniqueType() == ITEM_PROFILE.UniqueType()),
-            makeErrorReportPrefix() << "unique_types did not match.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR->UniqueType() != unique_type::Count),
-            makeErrorReportPrefix() << "unique_type was Count.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialPrimary() == ITEM_PROFILE.MaterialPrimary()),
             makeErrorReportPrefix() << "primary materials did not match.");
 
@@ -577,23 +492,6 @@ namespace item
                 (ITEM_PTR->MaterialPrimary() == material::Leather),
                 makeErrorReportPrefix()
                     << "Leather Helm had a primary material that was not hard leather.");
-        }
-
-        // every unique_type is also a misc_type
-        if (ITEM_PTR->IsUnique())
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->IsMisc()),
-                makeErrorReportPrefix() << "unique but not misc.  That should never happen.  "
-                                           "Every unique_type should also be a misc_type.");
-        }
-
-        // unique_types cannot be set
-        if (ITEM_PTR->IsUnique())
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->IsSet() == false),
-                makeErrorReportPrefix() << "unique_type but also set_type.");
         }
 
         // set_types cannot be elemental
@@ -793,6 +691,14 @@ namespace item
 
         if (ITEM_PTR->IsMisc())
         {
+            // unique_types cannot be set
+            if (misc_type::IsUnique(ITEM_PTR->MiscType()))
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (ITEM_PTR->IsSet() == false),
+                    makeErrorReportPrefix() << "misc_type unique but also set_type.");
+            }
+
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (misc_type::IsWeapon(ITEM_PTR->MiscType()) == ITEM_PTR->IsWeapon()),
                 makeErrorReportPrefix()
@@ -816,6 +722,21 @@ namespace item
                     << ")=" << IS_TYPE_EQUIPPABLE
                     << " != (ITEM_PTR->Category() & category::Equippable)=" << IS_ITEM_EQUIPPABLE
                     << ".");
+
+            auto const IS_QUEST{ misc_type::IsQuestItem(ITEM_PTR->MiscType()) };
+            auto const IS_UNIQUE{ misc_type::IsUnique(ITEM_PTR->MiscType()) };
+            auto const IS_STANDALONE{ misc_type::IsStandalone(ITEM_PTR->MiscType()) };
+
+            auto const MISC_CATEGORY_COUNT{ ((IS_QUEST) ? 1 : 0) + ((IS_UNIQUE) ? 1 : 0)
+                                            + ((IS_STANDALONE) ? 1 : 0) };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (MISC_CATEGORY_COUNT == 1),
+                makeErrorReportPrefix()
+                    << "misc_type was not one and only one of the three "
+                       "misc_type sub-categories:  IsQuestItem="
+                    << std::boolalpha << IS_QUEST << ", IsUnique()=" << IS_UNIQUE
+                    << ", IsStandalone()=" << IS_STANDALONE << ".");
         }
 
         if (ITEM_PTR->IsWeapon())

@@ -195,6 +195,7 @@ namespace creature
 
     inline bool operator!=(const Enchantment & L, const Enchantment & R) { return !(L == R); }
 
+    using EnchantmentVec_t = std::vector<Enchantment>;
     using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
     using EnchantmentPtrOpt_t = boost::optional<EnchantmentPtr_t>;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;

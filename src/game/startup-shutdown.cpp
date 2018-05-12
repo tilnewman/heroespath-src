@@ -460,6 +460,7 @@ namespace game
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
+        item::ItemProfileWarehouse::Instance()->Setup();
     }
 
     void StartupShutdown::Setup_GameDataFile()

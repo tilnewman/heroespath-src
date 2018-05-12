@@ -108,7 +108,7 @@ namespace item
         }
         else if (PROFILE.IsUnique())
         {
-            ss << AppendSpaceIfNeeded(ss) << unique_type::Name(PROFILE.UniqueType());
+            ss << AppendSpaceIfNeeded(ss) << misc_type::Name(PROFILE.MiscType());
         }
         else
         {
@@ -179,7 +179,7 @@ namespace item
         }
         else if (PROFILE.IsUnique())
         {
-            ss << ", known as a " << unique_type::Name(PROFILE.UniqueType());
+            ss << ", known as a " << misc_type::Name(PROFILE.MiscType());
         }
 
         ss << ", made of " << material::Name(PROFILE.MaterialPrimary())

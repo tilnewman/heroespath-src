@@ -79,6 +79,8 @@ namespace sfml_util
             bool DoesFileExists(const item::ItemPtr_t ITEM_PTR) const;
             bool DoesFileExists(const std::string & FILENAME) const;
 
+            static const std::vector<std::string> AllFilenames();
+
         private:
             static const std::vector<std::string> Filenames(
                 const item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool IS_BONE);

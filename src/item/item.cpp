@@ -82,7 +82,6 @@ namespace item
         , weaponInfo_(WEAPON_INFO)
         , armorInfo_(ARMOR_INFO)
         , isPixie_(IS_PIXIE_ITEM)
-        , uniqueType_(TYPE_WRAPPER.unique)
         , setType_(TYPE_WRAPPER.set)
         , namedType_(TYPE_WRAPPER.name)
         , elementType_(TYPE_WRAPPER.element)
@@ -129,7 +128,7 @@ namespace item
     {
         if (IsUnique())
         {
-            return ComposeName(unique_type::Name(UniqueType()));
+            return ComposeName(misc_type::Name(miscType_));
         }
         else if (IsSet())
         {
@@ -170,6 +169,16 @@ namespace item
             ss << ", category=" << category::ToString(category_, true);
         }
 
+        if (IsUnique())
+        {
+            ss << ", unique";
+        }
+
+        if (IsQuestItem())
+        {
+            ss << ", quest";
+        }
+
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
             ss << ", armor_info=" << armorInfo_.ToString();
@@ -201,13 +210,6 @@ namespace item
         if (material::Nothing != materialSec_)
         {
             ss << ", mat_sec=" << material::ToString(materialSec_);
-        }
-
-        if (unique_type::NotUnique != uniqueType_)
-        {
-            ss << ", unique_type="
-               << ((unique_type::Count == uniqueType_) ? "Count"
-                                                       : unique_type::ToString(uniqueType_));
         }
 
         if (set_type::NotASet != setType_)
@@ -328,7 +330,6 @@ namespace item
                 L.weaponInfo_,
                 L.armorInfo_,
                 L.isPixie_,
-                L.uniqueType_,
                 L.setType_,
                 L.namedType_,
                 L.summonInfo_,
@@ -347,7 +348,6 @@ namespace item
                   R.weaponInfo_,
                   R.armorInfo_,
                   R.isPixie_,
-                  R.uniqueType_,
                   R.setType_,
                   R.namedType_,
                   R.summonInfo_,
@@ -378,7 +378,6 @@ namespace item
                 L.weaponInfo_,
                 L.armorInfo_,
                 L.isPixie_,
-                L.uniqueType_,
                 L.setType_,
                 L.namedType_,
                 L.summonInfo_,
@@ -397,7 +396,6 @@ namespace item
                    R.weaponInfo_,
                    R.armorInfo_,
                    R.isPixie_,
-                   R.uniqueType_,
                    R.setType_,
                    R.namedType_,
                    R.summonInfo_,

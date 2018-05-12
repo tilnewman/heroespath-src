@@ -46,7 +46,6 @@ namespace item
         explicit TypeWrapper(const ItemProfile &);
 
         element_type::Enum element;
-        unique_type::Enum unique;
         named_type::Enum name;
         set_type::Enum set;
         misc_type::Enum misc;

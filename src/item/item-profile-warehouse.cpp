@@ -55,6 +55,7 @@ namespace item
         , thinProfileFactory_()
         , profiles_()
         , religiousProfiles_()
+        , questItemProfilesMap_()
     {
         M_HP_LOG_DBG("Subsystem Construction: ItemProfileWarehouse");
     }
@@ -114,7 +115,6 @@ namespace item
         religiousProfiles_.reserve(320);
 
         Setup_StandardEquipment();
-        Setup_UniqueItems();
         Setup_MiscItems();
         Setup_NamedEquipment();
         Setup_SetEquipment();
@@ -142,28 +142,13 @@ namespace item
         }
     }
 
-    void ItemProfileWarehouse::Setup_UniqueItems()
-    {
-        for (int i(1); i < unique_type::Count; ++i)
-        {
-            auto const UNIQUE_TYPE{ static_cast<unique_type::Enum>(i) };
-
-            // currently there are only a few unique_type capes that are "of honor", but there are
-            // some, so this loop on element type is required
-            for (auto const ELEMENT_TYPE : unique_type::ElementTypes(UNIQUE_TYPE, true))
-            {
-                MakeLoopOverMaterialsForUnique(UNIQUE_TYPE, ELEMENT_TYPE);
-            }
-        }
-    }
-
     void ItemProfileWarehouse::Setup_MiscItems()
     {
         for (int i(1); i < misc_type::Count; ++i)
         {
             auto const MISC_TYPE{ static_cast<misc_type::Enum>(i) };
 
-            if (misc_type::IsStandalone(MISC_TYPE) && (misc_type::IsSummoning(MISC_TYPE) == false))
+            if (misc_type::IsSummoning(MISC_TYPE) == false)
             {
                 for (auto const ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
                 {
@@ -221,10 +206,10 @@ namespace item
                     if (ORIGIN_TYPE == origin_type::Statue)
                     {
                         for (auto const ELEMENT_TYPE :
-                             misc_type::ElementTypes(misc_type::Summoning_Statue, true))
+                             misc_type::ElementTypes(misc_type::SummoningStatue, true))
                         {
                             MakeLoopOverMaterialsForMisc(
-                                misc_type::Summoning_Statue, ELEMENT_TYPE, SUMMON_INFO);
+                                misc_type::SummoningStatue, ELEMENT_TYPE, SUMMON_INFO);
                         }
                     }
                     else
@@ -232,7 +217,7 @@ namespace item
                         auto const MISC_TYPE{ [&]() {
                             if (RACE_TYPE == creature::race::Spider)
                             {
-                                return misc_type::Spider_Eggs;
+                                return misc_type::SpiderEggs;
                             }
                             else if (ORIGIN_TYPE == origin_type::Egg)
                             {
@@ -256,30 +241,6 @@ namespace item
                 }
             }
         }
-    }
-
-    const ItemProfileVec_t & ItemProfileWarehouse::GetNormalProfiles()
-    {
-        // TODO when done with testing put this at system startup or in a seperate thread during
-        // intro stage
-        if (IsSetup() == false)
-        {
-            Setup();
-        }
-
-        return profiles_;
-    }
-
-    const ItemProfileVec_t & ItemProfileWarehouse::GetReligiousProfiles()
-    {
-        // TODO when done with testing put this at system startup or in a seperate thread during
-        // intro stage
-        if (IsSetup() == false)
-        {
-            Setup();
-        }
-
-        return religiousProfiles_;
     }
 
     const ElementEnumVec_t ItemProfileWarehouse::ElementTypesIncludingNone(
@@ -359,45 +320,6 @@ namespace item
         }
     }
 
-    void ItemProfileWarehouse::MakeLoopOverMaterialsForUnique(
-        const unique_type::Enum UNIQUE_TYPE, const element_type::Enum ELEMENT_TYPE)
-    {
-        for (auto const & MATERIAL_PAIR : materialFactory_.MakeForUniqueType(UNIQUE_TYPE))
-        {
-            auto const MISC_TYPE{ unique_type::MiscType(UNIQUE_TYPE) };
-
-            if (misc_type::HasOnlyPixieVersion(MISC_TYPE) == false)
-            {
-                ItemProfile profile;
-
-                profile.SetUniqueThenSetMisc(
-                    UNIQUE_TYPE,
-                    MISC_TYPE,
-                    MATERIAL_PAIR.first,
-                    MATERIAL_PAIR.second,
-                    ELEMENT_TYPE,
-                    false);
-
-                AppendToEitherNormalOrReligiousVector(profile);
-            }
-
-            if (misc_type::HasPixieVersion(MISC_TYPE))
-            {
-                ItemProfile profilePixie;
-
-                profilePixie.SetUniqueThenSetMisc(
-                    UNIQUE_TYPE,
-                    MISC_TYPE,
-                    MATERIAL_PAIR.first,
-                    MATERIAL_PAIR.second,
-                    ELEMENT_TYPE,
-                    true);
-
-                AppendToEitherNormalOrReligiousVector(profilePixie);
-            }
-        }
-    }
-
     void ItemProfileWarehouse::MakeForEquipment(
         const ItemProfileThin & THIN_PROFILE,
         const named_type::Enum NAMED_TYPE,
@@ -421,7 +343,7 @@ namespace item
                 profile.SetMisc(
                     THIN_PROFILE, false, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
 
-                AppendToEitherNormalOrReligiousVector(profile);
+                AppendToCorrectProfileCollection(profile);
             }
 
             if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
@@ -429,7 +351,7 @@ namespace item
                 profilePixie.SetMisc(
                     THIN_PROFILE, true, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE, ELEMENT_TYPE);
 
-                AppendToEitherNormalOrReligiousVector(profilePixie);
+                AppendToCorrectProfileCollection(profilePixie);
             }
 
             return;
@@ -636,13 +558,13 @@ namespace item
                     << ", mat_sec=" << material::ToString(MATERIAL_SEC)
                     << ") was unable to find the type of the given armor.");
 
-            AppendToEitherNormalOrReligiousVector(profile);
+            AppendToCorrectProfileCollection(profile);
 
             // only knights can equip plate armor, and knights can't be pixies...
             if (profilePixie.IsArmor()
                 && (profilePixie.ArmorInfo().BaseType() != armor::base_type::Plate))
             {
-                AppendToEitherNormalOrReligiousVector(profilePixie);
+                AppendToCorrectProfileCollection(profilePixie);
             }
 
             return;
@@ -797,11 +719,11 @@ namespace item
                     << ", mat_sec=" << material::ToString(MATERIAL_SEC)
                     << ") was unable to find the type of the given weapon.");
 
-            AppendToEitherNormalOrReligiousVector(profile);
+            AppendToCorrectProfileCollection(profile);
 
             if (profilePixie.IsWeapon())
             {
-                AppendToEitherNormalOrReligiousVector(profilePixie);
+                AppendToCorrectProfileCollection(profilePixie);
             }
 
             return;
@@ -826,7 +748,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        auto const IS_MAGICAL{ (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon() };
+        auto const IS_MAGICAL{ (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
+                               || misc_type::IsUnique(MISC_TYPE)
+                               || misc_type::IsQuestItem(MISC_TYPE) };
 
         for (auto const & MATERIAL_PAIR : materialFactory_.MakeForMiscType(MISC_TYPE, IS_MAGICAL))
         {
@@ -843,7 +767,7 @@ namespace item
                     ELEMENT_TYPE,
                     SUMMON_INFO);
 
-                AppendToEitherNormalOrReligiousVector(profile);
+                AppendToCorrectProfileCollection(profile);
             }
 
             if (misc_type::HasPixieVersion(MISC_TYPE))
@@ -859,7 +783,7 @@ namespace item
                     ELEMENT_TYPE,
                     SUMMON_INFO);
 
-                AppendToEitherNormalOrReligiousVector(profilePixie);
+                AppendToCorrectProfileCollection(profilePixie);
             }
         }
     }

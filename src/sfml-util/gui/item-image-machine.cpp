@@ -44,6 +44,7 @@
 
 #include <boost/filesystem.hpp>
 
+#include <cctype>
 #include <exception>
 #include <sstream>
 #include <vector>
@@ -108,14 +109,19 @@ namespace sfml_util
 
             const std::string TEST_PRE_STR{ "ItemImageMachine Test " };
 
+            static auto allFilenames{ AllFilenames() };
+
             static auto const WEAPON_TYPE_WRAPPERS{ weapon::WeaponTypeWrapper::MakeCompleteSet() };
 
             static std::size_t weaponIndex{ 0 };
             if (weaponIndex < WEAPON_TYPE_WRAPPERS.size())
             {
                 auto const & WEAPON_TYPE_WRAPPER{ WEAPON_TYPE_WRAPPERS.at(weaponIndex) };
+
+                auto const FILENAME{ Filename(WEAPON_TYPE_WRAPPER, false) };
+
                 sf::Texture texture;
-                Load(texture, Filename(WEAPON_TYPE_WRAPPER, false));
+                Load(texture, FILENAME);
 
                 game::LoopManager::Instance()->TestingImageSet(
                     texture, true, "item", WEAPON_TYPE_WRAPPER.ReadableName());
@@ -124,6 +130,11 @@ namespace sfml_util
                     TEST_PRE_STR + WEAPON_TYPE_WRAPPER.ReadableName());
 
                 EnsureValidDimmensions(texture, WEAPON_TYPE_WRAPPER.ReadableName());
+
+                allFilenames.erase(
+                    std::remove(std::begin(allFilenames), std::end(allFilenames), FILENAME),
+                    std::end(allFilenames));
+
                 ++weaponIndex;
                 return false;
             }
@@ -135,12 +146,14 @@ namespace sfml_util
             {
                 auto const & ARMOR_TYPE_WRAPPER{ ARMOR_TYPE_WRAPPERS.at(armorIndex) };
 
+                auto const FILENAME{ Filename(ARMOR_TYPE_WRAPPER) };
+
                 // skip testing skin images because we need creatures for that, and skin images will
                 // get tested when we test creature creation
                 if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
                 {
                     sf::Texture texture;
-                    Load(texture, Filename(ARMOR_TYPE_WRAPPER));
+                    Load(texture, FILENAME);
 
                     game::LoopManager::Instance()->TestingImageSet(
                         texture, true, "item", ARMOR_TYPE_WRAPPER.ReadableName());
@@ -150,6 +163,10 @@ namespace sfml_util
 
                     EnsureValidDimmensions(texture, ARMOR_TYPE_WRAPPER.ReadableName());
                 }
+
+                allFilenames.erase(
+                    std::remove(std::begin(allFilenames), std::end(allFilenames), FILENAME),
+                    std::end(allFilenames));
 
                 ++armorIndex;
                 return false;
@@ -208,6 +225,11 @@ namespace sfml_util
 
                     EnsureValidDimmensions(texture, ENUM_STR);
 
+                    allFilenames.erase(
+                        std::remove(
+                            std::begin(allFilenames), std::end(allFilenames), NEXT_FILENAME),
+                        std::end(allFilenames));
+
                     ++fileIndex;
                     return false;
                 }
@@ -225,6 +247,14 @@ namespace sfml_util
                 fileIndex = 0;
                 ++miscIndex;
                 return false;
+            }
+
+            for (auto const & FILENAME : allFilenames)
+            {
+                M_HP_LOG_WRN(
+                    "sfml_util::gui::ItemImageMachine::Test() found the following item image "
+                    "unused: "
+                    << FILENAME);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -290,50 +320,85 @@ namespace sfml_util
             return (bfs::exists(PATH) && bfs::is_regular_file(PATH));
         }
 
+        const std::vector<std::string> ItemImageMachine::AllFilenames()
+        {
+            std::vector<std::string> filenames;
+
+            namespace bfs = boost::filesystem;
+
+            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
+                "media-images-items-dir") };
+
+            for (auto const & PATH : bfs::path(IMAGES_DIR))
+            {
+                if (bfs::is_regular_file(PATH))
+                {
+                    namespace ba = boost::algorithm;
+
+                    if (ba::ends_with(PATH.leaf().string(), FILE_EXT_STR_))
+                    {
+                        filenames.emplace_back(PATH.leaf().string());
+                    }
+                }
+            }
+
+            return filenames;
+        }
+
         const std::vector<std::string> ItemImageMachine::Filenames(
             const item::misc_type::Enum MISC_TYPE, const bool IS_JEWELED, const bool IS_BONE)
         {
             using namespace item;
+            namespace ba = boost::algorithm;
 
             switch (MISC_TYPE)
             {
-                case misc_type::Amulet:
+                // these misc_types are compound names where underscores need to be converted to
+                // dashes
+                case misc_type::Brooch_Crown:
+                case misc_type::Brooch_Feather:
+                case misc_type::Brooch_Fist:
+                case misc_type::Brooch_Hourglass:
+                case misc_type::Brooch_Key:
+                case misc_type::Brooch_Mask:
+                case misc_type::Charm_Crown:
+                case misc_type::Charm_Feather:
+                case misc_type::Charm_Fist:
+                case misc_type::Charm_Hourglass:
+                case misc_type::Charm_Key:
+                case misc_type::Charm_Mask:
+                case misc_type::Pin_Crown:
+                case misc_type::Pin_Feather:
+                case misc_type::Pin_Fist:
+                case misc_type::Pin_Hourglass:
+                case misc_type::Pin_Key:
+                case misc_type::Pin_Mask:
+                {
+                    auto const TYPE_STR{ ba::replace_all_copy(
+                        ba::to_lower_copy(misc_type::ToString(MISC_TYPE)), "_", SEPARATOR_) };
+
+                    return { (TYPE_STR + FILE_EXT_STR_) };
+                }
+
+                    // these misc_types have specific filenames
+                case misc_type::ManaAmulet:
                 case misc_type::Pendant:
                 {
                     return MakeFilenames("amulet", 23);
                 }
-                case misc_type::Necklace:
-                {
-                    return { ("necklace" + FILE_EXT_STR_) };
-                }
-                case misc_type::Bag:
-                {
-                    return MakeFilenames("bag", 8);
-                }
-                case misc_type::Tome:
-                case misc_type::Book:
-                {
-                    return MakeFilenames("book", 5);
-                }
-                case misc_type::Cape:
+                case misc_type::CapeCommanders:
+                case misc_type::CapeGenerals:
+                case misc_type::CapeKings:
                 {
                     return { ("cape" + FILE_EXT_STR_) };
                 }
-                case misc_type::Cloak:
+                case misc_type::ShadeCloak:
                 {
                     return { ("cloak" + FILE_EXT_STR_) };
                 }
-                case misc_type::Robe:
+                case misc_type::SpecterRobe:
                 {
                     return { ("robe" + FILE_EXT_STR_) };
-                }
-                case misc_type::Doll:
-                {
-                    return MakeFilenames("doll", 16);
-                }
-                case misc_type::Potion:
-                {
-                    return MakeFilenames("potion", 33);
                 }
                 case misc_type::Goblet:
                 {
@@ -347,10 +412,6 @@ namespace sfml_util
                 {
                     return MakeFilenames("lockpicks", 7);
                 }
-                case misc_type::Mask:
-                {
-                    return MakeFilenames("mask", 6);
-                }
                 case misc_type::Mirror:
                 {
                     return MakeFilenames("mirror", 10);
@@ -358,10 +419,6 @@ namespace sfml_util
                 case misc_type::DrumLute:
                 {
                     return MakeFilenames("drumlute", 21);
-                }
-                case misc_type::Scroll:
-                {
-                    return MakeFilenames("scroll", 13);
                 }
                 case misc_type::Orb:
                 {
@@ -371,7 +428,7 @@ namespace sfml_util
                 {
                     if (IS_JEWELED)
                     {
-                        return MakeFilenames("ring-jeweled", 24);
+                        return MakeFilenames("ring-jeweled", 13);
                     }
                     else if (IS_BONE)
                     {
@@ -379,8 +436,12 @@ namespace sfml_util
                     }
                     else
                     {
-                        return MakeFilenames("ring-plain", 2);
+                        return { "ring" + FILE_EXT_STR_ };
                     }
+                }
+                case misc_type::RingHobo:
+                {
+                    return { "ring" + FILE_EXT_STR_ };
                 }
                 case misc_type::Shard:
                 {
@@ -394,163 +455,184 @@ namespace sfml_util
                 {
                     return MakeFilenames("scepter", 26);
                 }
-                case misc_type::Doll_Blessed:
+                case misc_type::DollBlessed:
                 {
-                    // note that certain numbers are intentionally missing from this sequence
-                    return { ("doll-1" + FILE_EXT_STR_), ("doll-2" + FILE_EXT_STR_),
-                             ("doll-4" + FILE_EXT_STR_), ("doll-5" + FILE_EXT_STR_),
-                             ("doll-6" + FILE_EXT_STR_), ("doll-8" + FILE_EXT_STR_),
-                             ("doll-9" + FILE_EXT_STR_), ("doll-10" + FILE_EXT_STR_) };
+                    return MakeFilenames("doll", 5, 2);
                 }
-                case misc_type::Doll_Cursed:
+                case misc_type::DollCursed:
                 {
-                    return MakeFilenames("doll", 16, 11);
+                    return MakeFilenames("doll", 11, 6);
                 }
-                case misc_type::Figurine_Blessed:
+                case misc_type::Doll:
                 {
-                    return MakeFilenames("figurine", 15);
+                    return { "doll-1" + FILE_EXT_STR_ };
                 }
-                case misc_type::Figurine_Cursed:
+                case misc_type::FigurineBlessed:
                 {
-                    auto filenames{ MakeFilenames("figurine", 15) };
-
-                    for (auto const & FILENAME : MakeFilenames("figurine-evil", 4))
-                    {
-                        filenames.emplace_back(FILENAME);
-                    }
-
-                    return filenames;
+                    return MakeFilenames("figurine", 6);
+                }
+                case misc_type::FigurineCursed:
+                {
+                    return MakeFilenames("figurine-evil", 6);
                 }
                 case misc_type::Staff:
                 {
                     return MakeFilenames("staff", 21);
                 }
-                case misc_type::Summoning_Statue:
+                case misc_type::SummoningStatue:
                 {
-                    return { ("figurine-1" + FILE_EXT_STR_) };
+                    return MakeFilenames("summoning-statue", 3);
                 }
-                case misc_type::Puppet_Blessed:
-                case misc_type::Puppet_Cursed:
+                case misc_type::BloodyDragonScale:
                 {
-                    return { ("puppet" + FILE_EXT_STR_) };
+                    return { "scales" + FILE_EXT_STR_ };
                 }
-                case misc_type::Ankh_Necklace:
-                case misc_type::Armband:
-                case misc_type::Beard:
-                case misc_type::Bell:
-                case misc_type::Bird_Claw:
-                case misc_type::Bone_Whistle:
-                case misc_type::Bone:
-                case misc_type::Bracelet_Crown:
-                case misc_type::Bracelet_Feather:
-                case misc_type::Bracelet_Fist:
-                case misc_type::Bracelet_Hourglass:
-                case misc_type::Bracelet_Key:
-                case misc_type::Bracelet_Mask:
-                case misc_type::Brooch_Crown:
-                case misc_type::Brooch_Feather:
-                case misc_type::Brooch_Fist:
-                case misc_type::Brooch_Hourglass:
-                case misc_type::Brooch_Key:
-                case misc_type::Brooch_Mask:
-                case misc_type::Angel_Braid:
-                case misc_type::Bust:
-                case misc_type::CameoPin:
-                case misc_type::Cat:
-                case misc_type::Chains:
-                case misc_type::Charm_Crown:
-                case misc_type::Charm_Feather:
-                case misc_type::Charm_Fist:
-                case misc_type::Charm_Hourglass:
-                case misc_type::Charm_Key:
-                case misc_type::Charm_Mask:
-                case misc_type::Chimes:
-                case misc_type::Conch:
-                case misc_type::Crumhorn:
-                case misc_type::Devil_Horn:
-                case misc_type::Dried_Head:
-                case misc_type::Embryo:
-                case misc_type::Egg:
-                case misc_type::Eye:
-                case misc_type::Feather:
-                case misc_type::Golem_Finger:
-                case misc_type::Fingerclaw:
-                case misc_type::Flag:
-                case misc_type::Frog:
-                case misc_type::Gecko:
-                case misc_type::Ghost_Sheet:
-                case misc_type::Gizzard:
-                case misc_type::Gong:
-                case misc_type::Grave_Ornament:
-                case misc_type::Handbag:
-                case misc_type::Hanky:
-                case misc_type::Headdress:
-                case misc_type::Hide:
-                case misc_type::Horn:
-                case misc_type::Horseshoe:
-                case misc_type::Hurdy_Gurdy:
-                case misc_type::Icicle:
-                case misc_type::Iguana:
-                case misc_type::Imp_Tail:
-                case misc_type::Leaf:
-                case misc_type::Legtie:
-                case misc_type::Litch_Hand:
-                case misc_type::Lizard:
-                case misc_type::Lyre:
-                case misc_type::Magnifying_Glass:
-                case misc_type::Mummy_Hand:
-                case misc_type::Noose:
-                case misc_type::Nose:
-                case misc_type::Paw:
-                case misc_type::Petrified_Snake:
-                case misc_type::Pin_Crown:
-                case misc_type::Pin_Feather:
-                case misc_type::Pin_Fist:
-                case misc_type::Pin_Hourglass:
-                case misc_type::Pin_Key:
-                case misc_type::Pin_Mask:
-                case misc_type::Pipe_And_Tabor:
-                case misc_type::Rabbit_Foot:
-                case misc_type::Rainmaker:
-                case misc_type::Rat_Juju:
-                case misc_type::Rattlesnake_Tail:
-                case misc_type::Recorder:
-                case misc_type::Relic:
-                case misc_type::Scythe:
-                case misc_type::Seeds:
-                case misc_type::Salamander:
-                case misc_type::Shark_Tooth_Necklace:
-                case misc_type::Shroud:
-                case misc_type::Signet_Crown:
-                case misc_type::Signet_Feather:
-                case misc_type::Signet_Fist:
-                case misc_type::Signet_Hourglass:
-                case misc_type::Signet_Key:
-                case misc_type::Signet_Mask:
-                case misc_type::Skink:
-                case misc_type::Spider_Eggs:
-                case misc_type::Spyglass:
-                case misc_type::Talisman:
-                case misc_type::Tongue:
-                case misc_type::Tooth_Necklace:
-                case misc_type::Tooth:
-                case misc_type::Troll_Figure:
-                case misc_type::Trophy:
-                case misc_type::Tuning_Fork:
-                case misc_type::Turtle_Shell:
-                case misc_type::Unicorn_Horn:
-                case misc_type::Veil:
-                case misc_type::Viol:
-                case misc_type::Warhorse_Marionette:
-                case misc_type::Weasel_Totem:
-                case misc_type::Wolfen_Fur:
-                case misc_type::Scales:
+                case misc_type::FlagFanatics:
+                case misc_type::FlagRegalCaptains:
+                case misc_type::FlagTribal:
                 {
-                    auto const TYPE_STR{ boost::replace_all_copy(
-                        boost::to_lower_copy(misc_type::ToString(MISC_TYPE)), "_", SEPARATOR_) };
+                    return { "flag" + FILE_EXT_STR_ };
+                }
+                case misc_type::MinotaurHide:
+                {
+                    return { "hide" + FILE_EXT_STR_ };
+                }
+                case misc_type::ReaperScythe:
+                {
+                    return { "bladedstaff-scythe" + FILE_EXT_STR_ };
+                }
 
-                    return { (TYPE_STR + FILE_EXT_STR_) };
+                // these misc_types are compound words whose filenames have dashes between each word
+                case misc_type::AngelBraid:
+                case misc_type::DevilHorn:
+                case misc_type::GolemFinger:
+                case misc_type::HurdyGurdy:
+                case misc_type::LitchHand:
+                case misc_type::MummyHand:
+                case misc_type::PetrifiedSnake:
+                case misc_type::PipeAndTabor:
+                case misc_type::UnicornHorn:
+                case misc_type::BasiliskTonge:
+                case misc_type::BerserkersBeard:
+                case misc_type::BishopsHanky:
+                case misc_type::BleedingTrophy:
+                case misc_type::BottleOfBansheeScreams:
+                case misc_type::BronzeTroll:
+                case misc_type::BurialShroud:
+                case misc_type::ChimeraBone:
+                case misc_type::CobraTooth:
+                case misc_type::CrystalChimes:
+                case misc_type::DemonDiary:
+                case misc_type::DoveBloodVial:
+                case misc_type::DragonToothWhistle:
+                case misc_type::DriedFrog:
+                case misc_type::DriedGecko:
+                case misc_type::DriedIguana:
+                case misc_type::DriedLizard:
+                case misc_type::DriedSalamander:
+                case misc_type::DriedSkink:
+                case misc_type::DriedToad:
+                case misc_type::DruidLeaf:
+                case misc_type::EvilRabbitsFoot:
+                case misc_type::ExoticGoldenGong:
+                case misc_type::EyeCyclops:
+                case misc_type::EyeGiantOwl:
+                case misc_type::EyeHawk:
+                case misc_type::FriarsChronicle:
+                case misc_type::FuneralRecord:
+                case misc_type::GhostSheet:
+                case misc_type::GlassCat:
+                case misc_type::GriffinFeather:
+                case misc_type::HangmansNoose:
+                case misc_type::HobgoblinNose:
+                case misc_type::HolyEpic:
+                case misc_type::HornOfTheHorde:
+                case misc_type::ImpTail:
+                case misc_type::IslanderHeaddress:
+                case misc_type::JeweledArmband:
+                case misc_type::JeweledHandbag:
+                case misc_type::JeweledPrincessVeil:
+                case misc_type::LastRitesScroll:
+                case misc_type::MacabreManuscript:
+                case misc_type::MadRatJuju:
+                case misc_type::MagicHorseshoe:
+                case misc_type::MagnifyingGlass:
+                case misc_type::MaskMourners:
+                case misc_type::MaskRascal:
+                case misc_type::MortuaryOrnament:
+                case misc_type::NecklaceJeweledAnkh:
+                case misc_type::NecklaceSharkTooth:
+                case misc_type::NecklaceVampiresTooth:
+                case misc_type::PantherPaw:
+                case misc_type::PixieBell:
+                case misc_type::RattlesnakeTail:
+                case misc_type::RavenClaw:
+                case misc_type::RequiemRegister:
+                case misc_type::RingMendicant:
+                case misc_type::RingMonk:
+                case misc_type::RingPriest:
+                case misc_type::RoyalScoutSpyglass:
+                case misc_type::SaintCameoPin:
+                case misc_type::SaintsJournal:
+                case misc_type::SanguineRelic:
+                case misc_type::ScoundrelSack:
+                case misc_type::SepultureDecoration:
+                case misc_type::ShamanRainmaker:
+                case misc_type::SirenConch:
+                case misc_type::SpecterChains:
+                case misc_type::SpiderEggs:
+                case misc_type::SprintersLegtie:
+                case misc_type::SwindlersBag:
+                case misc_type::TricksterPouch:
+                case misc_type::TuningFork:
+                case misc_type::TurtleShell:
+                case misc_type::VultureGizzard:
+                case misc_type::WarhorseMarionette:
+                case misc_type::WarTrumpet:
+                case misc_type::WeaselTotem:
+                case misc_type::WolfenFur:
+                case misc_type::WraithTalisman:
+                case misc_type::DriedHead:
+                case misc_type::PuppetBlessed:
+                case misc_type::PuppetCursed:
+                {
+                    std::string filename{ "" };
+
+                    auto const MISC_TYPE_STR{ misc_type::ToString(MISC_TYPE) };
+                    auto const MISC_TYPE_STR_SIZE{ MISC_TYPE_STR.size() };
+
+                    for (std::size_t i(0); i < MISC_TYPE_STR_SIZE; ++i)
+                    {
+                        auto const CURRENT_CHAR{ MISC_TYPE_STR[i] };
+                        filename.push_back(static_cast<char>(std::tolower(CURRENT_CHAR)));
+
+                        if ((MISC_TYPE_STR_SIZE - 1) > i)
+                        {
+                            auto const NEXT_CHAR{ MISC_TYPE_STR[i + 1] };
+                            if (std::islower(CURRENT_CHAR) && std::isupper(NEXT_CHAR))
+                            {
+                                filename.push_back(SEPARATOR_[0]);
+                            }
+                        }
+                    }
+
+                    return { filename + FILE_EXT_STR_ };
                 }
+
+                // these misc_types have single word names that are simply converted to lower-case
+                case misc_type::Crumhorn:
+                case misc_type::Icicle:
+                case misc_type::Lyre:
+                case misc_type::Recorder:
+                case misc_type::Viol:
+                case misc_type::Bust:
+                case misc_type::Egg:
+                case misc_type::Embryo:
+                case misc_type::Seeds:
+                {
+                    return { ba::to_lower_copy(misc_type::ToString(MISC_TYPE)) + FILE_EXT_STR_ };
+                }
+
                 case misc_type::NotMisc:
                 case misc_type::Count:
                 default:
