@@ -28,6 +28,7 @@
 // inventory-stage.hpp
 //
 #include "combat/combat-text.hpp"
+#include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -501,6 +502,8 @@ namespace stage
         creature::CreaturePtr_t turnCreaturePtr_;
         game::Phase::Enum currentPhase_;
         bool hasTakenActionSpellOrSong_;
+
+        combat::CreatureInteraction creatureInteraction_;
     };
 
 } // namespace stage

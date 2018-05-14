@@ -29,7 +29,7 @@
 //
 #include "condition.hpp"
 
-#include "combat/fight.hpp"
+#include "combat/creature-interaction.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -110,6 +110,7 @@ namespace creature
     void Condition::FinalChange(const CreaturePtr_t) const {}
 
     void Condition::PerTurnEffect(
+        const combat::CreatureInteraction & CREATURE_INTERACTION,
         const CreaturePtr_t CREATURE_PTR,
         combat::HitInfoVec_t & hitInfoVec,
         bool & hasTurnBeenConsumed) const
@@ -212,7 +213,7 @@ namespace creature
                 {
                     creature::CondEnumVec_t condsRemoved;
 
-                    combat::FightClub::RemoveAddedCondition(
+                    CREATURE_INTERACTION.RemoveAddedCondition(
                         creature::Conditions::Poisoned, CREATURE_PTR, hitInfoVec, condsRemoved);
 
                     std::ostringstream ss;
@@ -245,7 +246,7 @@ namespace creature
                     CondEnumVec_t condsAddedVec;
                     CondEnumVec_t condsRemovedVec;
 
-                    combat::FightClub::HandleDamage(
+                    CREATURE_INTERACTION.HandleDamage(
                         CREATURE_PTR,
                         hitInfoVec,
                         DAMAGE_FINAL,

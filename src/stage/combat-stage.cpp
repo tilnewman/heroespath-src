@@ -34,9 +34,7 @@
 #include "combat/combat-node.hpp"
 #include "combat/combat-over-enum.hpp"
 #include "combat/combat-text.hpp"
-#include "combat/condition-effects.hpp"
 #include "combat/encounter.hpp"
-#include "combat/fight.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-decider.hpp"
 #include "creature/algorithms.hpp"
@@ -275,6 +273,7 @@ namespace stage
         , isSongAnim1Done_(false)
         , isSongAnim2Done_(false)
         , creatureTitlesVec_()
+        , creatureInteraction_()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -2251,7 +2250,7 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_ = combat::FightClub::Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
                 return GetTurnActionPhaseFromFightResult(fightResult_);
@@ -2290,7 +2289,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = combat::FightClub::Cast(
+                fightResult_ = creatureInteraction_.Cast(
                     turnActionInfo_.Spell().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2308,7 +2307,7 @@ namespace stage
                 creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
-                fightResult_ = combat::FightClub::PlaySong(
+                fightResult_ = creatureInteraction_.PlaySong(
                     turnActionInfo_.Song().value(), TURN_CREATURE_PTR, targetedCreaturesPVec);
 
                 SetupTurnBox();
@@ -2334,7 +2333,7 @@ namespace stage
                         << ") turn_action_info.Action()==SkyPounce||LandPounce but "
                            "turn_action_info.Targets() was empty.");
 
-                fightResult_ = combat::FightClub::Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
+                fightResult_ = creatureInteraction_.Pounce(TURN_CREATURE_PTR, TARGETS_PVEC.at(0));
 
                 SetupTurnBox();
 
@@ -2350,7 +2349,7 @@ namespace stage
 
             case combat::TurnAction::Roar:
             {
-                fightResult_ = combat::FightClub::Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
+                fightResult_ = creatureInteraction_.Roar(TURN_CREATURE_PTR, combatDisplayStagePtr_);
                 SetupTurnBox();
 
                 AppendStatusMessage(
@@ -2432,7 +2431,7 @@ namespace stage
         }
         else
         {
-            conditionEffectsTookTurn_ = combat::ConditionEffects::Process(
+            conditionEffectsTookTurn_ = creatureInteraction_.ProcessConditionEffects(
                 game::Phase::Combat, TURN_CREATURE_PTR, conditionEffectsVec_);
         }
 
@@ -2561,7 +2560,7 @@ namespace stage
         }
         else
         {
-            HandleAttackTasks(combat::FightClub::FindNonPlayerCreatureToAttack(
+            HandleAttackTasks(creatureInteraction_.FindNonPlayerCreatureToAttack(
                 turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
             return true;
@@ -2654,7 +2653,7 @@ namespace stage
 
             combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-            fightResult_ = combat::FightClub::PlaySong(
+            fightResult_ = creatureInteraction_.PlaySong(
                 songBeingPlayedPtrOpt_.value(), TURN_CREATURE_PTR, creaturesListeningPVec);
 
             SetTurnActionPhase(TurnActionPhase::PlaySong);
@@ -2746,7 +2745,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_ = combat::FightClub::Cast(
+        fightResult_ = creatureInteraction_.Cast(
             spellBeingCastPtrOpt_.value(), TURN_CREATURE_PTR, creaturesToCastUponCopyPVec);
 
         SetTurnActionPhase(TurnActionPhase::Cast);
@@ -4152,7 +4151,7 @@ namespace stage
 
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
-        fightResult_ = combat::FightClub::Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
+        fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
 
         AppendStatusMessage(
             combat::Text::ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
@@ -4527,7 +4526,8 @@ namespace stage
 
     void CombatStage::PerformRoarEffects()
     {
-        fightResult_ = combat::FightClub::Roar(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
+        fightResult_
+            = creatureInteraction_.Roar(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
     }
 
     void CombatStage::AnimationCenteringStart(const creature::CreaturePVec_t & CREATURE_PVEC)

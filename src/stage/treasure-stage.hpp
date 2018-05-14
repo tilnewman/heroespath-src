@@ -28,6 +28,7 @@
 // treasure-stage.hpp
 //  A Stage class that allows finding treasure and advancing after combat.
 //
+#include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
 #include "combat/trap.hpp"
 #include "combat/turn-action-info.hpp"
@@ -182,6 +183,7 @@ namespace stage
         bool updateItemDisplayNeeded_;
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
+        combat::CreatureInteraction creatureInteraction_;
     };
 
 } // namespace stage

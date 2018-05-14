@@ -30,7 +30,6 @@
 #include "inventory-stage.hpp"
 
 #include "combat/combat-sound-effects.hpp"
-#include "combat/fight.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
@@ -67,8 +66,6 @@
 #include "state/game-state.hpp"
 
 #include <algorithm>
-#include <string>
-#include <vector>
 
 namespace heroespath
 {
@@ -294,6 +291,7 @@ namespace stage
         , turnCreaturePtr_(TURN_CREATURE_PTR)
         , currentPhase_(CURRENT_PHASE)
         , hasTakenActionSpellOrSong_(false)
+        , creatureInteraction_()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
     }
@@ -3986,7 +3984,7 @@ namespace stage
 
         turnActionInfo_ = combat::TurnActionInfo(SPELL_PTR, TARGET_CREATURES_PVEC);
 
-        fightResult_ = combat::FightClub::Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
+        fightResult_ = creatureInteraction_.Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
 
         Setup_CreatureDetails(false);
         Setup_CreatureStats();
@@ -4173,7 +4171,7 @@ namespace stage
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
-            fightResult_ = combat::FightClub::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
+            fightResult_ = creatureInteraction_.PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
 
             Setup_CreatureDetails(false);
             Setup_CreatureStats();

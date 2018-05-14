@@ -102,7 +102,6 @@ namespace game
             Setup_SubsystemsAcquire();
             Setup_SubsystemsInitialize();
             Setup_HoldersFill();
-            item::ArmorRatings::Setup();
 
             // this causes the initial stage transition/creation so it must occur last
             LoopManager::Instance()->Initialize();

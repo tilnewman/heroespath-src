@@ -43,6 +43,8 @@ namespace item
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
+    // Responsible for calculating an approximate armor rating for a creature that is wearing a
+    // certain kind of common armor configuration.
     class ArmorRatings
     {
     public:
@@ -50,33 +52,24 @@ namespace item
         ArmorRatings(ArmorRatings &&) = delete;
         ArmorRatings & operator=(const ArmorRatings &) = delete;
         ArmorRatings & operator=(ArmorRatings &&) = delete;
-        ArmorRatings() = delete;
 
-        static void Setup();
+        ArmorRatings();
 
-        static Armor_t FullyClothedCloth() { return clothesCloth_; }
-        static Armor_t FullyClothedLeather() { return clothesLeather_; }
-        static Armor_t ArmoredLesserLeather() { return armoredLesserLeather_; }
-        static Armor_t ArmoredLesserSteel() { return armoredLesserSteel_; }
-        static Armor_t ArmoredLesserDiamond() { return armoredLesserDiamond_; }
-        static Armor_t ArmoredGreaterLeather() { return armoredGreaterLeather_; }
-        static Armor_t ArmoredGreaterSteel() { return armoredGreaterSteel_; }
-        static Armor_t ArmoredGreaterDiamond() { return armoredGreaterDiamond_; }
+        Armor_t LesserSteel() const { return lesserSteel_; }
+        Armor_t GreaterSteel() const { return greaterSteel_; }
+        Armor_t GreaterDiamond() const { return greaterDiamond_; }
+
+        void LogCommonArmorRatings() const;
 
     private:
-        static Armor_t ClothesSetRating(const item::material::Enum);
-        static Armor_t LesserArmorSetRating(const item::material::Enum);
-        static Armor_t GreaterArmorSetRating(const item::material::Enum);
-        static Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &);
+        Armor_t ClothesSetRating(const item::material::Enum) const;
+        Armor_t LesserArmorSetRating(const item::material::Enum) const;
+        Armor_t GreaterArmorSetRating(const item::material::Enum) const;
+        Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &) const;
 
-        static Armor_t clothesCloth_;
-        static Armor_t clothesLeather_;
-        static Armor_t armoredLesserLeather_;
-        static Armor_t armoredLesserSteel_;
-        static Armor_t armoredLesserDiamond_;
-        static Armor_t armoredGreaterLeather_;
-        static Armor_t armoredGreaterSteel_;
-        static Armor_t armoredGreaterDiamond_;
+        Armor_t lesserSteel_;
+        Armor_t greaterSteel_;
+        Armor_t greaterDiamond_;
     };
 
 } // namespace item

@@ -39,6 +39,7 @@
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "interact/interaction-manager.hpp"
+#include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
 #include "log/log-macros.hpp"
@@ -398,6 +399,15 @@ if (false == willImageCheck_)
         if (false == hasTestingCompleted_InventoryFactory)
         {
             hasTestingCompleted_InventoryFactory = TestInventoryFactory();
+            return;
+        }
+
+        static auto hasTestingCompleted_ArmorRatings{ false };
+        if (false == hasTestingCompleted_ArmorRatings)
+        {
+            item::ArmorRatings armorRatings;
+            armorRatings.LogCommonArmorRatings();
+            hasTestingCompleted_ArmorRatings = true;
             return;
         }
 

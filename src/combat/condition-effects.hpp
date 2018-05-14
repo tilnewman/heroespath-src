@@ -48,15 +48,7 @@ namespace combat
 {
 
     struct ConditionEffects
-    {
-        // returns true if an effect consumed the current turn
-        // fightResult_OutParam is guaranteed to to only have one CreatureEffect
-        // if hitInfoVec_OutParam is empty return value will be false
-        static bool Process(
-            const game::Phase::Enum HEROESPATH_PHASE,
-            const creature::CreaturePtr_t CREATURE_PTR,
-            HitInfoVec_t & hitInfoVec_OuParam);
-    };
+    {};
 
 } // namespace combat
 } // namespace heroespath

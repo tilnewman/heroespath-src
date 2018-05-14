@@ -33,7 +33,6 @@
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
 
 #include <numeric>
 
@@ -42,30 +41,27 @@ namespace heroespath
 namespace item
 {
 
-    Armor_t ArmorRatings::clothesCloth_(0_armor);
-    Armor_t ArmorRatings::clothesLeather_(0_armor);
-    Armor_t ArmorRatings::armoredLesserLeather_(0_armor);
-    Armor_t ArmorRatings::armoredLesserSteel_(0_armor);
-    Armor_t ArmorRatings::armoredLesserDiamond_(0_armor);
-    Armor_t ArmorRatings::armoredGreaterLeather_(0_armor);
-    Armor_t ArmorRatings::armoredGreaterSteel_(0_armor);
-    Armor_t ArmorRatings::armoredGreaterDiamond_(0_armor);
+    ArmorRatings::ArmorRatings()
+        : lesserSteel_(LesserArmorSetRating(item::material::Steel))
+        , greaterSteel_(GreaterArmorSetRating(item::material::Steel))
+        , greaterDiamond_(GreaterArmorSetRating(item::material::Diamond))
+    {}
 
-    void ArmorRatings::Setup()
+    void ArmorRatings::LogCommonArmorRatings() const
     {
-        clothesCloth_ = ClothesSetRating(item::material::Cloth);
-        clothesLeather_ = ClothesSetRating(item::material::Leather);
-
-        armoredLesserLeather_ = LesserArmorSetRating(item::material::Leather);
-        armoredLesserSteel_ = LesserArmorSetRating(item::material::Steel);
-        armoredLesserDiamond_ = LesserArmorSetRating(item::material::Diamond);
-
-        armoredGreaterLeather_ = GreaterArmorSetRating(item::material::Leather);
-        armoredGreaterSteel_ = GreaterArmorSetRating(item::material::Steel);
-        armoredGreaterDiamond_ = GreaterArmorSetRating(item::material::Diamond);
+        M_HP_LOG_DBG(
+            "\nArmor Ratings:"
+            << "\n\t Cloth Clothes: " << ClothesSetRating(item::material::Cloth)
+            << "\n\t Leather Clothes: " << ClothesSetRating(item::material::Leather)
+            << "\n\t Lesser Leather Armor: " << LesserArmorSetRating(item::material::Leather)
+            << "\n\t Lesser Steel Armor: " << lesserSteel_
+            << "\n\t Lesser Diamond Armor: " << LesserArmorSetRating(item::material::Diamond)
+            << "\n\t Greater Leather Armor: " << GreaterArmorSetRating(item::material::Leather)
+            << "\n\t Greater Steel Armor: " << greaterSteel_
+            << "\n\t Greater Diamond Armor: " << greaterDiamond_);
     }
 
-    Armor_t ArmorRatings::ClothesSetRating(const item::material::Enum PRIMARY_MATERIAL)
+    Armor_t ArmorRatings::ClothesSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
         using namespace item::armor;
 
@@ -98,7 +94,7 @@ namespace item
         return GetTotalArmorRatingAndFree(itemPVec);
     }
 
-    Armor_t ArmorRatings::LesserArmorSetRating(const item::material::Enum PRIMARY_MATERIAL)
+    Armor_t ArmorRatings::LesserArmorSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
         using namespace item::armor;
 
@@ -152,7 +148,7 @@ namespace item
         return GetTotalArmorRatingAndFree(itemPVec);
     }
 
-    Armor_t ArmorRatings::GreaterArmorSetRating(const item::material::Enum PRIMARY_MATERIAL)
+    Armor_t ArmorRatings::GreaterArmorSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
         using namespace item::armor;
 
@@ -206,7 +202,7 @@ namespace item
         return GetTotalArmorRatingAndFree(itemPVec);
     }
 
-    Armor_t ArmorRatings::GetTotalArmorRatingAndFree(ItemPVec_t & itemPVec)
+    Armor_t ArmorRatings::GetTotalArmorRatingAndFree(ItemPVec_t & itemPVec) const
     {
         auto const TOTAL_ARMOR_RATING{ std::accumulate(
             std::begin(itemPVec),

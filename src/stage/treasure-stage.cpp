@@ -31,7 +31,6 @@
 
 #include "combat/combat-text.hpp"
 #include "combat/encounter.hpp"
-#include "combat/fight.hpp"
 #include "combat/trap-holder.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
@@ -65,7 +64,6 @@
 #include <exception>
 #include <set>
 #include <sstream>
-#include <string>
 #include <vector>
 
 namespace heroespath
@@ -122,6 +120,7 @@ namespace stage
         , updateItemDisplayNeeded_(false)
         , willProcessLockpickTitle_(false)
         , lockPicking_()
+        , creatureInteraction_()
     {}
 
     TreasureStage::~TreasureStage()
@@ -682,7 +681,7 @@ namespace stage
             "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
 
         fightResult_
-            = combat::FightClub::TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
+            = creatureInteraction_.TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,

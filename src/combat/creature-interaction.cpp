@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// fight.cpp
+// creature-interaction.cpp
 //
-#include "fight.hpp"
+#include "creature-interaction.hpp"
 
 #include "combat/combat-display.hpp"
 #include "combat/combat-text.hpp"
@@ -40,7 +40,6 @@
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
-#include "item/armor-ratings.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
@@ -59,16 +58,14 @@ namespace heroespath
 namespace combat
 {
 
-    stats::Trait_t FightClub::IsValuetHigherThanRatioOfStat(
-        const stats::Trait_t STAT_VALUE, const stats::Trait_t STAT_MAX, const float RATIO)
-    {
-        return (STAT_VALUE >= static_cast<stats::Trait_t>(static_cast<float>(STAT_MAX) * RATIO));
-    }
+    CreatureInteraction::CreatureInteraction()
+        : armorRatings_()
+    {}
 
-    const FightResult FightClub::Fight(
+    const FightResult CreatureInteraction::Fight(
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
-        const bool WILL_FORCE_HIT)
+        const bool WILL_FORCE_HIT) const
     {
         auto const HIT_INFO_VEC{ AttackWithAllWeapons(
             CREATURE_ATTACKING_PTR, CREATURE_DEFENDING_PTR, WILL_FORCE_HIT) };
@@ -107,13 +104,13 @@ namespace combat
         return FightResult(CREATURE_EFFECT);
     }
 
-    void FightClub::HandleDamage(
+    void CreatureInteraction::HandleDamage(
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
         HitInfoVec_t & hitInfoVec,
         const Health_t & HEALTH_ADJ,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec,
-        const bool CAN_ADD_CONDITIONS)
+        const bool CAN_ADD_CONDITIONS) const
     {
         using namespace creature;
 
@@ -250,12 +247,33 @@ namespace combat
         }
     }
 
-    void FightClub::AddConditionsBasedOnDamage(
+    bool CreatureInteraction::ProcessConditionEffects(
+        const game::Phase::Enum,
+        const creature::CreaturePtr_t CREATURE_PTR,
+        HitInfoVec_t & hitInfoVec_OuParam) const
+    {
+        auto condsPVec{ CREATURE_PTR->ConditionsPVec() };
+
+        std::sort(condsPVec.begin(), condsPVec.end(), [](auto const A, auto const B) {
+            return (A->Severity() > B->Severity());
+        });
+
+        auto hasTurnBeenConsumed{ false };
+        for (auto const & NEXT_COND_PTR : condsPVec)
+        {
+            NEXT_COND_PTR->PerTurnEffect(
+                *this, CREATURE_PTR, hitInfoVec_OuParam, hasTurnBeenConsumed);
+        }
+
+        return hasTurnBeenConsumed;
+    }
+
+    void CreatureInteraction::AddConditionsBasedOnDamage(
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
         const Health_t & DAMAGE_ABS,
         creature::CondEnumVec_t & condsAddedVecParam,
         creature::CondEnumVec_t & condsRemovedVecParam,
-        HitInfoVec_t & hitInfoVec)
+        HitInfoVec_t & hitInfoVec) const
     {
         using namespace creature;
 
@@ -349,11 +367,11 @@ namespace combat
         }
     }
 
-    bool FightClub::RemoveAddedConditions(
+    bool CreatureInteraction::RemoveAddedConditions(
         const creature::CondEnumVec_t & CONDS_VEC,
         const creature::CreaturePtr_t CREATURE_PTR,
         HitInfoVec_t & hitInfoVec,
-        creature::CondEnumVec_t & condsRemovedVec)
+        creature::CondEnumVec_t & condsRemovedVec) const
     {
         auto wasAnyRemoved{ false };
 
@@ -368,11 +386,11 @@ namespace combat
         return wasAnyRemoved;
     }
 
-    bool FightClub::RemoveAddedCondition(
+    bool CreatureInteraction::RemoveAddedCondition(
         const creature::Conditions::Enum COND_ENUM,
         const creature::CreaturePtr_t CREATURE_PTR,
         HitInfoVec_t & hitInfoVec,
-        creature::CondEnumVec_t & condsRemovedVec)
+        creature::CondEnumVec_t & condsRemovedVec) const
     {
         for (auto & nextHitInfo : hitInfoVec)
         {
@@ -391,14 +409,14 @@ namespace combat
         }
     }
 
-    const FightResult FightClub::Cast(
+    const FightResult CreatureInteraction::Cast(
         const spell::SpellPtr_t SPELL_PTR,
         const creature::CreaturePtr_t CREATURE_CASTING_PTR,
-        const creature::CreaturePVec_t & creaturesCastUponPVec)
+        const creature::CreaturePVec_t & creaturesCastUponPVec) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (creaturesCastUponPVec.empty() == false),
-            "combat::FightClub::Cast(spell="
+            "combat::CreatureInteraction::Cast(spell="
                 << SPELL_PTR->Name()
                 << ", creature_casting=" << CREATURE_CASTING_PTR->NameAndRaceAndRole()
                 << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
@@ -410,7 +428,7 @@ namespace combat
             && (creaturesCastUponPVec.size() > 1))
         {
             std::ostringstream ssErr;
-            ssErr << "combat::FightClub::Cast(spell=" << SPELL_PTR->Name()
+            ssErr << "combat::CreatureInteraction::Cast(spell=" << SPELL_PTR->Name()
                   << ", creature_casting=" << CREATURE_CASTING_PTR->NameAndRaceAndRole()
                   << ", creatures_cast_upon=\""
                   << creature::Algorithms::Names(
@@ -526,14 +544,14 @@ namespace combat
         return FightResult(creatureEffectVec);
     }
 
-    const FightResult FightClub::PlaySong(
+    const FightResult CreatureInteraction::PlaySong(
         const song::SongPtr_t SONG_PTR,
         const creature::CreaturePtr_t CREATURE_PLAYING_PTR,
-        const creature::CreaturePVec_t & CREATURES_LISTENING_PVEC)
+        const creature::CreaturePVec_t & CREATURES_LISTENING_PVEC) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (CREATURES_LISTENING_PVEC.empty() == false),
-            "combat::FightClub::PlaySong(song="
+            "combat::CreatureInteraction::PlaySong(song="
                 << SONG_PTR->Name()
                 << ", creature_playing=" << CREATURE_PLAYING_PTR->NameAndRaceAndRole()
                 << ", creatures_listening=empty) was given an empty creaturesListeningPVec.");
@@ -545,7 +563,7 @@ namespace combat
             && (CREATURES_LISTENING_PVEC.size() > 1))
         {
             std::ostringstream ssErr;
-            ssErr << "combat::FightClub::PlaySong(song=" << SONG_PTR->Name()
+            ssErr << "combat::CreatureInteraction::PlaySong(song=" << SONG_PTR->Name()
                   << ", creature_playing=" << CREATURE_PLAYING_PTR->NameAndRaceAndRole()
                   << ", creatures_listening=\""
                   << creature::Algorithms::Names(
@@ -656,9 +674,9 @@ namespace combat
         return FightResult(creatureEffectVec);
     }
 
-    const FightResult FightClub::Pounce(
+    const FightResult CreatureInteraction::Pounce(
         const creature::CreaturePtr_t CREATURE_POUNCING_PTR,
-        const creature::CreaturePtr_t CREATURE_DEFENDING_PTR)
+        const creature::CreaturePtr_t CREATURE_DEFENDING_PTR) const
     {
         using namespace creature;
 
@@ -759,9 +777,9 @@ namespace combat
         return FightResult(CreatureEffect(CREATURE_DEFENDING_PTR, HitInfoVec_t(1, hitInfo)));
     }
 
-    const FightResult FightClub::Roar(
+    const FightResult CreatureInteraction::Roar(
         const creature::CreaturePtr_t CREATURE_ROARING_PTR,
-        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         using namespace creature;
 
@@ -854,9 +872,9 @@ namespace combat
         return FightResult(creatureEffectsVec);
     }
 
-    const creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(
+    const creature::CreaturePtr_t CreatureInteraction::FindNonPlayerCreatureToAttack(
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const ATTACKABLE_NONPLAYER_CREATURES_PVEC{
             COMBAT_DISPLAY_PTR->FindCreaturesThatCanBeAttackedOfType(CREATURE_ATTACKING_PTR, false)
@@ -864,7 +882,7 @@ namespace combat
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ATTACKABLE_NONPLAYER_CREATURES_PVEC.empty() == false),
-            "combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() "
+            "combat::CreatureInteraction::HandleAttack() FindNonPlayerCreatureToAttack() "
                 << "returned no attackable creatures.");
 
         // attack those with the lowest relative health first, which will correspond
@@ -874,7 +892,7 @@ namespace combat
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LIVE_ATTBLE_LOWH_NP_CRTS_PVEC.empty() == false),
-            "combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() returned "
+            "combat::CreatureInteraction::HandleAttack() FindNonPlayerCreatureToAttack() returned "
                 << "no LIVING LOWEST HEALTH RATIO attackable creatures.");
 
         // skip creatures who are not a threat
@@ -911,8 +929,8 @@ namespace combat
         }
     }
 
-    const FightResult FightClub::TreasureTrap(
-        const Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR)
+    const FightResult CreatureInteraction::TreasureTrap(
+        const Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR) const
     {
         auto const HURT_CREATURE_PTRS(
             RandomSelectWhoIsHurtByTrap(TRAP, CREATURE_PICKING_THE_LOCK_PTR));
@@ -939,8 +957,8 @@ namespace combat
         return FightResult(creatureEffectVec);
     }
 
-    const creature::CreaturePVec_t FightClub::RandomSelectWhoIsHurtByTrap(
-        const Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR)
+    const creature::CreaturePVec_t CreatureInteraction::RandomSelectWhoIsHurtByTrap(
+        const Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR) const
     {
         creature::CreaturePVec_t creaturesHurtPtrs{ CREATURE_PICKING_THE_LOCK_PTR };
 
@@ -968,10 +986,10 @@ namespace combat
         return creaturesHurtPtrs;
     }
 
-    const HitInfoVec_t FightClub::AttackWithAllWeapons(
+    const HitInfoVec_t CreatureInteraction::AttackWithAllWeapons(
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
-        const bool WILL_FORCE_HIT)
+        const bool WILL_FORCE_HIT) const
     {
         HitInfoVec_t hitInfoVec;
 
@@ -1001,12 +1019,12 @@ namespace combat
 
     // Determine if attacking creature's accuracy overcomes the defending
     // creature's speed to see if there was a hit.
-    const HitInfo FightClub::AttackWithSingleWeapon(
+    const HitInfo CreatureInteraction::AttackWithSingleWeapon(
         HitInfoVec_t & hitInfoVec,
         const item::ItemPtr_t WEAPON_PTR,
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
-        const bool WILL_FORCE_HIT)
+        const bool WILL_FORCE_HIT) const
     {
         auto hasHitBeenDetermined{ false };
         auto wasHit{ false };
@@ -1221,13 +1239,13 @@ namespace combat
             Text::WeaponActionVerb(WEAPON_PTR, false));
     }
 
-    Health_t FightClub::DetermineDamage(
+    Health_t CreatureInteraction::DetermineDamage(
         const item::ItemPtr_t WEAPON_PTR,
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
         bool & isPowerHit_OutParam,
         bool & isCriticalHit_OutParam,
-        bool & didArmorAbsorb_OutParam)
+        bool & didArmorAbsorb_OutParam) const
     {
         const Health_t DAMAGE_FROM_WEAPON_RAW{ misc::random::Int(
             WEAPON_PTR->DamageMin().As<int>(), WEAPON_PTR->DamageMax().As<int>()) };
@@ -1355,9 +1373,8 @@ namespace combat
         auto armorRatingToUse{ CREATURE_DEFENDING_PTR->ArmorRating() };
         if (CREATURE_DEFENDING_PTR->HasCondition(creature::Conditions::Tripped))
         {
-            armorRatingToUse -= (item::ArmorRatings::ArmoredLesserSteel()
-                                 + item::ArmorRatings::ArmoredGreaterSteel())
-                / 4_armor;
+            armorRatingToUse
+                -= (armorRatings_.LesserSteel() + armorRatings_.GreaterSteel()) / 4_armor;
 
             if (armorRatingToUse < 0_armor)
             {
@@ -1367,8 +1384,7 @@ namespace combat
 
         damageFinal -= Health_t::Make(
             damageFinal.As<float>()
-            * (armorRatingToUse.As<float>()
-               / item::ArmorRatings::ArmoredGreaterDiamond().As<float>()));
+            * (armorRatingToUse.As<float>() / armorRatings_.GreaterDiamond().As<float>()));
 
         // check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0_health) && (damageFinal <= 0_health))
@@ -1442,10 +1458,10 @@ namespace combat
         return damageFinal * Health_t(-1);
     }
 
-    bool FightClub::AreAnyOfCondsContained(
+    bool CreatureInteraction::AreAnyOfCondsContained(
         const creature::CondEnumVec_t & CONDS_VEC,
         const creature::CreaturePtr_t CREATURE_PTR,
-        const HitInfoVec_t & HIT_INFO_VEC)
+        const HitInfoVec_t & HIT_INFO_VEC) const
     {
         for (auto const NEXT_COND_ENUM : CONDS_VEC)
         {
@@ -1464,6 +1480,12 @@ namespace combat
         }
 
         return false;
+    }
+
+    stats::Trait_t CreatureInteraction::IsValuetHigherThanRatioOfStat(
+        const stats::Trait_t STAT_VALUE, const stats::Trait_t STAT_MAX, const float RATIO) const
+    {
+        return (STAT_VALUE >= static_cast<stats::Trait_t>(static_cast<float>(STAT_MAX) * RATIO));
     }
 
 } // namespace combat

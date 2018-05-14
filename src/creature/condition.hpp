@@ -42,6 +42,10 @@
 
 namespace heroespath
 {
+namespace combat
+{
+    class CreatureInteraction;
+}
 namespace creature
 {
 
@@ -77,6 +81,7 @@ namespace creature
         void FinalChange(const CreaturePtr_t) const;
 
         void PerTurnEffect(
+            const combat::CreatureInteraction & CREATURE_INTERACTION,
             const CreaturePtr_t CREATURE_PTR,
             combat::HitInfoVec_t & hitInfoVec,
             bool & hasTurnBeenConsumed) const;
