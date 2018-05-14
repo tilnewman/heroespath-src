@@ -35,56 +35,14 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 
+#include <exception>
 #include <numeric>
+#include <sstream>
 
 namespace heroespath
 {
 namespace creature
 {
-
-    std::unique_ptr<EnchantmentFactory> EnchantmentFactory::instanceUPtr_;
-
-    EnchantmentFactory::EnchantmentFactory()
-    {
-        M_HP_LOG_DBG("Subsystem Construction: EnchantmentFactory");
-    }
-
-    EnchantmentFactory::~EnchantmentFactory()
-    {
-        M_HP_LOG_DBG("Subsystem Destruction: EnchantmentFactory");
-    }
-
-    misc::NotNull<EnchantmentFactory *> EnchantmentFactory::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): EnchantmentFactory");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void EnchantmentFactory::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<EnchantmentFactory>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: EnchantmentFactory");
-        }
-    }
-
-    void EnchantmentFactory::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_),
-            "creature::EnchantmentFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
 
     const EnchantmentPVec_t EnchantmentFactory::MakeAndStore(
         const item::TypeWrapper & TYPE_WRAPPER,

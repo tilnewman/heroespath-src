@@ -35,7 +35,6 @@
 #include "config/settings-file.hpp"
 #include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
-#include "creature/enchantment-factory.hpp"
 #include "creature/enchantment-warehouse.hpp"
 #include "creature/name-info.hpp"
 #include "creature/title-holder.hpp"
@@ -256,7 +255,6 @@ namespace game
 
             // factories should not be needed during shutdown, so release them early
             state::NpcFactory::Release();
-            creature::EnchantmentFactory::Release();
             state::GameStateFactory::Release();
             non_player::ownership::ChanceFactory::Release();
 
@@ -417,7 +415,6 @@ namespace game
         state::NpcFactory::Acquire();
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
-        creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
         creature::CreatureWarehouse::Acquire();
         sfml_util::SoundManager::Acquire();

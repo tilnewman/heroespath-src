@@ -86,17 +86,14 @@ namespace item
         , namedType_(TYPE_WRAPPER.name)
         , elementType_(TYPE_WRAPPER.element)
         , summonInfo_(TYPE_WRAPPER.summon)
-        , enchantmentsPVec_(creature::EnchantmentFactory::Instance()->MakeAndStore(
-              TYPE_WRAPPER,
-              MATERIAL_PRIMARY,
-              MATERIAL_SECONDARY,
-
-              // same as IsWeapon()
-              (WEAPON_INFO.IsTypeValid()),
-
-              ARMOR_INFO.IsTypeValid()))
+        , enchantmentsPVec_()
         , imageFilename_("")
     {
+        creature::EnchantmentFactory enchantmentFactory;
+
+        enchantmentsPVec_ = enchantmentFactory.MakeAndStore(
+            TYPE_WRAPPER, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IsWeapon(), IsArmor());
+
         sfml_util::gui::ItemImageLoader itemImageMachine;
         imageFilename_ = itemImageMachine.Filename(this, true);
     }

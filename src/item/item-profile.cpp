@@ -249,10 +249,9 @@ namespace item
 
         score_ += ScoreHelper::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
 
-        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE);
-
-        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-            MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+        creature::EnchantmentFactory enchantmentFactory;
+        score_ += enchantmentFactory.TreasureScore(SET_TYPE);
+        score_ += enchantmentFactory.TreasureScore(MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
 
         if (misc_type::IsUnique(MISC_TYPE))
         {
@@ -271,7 +270,7 @@ namespace item
                     << ", element_type=" << element_type::ToString(ELEMENT_TYPE, misc::Wrap::Yes)
                     << ") element_type wasn't None but the misc_type was not equippable.");
 
-            score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+            score_ += enchantmentFactory.TreasureScore(
                 ELEMENT_TYPE, misc_type::IsWeapon(MISC_TYPE), MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
 
@@ -837,12 +836,14 @@ namespace item
         }
         else
         {
+            creature::EnchantmentFactory enchantmentFactory;
+
             return (
                 ScoreHelper::Score(MATERIAL_PRI, MATERIAL_SEC)
-                + creature::EnchantmentFactory::Instance()->TreasureScore(
+                + enchantmentFactory.TreasureScore(
                       NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
-                + creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE)
-                + creature::EnchantmentFactory::Instance()->TreasureScore(
+                + enchantmentFactory.TreasureScore(SET_TYPE)
+                + enchantmentFactory.TreasureScore(
                       ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
         }
     }

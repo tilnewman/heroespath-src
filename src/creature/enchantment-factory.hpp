@@ -26,7 +26,6 @@
 #define HEROESPATH_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED
 //
 // enchantment-factory.hpp
-//  Responsibel for making (new'ing) all Enchantment objects.
 //
 #include "creature/condition-enum.hpp"
 #include "creature/enchantment-type.hpp"
@@ -36,10 +35,6 @@
 #include "misc/not-null.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
-
-#include <memory>
-#include <string>
-#include <vector>
 
 namespace heroespath
 {
@@ -70,13 +65,7 @@ namespace creature
         EnchantmentFactory & operator=(const EnchantmentFactory &) = delete;
         EnchantmentFactory & operator=(EnchantmentFactory &&) = delete;
 
-    public:
-        EnchantmentFactory();
-        ~EnchantmentFactory();
-
-        static misc::NotNull<EnchantmentFactory *> Instance();
-        static void Acquire();
-        static void Release();
+        EnchantmentFactory() = default;
 
         // If part of a set, then only the set enchantments will apply.
         // If unique, then only the unique_type enchantments will be applied.
@@ -158,9 +147,6 @@ namespace creature
             const item::material::Enum MATERIAL_SECONDARY,
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
-
-    private:
-        static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
     };
 
 } // namespace creature
