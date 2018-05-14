@@ -36,8 +36,8 @@
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/combat-image-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/combat-image-loader.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -133,7 +133,8 @@ namespace combat
 
         HealthChangeTasks();
 
-        sfml_util::gui::CreatureImageManager::GetImage(texture_, CREATURE_PTR);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(texture_, CREATURE_PTR);
 
         sprite_.setTexture(texture_);
 
@@ -344,9 +345,15 @@ namespace combat
         {
             if (!wingTextureUPtr_)
             {
+                sfml_util::gui::CombatImageLoader combatImageMachine;
+
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
-                sfml_util::gui::CombatImageManager::Get(
-                    *wingTextureUPtr_, sfml_util::gui::CombatImageType::Wing, !isPlayer_);
+
+                combatImageMachine.Get(
+                    *wingTextureUPtr_,
+                    sfml_util::gui::CombatImageType::Wing,
+                    ((!isPlayer_) ? sfml_util::gui::image::Flip::Yes
+                                  : sfml_util::gui::image::Flip::No));
             }
 
             wingSprite_.setTexture(*wingTextureUPtr_, true);

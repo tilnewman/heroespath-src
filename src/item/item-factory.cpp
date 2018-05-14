@@ -42,7 +42,7 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -187,7 +187,7 @@ namespace item
 
             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            sfml_util::gui::ItemImageMachine itemImageMachine;
+            sfml_util::gui::ItemImageLoader itemImageMachine;
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {

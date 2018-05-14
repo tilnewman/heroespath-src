@@ -31,7 +31,7 @@
 #include "game/loop-manager.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-fade.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 
 namespace heroespath
 {
@@ -70,18 +70,19 @@ namespace stage
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR)
     {
+        sfml_util::gui::TitleImageLoader titleImageLoader;
+
         boost::optional<sf::Texture> fromTextureOpt;
         if (FROM_TITLE_PTR_OPT)
         {
             fromTextureOpt = sf::Texture();
 
-            sfml_util::gui::TitleImageManager::Get(
-                fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
+            titleImageLoader.Get(fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
         }
 
         sf::Texture toTexture;
 
-        sfml_util::gui::TitleImageManager::Get(toTexture, TO_TITLE_PTR->Which());
+        titleImageLoader.Get(toTexture, TO_TITLE_PTR->Which());
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME,

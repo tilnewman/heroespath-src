@@ -34,7 +34,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 
 #include <exception>
 #include <iomanip>
@@ -97,7 +97,7 @@ namespace item
               ARMOR_INFO.IsTypeValid()))
         , imageFilename_("")
     {
-        sfml_util::gui::ItemImageMachine itemImageMachine;
+        sfml_util::gui::ItemImageLoader itemImageMachine;
         imageFilename_ = itemImageMachine.Filename(this, true);
     }
 

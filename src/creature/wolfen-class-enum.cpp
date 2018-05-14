@@ -31,17 +31,14 @@
 
 #include "game/game-data-file.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string wolfen_class::Name(const wolfen_class::Enum E)
+    const std::string wolfen_class::ToString(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
-        switch (E)
+        switch (WOLFEN_CLASS_TYPE)
         {
             case Pup:
             {
@@ -70,55 +67,15 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::wolfen_class::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(WOLFEN_CLASS_TYPE, "ToString");
             }
         }
     }
 
-    const std::string wolfen_class::Desc(const wolfen_class::Enum E)
+    const std::string wolfen_class::Desc(const wolfen_class::Enum WOLFEN_CLASS_TYPE)
     {
-        switch (E)
-        {
-            case Pup:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Pup");
-            }
-            case Juvenile:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Juvenile");
-            }
-            case Adult:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Adult");
-            }
-            case Noble:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Noble");
-            }
-            case Highborn:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Highborn");
-            }
-            case Elder:
-            {
-                return game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-creature-race-desc_Wolfen_Elder");
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "creature::race::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
+        return game::GameDataFile::Instance()->GetCopyStr(
+            "heroespath-creature-race-desc-wolfen-" + ToString(WOLFEN_CLASS_TYPE));
     }
 
     wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
@@ -157,5 +114,6 @@ namespace creature
             return wolfen_class::Pup;
         }
     }
+
 } // namespace creature
 } // namespace heroespath

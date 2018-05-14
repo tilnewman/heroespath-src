@@ -35,13 +35,13 @@
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/condition-image-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/condition-image-loader.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/song-image-loader.hpp"
+#include "sfml-util/gui/spell-image-loader.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -694,34 +694,44 @@ namespace sfml_util
 
                     if (listBoxItemSPtr->ITEM_PTR_OPT)
                     {
-                        sfml_util::gui::ItemImageMachine itemImageMachine;
+                        sfml_util::gui::ItemImageLoader itemImageMachine;
 
                         itemImageMachine.Load(
                             *imagePair.first, listBoxItemSPtr->ITEM_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->TITLE_PTR_OPT)
                     {
-                        sfml_util::gui::TitleImageManager::Get(
+                        sfml_util::gui::TitleImageLoader titleImageLoader;
+
+                        titleImageLoader.Get(
                             *imagePair.first, listBoxItemSPtr->TITLE_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->CHARACTER_PTR_OPT)
                     {
-                        sfml_util::gui::CreatureImageManager::GetImage(
+                        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+
+                        creatureImageLoader.GetImage(
                             *imagePair.first, listBoxItemSPtr->CHARACTER_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->SPELL_PTR_OPT)
                     {
-                        sfml_util::gui::SpellImageManager::Get(
+                        sfml_util::gui::SpellImageLoader spellImageLoader;
+
+                        spellImageLoader.Get(
                             *imagePair.first, listBoxItemSPtr->SPELL_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->COND_PTR_OPT)
                     {
-                        sfml_util::gui::ConditionImageManager::Get(
+                        sfml_util::gui::ConditionImageLoader conditionImageLoader;
+
+                        conditionImageLoader.Get(
                             *imagePair.first, listBoxItemSPtr->COND_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->SONG_PTR_OPT)
                     {
-                        sfml_util::gui::SongImageManager::Get(
+                        sfml_util::gui::SongImageLoader songImageLoader;
+
+                        songImageLoader.Get(
                             *imagePair.first, listBoxItemSPtr->SONG_PTR_OPT->Obj().Which());
                     }
                 }

@@ -54,13 +54,13 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-event-enum.hpp"
-#include "sfml-util/gui/combat-image-manager.hpp"
-#include "sfml-util/gui/condition-image-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/combat-image-loader.hpp"
+#include "sfml-util/gui/condition-image-loader.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
+#include "sfml-util/gui/song-image-loader.hpp"
+#include "sfml-util/gui/spell-image-loader.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -429,10 +429,11 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_SpellsImageManager{ false };
-        if (false == hasTestingCompleted_SpellsImageManager)
+        static auto hasTestingCompleted_SpellsImageLoader{ false };
+        if (false == hasTestingCompleted_SpellsImageLoader)
         {
-            hasTestingCompleted_SpellsImageManager = sfml_util::gui::SpellImageManager::Test();
+            static sfml_util::gui::SpellImageLoader spellImageLoader;
+            hasTestingCompleted_SpellsImageLoader = spellImageLoader.Test();
             return;
         }
 
@@ -443,10 +444,11 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_SongsImageManager{ false };
-        if (false == hasTestingCompleted_SongsImageManager)
+        static auto hasTestingCompleted_SongsImageLoader{ false };
+        if (false == hasTestingCompleted_SongsImageLoader)
         {
-            hasTestingCompleted_SongsImageManager = sfml_util::gui::SongImageManager::Test();
+            static sfml_util::gui::SongImageLoader songImageLoader;
+            hasTestingCompleted_SongsImageLoader = songImageLoader.Test();
             return;
         }
 
@@ -457,11 +459,11 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_ConditionImageManager{ false };
-        if (false == hasTestingCompleted_ConditionImageManager)
+        static auto hasTestingCompleted_ConditionImageLoader{ false };
+        if (false == hasTestingCompleted_ConditionImageLoader)
         {
-            hasTestingCompleted_ConditionImageManager
-                = sfml_util::gui::ConditionImageManager::Test();
+            static sfml_util::gui::ConditionImageLoader conditionImageLoader;
+            hasTestingCompleted_ConditionImageLoader = conditionImageLoader.Test();
 
             return;
         }
@@ -473,10 +475,11 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_TitleImageManager{ false };
-        if (false == hasTestingCompleted_TitleImageManager)
+        static auto hasTestingCompleted_TitleImageLoader{ false };
+        if (false == hasTestingCompleted_TitleImageLoader)
         {
-            hasTestingCompleted_TitleImageManager = sfml_util::gui::TitleImageManager::Test();
+            static sfml_util::gui::TitleImageLoader titleImageLoader;
+            hasTestingCompleted_TitleImageLoader = titleImageLoader.Test();
             return;
         }
 
@@ -487,24 +490,27 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_CombatImageManager{ false };
-        if (false == hasTestingCompleted_CombatImageManager)
+        static auto hasTestingCompleted_CombatImageLoader{ false };
+        if (false == hasTestingCompleted_CombatImageLoader)
         {
-            hasTestingCompleted_CombatImageManager = sfml_util::gui::CombatImageManager::Test();
+            static sfml_util::gui::CombatImageLoader combatImageLoader;
+            hasTestingCompleted_CombatImageLoader = combatImageLoader.Test();
             return;
         }
 
-        static auto hasTestingCompleted_ItemImageMachine{ false };
-        if (false == hasTestingCompleted_ItemImageMachine)
+        static auto hasTestingCompleted_ItemImageLoader{ false };
+        if (false == hasTestingCompleted_ItemImageLoader)
         {
-            hasTestingCompleted_ItemImageMachine = sfml_util::gui::ItemImageMachine::Test();
+            static sfml_util::gui::ItemImageLoader itemImageLoader;
+            hasTestingCompleted_ItemImageLoader = itemImageLoader.Test();
             return;
         }
 
-        static auto hasTestingCompleted_CreatureImageManager{ false };
-        if (false == hasTestingCompleted_CreatureImageManager)
+        static auto hasTestingCompleted_CreatureImageLoader{ false };
+        if (false == hasTestingCompleted_CreatureImageLoader)
         {
-            hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Test();
+            static sfml_util::gui::CreatureImageLoader creatureImageLoader;
+            hasTestingCompleted_CreatureImageLoader = creatureImageLoader.Test();
             return;
         }
 
@@ -834,7 +840,6 @@ if (false == willImageCheck_)
             "media-images-bones-three-headed-hound",
             "media-images-bones-wolfen",
             "media-images-trap",
-            "media-images-placeholder",
             "media-images-avatar-shadow",
         };
 
@@ -1469,6 +1474,9 @@ if (false == willImageCheck_)
         creature::AchievementType::Test();
         creature::Conditions::Test();
         creature::Titles::Test();
+        creature::sex::Test();
+        creature::dragon_class::Test();
+        creature::wolfen_class::Test();
         stats::Traits::Test();
         // combat::strategy::SelectType::Test(); //bah, this takes too long...
         combat::strategy::RefineType::Test();

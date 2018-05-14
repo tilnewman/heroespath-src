@@ -58,13 +58,13 @@
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/combat-image-manager.hpp"
-#include "sfml-util/gui/condition-image-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/combat-image-loader.hpp"
+#include "sfml-util/gui/condition-image-loader.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/song-image-loader.hpp"
+#include "sfml-util/gui/spell-image-loader.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loop.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/texture-cache.hpp"
@@ -402,21 +402,6 @@ namespace game
         sfml_util::SoundManager::SetSoundsDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-sounds-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-music-dir"));
-
-        sfml_util::gui::TitleImageManager::SetImageDirectoryPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"));
-
-        sfml_util::gui::SpellImageManager::SetImageDirectoryPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"));
-
-        sfml_util::gui::SongImageManager::SetImageDirectoryPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"));
-
-        sfml_util::gui::ConditionImageManager::SetImageDirectoryPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"));
-
-        sfml_util::gui::CombatImageManager::SetImageDirectoryPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"));
     }
 
     void StartupShutdown::Setup_HoldersFill()

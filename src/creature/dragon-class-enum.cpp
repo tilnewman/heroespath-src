@@ -28,18 +28,17 @@
 // dragon-class-enum.hpp
 //
 #include "dragon-class-enum.hpp"
+
 #include "game/game-data-file.hpp"
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string dragon_class::Name(const dragon_class::Enum E)
+    const std::string dragon_class::ToString(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
-        switch (E)
+        switch (DRAGON_CLASS_TYPE)
         {
             case Hatchling:
             {
@@ -76,17 +75,15 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::dragon_class::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(DRAGON_CLASS_TYPE, "ToString");
             }
         }
     }
 
-    const std::string dragon_class::Desc(const dragon_class::Enum E)
+    const std::string dragon_class::Desc(const dragon_class::Enum DRAGON_CLASS_TYPE)
     {
         std::ostringstream ss;
-        ss << "heroespath-creature-race-desc_Dragon_" << ToString(E);
+        ss << "heroespath-creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
         return game::GameDataFile::Instance()->GetCopyStr(ss.str());
     }
 
@@ -132,5 +129,6 @@ namespace creature
             return dragon_class::Whelp;
         }
     }
+
 } // namespace creature
 } // namespace heroespath

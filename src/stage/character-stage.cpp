@@ -56,7 +56,7 @@
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -1391,16 +1391,16 @@ namespace stage
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
 
-        characterImageFilenamesVec_
-            = sfml_util::gui::CreatureImageManager::GetFilenames(RACE, ROLE, SEX);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+
+        characterImageFilenamesVec_ = creatureImageLoader.GetFilenames(RACE, ROLE, SEX);
 
         sfml_util::TextureVec_t characterTextureVec;
         for (auto const & NEXT_FILENAME_STR : characterImageFilenamesVec_)
         {
             sf::Texture texture;
 
-            sfml_util::gui::CreatureImageManager::GetImageFromFilename(
-                texture, NEXT_FILENAME_STR, true);
+            creatureImageLoader.GetImageFromFilename(texture, NEXT_FILENAME_STR, true);
 
             characterTextureVec.emplace_back(texture);
         }

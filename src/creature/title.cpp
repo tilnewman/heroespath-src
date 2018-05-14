@@ -35,7 +35,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 
 #include <sstream>
 #include <tuple>

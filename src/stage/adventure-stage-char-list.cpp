@@ -34,7 +34,7 @@
 #include "log/log-macros.hpp"
 #include "player/party.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -638,6 +638,8 @@ namespace stage
     {
         charImages_.Clear();
 
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+
         auto const CHARACTER_VEC{ game::Game::Instance()->State().Party().Characters() };
         auto const NUM_CHARACTERS{ CHARACTER_VEC.size() };
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
@@ -646,7 +648,7 @@ namespace stage
 
             auto & imagePair{ charImages_[CHARACTER_PTR] };
 
-            sfml_util::gui::CreatureImageManager::GetImage(imagePair.first, CHARACTER_PTR);
+            creatureImageLoader.GetImage(imagePair.first, CHARACTER_PTR);
 
             sfml_util::Invert(imagePair.first);
             sfml_util::Mask(imagePair.first, sf::Color::White);

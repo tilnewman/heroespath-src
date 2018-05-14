@@ -34,8 +34,8 @@
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -516,7 +516,7 @@ namespace combat
         const float ITEM_IMAGE_SCALE_DEFAULT(sfml_util::MapByRes(ITEM_IMAGE_SCALE_MIN, 1.0f));
 
         // find total item list height with default scale per item image
-        sfml_util::gui::ItemImageMachine itemImageMachine;
+        sfml_util::gui::ItemImageLoader itemImageMachine;
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {

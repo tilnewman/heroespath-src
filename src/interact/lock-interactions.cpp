@@ -39,7 +39,7 @@
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-image-fade.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "stage/achievement-handler.hpp"
 #include "state/game-state.hpp"
 

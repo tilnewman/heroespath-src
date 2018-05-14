@@ -22,20 +22,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_MACHINE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_MACHINE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_LOADER_HPP_INCLUDED
 //
-// item-image-machine.hpp
+// item-image-loader.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/image-dimmensions.hpp"
+#include "sfml-util/gui/image-util.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -54,20 +53,20 @@ namespace sfml_util
     namespace gui
     {
 
-        // Responsible for loading item images.
-        class ItemImageMachine
+        // Responsible for loading Item images.
+        class ItemImageLoader
         {
         public:
-            ItemImageMachine(const ItemImageMachine &) = delete;
-            ItemImageMachine(ItemImageMachine &&) = delete;
-            ItemImageMachine & operator=(const ItemImageMachine &) = delete;
-            ItemImageMachine & operator=(ItemImageMachine &&) = delete;
+            ItemImageLoader(const ItemImageLoader &) = delete;
+            ItemImageLoader(ItemImageLoader &&) = delete;
+            ItemImageLoader & operator=(const ItemImageLoader &) = delete;
+            ItemImageLoader & operator=(ItemImageLoader &&) = delete;
 
-            ItemImageMachine() = default;
+            ItemImageLoader();
 
-            static bool Test();
+            bool Test() const;
 
-            static float MaxDimmension() { return ImageDimmensions::ResourceStandardMax(); }
+            float MaxDimmension() const { return image::StandardDimmension(); }
 
             void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 
@@ -79,40 +78,46 @@ namespace sfml_util
             bool DoesFileExists(const item::ItemPtr_t ITEM_PTR) const;
             bool DoesFileExists(const std::string & FILENAME) const;
 
-            static const std::vector<std::string> AllFilenames();
+            const std::vector<std::string> AllFilenames() const;
 
         private:
-            static const std::vector<std::string> Filenames(
-                const item::misc_type::Enum ITEM_ENUM, const bool IS_JEWELED, const bool IS_BONE);
+            const std::vector<std::string> Filenames(
+                const item::misc_type::Enum ITEM_ENUM,
+                const bool IS_JEWELED,
+                const bool IS_BONE) const;
 
-            static const std::string Filename(
+            const std::string Filename(
                 const item::misc_type::Enum ITEM_ENUM,
                 const bool IS_JEWELED,
                 const bool IS_BONE,
-                const bool WILL_RANDOMIZE);
+                const bool WILL_RANDOMIZE) const;
 
-            static const std::string GetSkinImageFilename(const item::material::Enum);
+            const std::string GetSkinImageFilename(const item::material::Enum) const;
 
-            static const std::string Filename(
-                const item::weapon::WeaponTypeWrapper & WEAPON_INFO, const bool IS_JEWELED);
+            const std::string Filename(
+                const item::weapon::WeaponTypeWrapper & WEAPON_INFO, const bool IS_JEWELED) const;
 
-            static const std::string Filename(const item::armor::ArmorTypeWrapper & ARMOR_INFO);
+            const std::string Filename(const item::armor::ArmorTypeWrapper & ARMOR_INFO) const;
 
-            static void Load(sf::Texture &, const std::string & FILENAME);
+            void Load(sf::Texture &, const std::string & FILENAME) const;
 
-            static const std::string MakeFullPathFromFilename(const std::string & FILENAME);
+            const std::string MakeFullPathFromFilename(const std::string & FILENAME) const;
 
-            static void EnsureValidDimmensions(const sf::Texture &, const std::string & ERROR_MSG);
+            void EnsureValidDimmensions(const sf::Texture &, const std::string & ERROR_MSG) const;
 
-            static const std::vector<std::string> MakeFilenames(
-                const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER = 1);
+            const std::vector<std::string> MakeFilenames(
+                const std::string & PREFIX,
+                const int LAST_NUMBER,
+                const int FIRST_NUMBER = 1) const;
 
             static const std::string FILE_EXT_STR_;
             static const std::string SEPARATOR_;
+
+            std::string imageDirectoryPath_;
         };
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_MACHINE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_ITEM_IMAGE_LOADER_HPP_INCLUDED

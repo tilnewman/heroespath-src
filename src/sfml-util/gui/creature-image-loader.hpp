@@ -22,11 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED
 //
-// creature-image-manager.hpp
-//  Code that manages loading and lifetime of creature images.
+// creature-image-loader.hpp
 //
 #include "creature/dragon-class-enum.hpp"
 #include "creature/race-enum.hpp"
@@ -34,7 +33,7 @@
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/image-dimmensions.hpp"
+#include "sfml-util/gui/image-util.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
@@ -54,49 +53,55 @@ namespace sfml_util
     namespace gui
     {
 
-        // A class that loads, stores, and distributes creature images.
-        class CreatureImageManager
+        // Responsible for loading Creature images.
+        class CreatureImageLoader
         {
         public:
-            CreatureImageManager(const CreatureImageManager &) = delete;
-            CreatureImageManager(CreatureImageManager &&) = delete;
-            CreatureImageManager & operator=(const CreatureImageManager &) = delete;
-            CreatureImageManager & operator=(CreatureImageManager &&) = delete;
-            CreatureImageManager() = delete;
+            CreatureImageLoader(const CreatureImageLoader &) = delete;
+            CreatureImageLoader(CreatureImageLoader &&) = delete;
+            CreatureImageLoader & operator=(const CreatureImageLoader &) = delete;
+            CreatureImageLoader & operator=(CreatureImageLoader &&) = delete;
 
-            static bool Test();
+            CreatureImageLoader();
 
-            static float MaxDimmension() { return ImageDimmensions::ResourceStandardMax(); }
+            bool Test() const;
 
-            static void GetImage(sf::Texture & texture, const creature::CreaturePtr_t);
+            static float MaxDimmension() { return image::StandardDimmension(); }
 
-            static void GetImageFromFilename(
-                sf::Texture & texture, const std::string & FILENAME, const bool WILL_FACE_RIGHT);
+            void GetImage(sf::Texture & texture, const creature::CreaturePtr_t) const;
 
-            static const std::string GetRandomFilename(const creature::CreaturePtr_t);
+            void GetImageFromFilename(
+                sf::Texture & texture,
+                const std::string & FILENAME,
+                const bool WILL_FACE_RIGHT) const;
 
-            static const std::vector<std::string> GetFilenames(
+            const std::string GetRandomFilename(const creature::CreaturePtr_t) const;
+
+            const std::vector<std::string> GetFilenames(
                 const creature::race::Enum RACE,
                 const creature::role::Enum ROLE,
                 const creature::sex::Enum SEX,
                 const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
                 const creature::dragon_class::Enum DRAGON_CLASS
-                = creature::dragon_class::Hatchling);
+                = creature::dragon_class::Hatchling) const;
 
-            static void EnsureFileExists(const std::string & FILENAME);
+            void EnsureFileExists(const std::string & FILENAME) const;
 
         private:
-            static void LoadImage(
+            void LoadImage(
                 sf::Texture & texture,
                 const std::string & IMAGE_FILE_NAME,
-                const bool WILL_FACE_RIGHT = false);
+                const bool WILL_FACE_RIGHT = false) const;
 
-            static const std::string MakeFullPathFromFilename(const std::string & FILENAME);
-            static const std::vector<std::string> AllFilenames();
+            const std::string MakeFullPathFromFilename(const std::string & FILENAME) const;
+
+            const std::vector<std::string> AllFilenames() const;
+
+            std::string imageDirectoryPath_;
         };
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED

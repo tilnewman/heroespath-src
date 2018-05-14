@@ -33,8 +33,8 @@
 #include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/spell-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "spell/spell.hpp"
 
@@ -291,8 +291,8 @@ namespace popup
 
     void PopupStageSpellbook::SetupPlayerImage()
     {
-        sfml_util::gui::CreatureImageManager::GetImage(
-            playerTexture_, popupInfo_.CreaturePtrOpt().value());
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(playerTexture_, popupInfo_.CreaturePtrOpt().value());
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);
@@ -473,7 +473,8 @@ namespace popup
         }
 
         // setup spell image
-        sfml_util::gui::SpellImageManager::Get(spellTexture_, SPELL_PTR->Which());
+        sfml_util::gui::SpellImageLoader spellImageLoader;
+        spellImageLoader.Get(spellTexture_, SPELL_PTR->Which());
 
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };

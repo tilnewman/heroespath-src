@@ -34,7 +34,7 @@
 #include "misc/random.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "player/initial.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "state/game-state-factory.hpp"
 #include "stats/stat-set.hpp"
 

@@ -55,7 +55,7 @@
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "stage/treasure-display-stage.hpp"

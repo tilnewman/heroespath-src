@@ -22,34 +22,31 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_IMAGE_UTIL_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_IMAGE_UTIL_HPP_INCLUDED
 //
-// song-image-manager.hpp
+// image-util.hpp
 //
-#include "sfml-util/gui/image-manager-base.hpp"
-#include "song/song-enum.hpp"
-
 namespace heroespath
 {
 namespace sfml_util
 {
     namespace gui
     {
-
-        // Responsible for loading song images.
-        class SongImageManager : public ImageManagerBase<song::Songs>
+        namespace image
         {
-        public:
-            SongImageManager(const SongImageManager &) = delete;
-            SongImageManager(SongImageManager &&) = delete;
-            SongImageManager & operator=(const SongImageManager &) = delete;
-            SongImageManager & operator=(SongImageManager &&) = delete;
-            SongImageManager() = delete;
-        };
+            enum class Flip : bool
+            {
+                No = false,
+                Yes = true
+            };
+
+            static inline float StandardDimmension() { return 256.0f; }
+
+        }; // namespace image
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_IMAGE_UTIL_HPP_INCLUDED

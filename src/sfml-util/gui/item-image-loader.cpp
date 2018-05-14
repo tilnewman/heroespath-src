@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// item-image-machine.cpp
+// item-image-loader.cpp
 //
-#include "item-image-machine.hpp"
+#include "item-image-loader.hpp"
 
 #include "creature/dragon-class-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
@@ -56,10 +56,23 @@ namespace sfml_util
     namespace gui
     {
 
-        const std::string ItemImageMachine::FILE_EXT_STR_{ ".png" };
-        const std::string ItemImageMachine::SEPARATOR_{ "-" };
+        const std::string ItemImageLoader::FILE_EXT_STR_{ ".png" };
+        const std::string ItemImageLoader::SEPARATOR_{ "-" };
 
-        bool ItemImageMachine::Test()
+        ItemImageLoader::ItemImageLoader()
+            : imageDirectoryPath_("")
+        {
+            namespace bfs = boost::filesystem;
+
+            const bfs::path PATH{ bfs::system_complete(
+                                      bfs::path(game::GameDataFile::Instance()->GetMediaPath(
+                                          "media-images-items-dir")))
+                                      .normalize() };
+
+            imageDirectoryPath_ = PATH.string();
+        }
+
+        bool ItemImageLoader::Test() const
         {
             using namespace item;
 
@@ -68,10 +81,10 @@ namespace sfml_util
             {
                 hasInitialPrompt = true;
                 game::LoopManager::Instance()->TestingStrAppend(
-                    "sfml_util::gui::ItemImageMachine::Test()  Starting tests...");
+                    "sfml_util::gui::ItemImageLoader::Test()  Starting tests...");
             }
 
-            const std::string TEST_PRE_STR{ "ItemImageMachine Test " };
+            const std::string TEST_PRE_STR{ "ItemImageLoader Test " };
 
             static auto allFilenames{ AllFilenames() };
 
@@ -158,7 +171,7 @@ namespace sfml_util
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (FILENAMES_VEC.empty() == false),
-                    "sfml_util::gui::ItemImageMachine::Test() While testing misc item #"
+                    "sfml_util::gui::ItemImageLoader::Test() While testing misc item #"
                         << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
                         << isJeweled << ", Filenames() returned an empty vector.");
 
@@ -169,15 +182,14 @@ namespace sfml_util
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (NEXT_FILENAME.empty() == false),
-                        "sfml_util::gui::ItemImageMachine::Test() (rand)  "
+                        "sfml_util::gui::ItemImageLoader::Test() (rand)  "
                             << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
                             << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
                             << isJeweled << ", found an empty filename string.");
 
                     std::ostringstream ss;
-                    ss << "ItemImageMachine Testing \"" << ENUM_STR
-                       << "\", file_index=" << fileIndex << " ("
-                       << ((isJeweled) ? "jeweled" : "not-jeweled") << ")";
+                    ss << "ItemImageLoader Testing \"" << ENUM_STR << "\", file_index=" << fileIndex
+                       << " (" << ((isJeweled) ? "jeweled" : "not-jeweled") << ")";
 
                     game::LoopManager::Instance()->TestingStrIncrement(ss.str());
 
@@ -216,23 +228,23 @@ namespace sfml_util
             for (auto const & FILENAME : allFilenames)
             {
                 M_HP_LOG_WRN(
-                    "sfml_util::gui::ItemImageMachine::Test() found the following item image "
+                    "sfml_util::gui::ItemImageLoader::Test() found the following item image "
                     "unused: "
                     << FILENAME);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::gui::ItemImageMachine::Test()  ALL TESTS PASSED.");
+                "sfml_util::gui::ItemImageLoader::Test()  ALL TESTS PASSED.");
 
             return true;
         }
 
-        void ItemImageMachine::Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const
+        void ItemImageLoader::Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const
         {
             Load(texture, ITEM_PTR->ImageFilename());
         }
 
-        const std::string ItemImageMachine::Filename(
+        const std::string ItemImageLoader::Filename(
             const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE) const
         {
             // it is important to check for weapon/armor status first, because some misc_types are
@@ -264,7 +276,7 @@ namespace sfml_util
             }
 
             std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageMachine::Filename(item={" << ITEM_PTR->ToString()
+            ss << "sfml_util::gui::ItemImageLoader::Filename(item={" << ITEM_PTR->ToString()
                << "}, will_randomize=" << std::boolalpha << WILL_RANDOMIZE
                << ") failed to find the image filename for that item because it was not weapon, "
                   "armor, or misc type.";
@@ -272,28 +284,25 @@ namespace sfml_util
             throw std::runtime_error(ss.str());
         }
 
-        bool ItemImageMachine::DoesFileExists(const item::ItemPtr_t ITEM_PTR) const
+        bool ItemImageLoader::DoesFileExists(const item::ItemPtr_t ITEM_PTR) const
         {
             return DoesFileExists(ITEM_PTR->ImageFilename());
         }
 
-        bool ItemImageMachine::DoesFileExists(const std::string & FILENAME) const
+        bool ItemImageLoader::DoesFileExists(const std::string & FILENAME) const
         {
             namespace bfs = boost::filesystem;
             auto const PATH{ bfs::path(MakeFullPathFromFilename(FILENAME)) };
             return (bfs::exists(PATH) && bfs::is_regular_file(PATH));
         }
 
-        const std::vector<std::string> ItemImageMachine::AllFilenames()
+        const std::vector<std::string> ItemImageLoader::AllFilenames() const
         {
             std::vector<std::string> filenames;
 
             namespace bfs = boost::filesystem;
 
-            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
-                "media-images-items-dir") };
-
-            for (auto const & PATH : bfs::path(IMAGES_DIR))
+            for (auto const & PATH : bfs::path(imageDirectoryPath_))
             {
                 if (bfs::is_regular_file(PATH))
                 {
@@ -309,8 +318,8 @@ namespace sfml_util
             return filenames;
         }
 
-        const std::vector<std::string> ItemImageMachine::Filenames(
-            const item::misc_type::Enum MISC_TYPE, const bool IS_JEWELED, const bool IS_BONE)
+        const std::vector<std::string> ItemImageLoader::Filenames(
+            const item::misc_type::Enum MISC_TYPE, const bool IS_JEWELED, const bool IS_BONE) const
         {
             using namespace item;
             namespace ba = boost::algorithm;
@@ -602,7 +611,7 @@ namespace sfml_util
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "sfml_util::gui::ItemImageMachine::Filenames(misc_type="
+                    ss << "sfml_util::gui::ItemImageLoader::Filenames(misc_type="
                        << ((MISC_TYPE == misc_type::Count) ? "Count"
                                                            : misc_type::ToString(MISC_TYPE))
                        << ", is_jeweled=" << std::boolalpha << IS_JEWELED << ", is_bone=" << IS_BONE
@@ -613,17 +622,17 @@ namespace sfml_util
             }
         }
 
-        const std::string ItemImageMachine::Filename(
+        const std::string ItemImageLoader::Filename(
             const item::misc_type::Enum MISC_TYPE,
             const bool IS_JEWELED,
             const bool IS_BONE,
-            const bool WILL_RANDOMIZE)
+            const bool WILL_RANDOMIZE) const
         {
             auto const FILENAMES(Filenames(MISC_TYPE, IS_JEWELED, IS_BONE));
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (FILENAMES.empty() == false),
-                "sfml_util::gui::ItemImageMachine::Filename(misc_type="
+                "sfml_util::gui::ItemImageLoader::Filename(misc_type="
                     << ((MISC_TYPE == item::misc_type::Count)
                             ? "Count"
                             : item::misc_type::ToString(MISC_TYPE))
@@ -642,7 +651,7 @@ namespace sfml_util
         }
 
         const std::string
-            ItemImageMachine::GetSkinImageFilename(const item::material::Enum PRIMARY_MATERIAL)
+            ItemImageLoader::GetSkinImageFilename(const item::material::Enum PRIMARY_MATERIAL) const
         {
             using namespace item;
 
@@ -656,8 +665,9 @@ namespace sfml_util
                 material::ToString(materialToUseForName) + FILE_EXT_STR_);
         }
 
-        const std::string ItemImageMachine::Filename(
-            const item::weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER, const bool IS_JEWELED)
+        const std::string ItemImageLoader::Filename(
+            const item::weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
+            const bool IS_JEWELED) const
         {
             if (WEAPON_TYPE_WRAPPER.IsStaff())
             {
@@ -676,8 +686,8 @@ namespace sfml_util
             }
         }
 
-        const std::string
-            ItemImageMachine::Filename(const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER)
+        const std::string ItemImageLoader::Filename(
+            const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER) const
         {
             if (ARMOR_TYPE_WRAPPER.IsPants() || ARMOR_TYPE_WRAPPER.IsBracers()
                 || ARMOR_TYPE_WRAPPER.IsAventail())
@@ -690,27 +700,21 @@ namespace sfml_util
             }
         }
 
-        void ItemImageMachine::Load(sf::Texture & texture, const std::string & FILENAME)
+        void ItemImageLoader::Load(sf::Texture & texture, const std::string & FILENAME) const
         {
             sfml_util::LoadTexture(texture, MakeFullPathFromFilename(FILENAME));
         }
 
-        const std::string ItemImageMachine::MakeFullPathFromFilename(const std::string & FILENAME)
+        const std::string
+            ItemImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
         {
             namespace bfs = boost::filesystem;
-
-            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
-                "media-images-items-dir") };
-
-            const bfs::path PATH{
-                bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(FILENAME)).normalize()
-            };
-
+            const bfs::path PATH{ bfs::path(imageDirectoryPath_) / bfs::path(FILENAME) };
             return PATH.string();
         }
 
-        void ItemImageMachine::EnsureValidDimmensions(
-            const sf::Texture & TEXTURE, const std::string & ERROR_MSG)
+        void ItemImageLoader::EnsureValidDimmensions(
+            const sf::Texture & TEXTURE, const std::string & ERROR_MSG) const
         {
             auto const SIZE{ TEXTURE.getSize() };
 
@@ -718,15 +722,15 @@ namespace sfml_util
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 ((SIZE.x == DIMMENSION) || (SIZE.y == DIMMENSION)),
-                "sfml_util::gui::ItemImageMachine::EnsureValidDimmensions() was given an image of "
+                "sfml_util::gui::ItemImageLoader::EnsureValidDimmensions() was given an image of "
                 "size="
                     << SIZE.x << "x" << SIZE.y
                     << " but neither of those dimmensions was the required " << DIMMENSION
                     << ".  This error occured during testing \"" << ERROR_MSG << "\".");
         }
 
-        const std::vector<std::string> ItemImageMachine::MakeFilenames(
-            const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER)
+        const std::vector<std::string> ItemImageLoader::MakeFilenames(
+            const std::string & PREFIX, const int LAST_NUMBER, const int FIRST_NUMBER) const
         {
             std::vector<std::string> filenames;
             filenames.reserve(static_cast<std::size_t>((LAST_NUMBER - FIRST_NUMBER) + 1));

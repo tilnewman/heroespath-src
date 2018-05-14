@@ -22,13 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_SPELLIMAGEMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_SPELLIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_SONG_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_SONG_IMAGE_LOADER_HPP_INCLUDED
 //
-// spell-image-manager.hpp
+// song-image-loader.hpp
 //
-#include "sfml-util/gui/image-manager-base.hpp"
-#include "spell/spell-enum.hpp"
+#include "game/game-data-file.hpp"
+#include "sfml-util/gui/enum-image-loader.hpp"
+#include "song/song-enum.hpp"
 
 namespace heroespath
 {
@@ -37,19 +38,23 @@ namespace sfml_util
     namespace gui
     {
 
-        // Responsible for loading spell images.
-        class SpellImageManager : public ImageManagerBase<spell::Spells>
+        // Responsible for loading Song images.
+        class SongImageLoader : public EnumImageLoader<song::Songs>
         {
         public:
-            SpellImageManager(const SpellImageManager &) = delete;
-            SpellImageManager(SpellImageManager &&) = delete;
-            SpellImageManager & operator=(const SpellImageManager &) = delete;
-            SpellImageManager & operator=(SpellImageManager &&) = delete;
-            SpellImageManager() = delete;
+            SongImageLoader(const SongImageLoader &) = delete;
+            SongImageLoader(SongImageLoader &&) = delete;
+            SongImageLoader & operator=(const SongImageLoader &) = delete;
+            SongImageLoader & operator=(SongImageLoader &&) = delete;
+
+            SongImageLoader()
+                : EnumImageLoader<song::Songs>(
+                      game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"))
+            {}
         };
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_SPELLIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED

@@ -43,7 +43,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "song/song-holder.hpp"
 #include "song/song.hpp"
 #include "spell/spell-holder.hpp"
@@ -98,7 +98,8 @@ namespace creature
 
         if (imageFilename_.empty())
         {
-            imageFilename_ = sfml_util::gui::CreatureImageManager::GetRandomFilename(this);
+            sfml_util::gui::CreatureImageLoader creatureImageLoader;
+            imageFilename_ = creatureImageLoader.GetRandomFilename(this);
         }
 
         actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.As<int>());

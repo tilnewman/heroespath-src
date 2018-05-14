@@ -3480,7 +3480,7 @@ namespace item
     // TODO move to MaterialFactory
     const MaterialPair_t material::SkinMaterial(const creature::race::Enum RACE)
     {
-        // keep in sync with ItemImageMachine::GetSkinImageFilename()
+        // keep in sync with ItemImageLoader::GetSkinImageFilename()
 
         if ((RACE == creature::race::Wolfen) || (RACE == creature::race::Troll)
             || (RACE == creature::race::Boar) || (RACE == creature::race::LionBoar)

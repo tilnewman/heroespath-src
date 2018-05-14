@@ -28,17 +28,15 @@
 // sex-enum.hpp
 //
 #include "sex-enum.hpp"
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string sex::ToString(const sex::Enum E)
+    const std::string sex::ToString(const sex::Enum SEX_TYPE)
     {
-        switch (E)
+        switch (SEX_TYPE)
         {
             case Unknown:
             {
@@ -55,34 +53,14 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::sex::Enum::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(SEX_TYPE, "ToString");
             }
         }
     }
 
-    bool sex::IsValid(const sex::Enum E)
+    const std::string sex::HeSheIt(const sex::Enum SEX_TYPE, const bool WILL_CAPITALIZE)
     {
-        switch (E)
-        {
-            case Unknown:
-            case Male:
-            case Female:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
-
-    const std::string sex::HeSheIt(const sex::Enum E, const bool WILL_CAPITALIZE)
-    {
-        switch (E)
+        switch (SEX_TYPE)
         {
             case Unknown:
             {
@@ -108,17 +86,15 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::sex::Enum::HisHersIts(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(SEX_TYPE, "HeSheIt");
             }
         }
     }
 
     const std::string sex::HisHerIts(
-        const sex::Enum E, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER)
+        const sex::Enum SEX_TYPE, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER)
     {
-        switch (E)
+        switch (SEX_TYPE)
         {
             case Unknown:
             {
@@ -144,16 +120,14 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::sex::Enum::HisHersIts(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(SEX_TYPE, "HisHersIts");
             }
         }
     }
 
-    const std::string sex::HimHerIt(const sex::Enum E, const bool WILL_CAPITALIZE)
+    const std::string sex::HimHerIt(const sex::Enum SEX_TYPE, const bool WILL_CAPITALIZE)
     {
-        switch (E)
+        switch (SEX_TYPE)
         {
             case Unknown:
             {
@@ -179,11 +153,10 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::sex::Enum::HimHerIt(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(SEX_TYPE, "HimHerIt");
             }
         }
     }
+
 } // namespace creature
 } // namespace heroespath

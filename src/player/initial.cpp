@@ -36,7 +36,7 @@
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 

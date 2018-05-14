@@ -22,13 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_CONDITION_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_CONDITION_IMAGE_LOADER_HPP_INCLUDED
 //
-// combat-image-manager.hpp
+// condition-image-loader.hpp
 //
-#include "sfml-util/gui/combat-image-enum.hpp"
-#include "sfml-util/gui/image-manager-base.hpp"
+#include "creature/condition-enum.hpp"
+#include "game/game-data-file.hpp"
+#include "sfml-util/gui/enum-image-loader.hpp"
 
 namespace heroespath
 {
@@ -37,19 +38,23 @@ namespace sfml_util
     namespace gui
     {
 
-        // Responsible for loading and dispensing combat images.
-        class CombatImageManager : public ImageManagerBase<CombatImageType>
+        // Responsible for loading condition images.
+        class ConditionImageLoader : public EnumImageLoader<creature::Conditions>
         {
         public:
-            CombatImageManager & operator=(const CombatImageManager &) = delete;
-            CombatImageManager & operator=(CombatImageManager &&) = delete;
-            CombatImageManager(const CombatImageManager &) = delete;
-            CombatImageManager(CombatImageManager &&) = delete;
-            CombatImageManager() = delete;
+            ConditionImageLoader(const ConditionImageLoader &) = delete;
+            ConditionImageLoader(ConditionImageLoader &&) = delete;
+            ConditionImageLoader & operator=(const ConditionImageLoader &) = delete;
+            ConditionImageLoader & operator=(ConditionImageLoader &&) = delete;
+
+            ConditionImageLoader()
+                : EnumImageLoader<creature::Conditions>(
+                      game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"))
+            {}
         };
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_CONDITION_IMAGE_LOADER_HPP_INCLUDED

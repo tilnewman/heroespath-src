@@ -22,23 +22,39 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_COMBAT_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_COMBAT_IMAGE_LOADER_HPP_INCLUDED
 //
-// image-dimmensions.hpp
+// combat-image-loader.hpp
 //
+#include "game/game-data-file.hpp"
+#include "sfml-util/gui/combat-image-enum.hpp"
+#include "sfml-util/gui/enum-image-loader.hpp"
+
 namespace heroespath
 {
 namespace sfml_util
 {
     namespace gui
     {
-        struct ImageDimmensions
+
+        // Responsible for loading combat images.
+        class CombatImageLoader : public EnumImageLoader<CombatImageType>
         {
-            static float ResourceStandardMax() { return 256.0f; }
+        public:
+            CombatImageLoader & operator=(const CombatImageLoader &) = delete;
+            CombatImageLoader & operator=(CombatImageLoader &&) = delete;
+            CombatImageLoader(const CombatImageLoader &) = delete;
+            CombatImageLoader(CombatImageLoader &&) = delete;
+
+            CombatImageLoader()
+                : EnumImageLoader<CombatImageType>(
+                      game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"))
+            {}
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_COMBAT_IMAGE_LOADER_HPP_INCLUDED

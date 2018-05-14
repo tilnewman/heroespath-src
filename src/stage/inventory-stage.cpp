@@ -50,12 +50,12 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -137,7 +137,7 @@ namespace stage
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfml_util::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfml_util::MapByRes(0.75f, 3.25f))
         , CREATURE_IMAGE_HEIGHT_MAX_(
-              sfml_util::gui::CreatureImageManager::MaxDimmension() * CREATURE_IMAGE_SCALE_)
+              sfml_util::gui::CreatureImageLoader::MaxDimmension() * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfml_util::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfml_util::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfml_util::MapByRes(65.0f, 200.0f))
@@ -997,7 +997,8 @@ namespace stage
 
     void InventoryStage::Setup_CreatureImage()
     {
-        sfml_util::gui::CreatureImageManager::GetImage(creatureTexture_, creaturePtr_);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(creatureTexture_, creaturePtr_);
         sfml_util::Invert(creatureTexture_);
         sfml_util::Mask(creatureTexture_, sf::Color::White);
         creatureSprite_.setTexture(creatureTexture_, true);
@@ -3587,7 +3588,9 @@ namespace stage
     float InventoryStage::UpdateImageDetailsPosition()
     {
         sf::Texture texture;
-        sfml_util::gui::CreatureImageManager::GetImage(texture, creaturePtr_);
+
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(texture, creaturePtr_);
 
         sf::Sprite sprite(texture);
         sprite.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -3649,7 +3652,7 @@ namespace stage
 
         auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
 
-        sfml_util::gui::ItemImageMachine itemImageMachine;
+        sfml_util::gui::ItemImageLoader itemImageMachine;
         itemImageMachine.Load(detailViewTexture_, ITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
@@ -3726,7 +3729,8 @@ namespace stage
 
         auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
 
-        sfml_util::gui::CreatureImageManager::GetImage(detailViewTexture_, CREATURE_PTR);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(detailViewTexture_, CREATURE_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_);
 

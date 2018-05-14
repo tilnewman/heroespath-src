@@ -43,7 +43,7 @@
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -643,7 +643,9 @@ namespace stage
 
                 mouseOverSlider_.Reset(MOUSE_OVER_SLIDER_SPEED_);
 
-                sfml_util::gui::CreatureImageManager::GetImage(
+                sfml_util::gui::CreatureImageLoader creatureImageLoader;
+
+                creatureImageLoader.GetImage(
                     mouseOverTexture_, itemSPtr->CHARACTER_PTR_OPT.value());
 
                 isMouseOverTexture_ = true;
@@ -658,7 +660,7 @@ namespace stage
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
                 mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_
-                    + sfml_util::gui::CreatureImageManager::MaxDimmension()
+                    + sfml_util::gui::CreatureImageLoader::MaxDimmension()
                     + creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);
 
                 mouseOverBoxHeight_ = mouseOverSprite_.getLocalBounds().height

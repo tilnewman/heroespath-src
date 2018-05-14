@@ -35,7 +35,7 @@
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -234,7 +234,9 @@ namespace popup
         auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
             IMAGE_INDEX) };
 
-        sfml_util::gui::CreatureImageManager::GetImage(textureCurr_, CREATURE_PTR);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(textureCurr_, CREATURE_PTR);
     }
+
 } // namespace popup
 } // namespace heroespath

@@ -28,6 +28,8 @@
 // sex-enum.hpp
 //  An enumeration of all sexes.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -35,19 +37,17 @@ namespace heroespath
 namespace creature
 {
 
-    struct sex
+    struct sex : misc::EnumBaseCounting<sex, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
-            Unknown = 0, // some creatures are too bizarre and don't have a sex
+            Unknown = 0, // some creatures are bizarre and don't have a sex
             Male,
             Female,
             Count
         };
 
         static const std::string ToString(const sex::Enum E);
-
-        static bool IsValid(const sex::Enum E);
 
         static const std::string HeSheIt(const sex::Enum E, const bool WILL_CAPITALIZE);
 
@@ -56,6 +56,7 @@ namespace creature
 
         static const std::string HimHerIt(const sex::Enum E, const bool WILL_CAPITALIZE);
     };
+
 } // namespace creature
 } // namespace heroespath
 

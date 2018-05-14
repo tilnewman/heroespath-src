@@ -38,7 +38,7 @@
 #include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
@@ -1040,7 +1040,8 @@ namespace stage
     {
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
 
-        sfml_util::gui::CreatureImageManager::GetImage(characterTexture_, CREATURE_PTR);
+        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        creatureImageLoader.GetImage(characterTexture_, CREATURE_PTR);
         sfml_util::Invert(characterTexture_);
         sfml_util::Mask(characterTexture_, sf::Color::White);
 
@@ -1054,7 +1055,7 @@ namespace stage
         sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
             inventoryListboxUPtr_->GetEntityPos().y
-                - (sfml_util::gui::CreatureImageManager::MaxDimmension()
+                - (sfml_util::gui::CreatureImageLoader::MaxDimmension()
                    * MEASUREMENTS.characterImageScale));
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
@@ -1280,7 +1281,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (sfml_util::gui::CreatureImageManager::MaxDimmension()
+            + (sfml_util::gui::CreatureImageLoader::MaxDimmension()
                * CreateDisplayMeasurements().characterImageScale);
     }
 

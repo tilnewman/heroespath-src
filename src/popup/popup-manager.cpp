@@ -121,7 +121,7 @@ namespace popup
         // TODO
 
         game::LoopManager::Instance()->TestingStrAppend(
-            "sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
+            "popup::PopupManager::Test()  ALL TESTS PASSED.");
 
         return true;
     }

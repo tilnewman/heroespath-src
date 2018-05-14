@@ -31,7 +31,7 @@
 
 #include "item/item.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/item-image-machine.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <sstream>
@@ -203,7 +203,7 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageMachine itemImageMachine;
+        sfml_util::gui::ItemImageLoader itemImageMachine;
         itemImageMachine.Load(texture_, ITEM_PTR_OPT.value());
 
         sprite_.setTexture(texture_, true);

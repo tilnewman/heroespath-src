@@ -70,7 +70,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/song-animation.hpp"

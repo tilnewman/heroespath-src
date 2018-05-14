@@ -22,13 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_TITLE_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_TITLE_IMAGE_LOADER_HPP_INCLUDED
 //
-// condition-image-manager.hpp
+// title-image-loader.hpp
 //
-#include "creature/condition-enum.hpp"
-#include "sfml-util/gui/image-manager-base.hpp"
+#include "creature/title-enum.hpp"
+#include "game/game-data-file.hpp"
+#include "sfml-util/gui/enum-image-loader.hpp"
 
 namespace heroespath
 {
@@ -37,19 +38,23 @@ namespace sfml_util
     namespace gui
     {
 
-        // Loads images and delivers sf::Textures to them on demand.
-        class ConditionImageManager : public ImageManagerBase<creature::Conditions>
+        // Responsible for loading Title images.
+        class TitleImageLoader : public EnumImageLoader<creature::Titles>
         {
         public:
-            ConditionImageManager(const ConditionImageManager &) = delete;
-            ConditionImageManager(ConditionImageManager &&) = delete;
-            ConditionImageManager & operator=(const ConditionImageManager &) = delete;
-            ConditionImageManager & operator=(ConditionImageManager &&) = delete;
-            ConditionImageManager() = delete;
+            TitleImageLoader(const TitleImageLoader &) = delete;
+            TitleImageLoader(TitleImageLoader &&) = delete;
+            TitleImageLoader & operator=(const TitleImageLoader &) = delete;
+            TitleImageLoader & operator=(TitleImageLoader &&) = delete;
+
+            TitleImageLoader()
+                : EnumImageLoader<creature::Titles>(
+                      game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"))
+            {}
         };
 
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_TITLE_IMAGE_LOADER_HPP_INCLUDED
