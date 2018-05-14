@@ -31,7 +31,6 @@
 
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
-#include "creature/name-info.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
@@ -89,14 +88,15 @@ namespace combat
         : GuiEntity(
               std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
               sf::FloatRect())
+        , creatureNameInfo_()
         , isPlayer_(CREATURE_PTR->IsPlayerCharacter())
         , nameTextObj_(
               CREATURE_PTR->Name(),
-              *creature::NameInfo::Instance()->DefaultFont(),
+              *creatureNameInfo_.DefaultFont(),
               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , condTextObj_(
               "",
-              *creature::NameInfo::Instance()->DefaultFont(),
+              *creatureNameInfo_.DefaultFont(),
               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , blockingPos_(0)
         , texture_()

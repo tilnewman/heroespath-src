@@ -36,7 +36,6 @@
 #include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-warehouse.hpp"
-#include "creature/name-info.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
@@ -262,7 +261,6 @@ namespace game
             LoopManager::Release();
 
             // these must occur after all the stages have been released
-            creature::NameInfo::Release();
             sfml_util::FontManager::Release(); // after NameInfo::Release()
             popup::PopupManager::Release();
             sfml_util::SoundManager::Release();
@@ -422,7 +420,6 @@ namespace game
         popup::PopupManager::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
-        creature::NameInfo::Acquire();
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
         non_player::ownership::ChanceFactory::Acquire();

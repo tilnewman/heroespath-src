@@ -32,14 +32,11 @@
 #include "creature/name-info.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-
+#include "misc/random.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "popup/popup-manager.hpp"
-
-#include "misc/random.hpp"
 
 namespace heroespath
 {
@@ -398,8 +395,10 @@ namespace popup
 
     void PopupStageBase::SetupVariousButtonPositionValues()
     {
+        creature::NameInfo creatureNameInfo;
+
         auto const TEMP_MOUSE_TEXT_INFO{ sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
-            creature::NameInfo::Instance()->LargestLetterString(), popupInfo_.ButtonColor()) };
+            creatureNameInfo.LargestLetterString(), popupInfo_.ButtonColor()) };
 
         const sf::Text TEMP_TEXT_OBJ{ TEMP_MOUSE_TEXT_INFO.up.text,
                                       *TEMP_MOUSE_TEXT_INFO.up.fontPtrOpt.value(),

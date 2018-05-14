@@ -826,7 +826,9 @@ namespace stage
 
     void CharacterStage::Setup_NameTextEntryBox()
     {
-        auto const WIDTH{ creature::NameInfo::Instance()->TextEntryBoxWidth() };
+        creature::NameInfo creatureNameInfo;
+
+        auto const WIDTH{ creatureNameInfo.DefaultTextEntryBoxWidth() };
 
         const sf::FloatRect REGION(
             (SCREEN_WIDTH_ * 0.5f) - (WIDTH * 0.5f),
@@ -843,7 +845,7 @@ namespace stage
             sfml_util::gui::callback::ITextEntryBoxCallbackHandlerPtr_t(this),
             "CharacterName",
             REGION,
-            creature::NameInfo::Instance()->MakeTextInfo(" ", DESC_TEXT_COLOR_),
+            creatureNameInfo.MakeTextInfo(" ", DESC_TEXT_COLOR_),
             LIGHT_TEXT_COLOR_,
             BOX_INFO);
 

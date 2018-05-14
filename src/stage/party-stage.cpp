@@ -55,7 +55,6 @@
 
 #include <algorithm>
 #include <sstream>
-#include <string>
 
 namespace heroespath
 {
@@ -399,13 +398,13 @@ namespace stage
 
         // establish the longest line that needs to fit in the listboxes
         std::ostringstream longestSS;
-        longestSS << creature::NameInfo::Instance()->LargestName() << ", "
+        creature::NameInfo creatureNameInfo;
+        longestSS << creatureNameInfo.LargestName() << ", "
                   << "Human, Beastmaster";
 
-        auto const LONGEST_TEXT_INFO{ creature::NameInfo::Instance()->MakeTextInfo(
-            longestSS.str()) };
+        auto const LONGEST_TEXT_INFO{ creatureNameInfo.MakeTextInfo(longestSS.str()) };
 
-        auto const LIST_BOX_WIDTH{ creature::NameInfo::Instance()->Length(LONGEST_TEXT_INFO)
+        auto const LIST_BOX_WIDTH{ creatureNameInfo.Length(LONGEST_TEXT_INFO)
                                    + sfml_util::MapByRes(50.0f, 300.0f) };
 
         // player list box
@@ -659,9 +658,11 @@ namespace stage
 
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
+                creature::NameInfo creatureNameInfo;
+
                 mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_
                     + sfml_util::gui::CreatureImageLoader::MaxDimmension()
-                    + creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);
+                    + creatureNameInfo.Length() + sfml_util::MapByRes(50.0f, 150.0f);
 
                 mouseOverBoxHeight_ = mouseOverSprite_.getLocalBounds().height
                     + (MOUSE_OVER_IMAGE_PAD_ * 2.0f) + sfml_util::MapByRes(0.0f, 600.0f);

@@ -42,47 +42,6 @@ namespace heroespath
 namespace creature
 {
 
-    std::unique_ptr<NameInfo> NameInfo::instanceUPtr_;
-
-    NameInfo::NameInfo()
-        : sizeMap_()
-    {
-        M_HP_LOG_DBG("Subsystem Construction: NameInfo");
-    }
-
-    NameInfo::~NameInfo() { M_HP_LOG_DBG("Subsystem Destruction: NameInfo"); }
-
-    misc::NotNull<NameInfo *> NameInfo::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): NameInfo");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void NameInfo::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<NameInfo>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NameInfo");
-        }
-    }
-
-    void NameInfo::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "NameInfo::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
     const sfml_util::FontPtr_t NameInfo::DefaultFont() const
     {
         return sfml_util::FontManager::Instance()->Font_Default2();
@@ -91,31 +50,6 @@ namespace creature
     unsigned int NameInfo::DefaultSize() const
     {
         return sfml_util::FontManager::Instance()->Size_Normal();
-    }
-
-    float NameInfo::LengthMax(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE)
-    {
-        auto const FONT_SIZE_PAIR{ std::make_pair(FONT_PTR, CHAR_SIZE) };
-        auto const ORIG_WIDTH{ sizeMap_[FONT_SIZE_PAIR] };
-
-        if (ORIG_WIDTH < 1.0f)
-        {
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                LargestName(), FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left);
-
-            sfml_util::gui::TextRegion textRegion(
-                "CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
-
-            auto const NAME_WIDTH{ textRegion.GetEntityRegion().width };
-
-            sizeMap_[FONT_SIZE_PAIR] = NAME_WIDTH;
-
-            return NAME_WIDTH;
-        }
-        else
-        {
-            return ORIG_WIDTH;
-        }
     }
 
     float NameInfo::Length(

@@ -26,13 +26,9 @@
 #define HEROESPATH_CREATURE_NAME_INFO_HPP_INCLUDED
 //
 // name-info.hpp
-//  Information about creature names and thier displayed characteristics.
-//  Often in the code base the max length of a character name is needed for GUI bounds/drawing,
-//  and this class answers that question.
 //
-#include "misc/vector-map.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include <memory>
+
 #include <string>
 #include <utility>
 
@@ -41,10 +37,10 @@ namespace heroespath
 namespace creature
 {
 
-    // responsibel for data regarding creature names and their display characteristics
+    // Responsible for storing and calculating values regarding creature names and their display
+    // characteristics.
     class NameInfo
     {
-        // types used by NameInfo
         using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
         using FontSizeToWidthMap_t = misc::VectorMap<FontSizePair_t, float>;
 
@@ -54,22 +50,18 @@ namespace creature
         NameInfo & operator=(const NameInfo &) = delete;
         NameInfo & operator=(NameInfo &&) = delete;
 
-        NameInfo();
-        ~NameInfo();
-
-        static misc::NotNull<NameInfo *> Instance();
-        static void Acquire();
-        static void Release();
+        NameInfo() = default;
 
         std::size_t MaxCharacterCount() const { return 13; }
 
-        float TextEntryBoxWidth(
-            const sfml_util::FontPtr_t FONT_PTR = NameInfo::Instance()->DefaultFont(),
-            const unsigned int CHAR_SIZE = NameInfo::Instance()->DefaultSize()) const
+        float DefaultTextEntryBoxWidth() const
         {
+            // The +1 is to accomodate the TextEntryBox's padding and margins
             return Length(
-                std::string(MaxCharacterCount() + 1, LargestLetter()), FONT_PTR, CHAR_SIZE);
-        } // The +1 is to accomodate the TextEntryBox's padding and margins
+                std::string(MaxCharacterCount() + 1, LargestLetter()),
+                DefaultFont(),
+                DefaultSize());
+        }
 
         const sfml_util::FontPtr_t DefaultFont() const;
 
@@ -90,16 +82,8 @@ namespace creature
             const sfml_util::Justified::Enum JUSTIFICATION = sfml_util::Justified::Left) const
         {
             return sfml_util::gui::TextInfo(
-                TEXT,
-                NameInfo::Instance()->DefaultFont(),
-                NameInfo::Instance()->DefaultSize(),
-                COLOR,
-                JUSTIFICATION);
+                TEXT, DefaultFont(), DefaultSize(), COLOR, JUSTIFICATION);
         }
-
-        float LengthMax(
-            const sfml_util::FontPtr_t FONT_PTR = NameInfo::Instance()->DefaultFont(),
-            const unsigned int CHAR_SIZE = NameInfo::Instance()->DefaultSize());
 
         float Length(
             const std::string & TEXT,
@@ -109,10 +93,6 @@ namespace creature
         float Length(const sfml_util::gui::TextInfo & TEXT_INFO) const;
 
         float Length() { return Length(MakeTextInfo(LargestName())); }
-
-    private:
-        static std::unique_ptr<NameInfo> instanceUPtr_;
-        FontSizeToWidthMap_t sizeMap_;
     };
 
 } // namespace creature

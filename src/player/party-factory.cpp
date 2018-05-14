@@ -213,10 +213,10 @@ namespace player
 
     const std::string PartyFactory::MakeCharacterNameForTesting(const std::string & POSTFIX)
     {
+        creature::NameInfo creatureNameInfo;
+
         return boost::algorithm::replace_last_copy(
-            creature::NameInfo::Instance()->LargestName(),
-            creature::NameInfo::Instance()->LargestLetterString(),
-            POSTFIX);
+            creatureNameInfo.LargestName(), creatureNameInfo.LargestLetterString(), POSTFIX);
     }
 
 } // namespace player

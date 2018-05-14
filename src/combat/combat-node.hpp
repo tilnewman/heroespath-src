@@ -28,6 +28,7 @@
 // combat-node.hpp
 //  A class that handles drawing nodes on the combat tree.
 //
+#include "creature/name-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
@@ -163,6 +164,7 @@ namespace combat
         static const float WING_IMAGE_ROTATION_MAX_;
         static const std::size_t HEALTH_LINE_COUNT_;
         //
+        creature::NameInfo creatureNameInfo_;
         bool isPlayer_;
         sf::Text nameTextObj_;
         sf::Text condTextObj_;

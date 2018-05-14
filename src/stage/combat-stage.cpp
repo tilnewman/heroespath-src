@@ -41,7 +41,6 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
-#include "creature/name-info.hpp"
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
