@@ -28,7 +28,6 @@
 // strategy-details.hpp
 //
 #include "combat/strategy-chances.hpp"
-#include "combat/strategy-details.hpp"
 #include "combat/strategy-enums.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
@@ -37,7 +36,6 @@
 
 #include <algorithm>
 #include <exception>
-#include <memory>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -53,27 +51,23 @@ namespace combat
         using RaceRolePair_t = std::pair<creature::race::Enum, creature::role::Enum>;
         using RaceRoleChancesMap_t = misc::VectorMap<RaceRolePair_t, Chances>;
 
-        // forward declarations for the Subsystem implementation
-        class ChanceFactory;
-        using DetailsSPtr_t = std::shared_ptr<ChanceFactory>;
-
-        // loads strategy details from GameDataFile and stores them per race and role
-        class ChanceFactory
+        // Responsible for loading creature strategy details from the GameDataFile, storing them,
+        // and providing quick and easy access.
+        class CreatureStrategies
         {
         public:
-            ChanceFactory(const ChanceFactory &) = delete;
-            ChanceFactory(ChanceFactory &&) = delete;
-            ChanceFactory & operator=(const ChanceFactory &) = delete;
-            ChanceFactory & operator=(ChanceFactory &&) = delete;
+            CreatureStrategies(const CreatureStrategies &) = delete;
+            CreatureStrategies(CreatureStrategies &&) = delete;
+            CreatureStrategies & operator=(const CreatureStrategies &) = delete;
+            CreatureStrategies & operator=(CreatureStrategies &&) = delete;
 
-        public:
-            ChanceFactory();
-            virtual ~ChanceFactory();
-            static DetailsSPtr_t Instance();
-            void Initialize();
-            const Chances Get(const creature::race::Enum, const creature::role::Enum);
+            CreatureStrategies();
+
+            const Chances Get(const creature::race::Enum, const creature::role::Enum) const;
 
         private:
+            void Setup();
+
             void ParseSubPartsSelect(const std::vector<std::string> &, SelectChanceMap_t &) const;
             void ParseSubPartsRefine(const std::vector<std::string> &, RefineChanceMap_t &) const;
             void ParseSubPartsAdvance(const std::vector<std::string> &, AdvanceChanceMap_t &) const;
@@ -99,7 +93,7 @@ namespace combat
                 if (enumColonChanceStrVec.size() != 2)
                 {
                     std::ostringstream ss;
-                    ss << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
+                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
                        << "() Found invalid subparts string: \"" << SUB_STR << "\".";
 
                     throw std::runtime_error(ss.str());
@@ -116,7 +110,7 @@ namespace combat
                     std::ostringstream exceptionSS;
 
                     exceptionSS
-                        << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
+                        << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
                         << "()  Threw exceptionn calling T::FromString(\""
                         << enumColonChanceStrVec.at(0)
                         << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
@@ -130,7 +124,7 @@ namespace combat
                 {
                     std::ostringstream ss;
 
-                    ss << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
+                    ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
                        << "()  Failed to parse \"" << enumColonChanceStrVec.at(1)
                        << "\" into a valid 'enum:float'.  Resulting float (chance) was: " << CHANCE
                        << ".";
@@ -143,7 +137,7 @@ namespace combat
 
             float ParseChanceString(const std::string & FLOAT_STR) const;
 
-        public:
+        private:
             static const std::string SUBPART_TITLE_SELECT_;
             static const std::string SUBPART_TITLE_REFINE_;
             static const std::string SUBPART_TITLE_ADVANCE_;
@@ -155,9 +149,6 @@ namespace combat
             static const std::string SUBPART_TITLE_FREQ_FLYPOUNCE_;
             static const std::string SUBPART_TITLE_FREQ_STANDPOUNCE_;
 
-        private:
-            static DetailsSPtr_t instance_;
-            //
             RaceRoleChancesMap_t raceRoleChancesMap_;
         };
 

@@ -30,7 +30,6 @@
 #include "startup-shutdown.hpp"
 
 #include "combat/encounter.hpp"
-#include "combat/strategy-details.hpp"
 #include "combat/trap-holder.hpp"
 #include "config/configbase.hpp"
 #include "config/settings-file.hpp"
@@ -441,10 +440,9 @@ namespace game
         config::SettingsFile::Instance()->LoadAndRestore();
 
         sfml_util::SoundManager::Instance()->Initialize();
-        combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
-        item::ItemProfileWarehouse::Instance()->Setup();
+        item::ItemProfileWarehouse::Instance()->Initialize();
     }
 
     void StartupShutdown::Setup_GameDataFile()

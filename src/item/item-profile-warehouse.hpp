@@ -65,7 +65,7 @@ namespace item
         static void Acquire();
         static void Release();
 
-        void Setup();
+        void Initialize();
 
         void Setup_StandardEquipment();
         void Setup_MiscItems();

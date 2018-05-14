@@ -96,9 +96,6 @@ namespace stage
         void Exit();
 
     private:
-        void HandleCountdownAndPleaseWaitPopup();
-        void SetupAfterDelay();
-
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
             const item::ItemCache & CACHE_HELD, const item::ItemCache & CACHE_LOCKBOX);
 
@@ -157,7 +154,6 @@ namespace stage
         void TransitionToAdventureStage();
 
     private:
-        static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_NO_TREASURE_;
         static const std::string POPUP_NAME_WORN_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_ONLY_;
@@ -172,7 +168,6 @@ namespace stage
         static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
         TreasureDisplayStagePtr_t displayStagePtr_;
-        int setupCountdown_;
         item::TreasureImage::Enum treasureImageType_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;

@@ -50,7 +50,6 @@
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-combat-over.hpp"
 #include "popup/popup-stage-image-fade.hpp"
-#include "popup/popup-stage-item-profile-wait.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -72,10 +71,6 @@ namespace stage
 {
 
     // all of these popup names must be unique
-    const std::string TreasureStage::POPUP_NAME_ITEMPROFILE_PLEASEWAIT_{
-        "PopupName_ItemProfilePleaseWait"
-    };
-
     const std::string TreasureStage::POPUP_NAME_NO_TREASURE_{ "PopupName_AllEnemiesRan" };
 
     const std::string TreasureStage::POPUP_NAME_WORN_ONLY_{ "PopupName_HeldOnly" };
@@ -109,7 +104,6 @@ namespace stage
     TreasureStage::TreasureStage()
         : Stage("Treasure")
         , displayStagePtr_(new TreasureDisplayStage(this))
-        , setupCountdown_(0)
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
         , itemCacheLockbox_()
@@ -132,12 +126,6 @@ namespace stage
 
     bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEMPROFILE_PLEASEWAIT_)
-        {
-            SetupAfterDelay();
-            return false;
-        }
-
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_TREASURE_)
         {
             TransitionToAdventureStage();
@@ -320,13 +308,29 @@ namespace stage
         // give control of the TreasureDispayStage object lifetime to the Loop class
         game::LoopManager::Instance()->AddStage(displayStagePtr_);
 
-        setupCountdown_ = 0;
-        SetupAfterDelay();
+        // TODO TEMP REMOVE -once finished testing
+        // create a fake collection of dead creatures, using the predetermined initial encounter
+        combat::Encounter::Instance()->BeginCombatTasks();
+        //
+        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
+        for (auto const & NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
+        {
+            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
+        }
+        //
+        combat::Encounter::Instance()->EndCombatTasks();
+
+        treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
+        itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
+        itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
+
+        displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
+        treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
+        PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        HandleCountdownAndPleaseWaitPopup();
         Stage::Draw(target, STATES);
 
         if (updateItemDisplayNeeded_)
@@ -503,46 +507,6 @@ namespace stage
     }
 
     void TreasureStage::Exit() { TransitionToAdventureStage(); }
-
-    void TreasureStage::HandleCountdownAndPleaseWaitPopup()
-    {
-        // If the ItemProfileWarehouse needs to be setup, then wait for the background
-        // to fade in a little before displaying the 'Please Wait' popup.
-        if (setupCountdown_ > 0)
-        {
-            if (0 == --setupCountdown_)
-            {
-                game::LoopManager::Instance()
-                    ->PopupWaitBeginSpecific<popup::PopupStageItemProfileWait>(
-                        this,
-                        popup::PopupManager::Instance()->CreateItemProfilePleaseWaitPopupInfo(
-                            POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
-            }
-        }
-    }
-
-    void TreasureStage::SetupAfterDelay()
-    {
-        // TODO TEMP REMOVE -once finished testing
-        // create a fake collection of dead creatures, using the predetermined initial encounter
-        combat::Encounter::Instance()->BeginCombatTasks();
-        //
-        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
-        for (auto const & NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
-        {
-            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
-        }
-        //
-        combat::Encounter::Instance()->EndCombatTasks();
-
-        treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
-        itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
-        itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
-
-        displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
-        treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
-        PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
-    }
 
     item::TreasureAvailable::Enum TreasureStage::DetermineTreasureAvailableState(
         const item::ItemCache & CACHE_HELD, const item::ItemCache & CACHE_LOCKBOX)

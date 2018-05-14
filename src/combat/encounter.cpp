@@ -29,7 +29,6 @@
 //
 #include "encounter.hpp"
 
-#include "combat/strategy-details.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature-factory.hpp"
 #include "creature/creature-warehouse.hpp"
@@ -73,6 +72,7 @@ namespace combat
         , deadNonPlayerItemsHeld_()
         , deadNonPlayerItemsLockbox_()
         , lockPickCreaturePtrOpt_(boost::none)
+        , creatureStrategies_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Encounter");
     }
@@ -410,9 +410,8 @@ namespace combat
             // enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
 
-            turnInfo.SetStrategyInfo(strategy::ChanceFactory::Instance()
-                                         ->Get(CREATURE_PTR->Race(), CREATURE_PTR->Role())
-                                         .Make());
+            turnInfo.SetStrategyInfo(
+                creatureStrategies_.Get(CREATURE_PTR->Race(), CREATURE_PTR->Role()).Make());
 
             turnInfoMap_[CREATURE_PTR] = turnInfo;
         }

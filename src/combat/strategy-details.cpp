@@ -30,8 +30,6 @@
 #include "strategy-details.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
-#include "misc/vector-map.hpp"
-#include <vector>
 
 namespace heroespath
 {
@@ -40,38 +38,27 @@ namespace combat
     namespace strategy
     {
 
-        const std::string ChanceFactory::SUBPART_TITLE_SELECT_("Select");
-        const std::string ChanceFactory::SUBPART_TITLE_REFINE_("Refine");
-        const std::string ChanceFactory::SUBPART_TITLE_ADVANCE_("Advance");
-        const std::string ChanceFactory::SUBPART_TITLE_RETREAT_("Retreat");
-        const std::string ChanceFactory::SUBPART_TITLE_OUTNUMBER_RETREAT_("OutnumberRetreat");
-        const std::string ChanceFactory::SUBPART_TITLE_FREQ_ROAR_("RoarFreq");
-        const std::string ChanceFactory::SUBPART_TITLE_FREQ_CAST_("CastFreq");
-        const std::string ChanceFactory::SUBPART_TITLE_FREQ_FLY_("FlyFreq");
-        const std::string ChanceFactory::SUBPART_TITLE_FREQ_FLYPOUNCE_("FlyPounceFreq");
-        const std::string ChanceFactory::SUBPART_TITLE_FREQ_STANDPOUNCE_("StandingPounceFreq");
-        //
-        DetailsSPtr_t ChanceFactory::instance_;
+        const std::string CreatureStrategies::SUBPART_TITLE_SELECT_("Select");
+        const std::string CreatureStrategies::SUBPART_TITLE_REFINE_("Refine");
+        const std::string CreatureStrategies::SUBPART_TITLE_ADVANCE_("Advance");
+        const std::string CreatureStrategies::SUBPART_TITLE_RETREAT_("Retreat");
+        const std::string CreatureStrategies::SUBPART_TITLE_OUTNUMBER_RETREAT_("OutnumberRetreat");
+        const std::string CreatureStrategies::SUBPART_TITLE_FREQ_ROAR_("RoarFreq");
+        const std::string CreatureStrategies::SUBPART_TITLE_FREQ_CAST_("CastFreq");
+        const std::string CreatureStrategies::SUBPART_TITLE_FREQ_FLY_("FlyFreq");
+        const std::string CreatureStrategies::SUBPART_TITLE_FREQ_FLYPOUNCE_("FlyPounceFreq");
+        const std::string CreatureStrategies::SUBPART_TITLE_FREQ_STANDPOUNCE_("StandingPounceFreq");
 
-        ChanceFactory::ChanceFactory()
+        CreatureStrategies::CreatureStrategies()
             : raceRoleChancesMap_()
-        {}
-
-        ChanceFactory::~ChanceFactory() = default;
-
-        DetailsSPtr_t ChanceFactory::Instance()
         {
-            if (!instance_)
-            {
-                instance_ = std::make_unique<ChanceFactory>();
-            }
-
-            return instance_;
+            Setup();
         }
 
-        void ChanceFactory::Initialize()
+        void CreatureStrategies::Setup()
         {
             std::map<creature::race::Enum, Chances> raceChancesMap;
+
             for (misc::EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {
                 auto const RACE_ENUM(static_cast<creature::race::Enum>(i));
@@ -84,7 +71,7 @@ namespace combat
                 const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (VALUE.empty() == false),
-                    "combat::strategy::ChanceFactory::Initialize()  (while parsing race=\""
+                    "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
                         << RACE_STR << "\")  failed to find gamedatafile value with key=\"" << KEY
                         << "\"");
 
@@ -109,7 +96,7 @@ namespace combat
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (subPartsVec.empty() == false),
-                        "combat::strategy::ChanceFactory::Initialize()  (while parsing race=\""
+                        "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
                             << RACE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
                             << "\" into any sub strings sep by comma.");
 
@@ -162,7 +149,8 @@ namespace combat
                     else
                     {
                         std::ostringstream ss;
-                        ss << "combat::strategy::ChanceFactory::ParsePartsString() Didn't find a "
+                        ss << "combat::strategy::CreatureStrategies::ParsePartsString() Didn't "
+                              "find a "
                               "known subparts title.  Found \""
                            << subPartsVec.at(0) << "\" instead.";
                         throw std::runtime_error(ss.str());
@@ -195,7 +183,7 @@ namespace combat
                 const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (VALUE.empty() == false),
-                    "combat::strategy::ChanceFactory::Initialize()  (while parsing role=\""
+                    "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
                         << ROLE_STR << "\")  failed to find gamedatafile value with key=\"" << KEY
                         << "\"");
 
@@ -219,7 +207,7 @@ namespace combat
                     appbase::stringhelp::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (subPartsVec.empty() == false),
-                        "combat::strategy::ChanceFactory::Initialize()  (while parsing role=\""
+                        "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
                             << ROLE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
                             << "\" into any sub strings sep by comma.");
 
@@ -272,7 +260,8 @@ namespace combat
                     else
                     {
                         std::ostringstream ss;
-                        ss << "combat::strategy::ChanceFactory::ParsePartsString() (while parsing "
+                        ss << "combat::strategy::CreatureStrategies::ParsePartsString() (while "
+                              "parsing "
                               "role=\""
                            << ROLE_STR << "\") Didn't find a known subparts title.  Found \""
                            << subPartsVec.at(0) << "\" instead.";
@@ -305,22 +294,20 @@ namespace combat
                         = CHANCES;
                 }
             }
+
+            // sorting only because it will make future lookups faster
+            raceRoleChancesMap_.Sort();
         }
 
-        const Chances ChanceFactory::Get(
-            const creature::race::Enum RACE_ENUM, const creature::role::Enum ROLE_ENUM)
+        const Chances CreatureStrategies::Get(
+            const creature::race::Enum RACE_ENUM, const creature::role::Enum ROLE_ENUM) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (raceRoleChancesMap_.Empty() == false),
-                "combat::strategy::ChanceFactory::Get("
-                    << creature::race::ToString(RACE_ENUM) << ", "
-                    << creature::role::ToString(ROLE_ENUM)
-                    << ") called before Initialize() was called.");
-
-            return raceRoleChancesMap_[std::make_pair(RACE_ENUM, ROLE_ENUM)];
+            Chances chances;
+            raceRoleChancesMap_.Find(std::make_pair(RACE_ENUM, ROLE_ENUM), chances);
+            return chances;
         }
 
-        void ChanceFactory::ParseSubPartsSelect(
+        void CreatureStrategies::ParseSubPartsSelect(
             const std::vector<std::string> & PARTS_VEC,
             SelectChanceMap_t & OutParam_SelectChanceMap) const
         {
@@ -383,7 +370,7 @@ namespace combat
             }
         }
 
-        void ChanceFactory::ParseSubPartsRefine(
+        void CreatureStrategies::ParseSubPartsRefine(
             const std::vector<std::string> & PARTS_VEC,
             RefineChanceMap_t & OutParam_refineChanceMap) const
         {
@@ -417,7 +404,7 @@ namespace combat
             }
         }
 
-        void ChanceFactory::ParseSubPartsAdvance(
+        void CreatureStrategies::ParseSubPartsAdvance(
             const std::vector<std::string> & PARTS_VEC,
             AdvanceChanceMap_t & OutParam_AdvanceChanceMap) const
         {
@@ -443,7 +430,7 @@ namespace combat
             }
         }
 
-        void ChanceFactory::ParseSubPartsRetreat(
+        void CreatureStrategies::ParseSubPartsRetreat(
             const std::vector<std::string> & PARTS_VEC,
             RetreatChanceMap_t & OutParam_RetreatChanceMap) const
         {
@@ -468,7 +455,7 @@ namespace combat
             }
         }
 
-        void ChanceFactory::ParseSubPartsFrequency(
+        void CreatureStrategies::ParseSubPartsFrequency(
             const std::string & SUBPART_TITLE_STR,
             const std::vector<std::string> & SUBPARTS_VEC,
             FrequencyChanceMap_t & OutParam_FreqChanceMap) const
@@ -514,7 +501,7 @@ namespace combat
             }
         }
 
-        void ChanceFactory::ParseSubPartsOutnumberRetreat(
+        void CreatureStrategies::ParseSubPartsOutnumberRetreat(
             const std::vector<std::string> & SUBPARTS_VEC,
             OutnumberRetreatChanceMap_t & OutParam_OutnumberRetreatChanceMap) const
         {
@@ -668,7 +655,7 @@ namespace combat
             }
         }
 
-        float ChanceFactory::ParseChanceString(const std::string & FLOAT_STR) const
+        float CreatureStrategies::ParseChanceString(const std::string & FLOAT_STR) const
         {
             try
             {

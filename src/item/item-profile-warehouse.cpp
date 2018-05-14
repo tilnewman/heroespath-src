@@ -97,7 +97,7 @@ namespace item
         instanceUPtr_.reset();
     }
 
-    void ItemProfileWarehouse::Setup()
+    void ItemProfileWarehouse::Initialize()
     {
         profiles_.clear();
 

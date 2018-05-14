@@ -29,6 +29,7 @@
 //  Code that orchestrates an encounter from start to finish,
 //  and owns the pointers to the non-player party.
 //
+#include "combat/strategy-details.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-info.hpp"
 #include "item/item-cache.hpp"
@@ -185,6 +186,8 @@ namespace combat
 
         // this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtrOpt_t lockPickCreaturePtrOpt_;
+
+        strategy::CreatureStrategies creatureStrategies_;
     };
 
 } // namespace combat
