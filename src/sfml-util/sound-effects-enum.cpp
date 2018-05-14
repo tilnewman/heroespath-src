@@ -28,6 +28,7 @@
 // sound-effects-enum.cpp
 //
 #include "sound-effects-enum.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
 
 #include <exception>
@@ -740,7 +741,7 @@ namespace sfml_util
             }
             case RoarDragonFirebrandWhelp:
             {
-                return "dragon-firebrand-hatchling";
+                return "dragon-firebrand-whelp";
             }
             case RoarDragonFirebrandFledgling:
             {
@@ -770,13 +771,10 @@ namespace sfml_util
             {
                 return "dragon-sylavin-hatchling";
             }
-
-            // There is no sylavin whelp sfx yet, so re-use the hatchling sfx.  zTn 2017-7-6
             case RoarDragonSylavinWhelp:
             {
-                return "dragon-sylavin-hatchling";
+                return "dragon-sylavin-whelp";
             }
-
             case RoarDragonSylavinFledgling:
             {
                 return "dragon-sylavin-fledgling";
@@ -1329,16 +1327,22 @@ namespace sfml_util
             case Random:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::sound_effect::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
 
     const std::string sound_effect::Filename(const sound_effect::Enum E)
     {
-        return ToString(E) + ".ogg";
+        if (E == RoarDragonSylavinWhelp)
+        {
+            // There is no sylavin whelp sfx yet, so re-use the hatchling sfx.  zTn 2017-7-6
+            return ToString(RoarDragonSylavinHatchling) + ".ogg";
+        }
+        else
+        {
+            return ToString(E) + ".ogg";
+        }
     }
 
     const std::string sound_effect::Directory(const sound_effect::Enum E)
@@ -1771,9 +1775,7 @@ namespace sfml_util
             case Random:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::sound_effect::Directory(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Directory");
             }
         }
     }
@@ -1916,5 +1918,6 @@ namespace sfml_util
         ss << "map::Level::Enum::MapTransitionFromString(\"" << NAME << "\")_InvalidValueError.";
         throw std::runtime_error(ss.str());
     }
+
 } // namespace sfml_util
 } // namespace heroespath

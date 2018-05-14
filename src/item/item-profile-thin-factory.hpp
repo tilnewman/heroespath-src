@@ -51,12 +51,12 @@ namespace item
         const ItemProfileThin MakeArmorNonSpecific(
             const armor_type::Enum ARMOR_TYPE,
             const armor::base_type::Enum BASE_TYPE = armor::base_type::Count,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const;
+            const misc_type::Enum MISC_TYPE = misc_type::Not) const;
 
         template <typename SpecificArmor_t>
         const ItemProfileThin MakeArmorSpecific(
             const SpecificArmor_t SPECIFIC_ARMOR_TYPE,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const
+            const misc_type::Enum MISC_TYPE = misc_type::Not) const
         {
             return ItemProfileThin(armor::ArmorTypeWrapper(SPECIFIC_ARMOR_TYPE), MISC_TYPE);
         }
@@ -67,7 +67,7 @@ namespace item
             ItemProfileThinVec_t thinProfiles;
             thinProfiles.reserve(static_cast<std::size_t>(SpecificArmorEnum_t::Count));
 
-            for (int i(0); i < SpecificArmorEnum_t::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < SpecificArmorEnum_t::Count; ++i)
             {
                 thinProfiles.emplace_back(MakeArmorSpecific<typename SpecificArmorEnum_t::Enum>(
                     static_cast<typename SpecificArmorEnum_t::Enum>(i)));
@@ -85,13 +85,13 @@ namespace item
 
         const ItemProfileThin MakeWeapon(
             const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const
+            const misc_type::Enum MISC_TYPE = misc_type::Not) const
         {
             return ItemProfileThin(WEAPON_TYPE_WRAPPER, MISC_TYPE);
         }
 
         const ItemProfileThin MakeWeaponStaffOrQuarterstaff(
-            const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const
+            const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::Not) const
         {
             return ItemProfileThin(
                 weapon::WeaponTypeWrapper(
@@ -102,7 +102,7 @@ namespace item
         template <typename SpecificWeapon_t>
         const ItemProfileThin MakeWeaponSpecific(
             const SpecificWeapon_t SPECIFIC_WEAPON_TYPE,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc) const
+            const misc_type::Enum MISC_TYPE = misc_type::Not) const
         {
             return MakeWeapon(weapon::WeaponTypeWrapper(SPECIFIC_WEAPON_TYPE), MISC_TYPE);
         }
@@ -115,7 +115,7 @@ namespace item
             ItemProfileThinVec_t thinProfiles;
             thinProfiles.reserve(static_cast<std::size_t>(SpecificWeaponEnum_t::Count));
 
-            for (int i(0); i < SpecificWeaponEnum_t::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < SpecificWeaponEnum_t::Count; ++i)
             {
                 thinProfiles.emplace_back(MakeWeaponSpecific<typename SpecificWeaponEnum_t::Enum>(
                     static_cast<typename SpecificWeaponEnum_t::Enum>(i)));

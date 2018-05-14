@@ -29,10 +29,7 @@
 //
 #include "animation-enum.hpp"
 
-#include <boost/algorithm/string.hpp>
-
-#include <exception>
-#include <sstream>
+#include "misc/boost-string-includes.hpp"
 
 namespace heroespath
 {
@@ -166,30 +163,9 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Animations::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
-    }
-
-    Animations::Enum Animations::FromString(const std::string & NAME_ORIG)
-    {
-        namespace ba = boost::algorithm;
-
-        auto const NAME_LOWER{ ba::to_lower_copy(NAME_ORIG) };
-
-        for (int i(0); i < Count; ++i)
-        {
-            auto const ENUM{ static_cast<Animations::Enum>(i) };
-
-            if (ba::to_lower_copy(ToString(ENUM)) == NAME_LOWER)
-            {
-                return ENUM;
-            }
-        }
-
-        return Animations::Count;
     }
 
     const std::string Animations::MediaPathKey(const Enum E)
@@ -319,9 +295,7 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Animations::MediaPathKey(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "MediaPathKey");
             }
         }
     }
@@ -369,9 +343,7 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Animations::IsMultiTexture(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "IsMultiTexture");
             }
         }
     }
@@ -503,9 +475,7 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Animations::SizePair(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "SizePair");
             }
         }
     }
@@ -553,9 +523,7 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Animations::TimePerFrameSec(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "TimePerFrameSec");
             }
         }
     }
@@ -571,5 +539,6 @@ namespace sfml_util
             return {};
         }
     }
+
 } // namespace sfml_util
 } // namespace heroespath

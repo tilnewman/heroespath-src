@@ -40,7 +40,6 @@
 
 #include <exception>
 #include <sstream>
-#include <string>
 
 namespace heroespath
 {
@@ -49,9 +48,9 @@ namespace non_player
     namespace ownership
     {
 
-        const std::string wealth_type::ToString(const wealth_type::Enum E)
+        const std::string wealth_type::ToString(const wealth_type::Enum WEALTH_TYPE)
         {
-            switch (E)
+            switch (WEALTH_TYPE)
             {
                 case Destitute:
                 {
@@ -84,11 +83,7 @@ namespace non_player
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "non_player::ownership::wealth_type::ToString(" << E
-                       << ")_InvalidValueError.";
-
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
                 }
             }
         }
@@ -159,47 +154,16 @@ namespace non_player
             return FromRank(CHARACTER_PTR->Rank());
         }
 
-        const std::string collector_type::ToString(const collector_type::Enum E)
+        void collector_type::ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR)
         {
-            std::ostringstream ss;
-
-            if (E == collector_type::NoPreference)
-            {
-                ss << "No Preference";
-            }
-            else
-            {
-                if (E & Minimalist)
-                {
-                    ss << "Minimalist";
-                }
-
-                if (E & Practical)
-                {
-                    ss << ((ss.str().empty()) ? "" : "/") << "Practical";
-                }
-
-                if (E & Collector)
-                {
-                    ss << ((ss.str().empty()) ? "" : "/") << "Collector";
-                }
-
-                if (E & Hoarder)
-                {
-                    ss << ((ss.str().empty()) ? "" : "/") << "Hoarder";
-                }
-            }
-
-            if (ss.str().empty())
-            {
-                std::ostringstream ssErr;
-                ssErr << "non_player::ownership::collector_type::ToString(" << E
-                      << ")_InvalidValueError";
-
-                throw std::range_error(ssErr.str());
-            }
-
-            return ss.str();
+            AppendNameIfBitIsSet(
+                ss, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Practical, "Practical", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
         }
 
         collector_type::Enum
@@ -313,7 +277,7 @@ namespace non_player
             }
 
             // determine
-            collector_type::Enum collectorType(NoPreference);
+            collector_type::Enum collectorType{ None };
             if (misc::random::Float() < chancePractical)
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
@@ -337,11 +301,31 @@ namespace non_player
             return collectorType;
         }
 
+        const std::string owns_magic_type::ToString(const owns_magic_type::Enum OWNS_MAGIC_TYPE)
+        {
+            if (OWNS_MAGIC_TYPE == Rarely)
+            {
+                return "Rarely";
+            }
+            else if (OWNS_MAGIC_TYPE == Religious)
+            {
+                return "Religious";
+            }
+            else if (OWNS_MAGIC_TYPE == Magical)
+            {
+                return "Magical";
+            }
+            else
+            {
+                ThrowInvalidValueForFunction(OWNS_MAGIC_TYPE, "ToString");
+            }
+        }
+
         owns_magic_type::Enum
             owns_magic_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             float chanceRarely(0.0f);
-            float chanceReligous(0.0f);
+            float chanceReligious(0.0f);
             float chanceMagical(0.0f);
 
             // adjust for race
@@ -379,7 +363,7 @@ namespace non_player
                         << RACE_OWNSMAGIC_PARTS_STR << " -but those values do not add up to one.");
 
                 chanceRarely += RARELY_RACE_ADJ;
-                chanceReligous += RELIGIOUS_RACE_ADJ;
+                chanceReligious += RELIGIOUS_RACE_ADJ;
                 chanceMagical += MAGICAL_RACE_ADJ;
             }
 
@@ -410,7 +394,7 @@ namespace non_player
                         << ") failed to read three values from the key=" << ROLE_KEY);
 
                 chanceRarely += ConvertStringToFloat(ROLE_KEY, rolePartsVec[0]);
-                chanceReligous += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
+                chanceReligious += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
                 chanceMagical += ConvertStringToFloat(ROLE_KEY, rolePartsVec[2]);
             }
 
@@ -424,9 +408,9 @@ namespace non_player
                     chanceRarely = MIN;
                 }
 
-                if (chanceReligous < MIN)
+                if (chanceReligious < MIN)
                 {
-                    chanceReligous = MIN;
+                    chanceReligious = MIN;
                 }
 
                 if (chanceMagical < MIN)
@@ -445,9 +429,9 @@ namespace non_player
                     chanceRarely = MAX;
                 }
 
-                if (chanceReligous > MAX)
+                if (chanceReligious > MAX)
                 {
-                    chanceReligous = MAX;
+                    chanceReligious = MAX;
                 }
 
                 if (chanceMagical > MAX)
@@ -458,7 +442,7 @@ namespace non_player
 
             // determine
             auto const RAND(
-                misc::random::Float(0.0f, (chanceRarely + chanceReligous + chanceRarely)));
+                misc::random::Float(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
 
             if (RAND < chanceMagical)
             {
@@ -466,9 +450,9 @@ namespace non_player
             }
             else
             {
-                if (RAND < (chanceMagical + chanceReligous))
+                if (RAND < (chanceMagical + chanceReligious))
                 {
-                    return Religous;
+                    return Religious;
                 }
                 else
                 {
@@ -477,9 +461,9 @@ namespace non_player
             }
         }
 
-        const std::string complexity_type::ToString(const complexity_type::Enum E)
+        const std::string complexity_type::ToString(const complexity_type::Enum COMPLEXITY_TYPE)
         {
-            switch (E)
+            switch (COMPLEXITY_TYPE)
             {
                 case Animal:
                 {
@@ -500,56 +484,28 @@ namespace non_player
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "non_player::ownership::complexity_type::ToString(" << E
-                       << ")_InvalidValueError.";
-
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
                 }
-            }
-        }
-
-        complexity_type::Enum complexity_type::FromString(const std::string & NAME)
-        {
-            if (NAME == ToString(Animal))
-            {
-                return Animal;
-            }
-            else if (NAME == ToString(Simple))
-            {
-                return Simple;
-            }
-            else if (NAME == ToString(Moderate))
-            {
-                return Moderate;
-            }
-            else if (NAME == ToString(Complex))
-            {
-                return Complex;
-            }
-            else
-            {
-                return Count;
             }
         }
 
         complexity_type::Enum
             complexity_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
-            const complexity_type::Enum COMPLEXITY_BASED_ON_RACE(
-                FromString(game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
-                    + creature::race::ToString(CHARACTER_PTR->Race()))));
+            auto const RACE_COMPLEXITY_STR{ game::GameDataFile::Instance()->GetCopyStr(
+                "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
+                + creature::race::ToString(CHARACTER_PTR->Race())) };
 
-            if (COMPLEXITY_BASED_ON_RACE != complexity_type::Count)
+            if (RACE_COMPLEXITY_STR == "based-on-role")
             {
-                return COMPLEXITY_BASED_ON_RACE;
+                return static_cast<complexity_type::Enum>(
+                    FromString(game::GameDataFile::Instance()->GetCopyStr(
+                        "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
+                        + creature::role::ToString(CHARACTER_PTR->Role()))));
             }
             else
             {
-                return FromString(game::GameDataFile::Instance()->GetCopyStr(
-                    "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
-                    + creature::role::ToString(CHARACTER_PTR->Role())));
+                return static_cast<complexity_type::Enum>(FromString(RACE_COMPLEXITY_STR));
             }
         }
 

@@ -28,6 +28,8 @@
 // title-enum.hpp
 //  An enumeration defining each type of Title.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -36,10 +38,10 @@ namespace heroespath
 namespace creature
 {
 
-    struct Titles
+    struct Titles : public misc::EnumBaseCounting<Titles, misc::EnumFirstValueValid>
     {
         // Note:  Keep order in sync with creature::title::Warehouse::Fill()
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             ProtectorOfThornberry = 0,
             //
@@ -233,6 +235,7 @@ namespace creature
     };
 
     using TitleEnumVec_t = std::vector<Titles::Enum>;
+
 } // namespace creature
 } // namespace heroespath
 

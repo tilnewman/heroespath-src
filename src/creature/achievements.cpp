@@ -173,7 +173,7 @@ namespace creature
     {
         TitleCountMap_t titleCountMap;
 
-        for (int t(TITLE_FIRST); t <= TITLE_LAST; ++t)
+        for (misc::EnumUnderlying_t t(TITLE_FIRST); t <= TITLE_LAST; ++t)
         {
             auto const NEXT_ENUM{ static_cast<Titles::Enum>(t) };
             auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_ENUM) };

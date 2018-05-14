@@ -50,8 +50,8 @@ namespace item
         , religiousRatio_(0.0f)
         , category_(category::None)
         , thinProfile_()
-        , set_(set_type::NotASet)
-        , named_(named_type::NotNamed)
+        , set_(set_type::Not)
+        , named_(named_type::Not)
         , element_(element_type::None)
         , matPri_(material::Nothing)
         , matSec_(material::Nothing)
@@ -126,7 +126,7 @@ namespace item
 
         if (category::None != category_)
         {
-            ss << "category=" << category::ToString(category_, true);
+            ss << "category=" << category::ToString(category_, misc::Wrap::Yes);
         }
 
         if (ss.str().empty() == false)
@@ -155,12 +155,12 @@ namespace item
             ss << ", mat_sec=" << material::ToString(matSec_);
         }
 
-        if (set_type::NotASet != set_)
+        if (set_type::Not != set_)
         {
             ss << ", set_type=" << ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
         }
 
-        if (named_type::NotNamed != named_)
+        if (named_type::Not != named_)
         {
             ss << ", named_type="
                << ((named_type::Count == named_) ? "Count" : named_type::ToString(named_));
@@ -168,7 +168,7 @@ namespace item
 
         if (element_type::None != element_)
         {
-            ss << ", element_type=" << element_type::ToString(element_, true);
+            ss << ", element_type=" << element_type::ToString(element_, misc::Wrap::Yes);
         }
 
         if (summonInfo_.CanSummon())
@@ -268,7 +268,7 @@ namespace item
                     << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
                     << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
                     << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE, true)
+                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE, misc::Wrap::Yes)
                     << ") element_type wasn't None but the misc_type was not equippable.");
 
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
@@ -282,7 +282,7 @@ namespace item
                 armor::cover_type::Cape,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
-                named_type::NotNamed,
+                named_type::Not,
                 SET_TYPE,
                 ELEMENT_TYPE,
                 IS_PIXIE,
@@ -296,7 +296,7 @@ namespace item
                 armor::cover_type::Cloak,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
-                named_type::NotNamed,
+                named_type::Not,
                 SET_TYPE,
                 ELEMENT_TYPE,
                 IS_PIXIE,
@@ -308,7 +308,7 @@ namespace item
                 armor::cover_type::Robe,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
-                named_type::NotNamed,
+                named_type::Not,
                 SET_TYPE,
                 ELEMENT_TYPE,
                 IS_PIXIE,
@@ -319,7 +319,7 @@ namespace item
             SetStaff(
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
-                named_type::NotNamed,
+                named_type::Not,
                 SET_TYPE,
                 ELEMENT_TYPE,
                 MISC_TYPE,
@@ -331,7 +331,7 @@ namespace item
                 weapon::bladedstaff_type::Scythe,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
-                named_type::NotNamed,
+                named_type::Not,
                 SET_TYPE,
                 ELEMENT_TYPE,
                 MISC_TYPE);
@@ -775,7 +775,7 @@ namespace item
 
         thinProfile_ = THIN_PROFILE;
 
-        if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
+        if ((MISC_TYPE == misc_type::Not) || (MISC_TYPE == misc_type::Count))
         {
             SetHelperForWeaponsAndArmor(
                 MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);

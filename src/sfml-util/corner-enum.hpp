@@ -27,6 +27,8 @@
 //
 // corner.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,21 +36,25 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Corner
+    struct Corner : misc::EnumBaseBitField<Corner>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             Error = 0,
             None = Error,
             TopLeft = 1 << 0,
             TopRight = 1 << 1,
             BottomLeft = 1 << 2,
-            BottomRight = 1 << 3
+            BottomRight = 1 << 3,
+            Last = BottomRight
         };
 
-        static const std::string ToString(const Corner::Enum E);
-        static bool IsValid(const Corner::Enum E);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

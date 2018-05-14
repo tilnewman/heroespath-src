@@ -29,48 +29,20 @@
 //
 #include "corner-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace sfml_util
 {
-
-    const std::string Corner::ToString(const Corner::Enum E)
+    void Corner::ToStringPopulate(
+        std::ostringstream & ss,
+        const misc::EnumUnderlying_t ENUM_VALUE,
+        const std::string & SEPARATOR)
     {
-        switch (E)
-        {
-            case TopLeft:
-            {
-                return "TopLeft";
-            }
-            case TopRight:
-            {
-                return "TopRight";
-            }
-            case BottomLeft:
-            {
-                return "BottomLeft";
-            }
-            case BottomRight:
-            {
-                return "BottomRight";
-            }
-            case Error:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::Corner::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Corner::TopLeft, "TopLeft", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Corner::TopRight, "TopRight", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Corner::BottomLeft, "BottomLeft", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Corner::BottomRight, "BottomRight", SEPARATOR);
     }
 
-    bool Corner::IsValid(const Corner::Enum E)
-    {
-        const unsigned MAX(None | TopLeft | TopRight | BottomLeft | BottomRight);
-        return (static_cast<unsigned>(E) <= MAX);
-    }
 } // namespace sfml_util
 } // namespace heroespath

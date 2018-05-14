@@ -66,11 +66,11 @@ namespace item
     private:
         explicit ItemProfileThin(
             const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+            const misc_type::Enum MISC_TYPE = misc_type::Not);
 
         explicit ItemProfileThin(
             const armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+            const misc_type::Enum MISC_TYPE = misc_type::Not);
 
         explicit ItemProfileThin(const misc_type::Enum MISC_TYPE);
 
@@ -85,7 +85,7 @@ namespace item
 
         bool IsMisc() const
         {
-            return ((misc_type::Count != miscType_) && (misc_type::NotMisc != miscType_));
+            return ((misc_type::Count != miscType_) && (misc_type::Not != miscType_));
         }
 
         bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }

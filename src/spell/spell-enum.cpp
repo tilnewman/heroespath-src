@@ -30,11 +30,7 @@
 #include "spell-enum.hpp"
 
 #include "game/game-data-file.hpp"
-
 #include "misc/boost-string-includes.hpp"
-
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
@@ -96,9 +92,7 @@ namespace spell
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::spell::Spells::ToString(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -158,9 +152,7 @@ namespace spell
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::spell::Spells::Name(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Name");
             }
         }
     }
@@ -183,5 +175,6 @@ namespace spell
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
+
 } // namespace spell
 } // namespace heroespath

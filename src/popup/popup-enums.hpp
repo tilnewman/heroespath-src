@@ -27,6 +27,7 @@
 //
 // popup-enums.hpp
 //
+#include "misc/enum-util.hpp"
 #include "popup/popup-response-enum.hpp"
 
 #include <string>
@@ -38,7 +39,7 @@ namespace popup
 
     struct PopupButtons
     {
-        enum Enum : unsigned
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             Okay = ResponseTypes::Okay,
@@ -56,7 +57,7 @@ namespace popup
 
     struct PopupButtonColor
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Light = 0,
             Dark,
@@ -69,7 +70,7 @@ namespace popup
 
     struct PopupImage
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Banner = 0,
             Regular,
@@ -85,6 +86,7 @@ namespace popup
         static const std::string ToString(const PopupImage::Enum);
         static bool IsValid(const PopupImage::Enum);
     };
+
 } // namespace popup
 } // namespace heroespath
 

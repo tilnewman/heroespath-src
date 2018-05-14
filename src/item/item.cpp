@@ -166,7 +166,7 @@ namespace item
 
         if (category::None != category_)
         {
-            ss << ", category=" << category::ToString(category_, true);
+            ss << ", category=" << category::ToString(category_, misc::Wrap::Yes);
         }
 
         if (IsUnique())
@@ -189,7 +189,7 @@ namespace item
             ss << ", weapon_info=" << weaponInfo_.ToString();
         }
 
-        if (misc_type::NotMisc != miscType_)
+        if (misc_type::Not != miscType_)
         {
             ss << ", misc_type="
                << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
@@ -212,13 +212,13 @@ namespace item
             ss << ", mat_sec=" << material::ToString(materialSec_);
         }
 
-        if (set_type::NotASet != setType_)
+        if (set_type::Not != setType_)
         {
             ss << ", set_type="
                << ((set_type::Count == setType_) ? "Count" : set_type::ToString(setType_));
         }
 
-        if (named_type::NotNamed != namedType_)
+        if (named_type::Not != namedType_)
         {
             ss << ", named_type="
                << ((named_type::Count == namedType_) ? "Count" : named_type::ToString(namedType_));
@@ -226,7 +226,7 @@ namespace item
 
         if (element_type::None != elementType_)
         {
-            ss << ", element_type=" << element_type::ToString(elementType_, true);
+            ss << ", element_type=" << element_type::ToString(elementType_, misc::Wrap::Yes);
         }
 
         if (summonInfo_.CanSummon())

@@ -705,7 +705,7 @@ namespace item
                 return { MakeArmorSpecific(cover_type::Cloak) };
             }
 
-            case named_type::NotNamed:
+            case named_type::Not:
             case named_type::Count:
             default:
             {
@@ -1114,7 +1114,7 @@ namespace item
                 };
             }
 
-            case set_type::NotASet:
+            case set_type::Not:
             case set_type::Count:
             default:
             {
@@ -1147,7 +1147,7 @@ namespace item
     {
         ItemProfileThinVec_t thinProfiles;
 
-        for (int i(0); i < armor::base_type::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
             auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
             thinProfiles.emplace_back(MakeArmorNonSpecific(ARMOR_TYPE, BASE_TYPE));
@@ -1173,7 +1173,7 @@ namespace item
     {
         ItemProfileThinVec_t thinProfiles;
 
-        for (int i(0); i < armor::base_type::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
             auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
 

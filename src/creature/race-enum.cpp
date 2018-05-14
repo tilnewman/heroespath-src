@@ -32,17 +32,15 @@
 #include "game/game-data-file.hpp"
 
 #include <algorithm>
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string origin_type::ToString(const origin_type::Enum E)
+    const std::string origin_type::ToString(const origin_type::Enum ORIGIN_TYPE)
     {
-        switch (E)
+        switch (ORIGIN_TYPE)
         {
             case Statue:
             {
@@ -63,16 +61,14 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::origin_type::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(ORIGIN_TYPE, "ToString");
             }
         }
     }
 
-    std::size_t origin_type::UseCount(const origin_type::Enum E)
+    std::size_t origin_type::UseCount(const origin_type::Enum ORIGIN_TYPE)
     {
-        switch (E)
+        switch (ORIGIN_TYPE)
         {
             case Statue:
             {
@@ -95,9 +91,9 @@ namespace creature
         }
     }
 
-    const std::string race::ToString(const race::Enum E)
+    const std::string race::ToString(const race::Enum RACE)
     {
-        switch (E)
+        switch (RACE)
         {
             case Human:
             {
@@ -278,22 +274,20 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::race::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(RACE, "ToString");
             }
         }
     }
 
-    const std::string race::Name(const race::Enum E)
+    const std::string race::Name(const race::Enum RACE)
     {
-        if (E == Spider)
+        if (RACE == Spider)
         {
             return "Giant Spider";
         }
         else
         {
-            return ToString(E);
+            return ToString(RACE);
         }
     }
 
@@ -459,9 +453,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::race::HasTorso(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "HasTorso");
             }
         }
     }
@@ -673,9 +665,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::race::HasTorso(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Roles");
             }
         }
     }
@@ -2404,9 +2394,7 @@ namespace creature
             case race::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::race::CorpseImageKeys(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "CorpseImageKeys");
             }
         }
     }

@@ -29,9 +29,6 @@
 //
 #include "weapon-types.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace item
@@ -90,10 +87,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::sword_type::ToString(" << SWORD_TYPE
-                       << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(SWORD_TYPE, "ToString");
                 }
             }
         }
@@ -133,9 +127,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::axe_type::ToString(" << AXE_TYPE << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(AXE_TYPE, "ToString");
                 }
             }
         }
@@ -163,9 +155,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::axe_type::Name(" << AXE_TYPE << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(AXE_TYPE, "Name");
                 }
             }
         }
@@ -193,10 +183,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::club_type::ToString(" << CLUB_TYPE
-                       << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(CLUB_TYPE, "ToString");
                 }
             }
         }
@@ -220,10 +207,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::whip_type::ToString(" << WHIP_TYPE
-                       << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(WHIP_TYPE, "ToString");
                 }
             }
         }
@@ -271,10 +255,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::projectile_type::ToString(" << PROJECTILE_TYPE
-                       << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(PROJECTILE_TYPE, "ToString");
                 }
             }
         }
@@ -322,11 +303,7 @@ namespace item
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "item::weapon::bladedstaff_type::ToString(" << BSTAFF_TYPE
-                       << ")_InvalidValueError.";
-
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(BSTAFF_TYPE, "ToString");
                 }
             }
         }

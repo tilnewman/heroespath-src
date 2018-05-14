@@ -27,6 +27,8 @@
 //
 // achievement-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -36,8 +38,9 @@ namespace creature
 {
 
     struct AchievementType
+        : public misc::EnumBaseCounting<AchievementType, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             EnemiesFaced,
@@ -67,6 +70,7 @@ namespace creature
     };
 
     using AchievementTypeVec_t = std::vector<AchievementType::Enum>;
+
 } // namespace creature
 } // namespace heroespath
 

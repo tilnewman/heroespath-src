@@ -29,116 +29,22 @@
 //
 #include "phase-enum.hpp"
 
-#include <boost/algorithm/string.hpp>
-
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace game
 {
 
-    const std::string game::Phase::ToString(const Enum E, const bool WILL_WRAP)
+    void Phase::ToStringPopulate(
+        std::ostringstream & ss,
+        const misc::EnumUnderlying_t ENUM_VALUE,
+        const std::string & SEPARATOR)
     {
-        std::ostringstream ss;
-
-        if (E == game::Phase::NotAPhase)
-        {
-            return "";
-        }
-
-        if (E & game::Phase::Combat)
-        {
-            ss << "Combat";
-        }
-
-        if (E & game::Phase::Exploring)
-        {
-            ss << ((ss.str().empty()) ? "" : ", ") << "Exploring";
-        }
-
-        if (E & game::Phase::Conversation)
-        {
-            ss << ((ss.str().empty()) ? "" : ", ") << "Conversation";
-        }
-
-        if (E & game::Phase::Quest)
-        {
-            ss << ((ss.str().empty()) ? "" : ", ") << "Quest";
-        }
-
-        if (E & game::Phase::Inventory)
-        {
-            ss << ((ss.str().empty()) ? "" : ", ") << "Inventory";
-        }
-
-        if (ss.str().empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "Phase::ToString(" << E << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Combat, "Combat", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Exploring, "Exploring", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Conversation, "Conversation", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Quest, "Quest", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Inventory, "Inventory", SEPARATOR);
     }
 
-    game::Phase::Enum game::Phase::FromString(const std::string & S)
-    {
-        if (S == game::Phase::ToString(Phase::NotAPhase, false))
-        {
-            return game::Phase::NotAPhase;
-        }
-
-        auto lowerCaseStr{ boost::algorithm::to_lower_copy(S) };
-
-        unsigned int x{ 0 };
-        if (boost::contains(
-                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))
-        {
-            x = x | game::Phase::Combat;
-        }
-
-        if (boost::contains(
-                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))
-        {
-            x = x | game::Phase::Exploring;
-        }
-
-        if (boost::contains(
-                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))
-        {
-            x = x | game::Phase::Conversation;
-        }
-
-        if (boost::contains(
-                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))
-        {
-            x = x | game::Phase::Quest;
-        }
-
-        if (boost::contains(
-                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))
-        {
-            x = x | game::Phase::Inventory;
-        }
-
-        if (0 == x)
-        {
-            std::ostringstream ssErr;
-            ssErr << "Phase::FromString(\"" << S
-                  << "\") unable to convert that string into a set of game::Phase::Enum flags.";
-            throw std::runtime_error(ssErr.str());
-        }
-
-        return static_cast<game::Phase::Enum>(x);
-    }
 } // namespace game
 } // namespace heroespath

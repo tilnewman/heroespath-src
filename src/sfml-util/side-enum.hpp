@@ -25,8 +25,10 @@
 #ifndef HEROESPATH_SFMLUTIL_SIDE_ENUM_HPP_INCLUDED
 #define HEROESPATH_SFMLUTIL_SIDE_ENUM_HPP_INCLUDED
 //
-// side.hpp
+// side-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,21 +36,25 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Side
+    struct Side : misc::EnumBaseBitField<Side>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             Error = 0,
             None = Error,
             Top = 1 << 0,
             Bottom = 1 << 1,
             Left = 1 << 2,
-            Right = 1 << 3
+            Right = 1 << 3,
+            Last = Right
         };
 
-        static const std::string ToString(const Side::Enum E);
-        static bool IsValid(const Side::Enum E);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

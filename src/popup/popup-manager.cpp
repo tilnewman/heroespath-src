@@ -29,25 +29,20 @@
 //
 #include "popup-manager.hpp"
 
+#include "creature/creature.hpp"
+#include "creature/title.hpp"
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
+#include "misc/types.hpp"
+#include "misc/vectors.hpp"
+#include "popup/popup-stage-generic.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "creature/creature.hpp"
-#include "creature/title.hpp"
-#include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
-
-#include "popup/popup-stage-generic.hpp"
-
-#include "misc/random.hpp"
-#include "misc/types.hpp"
-#include "misc/vectors.hpp"
-
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include <exception>
 #include <memory>

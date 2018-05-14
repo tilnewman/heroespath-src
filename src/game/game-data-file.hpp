@@ -32,7 +32,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/not-null.hpp"
 
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp>
 
 #include <memory>
 #include <string>

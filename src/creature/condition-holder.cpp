@@ -173,7 +173,7 @@ namespace creature
                     "creature::condition::Holder::Test() Starting Tests...");
             }
 
-            static auto condIndex{ 0 };
+            static misc::EnumUnderlying_t condIndex{ 0 };
             if (condIndex < creature::Conditions::Count)
             {
                 auto const NEXT_ENUM{ static_cast<creature::Conditions::Enum>(condIndex) };

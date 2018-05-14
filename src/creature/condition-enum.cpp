@@ -30,7 +30,6 @@
 #include "condition-enum.hpp"
 
 #include "game/game-data-file.hpp"
-
 #include "misc/boost-string-includes.hpp"
 
 #include <exception>
@@ -104,10 +103,7 @@ namespace creature
             case Conditions::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::Conditions::Enum::ToString(" << E << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }

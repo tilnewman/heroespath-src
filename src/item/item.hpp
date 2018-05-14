@@ -132,19 +132,16 @@ namespace item
         bool IsArmor() const { return (armorInfo_.IsTypeValid()); }
         bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }
 
-        bool IsSet() const
-        {
-            return (set_type::Count != setType_) && (set_type::NotASet != setType_);
-        }
+        bool IsSet() const { return (set_type::Count != setType_) && (set_type::Not != setType_); }
 
         bool IsNamed() const
         {
-            return (named_type::Count != namedType_) && (named_type::NotNamed != namedType_);
+            return (named_type::Count != namedType_) && (named_type::Not != namedType_);
         }
 
         bool IsMisc() const
         {
-            return (misc_type::Count != miscType_) && (misc_type::NotMisc != miscType_);
+            return (misc_type::Count != miscType_) && (misc_type::Not != miscType_);
         }
 
         bool IsUnique() const { return misc_type::IsUnique(miscType_); }

@@ -31,6 +31,7 @@
 
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/i-stage.hpp"

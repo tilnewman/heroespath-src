@@ -29,9 +29,6 @@
 //
 #include "achievement-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace creature
@@ -124,9 +121,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::AchievementType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -218,11 +213,10 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::AchievementType::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Name");
             }
         }
     }
+
 } // namespace creature
 } // namespace heroespath

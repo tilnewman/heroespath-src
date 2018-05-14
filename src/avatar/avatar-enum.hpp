@@ -28,6 +28,8 @@
 // avatar_enum.hpp
 //
 #include "interact/statement.hpp"
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -36,7 +38,7 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Avatar
+    struct Avatar : public misc::EnumBaseCounting<Avatar, misc::EnumFirstValueValid>
     {
         enum class NameEnum
         {
@@ -83,7 +85,7 @@ namespace avatar
             Monk
         };
 
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Player_First = 0,
             Metal_Female_Dark = Player_First,

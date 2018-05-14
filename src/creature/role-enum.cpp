@@ -31,17 +31,14 @@
 
 #include "game/game-data-file.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string role::ToString(const role::Enum E)
+    const std::string role::ToString(const role::Enum ROLE)
     {
-        switch (E)
+        switch (ROLE)
         {
             case Beastmaster:
             {
@@ -239,11 +236,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-
-                ss << "creature::role::ToString(" << E << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(ROLE, "ToString");
             }
         }
     }
@@ -270,7 +263,9 @@ namespace creature
             return "Wlf";
         }
         else
+        {
             return Name(E).substr(0, 3);
+        }
     }
 
     bool role::CanFly(const role::Enum E)
@@ -364,9 +359,7 @@ namespace creature
             case role::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "role::BlockingPosType(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "BlockingPosType");
             }
         }
     }
@@ -375,7 +368,7 @@ namespace creature
         role::RolesOfBlockingPosType(const combat::BlockingPosType::Enum BLOCKING_POS_ENUM)
     {
         std::vector<role::Enum> rolesVec;
-        for (int i(0); i < role::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
         {
             auto const ROLE{ static_cast<role::Enum>(i) };
             if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)
@@ -393,5 +386,6 @@ namespace creature
 
         return rolesVec;
     }
+
 } // namespace creature
 } // namespace heroespath

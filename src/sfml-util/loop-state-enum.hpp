@@ -28,6 +28,8 @@
 // loop-state-enum.hpp
 //  An enum describing the game loop state.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -35,9 +37,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct LoopState
+    struct LoopState : public misc::EnumBaseCounting<LoopState, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             Intro,
@@ -60,9 +62,11 @@ namespace sfml_util
             Count
         };
 
-        static const std::string ToString(const LoopState::Enum E);
-        static LoopState::Enum FromString(const std::string & ENUM_STR);
+        static const std::string ToString(const LoopState::Enum);
+
+        static bool TestHelper() { return EnumBaseCounting::Test(); }
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

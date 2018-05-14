@@ -28,6 +28,8 @@
 // sound-effects-enum.hpp
 //  An enum defining the various sound effects
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -36,9 +38,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct sound_effect
+    struct sound_effect : public misc::EnumBaseCounting<sound_effect, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             WindGust1 = 0,
             WindGust2,
@@ -390,6 +392,7 @@ namespace sfml_util
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

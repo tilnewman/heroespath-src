@@ -36,12 +36,10 @@
 #include "map/parser.hpp"
 #include "map/shadow-masker.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 #include <exception>

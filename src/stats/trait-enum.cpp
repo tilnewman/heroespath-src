@@ -29,17 +29,14 @@
 //
 #include "trait-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace stats
 {
 
-    const std::string Traits::ToString(const Enum E)
+    const std::string Traits::ToString(const Enum TRAIT)
     {
-        switch (E)
+        switch (TRAIT)
         {
             case Strength:
             {
@@ -220,16 +217,14 @@ namespace stats
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "stats::Traits::ToString(" << E << ")_InvalidValueError";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(TRAIT, "ToString");
             }
         }
     }
 
-    const std::string Traits::Abbr(const Enum E)
+    const std::string Traits::Abbr(const Enum TRAIT)
     {
-        switch (E)
+        switch (TRAIT)
         {
             case Strength:
             {
@@ -410,16 +405,14 @@ namespace stats
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "stats::Traits::Abbr(" << E << ")_InvalidValueError";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(TRAIT, "Abbr");
             }
         }
     }
 
-    const std::string Traits::Name(const Enum E)
+    const std::string Traits::Name(const Enum TRAIT)
     {
-        switch (E)
+        switch (TRAIT)
         {
             case Strength:
             {
@@ -600,17 +593,12 @@ namespace stats
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "stats::Traits::Name(" << E << ")_InvalidValueError";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(TRAIT, "Name");
             }
         }
     }
 
-    const std::string Traits::Desc(const Enum E)
-    {
-        // TODO
-        return Name(E);
-    }
+    const std::string Traits::Desc(const Enum) { return "(descriptions TODO)"; }
+
 } // namespace stats
 } // namespace heroespath

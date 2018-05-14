@@ -42,8 +42,6 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 
-#include <boost/algorithm/algorithm.hpp>
-
 #include <algorithm>
 
 namespace heroespath

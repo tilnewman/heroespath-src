@@ -117,7 +117,7 @@ namespace item
                     || (ProjectileType() == projectile_type::Blowpipe));
             }
 
-            bool IsTypeValid() const { return (type_ != weapon_type::NotAWeapon); }
+            bool IsTypeValid() const { return (type_ != weapon_type::None); }
 
             weapon_type::Enum Type() const { return type_; }
 
@@ -244,7 +244,7 @@ namespace item
             {
                 std::vector<WeaponTypeWrapper> wrappers;
 
-                for (int i(0); i < T::Count; ++i)
+                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     auto const SPECIFIC_WEAPON_ENUM{ static_cast<typename T::Enum>(i) };
                     wrappers.emplace_back(WeaponTypeWrapper(SPECIFIC_WEAPON_ENUM));
@@ -288,7 +288,7 @@ namespace item
             bool SetupWithSpecificTypeName(
                 const std::string & SYSTEM_NAME_LOWERCASE, const weapon_type::Enum WEAPON_TYPE)
             {
-                for (int i(0); i < T::Count; ++i)
+                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     auto const SPECIFIC_WEAPON_ENUM{ static_cast<typename T::Enum>(i) };
 

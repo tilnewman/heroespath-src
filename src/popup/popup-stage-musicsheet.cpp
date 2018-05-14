@@ -496,7 +496,7 @@ namespace popup
         ss << "Mana Cost: " << SONG_PTR->ManaCost() << "\n"
            << "Rank: " << SONG_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
-           << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases(), false) << "\n";
+           << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << "\n";
 
         const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
             ss.str(),
@@ -561,8 +561,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SONG_PTR->ValidPhases(), false)
-                   << ".";
+                ss << "Only during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << ".";
             }
         }
 

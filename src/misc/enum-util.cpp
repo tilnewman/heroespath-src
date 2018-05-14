@@ -38,7 +38,7 @@ namespace misc
     namespace enum_util
     {
 
-        void TestReporter::Log(const std::string & MSG_STR)
+        void TestLog(const std::string & MSG_STR)
         {
             game::LoopManager::Instance()->TestingStrIncrement(MSG_STR);
         }

@@ -30,7 +30,6 @@
 #include "song-enum.hpp"
 
 #include "game/game-data-file.hpp"
-
 #include "misc/boost-string-includes.hpp"
 
 #include <exception>

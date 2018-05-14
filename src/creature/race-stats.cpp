@@ -43,7 +43,7 @@ namespace creature
     {
         if (raceStatSetMap_.Empty())
         {
-            for (int i(0); i < race::Count_PlayerRaces; ++i)
+            for (misc::EnumUnderlying_t i(0); i < race::Count_PlayerRaces; ++i)
             {
                 auto const NEXT_ENUM{ static_cast<race::Enum>(i) };
                 auto const NEXT_ENUM_STR{ race::ToString(NEXT_ENUM) };

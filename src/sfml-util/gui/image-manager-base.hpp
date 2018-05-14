@@ -34,7 +34,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp>
 
 #include <string>
 
@@ -124,7 +124,7 @@ namespace sfml_util
                 }
 
                 static auto willFlip{ false };
-                static auto imageIndex{ 0 };
+                static misc::EnumUnderlying_t imageIndex{ 0 };
                 if (imageIndex < T::Count)
                 {
                     auto const ENUM{ static_cast<typename T::Enum>(imageIndex) };

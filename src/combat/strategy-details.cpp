@@ -72,7 +72,7 @@ namespace combat
         void ChanceFactory::Initialize()
         {
             std::map<creature::race::Enum, Chances> raceChancesMap;
-            for (int i(0); i < creature::race::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {
                 auto const RACE_ENUM(static_cast<creature::race::Enum>(i));
                 auto const RACE_STR(creature::race::ToString(RACE_ENUM));
@@ -183,7 +183,7 @@ namespace combat
             }
 
             misc::VectorMap<creature::role::Enum, Chances> roleChancesMap;
-            for (int i(0); i < creature::role::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
                 auto const ROLE_ENUM(static_cast<creature::role::Enum>(i));
                 auto const ROLE_STR(creature::role::ToString(ROLE_ENUM));

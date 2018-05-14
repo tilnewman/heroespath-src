@@ -31,255 +31,67 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace combat
 {
     namespace strategy
     {
-
-        const std::string SelectType::ToString(const SelectType::Enum E, const bool WILL_WRAP)
+        void SelectType::ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR)
         {
-            std::ostringstream ss;
-
-            if (E == SelectType::None)
-            {
-                ss << "None";
-            }
-            else
-            {
-                if (E & SelectType::Pixie)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Pixie";
-                if (E & SelectType::Dragon)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Dragon";
-                if (E & SelectType::Human)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Human";
-                if (E & SelectType::Gnome)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Gnome";
-                if (E & SelectType::Wolfen)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Wolfen";
-                if (E & SelectType::Archer)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Archer";
-                if (E & SelectType::Sorcerer)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Sorcerer";
-                if (E & SelectType::Knight)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Knight";
-                if (E & SelectType::Beastmaster)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Beastmaster";
-                if (E & SelectType::Cleric)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Cleric";
-                if (E & SelectType::Theif)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Theif";
-                if (E & SelectType::Bard)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Bard";
-                if (E & SelectType::FireBrand)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "FireBrand";
-                if (E & SelectType::Sylavin)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Sylavin";
-                if (E & SelectType::Projectile)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Projectile";
-                if (E & SelectType::Caster)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Caster";
-                if (E & SelectType::CanFly)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "CanFly";
-                if (E & SelectType::CantFly)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "CantFly";
-                if (E & SelectType::Beast)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Beast";
-                if (E & SelectType::NotBeast)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "NotBeast";
-            }
-
-            if (ss.str().empty())
-            {
-                std::ostringstream exxceptionSS;
-                exxceptionSS << "combat::strategy::SelectType::ToString(" << E
-                             << ")_InvalidValueError.";
-                throw std::runtime_error(exxceptionSS.str());
-            }
-
-            if (WILL_WRAP)
-            {
-                return "(" + ss.str() + ")";
-            }
-            else
-            {
-                return ss.str();
-            }
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Pixie, "Pixie", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Dragon, "Dragon", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Human, "Human", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Gnome, "Gnome", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Wolfen, "Wolfen", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Archer, "Archer", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Sorcerer, "Sorcerer", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Knight, "Knight", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Beastmaster, "Beastmaster", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Cleric, "Cleric", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Theif, "Theif", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Bard, "Bard", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::FireBrand, "FireBrand", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Sylavin, "Sylavin", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Projectile, "Projectile", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Caster, "Caster", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::CanFly, "CanFly", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::CantFly, "CantFly", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Beast, "Beast", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::NotBeast, "NotBeast", SEPARATOR);
         }
 
-        SelectType::Enum SelectType::FromString(const std::string & S)
+        void RefineType::ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR)
         {
-            if (boost::algorithm::icontains(S, ToString(None)))
-            {
-                return None;
-            }
-            else
-            {
-                unsigned int i(0);
-                if (boost::algorithm::icontains(S, ToString(Pixie)))
-                    i = i | Pixie;
-                if (boost::algorithm::icontains(S, ToString(Dragon)))
-                    i = i | Dragon;
-                if (boost::algorithm::icontains(S, ToString(Human)))
-                    i = i | Human;
-                if (boost::algorithm::icontains(S, ToString(Gnome)))
-                    i = i | Gnome;
-                if (boost::algorithm::icontains(S, ToString(Wolfen)))
-                    i = i | Wolfen;
-                if (boost::algorithm::icontains(S, ToString(Archer)))
-                    i = i | Archer;
-                if (boost::algorithm::icontains(S, ToString(Sorcerer)))
-                    i = i | Sorcerer;
-                if (boost::algorithm::icontains(S, ToString(Knight)))
-                    i = i | Knight;
-                if (boost::algorithm::icontains(S, ToString(Beastmaster)))
-                    i = i | Beastmaster;
-                if (boost::algorithm::icontains(S, ToString(Cleric)))
-                    i = i | Cleric;
-                if (boost::algorithm::icontains(S, ToString(Theif)))
-                    i = i | Theif;
-                if (boost::algorithm::icontains(S, ToString(Bard)))
-                    i = i | Bard;
-                if (boost::algorithm::icontains(S, ToString(FireBrand)))
-                    i = i | FireBrand;
-                if (boost::algorithm::icontains(S, ToString(Sylavin)))
-                    i = i | Sylavin;
-                if (boost::algorithm::icontains(S, ToString(Projectile)))
-                    i = i | Projectile;
-                if (boost::algorithm::icontains(S, ToString(Caster)))
-                    i = i | Caster;
-                if (boost::algorithm::icontains(S, ToString(CanFly)))
-                    i = i | CanFly;
-                if (boost::algorithm::icontains(S, ToString(CantFly)))
-                    i = i | CantFly;
-                if (boost::algorithm::icontains(S, ToString(Beast)))
-                    i = i | Beast;
-                if (boost::algorithm::icontains(S, ToString(NotBeast)))
-                    i = i | NotBeast;
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Murderer, "Murderer", SEPARATOR);
 
-                if (0 == i)
-                {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::SelectType::FromString(\"" << S
-                       << "\")_InvalidValueError.";
-                    throw std::runtime_error(ss.str());
-                }
-                else
-                {
-                    return static_cast<Enum>(i);
-                }
-            }
+            AppendNameIfBitIsSet(
+                ss, ENUM_VALUE, RefineType::Bloodthirsty, "Bloodthirsty", SEPARATOR);
+
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Coward, "Coward", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Hit, "Hit", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Attack, "Attack", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::MusicMaker, "MusicMaker", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Caster, "Caster", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Enchanted, "Enchanted", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                ss, ENUM_VALUE, RefineType::NotEnchanted, "NotEnchanted", SEPARATOR);
+
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Steadfast, "Steadfast", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::LastTo, "LastTo", SEPARATOR);
+            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::MostDamage, "MostDamage", SEPARATOR);
         }
 
-        const std::string RefineType::ToString(const RefineType::Enum E, const bool WILL_WRAP)
+        const std::string AdvanceType::ToString(const AdvanceType::Enum ADVANCE_TYPE)
         {
-            std::ostringstream ss;
-
-            if (E == None)
-            {
-                ss << "None";
-            }
-            else
-            {
-                if (E & Murderer)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Murderer";
-                if (E & Bloodthirsty)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Bloodthirsty";
-                if (E & Coward)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Coward";
-                if (E & Hit)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Hit";
-                if (E & Attack)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Attack";
-                if (E & MusicMaker)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "MusicMaker";
-                if (E & Caster)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Caster";
-                if (E & Enchanted)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Enchanted";
-                if (E & NotEnchanted)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "NotEnchanted";
-                if (E & Steadfast)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "Steadfast";
-                if (E & LastTo)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "LastTo";
-                if (E & MostDamage)
-                    ss << ((ss.str().empty()) ? "" : ", ") << "MostDamage";
-            }
-
-            if (ss.str().empty())
-            {
-                std::ostringstream exceptionSS;
-                exceptionSS << "combat::strategy::RefineType::ToString(" << E
-                            << ")_InvalidValueError.";
-                throw std::runtime_error(exceptionSS.str());
-            }
-
-            if (WILL_WRAP)
-            {
-                return "(" + ss.str() + ")";
-            }
-            else
-            {
-                return ss.str();
-            }
-        }
-
-        RefineType::Enum RefineType::FromString(const std::string & S)
-        {
-            if (boost::algorithm::icontains(S, ToString(None)))
-            {
-                return None;
-            }
-            else
-            {
-                unsigned int i(0);
-                if (boost::algorithm::icontains(S, ToString(Murderer)))
-                    i = i | Murderer;
-                if (boost::algorithm::icontains(S, ToString(Bloodthirsty)))
-                    i = i | Bloodthirsty;
-                if (boost::algorithm::icontains(S, ToString(Coward)))
-                    i = i | Coward;
-                if (boost::algorithm::icontains(S, ToString(Hit)))
-                    i = i | Hit;
-                if (boost::algorithm::icontains(S, ToString(Attack)))
-                    i = i | Attack;
-                if (boost::algorithm::icontains(S, ToString(MusicMaker)))
-                    i = i | MusicMaker;
-                if (boost::algorithm::icontains(S, ToString(Caster)))
-                    i = i | Caster;
-                if (boost::algorithm::icontains(S, ToString(Enchanted)))
-                    i = i | Enchanted;
-                if (boost::algorithm::icontains(S, ToString(NotEnchanted)))
-                    i = i | NotEnchanted;
-                if (boost::algorithm::icontains(S, ToString(Steadfast)))
-                    i = i | Steadfast;
-                if (boost::algorithm::icontains(S, ToString(LastTo)))
-                    i = i | LastTo;
-                if (boost::algorithm::icontains(S, ToString(MostDamage)))
-                    i = i | MostDamage;
-
-                if (0 == i)
-                {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::RefineType::FromString(\"" << S
-                       << "\")_InvalidValueError.";
-                    throw std::runtime_error(ss.str());
-                }
-                else
-                {
-                    return static_cast<Enum>(i);
-                }
-            }
-        }
-
-        const std::string AdvanceType::ToString(const AdvanceType::Enum E)
-        {
-            switch (E)
+            switch (ADVANCE_TYPE)
             {
                 case None:
                 {
@@ -300,35 +112,14 @@ namespace combat
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::AdvanceType::ToString(" << E << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(ADVANCE_TYPE, "ToString");
                 }
             }
         }
 
-        AdvanceType::Enum AdvanceType::FromString(const std::string & S)
+        const std::string RetreatType::ToString(const Enum RETREAT_TYPE)
         {
-            if (boost::algorithm::iequals(S, ToString(None)))
-                return None;
-            else if (boost::algorithm::iequals(S, ToString(Cowardly)))
-                return Cowardly;
-            else if (boost::algorithm::iequals(S, ToString(Hesitant)))
-                return Hesitant;
-            else if (boost::algorithm::iequals(S, ToString(Charger)))
-                return Charger;
-            else
-            {
-                std::ostringstream ss;
-                ss << "combat::strategy::AdvanceType::FromString(\"" << S
-                   << "\")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
-            }
-        }
-
-        const std::string RetreatType::ToString(const Enum E)
-        {
-            switch (E)
+            switch (RETREAT_TYPE)
             {
                 case None:
                 {
@@ -345,33 +136,14 @@ namespace combat
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::RetreatType::ToString(" << E << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(RETREAT_TYPE, "ToString");
                 }
             }
         }
 
-        RetreatType::Enum RetreatType::FromString(const std::string & S)
+        const std::string FrequencyType::ToString(const FrequencyType::Enum FREQ_TYPE)
         {
-            if (boost::algorithm::iequals(S, ToString(None)))
-                return None;
-            else if (boost::algorithm::iequals(S, ToString(Wary)))
-                return Wary;
-            else if (boost::algorithm::iequals(S, ToString(Coward)))
-                return Coward;
-            else
-            {
-                std::ostringstream ss;
-                ss << "combat::strategy::RetreatType::FromString(\"" << S
-                   << "\")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
-            }
-        }
-
-        const std::string FrequencyType::ToString(const FrequencyType::Enum E)
-        {
-            switch (E)
+            switch (FREQ_TYPE)
             {
                 case Never:
                 {
@@ -416,44 +188,11 @@ namespace combat
                 case Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "combat::strategy::FrequencyType::ToString(" << E
-                       << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
+                    ThrowInvalidValueForFunction(FREQ_TYPE, "ToString");
                 }
             }
         }
 
-        FrequencyType::Enum FrequencyType::FromString(const std::string & S)
-        {
-            if (boost::algorithm::iequals(S, ToString(Never)))
-                return Never;
-            else if (boost::algorithm::iequals(S, ToString(Once)))
-                return Once;
-            else if (boost::algorithm::iequals(S, ToString(Twice)))
-                return Twice;
-            else if (boost::algorithm::iequals(S, ToString(Thrice)))
-                return Thrice;
-            else if (boost::algorithm::iequals(S, ToString(Rarely)))
-                return Rarely;
-            else if (boost::algorithm::iequals(S, ToString(Seldom)))
-                return Seldom;
-            else if (boost::algorithm::iequals(S, ToString(Neutral)))
-                return Neutral;
-            else if (boost::algorithm::iequals(S, ToString(Commonly)))
-                return Commonly;
-            else if (boost::algorithm::iequals(S, ToString(Often)))
-                return Often;
-            else if (boost::algorithm::iequals(S, ToString(Always)))
-                return Always;
-            else
-            {
-                std::ostringstream ss;
-                ss << "combat::strategy::FrequencyType::FromString(\"" << S
-                   << "\")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
-            }
-        }
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

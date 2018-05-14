@@ -186,7 +186,7 @@ namespace spell
                 "spell::Holder::Test() Starting Tests...");
         }
 
-        static auto spellIndex{ 0 };
+        static misc::EnumUnderlying_t spellIndex{ 0 };
         if (spellIndex < Spells::Count)
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };

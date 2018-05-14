@@ -34,12 +34,11 @@
 #include "map/shadow-masker.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
@@ -385,7 +384,8 @@ namespace map
                 auto const ANIM_NAME{ FetchXMLAttribute<std::string>(
                     OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
-                auto const ANIM_ENUM{ sfml_util::Animations::FromString(ANIM_NAME) };
+                auto const ANIM_ENUM{ static_cast<sfml_util::Animations::Enum>(
+                    sfml_util::Animations::FromString(ANIM_NAME)) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (ANIM_ENUM != sfml_util::Animations::Count),
@@ -512,7 +512,7 @@ namespace map
             {
                 try
                 {
-                    level = Level::FromString(VALUE_STR);
+                    level = static_cast<Level::Enum>(Level::FromString(VALUE_STR));
                 }
                 catch (...)
                 {
@@ -593,8 +593,8 @@ namespace map
             throw;
         }
 
-        auto const MUSIC{ sfml_util::music::FootstepToMusic(
-            sfml_util::Footstep::FromString(footstepName)) };
+        auto const MUSIC{ sfml_util::music::FootstepToMusic(static_cast<sfml_util::Footstep::Enum>(
+            sfml_util::Footstep::FromString(footstepName))) };
 
         if (MUSIC == sfml_util::music::Count)
         {

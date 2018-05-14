@@ -90,8 +90,8 @@ namespace item
 
         void MakeLoopOverMaterialsAndElementsForEquipment(
             const ItemProfileThin & THIN_PROFILE,
-            const named_type::Enum = named_type::NotNamed,
-            const set_type::Enum = set_type::NotASet);
+            const named_type::Enum = named_type::Not,
+            const set_type::Enum = set_type::Not);
 
         void MakeForEquipment(
             const ItemProfileThin & THIN_PROFILE,

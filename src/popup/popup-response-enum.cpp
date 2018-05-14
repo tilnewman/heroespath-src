@@ -29,61 +29,26 @@
 //
 #include "popup-response-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace popup
 {
-
-    const std::string ResponseTypes::ToString(const ResponseTypes::Enum E)
+    void ResponseTypes::ToStringPopulate(
+        std::ostringstream & ss,
+        const misc::EnumUnderlying_t ENUM_VALUE,
+        const std::string & SEPARATOR)
     {
-        switch (E)
-        {
-            case Okay:
-            {
-                return "Okay";
-            }
-            case Continue:
-            {
-                return "Continue";
-            }
-            case Yes:
-            {
-                return "Yes";
-            }
-            case No:
-            {
-                return "No";
-            }
-            case Cancel:
-            {
-                return "Cancel";
-            }
-            case Select:
-            {
-                return "Select";
-            }
-            case Error:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "popup::ResponseTypes::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::Okay, "Okay", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::Continue, "Continue", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::Yes, "Yes", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::No, "No", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::Cancel, "Cancel", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ResponseTypes::Select, "Select", SEPARATOR);
     }
 
-    bool ResponseTypes::IsValid(const ResponseTypes::Enum E)
+    bool ResponseTypes::IsAffirmative(const ResponseTypes::Enum RESPONSE_TYPE)
     {
-        const unsigned MAX(None | Okay | Continue | Yes | No | Cancel | Select);
-        return (static_cast<unsigned>(E) <= MAX);
-    }
-
-    bool ResponseTypes::IsAffirmative(const ResponseTypes::Enum E)
-    {
-        switch (E)
+        switch (RESPONSE_TYPE)
         {
             case Okay:
             case Continue:
@@ -100,11 +65,10 @@ namespace popup
             case Error:
             default:
             {
-                std::ostringstream ss;
-                ss << "popup::ResponseTypes::IsAffirmative(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(RESPONSE_TYPE, "IsAffirmative");
             }
         }
     }
+
 } // namespace popup
 } // namespace heroespath

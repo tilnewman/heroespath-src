@@ -32,6 +32,7 @@
 #include "creature/rank.hpp"
 #include "creature/role-enum.hpp"
 #include "item/treasure-scores.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/handy-types.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
@@ -45,9 +46,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct origin_type
+    struct origin_type : public misc::EnumBaseCounting<origin_type, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Statue = 0,
             Egg,
@@ -62,9 +63,9 @@ namespace creature
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
 
-    struct race
+    struct race : public misc::EnumBaseCounting<race, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Human = 0,
             Gnome,

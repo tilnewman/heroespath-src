@@ -348,8 +348,8 @@ namespace non_player
                     armor::base_type::Plain,
                     CHANCES.boots.RandomMaterialPri(),
                     CHANCES.boots.RandomMaterialSec(),
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -364,8 +364,8 @@ namespace non_player
                     armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
                     CHANCES.gloves.RandomMaterialSec(),
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -380,8 +380,8 @@ namespace non_player
                     armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
                     material::Nothing,
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -396,8 +396,8 @@ namespace non_player
                     armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
                     material::Nothing,
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -412,8 +412,8 @@ namespace non_player
                     armor::cover_type::Vest,
                     CHANCES.vest.RandomMaterialPri(),
                     CHANCES.vest.RandomMaterialSec(),
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -437,8 +437,8 @@ namespace non_player
                     COVER_TYPE,
                     CHANCES.vest.RandomMaterialPri(),
                     CHANCES.vest.RandomMaterialSec(),
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     IS_PIXIE);
 
@@ -582,8 +582,8 @@ namespace non_player
                         profile.SetDagger(
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
                             WEAPON_CHANCES.knife.RandomMaterialSec(),
-                            named_type::NotNamed,
-                            set_type::NotASet,
+                            named_type::Not,
+                            set_type::Not,
                             element_type::None,
                             CHARACTER_PTR->IsPixie());
                     }
@@ -592,8 +592,8 @@ namespace non_player
                         profile.SetKnife(
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
                             WEAPON_CHANCES.knife.RandomMaterialSec(),
-                            named_type::NotNamed,
-                            set_type::NotASet,
+                            named_type::Not,
+                            set_type::Not,
                             element_type::None,
                             CHARACTER_PTR->IsPixie());
                     }
@@ -610,8 +610,8 @@ namespace non_player
                         profile.SetQuarterStaff(
                             WEAPON_CHANCES.staff.RandomMaterialPri(),
                             WEAPON_CHANCES.staff.RandomMaterialSec(),
-                            named_type::NotNamed,
-                            set_type::NotASet,
+                            named_type::Not,
+                            set_type::Not,
                             element_type::None);
                     }
                     else
@@ -619,10 +619,10 @@ namespace non_player
                         profile.SetStaff(
                             WEAPON_CHANCES.staff.RandomMaterialPri(),
                             WEAPON_CHANCES.staff.RandomMaterialSec(),
-                            named_type::NotNamed,
-                            set_type::NotASet,
+                            named_type::Not,
+                            set_type::Not,
                             element_type::None,
-                            misc_type::NotMisc,
+                            misc_type::Not,
                             CHARACTER_PTR->IsPixie());
                     }
 
@@ -642,8 +642,8 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\"" << weapon::axe_type::ToString(AXE_TYPE)
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
+                            << weapon::axe_type::ToString(AXE_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -679,8 +679,7 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\""
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
                             << weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -716,8 +715,8 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\"" << weapon::club_type::ToString(CLUB_TYPE)
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
+                            << weapon::club_type::ToString(CLUB_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -752,8 +751,7 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\""
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
                             << weapon::projectile_type::ToString(PROJECTILE_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
@@ -784,8 +782,8 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\"" << weapon::sword_type::ToString(SWORD_TYPE)
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
+                            << weapon::sword_type::ToString(SWORD_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -815,8 +813,8 @@ namespace non_player
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
-                            << weapon_type::ToString(randomSelectedWeaponType, false)
-                            << "\" and kind=\"" << weapon::whip_type::ToString(WHIP_TYPE)
+                            << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
+                            << weapon::whip_type::ToString(WHIP_TYPE)
                             << "\" -but that weapon was not found in the original "
                                "WEAPON_CHANCES "
                                "object.");
@@ -833,7 +831,7 @@ namespace non_player
                 }
                 case weapon_type::Bladed:
                 case weapon_type::Melee:
-                case weapon_type::NotAWeapon:
+                case weapon_type::None:
                 case weapon_type::Pointed:
                 case weapon_type::BodyPart:
                 default:
@@ -842,7 +840,7 @@ namespace non_player
                     ss << "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                        << "creature=\"" << CHARACTER_PTR->ToString()
                        << "\") failed to find a valid random selected weapon.  (weapon_type="
-                       << weapon_type::ToString(randomSelectedWeaponType, false) << "\")";
+                       << weapon_type::ToString(randomSelectedWeaponType) << "\")";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -901,8 +899,8 @@ namespace non_player
                         CHANCES.boots.RandomArmorBaseType(),
                         CHANCES.boots.RandomMaterialPri(),
                         CHANCES.boots.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
@@ -929,8 +927,8 @@ namespace non_player
                         CHANCES.bracers.RandomArmorBaseType(),
                         CHANCES.bracers.RandomMaterialPri(),
                         CHANCES.bracers.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
@@ -957,8 +955,8 @@ namespace non_player
                         CHANCES.gauntlets.RandomArmorBaseType(),
                         CHANCES.gauntlets.RandomMaterialPri(),
                         CHANCES.gauntlets.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
@@ -985,8 +983,8 @@ namespace non_player
                         CHANCES.pants.RandomArmorBaseType(),
                         CHANCES.pants.RandomMaterialPri(),
                         CHANCES.pants.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
@@ -1013,8 +1011,8 @@ namespace non_player
                         CHANCES.shirt.RandomArmorBaseType(),
                         CHANCES.shirt.RandomMaterialPri(),
                         CHANCES.shirt.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
@@ -1057,8 +1055,8 @@ namespace non_player
                         COVER_PAIR.first,
                         coverChances.RandomMaterialPri(),
                         coverChances.RandomMaterialSec(),
-                        named_type::NotNamed,
-                        set_type::NotASet,
+                        named_type::Not,
+                        set_type::Not,
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 

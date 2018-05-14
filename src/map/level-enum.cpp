@@ -31,19 +31,14 @@
 
 #include "game/game-data-file.hpp"
 
-#include <exception>
-#include <sstream>
-
-#include <boost/algorithm/string.hpp>
-
 namespace heroespath
 {
 namespace map
 {
 
-    const std::string LevelType::ToString(const LevelType::Enum E)
+    const std::string LevelType::ToString(const LevelType::Enum LEVEL_TYPE)
     {
-        switch (E)
+        switch (LEVEL_TYPE)
         {
             case Town:
             {
@@ -64,18 +59,16 @@ namespace map
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "map::LevelType::Enum::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(LEVEL_TYPE, "ToString");
             }
         }
     }
 
     const std::string Level::FILENAME_EXTENSION{ ".tmx" };
 
-    const std::string Level::ToString(const Level::Enum E)
+    const std::string Level::ToString(const Level::Enum LEVEL)
     {
-        switch (E)
+        switch (LEVEL)
         {
             case Thornberry:
             {
@@ -97,46 +90,23 @@ namespace map
             {
                 return "ThornberryHighlands";
             }
-            // case Mudgate:                   { return "Mudgate"; }
-            // case Bridgeway:                 { return "Bridgeway"; }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Level::Enum::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(LEVEL, "ToString");
             }
         }
     }
 
-    const std::string Level::Path(const Level::Enum E)
+    const std::string Level::Path(const Level::Enum LEVEL)
     {
-        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") + ToString(E)
+        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") + ToString(LEVEL)
             + FILENAME_EXTENSION;
     }
 
-    Level::Enum Level::FromString(const std::string & NAME)
+    LevelType::Enum Level::Type(const Level::Enum LEVEL)
     {
-        namespace ba = boost::algorithm;
-
-        for (int i(0); i < Level::Count; ++i)
-        {
-            auto const ENUM{ static_cast<Level::Enum>(i) };
-
-            if (ba::to_lower_copy(ToString(ENUM)) == ba::to_lower_copy(NAME))
-            {
-                return ENUM;
-            }
-        }
-
-        std::ostringstream ss;
-        ss << "map::Level::Enum::FromString(\"" << NAME << "\")_InvalidValueError.";
-        throw std::runtime_error(ss.str());
-    }
-
-    LevelType::Enum Level::Type(const Level::Enum E)
-    {
-        switch (E)
+        switch (LEVEL)
         {
             case Thornberry:
             {
@@ -161,11 +131,10 @@ namespace map
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Level::Enum::Type(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(LEVEL, "Type");
             }
         }
     }
+
 } // namespace map
 } // namespace heroespath

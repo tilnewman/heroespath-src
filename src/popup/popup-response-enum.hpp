@@ -27,6 +27,8 @@
 //
 // popup-response-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,9 +36,9 @@ namespace heroespath
 namespace popup
 {
 
-    struct ResponseTypes
+    struct ResponseTypes : misc::EnumBaseBitField<ResponseTypes>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             Error = 0,
             None = Error,
@@ -45,13 +47,18 @@ namespace popup
             Yes = 1 << 2,
             No = 1 << 3,
             Cancel = 1 << 4,
-            Select = 1 << 5
+            Select = 1 << 5,
+            Last = Select
         };
 
-        static const std::string ToString(const ResponseTypes::Enum E);
-        static bool IsValid(const ResponseTypes::Enum E);
-        static bool IsAffirmative(const ResponseTypes::Enum E);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
+
+        static bool IsAffirmative(const ResponseTypes::Enum);
     };
+
 } // namespace popup
 } // namespace heroespath
 

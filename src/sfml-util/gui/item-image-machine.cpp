@@ -71,42 +71,6 @@ namespace sfml_util
                     "sfml_util::gui::ItemImageMachine::Test()  Starting tests...");
             }
 
-            // TODO these enum tests (and many others) should be elsewhere in the testing system
-            if (misc::enum_util::Test<category>::ToStringForFlagEnum(
-                    misc::enum_util::AllowOneEmpty::Yes)
-                == false)
-            {
-                return false;
-            }
-
-            if (misc::enum_util::Test<element_type>::ToStringForFlagEnum(
-                    misc::enum_util::AllowOneEmpty::Yes)
-                == false)
-            {
-                return false;
-            }
-
-            if (misc::enum_util::Test<weapon_type>::ToStringForFlagEnum(
-                    misc::enum_util::AllowOneEmpty::No)
-                == false)
-            {
-                return false;
-            }
-
-            if (misc::enum_util::Test<armor_type>::ToStringForCountingEnum(
-                    misc::enum_util::AllowOneEmpty::No)
-                == false)
-            {
-                return false;
-            }
-
-            if (misc::enum_util::Test<non_player::ownership::collector_type>::ToStringForFlagEnum(
-                    misc::enum_util::AllowOneEmpty::No)
-                == false)
-            {
-                return false;
-            }
-
             const std::string TEST_PRE_STR{ "ItemImageMachine Test " };
 
             static auto allFilenames{ AllFilenames() };
@@ -173,7 +137,7 @@ namespace sfml_util
             }
 
             // test misc items
-            static auto miscIndex{ 1 }; // start at 1 to avoid misc_type::NotMisc
+            static auto miscIndex{ 1 }; // start at 1 to avoid misc_type::Not
             static auto isJeweled{ true };
             static auto isBone{ false };
             if (miscIndex < static_cast<int>(misc_type::Count))
@@ -633,7 +597,7 @@ namespace sfml_util
                     return { ba::to_lower_copy(misc_type::ToString(MISC_TYPE)) + FILE_EXT_STR_ };
                 }
 
-                case misc_type::NotMisc:
+                case misc_type::Not:
                 case misc_type::Count:
                 default:
                 {

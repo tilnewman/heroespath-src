@@ -48,8 +48,8 @@ namespace item
 
         const MaterialPairVec_t MakeForEquipment(
             const ItemProfileThin & THIN_PROFILE,
-            const named_type::Enum NAMED_TYPE = named_type::NotNamed,
-            const set_type::Enum SET_TYPE = set_type::NotASet);
+            const named_type::Enum NAMED_TYPE = named_type::Not,
+            const set_type::Enum SET_TYPE = set_type::Not);
 
         const MaterialPairVec_t
             MakeForMiscType(const misc_type::Enum MISC_TYPE, const bool IS_MAGICAL) const;

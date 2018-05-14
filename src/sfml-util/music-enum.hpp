@@ -28,6 +28,8 @@
 // music-enum.hpp
 //  An enum defining the various background music files
 //
+#include "misc/enum-util.hpp"
+
 #include <set>
 #include <string>
 #include <vector>
@@ -37,9 +39,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Footstep
+    struct Footstep : public misc::EnumBaseCounting<Footstep, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Grass = 0,
             Gravel,
@@ -50,12 +52,11 @@ namespace sfml_util
         };
 
         static const std::string ToString(const Enum);
-        static Enum FromString(const std::string &);
     };
 
-    struct music
+    struct music : public misc::EnumBaseCounting<music, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Theme = 0,
             Wind,
@@ -91,6 +92,7 @@ namespace sfml_util
 
     using MusicEnumVec_t = std::vector<music::Enum>;
     using MusicEnumSet_t = std::set<music::Enum>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

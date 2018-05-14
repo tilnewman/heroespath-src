@@ -29,24 +29,421 @@
 //
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/vector-map.hpp"
+#include "stringutil/stringhelp.hpp"
 
 #include <boost/type_index.hpp>
 
+#include <cctype>
+#include <exception>
 #include <sstream>
+#include <string>
+#include <type_traits>
+#include <vector>
 
 namespace heroespath
 {
 namespace misc
 {
+
+    using EnumUnderlying_t = unsigned;
+
     namespace enum_util
     {
+        void TestLog(const std::string &);
 
-        static inline unsigned CalculateLastValidValueOfFlagEnum(const unsigned HIGHEST_BIT_SET)
+        template <typename EnumWrapper_t>
+        bool Test(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
         {
-            unsigned finalValue{ 0 };
-            unsigned shiftingValue{ 1 };
-            while (shiftingValue <= HIGHEST_BIT_SET)
+            std::ostringstream msgSS;
+            msgSS << "misc::enum_util::TestToString<"
+                  << boost::typeindex::type_id<typename EnumWrapper_t::Enum>().pretty_name() << ", "
+                  << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
+                  << ">(last_valid_value=" << LAST_VALID_VALUE
+                  << ", must_first_be_empty=" << std::boolalpha << MUST_FIRST_STRING_TO_BE_EMPTY
+                  << ") ";
+
+            TestLog(msgSS.str() + "Starting...");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (LAST_VALID_VALUE > 0),
+                msgSS.str() << "was given a last_valid_value that was not greater than zero.");
+
+            static EnumUnderlying_t flagValue{ 0 };
+
+            // this is used to verify ToString() returns a unique string for each unique enum
+            static std::vector<std::string> alreadyGeneratedStrings;
+            if (alreadyGeneratedStrings.capacity() < static_cast<std::size_t>(LAST_VALID_VALUE))
+            {
+                alreadyGeneratedStrings.reserve(static_cast<std::size_t>(LAST_VALID_VALUE));
+            }
+
+            try
+            {
+                while (flagValue <= LAST_VALID_VALUE)
+                {
+                    auto const FLAG_VALUE_TO_TEST_AND_REPORT{ flagValue++ };
+
+                    if (EnumWrapper_t::IsValid(static_cast<typename EnumWrapper_t::Enum>(
+                            FLAG_VALUE_TO_TEST_AND_REPORT))
+                        == false)
+                    {
+                        M_HP_LOG_DBG(
+                            msgSS.str()
+                            << "skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT);
+                        continue;
+                    }
+
+                    auto const STRING{ EnumWrapper_t::ToString(
+                        static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
+
+                    if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
+                    {
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (STRING.empty()),
+                            msgSS.str() << "ToString() returned non-empty string (\"" << STRING
+                                        << "\") on first value.");
+                    }
+                    else
+                    {
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (STRING.empty() == false),
+                            msgSS.str() << "ToString() returned an empty string on value "
+                                        << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
+                    }
+
+                    auto const IS_DUPLICATE{ std::find(
+                                                 std::begin(alreadyGeneratedStrings),
+                                                 std::end(alreadyGeneratedStrings),
+                                                 STRING)
+                                             != std::end(alreadyGeneratedStrings) };
+
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (IS_DUPLICATE == false),
+                        msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
+                                    << "\" is a duplicate of a previous generated string.");
+
+                    auto const FROM_STRING_RESULT{ EnumWrapper_t::FromString(STRING) };
+
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
+                        msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
+                                    << "!=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
+
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (EnumWrapper_t::IsValid(
+                            static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
+                        msgSS.str()
+                            << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
+                            << "=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT
+                            << " -but that value was not valid.  (IsValid() returned false)");
+                }
+            }
+            catch (const std::exception & EXCEPTION)
+            {
+                --flagValue;
+
+                M_HP_LOG_ERR(
+                    msgSS.str() << "threw exception \"" << EXCEPTION.what()
+                                << "\" on value=" << flagValue << ".");
+
+                throw;
+            }
+
+            msgSS << "Done testing all " << flagValue << " values.";
+            TestLog(msgSS.str());
+            return true;
+        }
+    } // namespace enum_util
+
+    enum class Wrap : bool
+    {
+        No = false,
+        Yes = true
+    };
+
+    enum class NoneEmpty : bool
+    {
+        No = false,
+        Yes = true
+    };
+
+    struct EnumFirstValueValid
+    {};
+
+    struct EnumFirstValueNot
+    {};
+
+    struct EnumFirstValueNothing
+    {};
+
+    struct EnumFirstValueNever
+    {};
+
+    struct EnumFirstValueNone
+    {};
+
+    // Responsible for common operations of enums that are used as counted values.
+    template <typename EnumWrapper_t, typename EnumFirstValue_t>
+    class EnumBaseCounting
+    {
+        EnumBaseCounting() = delete;
+
+    public:
+        static bool IsValid(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return (ENUM_VALUE <= LargestValidValue());
+        }
+
+        static bool IsNonZeroValid(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
+        }
+
+        static EnumUnderlying_t LargestValidValue() { return EnumWrapper_t::Count - 1; }
+
+        static const std::string Name(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
+        }
+
+        static EnumUnderlying_t FromString(const std::string & S)
+        {
+            for (EnumUnderlying_t i(0); i < EnumWrapper_t::Count; ++i)
+            {
+                if (boost::algorithm::iequals(
+                        S, EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(i))))
+                {
+                    return i;
+                }
+            }
+
+            std::ostringstream ss;
+            ss << "misc::EnumBaseCounting::FromString(\"" << S
+               << "\")_InvalidValueError.  (typename=" << TypeName() << ")";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        static bool Test()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (std::is_same<
+                    EnumUnderlying_t,
+                    typename std::underlying_type<typename EnumWrapper_t::Enum>::type>::value),
+                TypeName()
+                    << "Underlying type was "
+                    << boost::typeindex::type_id<
+                           typename std::underlying_type<typename EnumWrapper_t::Enum>::type>()
+                           .pretty_name()
+                    << " instead of " << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
+                    << ".");
+
+            if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNot>::value)
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (EnumWrapper_t::Not == 0),
+                    TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
+            }
+
+            if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNothing>::value)
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (EnumWrapper_t::Nothing == 0),
+                    TypeName() << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
+            }
+
+            if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNever>::value)
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (EnumWrapper_t::Never == 0),
+                    TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
+            }
+
+            if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNone>::value)
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (EnumWrapper_t::None == 0),
+                    TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
+            }
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EnumWrapper_t::Count != 0),
+                TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+                           << " is not greater than zero.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EnumWrapper_t::Count == LargestValidValue() + 1),
+                TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+                           << " is not one less than the largest valid value="
+                           << LargestValidValue() << ".");
+
+            return enum_util::Test<EnumWrapper_t>(LargestValidValue(), false);
+        }
+
+        static const std::string TypeName()
+        {
+            return boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "::Enum";
+        }
+
+        static const std::string EnumValueToStringWithDebugInfo(const EnumUnderlying_t ENUM_VALUE)
+        {
+            std::ostringstream ss;
+            ss << ENUM_VALUE;
+
+            if (ENUM_VALUE > LargestValidValue())
+            {
+                ss << "(that value is higher than the maximum defined for this bitfield enum)";
+            }
+
+            return ss.str();
+        }
+
+        [[noreturn]] static void ThrowInvalidValueForFunction(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
+        {
+            std::ostringstream ssErr;
+            ssErr << TypeName() << "::" << FUNCTION_NAME << "("
+                  << EnumValueToStringWithDebugInfo(ENUM_VALUE) << ")_InvalidValueError";
+
+            throw std::range_error(ssErr.str());
+        }
+    };
+
+    // Responsible for common operations of enums that are used as bit flags.
+    template <typename EnumWrapper_t>
+    class EnumBaseBitField
+    {
+        EnumBaseBitField() = delete;
+
+    public:
+        static bool IsValid(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return (ENUM_VALUE <= LargestValidValue());
+        }
+
+        static bool IsNonZeroValid(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
+        }
+
+        static const std::string ToString(
+            const EnumUnderlying_t ENUM_VALUE,
+            const Wrap WILL_WRAP = Wrap::No,
+            const NoneEmpty WILL_NONE_RETURN_EMPTY = NoneEmpty::Yes,
+            const std::string & SEPARATOR = ", ")
+        {
+            if (ENUM_VALUE == EnumWrapper_t::None)
+            {
+                if (WILL_NONE_RETURN_EMPTY == NoneEmpty::Yes)
+                {
+                    return "";
+                }
+                else
+                {
+                    return "None";
+                }
+            }
+
+            std::ostringstream ss;
+
+            EnumWrapper_t::ToStringPopulate(ss, ENUM_VALUE, SEPARATOR);
+
+            if (ss.str().empty())
+            {
+                ThrowInvalidValueForFunction(ENUM_VALUE, "ToString");
+            }
+
+            if (WILL_WRAP == Wrap::Yes)
+            {
+                return "(" + ss.str() + ")";
+            }
+            else
+            {
+                return ss.str();
+            }
+        }
+
+        static EnumUnderlying_t FromString(const std::string & S)
+        {
+            auto const TRIMMED{ boost::algorithm::trim_copy(S) };
+
+            if (TRIMMED.empty())
+            {
+                return EnumWrapper_t::None;
+            }
+
+            std::string seperatorChars{ "" };
+
+            for (auto const CHAR : TRIMMED)
+            {
+                if ((std::isalpha(CHAR) == false) && (std::isspace(CHAR) == false) && (CHAR != '-')
+                    && (CHAR != ':'))
+                {
+                    seperatorChars.push_back(CHAR);
+                }
+            }
+
+            std::vector<std::string> words;
+
+            if (seperatorChars.empty())
+            {
+                words.emplace_back(TRIMMED);
+            }
+            else
+            {
+                appbase::stringhelp::SplitByChars(TRIMMED, words, seperatorChars, true, true);
+            }
+
+            EnumUnderlying_t result{ 0 };
+            for (auto const & WORD : words)
+            {
+                EnumUnderlying_t flag{ 1 };
+
+                while (flag <= EnumWrapper_t::Last)
+                {
+                    if (boost::algorithm::iequals(WORD, EnumWrapper_t::ToString(flag)))
+                    {
+                        result |= flag;
+                        break;
+                    }
+
+                    flag <<= 1;
+                }
+            }
+
+            return result;
+        }
+
+        static int CountBitsSet(const EnumUnderlying_t ENUM_VALUE)
+        {
+            int result{ 0 };
+            EnumUnderlying_t flag{ 1 };
+
+            while (flag != EnumWrapper_t::Last)
+            {
+                if (ENUM_VALUE & flag)
+                {
+                    ++result;
+                }
+
+                flag <<= 1;
+            }
+
+            return result;
+        }
+
+        static const std::string Name(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return EnumWrapper_t::ToString(ENUM_VALUE);
+        }
+
+        static EnumUnderlying_t LargestValidValue()
+        {
+            EnumUnderlying_t finalValue{ 0 };
+            EnumUnderlying_t shiftingValue{ 1 };
+            while (shiftingValue <= EnumWrapper_t::Last)
             {
                 finalValue |= shiftingValue;
                 shiftingValue <<= 1;
@@ -54,171 +451,85 @@ namespace misc
             return finalValue;
         }
 
-        struct TestReporter
+        static bool Test()
         {
-            static void Log(const std::string &);
-        };
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (std::is_same<
+                    EnumUnderlying_t,
+                    typename std::underlying_type<typename EnumWrapper_t::Enum>::type>::value),
+                TypeName()
+                    << "Underlying type was "
+                    << boost::typeindex::type_id<
+                           typename std::underlying_type<typename EnumWrapper_t::Enum>::type>()
+                           .pretty_name()
+                    << " instead of " << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
+                    << ".");
 
-        enum class AllowOneEmpty : bool
-        {
-            No = false,
-            Yes = true
-        };
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EnumWrapper_t::None == 0), TypeName() << "::None was not zero.");
 
-        enum class AllowLastDuplicate : bool
-        {
-            No = false,
-            Yes = true
-        };
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EnumWrapper_t::Last > 0),
+                TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+                           << " is not greater than zero.");
 
-        // Responsible for testing the ToString() function over all possible enum flag values.
-        template <typename Enum_t>
-        struct Test
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EnumWrapper_t::Last < LargestValidValue()),
+                TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+                           << " is not less than the largest valid value=" << LargestValidValue()
+                           << ".");
+
+            return enum_util::Test<EnumWrapper_t>(LargestValidValue(), true);
+        }
+
+        static const std::string TypeName()
         {
-            static bool ToStringForCountingEnum(const AllowOneEmpty WILL_ALLOW_ONE_EMPTY_STRING)
+            return boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "::Enum";
+        }
+
+        static const std::string EnumValueToStringWithDebugInfo(const EnumUnderlying_t ENUM_VALUE)
+        {
+            std::ostringstream ss;
+            ss << ENUM_VALUE;
+
+            if (ENUM_VALUE > LargestValidValue())
             {
-                return ToString<int>(
-                    Enum_t::Count - 1, WILL_ALLOW_ONE_EMPTY_STRING, AllowLastDuplicate::No);
+                ss << "(that value is higher than the maximum defined for this bitfield enum)";
             }
 
-            static bool ToStringForFlagEnum(const AllowOneEmpty WILL_ALLOW_ONE_EMPTY_STRING)
+            return ss.str();
+        }
+
+        [[noreturn]] static void ThrowInvalidValueForFunction(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
+        {
+            std::ostringstream ssErr;
+            ssErr << TypeName() << "::" << FUNCTION_NAME << "("
+                  << EnumValueToStringWithDebugInfo(ENUM_VALUE) << ")_InvalidValueError";
+
+            throw std::range_error(ssErr.str());
+        }
+
+    protected:
+        static void AppendNameIfBitIsSet(
+            std::ostringstream & ss,
+            const EnumUnderlying_t ENUM_VALUE,
+            const EnumUnderlying_t BIT_TO_CHECK,
+            const std::string & NAME,
+            const std::string & SEPARATOR = ", ")
+        {
+            if (ENUM_VALUE & BIT_TO_CHECK)
             {
-                return ToString<unsigned>(
-                    CalculateLastValidValueOfFlagEnum(static_cast<unsigned>(Enum_t::Last)),
-                    WILL_ALLOW_ONE_EMPTY_STRING,
-                    AllowLastDuplicate::Yes);
+                if (ss.str().empty() == false)
+                {
+                    ss << SEPARATOR;
+                }
+
+                ss << NAME;
             }
+        }
+    };
 
-        private:
-            template <typename Value_t>
-            static bool ToString(
-                const Value_t LAST_VALID_VALUE,
-                const AllowOneEmpty WILL_ALLOW_ONE_EMPTY_STRING,
-                const AllowLastDuplicate ALLOW_LAST_DUPLICATE)
-            {
-                static auto hasAlreadyTested{ false };
-
-                if (hasAlreadyTested)
-                {
-                    return true;
-                }
-
-                std::ostringstream errorSS;
-                errorSS << "misc::EnumTester<" << boost::typeindex::type_id<Enum_t>().pretty_name()
-                        << ">::ToString<" << boost::typeindex::type_id<Value_t>().pretty_name()
-                        << ">(last_valid_value=" << LAST_VALID_VALUE
-                        << ", allow_one_empty=" << std::boolalpha
-                        << bool(WILL_ALLOW_ONE_EMPTY_STRING)
-                        << ", allow_last_duplicate=" << bool(ALLOW_LAST_DUPLICATE) << ") ";
-
-                static auto hasLoggedBegin{ false };
-                if (false == hasLoggedBegin)
-                {
-                    errorSS << "Starting...";
-                    TestReporter::Log(errorSS.str());
-                    hasLoggedBegin = true;
-                    return false;
-                }
-
-                static auto hasZeroBeenChecked{ false };
-                if (false == hasZeroBeenChecked)
-                {
-                    hasZeroBeenChecked = true;
-
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        (LAST_VALID_VALUE > 0),
-                        errorSS.str()
-                            << "was given a last_valid_value that was not greater than zero.");
-
-                    return false;
-                }
-
-                static Value_t LOG_AFTER_COUNT{ 100000 };
-                static Value_t flagValue{ 0 };
-
-                // this is used to verify ToString() returns a unique string for each unique enum
-                static std::vector<std::string> alreadyGeneratedStrings;
-                if (alreadyGeneratedStrings.capacity() < static_cast<std::size_t>(LAST_VALID_VALUE))
-                {
-                    alreadyGeneratedStrings.reserve(static_cast<std::size_t>(LAST_VALID_VALUE));
-                }
-
-                try
-                {
-                    while (flagValue <= LAST_VALID_VALUE)
-                    {
-                        auto const FLAG_VALUE_TO_TEST_AND_REPORT{ flagValue++ };
-
-                        auto const STRING{ Enum_t::ToString(
-                            static_cast<typename Enum_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
-
-                        if (WILL_ALLOW_ONE_EMPTY_STRING == AllowOneEmpty::No)
-                        {
-                            M_ASSERT_OR_LOGANDTHROW_SS(
-                                (STRING.empty() == false),
-                                errorSS.str() << "ToString() returned an empty string on value "
-                                              << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
-                        }
-
-                        if ((FLAG_VALUE_TO_TEST_AND_REPORT != LAST_VALID_VALUE)
-                            || (ALLOW_LAST_DUPLICATE == AllowLastDuplicate::No))
-                        {
-                            auto const WAS_STRING_ALREADY_GENERATED{
-                                std::find(
-                                    std::begin(alreadyGeneratedStrings),
-                                    std::end(alreadyGeneratedStrings),
-                                    STRING)
-                                != std::end(alreadyGeneratedStrings)
-                            };
-
-                            M_ASSERT_OR_LOGANDTHROW_SS(
-                                (WAS_STRING_ALREADY_GENERATED == false),
-                                errorSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\""
-                                              << STRING << "\" was already generated.");
-                        }
-
-                        if ((FLAG_VALUE_TO_TEST_AND_REPORT % LOG_AFTER_COUNT) == 0)
-                        {
-                            std::ostringstream statusSS;
-
-                            statusSS << "EnumTester<"
-                                     << boost::typeindex::type_id<Enum_t>().pretty_name()
-                                     << ">::ToString() " << std::setprecision(3)
-                                     << 100.0
-                                    * (static_cast<double>(FLAG_VALUE_TO_TEST_AND_REPORT)
-                                       / static_cast<double>(LAST_VALID_VALUE))
-                                     << "%";
-
-                            TestReporter::Log(statusSS.str());
-                            return false;
-                        }
-                    }
-                }
-                catch (const std::exception & EXCEPTION)
-                {
-                    --flagValue;
-
-                    M_HP_LOG_ERR(
-                        errorSS.str() << "threw exception \"" << EXCEPTION.what()
-                                      << "\" on value=" << flagValue << ".");
-
-                    throw;
-                }
-
-                static auto hasLoggedEnd{ false };
-                if (false == hasLoggedEnd)
-                {
-                    errorSS << "Done testing all " << flagValue << " values.";
-                    TestReporter::Log(errorSS.str());
-                    hasLoggedEnd = true;
-                }
-
-                hasAlreadyTested = true;
-                return true;
-            }
-        };
-
-    } // namespace enum_util
 } // namespace misc
 } // namespace heroespath
 

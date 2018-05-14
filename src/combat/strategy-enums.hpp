@@ -27,7 +27,9 @@
 //
 //  strategy-enums.hpp
 //
+#include "misc/enum-util.hpp"
 #include "misc/vector-map.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -37,9 +39,9 @@ namespace combat
     namespace strategy
     {
 
-        struct SelectType
+        struct SelectType : public misc::EnumBaseBitField<SelectType>
         {
-            enum Enum : unsigned int
+            enum Enum : misc::EnumUnderlying_t
             {
                 None = 0,
                 Pixie = 1 << 0,
@@ -62,15 +64,18 @@ namespace combat
                 CantFly = 1 << 17,
                 Beast = 1 << 18,
                 NotBeast = 1 << 19,
+                Last = NotBeast
             };
 
-            static const std::string ToString(const Enum, const bool WILL_WRAP = false);
-            static Enum FromString(const std::string &);
+            static void ToStringPopulate(
+                std::ostringstream & ss,
+                const misc::EnumUnderlying_t ENUM_VALUE,
+                const std::string & SEPARATOR = ", ");
         };
 
-        struct RefineType
+        struct RefineType : public misc::EnumBaseBitField<RefineType>
         {
-            enum Enum : unsigned int
+            enum Enum : misc::EnumUnderlying_t
             {
                 None = 0,
                 Murderer = 1 << 0, // selects whoever is unconcious
@@ -85,16 +90,20 @@ namespace combat
                 Steadfast = 1 << 9, // won't change selected target until they die
                 LastTo = 1 << 10, // will change selection/target to whoever last triggers the
                                   // refinement type
-                MostDamage = 1 << 11 // selects whoever is doing the most damage
+                MostDamage = 1 << 11, // selects whoever is doing the most damage
+
+                Last = MostDamage
             };
 
-            static const std::string ToString(const Enum, const bool WILL_WRAP = false);
-            static Enum FromString(const std::string &);
+            static void ToStringPopulate(
+                std::ostringstream & ss,
+                const misc::EnumUnderlying_t ENUM_VALUE,
+                const std::string & SEPARATOR = ", ");
         };
 
-        struct AdvanceType
+        struct AdvanceType : public misc::EnumBaseCounting<AdvanceType, misc::EnumFirstValueNone>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 None = 0, // advances toward most desired target but stops whenever able to attack
                 Cowardly, // Never advances
@@ -104,12 +113,11 @@ namespace combat
             };
 
             static const std::string ToString(const Enum);
-            static Enum FromString(const std::string &);
         };
 
-        struct RetreatType
+        struct RetreatType : public misc::EnumBaseCounting<RetreatType, misc::EnumFirstValueNone>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 None = 0, // never retreats
                 Wary, // retreats if melee is outnumbered
@@ -118,12 +126,12 @@ namespace combat
             };
 
             static const std::string ToString(const Enum);
-            static Enum FromString(const std::string &);
         };
 
         struct FrequencyType
+            : public misc::EnumBaseCounting<FrequencyType, misc::EnumFirstValueNever>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Never = 0,
                 Once,
@@ -139,7 +147,6 @@ namespace combat
             };
 
             static const std::string ToString(const Enum);
-            static Enum FromString(const std::string &);
         };
 
         using SelectChanceMap_t = misc::VectorMap<SelectType::Enum, float>;

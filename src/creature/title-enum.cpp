@@ -32,9 +32,7 @@
 #include "creature/title-holder.hpp"
 #include "creature/title.hpp"
 #include "game/game-data-file.hpp"
-
-#include <exception>
-#include <sstream>
+#include "misc/boost-string-includes.hpp"
 
 namespace heroespath
 {
@@ -688,9 +686,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::Titles::Enum::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -1342,9 +1338,7 @@ namespace creature
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::Titles::Enum::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Name");
             }
         }
     }
@@ -1360,5 +1354,6 @@ namespace creature
     {
         return title::Holder::Get(E)->ImageFilename();
     }
+
 } // namespace creature
 } // namespace heroespath

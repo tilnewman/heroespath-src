@@ -27,6 +27,8 @@
 //
 // trait-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -37,9 +39,9 @@ namespace stats
 {
 
     // Defines one effect an Enchantment can have.
-    struct Traits
+    struct Traits : public misc::EnumBaseCounting<Traits, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             // Keep stats starting at zero and in order.
             Strength = 0,

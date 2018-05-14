@@ -29,9 +29,8 @@
 //
 #include "statement.hpp"
 #include "creature/creature.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "player/party.hpp"
-
-#include <boost/algorithm/string.hpp>
 
 namespace heroespath
 {

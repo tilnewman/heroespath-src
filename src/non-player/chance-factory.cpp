@@ -915,7 +915,7 @@ namespace non_player
                         break;
                     }
                     case item::armor_type::Skin:
-                    case item::armor_type::NotArmor:
+                    case item::armor_type::Not:
                     case item::armor_type::Count:
                     default:
                     {
@@ -1713,7 +1713,7 @@ namespace non_player
         {
             roleArmorChanceMap_.Clear();
 
-            for (int i(0); i < creature::role::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
                 auto const ROLE{ static_cast<creature::role::Enum>(i) };
 
@@ -1776,14 +1776,15 @@ namespace non_player
 
                     using namespace item::armor;
 
+                    base_type::Enum baseType{ base_type::Count };
                     auto const HAS_BASE_TYPE_STR{ piecesVec.size() > 2 };
-                    auto const BASE_TYPE_STR{ piecesVec[1] };
-                    auto const BASE_TYPE_ENUM{ base_type::FromString(BASE_TYPE_STR) };
 
                     if (HAS_BASE_TYPE_STR)
                     {
+                        baseType = base_type::FromString(piecesVec[1]);
+
                         M_ASSERT_OR_LOGANDTHROW_SS(
-                            (BASE_TYPE_ENUM != base_type::Count),
+                            (baseType != base_type::Count),
                             "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
@@ -1792,7 +1793,7 @@ namespace non_player
                                 << "to be parsed as a valid item::armor::base_type::Enum.");
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
-                            (BASE_TYPE_ENUM != base_type::Plain),
+                            (baseType != base_type::Plain),
                             "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
@@ -1803,7 +1804,7 @@ namespace non_player
                     }
 
                     const item::armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER(
-                        ARMOR_NAME_STR, base_type::Count, true);
+                        ARMOR_NAME_STR, baseType, true);
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (ARMOR_TYPE_WRAPPER.IsTypeValid()),
@@ -1823,7 +1824,7 @@ namespace non_player
         {
             roleWeaponChanceMap_.Clear();
 
-            for (int i(0); i < creature::role::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
                 auto const ROLE{ static_cast<creature::role::Enum>(i) };
                 roleWeaponChanceMap_[ROLE] = GetRoleWeaponChances(ROLE);

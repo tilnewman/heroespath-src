@@ -48,7 +48,7 @@
 #include "stage/testing-stage.hpp"
 #include "stage/treasure-stage.hpp"
 
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp>
 
 #include <memory>
 #include <string>

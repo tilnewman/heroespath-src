@@ -36,7 +36,7 @@
 #include "game/loop-manager.hpp"
 #include "stats/stat-set.hpp"
 
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp>
 
 #include <list>
 #include <memory>
@@ -98,6 +98,7 @@ namespace stage
         bool TestAnimations();
         bool TestInventoryFactory();
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
+        bool PerformEnumTests();
 
         // see comment in .cpp file
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;

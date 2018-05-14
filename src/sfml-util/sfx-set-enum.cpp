@@ -29,9 +29,6 @@
 //
 #include "sfx-set-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace sfml_util
@@ -164,11 +161,10 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::sound_effect_set::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
+
 } // namespace sfml_util
 } // namespace heroespath

@@ -31,6 +31,7 @@
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
 
 #include <boost/filesystem.hpp>

@@ -29,6 +29,8 @@
 //  An enumeration defining each Role of creature, both player and non_player.
 //
 #include "combat/blocking-pos-type-enum.hpp"
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -37,11 +39,11 @@ namespace heroespath
 namespace creature
 {
 
-    struct role
+    struct role : public misc::EnumBaseCounting<role, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
-            Archer,
+            Archer = 0,
             Bard,
             Beastmaster,
             Cleric,
@@ -94,7 +96,6 @@ namespace creature
         };
 
         static const std::string ToString(const role::Enum);
-        static const std::string Name(const role::Enum E) { return ToString(E); }
         static const std::string Desc(const role::Enum);
         static const std::string Abbr(const role::Enum);
         static bool CanFly(const role::Enum);
@@ -104,6 +105,7 @@ namespace creature
     };
 
     using RoleVec_t = std::vector<role::Enum>;
+
 } // namespace creature
 } // namespace heroespath
 

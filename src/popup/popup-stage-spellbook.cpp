@@ -505,7 +505,7 @@ namespace popup
         ss << "Mana Cost: " << SPELL_PTR->ManaCost() << "\n"
            << "Rank: " << SPELL_PTR->Rank() << "\n"
            << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
-           << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases(), false) << "\n";
+           << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << "\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
             ss.str(),
@@ -572,8 +572,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SPELL_PTR->ValidPhases(), false)
-                   << ".";
+                ss << "Only during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << ".";
             }
         }
 

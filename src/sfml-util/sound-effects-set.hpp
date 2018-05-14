@@ -67,6 +67,7 @@ namespace sfml_util
     };
 
     using SfxSetVec_t = std::vector<SfxSet>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

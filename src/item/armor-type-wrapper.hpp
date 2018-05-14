@@ -87,7 +87,7 @@ namespace item
 
             const std::string ToString() const;
 
-            bool IsTypeValid() const { return (armor_type::NotArmor != type_); }
+            bool IsTypeValid() const { return (armor_type::Not != type_); }
 
             const ElementEnumVec_t
                 ElementTypesWithGivenBaseType(const base_type::Enum BASE_TYPE) const
@@ -179,7 +179,7 @@ namespace item
             template <typename T>
             static void MakeSpecificSetWithoutBaseType(std::vector<ArmorTypeWrapper> & wrappers)
             {
-                for (int i(0); i < T::Count; ++i)
+                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     auto const SPECIFIC_ARMOR_ENUM{ static_cast<typename T::Enum>(i) };
                     wrappers.emplace_back(ArmorTypeWrapper(SPECIFIC_ARMOR_ENUM));
@@ -210,7 +210,7 @@ namespace item
             {
                 auto const SYSTEM_NAME_LOWERCASE{ boost::algorithm::to_lower_copy(SYSTEM_NAME) };
 
-                for (int i(0); i < T::Count; ++i)
+                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     auto const SPECIFIC_TYPE_ENUM{ static_cast<typename T::Enum>(i) };
 

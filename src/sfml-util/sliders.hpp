@@ -42,7 +42,7 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp>
 
 #include <type_traits>
 

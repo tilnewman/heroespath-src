@@ -28,6 +28,8 @@
 // armor-types.hpp
 //  A set of enumerations that define a piece of armor.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -37,9 +39,9 @@ namespace item
     namespace armor
     {
 
-        struct shield_type
+        struct shield_type : public misc::EnumBaseCounting<shield_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Buckler = 0,
                 Kite,
@@ -49,12 +51,11 @@ namespace item
             };
 
             static const std::string ToString(const shield_type::Enum);
-            static shield_type::Enum FromString(const std::string &);
         };
 
-        struct helm_type
+        struct helm_type : public misc::EnumBaseCounting<helm_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Leather = 0,
                 MailCoif,
@@ -67,12 +68,11 @@ namespace item
 
             static const std::string ToString(const helm_type::Enum);
             static const std::string Name(const helm_type::Enum E);
-            static helm_type::Enum FromString(const std::string &);
         };
 
-        struct base_type
+        struct base_type : public misc::EnumBaseCounting<base_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Plain = 0,
                 Mail,
@@ -82,12 +82,15 @@ namespace item
             };
 
             static const std::string ToString(const base_type::Enum);
-            static base_type::Enum FromString(const std::string &);
+            static Enum FromString(const std::string & S)
+            {
+                return static_cast<Enum>(EnumBaseCounting::FromString(S));
+            }
         };
 
-        struct cover_type
+        struct cover_type : public misc::EnumBaseCounting<cover_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Cape = 0,
                 Vest,
@@ -97,7 +100,6 @@ namespace item
             };
 
             static const std::string ToString(const cover_type::Enum);
-            static cover_type::Enum FromString(const std::string &);
         };
 
     } // namespace armor

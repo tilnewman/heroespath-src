@@ -179,8 +179,8 @@ namespace player
                 daggerProfile.SetKnife(
                     material::Steel,
                     material::Wood,
-                    named_type::NotNamed,
-                    set_type::NotASet,
+                    named_type::Not,
+                    set_type::Not,
                     element_type::None,
                     CREATURE_PTR->IsPixie());
 
@@ -374,8 +374,8 @@ namespace player
             armor::base_type::Plain,
             material::Leather,
             material::Tin,
-            named_type::NotNamed,
-            set_type::NotASet,
+            named_type::Not,
+            set_type::Not,
             element_type::None,
             IS_PIXIE);
 
@@ -392,8 +392,8 @@ namespace player
             armor::base_type::Plain,
             material::Leather,
             material::Tin,
-            named_type::NotNamed,
-            set_type::NotASet,
+            named_type::Not,
+            set_type::Not,
             element_type::None,
             IS_PIXIE);
 
@@ -410,8 +410,8 @@ namespace player
             armor::base_type::Plain,
             material::Leather,
             material::Tin,
-            named_type::NotNamed,
-            set_type::NotASet,
+            named_type::Not,
+            set_type::Not,
             element_type::None,
             IS_PIXIE);
 

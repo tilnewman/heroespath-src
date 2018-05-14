@@ -28,15 +28,13 @@
 // logbase.cpp
 //
 #include "logbase.hpp"
-//
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <exception>
 #include <iostream>
-#include <sstream>
-#include <string>
-
-namespace bfs = boost::filesystem;
 
 namespace heroespath
 {
@@ -59,7 +57,8 @@ namespace log
         const LogPri::Enum consoleEchoPri)
         : FILE_NAME_((fileName.empty() == true) ? FILE_NAME_DEFAULT : fileName)
         , FILE_NAME_EXT_(fileNameExt)
-        , FILE_PATH_(bfs::current_path() / bfs::path(std::string(filePath)))
+        , FILE_PATH_(
+              boost::filesystem::current_path() / boost::filesystem::path(std::string(filePath)))
         , FILE_NUM_MAX_((fileCountMax < FILE_NUM_MIN) ? FILE_NUM_MIN : fileCountMax)
         , FILE_SIZE_LIMIT_BYTES_(fileSizeMaxBytes)
         , CONSOLE_ECHO_PRIORITY_(consoleEchoPri)
@@ -78,8 +77,7 @@ namespace log
             LogBase::OnFileClose(false);
         }
         catch (...)
-        {
-        }
+        {}
     }
 
     void LogBase::Log(const std::string & MSG) { FlushWrapper(MSG); }
@@ -116,6 +114,8 @@ namespace log
     {
         std::ostringstream fileNameStream;
         AppendFileName(fileNameStream);
+
+        namespace bfs = boost::filesystem;
 
         auto const FULL_PATH{ bfs::system_complete(bfs::path(FILE_PATH_ / fileNameStream.str())) };
 
@@ -256,6 +256,8 @@ namespace log
 
     void LogBase::OpenNextFile()
     {
+        namespace bfs = boost::filesystem;
+
         // close if needed
         if (true == fileStream_.is_open())
         {
@@ -379,7 +381,7 @@ namespace log
             std::string fileNameOnly("");
 
             if (false == isDestructing_)
-                fileNameOnly = bfs::path(FILE).filename().string();
+                fileNameOnly = boost::filesystem::path(FILE).filename().string();
 
             if (fileNameOnly.empty())
             {

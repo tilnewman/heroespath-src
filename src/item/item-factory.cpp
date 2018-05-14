@@ -544,7 +544,7 @@ namespace item
         // all items must be weapon, armor, or misc
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor()
-             || (ITEM_PTR->MiscType() != misc_type::NotMisc)),
+             || (ITEM_PTR->MiscType() != misc_type::Not)),
             makeErrorReportPrefix()
                 << "the item was not a weapon, armor, or misc_type.  All items must be one of "
                    "these three.");
@@ -679,8 +679,8 @@ namespace item
             (ITEM_PROFILE.WeaponType() == ITEM_PTR->WeaponType()),
             makeErrorReportPrefix()
                 << " weapon_types did not match.  profile="
-                << weapon_type::ToString(ITEM_PROFILE.WeaponType(), true)
-                << " but item=" << weapon_type::ToString(ITEM_PTR->WeaponType(), true) << ".");
+                << weapon_type::ToString(ITEM_PROFILE.WeaponType(), misc::Wrap::Yes) << " but item="
+                << weapon_type::ToString(ITEM_PTR->WeaponType(), misc::Wrap::Yes) << ".");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),

@@ -102,9 +102,8 @@ namespace song
             ss << "drum beat";
         }
 
-        ss << " that can be played during " << game::Phase::ToString(validPhases_, false)
-           << ", targeting " << combat::TargetType::Name(targetType_) << ", and costing "
-           << manaCost_ << " mana.";
+        ss << " that can be played during " << game::Phase::ToString(validPhases_) << ", targeting "
+           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
 
         return ss.str();
     }

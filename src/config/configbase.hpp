@@ -34,34 +34,9 @@
 //
 #include "iconfig.hpp"
 
-// prevent warnings that can be ignored
-#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
-#pragma warning(push)
-#pragma warning(disable : 4244 4512)
-#elif defined(__APPLE__) || defined(__MACH__)
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#pragma GCC diagnostic ignored "-Wnested-anon-types"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wundef"
-#endif
-
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/thread/recursive_mutex.hpp>
-#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
-#pragma warning(pop)
-#elif defined(__APPLE__) || defined(__MACH__)
-#pragma GCC diagnostic warning "-Wswitch-enum"
-#pragma GCC diagnostic warning "-Wnested-anon-types"
-#pragma GCC diagnostic warning "-Wunused-parameter"
-#pragma GCC diagnostic warning "-Wshadow"
-#pragma GCC diagnostic warning "-Wundef"
-#endif
+#include <boost/type_index.hpp>
 
 #include <exception>
 #include <map>
@@ -291,7 +266,6 @@ namespace config
         static const std::string COMMENT_STR_DEFAULT_;
 
     private:
-        mutable boost::recursive_mutex dataAccessMutex_;
         std::string filePathStr_;
         std::string sepStr_;
         std::string commentStr_;

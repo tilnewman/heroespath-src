@@ -27,6 +27,8 @@
 //
 // target-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,9 +36,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct TargetType
+    struct TargetType : public misc::EnumBaseCounting<TargetType, misc::EnumFirstValueNone>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             SingleOpponent,
@@ -52,6 +54,7 @@ namespace combat
         static const std::string Name(const Enum);
         static const std::string ActionPhrase(const Enum);
     };
+
 } // namespace combat
 } // namespace heroespath
 

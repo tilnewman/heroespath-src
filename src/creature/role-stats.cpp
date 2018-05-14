@@ -43,7 +43,7 @@ namespace creature
     {
         if (roleStatSetMap_.Empty())
         {
-            for (int i(0); i < role::PlayerRoleCount; ++i)
+            for (misc::EnumUnderlying_t i(0); i < role::PlayerRoleCount; ++i)
             {
                 auto const NEXT_ENUM{ static_cast<role::Enum>(i) };
                 auto const NEXT_ENUM_STR{ role::ToString(NEXT_ENUM) };

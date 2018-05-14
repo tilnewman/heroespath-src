@@ -105,7 +105,8 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "LoopManager::Initialize() found instanceUPtr that was null.");
 
-        auto const STARTUP_STAGE_ENUM{ sfml_util::LoopState::FromString(startupStageName_) };
+        auto const STARTUP_STAGE_ENUM{ static_cast<sfml_util::LoopState::Enum>(
+            sfml_util::LoopState::FromString(startupStageName_)) };
 
         if (STARTUP_STAGE_ENUM != sfml_util::LoopState::Intro)
         {

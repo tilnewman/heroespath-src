@@ -60,7 +60,7 @@ namespace creature
     public:
         explicit UseInfo(
             const int COUNT = 0, // negative means infinite
-            const game::Phase::Enum PHASE_RESTRICT = game::Phase::NotAPhase,
+            const game::Phase::Enum PHASE_RESTRICT = game::Phase::None,
             const spell::Spells::Enum SPELL = spell::Spells::Count,
             const CondEnumVec_t & CONDS_REMOVED_VEC = CondEnumVec_t())
             : countOrig_(COUNT)

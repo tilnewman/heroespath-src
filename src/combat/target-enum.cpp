@@ -31,16 +31,14 @@
 
 #include "misc/random.hpp"
 
-#include <sstream>
-
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string TargetType::ToString(const Enum E)
+    const std::string TargetType::ToString(const Enum TARGET_TYPE)
     {
-        switch (E)
+        switch (TARGET_TYPE)
         {
             case None:
             {
@@ -73,16 +71,14 @@ namespace combat
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "TargetType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(TARGET_TYPE, "ToString");
             }
         }
     }
 
-    const std::string TargetType::Name(const Enum E)
+    const std::string TargetType::Name(const Enum TARGET_TYPE)
     {
-        switch (E)
+        switch (TARGET_TYPE)
         {
             case None:
             {
@@ -115,44 +111,36 @@ namespace combat
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "TargetType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(TARGET_TYPE, "Name");
             }
         }
     }
 
-    const std::string TargetType::ActionPhrase(const Enum E)
+    const std::string TargetType::ActionPhrase(const Enum TARGET_TYPE)
     {
-        auto const PREAMBLE{ ((misc::random::Bool()) ? "at " : "upon ") };
+        const std::string PREAMBLE{ ((misc::random::Bool()) ? "at " : "upon ") };
 
-        std::ostringstream ss;
-        switch (E)
+        switch (TARGET_TYPE)
         {
             case SingleOpponent:
             {
-                ss << "a single opponent";
-                break;
+                return PREAMBLE + "a single opponent";
             }
             case AllOpponents:
             {
-                ss << "all opponent";
-                break;
+                return PREAMBLE + "all opponent";
             }
             case SingleCompanion:
             {
-                ss << "a single companion";
-                break;
+                return PREAMBLE + "a single companion";
             }
             case AllCompanions:
             {
-                ss << "all companion";
-                break;
+                return PREAMBLE + "all companion";
             }
             case Item:
             {
-                ss << "an item";
-                break;
+                return PREAMBLE + "an item";
             }
             case QuestSpecific:
             case None:
@@ -162,8 +150,7 @@ namespace combat
                 return "";
             }
         }
-
-        return PREAMBLE + ss.str();
     }
+
 } // namespace combat
 } // namespace heroespath

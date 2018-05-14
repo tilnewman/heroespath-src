@@ -28,8 +28,7 @@
 // configbase.cpp
 //
 #include "configbase.hpp"
-
-#include <boost/algorithm/algorithm.hpp>
+#include "misc/boost-string-includes.hpp"
 
 #include <exception>
 #include <fstream>
@@ -52,8 +51,7 @@ namespace config
         const std::string & FILE_PATH_STR,
         const std::string & SEP_STR,
         const std::string & COMMENT_STR)
-        : dataAccessMutex_()
-        , filePathStr_((FILE_PATH_STR.empty()) ? FILE_PATH_DEFAULT_ : FILE_PATH_STR)
+        : filePathStr_((FILE_PATH_STR.empty()) ? FILE_PATH_DEFAULT_ : FILE_PATH_STR)
         , sepStr_((SEP_STR.empty()) ? SEP_STR_DEFAULT_ : SEP_STR)
         , commentStr_((COMMENT_STR.empty()) ? COMMENT_STR_DEFAULT_ : COMMENT_STR)
         , data_()
@@ -61,8 +59,6 @@ namespace config
 
     bool ConfigBase::Load()
     {
-        boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
-
         namespace bfs = boost::filesystem;
 
         const bfs::path PATH(GetFullPath(filePathStr_));
@@ -134,8 +130,6 @@ namespace config
 
     bool ConfigBase::Save(const std::string & FILENAME) const
     {
-        boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
-
         namespace bfs = boost::filesystem;
 
         // use the given FILENAME unless it is empty
@@ -216,8 +210,6 @@ namespace config
 
     void ConfigBase::GetStr(std::string & val, const std::string & KEY) const
     {
-        boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
-
         const ConfigMap::const_iterator ITER(data_.find(KEY));
         if (ITER == data_.end())
         {
@@ -233,7 +225,6 @@ namespace config
 
     void ConfigBase::SetStr(const std::string & KEY, const std::string & VALUE)
     {
-        boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
         data_[KEY] = VALUE;
     }
 

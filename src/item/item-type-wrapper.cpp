@@ -38,9 +38,9 @@ namespace item
 
     TypeWrapper::TypeWrapper()
         : element(element_type::None)
-        , name(named_type::NotNamed)
-        , set(set_type::NotASet)
-        , misc(misc_type::NotMisc)
+        , name(named_type::Not)
+        , set(set_type::Not)
+        , misc(misc_type::Not)
         , roleRestriction(creature::role::Count)
         , summon()
     {}

@@ -29,66 +29,52 @@
 //
 #include "enchantment-type.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace creature
 {
-
-    const std::string EnchantmentType::ToString(const Enum E)
+    void EnchantmentType::ToStringPopulate(
+        std::ostringstream & ss,
+        const misc::EnumUnderlying_t ENUM_VALUE,
+        const std::string & SEPARATOR)
     {
-        std::ostringstream ss;
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, EnchantmentType::WhenUsed, "when used:", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, EnchantmentType::WhenHeld, "when held:", SEPARATOR);
 
-        if (E == None)
-        {
-            return "";
-        }
-        else
-        {
-            if (E & WhenUsed)
-            {
-                ss << "when used:";
-            }
-            else if (E & WhenHeld)
-            {
-                ss << "when held:";
-            }
-            else if (E & WhenEquipped)
-            {
-                ss << "when equipped:";
-            }
+        AppendNameIfBitIsSet(
+            ss, ENUM_VALUE, EnchantmentType::WhenEquipped, "when equipped:", SEPARATOR);
 
-            // intentionally no text for "ChangesCreature"
-            // " " for "RemoveAfterUse"
+        AppendNameIfBitIsSet(
+            ss, ENUM_VALUE, EnchantmentType::RemoveAfterUse, "RemoveAfterUse", SEPARATOR);
 
-            if (E & AllowsFlight)
-            {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows flying";
-            }
+        AppendNameIfBitIsSet(
+            ss, ENUM_VALUE, EnchantmentType::BoundToNothing, "item not required", SEPARATOR);
 
-            if (E & CurseWithoutItem)
-            {
-                ss << ((ss.str().empty()) ? "" : "  ")
-                   << "allows casting curse without a cursed item";
-            }
+        AppendNameIfBitIsSet(
+            ss, ENUM_VALUE, EnchantmentType::BoundToItem, "bound to the item", SEPARATOR);
 
-            if (E & BlessWithoutItem)
-            {
-                ss << ((ss.str().empty()) ? "" : "  ")
-                   << "allows casting bless without a blessed item";
-            }
-        }
+        AppendNameIfBitIsSet(
+            ss, ENUM_VALUE, EnchantmentType::AllowsFlight, "allows flying", SEPARATOR);
 
-        if (ss.str().empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::EnchantmentType::ToString(" << E << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        return ss.str();
+        AppendNameIfBitIsSet(
+            ss,
+            ENUM_VALUE,
+            EnchantmentType::CurseWithoutItem,
+            "allows casting curse without a cursed item",
+            SEPARATOR);
+        AppendNameIfBitIsSet(
+            ss,
+            ENUM_VALUE,
+            EnchantmentType::BlessWithoutItem,
+            "allows casting bless without a blessed item",
+            SEPARATOR);
+        AppendNameIfBitIsSet(
+            ss,
+            ENUM_VALUE,
+            EnchantmentType::OnlyIfSetIsComplete,
+            "only if all items in the set are equipped",
+            SEPARATOR);
     }
+
 } // namespace creature
 } // namespace heroespath

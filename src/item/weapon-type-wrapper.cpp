@@ -52,7 +52,7 @@ namespace item
             , specificName_("")
             , systemName_(SYSTEM_NAME)
             , readableName_("")
-            , type_(weapon_type::NotAWeapon)
+            , type_(weapon_type::None)
             , isDagger_(false)
             , variant_()
             , elementTypes_()
@@ -304,7 +304,7 @@ namespace item
                 ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
             }
 
-            ss << "type=" << weapon_type::ToString(type_, true) << std::boolalpha << ", "
+            ss << "type=" << weapon_type::ToString(type_, misc::Wrap::Yes) << std::boolalpha << ", "
                << ((IsStaff()) ? "Staff," : "") << ((IsQuarterstaff()) ? "Quarterstaff," : "")
                << ((IsBodyPart()) ? (body_part::ToString(BodyPartType()) + ",") : "")
                << ((IsBite()) ? "Bite," : "") << ((IsFists()) ? "Fists," : "")
@@ -336,14 +336,8 @@ namespace item
 
                         auto const ELEMENT_TYPE{ elementTypes_.at(i) };
 
-                        if (ELEMENT_TYPE == element_type::None)
-                        {
-                            ss << "(None)";
-                        }
-                        else
-                        {
-                            ss << element_type::ToString(ELEMENT_TYPE, true, "&");
-                        }
+                        ss << element_type::ToString(
+                            ELEMENT_TYPE, misc::Wrap::Yes, misc::NoneEmpty::No, "&");
                     }
                 }
 
@@ -538,14 +532,14 @@ namespace item
                         }
                         case sword_type::Falcata:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Shadow);
 
                             break;
                         }
                         case sword_type::Rapier:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Fire | element_type::Shadow);
 
                             break;
@@ -562,28 +556,28 @@ namespace item
                         }
                         case sword_type::Longsword:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Fire);
 
                             break;
                         }
                         case sword_type::Knightlysword:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Honor);
 
                             break;
                         }
                         case sword_type::Flamberg:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Shadow);
 
                             break;
                         }
                         case sword_type::Claymore:
                         {
-                            elementTypes_ = element_type::AllCombinations();
+                            elementTypes_ = element_type::ValidCombinations();
                             break;
                         }
                         case sword_type::Shortsword:
@@ -708,21 +702,21 @@ namespace item
                     {
                         case club_type::Spiked:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Shadow);
 
                             break;
                         }
                         case club_type::Mace:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Honor);
 
                             break;
                         }
                         case club_type::Warhammer:
                         {
-                            elementTypes_ = element_type::AllCombinations();
+                            elementTypes_ = element_type::ValidCombinations();
                             break;
                         }
                         case club_type::Maul:
@@ -775,7 +769,7 @@ namespace item
                         case projectile_type::CompositeBow:
                         {
                             generalName_ = BOW_GENERAL_NAME_;
-                            elementTypes_ = element_type::AllCombinations();
+                            elementTypes_ = element_type::ValidCombinations();
                             break;
                         }
                         case projectile_type::Count:
@@ -803,17 +797,17 @@ namespace item
                         systemName_ = DAGGER_NAME_;
                         readableName_ = DAGGER_NAME_;
 
-                        elementTypes_ = element_type::AllCombinations(
+                        elementTypes_ = element_type::ValidCombinations(
                             element_type::Fire | element_type::Frost | element_type::Honor);
                     }
                     else
                     {
                         generalName_ = weapon_type::Name(type_);
                         specificName_ = generalName_;
-                        systemName_ = weapon_type::ToString(type_, false);
+                        systemName_ = weapon_type::ToString(type_);
                         readableName_ = generalName_;
 
-                        elementTypes_ = element_type::AllCombinations(
+                        elementTypes_ = element_type::ValidCombinations(
                             element_type::Fire | element_type::Frost | element_type::Shadow);
                     }
 
@@ -839,28 +833,28 @@ namespace item
                     {
                         case bladedstaff_type::Scythe:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Shadow);
 
                             break;
                         }
                         case bladedstaff_type::Pike:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Honor);
 
                             break;
                         }
                         case bladedstaff_type::Partisan:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Honor);
 
                             break;
                         }
                         case bladedstaff_type::Halberd:
                         {
-                            elementTypes_ = element_type::AllCombinations(
+                            elementTypes_ = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Frost | element_type::Honor);
 
                             break;
@@ -875,13 +869,13 @@ namespace item
                     }
 
                     auto const POINTED_TYPE{ (
-                        (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::NotAWeapon
+                        (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::None
                                                                        : weapon_type::Pointed) };
 
                     auto const BLADED_TYPE{ (
                         ((BLADEDSTAFF_TYPE == bladedstaff_type::Spear)
                          || (BLADEDSTAFF_TYPE == bladedstaff_type::ShortSpear))
-                            ? weapon_type::NotAWeapon
+                            ? weapon_type::None
                             : weapon_type::Bladed) };
 
                     type_ = static_cast<weapon_type::Enum>(
@@ -891,7 +885,7 @@ namespace item
                     break;
                 }
 
-                case weapon_type::NotAWeapon:
+                case weapon_type::None:
                 case weapon_type::Melee:
                 case weapon_type::Bladed:
                 case weapon_type::Pointed:
@@ -923,7 +917,7 @@ namespace item
                 return false;
             }
 
-            if (weapon_type::NotAWeapon == type_)
+            if (weapon_type::None == type_)
             {
                 return false;
             }

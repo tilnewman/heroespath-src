@@ -250,7 +250,7 @@ namespace stage
             (PACKAGE.Info().Name() == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
             && (PACKAGE.Response() != popup::ResponseTypes::Cancel))
         {
-            auto const SELECTED_NUM{ static_cast<int>(PACKAGE.Selection()) };
+            auto const SELECTED_NUM{ static_cast<misc::EnumUnderlying_t>(PACKAGE.Selection()) };
             auto const ANIM_NUM{ avatar::Avatar::Player_First + SELECTED_NUM };
             auto const ANIM_ENUM{ static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
             if (avatar::Avatar::IsPlayer(ANIM_ENUM))
@@ -910,7 +910,10 @@ namespace stage
     void PartyStage::PartyAvatarSelectionPopup()
     {
         sfml_util::TextureVec_t partyTextureVec;
-        for (int i(avatar::Avatar::Player_First); i <= avatar::Avatar::Player_Last; ++i)
+
+        for (misc::EnumUnderlying_t i(avatar::Avatar::Player_First);
+             i <= avatar::Avatar::Player_Last;
+             ++i)
         {
             partyTextureVec.emplace_back(sf::Texture());
             auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(i) };

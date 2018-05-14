@@ -64,31 +64,9 @@
 #include <set>
 #include <string>
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4512)
-#pragma warning(disable : 4701)
-#pragma warning(disable : 4127)
-#endif
-
-// suppress warnings that are safe to ignore in boost
-#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
-#pragma GCC diagnostic ignored "-Wundef"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif
-
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
-
-#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
-#pragma GCC diagnostic warning "-Wundef"
-#pragma GCC diagnostic warning "-Wswitch-enum"
-#endif
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace appbase
 {

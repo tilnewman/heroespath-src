@@ -31,6 +31,8 @@
 
 #include "avatar/avatar-enum.hpp"
 #include "avatar/i-view.hpp"
+#include "combat/strategy-enums.hpp"
+#include "combat/target-enum.hpp"
 #include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
@@ -51,6 +53,7 @@
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui-event-enum.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -59,7 +62,9 @@
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
+#include "sfml-util/side-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
@@ -354,6 +359,13 @@ if (false == willImageCheck_)
         if (false == hasTestingCompleted_GameDataFile)
         {
             hasTestingCompleted_GameDataFile = PerformGameDataFileTests();
+            return;
+        }
+
+        static auto hasTestingCompleted_Enums{ false };
+        if (false == hasTestingCompleted_Enums)
+        {
+            hasTestingCompleted_Enums = PerformEnumTests();
             return;
         }
 
@@ -672,7 +684,7 @@ if (false == willImageCheck_)
 
         auto isMismatchCurrent{ false };
         auto isMismatchNormal{ false };
-        for (int i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_ENUM{ static_cast<stats::Traits::Enum>(i) };
 
@@ -858,7 +870,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        static auto imageIndex{ 0 };
+        static misc::EnumUnderlying_t imageIndex{ 0 };
         if (imageIndex < avatar::Avatar::Count)
         {
             auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(imageIndex) };
@@ -937,7 +949,7 @@ if (false == willImageCheck_)
         static auto hasFirstPassLoad{ false };
         if (false == hasFirstPassLoad)
         {
-            static auto mapIndex{ 0 };
+            static misc::EnumUnderlying_t mapIndex{ 0 };
             if (mapIndex < map::Level::Count)
             {
                 auto const WHICH_LEVEL{ static_cast<map::Level::Enum>(mapIndex) };
@@ -1138,8 +1150,8 @@ if (false == willImageCheck_)
             return false;
         }
 
-        static auto raceIndex{ 0 };
-        static auto roleIndex{ 0 };
+        static misc::EnumUnderlying_t raceIndex{ 0 };
+        static misc::EnumUnderlying_t roleIndex{ 0 };
 
         if (raceIndex < static_cast<int>(creature::race::Count))
         {
@@ -1147,7 +1159,7 @@ if (false == willImageCheck_)
             auto const RACE_STR{ creature::race::ToString(RACE_ENUM) };
             auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
 
-            if (roleIndex < static_cast<int>(ROLE_VEC.size()))
+            if (roleIndex < static_cast<misc::EnumUnderlying_t>(ROLE_VEC.size()))
             {
                 auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                 auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
@@ -1425,5 +1437,64 @@ if (false == willImageCheck_)
         exit(1);
     }
     */
+
+    bool TestingStage::PerformEnumTests()
+    {
+        item::category::Test();
+        item::material::Test();
+        item::element_type::Test();
+        item::misc_type::Test();
+        item::set_type::Test();
+        item::named_type::Test();
+        item::weapon_type::Test();
+        item::armor_type::Test();
+        item::body_part::Test();
+        item::name_material_type::Test();
+        item::armor::shield_type::Test();
+        item::armor::helm_type::Test();
+        item::armor::base_type::Test();
+        item::armor::cover_type::Test();
+        item::weapon::sword_type::Test();
+        item::weapon::axe_type::Test();
+        item::weapon::club_type::Test();
+        item::weapon::whip_type::Test();
+        item::weapon::projectile_type::Test();
+        item::weapon::bladedstaff_type::Test();
+        map::Level::Test();
+        map::LevelType::Test();
+        creature::origin_type::Test();
+        creature::race::Test();
+        creature::role::Test();
+        creature::EnchantmentType::Test();
+        creature::AchievementType::Test();
+        creature::Conditions::Test();
+        creature::Titles::Test();
+        stats::Traits::Test();
+        // combat::strategy::SelectType::Test(); //bah, this takes too long...
+        combat::strategy::RefineType::Test();
+        combat::strategy::AdvanceType::Test();
+        combat::strategy::RetreatType::Test();
+        combat::strategy::FrequencyType::Test();
+        combat::TargetType::Test();
+        game::Phase::Test();
+        non_player::ownership::wealth_type::Test();
+        non_player::ownership::collector_type::Test();
+        non_player::ownership::owns_magic_type::Test();
+        non_player::ownership::complexity_type::Test();
+        popup::ResponseTypes::Test();
+        sfml_util::Corner::Test();
+        sfml_util::GuiEvent::Test();
+        sfml_util::Side::Test();
+        sfml_util::Animations::Test();
+        sfml_util::LoopState::TestHelper();
+        sfml_util::Footstep::Test();
+        sfml_util::music::Test();
+        sfml_util::sound_effect::Test();
+        sfml_util::sound_effect_set::Test();
+        avatar::Avatar::Test();
+        spell::Spells::Test();
+        return true;
+    }
+
 } // namespace stage
 } // namespace heroespath

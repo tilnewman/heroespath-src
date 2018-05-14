@@ -66,7 +66,7 @@ namespace item
 
         bool DoesBelongToASet() const
         {
-            return ((set_type::Count != set) && (set_type::NotASet != set));
+            return ((set_type::Count != set) && (set_type::Not != set));
         }
 
         bool DoesSetMatch(const ItemProfile & ITEM_PROFILE) const

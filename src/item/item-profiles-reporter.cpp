@@ -437,7 +437,11 @@ namespace item
                         std::end(elementTypeScoreVecPair.second));
 
                     ss << "\n\t" << std::setw(20)
-                       << element_type::ToString(elementTypeScoreVecPair.first, true, "/")
+                       << element_type::ToString(
+                              elementTypeScoreVecPair.first,
+                              misc::Wrap::Yes,
+                              misc::NoneEmpty::No,
+                              "/")
                        << "\t\tcount=" << std::setw(7) << elementTypeScoreVecPair.second.size()
                        << PercentToString(elementTypeScoreVecPair.second.size(), elementalCount)
                        << SumPhrase("", elementTypeScoreVecPair.second, SCORES_SUM);

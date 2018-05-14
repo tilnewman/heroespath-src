@@ -31,6 +31,7 @@
 //
 #include "creature/rank.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "non-player/ownership-chance-types.hpp"
@@ -52,9 +53,9 @@ namespace non_player
     {
 
         // defines the value of items owned by a creature
-        struct wealth_type
+        struct wealth_type : public misc::EnumBaseCounting<wealth_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Destitute = 0,
                 Poor,
@@ -73,12 +74,12 @@ namespace non_player
         };
 
         // defines the number of items a creature owns
-        struct collector_type
+        struct collector_type : misc::EnumBaseBitField<collector_type>
         {
-            enum Enum : unsigned int
+            enum Enum : misc::EnumUnderlying_t
             {
                 // pure random chance to carry items, should not be used
-                NoPreference = 0,
+                None = 0,
 
                 // rarely carries duplicates, usually only carries essential items
                 Minimalist = 1 << 0,
@@ -95,28 +96,35 @@ namespace non_player
                 Last = Hoarder
             };
 
-            static const std::string ToString(const collector_type::Enum);
+            static void ToStringPopulate(
+                std::ostringstream & ss,
+                const misc::EnumUnderlying_t ENUM_VALUE,
+                const std::string & SEPARATOR = ", ");
+
             static collector_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // defines the frequency/power of magical items owned by the creature
         struct owns_magic_type
+            : public misc::EnumBaseCounting<owns_magic_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Rarely = 0, // rarely carries magic items
-                Religous, // often carries religous items and only occasionally magic items
+                Religious, // often carries religous items and only occasionally magic items
                 Magical, // often carries religous and magic items
                 Count
             };
 
+            static const std::string ToString(const owns_magic_type::Enum);
             static owns_magic_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // define the complexity of items owned by the creature
         struct complexity_type
+            : public misc::EnumBaseCounting<complexity_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 //...nothing
                 Animal = 0,
@@ -135,7 +143,6 @@ namespace non_player
             };
 
             static const std::string ToString(const complexity_type::Enum);
-            static complexity_type::Enum FromString(const std::string &);
             static complexity_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 

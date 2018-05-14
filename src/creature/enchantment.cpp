@@ -100,10 +100,10 @@ namespace creature
             }
         }
 
-        if (useInfo_.RestrictedToPhase() != game::Phase::NotAPhase)
+        if (useInfo_.RestrictedToPhase() != game::Phase::None)
         {
             ss << SepIfNotEmpty(ss.str()) << ", use only during "
-               << game::Phase::ToString(useInfo_.RestrictedToPhase(), false);
+               << game::Phase::ToString(useInfo_.RestrictedToPhase());
         }
 
         auto const TRAITS_STR{ traitSet_.ToString(false, false, false, true) };

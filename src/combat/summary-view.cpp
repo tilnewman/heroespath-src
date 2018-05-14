@@ -474,7 +474,7 @@ namespace combat
         // then misc
         for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
+            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Not)
             {
                 itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
             }

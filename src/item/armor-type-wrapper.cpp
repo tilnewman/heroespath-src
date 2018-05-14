@@ -54,7 +54,7 @@ namespace item
             , specificName_("")
             , systemName_(SYSTEM_NAME)
             , readableName_("")
-            , type_(armor_type::NotArmor)
+            , type_(armor_type::Not)
             , base_(BASE_TYPE)
             , variant_()
             , elementTypes_()
@@ -87,7 +87,7 @@ namespace item
                         }
                         else
                         {
-                            for (int i(0); i <= armor_type::Skin; ++i)
+                            for (misc::EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
                             {
                                 auto const ARMOR_TYPE_ENUM{ static_cast<armor_type::Enum>(i) };
                                 if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
@@ -278,14 +278,8 @@ namespace item
 
                         auto const ELEMENT_TYPE{ elementTypes_.at(i) };
 
-                        if (ELEMENT_TYPE == element_type::None)
-                        {
-                            ss << "(None)";
-                        }
-                        else
-                        {
-                            ss << element_type::ToString(ELEMENT_TYPE, true, "&");
-                        }
+                        ss << element_type::ToString(
+                            ELEMENT_TYPE, misc::Wrap::Yes, misc::NoneEmpty::No, "&");
                     }
                 }
 
@@ -379,13 +373,13 @@ namespace item
         void
             ArmorTypeWrapper::MakeSpecificSetsWithBaseType(std::vector<ArmorTypeWrapper> & wrappers)
         {
-            for (int a(0); a < armor_type::Count; ++a)
+            for (misc::EnumUnderlying_t a(0); a < armor_type::Count; ++a)
             {
                 auto const ARMOR_ENUM{ static_cast<armor_type::Enum>(a) };
 
                 if (armor_type::DoesRequireBaseType(ARMOR_ENUM))
                 {
-                    for (int b(0); b < base_type::Count; ++b)
+                    for (misc::EnumUnderlying_t b(0); b < base_type::Count; ++b)
                     {
                         auto const BASE_ENUM{ static_cast<base_type::Enum>(b) };
                         wrappers.emplace_back(ArmorTypeWrapper(ARMOR_ENUM, BASE_ENUM));
@@ -470,7 +464,7 @@ namespace item
                     break;
                 }
 
-                case armor_type::NotArmor:
+                case armor_type::Not:
                 case armor_type::Count:
                 default:
                 {
@@ -547,7 +541,7 @@ namespace item
                     return true;
                 }
 
-                case armor_type::NotArmor:
+                case armor_type::Not:
                 case armor_type::Count:
                 default:
                 {
@@ -596,21 +590,21 @@ namespace item
                     {
                         case shield_type::Kite:
                         {
-                            elementTypes = element_type::AllCombinations(
+                            elementTypes = element_type::ValidCombinations(
                                 element_type::Frost | element_type::Honor);
 
                             break;
                         }
                         case shield_type::Heater:
                         {
-                            elementTypes = element_type::AllCombinations(
+                            elementTypes = element_type::ValidCombinations(
                                 element_type::Fire | element_type::Shadow);
 
                             break;
                         }
                         case shield_type::Pavis:
                         {
-                            elementTypes = element_type::AllCombinations();
+                            elementTypes = element_type::ValidCombinations();
                             break;
                         }
                         case shield_type::Buckler:
@@ -649,7 +643,7 @@ namespace item
                         }
                         case helm_type::Great:
                         {
-                            elementTypes = element_type::AllCombinations();
+                            elementTypes = element_type::ValidCombinations();
                             break;
                         }
                         case helm_type::Leather:
@@ -676,13 +670,13 @@ namespace item
                     }
                     else if (cover_type::Cloak == COVER_TYPE)
                     {
-                        elementTypes = element_type::AllCombinations();
+                        elementTypes = element_type::ValidCombinations();
                     }
 
                     break;
                 }
                 case armor_type::Skin:
-                case armor_type::NotArmor:
+                case armor_type::Not:
                 case armor_type::Count:
                 default:
                 {

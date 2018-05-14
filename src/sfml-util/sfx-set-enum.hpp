@@ -27,6 +27,8 @@
 //
 // sfx-set-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -35,8 +37,9 @@ namespace sfml_util
 {
 
     struct sound_effect_set
+        : public misc::EnumBaseCounting<sound_effect_set, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Prompt = 0,
             Switch,
@@ -71,8 +74,9 @@ namespace sfml_util
             Count
         };
 
-        const std::string ToString(const Enum);
+        static const std::string ToString(const Enum);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -144,7 +144,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_MiscItems()
     {
-        for (int i(1); i < misc_type::Count; ++i)
+        for (misc::EnumUnderlying_t i(1); i < misc_type::Count; ++i)
         {
             auto const MISC_TYPE{ static_cast<misc_type::Enum>(i) };
 
@@ -160,28 +160,28 @@ namespace item
 
     void ItemProfileWarehouse::Setup_NamedEquipment()
     {
-        for (int i(1); i < named_type::Count; ++i)
+        for (misc::EnumUnderlying_t i(1); i < named_type::Count; ++i)
         {
             auto const NAMED_TYPE{ static_cast<named_type::Enum>(i) };
 
             for (auto const & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
-                    NAMED_THINPROFILE, NAMED_TYPE, set_type::NotASet);
+                    NAMED_THINPROFILE, NAMED_TYPE, set_type::Not);
             }
         }
     }
 
     void ItemProfileWarehouse::Setup_SetEquipment()
     {
-        for (int i(1); i < set_type::Count; ++i)
+        for (misc::EnumUnderlying_t i(1); i < set_type::Count; ++i)
         {
             auto const SET_TYPE{ static_cast<set_type::Enum>(i) };
 
             for (auto const & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
-                    SET_THINPROFILE, named_type::NotNamed, SET_TYPE);
+                    SET_THINPROFILE, named_type::Not, SET_TYPE);
             }
         }
     }
@@ -190,7 +190,7 @@ namespace item
     {
         using namespace creature;
 
-        for (int raceIndex(0); raceIndex < race::Count; ++raceIndex)
+        for (misc::EnumUnderlying_t raceIndex(0); raceIndex < race::Count; ++raceIndex)
         {
             auto const RACE_TYPE{ static_cast<race::Enum>(raceIndex) };
 
@@ -252,16 +252,16 @@ namespace item
 
         ElementEnumVec_t elementTypes;
 
-        if ((SET_TYPE != set_type::NotASet) && (SET_TYPE != set_type::Count))
+        if ((SET_TYPE != set_type::Not) && (SET_TYPE != set_type::Count))
         {
             elementTypes = { element_type::None };
         }
-        else if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
+        else if ((NAMED_TYPE != named_type::Not) && (NAMED_TYPE != named_type::Count))
         {
             elementTypes = named_type::ElementTypes(NAMED_TYPE, true);
         }
         else if (
-            (THIN_PROFILE.MiscType() != misc_type::NotMisc)
+            (THIN_PROFILE.MiscType() != misc_type::Not)
             && (THIN_PROFILE.MiscType() != misc_type::Count))
         {
             elementTypes = misc_type::ElementTypes(THIN_PROFILE.MiscType(), true);
@@ -537,7 +537,7 @@ namespace item
                     break;
                 }
                 case armor_type::Skin:
-                case armor_type::NotArmor:
+                case armor_type::Not:
                 case armor_type::Count:
                 default:
                 {
@@ -687,7 +687,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE,
-                    misc_type::NotMisc,
+                    misc_type::Not,
                     false);
 
                 profilePixie.SetStaff(
@@ -697,7 +697,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE,
-                    misc_type::NotMisc,
+                    misc_type::Not,
                     true);
             }
             else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
@@ -763,7 +763,7 @@ namespace item
                     false,
                     MATERIAL_PAIR.first,
                     MATERIAL_PAIR.second,
-                    set_type::NotASet,
+                    set_type::Not,
                     ELEMENT_TYPE,
                     SUMMON_INFO);
 
@@ -779,7 +779,7 @@ namespace item
                     true,
                     MATERIAL_PAIR.first,
                     MATERIAL_PAIR.second,
-                    set_type::NotASet,
+                    set_type::Not,
                     ELEMENT_TYPE,
                     SUMMON_INFO);
 

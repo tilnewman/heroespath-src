@@ -29,10 +29,7 @@
 //
 #include "music-enum.hpp"
 
-#include <boost/algorithm/string.hpp>
-
-#include <exception>
-#include <sstream>
+#include "misc/boost-string-includes.hpp"
 
 namespace heroespath
 {
@@ -66,30 +63,9 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Footstep::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
-    }
-
-    Footstep::Enum Footstep::FromString(const std::string & NAME_ORIG)
-    {
-        namespace ba = boost::algorithm;
-
-        auto const NAME_LOWER{ ba::to_lower_copy(NAME_ORIG) };
-
-        for (int i(0); i < Footstep::Count; ++i)
-        {
-            auto const ENUM{ static_cast<Footstep::Enum>(i) };
-
-            if (ba::to_lower_copy(Footstep::ToString(ENUM)) == NAME_LOWER)
-            {
-                return ENUM;
-            }
-        }
-
-        return Footstep::Count;
     }
 
     const std::string music::ToString(const music::Enum E)
@@ -167,9 +143,7 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -225,19 +199,17 @@ namespace sfml_util
                 return "inventory";
             }
             case All:
+            {
+                ThrowInvalidValueForFunction(E, "Directory(All)");
+            }
             case None:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::Directory(" << music::ToString(E)
-                   << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Directory(None)");
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::Directory(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Directory");
             }
         }
     }
@@ -268,18 +240,17 @@ namespace sfml_util
                 return false;
             }
             case All:
+            {
+                ThrowInvalidValueForFunction(E, "IsLooped(All)");
+            }
             case None:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::IsLooped(" << music::ToString(E) << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
+                ThrowInvalidValueForFunction(E, "IsLooped(None)");
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::IsLooped(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "IsLooped");
             }
         }
     }
@@ -322,19 +293,17 @@ namespace sfml_util
                 return "Marcelo Fernandez";
             }
             case All:
+            {
+                ThrowInvalidValueForFunction(E, "ArtistName(All)");
+            }
             case None:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::ArtistName(" << music::ToString(E)
-                   << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ArtistName(None)");
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::ArtistName(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ArtistName");
             }
         }
     }
@@ -377,19 +346,17 @@ namespace sfml_util
                 return "CC-BY 4.0";
             }
             case All:
+            {
+                ThrowInvalidValueForFunction(E, "LicenseTitle(All)");
+            }
             case None:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::LicenseTitle(" << music::ToString(E)
-                   << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
+                ThrowInvalidValueForFunction(E, "LicenseTitle(None)");
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::LicenseTitle(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "LicenseTitle");
             }
         }
     }
@@ -459,18 +426,17 @@ namespace sfml_util
                 return "PYC";
             }
             case All:
+            {
+                ThrowInvalidValueForFunction(E, "SongName(All)");
+            }
             case None:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::SongName(" << music::ToString(E) << ")_InvalidValueError.";
-                throw std::logic_error(ss.str());
+                ThrowInvalidValueForFunction(E, "SongName(None)");
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::music::SongName(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "SongName");
             }
         }
     }
@@ -490,5 +456,6 @@ namespace sfml_util
         else
             return music::Count;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

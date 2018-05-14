@@ -27,6 +27,8 @@
 //
 // level-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,9 +36,9 @@ namespace heroespath
 namespace map
 {
 
-    struct LevelType
+    struct LevelType : public misc::EnumBaseCounting<LevelType, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Town = 0,
             Hideaway,
@@ -48,9 +50,9 @@ namespace map
         static const std::string ToString(const Enum);
     };
 
-    struct Level
+    struct Level : public misc::EnumBaseCounting<Level, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Thornberry = 0,
             Thornberry_GuardPostWest,
@@ -64,10 +66,10 @@ namespace map
 
         static const std::string FILENAME_EXTENSION;
         static const std::string ToString(const Level::Enum);
-        static Level::Enum FromString(const std::string &);
         static const std::string Path(const Level::Enum);
         static LevelType::Enum Type(const Level::Enum);
     };
+
 } // namespace map
 } // namespace heroespath
 

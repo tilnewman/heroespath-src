@@ -40,7 +40,7 @@ namespace item
 
         auto score{ 0_score };
 
-        for (int i(1); i < Traits::Count; ++i)
+        for (misc::EnumUnderlying_t i(1); i < Traits::Count; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
             auto const NEXT_TRAIT_VALUE{ TRAIT_SET.GetCopy(NEXT_TRAIT_ENUM).Current() };

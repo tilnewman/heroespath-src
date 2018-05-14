@@ -79,9 +79,8 @@ namespace spell
         std::ostringstream ss;
         ss << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
            << " " << combat::EffectType::Name(effectType_) << " spell"
-           << " that can be cast during " << game::Phase::ToString(validPhases_, false)
-           << ", targeting " << combat::TargetType::Name(targetType_) << ", and costing "
-           << manaCost_ << " mana.";
+           << " that can be cast during " << game::Phase::ToString(validPhases_) << ", targeting "
+           << combat::TargetType::Name(targetType_) << ", and costing " << manaCost_ << " mana.";
 
         return ss.str();
     }

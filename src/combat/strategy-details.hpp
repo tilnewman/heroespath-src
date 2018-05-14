@@ -108,7 +108,8 @@ namespace combat
                 EnumType typeEnum;
                 try
                 {
-                    typeEnum = BaseType::FromString(enumColonChanceStrVec.at(0));
+                    typeEnum
+                        = static_cast<EnumType>(BaseType::FromString(enumColonChanceStrVec.at(0)));
                 }
                 catch (const std::exception & EX)
                 {

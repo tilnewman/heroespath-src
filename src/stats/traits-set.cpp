@@ -74,7 +74,7 @@ namespace stats
     {
         std::ostringstream ss;
 
-        for (int i(0); i < Traits::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
             auto const NEXT_ENUM{ static_cast<Traits::Enum>(i) };
             auto const NEXT_CURR{ traitVec_[static_cast<std::size_t>(i)].Current() };

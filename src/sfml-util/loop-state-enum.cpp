@@ -31,9 +31,6 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace sfml_util
@@ -118,81 +115,10 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "LoopState::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
 
-    LoopState::Enum LoopState::FromString(const std::string & ENUM_STR)
-    {
-        if (ENUM_STR == ToString(Intro))
-        {
-            return Intro;
-        }
-        else if (ENUM_STR == ToString(MainMenu))
-        {
-            return MainMenu;
-        }
-        else if (ENUM_STR == ToString(LoadGameMenu))
-        {
-            return LoadGameMenu;
-        }
-        else if (ENUM_STR == ToString(CharacterCreation))
-        {
-            return CharacterCreation;
-        }
-        else if (ENUM_STR == ToString(PartyCreation))
-        {
-            return PartyCreation;
-        }
-        else if (ENUM_STR == ToString(Adventure))
-        {
-            return Adventure;
-        }
-        else if (ENUM_STR == ToString(Combat))
-        {
-            return Combat;
-        }
-        else if (ENUM_STR == ToString(Camp))
-        {
-            return Camp;
-        }
-        else if (ENUM_STR == ToString(Inn))
-        {
-            return Inn;
-        }
-        else if (ENUM_STR == ToString(Query))
-        {
-            return Query;
-        }
-        else if (ENUM_STR == ToString(Credits))
-        {
-            return Credits;
-        }
-        else if (ENUM_STR == ToString(Settings))
-        {
-            return Settings;
-        }
-        else if (ENUM_STR == ToString(Inventory))
-        {
-            return Inventory;
-        }
-        else if (ENUM_STR == ToString(Treasure))
-        {
-            return Treasure;
-        }
-        else if (ENUM_STR == ToString(Test))
-        {
-            return Test;
-        }
-        else
-        {
-            std::ostringstream ss;
-            ss << "LoopState::FromString(\"" << ENUM_STR << "\") unknown stage name.";
-            throw std::runtime_error(ss.str());
-        }
-    }
 } // namespace sfml_util
 } // namespace heroespath

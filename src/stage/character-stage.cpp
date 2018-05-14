@@ -535,7 +535,7 @@ namespace stage
             }
         }
 
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             if (false == fixedStatsSVec_[i]->IgnoreMe())
             {
@@ -609,7 +609,7 @@ namespace stage
         if ((initialRollCounter_ >= 6) && (false == AreAnyAnimNumStillMoving()))
         {
             auto isNumberHeldDown{ false };
-            for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+            for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
             {
                 if (fixedStatsSVec_[i]->MouseDown(MOUSE_POS_V.x, MOUSE_POS_V.y))
                 {
@@ -643,7 +643,7 @@ namespace stage
             sfml_util::Justified::Left);
 
         std::vector<std::string> raceNameVec;
-        for (std::size_t i(0); i < creature::race::Count_PlayerRaces; ++i)
+        for (misc::EnumUnderlying_t i(0); i < creature::race::Count_PlayerRaces; ++i)
         {
             raceNameVec.emplace_back(creature::race::Name(static_cast<creature::race::Enum>(i)));
         }
@@ -1341,7 +1341,7 @@ namespace stage
         ss << "The following attributes are blank: ";
 
         bool foundAnyToIgnore(false);
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IgnoreMe())
             {
@@ -1528,7 +1528,7 @@ namespace stage
 
         // setup the final StatSet for the character
         stats::StatSet statSetFinal;
-        for (int i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_ENUM{ static_cast<stats::Traits::Enum>(i) };
             statSetFinal.Set(NEXT_ENUM, fixedStatsSVec_[NEXT_ENUM]->Value());
@@ -2113,7 +2113,7 @@ namespace stage
 
     void CharacterStage::SetVisibleStatsToStatSetBase()
     {
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
             auto const NEW_VAL{ statSetBase_.Get(NEXT_TRAIT_ENUM) };
@@ -2158,7 +2158,7 @@ namespace stage
 
         std::vector<stats::Traits::Enum> preExistingStatVec;
 
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
             auto const NEXT_STAT_VAL{ statSetRace_.Get(NEXT_TRAIT_ENUM) };
@@ -2190,7 +2190,7 @@ namespace stage
 
         statSetRole_ = creature::RoleStatModifier::Get(ROLE_ENUM);
 
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
             auto const NEXT_STAT_VAL{ statSetRole_.Get(NEXT_TRAIT_ENUM) };
@@ -2357,7 +2357,7 @@ namespace stage
 
         // clear isHeldDown status from all stat anim objects, and see if any were
         auto wereAnyHeldDown{ false };
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IsHeldDown())
             {
@@ -2408,7 +2408,7 @@ namespace stage
 
     bool CharacterStage::AreAnyStatsIgnored() const
     {
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IgnoreMe())
             {
@@ -2812,7 +2812,7 @@ namespace stage
         nameTextEntryBoxUPtr_->SetText("");
         statModifierTextVec_.clear();
 
-        for (std::size_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             fixedStatsSVec_[i]->SetIgnoreMe();
         }

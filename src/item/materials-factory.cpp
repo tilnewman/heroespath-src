@@ -109,7 +109,7 @@ namespace item
     {
         MaterialPairVec_t materialPairs;
 
-        if ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::NotASet))
+        if ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::Not))
         {
             materialPairs = MakeForSetType(THIN_PROFILE, SET_TYPE);
         }
@@ -126,7 +126,7 @@ namespace item
             materialPairs = MakeForMiscType(THIN_PROFILE.MiscType(), false);
         }
 
-        if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
+        if ((NAMED_TYPE != named_type::Not) && (NAMED_TYPE != named_type::Count))
         {
             LimitForNamedType(THIN_PROFILE, NAMED_TYPE, materialPairs);
         }
@@ -846,7 +846,7 @@ namespace item
                         metal_),
                     AppendNothingCopy(fancyJewel_));
             }
-            case misc_type::NotMisc:
+            case misc_type::Not:
             case misc_type::Count:
             default:
             {
@@ -1782,7 +1782,7 @@ namespace item
 
                 break;
             }
-            case named_type::NotNamed:
+            case named_type::Not:
             case named_type::Count:
             default:
             {
@@ -2413,7 +2413,7 @@ namespace item
                 break;
             }
 
-            case set_type::NotASet:
+            case set_type::Not:
             case set_type::Count:
             default:
             {

@@ -68,8 +68,8 @@ namespace combat
             M_HP_LOG_ERR(
                 "combat::CombatSoundEffects::PlayShoot(weapon=\""
                 << WEAPON_PTR->Name() << "\", category=\""
-                << item::category::ToString(WEAPON_PTR->Category(), false)
-                << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
+                << item::category::ToString(WEAPON_PTR->Category(), misc::Wrap::Yes)
+                << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, misc::Wrap::No)
                 << ") Unable to find a 'shoot' sound effect to fit that weapon_type.");
         }
     }
@@ -310,8 +310,8 @@ namespace combat
                     "combat::CombatSoundEffects::PlayHitOrMiss("
                     << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole() << "\", weapon=\""
                     << WEAPON_PTR->Name() << "\", category=\""
-                    << item::category::ToString(WEAPON_PTR->Category(), false)
-                    << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
+                    << item::category::ToString(WEAPON_PTR->Category())
+                    << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE)
                     << ") Unable to find a 'miss' sound effect to fit that weapon_type.");
             }
         }

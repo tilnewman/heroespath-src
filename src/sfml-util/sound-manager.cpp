@@ -29,17 +29,14 @@
 //
 #include "sound-manager.hpp"
 
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
-
 #include "stringutil/stringhelp.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-#include "misc/random.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -716,7 +713,7 @@ namespace sfml_util
                 hasSFXPromptedStart = true;
             }
 
-            static auto sfxIndex{ 0 };
+            static misc::EnumUnderlying_t sfxIndex{ 0 };
             if (sfxIndex < sound_effect::Count)
             {
                 auto const ENUM{ static_cast<sound_effect::Enum>(sfxIndex) };
@@ -753,7 +750,7 @@ namespace sfml_util
                 hasStaticSFXPromptedStart = true;
             }
 
-            static std::size_t sfxSetIndex{ 0 };
+            static misc::EnumUnderlying_t sfxSetIndex{ 0 };
             if (sfxSetIndex < sfxSetVec_.size())
             {
                 static std::size_t sfxSetInnerIndex{ 0 };
@@ -796,7 +793,7 @@ namespace sfml_util
         }
 
         // test regular music
-        static auto musicIndex{ 0 };
+        static misc::EnumUnderlying_t musicIndex{ 0 };
         {
             if (musicIndex < music::Count)
             {

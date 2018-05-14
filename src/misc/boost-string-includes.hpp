@@ -28,19 +28,7 @@
 // boost-string-includes.hpp
 //
 
-// suppress warnings that are safe to ignore in boost
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic ignored "-Wundef"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif
-
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
-
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic warning "-Wswitch-enum"
-#pragma GCC diagnostic warning "-Wundef"
-#endif
 
 #endif // HEROESPATH_MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED

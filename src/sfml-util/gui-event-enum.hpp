@@ -27,6 +27,8 @@
 //
 // gui-event-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,9 +36,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct GuiEvent
+    struct GuiEvent : misc::EnumBaseBitField<GuiEvent>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             Click = 1 << 0,
@@ -44,12 +46,16 @@ namespace sfml_util
             MouseWheel = 1 << 2,
             SelectionChange = 1 << 3,
             Keypress = 1 << 4,
-            FocusChange = 1 << 5
+            FocusChange = 1 << 5,
+            Last = FocusChange
         };
 
-        static const std::string ToString(const GuiEvent::Enum);
-        static bool IsValid(const GuiEvent::Enum);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

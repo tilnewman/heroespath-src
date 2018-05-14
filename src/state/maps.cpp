@@ -45,7 +45,7 @@ namespace state
         level_ = map::Level::Thornberry;
         levels_.clear();
 
-        for (int i(0); i < map::Level::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < map::Level::Count; ++i)
         {
             levels_.emplace_back(Level(static_cast<map::Level::Enum>(i)));
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);

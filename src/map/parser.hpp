@@ -37,23 +37,11 @@
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include <string>
-#include <vector>
-
-// suppress warnings that are safe to ignore in boost
-#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
-#pragma GCC diagnostic ignored "-Wundef"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif
-
-#include <boost/filesystem/path.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-#if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
-#pragma GCC diagnostic warning "-Wundef"
-#pragma GCC diagnostic warning "-Wswitch-enum"
-#endif
+#include <string>
+#include <vector>
 
 namespace heroespath
 {
@@ -151,7 +139,7 @@ namespace map
         static const std::string XML_ATTRIB_NAME_NAME_;
         static const std::string XML_ATTRIB_NAME_DOORSFX_;
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_PARSER_HPP_INCLUDED

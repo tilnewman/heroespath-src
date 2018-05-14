@@ -28,7 +28,9 @@
 // animation-enum.hpp
 //  An enumeration of all animations.
 //
+#include "misc/enum-util.hpp"
 #include "sfml-util/music-enum.hpp"
+
 #include <string>
 #include <utility> //for std::pair
 
@@ -37,9 +39,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Animations
+    struct Animations : public misc::EnumBaseCounting<Animations, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Burst = 0,
             Campfire,
@@ -75,13 +77,13 @@ namespace sfml_util
         };
 
         static const std::string ToString(const Enum);
-        static Enum FromString(const std::string &);
         static const std::string MediaPathKey(const Enum);
         static bool IsMultiTexture(const Enum);
         static const std::pair<int, int> SizePair(const Enum);
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -31,196 +31,34 @@
 
 #include "game/game-data-file.hpp"
 
-#include <algorithm>
-#include <exception>
-#include <sstream>
+#include <utility>
 
 namespace heroespath
 {
 namespace item
 {
 
-    const std::string
-        category::ToString(const item::category::Enum CATEGORY_TYPE, const bool WILL_WRAP)
+    void category::ToStringPopulate(
+        std::ostringstream & ss, const misc::EnumUnderlying_t ENUM_VALUE, const std::string &)
     {
-        if (CATEGORY_TYPE == category::None)
-        {
-            return "";
-        }
-
-        std::ostringstream ss;
-
-        auto appendNameIfCategoryBitIsSet{ [&](const category::Enum CATEGORY_BIT,
-                                               const std::string & NAME) {
-            if (CATEGORY_TYPE & CATEGORY_BIT)
-            {
-                if (ss.str().empty() == false)
-                {
-                    ss << ", ";
-                }
-
-                ss << NAME;
-            }
-        } };
-
-        appendNameIfCategoryBitIsSet(category::Broken, "broken");
-        appendNameIfCategoryBitIsSet(category::Useable, "useable");
-        appendNameIfCategoryBitIsSet(category::BodyPart, "bodypart");
-        appendNameIfCategoryBitIsSet(category::Equippable, "equippable");
-        appendNameIfCategoryBitIsSet(category::Wearable, "wearable");
-        appendNameIfCategoryBitIsSet(category::OneHanded, "one-handed");
-        appendNameIfCategoryBitIsSet(category::TwoHanded, "two-handed");
-        appendNameIfCategoryBitIsSet(category::ConsumedOnUse, "consumed upon use");
-        appendNameIfCategoryBitIsSet(category::ShowsEnemyInfo, "shows enemy info");
-
-        if (ss.str().empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::category::ToString(" << CATEGORY_TYPE << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::Broken, "broken");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::Useable, "useable");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::BodyPart, "bodypart");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::Equippable, "equippable");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::Wearable, "wearable");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::OneHanded, "one-handed");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::TwoHanded, "two-handed");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::ConsumedOnUse, "consumed upon use");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, category::ShowsEnemyInfo, "shows enemy info");
     }
 
-    const std::string element_type::ToString(
-        const element_type::Enum ELEMENT_TYPE, const bool WILL_WRAP, const std::string & SEPARATOR)
+    void element_type::ToStringPopulate(
+        std::ostringstream & ss, const misc::EnumUnderlying_t ENUM_VALUE, const std::string &)
     {
-        if (ELEMENT_TYPE == element_type::None)
-        {
-            return "";
-        }
-
-        std::ostringstream ss;
-
-        auto appendNameIfElementBitIsSet{ [&](const element_type::Enum ELEMENT_BIT,
-                                              const std::string & NAME) {
-            if (ELEMENT_TYPE & ELEMENT_BIT)
-            {
-                if (ss.str().empty() == false)
-                {
-                    ss << SEPARATOR;
-                }
-
-                ss << NAME;
-            }
-        } };
-
-        appendNameIfElementBitIsSet(element_type::Fire, "Fire");
-        appendNameIfElementBitIsSet(element_type::Frost, "Frost");
-        appendNameIfElementBitIsSet(element_type::Honor, "Honor");
-        appendNameIfElementBitIsSet(element_type::Shadow, "Shadow");
-
-        if (ss.str().empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::element_type::ToString(" << ELEMENT_TYPE << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
-        }
-    }
-
-    const std::string
-        element_type::Name(const element_type::Enum ELEMENT_TYPE, const bool WILL_WRAP)
-    {
-        if (ELEMENT_TYPE == element_type::None)
-        {
-            if (WILL_WRAP)
-            {
-                return "()";
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        std::vector<std::string> names;
-
-        auto appendNameIfElementBitIsSet{ [&](const element_type::Enum ELEMENT_BIT) {
-            if (ELEMENT_TYPE & ELEMENT_BIT)
-            {
-                names.emplace_back(element_type::ToString(ELEMENT_BIT, false));
-            }
-        } };
-
-        appendNameIfElementBitIsSet(element_type::Fire);
-        appendNameIfElementBitIsSet(element_type::Frost);
-        appendNameIfElementBitIsSet(element_type::Honor);
-        appendNameIfElementBitIsSet(element_type::Shadow);
-
-        std::ostringstream ss;
-
-        if (names.empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::element_type::Name(" << ELEMENT_TYPE << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        ss << "of ";
-
-        if (names.size() == 1)
-        {
-            ss << names.at(0);
-        }
-        else if (names.size() == 2)
-        {
-            ss << names.at(0) << " and " << names.at(1);
-        }
-        else if (names.size() == 3)
-        {
-            ss << names.at(0) << ", " << names.at(1) << " and " << names.at(2);
-        }
-        else
-        {
-            ss << names.at(0) << ", " << names.at(1) << ", " << names.at(2) << " and "
-               << names.at(3);
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
-        }
-    }
-
-    int element_type::ValidTypeCounter(const Enum ELEMENT_TYPE)
-    {
-        if (ELEMENT_TYPE == element_type::None)
-        {
-            return 0;
-        }
-        else if (
-            ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Honor))
-            || ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Shadow))
-            || ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Honor))
-            || ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Shadow)))
-        {
-            return 2;
-        }
-        else
-        {
-            return 1;
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Fire, "Fire");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Frost, "Frost");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Honor, "Honor");
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Shadow, "Shadow");
     }
 
     bool element_type::IsValid(const element_type::Enum E)
@@ -236,15 +74,14 @@ namespace item
         }
     }
 
-    const std::string misc_type::ToString(const misc_type::Enum E)
+    const std::string misc_type::ToString(const misc_type::Enum MISC_TYPE)
     {
-        switch (E)
+        switch (MISC_TYPE)
         {
-            case NotMisc:
+            case Not:
             {
-                return "NotMisc";
+                return "Not";
             }
-
             case AngelBraid:
             {
                 return "AngelBraid";
@@ -301,7 +138,6 @@ namespace item
             {
                 return "Viol";
             }
-
             case BasiliskTonge:
             {
                 return "BasiliskTonge";
@@ -849,22 +685,19 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::misc_type::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MISC_TYPE, "ToString");
             }
         }
     }
 
-    const std::string misc_type::Name(const misc_type::Enum E)
+    const std::string misc_type::Name(const misc_type::Enum MISC_TYPE)
     {
-        switch (E)
+        switch (MISC_TYPE)
         {
-            case NotMisc:
+            case Not:
             {
-                return "NotMisc";
+                return "Not";
             }
-
             case AngelBraid:
             {
                 return "Angel Braid";
@@ -921,7 +754,6 @@ namespace item
             {
                 return "Villain's Viol";
             }
-
             case BasiliskTonge:
             {
                 return "Basilisk Tonge";
@@ -1466,13 +1298,10 @@ namespace item
             {
                 return "Wand";
             }
-
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::misc_type::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MISC_TYPE, "Name");
             }
         }
     }
@@ -1504,7 +1333,7 @@ namespace item
     bool misc_type::IsUnique(const Enum MISC_TYPE)
     {
         return (
-            (MISC_TYPE != NotMisc) && (MISC_TYPE != Count) && (IsQuestItem(MISC_TYPE) == false)
+            (MISC_TYPE != Not) && (MISC_TYPE != Count) && (IsQuestItem(MISC_TYPE) == false)
             && (IsStandalone(MISC_TYPE) == false));
     }
 
@@ -1773,13 +1602,11 @@ namespace item
             case WarhorseMarionette:    { return 320_weight; }
             case SpecterChains:         { return 400_weight; }
             case ExoticGoldenGong:      { return 450_weight; }
-            case NotMisc:
+            case Not:
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::misc_type::Weight(" << MISC_TYPE << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MISC_TYPE, "Weight");
             }
         }
         // clang-format on
@@ -1976,7 +1803,7 @@ namespace item
             case Wand:
             case Shard:
             case Staff:
-            case NotMisc:
+            case Not:
             case Count:
             default:
             {
@@ -2044,13 +1871,13 @@ namespace item
         return elementTypes;
     }
 
-    const std::string set_type::ToString(const set_type::Enum E)
+    const std::string set_type::ToString(const set_type::Enum SET_TYPE)
     {
-        switch (E)
+        switch (SET_TYPE)
         {
-            case NotASet:
+            case Not:
             {
-                return "NotASet";
+                return "Not";
             }
             case TheAssassins:
             {
@@ -2183,20 +2010,18 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ssErr;
-                ssErr << "item::set_type::ToString(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
+                ThrowInvalidValueForFunction(SET_TYPE, "ToString");
             }
         }
     }
 
-    const std::string set_type::Name(const set_type::Enum E)
+    const std::string set_type::Name(const set_type::Enum SET_TYPE)
     {
-        switch (E)
+        switch (SET_TYPE)
         {
-            case NotASet:
+            case Not:
             {
-                return "NotASet";
+                return "Not";
             }
             case TheAssassins:
             {
@@ -2329,18 +2154,16 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ssErr;
-                ssErr << "item::set_type::Name(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
+                ThrowInvalidValueForFunction(SET_TYPE, "Name");
             }
         }
     }
 
-    creature::role::Enum set_type::Role(const set_type::Enum E)
+    creature::role::Enum set_type::Role(const set_type::Enum SET_TYPE)
     {
-        switch (E)
+        switch (SET_TYPE)
         {
-            case NotASet:
+            case Not:
             {
                 return creature::role::Count;
             }
@@ -2400,20 +2223,18 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ssErr;
-                ssErr << "item::set_type::Role(" << E << ")_InvalidValueError";
-                throw std::range_error(ssErr.str());
+                ThrowInvalidValueForFunction(SET_TYPE, "Role");
             }
         }
     }
 
-    const std::string named_type::ToString(const named_type::Enum E)
+    const std::string named_type::ToString(const named_type::Enum NAMED_TYPE)
     {
-        switch (E)
+        switch (NAMED_TYPE)
         {
-            case NotNamed:
+            case Not:
             {
-                return "NotNamed";
+                return "Not";
             }
             case Arctic:
             {
@@ -2654,16 +2475,14 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::named_type::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(NAMED_TYPE, "ToString");
             }
         }
     }
 
-    const std::string named_type::Name(const named_type::Enum E)
+    const std::string named_type::Name(const named_type::Enum NAMED_TYPE)
     {
-        switch (E)
+        switch (NAMED_TYPE)
         {
             case Charlatans:
             {
@@ -2709,7 +2528,7 @@ namespace item
             {
                 return "Warden's";
             }
-            case NotNamed:
+            case Not:
             case Arctic:
             case Army:
             case Betrayer:
@@ -2759,14 +2578,12 @@ namespace item
             case Winter:
             case Woe:
             {
-                return named_type::ToString(E);
+                return named_type::ToString(NAMED_TYPE);
             }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::named_type::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(NAMED_TYPE, "Name");
             }
         }
     }
@@ -2782,13 +2599,15 @@ namespace item
         }
         else if (NAMED_TYPE == named_type::Infernal)
         {
-            elementTypes = element_type::AllCombinations(element_type::Fire | element_type::Shadow);
+            elementTypes
+                = element_type::ValidCombinations(element_type::Fire | element_type::Shadow);
         }
         else if (
             (NAMED_TYPE == named_type::Light) || (NAMED_TYPE == named_type::Dawn)
             || (NAMED_TYPE == named_type::Sun))
         {
-            elementTypes = element_type::AllCombinations(element_type::Fire | element_type::Honor);
+            elementTypes
+                = element_type::ValidCombinations(element_type::Fire | element_type::Honor);
         }
         else if (NAMED_TYPE == named_type::Dancing)
         {
@@ -2842,9 +2661,9 @@ namespace item
         return elementTypes;
     }
 
-    const std::string material::ToString(const item::material::Enum E)
+    const std::string material::ToString(const item::material::Enum MATERIAL)
     {
-        switch (E)
+        switch (MATERIAL)
         {
             case Nothing:
             {
@@ -3017,22 +2836,20 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::material::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MATERIAL, "ToString");
             }
         }
     }
 
-    const std::string material::Name(const item::material::Enum MATERIAL_TYPE)
+    const std::string material::Name(const item::material::Enum MATERIAL)
     {
-        if (MATERIAL_TYPE == material::DriedFlesh)
+        if (MATERIAL == material::DriedFlesh)
         {
             return "Dried Flesh";
         }
         else
         {
-            return ToString(MATERIAL_TYPE);
+            return ToString(MATERIAL);
         }
     }
 
@@ -3178,11 +2995,7 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::material::ArmorRatingBonusPri(" << MATERIAL_PRI
-                   << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MATERIAL_PRI, "ArmorRatingBonusPri");
             }
         }
     }
@@ -3376,16 +3189,15 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-
-                ss << "item::material::PriceAdjPri(" << MATERIAL_PRI << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MATERIAL_PRI, "PriceAdjPri");
             }
         }
     }
 
-    Coin_t material::PriceAdjSec(const material::Enum E) { return PriceAdjPri(E) / 10_coin; }
+    Coin_t material::PriceAdjSec(const material::Enum MATERIAL)
+    {
+        return PriceAdjPri(MATERIAL) / 10_coin;
+    }
 
     float material::WeightMult(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
     {
@@ -3567,11 +3379,7 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-
-                ss << "item::material::WeightMultPri(" << MATERIAL_PRI << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MATERIAL_PRI, "WeightMultPri");
             }
         }
     }
@@ -3608,10 +3416,10 @@ namespace item
     {
         // clang-format off
         switch (MATERIAL)
-                       {
+        {
             // this is the standard set that runs the full range of values
             case Glass:                    { return 0.1f;  }
-            case DriedFlesh:{ return 0.5f;  }
+            case DriedFlesh:               { return 0.5f;  }
             case Blood:                    { return 0.85f; }
             case Spirit:                   { return 1.25f; }//extra bonus for spirit is intentional
 
@@ -3645,7 +3453,7 @@ namespace item
             case Bronze:                   { return 0.333f; }
             case Silver:                   { return 0.666f; }
             case Gold:                     { return 0.8f;   }
-            case Platinum:                 { return 0.85f;   }
+            case Platinum:                 { return 0.85f;  }
 
             // all others are 0%
             case Nothing:
@@ -3662,7 +3470,7 @@ namespace item
             case Wood:
             case Count:
             default:
-                           {
+            {
                 return 0.0f;
             }
         }
@@ -3964,11 +3772,7 @@ namespace item
             case material::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::FireDamageRatio(material_pri=" << PRI
-                   << ", material_sec=...) -but that material_pri type is unknown.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(PRI, "FireDamageRatio(PRI)");
             }
         }
         switch (SEC)
@@ -4182,11 +3986,7 @@ namespace item
             case material::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::FireDamageRatio(material_pri=" << material::ToString(PRI)
-                   << ", material_sec=" << SEC << " -but that material_sec type is unknown.";
-
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(SEC, "FireDamageRatio(SEC)");
             }
         }
 
@@ -4252,100 +4052,45 @@ namespace item
             || (MATERIAL == Emerald));
     }
 
-    const std::string weapon_type::ToString(
-        const item::weapon_type::Enum WEAPON_TYPE, const bool WILL_WRAP, const bool IS_READBLE)
+    void weapon_type::ToStringPopulate(
+        std::ostringstream & ss,
+        const misc::EnumUnderlying_t ENUM_VALUE,
+        const std::string & SEPARATOR)
     {
-        std::ostringstream ss;
-
-        if (WEAPON_TYPE == weapon_type::NotAWeapon)
-        {
-            ss << "NotAWeapon";
-        }
-        else
-        {
-            auto appendNameIfBitSet{ [&](const weapon_type::Enum WEAPON_TYPE_BIT,
-                                         const std::string & NAME) {
-                if (WEAPON_TYPE & WEAPON_TYPE_BIT)
-                {
-                    if (ss.str().empty() == false)
-                    {
-                        ss << "/";
-                    }
-
-                    ss << NAME;
-                }
-            } };
-
-            appendNameIfBitSet(weapon_type::BodyPart, "BodyPart");
-            appendNameIfBitSet(weapon_type::Sword, "Sword");
-            appendNameIfBitSet(weapon_type::Axe, "Axe");
-            appendNameIfBitSet(weapon_type::Whip, "Whip");
-            appendNameIfBitSet(weapon_type::Knife, "Knife");
-            appendNameIfBitSet(weapon_type::Club, "Club");
-            appendNameIfBitSet(weapon_type::Staff, "Staff");
-
-            appendNameIfBitSet(
-                weapon_type::BladedStaff, ((IS_READBLE) ? "Bladed Staff" : "BladedStaff"));
-
-            appendNameIfBitSet(weapon_type::Melee, "Melee");
-            appendNameIfBitSet(weapon_type::Projectile, "Projectile");
-            appendNameIfBitSet(weapon_type::Bladed, "Bladed");
-            appendNameIfBitSet(weapon_type::Pointed, "Pointed");
-        }
-
-        if (ss.str().empty())
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::weapon_type::ToString(" << WEAPON_TYPE
-                  << ", will_wrap=" << std::boolalpha << WILL_WRAP << ", is_readable=" << IS_READBLE
-                  << ")_InvalidValueError";
-
-            throw std::range_error(ssErr.str());
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
-        }
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::BodyPart, "BodyPart", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Sword, "Sword", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Axe, "Axe", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Whip, "Whip", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Knife, "Knife", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Club, "Club", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Staff, "Staff", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::BladedStaff, "BladedStaff", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Melee, "Melee", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Projectile, "Projectile", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Bladed, "Bladed", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, weapon_type::Pointed, "Pointed", SEPARATOR);
     }
 
     const std::string weapon_type::Name(const weapon_type::Enum WEAPON_TYPE)
     {
-        return weapon_type::ToString(WEAPON_TYPE, false, true);
-    }
-
-    weapon_type::Enum weapon_type::FromString(const std::string & S)
-    {
-        weapon_type::Enum type{ NotAWeapon };
-
-        unsigned flag{ 1 };
-
-        while (flag != Last)
+        if (WEAPON_TYPE & weapon_type::BladedStaff)
         {
-            auto const WEAPON_TYPE_ENUM{ static_cast<weapon_type::Enum>(flag) };
-
-            if (boost::algorithm::icontains(S, weapon_type::ToString(WEAPON_TYPE_ENUM)))
-            {
-                type = static_cast<weapon_type::Enum>(type | flag);
-            }
-
-            flag <<= 1;
+            return boost::algorithm::replace_all_copy(
+                weapon_type::ToString(WEAPON_TYPE), "BladedStaff", "Bladed Staff");
         }
-
-        return type;
+        else
+        {
+            return weapon_type::ToString(WEAPON_TYPE);
+        }
     }
 
     const std::string armor_type::ToString(const item::armor_type::Enum ARMOR_TYPE)
     {
         switch (ARMOR_TYPE)
         {
-            case NotArmor:
+            case Not:
             {
-                return "NotArmor";
+                return "Not";
             }
             case Shield:
             {
@@ -4390,9 +4135,7 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::armor_type::ToString(" << ARMOR_TYPE << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(ARMOR_TYPE, "ToString");
             }
         }
     }
@@ -4410,7 +4153,7 @@ namespace item
             {
                 return true;
             }
-            case NotArmor:
+            case Not:
             case Shield:
             case Helm:
             case Covering:
@@ -4454,9 +4197,7 @@ namespace item
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::body_part::ToString(" << BODY_PART << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(BODY_PART, "ToString");
             }
         }
     }
@@ -4505,10 +4246,7 @@ namespace item
             case name_material_type::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::name_material_type::ToString(" << NAME_MATERIAL_TYPE
-                   << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(NAME_MATERIAL_TYPE, "ToString");
             }
         }
     }

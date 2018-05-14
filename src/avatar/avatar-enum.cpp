@@ -30,8 +30,7 @@
 #include "avatar-enum.hpp"
 
 #include "game/game-data-file.hpp"
-
-#include <boost/algorithm/string.hpp>
+#include "misc/boost-string-includes.hpp"
 
 #include <exception>
 #include <sstream>
@@ -2464,9 +2463,7 @@ namespace avatar
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Avatar::ToString(Enum=" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -3016,11 +3013,10 @@ namespace avatar
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Avatar::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Name");
             }
         }
     }
+
 } // namespace avatar
 } // namespace heroespath

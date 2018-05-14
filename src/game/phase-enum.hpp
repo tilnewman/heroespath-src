@@ -27,6 +27,8 @@
 //
 // phase-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,21 +36,25 @@ namespace heroespath
 namespace game
 {
 
-    struct Phase
+    struct Phase : misc::EnumBaseBitField<Phase>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
-            NotAPhase = 0,
+            None = 0,
             Combat = 1 << 0,
             Exploring = 1 << 1,
             Conversation = 1 << 2,
             Quest = 1 << 3,
-            Inventory = 1 << 4
+            Inventory = 1 << 4,
+            Last = Inventory
         };
 
-        static const std::string ToString(const Enum, const bool WILL_WRAP);
-        static Enum FromString(const std::string &);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
     };
+
 } // namespace game
 } // namespace heroespath
 

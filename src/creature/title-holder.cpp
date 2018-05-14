@@ -1782,7 +1782,7 @@ namespace creature
                     "creature::Titles::Holder::Test() Starting Tests...");
             }
 
-            static auto titleIndex{ 0 };
+            static misc::EnumUnderlying_t titleIndex{ 0 };
             if (titleIndex < Titles::Count)
             {
                 auto const NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));

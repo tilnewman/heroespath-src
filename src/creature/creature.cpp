@@ -1063,8 +1063,8 @@ namespace creature
                 || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
             {
                 std::ostringstream ss;
-                ss << "Thieves cannot equip "
-                   << item::weapon_type::ToString(ITEM_PTR->WeaponType(), false) << "s.";
+                ss << "Thieves cannot equip " << item::weapon_type::ToString(ITEM_PTR->WeaponType())
+                   << "s.";
             }
         }
 
@@ -1566,7 +1566,7 @@ namespace creature
 
     void Creature::ReCalculateTraitBonuses()
     {
-        for (int i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
 
@@ -1615,7 +1615,7 @@ namespace creature
     const stats::TraitSet Creature::TraitsWorking() const
     {
         stats::TraitSet set;
-        for (int i(0); i < stats::Traits::Count; ++i)
+        for (misc::EnumUnderlying_t i(0); i < stats::Traits::Count; ++i)
         {
             auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
             set.Get(NEXT_TRAIT_ENUM).NormalSet(TraitNormal(NEXT_TRAIT_ENUM));

@@ -28,6 +28,8 @@
 // weapons-types.hpp
 //  A set of enumerations that together define a weapon.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -37,9 +39,9 @@ namespace item
     namespace weapon
     {
 
-        struct sword_type
+        struct sword_type : public misc::EnumBaseCounting<sword_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Shortsword = 0,
                 Gladius,
@@ -59,9 +61,9 @@ namespace item
             static const std::string Name(const sword_type::Enum);
         };
 
-        struct axe_type
+        struct axe_type : public misc::EnumBaseCounting<axe_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Handaxe = 0,
                 Sickle,
@@ -74,9 +76,9 @@ namespace item
             static const std::string Name(const axe_type::Enum);
         };
 
-        struct club_type
+        struct club_type : public misc::EnumBaseCounting<club_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Spiked = 0,
                 Maul,
@@ -86,12 +88,11 @@ namespace item
             };
 
             static const std::string ToString(const club_type::Enum);
-            static const std::string Name(const club_type::Enum);
         };
 
-        struct whip_type
+        struct whip_type : public misc::EnumBaseCounting<whip_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Bullwhip = 0,
                 Flail,
@@ -104,8 +105,9 @@ namespace item
         };
 
         struct projectile_type
+            : public misc::EnumBaseCounting<projectile_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 Blowpipe = 0,
                 Sling,
@@ -121,8 +123,9 @@ namespace item
         };
 
         struct bladedstaff_type
+            : public misc::EnumBaseCounting<bladedstaff_type, misc::EnumFirstValueValid>
         {
-            enum Enum
+            enum Enum : misc::EnumUnderlying_t
             {
                 ShortSpear = 0,
                 Spear,

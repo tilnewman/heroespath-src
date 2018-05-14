@@ -29,8 +29,7 @@
 //
 #include "shadow-masker.hpp"
 
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/algorithm/string.hpp>
+#include "misc/boost-string-includes.hpp"
 
 namespace heroespath
 {

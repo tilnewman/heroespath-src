@@ -28,6 +28,8 @@
 // enchantment-type.hpp
 //  Defines special effects of an enchantment.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -35,9 +37,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct EnchantmentType
+    struct EnchantmentType : misc::EnumBaseBitField<EnchantmentType>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
             WhenUsed = 1 << 0,
@@ -49,11 +51,16 @@ namespace creature
             AllowsFlight = 1 << 6,
             CurseWithoutItem = 1 << 7,
             BlessWithoutItem = 1 << 8,
-            OnlyIfSetIsComplete = 1 << 9
+            OnlyIfSetIsComplete = 1 << 9,
+            Last = OnlyIfSetIsComplete
         };
 
-        static const std::string ToString(const Enum);
+        static void ToStringPopulate(
+            std::ostringstream & ss,
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const std::string & SEPARATOR = ", ");
     };
+
 } // namespace creature
 } // namespace heroespath
 

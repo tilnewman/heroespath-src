@@ -28,6 +28,8 @@
 // condition-enum.hpp
 //  An enumeration defining each type of Condition.
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -46,9 +48,9 @@ namespace creature
     //      interactions in fight.cpp
     //      testing code in conditions.cpp creature::condition::Warehouse::Fill()
     //
-    struct Conditions
+    struct Conditions : public misc::EnumBaseCounting<Conditions, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Good = 0,
             Bold,
@@ -99,6 +101,7 @@ namespace creature
             //       Each Condition must have a unique Severity.
             static std::size_t Get(const Conditions::Enum);
         };
+
     } // namespace condition
 } // namespace creature
 } // namespace heroespath

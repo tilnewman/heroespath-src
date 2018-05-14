@@ -57,7 +57,7 @@ namespace item
     ItemProfileThin::ItemProfileThin()
         : weaponInfo_()
         , armorInfo_()
-        , miscType_(misc_type::NotMisc)
+        , miscType_(misc_type::Not)
     {}
 
     const std::string ItemProfileThin::ToString() const

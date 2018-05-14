@@ -93,7 +93,7 @@ namespace creature
         const bool IS_WEAPON,
         const bool IS_ARMOR) const
     {
-        if (TYPE_WRAPPER.set != item::set_type::NotASet)
+        if (TYPE_WRAPPER.set != item::set_type::Not)
         {
             // if part of a set, then only the set enchantments will apply
             return { NewFromSetType(TYPE_WRAPPER.set) };
@@ -108,14 +108,14 @@ namespace creature
                     TYPE_WRAPPER.element, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY));
             }
 
-            if ((TYPE_WRAPPER.name != item::named_type::NotNamed)
+            if ((TYPE_WRAPPER.name != item::named_type::Not)
                 && (TYPE_WRAPPER.name != item::named_type::Count))
             {
                 enchantmentsPVec.emplace_back(NewFromNamedType(
                     TYPE_WRAPPER.name, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IS_ARMOR, IS_WEAPON));
             }
 
-            if (TYPE_WRAPPER.misc != item::misc_type::NotMisc)
+            if (TYPE_WRAPPER.misc != item::misc_type::Not)
             {
                 for (auto const & ENCHANTMENT_PTR :
                      NewFromMiscType(TYPE_WRAPPER.misc, MATERIAL_PRIMARY, MATERIAL_SECONDARY))
@@ -137,7 +137,7 @@ namespace creature
 
         Score_t score{ 0_score };
 
-        if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
+        if ((MISC_TYPE == misc_type::Not) || (MISC_TYPE == misc_type::Count))
         {
             return score;
         }
@@ -197,7 +197,7 @@ namespace creature
 
     Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
     {
-        if ((E == item::set_type::NotASet) || (E == item::set_type::Count))
+        if ((E == item::set_type::Not) || (E == item::set_type::Count))
         {
             return 0_score;
         }
@@ -214,7 +214,7 @@ namespace creature
         const bool IS_WEAPON,
         const bool IS_ARMOR) const
     {
-        if ((NAMED_ENUM == item::named_type::NotNamed) || (NAMED_ENUM == item::named_type::Count))
+        if ((NAMED_ENUM == item::named_type::Not) || (NAMED_ENUM == item::named_type::Count))
         {
             return 0_score;
         }
@@ -240,7 +240,7 @@ namespace creature
         // the additional 750 is to raise the score of all elemental items
         return MakeFromElementType(ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
                    .TreasureScore()
-            + (750_score * Score_t::Make(item::element_type::ValidTypeCounter(ELEMENT_TYPE)));
+            + (750_score * Score_t::Make(item::element_type::CountBitsSet(ELEMENT_TYPE)));
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(
@@ -1681,7 +1681,7 @@ namespace creature
             case misc_type::AngelBraid:
             case misc_type::LitchHand:
 
-            case misc_type::NotMisc:
+            case misc_type::Not:
             case misc_type::Count:
             default:
             {
@@ -2093,7 +2093,7 @@ namespace creature
                                       std::make_pair(stats::Traits::AnimalResist, 9),
                                       std::make_pair(stats::Traits::MagicResist, 4) }));
             }
-            case set_type::NotASet:
+            case set_type::Not:
             case set_type::Count:
             default:
             {
@@ -2537,7 +2537,7 @@ namespace creature
                                       std::make_pair(stats::Traits::AnimalResist, 28),
                                       std::make_pair(stats::Traits::MagicResist, 16) }));
             }
-            case set_type::NotASet:
+            case set_type::Not:
             case set_type::Count:
             default:
             {
@@ -3347,7 +3347,7 @@ namespace creature
                           std::make_pair(stats::Traits::Luck, (MAT_BONUS / 2)),
                           std::make_pair(stats::Traits::FindMagic, (MAT_BONUS / 2)) }));
             }
-            case named_type::NotNamed:
+            case named_type::Not:
             case named_type::Count:
             default:
             {
