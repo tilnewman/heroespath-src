@@ -67,7 +67,6 @@
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 #include "state/game-state-factory.hpp"
-#include "state/npc-factory.hpp"
 #include "state/npc-warehouse.hpp"
 
 #include <cstdlib>
@@ -271,7 +270,6 @@ namespace game
             config::SettingsFile::Release();
 
             // factories should not be needed during shutdown, so release them early
-            state::NpcFactory::Release();
             state::GameStateFactory::Release();
             non_player::ownership::ChanceFactory::Release();
 
@@ -408,7 +406,6 @@ namespace game
     void StartupShutdown::Setup_SubsystemsAcquire() const
     {
         state::NpcWarehouse::Acquire();
-        state::NpcFactory::Acquire();
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
         item::ItemWarehouse::Acquire();

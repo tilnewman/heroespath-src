@@ -30,8 +30,6 @@
 #include "misc/not-null-warehouse.hpp"
 #include "state/npc-placeholder.hpp"
 
-#include <memory>
-
 namespace heroespath
 {
 namespace state
@@ -50,17 +48,9 @@ namespace state
         NpcFactory & operator=(const NpcFactory &) = delete;
         NpcFactory & operator=(NpcFactory &&) = delete;
 
-        NpcFactory();
-        ~NpcFactory();
-
-        static misc::NotNull<NpcFactory *> Instance();
-        static void Acquire();
-        static void Release();
+        NpcFactory() = default;
 
         const NpcPVec_t Make(const NpcPlaceholder &) const;
-
-    private:
-        static std::unique_ptr<NpcFactory> instanceUPtr_;
     };
 
 } // namespace state

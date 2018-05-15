@@ -100,9 +100,10 @@ namespace state
 
     void Level::CreateRandomNPCs()
     {
+        NpcFactory npcFactory;
         for (auto const & NPC_PLACEHOLDER : randomNPCPlaceholders_)
         {
-            for (auto const & NPC_PTR : NpcFactory::Instance()->Make(NPC_PLACEHOLDER))
+            for (auto const & NPC_PTR : npcFactory.Make(NPC_PLACEHOLDER))
             {
                 AddRandomNpc(NPC_PTR);
             }

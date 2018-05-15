@@ -44,43 +44,6 @@ namespace heroespath
 namespace state
 {
 
-    std::unique_ptr<NpcFactory> NpcFactory::instanceUPtr_;
-
-    NpcFactory::NpcFactory() { M_HP_LOG_DBG("Subsystem Construction: NpcFactory"); }
-
-    NpcFactory::~NpcFactory() { M_HP_LOG_DBG("Subsystem Destruction: NpcFactory"); }
-
-    misc::NotNull<NpcFactory *> NpcFactory::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): NpcFactory");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void NpcFactory::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<NpcFactory>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NpcFactory");
-        }
-    }
-
-    void NpcFactory::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "creature::NpcFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
     const NpcPVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER) const
     {
         NpcPVec_t npcPtrs;
