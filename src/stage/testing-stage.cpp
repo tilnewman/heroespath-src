@@ -363,7 +363,8 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_ItemFactory{ false };
         if (false == hasTestingCompleted_ItemFactory)
         {
-            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
+            static item::ItemFactory itemFactory;
+            hasTestingCompleted_ItemFactory = itemFactory.Test();
             return;
         }
 
@@ -1147,6 +1148,8 @@ if (false == willImageCheck_)
             return false;
         }
 
+        static non_player::ownership::InventoryFactory inventoryFactory;
+
         static misc::EnumUnderlying_t raceIndex{ 0 };
         static misc::EnumUnderlying_t roleIndex{ 0 };
 
@@ -1209,7 +1212,7 @@ if (false == willImageCheck_)
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));
 
-                    non_player::ownership::InventoryFactory::SetupCreatureInventory(&character);
+                    inventoryFactory.SetupCreatureInventory(&character);
                 }
 
                 ++roleIndex;

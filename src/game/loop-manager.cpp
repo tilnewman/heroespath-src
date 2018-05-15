@@ -94,8 +94,8 @@ namespace game
         {
             // TEMP TODO REMOVE -once done testing
             // create a party of characters to work with during testing
-            state::GameStateFactory::Instance()->NewGame(
-                player::PartyFactory::MakeFakeForTesting());
+            player::PartyFactory partyFactory;
+            state::GameStateFactory::Instance()->NewGame(partyFactory.MakeFakeForTesting());
         }
 
         instanceUPtr_->TransitionTo(STARTUP_STAGE_ENUM);

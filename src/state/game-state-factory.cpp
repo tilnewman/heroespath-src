@@ -167,10 +167,12 @@ namespace state
         // it is possible that during normal operation that the unplayed characters save dir will be
         // empty, so don't bother checking if SAVED_UNPLAYED_CHARACTER_FILE_PATHS.empty()
 
+        creature::CreatureFactory creatureFactory;
+
         // try and load each character file
         for (auto const & FILE_PATH : SAVED_UNPLAYED_CHARACTER_FILE_PATHS)
         {
-            auto const CREATURE_PTR{ creature::CreatureFactory::MakeDefaultForDeserialization() };
+            auto const CREATURE_PTR{ creatureFactory.MakeDefaultForDeserialization() };
 
             try
             {

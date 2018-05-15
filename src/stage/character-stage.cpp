@@ -2845,7 +2845,8 @@ namespace stage
 
         stats::StatSet statSetFinal(statSetBase_);
 
-        creature::CreatureFactory::MakeEquipSaveAndFreePlayer(
+        creature::CreatureFactory creatureFactory;
+        creatureFactory.MakeEquipSaveAndFreePlayer(
             NAME,
             SEX_ENUM,
             RACE_ENUM,

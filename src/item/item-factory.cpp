@@ -14,13 +14,14 @@
 #include "creature/creature.hpp"
 #include "creature/summon-info.hpp"
 #include "game/loop-manager.hpp"
-#include "item/armor-factory.hpp"
+#include "item/armor-details.hpp"
+#include "item/armor-type-wrapper.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-#include "item/misc-item-factory.hpp"
-#include "item/weapon-factory.hpp"
+#include "item/weapon-details.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vector-map.hpp"
@@ -35,7 +36,7 @@ namespace heroespath
 namespace item
 {
 
-    bool ItemFactory::Test()
+    bool ItemFactory::Test() const
     {
         static auto didPostInitial{ false };
         if (false == didPostInitial)
@@ -73,7 +74,7 @@ namespace item
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (ItemProfileWarehouse::Instance()->GetReligiousProfiles().empty() == false),
-                "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
+                "item::ItemFactory::Test() found ItemProfieWarehouse's religious profiles empty.");
 
             for (auto const & PROFILE : ItemProfileWarehouse::Instance()->GetReligiousProfiles())
             {
@@ -82,7 +83,7 @@ namespace item
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (ItemProfileWarehouse::Instance()->GetQuestProfiles().Empty() == false),
-                "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
+                "item::ItemFactory::Test() found ItemProfieWarehouse's quest profiles empty.");
 
             for (auto const & MISCENUM_PROFILE_PAIR :
                  ItemProfileWarehouse::Instance()->GetQuestProfiles())
@@ -148,6 +149,9 @@ namespace item
         static auto hasCreatedAndTestedAll{ false };
         if (false == hasCreatedAndTestedAll)
         {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Individual Item Tests....");
+
             for (auto const & PROFILE : profiles)
             {
                 auto itemPtr{ Make(PROFILE) };
@@ -155,6 +159,9 @@ namespace item
                 imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImageFilename(), PROFILE);
                 ItemWarehouse::Access().Free(itemPtr);
             }
+
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Finished Individual Item Tests.");
 
             hasCreatedAndTestedAll = true;
             return false;
@@ -380,7 +387,7 @@ namespace item
         return true;
     }
 
-    void ItemFactory::TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE)
+    void ItemFactory::TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE) const
     {
         auto makeErrorReportPrefix{ [&]() {
             std::ostringstream ss;
@@ -801,21 +808,21 @@ namespace item
         }
     }
 
-    const ItemPtr_t ItemFactory::Make(const ItemProfile & PROFILE)
+    const ItemPtr_t ItemFactory::Make(const ItemProfile & PROFILE) const
     {
         // Note that some misc_type items are also weapons or armor.  In these cases item
         // construction is handled by WeaponFactory or ArmorFactory.
         if (PROFILE.IsArmor())
         {
-            return armor::ArmorFactory::Make(PROFILE);
+            return MakeArmor(PROFILE);
         }
         else if (PROFILE.IsWeapon())
         {
-            return weapon::WeaponFactory::Make(PROFILE);
+            return MakeWeapon(PROFILE);
         }
         else if (PROFILE.IsMisc())
         {
-            return item::MiscItemFactory::Make(PROFILE);
+            return MakeMisc(PROFILE);
         }
         else
         {
@@ -831,16 +838,266 @@ namespace item
     }
 
     const ItemPtr_t ItemFactory::Make(
-        const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR)
+        const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR) const
     {
         if (BODY_PART == body_part::Skin)
         {
-            return armor::ArmorFactory::Make(BODY_PART, CREATURE_PTR);
+            return MakeArmor(BODY_PART, CREATURE_PTR);
         }
         else
         {
-            return weapon::WeaponFactory::Make(BODY_PART, CREATURE_PTR);
+            return MakeWeapon(BODY_PART, CREATURE_PTR);
         }
+    }
+
+    const ItemPtr_t ItemFactory::MakeArmor(const ItemProfile & PROFILE) const
+    {
+        auto const ARMOR_TYPE_WRAPPER{ PROFILE.ArmorInfo() };
+
+        auto const ARMOR_DETAILS{ armor::ArmorDetailLoader::LookupArmorDetails(
+            ARMOR_TYPE_WRAPPER.DetailsKeyName()) };
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
+            nameFactory_.MakeNonBodyPartName(PROFILE),
+            nameFactory_.MakeNonBodyPartDescription(PROFILE, ARMOR_DETAILS.description),
+            PROFILE.Category(),
+            PROFILE.MaterialPrimary(),
+            PROFILE.MaterialSecondary(),
+            CalculatePrice(PROFILE, ARMOR_DETAILS.price),
+            CalculateWeight(PROFILE, ARMOR_DETAILS.weight),
+            0_health,
+            0_health,
+            CalculateArmorRating(PROFILE, ARMOR_DETAILS.armor_rating),
+            TypeWrapper(PROFILE),
+            PROFILE.WeaponInfo(),
+            ARMOR_TYPE_WRAPPER,
+            PROFILE.IsPixie(),
+            PROFILE.RoleRestriction()));
+    }
+
+    const ItemPtr_t ItemFactory::MakeArmor(
+        const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        // TODO move to MaterialFactory
+        auto const MATERIALS_PAIR{ material::SkinMaterial(CREATURE_PTR->Race()) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((MATERIALS_PAIR.first != material::Count)
+             && (MATERIALS_PAIR.first != material::Nothing)),
+            "item::armor::ArmorFactory::Make(body_part="
+                << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
+                << ", creature={" << CREATURE_PTR->ToString()
+                << "}) but that creature's skin material (material::SkinMaterial()) was "
+                   "invalid: pri="
+                << ((MATERIALS_PAIR.first == material::Count)
+                        ? "Count"
+                        : material::ToString(MATERIALS_PAIR.first))
+                << ", sec="
+                << ((MATERIALS_PAIR.second == material::Count)
+                        ? "Count"
+                        : material::ToString(MATERIALS_PAIR.second))
+                << ".");
+
+        const armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER{ BODY_PART };
+
+        auto const ARMOR_RATING{ Armor_t::Make(
+            material::ArmorRatingBonusPri(MATERIALS_PAIR.first).As<int>()
+            + CREATURE_PTR->Rank().As<int>()) };
+
+        auto const WEIGHT{ Weight_t::Make(
+            10.0f * material::WeightMult(MATERIALS_PAIR.first, MATERIALS_PAIR.second)) };
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
+            nameFactory_.MakeArmorBodyPartName(MATERIALS_PAIR, CREATURE_PTR),
+            nameFactory_.MakeArmorBodyPartDescription(MATERIALS_PAIR),
+            static_cast<category::Enum>(ItemProfile::CategoryArmor() | category::BodyPart),
+            MATERIALS_PAIR.first,
+            MATERIALS_PAIR.second,
+            0_coin,
+            WEIGHT,
+            0_health,
+            0_health,
+            ARMOR_RATING,
+            TypeWrapper(),
+            weapon::WeaponTypeWrapper(),
+            ARMOR_TYPE_WRAPPER,
+            CREATURE_PTR->IsPixie()));
+    }
+
+    const ItemPtr_t ItemFactory::MakeWeapon(const ItemProfile & PROFILE) const
+    {
+        auto const WEAPON_TYPE_WRAPPER{ PROFILE.WeaponInfo() };
+
+        auto const WEAPON_DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+            WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
+            nameFactory_.MakeNonBodyPartName(PROFILE),
+            nameFactory_.MakeNonBodyPartDescription(PROFILE, WEAPON_DETAILS.description),
+            PROFILE.Category(),
+            PROFILE.MaterialPrimary(),
+            PROFILE.MaterialSecondary(),
+            CalculatePrice(PROFILE, WEAPON_DETAILS.price),
+            CalculateWeight(PROFILE, WEAPON_DETAILS.weight),
+            WEAPON_DETAILS.damage_min,
+            WEAPON_DETAILS.damage_max,
+            0_armor,
+            TypeWrapper(PROFILE),
+            WEAPON_TYPE_WRAPPER,
+            PROFILE.ArmorInfo(),
+            PROFILE.IsPixie(),
+            PROFILE.RoleRestriction()));
+    }
+
+    const ItemPtr_t ItemFactory::MakeWeapon(
+        const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        const weapon::WeaponTypeWrapper WEAPON_TYPE_WRAPPER(BODY_PART);
+
+        if (BODY_PART == body_part::Breath)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((CREATURE_PTR->Role() == creature::role::Sylavin)
+                 || (CREATURE_PTR->Role() == creature::role::Firebrand)),
+                "WeaponFactory::Make(body_part=Breath, creature=\n{"
+                    << CREATURE_PTR->ToString()
+                    << "}\nbody part was breath but the creature's role was not Sylavin or "
+                       "Firebrand.");
+        }
+
+        auto const WEAPON_DETAILS_NAME{ (
+            (body_part::Breath == BODY_PART) ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
+                                                + creature::role::ToString(CREATURE_PTR->Role()))
+                                             : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+
+        const weapon::WeaponDetails WEAPON_DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+            WEAPON_DETAILS_NAME) };
+
+        // TODO move into MaterialsFactory
+        auto const MATERIALS{ [BODY_PART]() {
+            if (BODY_PART == body_part::Bite)
+            {
+                return std::make_pair(material::Tooth, material::Nothing);
+            }
+            else if (BODY_PART == body_part::Breath)
+            {
+                return std::make_pair(material::Gas, material::Nothing);
+            }
+            else if (BODY_PART == body_part::Claws)
+            {
+                return std::make_pair(material::Claw, material::Nothing);
+            }
+            else if (BODY_PART == body_part::Fists)
+            {
+                return std::make_pair(material::Bone, material::Hide);
+            }
+            else // tentacles
+            {
+                return std::make_pair(material::Plant, material::Nothing);
+            }
+        }() };
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
+            nameFactory_.MakeWeaponBodyPartName(CREATURE_PTR, WEAPON_TYPE_WRAPPER.ReadableName()),
+            nameFactory_.MakeWeaponBodyPartDescription(WEAPON_DETAILS.description, CREATURE_PTR),
+            ItemProfile::CategoryWeaponBodypart(BODY_PART),
+            MATERIALS.first,
+            MATERIALS.second,
+            WEAPON_DETAILS.price,
+            WEAPON_DETAILS.weight,
+            WEAPON_DETAILS.damage_min,
+            WEAPON_DETAILS.damage_max,
+            0_armor,
+            TypeWrapper(),
+            WEAPON_TYPE_WRAPPER,
+            armor::ArmorTypeWrapper(),
+            CREATURE_PTR->IsPixie()));
+    }
+
+    const ItemPtr_t ItemFactory::MakeMisc(const ItemProfile & PROFILE) const
+    {
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
+            // "" is okay in both places because there is special misc_type logic inside
+            nameFactory_.MakeNonBodyPartName(PROFILE),
+            nameFactory_.MakeNonBodyPartDescription(PROFILE, PROFILE.ReadableName()),
+            PROFILE.Category(),
+            PROFILE.MaterialPrimary(),
+            PROFILE.MaterialSecondary(),
+            // zero is okay in both places because there is special misc_type logic inside
+            CalculatePrice(PROFILE),
+            CalculateWeight(PROFILE),
+            0_health,
+            0_health,
+            0_armor,
+            TypeWrapper(PROFILE),
+            PROFILE.WeaponInfo(),
+            PROFILE.ArmorInfo(),
+            PROFILE.IsPixie(),
+            PROFILE.RoleRestriction()));
+    }
+
+    Coin_t ItemFactory::CalculatePrice(
+        const ItemProfile & PROFILE, const Coin_t BASE_PRICE_PARAM) const
+    {
+        auto const BASE_PRICE_FINAL{ (
+            (BASE_PRICE_PARAM > 0_coin) ? BASE_PRICE_PARAM
+                                        : TreasureScoreToCoins(PROFILE.TreasureScore())) };
+
+        Coin_t price{ BASE_PRICE_FINAL
+                      + material::PriceAdj(
+                            PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
+
+        if (PROFILE.IsPixie())
+        {
+            price = Coin_t::Make(price.As<float>() * 1.5f);
+        }
+
+        return price;
+    }
+
+    Weight_t ItemFactory::CalculateWeight(
+        const ItemProfile & PROFILE, const Weight_t BASE_WEIGHT_PARAM) const
+    {
+        auto weight{ (
+            (BASE_WEIGHT_PARAM > 0_weight) ? BASE_WEIGHT_PARAM
+                                           : misc_type::Weight(PROFILE.MiscType())) };
+
+        weight = Weight_t::Make(
+            weight.As<float>()
+            * material::WeightMult(PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()));
+
+        if (PROFILE.IsPixie())
+        {
+            weight /= 250_weight;
+        }
+
+        if (weight < 1_weight)
+        {
+            weight = 1_weight;
+        }
+
+        return weight;
+    }
+
+    Armor_t ItemFactory::CalculateArmorRating(
+        const ItemProfile & PROFILE, const Armor_t & BASE_ARMOR_RATING) const
+    {
+        // armor items with a clasp will not consider the secondary material in terms of armor
+        // rating because that is just the material of the clasp
+
+        return BASE_ARMOR_RATING
+            + material::ArmorRatingBonus(
+                   PROFILE.MaterialPrimary(),
+                   (((PROFILE.NameMaterialType() == name_material_type::Claspped)
+                     || (PROFILE.NameMaterialType() == name_material_type::ClasppedWithBase))
+                        ? material::Nothing
+                        : PROFILE.MaterialSecondary()));
+    }
+
+    Coin_t ItemFactory::TreasureScoreToCoins(const Score_t & TREASURE_SCORE) const
+    {
+        // For now Treasure Score equals the price in coins
+        return Coin_t::Make(TREASURE_SCORE);
     }
 
 } // namespace item

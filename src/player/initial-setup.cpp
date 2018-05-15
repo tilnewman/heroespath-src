@@ -7,20 +7,20 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// initial.cpp
+// initial-setup.cpp
 //
-#include "initial.hpp"
+#include "initial-setup.hpp"
 
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
-#include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
+#include "stats/trait.hpp"
 
 #include <exception>
 #include <sstream>
@@ -31,7 +31,7 @@ namespace heroespath
 namespace player
 {
 
-    void Initial::Setup(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::Setup(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         SetupInventory(CREATURE_PTR);
         SetupSpellsAndSongs(CREATURE_PTR);
@@ -40,7 +40,7 @@ namespace player
         SetStartingMana(CREATURE_PTR);
     }
 
-    void Initial::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         EquipBodyParts(CREATURE_PTR);
 
@@ -59,19 +59,19 @@ namespace player
                         profile.SetSword(
                             weapon::sword_type::Shortsword, material::Steel, material::Wood);
 
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                     case 2:
                     {
                         profile.SetSword(
                             weapon::sword_type::Cutlass, material::Steel, material::Wood);
 
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                     default:
                     {
                         profile.SetAxe(weapon::axe_type::Sickle, material::Steel, material::Wood);
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                 }
             }() };
@@ -86,7 +86,7 @@ namespace player
 
                 helmProfile.SetHelm(armor::helm_type::Great, material::Leather, material::Nothing);
 
-                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(helmProfile));
+                EnsureItemAddedAndEquipped(CREATURE_PTR, itemFactory_.Make(helmProfile));
             }
 
             return;
@@ -102,19 +102,19 @@ namespace player
                         profile.SetSword(
                             weapon::sword_type::Shortsword, material::Steel, material::Wood);
 
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                     case 2:
                     {
                         profile.SetSword(
                             weapon::sword_type::Cutlass, material::Steel, material::Wood);
 
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                     default:
                     {
                         profile.SetAxe(weapon::axe_type::Sickle, material::Steel, material::Wood);
-                        return item::ItemFactory::Make(profile);
+                        return itemFactory_.Make(profile);
                     }
                 }
             }() };
@@ -127,7 +127,7 @@ namespace player
             {
                 ItemProfile wandProfile;
                 wandProfile.SetMisc(misc_type::Wand, CREATURE_PTR->IsPixie(), material::Wood);
-                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(wandProfile));
+                EnsureItemAddedAndEquipped(CREATURE_PTR, itemFactory_.Make(wandProfile));
             }
 
             return;
@@ -137,7 +137,7 @@ namespace player
             {
                 ItemProfile bowProfile;
                 bowProfile.SetProjectile(weapon::projectile_type::Shortbow, material::Wood);
-                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(bowProfile));
+                EnsureItemAddedAndEquipped(CREATURE_PTR, itemFactory_.Make(bowProfile));
             }
 
             EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
@@ -166,7 +166,7 @@ namespace player
                     element_type::None,
                     CREATURE_PTR->IsPixie());
 
-                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(daggerProfile));
+                EnsureItemAddedAndEquipped(CREATURE_PTR, itemFactory_.Make(daggerProfile));
             }
 
             EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
@@ -204,19 +204,19 @@ namespace player
             || (ROLE_ENUM == creature::role::Firebrand))
         {
             EnsureItemAddedAndEquipped(
-                CREATURE_PTR, ItemFactory::Make(body_part::Skin, CREATURE_PTR));
+                CREATURE_PTR, itemFactory_.Make(body_part::Skin, CREATURE_PTR));
             return;
         }
 
         std::ostringstream ss;
-        ss << "player::Initial::SetupInventory(\"" << CREATURE_PTR->Name()
+        ss << "player::InitialSetup::SetupInventory(\"" << CREATURE_PTR->Name()
            << "\", race=" << CREATURE_PTR->RaceName() << ", role=" << CREATURE_PTR->RoleName()
            << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
     }
 
-    void Initial::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
@@ -250,7 +250,7 @@ namespace player
         }
     }
 
-    void Initial::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         using namespace item;
 
@@ -261,29 +261,29 @@ namespace player
                 || (CREATURE_PTR->Role() == creature::role::Firebrand)))
         {
             EnsureItemAddedAndEquipped(
-                CREATURE_PTR, ItemFactory::Make(body_part::Breath, CREATURE_PTR));
+                CREATURE_PTR, itemFactory_.Make(body_part::Breath, CREATURE_PTR));
         }
 
         if (BODY.HasClaws())
         {
             EnsureItemAddedAndEquipped(
-                CREATURE_PTR, ItemFactory::Make(body_part::Claws, CREATURE_PTR));
+                CREATURE_PTR, itemFactory_.Make(body_part::Claws, CREATURE_PTR));
         }
 
         if (BODY.HasBite())
         {
             EnsureItemAddedAndEquipped(
-                CREATURE_PTR, ItemFactory::Make(body_part::Bite, CREATURE_PTR));
+                CREATURE_PTR, itemFactory_.Make(body_part::Bite, CREATURE_PTR));
         }
 
         if ((BODY.IsHumanoid()) && (CREATURE_PTR->IsPixie() == false))
         {
             EnsureItemAddedAndEquipped(
-                CREATURE_PTR, ItemFactory::Make(body_part::Fists, CREATURE_PTR));
+                CREATURE_PTR, itemFactory_.Make(body_part::Fists, CREATURE_PTR));
         }
     }
 
-    Health_t Initial::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR)
+    Health_t InitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
@@ -298,14 +298,14 @@ namespace player
         return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
 
-    void Initial::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const STARTING_HEALTH{ GetStartingHealth(CREATURE_PTR) };
         CREATURE_PTR->HealthNormalSet(STARTING_HEALTH);
         CREATURE_PTR->HealthCurrentSet(STARTING_HEALTH);
     }
 
-    void Initial::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR)
+    void InitialSetup::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
@@ -326,14 +326,14 @@ namespace player
         }
     }
 
-    void Initial::EnsureItemAddedAndEquipped(
-        const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR)
+    void InitialSetup::EnsureItemAddedAndEquipped(
+        const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR) const
     {
         auto const ITEM_ADD_STR{ CREATURE_PTR->ItemAdd(ITEM_PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_ADD_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
-            "player::Initial::EnsureItemAddedAndEquipped() was unable to ADD item={"
+            "player::InitialSetup::EnsureItemAddedAndEquipped() was unable to ADD item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_ADD_STR << ".");
 
@@ -341,12 +341,12 @@ namespace player
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_EQUIP_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
-            "player::Initial::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
+            "player::InitialSetup::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_EQUIP_STR << ".");
     }
 
-    const item::ItemPtr_t Initial::MakePlainBoots(const bool IS_PIXIE)
+    const item::ItemPtr_t InitialSetup::MakePlainBoots(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -361,10 +361,10 @@ namespace player
             element_type::None,
             IS_PIXIE);
 
-        return ItemFactory::Make(profile);
+        return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t Initial::MakePlainShirt(const bool IS_PIXIE)
+    const item::ItemPtr_t InitialSetup::MakePlainShirt(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -379,10 +379,10 @@ namespace player
             element_type::None,
             IS_PIXIE);
 
-        return ItemFactory::Make(profile);
+        return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t Initial::MakePlainPants(const bool IS_PIXIE)
+    const item::ItemPtr_t InitialSetup::MakePlainPants(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -397,16 +397,16 @@ namespace player
             element_type::None,
             IS_PIXIE);
 
-        return ItemFactory::Make(profile);
+        return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t Initial::MakePlainWand(const bool IS_PIXIE)
+    const item::ItemPtr_t InitialSetup::MakePlainWand(const bool IS_PIXIE) const
     {
         using namespace item;
 
         ItemProfile profile;
         profile.SetMisc(misc_type::Wand, IS_PIXIE, material::Wood);
-        return ItemFactory::Make(profile);
+        return itemFactory_.Make(profile);
     }
 
 } // namespace player

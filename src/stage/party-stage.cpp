@@ -773,8 +773,8 @@ namespace stage
         }
 
         // create a new GameState with the given party and then save it
-        state::GameStateFactory::Instance()->NewGame(
-            player::PartyFactory::Make(PARTY_AVATAR, charPVec));
+        player::PartyFactory partyFactory;
+        state::GameStateFactory::Instance()->NewGame(partyFactory.Make(PARTY_AVATAR, charPVec));
 
         // Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning

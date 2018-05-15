@@ -15,7 +15,7 @@
 #include "creature/creature.hpp"
 #include "misc/random.hpp"
 #include "non-player/inventory-factory.hpp"
-#include "player/initial.hpp"
+#include "player/initial-setup.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "state/game-state-factory.hpp"
 #include "stats/stat-set.hpp"
@@ -27,7 +27,7 @@ namespace heroespath
 namespace creature
 {
 
-    const CreaturePtr_t CreatureFactory::MakeDefaultForDeserialization()
+    const CreaturePtr_t CreatureFactory::MakeDefaultForDeserialization() const
     {
         return CreatureWarehouse::Access().Store(std::make_unique<Creature>());
     }
@@ -38,9 +38,9 @@ namespace creature
         const race::Enum & RACE,
         const role::Enum & ROLE,
         const stats::StatSet & STATS,
-        const std::string & IMAGE_FILENAME)
+        const std::string & IMAGE_FILENAME) const
     {
-        auto const CHARACTER_PTR{ MakePlayerAndEquip(
+        auto const CHARACTER_PTR{ MakeAndEquipPlayer(
             NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME) };
 
         state::GameStateFactory::Instance()->SaveCharacter(CHARACTER_PTR);
@@ -51,9 +51,9 @@ namespace creature
         const std::string & NAME,
         const race::Enum & RACE,
         const role::Enum & ROLE,
-        const stats::StatSet & STATS)
+        const stats::StatSet & STATS) const
     {
-        return MakePlayerAndEquip(
+        return MakeAndEquipPlayer(
             NAME,
             ((misc::random::Bool()) ? creature::sex::Female : creature::sex::Male),
             RACE,
@@ -70,7 +70,7 @@ namespace creature
         const Health_t & HEALTH,
         const Rank_t & RANK,
         const Experience_t & EXPERIENCE,
-        const Mana_t & MANA)
+        const Mana_t & MANA) const
     {
         auto const VALID_ROLES{ race::Roles(RACE) };
 
@@ -86,11 +86,12 @@ namespace creature
         auto const CREATURE_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
-        non_player::ownership::InventoryFactory::SetupCreatureInventory(CREATURE_PTR);
+        non_player::ownership::InventoryFactory inventoryFactory;
+        inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
         return CREATURE_PTR;
     }
 
-    const CreaturePVec_t CreatureFactory::MakeFirstEncounterEnemies()
+    const CreaturePVec_t CreatureFactory::MakeFirstEncounterEnemies() const
     {
         CreaturePVec_t creaturesPVec;
 
@@ -102,22 +103,24 @@ namespace creature
         return creaturesPVec;
     }
 
-    const CreaturePtr_t CreatureFactory::MakePlayerAndEquip(
+    const CreaturePtr_t CreatureFactory::MakeAndEquipPlayer(
         const std::string & NAME,
         const sex::Enum SEX,
         const race::Enum & RACE,
         const role::Enum & ROLE,
         const stats::StatSet & STATS,
-        const std::string & IMAGE_FILENAME)
+        const std::string & IMAGE_FILENAME) const
     {
         auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
-        player::Initial::Setup(CHARACTER_PTR);
+        player::InitialSetup playerSetup;
+        playerSetup.Setup(CHARACTER_PTR);
+
         return CHARACTER_PTR;
     }
 
-    const CreaturePtr_t CreatureFactory::MakeGoblinGrunt()
+    const CreaturePtr_t CreatureFactory::MakeGoblinGrunt() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),

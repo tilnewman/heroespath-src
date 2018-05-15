@@ -30,13 +30,22 @@ namespace player
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
 
-    struct PartyFactory
+    // Responsible for making party objects full of player creatures.
+    class PartyFactory
     {
-        static PartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &);
-        static PartyUPtr_t MakeFakeForTesting();
+    public:
+        PartyFactory(const PartyFactory &) = delete;
+        PartyFactory(PartyFactory &&) = delete;
+        PartyFactory & operator=(const PartyFactory &) = delete;
+        PartyFactory & operator=(PartyFactory &&) = delete;
+
+        PartyFactory() = default;
+
+        PartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &) const;
+        PartyUPtr_t MakeFakeForTesting() const;
 
     private:
-        static const std::string MakeCharacterNameForTesting(const std::string & POSTFIX);
+        const std::string MakeCharacterNameForTesting(const std::string & POSTFIX) const;
     };
 
 } // namespace player

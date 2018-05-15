@@ -9,10 +9,11 @@
 //
 // item-factory.hpp
 //
-#include "item/item-factory-base.hpp"
+#include "item/item-name-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
 
 #include <memory>
 #include <string>
@@ -30,25 +31,46 @@ namespace item
 
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
-    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 
-    // Responsible for making new (and properly warehousing) item objects from (fat) ItemProfiles.
-    class ItemFactory : public ItemFactoryBase
+    // Responsible for making new (and properly warehousing) item objects from ItemProfiles.
+    class ItemFactory
     {
     public:
         ItemFactory(const ItemFactory &) = delete;
         ItemFactory(ItemFactory &&) = delete;
         ItemFactory & operator=(const ItemFactory &) = delete;
         ItemFactory & operator=(ItemFactory &&) = delete;
-        ItemFactory() = delete;
 
-        static bool Test();
+        ItemFactory() = default;
 
-        static const ItemPtr_t Make(const ItemProfile &);
-        static const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t);
+        bool Test() const;
+
+        const ItemPtr_t Make(const ItemProfile &) const;
+        const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t) const;
 
     private:
-        static void TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE);
+        void TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE) const;
+
+        const ItemPtr_t MakeArmor(const ItemProfile &) const;
+        const ItemPtr_t MakeArmor(const body_part::Enum, const creature::CreaturePtr_t) const;
+
+        const ItemPtr_t MakeWeapon(const ItemProfile &) const;
+        const ItemPtr_t MakeWeapon(const body_part::Enum, const creature::CreaturePtr_t) const;
+
+        const ItemPtr_t MakeMisc(const ItemProfile & PROFILE) const;
+
+        Coin_t CalculatePrice(
+            const ItemProfile & PROFILE, const Coin_t BASE_PRICE_PARAM = 0_coin) const;
+
+        Weight_t CalculateWeight(
+            const ItemProfile & PROFILE, const Weight_t BASE_WEIGHT_PARAM = 0_weight) const;
+
+        Armor_t CalculateArmorRating(
+            const ItemProfile & PROFILE, const Armor_t & BASE_ARMOR_RATING = 0_armor) const;
+
+        Coin_t TreasureScoreToCoins(const Score_t &) const;
+
+        ItemNameFactory nameFactory_;
     };
 
 } // namespace item

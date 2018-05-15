@@ -10,6 +10,7 @@
 // inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
+#include "item/item-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "misc/not-null.hpp"
@@ -44,7 +45,7 @@ namespace non_player
         // used by InventoryFactory
         using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
 
-        // Responsible for creating sets of items that will equip non-player characters.
+        // Responsible for creating sets of items that will equip non-player creatures.
         class InventoryFactory
         {
         public:
@@ -52,34 +53,36 @@ namespace non_player
             InventoryFactory(InventoryFactory &&) = delete;
             InventoryFactory & operator=(const InventoryFactory &) = delete;
             InventoryFactory & operator=(InventoryFactory &&) = delete;
-            InventoryFactory() = delete;
 
-            static void SetupCreatureInventory(const creature::CreaturePtr_t);
+            InventoryFactory() = default;
 
-            static const IItemPVecPair_t MakeItemSet(
+            void SetupCreatureInventory(const creature::CreaturePtr_t) const;
+
+            const IItemPVecPair_t MakeItemSet(
                 const chance::InventoryChances & CHANCES,
-                const creature::CreaturePtr_t CHARACTER_PTR);
+                const creature::CreaturePtr_t CHARACTER_PTR) const;
 
         private:
-            static const IItemPVecPair_t
-                MakeItemSet_Clothing(const chance::ClothingChances & CHANCES, const bool IS_PIXIE);
+            const IItemPVecPair_t MakeItemSet_Clothing(
+                const chance::ClothingChances & CHANCES, const bool IS_PIXIE) const;
 
-            static const IItemPVecPair_t MakeItemSet_Weapons(
-                const chance::WeaponChances & CHANCES, const creature::CreaturePtr_t CHARACTER_PTR);
+            const IItemPVecPair_t MakeItemSet_Weapons(
+                const chance::WeaponChances & CHANCES,
+                const creature::CreaturePtr_t CHARACTER_PTR) const;
 
-            static const IItemPVecPair_t MakeItemSet_Armor(
+            const IItemPVecPair_t MakeItemSet_Armor(
                 const chance::ArmorChances & CHANCES,
                 const creature::CreaturePtr_t CHARACTER_PTR,
-                const bool HAS_TWO_HANDED_WEAPON_EQUIPPED);
+                const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const;
 
-            static const item::ItemPVec_t MakeItemSet_BodyWeapons(
+            const item::ItemPVec_t MakeItemSet_BodyWeapons(
                 const chance::WeaponChances & CHANCES,
                 const creature::CreaturePtr_t CHARACTER_PTR,
-                const bool HAS_TWO_HANDED_WEAPON_EQUIPPED);
+                const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const;
 
-            static Coin_t Make_Coins(const chance::InventoryChances & CHANCES);
+            Coin_t Make_Coins(const chance::InventoryChances & CHANCES) const;
 
-            static bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC);
+            bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC) const;
 
             // Returns the chanceTotal so that the weapon type can be compared to other types based
             // on the total chance instead of the specific chance.  For example, the chance that one
@@ -87,8 +90,8 @@ namespace non_player
             // but we return the chance for all swords totaled together so that this selected sword
             // can be selected among other weapon types, such as axes/clubs/whips/etc.
             template <typename T>
-            static const std::pair<T, float>
-                RandomSelectWeapon(const misc::VectorMap<T, chance::ItemChances> & MAP)
+            const std::pair<T, float>
+                RandomSelectWeapon(const misc::VectorMap<T, chance::ItemChances> & MAP) const
             {
                 // TOOD handle multiple weapons
 
@@ -138,11 +141,11 @@ namespace non_player
                 return std::make_pair(highestChanceItem, highestChance);
             }
 
-            static void RemoveArmorTypeFromVecAndFree(
-                const item::armor_type::Enum ENUM, item::ItemPVec_t & vec);
+            void RemoveArmorTypeFromVecAndFree(
+                const item::armor_type::Enum ENUM, item::ItemPVec_t & vec) const;
 
             template <typename T>
-            static void RemoveItemsAndFree(item::ItemPVec_t & pVec, T & matchingLambda)
+            void RemoveItemsAndFree(item::ItemPVec_t & pVec, T & matchingLambda) const
             {
                 item::ItemPVec_t itemsToFreePVec;
 
@@ -158,6 +161,8 @@ namespace non_player
 
                 item::ItemWarehouse::Access().Free(itemsToFreePVec);
             }
+
+            item::ItemFactory itemFactory_;
         };
 
     } // namespace ownership

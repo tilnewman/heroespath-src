@@ -7,37 +7,37 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// item-factory-base.cpp
+// item-name-factory.cpp
 //
-#include "item-factory-base.hpp"
+#include "item-name-factory.hpp"
 
 #include "creature/creature.hpp"
+#include "item/item-profile.hpp"
 #include "item/item.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
 
 #include <cctype>
-#include <sstream>
 
 namespace heroespath
 {
 namespace item
 {
 
-    const std::string ItemFactoryBase::MakeWeaponBodyPartName(
-        const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME)
+    const std::string ItemNameFactory::MakeWeaponBodyPartName(
+        const creature::CreaturePtr_t CREATURE_PTR, const std::string & READABLE_NAME) const
     {
         return CREATURE_PTR->RaceName() + " " + READABLE_NAME;
     }
 
-    const std::string ItemFactoryBase::MakeWeaponBodyPartDescription(
-        const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR)
+    const std::string ItemNameFactory::MakeWeaponBodyPartDescription(
+        const std::string & BASE_DESCRIPTION, const creature::CreaturePtr_t CREATURE_PTR) const
     {
         return BASE_DESCRIPTION + " " + creature::race::Name(CREATURE_PTR->Race());
     }
 
-    const std::string ItemFactoryBase::MakeArmorBodyPartName(
-        const MaterialPair_t & MATERIALS_PAIR, const creature::CreaturePtr_t CREATURE_PTR)
+    const std::string ItemNameFactory::MakeArmorBodyPartName(
+        const MaterialPair_t & MATERIALS_PAIR, const creature::CreaturePtr_t CREATURE_PTR) const
     {
         std::ostringstream ss;
         ss << CREATURE_PTR->RaceName() << "'s ";
@@ -53,7 +53,7 @@ namespace item
     }
 
     const std::string
-        ItemFactoryBase::MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR)
+        ItemNameFactory::MakeArmorBodyPartDescription(const MaterialPair_t & MATERIALS_PAIR) const
     {
         std::ostringstream ss;
         ss << "tough skin made of " << material::Name(MATERIALS_PAIR.first);
@@ -66,7 +66,7 @@ namespace item
         return ss.str();
     }
 
-    const std::string ItemFactoryBase::MakeNonBodyPartName(const ItemProfile & PROFILE)
+    const std::string ItemNameFactory::MakeNonBodyPartName(const ItemProfile & PROFILE) const
     {
         std::ostringstream ss;
 
@@ -138,8 +138,8 @@ namespace item
         return ss.str();
     }
 
-    const std::string ItemFactoryBase::MakeNonBodyPartDescription(
-        const ItemProfile & PROFILE, const std::string & BASE_DESC)
+    const std::string ItemNameFactory::MakeNonBodyPartDescription(
+        const ItemProfile & PROFILE, const std::string & BASE_DESC) const
     {
         std::ostringstream ss;
 
@@ -197,71 +197,7 @@ namespace item
         return ss.str();
     }
 
-    Coin_t
-        ItemFactoryBase::CalculatePrice(const ItemProfile & PROFILE, const Coin_t BASE_PRICE_PARAM)
-    {
-        auto const BASE_PRICE_FINAL{ (
-            (BASE_PRICE_PARAM > 0_coin) ? BASE_PRICE_PARAM
-                                        : TreasureScoreToCoins(PROFILE.TreasureScore())) };
-
-        Coin_t price{ BASE_PRICE_FINAL
-                      + material::PriceAdj(
-                            PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
-
-        if (PROFILE.IsPixie())
-        {
-            price = Coin_t::Make(price.As<float>() * 1.5f);
-        }
-
-        return price;
-    }
-
-    Weight_t ItemFactoryBase::CalculateWeight(
-        const ItemProfile & PROFILE, const Weight_t BASE_WEIGHT_PARAM)
-    {
-        auto weight{ (
-            (BASE_WEIGHT_PARAM > 0_weight) ? BASE_WEIGHT_PARAM
-                                           : misc_type::Weight(PROFILE.MiscType())) };
-
-        weight = Weight_t::Make(
-            weight.As<float>()
-            * material::WeightMult(PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()));
-
-        if (PROFILE.IsPixie())
-        {
-            weight /= 250_weight;
-        }
-
-        if (weight < 1_weight)
-        {
-            weight = 1_weight;
-        }
-
-        return weight;
-    }
-
-    Armor_t ItemFactoryBase::CalculateArmorRating(
-        const ItemProfile & PROFILE, const Armor_t & BASE_ARMOR_RATING)
-    {
-        // armor items with a clasp will not consider the secondary material in terms of armor
-        // rating because that is just the material of the clasp
-
-        return BASE_ARMOR_RATING
-            + material::ArmorRatingBonus(
-                   PROFILE.MaterialPrimary(),
-                   (((PROFILE.NameMaterialType() == name_material_type::Claspped)
-                     || (PROFILE.NameMaterialType() == name_material_type::ClasppedWithBase))
-                        ? material::Nothing
-                        : PROFILE.MaterialSecondary()));
-    }
-
-    Coin_t ItemFactoryBase::TreasureScoreToCoins(const Score_t & TREASURE_SCORE)
-    {
-        // For now Treasure Score equals the price in coins
-        return Coin_t::Make(TREASURE_SCORE);
-    }
-
-    const std::string ItemFactoryBase::HandledNamePrefix(const ItemProfile & PROFILE)
+    const std::string ItemNameFactory::HandledNamePrefix(const ItemProfile & PROFILE) const
     {
         if ((PROFILE.WeaponInfo().WhipType() == weapon::whip_type::Bullwhip)
             || (PROFILE.WeaponInfo().ProjectileType() == weapon::projectile_type::Sling))
@@ -274,7 +210,8 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::ReadableNameWithoutArmorBaseType(const ItemProfile & PROFILE)
+    const std::string
+        ItemNameFactory::ReadableNameWithoutArmorBaseType(const ItemProfile & PROFILE) const
     {
         if (PROFILE.IsArmor())
         {
@@ -286,7 +223,7 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::PrefixAOrAn(const material::Enum MATERIAL)
+    const std::string ItemNameFactory::PrefixAOrAn(const material::Enum MATERIAL) const
     {
         if (material::RequiresAnPrefix(MATERIAL))
         {
@@ -298,7 +235,7 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::RandomCoatedPhrase()
+    const std::string ItemNameFactory::RandomCoatedPhrase() const
     {
         if (misc::random::Bool())
         {
@@ -310,7 +247,7 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::RandomCoatedAdjective()
+    const std::string ItemNameFactory::RandomCoatedAdjective() const
     {
         switch (misc::random::Int(3))
         {
@@ -334,11 +271,11 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::JeweledAdjective() { return "jeweled"; }
+    const std::string ItemNameFactory::JeweledAdjective() const { return "jeweled"; }
 
-    const std::string ItemFactoryBase::AdornedAdjective() { return "adorned"; }
+    const std::string ItemNameFactory::AdornedAdjective() const { return "adorned"; }
 
-    const std::string ItemFactoryBase::RandomClaspNoun()
+    const std::string ItemNameFactory::RandomClaspNoun() const
     {
         switch (misc::random::Int(2))
         {
@@ -358,13 +295,13 @@ namespace item
         }
     }
 
-    bool ItemFactoryBase::IsNonEmptyWithoutTrailingSpace(std::ostringstream & ss)
+    bool ItemNameFactory::IsNonEmptyWithoutTrailingSpace(std::ostringstream & ss) const
     {
         auto const CURRENT_STR{ ss.str() };
         return ((CURRENT_STR.empty() == false) && (CURRENT_STR.at(CURRENT_STR.size() - 1) != ' '));
     }
 
-    const std::string ItemFactoryBase::AppendSpaceIfNeeded(std::ostringstream & ss)
+    const std::string ItemNameFactory::AppendSpaceIfNeeded(std::ostringstream & ss) const
     {
         if (IsNonEmptyWithoutTrailingSpace(ss))
         {
@@ -376,8 +313,8 @@ namespace item
         }
     }
 
-    void ItemFactoryBase::AppendPixiePhraseIfNeeded(
-        const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream & ss)
+    void ItemNameFactory::AppendPixiePhraseIfNeeded(
+        const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream & ss) const
     {
         if (PROFILE.IsPixie())
         {
@@ -394,7 +331,7 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE)
+    const std::string ItemNameFactory::ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE) const
     {
         auto const BASE_TYPE{ PROFILE.ArmorInfo().BaseType() };
         if (PROFILE.IsArmor()
@@ -408,8 +345,8 @@ namespace item
         }
     }
 
-    void ItemFactoryBase::AppendBlessedOrCursedIfNeeded(
-        const ItemProfile & PROFILE, std::ostringstream & ss)
+    void ItemNameFactory::AppendBlessedOrCursedIfNeeded(
+        const ItemProfile & PROFILE, std::ostringstream & ss) const
     {
         if (PROFILE.IsUnique() == false)
         {
@@ -435,8 +372,8 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SeccondaryMaterialPhrase(
-        const PhraseType PHRASE_TYPE, const ItemProfile & PROFILE)
+    const std::string ItemNameFactory::SeccondaryMaterialPhrase(
+        const PhraseType PHRASE_TYPE, const ItemProfile & PROFILE) const
     {
         auto const SECONDARY_MATERIAL{ PROFILE.MaterialSecondary() };
 
@@ -519,8 +456,8 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseDecoration(
-        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemNameFactory::SecondaryMaterialPhraseDecoration(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME) const
     {
         if (material::IsFancyJewel(SECONDARY_MATERIAL))
         {
@@ -542,15 +479,15 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseHandle(
-        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemNameFactory::SecondaryMaterialPhraseHandle(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME) const
     {
         return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME
             + " handle";
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseReinforced(
-        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemNameFactory::SecondaryMaterialPhraseReinforced(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME) const
     {
         if (material::IsMetal(SECONDARY_MATERIAL))
         {
@@ -562,14 +499,14 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseTipped(
-        const material::Enum, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemNameFactory::SecondaryMaterialPhraseTipped(
+        const material::Enum, const std::string & SECONDARY_MATERIAL_NAME) const
     {
         return " tipped with " + SECONDARY_MATERIAL_NAME;
     }
 
-    const std::string ItemFactoryBase::SecondaryMaterialPhraseClasped(
-        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME)
+    const std::string ItemNameFactory::SecondaryMaterialPhraseClasped(
+        const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME) const
     {
         if (material::IsFancyJewel(SECONDARY_MATERIAL))
         {
@@ -590,7 +527,7 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::FirstLetterLowercaseCopy(const std::string & ORIG_STR)
+    const std::string ItemNameFactory::FirstLetterLowercaseCopy(const std::string & ORIG_STR) const
     {
         std::string finalStr{ ORIG_STR };
 

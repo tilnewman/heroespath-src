@@ -31,7 +31,7 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 
-    // Creates sets of creatures that are enemies, not player characters.
+    // Creates fuly equipped and setup (and warehoused) creatures, both player and non-player.
     class CreatureFactory
     {
     public:
@@ -39,25 +39,26 @@ namespace creature
         CreatureFactory(CreatureFactory &&) = delete;
         CreatureFactory & operator=(const CreatureFactory &) = delete;
         CreatureFactory & operator=(CreatureFactory &&) = delete;
-        CreatureFactory() = delete;
 
-        static const CreaturePtr_t MakeDefaultForDeserialization();
+        CreatureFactory() = default;
 
-        static void MakeEquipSaveAndFreePlayer(
+        const CreaturePtr_t MakeDefaultForDeserialization() const;
+
+        void MakeEquipSaveAndFreePlayer(
             const std::string & NAME,
             const sex::Enum SEX,
             const race::Enum & RACE,
             const role::Enum & ROLE,
             const stats::StatSet & STATS,
-            const std::string & IMAGE_FILENAME);
+            const std::string & IMAGE_FILENAME) const;
 
-        static const CreaturePtr_t MakeAndEquipPlayerForTesting(
+        const CreaturePtr_t MakeAndEquipPlayerForTesting(
             const std::string & NAME,
             const race::Enum & RACE,
             const role::Enum & ROLE,
-            const stats::StatSet & STATS);
+            const stats::StatSet & STATS) const;
 
-        static const CreaturePtr_t MakeAndEquipEnemy(
+        const CreaturePtr_t MakeAndEquipEnemy(
             const sex::Enum SEX,
             const race::Enum RACE,
             const role::Enum ROLE,
@@ -65,20 +66,20 @@ namespace creature
             const Health_t & HEALTH,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
-            const Mana_t & MANA = 0_mana);
+            const Mana_t & MANA = 0_mana) const;
 
-        static const CreaturePVec_t MakeFirstEncounterEnemies();
+        const CreaturePVec_t MakeFirstEncounterEnemies() const;
 
     private:
-        static const CreaturePtr_t MakePlayerAndEquip(
+        const CreaturePtr_t MakeAndEquipPlayer(
             const std::string & NAME,
             const sex::Enum SEX,
             const race::Enum & RACE,
             const role::Enum & ROLE,
             const stats::StatSet & STATS,
-            const std::string & IMAGE_FILENAME);
+            const std::string & IMAGE_FILENAME) const;
 
-        static const CreaturePtr_t MakeGoblinGrunt();
+        const CreaturePtr_t MakeGoblinGrunt() const;
     };
 
 } // namespace creature

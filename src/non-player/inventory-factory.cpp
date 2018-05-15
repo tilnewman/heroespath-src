@@ -32,7 +32,8 @@ namespace non_player
     namespace ownership
     {
 
-        void InventoryFactory::SetupCreatureInventory(const creature::CreaturePtr_t CREATURE_PTR)
+        void InventoryFactory::SetupCreatureInventory(
+            const creature::CreaturePtr_t CREATURE_PTR) const
         {
             auto const INVENTORY_CHANCES{ ChanceFactory::Make(CREATURE_PTR) };
             CREATURE_PTR->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
@@ -93,7 +94,8 @@ namespace non_player
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet(
-            const chance::InventoryChances & CHANCES, const creature::CreaturePtr_t CHARACTER_PTR)
+            const chance::InventoryChances & CHANCES,
+            const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             IItemPVecPair_t itemsPtrVecPair;
 
@@ -101,7 +103,7 @@ namespace non_player
                 != item::material::Nothing)
             {
                 itemsPtrVecPair.first.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Skin, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Skin, CHARACTER_PTR));
             }
 
             {
@@ -313,7 +315,7 @@ namespace non_player
         } // namespace ownership
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Clothing(
-            const chance::ClothingChances & CHANCES, const bool IS_PIXIE)
+            const chance::ClothingChances & CHANCES, const bool IS_PIXIE) const
         {
             using namespace item;
             // Assume there is only one of each article of clothing.
@@ -335,7 +337,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.gloves.IsOwned())
@@ -351,7 +353,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.pants.IsOwned())
@@ -367,7 +369,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.shirt.IsOwned())
@@ -383,7 +385,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             if (CHANCES.vest.IsOwned())
@@ -399,7 +401,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             auto const COVER_TYPE{ CHANCES.RandomCoverType() };
@@ -424,7 +426,7 @@ namespace non_player
                     element_type::None,
                     IS_PIXIE);
 
-                itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
             return itemsPtrVecPair;
@@ -432,7 +434,7 @@ namespace non_player
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(
             const chance::WeaponChances & WEAPON_CHANCES,
-            const creature::CreaturePtr_t CHARACTER_PTR)
+            const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             using namespace item;
 
@@ -580,7 +582,7 @@ namespace non_player
                             CHARACTER_PTR->IsPixie());
                     }
 
-                    itemsPtrVecPair.first.emplace_back(ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Staff:
@@ -608,7 +610,7 @@ namespace non_player
                             CHARACTER_PTR->IsPixie());
                     }
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Axe:
@@ -643,7 +645,7 @@ namespace non_player
 
                     profile.SetAxe(AXE_TYPE, MATERIAL_PRI, materialSec);
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::BladedStaff:
@@ -679,7 +681,7 @@ namespace non_player
 
                     ItemProfile profile;
                     profile.SetBladedStaff(BLADEDSTAFF_TYPE, MATERIAL_PRI, materialSec);
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Club:
@@ -715,7 +717,7 @@ namespace non_player
 
                     ItemProfile profile;
                     profile.SetClub(CLUB_TYPE, MATERIAL_PRI, materialSec);
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Projectile:
@@ -746,7 +748,7 @@ namespace non_player
                         projChances.RandomMaterialPri(),
                         projChances.RandomMaterialSec());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Sword:
@@ -777,7 +779,7 @@ namespace non_player
                         swordChances.RandomMaterialPri(),
                         swordChances.RandomMaterialSec());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Whip:
@@ -808,7 +810,7 @@ namespace non_player
                         whipChances.RandomMaterialPri(),
                         whipChances.RandomMaterialSec());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     break;
                 }
                 case weapon_type::Bladed:
@@ -834,7 +836,7 @@ namespace non_player
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(
             const chance::ArmorChances & CHANCES,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            const bool HAS_TWO_HANDED_WEAPON)
+            const bool HAS_TWO_HANDED_WEAPON) const
         {
             using namespace item;
             using namespace item::armor;
@@ -858,7 +860,7 @@ namespace non_player
                         CHANCES.aventail.RandomMaterialPri(),
                         CHANCES.aventail.RandomMaterialSec());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -886,7 +888,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -914,7 +916,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -942,7 +944,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -970,7 +972,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -998,7 +1000,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -1042,7 +1044,7 @@ namespace non_player
                         element_type::None,
                         CHARACTER_PTR->IsPixie());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -1082,7 +1084,7 @@ namespace non_player
                         helmChances.RandomMaterialPri(),
                         helmChances.RandomMaterialSec());
 
-                    itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                    itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                 }
             }
             catch (...)
@@ -1124,11 +1126,11 @@ namespace non_player
 
                     if (HAS_TWO_HANDED_WEAPON)
                     {
-                        itemsPtrVecPair.second.emplace_back(item::ItemFactory::Make(profile));
+                        itemsPtrVecPair.second.emplace_back(itemFactory_.Make(profile));
                     }
                     else
                     {
-                        itemsPtrVecPair.first.emplace_back(item::ItemFactory::Make(profile));
+                        itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
                     }
                 }
             }
@@ -1148,33 +1150,33 @@ namespace non_player
         const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(
             const chance::WeaponChances & CHANCES,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            const bool HAS_TWO_HANDED_WEAPON_EQUIPPED)
+            const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const
         {
             item::ItemPVec_t bodyWeaponsSVec;
 
             if (CHANCES.has_bite)
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Bite, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Bite, CHARACTER_PTR));
             }
 
             if (CHANCES.has_claws && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Claws, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Claws, CHARACTER_PTR));
             }
 
             if (CHANCES.has_fists && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false)
                 && (CHANCES.has_claws == false))
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Fists, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Fists, CHARACTER_PTR));
             }
 
             if (CHANCES.has_tentacles && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Tentacles, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Tentacles, CHARACTER_PTR));
             }
 
             if (CHANCES.has_breath
@@ -1182,18 +1184,18 @@ namespace non_player
                     || (CHARACTER_PTR->Role() == creature::role::Firebrand)))
             {
                 bodyWeaponsSVec.emplace_back(
-                    item::ItemFactory::Make(item::body_part::Breath, CHARACTER_PTR));
+                    itemFactory_.Make(item::body_part::Breath, CHARACTER_PTR));
             }
 
             return bodyWeaponsSVec;
         }
 
-        Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
+        Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES) const
         {
             return CHANCES.RandomCoins();
         }
 
-        bool InventoryFactory::ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_PVEC)
+        bool InventoryFactory::ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_PVEC) const
         {
             for (auto const & NEXT_WEAPON_PTR : WEAPON_PVEC)
             {
@@ -1207,7 +1209,7 @@ namespace non_player
         }
 
         void InventoryFactory::RemoveArmorTypeFromVecAndFree(
-            const item::armor_type::Enum ENUM, item::ItemPVec_t & vec)
+            const item::armor_type::Enum ENUM, item::ItemPVec_t & vec) const
         {
             item::ItemPVec_t itemsToRemovePVec;
 

@@ -240,7 +240,8 @@ namespace combat
         // fight.
         if (game::Game::Instance()->State().IsNewGame())
         {
-            nonPlayerPartyPVec_ = creature::CreatureFactory::MakeFirstEncounterEnemies();
+            creature::CreatureFactory creatureFactory;
+            nonPlayerPartyPVec_ = creatureFactory.MakeFirstEncounterEnemies();
         }
 
         // TODO move this to the Adventure Stage as well

@@ -13,10 +13,8 @@
 
 #include "creature/enchantment-factory.hpp"
 #include "creature/race-enum.hpp"
-#include "item/armor-factory.hpp"
 #include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
-#include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 

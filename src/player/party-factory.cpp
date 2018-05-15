@@ -16,7 +16,7 @@
 #include "creature/name-info.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
-#include "player/initial.hpp"
+#include "player/initial-setup.hpp"
 #include "player/party.hpp"
 #include "stats/stat-set.hpp"
 
@@ -29,13 +29,15 @@ namespace player
 {
 
     PartyUPtr_t PartyFactory::Make(
-        const avatar::Avatar::Enum AVATAR, const creature::CreaturePVec_t & CHARACTERS)
+        const avatar::Avatar::Enum AVATAR, const creature::CreaturePVec_t & CHARACTERS) const
     {
         return std::make_unique<Party>(AVATAR, CHARACTERS);
     }
 
-    PartyUPtr_t PartyFactory::MakeFakeForTesting()
+    PartyUPtr_t PartyFactory::MakeFakeForTesting() const
     {
+        creature::CreatureFactory creatureFactory;
+
         creature::CreaturePVec_t creaturesPVec;
 
         const int STAT_BASE_HIGH{ 18 };
@@ -52,7 +54,7 @@ namespace player
             STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
             STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("K"),
             creature::race::Human,
             creature::role::Knight,
@@ -67,7 +69,7 @@ namespace player
             Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("F"),
             creature::race::Dragon,
             creature::role::Firebrand,
@@ -82,7 +84,7 @@ namespace player
             10 + misc::random::Int(8),
             5  + misc::random::Int(6));
 
-                creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+                creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("A"),
                         creature::race::Human,
                         creature::role::Archer,
@@ -97,7 +99,7 @@ namespace player
             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
             STAT_BASE_LOW  + misc::random::Int(STAT_RAND));
 
-                creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+                creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("W"),
                         creature::race::Wolfen,
                         creature::role::Wolfen,
@@ -112,7 +114,7 @@ namespace player
             Speed_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("B"),
             creature::race::Human,
             creature::role::Bard,
@@ -126,7 +128,7 @@ namespace player
             Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("G"),
             creature::race::Human,
             creature::role::Beastmaster,
@@ -140,7 +142,7 @@ namespace player
             Speed_t(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("T"),
             creature::race::Gnome,
             creature::role::Thief,
@@ -154,7 +156,7 @@ namespace player
             Speed_t(STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("C"),
             creature::race::Pixie,
             creature::role::Cleric,
@@ -169,7 +171,7 @@ namespace player
             STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND),
             STAT_BASE_HIGH + 4 +  misc::random::Int(STAT_RAND));
 
-                creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+                creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
                         MakeCharacterNameForTesting("S"),
                         creature::race::Pixie,
                         creature::role::Sorcerer,
@@ -184,7 +186,7 @@ namespace player
             Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
-        creaturesPVec.emplace_back(creature::CreatureFactory::MakeAndEquipPlayerForTesting(
+        creaturesPVec.emplace_back(creatureFactory.MakeAndEquipPlayerForTesting(
             MakeCharacterNameForTesting("D"),
             creature::race::Dragon,
             creature::role::Sylavin,
@@ -193,7 +195,7 @@ namespace player
         return std::make_unique<player::Party>(avatar::Avatar::Puck_Male_Light, creaturesPVec);
     }
 
-    const std::string PartyFactory::MakeCharacterNameForTesting(const std::string & POSTFIX)
+    const std::string PartyFactory::MakeCharacterNameForTesting(const std::string & POSTFIX) const
     {
         creature::NameInfo creatureNameInfo;
 

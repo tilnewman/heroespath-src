@@ -265,9 +265,10 @@ namespace item
             }
         }
 
+        ItemFactory itemFactory;
         for (auto const PROFILE_INDEX : selectedIndexVec)
         {
-            itemCache_OutParam.items_pvec.emplace_back(ItemFactory::Make(PROFILES[PROFILE_INDEX]));
+            itemCache_OutParam.items_pvec.emplace_back(itemFactory.Make(PROFILES[PROFILE_INDEX]));
         }
 
         return selectedIndexVec.size();
@@ -280,7 +281,9 @@ namespace item
             PopulateFallbackItemProfiles();
         }
 
-        auto const ITEM_PTR{ ItemFactory::Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
+        ItemFactory itemFactory;
+
+        auto const ITEM_PTR{ itemFactory.Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
 
         itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }

@@ -9,6 +9,7 @@
 //
 // armor-ratings.hpp
 //
+#include "item/item-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
@@ -48,6 +49,8 @@ namespace item
         Armor_t LesserArmorSetRating(const item::material::Enum) const;
         Armor_t GreaterArmorSetRating(const item::material::Enum) const;
         Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &) const;
+
+        ItemFactory itemFactory_;
 
         Armor_t lesserSteel_;
         Armor_t greaterSteel_;
