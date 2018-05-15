@@ -3,11 +3,11 @@ This repository holds the source-code of the Heroes’ Path game.
 
 
 ## About the Game
-Heroes' Path is an open-source, free (non-commercial), simple, 2D game in the classic RPG turn-based style.  It was created more as a learning exercise than as an attempt to finish a full game.  I intend to implement a few hours worth of playtime, and then leave it as a fully-playable, all be it short, running game.  Given the permissive license the software and resource files are released under, it is possible for others to finish the game or to make their own ‘spin-off’ versions.
+Heroes' Path is a free (non-commercial), open-source (beerware), simple, 2D game in the classic RPG turn-based style.  I intend to implement a few hours worth of playtime, and then leave it as a fully-playable, all be it short, running game.  The license is intentionally (sarcastically) permissive, allowing anyone to finish the game or to make their own spin-off versions.
 
 
 ## About the Code
-The code is written in C++ (C++14).  I have endeavored to keep the code simple and straightforward, staying away from the dark corners of the type system and templates.  I relied heavily on SFML (“Simple Fast Multimedia Library”, www.sfml-dev.org) for 2D graphics and sound, while using the Boost (boost.org) libraries sparingly.
+The code is written in C++ (C++14 but moving to C++17).  I have endeavored to keep the code simple and straightforward, staying away from the dark corners of the type system and templates.  I relied heavily on SFML (“Simple Fast Multimedia Library”, www.sfml-dev.org) for 2D graphics and sound, while using the Boost (boost.org) libraries sparingly, mostly for serialization and xml parsing.
 
 This is a CMake project, and I maintained three build environments that compile cleanly at high warning levels:
  * Windows running Visual Studio 2017
