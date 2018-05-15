@@ -48,7 +48,6 @@
 #include "item/weapon-details.hpp"
 #include "log/logger.hpp"
 #include "log/macros.hpp"
-#include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "non-player/chance-factory.hpp"
 #include "non-player/inventory-factory.hpp"
@@ -80,19 +79,38 @@ namespace heroespath
 namespace game
 {
 
-    bool StartupShutdown::Setup(const std::string & APPLICATION_NAME, const int ARGC, char * argv[])
+    StartupShutdown::StartupShutdown()
+        : platform_()
+    {}
+
+    bool StartupShutdown::Setup(
+        const std::string & APPLICATION_NAME, const int ARGC, char * argv[]) const
     {
         try
         {
+            // this order is critical
+
             // initialize the log first so that all Setup() actions can be logged
             log::Logger::Acquire();
 
-            Setup_DetectLogAndCheckPlatform();
-            Setup_SeedRandomNumberGenerator();
-            Setup_ParseCommandLineArguments(ARGC, argv);
-            Setup_GameDataFile();
+            platform_.Log();
+            if (platform_.IsSupported() == false)
+            {
+                throw std::runtime_error(
+                    "This system/platform is not supported.  See log for details.");
+            }
 
-            // this order is critical
+            srand(static_cast<unsigned>(time(nullptr)));
+            misc::random::MersenneTwister::Seed();
+
+            Setup_ParseCommandLineArguments(ARGC, argv);
+
+            game::GameDataFile::Acquire();
+            game::GameDataFile::Instance()->Initialize();
+
+            item::armor::ArmorDetailLoader::LoadFromGameDataFile();
+            item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
+
             sfml_util::gui::GuiElements::LoadTexture();
             Setup_Display(APPLICATION_NAME);
             Setup_ManagerClassResourcePaths();
@@ -121,7 +139,7 @@ namespace game
         return false;
     }
 
-    int StartupShutdown::Run()
+    int StartupShutdown::Run() const
     {
         try
         {
@@ -146,7 +164,7 @@ namespace game
         return EXIT_FAILURE;
     }
 
-    int StartupShutdown::Teardown()
+    int StartupShutdown::Teardown() const
     {
         int exitCode{ EXIT_SUCCESS };
 
@@ -159,7 +177,7 @@ namespace game
         return exitCode;
     }
 
-    void StartupShutdown::Teardown_SettingsFile(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_SettingsFile(int & exitCode_OutParam) const
     {
         try
         {
@@ -184,7 +202,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_CloseDisplay(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_CloseDisplay(int & exitCode_OutParam) const
     {
         try
         {
@@ -212,7 +230,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_EmptyHolders(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_EmptyHolders(int & exitCode_OutParam) const
     {
         try
         {
@@ -242,7 +260,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_ReleaseSubsystems(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_ReleaseSubsystems(int & exitCode_OutParam) const
     {
         try
         {
@@ -291,7 +309,6 @@ namespace game
 
             // these two are needed almost everywhere so release them last
             GameDataFile::Release();
-            misc::Platform::Release();
         }
         catch (const std::exception & E)
         {
@@ -313,7 +330,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_Logger(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_Logger(int & exitCode_OutParam) const
     {
         try
         {
@@ -337,7 +354,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Setup_ParseCommandLineArguments(const int ARGC, char * argv[])
+    void StartupShutdown::Setup_ParseCommandLineArguments(const int ARGC, char * argv[]) const
     {
         if (ARGC >= 2)
         {
@@ -355,26 +372,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Setup_SeedRandomNumberGenerator()
-    {
-        srand(static_cast<unsigned>(time(nullptr)));
-        misc::random::MersenneTwister::Seed();
-    }
-
-    void StartupShutdown::Setup_DetectLogAndCheckPlatform()
-    {
-        misc::Platform::Acquire();
-        misc::Platform::Instance()->DetectAndLog();
-
-        if (misc::Platform::Instance()->IsSupported() == false)
-        {
-            throw std::runtime_error(
-                "StartupShutdown::Setup_DetectLogAndCheckPlatform() is throwing this exception "
-                "because this system (platform) is not supported.  See log for details.");
-        }
-    }
-
-    void StartupShutdown::Setup_Display(const std::string & APPLICATION_NAME)
+    void StartupShutdown::Setup_Display(const std::string & APPLICATION_NAME) const
     {
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
@@ -387,7 +385,7 @@ namespace game
             game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
     }
 
-    void StartupShutdown::Setup_ManagerClassResourcePaths()
+    void StartupShutdown::Setup_ManagerClassResourcePaths() const
     {
         popup::PopupManager::SetTexturesDirectoryPaths(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
@@ -398,7 +396,7 @@ namespace game
             game::GameDataFile::Instance()->GetMediaPath("media-music-dir"));
     }
 
-    void StartupShutdown::Setup_HoldersFill()
+    void StartupShutdown::Setup_HoldersFill() const
     {
         creature::title::Holder::Fill();
         creature::condition::Holder::Fill();
@@ -407,7 +405,7 @@ namespace game
         combat::trap::Holder::Fill();
     }
 
-    void StartupShutdown::Setup_SubsystemsAcquire()
+    void StartupShutdown::Setup_SubsystemsAcquire() const
     {
         state::NpcWarehouse::Acquire();
         state::NpcFactory::Acquire();
@@ -427,7 +425,7 @@ namespace game
         LoopManager::Acquire();
     }
 
-    void StartupShutdown::Setup_SubsystemsInitialize()
+    void StartupShutdown::Setup_SubsystemsInitialize() const
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.
@@ -437,14 +435,6 @@ namespace game
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
         item::ItemProfileWarehouse::Instance()->Initialize();
-    }
-
-    void StartupShutdown::Setup_GameDataFile()
-    {
-        game::GameDataFile::Acquire();
-        game::GameDataFile::Instance()->Initialize();
-        item::armor::ArmorDetailLoader::LoadFromGameDataFile();
-        item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
     }
 
 } // namespace game

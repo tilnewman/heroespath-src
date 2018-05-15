@@ -28,6 +28,7 @@
 // main.cpp
 //
 #include "game/startup-shutdown.hpp"
+
 #include <cstdlib>
 #include <iostream>
 
@@ -35,14 +36,16 @@ int main(int argc, char * argv[])
 {
     using namespace heroespath::game;
 
+    StartupShutdown startStop;
+
     int runExitCode{ EXIT_FAILURE };
 
-    if (StartupShutdown::Setup("Heroes' Path", argc, argv))
+    if (startStop.Setup("Heroes' Path", argc, argv))
     {
-        runExitCode = StartupShutdown::Run();
+        runExitCode = startStop.Run();
     }
 
-    auto const TEARDOWN_EXIT_CODE{ StartupShutdown::Teardown() };
+    auto const TEARDOWN_EXIT_CODE{ startStop.Teardown() };
 
     auto const SUCCESS{ ((EXIT_SUCCESS == runExitCode) && (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) };
 

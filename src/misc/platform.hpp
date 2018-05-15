@@ -26,7 +26,6 @@
 #define HEROESPATH_MISC_PLATFORM_HPP_INCLUDED
 //
 // platform.hpp
-//  Code that detects the platform and stores it.
 //
 #include "misc/not-null.hpp"
 
@@ -81,7 +80,7 @@ namespace misc
         static const std::string ToString(const platform_type::Enum);
     };
 
-    // Subsystem responsible for detecting, logging, and storing the system platform.
+    // Responsible for detecting, logging, and storing the platform this app is running on.
     class Platform
     {
     public:
@@ -92,21 +91,12 @@ namespace misc
 
         Platform();
 
-        static misc::NotNull<Platform *> Instance();
-        static void Acquire();
-        static void Release();
-
-        void DetectAndLog();
-
+        void Log() const;
         platform_type::Enum Get() const { return platform_; }
-
         const std::string GetName() const { return platform_type::ToString(platform_); }
-
         bool IsWindows() const { return (platform_type::Windows == platform_); }
-
         bool IsLinux() const { return (platform_type::Linux == platform_); }
-
-        bool IsApple() const { return (platform_type::Apple == platform_); }
+        bool IsMacOS() const { return (platform_type::Apple == platform_); }
 
         bool IsSupported() const
         {
@@ -115,9 +105,11 @@ namespace misc
         }
 
     private:
-        static std::unique_ptr<Platform> instanceUPtr_;
+        platform_type::Enum Detect() const;
+
         platform_type::Enum platform_;
     };
+
 } // namespace misc
 } // namespace heroespath
 

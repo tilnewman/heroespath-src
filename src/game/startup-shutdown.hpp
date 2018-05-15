@@ -27,6 +27,8 @@
 //
 // startup-shutdown.hpp
 //
+#include "misc/platform.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,29 +36,36 @@ namespace heroespath
 namespace game
 {
 
-    // responsible for starting and stopping the application
-    struct StartupShutdown
+    // Responsible for setting up and then tearing down the application.
+    class StartupShutdown
     {
-        static bool Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]);
-        static int Run();
-        static int Teardown();
+    public:
+        StartupShutdown(const StartupShutdown &) = delete;
+        StartupShutdown(StartupShutdown &&) = delete;
+        StartupShutdown & operator=(const StartupShutdown &) = delete;
+        StartupShutdown & operator=(StartupShutdown &&) = delete;
+
+        StartupShutdown();
+
+        bool Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]) const;
+        int Run() const;
+        int Teardown() const;
 
     private:
-        static void Teardown_SettingsFile(int & exitCode_OutParam);
-        static void Teardown_CloseDisplay(int & exitCode_OutParam);
-        static void Teardown_EmptyHolders(int & exitCode_OutParam);
-        static void Teardown_ReleaseSubsystems(int & exitCode_OutParam);
-        static void Teardown_Logger(int & exitCode_OutParam);
+        void Teardown_SettingsFile(int & exitCode_OutParam) const;
+        void Teardown_CloseDisplay(int & exitCode_OutParam) const;
+        void Teardown_EmptyHolders(int & exitCode_OutParam) const;
+        void Teardown_ReleaseSubsystems(int & exitCode_OutParam) const;
+        void Teardown_Logger(int & exitCode_OutParam) const;
 
-        static void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]);
-        static void Setup_DetectLogAndCheckPlatform();
-        static void Setup_SeedRandomNumberGenerator();
-        static void Setup_Display(const std::string & APPLICATION_NAME);
-        static void Setup_ManagerClassResourcePaths();
-        static void Setup_HoldersFill();
-        static void Setup_SubsystemsAcquire();
-        static void Setup_SubsystemsInitialize();
-        static void Setup_GameDataFile();
+        void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]) const;
+        void Setup_Display(const std::string & APPLICATION_NAME) const;
+        void Setup_ManagerClassResourcePaths() const;
+        void Setup_HoldersFill() const;
+        void Setup_SubsystemsAcquire() const;
+        void Setup_SubsystemsInitialize() const;
+
+        misc::Platform platform_;
     };
 
 } // namespace game

@@ -43,6 +43,12 @@ namespace game
 
     GameDataFile::GameDataFile()
         : ConfigBase("game-data.txt", "=", "#")
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+        , mediaBasePathKeyStr_("system-media-dir-win")
+#else
+        , mediaBasePathKeyStr_("system-media-dir-linux")
+#endif
+        , mediaBasePathStr_("")
     {
         M_HP_LOG_DBG("Subsystem Construction: GameDataFile");
     }
@@ -83,47 +89,30 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
-        auto const LOAD_SUCCESS{ instanceUPtr_->config::ConfigBase::Load() };
+        auto const LOAD_SUCCESS{ Instance()->config::ConfigBase::Load() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LOAD_SUCCESS),
             "game::GameDataFile::Initialize() config::ConfigBase::Load() returned false.");
+
+        mediaBasePathStr_ = GetCopyStr(mediaBasePathKeyStr_);
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (mediaBasePathStr_.empty() == false),
+            "game::GameDataFile::Initialize() mediaBasePathKeyStr_=" << mediaBasePathKeyStr_
+                                                                     << " was not found.");
     }
 
     const std::string GameDataFile::GetMediaPath(const std::string & KEY) const
     {
-        const std::string PATH(GetCopyStr(KEY));
+        auto const PATH_STR{ GetCopyStr(KEY) };
+
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (PATH.empty() == false),
+            (PATH_STR.empty() == false),
             "GameDataFile::GetMediaPath(\"" << KEY
                                             << "\") failed to find that key in the config file.");
 
-        std::ostringstream ss;
-        ss << GetMediaBasePathStr() << PATH;
-        return ss.str();
-    }
-
-    const std::string GameDataFile::CreateMediaPath(const std::string & PATH) const
-    {
-        std::ostringstream ss;
-        ss << GetMediaBasePathStr() << PATH;
-        return ss.str();
-    }
-
-    const std::string GameDataFile::GetMediaBasePathStr() const
-    {
-        const std::string MEDIA_BASE_PATH_KEY_STR(
-            (misc::Platform::Instance()->IsWindows()) ? "system-media-dir-win"
-                                                      : "system-media-dir-linux");
-
-        const std::string MEDIA_BASE_PATH_STR(GetCopyStr(MEDIA_BASE_PATH_KEY_STR));
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (MEDIA_BASE_PATH_STR.empty() == false),
-            "GameDataFile::GetMediaBasePathStr(key=\""
-                << MEDIA_BASE_PATH_KEY_STR << "\") failed to find that key in the config file.");
-
-        return MEDIA_BASE_PATH_STR;
+        return mediaBasePathStr_ + PATH_STR;
     }
 
 } // namespace game

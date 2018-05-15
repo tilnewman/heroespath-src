@@ -30,7 +30,6 @@
 #include "platform.hpp"
 
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 
 #include <exception>
@@ -75,68 +74,51 @@ namespace misc
         }
     }
 
-    std::unique_ptr<Platform> Platform::instanceUPtr_;
-
     Platform::Platform()
-        : platform_(platform_type::Unknown)
+        : platform_(Detect())
+    {}
+
+    platform_type::Enum Platform::Detect() const
     {
-        M_HP_LOG_DBG("Subsystem Construction: Platform");
+        platform_type::Enum platform{ platform_type::Unknown };
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+        platform = platform_type::Windows;
+#endif
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
+        platform = platform_type::Unsupported;
+#endif
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
+        platform = platform_type::Apple;
+#endif
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
+        platform = platform_type::Linux;
+#endif
+
+        return platform;
     }
 
-    misc::NotNull<Platform *> Platform::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Platform");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void Platform::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<Platform>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Subsystem Acquire() after Constructor: Platform");
-        }
-    }
-
-    void Platform::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "misc::Platform::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-    void Platform::DetectAndLog()
+    void Platform::Log() const
     {
         std::ostringstream ss;
-        platform_ = platform_type::Unknown;
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
         ss << "  Windows";
-        platform_ = platform_type::Windows;
 #endif
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
         ss << "  APPLE (OS9)";
-        platform_ = platform_type::Unsupported;
 #endif
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
         ss << "  APPLE (OS)";
-        platform_ = platform_type::Apple;
 #endif
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
         ss << "  Linux";
-        platform_ = platform_type::Linux;
 #endif
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_UNIX
@@ -160,9 +142,8 @@ namespace misc
             ss << "(None!  This unknown platform is probably not supported...)";
         }
 
-        M_HP_LOG(
-            "Platform(s) Detected:  " << ss.str() << "  The platform_type has been set to "
-                                      << GetName() << ".");
+        M_HP_LOG("Platform(s) Detected:  " << ss.str());
     }
+
 } // namespace misc
 } // namespace heroespath

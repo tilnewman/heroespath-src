@@ -53,16 +53,17 @@ namespace game
 
         GameDataFile();
         virtual ~GameDataFile() = default;
+
         static misc::NotNull<GameDataFile *> Instance();
         static void Acquire();
         static void Release();
-        static void Initialize();
 
+        void Initialize();
         const std::string GetMediaPath(const std::string & KEY) const;
-        const std::string CreateMediaPath(const std::string & PATH) const;
-        const std::string GetMediaBasePathStr() const;
 
     private:
+        std::string mediaBasePathKeyStr_;
+        std::string mediaBasePathStr_;
         static std::unique_ptr<GameDataFile> instanceUPtr_;
     };
 
