@@ -586,8 +586,7 @@ namespace item
                     // you would think this should be axe_type::Name() called here, but the names
                     // are so distinct that we use ToString() instead, intentionally.
                     specificName_ = axe_type::ToString(AXE_TYPE);
-
-                    systemName_ = axe_type::ToString(AXE_TYPE);
+                    systemName_ = specificName_;
 
                     if (AXE_TYPE == axe_type::Sickle)
                     {
