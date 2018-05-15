@@ -16,6 +16,7 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
 
+#include <cctype>
 #include <sstream>
 
 namespace heroespath
@@ -70,7 +71,11 @@ namespace item
         std::ostringstream ss;
 
         AppendBlessedOrCursedIfNeeded(PROFILE, ss);
-        AppendPixiePhraseIfNeeded(PROFILE, PhraseType::Name, ss);
+
+        if (PROFILE.IsSet() == false)
+        {
+            AppendPixiePhraseIfNeeded(PROFILE, PhraseType::Name, ss);
+        }
 
         auto const ELEMENT_TYPE_STR{ [&]() -> std::string {
             if (PROFILE.IsElemental())
@@ -116,7 +121,8 @@ namespace item
                    << ArmorBaseTypeNamePrefix(PROFILE) << HandledNamePrefix(PROFILE);
             }
 
-            auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PROFILE) };
+            auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(
+                PhraseType::Name, PROFILE) };
 
             if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary())
                 && (IS_COVER_ARMOR_MADE_OF_CLOTH == false))
@@ -151,8 +157,7 @@ namespace item
 
         if (PROFILE.IsSet())
         {
-            ss << ", an enchanted " << PROFILE.ReadableName() << " from "
-               << set_type::Name(PROFILE.SetType()) << " Set";
+            ss << ", from " << set_type::Name(PROFILE.SetType()) << " Set";
         }
         else if (PROFILE.IsNamed())
         {
@@ -164,10 +169,10 @@ namespace item
             ss << ", known as a " << misc_type::Name(PROFILE.MiscType());
         }
 
-        ss << ", made of " << material::Name(PROFILE.MaterialPrimary())
+        ss << ", made of " << FirstLetterLowercaseCopy(material::Name(PROFILE.MaterialPrimary()))
            << ArmorBaseTypeNamePrefix(PROFILE);
 
-        auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PROFILE) };
+        auto const SECONDARY_MATERIAL_PHRASE{ SeccondaryMaterialPhrase(PhraseType::Desc, PROFILE) };
 
         if (SECONDARY_MATERIAL_PHRASE.empty() == false)
         {
@@ -384,7 +389,7 @@ namespace item
             }
             else
             {
-                ss << "Pixie sized";
+                ss << "pixie sized";
             }
         }
     }
@@ -430,10 +435,22 @@ namespace item
         }
     }
 
-    const std::string ItemFactoryBase::SeccondaryMaterialPhrase(const ItemProfile & PROFILE)
+    const std::string ItemFactoryBase::SeccondaryMaterialPhrase(
+        const PhraseType PHRASE_TYPE, const ItemProfile & PROFILE)
     {
         auto const SECONDARY_MATERIAL{ PROFILE.MaterialSecondary() };
-        auto const SECONDARY_MATERIAL_NAME{ material::Name(SECONDARY_MATERIAL) };
+
+        auto const SECONDARY_MATERIAL_NAME{ [&]() {
+            // make lowercase if a Description and not a Name
+            if (PHRASE_TYPE == PhraseType::Desc)
+            {
+                return FirstLetterLowercaseCopy(material::Name(SECONDARY_MATERIAL));
+            }
+            else
+            {
+                return material::Name(SECONDARY_MATERIAL);
+            }
+        }() };
 
         if ((SECONDARY_MATERIAL == material::Nothing) || material::IsGas(SECONDARY_MATERIAL))
         {
@@ -571,6 +588,18 @@ namespace item
             return " with " + PrefixAOrAn(SECONDARY_MATERIAL) + " " + SECONDARY_MATERIAL_NAME
                 + " clasp";
         }
+    }
+
+    const std::string ItemFactoryBase::FirstLetterLowercaseCopy(const std::string & ORIG_STR)
+    {
+        std::string finalStr{ ORIG_STR };
+
+        if (finalStr.empty() == false)
+        {
+            finalStr[0] = static_cast<char>(std::tolower(finalStr[0]));
+        }
+
+        return finalStr;
     }
 
 } // namespace item

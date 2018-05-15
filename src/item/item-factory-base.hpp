@@ -93,7 +93,7 @@ namespace item
         static void AppendPixiePhraseIfNeeded(
             const ItemProfile & PROFILE, const PhraseType PHRASE_TYPE, std::ostringstream &);
 
-        static const std::string SeccondaryMaterialPhrase(const ItemProfile &);
+        static const std::string SeccondaryMaterialPhrase(const PhraseType, const ItemProfile &);
 
         static const std::string SecondaryMaterialPhraseDecoration(
             const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
@@ -109,6 +109,8 @@ namespace item
 
         static const std::string SecondaryMaterialPhraseClasped(
             const material::Enum SECONDARY_MATERIAL, const std::string & SECONDARY_MATERIAL_NAME);
+
+        static const std::string FirstLetterLowercaseCopy(const std::string &);
     };
 
 } // namespace item
