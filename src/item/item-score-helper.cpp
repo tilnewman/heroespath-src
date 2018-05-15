@@ -16,7 +16,7 @@ namespace heroespath
 namespace item
 {
 
-    Score_t ScoreHelper::Score(const stats::TraitSet & TRAIT_SET)
+    Score_t ScoreHelper::Score(const stats::TraitSet & TRAIT_SET) const
     {
         using namespace stats;
 
@@ -79,14 +79,14 @@ namespace item
         return score;
     }
 
-    Score_t ScoreHelper::Score(const material::Enum PRI, const material::Enum SEC)
+    Score_t ScoreHelper::Score(const material::Enum PRI, const material::Enum SEC) const
     {
         auto const BONUS_PRI{ material::EnchantmentBonus(PRI, material::Nothing) };
         auto const BONUS_SEC{ material::EnchantmentBonus(SEC, material::Nothing) };
         return Score_t::Make(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
     }
 
-    Score_t ScoreHelper::Score(const weapon::axe_type::Enum AXE_TYPE)
+    Score_t ScoreHelper::Score(const weapon::axe_type::Enum AXE_TYPE) const
     {
         using namespace weapon;
 
@@ -116,7 +116,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const weapon::bladedstaff_type::Enum BSTAFF_TYPE)
+    Score_t ScoreHelper::Score(const weapon::bladedstaff_type::Enum BSTAFF_TYPE) const
     {
         using namespace weapon;
 
@@ -154,7 +154,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const weapon::club_type::Enum CLUB_TYPE)
+    Score_t ScoreHelper::Score(const weapon::club_type::Enum CLUB_TYPE) const
     {
         using namespace weapon;
 
@@ -184,7 +184,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const weapon::projectile_type::Enum PROJ_TYPE)
+    Score_t ScoreHelper::Score(const weapon::projectile_type::Enum PROJ_TYPE) const
     {
         using namespace weapon;
 
@@ -222,7 +222,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const weapon::sword_type::Enum SWORD_TYPE)
+    Score_t ScoreHelper::Score(const weapon::sword_type::Enum SWORD_TYPE) const
     {
         using namespace weapon;
 
@@ -280,7 +280,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const weapon::whip_type::Enum WHIP_TYPE)
+    Score_t ScoreHelper::Score(const weapon::whip_type::Enum WHIP_TYPE) const
     {
         using namespace weapon;
 
@@ -306,15 +306,15 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::ScoreKnife() { return 22_score; }
+    Score_t ScoreHelper::ScoreKnife() const { return 22_score; }
 
-    Score_t ScoreHelper::ScoreDagger() { return 33_score; }
+    Score_t ScoreHelper::ScoreDagger() const { return 33_score; }
 
-    Score_t ScoreHelper::ScoreStaff() { return 25_score; }
+    Score_t ScoreHelper::ScoreStaff() const { return 25_score; }
 
-    Score_t ScoreHelper::ScoreQuarterStaff() { return 15_score; }
+    Score_t ScoreHelper::ScoreQuarterStaff() const { return 15_score; }
 
-    Score_t ScoreHelper::Score(const armor::cover_type::Enum COVER_TYPE)
+    Score_t ScoreHelper::Score(const armor::cover_type::Enum COVER_TYPE) const
     {
         using namespace armor;
 
@@ -344,7 +344,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const armor::helm_type::Enum HELM_TYPE)
+    Score_t ScoreHelper::Score(const armor::helm_type::Enum HELM_TYPE) const
     {
         using namespace armor;
 
@@ -382,7 +382,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const armor::shield_type::Enum SHIELD_TYPE)
+    Score_t ScoreHelper::Score(const armor::shield_type::Enum SHIELD_TYPE) const
     {
         using namespace armor;
 
@@ -413,7 +413,7 @@ namespace item
     }
 
     Score_t ScoreHelper::Score(
-        const armor_type::Enum ARMOR_TYPE, const armor::base_type::Enum BASE_TYPE)
+        const armor_type::Enum ARMOR_TYPE, const armor::base_type::Enum BASE_TYPE) const
     {
         if (ARMOR_TYPE == armor_type::Aventail)
         {
@@ -445,7 +445,7 @@ namespace item
         }
     }
 
-    Score_t ScoreHelper::Score(const armor::base_type::Enum ARMOR_BASE_TYPE)
+    Score_t ScoreHelper::Score(const armor::base_type::Enum ARMOR_BASE_TYPE) const
     {
         using namespace armor;
 

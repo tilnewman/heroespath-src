@@ -16,6 +16,7 @@
 #include "combat/turn-info.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-image-enum.hpp"
+#include "item/treasure.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 
@@ -170,6 +171,8 @@ namespace combat
         creature::CreaturePtrOpt_t lockPickCreaturePtrOpt_;
 
         strategy::CreatureStrategies creatureStrategies_;
+
+        item::TreasureFactory treasureFactory_;
     };
 
 } // namespace combat

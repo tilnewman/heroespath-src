@@ -8,7 +8,6 @@
 #define HEROESPATH_ITEM_TREASURE_HPP_INCLUDED
 //
 // treasure.hpp
-//  Functions that determine what treasure a defeated enemy party has.
 //
 #include "item/item-profile.hpp"
 #include "item/treasure-image-enum.hpp"
@@ -84,55 +83,65 @@ namespace item
 
     using RandomSelectionVec_t = std::vector<RandomSelection>;
 
-    struct TreasureFactory
+    // Responsible for deciding what treasure a given creatures has.
+    class TreasureFactory
     {
-        // Decides what treasure the given creatures have and adds it
-        // to items_OutParam.  It is assumed, but not required, that
-        // items_OutParam is empty when Make is called.
-        static TreasureImage::Enum
-            Make(const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & items_OutParam);
+    public:
+        TreasureFactory(const TreasureFactory &) = delete;
+        TreasureFactory(TreasureFactory &&) = delete;
+        TreasureFactory & operator=(const TreasureFactory &) = delete;
+        TreasureFactory & operator=(TreasureFactory &&) = delete;
 
-        static float TreasureRatioPer(const creature::CreaturePVec_t &);
+        TreasureFactory() = default;
+
+        TreasureImage::Enum
+            Make(const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & items_OutParam) const;
+
+        float TreasureRatioPer(const creature::CreaturePVec_t &) const;
 
     private:
-        static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &);
+        TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &) const;
 
         // uses a TreasureInfo object to hold/return sum values
-        static const TreasureScores CalculateTreasureSums(const creature::CreaturePVec_t &);
+        const TreasureScores CalculateTreasureSums(const creature::CreaturePVec_t &) const;
 
-        static const TreasureScores MakeRandTreasureInfo(const creature::CreaturePVec_t &);
+        const TreasureScores MakeRandTreasureInfo(const creature::CreaturePVec_t &) const;
 
-        static std::size_t SelectItems(
-            const Score_t & TREASURE_SCORE, const bool IS_RELIGIOUS, ItemCache & items_OutParam);
+        std::size_t SelectItems(
+            const Score_t & TREASURE_SCORE,
+            const bool IS_RELIGIOUS,
+            ItemCache & items_OutParam) const;
 
-        static void ForceItemSelection(ItemCache & items_OutParam);
+        void ForceItemSelection(ItemCache & items_OutParam) const;
 
-        static std::size_t SelectRandomWeighted(
-            const double WEIGHT_SUM, const RandomSelectionVec_t &, const std::size_t INDEX_LIMIT);
+        std::size_t SelectRandomWeighted(
+            const double WEIGHT_SUM,
+            const RandomSelectionVec_t &,
+            const std::size_t INDEX_LIMIT) const;
 
-        static double TreasureScoreToWeight(const Score_t & SCORE)
+        double TreasureScoreToWeight(const Score_t & SCORE) const
         {
             return 1.0 / (SCORE.As<double>() * 0.1);
         }
 
-        static const SetTypeProfileVec_t SetItemsAlreadyOwned();
+        const SetTypeProfileVec_t SetItemsAlreadyOwned() const;
 
-        static double PopuplatePossibleVectorAndReturnWeightSum(
+        double PopuplatePossibleVectorAndReturnWeightSum(
             RandomSelectionVec_t & possibleVec,
             const ItemProfileVec_t & PROFILES,
             const Score_t & MAX_SCORE,
             const bool IS_RELIGIOUS,
-            const SetTypeProfileVec_t & OWNED_SET_PROFILES);
+            const SetTypeProfileVec_t & OWNED_SET_PROFILES) const;
 
-        static void FindNewPossibleVectorLimitAndUpdateWeightSum(
+        void FindNewPossibleVectorLimitAndUpdateWeightSum(
             RandomSelectionVec_t & possibleVec,
             const Score_t & MAX_SCORE,
             std::size_t & possibleIndexLimit,
-            double & weightSum);
+            double & weightSum) const;
 
-        static void PopulateFallbackItemProfiles();
+        void PopulateFallbackItemProfiles() const;
 
-        static ItemProfileVec_t fallbackItemProfiles_;
+        mutable ItemProfileVec_t fallbackItemProfiles_;
     };
 
 } // namespace item

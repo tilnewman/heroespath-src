@@ -412,9 +412,11 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(SWORD_TYPE),
+                scoreHelper.Score(SWORD_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -439,9 +441,11 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(AXE_TYPE),
+                scoreHelper.Score(AXE_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -466,9 +470,11 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(CLUB_TYPE),
+                scoreHelper.Score(CLUB_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -493,9 +499,11 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(WHIP_TYPE),
+                scoreHelper.Score(WHIP_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -522,9 +530,11 @@ namespace item
         {
             using namespace weapon;
 
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(PROJECTILE_TYPE),
+                scoreHelper.Score(PROJECTILE_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -549,9 +559,11 @@ namespace item
             const element_type::Enum ELEMENT_TYPE = element_type::None,
             const bool IS_PIXIE = false)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreKnife(),
+                scoreHelper.ScoreKnife(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -577,9 +589,11 @@ namespace item
             const element_type::Enum ELEMENT_TYPE = element_type::None,
             const bool IS_PIXIE = false)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreDagger(),
+                scoreHelper.ScoreDagger(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -603,9 +617,11 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreQuarterStaff(),
+                scoreHelper.ScoreQuarterStaff(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -632,9 +648,11 @@ namespace item
             const misc_type::Enum MISC_TYPE = misc_type::Not,
             const bool IS_PIXIE = false)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::ScoreStaff(),
+                scoreHelper.ScoreStaff(),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -663,9 +681,11 @@ namespace item
             const element_type::Enum ELEMENT_TYPE = element_type::None,
             const misc_type::Enum MISC_TYPE = misc_type::Not)
         {
+            item::ScoreHelper scoreHelper;
+
             SetWeaponHelper(
                 THIN_PROFILE,
-                ScoreHelper::Score(BLADEDSTAFF_TYPE),
+                scoreHelper.Score(BLADEDSTAFF_TYPE),
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 NAMED_TYPE,
@@ -720,7 +740,8 @@ namespace item
                     ELEMENT_TYPE,
                     IS_PIXIE);
 
-                score_ += ScoreHelper::Score(SPECIFIC_ARMOR_TYPE);
+                item::ScoreHelper scoreHelper;
+                score_ += scoreHelper.Score(SPECIFIC_ARMOR_TYPE);
 
                 score_ += NonMiscScoreBasedOnMaterialsAndEnchantments(
                     MATERIAL_PRIMARY,

@@ -35,7 +35,7 @@ namespace non_player
         void InventoryFactory::SetupCreatureInventory(
             const creature::CreaturePtr_t CREATURE_PTR) const
         {
-            auto const INVENTORY_CHANCES{ ChanceFactory::Make(CREATURE_PTR) };
+            auto const INVENTORY_CHANCES{ ChanceFactory::Instance()->Make(CREATURE_PTR) };
             CREATURE_PTR->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
 
             //.first is for equipped items and .second is for unequipped items

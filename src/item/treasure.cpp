@@ -30,8 +30,6 @@ namespace heroespath
 namespace item
 {
 
-    ItemProfileVec_t TreasureFactory::fallbackItemProfiles_{};
-
     SetTypeProfile::SetTypeProfile(const Item & ITEM)
         : set(ITEM.SetType())
         , weapon(ITEM.WeaponType())
@@ -47,7 +45,7 @@ namespace item
     }
 
     TreasureImage::Enum TreasureFactory::Make(
-        const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam)
+        const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam) const
     {
         auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
@@ -66,8 +64,8 @@ namespace item
         return DetermineWhichTreasureImage(TREASURE_SCORES);
     }
 
-    const TreasureScores
-        TreasureFactory::CalculateTreasureSums(const creature::CreaturePVec_t & CHARACTER_PVEC)
+    const TreasureScores TreasureFactory::CalculateTreasureSums(
+        const creature::CreaturePVec_t & CHARACTER_PVEC) const
     {
         TreasureScores scores;
 
@@ -84,7 +82,7 @@ namespace item
     }
 
     TreasureImage::Enum
-        TreasureFactory::DetermineWhichTreasureImage(const TreasureScores & TREASURE_SCORES)
+        TreasureFactory::DetermineWhichTreasureImage(const TreasureScores & TREASURE_SCORES) const
     {
         if (TREASURE_SCORES.IsEmpty())
         {
@@ -102,7 +100,7 @@ namespace item
         }
     }
 
-    float TreasureFactory::TreasureRatioPer(const creature::CreaturePVec_t & CHARACTER_PVEC)
+    float TreasureFactory::TreasureRatioPer(const creature::CreaturePVec_t & CHARACTER_PVEC) const
     {
         TreasureScores scores;
 
@@ -134,7 +132,7 @@ namespace item
     }
 
     const TreasureScores
-        TreasureFactory::MakeRandTreasureInfo(const creature::CreaturePVec_t & CHARACTER_PVEC)
+        TreasureFactory::MakeRandTreasureInfo(const creature::CreaturePVec_t & CHARACTER_PVEC) const
     {
         TreasureScores scores;
 
@@ -189,7 +187,9 @@ namespace item
     }
 
     std::size_t TreasureFactory::SelectItems(
-        const Score_t & TREASURE_SCORE, const bool IS_RELIGIOUS, ItemCache & itemCache_OutParam)
+        const Score_t & TREASURE_SCORE,
+        const bool IS_RELIGIOUS,
+        ItemCache & itemCache_OutParam) const
     {
         // this function assumes that ItemProfileWarehouse::Instance()->Get() returns a vector
         // sorted by TreasureScore()
@@ -274,7 +274,7 @@ namespace item
         return selectedIndexVec.size();
     }
 
-    void TreasureFactory::ForceItemSelection(ItemCache & itemCache_OutParam)
+    void TreasureFactory::ForceItemSelection(ItemCache & itemCache_OutParam) const
     {
         if (fallbackItemProfiles_.empty())
         {
@@ -291,7 +291,7 @@ namespace item
     std::size_t TreasureFactory::SelectRandomWeighted(
         const double WEIGHT_SUM,
         const RandomSelectionVec_t & POSSIBLE_SELECTIONS,
-        const std::size_t INDEX_LIMIT)
+        const std::size_t INDEX_LIMIT) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (POSSIBLE_SELECTIONS.empty() == false),
@@ -319,7 +319,7 @@ namespace item
         return INDEX_LIMIT;
     }
 
-    const SetTypeProfileVec_t TreasureFactory::SetItemsAlreadyOwned()
+    const SetTypeProfileVec_t TreasureFactory::SetItemsAlreadyOwned() const
     {
         SetTypeProfileVec_t ownedSetProfiles;
         ownedSetProfiles.reserve(128); // found by experiment to be a good upper bound
@@ -356,7 +356,7 @@ namespace item
         const ItemProfileVec_t & PROFILES,
         const Score_t & MAX_SCORE,
         const bool IS_RELIGIOUS,
-        const SetTypeProfileVec_t & OWNED_SET_PROFILES)
+        const SetTypeProfileVec_t & OWNED_SET_PROFILES) const
     {
         possibleVec.clear();
 
@@ -406,7 +406,7 @@ namespace item
         RandomSelectionVec_t & possibleVec,
         const Score_t & MAX_SCORE,
         std::size_t & possibleIndexLimit,
-        double & weightSum)
+        double & weightSum) const
     {
         for (;; --possibleIndexLimit)
         {
@@ -433,7 +433,7 @@ namespace item
         }
     }
 
-    void TreasureFactory::PopulateFallbackItemProfiles()
+    void TreasureFactory::PopulateFallbackItemProfiles() const
     {
         fallbackItemProfiles_.reserve(745); // this was the size measured on 2018-3-19
 

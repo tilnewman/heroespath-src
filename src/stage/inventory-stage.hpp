@@ -9,9 +9,9 @@
 //
 // inventory-stage.hpp
 //
-#include "combat/combat-text.hpp"
 #include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
+#include "combat/turn-action-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"

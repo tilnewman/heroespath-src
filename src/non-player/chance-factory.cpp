@@ -39,34 +39,48 @@ namespace non_player
         const float ChanceFactory::CHANCE_MAXIMUM_{ 0.999f };
         const float ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_SET_{ 0.5f };
         const float ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_{ 0.1f };
+
         std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_;
-        chance::MaterialChanceMap_t ChanceFactory::materialChanceMapCool_;
-        chance::MaterialChanceMap_t ChanceFactory::materialChanceMapMetal_;
-        chance::MaterialChanceMap_t ChanceFactory::materialChanceMapPrecious_;
 
-        misc::VectorMap<creature::role::Enum, ChanceFactory::RoleArmorChanceVec_t>
-            ChanceFactory::roleArmorChanceMap_{};
-
-        misc::VectorMap<creature::role::Enum, ChanceFactory::WeaponSetVec_t>
-            ChanceFactory::roleWeaponChanceMap_{};
-
-        float ChanceFactory::masterRankMax_{ 0.0f };
-        float ChanceFactory::clothingChanceMin_{ 0.0f };
-        float ChanceFactory::clothingChanceMax_{ 0.0f };
-        float ChanceFactory::materialPrimaryChanceCool_{ 0.0f };
-        float ChanceFactory::materialPrimaryChanceMetal_{ 0.0f };
-        float ChanceFactory::materialPrimaryChancePrecious_{ 0.0f };
-        float ChanceFactory::collectorMaterialChanceIncreaseCool_{ 0.0f };
-        float ChanceFactory::collectorMaterialChanceIncreaseMetal_{ 0.0f };
-        float ChanceFactory::collectorMaterialChanceIncreasePrecious_{ 0.0f };
-        float ChanceFactory::collectorMaterialChancePerCool_{ 0.0f };
-        float ChanceFactory::collectorMaterialChancePerMetal_{ 0.0f };
-        float ChanceFactory::collectorMaterialChancePerPrecious_{ 0.0f };
-        float ChanceFactory::materialSecondaryChanceCool_{ 0.0f };
-        float ChanceFactory::materialSecondaryChanceMetal_{ 0.0f };
-        float ChanceFactory::materialSecondaryChancePrecious_{ 0.0f };
-
-        ChanceFactory::ChanceFactory() { M_HP_LOG_DBG("Subsystem Construction: ChanceFactory"); }
+        ChanceFactory::ChanceFactory()
+            : masterRankMax_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-rankclass-Master-rankmax"))
+            , clothingChanceMin_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-inventory-clothing-chance-min"))
+            , clothingChanceMax_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-inventory-clothing-chance-max"))
+            , materialPrimaryChanceCool_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-primary-chance-base-Cool-onein"))
+            , materialPrimaryChanceMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-primary-chance-base-Metal-onein"))
+            , materialPrimaryChancePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-primary-chance-base-Precious-onein"))
+            , collectorMaterialChanceIncreaseCool_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-base-increase-Cool"))
+            , collectorMaterialChanceIncreaseMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-base-increase-Metal"))
+            , collectorMaterialChanceIncreasePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-base-increase-Precious"))
+            , collectorMaterialChancePerCool_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-per-divisor-Cool"))
+            , collectorMaterialChancePerMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-per-divisor-Metal"))
+            , collectorMaterialChancePerPrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-collector-chance-per-divisor-Precious"))
+            , materialSecondaryChanceCool_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-secondary-chance-base-Cool-onein"))
+            , materialSecondaryChanceMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-secondary-chance-base-Metal-onein"))
+            , materialSecondaryChancePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+                  "heroespath-material-secondary-chance-base-Precious-onein"))
+            , materialChanceMapCool_(Make_MaterialChanceMapCool())
+            , materialChanceMapMetal_(Make_MaterialChanceMapMetal())
+            , materialChanceMapPrecious_(Make_MaterialChanceMapPrecious())
+            , roleArmorChanceMap_()
+            , roleWeaponChanceMap_()
+        {
+            M_HP_LOG_DBG("Subsystem Construction: ChanceFactory");
+        }
 
         ChanceFactory::~ChanceFactory() { M_HP_LOG_DBG("Subsystem Destruction: ChanceFactory"); }
 
@@ -105,19 +119,18 @@ namespace non_player
 
         void ChanceFactory::Initialize()
         {
-            CacheGameDataFileFloats();
             CacheRoleArmorChances();
             CacheRoleWeaponChances();
         }
 
         const chance::InventoryChances
-            ChanceFactory::Make(const creature::CreaturePtr_t CHARACTER_PTR)
+            ChanceFactory::Make(const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             return Make(Profile::Make_FromCreature(CHARACTER_PTR), CHARACTER_PTR);
         }
 
         const chance::InventoryChances ChanceFactory::Make(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             auto coinsMin{ 0_coin };
             auto coinsMax{ 0_coin };
@@ -133,7 +146,7 @@ namespace non_player
         }
 
         void ChanceFactory::Make_Coins(
-            const Profile & PROFILE, Coin_t & coinsMin_OutParam, Coin_t & coinsMax_OutParam)
+            const Profile & PROFILE, Coin_t & coinsMin_OutParam, Coin_t & coinsMax_OutParam) const
         {
             auto const KEY_STR{ "heroespath-nonplayer-coins-bounds-"
                                 + wealth_type::ToString(PROFILE.wealthType) };
@@ -187,7 +200,7 @@ namespace non_player
         }
 
         const chance::ClothingChances ChanceFactory::Make_ClothingChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             using namespace item;
 
@@ -337,7 +350,7 @@ namespace non_player
         }
 
         const chance::WeaponChances ChanceFactory::Make_WeaponChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             chance::WeaponChances weaponChances(chance::WeaponChances::NoWeapon());
 
@@ -371,7 +384,7 @@ namespace non_player
         }
 
         const chance::ArmorChances ChanceFactory::Make_ArmorChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             auto armorChances{ chance::ArmorChances::NoArmor() };
             LookupPossibleArmorByRole(PROFILE, CHARACTER_PTR, armorChances);
@@ -392,8 +405,8 @@ namespace non_player
             return armorChances;
         }
 
-        const chance::ItemChanceMap_t
-            ChanceFactory::Make_MiscItemChances(const Profile &, const creature::CreaturePtr_t)
+        const chance::ItemChanceMap_t ChanceFactory::Make_MiscItemChances(
+            const Profile &, const creature::CreaturePtr_t) const
         {
             chance::ItemChanceMap_t miscItems;
 
@@ -410,7 +423,7 @@ namespace non_player
             chance::WeaponChances & weaponChances,
             const WeaponSet & WEAPON_SET,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR)
+            const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             // find the total chance of all weapon possibilities combined
             float chanceCombined(0.0f);
@@ -804,11 +817,15 @@ namespace non_player
         void ChanceFactory::LookupPossibleArmorByRole(
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::ArmorChances & armorChances)
+            chance::ArmorChances & armorChances) const
         {
             using namespace boost::algorithm;
 
-            for (auto const & ROLE_ARMOR_CHANCE : roleArmorChanceMap_[CHARACTER_PTR->Role()])
+            RoleArmorChanceVec_t ignored;
+            auto & roleArmorChances{ ignored };
+            roleArmorChanceMap_.Find(CHARACTER_PTR->Role(), roleArmorChances);
+
+            for (auto const & ROLE_ARMOR_CHANCE : roleArmorChances)
             {
                 switch (ROLE_ARMOR_CHANCE.type_wrapper.Type())
                 {
@@ -908,7 +925,7 @@ namespace non_player
         }
 
         void ChanceFactory::LookupPossibleWeaponsByRole(
-            const creature::role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam)
+            const creature::role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam) const
         {
             auto const WAS_FOUND{ roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
 
@@ -920,7 +937,7 @@ namespace non_player
         }
 
         float ChanceFactory::GetFloatFromGameDataFile(
-            const std::string & KEY, const float MIN, const float MAX)
+            const std::string & KEY, const float MIN, const float MAX) const
         {
             const std::string MIN_STR{ "min" };
             const std::string MAX_STR{ "max" };
@@ -973,7 +990,7 @@ namespace non_player
             const creature::CreaturePtr_t CHARACTER_PTR,
             float & clothChance,
             float & leatherChance,
-            float & silkChance)
+            float & silkChance) const
         {
             std::ostringstream ss;
             ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
@@ -1058,7 +1075,7 @@ namespace non_player
         void ChanceFactory::Make_ClothingMaterialChancesPrimary(
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::ItemChances & itemChancesBase)
+            chance::ItemChances & itemChancesBase) const
         {
             // set the chance base object with data common to all clothing chances
             //(shared between boots, cloaks, capes, etc.)
@@ -1085,7 +1102,7 @@ namespace non_player
             const creature::CreaturePtr_t CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
             const Weight_t & ITEM_WEIGHT,
-            chance::MaterialChanceMap_t & materialsMap_OutParam)
+            chance::MaterialChanceMap_t & materialsMap_OutParam) const
         {
             // establish the base chances for a special primary material
             auto chanceCool{ 1.0f / materialPrimaryChanceCool_ };
@@ -1236,7 +1253,7 @@ namespace non_player
         void ChanceFactory::Make_MaterialChancesSecondary(
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::MaterialChanceMap_t & materialsMap_OutParam)
+            chance::MaterialChanceMap_t & materialsMap_OutParam) const
         {
             // establish the base chances for a secondary material
             auto chanceCool{ 1.0f / materialSecondaryChanceCool_ };
@@ -1369,7 +1386,7 @@ namespace non_player
         const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMap(
             const std::string & PREFIX,
             const std::string & POSTFIX,
-            const chance::MaterialVec_t & MATERIALS_VEC)
+            const chance::MaterialVec_t & MATERIALS_VEC) const
         {
             auto cumulativeChance{ 0.0f };
             chance::MaterialChanceMap_t materialChanceMap;
@@ -1406,58 +1423,43 @@ namespace non_player
             return materialChanceMap;
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapCool()
+        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapCool() const
         {
-            if (materialChanceMapCool_.Empty())
-            {
-                const chance::MaterialVec_t MATERIAL_VEC
-                    = { item::material::Stone,    item::material::Bone,   item::material::Horn,
-                        item::material::Tooth,    item::material::Bronze, item::material::Jade,
-                        item::material::Obsidian, item::material::Scales, item::material::Lazuli,
-                        item::material::Gold,     item::material::Pearl };
+            const chance::MaterialVec_t MATERIAL_VEC
+                = { item::material::Stone,    item::material::Bone,   item::material::Horn,
+                    item::material::Tooth,    item::material::Bronze, item::material::Jade,
+                    item::material::Obsidian, item::material::Scales, item::material::Lazuli,
+                    item::material::Gold,     item::material::Pearl };
 
-                materialChanceMapCool_ = Make_MaterialChanceMap(
-                    "heroespath-material-chance-base-cool-", "-onein", MATERIAL_VEC);
-            }
-
-            return materialChanceMapCool_;
+            return Make_MaterialChanceMap(
+                "heroespath-material-chance-base-cool-", "-onein", MATERIAL_VEC);
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious()
+        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious() const
         {
-            if (materialChanceMapPrecious_.Empty())
-            {
-                const chance::MaterialVec_t MATERIAL_VEC
-                    = { item::material::Jade,     item::material::Amethyst, item::material::Emerald,
-                        item::material::Silver,   item::material::Lazuli,   item::material::Gold,
-                        item::material::Platinum, item::material::Ruby,     item::material::Pearl,
-                        item::material::Sapphire, item::material::Diamond };
+            const chance::MaterialVec_t MATERIAL_VEC
+                = { item::material::Jade,     item::material::Amethyst, item::material::Emerald,
+                    item::material::Silver,   item::material::Lazuli,   item::material::Gold,
+                    item::material::Platinum, item::material::Ruby,     item::material::Pearl,
+                    item::material::Sapphire, item::material::Diamond };
 
-                materialChanceMapPrecious_ = Make_MaterialChanceMap(
-                    "heroespath-material-chance-base-precious-", "-onein", MATERIAL_VEC);
-            }
-
-            return materialChanceMapPrecious_;
+            return Make_MaterialChanceMap(
+                "heroespath-material-chance-base-precious-", "-onein", MATERIAL_VEC);
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal()
+        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal() const
         {
-            if (materialChanceMapMetal_.Empty())
-            {
-                const chance::MaterialVec_t MATERIAL_VEC
-                    = { item::material::Tin,     item::material::Bronze, item::material::Iron,
-                        item::material::Steel,   item::material::Silver, item::material::Gold,
-                        item::material::Platinum };
+            const chance::MaterialVec_t MATERIAL_VEC
+                = { item::material::Tin,     item::material::Bronze, item::material::Iron,
+                    item::material::Steel,   item::material::Silver, item::material::Gold,
+                    item::material::Platinum };
 
-                materialChanceMapMetal_ = Make_MaterialChanceMap(
-                    "heroespath-material-chance-base-metal-", "-onein", MATERIAL_VEC);
-            }
-
-            return materialChanceMapMetal_;
+            return Make_MaterialChanceMap(
+                "heroespath-material-chance-base-metal-", "-onein", MATERIAL_VEC);
         }
 
         const chance::ClothingChances ChanceFactory::Make_ClothingMaterialChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
         {
             chance::ItemChances itemChancesBase;
             Make_ClothingMaterialChancesPrimary(PROFILE, CHARACTER_PTR, itemChancesBase);
@@ -1470,6 +1472,7 @@ namespace non_player
 
             auto const MIN_VAL{ game::GameDataFile::Instance()->GetCopyFloat(
                 KEY_BASE + "chance-min") };
+
             auto const MAX_VAL{ game::GameDataFile::Instance()->GetCopyFloat(
                 KEY_BASE + "chance-max") };
 
@@ -1517,7 +1520,7 @@ namespace non_player
             const Profile & PROFILE,
             const creature::CreaturePtr_t CREATURE_PTR,
             chance::MaterialChanceMap_t & materialsMapPri,
-            chance::MaterialChanceMap_t & materialsMapSec)
+            chance::MaterialChanceMap_t & materialsMapSec) const
         {
             auto const WEAPON_DETAILS{ item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
@@ -1538,7 +1541,7 @@ namespace non_player
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec,
             const Weight_t & WEIGHT,
-            const item::material::Enum FORCED_PRIMARY_MATERIAL)
+            const item::material::Enum FORCED_PRIMARY_MATERIAL) const
         {
             if (FORCED_PRIMARY_MATERIAL == item::material::Nothing)
             {
@@ -1561,8 +1564,8 @@ namespace non_player
             float & chanceMetal,
             chance::MaterialChanceMap_t & chanceMapMetal,
             float & chancePrecious,
-            chance::MaterialChanceMap_t &) // individual precious material chances are not changed
-                                           // here
+            chance::MaterialChanceMap_t &) const // individual precious material chances are not
+                                                 // changed here
         {
             // enforce creature complexity type restrictions on which materials are possible
             if (COMPLEXITY == complexity_type::Simple)
@@ -1603,7 +1606,7 @@ namespace non_player
         }
 
         const chance::MaterialChanceMap_t ChanceFactory::MakeTypicalArmorMaterials(
-            const Profile &, const creature::CreaturePtr_t, const bool INCLUDE_WOOD)
+            const Profile &, const creature::CreaturePtr_t, const bool INCLUDE_WOOD) const
         {
             chance::MaterialChanceMap_t materialChanceMap;
 
@@ -1635,7 +1638,7 @@ namespace non_player
             const RoleArmorChance & ROLE_ARMOR_CHANCE,
             const Profile & PROFILE,
             const creature::CreaturePtr_t CREATURE_PTR,
-            const bool WILL_MATERIALS_INCLUDED_WOOD)
+            const bool WILL_MATERIALS_INCLUDED_WOOD) const
         {
             auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(
                 ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
@@ -1667,7 +1670,7 @@ namespace non_player
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD,
-            const item::material::Enum FORCED_PRIMARY_MATERIAL)
+            const item::material::Enum FORCED_PRIMARY_MATERIAL) const
         {
             auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(
                 ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
@@ -1942,54 +1945,6 @@ namespace non_player
             }
 
             return weaponSets;
-        }
-
-        void ChanceFactory::CacheGameDataFileFloats()
-        {
-            masterRankMax_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-rankclass-Master-rankmax");
-
-            clothingChanceMin_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-inventory-clothing-chance-min");
-
-            clothingChanceMax_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-inventory-clothing-chance-max");
-
-            materialPrimaryChanceCool_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-primary-chance-base-Cool-onein");
-
-            materialPrimaryChanceMetal_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-primary-chance-base-Metal-onein");
-
-            materialPrimaryChancePrecious_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-primary-chance-base-Precious-onein");
-
-            collectorMaterialChanceIncreaseCool_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-base-increase-Cool");
-
-            collectorMaterialChanceIncreaseMetal_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-base-increase-Metal");
-
-            collectorMaterialChanceIncreasePrecious_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-base-increase-Precious");
-
-            collectorMaterialChancePerCool_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Cool");
-
-            collectorMaterialChancePerMetal_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Metal");
-
-            collectorMaterialChancePerPrecious_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Precious");
-
-            materialSecondaryChanceCool_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-secondary-chance-base-Cool-onein");
-
-            materialSecondaryChanceMetal_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-secondary-chance-base-Metal-onein");
-
-            materialSecondaryChancePrecious_ = game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-secondary-chance-base-Precious-onein");
         }
 
     } // namespace ownership

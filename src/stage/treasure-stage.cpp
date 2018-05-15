@@ -653,7 +653,9 @@ namespace stage
                 "stage::TreasureStage::PromptPlayerWithDamagePopups() called when "
                 "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
 
-            auto const DAMAGE_TEXT{ combat::Text::ActionTextIndexed(
+            combat::Text combatText;
+
+            auto const DAMAGE_TEXT{ combatText.ActionTextIndexed(
                 LOCK_PICKING_CREATURE_PTR_OPT.value(),
                 combat::TurnActionInfo(combat::TurnAction::TreasureUnlock),
                 fightResult_,

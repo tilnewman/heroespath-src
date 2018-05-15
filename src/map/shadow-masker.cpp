@@ -28,7 +28,8 @@ namespace map
     const sf::Color ShadowMasker::SHADOW_COLOR3_{ sf::Color(0, 0, 0, 35) };
     const unsigned ShadowMasker::COLOR_COMPONENT_COUNT_{ 4 };
 
-    void ShadowMasker::ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout)
+    void ShadowMasker::ChangeColors(
+        const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout) const
     {
         for (auto & nextTilesPanel : layout.tiles_panel_vec)
         {
@@ -42,58 +43,61 @@ namespace map
         }
     }
 
-    void ShadowMasker::ChangeColors(sf::Texture & texture, const bool IS_SHADOW_IMAGE)
+    void ShadowMasker::ChangeColors(sf::Texture & texture, const bool IS_SHADOW_IMAGE) const
     {
         sf::Image srcImage(texture.copyToImage());
         sf::Image destImage(srcImage);
 
+        auto const DEST_IMAGE_SIZE_X{ destImage.getSize().x };
+
+        auto destPixelX{ [&](const unsigned INDEX) {
+            return ((INDEX / COLOR_COMPONENT_COUNT_) % DEST_IMAGE_SIZE_X);
+        } };
+
+        auto destPixelY{ [&](const unsigned INDEX) {
+            return ((INDEX / COLOR_COMPONENT_COUNT_) / DEST_IMAGE_SIZE_X);
+        } };
+
         const sf::Uint8 * const PIXEL_PTR{ srcImage.getPixelsPtr() };
 
-        auto const PIXEL_COUNT{ static_cast<std::size_t>(
-            srcImage.getSize().x * srcImage.getSize().y * COLOR_COMPONENT_COUNT_) };
+        auto const PIXEL_COUNT{ srcImage.getSize().x * srcImage.getSize().y
+                                * COLOR_COMPONENT_COUNT_ };
 
-        for (std::size_t i(0); i < PIXEL_COUNT; i += 4)
+        for (unsigned i(0); i < PIXEL_COUNT; i += 4)
         {
             const sf::Uint8 RED{ *(PIXEL_PTR + i + 0) };
             const sf::Uint8 GREEN{ *(PIXEL_PTR + i + 1) };
             const sf::Uint8 BLUE{ *(PIXEL_PTR + i + 2) };
 
-            auto const DEST_X{ (static_cast<unsigned>(i) / COLOR_COMPONENT_COUNT_)
-                               % destImage.getSize().x };
-
-            auto const DEST_Y{ (static_cast<unsigned>(i) / COLOR_COMPONENT_COUNT_)
-                               / destImage.getSize().x };
-
             // check for faded blue background color that should be made fully transparent
             if ((RED == TRANSPARENT_MASK_.r) && (GREEN == TRANSPARENT_MASK_.g)
                 && (BLUE == TRANSPARENT_MASK_.b))
             {
-                destImage.setPixel(DEST_X, DEST_Y, sf::Color::Transparent);
+                destImage.setPixel(destPixelX(i), destPixelY(i), sf::Color::Transparent);
             }
-            else
+            else if (IS_SHADOW_IMAGE && (GREEN == 0))
             {
                 // all remaining shadow colors has a green value of zero
-                if (IS_SHADOW_IMAGE && (GREEN == 0))
+
+                if ((RED == SHADOW_MASK1_.r) && (BLUE == SHADOW_MASK1_.b))
                 {
-                    if ((RED == SHADOW_MASK1_.r) && (BLUE == SHADOW_MASK1_.b))
-                    {
-                        destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR1_);
-                    }
-                    else if (
-                        ((RED == SHADOW_MASK2_.r) && (BLUE == SHADOW_MASK2_.b))
-                        || ((RED == SHADOW_MASK2B_.r) && (BLUE == SHADOW_MASK2B_.b)))
-                    {
-                        destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR2_);
-                    }
-                    else if ((RED == SHADOW_MASK3_.r) && (BLUE == SHADOW_MASK3_.b))
-                    {
-                        destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR3_);
-                    }
+                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR1_);
+                }
+                else if (
+                    ((RED == SHADOW_MASK2_.r) && (BLUE == SHADOW_MASK2_.b))
+                    || ((RED == SHADOW_MASK2B_.r) && (BLUE == SHADOW_MASK2B_.b)))
+                {
+                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR2_);
+                }
+                else if ((RED == SHADOW_MASK3_.r) && (BLUE == SHADOW_MASK3_.b))
+                {
+                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR3_);
                 }
             }
         }
 
         texture.update(destImage);
     }
+
 } // namespace map
 } // namespace heroespath

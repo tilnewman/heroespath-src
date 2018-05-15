@@ -1209,6 +1209,8 @@ namespace combat
                 CREATURE_DEFENDING_PTR, hitInfoVec, damage, condsAddedVec, condsRemovedVec);
         }
 
+        combat::Text combatText;
+
         return HitInfo(
             wasHit,
             WEAPON_PTR,
@@ -1218,7 +1220,7 @@ namespace combat
             didArmorAbsorb,
             condsAddedVec,
             condsRemovedVec,
-            Text::WeaponActionVerb(WEAPON_PTR, false));
+            combatText.WeaponActionVerb(WEAPON_PTR, false));
     }
 
     Health_t CreatureInteraction::DetermineDamage(

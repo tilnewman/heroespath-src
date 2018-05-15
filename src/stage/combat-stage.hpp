@@ -11,10 +11,12 @@
 //
 #include "combat/combat-restore-info.hpp"
 #include "combat/combat-sound-effects.hpp"
+#include "combat/combat-text.hpp"
 #include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
+#include "combat/turn-decider.hpp"
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
@@ -416,6 +418,9 @@ namespace stage
         const bool WILL_ADVANCE_TURN_;
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
+        //
+        combat::Text combatText_;
+        combat::TurnDecider turnDecider_;
         //
         sfml_util::gui::box::BoxUPtr_t commandBoxUPtr_;
         sfml_util::gui::ListBoxUPtr_t statusBoxUPtr_;

@@ -15,10 +15,8 @@
 #include "combat/combat-display.hpp"
 #include "combat/combat-node.hpp"
 #include "combat/combat-over-enum.hpp"
-#include "combat/combat-text.hpp"
 #include "combat/encounter.hpp"
 #include "combat/turn-action-enum.hpp"
-#include "combat/turn-decider.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition-algorithms.hpp"
 #include "creature/condition.hpp"
@@ -148,19 +146,17 @@ namespace stage
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , combatText_()
+        , turnDecider_()
         , commandBoxUPtr_()
         , statusBoxUPtr_()
-        ,
-
-        statusBoxTextInfo_(
-            " ",
-            sfml_util::FontManager::Instance()->Font_Typical(),
-            sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Orange(),
-            sfml_util::Justified::Left)
-        ,
-
-        zoomSliderBarUPtr_()
+        , statusBoxTextInfo_(
+              " ",
+              sfml_util::FontManager::Instance()->Font_Typical(),
+              sfml_util::FontManager::Instance()->Size_Small(),
+              sfml_util::FontManager::Color_Orange(),
+              sfml_util::Justified::Left)
+        , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
         , turnBoxRegion_()
         , combatSoundEffects_()
@@ -680,7 +676,7 @@ namespace stage
 
         attackTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        attackTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
+        attackTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
 
         EntityAdd(attackTBoxButtonUPtr_.get());
 
@@ -704,7 +700,7 @@ namespace stage
 
         fightTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        fightTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
+        fightTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
 
         EntityAdd(fightTBoxButtonUPtr_.get());
 
@@ -728,7 +724,7 @@ namespace stage
 
         castTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        castTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
+        castTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
         EntityAdd(castTBoxButtonUPtr_.get());
 
@@ -752,8 +748,7 @@ namespace stage
 
         advanceTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        advanceTBoxButtonUPtr_->SetMouseHoverText(
-            combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
+        advanceTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
 
         EntityAdd(advanceTBoxButtonUPtr_.get());
 
@@ -777,8 +772,7 @@ namespace stage
 
         retreatTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        retreatTBoxButtonUPtr_->SetMouseHoverText(
-            combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
+        retreatTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
 
         EntityAdd(retreatTBoxButtonUPtr_.get());
 
@@ -802,7 +796,7 @@ namespace stage
 
         blockTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        blockTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
+        blockTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
 
         EntityAdd(blockTBoxButtonUPtr_.get());
 
@@ -826,7 +820,7 @@ namespace stage
 
         skipTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        skipTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
+        skipTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
         EntityAdd(skipTBoxButtonUPtr_.get());
 
@@ -850,7 +844,7 @@ namespace stage
 
         flyTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        flyTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
+        flyTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
 
         EntityAdd(flyTBoxButtonUPtr_.get());
 
@@ -873,7 +867,7 @@ namespace stage
             turnButtonTextInfoDisabled);
 
         landTBoxButtonUPtr_->SetCallbackHandler(this);
-        landTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
+        landTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
         EntityAdd(landTBoxButtonUPtr_.get());
 
         // roar button
@@ -896,7 +890,7 @@ namespace stage
 
         roarTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        roarTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
+        roarTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
 
         EntityAdd(roarTBoxButtonUPtr_.get());
 
@@ -920,7 +914,7 @@ namespace stage
 
         pounceTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        pounceTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
+        pounceTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
 
         EntityAdd(pounceTBoxButtonUPtr_.get());
 
@@ -944,7 +938,7 @@ namespace stage
 
         runTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        runTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_);
+        runTBoxButtonUPtr_->SetMouseHoverText(combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_);
 
         EntityAdd(runTBoxButtonUPtr_.get());
 
@@ -1678,19 +1672,19 @@ namespace stage
         {
             if (KE.code == sf::Keyboard::Return)
             {
-                auto const MOUSEOVER_ATTACK_STR(combat::Text::MouseOverTextAttackStr(
+                auto const MOUSEOVER_ATTACK_STR(combatText_.MouseOverTextAttackStr(
                     turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
-                if (MOUSEOVER_ATTACK_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
+                if (MOUSEOVER_ATTACK_STR == combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
                 {
                     return HandleAttack();
                 }
                 else
                 {
-                    auto const MOUSEOVER_STR(combat::Text::MouseOverTextBlockStr(
+                    auto const MOUSEOVER_STR(combatText_.MouseOverTextBlockStr(
                         turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
-                    if (MOUSEOVER_STR == combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
+                    if (MOUSEOVER_STR == combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
                     {
                         return HandleBlock();
                     }
@@ -1814,7 +1808,7 @@ namespace stage
     void CombatStage::AppendInitialStatus()
     {
         std::ostringstream ss;
-        ss << combat::Text::InitialCombatStatusMessagePrefix() << " "
+        ss << combatText_.InitialCombatStatusMessagePrefix() << " "
            << combat::Encounter::Instance()->LivingNonPlayersSummary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
@@ -2028,7 +2022,7 @@ namespace stage
             if (turnActionInfo_.Action() == combat::TurnAction::Nothing)
             {
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2191,7 +2185,7 @@ namespace stage
 
     void CombatStage::HandleEnemyTurnStep1_Decide(const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
-        turnActionInfo_ = combat::TurnDecider::Decide(TURN_CREATURE_PTR, combatDisplayStagePtr_);
+        turnActionInfo_ = turnDecider_.Decide(TURN_CREATURE_PTR, combatDisplayStagePtr_);
         combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
         SetupTurnBox();
     }
@@ -2239,7 +2233,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2254,7 +2248,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2272,7 +2266,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2290,7 +2284,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2315,7 +2309,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2330,7 +2324,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2349,7 +2343,7 @@ namespace stage
                 SetupTurnBox();
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -2527,10 +2521,10 @@ namespace stage
 
     bool CombatStage::HandleAttack()
     {
-        auto const MOUSEOVER_STR(combat::Text::MouseOverTextAttackStr(
+        auto const MOUSEOVER_STR(combatText_.MouseOverTextAttackStr(
             turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2546,10 +2540,10 @@ namespace stage
 
     bool CombatStage::HandleFight()
     {
-        auto const MOUSEOVER_STR(combat::Text::MouseOverTextFightStr(
-            turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
+        auto const MOUSEOVER_STR(
+            combatText_.MouseOverTextFightStr(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2570,9 +2564,9 @@ namespace stage
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextPlayStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextPlayStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2647,9 +2641,9 @@ namespace stage
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextCastStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextCastStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2739,9 +2733,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextAdvanceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextAdvanceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2754,7 +2748,7 @@ namespace stage
             combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 false);
 
@@ -2769,9 +2763,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextRetreatStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextRetreatStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2785,7 +2779,7 @@ namespace stage
             combat::Encounter::Instance()->SetTurnActionInfo(TURN_CREATURE_PTR, turnActionInfo_);
 
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 false);
 
@@ -2800,9 +2794,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextBlockStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextBlockStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2818,7 +2812,7 @@ namespace stage
             // no need for ZoomAndSlide or PerformAnim so skip to end of turn
             // with AppendStatusMessage()
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
@@ -2841,7 +2835,7 @@ namespace stage
 
         // no need for ZoomAndSlide or PerformAnim so skip to end of turn with AppendStatusMessage()
         AppendStatusMessage(
-            combat::Text::ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
+            combatText_.ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
             true);
 
         return true;
@@ -2852,9 +2846,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextFlyStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextFlyStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2874,7 +2868,7 @@ namespace stage
             // no need for turnActionPhase_, ZoomAndSlide, or PerformAnim so skip
             // to end of turn with AppendStatusMessage()
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
@@ -2887,9 +2881,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextLandStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextLandStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2909,7 +2903,7 @@ namespace stage
             // no need for turnActionPhase_, ZoomAndSlide, or PerformAnim so skip
             // to end of turn with AppendStatusMessage()
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
@@ -2922,12 +2916,12 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextRoarStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextRoarStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
         auto creaturesToCenterOnPVec{ combatDisplayStagePtr_->GetCreaturesInRoaringDistance(
             TURN_CREATURE_PTR) };
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2948,7 +2942,7 @@ namespace stage
             fightResult_ = combat::FightResult();
 
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 false);
 
@@ -2968,9 +2962,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextPounceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextPounceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -2986,7 +2980,7 @@ namespace stage
 
             // not implemented yet so skip to end of turn with AppendStatusMessage()
             AppendStatusMessage(
-                combat::Text::ActionText(
+                combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
@@ -3012,9 +3006,9 @@ namespace stage
         auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
-            combat::Text::MouseOverTextRunStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
+            combatText_.MouseOverTextRunStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_)
+        if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
             return false;
@@ -3040,7 +3034,7 @@ namespace stage
                     TURN_CREATURE_PTR, turnActionInfo_);
 
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -3078,19 +3072,19 @@ namespace stage
 
             // attack button
             auto const MOT_ATTACK_STR(
-                combat::Text::MouseOverTextAttackStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextAttackStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             attackTBoxButtonUPtr_->SetIsDisabled(
-                MOT_ATTACK_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
+                MOT_ATTACK_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
 
             attackTBoxButtonUPtr_->SetMouseHoverText(MOT_ATTACK_STR);
 
             // fight button
             auto const MOT_FIGHT_STR(
-                combat::Text::MouseOverTextFightStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextFightStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             fightTBoxButtonUPtr_->SetIsDisabled(
-                MOT_FIGHT_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
+                MOT_FIGHT_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
 
             fightTBoxButtonUPtr_->SetMouseHoverText(MOT_FIGHT_STR);
 
@@ -3100,10 +3094,10 @@ namespace stage
                 castTBoxButtonUPtr_->SetText("(S)ong");
 
                 auto const MOT_PLAY_STR(
-                    combat::Text::MouseOverTextPlayStr(CREATURE_PTR, combatDisplayStagePtr_));
+                    combatText_.MouseOverTextPlayStr(CREATURE_PTR, combatDisplayStagePtr_));
 
                 castTBoxButtonUPtr_->SetIsDisabled(
-                    MOT_PLAY_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_);
+                    MOT_PLAY_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_);
 
                 castTBoxButtonUPtr_->SetMouseHoverText(MOT_PLAY_STR);
             }
@@ -3112,83 +3106,83 @@ namespace stage
                 castTBoxButtonUPtr_->SetText("(S)pell");
 
                 auto const MOT_CAST_STR(
-                    combat::Text::MouseOverTextCastStr(CREATURE_PTR, combatDisplayStagePtr_));
+                    combatText_.MouseOverTextCastStr(CREATURE_PTR, combatDisplayStagePtr_));
 
                 castTBoxButtonUPtr_->SetIsDisabled(
-                    MOT_CAST_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
+                    MOT_CAST_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
                 castTBoxButtonUPtr_->SetMouseHoverText(MOT_CAST_STR);
             }
 
             // advance button
             auto const MOT_ADVANCE_STR(
-                combat::Text::MouseOverTextAdvanceStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextAdvanceStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             advanceTBoxButtonUPtr_->SetIsDisabled(
-                MOT_ADVANCE_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
+                MOT_ADVANCE_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
 
             advanceTBoxButtonUPtr_->SetMouseHoverText(MOT_ADVANCE_STR);
 
             // retreat button
             auto const MOT_RETREAT_STR(
-                combat::Text::MouseOverTextRetreatStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextRetreatStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             retreatTBoxButtonUPtr_->SetIsDisabled(
-                MOT_RETREAT_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
+                MOT_RETREAT_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
 
             retreatTBoxButtonUPtr_->SetMouseHoverText(MOT_RETREAT_STR);
 
             // block button
             const std::string MOT_BLOCK_STR(
-                combat::Text::MouseOverTextBlockStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextBlockStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             blockTBoxButtonUPtr_->SetIsDisabled(
-                MOT_BLOCK_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
+                MOT_BLOCK_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
 
             blockTBoxButtonUPtr_->SetMouseHoverText(MOT_BLOCK_STR);
 
             // fly button
             auto const MOT_FLY_STR(
-                combat::Text::MouseOverTextFlyStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextFlyStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             flyTBoxButtonUPtr_->SetIsDisabled(
-                MOT_FLY_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
+                MOT_FLY_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
 
             flyTBoxButtonUPtr_->SetMouseHoverText(MOT_FLY_STR);
 
             // land
             auto const MOT_LAND_STR(
-                combat::Text::MouseOverTextLandStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextLandStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             landTBoxButtonUPtr_->SetIsDisabled(
-                MOT_LAND_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
+                MOT_LAND_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
 
             landTBoxButtonUPtr_->SetMouseHoverText(MOT_LAND_STR);
 
             // roar button
             auto const MOT_ROAR_STR(
-                combat::Text::MouseOverTextRoarStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextRoarStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             roarTBoxButtonUPtr_->SetIsDisabled(
-                MOT_ROAR_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
+                MOT_ROAR_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
 
             roarTBoxButtonUPtr_->SetMouseHoverText(MOT_ROAR_STR);
 
             // pounce button
             auto const MOT_POUNCE_STR(
-                combat::Text::MouseOverTextPounceStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextPounceStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             pounceTBoxButtonUPtr_->SetIsDisabled(
-                MOT_POUNCE_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
+                MOT_POUNCE_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
 
             pounceTBoxButtonUPtr_->SetMouseHoverText(MOT_POUNCE_STR);
 
             // skip button
             auto const MOT_SKIP_STR(
-                combat::Text::MouseOverTextSkipStr(CREATURE_PTR, combatDisplayStagePtr_));
+                combatText_.MouseOverTextSkipStr(CREATURE_PTR, combatDisplayStagePtr_));
 
             skipTBoxButtonUPtr_->SetIsDisabled(
-                MOT_SKIP_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
+                MOT_SKIP_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
             skipTBoxButtonUPtr_->SetMouseHoverText(MOT_SKIP_STR);
         }
@@ -3393,7 +3387,7 @@ namespace stage
                 isPreambleShowing = true;
 
                 // preamble version of action text
-                preambleSS << combat::Text::ActionText(
+                preambleSS << combatText_.ActionText(
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, false, false, true);
             }
             else
@@ -3415,7 +3409,7 @@ namespace stage
             isPreambleShowing = true;
 
             // perform report version of action text
-            preambleSS << combat::Text::ActionTextIndexed(
+            preambleSS << combatText_.ActionTextIndexed(
                 TURN_CREATURE_PTR,
                 turnActionInfo_,
                 fightResult_,
@@ -3654,7 +3648,7 @@ namespace stage
             case TurnActionPhase::Cast:
             {
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -3700,7 +3694,7 @@ namespace stage
             case TurnActionPhase::PlaySong:
             {
                 AppendStatusMessage(
-                    combat::Text::ActionText(
+                    combatText_.ActionText(
                         TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                     false);
 
@@ -4131,7 +4125,7 @@ namespace stage
         fightResult_ = creatureInteraction_.Fight(TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR);
 
         AppendStatusMessage(
-            combat::Text::ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
+            combatText_.ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
             false);
 
         SetTurnActionPhase(GetTurnActionPhaseFromFightResult(fightResult_));

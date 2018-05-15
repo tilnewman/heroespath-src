@@ -19,7 +19,6 @@
 #include "game/loop-manager.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-#include "item/treasure.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
@@ -55,6 +54,7 @@ namespace combat
         , deadNonPlayerItemsLockbox_()
         , lockPickCreaturePtrOpt_(boost::none)
         , creatureStrategies_()
+        , treasureFactory_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Encounter");
     }
@@ -335,7 +335,7 @@ namespace combat
             }
         }
 
-        return item::TreasureFactory::Make(deadNonPlayerPartyPVec_, deadNonPlayerItemsLockbox_);
+        return treasureFactory_.Make(deadNonPlayerPartyPVec_, deadNonPlayerItemsLockbox_);
     }
 
     void Encounter::EndTreasureStageTasks(
@@ -381,7 +381,7 @@ namespace combat
 
     float Encounter::DefeatedPartyTreasureRatioPer() const
     {
-        return item::TreasureFactory::TreasureRatioPer(deadNonPlayerPartyPVec_);
+        return treasureFactory_.TreasureRatioPer(deadNonPlayerPartyPVec_);
     }
 
     void Encounter::PopulateTurnInfoMap()

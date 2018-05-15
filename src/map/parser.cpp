@@ -150,7 +150,8 @@ namespace map
         std::sort(
             std::begin(packet.walkSfxLayers.top_layers), std::end(packet.walkSfxLayers.top_layers));
 
-        ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
+        ShadowMasker shadowMasker;
+        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
     }
 
     const boost::property_tree::ptree Parser::Parse_XML(const std::string & MAP_FILE_PATH_STR) const

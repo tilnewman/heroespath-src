@@ -9,18 +9,18 @@
 //
 // map-display.hpp
 //
+#include "map/layer.hpp"
+#include "map/layout.hpp"
+#include "map/map-anim.hpp"
+#include "map/shadow-masker.hpp"
+#include "map/tile-offsets.hpp"
+#include "map/tiles-panel.hpp"
+#include "misc/types.hpp"
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/collision-quad-tree.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "map/layer.hpp"
-#include "map/layout.hpp"
-#include "map/map-anim.hpp"
-#include "map/tile-offsets.hpp"
-#include "map/tiles-panel.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 #include <vector>
@@ -34,7 +34,6 @@ namespace map
 
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
-
     {
     public:
         MapDisplay(const MapDisplay &) = delete;
@@ -137,6 +136,8 @@ namespace map
 
         MapAnimVec_t animInfoVec_;
         std::vector<sfml_util::AnimationUPtr_t> animUPtrVec_;
+
+        ShadowMasker shadowMasker_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

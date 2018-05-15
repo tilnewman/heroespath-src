@@ -26,7 +26,6 @@
 #include <algorithm>
 #include <sstream>
 #include <tuple>
-#include <vector>
 
 namespace heroespath
 {
@@ -47,7 +46,7 @@ namespace combat
 
     const TurnActionInfo TurnDecider::Decide(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         // only do 'Nothing' if can't take any action
         if (CREATURE_DECIDING_PTR->CanTakeAction() == false)
@@ -290,7 +289,7 @@ namespace combat
     creature::CreaturePtr_t TurnDecider::FindMostDesiredTarget(
         const TurnInfo & CREATURE_DECIDING_TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         // pick (select) favorite targets by type
         const creature::CreaturePVec_t SELECT_TARGETS_PVEC{ FindSelectedTargets(
@@ -386,7 +385,7 @@ namespace combat
         return misc::Vector::SelectRandom(CLOSEST_POSSIBLE_TARGETS_PVEC);
     }
 
-    creature::CreaturePVec_t TurnDecider::FindSelectedTargets(const TurnInfo & TURN_INFO)
+    creature::CreaturePVec_t TurnDecider::FindSelectedTargets(const TurnInfo & TURN_INFO) const
     {
         auto const SELECT_TYPE_ENUM{ TURN_INFO.GetStrategyInfo().Select() };
 
@@ -568,7 +567,7 @@ namespace combat
     }
 
     creature::CreaturePVec_t TurnDecider::RefineTargets(
-        const creature::CreaturePVec_t & SELECTED_TARGETS_PVEC, const TurnInfo & TURN_INFO)
+        const creature::CreaturePVec_t & SELECTED_TARGETS_PVEC, const TurnInfo & TURN_INFO) const
     {
         auto const REFINE_TYPE_ENUM{ TURN_INFO.GetStrategyInfo().Refine() };
 
@@ -750,7 +749,7 @@ namespace combat
         return refinedTargetsPVec;
     }
 
-    float TurnDecider::ChanceFromFrequency(const strategy::FrequencyType::Enum E)
+    float TurnDecider::ChanceFromFrequency(const strategy::FrequencyType::Enum E) const
     {
         if (E == strategy::FrequencyType::Commonly)
         {
@@ -787,7 +786,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
         const std::size_t NUM_PLAYERS_IN_MELEE_RANGE,
-        const std::size_t NUM_FELLOWS_IN_MELEE_RANGE)
+        const std::size_t NUM_FELLOWS_IN_MELEE_RANGE) const
     {
         if (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false).empty())
         {
@@ -833,7 +832,7 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideIfCasting(
         const TurnInfo & TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR)
+        const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR) const
     {
         auto const CAN_CAST_HEALING_SPELLS{ CREATURE_DECIDING_PTR->CanCastSpellByEffectType(
             EffectType::CreatureHelpHeal) };
@@ -911,7 +910,7 @@ namespace combat
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
         const int MOST_DESIRED_TARGET_DISTANCE,
         const bool NUM_PLAYERS_IN_ATTACK_RANGE,
-        const bool CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
+        const bool CAN_ATTACK_MOST_DESIRED_TARGET_WITH) const
     {
         auto const ADV_TYPE{ TURN_INFO.GetStrategyInfo().Advance() };
 
@@ -950,7 +949,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR,
         const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
-        const int MOST_DESIRED_TARGET_CREATURE_DISTANCE)
+        const int MOST_DESIRED_TARGET_CREATURE_DISTANCE) const
     {
         if (CREATURE_DECIDING_PTR->IsBeast())
         {
@@ -1055,7 +1054,7 @@ namespace combat
 
     const TurnActionInfo TurnDecider::ForcePickSpellToCast(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR)
+        const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR) const
     {
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_PTR->SpellsPVec() };
 
@@ -1121,7 +1120,7 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideSpell(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR,
-        const EffectTypeVec_t & SPELL_EFFECTTYPES_VEC)
+        const EffectTypeVec_t & SPELL_EFFECTTYPES_VEC) const
     {
         auto const SPELL_PTR{ PickSpell(CREATURE_DECIDING_PTR, SPELL_EFFECTTYPES_VEC) };
 
@@ -1168,14 +1167,14 @@ namespace combat
 
     const spell::SpellPtr_t TurnDecider::PickSpell(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const combat::EffectType::Enum SPELL_EFFECTTYPE)
+        const combat::EffectType::Enum SPELL_EFFECTTYPE) const
     {
         return PickSpell(CREATURE_DECIDING_PTR, EffectTypeVec_t{ SPELL_EFFECTTYPE });
     }
 
     const spell::SpellPtr_t TurnDecider::PickSpell(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const EffectTypeVec_t & SPELL_EFFECTTYPE_VEC)
+        const EffectTypeVec_t & SPELL_EFFECTTYPE_VEC) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (SPELL_EFFECTTYPE_VEC.empty() == false),
@@ -1224,7 +1223,7 @@ namespace combat
     }
 
     const TurnActionInfo TurnDecider::DecideIfFlying(
-        const TurnInfo & TURN_INFO, const creature::CreaturePtr_t CREATURE_DECIDING_PTR)
+        const TurnInfo & TURN_INFO, const creature::CreaturePtr_t CREATURE_DECIDING_PTR) const
     {
         if ((TURN_INFO.GetIsFlying() == false) && (CREATURE_DECIDING_PTR->CanFly()))
         {
@@ -1241,7 +1240,7 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideIfAdvancingTowardNonMostDesiredTarget(
         const TurnInfo & CREATURE_DECIDING_TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(
             creature::Algorithms::Living) };
@@ -1308,7 +1307,8 @@ namespace combat
     }
 
     void TurnDecider::AdjustCreatueVecForMurderousIntent(
-        const TurnInfo & CREATURE_DECIDING_TURN_INFO, creature::CreaturePVec_t & pVec_OutParam)
+        const TurnInfo & CREATURE_DECIDING_TURN_INFO,
+        creature::CreaturePVec_t & pVec_OutParam) const
     {
         // determine if any available targets are unconscious
         auto const ARE_ANY_TARGETS_UNCONSCIOUS{ [&]() {

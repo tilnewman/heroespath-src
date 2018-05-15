@@ -13,7 +13,6 @@
 
 #include "combat/combat-display.hpp"
 #include "combat/combat-node.hpp"
-#include "combat/combat-text.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"

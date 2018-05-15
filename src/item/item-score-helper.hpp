@@ -25,30 +25,36 @@ namespace item
     // unique_type/set_type/misc_type/named_type/element_type.
     struct ScoreHelper
     {
-        static Score_t Score(const stats::TraitSet &);
+        ScoreHelper(const ScoreHelper &) = delete;
+        ScoreHelper(ScoreHelper &&) = delete;
+        ScoreHelper & operator=(const ScoreHelper &) = delete;
+        ScoreHelper & operator=(ScoreHelper &&) = delete;
 
-        static Score_t
-            Score(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        ScoreHelper() = default;
 
-        static Score_t Score(const weapon::axe_type::Enum);
-        static Score_t Score(const weapon::bladedstaff_type::Enum);
-        static Score_t Score(const weapon::club_type::Enum);
-        static Score_t Score(const weapon::projectile_type::Enum);
-        static Score_t Score(const weapon::sword_type::Enum);
-        static Score_t Score(const weapon::whip_type::Enum);
+        Score_t Score(const stats::TraitSet &) const;
 
-        static Score_t ScoreKnife();
-        static Score_t ScoreDagger();
-        static Score_t ScoreStaff();
-        static Score_t ScoreQuarterStaff();
+        Score_t Score(const material::Enum PRI, const material::Enum SEC = material::Nothing) const;
 
-        static Score_t Score(const armor::cover_type::Enum);
-        static Score_t Score(const armor::helm_type::Enum);
-        static Score_t Score(const armor::shield_type::Enum);
+        Score_t Score(const weapon::axe_type::Enum) const;
+        Score_t Score(const weapon::bladedstaff_type::Enum) const;
+        Score_t Score(const weapon::club_type::Enum) const;
+        Score_t Score(const weapon::projectile_type::Enum) const;
+        Score_t Score(const weapon::sword_type::Enum) const;
+        Score_t Score(const weapon::whip_type::Enum) const;
 
-        static Score_t Score(const armor_type::Enum, const armor::base_type::Enum);
+        Score_t ScoreKnife() const;
+        Score_t ScoreDagger() const;
+        Score_t ScoreStaff() const;
+        Score_t ScoreQuarterStaff() const;
 
-        static Score_t Score(const armor::base_type::Enum);
+        Score_t Score(const armor::cover_type::Enum) const;
+        Score_t Score(const armor::helm_type::Enum) const;
+        Score_t Score(const armor::shield_type::Enum) const;
+
+        Score_t Score(const armor_type::Enum, const armor::base_type::Enum) const;
+
+        Score_t Score(const armor::base_type::Enum) const;
     };
 
 } // namespace item

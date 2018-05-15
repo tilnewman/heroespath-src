@@ -72,7 +72,8 @@ namespace combat
     };
 
     const std::string Text::MouseOverTextAttackStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const creature::CreaturePtr_t CREATURE_PTR,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -97,7 +98,8 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextFightStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const creature::CreaturePtr_t CREATURE_PTR,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
 
@@ -123,7 +125,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextPlayStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_PLAY_STR(CREATURE_PTR->CanPlaySongsStr());
         if (CAN_PLAY_STR.empty() == false)
@@ -135,7 +137,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextCastStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_CAST_STR(CREATURE_PTR->CanCastSpellsStr());
         if (CAN_CAST_STR.empty() == false)
@@ -147,7 +149,8 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextAdvanceStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const creature::CreaturePtr_t CREATURE_PTR,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -166,7 +169,8 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextRetreatStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
+        const creature::CreaturePtr_t CREATURE_PTR,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -185,7 +189,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextBlockStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -197,7 +201,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextFlyStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -219,7 +223,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextLandStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -236,7 +240,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextRoarStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -253,7 +257,7 @@ namespace combat
     }
 
     const std::string
-        Text::MouseOverTextPounceStr(const creature::CreaturePtr_t, const CombatDisplayPtr_t)
+        Text::MouseOverTextPounceStr(const creature::CreaturePtr_t, const CombatDisplayPtr_t) const
     {
         /*
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
@@ -274,7 +278,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextRunStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -286,7 +290,7 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextSkipStr(
-        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t)
+        const creature::CreaturePtr_t CREATURE_PTR, const CombatDisplayPtr_t) const
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty())
@@ -305,7 +309,7 @@ namespace combat
         const combat::FightResult & FIGHT_RESULT,
         const bool WILL_USE_NAME,
         const bool IS_STATUS_VERSION,
-        const bool IS_PREAMBLE_VERSION)
+        const bool IS_PREAMBLE_VERSION) const
     {
         std::ostringstream ss;
 
@@ -473,7 +477,7 @@ namespace combat
         const bool WILL_USE_NAME,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
-        bool & wasCollapsed)
+        bool & wasCollapsed) const
     {
         wasCollapsed = false;
 
@@ -570,7 +574,7 @@ namespace combat
     }
 
     const std::string
-        Text::WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR, const bool WILL_APPEND_ING)
+        Text::WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR, const bool WILL_APPEND_ING) const
     {
         std::vector<std::string> strVec;
 
@@ -771,7 +775,8 @@ namespace combat
         return misc::Vector::SelectRandom(strVec);
     }
 
-    const std::string Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT)
+    const std::string
+        Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT) const
     {
         // assume weapon attacks can only effect one target creature
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -811,7 +816,7 @@ namespace combat
         return ss.str();
     }
 
-    const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT)
+    const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT) const
     {
         // assume weapon attacks can only effect one target creature
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -832,7 +837,7 @@ namespace combat
     const std::string Text::AttackDescriptionFullVersion(
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
-        const std::size_t HIT_INDEX)
+        const std::size_t HIT_INDEX) const
     {
         // assume weapon attacks can only effect one target creature
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -936,7 +941,7 @@ namespace combat
     }
 
     const std::string Text::CastDescriptionStatusVersion(
-        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT)
+        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT) const
     {
         std::ostringstream ss;
         ss << "casts the " << SPELL_PTR->Name() << " spell ";
@@ -956,7 +961,7 @@ namespace combat
     }
 
     const std::string Text::CastDescriptionPreambleVersion(
-        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT)
+        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT) const
     {
         std::ostringstream ss;
         ss << "casts the " << SPELL_PTR->Name() << " spell ";
@@ -1004,7 +1009,7 @@ namespace combat
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
-        bool & wasCollapsed)
+        bool & wasCollapsed) const
     {
         wasCollapsed = false;
 
@@ -1051,7 +1056,7 @@ namespace combat
     }
 
     const std::string Text::PlaySongDescriptionStatusVersion(
-        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT)
+        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT) const
     {
         std::ostringstream ss;
 
@@ -1069,7 +1074,7 @@ namespace combat
     }
 
     const std::string Text::PlaySongDescriptionPreambleVersion(
-        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT)
+        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT) const
     {
         std::ostringstream ss;
         ss << "plays the " << SONG_PTR->Name() << " " << SONG_PTR->TypeToNoun() << " ";
@@ -1117,7 +1122,7 @@ namespace combat
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
-        bool & wasCollapsed)
+        bool & wasCollapsed) const
     {
         wasCollapsed = false;
 
@@ -1170,7 +1175,7 @@ namespace combat
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
-        bool & wasCollapsed)
+        bool & wasCollapsed) const
     {
         wasCollapsed = false;
 
@@ -1208,7 +1213,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_UNLOCKING_PTR,
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
-        const std::size_t HIT_INDEX)
+        const std::size_t HIT_INDEX) const
     {
         auto const & CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
 
@@ -1239,8 +1244,36 @@ namespace combat
         return ss.str();
     }
 
-    const std::string
-        Text::WeaponActionVerbList(const HitInfoVec_t & HIT_INFO_VEC, const bool WILL_SKIP_MISSES)
+    const std::string Text::InitialCombatStatusMessagePrefix() const
+    {
+        switch (misc::random::Int(4))
+        {
+            case 0:
+            {
+                return "You face";
+            }
+            case 1:
+            {
+                return "Before you rage";
+            }
+            case 2:
+            {
+                return "Before you stand";
+            }
+            case 3:
+            {
+                return "Attacking you are";
+            }
+            case 4:
+            default:
+            {
+                return "You encounter";
+            }
+        }
+    }
+
+    const std::string Text::WeaponActionVerbList(
+        const HitInfoVec_t & HIT_INFO_VEC, const bool WILL_SKIP_MISSES) const
     {
         std::vector<std::string> strVec;
 
@@ -1269,7 +1302,7 @@ namespace combat
         }
     }
 
-    const std::string Text::CountPhrase(const HitInfoVec_t & HIT_INFO_VEC)
+    const std::string Text::CountPhrase(const HitInfoVec_t & HIT_INFO_VEC) const
     {
         std::size_t count{ 0 };
         for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
@@ -1283,7 +1316,7 @@ namespace combat
         return CountPhrase(count);
     }
 
-    const std::string Text::CountPhrase(const std::size_t COUNT)
+    const std::string Text::CountPhrase(const std::size_t COUNT) const
     {
         if (COUNT == 1)
         {
@@ -1301,7 +1334,24 @@ namespace combat
         }
     }
 
-    const std::string Text::AttackConditionsSummaryList(const CreatureEffect & CREATURE_EFFECT)
+    const std::string Text::NamePhrase(const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        std::ostringstream ss;
+
+        if (CREATURE_PTR->IsPlayerCharacter())
+        {
+            ss << "at " << CREATURE_PTR->NameOrRaceAndRole();
+        }
+        else
+        {
+            ss << "at a " << CREATURE_PTR->NameOrRaceAndRole();
+        }
+
+        return ss.str();
+    }
+
+    const std::string
+        Text::AttackConditionsSummaryList(const CreatureEffect & CREATURE_EFFECT) const
     {
         std::ostringstream ss;
 
@@ -1343,52 +1393,9 @@ namespace combat
         return ss.str();
     }
 
-    const std::string Text::NamePhrase(const creature::CreaturePtr_t CREATURE_PTR)
-    {
-        std::ostringstream ss;
-
-        if (CREATURE_PTR->IsPlayerCharacter())
-        {
-            ss << "at " << CREATURE_PTR->NameOrRaceAndRole();
-        }
-        else
-        {
-            ss << "at a " << CREATURE_PTR->NameOrRaceAndRole();
-        }
-
-        return ss.str();
-    }
-
-    const std::string Text::InitialCombatStatusMessagePrefix()
-    {
-        switch (misc::random::Int(4))
-        {
-            case 0:
-            {
-                return "You face";
-            }
-            case 1:
-            {
-                return "Before you rage";
-            }
-            case 2:
-            {
-                return "Before you stand";
-            }
-            case 3:
-            {
-                return "Attacking you are";
-            }
-            case 4:
-            default:
-            {
-                return "You encounter";
-            }
-        }
-    }
-
     const FightResultSummary Text::SummarizeFightResult(
-        const creature::CreaturePtr_t CREATURE_INITIATING_PTR, const FightResult & FIGHT_RESULT)
+        const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
+        const FightResult & FIGHT_RESULT) const
     {
         auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
         auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
@@ -1447,7 +1454,7 @@ namespace combat
     }
 
     bool Text::SummarizeCreatureEffect(
-        FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT)
+        FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT) const
     {
         auto const & NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
         if (NEXT_HIT_INFO_VEC.size() != 1)
@@ -1502,5 +1509,6 @@ namespace combat
 
         return false;
     }
+
 } // namespace combat
 } // namespace heroespath

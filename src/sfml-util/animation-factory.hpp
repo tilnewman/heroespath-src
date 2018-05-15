@@ -19,6 +19,8 @@ namespace sfml_util
 
     struct AnimationFactory
     {
+        AnimationFactory() = delete;
+
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
             const float SCALE,
@@ -49,6 +51,7 @@ namespace sfml_util
             const sf::Color & COLOR_TO,
             const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

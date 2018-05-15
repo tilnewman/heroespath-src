@@ -12,6 +12,7 @@
 #include "inventory-stage.hpp"
 
 #include "combat/combat-sound-effects.hpp"
+#include "combat/combat-text.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
@@ -3995,8 +3996,10 @@ namespace stage
             return true;
         }
 
+        combat::Text combatText;
         bool isFightResultCollapsed{ false };
-        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
+
+        auto const ACTION_TEXT{ combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,
@@ -4192,8 +4195,10 @@ namespace stage
             return true;
         }
 
+        combat::Text combatText;
+
         bool isFightResultCollapsed{ false };
-        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
+        auto const ACTION_TEXT{ combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,

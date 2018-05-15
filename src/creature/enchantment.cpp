@@ -186,7 +186,9 @@ namespace creature
 
     Score_t Enchantment::CalcTreasureScore() const
     {
-        auto score{ item::ScoreHelper::Score(traitSet_) };
+        item::ScoreHelper scoreHelper;
+
+        auto score{ scoreHelper.Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {

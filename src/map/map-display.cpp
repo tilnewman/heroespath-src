@@ -16,7 +16,6 @@
 #include "log/log-macros.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
-#include "map/shadow-masker.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
@@ -62,6 +61,7 @@ namespace map
         , npcShadowSprite_()
         , animInfoVec_()
         , animUPtrVec_()
+        , shadowMasker_()
     {
         SetupNPCShadowImage();
     }
@@ -744,8 +744,7 @@ namespace map
             npcShadowTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
 
-        ShadowMasker::ChangeColors(npcShadowTexture_, true);
-
+        shadowMasker_.ChangeColors(npcShadowTexture_, true);
         npcShadowSprite_.setTexture(npcShadowTexture_, true);
     }
 

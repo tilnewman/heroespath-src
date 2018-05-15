@@ -11,6 +11,7 @@
 //
 #include "map/layout.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -18,18 +19,19 @@ namespace heroespath
 namespace map
 {
 
-    // Responsible for changing shadow place-holder colors into shades of gray.
+    // Responsible for changing transparent and shadow place-holder colors into shades of gray.
     class ShadowMasker
     {
     public:
-        ShadowMasker() = delete;
         ShadowMasker(const ShadowMasker &) = delete;
         ShadowMasker(ShadowMasker &&) = delete;
         ShadowMasker & operator=(const ShadowMasker &) = delete;
         ShadowMasker & operator=(ShadowMasker &&) = delete;
 
-        static void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);
-        static void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE);
+        ShadowMasker() = default;
+
+        void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout) const;
+        void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE) const;
 
     private:
         // The tileset I found online uses this color as a background,
@@ -49,6 +51,7 @@ namespace map
 
         static const unsigned COLOR_COMPONENT_COUNT_;
     };
+
 } // namespace map
 } // namespace heroespath
 

@@ -227,7 +227,8 @@ namespace item
             religiousRatio_ = misc_type::ReligiousRatio(MISC_TYPE);
         }
 
-        score_ += ScoreHelper::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+        item::ScoreHelper scoreHelper;
+        score_ += scoreHelper.Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
 
         creature::EnchantmentFactory enchantmentFactory;
         score_ += enchantmentFactory.TreasureScore(SET_TYPE);
@@ -728,7 +729,8 @@ namespace item
         SetHelperForWeaponsAndArmor(
             MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
 
-        score_ += ScoreHelper::Score(
+        item::ScoreHelper scoreHelper;
+        score_ += scoreHelper.Score(
             THIN_PROFILE.ArmorInfo().Type(), THIN_PROFILE.ArmorInfo().BaseType());
 
         score_ += NonMiscScoreBasedOnMaterialsAndEnchantments(
@@ -818,8 +820,10 @@ namespace item
         {
             creature::EnchantmentFactory enchantmentFactory;
 
+            item::ScoreHelper scoreHelper;
+
             return (
-                ScoreHelper::Score(MATERIAL_PRI, MATERIAL_SEC)
+                scoreHelper.Score(MATERIAL_PRI, MATERIAL_SEC)
                 + enchantmentFactory.TreasureScore(
                       NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
                 + enchantmentFactory.TreasureScore(SET_TYPE)
