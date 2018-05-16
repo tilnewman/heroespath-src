@@ -60,105 +60,64 @@ namespace heroespath
 namespace game
 {
 
-    StartupShutdown::StartupShutdown()
+    StartupShutdown::StartupShutdown(
+        const std::string & APPLICATION_NAME, const int ARGC, char * argv[])
         : platform_()
-    {}
+    {
+        Setup(APPLICATION_NAME, ARGC, argv);
+    }
 
-    bool StartupShutdown::Setup(
+    void StartupShutdown::Setup(
         const std::string & APPLICATION_NAME, const int ARGC, char * argv[]) const
     {
-        try
+        // this order is critical
+
+        // initialize the log first so that all Setup() actions can be logged
+        log::Logger::Acquire();
+
+        platform_.Log();
+        if (platform_.IsSupported() == false)
         {
-            // this order is critical
-
-            // initialize the log first so that all Setup() actions can be logged
-            log::Logger::Acquire();
-
-            platform_.Log();
-            if (platform_.IsSupported() == false)
-            {
-                throw std::runtime_error(
-                    "This system/platform is not supported.  See log for details.");
-            }
-
-            srand(static_cast<unsigned>(time(nullptr)));
-            misc::random::MersenneTwister::Seed();
-
-            Setup_ParseCommandLineArguments(ARGC, argv);
-
-            game::GameDataFile::Acquire();
-            game::GameDataFile::Instance()->Initialize();
-
-            item::armor::ArmorDetailLoader::LoadFromGameDataFile();
-            item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
-
-            sfml_util::gui::GuiElements::LoadTexture();
-            Setup_Display(APPLICATION_NAME);
-            Setup_ManagerClassResourcePaths();
-            Setup_SubsystemsAcquire();
-            Setup_SubsystemsInitialize();
-            Setup_HoldersFill();
-
-            // this causes the initial stage transition/creation so it must occur last
-            LoopManager::Instance()->Initialize();
-
-            return true;
-        }
-        catch (const std::exception & E)
-        {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
-                "StartupShutdown::Setup() threw std::exception \"" << E.what() << "\"");
-        }
-        catch (...)
-        {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
-                "StartupShutdown::Setup() threw unknown (non-std) exception.");
+            throw std::runtime_error(
+                "This system/platform is not supported.  See log for details.");
         }
 
-        return false;
+        srand(static_cast<unsigned>(time(nullptr)));
+        misc::random::MersenneTwister::Seed();
+
+        Setup_ParseCommandLineArguments(ARGC, argv);
+
+        game::GameDataFile::Acquire();
+        game::GameDataFile::Instance()->Initialize();
+
+        item::armor::ArmorDetailLoader::LoadFromGameDataFile();
+        item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
+
+        sfml_util::gui::GuiElements::LoadTexture();
+        Setup_Display(APPLICATION_NAME);
+        Setup_ManagerClassResourcePaths();
+        Setup_SubsystemsAcquire();
+        Setup_SubsystemsInitialize();
+        Setup_HoldersFill();
+
+        // this causes the initial stage transition/creation so it must occur last
+        LoopManager::Instance()->Initialize();
     }
 
-    int StartupShutdown::Run() const
+    StartupShutdown::~StartupShutdown() { Teardown(); }
+
+    void StartupShutdown::Run() const { game::LoopManager::Instance()->Execute(); }
+
+    void StartupShutdown::Teardown() const
     {
-        try
-        {
-            if (game::LoopManager::Instance()->Execute())
-            {
-                return EXIT_SUCCESS;
-            }
-        }
-        catch (const std::exception & E)
-        {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
-                "StartupShutdown::Run() threw std::exception \"" << E.what() << "\"");
-        }
-        catch (...)
-        {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
-                "StartupShutdown::Run() threw an unknown (non-std) exception.");
-        }
-
-        return EXIT_FAILURE;
+        Teardown_SettingsFile();
+        Teardown_CloseDisplay();
+        Teardown_ReleaseSubsystems();
+        Teardown_EmptyHolders();
+        Teardown_Logger();
     }
 
-    int StartupShutdown::Teardown() const
-    {
-        int exitCode{ EXIT_SUCCESS };
-
-        Teardown_SettingsFile(exitCode);
-        Teardown_CloseDisplay(exitCode);
-        Teardown_ReleaseSubsystems(exitCode);
-        Teardown_EmptyHolders(exitCode);
-        Teardown_Logger(exitCode);
-
-        return exitCode;
-    }
-
-    void StartupShutdown::Teardown_SettingsFile(int & exitCode_OutParam) const
+    void StartupShutdown::Teardown_SettingsFile() const
     {
         try
         {
@@ -170,20 +129,16 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_SettingsFile() threw std::exception \"" << E.what()
                                                                                    << "\"");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_SettingsFile() threw an unknown (non-std) exception.");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
     }
 
-    void StartupShutdown::Teardown_CloseDisplay(int & exitCode_OutParam) const
+    void StartupShutdown::Teardown_CloseDisplay() const
     {
         try
         {
@@ -198,20 +153,16 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_CloseDisplay() threw std::exception \"" << E.what()
                                                                                    << "\"");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_CloseDisplay() threw an unknown (non-std) exception.");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
     }
 
-    void StartupShutdown::Teardown_EmptyHolders(int & exitCode_OutParam) const
+    void StartupShutdown::Teardown_EmptyHolders() const
     {
         try
         {
@@ -227,8 +178,6 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_EmptyHolders() threw std::exception \"" << E.what()
                                                                                    << "\"");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
@@ -236,12 +185,10 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_EmptyHolders() "
                     << "threw an unknown (non-std) exception.");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
     }
 
-    void StartupShutdown::Teardown_ReleaseSubsystems(int & exitCode_OutParam) const
+    void StartupShutdown::Teardown_ReleaseSubsystems() const
     {
         try
         {
@@ -296,8 +243,6 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_ReleaseSubsystems() threw std::exception \"" << E.what()
                                                                                         << "\"");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
@@ -305,12 +250,10 @@ namespace game
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_ReleaseSubsystems() "
                     << "threw an unknown (non-std) exception.");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
     }
 
-    void StartupShutdown::Teardown_Logger(int & exitCode_OutParam) const
+    void StartupShutdown::Teardown_Logger() const
     {
         try
         {
@@ -321,16 +264,12 @@ namespace game
             M_LOG_FAT(
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_Logger() threw std::exception \"" << E.what() << "\"");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_Logger() threw an unknown (non-std) exception.");
-
-            exitCode_OutParam = EXIT_FAILURE;
         }
     }
 

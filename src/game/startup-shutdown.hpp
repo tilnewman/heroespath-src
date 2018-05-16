@@ -26,19 +26,23 @@ namespace game
         StartupShutdown(StartupShutdown &&) = delete;
         StartupShutdown & operator=(const StartupShutdown &) = delete;
         StartupShutdown & operator=(StartupShutdown &&) = delete;
+        StartupShutdown() = delete;
 
-        StartupShutdown();
+        StartupShutdown(const std::string & APPLICATION_NAME, int ARGC, char * argv[]);
+        ~StartupShutdown();
 
-        bool Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]) const;
-        int Run() const;
-        int Teardown() const;
+        void Run() const;
 
     private:
-        void Teardown_SettingsFile(int & exitCode_OutParam) const;
-        void Teardown_CloseDisplay(int & exitCode_OutParam) const;
-        void Teardown_EmptyHolders(int & exitCode_OutParam) const;
-        void Teardown_ReleaseSubsystems(int & exitCode_OutParam) const;
-        void Teardown_Logger(int & exitCode_OutParam) const;
+        void Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]) const;
+
+        void Teardown() const;
+
+        void Teardown_SettingsFile() const;
+        void Teardown_CloseDisplay() const;
+        void Teardown_EmptyHolders() const;
+        void Teardown_ReleaseSubsystems() const;
+        void Teardown_Logger() const;
 
         void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]) const;
         void Setup_Display(const std::string & APPLICATION_NAME) const;

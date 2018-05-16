@@ -179,7 +179,7 @@ namespace item
 
     private:
         const std::string ReadableName() const;
-        const std::string ComposeName(const std::string ROOT_NAME) const;
+        const std::string ComposeName(const std::string & ROOT_NAME) const;
 
     protected:
         std::string name_;

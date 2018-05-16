@@ -271,7 +271,7 @@ namespace item
         }
     }
 
-    const std::string Item::ComposeName(const std::string ROOT_NAME) const
+    const std::string Item::ComposeName(const std::string & ROOT_NAME) const
     {
         std::ostringstream ss;
 

@@ -393,7 +393,7 @@ namespace item
             std::ostringstream ss;
 
             ss << std::boolalpha << "item::ItemFactory::TestItem(\nitem={" << ITEM_PTR->ToString()
-               << "}\nprofile={" << ITEM_PROFILE.ToString() << "})\n *** ERROR: ";
+               << "}\nprofile={" << ITEM_PROFILE.ToString() << "})\nERROR: ";
 
             return ss.str();
         } };
@@ -852,7 +852,7 @@ namespace item
 
     const ItemPtr_t ItemFactory::MakeArmor(const ItemProfile & PROFILE) const
     {
-        auto const ARMOR_TYPE_WRAPPER{ PROFILE.ArmorInfo() };
+        auto const & ARMOR_TYPE_WRAPPER{ PROFILE.ArmorInfo() };
 
         auto const ARMOR_DETAILS{ armor::ArmorDetailLoader::LookupArmorDetails(
             ARMOR_TYPE_WRAPPER.DetailsKeyName()) };
@@ -926,7 +926,7 @@ namespace item
 
     const ItemPtr_t ItemFactory::MakeWeapon(const ItemProfile & PROFILE) const
     {
-        auto const WEAPON_TYPE_WRAPPER{ PROFILE.WeaponInfo() };
+        auto const & WEAPON_TYPE_WRAPPER{ PROFILE.WeaponInfo() };
 
         auto const WEAPON_DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
             WEAPON_TYPE_WRAPPER.DetailsKeyName()) };

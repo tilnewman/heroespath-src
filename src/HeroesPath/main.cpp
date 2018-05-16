@@ -12,31 +12,25 @@
 #include "game/startup-shutdown.hpp"
 
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 
 int main(int argc, char * argv[])
 {
-    using namespace heroespath::game;
-
-    StartupShutdown startStop;
-
-    int runExitCode{ EXIT_FAILURE };
-
-    if (startStop.Setup("Heroes' Path", argc, argv))
+    try
     {
-        runExitCode = startStop.Run();
+        heroespath::game::StartupShutdown startStop("Heroes' Path", argc, argv);
+        startStop.Run();
+        return EXIT_SUCCESS;
+    }
+    catch (const std::exception & EXCEPTION)
+    {
+        std::cerr << "exception: " << EXCEPTION.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "unknown exception" << std::endl;
     }
 
-    auto const TEARDOWN_EXIT_CODE{ startStop.Teardown() };
-
-    auto const SUCCESS{ ((EXIT_SUCCESS == runExitCode) && (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) };
-
-    if (SUCCESS == false)
-    {
-        std::cerr << "Heroes' Path error detected: run_exit_code=" << runExitCode
-                  << ", teardown_exit_code=" << TEARDOWN_EXIT_CODE << "  (" << EXIT_SUCCESS
-                  << " means success)" << std::endl;
-    }
-
-    return ((SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE);
+    return EXIT_FAILURE;
 }
