@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(
     TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIndex_and_CheckSlotReuse)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
     auto const ID4{ tc.AddByKey(KEY) };
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-anim-images-dir-inferno" };
@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-anim-images-dir-inferno" };
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-anim-images-dir-inferno" };
@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
 {
     heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Initialize();
+    heroespath::game::GameDataFile::Instance()->Initialize();
 
     TextureCache tc;
     auto const KEY{ "media-anim-images-dir-inferno" };

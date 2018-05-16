@@ -48,8 +48,10 @@ namespace ts = test_stuff;
 
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
+    StartupShutdown startupShutdown;
+
     BOOST_CHECK_MESSAGE(
-        StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
+        startupShutdown.Setup("Heroes' Path Unit Tests", 0, nullptr),
         "StartupShutdown::Setup() failed");
 
     combat::CombatTree combatTree;
@@ -122,7 +124,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(0).empty());
     BOOST_CHECK(combatTree.GetCombatNodes().empty());
 
-    StartupShutdown::Teardown();
+    BOOST_CHECK(startupShutdown.Teardown() == EXIT_SUCCESS);
 }
 
 BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
