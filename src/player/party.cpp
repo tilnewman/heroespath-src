@@ -84,11 +84,11 @@ namespace player
                 << charactersPVec_.size() - 1 << ")");
 
         std::size_t indexCounter(0);
-        for (auto iter(charactersPVec_.begin()); iter != charactersPVec_.end(); ++iter)
+        for (auto const & CREATURE_PTR : charactersPVec_)
         {
             if (indexCounter++ == INDEX_NUM)
             {
-                return *iter;
+                return CREATURE_PTR;
             }
         }
 
