@@ -90,8 +90,14 @@ namespace item
 
         if (PROFILE.IsSet())
         {
-            ss << AppendSpaceIfNeeded(ss) << set_type::Name(PROFILE.SetType()) << " "
-               << PROFILE.ReadableName();
+            ss << AppendSpaceIfNeeded(ss) << set_type::Name(PROFILE.SetType()) << " ";
+
+            if (PROFILE.IsPixie())
+            {
+                ss << "Pixie";
+            }
+
+            ss << PROFILE.ReadableName();
         }
         else if (PROFILE.IsUnique())
         {
@@ -157,7 +163,8 @@ namespace item
 
         if (PROFILE.IsSet())
         {
-            ss << ", from " << set_type::Name(PROFILE.SetType()) << " Set";
+            ss << ", from " << set_type::Name(PROFILE.SetType()) << " Set for "
+               << creature::role::Name(set_type::Role(PROFILE.SetType())) << "s";
         }
         else if (PROFILE.IsNamed())
         {
