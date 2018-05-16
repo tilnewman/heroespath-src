@@ -46,7 +46,7 @@ namespace misc
         template <typename AsType_t>
         constexpr AsType_t As() const
         {
-            return static_cast<AsType_t>(this->Get());
+            return static_cast<AsType_t>(this->m_value);
         }
 
         constexpr bool IsZero() const { return misc::IsRealZero(this->m_value); }
@@ -60,31 +60,31 @@ namespace misc
 
         StrongNumericType & operator=(const StrongNumericType & RHS)
         {
-            this->Get() = RHS.Get();
+            this->m_value = RHS.m_value;
             return *this;
         }
 
         StrongNumericType & operator+=(const StrongNumericType & RHS)
         {
-            this->Get() += RHS.Get();
+            this->m_value += RHS.m_value;
             return *this;
         }
 
         StrongNumericType & operator-=(const StrongNumericType & RHS)
         {
-            this->Get() -= RHS.Get();
+            this->m_value -= RHS.m_value;
             return *this;
         }
 
         StrongNumericType & operator*=(const StrongNumericType & RHS)
         {
-            this->Get() *= RHS.Get();
+            this->m_value *= RHS.m_value;
             return *this;
         }
 
         StrongNumericType & operator/=(const StrongNumericType & RHS)
         {
-            this->Get() /= RHS.Get();
+            this->m_value /= RHS.m_value;
             return *this;
         }
 
@@ -110,37 +110,37 @@ namespace misc
 
         inline bool operator==(const StrongNumericType & RHS) const
         {
-            return this->Get() == RHS.Get();
+            return this->m_value == RHS.m_value;
         }
 
         inline bool operator!=(const StrongNumericType & RHS) const
         {
-            return this->Get() != RHS.Get();
+            return this->m_value != RHS.m_value;
         }
 
         inline bool operator<(const StrongNumericType & RHS) const
         {
-            return this->Get() < RHS.Get();
+            return this->m_value < RHS.m_value;
         }
 
         inline bool operator<=(const StrongNumericType & RHS) const
         {
-            return this->Get() <= RHS.Get();
+            return this->m_value <= RHS.m_value;
         }
 
         inline bool operator>(const StrongNumericType & RHS) const
         {
-            return this->Get() > RHS.Get();
+            return this->m_value > RHS.m_value;
         }
 
         inline bool operator>=(const StrongNumericType & RHS) const
         {
-            return this->Get() >= RHS.Get();
+            return this->m_value >= RHS.m_value;
         }
 
         StrongNumericType & operator++()
         {
-            ++(this->Get());
+            ++(this->m_value);
             return *this;
         }
 
@@ -153,7 +153,7 @@ namespace misc
 
         StrongNumericType & operator--()
         {
-            --(this->Get());
+            --(this->m_value);
             return *this;
         }
 
@@ -162,6 +162,14 @@ namespace misc
             StrongNumericType temp{ *this };
             operator--();
             return temp;
+        }
+
+    private:
+        friend class boost::serialization::access;
+        template <typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & boost::serialization::base_object<StrongType<T, Parameter_t>>(*this);
         }
     };
 

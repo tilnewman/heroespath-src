@@ -35,14 +35,6 @@ namespace misc
 
         using type = T;
 
-        // this move constructor allows for reference types
-        template <typename T_ = T>
-        explicit StrongType(
-            T && value,
-            typename std::enable_if<!std::is_reference<T_>::value, std::nullptr_t>::type = nullptr)
-            : m_value(std::move(value))
-        {}
-
         T & Get() { return m_value; }
         const T & Get() const { return m_value; }
 
