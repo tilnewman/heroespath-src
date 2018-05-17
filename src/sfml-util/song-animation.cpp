@@ -147,27 +147,27 @@ namespace sfml_util
             , noteTexture6_()
             , noteVec_()
         {
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture1_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note1"));
 
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture2_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note2"));
 
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture3_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note3"));
 
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture4_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note4"));
 
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture5_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note5"));
 
-            LoadTexture(
+            Loaders::Texture(
                 noteTexture6_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note6"));
 

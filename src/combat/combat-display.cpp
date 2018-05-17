@@ -155,7 +155,7 @@ namespace combat
         boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatDisplay's'", BOX_INFO);
 
         // load background texture
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             bgTexture_,
             game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-backgrounds-tile-darkpaper"));

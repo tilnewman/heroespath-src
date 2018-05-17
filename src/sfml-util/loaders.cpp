@@ -11,40 +11,41 @@
 //
 #include "loaders.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-
-#include <boost/filesystem.hpp>
+#include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    void LoadTexture(sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH)
+    const std::vector<std::string> Loaders::INVALID_TEXT_VEC_{ ".txt", ".DS_Store", "sample.gif" };
+
+    void Loaders::Texture(
+        sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH)
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
-        const std::string PATH_OBJ_STR(PATH_OBJ.string());
+        const bfs::path PATH{ PATH_STR };
 
         // check if the path exists
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::exists(PATH_OBJ),
-            "LoadTexture(\"" << PATH_OBJ_STR << "\") failed because that file does not exist.");
+            bfs::exists(PATH),
+            "sfml_util::Loaders::Texture(\"" << MakePathPretty(PATH)
+                                             << "\") failed because that file does not exist.");
 
-        // ignore subdirectories, irregulare files, etc.
+        // ignore subdirectories, irregular files, etc.
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::is_regular_file(PATH_OBJ),
-            "LoadTexture(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file.");
+            bfs::is_regular_file(PATH),
+            "sfml_util::Loaders::Texture(\"" << MakePathPretty(PATH)
+                                             << "\") failed because that is not a regular file.");
 
         // verify the load()
         M_ASSERT_OR_LOGANDTHROW_SS(
-            texture.loadFromFile(PATH_OBJ_STR.c_str()),
-            "During LoadTexture(), sf::(Image or Texture).loadFromFile(\""
-                << PATH_OBJ_STR << "\") failed.  Check console output for information.");
+            texture.loadFromFile(PATH.string()),
+            "sfml_util::Loaders::Texture(), sf::(Image or Texture).loadFromFile(\""
+                << MakePathPretty(PATH) << "\") failed.  Check console output for information.");
 
         if (WILL_SMOOTH)
         {
@@ -53,42 +54,36 @@ namespace sfml_util
     }
 
     // Returns the number loaded into textureVec
-    std::size_t LoadAllTexturesInDir(
+    std::size_t Loaders::AllTexturesInDir(
         std::vector<sf::Texture> & textureVec, const std::string & DIR_STR, const bool WILL_SMOOTH)
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path DIR_OBJ(bfs::system_complete(bfs::path(DIR_STR)));
-        const std::string DIR_OBJ_STR(DIR_OBJ.string());
+        const bfs::path DIR_PATH{ DIR_STR };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::exists(DIR_OBJ),
-            "LoadAllTexturesInDir(\"" << DIR_OBJ_STR
-                                      << "\") failed because that path does not exist.");
+            bfs::exists(DIR_PATH),
+            "sfml_util::Loaders::AllTexturesInDir(\""
+                << MakePathPretty(DIR_PATH) << "\") failed because that path does not exist.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::is_directory(DIR_OBJ),
-            "LoadAllTexturesInDir(\"" << DIR_OBJ_STR
-                                      << "\") failed because that is not a directory.");
+            bfs::is_directory(DIR_PATH),
+            "sfml_util::Loaders::AllTexturesInDir(\""
+                << MakePathPretty(DIR_PATH) << "\") failed because that is not a directory.");
 
-        const std::size_t ORIG_SIZE(textureVec.size());
+        auto const ORIG_SIZE{ textureVec.size() };
 
-        bfs::directory_iterator endItr;
-        for (bfs::directory_iterator dirItr(DIR_OBJ); endItr != dirItr; ++dirItr)
+        for (auto const & PATH : DIR_PATH)
         {
-            auto const DIR_PATH_STR{ dirItr->path().string() };
-
-            if (bfs::is_regular_file(dirItr->status()) == false)
+            if (bfs::is_regular_file(PATH) == false)
             {
                 continue;
             }
 
-            const std::vector<std::string> INVALID_TEXT_VEC = { ".txt", ".DS_Store", "sample.gif" };
-
             auto didFindInvalid{ false };
-            for (auto const & NEXT_INVALID_STRING : INVALID_TEXT_VEC)
+            for (auto const & NEXT_INVALID_STRING : INVALID_TEXT_VEC_)
             {
-                if (boost::algorithm::icontains(DIR_PATH_STR, NEXT_INVALID_STRING))
+                if (boost::algorithm::icontains(PATH.leaf().string(), NEXT_INVALID_STRING))
                 {
                     didFindInvalid = true;
                     break;
@@ -100,62 +95,73 @@ namespace sfml_util
                 continue;
             }
 
-            sf::Texture t;
-            LoadTexture(t, DIR_PATH_STR, WILL_SMOOTH);
-            textureVec.emplace_back(t);
+            textureVec.emplace_back(sf::Texture());
+            Texture(textureVec.back(), PATH.string(), WILL_SMOOTH);
         }
 
         const std::size_t TOTAL_ADDED(textureVec.size() - ORIG_SIZE);
         return TOTAL_ADDED;
     }
 
-    void LoadFont(sf::Font & font, const std::string & PATH_STR)
+    void Loaders::Font(sf::Font & font, const std::string & PATH_STR)
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
-        const std::string PATH_OBJ_STR(PATH_OBJ.string());
+        const bfs::path PATH{ PATH_STR };
 
         // check if the path even exists
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::exists(PATH_OBJ),
-            "LoadFont(\"" << PATH_OBJ_STR << "\") failed because that file does not exist!");
+            bfs::exists(PATH),
+            "sfml_util::Loaders::Font(\"" << MakePathPretty(PATH)
+                                          << "\") failed because that file does not exist.");
 
         // ignore subdirectories, etc.
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::is_regular_file(PATH_OBJ),
-            "LoadFont(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file!");
+            bfs::is_regular_file(PATH),
+            "sfml_util::Loaders::Font(\"" << MakePathPretty(PATH)
+                                          << "\") failed because that is not a regular file.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            font.loadFromFile(PATH_OBJ_STR.c_str()),
-            "During LoadFont(), sf::Font::loadFromFile(\""
-                << PATH_OBJ_STR << "\") failed!  "
+            font.loadFromFile(PATH.string()),
+            "sfml_util::Loaders::Font(), sf::Font::loadFromFile(\""
+                << MakePathPretty(PATH) << "\") failed.  "
                 << "Check console output for information.");
     }
 
-    MusicUPtr_t LoadMusic(const std::string & PATH_STR)
+    MusicUPtr_t Loaders::Music(const std::string & PATH_STR)
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(PATH_STR)));
-        const std::string PATH_OBJ_STR(PATH_OBJ.string());
+        const bfs::path PATH{ PATH_STR };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::exists(PATH_OBJ),
-            "LoadMusicSPtr(\"" << PATH_OBJ_STR << "\") failed because that file does not exist.");
+            bfs::exists(PATH),
+            "sfml_util::Loaders::Music(\"" << MakePathPretty(PATH)
+                                           << "\") failed because that file does not exist.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::is_regular_file(PATH_OBJ),
-            "LoadMusic(\"" << PATH_OBJ_STR << "\") failed because that is not a regular file.");
+            bfs::is_regular_file(PATH),
+            "sfml_util::Loaders::Music(\"" << MakePathPretty(PATH)
+                                           << "\") failed because that is not a regular file.");
 
         auto musicUPtr{ std::make_unique<sf::Music>() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            musicUPtr->openFromFile(PATH_OBJ_STR.c_str()),
-            "LoadMusic(\"" << PATH_OBJ_STR << "\"), sf::Music::OpenFromFile() returned false.  "
-                           << "See console output for more information.");
+            musicUPtr->openFromFile(PATH.string()),
+            "sfml_util::Loaders::Music(\"" << MakePathPretty(PATH)
+                                           << "\"), sf::Music::OpenFromFile() returned false.  "
+                                           << "See console output for more information.");
 
         return musicUPtr;
     }
+
+    const std::string Loaders::MakePathPretty(const boost::filesystem::path & PATH)
+    {
+        namespace bfs = boost::filesystem;
+        bfs::path prettyPath{ bfs::system_complete(PATH) };
+        prettyPath.normalize();
+        return prettyPath.string();
+    }
+
 } // namespace sfml_util
 } // namespace heroespath

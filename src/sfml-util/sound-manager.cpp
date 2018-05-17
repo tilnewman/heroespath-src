@@ -572,11 +572,10 @@ namespace sfml_util
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(
-            bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME)
-            / bfs::path(MUSIC_FILE_NAME)));
+        auto const PATH{ bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME)
+                         / bfs::path(MUSIC_FILE_NAME) };
 
-        return sfml_util::LoadMusic(PATH_OBJ.string());
+        return sfml_util::Loaders::Music(PATH.string());
     }
 
     void SoundManager::CacheMusicInfo_CombatIntro()

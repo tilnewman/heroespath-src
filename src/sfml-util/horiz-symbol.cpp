@@ -54,7 +54,7 @@ namespace sfml_util
         const sf::Color & COLOR,
         const float VERT_OFFSET_RATIO)
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             texture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
 

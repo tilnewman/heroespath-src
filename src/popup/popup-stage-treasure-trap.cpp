@@ -85,7 +85,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupAccentImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             accentTexture1_, game::GameDataFile::Instance()->GetMediaPath("media-images-trap"));
 
         accentSprite1_.setTexture(accentTexture1_, true);

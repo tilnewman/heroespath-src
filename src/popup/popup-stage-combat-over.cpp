@@ -43,7 +43,7 @@ namespace popup
                     ->Getsound_effect_set(sfml_util::sound_effect_set::CombatWin)
                     .PlayRandom();
 
-                sfml_util::LoadTexture(
+                sfml_util::Loaders::Texture(
                     bgTexture_,
                     game::GameDataFile::Instance()->GetMediaPath(
                         "media-images-combat-crossswords"));
@@ -57,7 +57,7 @@ namespace popup
                     ->Getsound_effect_set(sfml_util::sound_effect_set::CombatLose)
                     .PlayRandom();
 
-                sfml_util::LoadTexture(
+                sfml_util::Loaders::Texture(
                     bgTexture_,
                     game::GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
 
@@ -72,7 +72,7 @@ namespace popup
                     ->Getsound_effect_set(sfml_util::sound_effect_set::CombatLose)
                     .PlayRandom();
 
-                sfml_util::LoadTexture(
+                sfml_util::Loaders::Texture(
                     bgTexture_,
                     game::GameDataFile::Instance()->GetMediaPath("media-images-combat-run"));
 

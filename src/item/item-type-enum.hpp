@@ -205,6 +205,8 @@ namespace item
 
         static bool IsValid(const Enum);
 
+        static const std::string Name(const Enum);
+
         template <typename T>
         static const std::vector<element_type::Enum>
             ValidCombinations(const T VALUE, const bool WILL_INCLUDE_NOTHING = false)

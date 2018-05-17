@@ -151,8 +151,6 @@ namespace sfml_util
         const FontPtr_t Font_PopupButton() { return Font_BigFlavor2(); }
 
     private:
-        static const sf::Font LoadFont(const std::string & FONT_FILE_NAME);
-
         static const unsigned int SIZE_LARGER_MAX_;
         static const unsigned int SIZE_LARGER_MIN_;
         static const unsigned int SIZE_LARGE_MAX_;

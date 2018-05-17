@@ -376,7 +376,7 @@ namespace sfml_util
 
         try
         {
-            sfml_util::LoadTexture(*cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
+            sfml_util::Loaders::Texture(*cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
         }
         catch (...)
         {

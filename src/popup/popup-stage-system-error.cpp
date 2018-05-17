@@ -32,7 +32,7 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             bgTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-error"));
 
         sfml_util::Mask(bgTexture_, sf::Color::White);

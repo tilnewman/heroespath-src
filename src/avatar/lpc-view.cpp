@@ -35,7 +35,7 @@ namespace avatar
         , frameTimerSec_(0.0f)
         , frameIndex_(0)
     {
-        sfml_util::LoadTexture(texture_, Avatar::ImagePath(whichAvatar_));
+        sfml_util::Loaders::Texture(texture_, Avatar::ImagePath(whichAvatar_));
         sprite_.setTexture(texture_, true);
         SetupSprite();
     }

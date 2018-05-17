@@ -684,7 +684,7 @@ namespace sfml_util
 
         void ItemImageLoader::Load(sf::Texture & texture, const std::string & FILENAME) const
         {
-            sfml_util::LoadTexture(texture, MakeFullPathFromFilename(FILENAME));
+            sfml_util::Loaders::Texture(texture, MakeFullPathFromFilename(FILENAME));
         }
 
         const std::string

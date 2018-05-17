@@ -125,15 +125,15 @@ namespace sfml_util
             , sparkTexture3_()
             , sparkleVec_()
         {
-            LoadTexture(
+            Loaders::Texture(
                 sparkTexture1_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark1"));
 
-            LoadTexture(
+            Loaders::Texture(
                 sparkTexture2_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark2"));
 
-            LoadTexture(
+            Loaders::Texture(
                 sparkTexture3_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark3"));
 

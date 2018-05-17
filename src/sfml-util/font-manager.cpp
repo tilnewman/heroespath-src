@@ -51,25 +51,29 @@ namespace sfml_util
     {
         M_HP_LOG_DBG("Subsystem Construction: FontManager");
 
+        auto const FONTS_DIR{ game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir") };
+
         // Note:  Keep order in sync with enum FontManager::Fonts
-        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/euler/euler.otf");
 
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/gentium-plus/gentium-plus.ttf");
 
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/goudy-bookletter/goudy-bookletter.otf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/goudy-bookletter/goudy-bookletter.otf");
 
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/modern-antiqua/modern-antiqua.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/modern-antiqua/modern-antiqua.ttf");
 
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/queen-country/queen-country.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/queen-country/queen-country.ttf");
 
-        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/quill-sword/quillsword.ttf");
 
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>());
+        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/valley-forge/valleyforge.ttf");
     }
 
     FontManager::~FontManager() { M_HP_LOG_DBG("Subsystem Destruction: FontManager"); }
@@ -174,20 +178,6 @@ namespace sfml_util
     unsigned int FontManager::Size_Tiny() const
     {
         return sfml_util::MapByRes(SIZE_TINY_MIN_, SIZE_TINY_MAX_);
-    }
-
-    const sf::Font FontManager::LoadFont(const std::string & FONT_FILE_NAME)
-    {
-        namespace bfs = boost::filesystem;
-
-        auto const FONTS_DIR{ game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir") };
-
-        const bfs::path PATH_OBJ(
-            bfs::system_complete(bfs::path(FONTS_DIR) / bfs::path(FONT_FILE_NAME)));
-
-        sf::Font font;
-        sfml_util::LoadFont(font, PATH_OBJ.string());
-        return font;
     }
 
 } // namespace sfml_util

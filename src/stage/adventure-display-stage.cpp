@@ -137,7 +137,7 @@ namespace stage
 
     void AdventureDisplayStage::Setup_BackgroundImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             backgroundTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
 

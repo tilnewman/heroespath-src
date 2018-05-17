@@ -359,13 +359,13 @@ namespace stage
     {
         if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 treasureTexture_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
         }
         else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 treasureTexture_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
         }
@@ -491,7 +491,7 @@ namespace stage
 
     void TreasureDisplayStage::SetupInitial_BackgroundImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             backgroundTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
 
@@ -513,7 +513,7 @@ namespace stage
 
     void TreasureDisplayStage::SetupAfterPleaseWait_CorpseImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             corpseTexture_,
             game::GameDataFile::Instance()->GetMediaPath(CorpseImageKeyFromEnemyParty()));
 
@@ -544,7 +544,7 @@ namespace stage
             || (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-2")
         };
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             treasureTexture_, game::GameDataFile::Instance()->GetMediaPath(TREASURE_IMAGE_KEY));
 
         treasureSprite_.setTexture(treasureTexture_);
@@ -571,7 +571,7 @@ namespace stage
     // The scales/colors/positions found by experiment to look good at various resolutions.
     void TreasureDisplayStage::SetupAfterPleaseWait_CoinsImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             coinsTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-coins"));
 
         coinsSprite_.setTexture(coinsTexture_);
@@ -1167,7 +1167,7 @@ namespace stage
     {
         if (WhichCharacterInventoryIsDisplayed()->IsBeast())
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 redXTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
         }
         else
@@ -1311,15 +1311,15 @@ namespace stage
         sf::Sprite & moneySprite,
         sf::Sprite & weightSprite)
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             listboxSortIconAlphaTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             listboxSortIconMoneyTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             listboxSortIconWeightTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
 

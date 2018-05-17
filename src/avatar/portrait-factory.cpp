@@ -20,7 +20,7 @@ namespace avatar
     void PortraitFactory::Make(const Avatar::Enum WHICH_AVATAR, sf::Texture & finalTexture)
     {
         sf::Texture charTexture;
-        sfml_util::LoadTexture(charTexture, Avatar::ImagePath(WHICH_AVATAR));
+        sfml_util::Loaders::Texture(charTexture, Avatar::ImagePath(WHICH_AVATAR));
 
         auto const WIDTH{ 64 };
         auto const HEIGHT{ WIDTH };

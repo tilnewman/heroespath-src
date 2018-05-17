@@ -49,7 +49,7 @@ namespace stage
 
     void IntroStage::Setup()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             titleTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-title-intro"));
 

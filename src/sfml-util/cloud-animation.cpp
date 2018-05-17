@@ -12,11 +12,9 @@
 #include "cloud-animation.hpp"
 
 #include "game/game-data-file.hpp"
-
+#include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "misc/random.hpp"
 
 #include <algorithm>
 
@@ -144,15 +142,15 @@ namespace sfml_util
             , cloudTexture3_()
             , cloudVec_()
         {
-            LoadTexture(
+            Loaders::Texture(
                 cloudTexture1_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud1"));
 
-            LoadTexture(
+            Loaders::Texture(
                 cloudTexture2_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud2"));
 
-            LoadTexture(
+            Loaders::Texture(
                 cloudTexture3_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud3"));
 

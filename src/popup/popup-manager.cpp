@@ -532,7 +532,7 @@ namespace popup
 
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             texture,
             accentPathsVec_
                 .at(static_cast<std::size_t>(

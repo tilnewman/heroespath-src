@@ -148,7 +148,7 @@ namespace stage
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 texture_, game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH));
 
             sprite_.setTexture(texture_);

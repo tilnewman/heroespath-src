@@ -61,7 +61,7 @@ namespace sfml_util
                 auto const PATH{ bfs::path(imageDirectoryPath_)
                                  / bfs::path(EnumWrapper_t::ImageFilename(ENUM_VALUE_VALUE)) };
 
-                sfml_util::LoadTexture(texture, PATH.string());
+                sfml_util::Loaders::Texture(texture, PATH.string());
 
                 if (WILL_FLIP_HORIZ == image::Flip::Yes)
                 {

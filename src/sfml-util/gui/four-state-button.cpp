@@ -188,25 +188,25 @@ namespace sfml_util
             // up image is required
             if (IMAGE_PATH_UP.empty() == false)
             {
-                sfml_util::LoadTexture(up, IMAGE_PATH_UP);
+                sfml_util::Loaders::Texture(up, IMAGE_PATH_UP);
                 hasUp = true;
             }
             // down, over, disabled images are not required
             if (IMAGE_PATH_DOWN.empty() == false)
             {
-                sfml_util::LoadTexture(down, IMAGE_PATH_DOWN);
+                sfml_util::Loaders::Texture(down, IMAGE_PATH_DOWN);
                 hasDown = true;
             }
 
             if (IMAGE_PATH_OVER.empty() == false)
             {
-                sfml_util::LoadTexture(over, IMAGE_PATH_OVER);
+                sfml_util::Loaders::Texture(over, IMAGE_PATH_OVER);
                 hasOver = true;
             }
 
             if (IMAGE_PATH_DISABLED.empty() == false)
             {
-                sfml_util::LoadTexture(disabled, IMAGE_PATH_DISABLED);
+                sfml_util::Loaders::Texture(disabled, IMAGE_PATH_DISABLED);
                 hasDisabled = true;
             }
 

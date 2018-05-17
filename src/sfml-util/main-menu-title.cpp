@@ -43,7 +43,7 @@ namespace sfml_util
         const float SYMBOL_SCALE_HORIZ,
         const float SYMBOL_SCALE_VERT)
     {
-        LoadTexture(
+        Loaders::Texture(
             symbolTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
 
@@ -62,7 +62,7 @@ namespace sfml_util
                                              "media-images-buttons-mainmenu-dir")
                                          + TITLE_IMAGE_FILENAME };
 
-            sfml_util::LoadTexture(titleTexture_, TITLE_IMAGE_PATH);
+            sfml_util::Loaders::Texture(titleTexture_, TITLE_IMAGE_PATH);
             titleSprite_.setTexture(titleTexture_, true);
         }
 

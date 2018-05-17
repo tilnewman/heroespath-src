@@ -65,7 +65,7 @@ namespace sfml_util
             size_ = SIZE;
             color_ = COLOR;
 
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 texture_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-knot-corner"));
 

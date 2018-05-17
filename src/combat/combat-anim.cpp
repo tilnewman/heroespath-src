@@ -255,7 +255,7 @@ namespace combat
         }
 
         // load the projectile image
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
         projAnimSprite_.setTexture(projAnimTexture_, true);

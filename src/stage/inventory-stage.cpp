@@ -940,7 +940,7 @@ namespace stage
 
     void InventoryStage::Setup_PaperBackground()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             paperBgTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
 
@@ -1370,15 +1370,15 @@ namespace stage
     void InventoryStage::Setup_SortButtons()
     {
         // load images
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             sortButtonNameTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             sortButtonPriceTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             sortButtonWeightTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
 

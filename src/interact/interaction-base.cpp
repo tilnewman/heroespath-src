@@ -37,10 +37,10 @@ namespace interact
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             contextTexture_,
             game::GameDataFile::Instance()->GetMediaPath(Interact::ImageKey(INTERACTION_TYPE)));
     }

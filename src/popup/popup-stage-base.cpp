@@ -284,7 +284,7 @@ namespace popup
         // Custom popups have no background image
         if (popupInfo_.Image() != PopupImage::Custom)
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 backgroundTexture_,
                 PopupManager::Instance()->BackgroundImagePath(popupInfo_.Image()));
 
@@ -582,7 +582,7 @@ namespace popup
 
     void PopupStageBase::SetupRedXImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             xSymbolTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
 
         xSymbolSprite_.setTexture(xSymbolTexture_);

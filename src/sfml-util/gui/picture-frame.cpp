@@ -31,7 +31,7 @@ namespace sfml_util
             , botRightSprite_()
             , sideSprites_()
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 texture_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-misc-picture-frame"));
 

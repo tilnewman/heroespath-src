@@ -335,7 +335,7 @@ namespace sfml_util
             const std::string & IMAGE_FILE_NAME,
             const bool WILL_FACE_RIGHT) const
         {
-            sfml_util::LoadTexture(texture, MakeFullPathFromFilename(IMAGE_FILE_NAME));
+            sfml_util::Loaders::Texture(texture, MakeFullPathFromFilename(IMAGE_FILE_NAME));
 
             if (WILL_FACE_RIGHT)
             {

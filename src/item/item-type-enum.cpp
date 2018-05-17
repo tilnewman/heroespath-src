@@ -43,6 +43,34 @@ namespace item
         AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Shadow, "Shadow");
     }
 
+    const std::string element_type::Name(const Enum ELEMENT_TYPE)
+    {
+        std::ostringstream ss;
+
+        auto appendIfBitIsSet{ [&](const element_type::Enum BIT) {
+            if (ELEMENT_TYPE & BIT)
+            {
+                if (ss.str().empty())
+                {
+                    ss << "of ";
+                }
+                else
+                {
+                    ss << " and ";
+                }
+
+                ss << element_type::ToString(BIT);
+            }
+        } };
+
+        appendIfBitIsSet(element_type::Fire);
+        appendIfBitIsSet(element_type::Frost);
+        appendIfBitIsSet(element_type::Honor);
+        appendIfBitIsSet(element_type::Shadow);
+
+        return ss.str();
+    }
+
     bool element_type::IsValid(const element_type::Enum E)
     {
         if (((E & element_type::Fire) && (E & element_type::Frost))

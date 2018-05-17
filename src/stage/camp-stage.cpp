@@ -106,7 +106,7 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         // campfire background image
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             campfireTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
 

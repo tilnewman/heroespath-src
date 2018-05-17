@@ -552,7 +552,7 @@ namespace combat
         {
             crossBonesTextureUPtr_ = std::make_unique<sf::Texture>();
 
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 *crossBonesTextureUPtr_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
 

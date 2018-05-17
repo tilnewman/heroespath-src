@@ -25,12 +25,12 @@ namespace sfml_util
 
         void GuiElements::LoadTexture()
         {
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 elementsTexture_,
                 game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
         }
 
-        /*sfml_util::LoadTexture(
+        /*sfml_util::Loaders::Texture(
             darkKnotBgTexture_,
             game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-backgrounds-tile-darkknot"));*/

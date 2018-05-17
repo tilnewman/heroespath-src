@@ -90,7 +90,7 @@ namespace stage
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("TestingStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             animBGTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
 
@@ -844,7 +844,7 @@ if (false == willImageCheck_)
             TestingStrAppend(ss.str());
 
             sf::Texture texture;
-            sfml_util::LoadTexture(
+            sfml_util::Loaders::Texture(
                 texture, game::GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
 
             TestingImageSet(texture);
@@ -878,7 +878,7 @@ if (false == willImageCheck_)
             TestingStrAppend(ss.str());
 
             sf::Texture texture;
-            sfml_util::LoadTexture(texture, avatar::Avatar::ImagePath(WHICH_AVATAR));
+            sfml_util::Loaders::Texture(texture, avatar::Avatar::ImagePath(WHICH_AVATAR));
             TestingImageSet(texture);
 
             ++imageIndex;
@@ -1419,7 +1419,7 @@ if (false == willImageCheck_)
             }
 
             sf::Texture texture;
-            sfml_util::LoadTexture(texture, FILE_PATH_STR, false);
+            sfml_util::Loaders::Texture(texture, FILE_PATH_STR, false);
             sf::Image image{ texture.copyToImage() };
 
             auto const WIDTH{ texture.getSize().x };

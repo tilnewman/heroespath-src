@@ -8,10 +8,11 @@
 #define HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED
 //
 // loaders.hpp
-//  Functions that help load assests and media.
 //
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+
+#include <boost/filesystem.hpp>
 
 #include <string>
 #include <vector>
@@ -21,17 +22,29 @@ namespace heroespath
 namespace sfml_util
 {
 
-    void LoadTexture(
-        sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH = true);
+    // Responsible for loading sfml media
+    struct Loaders
+    {
+        Loaders() = delete;
 
-    std::size_t LoadAllTexturesInDir(
-        std::vector<sf::Texture> & textureVec,
-        const std::string & DIR_STR,
-        const bool WILL_SMOOTH = true);
+        static void Texture(
+            sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH = true);
 
-    void LoadFont(sf::Font & font, const std::string & PATH_STR);
+        static std::size_t AllTexturesInDir(
+            std::vector<sf::Texture> & textureVec,
+            const std::string & DIR_STR,
+            const bool WILL_SMOOTH = true);
 
-    MusicUPtr_t LoadMusic(const std::string & PATH_STR);
+        static void Font(sf::Font & font, const std::string & PATH_STR);
+
+        static MusicUPtr_t Music(const std::string & PATH_STR);
+
+    private:
+        static const std::string MakePathPretty(const boost::filesystem::path &);
+
+        static const std::vector<std::string> INVALID_TEXT_VEC_;
+    };
+
 } // namespace sfml_util
 } // namespace heroespath
 

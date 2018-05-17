@@ -260,7 +260,7 @@ namespace stage
             BG_BOX_WIDTH - (BG_BOX_INNER_PAD * 2.0f),
             BG_BOX_HEIGHT - (BG_BOX_INNER_PAD * 2.0f));
 
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             woodTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
 

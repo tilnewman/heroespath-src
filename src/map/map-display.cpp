@@ -740,7 +740,7 @@ namespace map
 
     void MapDisplay::SetupNPCShadowImage()
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             npcShadowTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
 

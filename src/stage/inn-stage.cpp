@@ -53,7 +53,7 @@ namespace stage
     void InnStage::Setup()
     {
         // title symbol
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             titleSymbolTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
 
@@ -68,7 +68,7 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         // candle
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             candleTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-candle"));
 
         candleSprite_.setTexture(candleTexture_);

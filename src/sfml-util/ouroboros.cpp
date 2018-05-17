@@ -39,7 +39,7 @@ namespace sfml_util
         , shadeDrifter_(5.0f, 25.0f, 0.1, 0.75)
         , rotSpeedDrifter_(1.0f, 10.0f, 0.25, 0.75)
     {
-        sfml_util::LoadTexture(
+        sfml_util::Loaders::Texture(
             texture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
 

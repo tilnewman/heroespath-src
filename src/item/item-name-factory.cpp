@@ -94,7 +94,7 @@ namespace item
 
             if (PROFILE.IsPixie())
             {
-                ss << "Pixie";
+                ss << "Pixie ";
             }
 
             ss << PROFILE.ReadableName();

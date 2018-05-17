@@ -227,7 +227,8 @@ namespace map
             bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir"))
             / bfs::path(tilesPanel.path_rel).leaf());
 
-        sfml_util::LoadTexture(layout.texture_vec[TEXTURE_INDEX], tilesPanel.path_obj.string());
+        sfml_util::Loaders::Texture(
+            layout.texture_vec[TEXTURE_INDEX], tilesPanel.path_obj.string());
     }
 
     void Parser::Parse_Layer_Collisions(

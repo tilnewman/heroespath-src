@@ -170,9 +170,9 @@ namespace misc
     template <typename EnumWrapper_t, typename EnumFirstValue_t>
     class EnumBaseCounting
     {
+    public:
         EnumBaseCounting() = delete;
 
-    public:
         static bool IsValid(const EnumUnderlying_t ENUM_VALUE)
         {
             return (ENUM_VALUE <= LargestValidValue());
@@ -297,9 +297,9 @@ namespace misc
     template <typename EnumWrapper_t>
     class EnumBaseBitField
     {
+    public:
         EnumBaseBitField() = delete;
 
-    public:
         static bool IsValid(const EnumUnderlying_t ENUM_VALUE)
         {
             return (ENUM_VALUE <= LargestValidValue());
