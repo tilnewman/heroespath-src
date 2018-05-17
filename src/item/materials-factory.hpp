@@ -83,7 +83,9 @@ namespace item
         const MaterialPairVec_t MakePairs(const material::Enum MATERIAL) const;
 
         void CleanupMaterialPairVectorAndEnsureNotEmpty(
-            MaterialPairVec_t & materialPairs, const bool WILL_REMOVE_LAME_MATERIALS) const;
+            MaterialPairVec_t & materialPairs,
+            const bool WILL_REMOVE_LAME_MATERIALS,
+            const bool ALLOW_INVALID) const;
 
     private:
         MaterialVec_t metal_;

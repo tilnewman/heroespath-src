@@ -87,13 +87,15 @@ namespace item
         // As of 2018-3-17 there were 465091 profiles with no duplicates to cleanup.
         // As of 2018-4-28 457935
         // As of 2018-5-2 236585 (reduced the number of element enchantments)
-        // AS OF 2018-5-8 59370
-        profiles_.reserve(60000);
+        // As oF 2018-5-8 59370
+        // 2018-5-17 44057 (fixed a bug in materials factory that was allowing invalid materials)
+        profiles_.reserve(45000);
 
         // As of 2018-3-19 there were 251 religious profiles.
         // As of 2018-4-28 107
         // As of 2018-5-2 392
         // As of 2018-5-8 313
+        // 2018-5-17 317
         religiousProfiles_.reserve(320);
 
         Setup_StandardEquipment();
