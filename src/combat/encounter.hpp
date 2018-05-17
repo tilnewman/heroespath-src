@@ -21,6 +21,7 @@
 #include "misc/not-null.hpp"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace heroespath

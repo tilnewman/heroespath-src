@@ -905,7 +905,7 @@ if (false == willImageCheck_)
 
         struct MapAndTransitions
         {
-            MapAndTransitions(
+            explicit MapAndTransitions(
                 const map::Level::Enum LEVEL = map::Level::Count,
                 const MapLevelVec_t & ENTRY_LEVELS = MapLevelVec_t(),
                 const MapLevelVec_t & EXIT_LEVELS = MapLevelVec_t())

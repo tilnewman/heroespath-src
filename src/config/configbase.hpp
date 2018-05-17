@@ -65,7 +65,7 @@ namespace config
         // Returns the value stored at KEY.
         // Retuns DEFAULT if key does not exist, or cannot be cast to the desired type.
         template <typename T>
-        T GetWithDefault(const std::string & KEY, const T DEFAULT = T()) const
+        T GetWithDefault(const std::string & KEY, const T & DEFAULT = T()) const
         {
             T x;
 

@@ -23,7 +23,7 @@ namespace sfml_util
                 Yes = true
             };
 
-            static inline float StandardDimmension() { return 256.0f; }
+            inline float StandardDimmension() { return 256.0f; }
 
         }; // namespace image
 

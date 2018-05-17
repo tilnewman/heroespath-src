@@ -389,16 +389,19 @@ namespace sfml_util
 
     void TextureCache::ReorderByLastNumber(std::vector<std::string> & strVec)
     {
-        std::multimap<std::size_t, std::string> numberToStrMMap;
+        misc::VectorMap<std::size_t, std::string> numberToStrMap;
 
         for (auto const & STR : strVec)
         {
-            numberToStrMMap.insert(std::pair<std::size_t, std::string>(FindLastNumber(STR), STR));
+            // use Append() to allow for duplicates
+            numberToStrMap.Append(FindLastNumber(STR), STR);
         }
 
         strVec.clear();
 
-        for (auto const & NUM_STR_PAIR : numberToStrMMap)
+        numberToStrMap.Sort();
+
+        for (auto const & NUM_STR_PAIR : numberToStrMap)
         {
             strVec.emplace_back(NUM_STR_PAIR.second);
         }

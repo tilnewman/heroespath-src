@@ -39,7 +39,7 @@ namespace combat
 
         void CreatureStrategies::Setup()
         {
-            std::map<creature::race::Enum, Chances> raceChancesMap;
+            misc::VectorMap<creature::race::Enum, Chances> raceChancesMap;
 
             for (misc::EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {

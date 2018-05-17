@@ -45,7 +45,7 @@ namespace stage
         AdventureDisplayStage & operator=(AdventureDisplayStage &&) = delete;
 
     public:
-        AdventureDisplayStage(interact::InteractionManager &);
+        explicit AdventureDisplayStage(interact::InteractionManager &);
         virtual ~AdventureDisplayStage();
 
         void Setup() override;

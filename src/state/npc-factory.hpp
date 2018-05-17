@@ -12,6 +12,8 @@
 #include "misc/not-null-warehouse.hpp"
 #include "state/npc-placeholder.hpp"
 
+#include <vector>
+
 namespace heroespath
 {
 namespace state

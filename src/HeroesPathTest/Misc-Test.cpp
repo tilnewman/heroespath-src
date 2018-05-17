@@ -38,7 +38,7 @@ using namespace heroespath::misc;
 class Thing
 {
 public:
-    Thing(const int NUMBER = 0)
+    explicit Thing(const int NUMBER = 0)
         : m_number(NUMBER)
     {}
 

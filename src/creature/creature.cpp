@@ -619,6 +619,15 @@ namespace creature
         {
             return "Can't equip because it is a mini verson made only for Pixies.";
         }
+        else if (ITEM_PTR->IsSet())
+        {
+            auto const REQUIRED_ROLE{ item::set_type::Role(ITEM_PTR->SetType()) };
+            if (REQUIRED_ROLE != Role())
+            {
+                return "Can't equip because it is part of a magical set intended for "
+                    + role::Name(REQUIRED_ROLE) + "s.";
+            }
+        }
 
         const std::string SEP(", ");
 

@@ -79,7 +79,7 @@ namespace non_player
             // responsible for wrapping all the armor chance information per role
             struct RoleArmorChance
             {
-                RoleArmorChance(
+                explicit RoleArmorChance(
                     const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
                     const float CHANCE = 0.0f)
                     : type_wrapper(ARMOR_TYPE_WRAPPER)

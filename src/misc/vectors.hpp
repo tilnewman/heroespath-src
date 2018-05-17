@@ -315,7 +315,7 @@ namespace misc
                 , sum(SUM)
             {}
 
-            MinMaxAvgSum(const std::vector<T> & VALUES)
+            explicit MinMaxAvgSum(const std::vector<T> & VALUES)
                 : min(0)
                 , max(0)
                 , avg(0)

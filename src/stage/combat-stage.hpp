@@ -83,7 +83,7 @@ namespace stage
     // Responsible for wrapping all the perform report indicies.
     struct ReportIndicies
     {
-        ReportIndicies(const std::size_t EFFECT_INDEX = 0, const std::size_t HIT_INDEX = 0)
+        explicit ReportIndicies(const std::size_t EFFECT_INDEX = 0, const std::size_t HIT_INDEX = 0)
             : effect(EFFECT_INDEX)
             , hit(HIT_INDEX)
         {}

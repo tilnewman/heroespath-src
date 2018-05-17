@@ -85,6 +85,7 @@ namespace sfml_util
         // NOT the complete system path.
         StrToSizetVecMap_t strToVecMap_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

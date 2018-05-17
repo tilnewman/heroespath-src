@@ -53,7 +53,7 @@ namespace item
         class Report
         {
         public:
-            Report(const std::string & DESCRIPTION = "")
+            explicit Report(const std::string & DESCRIPTION = "")
                 : description_(DESCRIPTION)
                 , scores_()
                 , religiousScores_()
@@ -103,7 +103,7 @@ namespace item
         class WeaponOrArmorReport : public Report
         {
         public:
-            WeaponOrArmorReport(
+            explicit WeaponOrArmorReport(
                 const bool IS_WEAPON_REPORT, const std::string & DESCRIPTION_POSTFIX = "")
                 : Report(((IS_WEAPON_REPORT) ? "weapons" : "armor") + DESCRIPTION_POSTFIX)
             {
@@ -124,7 +124,7 @@ namespace item
         class StandardSetReport : public Report
         {
         public:
-            StandardSetReport(const std::string & DESCRIPTION)
+            explicit StandardSetReport(const std::string & DESCRIPTION)
                 : Report(DESCRIPTION)
             {}
 
@@ -155,7 +155,7 @@ namespace item
             const T NUMERATOR,
             const U DENOMINATOR,
             const bool WILL_WRAP = false,
-            const std::string POSTFIX = "",
+            const std::string & POSTFIX = "",
             const int DIGITS = 4)
         {
             if (DENOMINATOR > 0)

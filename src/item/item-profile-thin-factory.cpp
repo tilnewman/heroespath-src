@@ -13,6 +13,8 @@
 
 #include "misc/vectors.hpp"
 
+#include <vector>
+
 namespace heroespath
 {
 namespace item

@@ -17,6 +17,7 @@
 
 #include <string>
 #include <tuple>
+#include <vector>
 
 namespace heroespath
 {
@@ -45,7 +46,7 @@ namespace item
 
             explicit ArmorTypeWrapper(const cover_type::Enum COVER_TYPE);
 
-            ArmorTypeWrapper(const helm_type::Enum HELM_TYPE);
+            explicit ArmorTypeWrapper(const helm_type::Enum HELM_TYPE);
 
             explicit ArmorTypeWrapper(const shield_type::Enum SHIELD_TYPE);
 

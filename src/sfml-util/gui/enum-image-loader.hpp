@@ -37,7 +37,7 @@ namespace sfml_util
             EnumImageLoader & operator=(const EnumImageLoader &) = delete;
             EnumImageLoader & operator=(EnumImageLoader &&) = delete;
 
-            EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
+            explicit EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
                 : imageDirectoryPath_("")
             {
                 namespace bfs = boost::filesystem;

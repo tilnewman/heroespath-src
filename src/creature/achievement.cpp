@@ -113,7 +113,7 @@ namespace creature
         // Keep incrementing past the count of the final Title so the player can track
         // progress even if there are no more Titles to earn.  Don't stop until the
         // count reaches a large recognizeable limit...something with lots of 9's...
-        if (999'999_count <= count_)
+        if (999999_count <= count_)
         {
             return boost::none;
         }

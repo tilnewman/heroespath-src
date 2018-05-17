@@ -1633,12 +1633,8 @@ namespace item
             || (MISC_TYPE == MagnifyingGlass) || (MISC_TYPE == PixieBell)
             || (MISC_TYPE == ShamanRainmaker) || (MISC_TYPE == SpecterChains)
             || (MISC_TYPE == VultureGizzard) || (MISC_TYPE == WarTrumpet)
-            || (MISC_TYPE == WraithTalisman) || (MISC_TYPE == PixieBell)
-            || (MISC_TYPE == DragonToothWhistle) || (MISC_TYPE == CrystalChimes)
-            || (MISC_TYPE == ExoticGoldenGong) || (MISC_TYPE == Key)
-            || (MISC_TYPE == MagnifyingGlass) || (MISC_TYPE == DoveBloodVial)
-            || (MISC_TYPE == BottleOfBansheeScreams) || (MISC_TYPE == ShamanRainmaker)
-            || (MISC_TYPE == SpecterChains));
+            || (MISC_TYPE == WraithTalisman) || (MISC_TYPE == Key)
+            || (MISC_TYPE == BottleOfBansheeScreams));
     }
 
     bool misc_type::IsMusicalInstrument(const Enum MISC_TYPE)
