@@ -678,8 +678,53 @@ namespace item
                 << armor_type::ToString(ITEM_PROFILE.ArmorType())
                 << " but item=" << armor_type::ToString(ITEM_PTR->ArmorType()) << ".");
 
+        const bool IS_ITEM_EQUIPPABLE{ (ITEM_PTR->Category() & category::Equippable) > 0 };
+
+        if (IS_ITEM_EQUIPPABLE)
+        {
+            auto const IS_WEARABLE{ (ITEM_PTR->Category() & category::Wearable) > 0 };
+            auto const IS_ONE_HANDED{ (ITEM_PTR->Category() & category::OneHanded) > 0 };
+            auto const IS_TWO_HANDED{ (ITEM_PTR->Category() & category::TwoHanded) > 0 };
+
+            auto const EQUIP_TYPE_COUNT{ ((IS_WEARABLE) ? 1 : 0) + ((IS_ONE_HANDED) ? 1 : 0)
+                                         + ((IS_TWO_HANDED) ? 1 : 0) };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (EQUIP_TYPE_COUNT == 1),
+                makeErrorReportPrefix()
+                    << "equippable but not one and only one of the three equippable types:"
+                       "is_wearable="
+                    << std::boolalpha << IS_WEARABLE << ", is_one_handed=" << IS_ONE_HANDED
+                    << ", is_two_handed=" << IS_TWO_HANDED << ".");
+        }
+        else
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->Category() & category::Wearable) == false),
+                makeErrorReportPrefix() << "not equippable but is wearable.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->Category() & category::OneHanded) == false),
+                makeErrorReportPrefix() << "not equippable but is one-handed.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->Category() & category::TwoHanded) == false),
+                makeErrorReportPrefix() << "not equippable but is two-handed.");
+        }
+
         if (ITEM_PTR->IsMisc())
         {
+            const bool IS_MISCTYPE_EQUIPPABLE{
+                (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equippable) > 0
+            };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (IS_MISCTYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
+                makeErrorReportPrefix()
+                    << "equippable, but the misc_type=" << misc_type::ToString(ITEM_PTR->MiscType())
+                    << " is NOT equippable.  misc_type_equip_category="
+                    << category::ToString(misc_type::EquipCategory(ITEM_PTR->MiscType())));
+
             // unique_types cannot be set
             if (misc_type::IsUnique(ITEM_PTR->MiscType()))
             {
@@ -700,17 +745,6 @@ namespace item
                     << "misc_type::IsArmor()=" << misc_type::IsArmor(ITEM_PTR->MiscType())
                     << " but ITEM_PTR->IsArmor()=" << ITEM_PTR->IsArmor()
                     << " -these should match.");
-
-            const bool IS_ITEM_EQUIPPABLE{ (ITEM_PTR->Category() & category::Equippable) != 0 };
-            const bool IS_TYPE_EQUIPPABLE{ misc_type::IsEquippable(ITEM_PTR->MiscType()) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (IS_TYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
-                makeErrorReportPrefix()
-                    << "misc_type::IsEquippable(" << misc_type::ToString(ITEM_PTR->MiscType())
-                    << ")=" << IS_TYPE_EQUIPPABLE
-                    << " != (ITEM_PTR->Category() & category::Equippable)=" << IS_ITEM_EQUIPPABLE
-                    << ".");
 
             auto const IS_QUEST{ misc_type::IsQuestItem(ITEM_PTR->MiscType()) };
             auto const IS_UNIQUE{ misc_type::IsUnique(ITEM_PTR->MiscType()) };
@@ -910,7 +944,7 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeArmorBodyPartName(MATERIALS_PAIR, CREATURE_PTR),
             nameFactory_.MakeArmorBodyPartDescription(MATERIALS_PAIR),
-            static_cast<category::Enum>(ItemProfile::CategoryArmor() | category::BodyPart),
+            static_cast<category::Enum>(category::Equippable | category::BodyPart),
             MATERIALS_PAIR.first,
             MATERIALS_PAIR.second,
             0_coin,

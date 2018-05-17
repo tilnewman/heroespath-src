@@ -192,7 +192,8 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE,
-                false);
+                false,
+                category::Wearable);
         }
 
         void SetCover(
@@ -225,7 +226,7 @@ namespace item
                 SET_TYPE,
                 ELEMENT_TYPE,
                 IS_PIXIE,
-                category::None,
+                category::Wearable,
                 MISC_TYPE);
         }
 
@@ -697,11 +698,6 @@ namespace item
 
         static category::Enum CategoryWeaponBodypart(const body_part::Enum);
 
-        static category::Enum CategoryArmor()
-        {
-            return static_cast<category::Enum>(category::Equippable);
-        }
-
     private:
         void SetArmorWithBaseTypeHelper(
             const ItemProfileThin & THIN_PROFILE,
@@ -725,8 +721,8 @@ namespace item
             const category::Enum CATEGORY_TO_APPEND = category::None,
             const misc_type::Enum MISC_TYPE = misc_type::Not)
         {
-            category_
-                = static_cast<category::Enum>(category_ | CategoryArmor() | CATEGORY_TO_APPEND);
+            category_ = static_cast<category::Enum>(
+                category_ | category::Equippable | CATEGORY_TO_APPEND);
 
             thinProfile_ = THIN_PROFILE;
 

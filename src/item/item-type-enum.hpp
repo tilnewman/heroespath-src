@@ -464,16 +464,8 @@ namespace item
         static bool IsUseable(const Enum);
         static bool IsMusicalInstrument(const Enum);
         static bool IsSummoning(const Enum);
-
-        // these two are not mutually exclusive, all wearable are equippable because creature
-        // inventories only understand equipped vs held, wearable is just a way to display more
-        // natural language to the player, so all wearable are equippable but not all equippable are
-        // wearable.
-        static bool IsWearable(const Enum);
-        static bool IsEquippable(const Enum);
-
+        static category::Enum EquipCategory(const Enum);
         static bool AllowsCasting(const Enum);
-
         static bool IsWeapon(const Enum);
         static bool IsArmor(const Enum);
 

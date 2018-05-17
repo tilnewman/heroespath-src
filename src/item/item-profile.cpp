@@ -207,15 +207,7 @@ namespace item
             category_ = static_cast<category::Enum>(category_ | category::Useable);
         }
 
-        if (misc_type::IsWearable(MISC_TYPE))
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Wearable);
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        }
-        else if (misc_type::IsEquippable(MISC_TYPE))
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        }
+        category_ = static_cast<category::Enum>(category_ | misc_type::EquipCategory(MISC_TYPE));
 
         thinProfile_ = THIN_PROFILE;
         matPri_ = MATERIAL_PRIMARY;
@@ -242,7 +234,7 @@ namespace item
         if (ELEMENT_TYPE != element_type::None)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (misc_type::IsEquippable(MISC_TYPE)),
+                ((misc_type::EquipCategory(MISC_TYPE) & category::Equippable) > 0),
                 "item::ItemProfile::SetMisc(misc_type="
                     << misc_type::ToString(MISC_TYPE) << ", is_pixie=" << std::boolalpha << IS_PIXIE
                     << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
@@ -723,7 +715,8 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        category_ = static_cast<category::Enum>(category_ | CategoryArmor());
+        category_
+            = static_cast<category::Enum>(category_ | category::Equippable | category::Wearable);
         thinProfile_ = THIN_PROFILE;
 
         SetHelperForWeaponsAndArmor(

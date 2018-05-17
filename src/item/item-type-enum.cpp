@@ -1652,7 +1652,7 @@ namespace item
             || (MISC_TYPE == SummoningStatue) || ((MISC_TYPE == SpiderEggs)));
     }
 
-    bool misc_type::IsWearable(const Enum MISC_TYPE)
+    category::Enum misc_type::EquipCategory(const Enum MISC_TYPE)
     {
         switch (MISC_TYPE)
         {
@@ -1702,22 +1702,38 @@ namespace item
             case Pendant:
             case Ring:
             {
-                return true;
+                return static_cast<category::Enum>(category::Equippable | category::Wearable);
             }
+
             case AngelBraid:
-            case Crumhorn:
             case DevilHorn:
             case GolemFinger:
-            case HurdyGurdy:
             case Icicle:
             case LitchHand:
-            case Lyre:
             case MummyHand:
             case PetrifiedSnake:
+            case UnicornHorn:
+            case Orb:
+            case Scepter:
+            case Wand:
+            case Shard:
+            {
+                return static_cast<category::Enum>(category::Equippable | category::OneHanded);
+            }
+
+            case Crumhorn:
+            case HurdyGurdy:
+            case Lyre:
             case PipeAndTabor:
             case Recorder:
-            case UnicornHorn:
             case Viol:
+            case DrumLute:
+            case ReaperScythe:
+            case Staff:
+            {
+                return static_cast<category::Enum>(category::Equippable | category::TwoHanded);
+            }
+
             case BasiliskTonge:
             case BishopsHanky:
             case BleedingTrophy:
@@ -1765,7 +1781,6 @@ namespace item
             case PixieBell:
             case RattlesnakeTail:
             case RavenClaw:
-            case ReaperScythe:
             case RequiemRegister:
             case RoyalScoutSpyglass:
             case SaintsJournal:
@@ -1792,7 +1807,6 @@ namespace item
             case DollBlessed:
             case DollCursed:
             case DriedHead:
-            case DrumLute:
             case Egg:
             case Embryo:
             case FigurineBlessed:
@@ -1801,28 +1815,16 @@ namespace item
             case Key:
             case LockPicks:
             case Mirror:
-            case Orb:
             case PuppetBlessed:
             case PuppetCursed:
-            case Scepter:
             case SummoningStatue:
-            case Wand:
-            case Shard:
-            case Staff:
             case Not:
             case Count:
             default:
             {
-                return false;
+                return category::None;
             }
         }
-    }
-
-    bool misc_type::IsEquippable(const Enum MISC_TYPE)
-    {
-        return (
-            IsMusicalInstrument(MISC_TYPE) || IsWearable(MISC_TYPE) || AllowsCasting(MISC_TYPE)
-            || IsWeapon(MISC_TYPE) || IsArmor(MISC_TYPE));
     }
 
     bool misc_type::AllowsCasting(const Enum MISC_TYPE)
