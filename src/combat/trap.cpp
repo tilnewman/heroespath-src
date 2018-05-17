@@ -121,8 +121,7 @@ namespace combat
 
     std::size_t Trap::RandomEffectedPlayersCount() const
     {
-        return static_cast<std::size_t>(misc::random::Int(
-            static_cast<int>(playerCountRange_.Min()), static_cast<int>(playerCountRange_.Max())));
+        return misc::random::SizeT(playerCountRange_.Min(), playerCountRange_.Max());
     }
 
     Rank_t Trap::FindAveragePlayerRank() const

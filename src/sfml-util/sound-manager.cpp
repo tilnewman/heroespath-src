@@ -647,11 +647,7 @@ namespace sfml_util
 
         if (musicInfo.Which() == music::CombatIntro)
         {
-            auto const INDEX{ static_cast<std::size_t>(
-                misc::random::Int(0, static_cast<int>(combatIntroMusicInfoVec_.size()) - 1)) };
-
-            musicInfo = combatIntroMusicInfoVec_[INDEX];
-
+            musicInfo = misc::Vector::SelectRandom(combatIntroMusicInfoVec_);
             musicUPtr = OpenMusic(musicInfo.Filename(), music::Directory(music::CombatIntro));
         }
         else

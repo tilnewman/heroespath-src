@@ -121,8 +121,7 @@ namespace sfml_util
         }
         else
         {
-            PlayAt(static_cast<std::size_t>(
-                misc::random::Int(static_cast<int>(sfxEnums_.size()) - 1)));
+            PlayAt(misc::random::SizeT(sfxEnums_.size() - 1));
         }
     }
 

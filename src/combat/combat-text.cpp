@@ -420,8 +420,7 @@ namespace combat
                     "surges", "charages", "leaps", "rushes", "springs"
                 };
 
-                ss << strVec.at(static_cast<std::size_t>(
-                    misc::random::Int(static_cast<int>(strVec.size()) - 1)));
+                ss << misc::Vector::SelectRandom(strVec);
 
                 if (misc::random::Bool())
                 {
