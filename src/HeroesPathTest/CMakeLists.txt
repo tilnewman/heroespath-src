@@ -36,7 +36,6 @@ foreach(testSrc ${impl_files})
 
         target_link_libraries(  ${testName}
 	                        Misc
-        	                Config
                 	        Log
                         	sfml-util
                         	sfml-util-gui

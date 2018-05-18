@@ -10,6 +10,7 @@
 // configbase.cpp
 //
 #include "configbase.hpp"
+
 #include "misc/boost-string-includes.hpp"
 
 #include <exception>
@@ -19,7 +20,7 @@
 
 namespace heroespath
 {
-namespace config
+namespace misc
 {
 
     // static member initializers
@@ -36,7 +37,7 @@ namespace config
         : filePathStr_((FILE_PATH_STR.empty()) ? FILE_PATH_DEFAULT_ : FILE_PATH_STR)
         , sepStr_((SEP_STR.empty()) ? SEP_STR_DEFAULT_ : SEP_STR)
         , commentStr_((COMMENT_STR.empty()) ? COMMENT_STR_DEFAULT_ : COMMENT_STR)
-        , data_()
+        , map_()
     {}
 
     bool ConfigBase::Load()
@@ -50,7 +51,6 @@ namespace config
             // verify the file exists
             if (false == bfs::exists(PATH))
             {
-                HandleLoadSaveError("");
                 return false;
             }
 
@@ -76,7 +76,7 @@ namespace config
             }
 
             // clear all existing data
-            data_.clear();
+            map_.Clear();
 
             // read in all entries
             std::size_t lineNum(0);
@@ -88,7 +88,9 @@ namespace config
                 nextLine.clear();
             }
 
-            return (false == data_.empty());
+            map_.Sort();
+
+            return (false == map_.Empty());
         }
         catch (const std::exception & EX)
         {
@@ -129,9 +131,9 @@ namespace config
             }
 
             // write
-            for (auto i{ data_.begin() }; data_.end() != i; ++i)
+            for (auto const & KEY_VALUE_PAIR : map_)
             {
-                SaveNextLine(i, fileStream);
+                SaveNextLine(KEY_VALUE_PAIR, fileStream);
             }
 
             return true;
@@ -181,31 +183,30 @@ namespace config
             catch (...)
             {
                 std::ostringstream ss;
-                ss << "config::ConfigBase::GetBool(key=\"" << KEY << "\", str=\"" << s
+                ss << "misc::ConfigBase::GetBool(key=\"" << KEY << "\", str=\"" << s
                    << "\") str could not be interpreted as a bool.";
                 throw std::runtime_error(ss.str());
             }
         }
     }
 
-    void ConfigBase::GetStr(std::string & val, const std::string & KEY) const
+    void ConfigBase::GetStr(std::string & value, const std::string & KEY) const
     {
-        const ConfigMap::const_iterator ITER(data_.find(KEY));
-        if (ITER == data_.end())
+        if (map_.Find(KEY, value))
         {
-            std::ostringstream ss;
-            ss << "config::ConfigBase::GetStr(key=\"" << KEY << "\") was unable to find that key.";
-            throw std::runtime_error(ss.str());
+            boost::algorithm::trim(value);
         }
         else
         {
-            val = boost::algorithm::trim_copy(ITER->second);
+            std::ostringstream ss;
+            ss << "misc::ConfigBase::GetStr(key=\"" << KEY << "\") was unable to find that key.";
+            throw std::runtime_error(ss.str());
         }
     }
 
     void ConfigBase::SetStr(const std::string & KEY, const std::string & VALUE)
     {
-        data_[KEY] = VALUE;
+        map_[KEY] = VALUE;
     }
 
     void ConfigBase::HandleLoadSaveError(const std::string & ERR_MSG) const
@@ -279,7 +280,7 @@ namespace config
 
         if (errStr.empty())
         {
-            data_[NEXT_KEY] = boost::algorithm::trim_copy(nextValue);
+            map_[NEXT_KEY] = boost::algorithm::trim_copy(nextValue);
             return true;
         }
         else
@@ -294,17 +295,18 @@ namespace config
     }
 
     bool ConfigBase::SaveNextLine(
-        const ConfigMap::const_iterator & NEXT_ENTRY_ITR, std::ostream & stream) const
+        const std::pair<std::string, std::string> & KEY_VALUE_PAIR, std::ostream & stream) const
     {
-        stream << NEXT_ENTRY_ITR->first << sepStr_ << NEXT_ENTRY_ITR->second << std::endl;
+        stream << KEY_VALUE_PAIR.first << sepStr_ << KEY_VALUE_PAIR.second << std::endl;
         return true;
     }
 
     void ConfigBase::Dump(std::ostream & stream_OutParam)
     {
-        for (ConfigMapCIter i(data_.begin()); data_.end() != i; ++i)
+        for (auto const & KEY_VALUE_PAIR : map_)
         {
-            stream_OutParam << i->first << sepStr_ << i->second << std::endl;
+            stream_OutParam << KEY_VALUE_PAIR.first << sepStr_ << KEY_VALUE_PAIR.second
+                            << std::endl;
         }
     }
 
@@ -353,5 +355,5 @@ namespace config
     const std::string ConfigBase::GetSeparatorStr() const { return sepStr_; }
 
     const std::string ConfigBase::GetCommentStr() const { return commentStr_; }
-} // namespace config
+} // namespace misc
 } // namespace heroespath

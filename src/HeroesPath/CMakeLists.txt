@@ -32,7 +32,6 @@ add_executable(${PROJECT_NAME} ${source_files})
 
 target_link_libraries(  ${PROJECT_NAME}
                         Misc
-                        Config
                         Log
                         sfml-util
                         sfml-util-gui

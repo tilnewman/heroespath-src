@@ -11,17 +11,15 @@
 //
 #include "settings-file.hpp"
 
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "misc/assertlogandthrow.hpp"
-
-#include "log/log-macros.hpp"
-
 namespace heroespath
 {
-namespace config
+namespace misc
 {
 
     std::unique_ptr<SettingsFile> SettingsFile::instanceUPtr_;
@@ -213,5 +211,6 @@ namespace config
             sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(50.0f);
         }
     }
-} // namespace config
+
+} // namespace misc
 } // namespace heroespath

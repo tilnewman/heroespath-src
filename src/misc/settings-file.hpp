@@ -4,13 +4,13 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED
-#define HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_SETTINGS_FILE_HPP_INCLUDED
+#define HEROESPATH_MISC_SETTINGS_FILE_HPP_INCLUDED
 //
 // settings-file.hpp
 //  A Subsystem config file class that saves game settings. (i.e. volume, resolution, etc.)
 //
-#include "config/configbase.hpp"
+#include "misc/configbase.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace config
+namespace misc
 {
 
     // Subsystem class that manages a simple configuration file
@@ -30,7 +30,6 @@ namespace config
         SettingsFile & operator=(const SettingsFile &) = delete;
         SettingsFile & operator=(SettingsFile &&) = delete;
 
-    public:
         SettingsFile();
         virtual ~SettingsFile();
         static misc::NotNull<SettingsFile *> Instance();
@@ -40,7 +39,6 @@ namespace config
         void AcquireAndSave();
         void LoadAndRestore();
 
-    public:
         static const std::string KEY_THEMEMUSIC_VOL_;
         static const std::string KEY_SOUNDEFFECTS_VOL_;
         static const std::string KEY_RESOLUTION_WIDTH_;
@@ -53,7 +51,8 @@ namespace config
     private:
         static std::unique_ptr<SettingsFile> instanceUPtr_;
     };
-} // namespace config
+
+} // namespace misc
 } // namespace heroespath
 
 #endif // HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED

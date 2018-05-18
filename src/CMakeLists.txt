@@ -25,9 +25,6 @@ if(MSVC)
     set(BOOST_ROOT "C:/local/boost_1_66_0/boost")
     set(Boost_COMPILER -vc90)
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress DESTINATION ${CMAKE_BINARY_DIR}/configbase)
-    endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress DESTINATION ${CMAKE_BINARY_DIR}/game)
     endif()
@@ -130,7 +127,6 @@ include_directories(${include_directories} . ${Boost_INCLUDE_DIRS} ${BOOST_INCLU
 link_directories(${link_directories} ${Boost_LIBRARY_DIRS} ${BOOST_LIBRARYDIR})
 
 add_subdirectory(misc)
-add_subdirectory(config)
 add_subdirectory(log)
 add_subdirectory(stringutil)
 add_subdirectory(sfml-util)

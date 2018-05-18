@@ -71,11 +71,11 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
-        auto const LOAD_SUCCESS{ Instance()->config::ConfigBase::Load() };
+        auto const LOAD_SUCCESS{ Instance()->Load() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LOAD_SUCCESS),
-            "game::GameDataFile::Initialize() config::ConfigBase::Load() returned false.");
+            "game::GameDataFile::Initialize() misc::ConfigBase::Load() returned false.");
 
         mediaBasePathStr_ = GetCopyStr(mediaBasePathKeyStr_);
 

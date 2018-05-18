@@ -13,8 +13,6 @@
 
 #include "combat/encounter.hpp"
 #include "combat/trap-holder.hpp"
-#include "config/configbase.hpp"
-#include "config/settings-file.hpp"
 #include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-warehouse.hpp"
@@ -34,7 +32,9 @@
 #include "item/weapon-details.hpp"
 #include "log/logger.hpp"
 #include "log/macros.hpp"
+#include "misc/configbase.hpp"
 #include "misc/random.hpp"
+#include "misc/settings-file.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -121,7 +121,7 @@ namespace game
     {
         try
         {
-            config::SettingsFile::Instance()->AcquireAndSave();
+            misc::SettingsFile::Instance()->AcquireAndSave();
         }
         catch (const std::exception & E)
         {
@@ -196,7 +196,7 @@ namespace game
 
             // release the SettingsFile first so that it saves the settings file even if a problem
             // happens during shutdown
-            config::SettingsFile::Release();
+            misc::SettingsFile::Release();
 
             // factories should not be needed during shutdown, so release them early
             game::GameStateFactory::Release();
@@ -339,7 +339,7 @@ namespace game
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
         creature::nonplayer::ChanceFactory::Acquire();
-        config::SettingsFile::Acquire();
+        misc::SettingsFile::Acquire();
         LoopManager::Acquire();
     }
 
@@ -347,7 +347,7 @@ namespace game
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.
-        config::SettingsFile::Instance()->LoadAndRestore();
+        misc::SettingsFile::Instance()->LoadAndRestore();
 
         sfml_util::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();

@@ -10,8 +10,8 @@
 // game-data-file.hpp
 //  A Subsystem config file that contains game data
 //
-#include "config/configbase.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/configbase.hpp"
 #include "misc/not-null.hpp"
 
 #include <boost/type_index.hpp>
@@ -25,7 +25,7 @@ namespace game
 {
 
     // Subsystem class that manages a simple configuration file
-    class GameDataFile : public config::ConfigBase
+    class GameDataFile : public misc::ConfigBase
     {
     public:
         GameDataFile(const GameDataFile &) = delete;
