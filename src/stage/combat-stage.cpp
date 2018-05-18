@@ -2551,7 +2551,7 @@ namespace stage
         else
         {
             // Can't set turnActionInfo_ or fightResult_ or turnActionPhase_ yet because
-            // the player must select which non_player creature to fight first.
+            // the player must select which non-player creature to fight first.
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
             combatDisplayStagePtr_->SetScrollingAllowed(true);
             SetTurnPhase(TurnPhase::TargetSelect);
@@ -3018,7 +3018,7 @@ namespace stage
             // run away works if flying, and if not flying it is a test of speed
             if ((creature::Stats::Test(
                     TURN_CREATURE_PTR,
-                    stats::Traits::Speed,
+                    creature::Traits::Speed,
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                         | creature::Stats::With::StandardBonus)))
@@ -3278,19 +3278,21 @@ namespace stage
 
             weaponHoldingSS << HOLDING_WEAPON_STR;
 
-            infoSS << " Str:   " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Strength) << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Strength, true)
-                   << "\n Acc:  " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Accuracy) << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Accuracy, true)
-                   << "\n Cha:  " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Charm) << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Charm, true)
-                   << "\n Lck:  " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Luck) << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Luck, true)
-                   << "\n Spd:  " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Speed) << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Speed, true)
-                   << "\n Int:    " << TURN_CREATURE_PTR->TraitCurrent(stats::Traits::Intelligence)
+            infoSS << " Str:   " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Strength)
                    << " "
-                   << TURN_CREATURE_PTR->TraitModifiedString(stats::Traits::Intelligence, true)
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Strength, true)
+                   << "\n Acc:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Accuracy)
+                   << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Accuracy, true)
+                   << "\n Cha:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Charm) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Charm, true)
+                   << "\n Lck:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Luck) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Luck, true)
+                   << "\n Spd:  " << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Speed) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Speed, true)
+                   << "\n Int:    "
+                   << TURN_CREATURE_PTR->TraitCurrent(creature::Traits::Intelligence) << " "
+                   << TURN_CREATURE_PTR->TraitModifiedString(creature::Traits::Intelligence, true)
                    << "\nHealth:  " << TURN_CREATURE_PTR->HealthCurrent() << "/"
                    << TURN_CREATURE_PTR->HealthNormal() << "\nCondition";
 

@@ -10,7 +10,7 @@
 // types.hpp
 //  Strong types used by the game.
 //
-#include "stats/trait.hpp"
+#include "creature/trait.hpp"
 
 #include "misc/strong-numeric-type.hpp"
 #include "misc/strong-type.hpp"
@@ -80,12 +80,12 @@ using Mana_t = misc::StrongNumericType<int, ManaTag>;
 using Weight_t = misc::StrongNumericType<int, WeightTag>;
 using Armor_t = misc::StrongNumericType<int, ArmorTag>;
 using Score_t = misc::StrongNumericType<int, ScoreTag>;
-using Strength_t = misc::StrongNumericType<stats::Trait_t, StrengthTag>;
-using Accuracy_t = misc::StrongNumericType<stats::Trait_t, AccuracyTag>;
-using Charm_t = misc::StrongNumericType<stats::Trait_t, CharmTag>;
-using Luck_t = misc::StrongNumericType<stats::Trait_t, LuckTag>;
-using Speed_t = misc::StrongNumericType<stats::Trait_t, SpeedTag>;
-using Intell_t = misc::StrongNumericType<stats::Trait_t, IntellTag>;
+using Strength_t = misc::StrongNumericType<creature::Trait_t, StrengthTag>;
+using Accuracy_t = misc::StrongNumericType<creature::Trait_t, AccuracyTag>;
+using Charm_t = misc::StrongNumericType<creature::Trait_t, CharmTag>;
+using Luck_t = misc::StrongNumericType<creature::Trait_t, LuckTag>;
+using Speed_t = misc::StrongNumericType<creature::Trait_t, SpeedTag>;
+using Intell_t = misc::StrongNumericType<creature::Trait_t, IntellTag>;
 using ID_t = misc::StrongNumericType<std::size_t, IDTag>;
 using Index_t = misc::StrongNumericType<std::size_t, IndexTag>;
 using Count_t = misc::StrongNumericType<std::size_t, CountTag>;

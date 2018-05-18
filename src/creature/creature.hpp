@@ -20,7 +20,10 @@
 #include "creature/rank.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
+#include "creature/stat-set.hpp"
 #include "creature/title-enum.hpp"
+#include "creature/trait.hpp"
+#include "creature/traits-set.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "item/inventory.hpp"
 #include "misc/boost-serialize-includes.hpp"
@@ -29,9 +32,6 @@
 #include "sfml-util/date-time.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
-#include "stats/stat-set.hpp"
-#include "stats/trait.hpp"
-#include "stats/traits-set.hpp"
 
 #include <memory>
 #include <string>
@@ -98,7 +98,7 @@ namespace creature
             const sex::Enum SEX = creature::sex::Unknown,
             const race::Enum & RACE = race::Human,
             const role::Enum & ROLE = role::Archer,
-            const stats::StatSet & STATS = stats::StatSet(),
+            const StatSet & STATS = StatSet(),
             const std::string & IMAGE_FILENAME = "",
             const Health_t & HEALTH = 0_health,
             const Rank_t & RANK = 1_rank,
@@ -172,21 +172,21 @@ namespace creature
 
         Mana_t ManaMissing() const
         {
-            return Mana_t(TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
+            return Mana_t(TraitNormal(Traits::Mana) - TraitWorking(Traits::Mana));
         }
 
-        Mana_t Mana() const { return Mana_t(TraitWorking(stats::Traits::Mana)); }
+        Mana_t Mana() const { return Mana_t(TraitWorking(Traits::Mana)); }
 
         Mana_t ManaAdj(const Mana_t & ADJ)
         {
-            return Mana_t(TraitCurrentAdj(stats::Traits::Mana, ADJ.As<int>()));
+            return Mana_t(TraitCurrentAdj(Traits::Mana, ADJ.As<int>()));
         }
 
-        Mana_t ManaNormal() const { return Mana_t(TraitNormal(stats::Traits::Mana)); }
+        Mana_t ManaNormal() const { return Mana_t(TraitNormal(Traits::Mana)); }
 
         Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
-            return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.As<int>()));
+            return Mana_t(TraitNormalAdj(Traits::Mana, ADJ.As<int>()));
         }
 
         float ManaRatio() const { return (Mana().As<float>() / ManaNormal().As<float>()); }
@@ -194,20 +194,17 @@ namespace creature
         bool IsDead() const { return HasCondition(Conditions::Dead); }
         bool IsAlive() const { return !IsDead(); }
 
-        Strength_t Strength() const { return Strength_t(TraitWorking(stats::Traits::Strength)); }
+        Strength_t Strength() const { return Strength_t(TraitWorking(Traits::Strength)); }
 
-        Accuracy_t Accuracy() const { return Accuracy_t(TraitWorking(stats::Traits::Accuracy)); }
+        Accuracy_t Accuracy() const { return Accuracy_t(TraitWorking(Traits::Accuracy)); }
 
-        Charm_t Charm() const { return Charm_t(TraitWorking(stats::Traits::Charm)); }
+        Charm_t Charm() const { return Charm_t(TraitWorking(Traits::Charm)); }
 
-        Luck_t Luck() const { return Luck_t(TraitWorking(stats::Traits::Luck)); }
+        Luck_t Luck() const { return Luck_t(TraitWorking(Traits::Luck)); }
 
-        Speed_t Speed() const { return Speed_t(TraitWorking(stats::Traits::Speed)); }
+        Speed_t Speed() const { return Speed_t(TraitWorking(Traits::Speed)); }
 
-        Intell_t Intelligence() const
-        {
-            return Intell_t(TraitWorking(stats::Traits::Intelligence));
-        }
+        Intell_t Intelligence() const { return Intell_t(TraitWorking(Traits::Intelligence)); }
 
         const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
 
@@ -334,65 +331,58 @@ namespace creature
 
         void ReCalculateTraitBonuses();
 
-        int TraitNormal(const stats::Traits::Enum E) const
-        {
-            return actualSet_.GetCopy(E).Normal();
-        }
+        int TraitNormal(const Traits::Enum E) const { return actualSet_.GetCopy(E).Normal(); }
 
-        stats::Trait_t TraitNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        Trait_t TraitNormalAdj(const Traits::Enum E, const Trait_t ADJ)
         {
             return actualSet_.Get(E).NormalAdj(ADJ);
         }
 
-        void TraitNormalSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        void TraitNormalSet(const Traits::Enum E, const Trait_t NEW_VALUE)
         {
             actualSet_.Get(E).NormalSet(NEW_VALUE);
         }
 
-        stats::Trait_t TraitCurrent(const stats::Traits::Enum E) const
-        {
-            return actualSet_.GetCopy(E).Current();
-        }
+        Trait_t TraitCurrent(const Traits::Enum E) const { return actualSet_.GetCopy(E).Current(); }
 
-        stats::Trait_t TraitCurrentAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        Trait_t TraitCurrentAdj(const Traits::Enum E, const Trait_t ADJ)
         {
             return actualSet_.Get(E).CurrentAdj(ADJ);
         }
 
-        void TraitCurrentSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        void TraitCurrentSet(const Traits::Enum E, const Trait_t NEW_VALUE)
         {
             actualSet_.Get(E).CurrentSet(NEW_VALUE);
         }
 
-        stats::Trait_t TraitWorking(const stats::Traits::Enum E) const;
+        Trait_t TraitWorking(const Traits::Enum E) const;
 
-        stats::Trait_t TraitBonusNormal(const stats::Traits::Enum E) const
+        Trait_t TraitBonusNormal(const Traits::Enum E) const
         {
             return bonusSet_.GetCopy(E).Normal();
         }
 
-        stats::Trait_t TraitBonusNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ);
+        Trait_t TraitBonusNormalAdj(const Traits::Enum E, const Trait_t ADJ);
 
-        stats::Trait_t TraitBonusCurrent(const stats::Traits::Enum E) const
+        Trait_t TraitBonusCurrent(const Traits::Enum E) const
         {
             return bonusSet_.GetCopy(E).Current();
         }
 
-        bool TraitBonusTest(const stats::Traits::Enum) const;
+        bool TraitBonusTest(const Traits::Enum) const;
 
-        float TraitBonusActualAsRatio(const stats::Traits::Enum E) const
+        float TraitBonusActualAsRatio(const Traits::Enum E) const
         {
             return static_cast<float>(bonusSet_.GetCopy(E).Current()) / 100.0f;
         }
 
-        const stats::TraitSet TraitsWorking() const;
+        const TraitSet TraitsWorking() const;
 
-        const stats::TraitSet TraitsBonuses() const { return bonusSet_; }
+        const TraitSet TraitsBonuses() const { return bonusSet_; }
 
-        const std::string
-            TraitModifiedString(const stats::Traits::Enum E, const bool WILL_WRAP) const;
+        const std::string TraitModifiedString(const Traits::Enum E, const bool WILL_WRAP) const;
 
-        void StatTraitsModify(const stats::StatSet &);
+        void StatTraitsModify(const StatSet &);
 
         void BeforeSerialize();
         void AfterSerialize();
@@ -471,8 +461,8 @@ namespace creature
         //      TraitBonusCurrent() returns.
         //      Get the entire set with TraitsBonuses();
         //
-        stats::TraitSet actualSet_;
-        stats::TraitSet bonusSet_;
+        TraitSet actualSet_;
+        TraitSet bonusSet_;
 
         // The Creature class is not responsible for the lifetime of
         // Enchantment objects, the Item class is.  This vector of

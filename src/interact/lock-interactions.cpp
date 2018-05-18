@@ -59,7 +59,7 @@ namespace interact
         {
             auto const DID_UNLOCK{ creature::Stats::Test(
                 characterPtrOpt_.value(),
-                stats::Traits::Luck,
+                creature::Traits::Luck,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::RaceRoleBonus | creature::Stats::With::StandardBonus)) };
 

@@ -7,18 +7,19 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// chance-factory.cpp
+// nonplayer-inventory-chances.cpp
 //
-#include "chance-factory.hpp"
+#include "nonplayer-inventory-chances.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/trait.hpp"
+#include "game/game-data-file.hpp"
 #include "item/armor-details.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "stats/trait.hpp"
 #include "stringutil/stringhelp.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -30,9 +31,9 @@
 
 namespace heroespath
 {
-namespace non_player
+namespace creature
 {
-    namespace ownership
+    namespace nonplayer
     {
 
         const float ChanceFactory::CHANCE_MINIMUM_{ 0.001f };
@@ -111,7 +112,7 @@ namespace non_player
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (instanceUPtr_),
-                "non_player::ownership::ChanceFactory::Release() "
+                "nonplayerChanceFactory::Release() "
                     << "found instanceUPtr that was null.");
 
             instanceUPtr_.reset();
@@ -123,20 +124,19 @@ namespace non_player
             CacheRoleWeaponChances();
         }
 
-        const chance::InventoryChances
-            ChanceFactory::Make(const creature::CreaturePtr_t CHARACTER_PTR) const
+        const InventoryChances ChanceFactory::Make(const CreaturePtr_t CHARACTER_PTR) const
         {
             return Make(Profile::Make_FromCreature(CHARACTER_PTR), CHARACTER_PTR);
         }
 
-        const chance::InventoryChances ChanceFactory::Make(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
+        const InventoryChances
+            ChanceFactory::Make(const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
             auto coinsMin{ 0_coin };
             auto coinsMax{ 0_coin };
             Make_Coins(PROFILE, coinsMin, coinsMax);
 
-            return chance::InventoryChances(
+            return InventoryChances(
                 coinsMin,
                 coinsMax,
                 Make_ClothingChances(PROFILE, CHARACTER_PTR),
@@ -159,7 +159,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (strVec.size() == 2),
-                "non_player::ownership::ChanceFactory::Make_Coins() looked up \""
+                "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
                     << "\" which failed to be parsed into 2 comma sep strings.");
 
@@ -174,7 +174,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (coinsMin_OutParam >= 0_coin),
-                "non_player::ownership::ChanceFactory::Make_Coins() looked up \""
+                "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
                     << "\" which failed to parse the first comma sep field into a valid number of "
                        "coins."
@@ -191,7 +191,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (coinsMax_OutParam >= coinsMin_OutParam),
-                "non_player::ownership::ChanceFactory::Make_Coins() looked up \""
+                "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
                     << "\" which failed to parse the second comma sep field into a valid (>= the "
                        "min"
@@ -199,13 +199,12 @@ namespace non_player
                     << ") number of coins.  coinsMax=" << coinsMax_OutParam);
         }
 
-        const chance::ClothingChances ChanceFactory::Make_ClothingChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
+        const ClothingChances ChanceFactory::Make_ClothingChances(
+            const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
             using namespace item;
 
-            chance::ClothingChances clothingChances(
-                Make_ClothingMaterialChances(PROFILE, CHARACTER_PTR));
+            ClothingChances clothingChances(Make_ClothingMaterialChances(PROFILE, CHARACTER_PTR));
 
             // capes, cloaks, and robes are mutually exclusive, so pre-select which (if any) are
             // worn
@@ -218,7 +217,7 @@ namespace non_player
                 catch (...)
                 {
                     M_HP_LOG_ERR(
-                        "non_player::ownership::Make_ClothingChances(creature={"
+                        "nonplayerMake_ClothingChances(creature={"
                         << CHARACTER_PTR->ToString()
                         << "})  threw exception during "
                            "clothingChances.cover_map[armor::cover_type::Cloak].IsOwned()");
@@ -243,7 +242,7 @@ namespace non_player
                     catch (...)
                     {
                         M_HP_LOG_ERR(
-                            "non_player::ownership::Make_ClothingChances(creature={"
+                            "nonplayerMake_ClothingChances(creature={"
                             << CHARACTER_PTR->ToString()
                             << "})  threw exception during "
                                "clothingChances.cover_map[armor::cover_type::Robe].IsOwned()");
@@ -273,7 +272,7 @@ namespace non_player
                         catch (...)
                         {
                             M_HP_LOG_ERR(
-                                "non_player::ownership::Make_ClothingChances(creature={"
+                                "nonplayerMake_ClothingChances(creature={"
                                 << CHARACTER_PTR->ToString()
                                 << "})  threw exception during "
                                    "clothingChances.cover_map[armor::cover_type::Cape].IsOwned()");
@@ -297,7 +296,7 @@ namespace non_player
             }
 
             // enforce bodytype restrictions
-            const creature::BodyType BODY_TYPE(CHARACTER_PTR->Body());
+            const BodyType BODY_TYPE(CHARACTER_PTR->Body());
             if ((BODY_TYPE.NumArms() != 2) || (BODY_TYPE.HasWings() == true))
             {
                 clothingChances.shirt.SetCountChanceSingleNoChance();
@@ -338,7 +337,7 @@ namespace non_player
 
             if (BODY_TYPE.IsSerpentine())
             {
-                clothingChances = chance::ClothingChances::NoClothes();
+                clothingChances = ClothingChances::NoClothes();
             }
 
             if (BODY_TYPE.NumHeads() != 1)
@@ -349,10 +348,10 @@ namespace non_player
             return clothingChances;
         }
 
-        const chance::WeaponChances ChanceFactory::Make_WeaponChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
+        const WeaponChances ChanceFactory::Make_WeaponChances(
+            const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
-            chance::WeaponChances weaponChances(chance::WeaponChances::NoWeapon());
+            WeaponChances weaponChances(WeaponChances::NoWeapon());
 
             WeaponSetVec_t weaponSetVec;
             LookupPossibleWeaponsByRole(CHARACTER_PTR->Role(), weaponSetVec);
@@ -370,8 +369,8 @@ namespace non_player
             weaponChances.has_tentacles = BODY.HasTentacles();
 
             weaponChances.has_breath = BODY.HasBreath()
-                && ((CHARACTER_PTR->Role() == creature::role::Firebrand)
-                    || (CHARACTER_PTR->Role() == creature::role::Sylavin));
+                && ((CHARACTER_PTR->Role() == role::Firebrand)
+                    || (CHARACTER_PTR->Role() == role::Sylavin));
 
             // enforce body-type/PROFILE.wealthType/PROFILE.wealthType
             // -what restrictions would there be when the weapon sets are
@@ -383,14 +382,14 @@ namespace non_player
             return weaponChances;
         }
 
-        const chance::ArmorChances ChanceFactory::Make_ArmorChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
+        const ArmorChances ChanceFactory::Make_ArmorChances(
+            const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
-            auto armorChances{ chance::ArmorChances::NoArmor() };
+            auto armorChances{ ArmorChances::NoArmor() };
             LookupPossibleArmorByRole(PROFILE, CHARACTER_PTR, armorChances);
 
             // enforce bodytype restrictions
-            const creature::BodyType BODY_TYPE(CHARACTER_PTR->Body());
+            const BodyType BODY_TYPE(CHARACTER_PTR->Body());
 
             if (BODY_TYPE.HasArms() == false)
             {
@@ -405,10 +404,10 @@ namespace non_player
             return armorChances;
         }
 
-        const chance::ItemChanceMap_t ChanceFactory::Make_MiscItemChances(
-            const Profile &, const creature::CreaturePtr_t) const
+        const ItemChanceMap_t
+            ChanceFactory::Make_MiscItemChances(const Profile &, const CreaturePtr_t) const
         {
-            chance::ItemChanceMap_t miscItems;
+            ItemChanceMap_t miscItems;
 
             // Leave this as is for now, since there will be code elsewhere that determines
             // what items are left behind by a party of enemies (non-player characters) after
@@ -420,10 +419,10 @@ namespace non_player
         }
 
         void ChanceFactory::PopulateWeaponChances(
-            chance::WeaponChances & weaponChances,
+            WeaponChances & weaponChances,
             const WeaponSet & WEAPON_SET,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR) const
+            const CreaturePtr_t CHARACTER_PTR) const
         {
             // find the total chance of all weapon possibilities combined
             float chanceCombined(0.0f);
@@ -528,7 +527,7 @@ namespace non_player
 
                     weaponChances.knife.is_dagger = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger();
 
-                    chance::MaterialChanceMap_t typicalKnifePrimaryMaterials;
+                    MaterialChanceMap_t typicalKnifePrimaryMaterials;
                     if (PROFILE.complexityType == complexity_type::Simple)
                     {
                         typicalKnifePrimaryMaterials[material::Stone] = 0.75f;
@@ -568,7 +567,7 @@ namespace non_player
                     weaponChances.staff.is_quarterstaff
                         = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsQuarterstaff();
 
-                    chance::MaterialChanceMap_t typicalStaffPrimaryMaterials;
+                    MaterialChanceMap_t typicalStaffPrimaryMaterials;
                     typicalStaffPrimaryMaterials[material::Wood] = 1.0f;
 
                     PopulateWeaponMaterials(
@@ -581,7 +580,7 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalAxePrimaryMaterials;
+                    MaterialChanceMap_t typicalAxePrimaryMaterials;
                     typicalAxePrimaryMaterials[material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsAxe())
@@ -617,7 +616,7 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
+                    MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
                     typicalBladedStaffPrimaryMaterials[material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBladedStaff())
@@ -653,7 +652,7 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalClubPrimaryMaterials;
+                    MaterialChanceMap_t typicalClubPrimaryMaterials;
                     typicalClubPrimaryMaterials[material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsClub())
@@ -689,7 +688,7 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalProjectilePrimaryMaterials;
+                    MaterialChanceMap_t typicalProjectilePrimaryMaterials;
                     typicalProjectilePrimaryMaterials[material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsProjectile())
@@ -725,7 +724,7 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalSwordPrimaryMaterials;
+                    MaterialChanceMap_t typicalSwordPrimaryMaterials;
                     typicalSwordPrimaryMaterials[material::Steel] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsSword())
@@ -762,7 +761,7 @@ namespace non_player
 
                 {
                     auto whipMaterialChanceMapMaker{ [](const weapon::whip_type::Enum WHIP_TYPE) {
-                        chance::MaterialChanceMap_t typicalWhipPrimaryMaterials;
+                        MaterialChanceMap_t typicalWhipPrimaryMaterials;
 
                         if (WHIP_TYPE == weapon::whip_type::Bullwhip)
                         {
@@ -816,8 +815,8 @@ namespace non_player
 
         void ChanceFactory::LookupPossibleArmorByRole(
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::ArmorChances & armorChances) const
+            const CreaturePtr_t CHARACTER_PTR,
+            ArmorChances & armorChances) const
         {
             using namespace boost::algorithm;
 
@@ -925,15 +924,14 @@ namespace non_player
         }
 
         void ChanceFactory::LookupPossibleWeaponsByRole(
-            const creature::role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam) const
+            const role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam) const
         {
             auto const WAS_FOUND{ roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (WAS_FOUND),
-                "non_player::ownership::ChanceFactory::LookupPossibleWeaponsByRole(role="
-                    << creature::role::ToString(ROLE)
-                    << ") was unable to find that role in the map.");
+                "nonplayerChanceFactory::LookupPossibleWeaponsByRole(role="
+                    << role::ToString(ROLE) << ") was unable to find that role in the map.");
         }
 
         float ChanceFactory::GetFloatFromGameDataFile(
@@ -974,7 +972,7 @@ namespace non_player
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (exceptionWhatStr.empty()),
-                            "non-player::ownership::ChanceFactory::GetFloatFromGameDataFile(key=\""
+                            "creature::nonplayer::ChanceFactory::GetFloatFromGameDataFile(key=\""
                                 << KEY << "\"), found value \"" << VALUE_STR
                                 << "\" that failed to be parsed as a float, throwing exception: \""
                                 << exceptionWhatStr << "\".");
@@ -987,7 +985,7 @@ namespace non_player
 
         void ChanceFactory::LookupClothingMaterialChances(
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
+            const CreaturePtr_t CHARACTER_PTR,
             float & clothChance,
             float & leatherChance,
             float & silkChance) const
@@ -1074,8 +1072,8 @@ namespace non_player
 
         void ChanceFactory::Make_ClothingMaterialChancesPrimary(
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::ItemChances & itemChancesBase) const
+            const CreaturePtr_t CHARACTER_PTR,
+            ItemChances & itemChancesBase) const
         {
             // set the chance base object with data common to all clothing chances
             //(shared between boots, cloaks, capes, etc.)
@@ -1099,10 +1097,10 @@ namespace non_player
 
         void ChanceFactory::Make_MaterialChancesPrimary(
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
-            const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
+            const CreaturePtr_t CHARACTER_PTR,
+            const MaterialChanceMap_t & MATERIALS_TYPICAL,
             const Weight_t & ITEM_WEIGHT,
-            chance::MaterialChanceMap_t & materialsMap_OutParam) const
+            MaterialChanceMap_t & materialsMap_OutParam) const
         {
             // establish the base chances for a special primary material
             auto chanceCool{ 1.0f / materialPrimaryChanceCool_ };
@@ -1238,7 +1236,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (materialsMap_OutParam.Empty() == false),
-                "non_player::ownership::ChanceFactory::Make_MaterialChancesPrimary(creature={"
+                "nonplayerChanceFactory::Make_MaterialChancesPrimary(creature={"
                     << CHARACTER_PTR->ToString() << "}) final materials map was empty.");
 
             for (auto & nextPair : materialsMap_OutParam)
@@ -1252,8 +1250,8 @@ namespace non_player
 
         void ChanceFactory::Make_MaterialChancesSecondary(
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
-            chance::MaterialChanceMap_t & materialsMap_OutParam) const
+            const CreaturePtr_t CHARACTER_PTR,
+            MaterialChanceMap_t & materialsMap_OutParam) const
         {
             // establish the base chances for a secondary material
             auto chanceCool{ 1.0f / materialSecondaryChanceCool_ };
@@ -1383,13 +1381,13 @@ namespace non_player
             }
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMap(
+        const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMap(
             const std::string & PREFIX,
             const std::string & POSTFIX,
-            const chance::MaterialVec_t & MATERIALS_VEC) const
+            const item::MaterialVec_t & MATERIALS_VEC) const
         {
             auto cumulativeChance{ 0.0f };
-            chance::MaterialChanceMap_t materialChanceMap;
+            MaterialChanceMap_t materialChanceMap;
             auto materialWithRemainingChance(item::material::Nothing);
 
             for (auto const NEXT_MATERIAL : MATERIALS_VEC)
@@ -1423,9 +1421,9 @@ namespace non_player
             return materialChanceMap;
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapCool() const
+        const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapCool() const
         {
-            const chance::MaterialVec_t MATERIAL_VEC
+            const item::MaterialVec_t MATERIAL_VEC
                 = { item::material::Stone,    item::material::Bone,   item::material::Horn,
                     item::material::Tooth,    item::material::Bronze, item::material::Jade,
                     item::material::Obsidian, item::material::Scales, item::material::Lazuli,
@@ -1435,9 +1433,9 @@ namespace non_player
                 "heroespath-material-chance-base-cool-", "-onein", MATERIAL_VEC);
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious() const
+        const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious() const
         {
-            const chance::MaterialVec_t MATERIAL_VEC
+            const item::MaterialVec_t MATERIAL_VEC
                 = { item::material::Jade,     item::material::Amethyst, item::material::Emerald,
                     item::material::Silver,   item::material::Lazuli,   item::material::Gold,
                     item::material::Platinum, item::material::Ruby,     item::material::Pearl,
@@ -1447,9 +1445,9 @@ namespace non_player
                 "heroespath-material-chance-base-precious-", "-onein", MATERIAL_VEC);
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal() const
+        const MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal() const
         {
-            const chance::MaterialVec_t MATERIAL_VEC
+            const item::MaterialVec_t MATERIAL_VEC
                 = { item::material::Tin,     item::material::Bronze, item::material::Iron,
                     item::material::Steel,   item::material::Silver, item::material::Gold,
                     item::material::Platinum };
@@ -1458,10 +1456,10 @@ namespace non_player
                 "heroespath-material-chance-base-metal-", "-onein", MATERIAL_VEC);
         }
 
-        const chance::ClothingChances ChanceFactory::Make_ClothingMaterialChances(
-            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const
+        const ClothingChances ChanceFactory::Make_ClothingMaterialChances(
+            const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
-            chance::ItemChances itemChancesBase;
+            ItemChances itemChancesBase;
             Make_ClothingMaterialChancesPrimary(PROFILE, CHARACTER_PTR, itemChancesBase);
             Make_MaterialChancesSecondary(PROFILE, CHARACTER_PTR, itemChancesBase.mat_map_sec);
 
@@ -1477,7 +1475,7 @@ namespace non_player
                 KEY_BASE + "chance-max") };
 
             // the final resulting object that will hold the chances for all clothing articles
-            chance::ClothingChances clothingChances;
+            ClothingChances clothingChances;
 
             clothingChances.boots = itemChancesBase;
             clothingChances.boots.SetCountChanceSingle(
@@ -1516,11 +1514,11 @@ namespace non_player
 
         void ChanceFactory::PopulateWeaponMaterials(
             const std::string & WEAPON_NAME,
-            const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
+            const MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CREATURE_PTR,
-            chance::MaterialChanceMap_t & materialsMapPri,
-            chance::MaterialChanceMap_t & materialsMapSec) const
+            const CreaturePtr_t CREATURE_PTR,
+            MaterialChanceMap_t & materialsMapPri,
+            MaterialChanceMap_t & materialsMapSec) const
         {
             auto const WEAPON_DETAILS{ item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
@@ -1535,11 +1533,11 @@ namespace non_player
         }
 
         void ChanceFactory::PopulatMaterials(
-            const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
+            const MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CREATURE_PTR,
-            chance::MaterialChanceMap_t & materialsMapPri,
-            chance::MaterialChanceMap_t & materialsMapSec,
+            const CreaturePtr_t CREATURE_PTR,
+            MaterialChanceMap_t & materialsMapPri,
+            MaterialChanceMap_t & materialsMapSec,
             const Weight_t & WEIGHT,
             const item::material::Enum FORCED_PRIMARY_MATERIAL) const
         {
@@ -1560,12 +1558,12 @@ namespace non_player
         void ChanceFactory::RestrictMaterialsByComplexity(
             const complexity_type::Enum COMPLEXITY,
             float &, // cool materials are always possible, so this value is not changed here
-            chance::MaterialChanceMap_t & chanceMapCool,
+            MaterialChanceMap_t & chanceMapCool,
             float & chanceMetal,
-            chance::MaterialChanceMap_t & chanceMapMetal,
+            MaterialChanceMap_t & chanceMapMetal,
             float & chancePrecious,
-            chance::MaterialChanceMap_t &) const // individual precious material chances are not
-                                                 // changed here
+            MaterialChanceMap_t &) const // individual precious material chances are not
+                                         // changed here
         {
             // enforce creature complexity type restrictions on which materials are possible
             if (COMPLEXITY == complexity_type::Simple)
@@ -1605,10 +1603,10 @@ namespace non_player
             return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
         }
 
-        const chance::MaterialChanceMap_t ChanceFactory::MakeTypicalArmorMaterials(
-            const Profile &, const creature::CreaturePtr_t, const bool INCLUDE_WOOD) const
+        const MaterialChanceMap_t ChanceFactory::MakeTypicalArmorMaterials(
+            const Profile &, const CreaturePtr_t, const bool INCLUDE_WOOD) const
         {
-            chance::MaterialChanceMap_t materialChanceMap;
+            MaterialChanceMap_t materialChanceMap;
 
             if (INCLUDE_WOOD)
             {
@@ -1634,10 +1632,10 @@ namespace non_player
         }
 
         void ChanceFactory::SetArmorChancesGeneral(
-            chance::ArmorItemChances & armorItemChances,
+            ArmorItemChances & armorItemChances,
             const RoleArmorChance & ROLE_ARMOR_CHANCE,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CREATURE_PTR,
+            const CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD) const
         {
             auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(
@@ -1665,10 +1663,10 @@ namespace non_player
         }
 
         void ChanceFactory::SetArmorChancesSpecific(
-            chance::ItemChances & itemChances,
+            ItemChances & itemChances,
             const RoleArmorChance & ROLE_ARMOR_CHANCE,
             const Profile & PROFILE,
-            const creature::CreaturePtr_t CHARACTER_PTR,
+            const CreaturePtr_t CHARACTER_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD,
             const item::material::Enum FORCED_PRIMARY_MATERIAL) const
         {
@@ -1698,11 +1696,11 @@ namespace non_player
         {
             roleArmorChanceMap_.Clear();
 
-            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
             {
-                auto const ROLE{ static_cast<creature::role::Enum>(i) };
+                auto const ROLE{ static_cast<role::Enum>(i) };
 
-                auto const ROLE_STR{ creature::role::ToString(ROLE) };
+                auto const ROLE_STR{ role::ToString(ROLE) };
                 auto const KEY_STR{ "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
                 auto const VALUE_STR{ game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
@@ -1720,7 +1718,7 @@ namespace non_player
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (piecesVec.size() >= 2),
-                        "non_player::ownership::ChanceFactory::CacheRoleArmorChances() role=\""
+                        "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which failed to be parsed into the required 2  or more comma "
                                "sep "
@@ -1745,7 +1743,7 @@ namespace non_player
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (misc::IsRealClose(INVALID_CHANCE, armorChanceVal) == false),
-                        "non_player::ownership::ChanceFactory::CacheRoleArmorChances() role=\""
+                        "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which had float str=\"" << ARMOR_CHANCE_STR
                             << "\" val=" << armorChanceVal
@@ -1770,7 +1768,7 @@ namespace non_player
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (baseType != base_type::Count),
-                            "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
+                            "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
                                    "field "
@@ -1779,7 +1777,7 @@ namespace non_player
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (baseType != base_type::Plain),
-                            "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
+                            "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
                                    "field "
@@ -1793,7 +1791,7 @@ namespace non_player
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (ARMOR_TYPE_WRAPPER.IsTypeValid()),
-                        "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role = \""
+                        "nonplayerChanceFactor::CacheRoleArmorChances() role = \""
                             << ROLE_STR << "\", NEXT_ARMOR_CHANCE_STR=\"" << NEXT_ARMOR_CHANCE_STR
                             << "\", failed to create a valid ArmorTypeWrapper.");
 
@@ -1809,15 +1807,15 @@ namespace non_player
         {
             roleWeaponChanceMap_.Clear();
 
-            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
+            for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
             {
-                auto const ROLE{ static_cast<creature::role::Enum>(i) };
+                auto const ROLE{ static_cast<role::Enum>(i) };
                 roleWeaponChanceMap_[ROLE] = GetRoleWeaponChances(ROLE);
             }
         }
 
         const ChanceFactory::WeaponSetVec_t
-            ChanceFactory::GetRoleWeaponChances(const creature::role::Enum ROLE)
+            ChanceFactory::GetRoleWeaponChances(const role::Enum ROLE)
         {
             ChanceFactory::WeaponSetVec_t weaponSets;
 
@@ -1825,7 +1823,7 @@ namespace non_player
 
             using StrVec_t = std::vector<std::string>;
 
-            auto const ROLE_STR{ creature::role::ToString(ROLE) };
+            auto const ROLE_STR{ role::ToString(ROLE) };
             const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
             auto const VALUE_STR_LOWER{ to_lower_copy(
@@ -1868,7 +1866,7 @@ namespace non_player
 
                             M_ASSERT_OR_LOGANDTHROW_SS(
                                 (nextWeaponSet.count > 0),
-                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                "nonplayerLookupPossibleWeaponsByRole(role="
                                     << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
                                     << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
                                     << NEXT_INSTRUCTION_STR
@@ -1884,7 +1882,7 @@ namespace non_player
                         else
                         {
                             M_HP_LOG(
-                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                "nonplayerLookupPossibleWeaponsByRole(role="
                                 << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
                                 << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
                                 << NEXT_INSTRUCTION_STR
@@ -1903,7 +1901,7 @@ namespace non_player
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)
                              && (partsVec.at(1).size() > 2)),
-                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                            "nonplayerLookupPossibleWeaponsByRole(role="
                                 << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
                                 << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
                                 << NEXT_INSTRUCTION_STR
@@ -1929,7 +1927,7 @@ namespace non_player
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (chance > 0.0f),
-                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                            "nonplayerLookupPossibleWeaponsByRole(role="
                                 << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
                                 << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
                                 << NEXT_INSTRUCTION_STR << "\", weapon name=\"" << WEAPON_NAME
@@ -1947,6 +1945,6 @@ namespace non_player
             return weaponSets;
         }
 
-    } // namespace ownership
-} // namespace non_player
+    } // namespace nonplayer
+} // namespace creature
 } // namespace heroespath

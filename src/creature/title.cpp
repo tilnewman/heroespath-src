@@ -37,7 +37,7 @@ namespace creature
         const Index_t & ACHIEVEMENT_INDEX,
         const Count_t & ACHIEVEMENT_COUNT,
         const RoleVec_t & ROLES_VEC,
-        const stats::StatSet & STATS_BONUS,
+        const StatSet & STATS_BONUS,
         const Rank_t & RANK_BONUS,
         const Experience_t & EXPERIENCE_BONUS,
         const Health_t & HEALTH_BONUS)

@@ -18,6 +18,8 @@
 #include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-warehouse.hpp"
+#include "creature/nonplayer-inventory-chances.hpp"
+#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
@@ -31,8 +33,6 @@
 #include "log/logger.hpp"
 #include "log/macros.hpp"
 #include "misc/random.hpp"
-#include "non-player/chance-factory.hpp"
-#include "non-player/inventory-factory.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -200,7 +200,7 @@ namespace game
 
             // factories should not be needed during shutdown, so release them early
             state::GameStateFactory::Release();
-            non_player::ownership::ChanceFactory::Release();
+            creature::nonplayer::ChanceFactory::Release();
 
             // release LoopManager early because it frees all the stages and their resources
             LoopManager::Release();
@@ -338,7 +338,7 @@ namespace game
         state::GameStateFactory::Acquire();
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
-        non_player::ownership::ChanceFactory::Acquire();
+        creature::nonplayer::ChanceFactory::Acquire();
         config::SettingsFile::Acquire();
         LoopManager::Acquire();
     }
@@ -351,7 +351,7 @@ namespace game
 
         sfml_util::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
-        non_player::ownership::ChanceFactory::Instance()->Initialize();
+        creature::nonplayer::ChanceFactory::Instance()->Initialize();
         item::ItemProfileWarehouse::Instance()->Initialize();
     }
 

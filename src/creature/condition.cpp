@@ -27,7 +27,7 @@ namespace creature
 {
 
     Condition::Condition(
-        const Conditions::Enum TYPE, const bool IS_MAGICAL, const stats::TraitSet & TRAIT_SET)
+        const Conditions::Enum TYPE, const bool IS_MAGICAL, const TraitSet & TRAIT_SET)
         : type_(TYPE)
         , isMagical_(IS_MAGICAL)
         , traitSet_(TRAIT_SET)
@@ -188,7 +188,7 @@ namespace creature
             {
                 if (creature::Stats::Test(
                         CREATURE_PTR,
-                        stats::Traits::Strength,
+                        Traits::Strength,
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))
                     && (misc::random::Int(9) == 0))
@@ -274,7 +274,7 @@ namespace creature
 
                 if (creature::Stats::Test(
                         CREATURE_PTR,
-                        stats::Traits::Strength,
+                        Traits::Strength,
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)))
                 {

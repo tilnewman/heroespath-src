@@ -12,11 +12,11 @@
 #include "creature/condition-enum.hpp"
 #include "creature/enchantment-type.hpp"
 #include "creature/enchantment.hpp"
+#include "creature/trait.hpp"
+#include "creature/traits-set.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-type-wrapper.hpp"
 #include "misc/not-null.hpp"
-#include "stats/trait.hpp"
-#include "stats/traits-set.hpp"
 
 namespace heroespath
 {
@@ -83,7 +83,7 @@ namespace creature
     private:
         const EnchantmentPtr_t Make(
             const EnchantmentType::Enum TYPE,
-            const stats::TraitSet & TRAIT_SET,
+            const TraitSet & TRAIT_SET,
             const UseInfo & USE_INFO) const;
 
         const EnchantmentPtr_t Make(const Enchantment &) const;

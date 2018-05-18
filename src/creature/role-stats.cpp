@@ -21,7 +21,7 @@ namespace creature
 
     RoleStatSetMap_t RoleStatModifier::roleStatSetMap_;
 
-    const stats::StatSet RoleStatModifier::Get(const role::Enum ENUM)
+    const StatSet RoleStatModifier::Get(const role::Enum ENUM)
     {
         if (roleStatSetMap_.Empty())
         {

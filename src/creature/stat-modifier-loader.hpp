@@ -9,7 +9,7 @@
 //
 // stat-modifier-loader.cpp
 //
-#include "stats/stat-set.hpp"
+#include "creature/stat-set.hpp"
 
 #include <string>
 
@@ -21,7 +21,7 @@ namespace creature
     // Stat Modifier Game Data File Loading helper functions.
     struct StatModifierLoader
     {
-        static const stats::StatSet ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR);
+        static const StatSet ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR);
     };
 } // namespace creature
 } // namespace heroespath

@@ -9,9 +9,9 @@
 //
 // weapon-details.hpp
 //
+#include "creature/nonplayer-inventory-types.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "non-player/ownership-profile.hpp"
 
 #include <memory>
 #include <string>
@@ -34,7 +34,7 @@ namespace item
                 , damage_min(0)
                 , damage_max(0)
                 , handedness(item::category::OneHanded)
-                , complexity(non_player::ownership::complexity_type::Count)
+                , complexity(creature::nonplayer::complexity_type::Count)
             {}
 
             std::string name;
@@ -44,7 +44,7 @@ namespace item
             Health_t damage_min;
             Health_t damage_max;
             item::category::Enum handedness;
-            non_player::ownership::complexity_type::Enum complexity;
+            creature::nonplayer::complexity_type::Enum complexity;
         };
 
         // name to details mapping

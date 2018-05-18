@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED
-#define HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_TRAIT_ENUM_HPP_INCLUDED
+#define HEROESPATH_CREATURE_TRAIT_ENUM_HPP_INCLUDED
 //
 // trait-enum.hpp
 //
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     // Defines one effect an Enchantment can have.
@@ -84,7 +84,7 @@ namespace stats
     using TraitValuePair_t = std::pair<Traits::Enum, int>;
     using TraitValueVec_t = std::vector<TraitValuePair_t>;
 
-} // namespace stats
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TRAIT_ENUM_HPP_INCLUDED

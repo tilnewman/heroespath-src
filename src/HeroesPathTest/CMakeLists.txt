@@ -42,9 +42,7 @@ foreach(testSrc ${impl_files})
                         	sfml-util-gui
                         	Game
                         	Stage
-                        	Stats
                         	Creature
-                        	NonPlayer
                         	State
                         	Combat
 				            Popup

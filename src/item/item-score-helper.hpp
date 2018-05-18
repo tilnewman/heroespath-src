@@ -9,11 +9,11 @@
 //
 // item-score-helper.hpp
 //
+#include "creature/traits-set.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/types.hpp"
-#include "stats/traits-set.hpp"
 
 namespace heroespath
 {
@@ -32,7 +32,7 @@ namespace item
 
         ScoreHelper() = default;
 
-        Score_t Score(const stats::TraitSet &) const;
+        Score_t Score(const creature::TraitSet &) const;
 
         Score_t Score(const material::Enum PRI, const material::Enum SEC = material::Nothing) const;
 

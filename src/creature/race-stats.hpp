@@ -11,8 +11,8 @@
 //  Race specific attribute stat modifiers.
 //
 #include "creature/race-enum.hpp"
+#include "creature/stat-set.hpp"
 #include "misc/vector-map.hpp"
-#include "stats/stat-set.hpp"
 #include <string>
 
 namespace heroespath
@@ -20,13 +20,13 @@ namespace heroespath
 namespace creature
 {
 
-    using RaceStatSetMap_t = misc::VectorMap<race::Enum, stats::StatSet>;
+    using RaceStatSetMap_t = misc::VectorMap<race::Enum, StatSet>;
 
     // Responsible for reading race related stat modifiers from the game data
     // file and then providing access to them.
     struct RaceStatModifier
     {
-        static const stats::StatSet Get(const creature::race::Enum);
+        static const StatSet Get(const creature::race::Enum);
 
     private:
         static RaceStatSetMap_t raceStatSetMap_;

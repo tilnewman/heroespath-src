@@ -12,9 +12,9 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/trait.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/types.hpp"
-#include "stats/trait.hpp"
 
 #include <string>
 #include <utility>

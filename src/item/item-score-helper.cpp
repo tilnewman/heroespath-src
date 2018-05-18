@@ -16,15 +16,13 @@ namespace heroespath
 namespace item
 {
 
-    Score_t ScoreHelper::Score(const stats::TraitSet & TRAIT_SET) const
+    Score_t ScoreHelper::Score(const creature::TraitSet & TRAIT_SET) const
     {
-        using namespace stats;
-
         auto score{ 0_score };
 
-        for (misc::EnumUnderlying_t i(1); i < Traits::Count; ++i)
+        for (misc::EnumUnderlying_t i(1); i < creature::Traits::Count; ++i)
         {
-            auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
+            auto const NEXT_TRAIT_ENUM{ static_cast<creature::Traits::Enum>(i) };
             auto const NEXT_TRAIT_VALUE{ TRAIT_SET.GetCopy(NEXT_TRAIT_ENUM).Current() };
 
             if (NEXT_TRAIT_VALUE == 0)
@@ -50,25 +48,26 @@ namespace item
                 }
             }() };
 
-            if ((NEXT_TRAIT_ENUM == Traits::HealthGainAll)
-                || (NEXT_TRAIT_ENUM == Traits::HealthGainMelee))
+            if ((NEXT_TRAIT_ENUM == creature::Traits::HealthGainAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::HealthGainMelee))
             {
                 traitScore *= 10;
             }
             else if (
-                (NEXT_TRAIT_ENUM == Traits::AnimalResist)
-                || (NEXT_TRAIT_ENUM == Traits::ArmorRating) || (NEXT_TRAIT_ENUM == Traits::Backstab)
-                || (NEXT_TRAIT_ENUM == Traits::CurseOnDamage)
-                || (NEXT_TRAIT_ENUM == Traits::DamageBonusAll)
-                || (NEXT_TRAIT_ENUM == Traits::DamageBonusMelee)
-                || (NEXT_TRAIT_ENUM == Traits::DamageBonusProj)
-                || (NEXT_TRAIT_ENUM == Traits::FindCoinsAmount)
-                || (NEXT_TRAIT_ENUM == Traits::PoisonOnAll)
-                || (NEXT_TRAIT_ENUM == Traits::PoisonOnMelee))
+                (NEXT_TRAIT_ENUM == creature::Traits::AnimalResist)
+                || (NEXT_TRAIT_ENUM == creature::Traits::ArmorRating)
+                || (NEXT_TRAIT_ENUM == creature::Traits::Backstab)
+                || (NEXT_TRAIT_ENUM == creature::Traits::CurseOnDamage)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusMelee)
+                || (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusProj)
+                || (NEXT_TRAIT_ENUM == creature::Traits::FindCoinsAmount)
+                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnAll)
+                || (NEXT_TRAIT_ENUM == creature::Traits::PoisonOnMelee))
             {
                 traitScore *= 2;
             }
-            else if (NEXT_TRAIT_ENUM == Traits::DamageBonusFist)
+            else if (NEXT_TRAIT_ENUM == creature::Traits::DamageBonusFist)
             {
                 traitScore /= 4;
             }

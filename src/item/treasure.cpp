@@ -14,6 +14,7 @@
 #include "combat/encounter.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
+#include "creature/nonplayer-inventory-types.hpp"
 #include "game/game-data-file.hpp"
 #include "item/item-cache.hpp"
 #include "item/item-factory.hpp"
@@ -21,7 +22,6 @@
 #include "item/item.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "non-player/ownership-profile.hpp"
 
 #include <algorithm>
 
@@ -71,8 +71,8 @@ namespace item
 
         for (auto const & NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
-            using namespace non_player::ownership;
-            if (complexity_type::FromCreature(NEXT_CHARACTER_PTR) != complexity_type::Animal)
+            if (creature::nonplayer::complexity_type::FromCreature(NEXT_CHARACTER_PTR)
+                != creature::nonplayer::complexity_type::Animal)
             {
                 scores += MakeRandTreasureInfo(CHARACTER_PVEC);
             }
@@ -162,21 +162,21 @@ namespace item
 
         auto const GEM{ Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
-        auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
+        auto const MAGIC_BASE{ static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
 
-        auto const MAGIC_RAND_BASE{ static_cast<stats::Trait_t>(
+        auto const MAGIC_RAND_BASE{ static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
         auto const MAGIC{ Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
-        auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
+        auto const RELIGIOUS_BASE{ static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
 
-        auto const RELIGIOUS_RAND_BASE{ static_cast<stats::Trait_t>(
+        auto const RELIGIOUS_RAND_BASE{ static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 

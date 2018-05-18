@@ -7,17 +7,17 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// inventory-factory.cpp
+// nonplayer-inventory-factory.cpp
 //
-#include "inventory-factory.hpp"
+#include "nonplayer-inventory-factory.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/nonplayer-inventory-chances.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
-#include "non-player/chance-factory.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -27,13 +27,12 @@
 
 namespace heroespath
 {
-namespace non_player
+namespace creature
 {
-    namespace ownership
+    namespace nonplayer
     {
 
-        void InventoryFactory::SetupCreatureInventory(
-            const creature::CreaturePtr_t CREATURE_PTR) const
+        void InventoryFactory::SetupCreatureInventory(const CreaturePtr_t CREATURE_PTR) const
         {
             auto const INVENTORY_CHANCES{ ChanceFactory::Instance()->Make(CREATURE_PTR) };
             CREATURE_PTR->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
@@ -46,7 +45,7 @@ namespace non_player
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
-                        "non-player::ownership::InventoryFactory::SetupCreatureInventory"
+                        "creature::nonplayer::InventoryFactory::SetupCreatureInventory"
                         << "[to equip - add step](creature=\n{" << CREATURE_PTR->ToString()
                         << "}) unable to add the item=\n{" << NEXT_ITEM_PTR->ToString()
                         << "} with reported error=\n\"" << ITEM_ADD_RESULT << "\".  Proceeding...");
@@ -61,7 +60,7 @@ namespace non_player
                         if (ITEM_EQUIP_RESULT.empty() == false)
                         {
                             M_HP_LOG_ERR(
-                                "non-player::ownership::InventoryFactory::"
+                                "creature::nonplayer::InventoryFactory::"
                                 << "SetupCreatureInventory[to equip - equip step](creature=\n{"
                                 << CREATURE_PTR->ToString() << "}) unable to add the item=\n{"
                                 << NEXT_ITEM_PTR->ToString() << "} with reported error=\n\""
@@ -80,7 +79,7 @@ namespace non_player
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
-                        "non-player::ownership::InventoryFactory::"
+                        "creature::nonplayer::InventoryFactory::"
                         << "SetupCreatureInventory[not to equip]\n(creature={"
                         << CREATURE_PTR->ToString() << "})\nunable to add the item=\n{"
                         << NEXT_ITEM_PTR->ToString() << "} with reported error=\n\""
@@ -94,8 +93,7 @@ namespace non_player
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet(
-            const chance::InventoryChances & CHANCES,
-            const creature::CreaturePtr_t CHARACTER_PTR) const
+            const InventoryChances & CHANCES, const CreaturePtr_t CHARACTER_PTR) const
         {
             IItemPVecPair_t itemsPtrVecPair;
 
@@ -204,8 +202,8 @@ namespace non_player
             auto isVestOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
-                    && ((CHARACTER_PTR->Race() == creature::race::Dragon)
-                        || (CHARACTER_PTR->Race() == creature::race::Wolfen)));
+                    && ((CHARACTER_PTR->Race() == race::Dragon)
+                        || (CHARACTER_PTR->Race() == race::Wolfen)));
             } };
 
             RemoveItemsAndFree(armorItemsPVecPair.first, isVestOnBeast);
@@ -312,10 +310,10 @@ namespace non_player
                 });
 
             return itemsPtrVecPair;
-        } // namespace ownership
+        }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Clothing(
-            const chance::ClothingChances & CHANCES, const bool IS_PIXIE) const
+            const ClothingChances & CHANCES, const bool IS_PIXIE) const
         {
             using namespace item;
             // Assume there is only one of each article of clothing.
@@ -407,12 +405,12 @@ namespace non_player
             auto const COVER_TYPE{ CHANCES.RandomCoverType() };
             if (COVER_TYPE != item::armor::cover_type::Count)
             {
-                non_player::ownership::chance::ItemChances itemChances;
+                nonplayer::ItemChances itemChances;
                 auto const WAS_FOUND{ CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     WAS_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
+                    "creature::nonplayer::InventoryFactory::MakeItemSet_Clothing() failed to"
                         << " find \"" << COVER_TYPE << "\".");
 
                 ItemProfile profile;
@@ -433,8 +431,7 @@ namespace non_player
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(
-            const chance::WeaponChances & WEAPON_CHANCES,
-            const creature::CreaturePtr_t CHARACTER_PTR) const
+            const WeaponChances & WEAPON_CHANCES, const CreaturePtr_t CHARACTER_PTR) const
         {
             using namespace item;
 
@@ -618,12 +615,12 @@ namespace non_player
                     auto const AXE_TYPE{ static_cast<weapon::axe_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances axeChances;
+                    nonplayer::ItemChances axeChances;
                     auto const WAS_AXE_FOUND{ WEAPON_CHANCES.axe_map.Find(AXE_TYPE, axeChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_AXE_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -653,14 +650,14 @@ namespace non_player
                     auto const BLADEDSTAFF_TYPE{ static_cast<weapon::bladedstaff_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances bstaffChances;
+                    nonplayer::ItemChances bstaffChances;
 
                     auto const WAS_BSTAFF_FOUND{ WEAPON_CHANCES.bladedstaff_map.Find(
                         BLADEDSTAFF_TYPE, bstaffChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_BSTAFF_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -689,14 +686,14 @@ namespace non_player
                     auto const CLUB_TYPE{ static_cast<weapon::club_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances clubChances;
+                    nonplayer::ItemChances clubChances;
 
                     auto const WAS_CLUB_FOUND{ WEAPON_CHANCES.club_map.Find(
                         CLUB_TYPE, clubChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_CLUB_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -725,14 +722,14 @@ namespace non_player
                     auto const PROJECTILE_TYPE{ static_cast<weapon::projectile_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances projChances;
+                    nonplayer::ItemChances projChances;
 
                     auto const WAS_PROJ_FOUND{ WEAPON_CHANCES.projectile_map.Find(
                         PROJECTILE_TYPE, projChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_PROJ_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -756,14 +753,14 @@ namespace non_player
                     auto const SWORD_TYPE{ static_cast<weapon::sword_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances swordChances;
+                    nonplayer::ItemChances swordChances;
 
                     auto const WAS_SWORD_FOUND{ WEAPON_CHANCES.sword_map.Find(
                         SWORD_TYPE, swordChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_SWORD_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -787,14 +784,14 @@ namespace non_player
                     auto const WHIP_TYPE{ static_cast<weapon::whip_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    non_player::ownership::chance::ItemChances whipChances;
+                    nonplayer::ItemChances whipChances;
 
                     auto const WAS_WHIP_FOUND{ WEAPON_CHANCES.whip_map.Find(
                         WHIP_TYPE, whipChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_WHIP_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << weapon_type::ToString(randomSelectedWeaponType) << "\" and kind=\""
@@ -821,7 +818,7 @@ namespace non_player
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
+                    ss << "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                        << "creature=\"" << CHARACTER_PTR->ToString()
                        << "\") failed to find a valid random selected weapon.  (weapon_type="
                        << weapon_type::ToString(randomSelectedWeaponType) << "\")";
@@ -834,8 +831,8 @@ namespace non_player
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(
-            const chance::ArmorChances & CHANCES,
-            const creature::CreaturePtr_t CHARACTER_PTR,
+            const ArmorChances & CHANCES,
+            const CreaturePtr_t CHARACTER_PTR,
             const bool HAS_TWO_HANDED_WEAPON) const
         {
             using namespace item;
@@ -866,7 +863,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking aventail.");
 
@@ -894,7 +891,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking boots.");
 
@@ -922,7 +919,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking bracers.");
 
@@ -950,7 +947,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking gauntlets.");
 
@@ -978,7 +975,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking pants.");
 
@@ -1006,7 +1003,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking shirt.");
 
@@ -1019,14 +1016,14 @@ namespace non_player
                 auto const COVER_PAIR{ CHANCES.RandomCover() };
                 if (COVER_PAIR.second > 0)
                 {
-                    non_player::ownership::chance::ItemChances coverChances;
+                    nonplayer::ItemChances coverChances;
 
                     auto const WAS_COVER_FOUND{ CHANCES.cover_map.Find(
                         COVER_PAIR.first, coverChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_COVER_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomCover() returned \""
                             << cover_type::ToString(COVER_PAIR.first)
@@ -1050,7 +1047,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking covers.");
 
@@ -1063,14 +1060,14 @@ namespace non_player
                 auto const HELM_PAIR{ CHANCES.RandomHelm() };
                 if (HELM_PAIR.second > 0)
                 {
-                    non_player::ownership::chance::ItemChances helmChances;
+                    nonplayer::ItemChances helmChances;
 
                     auto const WAS_HELM_FOUND{ CHANCES.helm_map.Find(
                         HELM_PAIR.first, helmChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_HELM_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomHelm() returned \""
                             << helm_type::ToString(HELM_PAIR.first)
@@ -1090,7 +1087,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking helms.");
 
@@ -1103,14 +1100,14 @@ namespace non_player
                 auto const SHIELD_PAIR{ CHANCES.RandomShield() };
                 if (SHIELD_PAIR.second > 0)
                 {
-                    ownership::chance::ItemChances shieldChances;
+                    ItemChances shieldChances;
 
                     auto const WAS_SHIELD_FOUND{ CHANCES.shield_map.Find(
                         SHIELD_PAIR.first, shieldChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_SHIELD_FOUND,
-                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomShield() returned \""
                             << shield_type::ToString(SHIELD_PAIR.first)
@@ -1137,7 +1134,7 @@ namespace non_player
             catch (...)
             {
                 M_HP_LOG_ERR(
-                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    "creature::nonplayer::MakeItemSet_Armor(creature={"
                     << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
                     << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking shields.");
 
@@ -1148,8 +1145,8 @@ namespace non_player
         }
 
         const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(
-            const chance::WeaponChances & CHANCES,
-            const creature::CreaturePtr_t CHARACTER_PTR,
+            const WeaponChances & CHANCES,
+            const CreaturePtr_t CHARACTER_PTR,
             const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const
         {
             item::ItemPVec_t bodyWeaponsSVec;
@@ -1180,8 +1177,8 @@ namespace non_player
             }
 
             if (CHANCES.has_breath
-                && ((CHARACTER_PTR->Role() == creature::role::Sylavin)
-                    || (CHARACTER_PTR->Role() == creature::role::Firebrand)))
+                && ((CHARACTER_PTR->Role() == role::Sylavin)
+                    || (CHARACTER_PTR->Role() == role::Firebrand)))
             {
                 bodyWeaponsSVec.emplace_back(
                     itemFactory_.Make(item::body_part::Breath, CHARACTER_PTR));
@@ -1190,7 +1187,7 @@ namespace non_player
             return bodyWeaponsSVec;
         }
 
-        Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES) const
+        Coin_t InventoryFactory::Make_Coins(const InventoryChances & CHANCES) const
         {
             return CHANCES.RandomCoins();
         }
@@ -1228,6 +1225,6 @@ namespace non_player
             item::ItemWarehouse::Access().Free(itemsToRemovePVec);
         }
 
-    } // namespace ownership
-} // namespace non_player
+    } // namespace nonplayer
+} // namespace creature
 } // namespace heroespath

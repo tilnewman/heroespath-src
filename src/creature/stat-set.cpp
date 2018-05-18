@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     StatSet::StatSet(
@@ -35,7 +35,7 @@ namespace stats
         , int_(INT)
     {}
 
-    stats::Trait_t StatSet::Get(const stats::Traits::Enum E) const
+    Trait_t StatSet::Get(const Traits::Enum E) const
     {
         if (E == Traits::Strength)
         {
@@ -63,11 +63,11 @@ namespace stats
         }
 
         std::ostringstream ss;
-        ss << "stats::StatSet::Get(" << E << ")_InvalidValueError.";
+        ss << "StatSet::Get(" << E << ")_InvalidValueError.";
         throw std::range_error(ss.str());
     }
 
-    void StatSet::Set(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+    void StatSet::Set(const Traits::Enum E, const Trait_t NEW_VALUE)
     {
         if (E == Traits::Strength)
         {
@@ -102,7 +102,7 @@ namespace stats
 
         std::ostringstream ss;
 
-        ss << "stats::StatSet::Set(" << E << ", new_value=" << NEW_VALUE << ")_InvalidValueError.";
+        ss << "StatSet::Set(" << E << ", new_value=" << NEW_VALUE << ")_InvalidValueError.";
 
         throw std::range_error(ss.str());
     }
@@ -150,5 +150,6 @@ namespace stats
             return ss.str();
         }
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath

@@ -4,20 +4,20 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATS_STATSET_HPP_INCLUDED
-#define HEROESPATH_STATS_STATSET_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_STAT_SET_HPP_INCLUDED
+#define HEROESPATH_CREATURE_STAT_SET_HPP_INCLUDED
 //
 // stat-set.hpp
 //
+#include "creature/trait.hpp"
 #include "misc/types.hpp"
-#include "stats/trait-enum.hpp"
 
 #include <string>
 #include <tuple>
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     // Convenience warpper for creature stat values.
@@ -40,8 +40,8 @@ namespace stats
         Speed_t Spd() const { return spd_; }
         Intell_t Int() const { return int_; }
 
-        stats::Trait_t Get(const Traits::Enum) const;
-        void Set(const Traits::Enum, const stats::Trait_t);
+        Trait_t Get(const Traits::Enum) const;
+        void Set(const Traits::Enum, const Trait_t);
 
         const std::string ToString(const bool WILL_WRAP) const;
 
@@ -70,7 +70,8 @@ namespace stats
         return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
             < std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_STATS_STATSET_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_STAT_SET_HPP_INCLUDED

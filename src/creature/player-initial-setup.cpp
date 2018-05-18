@@ -12,6 +12,7 @@
 #include "player-initial-setup.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/trait.hpp"
 #include "game/game-data-file.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
@@ -20,7 +21,6 @@
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
-#include "stats/trait.hpp"
 
 #include <exception>
 #include <sstream>
@@ -312,18 +312,18 @@ namespace creature
 
         if ((ROLE_ENUM == creature::role::Sorcerer) || (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const INITIAL_MANA{ CREATURE_PTR->TraitNormal(stats::Traits::Intelligence) / 2 };
-            CREATURE_PTR->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
-            CREATURE_PTR->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
+            auto const INITIAL_MANA{ CREATURE_PTR->TraitNormal(Traits::Intelligence) / 2 };
+            CREATURE_PTR->TraitNormalSet(Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitCurrentSet(Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA{ (CREATURE_PTR->TraitNormal(stats::Traits::Intelligence)
-                                      + CREATURE_PTR->TraitNormal(stats::Traits::Charm))
+            auto const INITIAL_MANA{ (CREATURE_PTR->TraitNormal(Traits::Intelligence)
+                                      + CREATURE_PTR->TraitNormal(Traits::Charm))
                                      / 4 };
 
-            CREATURE_PTR->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
-            CREATURE_PTR->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitNormalSet(Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitCurrentSet(Traits::Mana, INITIAL_MANA);
         }
     }
 

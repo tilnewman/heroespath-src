@@ -24,7 +24,7 @@ namespace heroespath
 namespace creature
 {
 
-    const stats::StatSet
+    const StatSet
         StatModifierLoader::ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR)
     {
         std::vector<std::string> statValuesStrVec;
@@ -37,15 +37,15 @@ namespace creature
                 << "six comma sep values from \"" << DATA_FILE_VALUE_STR
                 << "\".  (There must be a typo in the game data file.)");
 
-        const stats::Trait_t ERROR_VALUE{ -123456789 };
+        const Trait_t ERROR_VALUE{ -123456789 };
 
-        stats::StatSet statSet;
+        StatSet statSet;
         for (std::size_t i(0); i < statValuesStrVec.size(); ++i)
         {
-            stats::Trait_t nextValue{ ERROR_VALUE };
+            Trait_t nextValue{ ERROR_VALUE };
             try
             {
-                nextValue = boost::lexical_cast<stats::Trait_t>(statValuesStrVec.at(i));
+                nextValue = boost::lexical_cast<Trait_t>(statValuesStrVec.at(i));
             }
             catch (...)
             {
@@ -57,7 +57,7 @@ namespace creature
                 "creature::StatModifierLoader::Load() was unable to convert \""
                     << statValuesStrVec.at(i) << "\" to an int value.");
 
-            auto const NEXT_STAT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_STAT_ENUM{ static_cast<Traits::Enum>(i) };
             statSet.Set(NEXT_STAT_ENUM, nextValue);
         }
 

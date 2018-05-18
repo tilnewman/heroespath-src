@@ -46,7 +46,7 @@ namespace creature
         const sex::Enum SEX,
         const race::Enum & RACE,
         const role::Enum & ROLE,
-        const stats::StatSet & STATS,
+        const StatSet & STATS,
         const std::string & IMAGE_FILENAME,
         const Health_t & HEALTH,
         const Rank_t & RANK,
@@ -84,13 +84,13 @@ namespace creature
             imageFilename_ = creatureImageLoader.GetRandomFilename(this);
         }
 
-        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.As<int>());
-        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
-        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
-        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha().As<int>());
-        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck().As<int>());
-        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
-        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
+        actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.As<int>());
+        actualSet_.Get(Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
+        actualSet_.Get(Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
+        actualSet_.Get(Traits::Charm).CurrAndNormSet(STATS.Cha().As<int>());
+        actualSet_.Get(Traits::Luck).CurrAndNormSet(STATS.Lck().As<int>());
+        actualSet_.Get(Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
+        actualSet_.Get(Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
 
         ReCalculateTraitBonuses();
 
@@ -1282,7 +1282,7 @@ namespace creature
                 + RESPONSE_POSTFIX;
         }
 
-        if (TraitWorking(stats::Traits::Mana) <= 0)
+        if (TraitWorking(Traits::Mana) <= 0)
         {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
                 + RESPONSE_POSTFIX;
@@ -1385,7 +1385,7 @@ namespace creature
                 + RESPONSE_POSTFIX;
         }
 
-        if (TraitWorking(stats::Traits::Mana) <= 0)
+        if (TraitWorking(Traits::Mana) <= 0)
         {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
                 + RESPONSE_POSTFIX;
@@ -1470,9 +1470,9 @@ namespace creature
         ss << "\"" << name_ << "\""
            << ", " << sex::ToString(sex_) << ", " << race::Name(race_) << ", " << role::Name(role_)
            << ", " << actualSet_.StatsString(false) << ", health=" << healthCurrent_ << "/"
-           << healthNormal_ << ", mana=" << TraitWorking(stats::Traits::Mana) << "/"
-           << TraitNormal(stats::Traits::Mana) << ", rank=" << Rank() << ", exp=" << Exp()
-           << ", body[" << bodyType_.ToString() << "]";
+           << healthNormal_ << ", mana=" << TraitWorking(Traits::Mana) << "/"
+           << TraitNormal(Traits::Mana) << ", rank=" << Rank() << ", exp=" << Exp() << ", body["
+           << bodyType_.ToString() << "]";
 
         ss << ", conds=";
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
@@ -1558,9 +1558,9 @@ namespace creature
 
     void Creature::ReCalculateTraitBonuses()
     {
-        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < Traits::StatCount; ++i)
         {
-            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
 
             int traitPercent{ 0 };
 
@@ -1583,33 +1583,32 @@ namespace creature
         }
     }
 
-    stats::Trait_t Creature::TraitWorking(const stats::Traits::Enum E) const
+    Trait_t Creature::TraitWorking(const Traits::Enum E) const
     {
         auto const ACTUAL{ static_cast<float>(TraitCurrent(E))
                            + (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
 
-        return (ACTUAL < 0.0f) ? 0 : static_cast<stats::Trait_t>(ACTUAL);
+        return (ACTUAL < 0.0f) ? 0 : static_cast<Trait_t>(ACTUAL);
     }
 
-    stats::Trait_t
-        Creature::TraitBonusNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
+    Trait_t Creature::TraitBonusNormalAdj(const Traits::Enum E, const Trait_t ADJ)
     {
         auto const NEW_NORMAL{ bonusSet_.Get(E).NormalAdj(ADJ) };
         ReCalculateTraitBonuses();
         return NEW_NORMAL;
     }
 
-    bool Creature::TraitBonusTest(const stats::Traits::Enum E) const
+    bool Creature::TraitBonusTest(const Traits::Enum E) const
     {
         return (misc::random::Int(100) < bonusSet_.GetCopy(E).Current());
     }
 
-    const stats::TraitSet Creature::TraitsWorking() const
+    const TraitSet Creature::TraitsWorking() const
     {
-        stats::TraitSet set;
-        for (misc::EnumUnderlying_t i(0); i < stats::Traits::Count; ++i)
+        TraitSet set;
+        for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
-            auto const NEXT_TRAIT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
             set.Get(NEXT_TRAIT_ENUM).NormalSet(TraitNormal(NEXT_TRAIT_ENUM));
             set.Get(NEXT_TRAIT_ENUM).CurrentSet(TraitWorking(NEXT_TRAIT_ENUM));
         }
@@ -1618,7 +1617,7 @@ namespace creature
     }
 
     const std::string
-        Creature::TraitModifiedString(const stats::Traits::Enum E, const bool WILL_WRAP) const
+        Creature::TraitModifiedString(const Traits::Enum E, const bool WILL_WRAP) const
     {
         auto const WORKING{ TraitWorking(E) };
         auto const NORMAL{ TraitNormal(E) };
@@ -1652,14 +1651,14 @@ namespace creature
         }
     }
 
-    void Creature::StatTraitsModify(const stats::StatSet & STAT_SET)
+    void Creature::StatTraitsModify(const StatSet & STAT_SET)
     {
-        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str().As<int>());
-        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc().As<int>());
-        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha().As<int>());
-        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck().As<int>());
-        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd().As<int>());
-        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().As<int>());
+        TraitNormalAdj(Traits::Strength, STAT_SET.Str().As<int>());
+        TraitNormalAdj(Traits::Accuracy, STAT_SET.Acc().As<int>());
+        TraitNormalAdj(Traits::Charm, STAT_SET.Cha().As<int>());
+        TraitNormalAdj(Traits::Luck, STAT_SET.Lck().As<int>());
+        TraitNormalAdj(Traits::Speed, STAT_SET.Spd().As<int>());
+        TraitNormalAdj(Traits::Intelligence, STAT_SET.Int().As<int>());
     }
 
     void Creature::BeforeSerialize() { inventory_.BeforeSerialize(); }

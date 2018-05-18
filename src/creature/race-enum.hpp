@@ -13,11 +13,11 @@
 
 #include "creature/rank.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/trait.hpp"
 #include "item/treasure-scores.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/handy-types.hpp"
 #include "misc/types.hpp"
-#include "stats/trait.hpp"
 
 #include <string>
 #include <tuple>

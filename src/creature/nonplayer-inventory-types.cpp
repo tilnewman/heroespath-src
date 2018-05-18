@@ -7,28 +7,287 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// ownership-profile.cpp
+// nonplayer-inventory-types.cpp
 //
-#include "ownership-profile.hpp"
-
+#include "nonplayer-inventory-types.hpp"
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
-#include "item/item.hpp"
-#include "misc/handy-types.hpp"
-#include "misc/random.hpp"
-#include "stringutil/stringhelp.hpp"
-
-#include "boost/lexical_cast.hpp"
-
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
-namespace non_player
+namespace creature
 {
-    namespace ownership
+    namespace nonplayer
     {
+
+        ItemChances::ItemChances(
+            const CountChanceMap_t & NUM_OWNED_MAP,
+            const float CHANCE_EQUIPPED,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : chance_equipped(CHANCE_EQUIPPED)
+            , num_owned_map(NUM_OWNED_MAP)
+            , mat_map_pri(MAT_CH_MAP_PRI)
+            , mat_map_sec(MAT_CH_MAP_SEC)
+        {
+            if (num_owned_map.Empty())
+            {
+                num_owned_map[0] = 1.0f;
+            }
+        }
+
+        ItemChances::ItemChances(
+            const float CHANCE_OWNED,
+            const float CHANCE_EQUIPPED,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : chance_equipped(CHANCE_EQUIPPED)
+            , num_owned_map()
+            , mat_map_pri(MAT_CH_MAP_PRI)
+            , mat_map_sec(MAT_CH_MAP_SEC)
+        {
+            SetCountChanceSingle(CHANCE_OWNED);
+        }
+
+        ItemChances::ItemChances(
+            const float CHANCE_OWNED,
+            const float CHANCE_EQUIPPED,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY)
+            : chance_equipped(CHANCE_EQUIPPED)
+            , num_owned_map()
+            , mat_map_pri()
+            , mat_map_sec()
+        {
+            SetCountChanceSingle(CHANCE_OWNED);
+            mat_map_pri[MATERIAL_PRIMARY] = 1.0f;
+            mat_map_sec[MATERIAL_SECONDARY] = 1.0f;
+        }
+
+        std::size_t ItemChances::CountOwned() const
+        {
+            if (num_owned_map.Empty())
+            {
+                return 0;
+            }
+            else
+            {
+                return MappedRandomFloatChance<std::size_t>(num_owned_map);
+            }
+        }
+
+        item::material::Enum ItemChances::RandomMaterialPri() const
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (mat_map_pri.Empty() == false),
+                "creature::nonplayer::ItemChances::RandomMaterialPri() "
+                    << "called when mat_map_pri is empty.");
+
+            return MappedRandomFloatChance<item::material::Enum>(mat_map_pri);
+        }
+
+        item::material::Enum ItemChances::RandomMaterialSec() const
+        {
+            if (mat_map_sec.Empty())
+            {
+                return item::material::Nothing;
+            }
+            else
+            {
+                return MappedRandomFloatChance<item::material::Enum>(mat_map_sec);
+            }
+        }
+
+        void ItemChances::SetCountChanceSingleCertain()
+        {
+            num_owned_map.Clear();
+            SetCountChanceSingle(1.0f);
+        }
+
+        void ItemChances::SetCountChanceSingle(const float CHANCE)
+        {
+            num_owned_map.Clear();
+            SetCountChance(1, CHANCE);
+            SetCountChance(0, 1.0f - CHANCE);
+        }
+
+        void ItemChances::SetCountChanceIncrement(const float CHANCE)
+        {
+            const std::size_t MAX_ITERATIONS(1000);
+            std::size_t i(0);
+            while (i < MAX_ITERATIONS)
+            {
+                if (misc::IsRealClose(num_owned_map[++i], 0.0f))
+                {
+                    num_owned_map[i] = 1.0f;
+                    break;
+                }
+            };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (i < MAX_ITERATIONS),
+                "creature::nonplayer::ItemChances::SetCountChanceIncrement("
+                    << CHANCE << ") reached the sentinel of " << MAX_ITERATIONS
+                    << " iterations.  Something is very wrong...");
+        }
+
+        ClothingChances::ClothingChances(
+            const float SHIRT,
+            const float GLOVES,
+            const float PANTS,
+            const float BOOTS,
+            const float VEST,
+            const CoverChanceMap_t & COVER_CHANCE_MAP,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : shirt(SHIRT, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , gloves(GLOVES, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , pants(PANTS, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , boots(BOOTS, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , vest(VEST, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , cover_map(COVER_CHANCE_MAP)
+        {}
+
+        item::armor::cover_type::Enum ClothingChances::RandomCoverType() const
+        {
+            misc::VectorMap<item::armor::cover_type::Enum, float> coverChanceMap;
+
+            for (auto const & NEXT_CHANCE_PAIR : cover_map)
+            {
+                if (NEXT_CHANCE_PAIR.second.IsOwned())
+                {
+                    coverChanceMap[NEXT_CHANCE_PAIR.first] = misc::random::Float();
+                }
+            }
+
+            if (coverChanceMap.Size() == 1)
+            {
+                return coverChanceMap.begin()->first;
+            }
+            else if (coverChanceMap.Size() > 1)
+            {
+                auto highestChance{ 0.0f };
+                auto highestEnum{ coverChanceMap.begin()->first };
+                for (auto const & NEXT_CHANCE_PAIR : coverChanceMap)
+                {
+                    if (NEXT_CHANCE_PAIR.second > highestChance)
+                    {
+                        highestEnum = NEXT_CHANCE_PAIR.first;
+                    }
+                }
+
+                return highestEnum;
+            }
+            else
+            {
+                return item::armor::cover_type::Count;
+            }
+        }
+
+        ArmorItemChances::ArmorItemChances(
+            const float CHANCE_OWNED,
+            const ArmorTypeChanceMap_t & ARMOR_TYPE_CH_MAP,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : ItemChances(CHANCE_OWNED, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , type_map(ARMOR_TYPE_CH_MAP)
+        {}
+
+        ArmorItemChances::ArmorItemChances(
+            const float CHANCE_OWNED,
+            const item::armor::base_type::Enum ARMOR_BASE_TYPE,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY)
+            : ItemChances(CHANCE_OWNED, 1.0f, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
+            , type_map()
+        {
+            type_map[ARMOR_BASE_TYPE] = 1.0f;
+        }
+
+        ArmorChances::ArmorChances(
+            const ArmorItemChances & AVENTAIL,
+            const ArmorItemChances & SHIRT,
+            const ArmorItemChances & BRACERS,
+            const ArmorItemChances & GAUNTLETS,
+            const ArmorItemChances & PANTS,
+            const ArmorItemChances & BOOTS,
+            const HelmChanceMap_t & HELM_MAP,
+            const CoverChanceMap_t & COVER_MAP,
+            const ShieldChanceMap_t & SHIELD_MAP)
+            : aventail(AVENTAIL)
+            , shirt(SHIRT)
+            , bracers(BRACERS)
+            , gauntlets(GAUNTLETS)
+            , pants(PANTS)
+            , boots(BOOTS)
+            , helm_map(HELM_MAP)
+            , cover_map(COVER_MAP)
+            , shield_map(SHIELD_MAP)
+        {}
+
+        KnifeItemChances::KnifeItemChances(
+            const float CHANCE_OWNED,
+            const float IS_EQUIPPED,
+            const float IS_DAGGER,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : ItemChances(CHANCE_OWNED, IS_EQUIPPED, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , is_dagger(IS_DAGGER)
+        {}
+
+        StaffItemChances::StaffItemChances(
+            const float CHANCE_OWNED,
+            const float IS_EQUIPPED,
+            const float IS_QUARTERSTAFF,
+            const MaterialChanceMap_t & MAT_CH_MAP_PRI,
+            const MaterialChanceMap_t & MAT_CH_MAP_SEC)
+            : ItemChances(CHANCE_OWNED, IS_EQUIPPED, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
+            , is_quarterstaff(IS_QUARTERSTAFF)
+        {}
+
+        InventoryChances::InventoryChances(
+            const Coin_t & COINS_MIN,
+            const Coin_t & COINS_MAX,
+            const ClothingChances & CLOTHES_CHANCES,
+            const WeaponChances & WEAPON_CHANCES,
+            const ArmorChances & ARMOR_CHANCES,
+            const ItemChanceMap_t & MISC_ITEM_CHANCES)
+            : coins_min(COINS_MIN)
+            , coins_max(COINS_MAX)
+            , armor(ARMOR_CHANCES)
+            , weapon(WEAPON_CHANCES)
+            , clothes(CLOTHES_CHANCES)
+            , misc_items(MISC_ITEM_CHANCES)
+        {}
+
+        WeaponChances::WeaponChances(
+            const bool HAS_CLAWS,
+            const bool HAS_BITE,
+            const bool HAS_FISTS,
+            const bool HAS_TENTACLES,
+            const bool HAS_BREATH,
+            const KnifeItemChances & KNIFE,
+            const StaffItemChances & STAFF,
+            const AxeChanceMap_t & AXE_MAP,
+            const ClubChanceMap_t & CLUB_MAP,
+            const WhipChanceMap_t & WHIP_MAP,
+            const SwordChanceMap_t & SWORD_MAP,
+            const ProjectileChanceMap_t & PROJECTILE_MAP,
+            const BladedStaffChanceMap_t & BLADEDSTAFF_MAP)
+            : has_claws(HAS_CLAWS)
+            , has_bite(HAS_BITE)
+            , has_fists(HAS_FISTS)
+            , has_tentacles(HAS_TENTACLES)
+            , has_breath(HAS_BREATH)
+            , knife(KNIFE)
+            , staff(STAFF)
+            , axe_map(AXE_MAP)
+            , club_map(CLUB_MAP)
+            , whip_map(WHIP_MAP)
+            , sword_map(SWORD_MAP)
+            , projectile_map(PROJECTILE_MAP)
+            , bladedstaff_map(BLADEDSTAFF_MAP)
+        {}
 
         const std::string wealth_type::ToString(const wealth_type::Enum WEALTH_TYPE)
         {
@@ -70,9 +329,9 @@ namespace non_player
             }
         }
 
-        wealth_type::Enum wealth_type::FromRankType(const creature::rank_class::Enum RANK_CLASS)
+        wealth_type::Enum wealth_type::FromRankType(const rank_class::Enum RANK_CLASS)
         {
-            auto const RANK_CLASS_STR{ creature::rank_class::ToString(RANK_CLASS) };
+            auto const RANK_CLASS_STR{ rank_class::ToString(RANK_CLASS) };
 
             misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
@@ -128,10 +387,10 @@ namespace non_player
 
         wealth_type::Enum wealth_type::FromRank(const Rank_t & RANK)
         {
-            return FromRankType(creature::rank_class::FromRank(RANK));
+            return FromRankType(rank_class::FromRank(RANK));
         }
 
-        wealth_type::Enum wealth_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
+        wealth_type::Enum wealth_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             return FromRank(CHARACTER_PTR->Rank());
         }
@@ -148,14 +407,13 @@ namespace non_player
             AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
         }
 
-        collector_type::Enum
-            collector_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
+        collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             auto const CHANCE_BASE(game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
-            auto const RACE_STR{ creature::race::ToString(CHARACTER_PTR->Race()) };
+            auto const RACE_STR{ race::ToString(CHARACTER_PTR->Race()) };
 
             auto const RACE_KEY{
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
@@ -171,7 +429,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (racePartsVec.size() == 4),
-                "non_player::ownership::collector_type::FromCreature("
+                "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
                     << ") failed to read four values from the key=" << RACE_KEY);
 
@@ -181,7 +439,7 @@ namespace non_player
             float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
 
             // adjust for roles
-            auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role()) };
+            auto const ROLE_STR{ role::ToString(CHARACTER_PTR->Role()) };
 
             auto const ROLE_KEY{
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
@@ -197,7 +455,7 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (rolePartsVec.size() == 4),
-                "non_player::ownership::collector_type::FromCreature("
+                "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
                     << ") failed to read four values from the key=" << ROLE_KEY);
 
@@ -303,8 +561,7 @@ namespace non_player
             }
         }
 
-        owns_magic_type::Enum
-            owns_magic_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
+        owns_magic_type::Enum owns_magic_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             float chanceRarely(0.0f);
             float chanceReligious(0.0f);
@@ -312,7 +569,7 @@ namespace non_player
 
             // adjust for race
             {
-                auto const RACE_STR(creature::race::ToString(CHARACTER_PTR->Race()));
+                auto const RACE_STR(race::ToString(CHARACTER_PTR->Race()));
 
                 auto const RACE_KEY{
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
@@ -327,7 +584,7 @@ namespace non_player
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (racePartsVec.size() == 3),
-                    "non_player::ownership::owns_magic_type::FromCreature("
+                    "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << RACE_KEY);
 
@@ -340,7 +597,7 @@ namespace non_player
                 // zTn -2017-7-14
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (misc::IsRealOne(RARELY_RACE_ADJ + RELIGIOUS_RACE_ADJ + MAGICAL_RACE_ADJ)),
-                    "non_player::ownership::owns_magic_type::FromCreature("
+                    "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole() << ") found key " << RACE_KEY << "="
                         << RACE_OWNSMAGIC_PARTS_STR << " -but those values do not add up to one.");
 
@@ -351,7 +608,7 @@ namespace non_player
 
             // adjust for role
             {
-                auto const ROLE_STR{ creature::role::ToString(CHARACTER_PTR->Role()) };
+                auto const ROLE_STR{ role::ToString(CHARACTER_PTR->Role()) };
 
                 std::ostringstream ss;
                 ss << "heroespath-nonplayer-ownershipprofile-"
@@ -371,7 +628,7 @@ namespace non_player
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (rolePartsVec.size() == 3),
-                    "non_player::ownership::owns_magic_type::FromCreature("
+                    "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << ROLE_KEY);
 
@@ -471,19 +728,18 @@ namespace non_player
             }
         }
 
-        complexity_type::Enum
-            complexity_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
+        complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             auto const RACE_COMPLEXITY_STR{ game::GameDataFile::Instance()->GetCopyStr(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
-                + creature::race::ToString(CHARACTER_PTR->Race())) };
+                + race::ToString(CHARACTER_PTR->Race())) };
 
             if (RACE_COMPLEXITY_STR == "based-on-role")
             {
                 return static_cast<complexity_type::Enum>(
                     FromString(game::GameDataFile::Instance()->GetCopyStr(
                         "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
-                        + creature::role::ToString(CHARACTER_PTR->Role()))));
+                        + role::ToString(CHARACTER_PTR->Role()))));
             }
             else
             {
@@ -502,7 +758,7 @@ namespace non_player
             , complexityType(COMPLEXITY_TYPE)
         {}
 
-        const Profile Profile::Make_FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
+        const Profile Profile::Make_FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
             return Profile(
                 wealth_type::FromCreature(CHARACTER_PTR),
@@ -520,13 +776,13 @@ namespace non_player
             catch (...)
             {
                 std::ostringstream ss;
-                ss << "non_player::ownership::ConvertStringToFloat(key=" << KEY
+                ss << "creature::nonplayer::ConvertStringToFloat(key=" << KEY
                    << ", STR_FLOAT=" << STR_FLOAT << " unable to convert that str to a float.";
 
                 throw std::runtime_error(ss.str());
             }
         }
 
-    } // namespace ownership
-} // namespace non_player
+    } // namespace nonplayer
+} // namespace creature
 } // namespace heroespath

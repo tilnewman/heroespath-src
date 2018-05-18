@@ -14,14 +14,14 @@
 #include "creature/enchantment-type.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/trait.hpp"
+#include "creature/traits-set.hpp"
 #include "game/phase-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
-#include "stats/trait.hpp"
-#include "stats/traits-set.hpp"
 
 #include <memory>
 #include <string>
@@ -114,7 +114,7 @@ namespace creature
 
         explicit Enchantment(
             const EnchantmentType::Enum TYPE = EnchantmentType::None,
-            const stats::TraitSet & TRAIT_SET = stats::TraitSet(),
+            const TraitSet & TRAIT_SET = TraitSet(),
             const UseInfo & USE_INFO = UseInfo(),
             const std::string & EFFECTS_STR = "",
             const Score_t SCORE = 0_score,
@@ -122,7 +122,7 @@ namespace creature
 
         EnchantmentType::Enum Type() const { return type_; }
         bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
-        const stats::TraitSet & Traits() const { return traitSet_; }
+        const TraitSet & Traits() const { return traitSet_; }
         const UseInfo & Use() const { return useInfo_; }
         void UseCountConsume() { useInfo_.CountConsume(); }
 
@@ -149,7 +149,7 @@ namespace creature
 
     private:
         EnchantmentType::Enum type_;
-        stats::TraitSet traitSet_;
+        TraitSet traitSet_;
         UseInfo useInfo_;
         std::string effectsStr_;
         UseEffectType effectType_;

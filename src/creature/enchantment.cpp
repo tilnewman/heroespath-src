@@ -24,7 +24,7 @@ namespace creature
 
     Enchantment::Enchantment(
         const EnchantmentType::Enum TYPE,
-        const stats::TraitSet & TRAIT_SET,
+        const TraitSet & TRAIT_SET,
         const UseInfo & USE_INFO,
         const std::string & EFFECTS_STR,
         const Score_t SCORE,

@@ -11,8 +11,8 @@
 //  Specific creature role stat modifiers.
 //
 #include "creature/role-enum.hpp"
+#include "creature/stat-set.hpp"
 #include "misc/vector-map.hpp"
-#include "stats/stat-set.hpp"
 #include <string>
 
 namespace heroespath
@@ -20,13 +20,13 @@ namespace heroespath
 namespace creature
 {
 
-    using RoleStatSetMap_t = misc::VectorMap<role::Enum, stats::StatSet>;
+    using RoleStatSetMap_t = misc::VectorMap<role::Enum, StatSet>;
 
     // Responsible for role related stat modifiers, for loading them from the
     // game data file and for providing access to them.
     struct RoleStatModifier
     {
-        static const stats::StatSet Get(const role::Enum);
+        static const StatSet Get(const role::Enum);
 
     private:
         static RoleStatSetMap_t roleStatSetMap_;

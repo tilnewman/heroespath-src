@@ -13,6 +13,7 @@
 #include "creature/creature.hpp"
 #include "creature/race-stats.hpp"
 #include "creature/role-stats.hpp"
+#include "creature/stat-set.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gradient.hpp"
@@ -31,7 +32,6 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/character-stage-anim-num.hpp"
-#include "stats/stat-set.hpp"
 
 #include <memory>
 #include <string>
@@ -93,9 +93,9 @@ namespace stage
     struct StatModText : public sf::Drawable
     {
         StatModText(
-            const stats::Traits::Enum STAT,
+            const creature::Traits::Enum STAT,
             const std::string & NAME, // name of race or role
-            const stats::Trait_t VAL,
+            const creature::Trait_t VAL,
             const float POS_LEFT,
             const float POS_TOP)
             : value(VAL)
@@ -132,8 +132,8 @@ namespace stage
             target.draw(*text_region_sptr, states);
         }
 
-        stats::Trait_t value;
-        stats::Traits::Enum stat;
+        creature::Trait_t value;
+        creature::Traits::Enum stat;
         sfml_util::gui::TextRegionSPtr_t text_region_sptr;
     };
 
@@ -212,14 +212,14 @@ namespace stage
         float Setup_AttributeDescriptionBox();
 
         void Setup_Attribute(
-            const stats::Traits::Enum TRAIT_ENUM,
+            const creature::Traits::Enum TRAIT_ENUM,
             const std::string & DESC_KEY,
             const sf::FloatRect & REGION,
             sfml_util::gui::TextInfo & descTextInfo,
             sfml_util::gui::TextRegionUVec_t & textRegionUVec);
 
         void Setup_AttributeHelpText(
-            const stats::Traits::Enum TRAIT_ENUM,
+            const creature::Traits::Enum TRAIT_ENUM,
             const sf::FloatRect & REGION,
             sfml_util::gui::TextInfo & helpTextInfo,
             sfml_util::gui::TextRegionUVec_t & textRegionUVec);
@@ -238,11 +238,11 @@ namespace stage
         void Help3Popup();
         void CharacterCreationConfirmPopup(const std::size_t IMAGE_INDEX);
         void AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE);
-        float GetAttributeNumPosTop(const stats::Traits::Enum STAT);
+        float GetAttributeNumPosTop(const creature::Traits::Enum STAT);
 
         // returns true if any text was set that needs to be displayed
         bool GetStatHelpText(
-            const stats::Traits::Enum WHICH_STAT, sfml_util::gui::TextInfo & textInfo) const;
+            const creature::Traits::Enum WHICH_STAT, sfml_util::gui::TextInfo & textInfo) const;
 
         void UndoAndClearStatModifierChanges();
         void SetVisibleStatsToStatSetBase();
@@ -250,16 +250,16 @@ namespace stage
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
 
-        // these functions return stats::Traits::Count on error or none result
-        stats::Traits::Enum GetHeldDownStat() const;
-        stats::Traits::Enum GetStatAbove(const stats::Traits::Enum STAT) const;
-        stats::Traits::Enum GetStatBelow(const stats::Traits::Enum STAT) const;
+        // these functions return creature::Traits::Count on error or none result
+        creature::Traits::Enum GetHeldDownStat() const;
+        creature::Traits::Enum GetStatAbove(const creature::Traits::Enum STAT) const;
+        creature::Traits::Enum GetStatBelow(const creature::Traits::Enum STAT) const;
 
-        float GetStatPosTop(const stats::Traits::Enum STAT) const; // returns <0.0f on error
+        float GetStatPosTop(const creature::Traits::Enum STAT) const; // returns <0.0f on error
         bool AreAnyStatsIgnored() const;
         void HandleAttributeDragging(const sf::Vector2f & MOUSE_POS_V);
         void ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS);
-        void SwapAttributes(const stats::Traits::Enum A, const stats::Traits::Enum B);
+        void SwapAttributes(const creature::Traits::Enum A, const creature::Traits::Enum B);
         void HandleStuckAnims(const float ELAPSED_TIME_SEC);
         bool HandleMenuNavigationKeyRelease(const sf::Event::KeyEvent &);
         void ResetForNewCharacterCreation();
@@ -269,8 +269,8 @@ namespace stage
         creature::sex::Enum GetCurrentSelectedSex() const;
 
     private:
-        static const stats::Trait_t STAT_INVALID_;
-        static const stats::Trait_t STAT_INITIAL_MAX_;
+        static const creature::Trait_t STAT_INVALID_;
+        static const creature::Trait_t STAT_INITIAL_MAX_;
         //
         static const sfml_util::gui::ColorSet GUI_DEFAULT_COLORSET_;
         static const sf::Color LIGHT_TEXT_COLOR_;
@@ -315,10 +315,10 @@ namespace stage
         MenuButtonUPtr_t helpButtonUPtr_;
         MenuButtonUPtr_t nextButtonUPtr_;
         //
-        stats::StatSet statSetBase_;
-        stats::StatSet statSetRace_;
-        stats::StatSet statSetRole_;
-        stats::StatSet statSetFixedAnim_;
+        creature::StatSet statSetBase_;
+        creature::StatSet statSetRace_;
+        creature::StatSet statSetRole_;
+        creature::StatSet statSetFixedAnim_;
         StatModTextVec_t statModifierTextVec_;
         bool willDrawStatModText_;
         //
@@ -357,7 +357,7 @@ namespace stage
         int initialRollCounter_;
         //
         float dragStartY_;
-        stats::Traits::Enum closestDragStat_;
+        creature::Traits::Enum closestDragStat_;
         //
         sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t racetDescTextRegionUPtr_;

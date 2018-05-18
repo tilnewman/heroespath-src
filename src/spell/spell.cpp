@@ -217,7 +217,7 @@ namespace spell
             {
                 auto const DAMAGE_ABS_ORIG{ Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
-                    stats::Traits::Intelligence,
+                    creature::Traits::Intelligence,
                     8,
                     0.5f,
                     0,
@@ -238,10 +238,10 @@ namespace spell
             {
                 auto const HEALTH_GAIN_ORIG{ Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
-                    stats::Traits::Charm,
+                    creature::Traits::Charm,
                     8,
                     0.5f,
-                    CREATURE_CASTING_PTR->TraitBonusCurrent(stats::Traits::MagicEffect),
+                    CREATURE_CASTING_PTR->TraitBonusCurrent(creature::Traits::MagicEffect),
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
@@ -510,9 +510,9 @@ namespace spell
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
                         CREATURE_CASTING_PTR,
-                        stats::Traits::Intelligence,
+                        creature::Traits::Intelligence,
                         CREATURE_CAST_UPON_PTR,
-                        stats::Traits::Count,
+                        creature::Traits::Count,
                         0,
                         0,
                         static_cast<creature::Stats::With>(
@@ -521,7 +521,7 @@ namespace spell
                             | creature::Stats::With::PlayerNaturalWins)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        CREATURE_CASTING_PTR->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_CASTING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)

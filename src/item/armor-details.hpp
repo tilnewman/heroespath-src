@@ -10,10 +10,11 @@
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
 //
+#include "creature/nonplayer-inventory-types.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "non-player/ownership-profile.hpp"
-#include "stats/trait.hpp"
+
+#include "creature/trait.hpp"
 
 #include <memory>
 #include <string>
@@ -34,7 +35,7 @@ namespace item
                 , price(0)
                 , weight(0)
                 , armor_rating(0)
-                , complexity(non_player::ownership::complexity_type::Count)
+                , complexity(creature::nonplayer::complexity_type::Count)
             {}
 
             std::string name;
@@ -42,7 +43,7 @@ namespace item
             Coin_t price;
             Weight_t weight;
             Armor_t armor_rating;
-            non_player::ownership::complexity_type::Enum complexity;
+            creature::nonplayer::complexity_type::Enum complexity;
         };
 
         // name to details mapping

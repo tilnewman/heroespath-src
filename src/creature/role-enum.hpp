@@ -8,7 +8,7 @@
 #define HEROESPATH_CREATURE_ROLEENUM_HPP_INCLUDED
 //
 // role-enum.hpp
-//  An enumeration defining each Role of creature, both player and non_player.
+//  An enumeration defining each Role of creature, both player and non-player.
 //
 #include "combat/blocking-pos-type-enum.hpp"
 #include "misc/enum-util.hpp"

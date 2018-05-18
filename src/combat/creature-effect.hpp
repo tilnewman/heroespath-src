@@ -10,9 +10,9 @@
 // creature-effect.hpp
 //
 #include "creature/condition-enum.hpp"
+#include "creature/trait.hpp"
 #include "hit-info.hpp"
 #include "misc/not-null.hpp"
-#include "stats/trait.hpp"
 
 #include <vector>
 

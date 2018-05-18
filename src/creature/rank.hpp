@@ -10,8 +10,8 @@
 // rank.hpp
 //  Code that gives meaning to all possible rank values.
 //
+#include "creature/trait.hpp"
 #include "misc/types.hpp"
-#include "stats/trait.hpp"
 
 #include "misc/range.hpp"
 

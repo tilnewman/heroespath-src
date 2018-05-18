@@ -10,11 +10,11 @@
 // hit-info.hpp
 //
 #include "creature/condition-enum.hpp"
+#include "creature/trait.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "name-position-enum.hpp"
-#include "stats/trait.hpp"
 
 #include <memory>
 #include <string>

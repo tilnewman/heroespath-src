@@ -38,9 +38,7 @@ target_link_libraries(  ${PROJECT_NAME}
                         sfml-util-gui
                         Game
                         Stage
-                        Stats
                         Creature
-                        NonPlayer
                         State
                         Combat
 			Popup

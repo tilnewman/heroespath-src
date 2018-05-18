@@ -13,12 +13,12 @@
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
+#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-initial-setup.hpp"
+#include "creature/stat-set.hpp"
 #include "misc/random.hpp"
-#include "non-player/inventory-factory.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "state/game-state-factory.hpp"
-#include "stats/stat-set.hpp"
 
 #include <memory>
 
@@ -37,7 +37,7 @@ namespace creature
         const sex::Enum SEX,
         const race::Enum & RACE,
         const role::Enum & ROLE,
-        const stats::StatSet & STATS,
+        const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
         auto const CHARACTER_PTR{ MakeAndEquipPlayer(
@@ -51,7 +51,7 @@ namespace creature
         const std::string & NAME,
         const race::Enum & RACE,
         const role::Enum & ROLE,
-        const stats::StatSet & STATS) const
+        const StatSet & STATS) const
     {
         return MakeAndEquipPlayer(
             NAME,
@@ -66,7 +66,7 @@ namespace creature
         const sex::Enum SEX,
         const race::Enum RACE,
         const role::Enum ROLE,
-        const stats::StatSet & STATS,
+        const StatSet & STATS,
         const Health_t & HEALTH,
         const Rank_t & RANK,
         const Experience_t & EXPERIENCE,
@@ -86,7 +86,7 @@ namespace creature
         auto const CREATURE_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
-        non_player::ownership::InventoryFactory inventoryFactory;
+        creature::nonplayer::InventoryFactory inventoryFactory;
         inventoryFactory.SetupCreatureInventory(CREATURE_PTR);
         return CREATURE_PTR;
     }
@@ -108,7 +108,7 @@ namespace creature
         const sex::Enum SEX,
         const race::Enum & RACE,
         const role::Enum & ROLE,
-        const stats::StatSet & STATS,
+        const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
         auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(
@@ -122,7 +122,7 @@ namespace creature
 
     const CreaturePtr_t CreatureFactory::MakeGoblinGrunt() const
     {
-        const stats::StatSet STATS(
+        const StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),
             Accuracy_t(13 + misc::random::Int(5)),
             Charm_t(5 + misc::random::Int(5)),

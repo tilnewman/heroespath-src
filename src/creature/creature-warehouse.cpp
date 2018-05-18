@@ -59,7 +59,7 @@ namespace creature
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_),
-            "non_player::CreatureWarehouse::Release() found instanceUPtr that was null.");
+            "creature::CreatureWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

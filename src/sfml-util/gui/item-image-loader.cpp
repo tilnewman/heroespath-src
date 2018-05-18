@@ -12,6 +12,7 @@
 #include "item-image-loader.hpp"
 
 #include "creature/dragon-class-enum.hpp"
+#include "creature/nonplayer-inventory-types.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
@@ -21,7 +22,7 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/random.hpp"
-#include "non-player/ownership-profile.hpp"
+
 #include "sfml-util/loaders.hpp"
 
 #include <boost/filesystem.hpp>

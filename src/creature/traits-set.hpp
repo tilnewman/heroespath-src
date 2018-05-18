@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED
-#define HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_TRAITS_SET_HPP_INCLUDED
+#define HEROESPATH_CREATURE_TRAITS_SET_HPP_INCLUDED
 //
 // traits-set.hpp
 //
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     class TraitSet
@@ -41,8 +41,7 @@ namespace stats
         friend bool operator<(const TraitSet & L, const TraitSet & R);
 
     private:
-        const std::string
-            StatStringHelper(const stats::Traits::Enum, const bool WILL_PREFIX = true) const;
+        const std::string StatStringHelper(const Traits::Enum, const bool WILL_PREFIX = true) const;
 
     private:
         TraitVec_t traitVec_;
@@ -67,7 +66,8 @@ namespace stats
     {
         return (L.traitVec_ < R.traitVec_);
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TRAITS_SET_HPP_INCLUDED

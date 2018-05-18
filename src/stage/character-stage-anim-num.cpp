@@ -22,8 +22,8 @@ namespace stage
 {
 
     AnimNum::AnimNum(
-        const stats::Trait_t VALUE,
-        const stats::Traits::Enum WHICH_STAT,
+        const creature::Trait_t VALUE,
+        const creature::Traits::Enum WHICH_STAT,
         const float START_LEFT,
         const float START_TOP,
         const float TARGET_LEFT,

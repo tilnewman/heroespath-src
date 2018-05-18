@@ -157,9 +157,9 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_PTR,
             const HitInfoVec_t & HIT_INFO_VEC) const;
 
-        stats::Trait_t IsValuetHigherThanRatioOfStat(
-            const stats::Trait_t STAT_VALUE,
-            const stats::Trait_t STAT_MAX,
+        creature::Trait_t IsValuetHigherThanRatioOfStat(
+            const creature::Trait_t STAT_VALUE,
+            const creature::Trait_t STAT_MAX,
             const float RATIO) const;
 
         item::ArmorRatings armorRatings_;

@@ -9,6 +9,7 @@
 //
 // combat-anim.hpp
 //
+#include "creature/trait.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
@@ -16,7 +17,6 @@
 #include "sfml-util/animation-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-#include "stats/trait.hpp"
 
 #include <memory>
 #include <string>

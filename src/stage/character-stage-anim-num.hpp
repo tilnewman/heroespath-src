@@ -10,11 +10,10 @@
 // character-stage-anim-num.hpp
 //  An animated number that is used on the CharacterCreation Stage
 //
+#include "creature/stat-set.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-
-#include "stats/stat-set.hpp"
 
 #include <memory>
 #include <string>
@@ -30,8 +29,8 @@ namespace stage
     {
     public:
         AnimNum(
-            const stats::Trait_t VALUE,
-            const stats::Traits::Enum WHICH_STAT,
+            const creature::Trait_t VALUE,
+            const creature::Traits::Enum WHICH_STAT,
             const float START_LEFT,
             const float START_TOP,
             const float TARGET_LEFT,
@@ -51,9 +50,9 @@ namespace stage
         void WillFadeSet(const bool B) { willFade_ = B; }
         bool IgnoreMe() const { return ignoreMe_; }
         void SetIgnoreMe() { ignoreMe_ = true; }
-        stats::Traits::Enum Which() const { return whichStat_; }
-        stats::Trait_t Value() const { return value_; }
-        void ValueSet(const stats::Trait_t S) { value_ = S; }
+        creature::Traits::Enum Which() const { return whichStat_; }
+        creature::Trait_t Value() const { return value_; }
+        void ValueSet(const creature::Trait_t S) { value_ = S; }
         bool IsHeldDown() const { return isHeldDown_; }
         void MouseUp() { isHeldDown_ = false; }
 
@@ -78,8 +77,8 @@ namespace stage
         friend bool operator==(const AnimNum & L, const AnimNum & R);
 
     private:
-        stats::Trait_t value_;
-        stats::Traits::Enum whichStat_;
+        creature::Trait_t value_;
+        creature::Traits::Enum whichStat_;
         bool ignoreMe_;
         sf::Uint8 colorVal_;
         float startLeft_;

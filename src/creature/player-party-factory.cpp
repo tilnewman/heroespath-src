@@ -16,9 +16,9 @@
 #include "creature/name-info.hpp"
 #include "creature/player-initial-setup.hpp"
 #include "creature/player-party.hpp"
+#include "creature/stat-set.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
-#include "stats/stat-set.hpp"
 
 #include <algorithm>
 #include <string>
@@ -46,7 +46,7 @@ namespace creature
         const int STAT_RAND{ 6 };
 
         /*
-        const stats::StatSet KNIGHT_STATS(
+        const StatSet KNIGHT_STATS(
             STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
             STAT_BASE_HIGH + misc::random::Int(STAT_RAND),
             STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
@@ -61,7 +61,7 @@ namespace creature
             KNIGHT_STATS));
         */
 
-        const stats::StatSet FIREBRAND_STATS(
+        const StatSet FIREBRAND_STATS(
             Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
@@ -76,7 +76,7 @@ namespace creature
             FIREBRAND_STATS));
 
         /*
-        const stats::StatSet ARCHER_STATS(
+        const StatSet ARCHER_STATS(
             15 + misc::random::Int(6),
             15 + misc::random::Int(10),
             5  + misc::random::Int(6),
@@ -91,7 +91,7 @@ namespace creature
                         ARCHER_STATS));
 
 
-        const stats::StatSet WOLFEN_STATS(
+        const StatSet WOLFEN_STATS(
             STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND),
             STAT_BASE_HIGH + 4 + misc::random::Int(STAT_RAND),
             STAT_BASE_LOW  + misc::random::Int(STAT_RAND),
@@ -106,7 +106,7 @@ namespace creature
                         WOLFEN_STATS));
         */
 
-        const stats::StatSet BARD_STATS(
+        const StatSet BARD_STATS(
             Strength_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
@@ -120,7 +120,7 @@ namespace creature
             creature::role::Bard,
             BARD_STATS));
 
-        const stats::StatSet BEASTMASTER_STATS(
+        const StatSet BEASTMASTER_STATS(
             Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
@@ -134,7 +134,7 @@ namespace creature
             creature::role::Beastmaster,
             BEASTMASTER_STATS));
 
-        const stats::StatSet THEIF_STATS(
+        const StatSet THEIF_STATS(
             Strength_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
@@ -148,7 +148,7 @@ namespace creature
             creature::role::Thief,
             THEIF_STATS));
 
-        const stats::StatSet CLERIC_STATS(
+        const StatSet CLERIC_STATS(
             Strength_t(1 + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
@@ -163,7 +163,7 @@ namespace creature
             CLERIC_STATS));
 
         /*
-        const stats::StatSet SORCERER_STATS(
+        const StatSet SORCERER_STATS(
             1             +       misc::random::Int(STAT_RAND),
             STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
             STAT_BASE_LOW +       misc::random::Int(STAT_RAND),
@@ -178,7 +178,7 @@ namespace creature
                         SORCERER_STATS));
                 */
 
-        const stats::StatSet SYLAVIN_STATS(
+        const StatSet SYLAVIN_STATS(
             Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),

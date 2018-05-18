@@ -75,8 +75,8 @@ namespace item
 
             armorDetails.name = CleanStringField(fieldsVec[0], false);
 
-            armorDetails.complexity = static_cast<non_player::ownership::complexity_type::Enum>(
-                non_player::ownership::complexity_type::FromString(
+            armorDetails.complexity = static_cast<creature::nonplayer::complexity_type::Enum>(
+                creature::nonplayer::complexity_type::FromString(
                     CleanStringField(fieldsVec[1], false)));
 
             armorDetails.price = Coin_t(StringFieldToInt("Price", fieldsVec[2]));

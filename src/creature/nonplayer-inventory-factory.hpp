@@ -4,39 +4,37 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED
-#define HEROESPATH_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_INVENTORY_FACTORY_HPP_INCLUDED
+#define HEROESPATH_CREATURE_INVENTORY_FACTORY_HPP_INCLUDED
 //
-// inventory-factory.hpp
+// nonplayer-inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
+#include "creature/nonplayer-inventory-types.hpp"
+#include "creature/trait.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "non-player/ownership-chance-types.hpp"
-#include "stats/trait.hpp"
 
 #include <utility>
 #include <vector>
 
 namespace heroespath
 {
-namespace creature
-{
-    class Creature;
-    using CreaturePtr_t = misc::NotNull<Creature *>;
-} // namespace creature
 namespace item
 {
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 } // namespace item
-namespace non_player
+namespace creature
 {
-    namespace ownership
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+
+    namespace nonplayer
     {
 
         // the type this factory returns, first=items to equip, second=items NOT to equip
@@ -56,31 +54,29 @@ namespace non_player
 
             InventoryFactory() = default;
 
-            void SetupCreatureInventory(const creature::CreaturePtr_t) const;
+            void SetupCreatureInventory(const CreaturePtr_t) const;
 
             const IItemPVecPair_t MakeItemSet(
-                const chance::InventoryChances & CHANCES,
-                const creature::CreaturePtr_t CHARACTER_PTR) const;
+                const InventoryChances & CHANCES, const CreaturePtr_t CHARACTER_PTR) const;
 
         private:
-            const IItemPVecPair_t MakeItemSet_Clothing(
-                const chance::ClothingChances & CHANCES, const bool IS_PIXIE) const;
+            const IItemPVecPair_t
+                MakeItemSet_Clothing(const ClothingChances & CHANCES, const bool IS_PIXIE) const;
 
             const IItemPVecPair_t MakeItemSet_Weapons(
-                const chance::WeaponChances & CHANCES,
-                const creature::CreaturePtr_t CHARACTER_PTR) const;
+                const WeaponChances & CHANCES, const CreaturePtr_t CHARACTER_PTR) const;
 
             const IItemPVecPair_t MakeItemSet_Armor(
-                const chance::ArmorChances & CHANCES,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const ArmorChances & CHANCES,
+                const CreaturePtr_t CHARACTER_PTR,
                 const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const;
 
             const item::ItemPVec_t MakeItemSet_BodyWeapons(
-                const chance::WeaponChances & CHANCES,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const WeaponChances & CHANCES,
+                const CreaturePtr_t CHARACTER_PTR,
                 const bool HAS_TWO_HANDED_WEAPON_EQUIPPED) const;
 
-            Coin_t Make_Coins(const chance::InventoryChances & CHANCES) const;
+            Coin_t Make_Coins(const InventoryChances & CHANCES) const;
 
             bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC) const;
 
@@ -91,7 +87,7 @@ namespace non_player
             // can be selected among other weapon types, such as axes/clubs/whips/etc.
             template <typename T>
             const std::pair<T, float>
-                RandomSelectWeapon(const misc::VectorMap<T, chance::ItemChances> & MAP) const
+                RandomSelectWeapon(const misc::VectorMap<T, ItemChances> & MAP) const
             {
                 // TOOD handle multiple weapons
 
@@ -165,8 +161,8 @@ namespace non_player
             item::ItemFactory itemFactory_;
         };
 
-    } // namespace ownership
-} // namespace non_player
+    } // namespace nonplayer
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_INVENTORY_FACTORY_HPP_INCLUDED

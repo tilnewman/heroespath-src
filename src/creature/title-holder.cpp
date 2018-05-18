@@ -40,7 +40,7 @@ namespace creature
                 1_index,
                 1_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(),
+                StatSet(),
                 0_rank,
                 500_exp,
                 2_health));
@@ -51,56 +51,56 @@ namespace creature
                 1_index,
                 50_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FastFoot,
                 AchievementType::DodgedStanding,
                 2_index,
                 100_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::NimbleFoot,
                 AchievementType::DodgedStanding,
                 3_index,
                 200_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SwiftFoot,
                 AchievementType::DodgedStanding,
                 4_index,
                 500_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeMover,
                 AchievementType::DodgedStanding,
                 5_index,
                 1000_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeGrace,
                 AchievementType::DodgedStanding,
                 6_index,
                 2000_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeDancer,
                 AchievementType::DodgedStanding,
                 7_index,
                 5000_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::MeleeShadow,
                 AchievementType::DodgedStanding,
                 8_index,
                 10000_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyDodger,
@@ -108,56 +108,56 @@ namespace creature
                 1_index,
                 20_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 1_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FastWing,
                 AchievementType::DodgedFlying,
                 2_index,
                 40_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 2_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::NimbleWing,
                 AchievementType::DodgedFlying,
                 3_index,
                 80_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 0_lck, 3_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SwiftWing,
                 AchievementType::DodgedFlying,
                 4_index,
                 120_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 4_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyMover,
                 AchievementType::DodgedFlying,
                 5_index,
                 200_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 2_lck, 5_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::GraceWing,
                 AchievementType::DodgedFlying,
                 6_index,
                 300_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 3_lck, 6_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyDancer,
                 AchievementType::DodgedFlying,
                 7_index,
                 450_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 4_lck, 7_spd, 0_int)));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkyShadow,
                 AchievementType::DodgedFlying,
                 8_index,
                 650_count,
                 Title::ROLEVEC_ALL_PLAYER_ROLES_,
-                stats::StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
+                StatSet(0_str, 0_acc, 0_cha, 7_lck, 10_spd, 0_int)));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Sneak,
@@ -165,7 +165,7 @@ namespace creature
                 1_index,
                 10_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 1_acc, 0_cha, 1_lck, 0_spd, 0_int),
+                StatSet(0_str, 1_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -175,7 +175,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 2_acc, 0_cha, 2_lck, 0_spd, 0_int),
+                StatSet(0_str, 2_acc, 0_cha, 2_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -185,7 +185,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 3_acc, 0_cha, 3_lck, 0_spd, 0_int),
+                StatSet(0_str, 3_acc, 0_cha, 3_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -195,7 +195,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 4_acc, 0_cha, 4_lck, 0_spd, 0_int),
+                StatSet(0_str, 4_acc, 0_cha, 4_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 1_health));
@@ -205,7 +205,7 @@ namespace creature
                 5_index,
                 300_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 5_acc, 0_cha, 5_lck, 0_spd, 0_int),
+                StatSet(0_str, 5_acc, 0_cha, 5_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -215,7 +215,7 @@ namespace creature
                 6_index,
                 400_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 6_acc, 0_cha, 6_lck, 0_spd, 0_int),
+                StatSet(0_str, 6_acc, 0_cha, 6_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -225,7 +225,7 @@ namespace creature
                 7_index,
                 500_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 7_acc, 0_cha, 7_lck, 0_spd, 0_int),
+                StatSet(0_str, 7_acc, 0_cha, 7_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 10_health));
@@ -235,7 +235,7 @@ namespace creature
                 8_index,
                 1000_count,
                 RoleVec_t{ role::Thief },
-                stats::StatSet(0_str, 10_acc, 0_cha, 10_lck, 0_spd, 0_int),
+                StatSet(0_str, 10_acc, 0_cha, 10_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 20_health));
@@ -246,7 +246,7 @@ namespace creature
                 1_index,
                 10_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -256,7 +256,7 @@ namespace creature
                 2_index,
                 100_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -266,7 +266,7 @@ namespace creature
                 3_index,
                 200_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -276,7 +276,7 @@ namespace creature
                 4_index,
                 500_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -286,7 +286,7 @@ namespace creature
                 5_index,
                 1000_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 25_health));
@@ -296,7 +296,7 @@ namespace creature
                 6_index,
                 2000_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -306,7 +306,7 @@ namespace creature
                 7_index,
                 3000_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(7_str, 7_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(7_str, 7_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 35_health));
@@ -316,7 +316,7 @@ namespace creature
                 8_index,
                 5000_count,
                 RoleVec_t{ role::Knight },
-                stats::StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -327,7 +327,7 @@ namespace creature
                 1_index,
                 50_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
+                StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -337,7 +337,7 @@ namespace creature
                 2_index,
                 200_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
+                StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -347,7 +347,7 @@ namespace creature
                 3_index,
                 500_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
+                StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -357,7 +357,7 @@ namespace creature
                 4_index,
                 1000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
+                StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
                 1_rank,
                 0_exp,
                 15_health));
@@ -367,7 +367,7 @@ namespace creature
                 5_index,
                 2000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
+                StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
                 1_rank,
                 0_exp,
                 20_health));
@@ -377,7 +377,7 @@ namespace creature
                 6_index,
                 3000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
+                StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
                 1_rank,
                 0_exp,
                 25_health));
@@ -387,7 +387,7 @@ namespace creature
                 7_index,
                 5000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 8_cha, 0_lck, 0_spd, 8_int),
+                StatSet(0_str, 0_acc, 8_cha, 0_lck, 0_spd, 8_int),
                 1_rank,
                 0_exp,
                 35_health));
@@ -397,7 +397,7 @@ namespace creature
                 8_index,
                 10000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
+                StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -408,7 +408,7 @@ namespace creature
                 1_index,
                 50_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
+                StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -418,7 +418,7 @@ namespace creature
                 2_index,
                 100_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
+                StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 4_health));
@@ -428,7 +428,7 @@ namespace creature
                 3_index,
                 200_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
+                StatSet(0_str, 0_acc, 3_cha, 0_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 8_health));
@@ -438,7 +438,7 @@ namespace creature
                 4_index,
                 400_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
+                StatSet(0_str, 0_acc, 4_cha, 0_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 12_health));
@@ -448,7 +448,7 @@ namespace creature
                 5_index,
                 800_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
+                StatSet(0_str, 0_acc, 5_cha, 0_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 16_health));
@@ -458,7 +458,7 @@ namespace creature
                 6_index,
                 1000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
+                StatSet(0_str, 0_acc, 6_cha, 0_lck, 0_spd, 6_int),
                 1_rank,
                 0_exp,
                 20_health));
@@ -468,7 +468,7 @@ namespace creature
                 7_index,
                 2500_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 7_cha, 0_lck, 0_spd, 7_int),
+                StatSet(0_str, 0_acc, 7_cha, 0_lck, 0_spd, 7_int),
                 1_rank,
                 0_exp,
                 24_health));
@@ -478,7 +478,7 @@ namespace creature
                 8_index,
                 4000_count,
                 RoleVec_t{ role::Cleric },
-                stats::StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
+                StatSet(0_str, 0_acc, 10_cha, 0_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 30_health));
@@ -489,7 +489,7 @@ namespace creature
                 1_index,
                 10_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(1_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(1_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -499,7 +499,7 @@ namespace creature
                 2_index,
                 30_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(2_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(2_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 4_health));
@@ -509,7 +509,7 @@ namespace creature
                 3_index,
                 50_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(3_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(3_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 8_health));
@@ -519,7 +519,7 @@ namespace creature
                 4_index,
                 100_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(4_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(4_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 12_health));
@@ -529,7 +529,7 @@ namespace creature
                 5_index,
                 200_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(5_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(5_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 16_health));
@@ -539,7 +539,7 @@ namespace creature
                 6_index,
                 400_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(6_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(6_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -549,7 +549,7 @@ namespace creature
                 7_index,
                 1000_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(8_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(8_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 24_health));
@@ -559,7 +559,7 @@ namespace creature
                 8_index,
                 2000_count,
                 RoleVec_t{ role::Wolfen, role::Firebrand, role::Sylavin },
-                stats::StatSet(10_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(10_str, 0_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 30_health));
@@ -576,7 +576,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 1_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 1_spd, 0_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -592,7 +592,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 2_lck, 2_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 2_lck, 2_spd, 0_int),
                 0_rank,
                 0_exp,
                 4_health));
@@ -608,7 +608,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 3_lck, 3_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 3_lck, 3_spd, 0_int),
                 0_rank,
                 0_exp,
                 8_health));
@@ -624,7 +624,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 4_lck, 4_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 4_lck, 4_spd, 0_int),
                 0_rank,
                 0_exp,
                 12_health));
@@ -640,7 +640,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 5_lck, 5_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 5_lck, 5_spd, 0_int),
                 0_rank,
                 0_exp,
                 16_health));
@@ -656,7 +656,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 6_lck, 6_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 6_lck, 6_spd, 0_int),
                 1_rank,
                 0_exp,
                 20_health));
@@ -672,7 +672,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 8_lck, 8_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 8_lck, 8_spd, 0_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -688,7 +688,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 10_lck, 10_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 10_lck, 10_spd, 0_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -699,7 +699,7 @@ namespace creature
                 1_index,
                 10_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 1_cha, 1_lck, 0_spd, 1_int),
+                StatSet(0_str, 0_acc, 1_cha, 1_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -709,7 +709,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 2_cha, 1_lck, 0_spd, 2_int),
+                StatSet(0_str, 0_acc, 2_cha, 1_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -719,7 +719,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 3_cha, 2_lck, 0_spd, 3_int),
+                StatSet(0_str, 0_acc, 3_cha, 2_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -729,7 +729,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 4_cha, 2_lck, 0_spd, 4_int),
+                StatSet(0_str, 0_acc, 4_cha, 2_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -739,7 +739,7 @@ namespace creature
                 5_index,
                 500_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 5_cha, 3_lck, 0_spd, 5_int),
+                StatSet(0_str, 0_acc, 5_cha, 3_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 25_health));
@@ -749,7 +749,7 @@ namespace creature
                 6_index,
                 1000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 6_cha, 3_lck, 0_spd, 6_int),
+                StatSet(0_str, 0_acc, 6_cha, 3_lck, 0_spd, 6_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -759,7 +759,7 @@ namespace creature
                 7_index,
                 2000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 8_cha, 5_lck, 0_spd, 8_int),
+                StatSet(0_str, 0_acc, 8_cha, 5_lck, 0_spd, 8_int),
                 1_rank,
                 0_exp,
                 50_health));
@@ -769,7 +769,7 @@ namespace creature
                 8_index,
                 5000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 10_cha, 10_lck, 0_spd, 10_int),
+                StatSet(0_str, 0_acc, 10_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 60_health));
@@ -780,7 +780,7 @@ namespace creature
                 1_index,
                 50_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
+                StatSet(0_str, 0_acc, 1_cha, 0_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -790,7 +790,7 @@ namespace creature
                 2_index,
                 100_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
+                StatSet(0_str, 0_acc, 2_cha, 0_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 4_health));
@@ -800,7 +800,7 @@ namespace creature
                 3_index,
                 200_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 3_cha, 1_lck, 0_spd, 3_int),
+                StatSet(0_str, 0_acc, 3_cha, 1_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 8_health));
@@ -810,7 +810,7 @@ namespace creature
                 4_index,
                 500_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 4_cha, 1_lck, 0_spd, 4_int),
+                StatSet(0_str, 0_acc, 4_cha, 1_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 12_health));
@@ -820,7 +820,7 @@ namespace creature
                 5_index,
                 1000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 5_cha, 2_lck, 0_spd, 5_int),
+                StatSet(0_str, 0_acc, 5_cha, 2_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 16_health));
@@ -830,7 +830,7 @@ namespace creature
                 6_index,
                 2000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 6_cha, 2_lck, 0_spd, 6_int),
+                StatSet(0_str, 0_acc, 6_cha, 2_lck, 0_spd, 6_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -840,7 +840,7 @@ namespace creature
                 7_index,
                 3000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 7_cha, 3_lck, 0_spd, 7_int),
+                StatSet(0_str, 0_acc, 7_cha, 3_lck, 0_spd, 7_int),
                 1_rank,
                 0_exp,
                 24_health));
@@ -850,7 +850,7 @@ namespace creature
                 8_index,
                 5000_count,
                 RoleVec_t{ role::Bard },
-                stats::StatSet(0_str, 0_acc, 10_cha, 5_lck, 0_spd, 10_int),
+                StatSet(0_str, 0_acc, 10_cha, 5_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -867,7 +867,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(1_str, 1_acc, 0_cha, 1_lck, 0_spd, 0_int),
+                StatSet(1_str, 1_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SteadfastFlyer,
@@ -881,7 +881,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(1_str, 2_acc, 0_cha, 2_lck, 0_spd, 0_int),
+                StatSet(1_str, 2_acc, 0_cha, 2_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DeadEye,
@@ -895,7 +895,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(2_str, 3_acc, 0_cha, 3_lck, 0_spd, 0_int),
+                StatSet(2_str, 3_acc, 0_cha, 3_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::DeadCenter,
@@ -909,7 +909,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(2_str, 4_acc, 0_cha, 4_lck, 0_spd, 0_int),
+                StatSet(2_str, 4_acc, 0_cha, 4_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SureSail,
@@ -923,7 +923,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(3_str, 5_acc, 0_cha, 5_lck, 0_spd, 0_int),
+                StatSet(3_str, 5_acc, 0_cha, 5_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SureShot,
@@ -937,7 +937,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(3_str, 6_acc, 0_cha, 6_lck, 0_spd, 0_int),
+                StatSet(3_str, 6_acc, 0_cha, 6_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::PerfectHit,
@@ -951,7 +951,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(4_str, 8_acc, 0_cha, 8_lck, 0_spd, 0_int),
+                StatSet(4_str, 8_acc, 0_cha, 8_lck, 0_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::EnchantedAim,
@@ -965,7 +965,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(10_str, 10_acc, 0_cha, 10_lck, 0_spd, 0_int),
+                StatSet(10_str, 10_acc, 0_cha, 10_lck, 0_spd, 0_int),
                 1_rank));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
@@ -981,7 +981,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 0_spd, 1_int),
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 2_health));
@@ -998,7 +998,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 2_lck, 0_spd, 2_int),
+                StatSet(0_str, 0_acc, 0_cha, 2_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 4_health));
@@ -1015,7 +1015,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 3_lck, 0_spd, 3_int),
+                StatSet(0_str, 0_acc, 0_cha, 3_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 8_health));
@@ -1032,7 +1032,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 4_lck, 0_spd, 4_int),
+                StatSet(0_str, 0_acc, 0_cha, 4_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 12_health));
@@ -1049,7 +1049,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 5_lck, 0_spd, 5_int),
+                StatSet(0_str, 0_acc, 0_cha, 5_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 16_health));
@@ -1066,7 +1066,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 6_lck, 0_spd, 6_int),
+                StatSet(0_str, 0_acc, 0_cha, 6_lck, 0_spd, 6_int),
                 1_rank,
                 0_exp,
                 20_health));
@@ -1083,7 +1083,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
+                StatSet(0_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -1100,7 +1100,7 @@ namespace creature
                            role::Thief,
                            role::Cleric,
                            role::Sorcerer },
-                stats::StatSet(0_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
+                StatSet(0_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -1111,7 +1111,7 @@ namespace creature
                 1_index,
                 20_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -1121,7 +1121,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(1_str, 0_acc, 0_cha, 2_lck, 0_spd, 1_int),
+                StatSet(1_str, 0_acc, 0_cha, 2_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -1131,7 +1131,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(2_str, 0_acc, 0_cha, 3_lck, 0_spd, 2_int),
+                StatSet(2_str, 0_acc, 0_cha, 3_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -1141,7 +1141,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(3_str, 0_acc, 0_cha, 4_lck, 0_spd, 3_int),
+                StatSet(3_str, 0_acc, 0_cha, 4_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -1151,7 +1151,7 @@ namespace creature
                 5_index,
                 500_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(4_str, 0_acc, 0_cha, 5_lck, 0_spd, 4_int),
+                StatSet(4_str, 0_acc, 0_cha, 5_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 25_health));
@@ -1161,7 +1161,7 @@ namespace creature
                 6_index,
                 1000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(5_str, 0_acc, 0_cha, 6_lck, 0_spd, 5_int),
+                StatSet(5_str, 0_acc, 0_cha, 6_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 30_health));
@@ -1171,7 +1171,7 @@ namespace creature
                 7_index,
                 2000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(6_str, 0_acc, 0_cha, 7_lck, 0_spd, 6_int),
+                StatSet(6_str, 0_acc, 0_cha, 7_lck, 0_spd, 6_int),
                 0_rank,
                 0_exp,
                 35_health));
@@ -1181,7 +1181,7 @@ namespace creature
                 8_index,
                 3000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
+                StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
                 1_rank,
                 0_exp,
                 40_health));
@@ -1191,7 +1191,7 @@ namespace creature
                 9_index,
                 5000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
+                StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -1202,7 +1202,7 @@ namespace creature
                 1_index,
                 10_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
+                StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -1212,7 +1212,7 @@ namespace creature
                 2_index,
                 20_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 0_int),
+                StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -1222,7 +1222,7 @@ namespace creature
                 3_index,
                 50_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 0_int),
+                StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -1232,7 +1232,7 @@ namespace creature
                 4_index,
                 100_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 0_int),
+                StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -1242,7 +1242,7 @@ namespace creature
                 5_index,
                 200_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 0_int),
+                StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 25_health));
@@ -1252,7 +1252,7 @@ namespace creature
                 6_index,
                 300_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 0_int),
+                StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -1262,7 +1262,7 @@ namespace creature
                 7_index,
                 500_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 0_int),
+                StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 40_health));
@@ -1272,7 +1272,7 @@ namespace creature
                 8_index,
                 800_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 0_int),
+                StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -1283,7 +1283,7 @@ namespace creature
                 1_index,
                 50_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 1_lck, 1_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 1_lck, 1_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::LightFeather,
@@ -1291,7 +1291,7 @@ namespace creature
                 2_index,
                 100_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 2_lck, 2_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 2_lck, 2_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FreeFlyer,
@@ -1299,7 +1299,7 @@ namespace creature
                 3_index,
                 200_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 3_lck, 3_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 3_lck, 3_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SteadyWing,
@@ -1307,7 +1307,7 @@ namespace creature
                 4_index,
                 500_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 4_lck, 4_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 4_lck, 4_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::EverSoar,
@@ -1315,7 +1315,7 @@ namespace creature
                 5_index,
                 1000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 5_lck, 5_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 5_lck, 5_spd, 0_int),
                 0_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::SkySail,
@@ -1323,7 +1323,7 @@ namespace creature
                 6_index,
                 2000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 6_lck, 6_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 6_lck, 6_spd, 0_int),
                 1_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::Aerialist,
@@ -1331,7 +1331,7 @@ namespace creature
                 7_index,
                 3000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 8_lck, 8_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 8_lck, 8_spd, 0_int),
                 1_rank));
             titleUVec_.emplace_back(std::make_unique<Title>(
                 Titles::FeatherDancer,
@@ -1339,7 +1339,7 @@ namespace creature
                 8_index,
                 5000_count,
                 RoleVec_t{ Title::ROLEVEC_ALL_PLAYER_ROLES_ },
-                stats::StatSet(0_str, 0_acc, 0_cha, 10_lck, 10_spd, 0_int),
+                StatSet(0_str, 0_acc, 0_cha, 10_lck, 10_spd, 0_int),
                 2_rank));
 
             titleUVec_.emplace_back(std::make_unique<Title>(
@@ -1348,7 +1348,7 @@ namespace creature
                 1_index,
                 20_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -1358,7 +1358,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -1368,7 +1368,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -1378,7 +1378,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -1388,7 +1388,7 @@ namespace creature
                 5_index,
                 300_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 25_health));
@@ -1398,7 +1398,7 @@ namespace creature
                 6_index,
                 400_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 30_health));
@@ -1408,7 +1408,7 @@ namespace creature
                 7_index,
                 500_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(8_str, 8_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(8_str, 8_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 40_health));
@@ -1418,7 +1418,7 @@ namespace creature
                 8_index,
                 1000_count,
                 RoleVec_t{ role::Wolfen },
-                stats::StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -1429,7 +1429,7 @@ namespace creature
                 1_index,
                 20_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 1_int),
+                StatSet(1_str, 0_acc, 0_cha, 1_lck, 0_spd, 1_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -1439,7 +1439,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 2_int),
+                StatSet(2_str, 0_acc, 0_cha, 2_lck, 0_spd, 2_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -1449,7 +1449,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 3_int),
+                StatSet(3_str, 0_acc, 0_cha, 3_lck, 0_spd, 3_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -1459,7 +1459,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 4_int),
+                StatSet(4_str, 0_acc, 0_cha, 4_lck, 0_spd, 4_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -1469,7 +1469,7 @@ namespace creature
                 5_index,
                 300_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 5_int),
+                StatSet(5_str, 0_acc, 0_cha, 5_lck, 0_spd, 5_int),
                 0_rank,
                 0_exp,
                 25_health));
@@ -1479,7 +1479,7 @@ namespace creature
                 6_index,
                 400_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 6_int),
+                StatSet(6_str, 0_acc, 0_cha, 6_lck, 0_spd, 6_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -1489,7 +1489,7 @@ namespace creature
                 7_index,
                 500_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
+                StatSet(8_str, 0_acc, 0_cha, 8_lck, 0_spd, 8_int),
                 1_rank,
                 0_exp,
                 40_health));
@@ -1499,7 +1499,7 @@ namespace creature
                 8_index,
                 1000_count,
                 RoleVec_t{ role::Beastmaster },
-                stats::StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
+                StatSet(10_str, 0_acc, 0_cha, 10_lck, 0_spd, 10_int),
                 2_rank,
                 0_exp,
                 50_health));
@@ -1516,7 +1516,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(1_str, 1_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 5_health));
@@ -1532,7 +1532,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(2_str, 2_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 10_health));
@@ -1548,7 +1548,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(3_str, 3_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 15_health));
@@ -1564,7 +1564,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(4_str, 4_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 20_health));
@@ -1580,7 +1580,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(5_str, 5_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 0_rank,
                 0_exp,
                 25_health));
@@ -1596,7 +1596,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(6_str, 6_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 30_health));
@@ -1612,7 +1612,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(7_str, 7_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(7_str, 7_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 40_health));
@@ -1628,7 +1628,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(8_str, 8_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(8_str, 8_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 1_rank,
                 0_exp,
                 50_health));
@@ -1644,7 +1644,7 @@ namespace creature
                            role::Thief,
                            role::Firebrand,
                            role::Sylavin },
-                stats::StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
+                StatSet(10_str, 10_acc, 0_cha, 0_lck, 0_spd, 0_int),
                 2_rank,
                 0_exp,
                 100_health));
@@ -1655,7 +1655,7 @@ namespace creature
                 1_index,
                 20_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(1_str, 1_acc, 0_cha, 0_lck, 1_spd, 0_int),
+                StatSet(1_str, 1_acc, 0_cha, 0_lck, 1_spd, 0_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -1665,7 +1665,7 @@ namespace creature
                 2_index,
                 50_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(2_str, 2_acc, 0_cha, 0_lck, 2_spd, 1_int),
+                StatSet(2_str, 2_acc, 0_cha, 0_lck, 2_spd, 1_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -1675,7 +1675,7 @@ namespace creature
                 3_index,
                 100_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(3_str, 3_acc, 0_cha, 0_lck, 3_spd, 2_int),
+                StatSet(3_str, 3_acc, 0_cha, 0_lck, 3_spd, 2_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -1685,7 +1685,7 @@ namespace creature
                 4_index,
                 200_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(4_str, 4_acc, 0_cha, 0_lck, 4_spd, 3_int),
+                StatSet(4_str, 4_acc, 0_cha, 0_lck, 4_spd, 3_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -1695,7 +1695,7 @@ namespace creature
                 5_index,
                 500_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(5_str, 5_acc, 0_cha, 0_lck, 5_spd, 4_int),
+                StatSet(5_str, 5_acc, 0_cha, 0_lck, 5_spd, 4_int),
                 0_rank,
                 0_exp,
                 0_health));
@@ -1705,7 +1705,7 @@ namespace creature
                 6_index,
                 1000_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(6_str, 6_acc, 0_cha, 0_lck, 6_spd, 5_int),
+                StatSet(6_str, 6_acc, 0_cha, 0_lck, 6_spd, 5_int),
                 0_rank,
                 0_exp,
                 1_health));
@@ -1715,7 +1715,7 @@ namespace creature
                 7_index,
                 2000_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(8_str, 8_acc, 0_cha, 0_lck, 8_spd, 8_int),
+                StatSet(8_str, 8_acc, 0_cha, 0_lck, 8_spd, 8_int),
                 0_rank,
                 0_exp,
                 1_health));
@@ -1725,7 +1725,7 @@ namespace creature
                 8_index,
                 5000_count,
                 RoleVec_t{ role::Firebrand, role::Sylavin },
-                stats::StatSet(10_str, 10_acc, 0_cha, 0_lck, 10_spd, 10_int),
+                StatSet(10_str, 10_acc, 0_cha, 0_lck, 10_spd, 10_int),
                 0_rank,
                 0_exp,
                 2_health));

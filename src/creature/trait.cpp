@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     Trait::Trait(const Traits::Enum TYPE, const Trait_t NORMAL)
@@ -37,5 +37,6 @@ namespace stats
 
         return ss.str();
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath

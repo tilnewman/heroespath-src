@@ -4,23 +4,19 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_NONPLAYER_CHANCEFACTORY_INCLUDED
-#define HEROESPATH_NONPLAYER_CHANCEFACTORY_INCLUDED
+#ifndef HEROESPATH_CREATURE_NONPLAYER_INVENTORY_CHANCES_INCLUDED
+#define HEROESPATH_CREATURE_NONPLAYER_INVENTORY_CHANCES_INCLUDED
 //
-// inventory-factory.hpp
+// nonplayer-inventory-chances.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
 #include "creature/creature.hpp"
-#include "creature/race-enum.hpp"
-#include "creature/role-enum.hpp"
-#include "game/game-data-file.hpp"
+#include "creature/nonplayer-inventory-types.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
-#include "non-player/ownership-chance-types.hpp"
-#include "non-player/ownership-profile.hpp"
 
 #include <cstddef> //for std::size_t
 #include <memory>
@@ -30,9 +26,13 @@
 
 namespace heroespath
 {
-namespace non_player
+namespace creature
 {
-    namespace ownership
+
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+
+    namespace nonplayer
     {
 
         template <typename T>
@@ -106,15 +106,15 @@ namespace non_player
             static void Release();
             void Initialize();
 
-            const chance::InventoryChances Make(const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const InventoryChances Make(const CreaturePtr_t CHARACTER_PTR) const;
 
         private:
-            const chance::InventoryChances
-                Make(const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const InventoryChances
+                Make(const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
             void LookupClothingMaterialChances(
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const CreaturePtr_t CHARACTER_PTR,
                 float & clothChance,
                 float & leatherChance,
                 float & silkChance) const;
@@ -128,70 +128,65 @@ namespace non_player
                 Coin_t & coinsMin_OutParam,
                 Coin_t & coinsMax_OutParam) const;
 
-            const chance::ClothingChances Make_ClothingChances(
-                const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const ClothingChances Make_ClothingChances(
+                const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
-            const chance::WeaponChances Make_WeaponChances(
-                const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const WeaponChances Make_WeaponChances(
+                const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
-            const chance::ArmorChances Make_ArmorChances(
-                const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const ArmorChances
+                Make_ArmorChances(const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
-            const chance::ItemChanceMap_t Make_MiscItemChances(
-                const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const ItemChanceMap_t Make_MiscItemChances(
+                const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
-            const chance::ClothingChances Make_ClothingMaterialChances(
-                const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR) const;
+            const ClothingChances Make_ClothingMaterialChances(
+                const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const;
 
             void PopulateWeaponChances(
-                chance::WeaponChances &,
-                const WeaponSet &,
-                const Profile &,
-                const creature::CreaturePtr_t) const;
+                WeaponChances &, const WeaponSet &, const Profile &, const CreaturePtr_t) const;
 
             void LookupPossibleArmorByRole(
-                const Profile &, const creature::CreaturePtr_t, chance::ArmorChances &) const;
+                const Profile &, const CreaturePtr_t, ArmorChances &) const;
 
-            void LookupPossibleWeaponsByRole(const creature::role::Enum, WeaponSetVec_t &) const;
+            void LookupPossibleWeaponsByRole(const role::Enum, WeaponSetVec_t &) const;
 
             void Make_ClothingMaterialChancesPrimary(
-                const Profile &, const creature::CreaturePtr_t, chance::ItemChances &) const;
+                const Profile &, const CreaturePtr_t, ItemChances &) const;
 
             void Make_MaterialChancesPrimary(
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
-                const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
+                const CreaturePtr_t CHARACTER_PTR,
+                const MaterialChanceMap_t & MATERIALS_TYPICAL,
                 const Weight_t & ITEM_WEIGHT,
-                chance::MaterialChanceMap_t & materialsMap_OutParam) const;
+                MaterialChanceMap_t & materialsMap_OutParam) const;
 
             void Make_MaterialChancesSecondary(
-                const Profile &,
-                const creature::CreaturePtr_t,
-                chance::MaterialChanceMap_t &) const;
+                const Profile &, const CreaturePtr_t, MaterialChanceMap_t &) const;
 
-            const chance::MaterialChanceMap_t Make_MaterialChanceMap(
+            const MaterialChanceMap_t Make_MaterialChanceMap(
                 const std::string & PREFIX,
                 const std::string & POSTFIX,
-                const chance::MaterialVec_t & MATERIALS_VEC) const;
+                const item::MaterialVec_t & MATERIALS_VEC) const;
 
-            const chance::MaterialChanceMap_t Make_MaterialChanceMapCool() const;
-            const chance::MaterialChanceMap_t Make_MaterialChanceMapPrecious() const;
-            const chance::MaterialChanceMap_t Make_MaterialChanceMapMetal() const;
+            const MaterialChanceMap_t Make_MaterialChanceMapCool() const;
+            const MaterialChanceMap_t Make_MaterialChanceMapPrecious() const;
+            const MaterialChanceMap_t Make_MaterialChanceMapMetal() const;
 
             void PopulateWeaponMaterials(
                 const std::string & WEAPON_NAME,
-                const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
+                const MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
-                chance::MaterialChanceMap_t & materialsMapPri,
-                chance::MaterialChanceMap_t & materialsMapSec) const;
+                const CreaturePtr_t CHARACTER_PTR,
+                MaterialChanceMap_t & materialsMapPri,
+                MaterialChanceMap_t & materialsMapSec) const;
 
             void PopulatMaterials(
-                const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
+                const MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
-                chance::MaterialChanceMap_t & materialsMapPri,
-                chance::MaterialChanceMap_t & materialsMapSec,
+                const CreaturePtr_t CHARACTER_PTR,
+                MaterialChanceMap_t & materialsMapPri,
+                MaterialChanceMap_t & materialsMapSec,
                 const Weight_t & WEIGHT,
                 const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing) const;
 
@@ -201,9 +196,9 @@ namespace non_player
                 const T WEAPON_ENUM,
                 const float /*CHANCE_BASE*/,
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
-                const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-                misc::VectorMap<T, chance::ItemChances> & weaponChanceMap) const
+                const CreaturePtr_t CHARACTER_PTR,
+                const MaterialChanceMap_t & MATERIALS_TYPICAL,
+                misc::VectorMap<T, ItemChances> & weaponChanceMap) const
             {
                 /*
                 if (IsWeaponPossibleConsideringComplexity(WEAPON_NAME, PROFILE.complexityType)
@@ -254,35 +249,35 @@ namespace non_player
             }
 
             void SetArmorChancesGeneral(
-                chance::ArmorItemChances & armorItemChances,
+                ArmorItemChances & armorItemChances,
                 const RoleArmorChance & ROLE_ARMOR_CHANCE,
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const CreaturePtr_t CHARACTER_PTR,
                 const bool WILL_MATERIALS_INCLUDED_WOOD) const;
 
             void SetArmorChancesSpecific(
-                chance::ItemChances & itemChances,
+                ItemChances & itemChances,
                 const RoleArmorChance & ROLE_ARMOR_CHANCE,
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const CreaturePtr_t CHARACTER_PTR,
                 const bool WILL_MATERIALS_INCLUDED_WOOD,
                 const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing) const;
 
             void RestrictMaterialsByComplexity(
                 const complexity_type::Enum COMPLEXITY,
                 float & chanceCool,
-                chance::MaterialChanceMap_t & chanceMapCool,
+                MaterialChanceMap_t & chanceMapCool,
                 float & chanceMetal,
-                chance::MaterialChanceMap_t & chanceMapMetal,
+                MaterialChanceMap_t & chanceMapMetal,
                 float & chancePrecious,
-                chance::MaterialChanceMap_t & chanceMapPrecious) const;
+                MaterialChanceMap_t & chanceMapPrecious) const;
 
             bool IsWeaponPossibleConsideringComplexity(
                 const std::string & WEAPON_NAME, const complexity_type::Enum CREATURE_COMPLEXITY);
 
-            const chance::MaterialChanceMap_t MakeTypicalArmorMaterials(
+            const MaterialChanceMap_t MakeTypicalArmorMaterials(
                 const Profile & PROFILE,
-                const creature::CreaturePtr_t CHARACTER_PTR,
+                const CreaturePtr_t CHARACTER_PTR,
                 const bool INCLUDE_WOOD) const;
 
             void ForceMinMax(
@@ -310,7 +305,7 @@ namespace non_player
 
             void CacheRoleArmorChances();
             void CacheRoleWeaponChances();
-            const WeaponSetVec_t GetRoleWeaponChances(const creature::role::Enum ROLE);
+            const WeaponSetVec_t GetRoleWeaponChances(const role::Enum ROLE);
 
         private:
             static const float CHANCE_MINIMUM_;
@@ -337,16 +332,16 @@ namespace non_player
             float materialSecondaryChanceMetal_;
             float materialSecondaryChancePrecious_;
 
-            chance::MaterialChanceMap_t materialChanceMapCool_;
-            chance::MaterialChanceMap_t materialChanceMapMetal_;
-            chance::MaterialChanceMap_t materialChanceMapPrecious_;
+            MaterialChanceMap_t materialChanceMapCool_;
+            MaterialChanceMap_t materialChanceMapMetal_;
+            MaterialChanceMap_t materialChanceMapPrecious_;
 
-            misc::VectorMap<creature::role::Enum, RoleArmorChanceVec_t> roleArmorChanceMap_;
-            misc::VectorMap<creature::role::Enum, WeaponSetVec_t> roleWeaponChanceMap_;
+            misc::VectorMap<role::Enum, RoleArmorChanceVec_t> roleArmorChanceMap_;
+            misc::VectorMap<role::Enum, WeaponSetVec_t> roleWeaponChanceMap_;
         };
 
-    } // namespace ownership
-} // namespace non_player
+    } // namespace nonplayer
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_NONPLAYER_CHANCEFACTORY_INCLUDED
+#endif // HEROESPATH_CREATURE_NONPLAYER_INVENTORY_CHANCES_INCLUDED

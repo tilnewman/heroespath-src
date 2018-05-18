@@ -1057,18 +1057,20 @@ namespace stage
 
     void InventoryStage::Setup_CreatureStats()
     {
-        auto const STR_MOD_STR{ creaturePtr_->TraitModifiedString(stats::Traits::Strength, true) };
+        auto const STR_MOD_STR{ creaturePtr_->TraitModifiedString(
+            creature::Traits::Strength, true) };
 
-        auto const ACC_MOD_STR{ creaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true) };
+        auto const ACC_MOD_STR{ creaturePtr_->TraitModifiedString(
+            creature::Traits::Accuracy, true) };
 
-        auto const CHA_MOD_STR{ creaturePtr_->TraitModifiedString(stats::Traits::Charm, true) };
+        auto const CHA_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Charm, true) };
 
-        auto const LCK_MOD_STR{ creaturePtr_->TraitModifiedString(stats::Traits::Luck, true) };
+        auto const LCK_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Luck, true) };
 
-        auto const SPD_MOD_STR{ creaturePtr_->TraitModifiedString(stats::Traits::Speed, true) };
+        auto const SPD_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Speed, true) };
 
         auto const INT_MOD_STR{ creaturePtr_->TraitModifiedString(
-            stats::Traits::Intelligence, true) };
+            creature::Traits::Intelligence, true) };
 
         std::ostringstream ss;
         ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"

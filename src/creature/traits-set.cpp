@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     TraitSet::TraitSet(const TraitValueVec_t & TRAITS_VEC)
@@ -35,7 +35,7 @@ namespace stats
     Trait & TraitSet::Get(const Traits::Enum E)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (E < Traits::Count), "stats::TraitSet::Get(" << E << ")_InvalidValueError");
+            (E < Traits::Count), "TraitSet::Get(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
@@ -43,7 +43,7 @@ namespace stats
     const Trait & TraitSet::GetCopy(const Traits::Enum E) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (E < Traits::Count), "stats::TraitSet::GetCopy(" << E << ")_InvalidValueError");
+            (E < Traits::Count), "TraitSet::GetCopy(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
@@ -106,10 +106,9 @@ namespace stats
     {
         std::ostringstream ss;
 
-        ss << StatStringHelper(stats::Traits::Strength, false)
-           << StatStringHelper(stats::Traits::Accuracy) << StatStringHelper(stats::Traits::Charm)
-           << StatStringHelper(stats::Traits::Luck) << StatStringHelper(stats::Traits::Speed)
-           << StatStringHelper(stats::Traits::Intelligence);
+        ss << StatStringHelper(Traits::Strength, false) << StatStringHelper(Traits::Accuracy)
+           << StatStringHelper(Traits::Charm) << StatStringHelper(Traits::Luck)
+           << StatStringHelper(Traits::Speed) << StatStringHelper(Traits::Intelligence);
 
         if (WILL_WRAP)
         {
@@ -121,8 +120,7 @@ namespace stats
         }
     }
 
-    const std::string
-        TraitSet::StatStringHelper(const stats::Traits::Enum E, const bool WILL_PREFIX) const
+    const std::string TraitSet::StatStringHelper(const Traits::Enum E, const bool WILL_PREFIX) const
     {
         std::ostringstream ss;
 
@@ -133,7 +131,7 @@ namespace stats
 
         auto const TRAIT{ traitVec_[static_cast<std::size_t>(E)] };
 
-        ss << stats::Traits::Abbr(E) << "=";
+        ss << Traits::Abbr(E) << "=";
 
         if (TRAIT.Current() != TRAIT.Normal())
         {
@@ -144,5 +142,6 @@ namespace stats
 
         return ss.str();
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath

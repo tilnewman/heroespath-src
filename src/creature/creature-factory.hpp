@@ -13,11 +13,11 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
+#include "creature/stat-set.hpp"
+#include "creature/trait.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
-#include "stats/stat-set.hpp"
-#include "stats/trait.hpp"
 
 #include <memory>
 #include <string>
@@ -49,20 +49,20 @@ namespace creature
             const sex::Enum SEX,
             const race::Enum & RACE,
             const role::Enum & ROLE,
-            const stats::StatSet & STATS,
+            const StatSet & STATS,
             const std::string & IMAGE_FILENAME) const;
 
         const CreaturePtr_t MakeAndEquipPlayerForTesting(
             const std::string & NAME,
             const race::Enum & RACE,
             const role::Enum & ROLE,
-            const stats::StatSet & STATS) const;
+            const StatSet & STATS) const;
 
         const CreaturePtr_t MakeAndEquipEnemy(
             const sex::Enum SEX,
             const race::Enum RACE,
             const role::Enum ROLE,
-            const stats::StatSet & STATS,
+            const StatSet & STATS,
             const Health_t & HEALTH,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
@@ -76,7 +76,7 @@ namespace creature
             const sex::Enum SEX,
             const race::Enum & RACE,
             const role::Enum & ROLE,
-            const stats::StatSet & STATS,
+            const StatSet & STATS,
             const std::string & IMAGE_FILENAME) const;
 
         const CreaturePtr_t MakeGoblinGrunt() const;

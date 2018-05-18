@@ -12,11 +12,11 @@
 //
 #include "creature/achievement-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/stat-set.hpp"
 #include "creature/title-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
-#include "stats/stat-set.hpp"
 
 #include <algorithm>
 #include <memory>
@@ -53,7 +53,7 @@ namespace creature
             const Index_t & ACHIEVEMENT_INDEX = 0_index, // 0 is invalid
             const Count_t & ACHIEVEMENT_COUNT = 0_count,
             const RoleVec_t & ROLES_VEC = RoleVec_t(),
-            const stats::StatSet & STATS_BONUS = stats::StatSet(),
+            const StatSet & STATS_BONUS = StatSet(),
             const Rank_t & RANK_BONUS = 0_rank,
             const Experience_t & EXPERIENCE_BONUS = 0_exp,
             const Health_t & HEALTH_BONUS = 0_health);
@@ -61,7 +61,7 @@ namespace creature
         const std::string Name() const { return Titles::Name(title_); }
         const std::string Desc() const { return Titles::Desc(title_); }
         Titles::Enum Which() const { return title_; }
-        const stats::StatSet StatBonus() const { return statBonus_; }
+        const StatSet StatBonus() const { return statBonus_; }
         AchievementType::Enum GetAchievementType() const { return achievementType_; }
         Count_t AchievementCount() const { return achievementCount_; }
         Index_t AchievementIndex() const { return achievementIndex_; }
@@ -98,7 +98,7 @@ namespace creature
         RoleVec_t rolesVec_;
         Rank_t rankBonus_;
         Experience_t expBonus_;
-        stats::StatSet statBonus_;
+        StatSet statBonus_;
         std::string fileName_;
         Health_t healthBonus_;
     };

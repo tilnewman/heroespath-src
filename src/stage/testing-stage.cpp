@@ -18,6 +18,7 @@
 #include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
+#include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "creature/title-holder.hpp"
@@ -32,7 +33,6 @@
 #include "map/map.hpp"
 #include "misc/real.hpp"
 #include "misc/types.hpp"
-#include "non-player/inventory-factory.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -538,16 +538,16 @@ if (false == willImageCheck_)
         TestingStrAppend(
             "stage::TestingStage::PerformStatsTests() Starting Tests...");
 
-        const stats::StatSet STAT_SET_ZEROS(0, 0, 0, 0, 0, 0);
-        stats::StatSet actualSet;
+        const creature::StatSet STAT_SET_ZEROS(0, 0, 0, 0, 0, 0);
+        creature::StatSet actualSet;
         TestStatSetsCurrentAndNormal("Empty Set Initial Values", actualSet, STAT_SET_ZEROS);
 
-        const stats::StatSet STAT_SET_MOD1(0, -1, 2, -3, 4, -5);
+        const creature::StatSet STAT_SET_MOD1(0, -1, 2, -3, 4, -5);
         actualSet = STAT_SET_MOD1;
         TestStatSetsCurrentAndNormal("Mod1 Set Identity", actualSet, STAT_SET_MOD1);
 
         actualSet = STAT_SET_MOD1.CreateInvertCopy();
-        const stats::StatSet STAT_SET_MOD1_INV(0, 1, -2, 3, -4, 5);
+        const creature::StatSet STAT_SET_MOD1_INV(0, 1, -2, 3, -4, 5);
         TestStatSetsCurrentAndNormal("Mod1 Set CreateInvertCopy()", actualSet, STAT_SET_MOD1_INV);
 
         actualSet = STAT_SET_MOD1;
@@ -556,8 +556,8 @@ if (false == willImageCheck_)
 
         actualSet = STAT_SET_MOD1;
         actualSet.ForceValidNormal();
-        stats::StatSet expectedSet(STAT_SET_MOD1);
-        const stats::StatSet STAT_SET_MOD1_VALID(0, 0, 2, 0, 4, 0);
+        creature::StatSet expectedSet(STAT_SET_MOD1);
+        const creature::StatSet STAT_SET_MOD1_VALID(0, 0, 2, 0, 4, 0);
         expectedSet.ResetNormal(STAT_SET_MOD1_VALID);
         TestStatSetsCurrentAndNormal("Mod1 Set ForceValidNormal()", actualSet, expectedSet);
 
@@ -572,14 +572,14 @@ if (false == willImageCheck_)
         expectedSet = STAT_SET_MOD1_VALID;
         TestStatSetsCurrentAndNormal("Mod1 Set ForceValidAll()", actualSet, expectedSet);
 
-        const stats::StatSet STAT_SET_BASE(12, 12, 12, 12, 12, 12);
+        const creature::StatSet STAT_SET_BASE(12, 12, 12, 12, 12, 12);
         actualSet = STAT_SET_BASE;
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Identity", actualSet, expectedSet);
 
         actualSet = STAT_SET_BASE;
         actualSet.ModifyCurrentAndActual(STAT_SET_MOD1);
-        const stats::StatSet STAT_SET_BASE_MOD1{12, 11, 14, 9, 16, 7};
+        const creature::StatSet STAT_SET_BASE_MOD1{12, 11, 14, 9, 16, 7};
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_MOD1);
         TestStatSetsCurrentAndNormal("Base Set Mod1 Current", actualSet, expectedSet);
@@ -594,7 +594,7 @@ if (false == willImageCheck_)
         {
             actualSet.ModifyCurrentAndActual(STAT_SET_MOD1);
         }
-        const stats::StatSet STAT_SET_BASE_MOD1_X10(12, 2, 32, 0, 52, 0);
+        const creature::StatSet STAT_SET_BASE_MOD1_X10(12, 2, 32, 0, 52, 0);
         expectedSet = STAT_SET_BASE;
         expectedSet.ResetCurrent(STAT_SET_BASE_MOD1_X10);
         TestStatSetsCurrentAndNormal("Base Set Mod1 x10 Current", actualSet, expectedSet);
@@ -606,7 +606,7 @@ if (false == willImageCheck_)
         expectedSet = STAT_SET_BASE;
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
-        const stats::StatSet STAT_SET_CHAR_BASE{ 1000, 1000, 1000, 1000, 1000, 1000 };
+        const creature::StatSet STAT_SET_CHAR_BASE{ 1000, 1000, 1000, 1000, 1000, 1000 };
         auto playerSPtr( std::make_shared<creature::Creature>(
             true,
             "StatsTestingCreatureName",
@@ -622,7 +622,7 @@ if (false == willImageCheck_)
 
         playerSPtr->ConditionAdd(creature::Conditions::Panic);
         expectedSet = STAT_SET_CHAR_BASE;
-        const stats::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 500, 1000, 750, 500);
+        const creature::StatSet STAT_SET_CHAR_FRIGHTENED(1000, 500, 500, 1000, 750, 500);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED);
 
         TestStatSetsCurrentAndNormal("Creature Base Set Panicked",
@@ -631,7 +631,7 @@ if (false == willImageCheck_)
 
         playerSPtr->ConditionAdd(creature::Conditions::Dazed);
         expectedSet = STAT_SET_CHAR_BASE;
-        const stats::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 500, 1000, 250, 250);
+        const creature::StatSet STAT_SET_CHAR_FRIGHTENED_AND_DAZED(500, 166, 500, 1000, 250, 250);
         expectedSet.ResetCurrent(STAT_SET_CHAR_FRIGHTENED_AND_DAZED);
 
         TestStatSetsCurrentAndNormal("Creature Base Set Panicked and Dazed",
@@ -656,7 +656,7 @@ if (false == willImageCheck_)
 
         playerSPtr->ConditionRemove(creature::Conditions::Dead);
         expectedSet = STAT_SET_CHAR_BASE;
-        const stats::StatSet STAT_SET_CHAR_DAZED(500, 333, 1000, 1000, 333, 500);
+        const creature::StatSet STAT_SET_CHAR_DAZED(500, 333, 1000, 1000, 333, 500);
         expectedSet.ResetCurrent(STAT_SET_CHAR_DAZED);
 
         TestStatSetsCurrentAndNormal("Creature Base Set Dazed",
@@ -676,16 +676,16 @@ if (false == willImageCheck_)
     }
 
     void TestingStage::TestStatSetsCurrentAndNormal(
-        const std::string &, const stats::StatSet &, const stats::StatSet &)
+        const std::string &, const creature::StatSet &, const creature::StatSet &)
     {
         /*
         static auto statTestCounter{ 0 };
 
         auto isMismatchCurrent{ false };
         auto isMismatchNormal{ false };
-        for (misc::EnumUnderlying_t i(0); i < stats::Traits::StatCount; ++i)
+        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_ENUM{ static_cast<stats::Traits::Enum>(i) };
+            auto const NEXT_ENUM{ static_cast<creature::Traits::Enum>(i) };
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Current() != EXPECTED.GetCopy(NEXT_ENUM).Current())
             {
@@ -1148,7 +1148,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        static non_player::ownership::InventoryFactory inventoryFactory;
+        static creature::nonplayer::InventoryFactory inventoryFactory;
 
         static misc::EnumUnderlying_t raceIndex{ 0 };
         static misc::EnumUnderlying_t roleIndex{ 0 };
@@ -1206,7 +1206,7 @@ if (false == willImageCheck_)
                         ((misc::random::Bool()) ? creature::sex::Female : creature::sex::Male),
                         RACE_ENUM,
                         ROLE_ENUM,
-                        stats::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
+                        creature::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
                         "",
                         10_health,
                         Rank_t(rankIndex),
@@ -1472,7 +1472,7 @@ if (false == willImageCheck_)
         creature::sex::Test();
         creature::dragon_class::Test();
         creature::wolfen_class::Test();
-        stats::Traits::Test();
+        creature::Traits::Test();
         // combat::strategy::SelectType::Test(); //bah, this takes too long...
         combat::strategy::RefineType::Test();
         combat::strategy::AdvanceType::Test();
@@ -1480,10 +1480,10 @@ if (false == willImageCheck_)
         combat::strategy::FrequencyType::Test();
         combat::TargetType::Test();
         game::Phase::Test();
-        non_player::ownership::wealth_type::Test();
-        non_player::ownership::collector_type::Test();
-        non_player::ownership::owns_magic_type::Test();
-        non_player::ownership::complexity_type::Test();
+        creature::nonplayer::wealth_type::Test();
+        creature::nonplayer::collector_type::Test();
+        creature::nonplayer::owns_magic_type::Test();
+        creature::nonplayer::complexity_type::Test();
         popup::ResponseTypes::Test();
         sfml_util::Corner::Test();
         sfml_util::GuiEvent::Test();

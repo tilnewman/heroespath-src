@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     const std::string Traits::ToString(const Enum TRAIT)
@@ -582,5 +582,5 @@ namespace stats
 
     const std::string Traits::Desc(const Enum) { return "(descriptions TODO)"; }
 
-} // namespace stats
+} // namespace creature
 } // namespace heroespath

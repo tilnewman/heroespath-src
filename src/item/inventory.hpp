@@ -10,12 +10,12 @@
 // inventory.hpp
 //  A class that encapsolates a collection of Items.
 //
+#include "creature/trait.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
-#include "stats/trait.hpp"
 
 #include <memory>
 #include <sstream>

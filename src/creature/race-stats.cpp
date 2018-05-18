@@ -21,7 +21,7 @@ namespace creature
 
     RaceStatSetMap_t RaceStatModifier::raceStatSetMap_;
 
-    const stats::StatSet RaceStatModifier::Get(const creature::race::Enum ENUM)
+    const StatSet RaceStatModifier::Get(const creature::race::Enum ENUM)
     {
         if (raceStatSetMap_.Empty())
         {

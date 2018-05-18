@@ -589,7 +589,7 @@ namespace stage
     {
         return creature::Stats::Test(
             CHAR_WHO_IS_PICKING_THE_LOCK_PTR,
-            stats::Traits::Luck,
+            creature::Traits::Luck,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::RaceRoleBonus | creature::Stats::With::StandardBonus));
     }

@@ -13,10 +13,10 @@
 //
 #include "combat/hit-info.hpp"
 #include "creature/condition-enum.hpp"
+#include "creature/stat-set.hpp"
+#include "creature/traits-set.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "stats/stat-set.hpp"
-#include "stats/traits-set.hpp"
 
 #include <memory>
 #include <string>
@@ -47,7 +47,7 @@ namespace creature
         explicit Condition(
             const Conditions::Enum TYPE = Conditions::Good,
             const bool IS_MAGICAL = false,
-            const stats::TraitSet & TRAIT_SET = stats::TraitSet());
+            const TraitSet & TRAIT_SET = TraitSet());
 
         const std::string Name() const { return Conditions::Name(type_); }
         Conditions::Enum Which() const { return type_; }
@@ -56,7 +56,7 @@ namespace creature
         const std::string LongDesc() const;
         std::size_t Severity() const { return condition::Severity::Get(type_); }
         bool IsMagical() const { return isMagical_; }
-        const stats::TraitSet Traits() const { return traitSet_; }
+        const TraitSet Traits() const { return traitSet_; }
 
         // These two functions do not alter traits
         void InitialChange(const CreaturePtr_t) const;
@@ -74,7 +74,7 @@ namespace creature
     private:
         Conditions::Enum type_;
         bool isMagical_;
-        stats::TraitSet traitSet_;
+        TraitSet traitSet_;
     };
 
     using ConditionPtr_t = misc::NotNull<Condition *>;

@@ -10,13 +10,12 @@
 // testing-stage.hpp
 //  A Stage class that allows visualization of testing routines.
 //
+#include "creature/stat-set.hpp"
+#include "game/loop-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "game/loop-manager.hpp"
-#include "stats/stat-set.hpp"
 
 #include <boost/type_index.hpp>
 
@@ -70,8 +69,8 @@ namespace stage
     private:
         void TestStatSetsCurrentAndNormal(
             const std::string & TEST_NAME,
-            const stats::StatSet & ACTUAL,
-            const stats::StatSet & EXPECTED);
+            const creature::StatSet & ACTUAL,
+            const creature::StatSet & EXPECTED);
 
         bool TestImageSet();
         bool TestCharacterImageSet();

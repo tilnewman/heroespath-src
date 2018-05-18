@@ -13,11 +13,11 @@
 
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/traits-set.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "stats/traits-set.hpp"
 
 #include <algorithm>
 #include <exception>

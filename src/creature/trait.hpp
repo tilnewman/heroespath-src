@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATS_TRAIT_HPP_INCLUDED
-#define HEROESPATH_STATS_TRAIT_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_TRAIT_HPP_INCLUDED
+#define HEROESPATH_CREATURE_TRAIT_HPP_INCLUDED
 //
 // trait.hpp
 //
@@ -15,8 +15,8 @@
 //  something other than normal.  Eventually, the temporary condition will expire
 //  and the current will return to 'normal'.
 //
-#include "stats/trait-enum.hpp"
-#include "stats/trait.hpp"
+#include "creature/trait-enum.hpp"
+#include "creature/trait.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/real.hpp"
@@ -27,7 +27,7 @@
 
 namespace heroespath
 {
-namespace stats
+namespace creature
 {
 
     using Trait_t = int;
@@ -110,7 +110,8 @@ namespace stats
     {
         return std::tie(L.type_, L.normal_, L.current_) < std::tie(R.type_, R.normal_, R.current_);
     }
-} // namespace stats
+
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_STATS_TRAIT_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TRAIT_HPP_INCLUDED

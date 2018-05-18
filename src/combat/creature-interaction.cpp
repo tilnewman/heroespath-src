@@ -675,9 +675,9 @@ namespace combat
 
         auto const DID_ROLL_SUCCEED{ creature::Stats::Versus(
             CREATURE_POUNCING_PTR,
-            { stats::Traits::Speed, stats::Traits::Accuracy },
+            { creature::Traits::Speed, creature::Traits::Accuracy },
             CREATURE_DEFENDING_PTR,
-            { stats::Traits::Speed },
+            { creature::Traits::Speed },
             0,
             0,
             static_cast<creature::Stats::With>(
@@ -805,13 +805,13 @@ namespace combat
                 ++nextBlockingDisatnce;
             }
 
-            const stats::Trait_t DISATANCE_BONUS{ nextBlockingDisatnce * 2 };
+            const creature::Trait_t DISATANCE_BONUS{ nextBlockingDisatnce * 2 };
 
             if (creature::Stats::Versus(
                     CREATURE_ROARING_PTR,
-                    stats::Traits::Strength,
+                    creature::Traits::Strength,
                     NEXT_DEFEND_CREATURE_PTR,
-                    stats::Traits::Intelligence,
+                    creature::Traits::Intelligence,
                     0,
                     DISATANCE_BONUS,
                     static_cast<creature::Stats::With>(
@@ -1022,7 +1022,7 @@ namespace combat
             auto const ARCHER_ACC_BONUS_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-archer-projectile-accuracy-bonus-ratio") };
 
-            attackAccToUse += static_cast<stats::Trait_t>(
+            attackAccToUse += static_cast<creature::Trait_t>(
                 static_cast<float>(ATTACK_ACC_RAW) * ARCHER_ACC_BONUS_RATIO);
 
             auto const ARCHER_RANK_BONUS_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
@@ -1032,7 +1032,7 @@ namespace combat
                 CREATURE_ATTACKING_PTR->Rank().As<float>() * ARCHER_RANK_BONUS_RATIO);
         }
 
-        auto const ATTACK_ACC_RAND_MIN{ static_cast<stats::Trait_t>(
+        auto const ATTACK_ACC_RAND_MIN{ static_cast<creature::Trait_t>(
             static_cast<float>(attackAccToUse) * 0.4f) };
 
         auto const ATTACK_ACC_RAND_MAX{ std::max(ATTACK_ACC_RAW, attackAccToUse) };
@@ -1074,7 +1074,7 @@ namespace combat
                       "heroespath-fight-block-defend-speed-bonus-ratio"));
         }
 
-        auto const DEFEND_SPD_RAND_MIN{ static_cast<stats::Trait_t>(
+        auto const DEFEND_SPD_RAND_MIN{ static_cast<creature::Trait_t>(
             static_cast<float>(defendSpdToUse) * 0.4f) };
 
         auto const DEFEND_SPD_RAND_MAX{ std::max(DEFEND_SPD_RAW, defendSpdToUse) };
@@ -1131,10 +1131,10 @@ namespace combat
         if (false == hasHitBeenDetermined)
         {
             auto const ATTACKER_LUCK_RAND{ creature::Stats::Roll(
-                CREATURE_ATTACKING_PTR, stats::Traits::Luck, creature::Stats::RaceRoleBonus) };
+                CREATURE_ATTACKING_PTR, creature::Traits::Luck, creature::Stats::RaceRoleBonus) };
 
             auto const DEFENDER_LUCK_RAND{ creature::Stats::Roll(
-                CREATURE_DEFENDING_PTR, stats::Traits::Luck, creature::Stats::RaceRoleBonus) };
+                CREATURE_DEFENDING_PTR, creature::Traits::Luck, creature::Stats::RaceRoleBonus) };
 
             if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
@@ -1266,7 +1266,7 @@ namespace combat
 
         // If strength stat is at or over the min of STAT_FLOOR,
         // then add a damage bonus based on half a strength ratio "roll".
-        const stats::Trait_t STAT_FLOOR{ game::GameDataFile::Instance()->GetCopyInt(
+        const creature::Trait_t STAT_FLOOR{ game::GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
 
         Health_t damageFromStrength{ 0_health };
@@ -1274,7 +1274,7 @@ namespace combat
         if (STRENGTH_CURRENT > STAT_FLOOR)
         {
             auto const RAND_STR_STAT{ creature::Stats::Roll(
-                CREATURE_ATTACKING_PTR, stats::Traits::Strength) };
+                CREATURE_ATTACKING_PTR, creature::Traits::Strength) };
 
             auto const STR_BONUS_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
@@ -1295,7 +1295,7 @@ namespace combat
         // there is a rare chance of a power hit for players
         auto const STRENGTH_TEST{ creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
-            stats::Traits::Strength,
+            creature::Traits::Strength,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
@@ -1311,14 +1311,14 @@ namespace combat
         // there is a rare chance of a critical hit for players and non-players
         auto const ACCURACY_TEST{ creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
-            stats::Traits::Accuracy,
+            creature::Traits::Accuracy,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
         auto const LUCK_TEST{ creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
-            stats::Traits::Luck,
+            creature::Traits::Luck,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
@@ -1466,10 +1466,12 @@ namespace combat
         return false;
     }
 
-    stats::Trait_t CreatureInteraction::IsValuetHigherThanRatioOfStat(
-        const stats::Trait_t STAT_VALUE, const stats::Trait_t STAT_MAX, const float RATIO) const
+    creature::Trait_t CreatureInteraction::IsValuetHigherThanRatioOfStat(
+        const creature::Trait_t STAT_VALUE,
+        const creature::Trait_t STAT_MAX,
+        const float RATIO) const
     {
-        return (STAT_VALUE >= static_cast<stats::Trait_t>(static_cast<float>(STAT_MAX) * RATIO));
+        return (STAT_VALUE >= static_cast<creature::Trait_t>(static_cast<float>(STAT_MAX) * RATIO));
     }
 
 } // namespace combat
