@@ -19,6 +19,7 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
@@ -31,7 +32,6 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <numeric>

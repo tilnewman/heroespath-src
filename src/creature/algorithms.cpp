@@ -14,8 +14,8 @@
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "state/game-state.hpp"
 
 #include "misc/random.hpp"
 

@@ -4,19 +4,19 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
-#define HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_NPC_FACTORY_HPP_INCLUDED
+#define HEROESPATH_GAME_NPC_FACTORY_HPP_INCLUDED
 //
 // npc-factory.hpp
 //
+#include "game/npc-placeholder.hpp"
 #include "misc/not-null-warehouse.hpp"
-#include "state/npc-placeholder.hpp"
 
 #include <vector>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     class Npc;
@@ -37,7 +37,7 @@ namespace state
         const NpcPVec_t Make(const NpcPlaceholder &) const;
     };
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
+#endif // HEROESPATH_GAME_NPC_FACTORY_HPP_INCLUDED

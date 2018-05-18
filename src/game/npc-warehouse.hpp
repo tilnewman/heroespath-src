@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_NPC_WAREHOUSE_HPP_INCLUDED
+#define HEROESPATH_GAME_NPC_WAREHOUSE_HPP_INCLUDED
 //
 // npc-warehouse.hpp
 //  Responsible for managing the lifetime of all Npc objects.
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     class Npc;
@@ -51,7 +51,7 @@ namespace state
         misc::NotNullWarehouse<Npc> warehouse_;
     };
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_GAME_NPC_WAREHOUSE_HPP_INCLUDED

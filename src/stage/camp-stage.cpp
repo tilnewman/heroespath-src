@@ -18,6 +18,8 @@
 #include "creature/player-party.hpp"
 #include "creature/sex-enum.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/real.hpp"
@@ -32,8 +34,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
 
 namespace heroespath
 {

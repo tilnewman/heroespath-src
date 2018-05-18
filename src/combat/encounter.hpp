@@ -53,7 +53,7 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        // the player party CreaturePtr_ts are kept by the state::GameState in a
+        // the player party CreaturePtr_ts are kept by the game::GameState in a
         // creature::PlayerParty object, but all of the non-player CreaturePtr_ts are kept here in
         // these vectors
         const creature::CreaturePVec_t & LivingNonPlayers() const { return nonPlayerPartyPVec_; }

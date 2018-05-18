@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_NPC_HPP_INCLUDED
-#define HEROESPATH_STATE_NPC_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_NPC_HPP_INCLUDED
+#define HEROESPATH_GAME_NPC_HPP_INCLUDED
 //
 // npc.hpp
 //
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     // Responsible for wrapping all the state needed to represent a
@@ -77,7 +77,7 @@ namespace state
     using NpcPtr_t = misc::NotNull<Npc *>;
     using NpcPVec_t = std::vector<NpcPtr_t>;
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_NPC_HPP_INCLUDED
+#endif // HEROESPATH_GAME_NPC_HPP_INCLUDED

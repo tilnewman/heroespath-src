@@ -15,6 +15,7 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "item/item.hpp"
 #include "misc/vectors.hpp"
@@ -26,7 +27,6 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "stage/treasure-stage.hpp"
-#include "state/game-state.hpp"
 
 namespace heroespath
 {

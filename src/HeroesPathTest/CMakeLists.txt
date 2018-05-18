@@ -43,7 +43,6 @@ foreach(testSrc ${impl_files})
                         	Game
                         	Stage
                         	Creature
-                        	State
                         	Combat
 				            Popup
 				            Avatar

@@ -14,6 +14,7 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "creature/stats.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
@@ -23,7 +24,6 @@
 #include "popup/popup-stage-image-fade.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
 #include "stage/achievement-handler.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <vector>

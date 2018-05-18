@@ -10,16 +10,16 @@
 // locked-door.cpp
 //
 #include "locked-door.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
+#include "game/maps.hpp"
+#include "game/world.hpp"
 #include "interact/lock-interactions.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
-#include "state/game-state.hpp"
-#include "state/maps.hpp"
-#include "state/world.hpp"
 
 namespace heroespath
 {

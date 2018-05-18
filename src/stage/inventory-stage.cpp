@@ -18,6 +18,7 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item-warehouse.hpp"
@@ -46,7 +47,6 @@
 #include "sfml-util/sparkle-animation.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 

@@ -29,12 +29,12 @@
 //
 #include "npc-warehouse.hpp"
 
+#include "game/npc.hpp"
 #include "log/log-macros.hpp"
-#include "state/npc.hpp"
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     std::unique_ptr<NpcWarehouse> NpcWarehouse::instanceUPtr_;
@@ -78,5 +78,5 @@ namespace state
         instanceUPtr_.reset();
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

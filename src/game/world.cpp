@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     World::World()
@@ -31,5 +31,5 @@ namespace state
 
     void World::AfterDeserialize() { maps_.AfterDeserialize(); }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

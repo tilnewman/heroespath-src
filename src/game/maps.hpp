@@ -4,38 +4,32 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_WORLD_HPP_INCLUDED
-#define HEROESPATH_STATE_WORLD_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_MAPS_HPP_INCLUDED
+#define HEROESPATH_GAME_MAPS_HPP_INCLUDED
 //
-// world.hpp
-//  A class that represents the entire state of the game world.
+// maps.hpp
 //
+#include "game/level.hpp"
 #include "map/level-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
-#include "state/maps.hpp"
 
 #include <memory>
+#include <vector>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
-    // Encapsulates all states that describe the game world.
-    class World
+    // Responsible for storing all states that represent the game world contained in maps.
+    class Maps
     {
     public:
-        World(const World &) = delete;
-        World(World &&) = delete;
-        World & operator=(const World &) = delete;
-        World & operator=(World &&) = delete;
+        Maps();
 
-    public:
-        World();
+        Level & Current() { return levels_.at(static_cast<std::size_t>(level_)); }
 
-        Maps & GetMaps() { return maps_; }
-        std::size_t EncounterCount() const { return encounterCount_; }
-        void EncounterCountInc() { ++encounterCount_; }
+        void SetupForNewGame();
         void HandleLevelLoad(const map::Level::Enum);
         void HandleLevelUnload(const map::Level::Enum);
 
@@ -44,23 +38,20 @@ namespace state
         void AfterDeserialize();
 
     private:
-        // TODO quests
-        // TODO events
-        Maps maps_;
-        std::size_t encounterCount_;
+        map::Level::Enum level_;
+        std::vector<Level> levels_;
 
     private:
         friend class boost::serialization::access;
         template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & encounterCount_;
+            ar & level_;
+            ar & levels_;
         }
     };
 
-    using WorldUPtr_t = std::unique_ptr<World>;
-
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_WORLDcd_HPP_INCLUDED
+#endif // HEROESPATH_GAME_MAPS_HPP_INCLUDED

@@ -22,8 +22,10 @@
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
+#include "game/npc-warehouse.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -48,8 +50,6 @@
 #include "sfml-util/texture-cache.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/npc-warehouse.hpp"
 
 #include <cstdlib>
 #include <exception>
@@ -199,7 +199,7 @@ namespace game
             config::SettingsFile::Release();
 
             // factories should not be needed during shutdown, so release them early
-            state::GameStateFactory::Release();
+            game::GameStateFactory::Release();
             creature::nonplayer::ChanceFactory::Release();
 
             // release LoopManager early because it frees all the stages and their resources
@@ -214,8 +214,8 @@ namespace game
             // this will cause all party creatures/items/enchantments/etc to be Warehouses::Free()'d
             Game::Release();
 
-            // must occur after Game::Release() because state::GameState needs it
-            state::NpcWarehouse::Release();
+            // must occur after Game::Release() because game::GameState needs it
+            game::NpcWarehouse::Release();
 
             // if this is an abnormal shutdown then the Encounter object will have some
             // Warehouse::Free() calls to make, so this must occur after Game::Release() but before
@@ -326,7 +326,7 @@ namespace game
 
     void StartupShutdown::Setup_SubsystemsAcquire() const
     {
-        state::NpcWarehouse::Acquire();
+        game::NpcWarehouse::Acquire();
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
         item::ItemWarehouse::Acquire();
@@ -335,7 +335,7 @@ namespace game
         sfml_util::FontManager::Acquire();
         popup::PopupManager::Acquire();
         Game::Acquire();
-        state::GameStateFactory::Acquire();
+        game::GameStateFactory::Acquire();
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
         creature::nonplayer::ChanceFactory::Acquire();

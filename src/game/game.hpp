@@ -21,15 +21,12 @@ namespace creature
     class PlayerParty;
     using PlayerPartyUPtr_t = std::unique_ptr<PlayerParty>;
 } // namespace creature
-namespace state
+namespace game
 {
+
     class GameState;
     using GameStatePtr_t = misc::NotNull<GameState *>;
     using GameStateUPtr_t = std::unique_ptr<GameState>;
-} // namespace state
-
-namespace game
-{
 
     // Subsystem class that provides access to all game information
     class Game
@@ -48,12 +45,12 @@ namespace game
         static void Acquire();
         static void Release();
 
-        state::GameState & State() const;
-        const state::GameStatePtr_t MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR);
+        GameState & State() const;
+        const GameStatePtr_t MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR);
 
     private:
         static std::unique_ptr<Game> instanceUPtr_;
-        state::GameStateUPtr_t stateUPtr_;
+        GameStateUPtr_t stateUPtr_;
     };
 
 } // namespace game

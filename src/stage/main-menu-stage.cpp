@@ -12,6 +12,8 @@
 #include "main-menu-stage.hpp"
 
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/game-state.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
@@ -22,8 +24,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
 
 #include "misc/real.hpp"
 
@@ -141,7 +141,7 @@ namespace stage
         auto const ARE_THERE_GAMES_TO_LOAD{ []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
             // that does not create all games in order to find just one
-            auto const GAMESTATE_PVEC{ state::GameStateFactory::Instance()->LoadAllGames() };
+            auto const GAMESTATE_PVEC{ game::GameStateFactory::Instance()->LoadAllGames() };
             for (auto const & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
             {
                 delete NEXT_GAMESTATE_PTR.Ptr();

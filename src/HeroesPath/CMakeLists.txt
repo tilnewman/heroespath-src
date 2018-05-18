@@ -39,7 +39,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         Game
                         Stage
                         Creature
-                        State
                         Combat
 			Popup
 			Avatar

@@ -19,20 +19,20 @@
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
+#include "game/world-factory.hpp"
+#include "game/world.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "state/game-state.hpp"
-#include "state/world-factory.hpp"
-#include "state/world.hpp"
 
 #include <limits>
 #include <vector>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     std::unique_ptr<GameStateFactory> GameStateFactory::instanceUPtr_;
@@ -122,7 +122,7 @@ namespace state
             catch (const std::exception & E)
             {
                 M_HP_LOG_ERR(
-                    "state::GameStateFactory::LoadAllGames() while trying to "
+                    "GameStateFactory::LoadAllGames() while trying to "
                     << "de-serialize saved game file \"" << FILE_PATH.string()
                     << "\", threw exception \"" << E.what()
                     << "\".  That saved game file is somehow invalid and cannot be loaded.");
@@ -141,7 +141,7 @@ namespace state
     void GameStateFactory::SaveGame(const GameStatePtr_t GAMESTATE_PTR) const
     {
         Save(
-            state::GameStatePtrOpt_t(GAMESTATE_PTR),
+            GameStatePtrOpt_t(GAMESTATE_PTR),
             boost::none,
             SAVED_HEROESPATH_DIR_NAME_,
             SAVED_HEROESPATH_FILE_NAME_,
@@ -183,7 +183,7 @@ namespace state
             catch (const std::exception & E)
             {
                 M_HP_LOG_ERR(
-                    "state::GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
+                    "GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
                     << "de-serialize/load saved unplayed character file \"" << FILE_PATH.string()
                     << "\" threw exception \"" << E.what()
                     << "\".  That character file is somehow invalid and cannot be loaded.");
@@ -219,7 +219,7 @@ namespace state
         if (DoesDirectoryExist(DIR_PATH) == false)
         {
             M_HP_LOG_ERR(
-                "state::GameStateFactory::DeleteUnplayedCharacterFile(character={"
+                "GameStateFactory::DeleteUnplayedCharacterFile(character={"
                 << CHAR_TO_DELETE_PTR->ToString()
                 << "}) failed because the saved unplayed character directory (" << DIR_PATH.string()
                 << ") was not there.  This function should never be called in this case.");
@@ -233,7 +233,7 @@ namespace state
         if (SAVED_UNPLAYED_CHARACTER_FILE_PATHS.empty())
         {
             M_HP_LOG_ERR(
-                "state::GameStateFactory::DeleteUnplayedCharacterFile(character={"
+                "GameStateFactory::DeleteUnplayedCharacterFile(character={"
                 << CHAR_TO_DELETE_PTR->ToString()
                 << "}) failed because the saved unplayed character directory (" << DIR_PATH.string()
                 << ") was empty.  This function should never be called in this case.");
@@ -256,7 +256,7 @@ namespace state
             catch (const std::exception & EX)
             {
                 M_HP_LOG_ERR(
-                    "state::GameStateFactory::DeleteUnplayedCharacterFile(character={"
+                    "GameStateFactory::DeleteUnplayedCharacterFile(character={"
                     << CHAR_TO_DELETE_PTR->ToString() << "}) threw exception \"" << EX.what()
                     << "\" when trying to deserialize file \"" << FILE_PATH.string()
                     << "\".  This file is somehow invalid and cannot be loaded.  The partially "
@@ -273,7 +273,7 @@ namespace state
                 if (boost::filesystem::remove(FILE_PATH, errorCode) == false)
                 {
                     M_HP_LOG_ERR(
-                        "state::GameStateFactory::DeleteUnplayedCharacterFile(character={"
+                        "GameStateFactory::DeleteUnplayedCharacterFile(character={"
                         << CHAR_TO_DELETE_PTR->ToString() << "}) failed to delete file \""
                         << FILE_PATH.string() << "\" with error_code=" << errorCode
                         << ".  This file can safely be deleted manually.");
@@ -284,7 +284,7 @@ namespace state
         }
 
         M_HP_LOG_ERR(
-            "state::GameStateFactory::DeleteUnplayedCharacterFile(character={"
+            "GameStateFactory::DeleteUnplayedCharacterFile(character={"
             << CHAR_TO_DELETE_PTR->ToString() << "}) failed to find a saved file (out of "
             << SAVED_UNPLAYED_CHARACTER_FILE_PATHS.size() << ") matcheing that character.");
 
@@ -305,8 +305,8 @@ namespace state
         auto makeFunctionDescStr{ [&]() {
             std::ostringstream ss;
 
-            ss << "state::GameStateFactory::Save(dir=" << DIR_PATH.string() << ", file_name=\""
-               << FILE_STR << "\", file_ext=\"" << EXT_STR << "\", ";
+            ss << "GameStateFactory::Save(dir=" << DIR_PATH.string() << ", file_name=\"" << FILE_STR
+               << "\", file_ext=\"" << EXT_STR << "\", ";
 
             if (GAMESTATE_PTR_OPT)
             {
@@ -446,5 +446,5 @@ namespace state
         return pathsToMatchingFiles;
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

@@ -23,6 +23,8 @@
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "game/phase-enum.hpp"
@@ -54,8 +56,6 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "stage/achievement-handler.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
 
 #include <exception>
 #include <sstream>

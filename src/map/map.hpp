@@ -28,11 +28,11 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
     class Npc;
     using NpcPtr_t = misc::NotNull<Npc *>;
-} // namespace state
+} // namespace game
 namespace map
 {
 
@@ -101,7 +101,7 @@ namespace map
 
         void ResetNonPlayers();
 
-        void AddNonPlayerAvatar(const state::NpcPtr_t);
+        void AddNonPlayerAvatar(const game::NpcPtr_t);
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;

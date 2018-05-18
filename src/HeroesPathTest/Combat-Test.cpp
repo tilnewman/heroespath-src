@@ -36,8 +36,8 @@
 #include "creature/creature.hpp"
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state-factory.hpp"
 #include "game/startup-shutdown.hpp"
-#include "state/game-state-factory.hpp"
 
 #include <exception>
 
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     std::cout << "1" << std::endl;
     //setup the default party
     auto partyPtr{ player::PartyFactory::MakeFakeForTesting() };
-    state::GameStateFactory::Instance()->NewGame(partyPtr);
+    game::GameStateFactory::Instance()->NewGame(partyPtr);
     combat::Encounter::Instance()->BeginCombatTasks();
     std::cout << "2" << std::endl;
     //make a CombatNode for the creature at position zero

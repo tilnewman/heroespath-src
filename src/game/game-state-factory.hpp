@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED
-#define HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_GAME_STATE_FACTORY_HPP_INCLUDED
+#define HEROESPATH_GAME_GAME_STATE_FACTORY_HPP_INCLUDED
 //
 // game-state-factory.hpp
 //  Code that marshals GameState objects on and off disk, and creates new states.
@@ -33,7 +33,7 @@ namespace creature
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
-namespace state
+namespace game
 {
 
     // forward declarations
@@ -106,7 +106,7 @@ namespace state
         static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_GAME_GAME_STATE_FACTORY_HPP_INCLUDED

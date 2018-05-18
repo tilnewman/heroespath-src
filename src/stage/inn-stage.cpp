@@ -27,7 +27,7 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 
-#include "state/game-state-factory.hpp"
+#include "game/game-state-factory.hpp"
 
 namespace heroespath
 {

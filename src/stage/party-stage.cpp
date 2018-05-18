@@ -18,6 +18,7 @@
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
@@ -33,7 +34,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state-factory.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -213,7 +213,7 @@ namespace stage
             if ((selectedItemSPtr) && selectedItemSPtr->CHARACTER_PTR_OPT)
             {
                 auto const CHARACTER_PTR{ selectedItemSPtr->CHARACTER_PTR_OPT.value() };
-                state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
+                game::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
                 characterListBoxUPtr_->Remove(selectedItemSPtr);
                 partyListBoxUPtr_->Remove(selectedItemSPtr);
 
@@ -340,7 +340,7 @@ namespace stage
         }
 
         // load all players not yet assigned to a party/started game
-        unplayedCharactersPVec_ = state::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
+        unplayedCharactersPVec_ = game::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
 
         // fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSVec_t itemSVec;
@@ -769,12 +769,12 @@ namespace stage
                     CHARACTER_PTR),
                 std::end(unplayedCharactersPVec_));
 
-            state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
+            game::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
         }
 
         // create a new GameState with the given party and then save it
         creature::PlayerPartyFactory partyFactory;
-        state::GameStateFactory::Instance()->NewGame(partyFactory.Make(PARTY_AVATAR, charPVec));
+        game::GameStateFactory::Instance()->NewGame(partyFactory.Make(PARTY_AVATAR, charPVec));
 
         // Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning

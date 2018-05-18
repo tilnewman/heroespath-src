@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     Npc::Npc(
@@ -69,7 +69,7 @@ namespace state
     {
         std::ostringstream ss;
 
-        ss << "state::Npc={avatar=" << avatar::Avatar::ToString(avatar_) << ", conv_mood="
+        ss << "Npc={avatar=" << avatar::Avatar::ToString(avatar_) << ", conv_mood="
            << ((conversationMood_ == interact::talk::Mood::Kind) ? "kind" : "mean")
            << ", walk_bounds_index=" << walkBoundsIndex_ << ", conv_categories=";
 
@@ -83,5 +83,5 @@ namespace state
         return ss.str();
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

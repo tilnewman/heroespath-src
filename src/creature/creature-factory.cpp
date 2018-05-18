@@ -16,9 +16,9 @@
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-initial-setup.hpp"
 #include "creature/stat-set.hpp"
+#include "game/game-state-factory.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
-#include "state/game-state-factory.hpp"
 
 #include <memory>
 
@@ -43,7 +43,7 @@ namespace creature
         auto const CHARACTER_PTR{ MakeAndEquipPlayer(
             NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME) };
 
-        state::GameStateFactory::Instance()->SaveCharacter(CHARACTER_PTR);
+        game::GameStateFactory::Instance()->SaveCharacter(CHARACTER_PTR);
         creature::CreatureWarehouse::Access().Free(CHARACTER_PTR);
     }
 

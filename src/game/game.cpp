@@ -12,10 +12,10 @@
 #include "game.hpp"
 
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
+#include "game/world-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "state/game-state.hpp"
-#include "state/world-factory.hpp"
 
 #include <exception>
 #include <memory>
@@ -67,7 +67,7 @@ namespace game
         instanceUPtr_.reset();
     }
 
-    state::GameState & Game::State() const
+    GameState & Game::State() const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "Game::State() was called when there was no state.");
@@ -75,10 +75,10 @@ namespace game
         return *stateUPtr_;
     }
 
-    const state::GameStatePtr_t Game::MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR)
+    const GameStatePtr_t Game::MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR)
     {
-        stateUPtr_ = std::make_unique<state::GameState>(
-            std::move(PARTY_UPTR), state::WorldFactory::MakeForNewGame());
+        stateUPtr_
+            = std::make_unique<GameState>(std::move(PARTY_UPTR), WorldFactory::MakeForNewGame());
 
         stateUPtr_->IsNewGameSet(true);
         stateUPtr_->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());

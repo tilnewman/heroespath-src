@@ -4,28 +4,28 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED
-#define HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_GAME_STATE_HPP_INCLUDED
+#define HEROESPATH_GAME_GAME_STATE_HPP_INCLUDED
 //
 // game-state.hpp
 //  A class that represents a game in play.
 //
 #include "creature/player-party.hpp"
+#include "game/world.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/date-time.hpp"
-#include "state/world.hpp"
 
 #include <memory>
 #include <vector>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
-    // Encapsulates everything about a saved game.
+    // Encapsulates everything about a playing game.
     class GameState
     {
     public:
@@ -93,7 +93,7 @@ namespace state
 
     inline bool operator!=(const GameState & L, const GameState & R) { return !(L == R); }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED
+#endif // HEROESPATH_GAME_GAME_STATE_HPP_INCLUDED

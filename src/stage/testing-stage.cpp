@@ -23,6 +23,8 @@
 #include "creature/player-party.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/game-state.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
@@ -51,8 +53,6 @@
 #include "sfml-util/sound-manager.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
 
 #include <chrono>
 #include <sstream>

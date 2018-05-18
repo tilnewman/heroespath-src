@@ -13,6 +13,7 @@
 
 #include "creature/player-party.hpp"
 #include "creature/race-enum.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
@@ -20,7 +21,6 @@
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <vector>

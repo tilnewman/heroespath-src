@@ -4,16 +4,16 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_LEVEL_HPP_INCLUDED
-#define HEROESPATH_STATE_LEVEL_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_LEVEL_HPP_INCLUDED
+#define HEROESPATH_GAME_LEVEL_HPP_INCLUDED
 //
 // level.hpp
 //
+#include "game/npc-placeholder.hpp"
+#include "game/npc.hpp"
 #include "map/level-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vector-map.hpp"
-#include "state/npc-placeholder.hpp"
-#include "state/npc.hpp"
 
 #include <memory>
 #include <string>
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     // Responsible for storing all states that represent
@@ -94,7 +94,7 @@ namespace state
         }
     };
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_LEVEL_HPP_INCLUDED
+#endif // HEROESPATH_GAME_LEVEL_HPP_INCLUDED

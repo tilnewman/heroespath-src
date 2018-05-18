@@ -15,6 +15,7 @@
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "popup/popup-info.hpp"
@@ -23,7 +24,6 @@
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
 #include "stage/loop-cmd-addstage.hpp"
-#include "state/game-state-factory.hpp"
 
 namespace heroespath
 {
@@ -95,7 +95,7 @@ namespace game
             // TEMP TODO REMOVE -once done testing
             // create a party of characters to work with during testing
             creature::PlayerPartyFactory partyFactory;
-            state::GameStateFactory::Instance()->NewGame(partyFactory.MakeFakeForTesting());
+            GameStateFactory::Instance()->NewGame(partyFactory.MakeFakeForTesting());
         }
 
         instanceUPtr_->TransitionTo(STARTUP_STAGE_ENUM);

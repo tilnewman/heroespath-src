@@ -15,7 +15,9 @@
 #include "avatar/lpc-view.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
+#include "game/world.hpp"
 #include "interact/interaction-factory.hpp"
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
@@ -24,8 +26,6 @@
 #include "misc/vector-map.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "state/game-state.hpp"
-#include "state/world.hpp"
 
 #include <exception>
 #include <sstream>
@@ -554,7 +554,7 @@ namespace map
         }
     }
 
-    void Map::AddNonPlayerAvatar(const state::NpcPtr_t NPC_PTR)
+    void Map::AddNonPlayerAvatar(const game::NpcPtr_t NPC_PTR)
     {
         auto const WALK_BOUNDS_INDEX{ NPC_PTR->WalkBoundsIndex() };
         auto const AVATAR_IMAGE_ENUM{ NPC_PTR->AvatarImage() };

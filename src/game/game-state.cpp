@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     GameState::GameState(creature::PlayerPartyUPtr_t PARTY_UPTR, WorldUPtr_t WORLD_UPTR)
@@ -33,7 +33,7 @@ namespace state
     World & GameState::GetWorld()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (worldUPtr_), "state::GameState::GetWorld() called when the worldUptr_ was null.");
+            (worldUPtr_), "GameState::GetWorld() called when the worldUptr_ was null.");
 
         return *worldUPtr_;
     }
@@ -41,7 +41,7 @@ namespace state
     creature::PlayerParty & GameState::Party()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_), "state::GameState::GetParty() called when the partyUptr_ was null.");
+            (partyUPtr_), "GameState::GetParty() called when the partyUptr_ was null.");
 
         return *partyUPtr_;
     }
@@ -96,5 +96,5 @@ namespace state
                    R.dateTimeLastSave_);
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

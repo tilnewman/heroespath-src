@@ -13,10 +13,10 @@
 
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "state/game-state.hpp"
 
 #include <cmath>
 

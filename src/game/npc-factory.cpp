@@ -11,19 +11,19 @@
 //
 #include "npc-factory.hpp"
 
+#include "game/game-state.hpp"
 #include "game/game.hpp"
+#include "game/maps.hpp"
+#include "game/npc-warehouse.hpp"
+#include "game/npc.hpp"
+#include "game/world.hpp"
 #include "map/level-enum.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "state/game-state.hpp"
-#include "state/maps.hpp"
-#include "state/npc-warehouse.hpp"
-#include "state/npc.hpp"
-#include "state/world.hpp"
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     const NpcPVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER) const
@@ -65,5 +65,5 @@ namespace state
         return npcPtrs;
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

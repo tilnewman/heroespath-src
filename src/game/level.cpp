@@ -11,15 +11,15 @@
 //
 #include "level.hpp"
 
+#include "game/npc-factory.hpp"
+#include "game/npc-warehouse.hpp"
 #include "misc/serialize-helpers.hpp"
-#include "state/npc-factory.hpp"
-#include "state/npc-warehouse.hpp"
 
 #include <algorithm>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     Level::Level(const map::Level::Enum LEVEL)
@@ -65,19 +65,18 @@ namespace state
 
     void Level::AfterSerialize()
     {
-        misc::SerializeHelp::AfterSerialize(
-            specificNpcsToSerialize_, state::NpcWarehouse::Access());
+        misc::SerializeHelp::AfterSerialize(specificNpcsToSerialize_, NpcWarehouse::Access());
 
-        misc::SerializeHelp::AfterSerialize(randomNpcsToSerialize_, state::NpcWarehouse::Access());
+        misc::SerializeHelp::AfterSerialize(randomNpcsToSerialize_, NpcWarehouse::Access());
     }
 
     void Level::AfterDeserialize()
     {
         misc::SerializeHelp::AfterDeserialize(
-            specificNpcs_, specificNpcsToSerialize_, state::NpcWarehouse::Access());
+            specificNpcs_, specificNpcsToSerialize_, NpcWarehouse::Access());
 
         misc::SerializeHelp::AfterDeserialize(
-            randomNpcs_, randomNpcsToSerialize_, state::NpcWarehouse::Access());
+            randomNpcs_, randomNpcsToSerialize_, NpcWarehouse::Access());
     }
 
     void Level::CreateRandomNPCs()
@@ -92,5 +91,5 @@ namespace state
         }
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

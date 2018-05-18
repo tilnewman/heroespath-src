@@ -10,11 +10,11 @@
 // maps.cpp
 //
 #include "maps.hpp"
-#include "state/world-factory.hpp"
+#include "game/world-factory.hpp"
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     Maps::Maps()
@@ -75,5 +75,5 @@ namespace state
         }
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

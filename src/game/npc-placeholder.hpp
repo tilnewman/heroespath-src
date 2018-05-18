@@ -4,19 +4,20 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_NPC_PLACEHOLDER_HPP_INCLUDED
-#define HEROESPATH_STATE_NPC_PLACEHOLDER_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_NPC_PLACEHOLDER_HPP_INCLUDED
+#define HEROESPATH_GAME_NPC_PLACEHOLDER_HPP_INCLUDED
 //
 // npc-placeholder.hpp
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-serialize-includes.hpp"
+
 #include <vector>
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     // Responsible for wrapping all the state needed to create a random NPC in the game.
@@ -37,13 +38,13 @@ namespace state
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (AVATAR_TYPE_VEC.empty() == false),
-                "state::NpcPlaceholder::NpcPlaceholder(countMin="
+                "NpcPlaceholder::NpcPlaceholder(countMin="
                     << COUNT_MIN << ", countMax=" << COUNT_MAX << ", walkBoundsIndex="
                     << WALK_BOUNDS_INDEX << ") was given an empty AVATAR_TYPE_VEC.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (COUNT_MIN <= COUNT_MAX),
-                "state::NpcPlaceholder::NpcPlaceholder(countMin="
+                "NpcPlaceholder::NpcPlaceholder(countMin="
                     << COUNT_MIN << ", countMax=" << COUNT_MAX
                     << ", walkBoundsIndex=" << WALK_BOUNDS_INDEX
                     << ") was given COUNT_MIN that was greater than COUNT_MAX.");
@@ -81,7 +82,7 @@ namespace state
 
     using NpcPlaceholderVec_t = std::vector<NpcPlaceholder>;
 
-} // namespace state
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_NPC_PLACEHOLDER_HPP_INCLUDED
+#endif // HEROESPATH_GAME_NPC_PLACEHOLDER_HPP_INCLUDED

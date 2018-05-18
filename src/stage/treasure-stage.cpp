@@ -20,6 +20,7 @@
 #include "creature/stats.hpp"
 #include "creature/title.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -39,7 +40,6 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "stage/treasure-display-stage.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <exception>

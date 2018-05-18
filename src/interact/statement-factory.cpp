@@ -12,7 +12,9 @@
 #include "statement-factory.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
+#include "game/world.hpp"
 #include "interact/statement-child.hpp"
 #include "interact/statement-common.hpp"
 #include "interact/statement-guard.hpp"
@@ -21,8 +23,6 @@
 #include "interact/statement-town.hpp"
 #include "map/level-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "state/game-state.hpp"
-#include "state/world.hpp"
 
 namespace heroespath
 {

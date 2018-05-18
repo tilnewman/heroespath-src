@@ -22,6 +22,7 @@
 #include "creature/player-party.hpp"
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
@@ -29,7 +30,6 @@
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <cmath>

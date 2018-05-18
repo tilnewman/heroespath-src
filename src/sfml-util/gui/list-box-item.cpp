@@ -14,10 +14,10 @@
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
+#include "game/game-state.hpp"
 #include "item/item.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-#include "state/game-state.hpp"
 
 #include <string>
 #include <tuple>
@@ -79,7 +79,7 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const state::GameStatePtr_t GAMESTATE_PTR,
+            const game::GameStatePtr_t GAMESTATE_PTR,
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect())

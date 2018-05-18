@@ -16,8 +16,10 @@
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
+#include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
+#include "game/world.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
@@ -25,8 +27,6 @@
 #include "misc/vectors.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "state/game-state.hpp"
-#include "state/world.hpp"
 
 #include <algorithm>
 #include <exception>

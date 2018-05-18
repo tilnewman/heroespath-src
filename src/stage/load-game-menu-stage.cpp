@@ -14,7 +14,10 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/game-state.hpp"
 #include "game/loop-manager.hpp"
+#include "game/world.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
@@ -26,9 +29,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
-#include "state/world.hpp"
 
 #include <list>
 #include <string>
@@ -128,7 +128,7 @@ namespace stage
         // hand all GameState objects to the ListBox
         // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
         // function that doesn't actually load every game but a vector of profiles to use instead.
-        gamestatePVec_ = state::GameStateFactory::Instance()->LoadAllGames();
+        gamestatePVec_ = game::GameStateFactory::Instance()->LoadAllGames();
         sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
         std::size_t gameStateCount(0);
 

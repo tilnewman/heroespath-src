@@ -10,12 +10,12 @@
 // world-factory.cpp
 //
 #include "world-factory.hpp"
-#include "state/level.hpp"
-#include "state/world.hpp"
+#include "game/level.hpp"
+#include "game/world.hpp"
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     WorldUPtr_t WorldFactory::MakeForNewGame()
@@ -47,5 +47,5 @@ namespace state
         }
     }
 
-} // namespace state
+} // namespace game
 } // namespace heroespath

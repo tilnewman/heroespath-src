@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
-#define HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_WORLD_FACTORY_HPP_INCLUDED
+#define HEROESPATH_GAME_WORLD_FACTORY_HPP_INCLUDED
 //
 // world-factory.hpp
 //
@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace state
+namespace game
 {
 
     class World;
@@ -27,7 +27,8 @@ namespace state
         static WorldUPtr_t MakeForNewGame();
         static void SetupLevelForNewGame(Level &);
     };
-} // namespace state
+
+} // namespace game
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
+#endif // HEROESPATH_GAME_WORLD_FACTORY_HPP_INCLUDED

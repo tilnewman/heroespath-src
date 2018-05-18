@@ -41,12 +41,12 @@ namespace sfml_util
     } // namespace gui
 } // namespace sfml_util
 
-namespace state
+namespace game
 {
     class GameState;
     using GameStatePtr_t = misc::NotNull<GameState *>;
     using GameStatePVec_t = std::vector<GameStatePtr_t>;
-} // namespace state
+} // namespace game
 
 namespace stage
 {
@@ -100,7 +100,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
         //
-        state::GameStatePVec_t gamestatePVec_;
+        game::GameStatePVec_t gamestatePVec_;
     };
 } // namespace stage
 } // namespace heroespath
