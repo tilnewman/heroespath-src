@@ -19,7 +19,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct LoopState : public misc::EnumBaseCounting<LoopState, misc::EnumFirstValueValid>
+    struct LoopState : public misc::EnumBaseCounting<LoopState, misc::EnumFirstValueNone>
     {
         enum Enum : misc::EnumUnderlying_t
         {
