@@ -13,16 +13,16 @@
 
 // This is the one and only place where this is included,
 // and it needs to stay that way.  zTn 2017-3-30
-#include "player/party-serialize-includes.hpp"
+#include "creature/player-party-serialize-includes.hpp"
 
 #include "creature/creature-factory.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world-factory.hpp"
 #include "state/world.hpp"
@@ -85,7 +85,7 @@ namespace state
         instanceUPtr_.reset();
     }
 
-    void GameStateFactory::NewGame(player::PartyUPtr_t PARTY_UPTR) const
+    void GameStateFactory::NewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const
     {
         game::Game::Instance()->MakeNewGame(std::move(PARTY_UPTR));
     }

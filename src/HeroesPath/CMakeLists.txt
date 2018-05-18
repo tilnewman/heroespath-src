@@ -40,7 +40,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         Stage
                         Stats
                         Creature
-                        Player
                         NonPlayer
                         State
                         Combat

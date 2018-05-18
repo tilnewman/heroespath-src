@@ -12,10 +12,10 @@
 #include "adventure-stage.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/player-party-factory.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "stage/adventure-display-stage.hpp"
 #include "state/game-state-factory.hpp"

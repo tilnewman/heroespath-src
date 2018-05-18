@@ -11,10 +11,10 @@
 //
 #include "adventure-stage-char-list.hpp"
 
+#include "creature/player-party.hpp"
 #include "creature/race-enum.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
-#include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/text-info.hpp"

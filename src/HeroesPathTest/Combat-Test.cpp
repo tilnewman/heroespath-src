@@ -34,9 +34,9 @@
 #include "combat/combat-tree.hpp"
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party-factory.hpp"
+#include "creature/player-party.hpp"
 #include "game/startup-shutdown.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
 #include "state/game-state-factory.hpp"
 
 #include <exception>
@@ -48,11 +48,7 @@ namespace ts = test_stuff;
 
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
-    StartupShutdown startupShutdown;
-
-    BOOST_CHECK_MESSAGE(
-        startupShutdown.Setup("Heroes' Path Unit Tests", 0, nullptr),
-        "StartupShutdown::Setup() failed");
+    StartupShutdown startupShutdown("Heroes' Path Combat Tests", 0, nullptr);
 
     combat::CombatTree combatTree;
 
@@ -123,8 +119,6 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.GetNodesAtBlockingPos(0).empty());
     BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(0).empty());
     BOOST_CHECK(combatTree.GetCombatNodes().empty());
-
-    BOOST_CHECK(startupShutdown.Teardown() == EXIT_SUCCESS);
 }
 
 BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)

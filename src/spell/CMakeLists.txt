@@ -8,6 +8,5 @@ target_link_libraries(  ${PROJECT_NAME}
                         Stage
                         Item
                         Creature
-                        Player
                         NonPlayer
                         ${Boost_LIBRARIES} )

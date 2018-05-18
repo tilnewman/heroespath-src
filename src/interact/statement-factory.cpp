@@ -11,6 +11,7 @@
 //
 #include "statement-factory.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
 #include "interact/statement-child.hpp"
 #include "interact/statement-common.hpp"
@@ -20,7 +21,6 @@
 #include "interact/statement-town.hpp"
 #include "map/level-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world.hpp"
 

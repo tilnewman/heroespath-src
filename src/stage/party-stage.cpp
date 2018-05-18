@@ -15,13 +15,13 @@
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
+#include "creature/player-party-factory.hpp"
+#include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/display.hpp"
@@ -251,7 +251,7 @@ namespace stage
 
     bool PartyStage::HandleCallback_StartButton()
     {
-        if (partyListBoxUPtr_->Size() != player::Party::MAX_CHARACTER_COUNT_)
+        if (partyListBoxUPtr_->Size() != creature::PlayerParty::MAX_CHARACTER_COUNT_)
         {
             NotEnoughCharactersPopup();
             return false;
@@ -459,7 +459,7 @@ namespace stage
             sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
-        partyListBoxUPtr_->CountLimit(player::Party::MAX_CHARACTER_COUNT_);
+        partyListBoxUPtr_->CountLimit(creature::PlayerParty::MAX_CHARACTER_COUNT_);
 
         EntityAdd(partyListBoxUPtr_.get());
 
@@ -505,7 +505,7 @@ namespace stage
         {
             std::ostringstream ss;
             ss << "(There are not enough characters to make a party of "
-               << player::Party::MAX_CHARACTER_COUNT_ << ".  Go back and create more.)";
+               << creature::PlayerParty::MAX_CHARACTER_COUNT_ << ".  Go back and create more.)";
 
             warningTextInfo_ = sfml_util::gui::TextInfo(
                 ss.str(),
@@ -587,7 +587,7 @@ namespace stage
 
         willDisplayCharacterCountWarningText_
             = ((characterListBoxUPtr_->Size() + partyListBoxUPtr_->Size())
-               < player::Party::MAX_CHARACTER_COUNT_);
+               < creature::PlayerParty::MAX_CHARACTER_COUNT_);
 
         // oscillate the warning text color
         if (willDisplayCharacterCountWarningText_)
@@ -773,7 +773,7 @@ namespace stage
         }
 
         // create a new GameState with the given party and then save it
-        player::PartyFactory partyFactory;
+        creature::PlayerPartyFactory partyFactory;
         state::GameStateFactory::Instance()->NewGame(partyFactory.Make(PARTY_AVATAR, charPVec));
 
         // Don't bother clearing the party ListBox because it flashes the
@@ -878,8 +878,8 @@ namespace stage
     {
         std::ostringstream ss;
         ss << "\n\nThere are " << partyListBoxUPtr_->Size()
-           << " characters in your party.  You need exactly " << player::Party::MAX_CHARACTER_COUNT_
-           << " characters to start the game.";
+           << " characters in your party.  You need exactly "
+           << creature::PlayerParty::MAX_CHARACTER_COUNT_ << " characters to start the game.";
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_NOT_ENOUGH_CHARS_,

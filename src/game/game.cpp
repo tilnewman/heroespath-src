@@ -11,9 +11,9 @@
 //
 #include "game.hpp"
 
+#include "creature/player-party.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world-factory.hpp"
 
@@ -75,7 +75,7 @@ namespace game
         return *stateUPtr_;
     }
 
-    const state::GameStatePtr_t Game::MakeNewGame(player::PartyUPtr_t PARTY_UPTR)
+    const state::GameStatePtr_t Game::MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR)
     {
         stateUPtr_ = std::make_unique<state::GameState>(
             std::move(PARTY_UPTR), state::WorldFactory::MakeForNewGame());

@@ -16,11 +16,11 @@
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
-    class Party;
-    using PartyUPtr_t = std::unique_ptr<Party>;
-} // namespace player
+    class PlayerParty;
+    using PlayerPartyUPtr_t = std::unique_ptr<PlayerParty>;
+} // namespace creature
 namespace state
 {
     class GameState;
@@ -49,7 +49,7 @@ namespace game
         static void Release();
 
         state::GameState & State() const;
-        const state::GameStatePtr_t MakeNewGame(player::PartyUPtr_t PARTY_UPTR);
+        const state::GameStatePtr_t MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR);
 
     private:
         static std::unique_ptr<Game> instanceUPtr_;

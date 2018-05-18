@@ -9,9 +9,9 @@
 //
 // statement-town.hpp
 //
+#include "creature/player-party.hpp"
 #include "interact/statement.hpp"
 #include "map/level-enum.hpp"
-#include "player/party.hpp"
 #include <string>
 
 namespace heroespath
@@ -24,11 +24,13 @@ namespace interact
         struct TownTalk
         {
             static const std::string
-                Compose(const Mood, const player::Party &, const map::Level::Enum);
+                Compose(const Mood, const creature::PlayerParty &, const map::Level::Enum);
 
         private:
-            static const std::string ComposeKind(const player::Party &, const map::Level::Enum);
-            static const std::string ComposeMean(const player::Party &, const map::Level::Enum);
+            static const std::string
+                ComposeKind(const creature::PlayerParty &, const map::Level::Enum);
+            static const std::string
+                ComposeMean(const creature::PlayerParty &, const map::Level::Enum);
         };
 
     } // namespace talk

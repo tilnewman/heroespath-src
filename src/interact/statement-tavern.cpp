@@ -20,7 +20,7 @@ namespace interact
     namespace talk
     {
 
-        const std::string TavernTalk::Compose(const Mood MOOD, const player::Party & PARTY)
+        const std::string TavernTalk::Compose(const Mood MOOD, const creature::PlayerParty & PARTY)
         {
             if (MOOD == Mood::Kind)
             {
@@ -32,7 +32,7 @@ namespace interact
             }
         }
 
-        const std::string TavernTalk::ComposeMean(const player::Party & PARTY)
+        const std::string TavernTalk::ComposeMean(const creature::PlayerParty & PARTY)
         {
             using namespace compose;
 
@@ -75,7 +75,7 @@ namespace interact
             }
         }
 
-        const std::string TavernTalk::ComposeKind(const player::Party & PARTY)
+        const std::string TavernTalk::ComposeKind(const creature::PlayerParty & PARTY)
         {
             using namespace compose;
 

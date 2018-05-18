@@ -50,9 +50,7 @@ namespace config
             // verify the file exists
             if (false == bfs::exists(PATH))
             {
-                std::ostringstream ss;
-                ss << "Config file could not be found: \"" << PATH.string() << "\"";
-                HandleLoadSaveError(ss.str());
+                HandleLoadSaveError("");
                 return false;
             }
 

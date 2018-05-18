@@ -11,8 +11,8 @@
 //
 #include "statement.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "player/party.hpp"
 
 namespace heroespath
 {
@@ -79,7 +79,7 @@ namespace interact
                 return v;
             }
 
-            bool DoesPartyHaveBeasts(const player::Party & party)
+            bool DoesPartyHaveBeasts(const creature::PlayerParty & party)
             {
                 for (auto const & CHARACTER_PTR : party.Characters())
                 {
@@ -92,7 +92,7 @@ namespace interact
                 return false;
             }
 
-            bool DoesPartyHaveWolfens(const player::Party & party)
+            bool DoesPartyHaveWolfens(const creature::PlayerParty & party)
             {
                 for (auto const & CHARACTER_PTR : party.Characters())
                 {

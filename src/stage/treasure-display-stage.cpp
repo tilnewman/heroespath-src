@@ -13,11 +13,11 @@
 
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "item/item.hpp"
 #include "misc/vectors.hpp"
-#include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"

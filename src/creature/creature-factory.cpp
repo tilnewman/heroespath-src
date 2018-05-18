@@ -13,9 +13,9 @@
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-initial-setup.hpp"
 #include "misc/random.hpp"
 #include "non-player/inventory-factory.hpp"
-#include "player/initial-setup.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "state/game-state-factory.hpp"
 #include "stats/stat-set.hpp"
@@ -114,7 +114,7 @@ namespace creature
         auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
-        player::InitialSetup playerSetup;
+        PlayerInitialSetup playerSetup;
         playerSetup.Setup(CHARACTER_PTR);
 
         return CHARACTER_PTR;

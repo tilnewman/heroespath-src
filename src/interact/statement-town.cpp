@@ -19,7 +19,7 @@ namespace interact
     {
 
         const std::string TownTalk::Compose(
-            const Mood MOOD, const player::Party & PARTY, const map::Level::Enum LEVEL)
+            const Mood MOOD, const creature::PlayerParty & PARTY, const map::Level::Enum LEVEL)
         {
             if (MOOD == Mood::Kind)
             {
@@ -32,7 +32,7 @@ namespace interact
         }
 
         const std::string
-            TownTalk::ComposeMean(const player::Party & PARTY, const map::Level::Enum LEVEL)
+            TownTalk::ComposeMean(const creature::PlayerParty & PARTY, const map::Level::Enum LEVEL)
         {
             using namespace compose;
 
@@ -73,7 +73,8 @@ namespace interact
             }
         }
 
-        const std::string TownTalk::ComposeKind(const player::Party &, const map::Level::Enum LEVEL)
+        const std::string
+            TownTalk::ComposeKind(const creature::PlayerParty &, const map::Level::Enum LEVEL)
         {
             using namespace compose;
 

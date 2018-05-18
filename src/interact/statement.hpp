@@ -19,9 +19,9 @@
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
-    class Party;
+    class PlayerParty;
 }
 namespace interact
 {
@@ -95,10 +95,10 @@ namespace interact
             const StrVec_t Combinations(
                 const StrVec_t & V1, const StrVec_t & V2, const std::string & SEPARATOR = " ");
 
-            bool DoesPartyHaveBeasts(const player::Party &);
-            bool DoesPartyHaveWolfens(const player::Party &);
+            bool DoesPartyHaveBeasts(const creature::PlayerParty &);
+            bool DoesPartyHaveWolfens(const creature::PlayerParty &);
 
-            inline const std::string BeastRaceName(const player::Party & party)
+            inline const std::string BeastRaceName(const creature::PlayerParty & party)
             {
                 return (
                     (DoesPartyHaveWolfens(party)) ? std::string("wolfen") : std::string("dragon"));

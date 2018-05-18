@@ -13,6 +13,7 @@
 
 #include "avatar/avatar-enum.hpp"
 #include "avatar/lpc-view.hpp"
+#include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "interact/interaction-factory.hpp"
@@ -21,7 +22,6 @@
 #include "map/map-display.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
-#include "player/party.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "state/game-state.hpp"

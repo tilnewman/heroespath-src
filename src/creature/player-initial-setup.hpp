@@ -4,10 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_PLAYER_INITIAL_SETUP_HPP_INCLUDED
-#define HEROESPATH_PLAYER_INITIAL_SETUP_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_PLAYER_INITIAL_SETUP_HPP_INCLUDED
+#define HEROESPATH_CREATURE_PLAYER_INITIAL_SETUP_HPP_INCLUDED
 //
-// initial-setup.hpp
+// player-initial-setup.hpp
 //
 #include "item/item-factory.hpp"
 #include "misc/not-null.hpp"
@@ -25,19 +25,19 @@ namespace item
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
-namespace player
+namespace creature
 {
 
     // Responsible for the initial setup of player characters. (items/spells/starting health/etc.)
-    class InitialSetup
+    class PlayerInitialSetup
     {
     public:
-        InitialSetup(const InitialSetup &) = delete;
-        InitialSetup(InitialSetup &&) = delete;
-        InitialSetup & operator=(const InitialSetup &) = delete;
-        InitialSetup & operator=(InitialSetup &&) = delete;
+        PlayerInitialSetup(const PlayerInitialSetup &) = delete;
+        PlayerInitialSetup(PlayerInitialSetup &&) = delete;
+        PlayerInitialSetup & operator=(const PlayerInitialSetup &) = delete;
+        PlayerInitialSetup & operator=(PlayerInitialSetup &&) = delete;
 
-        InitialSetup() = default;
+        PlayerInitialSetup() = default;
 
         void Setup(const creature::CreaturePtr_t) const;
 
@@ -59,7 +59,7 @@ namespace player
         item::ItemFactory itemFactory_;
     };
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_PLAYER_INITIAL_SETUP_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_PLAYER_INITIAL_SETUP_HPP_INCLUDED

@@ -20,7 +20,7 @@ namespace heroespath
 namespace state
 {
 
-    GameState::GameState(player::PartyUPtr_t PARTY_UPTR, WorldUPtr_t WORLD_UPTR)
+    GameState::GameState(creature::PlayerPartyUPtr_t PARTY_UPTR, WorldUPtr_t WORLD_UPTR)
         : partyUPtr_(std::move(PARTY_UPTR))
         , worldUPtr_(std::move(WORLD_UPTR))
         , isGameNew_(false)
@@ -38,7 +38,7 @@ namespace state
         return *worldUPtr_;
     }
 
-    player::Party & GameState::Party()
+    creature::PlayerParty & GameState::Party()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (partyUPtr_), "state::GameState::GetParty() called when the partyUptr_ was null.");

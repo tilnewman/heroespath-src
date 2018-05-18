@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED
-#define HEROESPATH_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_PLAYER_PARTY_SERIALIZE_INCLUDES_HPP_INCLUDED
+#define HEROESPATH_CREATURE_PLAYER_PARTY_SERIALIZE_INCLUDES_HPP_INCLUDED
 //
 // party-serialize-includes.hpp
 //  A collection of includes that allows boost serialization of Character and Party objects.
@@ -25,7 +25,7 @@ BOOST_CLASS_EXPORT(heroespath::item::Item)
 #include "creature/creature.hpp"
 BOOST_CLASS_EXPORT(heroespath::creature::Creature)
 
-#include "player/party.hpp"
-BOOST_CLASS_EXPORT(heroespath::player::Party)
+#include "creature/player-party.hpp"
+BOOST_CLASS_EXPORT(heroespath::creature::PlayerParty)
 
-#endif // HEROESPATH_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_PLAYER_PARTY_SERIALIZE_INCLUDES_HPP_INCLUDED

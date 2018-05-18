@@ -13,8 +13,8 @@
 
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 
 #include "misc/random.hpp"

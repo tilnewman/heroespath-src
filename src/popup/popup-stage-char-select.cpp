@@ -12,9 +12,9 @@
 #include "popup-stage-char-select.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 
 #include "sfml-util/gui/creature-image-loader.hpp"

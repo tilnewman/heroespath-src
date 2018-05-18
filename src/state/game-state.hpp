@@ -10,10 +10,10 @@
 // game-state.hpp
 //  A class that represents a game in play.
 //
+#include "creature/player-party.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
-#include "player/party.hpp"
 #include "sfml-util/date-time.hpp"
 #include "state/world.hpp"
 
@@ -36,14 +36,14 @@ namespace state
 
     public:
         explicit GameState(
-            player::PartyUPtr_t PARTY_UPTR = player::PartyUPtr_t(),
+            creature::PlayerPartyUPtr_t PARTY_UPTR = creature::PlayerPartyUPtr_t(),
             WorldUPtr_t WORLD_UPTR = WorldUPtr_t());
 
         virtual ~GameState();
 
         World & GetWorld();
 
-        player::Party & Party();
+        creature::PlayerParty & Party();
 
         bool IsNewGame() const { return isGameNew_; }
 
@@ -65,7 +65,7 @@ namespace state
         friend bool operator==(const GameState & L, const GameState & R);
 
     private:
-        player::PartyUPtr_t partyUPtr_;
+        creature::PlayerPartyUPtr_t partyUPtr_;
         WorldUPtr_t worldUPtr_;
         bool isGameNew_;
         sfml_util::DateTime dateTimeStarted_;

@@ -18,7 +18,7 @@ namespace interact
     namespace talk
     {
 
-        const std::string GuardTalk::Compose(const Mood MOOD, const player::Party & PARTY)
+        const std::string GuardTalk::Compose(const Mood MOOD, const creature::PlayerParty & PARTY)
         {
             using namespace compose;
 

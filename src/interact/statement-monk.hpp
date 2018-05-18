@@ -9,8 +9,8 @@
 //
 // statement-monk.hpp
 //
+#include "creature/player-party.hpp"
 #include "interact/statement.hpp"
-#include "player/party.hpp"
 #include <string>
 
 namespace heroespath

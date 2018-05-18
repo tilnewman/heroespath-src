@@ -12,10 +12,10 @@
 #include "load-game-menu-stage.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/real.hpp"
-#include "player/party.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"

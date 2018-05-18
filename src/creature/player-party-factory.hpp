@@ -4,10 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED
-#define HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_PLAYER_PARTY_FACTORY_HPP_INCLUDED
+#define HEROESPATH_CREATURE_PLAYER_PARTY_FACTORY_HPP_INCLUDED
 //
-// party-factory.hpp
+// player-party-factory.hpp
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/not-null.hpp"
@@ -23,32 +23,29 @@ namespace creature
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-} // namespace creature
-namespace player
-{
 
-    class Party;
-    using PartyUPtr_t = std::unique_ptr<Party>;
+    class PlayerParty;
+    using PlayerPartyUPtr_t = std::unique_ptr<PlayerParty>;
 
     // Responsible for making party objects full of player creatures.
-    class PartyFactory
+    class PlayerPartyFactory
     {
     public:
-        PartyFactory(const PartyFactory &) = delete;
-        PartyFactory(PartyFactory &&) = delete;
-        PartyFactory & operator=(const PartyFactory &) = delete;
-        PartyFactory & operator=(PartyFactory &&) = delete;
+        PlayerPartyFactory(const PlayerPartyFactory &) = delete;
+        PlayerPartyFactory(PlayerPartyFactory &&) = delete;
+        PlayerPartyFactory & operator=(const PlayerPartyFactory &) = delete;
+        PlayerPartyFactory & operator=(PlayerPartyFactory &&) = delete;
 
-        PartyFactory() = default;
+        PlayerPartyFactory() = default;
 
-        PartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &) const;
-        PartyUPtr_t MakeFakeForTesting() const;
+        PlayerPartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &) const;
+        PlayerPartyUPtr_t MakeFakeForTesting() const;
 
     private:
         const std::string MakeCharacterNameForTesting(const std::string & POSTFIX) const;
     };
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_PLAYER_PARTY_FACTORY_HPP_INCLUDED

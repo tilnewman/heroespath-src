@@ -7,7 +7,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         State
                         Item
                         Creature
-                        Player
                         NonPlayer
                         Spell
                         Interact

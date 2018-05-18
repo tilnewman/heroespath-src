@@ -23,13 +23,11 @@
 
 namespace heroespath
 {
-namespace player
-{
-    class Party;
-    using PartyUPtr_t = std::unique_ptr<Party>;
-} // namespace player
 namespace creature
 {
+    class PlayerParty;
+    using PlayerPartyUPtr_t = std::unique_ptr<PlayerParty>;
+
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
@@ -61,7 +59,7 @@ namespace state
         static void Acquire();
         static void Release();
 
-        void NewGame(player::PartyUPtr_t) const;
+        void NewGame(creature::PlayerPartyUPtr_t) const;
 
         // Caller is responsible for the lifetime of the returned GameState objects.
         const GameStatePVec_t LoadAllGames() const;

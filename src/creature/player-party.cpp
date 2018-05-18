@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// party.hpp (player)
+// player-party.hpp
 //
-#include "party.hpp"
+#include "player-party.hpp"
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
@@ -22,20 +22,20 @@
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
 
-    const std::size_t Party::MAX_CHARACTER_COUNT_{ 6 };
+    const std::size_t PlayerParty::MAX_CHARACTER_COUNT_{ 6 };
 
-    Party::Party(
+    PlayerParty::PlayerParty(
         const avatar::Avatar::Enum PARTY_AVATAR, const creature::CreaturePVec_t & CHARACTERS_PVEC)
         : avatar_(PARTY_AVATAR)
         , charactersPVec_(CHARACTERS_PVEC)
     {}
 
-    Party::~Party() { creature::CreatureWarehouse::Access().Free(charactersPVec_); }
+    PlayerParty::~PlayerParty() { creature::CreatureWarehouse::Access().Free(charactersPVec_); }
 
-    const creature::CreaturePtr_t Party::GetNextInOrder(
+    const creature::CreaturePtr_t PlayerParty::GetNextInOrder(
         const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_CHOOSE_AFTER)
     {
         for (auto iter(charactersPVec_.begin()); iter != charactersPVec_.end(); ++iter)
@@ -75,7 +75,7 @@ namespace player
         throw std::runtime_error(ss.str());
     }
 
-    const creature::CreaturePtr_t Party::GetAtOrderPos(const std::size_t INDEX_NUM)
+    const creature::CreaturePtr_t PlayerParty::GetAtOrderPos(const std::size_t INDEX_NUM)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (INDEX_NUM < charactersPVec_.size()),
@@ -99,7 +99,7 @@ namespace player
         throw std::runtime_error(ss.str());
     }
 
-    std::size_t Party::GetOrderNum(const creature::CreaturePtr_t CREATURE_PTR) const
+    std::size_t PlayerParty::GetOrderNum(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         const std::size_t NUM_CHARACTERS(charactersPVec_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
@@ -118,7 +118,7 @@ namespace player
         throw std::runtime_error(ss.str());
     }
 
-    std::size_t Party::GetNumHumanoid() const
+    std::size_t PlayerParty::GetNumHumanoid() const
     {
         std::size_t count(0);
         for (auto const & NEXT_CHARACTER_PTR : charactersPVec_)
@@ -132,22 +132,22 @@ namespace player
         return count;
     }
 
-    void Party::BeforeSerialize()
+    void PlayerParty::BeforeSerialize()
     {
         misc::SerializeHelp::BeforeSerialize(charactersPVec_, charactersToSerializePVec_);
     }
 
-    void Party::AfterSerialize()
+    void PlayerParty::AfterSerialize()
     {
         misc::SerializeHelp::AfterSerialize(
             charactersToSerializePVec_, creature::CreatureWarehouse::Access());
     }
 
-    void Party::AfterDeserialize()
+    void PlayerParty::AfterDeserialize()
     {
         misc::SerializeHelp::AfterDeserialize(
             charactersPVec_, charactersToSerializePVec_, creature::CreatureWarehouse::Access());
     }
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath

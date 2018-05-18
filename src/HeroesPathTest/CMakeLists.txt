@@ -44,7 +44,6 @@ foreach(testSrc ${impl_files})
                         	Stage
                         	Stats
                         	Creature
-                        	Player
                         	NonPlayer
                         	State
                         	Combat

@@ -12,10 +12,10 @@
 #include "trap.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/player-party.hpp"
 #include "game/game.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "player/party.hpp"
 #include "state/game-state.hpp"
 
 #include <cmath>

@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// initial-setup.cpp
+// player-initial-setup.cpp
 //
-#include "initial-setup.hpp"
+#include "player-initial-setup.hpp"
 
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
@@ -28,10 +28,10 @@
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
 
-    void InitialSetup::Setup(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::Setup(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         SetupInventory(CREATURE_PTR);
         SetupSpellsAndSongs(CREATURE_PTR);
@@ -40,7 +40,7 @@ namespace player
         SetStartingMana(CREATURE_PTR);
     }
 
-    void InitialSetup::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         EquipBodyParts(CREATURE_PTR);
 
@@ -209,14 +209,14 @@ namespace player
         }
 
         std::ostringstream ss;
-        ss << "player::InitialSetup::SetupInventory(\"" << CREATURE_PTR->Name()
+        ss << "player::PlayerInitialSetup::SetupInventory(\"" << CREATURE_PTR->Name()
            << "\", race=" << CREATURE_PTR->RaceName() << ", role=" << CREATURE_PTR->RoleName()
            << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
     }
 
-    void InitialSetup::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
@@ -250,7 +250,7 @@ namespace player
         }
     }
 
-    void InitialSetup::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         using namespace item;
 
@@ -283,7 +283,8 @@ namespace player
         }
     }
 
-    Health_t InitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
+    Health_t
+        PlayerInitialSetup::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
@@ -298,14 +299,14 @@ namespace player
         return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
 
-    void InitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const STARTING_HEALTH{ GetStartingHealth(CREATURE_PTR) };
         CREATURE_PTR->HealthNormalSet(STARTING_HEALTH);
         CREATURE_PTR->HealthCurrentSet(STARTING_HEALTH);
     }
 
-    void InitialSetup::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR) const
+    void PlayerInitialSetup::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
@@ -326,14 +327,14 @@ namespace player
         }
     }
 
-    void InitialSetup::EnsureItemAddedAndEquipped(
+    void PlayerInitialSetup::EnsureItemAddedAndEquipped(
         const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR) const
     {
         auto const ITEM_ADD_STR{ CREATURE_PTR->ItemAdd(ITEM_PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_ADD_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
-            "player::InitialSetup::EnsureItemAddedAndEquipped() was unable to ADD item={"
+            "player::PlayerInitialSetup::EnsureItemAddedAndEquipped() was unable to ADD item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_ADD_STR << ".");
 
@@ -341,12 +342,12 @@ namespace player
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_EQUIP_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
-            "player::InitialSetup::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
+            "player::PlayerInitialSetup::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_EQUIP_STR << ".");
     }
 
-    const item::ItemPtr_t InitialSetup::MakePlainBoots(const bool IS_PIXIE) const
+    const item::ItemPtr_t PlayerInitialSetup::MakePlainBoots(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -364,7 +365,7 @@ namespace player
         return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t InitialSetup::MakePlainShirt(const bool IS_PIXIE) const
+    const item::ItemPtr_t PlayerInitialSetup::MakePlainShirt(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -382,7 +383,7 @@ namespace player
         return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t InitialSetup::MakePlainPants(const bool IS_PIXIE) const
+    const item::ItemPtr_t PlayerInitialSetup::MakePlainPants(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -400,7 +401,7 @@ namespace player
         return itemFactory_.Make(profile);
     }
 
-    const item::ItemPtr_t InitialSetup::MakePlainWand(const bool IS_PIXIE) const
+    const item::ItemPtr_t PlayerInitialSetup::MakePlainWand(const bool IS_PIXIE) const
     {
         using namespace item;
 
@@ -409,5 +410,5 @@ namespace player
         return itemFactory_.Make(profile);
     }
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath

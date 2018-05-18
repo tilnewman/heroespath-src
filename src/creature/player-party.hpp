@@ -4,11 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_PLAYER_PARTY_HPP_INCLUDED
-#define HEROESPATH_PLAYER_PARTY_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_PLAYER_PARTY_HPP_INCLUDED
+#define HEROESPATH_CREATURE_PLAYER_PARTY_HPP_INCLUDED
 //
-// party.hpp (player)
-//  A collection of characters under control of the user.
+// player-party.hpp
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
@@ -25,25 +24,22 @@ namespace creature
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-} // namespace creature
-namespace player
-{
 
     // encapsulates a set of Characters under control of the user
-    class Party
+    class PlayerParty
     {
     public:
-        Party(const Party &) = delete;
-        Party(Party &&) = delete;
-        Party & operator=(const Party &) = delete;
-        Party & operator=(Party &&) = delete;
+        PlayerParty(const PlayerParty &) = delete;
+        PlayerParty(PlayerParty &&) = delete;
+        PlayerParty & operator=(const PlayerParty &) = delete;
+        PlayerParty & operator=(PlayerParty &&) = delete;
 
     public:
-        explicit Party(
+        explicit PlayerParty(
             const avatar::Avatar::Enum PARTY_AVATAR = avatar::Avatar::Player_First,
             const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());
 
-        ~Party();
+        ~PlayerParty();
 
         const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
 
@@ -95,9 +91,9 @@ namespace player
         }
     };
 
-    using PartyUPtr_t = std::unique_ptr<Party>;
+    using PlayerPartyUPtr_t = std::unique_ptr<PlayerParty>;
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_PLAYER_PARTY_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_PLAYER_PARTY_HPP_INCLUDED

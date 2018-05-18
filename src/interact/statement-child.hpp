@@ -9,9 +9,9 @@
 //
 // statement-child.hpp
 //
+#include "creature/player-party.hpp"
 #include "interact/statement.hpp"
 #include "map/level-enum.hpp"
-#include "player/party.hpp"
 #include <algorithm>
 #include <string>
 
@@ -58,11 +58,11 @@ namespace interact
 
         struct ChildTalk
         {
-            static const std::string Compose(const Mood, const player::Party &);
+            static const std::string Compose(const Mood, const creature::PlayerParty &);
 
         private:
-            static const std::string ComposeKind(const player::Party &);
-            static const std::string ComposeMean(const player::Party &);
+            static const std::string ComposeKind(const creature::PlayerParty &);
+            static const std::string ComposeMean(const creature::PlayerParty &);
         };
 
     } // namespace talk

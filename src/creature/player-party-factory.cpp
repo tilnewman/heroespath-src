@@ -7,17 +7,17 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// party-factory.cpp
+// player-party-factory.cpp
 //
-#include "party-factory.hpp"
+#include "player-party-factory.hpp"
 
 #include "creature/creature-factory.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
+#include "creature/player-initial-setup.hpp"
+#include "creature/player-party.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
-#include "player/initial-setup.hpp"
-#include "player/party.hpp"
 #include "stats/stat-set.hpp"
 
 #include <algorithm>
@@ -25,16 +25,16 @@
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
 
-    PartyUPtr_t PartyFactory::Make(
+    PlayerPartyUPtr_t PlayerPartyFactory::Make(
         const avatar::Avatar::Enum AVATAR, const creature::CreaturePVec_t & CHARACTERS) const
     {
-        return std::make_unique<Party>(AVATAR, CHARACTERS);
+        return std::make_unique<PlayerParty>(AVATAR, CHARACTERS);
     }
 
-    PartyUPtr_t PartyFactory::MakeFakeForTesting() const
+    PlayerPartyUPtr_t PlayerPartyFactory::MakeFakeForTesting() const
     {
         creature::CreatureFactory creatureFactory;
 
@@ -192,10 +192,12 @@ namespace player
             creature::role::Sylavin,
             SYLAVIN_STATS));
 
-        return std::make_unique<player::Party>(avatar::Avatar::Puck_Male_Light, creaturesPVec);
+        return std::make_unique<creature::PlayerParty>(
+            avatar::Avatar::Puck_Male_Light, creaturesPVec);
     }
 
-    const std::string PartyFactory::MakeCharacterNameForTesting(const std::string & POSTFIX) const
+    const std::string
+        PlayerPartyFactory::MakeCharacterNameForTesting(const std::string & POSTFIX) const
     {
         creature::NameInfo creatureNameInfo;
 
@@ -203,5 +205,5 @@ namespace player
             creatureNameInfo.LargestName(), creatureNameInfo.LargestLetterString(), POSTFIX);
     }
 
-} // namespace player
+} // namespace creature
 } // namespace heroespath

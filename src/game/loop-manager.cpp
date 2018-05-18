@@ -12,11 +12,11 @@
 #include "loop-manager.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/player-party-factory.hpp"
+#include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-res-change.hpp"
@@ -94,7 +94,7 @@ namespace game
         {
             // TEMP TODO REMOVE -once done testing
             // create a party of characters to work with during testing
-            player::PartyFactory partyFactory;
+            creature::PlayerPartyFactory partyFactory;
             state::GameStateFactory::Instance()->NewGame(partyFactory.MakeFakeForTesting());
         }
 

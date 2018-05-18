@@ -29,6 +29,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
+
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 
