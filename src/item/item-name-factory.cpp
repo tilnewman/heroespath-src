@@ -192,7 +192,8 @@ namespace item
 
         if (PROFILE.IsElemental())
         {
-            ss << ", and pulsing with the magic " << element_type::Name(PROFILE.ElementType());
+            ss << ", and pulsing with " << element_type::Name(PROFILE.ElementType(), false)
+               << " magic";
         }
 
         if (PROFILE.SummonInfo().CanSummon())

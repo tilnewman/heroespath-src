@@ -1276,9 +1276,9 @@ heroespath-item-weapon-details-Dagger=		    "Dagger",          "Simple",    25, 
 
 #armor details (name, complexity, price, weight, armor-rating, description)
 heroespath-item-armor-details-Buckler=          "Buckler Shield",   "Simple",    20,   200,   40, "small circular shield"
-heroespath-item-armor-details-Kite=             "Kite Shield",      "Simple",    80,   800,   70, "medium shield with a round top and a pointed bottom"
-heroespath-item-armor-details-Heater=           "Heater Shield",    "Simple",   200,  1100,   80, "large shield with a flat top and a pointed bottom"
-heroespath-item-armor-details-Pavis=            "Pavis Shield",     "Simple",   400,  2000,   90, "large convex full-covering shield that knights use"
+heroespath-item-armor-details-Kite=             "Kite Shield",      "Simple",    80,   800,   70, "shield with a round top and a pointed bottom"
+heroespath-item-armor-details-Heater=           "Heater Shield",    "Simple",   200,  1100,   80, "shield with a flat top and a pointed bottom"
+heroespath-item-armor-details-Pavis=            "Pavis Shield",     "Simple",   400,  2000,   90, "convex full-covering shield that knights use"
 heroespath-item-armor-details-Leather=          "Leather Helm",     "Simple",    15,   100,   20, "simple top-covering single-piece helm"
 heroespath-item-armor-details-Kettle=           "Kettle Helm",      "Simple",    25,   150,   30, "top-covering brimmed single-piece helm"
 heroespath-item-armor-details-MailCoif=         "Mail Coif",        "Complex",   50,   250,   40, "single-piece of mail that fits over the head."

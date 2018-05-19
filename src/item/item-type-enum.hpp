@@ -205,7 +205,7 @@ namespace item
 
         static bool IsValid(const Enum);
 
-        static const std::string Name(const Enum);
+        static const std::string Name(const Enum, const bool INCLUDE_OF = true);
 
         template <typename T>
         static const std::vector<element_type::Enum>

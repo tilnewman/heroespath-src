@@ -43,7 +43,7 @@ namespace item
         AppendNameIfBitIsSet(ss, ENUM_VALUE, element_type::Shadow, "Shadow");
     }
 
-    const std::string element_type::Name(const Enum ELEMENT_TYPE)
+    const std::string element_type::Name(const Enum ELEMENT_TYPE, const bool INCLUDE_OF)
     {
         std::ostringstream ss;
 
@@ -52,7 +52,10 @@ namespace item
             {
                 if (ss.str().empty())
                 {
-                    ss << "of ";
+                    if (INCLUDE_OF)
+                    {
+                        ss << "of ";
+                    }
                 }
                 else
                 {
