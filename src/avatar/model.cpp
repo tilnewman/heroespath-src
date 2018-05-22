@@ -174,12 +174,7 @@ namespace avatar
 
     void Model::MovingIntoReset()
     {
-        if (walkingIntoNpcPtrOpt_)
-        {
-            walkingIntoNpcPtrOpt_->Obj().RemakeConversationIfRandom();
-            walkingIntoNpcPtrOpt_ = boost::none;
-        }
-
+        walkingIntoNpcPtrOpt_ = boost::none;
         walkingIntoTimerSec_ = 0.0f;
     }
 

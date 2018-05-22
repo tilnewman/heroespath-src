@@ -287,12 +287,16 @@ namespace map
         auto movingIntoNpcPtrOpt{ player_.MovingIntoUpdate(TIME_ELAPSED) };
         if (movingIntoNpcPtrOpt)
         {
-            if (movingIntoNpcPtrOpt->Obj().ConversationPoint().IsValid())
+            if (!interactionManager_.Current())
             {
-                player_.StopWalking();
+                movingIntoNpcPtrOpt->Obj().RemakeConversationIfRandom();
+                if (movingIntoNpcPtrOpt->Obj().ConversationPoint().IsValid())
+                {
+                    player_.StopWalking();
 
-                interactionManager_.SetNext(
-                    interact::InteractionFactory::MakeConversation(movingIntoNpcPtrOpt.value()));
+                    interactionManager_.SetNext(interact::InteractionFactory::MakeConversation(
+                        movingIntoNpcPtrOpt.value()));
+                }
             }
         }
 
