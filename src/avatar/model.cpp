@@ -10,8 +10,8 @@
 // model.cpp
 //
 #include "model.hpp"
-#include "avatar/i-view.hpp"
 #include "avatar/lpc-view.hpp"
+#include "game/npc.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
@@ -33,15 +33,10 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
-
-    const std::size_t Model::WALKING_INTO_INDEX_INVALID_{
-        0
-    }; // TODO fix by using something other than a size_t
-
     const float Model::WALKING_INTO_DURATION_SEC_{ 1.5f };
 
-    Model::Model(IViewUPtr_t viewUPtr, const std::vector<sf::FloatRect> & WALK_RECTS)
-        : viewUPtr_(std::move(viewUPtr))
+    Model::Model(const Avatar::Enum AVATAR_ENUM, const std::vector<sf::FloatRect> & WALK_RECTS)
+        : view_(AVATAR_ENUM)
         , blinkTimerSec_(0.0f)
         , timeUntilNextBlinkSec_(RandomBlinkDelay())
         , blinkTimes_()
@@ -54,7 +49,7 @@ namespace avatar
         , posV_(0.0f, 0.0f)
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
-        , walkingIntoIndex_(WALKING_INTO_INDEX_INVALID_)
+        , walkingIntoNpcPtrOpt_(boost::none)
     {
         if (IsPlayer() == false)
         {
@@ -73,23 +68,19 @@ namespace avatar
             UpdateWalkingAction(TIME_ELAPSED);
         }
 
-        viewUPtr_->UpdatePos(posV_);
-
-        // TODO finish implementation,
-        // TODO change method of identifying moving into targets, std::size_t won't work...
-        MovingIntoUpdate(TIME_ELAPSED);
+        view_.UpdatePos(posV_);
     }
 
     void Model::SetWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
     {
-        viewUPtr_->Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
+        view_.Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
     }
 
     void Model::Move(const float AMOUNT)
     {
         if (Pose::Walking == action_)
         {
-            switch (viewUPtr_->Direction())
+            switch (view_.Direction())
             {
                 case sfml_util::Direction::Left:
                 {
@@ -115,7 +106,7 @@ namespace avatar
                 }
             }
 
-            viewUPtr_->UpdatePos(posV_);
+            view_.UpdatePos(posV_);
         }
     }
 
@@ -170,35 +161,40 @@ namespace avatar
         prevWalkDirection_ = NEW_DIRECTION;
     }
 
-    void Model::MovingIntoSet(const std::size_t NON_PLAYER_INDEX)
+    void Model::MovingIntoSet(const game::NpcPtr_t NPC_PTR)
     {
-        if (NON_PLAYER_INDEX != walkingIntoIndex_)
+        if (NPC_PTR != walkingIntoNpcPtrOpt_)
         {
-            walkingIntoIndex_ = NON_PLAYER_INDEX;
+            walkingIntoNpcPtrOpt_ = NPC_PTR;
             walkingIntoTimerSec_ = 0.0f;
         }
     }
 
     void Model::MovingIntoReset()
     {
-        walkingIntoIndex_ = WALKING_INTO_INDEX_INVALID_;
+        if (walkingIntoNpcPtrOpt_)
+        {
+            walkingIntoNpcPtrOpt_->Obj().RemakeConversationIfRandom();
+            walkingIntoNpcPtrOpt_ = boost::none;
+        }
+
         walkingIntoTimerSec_ = 0.0f;
     }
 
-    std::size_t Model::MovingIntoUpdate(const float TIME_ELAPSED)
+    const game::NpcPtrOpt_t Model::MovingIntoUpdate(const float TIME_ELAPSED)
     {
-        if (walkingIntoIndex_ != WALKING_INTO_INDEX_INVALID_)
+        if (walkingIntoNpcPtrOpt_)
         {
             walkingIntoTimerSec_ += TIME_ELAPSED;
 
             if (walkingIntoTimerSec_ > WALKING_INTO_DURATION_SEC_)
             {
                 walkingIntoTimerSec_ = 0.0f;
-                return walkingIntoIndex_;
+                return walkingIntoNpcPtrOpt_;
             }
         }
 
-        return WALKING_INTO_INDEX_INVALID_;
+        return boost::none;
     }
 
     float Model::RandomBlinkDelay() const
@@ -231,20 +227,20 @@ namespace avatar
 
     void Model::UpdateAnimationAndStopIfNeeded(const float TIME_ELAPSED)
     {
-        if (viewUPtr_->Update(TIME_ELAPSED))
+        if (view_.Update(TIME_ELAPSED))
         {
-            viewUPtr_->Set(Pose::Standing, viewUPtr_->Direction());
+            view_.Set(Pose::Standing, view_.Direction());
         }
     }
 
     void Model::UpdateBlinking(const float TIME_ELAPSED)
     {
-        if (viewUPtr_->WhichPose() == Pose::Standing)
+        if (view_.WhichPose() == Pose::Standing)
         {
             blinkTimerSec_ += TIME_ELAPSED;
             if (blinkTimerSec_ > timeUntilNextBlinkSec_)
             {
-                viewUPtr_->Set(Pose::Blink, viewUPtr_->Direction());
+                view_.Set(Pose::Blink, view_.Direction());
                 blinkTimerSec_ = 0.0f;
                 auto const PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC{ timeUntilNextBlinkSec_ };
                 timeUntilNextBlinkSec_ = RandomBlinkDelay();

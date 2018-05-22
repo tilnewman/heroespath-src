@@ -106,5 +106,18 @@ namespace interact
         INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
     }
 
+    const ButtonVec_t InteractionBase::MakeButtonVecFromButtonEnumVec(
+        const ButtonEnumVec_t & BUTTON_ENUM_VEC) const
+    {
+        ButtonVec_t buttons;
+
+        for (auto const BUTTON_ENUM : BUTTON_ENUM_VEC)
+        {
+            buttons.emplace_back(Button(BUTTON_ENUM));
+        }
+
+        return buttons;
+    }
+
 } // namespace interact
 } // namespace heroespath

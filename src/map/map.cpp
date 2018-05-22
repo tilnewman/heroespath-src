@@ -26,8 +26,10 @@
 #include "misc/vector-map.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/texture-cache.hpp"
 
 #include <exception>
+#include <set>
 #include <sstream>
 
 namespace heroespath
@@ -47,8 +49,7 @@ namespace map
         , collisionVec_()
         , transitionVec_()
         , level_(Level::Count)
-        , player_(avatar::Model(
-              std::make_unique<avatar::LPCView>(game::Game::Instance()->State().Party().Avatar())))
+        , player_(game::Game::Instance()->State().Party().Avatar())
         , nonPlayers_()
         , walkRectVecMap_()
         , walkSfxLayers_()
@@ -56,7 +57,6 @@ namespace map
         , walkMusicIsWalking_(false)
         , sfxTimer_(game::GameDataFile::Instance()->GetCopyFloat(
               "heroespath-sound-map-sfx-time-between-updates"))
-        , interactionRect_()
     {}
 
     Map::~Map() = default;
@@ -125,9 +125,8 @@ namespace map
             }
             else
             {
-                if (sf::FloatRect() != interactionRect_)
+                if (interactionManager_.Current())
                 {
-                    interactionRect_ = sf::FloatRect();
                     interactionManager_.RemoveCurrent();
                 }
 
@@ -138,11 +137,9 @@ namespace map
 
     void Map::MoveNonPlayers()
     {
-        for (std::size_t npcIndex(0); npcIndex < nonPlayers_.size(); ++npcIndex)
+        for (auto & npcPtrModelPair : nonPlayers_)
         {
             // check if NPC move will collide with the player
-            auto & npc{ nonPlayers_[npcIndex] };
-
             auto const ADJ_POS_V{ [&]() {
                 auto v{ player_.GetView().SpriteSize() };
                 v.x *= 0.5f;
@@ -161,9 +158,9 @@ namespace map
             }() };
 
             auto const NPC_RECT_ADJ{ [&]() {
-                auto rect{ npc.GetView().SpriteRef().getGlobalBounds() };
+                auto rect{ npcPtrModelPair.second.GetView().SpriteRef().getGlobalBounds() };
 
-                switch (npc.GetView().Direction())
+                switch (npcPtrModelPair.second.GetView().Direction())
                 {
                     case sfml_util::Direction::Left:
                     {
@@ -203,29 +200,30 @@ namespace map
             if (sfml_util::DoRectsOverlap(
                     NPC_RECT_FOR_PLAYER_COLLISIONS, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
-                npc.StopWalking();
+                npcPtrModelPair.second.StopWalking();
                 return;
             }
 
             // check if NPC move will collide with other NPCs
-            auto const NPC_POS_V{ npc.GetView().SpriteRef().getPosition() };
+            auto const NPC_POS_V{ npcPtrModelPair.second.GetView().SpriteRef().getPosition() };
             auto didNPCsCollide{ false };
-            for (std::size_t subNPCIndex(0); subNPCIndex < nonPlayers_.size(); ++subNPCIndex)
+            for (auto const & SUB_NPC_PTR_MODEL_PAIR : nonPlayers_)
             {
-                if (subNPCIndex == npcIndex)
+                if (npcPtrModelPair.first == SUB_NPC_PTR_MODEL_PAIR.first)
                 {
                     continue;
                 }
 
-                auto & subNPC{ nonPlayers_[subNPCIndex] };
-
                 if (sfml_util::DoRectsOverlap(
-                        NPC_RECT_ADJ, subNPC.GetView().SpriteRef().getGlobalBounds()))
+                        NPC_RECT_ADJ,
+                        SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getGlobalBounds()))
                 {
-                    auto const SUB_POS_V{ subNPC.GetView().SpriteRef().getPosition() };
+                    auto const SUB_POS_V{
+                        SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getPosition()
+                    };
 
                     auto const IS_IN_THE_WAY{ [&]() {
-                        switch (npc.GetView().Direction())
+                        switch (npcPtrModelPair.second.GetView().Direction())
                         {
                             case sfml_util::Direction::Left:
                             {
@@ -258,11 +256,11 @@ namespace map
 
             if (didNPCsCollide)
             {
-                npc.StopWalking();
+                npcPtrModelPair.second.StopWalking();
             }
             else
             {
-                npc.Move(NONPLAYER_MOVE_DISTANCE_);
+                npcPtrModelPair.second.Move(NONPLAYER_MOVE_DISTANCE_);
             }
         }
     }
@@ -278,9 +276,21 @@ namespace map
 
         player_.Update(TIME_ELAPSED);
 
-        for (auto & npc : nonPlayers_)
+        auto movingIntoNpcPtrOpt{ player_.MovingIntoUpdate(TIME_ELAPSED) };
+        if (movingIntoNpcPtrOpt)
         {
-            npc.Update(TIME_ELAPSED);
+            if (movingIntoNpcPtrOpt->Obj().ConversationPoint().IsValid())
+            {
+                player_.StopWalking();
+
+                interactionManager_.SetNext(
+                    interact::InteractionFactory::MakeConversation(movingIntoNpcPtrOpt.value()));
+            }
+        }
+
+        for (auto & npcPtrModelPair : nonPlayers_)
+        {
+            npcPtrModelPair.second.Update(TIME_ELAPSED);
         }
 
         if (sfxTimer_.Update(TIME_ELAPSED))
@@ -350,15 +360,15 @@ namespace map
             ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
             ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
 
-        for (std::size_t i(0); i < nonPlayers_.size(); ++i)
+        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
         {
-            auto const & NPC{ nonPlayers_[i] };
-
-            const sf::FloatRect NPC_RECT{ NPC.GetView().SpriteRef().getGlobalBounds() };
+            const sf::FloatRect NPC_RECT{
+                NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getGlobalBounds()
+            };
 
             if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
-                player_.MovingIntoSet(i);
+                player_.MovingIntoSet(NPC_PTR_MODEL_PAIR.first);
                 return true;
             }
         }
@@ -415,19 +425,21 @@ namespace map
     {
         player_.StopWalking();
 
-        auto const IS_LOCKED{
+        auto const IS_LOCKED_DOOR{
             game::Game::Instance()->State().GetWorld().GetMaps().Current().IsDoorLocked(
                 TRANSITION.WhichLevel())
         };
 
-        if (IS_LOCKED)
+        if (IS_LOCKED_DOOR)
         {
-            if (TRANSITION.Rect() != interactionRect_)
+            auto const CURRENT_INTERACTION_PTR_OPT{ interactionManager_.Current() };
+            if (CURRENT_INTERACTION_PTR_OPT)
             {
-                interactionManager_.SetNext(
-                    interact::InteractionFactory::MakeLockedDoor(TRANSITION));
-
-                interactionRect_ = TRANSITION.Rect();
+                if (CURRENT_INTERACTION_PTR_OPT->Obj().Type() != interact::Interact::Lock)
+                {
+                    interactionManager_.SetNext(
+                        interact::InteractionFactory::MakeLockedDoor(TRANSITION));
+                }
             }
         }
         else
@@ -539,7 +551,18 @@ namespace map
 
     void Map::ResetNonPlayers()
     {
-        nonPlayers_.clear();
+        // remove all Model's LPCView textures from the cache, and watch out for duplicates
+        std::set<std::size_t> textureIndexSet;
+        for (auto const & NPC_MODEL_PAIR : nonPlayers_)
+        {
+            textureIndexSet.insert(NPC_MODEL_PAIR.second.ViewTextureIndex());
+        }
+        for (auto const TEXTURE_INDEX : textureIndexSet)
+        {
+            sfml_util::TextureCache::Instance()->RemoveByIndex(TEXTURE_INDEX);
+        }
+
+        nonPlayers_.Clear();
 
         for (auto const & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
@@ -590,8 +613,7 @@ namespace map
                    "not associated with any actual walk bounds.  "
                    "The vector was empty.");
 
-        nonPlayers_.emplace_back(
-            avatar::Model(std::make_unique<avatar::LPCView>(AVATAR_IMAGE_ENUM), walkRects));
+        nonPlayers_.Append(NPC_PTR, avatar::Model(AVATAR_IMAGE_ENUM, walkRects));
     }
 
 } // namespace map

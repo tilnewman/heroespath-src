@@ -317,16 +317,16 @@ namespace map
         characterShadowSprite.setPosition(PLAYER_OFFSCREEN_POS_V - SIZE_HALF);
         offScreenTextureBelow_.draw(characterShadowSprite);
 
-        for (auto const & NPC : MAP_.NonPlayers())
+        for (auto const & NPC_MODEL_PAIR : MAP_.NonPlayers())
         {
-            sf::Sprite npcSprite{ NPC.GetView().SpriteRef() };
+            sf::Sprite npcSprite{ NPC_MODEL_PAIR.second.GetView().SpriteRef() };
 
             // check if NPC is on the visible map
             auto const NPC_OFFSCREEN_POS_V{ OffScreenPosFromMapPos(npcSprite.getPosition())
                                             - SIZE_HALF };
 
             characterShadowSprite.setPosition(NPC_OFFSCREEN_POS_V);
-            characterShadowSprite.setScale(NPC.GetView().SpriteRef().getScale());
+            characterShadowSprite.setScale(NPC_MODEL_PAIR.second.GetView().SpriteRef().getScale());
             offScreenTextureBelow_.draw(characterShadowSprite);
 
             npcSprite.setPosition(NPC_OFFSCREEN_POS_V);

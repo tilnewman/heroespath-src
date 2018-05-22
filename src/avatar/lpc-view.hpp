@@ -9,12 +9,13 @@
 //
 // lpc-npc-view.hpp
 //
+#include "avatar/animation.hpp"
+#include "avatar/avatar-enum.hpp"
+#include "avatar/pose-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "avatar/animation.hpp"
-#include "avatar/i-view.hpp"
-#include "avatar/pose-enum.hpp"
+#include <SFML/System/Vector2.hpp>
 
 namespace heroespath
 {
@@ -22,30 +23,31 @@ namespace avatar
 {
 
     // Responsible for drawing an LPC-style NPC.
-    class LPCView : public IView
+    class LPCView
     {
     public:
         explicit LPCView(const Avatar::Enum);
-        virtual ~LPCView() = default;
 
-        void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
+        void Set(const Pose::Enum, const sfml_util::Direction::Enum);
 
-        bool Update(const float TIME_ELAPSED) override;
+        bool Update(const float TIME_ELAPSED);
 
-        void UpdatePos(const sf::Vector2f & V) override { sprite_.setPosition(V); }
+        void UpdatePos(const sf::Vector2f & V) { sprite_.setPosition(V); }
 
-        sfml_util::Direction::Enum Direction() const override { return animation_.direction; }
+        sfml_util::Direction::Enum Direction() const { return animation_.direction; }
 
-        Pose::Enum WhichPose() const override { return animation_.pose; }
+        Pose::Enum WhichPose() const { return animation_.pose; }
 
-        const sf::Sprite & SpriteRef() const override { return sprite_; }
+        const sf::Sprite & SpriteRef() const { return sprite_; }
 
-        const sf::Vector2f SpriteSize() const override
+        const sf::Vector2f SpriteSize() const
         {
             return sf::Vector2f(sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height);
         }
 
-        Avatar::Enum WhichAvatar() const override { return whichAvatar_; }
+        Avatar::Enum WhichAvatar() const { return whichAvatar_; }
+
+        std::size_t TextureIndex() const { return textureIndex_; }
 
     private:
         const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;
@@ -67,12 +69,14 @@ namespace avatar
         static const float FRAME_DURATION_SEC_BLINK_MAX_;
 
         Avatar::Enum whichAvatar_;
-        sf::Texture texture_;
+        std::size_t textureIndex_;
+        int textureSize_;
         sf::Sprite sprite_;
         Animation animation_;
         float frameTimerSec_;
         std::size_t frameIndex_;
     };
+
 } // namespace avatar
 } // namespace heroespath
 

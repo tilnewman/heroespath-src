@@ -10,8 +10,8 @@
 // npc.hpp
 //
 #include "avatar/avatar-enum.hpp"
-#include "interact/conversation-point.hpp"
-#include "interact/conversation.hpp"
+#include "interact/npc-conversation-point.hpp"
+#include "interact/npc-conversation.hpp"
 #include "interact/statement.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
@@ -36,29 +36,35 @@ namespace game
             const std::size_t WALK_BOUNDS_INDEX = 0);
 
         Npc(const avatar::Avatar::Enum,
-            const interact::Conversation &,
+            const interact::NpcConversation &,
             const std::size_t WALK_BOUNDS_INDEX);
 
         avatar::Avatar::Enum AvatarImage() const { return avatar_; }
 
-        const interact::ConversationPoint ConversationPoint() { return conversation_.Current(); }
+        const interact::NpcConversationPoint ConversationPoint() { return conversation_.Current(); }
 
-        void ApplyConversationResponse(const interact::Buttons::Enum);
+        // returns true if the conversation ended or restarted
+        bool ApplyConversationResponse(const interact::Buttons::Enum);
 
         std::size_t WalkBoundsIndex() const { return walkBoundsIndex_; }
 
-        void ResetConversation();
+        void RemakeConversationIfRandom();
 
         const std::string ToString() const;
 
     private:
-        const interact::Conversation MakeNewConversation();
+        const interact::NpcConversation MakeNewRandomConversation();
+
+        bool CanMakeNewRandomConversation() const
+        {
+            return (conversation_.IsRandom() && (conversationCategories_.empty() == false));
+        }
 
     private:
         avatar::Avatar::Enum avatar_;
         interact::talk::CategoryVec_t conversationCategories_;
         interact::talk::Mood conversationMood_;
-        interact::Conversation conversation_;
+        interact::NpcConversation conversation_;
         std::size_t walkBoundsIndex_;
 
     private:

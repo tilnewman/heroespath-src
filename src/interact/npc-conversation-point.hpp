@@ -4,15 +4,17 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_INTERACTION_CONVERSATION_POINT_HPP_INCLUDED
-#define HEROESPATH_INTERACTION_CONVERSATION_POINT_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACTION_NPC_CONVERSATION_POINT_HPP_INCLUDED
+#define HEROESPATH_INTERACTION_NPC_CONVERSATION_POINT_HPP_INCLUDED
 //
 // conversation-point.hpp
 //
 #include "interact/interaction-button-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vector-map.hpp"
+
 #include <algorithm>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -24,26 +26,26 @@ namespace interact
     using TransitionMap_t = misc::VectorMap<Buttons::Enum, std::size_t>;
 
     // Responsible for wrapping a place in a conversation.
-    struct ConversationPoint
+    struct NpcConversationPoint
     {
         // default construction means IsValid() == false.
-        explicit ConversationPoint(
+        explicit NpcConversationPoint(
             const std::string & TEXT = "",
-            const ButtonsVec_t & BUTTONS = ButtonsVec_t(),
+            const ButtonEnumVec_t & BUTTONS = ButtonEnumVec_t(),
             const TransitionMap_t & TRANSITIONS = TransitionMap_t())
             : text_(TEXT)
             , buttons_(BUTTONS)
             , transitionMap_(TRANSITIONS)
         {}
 
-        ConversationPoint(const std::string & TEXT, const Buttons::Enum BUTTON)
+        NpcConversationPoint(const std::string & TEXT, const Buttons::Enum BUTTON)
             : text_(TEXT)
             , buttons_(1, BUTTON)
             , transitionMap_()
         {}
 
         const std::string Text() const { return text_; }
-        const ButtonsVec_t Buttons() const { return buttons_; }
+        const ButtonEnumVec_t Buttons() const { return buttons_; }
 
         std::size_t Transition(const Buttons::Enum BUTTON) const
         {
@@ -52,11 +54,35 @@ namespace interact
             return index;
         }
 
-        bool IsValid() const { return (text_.empty() == false); }
+        bool IsValid() const { return (text_.empty() == false) && (buttons_.empty() == false); }
+
+        const std::string ToString() const
+        {
+            std::ostringstream ss;
+
+            ss << "NpcConversationPoint: \"" << text_ << "\", buttons=(";
+
+            for (auto const BUTTON : buttons_)
+            {
+                ss << Buttons::ToString(BUTTON) << ",";
+            }
+
+            ss << "), transition_map=(";
+
+            for (auto const & BUTTON_INDEX_PAIR : transitionMap_)
+            {
+                ss << Buttons::ToString(BUTTON_INDEX_PAIR.first) << "=" << BUTTON_INDEX_PAIR.second
+                   << ",";
+            }
+
+            ss << ")";
+
+            return ss.str();
+        }
 
     private:
         std::string text_;
-        ButtonsVec_t buttons_;
+        ButtonEnumVec_t buttons_;
         TransitionMap_t transitionMap_;
 
     private:
@@ -70,8 +96,9 @@ namespace interact
         }
     };
 
-    using ConvPointVec_t = std::vector<ConversationPoint>;
+    using ConvPointVec_t = std::vector<NpcConversationPoint>;
+
 } // namespace interact
 } // namespace heroespath
 
-#endif // HEROESPATH_INTERACTION_CONVERSATION_POINT_HPP_INCLUDED
+#endif // HEROESPATH_INTERACTION_NPC_CONVERSATION_POINT_HPP_INCLUDED

@@ -11,7 +11,6 @@
 //
 #include "adventure-display-stage.hpp"
 
-#include "avatar/i-view.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"

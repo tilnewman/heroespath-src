@@ -7,9 +7,10 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// conversation-factory.hpp
+// npc-conversation-factory.hpp
 //
-#include "conversation-factory.hpp"
+#include "npc-conversation-factory.hpp"
+
 #include "interact/interaction-button-enum.hpp"
 #include "interact/statement-factory.hpp"
 
@@ -18,10 +19,11 @@ namespace heroespath
 namespace interact
 {
 
-    const Conversation ConversationFactory::Make(
+    const NpcConversation NpcConversationFactory::MakeRandom(
         const talk::Mood MOOD, const talk::CategoryVec_t & TALK_CATEGORIES)
     {
-        return Conversation(talk::Factory::Make(TALK_CATEGORIES, MOOD), Buttons::Goodbye);
+        return NpcConversation(talk::Factory::Make(TALK_CATEGORIES, MOOD), Buttons::Goodbye);
     }
+
 } // namespace interact
 } // namespace heroespath

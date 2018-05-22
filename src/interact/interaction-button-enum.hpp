@@ -38,7 +38,7 @@ namespace interact
         static sf::Keyboard::Key Key(const Enum);
     };
 
-    using ButtonsVec_t = std::vector<Buttons::Enum>;
+    using ButtonEnumVec_t = std::vector<Buttons::Enum>;
 
 } // namespace interact
 } // namespace heroespath

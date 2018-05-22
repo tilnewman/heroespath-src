@@ -51,7 +51,7 @@ namespace game
 
         for (auto & npcPtr : randomNpcs_)
         {
-            npcPtr->ResetConversation();
+            npcPtr->RemakeConversationIfRandom();
         }
     }
 

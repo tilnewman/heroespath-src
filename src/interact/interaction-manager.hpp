@@ -23,7 +23,7 @@ namespace interact
     using IInteractionPtrOpt_t = boost::optional<IInteractionPtr_t>;
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
 
-    // Responsible for the lifetimes of interactions.
+    // Responsible for the lifetimes of interactions and for providing access to them.
     class InteractionManager
     {
     public:

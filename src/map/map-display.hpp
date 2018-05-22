@@ -141,6 +141,7 @@ namespace map
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
+
 } // namespace map
 } // namespace heroespath
 

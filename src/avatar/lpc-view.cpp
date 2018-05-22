@@ -14,6 +14,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/texture-cache.hpp"
 
 namespace heroespath
 {
@@ -29,14 +30,15 @@ namespace avatar
 
     LPCView::LPCView(const Avatar::Enum WHICH_AVATAR)
         : whichAvatar_(WHICH_AVATAR)
-        , texture_()
-        , sprite_()
+        , textureIndex_(
+              sfml_util::TextureCache::Instance()->AddByPath(Avatar::ImagePath(whichAvatar_)))
+        , textureSize_(static_cast<int>(
+              sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_).getSize().x))
+        , sprite_(sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_))
         , animation_(CreateAnimation(Pose::Standing, sfml_util::Direction::Right))
         , frameTimerSec_(0.0f)
         , frameIndex_(0)
     {
-        sfml_util::Loaders::Texture(texture_, Avatar::ImagePath(whichAvatar_));
-        sprite_.setTexture(texture_, true);
         SetupSprite();
     }
 
@@ -241,7 +243,7 @@ namespace avatar
 
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM) const
     {
-        auto const CELL_COUNT{ static_cast<FrameNum_t>(texture_.getSize().x) / CELL_SIZE_ };
+        auto const CELL_COUNT{ textureSize_ / CELL_SIZE_ };
 
         auto const FRAME_INDEX_X{ [&]() {
             auto const INDEX{ (FRAME_NUM % CELL_COUNT) - 1 };
@@ -321,5 +323,6 @@ namespace avatar
         auto const SCALE{ Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
     }
+
 } // namespace avatar
 } // namespace heroespath

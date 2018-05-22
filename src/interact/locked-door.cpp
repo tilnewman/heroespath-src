@@ -41,7 +41,7 @@ namespace interact
     {
         if (BUTTON.Which() == Buttons::Ignore)
         {
-            INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
+            HandleIgnore(INTERACTION_STAGE_PTR);
             return true;
         }
         else if (BUTTON.Which() == Buttons::Unlock)

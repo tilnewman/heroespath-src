@@ -12,7 +12,6 @@
 #include "testing-stage.hpp"
 
 #include "avatar/avatar-enum.hpp"
-#include "avatar/i-view.hpp"
 #include "combat/strategy-enums.hpp"
 #include "combat/target-enum.hpp"
 #include "creature/condition-holder.hpp"

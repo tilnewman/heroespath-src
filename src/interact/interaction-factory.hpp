@@ -15,6 +15,11 @@
 
 namespace heroespath
 {
+namespace game
+{
+    class Npc;
+    using NpcPtr_t = misc::NotNull<Npc *>;
+} // namespace game
 namespace interact
 {
 
@@ -22,7 +27,9 @@ namespace interact
     struct InteractionFactory
     {
         static InteractionUPtr_t MakeLockedDoor(const map::Transition &);
+        static InteractionUPtr_t MakeConversation(const game::NpcPtr_t);
     };
+
 } // namespace interact
 } // namespace heroespath
 

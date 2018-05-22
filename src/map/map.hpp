@@ -17,6 +17,7 @@
 #include "map/walk-sfx.hpp"
 #include "misc/not-null.hpp"
 #include "misc/timer.hpp"
+#include "misc/vector-map.hpp"
 #include "sfml-util/direction-enum.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -38,6 +39,8 @@ namespace map
 
     class MapDisplay;
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
+
+    using NpcModelMap_t = misc::VectorMap<game::NpcPtr_t, avatar::Model>;
 
     // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
@@ -73,7 +76,7 @@ namespace map
 
         const avatar::Model & Player() const { return player_; }
 
-        const std::vector<avatar::Model> & NonPlayers() const { return nonPlayers_; }
+        const NpcModelMap_t & NonPlayers() const { return nonPlayers_; }
 
         void EntryAndExitLevels(
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
@@ -114,14 +117,20 @@ namespace map
         std::vector<sf::FloatRect> collisionVec_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
+
+        // the texture of this Model's LPCView will stay in the TextureCache until the
+        // AdventureStage is destructed and everything in the TextureCache is cleared.
         avatar::Model player_;
-        std::vector<avatar::Model> nonPlayers_;
+
+        // the textures of these Model's LPCViews should be removed from the TextureCache each time
+        // this map is cleared before a new level loads.
+        NpcModelMap_t nonPlayers_;
+
         WalkRectMap_t walkRectVecMap_;
         WalkSfxRegionLayers walkSfxLayers_;
         sfml_util::music::Enum walkMusicWhich_;
         bool walkMusicIsWalking_;
         misc::Timer sfxTimer_;
-        sf::FloatRect interactionRect_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

@@ -4,12 +4,12 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED
-#define HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACTION_NPC_CONVERSATION_FACTORY_HPP_INCLUDED
+#define HEROESPATH_INTERACTION_NPC_CONVERSATION_FACTORY_HPP_INCLUDED
 //
-// conversation-factory.hpp
+// npc-conversation-factory.hpp
 //
-#include "interact/conversation.hpp"
+#include "interact/npc-conversation.hpp"
 #include "interact/statement.hpp"
 
 namespace heroespath
@@ -17,11 +17,12 @@ namespace heroespath
 namespace interact
 {
 
-    struct ConversationFactory
+    struct NpcConversationFactory
     {
-        static const Conversation Make(const talk::Mood, const talk::CategoryVec_t &);
+        static const NpcConversation MakeRandom(const talk::Mood, const talk::CategoryVec_t &);
     };
+
 } // namespace interact
 } // namespace heroespath
 
-#endif // HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED
+#endif // HEROESPATH_INTERACTION_NPC_CONVERSATION_FACTORY_HPP_INCLUDED

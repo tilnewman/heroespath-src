@@ -9,8 +9,11 @@
 //
 // model.hpp
 //
+#include "avatar/avatar-enum.hpp"
+#include "avatar/lpc-view.hpp"
 #include "avatar/pose-enum.hpp"
-
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/direction-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
@@ -22,23 +25,26 @@
 
 namespace heroespath
 {
+namespace game
+{
+    class Npc;
+    using NpcPtr_t = misc::NotNull<Npc *>;
+    using NpcPtrOpt_t = boost::optional<NpcPtr_t>;
+} // namespace game
 namespace avatar
 {
-
-    struct IView;
-    using IViewUPtr_t = std::unique_ptr<IView>;
 
     // Responsible for all state and non-drawing behavior of an NPC.
     class Model
     {
     public:
         explicit Model(
-            IViewUPtr_t viewUPtr,
+            const Avatar::Enum,
             const std::vector<sf::FloatRect> & WALK_RECTS = std::vector<sf::FloatRect>());
 
         void Update(const float TIME_ELAPSED);
 
-        const IView & GetView() const { return *viewUPtr_; }
+        const LPCView & GetView() const { return view_; }
 
         void SetWalkAnim(const sfml_util::Direction::Enum, const bool WILL_START_OR_STOP);
 
@@ -50,9 +56,11 @@ namespace avatar
 
         void ChangeDirection();
 
-        void MovingIntoSet(const std::size_t NON_PLAYER_INDEX);
+        void MovingIntoSet(const game::NpcPtr_t);
         void MovingIntoReset();
-        std::size_t MovingIntoUpdate(const float TIME_ELAPSED);
+        const game::NpcPtrOpt_t MovingIntoUpdate(const float TIME_ELAPSED);
+
+        std::size_t ViewTextureIndex() const { return view_.TextureIndex(); }
 
     private:
         float RandomBlinkDelay() const;
@@ -81,10 +89,9 @@ namespace avatar
         static const float TIME_BETWEEN_WALK_MIN_SEC_;
         static const float TIME_BETWEEN_WALK_MAX_SEC_;
         static const float WALK_TARGET_CLOSE_ENOUGH_;
-        static const std::size_t WALKING_INTO_INDEX_INVALID_;
         static const float WALKING_INTO_DURATION_SEC_;
 
-        IViewUPtr_t viewUPtr_;
+        LPCView view_;
         float blinkTimerSec_;
         float timeUntilNextBlinkSec_;
         std::vector<float> blinkTimes_;
@@ -97,8 +104,9 @@ namespace avatar
         sf::Vector2f posV_;
         sfml_util::Direction::Enum prevWalkDirection_;
         float walkingIntoTimerSec_;
-        std::size_t walkingIntoIndex_;
+        game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
     };
+
 } // namespace avatar
 } // namespace heroespath
 

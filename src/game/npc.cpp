@@ -10,7 +10,7 @@
 // npc.hpp
 //
 #include "npc.hpp"
-#include "interact/conversation-factory.hpp"
+#include "interact/npc-conversation-factory.hpp"
 
 #include <sstream>
 
@@ -27,13 +27,13 @@ namespace game
         : avatar_(AVATAR)
         , conversationCategories_(CONV_CATEGORIES)
         , conversationMood_(CONV_MOOD)
-        , conversation_(MakeNewConversation())
+        , conversation_(MakeNewRandomConversation())
         , walkBoundsIndex_(WALK_BOUNDS_INDEX)
     {}
 
     Npc::Npc(
         const avatar::Avatar::Enum AVATAR,
-        const interact::Conversation & CONVERSATION,
+        const interact::NpcConversation & CONVERSATION,
         const std::size_t WALK_BOUNDS_INDEX)
         : avatar_(AVATAR)
         , conversationCategories_()
@@ -42,26 +42,31 @@ namespace game
         , walkBoundsIndex_(WALK_BOUNDS_INDEX)
     {}
 
-    void Npc::ApplyConversationResponse(const interact::Buttons::Enum BUTTON)
+    bool Npc::ApplyConversationResponse(const interact::Buttons::Enum BUTTON)
     {
-        conversation_.ApplyResponse(BUTTON);
-
-        if (conversation_.Current().IsValid() == false)
+        if (conversation_.ApplyResponse(BUTTON))
         {
-            conversation_ = MakeNewConversation();
+            // at this point we know the conversation either ended or restarted
+            RemakeConversationIfRandom();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    const interact::Conversation Npc::MakeNewConversation()
+    const interact::NpcConversation Npc::MakeNewRandomConversation()
     {
-        return interact::ConversationFactory::Make(conversationMood_, conversationCategories_);
+        return interact::NpcConversationFactory::MakeRandom(
+            conversationMood_, conversationCategories_);
     }
 
-    void Npc::ResetConversation()
+    void Npc::RemakeConversationIfRandom()
     {
-        if (conversationCategories_.empty() == false)
+        if (CanMakeNewRandomConversation())
         {
-            conversation_ = MakeNewConversation();
+            conversation_ = MakeNewRandomConversation();
         }
     }
 

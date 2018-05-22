@@ -10,6 +10,8 @@
 // interaction-factory.cpp
 //
 #include "interaction-factory.hpp"
+
+#include "interact/conversation.hpp"
 #include "interact/locked-door.hpp"
 
 namespace heroespath
@@ -21,5 +23,11 @@ namespace interact
     {
         return std::make_unique<LockedDoor>(TRANSITION);
     }
+
+    InteractionUPtr_t InteractionFactory::MakeConversation(const game::NpcPtr_t NPC_PTR)
+    {
+        return std::make_unique<Conversation>(NPC_PTR);
+    }
+
 } // namespace interact
 } // namespace heroespath

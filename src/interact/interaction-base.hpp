@@ -67,10 +67,12 @@ namespace interact
         bool OnSuccess(const stage::InteractStagePtr_t) override { return false; }
         bool OnFailure(const stage::InteractStagePtr_t) override { return false; }
 
+    protected:
+        void HandleIgnore(const stage::InteractStagePtr_t);
+        const ButtonVec_t MakeButtonVecFromButtonEnumVec(const ButtonEnumVec_t &) const;
+
     private:
         virtual bool OnInteraction(const stage::InteractStagePtr_t, const Button &) = 0;
-
-        void HandleIgnore(const stage::InteractStagePtr_t);
 
     private:
         Interact::Enum interactionType_;

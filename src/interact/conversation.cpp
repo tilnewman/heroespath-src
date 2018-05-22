@@ -10,46 +10,38 @@
 // conversation.cpp
 //
 #include "conversation.hpp"
-#include <string>
+
+#include "game/npc.hpp"
+#include "interact/interaction-factory.hpp"
+#include "stage/adventure-stage-interact-stage.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
 
-    Conversation::Conversation(const ConvPointVec_t & CONVERSATION_POINTS)
-        : pointIndex_(1)
-        , convPoints_(CONVERSATION_POINTS)
+    Conversation::Conversation(const game::NpcPtr_t NPC_PTR)
+        : InteractionBase(
+              Interact::Conversation,
+              InteractionBase::MakeTextInfo(NPC_PTR->ConversationPoint().Text(), Text::Dialog),
+              MakeButtonVecFromButtonEnumVec(NPC_PTR->ConversationPoint().Buttons()),
+              "media-images-misc-talk")
+        , npcPtr_(NPC_PTR)
     {}
 
-    Conversation::Conversation(const std::string & TEXT, const Buttons::Enum BUTTON)
-        : pointIndex_(1)
-        , convPoints_()
+    bool Conversation::OnInteraction(
+        const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const Button & BUTTON)
     {
-        convPoints_.emplace_back(ConversationPoint());
-        convPoints_.emplace_back(ConversationPoint(TEXT, BUTTON));
+        INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
+
+        if (npcPtr_->ApplyConversationResponse(BUTTON.Which()) == false)
+        {
+            INTERACTION_STAGE_PTR->InteractionManager().SetNext(
+                interact::InteractionFactory::MakeConversation(npcPtr_));
+        }
+
+        return true;
     }
 
-    const ConversationPoint & Conversation::Current() const
-    {
-        if (pointIndex_ >= convPoints_.size())
-        {
-            return convPoints_.at(0);
-        }
-        else
-        {
-            return convPoints_.at(pointIndex_);
-        }
-    }
-
-    void Conversation::ApplyResponse(const Buttons::Enum BUTTON)
-    {
-        auto & convPoint{ Current() };
-
-        if (convPoint.IsValid())
-        {
-            pointIndex_ = convPoint.Transition(BUTTON);
-        }
-    }
 } // namespace interact
 } // namespace heroespath
