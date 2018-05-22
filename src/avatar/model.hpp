@@ -62,12 +62,23 @@ namespace avatar
 
         std::size_t ViewTextureIndex() const { return view_.TextureIndex(); }
 
-        void SetIsNextToPlayer(const bool IS_NEXT_TO_PLAYER)
+        void SetIsNextToPlayer(
+            const bool IS_NEXT_TO_PLAYER,
+            const sf::Vector2f & PLAYER_POS_V,
+            const bool WILL_FORCE_TURN_TO_FACE_PLAYER)
         {
+            if (WILL_FORCE_TURN_TO_FACE_PLAYER
+                || ((isNextToPlayer_ == false) && (IS_NEXT_TO_PLAYER == true)))
+            {
+                TurnToFacePos(PLAYER_POS_V);
+            }
+
             isNextToPlayer_ = IS_NEXT_TO_PLAYER;
         }
 
         bool IsWalking() const { return (Pose::Walking == action_); }
+
+        void TurnToFacePos(const sf::Vector2f &);
 
     private:
         float RandomBlinkDelay() const;

@@ -16,6 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -196,6 +197,17 @@ namespace avatar
         }
 
         return boost::none;
+    }
+
+    void Model::TurnToFacePos(const sf::Vector2f & POS_V)
+    {
+        auto const DIRECTION{ sfml_util::DirectionFromAToB(
+            sfml_util::SpriteCenter(view_.SpriteRef()), POS_V) };
+
+        if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
+        {
+            view_.Set(Pose::Standing, DIRECTION);
+        }
     }
 
     float Model::RandomBlinkDelay() const

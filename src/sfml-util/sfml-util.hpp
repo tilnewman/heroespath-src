@@ -9,6 +9,7 @@
 //
 // sfml-util.hpp
 //
+#include "sfml-util/direction-enum.hpp"
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-window.hpp"
@@ -40,6 +41,67 @@ namespace heroespath
 {
 namespace sfml_util
 {
+
+    template <typename T>
+    const sf::Vector2<T> RectCenter(const sf::Rect<T> & RECT)
+    {
+        return sf::Vector2<T>((RECT.left + (RECT.width / T(2))), (RECT.top + (RECT.height / T(2))));
+    }
+
+    const sf::Vector2f SpriteCenter(const sf::Sprite & SPRITE);
+
+    template <typename T>
+    sfml_util::Direction::Enum DirectionFromAToB(const sf::Vector2<T> & A, const sf::Vector2<T> & B)
+    {
+        auto const DIFF_HORIZ_ABS{ std::abs(B.x - A.x) };
+        auto const DIFF_VERT_ABS{ std::abs(B.y - A.y) };
+
+        if (DIFF_HORIZ_ABS > DIFF_VERT_ABS)
+        {
+            if (B.x < A.x)
+            {
+                return sfml_util::Direction::Left;
+            }
+            else
+            {
+                return sfml_util::Direction::Right;
+            }
+        }
+        else if (DIFF_VERT_ABS > DIFF_HORIZ_ABS)
+        {
+            if (B.y < A.y)
+            {
+                return sfml_util::Direction::Up;
+            }
+            else
+            {
+                return sfml_util::Direction::Down;
+            }
+        }
+        else
+        {
+            if (B.x < A.x)
+            {
+                return sfml_util::Direction::Left;
+            }
+            else if (A.x < B.x)
+            {
+                return sfml_util::Direction::Right;
+            }
+            else
+            {
+                return sfml_util::Direction::Count;
+            }
+        }
+    }
+
+    template <typename T>
+    sfml_util::Direction::Enum DirectionFromAToB(const sf::Rect<T> & A, const sf::Rect<T> & B)
+    {
+        return DirectionFromAToB(RectCenter(A), RectCenter(B));
+    }
+
+    sfml_util::Direction::Enum DirectionFromAToB(const sf::Sprite & A, const sf::Sprite & B);
 
     template <typename T>
     constexpr bool DoRectsOverlap(const sf::Rect<T> & A, const sf::Rect<T> & B)

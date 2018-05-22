@@ -208,7 +208,7 @@ namespace map
                     NPC_RECT_FOR_PLAYER_COLLISIONS, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 npcPtrModelPair.second.StopWalking();
-                npcPtrModelPair.second.SetIsNextToPlayer(true);
+                npcPtrModelPair.second.SetIsNextToPlayer(true, PlayerSpriteCenterMapPos(), false);
                 return;
             }
 
@@ -377,12 +377,12 @@ namespace map
             if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 player_.MovingIntoSet(npcPtrModelPair.first);
-                npcPtrModelPair.second.SetIsNextToPlayer(true);
+                npcPtrModelPair.second.SetIsNextToPlayer(true, PlayerSpriteCenterMapPos(), true);
                 return true;
             }
             else
             {
-                npcPtrModelPair.second.SetIsNextToPlayer(false);
+                npcPtrModelPair.second.SetIsNextToPlayer(false, PlayerSpriteCenterMapPos(), false);
             }
         }
 
@@ -628,6 +628,11 @@ namespace map
 
         nonPlayers_.Append(
             NPC_PTR, avatar::Model(avatar::Avatar::Leather_Corporal1_Light, walkRects));
+    }
+
+    const sf::Vector2f Map::PlayerSpriteCenterMapPos() const
+    {
+        return mapDisplayUPtr_->PlayerPosMap() + (player_.GetView().SpriteSize() * 0.5f);
     }
 
 } // namespace map

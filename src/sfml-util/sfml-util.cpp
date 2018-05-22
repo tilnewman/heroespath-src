@@ -32,6 +32,16 @@ namespace heroespath
 namespace sfml_util
 {
 
+    const sf::Vector2f SpriteCenter(const sf::Sprite & SPRITE)
+    {
+        return RectCenter(SPRITE.getGlobalBounds());
+    }
+
+    sfml_util::Direction::Enum DirectionFromAToB(const sf::Sprite & A, const sf::Sprite & B)
+    {
+        return DirectionFromAToB(SpriteCenter(A), SpriteCenter(B));
+    }
+
     const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect & REGION)
     {
         auto width{ REGION.width };

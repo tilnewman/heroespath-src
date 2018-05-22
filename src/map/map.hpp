@@ -106,6 +106,8 @@ namespace map
 
         void AddNonPlayerAvatar(const game::NpcPtr_t);
 
+        const sf::Vector2f PlayerSpriteCenterMapPos() const;
+
     private:
         static const float PLAYER_MOVE_DISTANCE_;
         static const float NONPLAYER_MOVE_DISTANCE_;
