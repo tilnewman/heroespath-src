@@ -62,6 +62,13 @@ namespace avatar
 
         std::size_t ViewTextureIndex() const { return view_.TextureIndex(); }
 
+        void SetIsNextToPlayer(const bool IS_NEXT_TO_PLAYER)
+        {
+            isNextToPlayer_ = IS_NEXT_TO_PLAYER;
+        }
+
+        bool IsWalking() const { return (Pose::Walking == action_); }
+
     private:
         float RandomBlinkDelay() const;
         float RandomWalkDelay() const;
@@ -105,6 +112,7 @@ namespace avatar
         sfml_util::Direction::Enum prevWalkDirection_;
         float walkingIntoTimerSec_;
         game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
+        bool isNextToPlayer_;
     };
 
 } // namespace avatar

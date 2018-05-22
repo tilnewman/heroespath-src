@@ -30,8 +30,8 @@ namespace avatar
     const std::size_t Model::NUM_BLINKS_WITHIN_TIME_WINDOW_{ 3 };
     const float Model::TIME_BETWEEN_BLINK_MIN_SEC_{ 0.25f };
     const float Model::TIME_BETWEEN_BLINK_MAX_SEC_{ 4.0f };
-    const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
-    const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
+    const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 3.0f };
+    const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 5.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
     const float Model::WALKING_INTO_DURATION_SEC_{ 1.0f };
 
@@ -50,6 +50,7 @@ namespace avatar
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_(boost::none)
+        , isNextToPlayer_(false)
     {
         if (IsPlayer() == false)
         {
@@ -63,7 +64,7 @@ namespace avatar
         UpdateAnimationAndStopIfNeeded(TIME_ELAPSED);
         UpdateBlinking(TIME_ELAPSED);
 
-        if (IsPlayer() == false)
+        if ((IsPlayer() == false) && (false == isNextToPlayer_))
         {
             UpdateWalkingAction(TIME_ELAPSED);
         }

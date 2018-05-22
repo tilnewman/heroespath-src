@@ -137,30 +137,37 @@ namespace map
 
     void Map::MoveNonPlayers()
     {
+        auto const PLAYER_ADJ_POS_V{ [&]() {
+            auto v{ player_.GetView().SpriteSize() };
+            v.x *= 0.5f;
+            v.y *= 0.5f;
+            return v;
+        }() };
+
+        auto const PLAYER_RECT_FOR_NPC_COLLISIONS{ [&]() {
+            auto const PLAYER_POS_V{ mapDisplayUPtr_->PlayerPosMap() };
+
+            return sf::FloatRect(
+                PLAYER_POS_V.x + (PLAYER_ADJ_POS_V.x * 1.2f),
+                PLAYER_POS_V.y + (PLAYER_ADJ_POS_V.x * 0.8f),
+                PLAYER_ADJ_POS_V.x * 0.05f,
+                PLAYER_ADJ_POS_V.y * 1.45f);
+        }() };
+
         for (auto & npcPtrModelPair : nonPlayers_)
         {
+            if (npcPtrModelPair.second.IsWalking() == false)
+            {
+                continue;
+            }
+
             // check if NPC move will collide with the player
-            auto const ADJ_POS_V{ [&]() {
-                auto v{ player_.GetView().SpriteSize() };
-                v.x *= 0.5f;
-                v.y *= 0.5f;
-                return v;
-            }() };
-
-            auto const PLAYER_RECT_FOR_NPC_COLLISIONS{ [&]() {
-                auto const PLAYER_POS_V{ mapDisplayUPtr_->PlayerPosMap() };
-
-                return sf::FloatRect(
-                    PLAYER_POS_V.x + (ADJ_POS_V.x * 1.2f),
-                    PLAYER_POS_V.y + (ADJ_POS_V.x * 0.8f),
-                    ADJ_POS_V.x * 0.05f,
-                    ADJ_POS_V.y * 1.45f);
-            }() };
+            auto const & NPC_VIEW{ npcPtrModelPair.second.GetView() };
 
             auto const NPC_RECT_ADJ{ [&]() {
-                auto rect{ npcPtrModelPair.second.GetView().SpriteRef().getGlobalBounds() };
+                auto rect{ NPC_VIEW.SpriteRef().getGlobalBounds() };
 
-                switch (npcPtrModelPair.second.GetView().Direction())
+                switch (NPC_VIEW.Direction())
                 {
                     case sfml_util::Direction::Left:
                     {
@@ -191,7 +198,7 @@ namespace map
 
             auto const NPC_RECT_FOR_PLAYER_COLLISIONS{ [&]() {
                 auto rect{ NPC_RECT_ADJ };
-                rect.left -= ADJ_POS_V.x * 0.25f;
+                rect.left -= PLAYER_ADJ_POS_V.x * 0.25f;
                 rect.width *= 1.75f;
                 rect.height *= 1.75f;
                 return rect;
@@ -201,11 +208,12 @@ namespace map
                     NPC_RECT_FOR_PLAYER_COLLISIONS, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 npcPtrModelPair.second.StopWalking();
+                npcPtrModelPair.second.SetIsNextToPlayer(true);
                 return;
             }
 
             // check if NPC move will collide with other NPCs
-            auto const NPC_POS_V{ npcPtrModelPair.second.GetView().SpriteRef().getPosition() };
+            auto const NPC_POS_V{ NPC_VIEW.SpriteRef().getPosition() };
             auto didNPCsCollide{ false };
             for (auto const & SUB_NPC_PTR_MODEL_PAIR : nonPlayers_)
             {
@@ -223,7 +231,7 @@ namespace map
                     };
 
                     auto const IS_IN_THE_WAY{ [&]() {
-                        switch (npcPtrModelPair.second.GetView().Direction())
+                        switch (NPC_VIEW.Direction())
                         {
                             case sfml_util::Direction::Left:
                             {
@@ -360,16 +368,21 @@ namespace map
             ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
             ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
 
-        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        for (auto & npcPtrModelPair : nonPlayers_)
         {
             const sf::FloatRect NPC_RECT{
-                NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getGlobalBounds()
+                npcPtrModelPair.second.GetView().SpriteRef().getGlobalBounds()
             };
 
             if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
-                player_.MovingIntoSet(NPC_PTR_MODEL_PAIR.first);
+                player_.MovingIntoSet(npcPtrModelPair.first);
+                npcPtrModelPair.second.SetIsNextToPlayer(true);
                 return true;
+            }
+            else
+            {
+                npcPtrModelPair.second.SetIsNextToPlayer(false);
             }
         }
 
@@ -613,7 +626,8 @@ namespace map
                    "not associated with any actual walk bounds.  "
                    "The vector was empty.");
 
-        nonPlayers_.Append(NPC_PTR, avatar::Model(AVATAR_IMAGE_ENUM, walkRects));
+        nonPlayers_.Append(
+            NPC_PTR, avatar::Model(avatar::Avatar::Leather_Corporal1_Light, walkRects));
     }
 
 } // namespace map
