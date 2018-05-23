@@ -90,6 +90,7 @@ namespace stage
         interact::InteractionManager & interactionManager_;
         sf::Sprite subjectSprite_;
         sf::Sprite contextSprite_;
+        sf::Sprite npcSprite_;
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
         std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;

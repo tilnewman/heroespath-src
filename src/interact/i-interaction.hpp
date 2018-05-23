@@ -15,6 +15,7 @@
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+
 #include <memory>
 
 namespace heroespath
@@ -55,6 +56,8 @@ namespace interact
         // need these but Locked Doors do.
         virtual bool OnSuccess(const stage::InteractStagePtr_t) = 0;
         virtual bool OnFailure(const stage::InteractStagePtr_t) = 0;
+
+        virtual const sf::Sprite & NpcSprite() const = 0;
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;

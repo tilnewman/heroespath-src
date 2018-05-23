@@ -32,11 +32,12 @@ namespace stage
         map::Map & map,
         const sf::FloatRect & STAGE_REGION,
         interact::InteractionManager & interactionManager)
-        : Stage("AdventureInteract", STAGE_REGION)
+        : Stage("AdventureInteract", STAGE_REGION, false)
         , map_(map)
         , interactionManager_(interactionManager)
         , subjectSprite_()
         , contextSprite_()
+        , npcSprite_()
         , textRegionUPtr_(
               std::make_unique<sfml_util::gui::TextRegion>("AdventureStage'sInteractStage's"))
         , buttons_()
@@ -223,6 +224,12 @@ namespace stage
 
                 EntityAdd(buttonUPtr.get());
             }
+
+            if (INTERACTION_PTR->Type() == interact::Interact::Conversation)
+            {
+                npcSprite_ = INTERACTION_PTR->NpcSprite();
+                sfml_util::CenterAndScaleSpriteToFit(npcSprite_, SUBJECT_REGION);
+            }
         }
         else
         {
@@ -241,6 +248,13 @@ namespace stage
         {
             target.draw(contextSprite_);
             target.draw(subjectSprite_);
+
+            if (interactionManager_.Current().value().Obj().Type()
+                == interact::Interact::Conversation)
+            {
+                target.draw(npcSprite_);
+            }
+
             target.draw(*textRegionUPtr_);
         }
     }

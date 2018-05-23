@@ -10,9 +10,11 @@
 // interaction-base.cpp
 //
 #include "interaction-base.hpp"
+
 #include "game/game-data-file.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 
@@ -27,7 +29,8 @@ namespace interact
         const ButtonVec_t & BUTTONS,
         const std::string & SUBJECT_IMAGE_KEY,
         const sfml_util::sound_effect::Enum SFX_ENTER,
-        const sfml_util::sound_effect::Enum SFX_EXIT)
+        const sfml_util::sound_effect::Enum SFX_EXIT,
+        const sf::Sprite & NPC_SPRITE)
         : interactionType_(INTERACTION_TYPE)
         , text_(TEXT)
         , buttons_(BUTTONS)
@@ -36,6 +39,7 @@ namespace interact
         , sfxEnter_(SFX_ENTER)
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)
+        , npcSprite_(NPC_SPRITE)
     {
         sfml_util::Loaders::Texture(
             subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));

@@ -14,6 +14,8 @@
 #include "interact/conversation.hpp"
 #include "interact/locked-door.hpp"
 
+#include "sfml-util/sfml-graphics.hpp"
+
 namespace heroespath
 {
 namespace interact
@@ -24,9 +26,10 @@ namespace interact
         return std::make_unique<LockedDoor>(TRANSITION);
     }
 
-    InteractionUPtr_t InteractionFactory::MakeConversation(const game::NpcPtr_t NPC_PTR)
+    InteractionUPtr_t InteractionFactory::MakeConversation(
+        const game::NpcPtr_t NPC_PTR, const sf::Sprite & TALKING_NPC)
     {
-        return std::make_unique<Conversation>(NPC_PTR);
+        return std::make_unique<Conversation>(NPC_PTR, TALKING_NPC);
     }
 
 } // namespace interact

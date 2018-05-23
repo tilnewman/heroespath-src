@@ -13,6 +13,11 @@
 #include "interact/interaction-text-enum.hpp"
 #include "map/transition.hpp"
 
+namespace sf
+{
+class Sprite;
+}
+
 namespace heroespath
 {
 namespace game
@@ -27,7 +32,9 @@ namespace interact
     struct InteractionFactory
     {
         static InteractionUPtr_t MakeLockedDoor(const map::Transition &);
-        static InteractionUPtr_t MakeConversation(const game::NpcPtr_t);
+
+        static InteractionUPtr_t
+            MakeConversation(const game::NpcPtr_t, const sf::Sprite & TALKING_NPC);
     };
 
 } // namespace interact

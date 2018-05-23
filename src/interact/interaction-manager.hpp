@@ -11,6 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+
 #include <memory>
 
 namespace heroespath

@@ -108,6 +108,8 @@ namespace map
 
         const sf::Vector2f PlayerSpriteCenterMapPos() const;
 
+        const sf::Sprite GetNpcDefaultPoseSprite(const game::NpcPtr_t) const;
+
     private:
         static const float PLAYER_MOVE_DISTANCE_;
         static const float NONPLAYER_MOVE_DISTANCE_;

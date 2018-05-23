@@ -49,6 +49,8 @@ namespace avatar
 
         std::size_t TextureIndex() const { return textureIndex_; }
 
+        const sf::Sprite DefaultPoseSprite() const;
+
     private:
         const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;
 

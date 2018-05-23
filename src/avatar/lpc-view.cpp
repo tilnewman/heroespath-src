@@ -81,6 +81,13 @@ namespace avatar
         return false;
     }
 
+    const sf::Sprite LPCView::DefaultPoseSprite() const
+    {
+        return sf::Sprite(
+            sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_),
+            FrameRect(FrameNumbers(Pose::Standing, sfml_util::Direction::Right).at(0)));
+    }
+
     const FrameNumVec_t LPCView::FrameNumbers(
         const Pose::Enum POSE, const sfml_util::Direction::Enum DIRECTION) const
     {

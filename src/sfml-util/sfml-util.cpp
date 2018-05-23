@@ -71,8 +71,8 @@ namespace sfml_util
 
         if (s.getGlobalBounds().width > WIDTH)
         {
-            auto const WIDHT_ORIG{ std::max(s.getGlobalBounds().width, 1.0f) };
-            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / WIDHT_ORIG) };
+            auto const WIDTH_ORIG{ std::max(s.getLocalBounds().width, 1.0f) };
+            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / WIDTH_ORIG) };
             s.setScale(HORIZ_SCALE, HORIZ_SCALE);
         }
     }

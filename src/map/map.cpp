@@ -295,7 +295,8 @@ namespace map
                     player_.StopWalking();
 
                     interactionManager_.SetNext(interact::InteractionFactory::MakeConversation(
-                        movingIntoNpcPtrOpt.value()));
+                        movingIntoNpcPtrOpt.value(),
+                        GetNpcDefaultPoseSprite(movingIntoNpcPtrOpt.value())));
                 }
             }
         }
@@ -637,6 +638,19 @@ namespace map
     const sf::Vector2f Map::PlayerSpriteCenterMapPos() const
     {
         return mapDisplayUPtr_->PlayerPosMap() + (player_.GetView().SpriteSize() * 0.5f);
+    }
+
+    const sf::Sprite Map::GetNpcDefaultPoseSprite(const game::NpcPtr_t NPC_PTR) const
+    {
+        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        {
+            if (NPC_PTR_MODEL_PAIR.first == NPC_PTR)
+            {
+                return NPC_PTR_MODEL_PAIR.second.GetView().DefaultPoseSprite();
+            }
+        }
+
+        return sf::Sprite();
     }
 
 } // namespace map

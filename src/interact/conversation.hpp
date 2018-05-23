@@ -12,6 +12,11 @@
 #include "interact/interaction-base.hpp"
 #include "map/transition.hpp"
 
+namespace sf
+{
+class Sprite;
+}
+
 namespace heroespath
 {
 namespace game
@@ -26,7 +31,7 @@ namespace interact
     class Conversation : public InteractionBase
     {
     public:
-        explicit Conversation(const game::NpcPtr_t);
+        explicit Conversation(const game::NpcPtr_t, const sf::Sprite & NPC_SPRITE);
 
         virtual ~Conversation() = default;
 

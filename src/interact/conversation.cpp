@@ -20,12 +20,15 @@ namespace heroespath
 namespace interact
 {
 
-    Conversation::Conversation(const game::NpcPtr_t NPC_PTR)
+    Conversation::Conversation(const game::NpcPtr_t NPC_PTR, const sf::Sprite & NPC_SPRITE)
         : InteractionBase(
               Interact::Conversation,
               InteractionBase::MakeTextInfo(NPC_PTR->ConversationPoint().Text(), Text::Dialog),
               MakeButtonVecFromButtonEnumVec(NPC_PTR->ConversationPoint().Buttons()),
-              "media-images-misc-talk")
+              "media-images-misc-talk",
+              sfml_util::sound_effect::Count,
+              sfml_util::sound_effect::Count,
+              NPC_SPRITE)
         , npcPtr_(NPC_PTR)
     {}
 
@@ -37,7 +40,7 @@ namespace interact
         if (npcPtr_->ApplyConversationResponse(BUTTON.Which()) == false)
         {
             INTERACTION_STAGE_PTR->InteractionManager().SetNext(
-                interact::InteractionFactory::MakeConversation(npcPtr_));
+                interact::InteractionFactory::MakeConversation(npcPtr_, NpcSprite()));
         }
 
         return true;
