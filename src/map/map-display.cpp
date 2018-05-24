@@ -305,6 +305,9 @@ namespace map
 
     void MapDisplay::DrawCharacterImages()
     {
+        // note that PlayerPosMap() returns the centered map position of the player, not the
+        // top-left corner position of the sprite, to get that top-left sprite corner pos you have
+        // to subtract half the sprite size with -HALF_SIZE.
         auto const PLAYER_OFFSCREEN_POS_V{ OffScreenPosFromMapPos(PlayerPosMap()) };
 
         sf::Sprite playerSprite{ MAP_.Player().GetView().SpriteRef() };
@@ -321,7 +324,9 @@ namespace map
         {
             sf::Sprite npcSprite{ NPC_MODEL_PAIR.second.GetView().SpriteRef() };
 
-            // check if NPC is on the visible map
+            // note that like the player position in the comment above, npcSprite.getPosition()
+            // returns the centered map coordinates position that must be translated into top-left
+            // offscreen coordinates
             auto const NPC_OFFSCREEN_POS_V{ OffScreenPosFromMapPos(npcSprite.getPosition())
                                             - SIZE_HALF };
 

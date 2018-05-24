@@ -102,6 +102,8 @@ namespace map
             mapDisplayUPtr_->Load(
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
         }
+
+        player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
     }
 
     bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
@@ -130,7 +132,10 @@ namespace map
                     interactionManager_.RemoveCurrent();
                 }
 
-                return mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_);
+                auto const DID_ACTUALLY_MOVE{ mapDisplayUPtr_->Move(
+                    DIRECTION, PLAYER_MOVE_DISTANCE_) };
+                player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
+                return DID_ACTUALLY_MOVE;
             }
         }
     }
@@ -138,7 +143,7 @@ namespace map
     void Map::MoveNonPlayers()
     {
         auto const PLAYER_ADJ_POS_V{ [&]() {
-            auto v{ player_.GetView().SpriteSize() };
+            auto v{ sfml_util::SpriteSize(player_.GetView().SpriteRef()) };
             v.x *= 0.5f;
             v.y *= 0.5f;
             return v;
@@ -208,7 +213,7 @@ namespace map
                     NPC_RECT_FOR_PLAYER_COLLISIONS, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 npcPtrModelPair.second.StopWalking();
-                npcPtrModelPair.second.SetIsNextToPlayer(true, PlayerSpriteCenterMapPos(), false);
+                npcPtrModelPair.second.SetIsNextToPlayer(true, player_.GetCenteredMapPos(), false);
                 return;
             }
 
@@ -268,7 +273,7 @@ namespace map
             }
             else
             {
-                npcPtrModelPair.second.Move(NONPLAYER_MOVE_DISTANCE_);
+                npcPtrModelPair.second.MoveIfWalking(NONPLAYER_MOVE_DISTANCE_);
             }
         }
     }
@@ -340,7 +345,7 @@ namespace map
         auto const PLAYER_POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
 
         auto const ADJ_FOR_COLLISIONS_V{ [&]() {
-            auto v{ player_.GetView().SpriteSize() };
+            auto v{ sfml_util::SpriteSize(player_.GetView().SpriteRef()) };
             v.x *= 0.3f;
             v.y *= 0.5f;
             return v;
@@ -361,7 +366,7 @@ namespace map
         }
 
         auto const ADJ_FOR_NPC_COLLISIONS_V{ [&]() {
-            auto v{ player_.GetView().SpriteSize() };
+            auto v{ sfml_util::SpriteSize(player_.GetView().SpriteRef()) };
             v.x *= 0.5f;
             v.y *= 0.5f;
             return v;
@@ -382,12 +387,12 @@ namespace map
             if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 player_.MovingIntoSet(npcPtrModelPair.first);
-                npcPtrModelPair.second.SetIsNextToPlayer(true, PlayerSpriteCenterMapPos(), true);
+                npcPtrModelPair.second.SetIsNextToPlayer(true, player_.GetCenteredMapPos(), true);
                 return true;
             }
             else
             {
-                npcPtrModelPair.second.SetIsNextToPlayer(false, PlayerSpriteCenterMapPos(), false);
+                npcPtrModelPair.second.SetIsNextToPlayer(false, player_.GetCenteredMapPos(), false);
             }
         }
 
@@ -450,15 +455,17 @@ namespace map
 
         if (IS_LOCKED_DOOR)
         {
+            // prevent making duplicate locked door interactions
             auto const CURRENT_INTERACTION_PTR_OPT{ interactionManager_.Current() };
             if (CURRENT_INTERACTION_PTR_OPT)
             {
-                if (CURRENT_INTERACTION_PTR_OPT->Obj().Type() != interact::Interact::Lock)
+                if (CURRENT_INTERACTION_PTR_OPT->Obj().Type() == interact::Interact::Lock)
                 {
-                    interactionManager_.SetNext(
-                        interact::InteractionFactory::MakeLockedDoor(TRANSITION));
+                    return;
                 }
             }
+
+            interactionManager_.SetNext(interact::InteractionFactory::MakeLockedDoor(TRANSITION));
         }
         else
         {
@@ -631,13 +638,21 @@ namespace map
                    "not associated with any actual walk bounds.  "
                    "The vector was empty.");
 
-        nonPlayers_.Append(
-            NPC_PTR, avatar::Model(avatar::Avatar::Leather_Corporal1_Light, walkRects));
-    }
-
-    const sf::Vector2f Map::PlayerSpriteCenterMapPos() const
-    {
-        return mapDisplayUPtr_->PlayerPosMap() + (player_.GetView().SpriteSize() * 0.5f);
+        sf::Vector2f startingPosV(-1.0f, -1.0f);
+        std::size_t walkRectsIndex{ walkRects.size() };
+        FindLocationToPlaceAvatar(walkRects, walkRectsIndex, startingPosV);
+        if ((walkRectsIndex >= walkRects.size()) || (startingPosV.x < 0.0f)
+            || (startingPosV.y < 0.0f))
+        {
+            M_HP_LOG_ERR(
+                "map::Map::FindLocationToPlaceAvatar() failed to find an open spot to put an "
+                "NPC, so it will not be added to the map at all.");
+        }
+        else
+        {
+            nonPlayers_.Append(
+                NPC_PTR, avatar::Model(AVATAR_IMAGE_ENUM, walkRects, walkRectsIndex, startingPosV));
+        }
     }
 
     const sf::Sprite Map::GetNpcDefaultPoseSprite(const game::NpcPtr_t NPC_PTR) const
@@ -651,6 +666,69 @@ namespace map
         }
 
         return sf::Sprite();
+    }
+
+    bool Map::IsPosTooCloseToAvatar(
+        const sf::Vector2f & POS_V,
+        const avatar::Model & AVATAR,
+        const float DISTANCE_TOO_CLOSE) const
+    {
+        auto const DISTANCE_HORIZ{ std::abs(AVATAR.GetCenteredMapPos().x - POS_V.x) };
+        auto const DISTANCE_VERT{ std::abs(AVATAR.GetCenteredMapPos().y - POS_V.y) };
+        return ((DISTANCE_HORIZ < DISTANCE_TOO_CLOSE) && (DISTANCE_VERT < DISTANCE_TOO_CLOSE));
+    }
+
+    bool Map::IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const
+    {
+        auto const PLAYER_GLOBAL_BOUNDS_RECT{ player_.GetView().SpriteRef().getGlobalBounds() };
+
+        auto const DISTANCE_TOO_CLOSE{
+            std::max(PLAYER_GLOBAL_BOUNDS_RECT.width, PLAYER_GLOBAL_BOUNDS_RECT.height) * 1.25f
+        };
+
+        if (IsPosTooCloseToAvatar(POS_V, player_, DISTANCE_TOO_CLOSE))
+        {
+            return true;
+        }
+
+        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        {
+            if (IsPosTooCloseToAvatar(POS_V, NPC_PTR_MODEL_PAIR.second, DISTANCE_TOO_CLOSE))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void Map::FindLocationToPlaceAvatar(
+        const sfml_util::FloatRectVec_t & WALK_RECTS,
+        std::size_t & walkRectsIndex,
+        sf::Vector2f & startingPosV)
+    {
+        auto const ATTEMPT_COUNT_MAX{ 10000 };
+
+        auto attemptCounter{ 0 };
+
+        do
+        {
+            walkRectsIndex = misc::random::SizeT(WALK_RECTS.size() - 1);
+            auto const RECT{ WALK_RECTS.at(walkRectsIndex) };
+            auto const X{ misc::random::Float(RECT.left, RECT.left + RECT.width) };
+            auto const Y{ misc::random::Float(RECT.top, RECT.top + RECT.height) };
+            startingPosV = sf::Vector2f(X, Y);
+
+            if (IsPosTooCloseToAnyAvatars(startingPosV) == false)
+            {
+                return;
+            }
+
+        } while (++attemptCounter < ATTEMPT_COUNT_MAX);
+
+        // no position found so set everything ot invalid
+        walkRectsIndex = WALK_RECTS.size();
+        startingPosV = sf::Vector2f(-1.0f, -1.0f);
     }
 
 } // namespace map

@@ -28,7 +28,7 @@ namespace avatar
     const float LPCView::FRAME_DURATION_SEC_BLINK_MIN_{ 0.025f };
     const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_{ 0.20f };
 
-    LPCView::LPCView(const Avatar::Enum WHICH_AVATAR)
+    LPCView::LPCView(const Avatar::Enum WHICH_AVATAR, const sf::Vector2f & CENTERED_MAP_POS_V)
         : whichAvatar_(WHICH_AVATAR)
         , textureIndex_(
               sfml_util::TextureCache::Instance()->AddByPath(Avatar::ImagePath(whichAvatar_)))
@@ -40,6 +40,7 @@ namespace avatar
         , frameIndex_(0)
     {
         SetupSprite();
+        sprite_.setPosition(CENTERED_MAP_POS_V);
     }
 
     void LPCView::Set(const Pose::Enum POSE, const sfml_util::Direction::Enum DIRECTION)
@@ -79,6 +80,38 @@ namespace avatar
         }
 
         return false;
+    }
+
+    void LPCView::MoveIfWalking(const float AMOUNT)
+    {
+        if (Pose::Walking == animation_.pose)
+        {
+            switch (Direction())
+            {
+                case sfml_util::Direction::Left:
+                {
+                    sprite_.move(AMOUNT * -1.0f, 0.0f);
+                    break;
+                }
+                case sfml_util::Direction::Right:
+                {
+                    sprite_.move(AMOUNT, 0.0f);
+                    break;
+                }
+                case sfml_util::Direction::Up:
+                {
+                    sprite_.move(0.0f, AMOUNT * -1.0f);
+                    break;
+                }
+                case sfml_util::Direction::Down:
+                case sfml_util::Direction::Count:
+                default:
+                {
+                    sprite_.move(0.0f, AMOUNT);
+                    break;
+                }
+            }
+        }
     }
 
     const sf::Sprite LPCView::DefaultPoseSprite() const

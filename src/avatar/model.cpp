@@ -36,8 +36,32 @@ namespace avatar
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
     const float Model::WALKING_INTO_DURATION_SEC_{ 1.0f };
 
-    Model::Model(const Avatar::Enum AVATAR_ENUM, const std::vector<sf::FloatRect> & WALK_RECTS)
-        : view_(AVATAR_ENUM)
+    Model::Model(const Avatar::Enum AVATAR_ENUM)
+        : view_(
+              AVATAR_ENUM,
+              sf::Vector2f(
+                  0.0f, 0.0f)) // see Map::Load() and Map::Move() for where player model pos is set
+        , blinkTimerSec_(0.0f)
+        , timeUntilNextBlinkSec_(RandomBlinkDelay())
+        , blinkTimes_()
+        , action_(Pose::Standing)
+        , walkTimerSec_(0.0f)
+        , timeUntilNextWalkSec_(RandomWalkDelay())
+        , walkRects_()
+        , walkTargetPosV_()
+        , walkRectIndex_(0)
+        , prevWalkDirection_(sfml_util::Direction::Count)
+        , walkingIntoTimerSec_(0.0f)
+        , walkingIntoNpcPtrOpt_(boost::none)
+        , isNextToPlayer_(false)
+    {}
+
+    Model::Model(
+        const Avatar::Enum AVATAR_ENUM,
+        const std::vector<sf::FloatRect> & WALK_RECTS,
+        const std::size_t CURRENT_WALK_RECT_INDEX,
+        const sf::Vector2f & CURRENT_CENTERED_MAP_POS_V)
+        : view_(AVATAR_ENUM, CURRENT_CENTERED_MAP_POS_V)
         , blinkTimerSec_(0.0f)
         , timeUntilNextBlinkSec_(RandomBlinkDelay())
         , blinkTimes_()
@@ -46,19 +70,12 @@ namespace avatar
         , timeUntilNextWalkSec_(RandomWalkDelay())
         , walkRects_(WALK_RECTS)
         , walkTargetPosV_()
-        , walkRectIndex_(0)
-        , posV_(0.0f, 0.0f)
+        , walkRectIndex_(CURRENT_WALK_RECT_INDEX)
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_(boost::none)
         , isNextToPlayer_(false)
-    {
-        if (IsPlayer() == false)
-        {
-            walkRectIndex_ = RandomWalkRectIndex();
-            posV_ = RandomWalkTarget();
-        }
-    }
+    {}
 
     void Model::Update(const float TIME_ELAPSED)
     {
@@ -69,47 +86,11 @@ namespace avatar
         {
             UpdateWalkingAction(TIME_ELAPSED);
         }
-
-        view_.UpdatePos(posV_);
     }
 
     void Model::SetWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
     {
         view_.Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
-    }
-
-    void Model::Move(const float AMOUNT)
-    {
-        if (Pose::Walking == action_)
-        {
-            switch (view_.Direction())
-            {
-                case sfml_util::Direction::Left:
-                {
-                    posV_.x -= AMOUNT;
-                    break;
-                }
-                case sfml_util::Direction::Right:
-                {
-                    posV_.x += AMOUNT;
-                    break;
-                }
-                case sfml_util::Direction::Up:
-                {
-                    posV_.y -= AMOUNT;
-                    break;
-                }
-                case sfml_util::Direction::Down:
-                case sfml_util::Direction::Count:
-                default:
-                {
-                    posV_.y += AMOUNT;
-                    break;
-                }
-            }
-
-            view_.UpdatePos(posV_);
-        }
     }
 
     void Model::StopWalking()
@@ -196,8 +177,7 @@ namespace avatar
 
     void Model::TurnToFacePos(const sf::Vector2f & POS_V)
     {
-        auto const DIRECTION{ sfml_util::DirectionFromAToB(
-            sfml_util::SpriteCenter(view_.SpriteRef()), POS_V) };
+        auto const DIRECTION{ sfml_util::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
 
         if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
         {
@@ -309,10 +289,12 @@ namespace avatar
         }
         else
         {
+            auto const CURRENT_POS_V{ GetCenteredMapPos() };
+
             std::vector<std::size_t> possibleWalkRectIndexes_;
             for (std::size_t i(0); i < walkRects_.size(); ++i)
             {
-                if (walkRects_[i].contains(posV_))
+                if (walkRects_[i].contains(CURRENT_POS_V))
                 {
                     possibleWalkRectIndexes_.emplace_back(i);
                 }
@@ -363,26 +345,28 @@ namespace avatar
     sfml_util::Direction::Enum
         Model::WalkDirection(const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
+        auto const CURRENT_POS_V{ GetCenteredMapPos() };
+
         if (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Count)
         {
             std::vector<sfml_util::Direction::Enum> dirVec;
 
-            if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            if ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 dirVec.emplace_back(sfml_util::Direction::Up);
             }
 
-            if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            if ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 dirVec.emplace_back(sfml_util::Direction::Down);
             }
 
-            if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            if ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 dirVec.emplace_back(sfml_util::Direction::Right);
             }
 
-            if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            if ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 dirVec.emplace_back(sfml_util::Direction::Left);
             }
@@ -399,41 +383,41 @@ namespace avatar
         else
         {
             if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Up)
-                && ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
+                && ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
             {
                 return sfml_util::Direction::Up;
             }
             else if (
                 (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Down)
-                && ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
+                && ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_))
             {
                 return sfml_util::Direction::Down;
             }
             else if (
                 (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Right)
-                && ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
+                && ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_))
             {
                 return sfml_util::Direction::Right;
             }
             else if (
                 (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Left)
-                && ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
+                && ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
             {
                 return sfml_util::Direction::Left;
             }
-            else if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            else if ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 return sfml_util::Direction::Up;
             }
-            else if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            else if ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 return sfml_util::Direction::Down;
             }
-            else if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            else if ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 return sfml_util::Direction::Right;
             }
-            else if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            else if ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
                 return sfml_util::Direction::Left;
             }
@@ -443,5 +427,6 @@ namespace avatar
             }
         }
     }
+
 } // namespace avatar
 } // namespace heroespath

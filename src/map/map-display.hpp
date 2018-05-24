@@ -123,8 +123,11 @@ namespace map
 
         Layout layout_;
         TileOffsets tileOffsets_;
+
+        // these two variables are in centered map coordinates
         sf::Vector2f playerPosV_;
         sf::Vector2f playerPosOffsetV_;
+
         sf::FloatRect offScreenRect_;
         sf::Sprite offScreenSpriteAbove_;
         sf::Sprite offScreenSpriteBelow_;

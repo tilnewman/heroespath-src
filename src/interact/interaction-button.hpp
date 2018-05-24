@@ -10,7 +10,9 @@
 // interact-button-enum.hpp
 //
 #include "interact/interaction-button-enum.hpp"
+
 #include <SFML/Window/Keyboard.hpp>
+
 #include <string>
 #include <vector>
 

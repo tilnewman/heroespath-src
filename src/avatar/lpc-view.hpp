@@ -26,30 +26,30 @@ namespace avatar
     class LPCView
     {
     public:
-        explicit LPCView(const Avatar::Enum);
+        explicit LPCView(const Avatar::Enum, const sf::Vector2f & CENTERED_MAP_POS_V);
 
         void Set(const Pose::Enum, const sfml_util::Direction::Enum);
 
         bool Update(const float TIME_ELAPSED);
 
-        void UpdatePos(const sf::Vector2f & V) { sprite_.setPosition(V); }
-
         sfml_util::Direction::Enum Direction() const { return animation_.direction; }
+
+        void MoveIfWalking(const float AMOUNT);
 
         Pose::Enum WhichPose() const { return animation_.pose; }
 
         const sf::Sprite & SpriteRef() const { return sprite_; }
-
-        const sf::Vector2f SpriteSize() const
-        {
-            return sf::Vector2f(sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height);
-        }
 
         Avatar::Enum WhichAvatar() const { return whichAvatar_; }
 
         std::size_t TextureIndex() const { return textureIndex_; }
 
         const sf::Sprite DefaultPoseSprite() const;
+
+        // see comment below on sf::Sprite member variable about these coordinates
+        const sf::Vector2f GetCenteredMapPos() const { return sprite_.getPosition(); }
+
+        void SetCenteredMapPos(const sf::Vector2f & NEW_POS_V) { sprite_.setPosition(NEW_POS_V); }
 
     private:
         const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;
@@ -73,7 +73,13 @@ namespace avatar
         Avatar::Enum whichAvatar_;
         std::size_t textureIndex_;
         int textureSize_;
+
+        // note that sprite_.getPosition() does not hold the actual top-left corner position of the
+        // sprite, instead this holds the centered map coordinates position, see
+        // MapDisplay::DrawCharacterImages() where the translation from centered map coordinates to
+        // top-left offscreen coordinates occurs
         sf::Sprite sprite_;
+
         Animation animation_;
         float frameTimerSec_;
         std::size_t frameIndex_;

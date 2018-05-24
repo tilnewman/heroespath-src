@@ -106,9 +106,19 @@ namespace map
 
         void AddNonPlayerAvatar(const game::NpcPtr_t);
 
-        const sf::Vector2f PlayerSpriteCenterMapPos() const;
-
         const sf::Sprite GetNpcDefaultPoseSprite(const game::NpcPtr_t) const;
+
+        bool IsPosTooCloseToAvatar(
+            const sf::Vector2f & POS_V,
+            const avatar::Model & AVATAR,
+            const float DISTANCE_TOO_CLOSE) const;
+
+        bool IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const;
+
+        void FindLocationToPlaceAvatar(
+            const sfml_util::FloatRectVec_t & WALK_RECTS,
+            std::size_t & walkRectsIndex,
+            sf::Vector2f & startingPosV);
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;

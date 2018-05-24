@@ -158,6 +158,11 @@ namespace sfml_util
         CenterSprite(s, R);
     }
 
+    inline const sf::Vector2f SpriteSize(const sf::Sprite & SPRITE)
+    {
+        return sf::Vector2f(SPRITE.getGlobalBounds().width, SPRITE.getGlobalBounds().height);
+    }
+
     // assumes 'facing right'
     float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V);
 

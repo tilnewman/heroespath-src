@@ -38,9 +38,15 @@ namespace avatar
     class Model
     {
     public:
-        explicit Model(
+        // use to create player Models
+        explicit Model(const Avatar::Enum);
+
+        // use to create non-player Models
+        Model(
             const Avatar::Enum,
-            const std::vector<sf::FloatRect> & WALK_RECTS = std::vector<sf::FloatRect>());
+            const std::vector<sf::FloatRect> & WALK_RECTS,
+            const std::size_t CURRENT_WALK_RECT_INDEX,
+            const sf::Vector2f & CURRENT_CENTERED_MAP_POS_V);
 
         void Update(const float TIME_ELAPSED);
 
@@ -50,7 +56,7 @@ namespace avatar
 
         bool IsPlayer() const { return walkRects_.empty(); }
 
-        void Move(const float AMOUNT);
+        void MoveIfWalking(const float AMOUNT) { view_.MoveIfWalking(AMOUNT); }
 
         void StopWalking();
 
@@ -78,7 +84,16 @@ namespace avatar
 
         bool IsWalking() const { return (Pose::Walking == action_); }
 
+        // the pos given must be in centered map coordinates
         void TurnToFacePos(const sf::Vector2f &);
+
+        // see comment below in LPCView about these coordinates
+        const sf::Vector2f GetCenteredMapPos() const { return view_.GetCenteredMapPos(); }
+
+        void SetCenteredMapPos(const sf::Vector2f & NEW_POS_V)
+        {
+            view_.SetCenteredMapPos(NEW_POS_V);
+        }
 
     private:
         float RandomBlinkDelay() const;
@@ -119,7 +134,6 @@ namespace avatar
         std::vector<sf::FloatRect> walkRects_;
         sf::Vector2f walkTargetPosV_;
         std::size_t walkRectIndex_;
-        sf::Vector2f posV_;
         sfml_util::Direction::Enum prevWalkDirection_;
         float walkingIntoTimerSec_;
         game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
