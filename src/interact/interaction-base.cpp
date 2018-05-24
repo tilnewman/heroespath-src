@@ -69,7 +69,7 @@ namespace interact
         InteractionBase::MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE)
     {
         return sfml_util::gui::TextInfo(
-            TEXT,
+            ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDark(),

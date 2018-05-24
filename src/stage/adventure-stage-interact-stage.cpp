@@ -23,6 +23,7 @@ namespace stage
 {
 
     const sf::Uint8 InteractStage::CONTEXT_IMAGE_ALPHA_{ 32 };
+    const sf::Uint8 InteractStage::BACKGROUND_ALPHA_{ 28 };
     const float InteractStage::SUBJECT_REGION_WIDTH_RATIO_{ 0.2f };
     const float InteractStage::SUBJECT_REGION_HEIGHT_RATIO_{ 0.5f };
     const float InteractStage::SUBJECT_IMAGE_PAD_RATIO_{ 0.9f };
@@ -30,10 +31,16 @@ namespace stage
 
     InteractStage::InteractStage(
         map::Map & map,
-        const sf::FloatRect & STAGE_REGION,
+        const sf::FloatRect & REGION,
         interact::InteractionManager & interactionManager)
-        : Stage("AdventureInteract", STAGE_REGION, false)
+        : Stage("AdventureInteract", REGION, false)
         , map_(map)
+        , regionPad_(sfml_util::MapByRes(18.0f, 52.0f))
+        , innerRect_(
+              REGION.left + regionPad_,
+              REGION.top + regionPad_,
+              REGION.width - (regionPad_ * 2.0f),
+              REGION.height - (regionPad_ * 2.0f))
         , interactionManager_(interactionManager)
         , subjectSprite_()
         , contextSprite_()
@@ -42,6 +49,7 @@ namespace stage
               std::make_unique<sfml_util::gui::TextRegion>("AdventureStage'sInteractStage's"))
         , buttons_()
         , lockPicking_()
+        , backgroundColoredRect_(innerRect_, sf::Color(0, 0, 0, BACKGROUND_ALPHA_))
     {}
 
     InteractStage::~InteractStage() = default;
@@ -154,21 +162,22 @@ namespace stage
         {
             auto const INTERACTION_PTR{ INTERACTION_PTR_OPT.value() };
 
-            const sf::FloatRect SUBJECT_REGION{ StageRegionLeft(),
-                                                StageRegionTop(),
-                                                StageRegionWidth() * SUBJECT_REGION_WIDTH_RATIO_,
-                                                StageRegionHeight()
-                                                    * SUBJECT_REGION_HEIGHT_RATIO_ };
+            const sf::FloatRect SUBJECT_REGION{ innerRect_.left,
+                                                innerRect_.top,
+                                                innerRect_.width * SUBJECT_REGION_WIDTH_RATIO_,
+                                                innerRect_.height * SUBJECT_REGION_HEIGHT_RATIO_ };
 
-            const sf::FloatRect TEXT_REGION{ StageRegionLeft() + SUBJECT_REGION.width,
-                                             StageRegionTop(),
-                                             StageRegionWidth() - SUBJECT_REGION.width,
-                                             SUBJECT_REGION.height };
+            auto const TEXT_REGION_TOP_MARGIN{ sfml_util::MapByRes(33.0f, 99.0f) };
 
-            const sf::FloatRect BUTTON_REGION{ StageRegionLeft(),
-                                               StageRegionTop() + SUBJECT_REGION.height,
-                                               StageRegionWidth(),
-                                               StageRegionHeight() - SUBJECT_REGION.height };
+            const sf::FloatRect TEXT_REGION{ innerRect_.left + SUBJECT_REGION.width,
+                                             innerRect_.top + TEXT_REGION_TOP_MARGIN,
+                                             innerRect_.width - SUBJECT_REGION.width,
+                                             SUBJECT_REGION.height - TEXT_REGION_TOP_MARGIN };
+
+            const sf::FloatRect BUTTON_REGION{ innerRect_.left,
+                                               innerRect_.top + SUBJECT_REGION.height,
+                                               innerRect_.width,
+                                               innerRect_.height - SUBJECT_REGION.height };
 
             const sf::FloatRect CONTEXT_REGION{ TEXT_REGION.left,
                                                 TEXT_REGION.top,
@@ -246,6 +255,7 @@ namespace stage
     {
         if (interactionManager_.Current())
         {
+            target.draw(backgroundColoredRect_);
             target.draw(contextSprite_);
             target.draw(subjectSprite_);
 

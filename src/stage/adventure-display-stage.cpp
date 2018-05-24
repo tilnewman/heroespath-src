@@ -228,7 +228,7 @@ namespace stage
     const sf::FloatRect
         AdventureDisplayStage::CalcInteractRegion(const sf::FloatRect & MAP_REGION) const
     {
-        sf::FloatRect interactRegion{ MAP_REGION };
+        sf::FloatRect interactRegion;
 
         auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH{ sfml_util::MapByRes(30.0f, 150.0f) };
 
@@ -238,6 +238,14 @@ namespace stage
         auto const RIGHT_MARGIN{ sfml_util::MapByRes(50.0f, 300.0f) };
 
         interactRegion.width = (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
+
+        auto const TOP_MARGIN{ sfml_util::MapByRes(33.0f, 99.0f) };
+
+        interactRegion.top = MAP_REGION.top + TOP_MARGIN;
+
+        auto const BOTTOM_MARGIN{ TOP_MARGIN / 2.0f };
+
+        interactRegion.height = MAP_REGION.height - (TOP_MARGIN + BOTTOM_MARGIN);
 
         return interactRegion;
     }

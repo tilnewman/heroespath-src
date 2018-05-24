@@ -15,6 +15,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
@@ -80,6 +81,7 @@ namespace stage
         void DrawInteraction(sf::RenderTarget &) const;
 
     private:
+        static const sf::Uint8 BACKGROUND_ALPHA_;
         static const sf::Uint8 CONTEXT_IMAGE_ALPHA_;
         static const float SUBJECT_REGION_WIDTH_RATIO_;
         static const float SUBJECT_REGION_HEIGHT_RATIO_;
@@ -87,6 +89,9 @@ namespace stage
         static const float CONTEXT_IMAGE_PAD_RATIO_;
 
         map::Map & map_;
+        float regionPad_;
+        // sf::FloatRect outerRect_; the outer rect is Stage::StageRegion()
+        sf::FloatRect innerRect_;
         interact::InteractionManager & interactionManager_;
         sf::Sprite subjectSprite_;
         sf::Sprite contextSprite_;
@@ -94,6 +99,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
         std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;
+        sfml_util::ColoredRect backgroundColoredRect_;
     };
 
     using InteractStagePtr_t = misc::NotNull<InteractStage *>;
