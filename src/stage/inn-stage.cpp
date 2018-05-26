@@ -11,6 +11,11 @@
 //
 #include "inn-stage.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/game-state-factory.hpp"
+#include "game/loop-manager.hpp"
+#include "misc/real.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
@@ -20,22 +25,20 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/tile.hpp"
 
-#include "misc/real.hpp"
-
-#include "popup/popup-manager.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
-
-#include "game/game-state-factory.hpp"
-
 namespace heroespath
 {
 namespace stage
 {
 
     InnStage::InnStage()
-        : Stage("Inn")
+        : Stage(
+              "Inn",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , titleSymbolTexture_()

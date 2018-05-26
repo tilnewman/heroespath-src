@@ -137,7 +137,7 @@ namespace stage
         {
             const sfml_util::gui::TextInfo TEXT_INFO{
                 CHARACTER_PTR->Name(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Large(),
                 FadedDarkColor_Text()
             };
@@ -181,7 +181,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO{
                 ss.str(),
-                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -217,7 +217,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO{
                 ss.str(),
-                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -252,7 +252,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO{
                 CHARACTER_PTR->ConditionNames(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Normal(),
                 FadedDarkColor_Text()
             };

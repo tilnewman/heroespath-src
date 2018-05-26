@@ -105,7 +105,13 @@ namespace stage
               0.0f,
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight())
+              sfml_util::Display::Instance()->GetWinHeight(),
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfml_util::MapByRes(10.0f, 40.0f))
@@ -162,7 +168,7 @@ namespace stage
         , SORT_ICON_COLOR_(sf::Color(255, 255, 255, 127))
         , listBoxItemTextInfo_(
               " ",
-              sfml_util::FontManager::Instance()->Font_Default2(),
+              sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
               sfml_util::FontManager::Instance()->Size_Smallish(),
               sfml_util::FontManager::Color_GrayDarker(),
               sfml_util::Justified::Left)
@@ -957,7 +963,7 @@ namespace stage
     {
         const sfml_util::gui::TextInfo INSTR_TEXT_INFO(
             "(use arrows or numbers to change characters, press 'a' to see achievements)",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_GrayDark(),
             sf::BlendAlpha,
@@ -1020,7 +1026,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -1083,7 +1089,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo STATS_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -1118,7 +1124,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo CENTER_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -1529,7 +1535,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(
             titleText,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
             sfml_util::Justified::Center);
@@ -1559,7 +1565,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo DESC_TEXT_INFO(
             TITLETEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
             sfml_util::Justified::Center);
@@ -1590,7 +1596,7 @@ namespace stage
     {
         sfml_util::gui::TextInfo textInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Left);
@@ -3677,7 +3683,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);
@@ -3753,7 +3759,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sf::Color::White,
             sfml_util::Justified::Left);

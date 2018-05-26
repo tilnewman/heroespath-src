@@ -33,7 +33,20 @@ namespace stage
     const float CreditsStage::CREDIT_BOX_INNER_PAD_(20);
 
     CreditsStage::CreditsStage()
-        : Stage("Credits")
+        : Stage(
+              "Credits",
+              {
+                  sfml_util::Font::Default,
+                  sfml_util::Font::DefaultBoldFlavor,
+                  sfml_util::Font::System,
+                  sfml_util::Font::SystemCondensed,
+                  sfml_util::Font::SignThinTallNarrow,
+                  sfml_util::Font::SignBoldShortWide,
+                  sfml_util::Font::Handwriting,
+                  sfml_util::Font::DialogModern,
+                  sfml_util::Font::DialogMedieval,
+              },
+              true)
         , CREDIT_BOX_WIDTH_(sfml_util::MapByRes(1000.0f, 1500.0f))
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
@@ -126,14 +139,14 @@ namespace stage
         // establish baseline TextInfo objects
         sfml_util::gui::TextInfo creditTextInfoSmall(
             "",
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             20,
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
 
         sfml_util::gui::TextInfo creditTextInfoLarge(
             "",
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             24,
             sf::Color::White,
             sfml_util::Justified::Center);
@@ -419,41 +432,41 @@ namespace stage
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Neo Euler\"",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             "Copyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the SIL Open Font "
             "License v1.1\nwww.scripts.sil.org/OFL"));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Goudy Bookletter 1911 \"",
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Gentium Plus\"",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             "Copyright (c) SIL International, 2003-2014\nwww.scripts.sil.org/Gentium\nUnder the "
             "SIL Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Modern Antiqua\"",
-            sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Queen & Country\"",
-            sfml_util::FontManager::Instance()->Font_BigFlavor3(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SignBoldShortWide),
             "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.  "
             "If you like it,\nplease e-mail the author at iconian@aol.com."));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Valley Forge\"",
-            sfml_util::FontManager::Instance()->Font_BigFlavor2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             "by Daniel Zadorozny\n2008 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
@@ -461,7 +474,7 @@ namespace stage
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Quill Sword\"",
-            sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
             "by Daniel Zadorozny\n2015 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));

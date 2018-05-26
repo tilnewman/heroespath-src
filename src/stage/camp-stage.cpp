@@ -46,7 +46,14 @@ namespace stage
     const std::string CampStage::NEWHEROESPATH_POPUP_NAME4_{ "NewGameIntroStoryPopup4" };
 
     CampStage::CampStage()
-        : Stage("Camp")
+        : Stage(
+              "Camp",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , mainMenuTitle_("")

@@ -36,7 +36,14 @@ namespace stage
 {
 
     SettingsStage::SettingsStage()
-        : Stage("Settings")
+        : Stage(
+              "Settings",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              false)
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(sfml_util::Display::Instance()->AntialiasLevel())
@@ -342,7 +349,7 @@ namespace stage
         {
             const sfml_util::gui::TextInfo TEXT_INFO(
                 " ",
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small());
 
             const std::vector<std::string> LABELS_VEC
@@ -601,7 +608,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Center);
@@ -638,7 +645,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Left);
@@ -665,7 +672,7 @@ namespace stage
     {
         return sfml_util::gui::TextInfo(
             TITLE,
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
@@ -675,7 +682,7 @@ namespace stage
     {
         return sfml_util::gui::MouseTextInfo(
             "",
-            sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
             sfml_util::FontManager::Instance()->Size_Small(),
             sf::Color::White,
             sf::Color(255, 200, 200));

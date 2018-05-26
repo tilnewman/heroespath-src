@@ -11,11 +11,10 @@
 //
 #include "text-animation.hpp"
 
+#include "misc/random.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "misc/random.hpp"
 
 #include <algorithm>
 #include <string>
@@ -56,7 +55,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT,
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 START_FONT_SIZE_,
                 START_COLOR_,
                 sfml_util::Justified::Center);
@@ -91,7 +90,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT_,
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 FONT_SIZE,
                 sfml_util::color::TransitionColor(START_COLOR_, END_COLOR_, SLIDER_POS),
                 sf::BlendAlpha,

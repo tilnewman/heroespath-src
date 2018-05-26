@@ -12,6 +12,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/font-enum.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -47,12 +48,14 @@ namespace sfml_util
         Stage & operator=(const Stage &) = delete;
         Stage & operator=(Stage &&) = delete;
 
-        explicit Stage(const std::string & NAME, const bool WILL_CLEAR_CACHE_ON_EXIT = true);
+        explicit Stage(
+            const std::string & NAME, const FontEnumVec_t &, const bool WILL_CLEAR_CACHE_ON_EXIT);
 
         Stage(
             const std::string & NAME,
             const sf::FloatRect & REGION,
-            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
+            const FontEnumVec_t &,
+            const bool WILL_CLEAR_CACHE_ON_EXIT);
 
         Stage(
             const std::string & NAME,
@@ -60,7 +63,8 @@ namespace sfml_util
             const float REGION_TOP,
             const float REGION_WIDTH,
             const float REGION_HEIGHT,
-            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
+            const FontEnumVec_t &,
+            const bool WILL_CLEAR_CACHE_ON_EXIT);
 
         virtual ~Stage();
 

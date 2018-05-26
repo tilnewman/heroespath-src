@@ -50,7 +50,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo TITLE_TEXTINFO(
             "You sprung the trap!",
-            sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Larger(),
             sf::Color(127, 32, 32),
             sf::BlendAlpha,
@@ -72,7 +72,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo DESC_TEXTINFO(
             popupInfo_.TextInfo().text,
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Center);

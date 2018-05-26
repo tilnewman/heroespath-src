@@ -43,6 +43,7 @@
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/font-enum.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
@@ -142,7 +143,15 @@ namespace stage
     combat::RestoreInfo CombatStage::restoreInfo_;
 
     CombatStage::CombatStage(const bool WILL_ADVANCE_TURN)
-        : Stage("Combat")
+        : Stage(
+              "Combat",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::DefaultBoldFlavor,
+                sfml_util::Font::Handwriting },
+              true)
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
@@ -152,7 +161,7 @@ namespace stage
         , statusBoxUPtr_()
         , statusBoxTextInfo_(
               " ",
-              sfml_util::FontManager::Instance()->Font_Typical(),
+              sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
               sfml_util::FontManager::Instance()->Size_Small(),
               sfml_util::FontManager::Color_Orange(),
               sfml_util::Justified::Left)
@@ -559,7 +568,7 @@ namespace stage
         // turnbox title text region
         const sfml_util::gui::TextInfo TURNBOXTITLE_TEXT_INFO(
             " ",
-            sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Center);
@@ -572,7 +581,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TURNBOXINFO_TEXT_INFO(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Left);
@@ -584,7 +593,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Center);
@@ -603,7 +612,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Center);
@@ -616,7 +625,7 @@ namespace stage
 
         sfml_util::gui::TextInfo turnBoxWeaponTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Center);
@@ -631,14 +640,14 @@ namespace stage
 
         sfml_util::gui::TextInfo turnButtonTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_Orange(),
             sfml_util::Justified::Left);
 
         const sfml_util::gui::TextInfo TESTING_TEXT_INFO(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayLight(),
             sfml_util::Justified::Left);
@@ -1064,7 +1073,7 @@ namespace stage
         // CombatDisplay Zoom Sliderbar
         const sfml_util::gui::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO(
             "Zoom",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Left);

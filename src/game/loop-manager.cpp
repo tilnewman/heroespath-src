@@ -618,7 +618,7 @@ namespace game
 
         sfml_util::gui::TextInfo textInfo(
             "Keep this setting?",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::Black,
             sfml_util::Justified::Center);

@@ -174,7 +174,7 @@ namespace popup
     {
         return sfml_util::gui::TextInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             FONT_SIZE,
             fontColor_,
             JUSTIFIED);

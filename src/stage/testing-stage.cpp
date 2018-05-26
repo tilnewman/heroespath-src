@@ -35,6 +35,7 @@
 #include "misc/real.hpp"
 #include "misc/types.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-event-enum.hpp"
@@ -69,7 +70,20 @@ namespace stage
     const int TestingStage::IMAGE_COUNT_MAX_{ 11 };
 
     TestingStage::TestingStage()
-        : Stage("Testing")
+        : Stage(
+              "Testing",
+              {
+                  sfml_util::Font::Default,
+                  sfml_util::Font::DefaultBoldFlavor,
+                  sfml_util::Font::System,
+                  sfml_util::Font::SystemCondensed,
+                  sfml_util::Font::SignThinTallNarrow,
+                  sfml_util::Font::SignBoldShortWide,
+                  sfml_util::Font::Handwriting,
+                  sfml_util::Font::DialogModern,
+                  sfml_util::Font::DialogMedieval,
+              },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , textureList_()
@@ -157,7 +171,7 @@ namespace stage
             // find out how tall the text lines will be
             sf::Text testText(
                 "M",
-                *sfml_util::FontManager::Instance()->Font_Default1(),
+                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
@@ -182,7 +196,7 @@ namespace stage
 
                 sf::Text text(
                     sf::String(ss.str()),
-                    *sfml_util::FontManager::Instance()->Font_Default1(),
+                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                     sfml_util::FontManager::Instance()->Size_Normal());
 
                 text.setPosition(1.0f, posTop);
@@ -1484,6 +1498,7 @@ if (false == willImageCheck_)
         creature::nonplayer::owns_magic_type::Test();
         creature::nonplayer::complexity_type::Test();
         popup::ResponseTypes::Test();
+        sfml_util::Brightness::Test();
         sfml_util::Corner::Test();
         sfml_util::GuiEvent::Test();
         sfml_util::Side::Test();

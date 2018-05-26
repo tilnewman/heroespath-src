@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/font-enum.hpp"
 #include "stage/adventure-display-stage.hpp"
 
 namespace heroespath
@@ -32,7 +33,17 @@ namespace stage
               0.0f,
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight())
+              sfml_util::Display::Instance()->GetWinHeight(),
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::Number,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::DialogMedieval,
+                sfml_util::Font::DialogModern,
+                sfml_util::Font::DefaultBoldFlavor,
+                sfml_util::Font::Handwriting },
+              true)
         , interactionManager_()
         , adventureDisplayStagePtr_(new AdventureDisplayStage(interactionManager_))
     {}

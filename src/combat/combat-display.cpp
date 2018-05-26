@@ -76,7 +76,7 @@ namespace combat
 
     CombatDisplay::CombatDisplay(
         const CombatAnimationPtr_t COMBAT_ANIM_PTR, const sf::FloatRect & REGION)
-        : Stage("CombatDisplay", REGION)
+        : Stage("CombatDisplay", REGION, {}, false)
         , POSITIONING_MARGIN_HORIZ_(sfml_util::MapByRes(50.0f, 300.0f))
         , POSITIONING_MARGIN_VERT_(sfml_util::MapByRes(50.0f, 300.0f))
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfml_util::MapByRes(5.0f, 200.0f))

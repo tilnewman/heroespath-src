@@ -82,7 +82,7 @@ namespace stage
     const float TreasureDisplayStage::ITEM_DETAIL_TIMEOUT_SEC_{ 3.0f };
 
     TreasureDisplayStage::TreasureDisplayStage(const TreasureStagePtr_t TREASURE_STAGE_PTR)
-        : Stage("TreasureDisplay", false)
+        : Stage("TreasureDisplay", {}, false)
         , treasureStagePtr_(TREASURE_STAGE_PTR)
         , titleImage_("treasure-button.png", true, 1.0f, 0.75f)
         , bottomImage_(0.75f, true, sf::Color::White, 0.4f)
@@ -795,7 +795,7 @@ namespace stage
     {
         const sfml_util::gui::TextInfo TEXT_INFO(
             "(press spacebar to change treasure, use arrows or numbers to change characters)",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_GrayDark(),
             sf::BlendAlpha,
@@ -842,7 +842,7 @@ namespace stage
 
         sfml_util::gui::TextInfo textInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             COLOR_UP,
             sfml_util::Justified::Left);
@@ -869,7 +869,7 @@ namespace stage
     {
         sfml_util::gui::TextInfo listboxTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -936,7 +936,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             LABEL_TEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -1242,7 +1242,7 @@ namespace stage
     {
         const sfml_util::gui::TextInfo TEXT_INFO(
             TEXT,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             FONT_SIZE,
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);

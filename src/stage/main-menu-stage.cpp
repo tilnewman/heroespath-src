@@ -33,7 +33,13 @@ namespace stage
 {
 
     MainMenuStage::MainMenuStage()
-        : Stage("MainMenu")
+        : Stage(
+              "MainMenu",
+              {
+                  sfml_util::Font::Default,
+                  sfml_util::Font::System,
+              },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , SCREEN_RECT_(

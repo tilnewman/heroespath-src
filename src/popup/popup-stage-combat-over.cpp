@@ -126,7 +126,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->Font_BigFlavor1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDarker(),
             sf::BlendAlpha,
@@ -178,7 +178,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
             DESC_TEXT,
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);

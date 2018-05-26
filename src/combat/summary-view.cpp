@@ -254,7 +254,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
@@ -266,7 +266,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_RANK_TEXT_INFO(
             rankSS.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
@@ -286,7 +286,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
             healthSS.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
@@ -298,7 +298,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
             armorRatingSS.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
@@ -307,7 +307,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(
             creaturePtr->Body().ToString(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light(),
             sf::BlendAlpha,
@@ -321,7 +321,7 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
             condSS.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_Light());
 
@@ -564,7 +564,7 @@ namespace combat
 
             const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(
                 nextItemText.item_ptr->Name(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
                 sfml_util::FontManager::Color_Light(),
                 sfml_util::Justified::Left);
@@ -582,7 +582,7 @@ namespace combat
 
             const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(
                 nextItemText.item_ptr->Desc(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
                 sfml_util::FontManager::Color_Light(),
                 sfml_util::Justified::Left);
@@ -626,7 +626,7 @@ namespace combat
 
             const sfml_util::gui::TextInfo INFO_TEXT_INFO(
                 infoSS.str(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
                 sfml_util::FontManager::Color_Light(),
                 sfml_util::Justified::Left);

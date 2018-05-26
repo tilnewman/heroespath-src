@@ -71,7 +71,7 @@ namespace sfml_util
         {
             return MouseTextInfo(
                 NAME,
-                FontManager::Instance()->Font_PopupButton(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Handwriting),
                 FontManager::Instance()->Size_Larger(),
                 FontManager::Color_PopupButtonUp(COLOR),
                 FontManager::Color_PopupButtonDown(COLOR),
@@ -82,7 +82,7 @@ namespace sfml_util
         {
             return MouseTextInfo(
                 NAME,
-                FontManager::Instance()->Font_PopupButton(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DialogMedieval),
                 FontManager::Instance()->Size_Large(),
                 FontManager::Color_PopupButtonUp(popup::PopupButtonColor::Dark),
                 FontManager::Color_PopupButtonDown(popup::PopupButtonColor::Dark),

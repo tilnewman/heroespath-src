@@ -17,7 +17,7 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include <boost/filesystem.hpp>
+#include "sfml-util/sfml-graphics.hpp"
 
 namespace heroespath
 {
@@ -47,33 +47,15 @@ namespace sfml_util
     std::unique_ptr<FontManager> FontManager::instanceUPtr_;
 
     FontManager::FontManager()
-        : fontUVec_()
+        : fontUVec_(Font::Count)
+        , numberFontFamilyName_("")
+        , fontsDirPathStr_(game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"))
     {
         M_HP_LOG_DBG("Subsystem Construction: FontManager");
 
-        auto const FONTS_DIR{ game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir") };
-
-        // Note:  Keep order in sync with enum FontManager::Fonts
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/euler/euler.otf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/gentium-plus/gentium-plus.ttf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/goudy-bookletter/goudy-bookletter.otf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/modern-antiqua/modern-antiqua.ttf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/queen-country/queen-country.ttf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/quill-sword/quillsword.ttf");
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>());
-        Loaders::Font(*fontUVec_.back(), FONTS_DIR + "/valley-forge/valleyforge.ttf");
+        Load(Font::Number);
+        numberFontFamilyName_ = GetFont(Font::Number)->getInfo().family;
+        Unload(Font::Number);
     }
 
     FontManager::~FontManager() { M_HP_LOG_DBG("Subsystem Destruction: FontManager"); }
@@ -108,6 +90,95 @@ namespace sfml_util
 
         instanceUPtr_.reset();
     }
+
+    const FontPtr_t FontManager::GetFont(const Font::Enum FONT)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (Font::IsValid(FONT)),
+            "sfml_util::FontManager::GetFont(font_enum="
+                << static_cast<misc::EnumUnderlying_t>(FONT) << ") given an invalid font enum.");
+
+        if (IsLoaded(FONT) == false)
+        {
+            M_HP_LOG_WRN(
+                "sfml_util::FontManager::GetFont("
+                << Font::ToString(FONT) << "/" << Font::Name(FONT)
+                << ") asked to return a font that was not already loaded.  Loading now...");
+
+            Load(FONT);
+        }
+
+        return GetFontRef(FONT).get();
+    }
+
+    void FontManager::Load(const Font::Enum FONT)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (Font::IsValid(FONT)),
+            "sfml_util::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+                                                      << ") given an invalid font enum.");
+
+        if (IsLoaded(FONT) == false)
+        {
+            auto & fontUPtr{ GetFontRef(FONT) };
+            fontUPtr = std::make_unique<sf::Font>();
+            sfml_util::Loaders::Font(*fontUPtr, fontsDirPathStr_ + "/" + Font::Path(FONT));
+        }
+    }
+
+    void FontManager::Load(const FontEnumVec_t & FONT_ENUM_VEC)
+    {
+        for (auto const FONT_ENUM : FONT_ENUM_VEC)
+        {
+            Load(FONT_ENUM);
+        }
+    }
+
+    void FontManager::Unload(const Font::Enum FONT)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (Font::IsValid(FONT)),
+            "sfml_util::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+                                                        << ") given an invalid font enum.");
+
+        GetFontRef(FONT).reset();
+    }
+
+    void FontManager::Unload(const FontEnumVec_t & FONT_ENUM_VEC)
+    {
+        for (auto const FONT_ENUM : FONT_ENUM_VEC)
+        {
+            Unload(FONT_ENUM);
+        }
+    }
+
+    void FontManager::UnloadAll()
+    {
+        for (auto & fontUPtr : fontUVec_)
+        {
+            fontUPtr.reset();
+        }
+    }
+
+    bool FontManager::IsLoaded(const Font::Enum FONT) const
+    {
+        if (Font::IsValid(FONT))
+        {
+            return !!fontUVec_.at(static_cast<std::size_t>(FONT));
+        }
+
+        return false;
+    }
+
+    const sf::Color FontManager::Color_GrayLight() { return sf::Color(200, 200, 200); }
+    const sf::Color FontManager::Color_GrayLighter() { return sf::Color(232, 232, 232); }
+    const sf::Color FontManager::Color_GrayDark() { return sf::Color(100, 100, 100); }
+    const sf::Color FontManager::Color_GrayDarker() { return sf::Color(64, 64, 64); }
+    const sf::Color FontManager::Color_Orange() { return sf::Color(255, 223, 181); }
+    const sf::Color FontManager::Color_Light() { return sf::Color(220, 220, 220); }
+    const sf::Color FontManager::Color_LightGold() { return sf::Color(255, 248, 220); }
+
+    sf::Uint8 FontManager::ColorValue_Highlight() { return 55; }
 
     const sf::Color FontManager::Color_PopupButtonUp(const popup::PopupButtonColor::Enum C)
     {
@@ -178,6 +249,13 @@ namespace sfml_util
     unsigned int FontManager::Size_Tiny() const
     {
         return sfml_util::MapByRes(SIZE_TINY_MIN_, SIZE_TINY_MAX_);
+    }
+
+    unsigned int FontManager::Size_CombatCreatureLabels() const { return Size_Smallish(); }
+
+    FontUPtr_t & FontManager::GetFontRef(const Font::Enum FONT)
+    {
+        return fontUVec_.at(static_cast<std::size_t>(FONT));
     }
 
 } // namespace sfml_util

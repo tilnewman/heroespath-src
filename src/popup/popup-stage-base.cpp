@@ -32,7 +32,7 @@ namespace popup
     const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_{ 0.85f };
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
-        : Stage(POPUP_INFO.Name() + "_PopupStage", false)
+        : Stage(POPUP_INFO.Name() + "_PopupStage", {}, false)
         , popupInfo_(POPUP_INFO)
         , innerRegion_()
         , backgroundTexture_()

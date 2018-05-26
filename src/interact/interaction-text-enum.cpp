@@ -43,9 +43,9 @@ namespace interact
         switch (TEXT_TYPE)
         {
             case Text::System:
-                return sfml_util::FontManager::Instance()->Font_Default1();
+                return sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default);
             case Text::Dialog:
-                return sfml_util::FontManager::Instance()->Font_Dialog1();
+                return sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DialogMedieval);
             case Text::Count:
             default:
             {

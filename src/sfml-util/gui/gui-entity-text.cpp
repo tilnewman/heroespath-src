@@ -148,7 +148,8 @@ namespace sfml_util
                 }
                 else
                 {
-                    textInfoNum.fontPtrOpt = FontManager::Instance()->Font_NumbersDefault1();
+                    textInfoNum.fontPtrOpt
+                        = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
                 }
             }
 

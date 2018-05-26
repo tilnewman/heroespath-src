@@ -43,7 +43,9 @@ namespace sfml_util
 
     bool LoopCmd_AddStage_Default::Execute()
     {
-        game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(new Stage("Default"));
+        game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(
+            new Stage("Default", {}, false));
+
         return true;
     }
 

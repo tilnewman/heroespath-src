@@ -11,17 +11,14 @@
 //
 #include "brightness-enum.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    const std::string Brightness::ToString(const Brightness::Enum E)
+    const std::string Brightness::ToString(const Brightness::Enum BRIGHTNESS)
     {
-        switch (E)
+        switch (BRIGHTNESS)
         {
             case Bright:
             {
@@ -38,29 +35,10 @@ namespace sfml_util
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Brightness::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(BRIGHTNESS, "ToString");
             }
         }
     }
 
-    bool Brightness::IsValid(const Brightness::Enum E)
-    {
-        switch (E)
-        {
-            case Bright:
-            case Medium:
-            case Dark:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
 } // namespace sfml_util
 } // namespace heroespath

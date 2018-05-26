@@ -37,7 +37,9 @@ namespace stage
               0.0f,
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight())
+              sfml_util::Display::Instance()->GetWinHeight(),
+              {},
+              false)
         , interactionManager_(interactionManager)
         , topImage_("", true, 1.0f, 0.75f)
         , bottomImage_(0.75f, true, sf::Color::White)

@@ -9,6 +9,8 @@
 //
 // brightness.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Brightness
+    struct Brightness : public misc::EnumBaseCounting<Brightness, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Bright = 0, // Default
             Medium,
@@ -26,9 +28,9 @@ namespace sfml_util
             Count
         };
 
-        static const std::string ToString(const Brightness::Enum E);
-        static bool IsValid(const Brightness::Enum E);
+        static const std::string ToString(const Brightness::Enum);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

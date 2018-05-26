@@ -39,7 +39,14 @@ namespace stage
 {
 
     LoadGameStage::LoadGameStage()
-        : Stage("LoadGameMenu")
+        : Stage(
+              "LoadGameMenu",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , mainMenuTitle_("resume_button_normal.png")
@@ -149,7 +156,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO(
                 ss.str(),
-                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
                 28,
                 sf::Color::White,
                 sfml_util::Justified::Left);
@@ -225,7 +232,7 @@ namespace stage
 
         sfml_util::gui::TextInfo descTextInfo(
             "",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             26,
             sf::Color::White,
             sfml_util::Justified::Left);

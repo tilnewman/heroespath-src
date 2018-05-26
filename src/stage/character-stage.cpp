@@ -122,7 +122,14 @@ namespace stage
     const double CharacterStage::SMOKE_ANIM_SPEED_MAX_{ 0.5 };
 
     CharacterStage::CharacterStage()
-        : Stage("CharacterCreation")
+        : Stage(
+              "CharacterCreation",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , SMALL_FONT_SIZE_(sfml_util::FontManager::Instance()->Size_Small())
@@ -345,7 +352,7 @@ namespace stage
 
         sfml_util::gui::TextInfo statTextInfo(
             "Strength",
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             38,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -619,7 +626,7 @@ namespace stage
     {
         sfml_util::gui::TextInfo raceRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             RADIO_BOX_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -658,7 +665,7 @@ namespace stage
     {
         sfml_util::gui::TextInfo roleRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             RADIO_BOX_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -716,7 +723,7 @@ namespace stage
 
         sfml_util::gui::TextInfo raceDescTextInfo(
             RACE_DESC,
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             30,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -760,7 +767,7 @@ namespace stage
 
         sfml_util::gui::TextInfo roleDescTextInfo(
             creature::role::Desc(ROLE_ENUM),
-            sfml_util::FontManager::Instance()->Font_Dialog2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             30,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -790,7 +797,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO(
             "(name your character here)",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Small(),
             LIGHT_TEXT_COLOR_,
             sf::BlendAlpha,
@@ -838,7 +845,7 @@ namespace stage
     {
         sfml_util::gui::TextInfo sexRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             RADIO_BOX_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -886,7 +893,7 @@ namespace stage
 
         sfml_util::gui::TextInfo insTextInfo(
             spacebarInstrTextSS.str(),
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Small(),
             LIGHT_TEXT_COLOR_,
             sf::BlendAlpha,
@@ -1104,7 +1111,7 @@ namespace stage
 
         sfml_util::gui::TextInfo descTextInfo(
             "", // see below for where this is set to a valid value
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             SMALL_FONT_SIZE_,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Center);
@@ -2502,7 +2509,7 @@ namespace stage
 
             sfml_util::gui::TextInfo textInfo(
                 " ",
-                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
                 40,
                 sf::Color::White,
                 sfml_util::Justified::Left);

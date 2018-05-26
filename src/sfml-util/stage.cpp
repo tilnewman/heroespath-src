@@ -33,7 +33,10 @@ namespace sfml_util
 
     const float Stage::MOUSE_DRAG_MIN_DISTANCE_{ 3.0f };
 
-    Stage::Stage(const std::string & NAME, const bool WILL_CLEAR_CACHE_ON_EXIT)
+    Stage::Stage(
+        const std::string & NAME,
+        const FontEnumVec_t & FONT_ENUM_VEC,
+        const bool WILL_CLEAR_CACHE_ON_EXIT)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(sf::FloatRect(
               0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight()))
@@ -45,10 +48,15 @@ namespace sfml_util
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
-    {}
+    {
+        FontManager::Instance()->Load(FONT_ENUM_VEC);
+    }
 
     Stage::Stage(
-        const std::string & NAME, const sf::FloatRect & REGION, const bool WILL_CLEAR_CACHE_ON_EXIT)
+        const std::string & NAME,
+        const sf::FloatRect & REGION,
+        const FontEnumVec_t & FONT_ENUM_VEC,
+        const bool WILL_CLEAR_CACHE_ON_EXIT)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(REGION)
         , entityPVec_()
@@ -59,7 +67,9 @@ namespace sfml_util
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
-    {}
+    {
+        FontManager::Instance()->Load(FONT_ENUM_VEC);
+    }
 
     Stage::Stage(
         const std::string & NAME,
@@ -67,6 +77,7 @@ namespace sfml_util
         const float REGION_TOP,
         const float REGION_WIDTH,
         const float REGION_HEIGHT,
+        const FontEnumVec_t & FONT_ENUM_VEC,
         const bool WILL_CLEAR_CACHE_ON_EXIT)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(sf::FloatRect(REGION_LEFT, REGION_TOP, REGION_WIDTH, REGION_HEIGHT))
@@ -78,7 +89,9 @@ namespace sfml_util
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
-    {}
+    {
+        FontManager::Instance()->Load(FONT_ENUM_VEC);
+    }
 
     Stage::~Stage()
     {
@@ -86,6 +99,7 @@ namespace sfml_util
         {
             SoundManager::Instance()->ClearSoundEffectsCache();
             TextureCache::Instance()->RemoveAll();
+            FontManager::Instance()->UnloadAll();
         }
     }
 
@@ -275,7 +289,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 hoverText,
-                FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
                 FontManager::Instance()->Size_Smallish(),
                 sf::Color(50, 50, 50),
                 Justified::Left);

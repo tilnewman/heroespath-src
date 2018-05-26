@@ -32,7 +32,9 @@ namespace stage
               0.0f,
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight())
+              sfml_util::Display::Instance()->GetWinHeight(),
+              {},
+              true)
         , titleTexture_()
         , titleSprite_()
         , initialDrawHoldCounter_(0)

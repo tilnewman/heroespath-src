@@ -51,7 +51,7 @@ namespace sfml_util
         {
             sfml_util::gui::MouseTextInfo nextTextInfo(
                 NEXT_RESOLUTION.ToString(false),
-                sfml_util::FontManager::Instance()->Font_Default1(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small());
 
             mouseTextInfoVec.emplace_back(nextTextInfo);

@@ -26,7 +26,7 @@ namespace creature
 
     const sfml_util::FontPtr_t NameInfo::DefaultFont() const
     {
-        return sfml_util::FontManager::Instance()->Font_Default2();
+        return sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System);
     }
 
     unsigned int NameInfo::DefaultSize() const

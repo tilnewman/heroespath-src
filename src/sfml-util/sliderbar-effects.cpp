@@ -68,12 +68,14 @@ namespace sfml_util
         if (NEW_VALUE_INT == 0)
         {
             ss << "MUTE";
-            textInfo.fontPtrOpt = FontManager::Instance()->Font_Typical();
+            textInfo.fontPtrOpt
+                = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed);
         }
         else
         {
             ss << NEW_VALUE_INT;
-            textInfo.fontPtrOpt = FontManager::Instance()->Font_NumbersDefault1();
+            textInfo.fontPtrOpt
+                = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
         }
 
         textInfo.text = ss.str();

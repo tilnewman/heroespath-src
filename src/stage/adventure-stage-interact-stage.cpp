@@ -33,7 +33,7 @@ namespace stage
         map::Map & map,
         const sf::FloatRect & REGION,
         interact::InteractionManager & interactionManager)
-        : Stage("AdventureInteract", REGION, false)
+        : Stage("AdventureInteract", REGION, {}, false)
         , map_(map)
         , regionPad_(sfml_util::MapByRes(18.0f, 52.0f))
         , innerRect_(

@@ -84,7 +84,15 @@ namespace stage
     };
 
     TreasureStage::TreasureStage()
-        : Stage("Treasure")
+        : Stage(
+              "Treasure",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::DefaultBoldFlavor,
+                sfml_util::Font::Handwriting },
+              true)
         , displayStagePtr_(new TreasureDisplayStage(this))
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()

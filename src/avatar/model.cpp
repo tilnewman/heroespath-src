@@ -34,7 +34,7 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 3.0f };
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 5.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
-    const float Model::WALKING_INTO_DURATION_SEC_{ 1.0f };
+    const float Model::WALKING_INTO_DURATION_SEC_{ 0.5f };
 
     Model::Model(const Avatar::Enum AVATAR_ENUM)
         : view_(

@@ -38,7 +38,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -67,7 +67,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -95,7 +95,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -204,7 +204,7 @@ namespace stage
 
         sfml_util::gui::TextInfo textInfoContent(
             CONTENT_TEXT,
-            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);

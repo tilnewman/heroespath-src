@@ -187,7 +187,8 @@ namespace sfml_util
             const Margins & MARGINS)
         {
             gui::TextInfo numbersTextInfo(TEXT_INFO);
-            numbersTextInfo.fontPtrOpt = sfml_util::FontManager::Instance()->Font_NumbersDefault1();
+            numbersTextInfo.fontPtrOpt
+                = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
             return Render(renderText, TEXT_INFO, numbersTextInfo, TEXT_INFO.text, REGION, MARGINS);
         }
 

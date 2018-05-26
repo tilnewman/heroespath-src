@@ -116,7 +116,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO(
                 ss.str(),
-                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
                 sfml_util::FontManager::Instance()->Size_Small(),
                 color,
                 sfml_util::Justified::Left);

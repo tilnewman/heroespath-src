@@ -59,7 +59,14 @@ namespace stage
     const float PartyStage::MOUSE_OVER_BOX_ALPHA_{ 170.0f };
 
     PartyStage::PartyStage()
-        : Stage("Party")
+        : Stage(
+              "Party",
+              { sfml_util::Font::Default,
+                sfml_util::Font::System,
+                sfml_util::Font::SystemCondensed,
+                sfml_util::Font::Number,
+                sfml_util::Font::Handwriting },
+              true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , mainMenuTitle_("create_party_normal.png")
@@ -320,7 +327,7 @@ namespace stage
         {
             sfml_util::gui::TextInfo insTextInfo(
                 "(double-click or use the arrow keys and enter to move characters back and forth)",
-                sfml_util::FontManager::Instance()->Font_Typical(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 sfml_util::FontManager::Color_GrayLight(),
                 sf::BlendAlpha,
@@ -346,7 +353,7 @@ namespace stage
         sfml_util::gui::ListBoxItemSVec_t itemSVec;
         sfml_util::gui::TextInfo textInfo(
             "",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::White,
             sfml_util::Justified::Left);
@@ -467,7 +474,7 @@ namespace stage
         {
             sfml_util::gui::TextInfo labelTextInfo(
                 "Unplayed Characters",
-                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
                 sfml_util::FontManager::Instance()->Size_Largeish(),
                 sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
@@ -486,7 +493,7 @@ namespace stage
         {
             sfml_util::gui::TextInfo labelTextInfo(
                 "New Party",
-                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
                 sfml_util::FontManager::Instance()->Size_Largeish(),
                 sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
@@ -509,7 +516,7 @@ namespace stage
 
             warningTextInfo_ = sfml_util::gui::TextInfo(
                 ss.str(),
-                sfml_util::FontManager::Instance()->Font_Typical(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 sf::Color(255, 200, 200),
                 sf::BlendAlpha,
@@ -729,7 +736,7 @@ namespace stage
 
                 const sfml_util::gui::TextInfo TEXT_INFO(
                     ss.str(),
-                    sfml_util::FontManager::Instance()->Font_Typical(),
+                    sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
                     sfml_util::FontManager::Instance()->Size_Smallish(),
                     sfml_util::FontManager::Color_Light(),
                     sfml_util::Justified::Left);

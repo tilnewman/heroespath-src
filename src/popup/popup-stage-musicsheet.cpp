@@ -64,7 +64,7 @@ namespace popup
 
         listBoxItemTextInfo_(
             " ",
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left)
@@ -331,7 +331,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -352,7 +352,7 @@ namespace popup
     {
         const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
             "Songs",
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
@@ -427,7 +427,7 @@ namespace popup
         // setup song title text
         const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
             SONG_PTR->Name(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
@@ -484,7 +484,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
@@ -551,7 +551,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             UNABLE_TEXT_COLOR_,
             sf::BlendAlpha,
@@ -583,7 +583,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
