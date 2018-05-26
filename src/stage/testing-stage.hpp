@@ -80,6 +80,7 @@ namespace stage
         bool TestInventoryFactory();
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
         bool PerformEnumTests();
+        bool TestFonts();
 
         // see comment in .cpp file
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;

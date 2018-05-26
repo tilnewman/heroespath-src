@@ -373,6 +373,13 @@ if (false == willImageCheck_)
             return;
         }
 
+        static auto hasTestingCompleted_Fonts{ false };
+        if (false == hasTestingCompleted_Fonts)
+        {
+            hasTestingCompleted_Fonts = TestFonts();
+            return;
+        }
+
         static auto hasTestingCompleted_ItemFactory{ false };
         if (false == hasTestingCompleted_ItemFactory)
         {
@@ -1508,9 +1515,36 @@ if (false == willImageCheck_)
         sfml_util::music::Test();
         sfml_util::sound_effect::Test();
         sfml_util::sound_effect_set::Test();
+        sfml_util::Font::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
         return true;
+    }
+
+    bool TestingStage::TestFonts()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            TestingStrAppend("stage::TestingStage::TestFonts() Starting Tests...");
+            return false;
+        }
+
+        static misc::EnumUnderlying_t fontIndex{ 0 };
+
+        if (fontIndex < sfml_util::Font::Count)
+        {
+            auto const FONT_ENUM{ static_cast<sfml_util::Font::Enum>(fontIndex) };
+            sfml_util::FontManager::Instance()->GetFont(FONT_ENUM);
+            ++fontIndex;
+            return false;
+        }
+        else
+        {
+            TestingStrAppend("stage::TestingStage::TestFonts() Finished.");
+            return true;
+        }
     }
 
 } // namespace stage
