@@ -37,6 +37,7 @@ namespace sfml_util
         float Speed() const { return static_cast<float>(slider_.Speed()); }
         bool IsShaking() const { return isShaking_; }
         const sf::Color Current() const { return colorCurr_; }
+        bool IsMovingToward() const { return slider_.IsIncreasing(); }
 
     private:
         sliders::Slider<float> slider_;
@@ -49,6 +50,7 @@ namespace sfml_util
         float blueDiff_;
         float alphaDiff_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

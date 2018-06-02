@@ -61,5 +61,6 @@ namespace sfml_util
         colorCurr_ = colorOrig_;
         slider_.Reset(0.0f, 1.0f);
     }
+
 } // namespace sfml_util
 } // namespace heroespath

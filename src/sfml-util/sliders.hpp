@@ -288,6 +288,8 @@ namespace sfml_util
                 return newCurrentVal;
             }
 
+            bool IsIncreasing() const { return isIncreasing_; }
+
         private:
             Value_t min_;
             Value_t max_;

@@ -77,6 +77,12 @@ namespace stage
               (Stage::StageRegionWidth() * 0.5f) + (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
         , MOUSEOVER_FINAL_INNER_EDGE_PAD_(sfml_util::ScreenRatioToPixelsHoriz(0.008f))
         , MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_(sfml_util::ScreenRatioToPixelsHoriz(0.115f))
+        , MOUSEOVER_COLORCYCLE_START_(sf::Color::Transparent)
+        , HEROESPATH_ORANGE_(sfml_util::FontManager::Instance()->Color_Orange())
+        , MOUSEOVER_COLORCYCLE_ALT_(
+              HEROESPATH_ORANGE_.r, HEROESPATH_ORANGE_.g, HEROESPATH_ORANGE_.b, 42)
+        , MOUSEOVER_COLORCYCLE_SPEED_(28.0f)
+        , MOUSEOVER_COLORCYCLE_COUNT_(3)
         , listBoxInfo_()
         , mainMenuTitle_("create_party_normal.png")
         , backgroundImage_("media-images-backgrounds-tile-darkknot")
@@ -125,6 +131,7 @@ namespace stage
         , bottomSymbol_()
         , willDisplayCharacterCountWarningText_(false)
         , unplayedCharactersPVec_()
+        , colorShakerRect_()
         , willShowMouseOverPopup_(false)
         , mouseOverPopupTimerSec_(0.0f)
         , mouseOverBackground_()
@@ -577,6 +584,7 @@ namespace stage
 
         if (willShowMouseOverPopup_)
         {
+            target.draw(colorShakerRect_, STATES);
             target.draw(mouseOverBackground_, STATES);
             target.draw(mouseOverCreatureSprite_, STATES);
 
@@ -614,8 +622,13 @@ namespace stage
     void PartyStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        UpdateTime_WarningTextColorCycling(ELAPSED_TIME_SECONDS);
+        UpdateTime_MouseOver_Detection(ELAPSED_TIME_SECONDS);
+        UpdateTime_MouseOver_Animation(ELAPSED_TIME_SECONDS);
+    }
 
-        // oscillate the warning text color
+    void PartyStage::UpdateTime_WarningTextColorCycling(const float ELAPSED_TIME_SECONDS)
+    {
         if (willDisplayCharacterCountWarningText_)
         {
             auto const NEW_COLOR_VAL{ static_cast<sf::Uint8>(
@@ -628,10 +641,16 @@ namespace stage
             color.b = NEW_COLOR_VAL;
             warningTextRegionUPtr_->SetEntityColorFgBoth(color);
         }
+    }
+
+    void PartyStage::UpdateTime_MouseOver_Detection(const float ELAPSED_TIME_SECONDS)
+    {
+        if (willShowMouseOverPopup_)
+        {
+            return;
+        }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
-
-        creature::CreaturePtrOpt_t mouseOverCharacterPtrOpt{ boost::none };
 
         if ((mouseOverPopupTimerSec_ > MOUSEOVER_POPUP_DELAY_SEC_)
             && (false == willShowMouseOverPopup_))
@@ -648,8 +667,6 @@ namespace stage
             {
                 willShowMouseOverPopup_ = true;
 
-                mouseOverCharacterPtrOpt = itemSPtr->CHARACTER_PTR_OPT;
-
                 mouseOverSlider_.Reset(MOUSEOVER_SLIDER_SPEED_);
 
                 sfml_util::gui::CreatureImageLoader creatureImageLoader;
@@ -662,12 +679,40 @@ namespace stage
                 // start at size zero
                 mouseOverCreatureSprite_.setScale(0.0f, 0.0f);
 
-                SetupMouseOverPositionsAndDimmensions(mouseOverCharacterPtrOpt.value());
+                SetupMouseOverPositionsAndDimmensions(itemSPtr->CHARACTER_PTR_OPT.value());
+
+                colorShakerRect_.Reset(
+                    itemSPtr->GetEntityRegion(),
+                    MOUSEOVER_COLORCYCLE_START_,
+                    MOUSEOVER_COLORCYCLE_ALT_,
+                    MOUSEOVER_COLORCYCLE_SPEED_,
+                    MOUSEOVER_COLORCYCLE_COUNT_);
+
+                colorShakerRect_.Start();
+
+                mouseOverBackground_.Color(sf::Color::Transparent);
             }
         }
+    }
 
-        if (willShowMouseOverPopup_)
+    void PartyStage::UpdateTime_MouseOver_Animation(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == willShowMouseOverPopup_)
         {
+            return;
+        }
+
+        if (colorShakerRect_.IsShaking())
+        {
+            colorShakerRect_.Update(ELAPSED_TIME_SECONDS);
+        }
+        else
+        {
+            if (mouseOverSlider_.IsDone())
+            {
+                return;
+            }
+
             auto const RATIO{ mouseOverSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             auto const BG_WIDTH{ mouseOverBackgroundRectFinal_.width * RATIO };
@@ -718,6 +763,41 @@ namespace stage
         Stage::UpdateMousePos(NEW_MOUSE_POS_V);
     }
 
+    bool PartyStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        ResetMouseOverPopupState();
+
+        if (Stage::KeyRelease(KEY_EVENT))
+        {
+            return true;
+        }
+        else if (KEY_EVENT.code == sf::Keyboard::B)
+        {
+            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            HandleCallback_BackButton();
+            return true;
+        }
+        else if (KEY_EVENT.code == sf::Keyboard::D)
+        {
+            deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            HandleCallback_DeleteButton();
+            return true;
+        }
+        else if (KEY_EVENT.code == sf::Keyboard::S)
+        {
+            startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            HandleCallback_StartButton();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void PartyStage::StartNewGame(const avatar::Avatar::Enum PARTY_AVATAR)
     {
         creature::CreaturePVec_t charPVec;
@@ -752,41 +832,6 @@ namespace stage
         // partyListBoxUPtr_->Clear();
 
         game::LoopManager::Instance()->TransitionTo_Camp();
-    }
-
-    bool PartyStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
-    {
-        ResetMouseOverPopupState();
-
-        if (Stage::KeyRelease(KEY_EVENT))
-        {
-            return true;
-        }
-        else if (KEY_EVENT.code == sf::Keyboard::B)
-        {
-            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            HandleCallback_BackButton();
-            return true;
-        }
-        else if (KEY_EVENT.code == sf::Keyboard::D)
-        {
-            deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            HandleCallback_DeleteButton();
-            return true;
-        }
-        else if (KEY_EVENT.code == sf::Keyboard::S)
-        {
-            startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            HandleCallback_StartButton();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     void PartyStage::ResetMouseOverPopupState()

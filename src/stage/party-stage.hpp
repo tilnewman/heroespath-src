@@ -14,6 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/color-shaker-rect.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
@@ -63,22 +64,21 @@ namespace stage
         PartyStage & operator=(const PartyStage &) = delete;
         PartyStage & operator=(PartyStage &&) = delete;
 
-    public:
         PartyStage();
         virtual ~PartyStage();
 
-        virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
+        const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(const popup::PopupResponse &);
-        virtual bool HandleCallback_BackButton();
-        virtual bool HandleCallback_StartButton();
-        virtual bool HandleCallback_DeleteButton();
+        bool HandleCallback(const popup::PopupResponse &) override;
+        bool HandleCallback_BackButton();
+        bool HandleCallback_StartButton();
+        bool HandleCallback_DeleteButton();
 
-        virtual void Setup();
+        void Setup() override;
         void Setup_Ouroboros();
         void Setup_Buttons();
         void Setup_TopInstructionText();
@@ -88,16 +88,21 @@ namespace stage
         void Setup_CharactersListBox();
         void Setup_PartyListBox();
 
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
-        virtual const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
-        virtual void StartNewGame(const avatar::Avatar::Enum);
-        virtual bool KeyRelease(const sf::Event::KeyEvent &);
+        sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
+        const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
+
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void UpdateTime_WarningTextColorCycling(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_MouseOver_Detection(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_MouseOver_Animation(const float ELAPSED_TIME_SECONDS);
+
+        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
+        void StartNewGame(const avatar::Avatar::Enum);
         void ResetMouseOverPopupState();
         bool AreAnyCharactersBeasts() const;
         bool AreAnyCharactersBeastmasters() const;
@@ -125,6 +130,11 @@ namespace stage
         const float PARTY_LISTBOX_POS_LEFT_;
         const float MOUSEOVER_FINAL_INNER_EDGE_PAD_;
         const float MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_;
+        const sf::Color MOUSEOVER_COLORCYCLE_START_;
+        const sf::Color HEROESPATH_ORANGE_;
+        const sf::Color MOUSEOVER_COLORCYCLE_ALT_;
+        const float MOUSEOVER_COLORCYCLE_SPEED_;
+        const std::size_t MOUSEOVER_COLORCYCLE_COUNT_;
         sfml_util::gui::box::Info listBoxInfo_;
         sfml_util::MainMenuTitle mainMenuTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
@@ -143,6 +153,7 @@ namespace stage
         sfml_util::BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
         creature::CreaturePVec_t unplayedCharactersPVec_;
+        sfml_util::ColorShakerRect colorShakerRect_;
 
         // mouseover popup animation members
         bool willShowMouseOverPopup_;
