@@ -830,11 +830,15 @@ namespace stage
 
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
+        sfml_util::gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
+        nameEntryTextInfo.text = " ";
+        nameEntryTextInfo.color = DESC_TEXT_COLOR_;
+
         nameTextEntryBoxUPtr_ = std::make_unique<sfml_util::gui::TextEntryBox>(
             sfml_util::gui::callback::ITextEntryBoxCallbackHandlerPtr_t(this),
             "CharacterName",
             REGION,
-            creatureNameInfo.MakeTextInfo(" ", DESC_TEXT_COLOR_),
+            nameEntryTextInfo,
             LIGHT_TEXT_COLOR_,
             BOX_INFO);
 

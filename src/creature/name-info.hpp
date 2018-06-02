@@ -39,10 +39,9 @@ namespace creature
         float DefaultTextEntryBoxWidth() const
         {
             // The +1 is to accomodate the TextEntryBox's padding and margins
-            return Length(
-                std::string(MaxCharacterCount() + 1, LargestLetter()),
-                DefaultFont(),
-                DefaultSize());
+            return Size(sfml_util::gui::TextInfo(
+                            LargestName() + LargestLetter(), DefaultFont(), DefaultSize()))
+                .x;
         }
 
         const sfml_util::FontPtr_t DefaultFont() const;
@@ -58,23 +57,42 @@ namespace creature
 
         const std::string LargestLetterString() const { return std::string(1, LargestLetter()); }
 
-        const sfml_util::gui::TextInfo MakeTextInfo(
-            const std::string & TEXT = " ",
-            const sf::Color & COLOR = sf::Color::White,
-            const sfml_util::Justified::Enum JUSTIFICATION = sfml_util::Justified::Left) const
+        const sfml_util::gui::TextInfo MakeTextInfo() const
         {
-            return sfml_util::gui::TextInfo(
-                TEXT, DefaultFont(), DefaultSize(), COLOR, JUSTIFICATION);
+            return MakeTextInfo(DefaultFont(), DefaultSize());
         }
 
-        float Length(
-            const std::string & TEXT,
-            const sfml_util::FontPtr_t FONT_PTR,
-            const unsigned int CHAR_SIZE) const;
+        const sfml_util::gui::TextInfo
+            MakeTextInfo(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        {
+            return sfml_util::gui::TextInfo(LargestName(), FONT_PTR, CHAR_SIZE);
+        }
 
-        float Length(const sfml_util::gui::TextInfo & TEXT_INFO) const;
+        const sf::Vector2f Size() const { return Size(MakeTextInfo()); }
 
-        float Length() { return Length(MakeTextInfo(LargestName())); }
+        const sf::Vector2f
+            Size(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        {
+            return Size(MakeTextInfo(FONT_PTR, CHAR_SIZE));
+        }
+
+        const sf::Vector2f Size(const sfml_util::gui::TextInfo & TEXT_INFO) const;
+
+        const sf::Vector2f ScreenRatio() const { return ConvertSizeToScreenRatio(Size()); }
+
+        const sf::Vector2f
+            ScreenRatio(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        {
+            return ConvertSizeToScreenRatio(Size(FONT_PTR, CHAR_SIZE));
+        }
+
+        const sf::Vector2f ScreenRatio(const sfml_util::gui::TextInfo & TEXT_INFO) const
+        {
+            return ConvertSizeToScreenRatio(Size(TEXT_INFO));
+        }
+
+    private:
+        const sf::Vector2f ConvertSizeToScreenRatio(const sf::Vector2f &) const;
     };
 
 } // namespace creature

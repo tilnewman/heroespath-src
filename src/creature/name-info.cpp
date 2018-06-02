@@ -12,6 +12,7 @@
 #include "name-info.hpp"
 
 #include "log/log-macros.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -34,21 +35,20 @@ namespace creature
         return sfml_util::FontManager::Instance()->Size_Normal();
     }
 
-    float NameInfo::Length(
-        const std::string & TEXT,
-        const sfml_util::FontPtr_t FONT_PTR,
-        const unsigned int CHAR_SIZE) const
-    {
-        return Length(sfml_util::gui::TextInfo(
-            TEXT, FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left));
-    }
-
-    float NameInfo::Length(const sfml_util::gui::TextInfo & TEXT_INFO) const
+    const sf::Vector2f NameInfo::Size(const sfml_util::gui::TextInfo & TEXT_INFO) const
     {
         sfml_util::gui::TextRegion textRegion(
-            "CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
+            "CreatureNameInfoSizeDeterminer", TEXT_INFO, sf::FloatRect());
 
-        return textRegion.GetEntityRegion().width;
+        return sf::Vector2f(
+            textRegion.GetEntityRegion().width, textRegion.GetEntityRegion().height);
+    }
+
+    const sf::Vector2f NameInfo::ConvertSizeToScreenRatio(const sf::Vector2f & SIZE_V) const
+    {
+        return sf::Vector2f(
+            SIZE_V.x / sfml_util::Display::Instance()->GetWinWidth(),
+            SIZE_V.y / sfml_util::Display::Instance()->GetWinHeight());
     }
 
 } // namespace creature

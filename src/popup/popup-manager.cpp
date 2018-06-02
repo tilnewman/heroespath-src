@@ -16,6 +16,7 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 #include "misc/types.hpp"
 #include "misc/vectors.hpp"
@@ -542,31 +543,18 @@ namespace popup
 
     void PopupManager::LoadAccentImagePaths()
     {
-        namespace bfs = boost::filesystem;
+        namespace fs = misc::filesystem;
 
-        const bfs::path DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
+        auto const DIR_PATH{ fs::MakePathPretty(
+            boost::filesystem::path(accentTextureDirectoryPath_)) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (bfs::exists(DIR_OBJ)),
-            "popup::PopupManager::LoadAssets() accents dir path not found \"" << DIR_OBJ.string()
-                                                                              << "\".");
+        accentPathsVec_ = fs::FindFilesInDirectory(DIR_PATH, "accent-", ".png");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (bfs::is_directory(DIR_OBJ)),
-            "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \""
-                << DIR_OBJ.string() << "\".");
-
-        // create a vector of paths to saved games
-        bfs::directory_iterator end_itr; // default construction yields past-the-end
-        for (bfs::directory_iterator itr(DIR_OBJ); itr != end_itr; ++itr)
-        {
-            if ((bfs::is_regular_file(itr->path()))
-                && (boost::algorithm::starts_with(itr->path().leaf().string(), "accent-"))
-                && (boost::algorithm::ends_with(itr->path().leaf().string(), ".png")))
-            {
-                accentPathsVec_.emplace_back(itr->path());
-            }
-        }
+            (accentPathsVec_.empty() == false),
+            "popup::PopupManager::LoadAccentImagePaths() failed to load any files from: "
+                << DIR_PATH.string());
     }
+
 } // namespace popup
 } // namespace heroespath

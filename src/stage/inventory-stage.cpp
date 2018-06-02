@@ -3733,7 +3733,7 @@ namespace stage
 
         detailViewSprite_.setPosition(
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
-            DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::MapByRes(0.0f, 50.0f));
+            DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::SpacerOld(50.0f));
 
         std::ostringstream ss;
         ss << "\n"

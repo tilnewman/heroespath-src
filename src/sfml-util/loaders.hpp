@@ -12,8 +12,6 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-#include <boost/filesystem.hpp>
-
 #include <string>
 #include <vector>
 
@@ -30,19 +28,15 @@ namespace sfml_util
         static void Texture(
             sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH = true);
 
+        // Returns the number loaded into textureVec
         static std::size_t AllTexturesInDir(
             std::vector<sf::Texture> & textureVec,
-            const std::string & DIR_STR,
+            const std::string & DIR_PATH_STR,
             const bool WILL_SMOOTH = true);
 
         static void Font(sf::Font & font, const std::string & PATH_STR);
 
         static MusicUPtr_t Music(const std::string & PATH_STR);
-
-    private:
-        static const std::string MakePathPretty(const boost::filesystem::path &);
-
-        static const std::vector<std::string> INVALID_TEXT_VEC_;
     };
 
 } // namespace sfml_util

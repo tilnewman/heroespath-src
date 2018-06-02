@@ -305,60 +305,9 @@ namespace sfml_util
         return static_cast<Return_t>(y);
     }
 
-    /*
-     * No need for keeping sf::RenderTextures at power of two sizes, and even if there were,
-     * we would not wrap them in std::shared_ptrs.
-     *
-    template<typename T>
-    RendTextSPtr_t CreateRenderTextureAtPowerOf2Size(const T ORIG_WIDTH,
-                                                     const T ORIG_HEIGHT)
-    {
-        auto const NEW_WIDTH { FindPowerOf2GreaterThan<T, unsigned>(ORIG_WIDTH)  };
-        auto const NEW_HEIGHT{ FindPowerOf2GreaterThan<T, unsigned>(ORIG_HEIGHT) };
-
-        auto renderTextureSPtr = std::make_shared<sf::RenderTexture>();
-
-        if (renderTextureSPtr->create(NEW_WIDTH, NEW_HEIGHT) == false)
-        {
-            std::ostringstream ss1;
-            ss1 << "sfml_util::CreateRenderTextureAtPowerOf2Size("
-                << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") resized to power of 2 fit="
-                << NEW_WIDTH << "x" << NEW_HEIGHT << " and failed on the create() call."
-                << "  See console output for details.  Will ignore this error and attempt to call"
-                << " create() at original size...";
-            M_HP_LOG_ERR(ss1.str());
-
-            if (renderTextureSPtr->create(static_cast<unsigned>(ORIG_WIDTH),
-                static_cast<unsigned>(ORIG_HEIGHT)) == false)
-            {
-                const unsigned int DEFAULT_SIZE{ 256 };
-
-                std::ostringstream ss2;
-                ss2 << "sfml_util::CreateRenderTextureAtPowerOf2Size("
-                    << ORIG_WIDTH << "x" << ORIG_HEIGHT << ") create() after resized to fit power"
-                    << " of 2 failed, and then create() at the original size also failed.  Using"
-                    << " default size of " << DEFAULT_SIZE << "x" << DEFAULT_SIZE
-                    << " that will probably not dispay right, but is better than crashing...";
-                M_HP_LOG(ss2.str());
-
-                M_ASSERT_OR_LOGANDTHROW_SS((renderTextureSPtr->create(DEFAULT_SIZE, DEFAULT_SIZE)),
-                    "sfml_util::CreateRenderTextureAtPowerOf2Size("
-                    << ORIG_WIDTH << "x" << ORIG_HEIGHT << ")...okay, failed to create() at "
-                    << "the resize to fit power of 2, then failed to create() at the original "
-                    << "size, and then failed to create() at the default size.  Probably an out of"
-                    << " video memory situation.  Bail.");
-            }
-        }
-
-        return renderTextureSPtr;
-    }
-    */
-
     const std::string KeyCodeToString(const sf::Keyboard::Key KEY);
 
     const std::string VideoModeToString(const sf::VideoMode & VM, const bool WILL_WRAP = true);
-
-    void GetResolutionAreas(float & resAreaCurrent, float & resAreaMin, float & resAreaMax);
 
     // map a VAL within [IN_MIN, IN_MAX] to the range [OUT_MIN, OUT_MAX]
     template <typename T>
@@ -367,24 +316,26 @@ namespace sfml_util
         return OUT_MIN + (((VAL - IN_MIN) * (OUT_MAX - OUT_MIN)) / (IN_MAX - IN_MIN));
     }
 
-    // return a number within [OUT_MIN, OUT_MAX] proportional to the current resolution vs the max
-    // supported resolution
-    template <typename T>
-    inline T MapByRes(const T OUT_MIN, const T OUT_MAX)
-    {
-        auto minResArea{ 0.0f };
-        auto maxResArea{ 0.0f };
-        auto currentResArea{ 0.0f };
-        GetResolutionAreas(currentResArea, minResArea, maxResArea);
-        auto const ACTUAL_MAX{ (currentResArea > maxResArea) ? currentResArea : maxResArea };
+    // maps[(1280*900), (7680*4800)/2] at the current resolution width*height to [THE_MIN, THE_MAX],
+    // which with THE_MIN=0.0f and THE_MAX=(below) and a current res of 2880x1880 yeilds:
+    //  1000 = 233
+    //  500  = 117
+    //  100  = 23
+    //  50   = 11.65
+    //  20   = 4.65
+    //  10   = 2.33
+    float MapByRes(const float THE_MIN, const float THE_MAX);
 
-        return static_cast<T>(
-            Map(currentResArea,
-                minResArea,
-                ACTUAL_MAX,
-                static_cast<float>(OUT_MIN),
-                static_cast<float>(OUT_MAX)));
+    inline unsigned MapByRes(const unsigned THE_MIN, const unsigned THE_MAX)
+    {
+        return static_cast<unsigned>(
+            MapByRes(static_cast<float>(THE_MIN), static_cast<float>(THE_MAX)));
     }
+
+    inline float SpacerOld(const float AMOUNT) { return MapByRes(0.0f, AMOUNT); }
+
+    float ScreenRatioToPixelsHoriz(const float RATIO);
+    float ScreenRatioToPixelsVert(const float RATIO);
 
     // linux SFML lib does not seem to support outline fonts...
     void SetTextColor(sf::Text & text, const sf::Color & COLOR);

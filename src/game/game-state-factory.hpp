@@ -86,16 +86,6 @@ namespace game
             const std::string & FILE_STR,
             const std::string & EXT_STR) const;
 
-        const boost::filesystem::path
-            CreateDirectoryPathFromCurrent(const std::string & SUBDIRECTORY_NAME) const;
-
-        bool DoesDirectoryExist(const boost::filesystem::path & DIR_PATH) const;
-
-        const std::vector<boost::filesystem::path> CreateVectorOfMatchingFilePathsInDir(
-            const boost::filesystem::path & DIR_PATH,
-            const std::string & FILENAME_PREFIX,
-            const std::string & FILENAME_EXTENSION) const;
-
         static const std::string SAVED_HEROESPATH_DIR_NAME_;
         static const std::string SAVED_HEROESPATH_FILE_NAME_;
         static const std::string SAVED_HEROESPATH_FILE_EXT_;

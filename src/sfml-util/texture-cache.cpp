@@ -14,6 +14,7 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
 
 #include <boost/filesystem.hpp>
@@ -131,6 +132,7 @@ namespace sfml_util
         const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH)
     {
         misc::SizetVec_t indexVec;
+
         if (strToVecMap_.Find(DIR_PATH_PARAM_STR, indexVec))
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -141,75 +143,26 @@ namespace sfml_util
         }
         else
         {
-            // verify directory exists
-            namespace bfs = boost::filesystem;
+            namespace fs = misc::filesystem;
 
-            auto const DIR_PATH{ bfs::system_complete(bfs::path(DIR_PATH_PARAM_STR)) };
-            auto const & DIR_PATH_COMPLETE_STR{ DIR_PATH.string() };
+            auto filePaths{ fs::FindFilesInDirectory(
+                fs::MakePathPretty(boost::filesystem::path(DIR_PATH_PARAM_STR)),
+                "",
+                "",
+                fs::FilenameText::TO_EXCLUDE_VEC_) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::exists(DIR_PATH)),
-                "sfml_util::TextureCache::"
-                    << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-                    << "\") failed because that path does not exist!");
+            fs::SortByNumberInFilename(filePaths);
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::is_directory(DIR_PATH)),
-                "sfml_util::TextureCache::"
-                    << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-                    << "\") failed because that is not a directory.");
-
-            // collect all valid file paths in pathVec (not in any order)
-            std::vector<std::string> pathVec;
-
-            const std::vector<std::string> INVALID_TEXT_VEC
-                = { ".txt", ".DS_Store", "sample.gif", ".html", ".htm" };
-
-            bfs::directory_iterator endItr;
-            for (bfs::directory_iterator dirItr(DIR_PATH); endItr != dirItr; ++dirItr)
+            for (auto const & PATH : filePaths)
             {
-                if (bfs::is_regular_file(dirItr->status()) == false)
-                {
-                    continue;
-                }
-
-                auto const NEXT_PATH_STR{ dirItr->path().string() };
-
-                auto didFindInvalid{ false };
-                for (auto const & NEXT_INVALID_STRING : INVALID_TEXT_VEC)
-                {
-                    if (boost::algorithm::icontains(NEXT_PATH_STR, NEXT_INVALID_STRING))
-                    {
-                        didFindInvalid = true;
-                        break;
-                    }
-                }
-
-                if (didFindInvalid)
-                {
-                    continue;
-                }
-                else
-                {
-                    pathVec.emplace_back(NEXT_PATH_STR);
-                }
+                indexVec.emplace_back(AddByPathInternal(PATH.string(), WILL_SMOOTH));
             }
 
-            // order the path strings by the last occurring numbers in the filenames
-            ReorderByLastNumber(pathVec);
-
-            // add each file to indexVec (now in order)
-            for (auto const & PATH_STR : pathVec)
-            {
-                indexVec.emplace_back(AddByPathInternal(PATH_STR, WILL_SMOOTH));
-            }
-
-            // verify that at least one valid file was found
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (indexVec.empty() == false),
-                "sfml_util::TextureCache::"
-                    << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-                    << "\") failed to find any valid images.");
+                "sfml_util::TextureCache::AddAllInDirectoryByPath(path=\""
+                    << DIR_PATH_PARAM_STR << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                    << ") failed to find any valid images.");
 
             // keep track of which texture indexes were associated with which directory
             strToVecMap_[DIR_PATH_PARAM_STR] = indexVec;
@@ -387,62 +340,5 @@ namespace sfml_util
         return INDEX;
     }
 
-    void TextureCache::ReorderByLastNumber(std::vector<std::string> & strVec)
-    {
-        misc::VectorMap<std::size_t, std::string> numberToStrMap;
-
-        for (auto const & STR : strVec)
-        {
-            // use Append() to allow for duplicates
-            numberToStrMap.Append(FindLastNumber(STR), STR);
-        }
-
-        strVec.clear();
-
-        numberToStrMap.Sort();
-
-        for (auto const & NUM_STR_PAIR : numberToStrMap)
-        {
-            strVec.emplace_back(NUM_STR_PAIR.second);
-        }
-    }
-
-    std::size_t TextureCache::FindLastNumber(const std::string & FILE_NAME)
-    {
-        if (FILE_NAME.empty())
-        {
-            return 0;
-        }
-
-        std::string numberStr{ "" };
-        std::size_t i{ FILE_NAME.size() - 1 };
-        do
-        {
-            auto const LETTER{ FILE_NAME[i] };
-            auto const IS_DIGIT{ std::isdigit(static_cast<unsigned char>(LETTER)) != 0 };
-
-            if ((numberStr.empty() == false) && (IS_DIGIT == false))
-            {
-                break;
-            }
-            else if (IS_DIGIT)
-            {
-                numberStr.push_back(LETTER);
-            }
-
-            --i;
-        } while (i != 0);
-
-        std::reverse(numberStr.begin(), numberStr.end());
-
-        try
-        {
-            return boost::lexical_cast<std::size_t>(numberStr);
-        }
-        catch (...)
-        {
-            return 0;
-        }
-    }
 } // namespace sfml_util
 } // namespace heroespath

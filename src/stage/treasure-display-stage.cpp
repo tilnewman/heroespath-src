@@ -826,7 +826,7 @@ namespace stage
         SetupLowerButton(takeAllButtonUPtr_, "(T)ake All", TAKEALL_POS_TOP);
 
         auto const EXIT_POS_TOP{ (TAKEALL_POS_TOP + takeAllButtonUPtr_->GetEntityRegion().height)
-                                 - sfml_util::MapByRes(0.0f, 50.0f) };
+                                 - sfml_util::SpacerOld(50.0f) };
 
         SetupLowerButton(doneButtonUPtr_, "(E)xit", EXIT_POS_TOP);
     }

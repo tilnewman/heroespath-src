@@ -14,6 +14,7 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
@@ -580,53 +581,39 @@ namespace sfml_util
 
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        // configure the path
-        namespace bfs = boost::filesystem;
-        const bfs::path DIR_OBJ(bfs::system_complete(
-            bfs::path(musicDirectoryPath_) / bfs::path(music::Directory(music::CombatIntro))));
+        namespace fs = misc::filesystem;
+
+        const boost::filesystem::path MUSIC_ROOT_DIR_PATH(musicDirectoryPath_);
+        const boost::filesystem::path MUSIC_SUB_DIR_PATH(music::Directory(music::CombatIntro));
+
+        auto const DIR_PATH{ fs::MakePathPretty(MUSIC_ROOT_DIR_PATH / MUSIC_SUB_DIR_PATH) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::exists(DIR_OBJ),
-            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
-                << DIR_OBJ.string() << "\" does not exist.");
+            (fs::DoesDirectoryExist(DIR_PATH)),
+            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() but the directory does not "
+            "exist: "
+                << DIR_PATH.string());
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            bfs::is_directory(DIR_OBJ),
-            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
-                << DIR_OBJ.string() << "\" exists but is not a directory.");
+        auto const MUSIC_FILE_PATHS{ fs::FindFilesInDirectory(DIR_PATH, "", music::FileExt()) };
 
         combatIntroMusicInfoVec_.clear();
 
-        bfs::directory_iterator end_iter; // default construction yields past-the-end
-        for (bfs::directory_iterator iter(DIR_OBJ); iter != end_iter; ++iter)
+        for (auto const & PATH : MUSIC_FILE_PATHS)
         {
-            const bfs::path NEXT_PATH_OBJ(iter->path());
-
-            if (bfs::is_regular_file(NEXT_PATH_OBJ) == false)
-            {
-                continue;
-            }
-
-            auto const NEXT_FILENAME(NEXT_PATH_OBJ.leaf().string());
-
-            if ((boost::algorithm::icontains(NEXT_FILENAME, ".txt"))
-                || (boost::algorithm::icontains(NEXT_FILENAME, ".DS_Store")))
-            {
-                continue;
-            }
+            auto const FILENAME{ PATH.leaf().string() };
 
             std::vector<std::string> filenamePartsVec;
-            appbase::stringhelp::SplitByChar(NEXT_FILENAME, filenamePartsVec, '_', true, true);
+            appbase::stringhelp::SplitByChar(FILENAME, filenamePartsVec, '_', true, true);
             if (filenamePartsVec.size() != 4)
             {
                 continue;
             }
 
-            const std::string NEXT_ARTIST_NAME(filenamePartsVec.at(1));
-            const std::string NEXT_TRACK_NAME(filenamePartsVec.at(2));
+            auto const NEXT_ARTIST_NAME{ filenamePartsVec.at(1) };
+            auto const NEXT_TRACK_NAME{ filenamePartsVec.at(2) };
 
-            const std::string NEXT_LICENSE_NAME(
-                boost::algorithm::erase_all_copy(filenamePartsVec.at(3), music::FileExt()));
+            auto const NEXT_LICENSE_NAME{ boost::algorithm::erase_all_copy(
+                filenamePartsVec.at(3), music::FileExt()) };
 
             combatIntroMusicInfoVec_.emplace_back(MusicInfo(
                 music::CombatIntro,
@@ -634,9 +621,15 @@ namespace sfml_util
                 NEXT_ARTIST_NAME,
                 NEXT_TRACK_NAME,
                 NEXT_LICENSE_NAME,
-                NEXT_FILENAME,
-                DIR_OBJ.string()));
+                FILENAME,
+                DIR_PATH.string()));
         }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (combatIntroMusicInfoVec_.empty() == false),
+            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() failed to load any music info "
+            "from the directory: "
+                << DIR_PATH.string());
     }
 
     MusicOperator SoundManager::MakeAndStartMusicOperator(

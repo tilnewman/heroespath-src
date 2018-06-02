@@ -77,7 +77,6 @@ namespace creature
         , bonusSet_()
         , enchantmentsPVec_()
     {
-
         if (imageFilename_.empty())
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;

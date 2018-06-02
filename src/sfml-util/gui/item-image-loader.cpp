@@ -21,6 +21,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/enum-util.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 
 #include "sfml-util/loaders.hpp"
@@ -45,14 +46,8 @@ namespace sfml_util
         ItemImageLoader::ItemImageLoader()
             : imageDirectoryPath_("")
         {
-            namespace bfs = boost::filesystem;
-
-            const bfs::path PATH{ bfs::system_complete(
-                                      bfs::path(game::GameDataFile::Instance()->GetMediaPath(
-                                          "media-images-items-dir")))
-                                      .normalize() };
-
-            imageDirectoryPath_ = PATH.string();
+            imageDirectoryPath_ = misc::filesystem::MakePathPretty(
+                game::GameDataFile::Instance()->GetMediaPath("media-images-items-dir"));
         }
 
         bool ItemImageLoader::Test() const
@@ -69,7 +64,11 @@ namespace sfml_util
 
             const std::string TEST_PRE_STR{ "ItemImageLoader Test " };
 
-            static auto allFilenames{ AllFilenames() };
+            static auto allFilenames{ misc::filesystem::FindFilesInDirectory(
+                imageDirectoryPath_,
+                "",
+                FILE_EXT_STR_,
+                misc::filesystem::FilenameText::TO_EXCLUDE_VEC_) };
 
             static auto const WEAPON_TYPE_WRAPPERS{ weapon::WeaponTypeWrapper::MakeCompleteSet() };
 
@@ -267,38 +266,9 @@ namespace sfml_util
             throw std::runtime_error(ss.str());
         }
 
-        bool ItemImageLoader::DoesFileExists(const item::ItemPtr_t ITEM_PTR) const
+        bool ItemImageLoader::DoesFileExist(const item::ItemPtr_t ITEM_PTR) const
         {
-            return DoesFileExists(ITEM_PTR->ImageFilename());
-        }
-
-        bool ItemImageLoader::DoesFileExists(const std::string & FILENAME) const
-        {
-            namespace bfs = boost::filesystem;
-            auto const PATH{ bfs::path(MakeFullPathFromFilename(FILENAME)) };
-            return (bfs::exists(PATH) && bfs::is_regular_file(PATH));
-        }
-
-        const std::vector<std::string> ItemImageLoader::AllFilenames() const
-        {
-            std::vector<std::string> filenames;
-
-            namespace bfs = boost::filesystem;
-
-            for (auto const & PATH : bfs::path(imageDirectoryPath_))
-            {
-                if (bfs::is_regular_file(PATH))
-                {
-                    namespace ba = boost::algorithm;
-
-                    if (ba::ends_with(PATH.leaf().string(), FILE_EXT_STR_))
-                    {
-                        filenames.emplace_back(PATH.leaf().string());
-                    }
-                }
-            }
-
-            return filenames;
+            return misc::filesystem::DoesFileExist(ITEM_PTR->ImageFilename());
         }
 
         const std::vector<std::string> ItemImageLoader::Filenames(

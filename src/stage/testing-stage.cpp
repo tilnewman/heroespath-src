@@ -17,6 +17,7 @@
 #include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
+#include "creature/name-info.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
@@ -379,6 +380,71 @@ if (false == willImageCheck_)
             hasTestingCompleted_Fonts = TestFonts();
             return;
         }
+
+        /*
+        static auto hasTestingCompleted_FontMeasurements{ false };
+        if (false == hasTestingCompleted_FontMeasurements)
+        {
+            hasTestingCompleted_FontMeasurements = true;
+
+            creature::NameInfo nameInfo;
+
+            for (int sizeIndex(0); sizeIndex <= 2; ++sizeIndex)
+            {
+                auto const FONT_SIZE{ [sizeIndex]() {
+                    switch (sizeIndex)
+                    {
+                            // clang-format off
+                    case 0: { return sfml_util::FontManager::Instance()->Size_Normal(); }
+                    case 1: { return sfml_util::FontManager::Instance()->Size_Largeish(); }
+                    case 2: { return sfml_util::FontManager::Instance()->Size_Large(); }
+                    default: { return unsigned(0); }
+                            // clang-format on
+                    }
+                }() };
+
+                const std::string FONT_SIZE_STR{ [sizeIndex]() {
+                    switch (sizeIndex)
+                    {
+                            // clang-format off
+                    case 0: { return "Normal"; }
+                    case 1: { return "Largeish"; }
+                    case 2: { return "Large"; }
+                    default: { return "ERROR"; }
+                            // clang-format on
+                    }
+                }() };
+
+                std::vector<float> lengths;
+
+                for (int fontIndex(0); fontIndex <= 3; ++fontIndex)
+                {
+                    auto const FONT_ENUM{ static_cast<sfml_util::Font::Enum>(fontIndex) };
+
+                    auto const LENGTH{ nameInfo.Length(sfml_util::gui::TextInfo(
+                        nameInfo.LargestName(),
+                        sfml_util::FontManager::Instance()->GetFont(FONT_ENUM),
+                        FONT_SIZE)) };
+
+                    lengths.emplace_back(LENGTH);
+
+                    M_HP_LOG_DBG(
+                        sfml_util::Font::ToString(FONT_ENUM)
+                        << "\t" << FONT_SIZE_STR << '\t' << LENGTH << '\t' << "(" << LENGTH << "/"
+                        << sfml_util::Display::Instance()->GetWinWidth()
+                        << ")=" << (LENGTH / sfml_util::Display::Instance()->GetWinWidth()));
+                }
+
+                misc::Vector::MinMaxAvgSum<float> mmas(lengths);
+
+                M_HP_LOG_DBG(
+                    "[" << mmas.min << ", " << mmas.avg << ", " << mmas.max
+                        << "]  std_dev=" << misc::Vector::StandardDeviation(lengths));
+            }
+
+            return;
+        }
+        */
 
         static auto hasTestingCompleted_ItemFactory{ false };
         if (false == hasTestingCompleted_ItemFactory)

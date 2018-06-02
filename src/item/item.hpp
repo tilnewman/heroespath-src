@@ -44,8 +44,8 @@ namespace item
 
     public:
         explicit Item(
-            const std::string & NAME = "no_name_error",
-            const std::string & DESC = "no-desc_error",
+            const std::string & NAME = "",
+            const std::string & DESC = "",
             const category::Enum CATEGORY = category::None,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,

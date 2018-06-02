@@ -629,25 +629,53 @@ namespace sfml_util
         }
     }
 
-    void GetResolutionAreas(float & resAreaCurrent, float & resAreaMin, float & resAreaMax)
-    {
-        resAreaCurrent
-            = (sfml_util::Display::Instance()->GetWinWidth()
-               * sfml_util::Display::Instance()->GetWinHeight());
-        resAreaMin
-            = (sfml_util::Display::Instance()->GetWinWidthMin()
-               * sfml_util::Display::Instance()->GetWinHeightMin());
-        resAreaMax = (sfml_util::Display::Instance()->GetWinWidthMax()
-                      * sfml_util::Display::Instance()->GetWinHeightMax())
-            * 0.5f;
-    }
-
     const std::string VideoModeToString(const sf::VideoMode & VM, const bool WILL_WRAP)
     {
         std::ostringstream ss;
+
         ss << ((WILL_WRAP) ? "[" : "") << VM.width << "x" << VM.height << ":" << VM.bitsPerPixel
            << ((WILL_WRAP) ? "]" : "");
+
         return ss.str();
+    }
+
+    float MapByRes(const float THE_MIN, const float THE_MAX)
+    {
+        auto const RES_AREA_MIN{ 1280.0f * 900.0f };
+        auto const RES_AREA_MAX{ (7680.0f * 4800.0f) * 0.5f };
+
+        auto const RES_AREA_CURR{ sfml_util::Display::Instance()->GetWinWidth()
+                                  * sfml_util::Display::Instance()->GetWinHeight() };
+
+        return Map(RES_AREA_CURR, RES_AREA_MIN, RES_AREA_MAX, THE_MIN, THE_MAX);
+    }
+
+    /*
+    load-game-menu-stage.cpp(127)       sfml_util::MapByRes(0.0f, 800.0f);
+
+    party-stage.cpp(401)                sfml_util::MapByRes(0.0f, 800.0f) };
+
+    party-stage.cpp(535)                sfml_util::MapByRes(0.0f, 20.0f) };
+
+    party-stage.cpp(657)                sfml_util::MapByRes(0.0f, 600.0f);
+
+    treasure-display-stage.cpp(829)     sfml_util::MapByRes(0.0f, 50.0f) };
+
+    adventure-stage-char-list.cpp(574)  sfml_util::MapByRes(0.0f, 10.0f) };
+
+    inventory-stage.cpp(3736)           sfml_util::MapByRes(0.0f, 50.0f));
+
+    combat-stage.cpp(3485)              sfml_util::MapByRes(0.0f, 16.0f));
+
+*/
+    float ScreenRatioToPixelsHoriz(const float RATIO)
+    {
+        return RATIO * sfml_util::Display::Instance()->GetWinWidth();
+    }
+
+    float ScreenRatioToPixelsVert(const float RATIO)
+    {
+        return RATIO * sfml_util::Display::Instance()->GetWinHeight();
     }
 
     void SetTextColor(sf::Text & text, const sf::Color & COLOR)

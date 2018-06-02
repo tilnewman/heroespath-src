@@ -24,6 +24,7 @@
 #include "item/weapon-type-wrapper.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/gui/item-image-loader.hpp"
 
@@ -180,7 +181,7 @@ namespace item
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
-                auto const DOES_FILE_EXIST{ itemImageMachine.DoesFileExists(
+                auto const DOES_FILE_EXIST{ misc::filesystem::DoesFileExist(
                     FILENAME_PROFILE_PAIR.first) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(

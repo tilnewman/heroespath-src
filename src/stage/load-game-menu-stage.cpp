@@ -124,7 +124,7 @@ namespace stage
         // GameState ListBox
         //
         // determine position on screen
-        gsListBoxPosLeft_ = ((SCREEN_WIDTH_ * 0.1f) - 85.0f) + sfml_util::MapByRes(0.0f, 800.0f);
+        gsListBoxPosLeft_ = ((SCREEN_WIDTH_ * 0.1f) - 85.0f) + sfml_util::SpacerOld(800.0f);
         gsListBoxPosWidth_ = 610.0f;
         gsListBoxPosHeight_ = SCREEN_HEIGHT_ * 0.5f;
         gsListBoxPosTop_ = ((SCREEN_HEIGHT_ * 0.5f) - (gsListBoxPosHeight_ * 0.5f)) + 50.0f;

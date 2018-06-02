@@ -77,8 +77,6 @@ namespace sfml_util
 
             const std::string MakeFullPathFromFilename(const std::string & FILENAME) const;
 
-            const std::vector<std::string> AllFilenames() const;
-
             std::string imageDirectoryPath_;
         };
 

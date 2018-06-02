@@ -17,6 +17,7 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -36,14 +37,8 @@ namespace sfml_util
         CreatureImageLoader::CreatureImageLoader()
             : imageDirectoryPath_("")
         {
-            namespace bfs = boost::filesystem;
-
-            const bfs::path PATH{ bfs::system_complete(
-                                      bfs::path(game::GameDataFile::Instance()->GetMediaPath(
-                                          "media-images-creatures-dir")))
-                                      .normalize() };
-
-            imageDirectoryPath_ = PATH.string();
+            imageDirectoryPath_ = misc::filesystem::MakePathPretty(
+                game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
         }
 
         bool CreatureImageLoader::Test() const
@@ -56,7 +51,8 @@ namespace sfml_util
                     "sfml_util::gui::CreatureImageLoader::Test() Starting Tests...");
             }
 
-            static auto allFilenames{ AllFilenames() };
+            static auto allFilenames{ misc::filesystem::FindFilesInDirectory(
+                imageDirectoryPath_, "", ".png", misc::filesystem::FilenameText::TO_EXCLUDE_VEC_) };
 
             static misc::EnumUnderlying_t raceIndex{ 0 };
             static misc::EnumUnderlying_t roleIndex{ 0 };
@@ -315,19 +311,13 @@ namespace sfml_util
 
         void CreatureImageLoader::EnsureFileExists(const std::string & FILENAME) const
         {
-            namespace bfs = boost::filesystem;
-
             auto const FULL_PATH_STR{ MakeFullPathFromFilename(FILENAME) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::exists(bfs::path(FULL_PATH_STR))),
+                (misc::filesystem::DoesFileExist(FULL_PATH_STR)),
                 "sfml_util::gui::CreatureImageLoader::EnsureFileExists(\""
-                    << FULL_PATH_STR << "\") but that file does not exist.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::is_regular_file(bfs::path(FULL_PATH_STR))),
-                "sfml_util::gui::CreatureImageLoader::EnsureFileExists(\""
-                    << FULL_PATH_STR << "\") but that is not a regular file.");
+                    << FULL_PATH_STR
+                    << "\") but that file either does not exist or is not a regular file.");
         }
 
         void CreatureImageLoader::LoadImage(
@@ -646,9 +636,9 @@ namespace sfml_util
             {
                 if (ROLE == role::Grunt)
                 {
-                    return {
-                        "minotaur-grunt-1.png", "minotaur-grunt-2.png", "minotaur-grunt-3.png"
-                    };
+                    return { "minotaur-grunt-1.png",
+                             "minotaur-grunt-2.png",
+                             "minotaur-grunt-3.png" };
                 }
 
                 if (ROLE == role::Brute)
@@ -1727,29 +1717,9 @@ namespace sfml_util
             CreatureImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
         {
             namespace bfs = boost::filesystem;
-            return (bfs::path(imageDirectoryPath_) / bfs::path(FILENAME)).string();
-        }
-
-        const std::vector<std::string> CreatureImageLoader::AllFilenames() const
-        {
-            std::vector<std::string> filenames;
-
-            namespace bfs = boost::filesystem;
-
-            for (auto const & PATH : bfs::path(imageDirectoryPath_))
-            {
-                if (bfs::is_regular_file(PATH))
-                {
-                    namespace ba = boost::algorithm;
-
-                    if (ba::ends_with(PATH.leaf().string(), ".png"))
-                    {
-                        filenames.emplace_back(PATH.leaf().string());
-                    }
-                }
-            }
-
-            return filenames;
+            return misc::filesystem::MakePathPretty(
+                       bfs::path(imageDirectoryPath_) / bfs::path(FILENAME))
+                .string();
         }
 
     } // namespace gui

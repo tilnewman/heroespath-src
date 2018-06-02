@@ -73,10 +73,6 @@ namespace sfml_util
         std::size_t
             AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH);
 
-        static void ReorderByLastNumber(std::vector<std::string> &);
-
-        static std::size_t FindLastNumber(const std::string &);
-
     private:
         static std::unique_ptr<TextureCache> instanceUPtr_;
         TextureUVec_t cacheUVec_;

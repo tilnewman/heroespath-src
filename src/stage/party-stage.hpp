@@ -14,6 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
@@ -68,52 +69,63 @@ namespace stage
 
         virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
+
         virtual bool
             HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+
         virtual bool HandleCallback(const popup::PopupResponse &);
-        //
         virtual bool HandleCallback_BackButton();
         virtual bool HandleCallback_StartButton();
         virtual bool HandleCallback_DeleteButton();
 
         virtual void Setup();
+        void Setup_Ouroboros();
+        void Setup_Buttons();
+        void Setup_TopInstructionText();
+        void Setup_TopWarningText();
+        void Setup_CharactersListBoxLabel();
+        void Setup_PartyListBoxLabel();
+        void Setup_CharactersListBox();
+        void Setup_PartyListBox();
+
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
         virtual const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
-
         virtual void StartNewGame(const avatar::Avatar::Enum);
-
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
 
     private:
         void ResetMouseOverPopupState();
-
         bool AreAnyCharactersBeasts() const;
         bool AreAnyCharactersBeastmasters() const;
-
         void MissingBeastmasterPopup();
         void NotEnoughCharactersPopup();
         void PartyAvatarSelectionPopup();
+        void UpdateWillDisplayCharacterCountWarning();
+        void SetupMouseOverPositionsAndDimmensions(const creature::CreaturePtr_t);
 
     private:
         static const std::string POPUP_NAME_STR_NOT_ENOUGH_CHARS_;
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
         static const std::string POPUP_NAME_STR_DELETE_CONFIRM_;
         static const std::string POPUP_NAME_STR_PARTY_IMAGE_SELECT_;
-        static const float MOUSE_OVER_POPUP_DELAY_SEC_;
-        static const float MOUSE_OVER_SLIDER_SPEED_;
-        static const float MOUSE_OVER_POPUP_POS_LEFT_;
-        static const float MOUSE_OVER_POPUP_POS_TOP_;
-        static const float MOUSE_OVER_IMAGE_PAD_;
-        static const float MOUSE_OVER_BOX_ALPHA_;
+        static const float MOUSEOVER_POPUP_DELAY_SEC_;
+        static const float MOUSEOVER_SLIDER_SPEED_;
+        static const float MOUSEOVER_BACKGROUND_FINAL_ALPHA_;
         //
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
+        const sfml_util::Font::Enum LISTBOX_FONT_ENUM_;
+        const unsigned LISTBOX_FONT_SIZE_;
+        const float LISTBOX_WIDTH_;
+        const float LISTBOX_HEIGHT_;
+        const float BETWEEN_LISTBOXES_SPACER_;
+        const float CHAR_LISTBOX_POS_LEFT_;
+        const float PARTY_LISTBOX_POS_LEFT_;
+        const float MOUSEOVER_FINAL_INNER_EDGE_PAD_;
+        const float MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_;
+        sfml_util::gui::box::Info listBoxInfo_;
         sfml_util::MainMenuTitle mainMenuTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
@@ -130,22 +142,18 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
+        creature::CreaturePVec_t unplayedCharactersPVec_;
 
-        // mouseover popup and animation members
+        // mouseover popup animation members
         bool willShowMouseOverPopup_;
         float mouseOverPopupTimerSec_;
-        sf::VertexArray mouseOverQuad_;
-        float mouseOverBoxWidth_;
-        float mouseOverBoxHeight_;
-        sf::Vector2f mouseOverPosV_;
-        sf::Sprite mouseOverSprite_;
-        sf::Texture mouseOverTexture_;
-        bool isMouseOverTexture_;
+        sfml_util::ColoredRect mouseOverBackground_;
+        sf::Vector2f mousePosV_;
+        sf::FloatRect mouseOverBackgroundRectFinal_;
+        sf::Sprite mouseOverCreatureSprite_;
+        sf::Texture mouseOverCreatureTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
-
-        //
-        creature::CreaturePVec_t unplayedCharactersPVec_;
     };
 
 } // namespace stage

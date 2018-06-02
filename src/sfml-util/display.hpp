@@ -183,6 +183,11 @@ namespace sfml_util
 
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
+        const sf::FloatRect FullscreenRect() const
+        {
+            return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight());
+        }
+
     private:
         static std::unique_ptr<Display> instanceUPtr_;
 

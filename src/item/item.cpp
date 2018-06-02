@@ -76,8 +76,11 @@ namespace item
         enchantmentsPVec_ = enchantmentFactory.MakeAndStore(
             TYPE_WRAPPER, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IsWeapon(), IsArmor());
 
-        sfml_util::gui::ItemImageLoader itemImageMachine;
-        imageFilename_ = itemImageMachine.Filename(this, true);
+        if (NAME.empty() == false)
+        {
+            sfml_util::gui::ItemImageLoader itemImageMachine;
+            imageFilename_ = itemImageMachine.Filename(this, true);
+        }
     }
 
     Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }
