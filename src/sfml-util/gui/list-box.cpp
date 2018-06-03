@@ -168,7 +168,7 @@ namespace sfml_util
                 return;
             }
 
-            auto lastDrawnListItemTop{ entityRegion_.top };
+            auto lastDrawnLinePosVert{ entityRegion_.top };
             auto const LIST_BOTTOM{ entityRegion_.top + entityRegion_.height };
             auto const SELECTION_INDEX{ SelectedIndex() };
 
@@ -181,8 +181,6 @@ namespace sfml_util
                 {
                     auto const ITEM_SPTR{ items_.at(i) };
                     auto const ITEM_RECT{ FullItemRect(ITEM_SPTR) };
-
-                    lastDrawnListItemTop = ITEM_RECT.top;
 
                     if (SELECTION_INDEX == i)
                     {
@@ -209,6 +207,7 @@ namespace sfml_util
                     if (LINE_POS_TOP < LIST_BOTTOM)
                     {
                         DrawLine(target, LINE_POS_TOP);
+                        lastDrawnLinePosVert = LINE_POS_TOP;
                     }
                     else
                     {
@@ -218,11 +217,11 @@ namespace sfml_util
             }
 
             // draw lines in the rest of the box even though there are no more items
-            lastDrawnListItemTop += (itemSizeV_.y + betweenPadVert_);
-            while (lastDrawnListItemTop < LIST_BOTTOM)
+            auto linePosVert{ lastDrawnLinePosVert + (itemSizeV_.y + betweenPadVert_) };
+            while (linePosVert < LIST_BOTTOM)
             {
-                DrawLine(target, lastDrawnListItemTop);
-                lastDrawnListItemTop += (itemSizeV_.y + betweenPadVert_);
+                DrawLine(target, linePosVert);
+                linePosVert += (itemSizeV_.y + betweenPadVert_);
             }
         }
 
