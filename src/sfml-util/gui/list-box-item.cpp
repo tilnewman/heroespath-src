@@ -91,8 +91,10 @@ namespace sfml_util
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
-            textureIndex_
-                = TextureCache::Instance()->AddByPath(creatureImageLoader.Path(CHARACTER_PTR));
+            textureIndex_ = TextureCache::Instance()->AddByPath(
+                creatureImageLoader.Path(CHARACTER_PTR),
+                true,
+                creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR));
 
             sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
         }

@@ -41,22 +41,30 @@ namespace sfml_util
         static void Acquire();
         static void Release();
 
-        std::size_t
-            AddByKey(const std::string & GAMEDATAFILE_KEY_STR, const bool WILL_SMOOTH = true);
+        std::size_t AddByKey(
+            const std::string & GAMEDATAFILE_KEY_STR,
+            const bool WILL_SMOOTH = true,
+            const bool WILL_FLIP_HORIZ = false);
 
-        std::size_t
-            AddByPath(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH = true);
+        std::size_t AddByPath(
+            const std::string & PATH_TO_TEXTURE_STR,
+            const bool WILL_SMOOTH = true,
+            const bool WILL_FLIP_HORIZ = false);
 
         std::size_t
             AddByPathFake(const std::string & FAKE_PATH_TO_TEXTURE_STR, const sf::Texture &);
 
         // not recursive
-        const misc::SizetVec_t
-            AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH = true);
+        const misc::SizetVec_t AddAllInDirectoryByKey(
+            const std::string & DIR_PATH_KEY,
+            const bool WILL_SMOOTH = true,
+            const bool WILL_FLIP_HORIZ = false);
 
         // not recursive
         const misc::SizetVec_t AddAllInDirectoryByPath(
-            const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH = true);
+            const std::string & DIR_PATH_PARAM_STR,
+            const bool WILL_SMOOTH = true,
+            const bool WILL_FLIP_HORIZ = false);
 
         void RemoveByKey(const std::string & GAMEDATAFILE_KEY_STR);
 
@@ -73,8 +81,10 @@ namespace sfml_util
     private:
         std::size_t EstablishNextAvailableIndex();
 
-        std::size_t
-            AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH);
+        std::size_t AddByPathInternal(
+            const std::string & PATH_TO_TEXTURE_STR,
+            const bool WILL_SMOOTH,
+            const bool WILL_FLIP_HORIZ);
 
         std::size_t AddByPathInternalFake(const sf::Texture &);
 

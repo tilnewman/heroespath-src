@@ -76,13 +76,13 @@ namespace stage
         , PARTY_LISTBOX_POS_LEFT_(
               (Stage::StageRegionWidth() * 0.5f) + (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
         , MOUSEOVER_FINAL_INNER_EDGE_PAD_(sfml_util::ScreenRatioToPixelsHoriz(0.008f))
-        , MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_(sfml_util::ScreenRatioToPixelsHoriz(0.115f))
+        , MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_(sfml_util::ScreenRatioToPixelsHoriz(0.115f))
         , MOUSEOVER_COLORCYCLE_START_(sf::Color::Transparent)
         , HEROESPATH_ORANGE_(sfml_util::FontManager::Instance()->Color_Orange())
         , MOUSEOVER_COLORCYCLE_ALT_(
               HEROESPATH_ORANGE_.r, HEROESPATH_ORANGE_.g, HEROESPATH_ORANGE_.b, 32)
         , MOUSEOVER_COLORCYCLE_SPEED_(28.0f)
-        , MOUSEOVER_COLORCYCLE_COUNT_(3)
+        , MOUSEOVER_COLORCYCLE_COUNT_(4)
         , listBoxInfo_()
         , mainMenuTitle_("create_party_normal.png")
         , backgroundImage_("media-images-backgrounds-tile-darkknot")
@@ -675,9 +675,6 @@ namespace stage
 
                 mouseOverCreatureSprite_.setTexture(mouseOverCreatureTexture_, true);
 
-                // start at size zero
-                mouseOverCreatureSprite_.setScale(0.0f, 0.0f);
-
                 SetupMouseOverPositionsAndDimmensions(itemSPtr->CharacterPtrOpt().value());
 
                 auto const LISTBOX_ITEM_RECT{ (
@@ -734,27 +731,31 @@ namespace stage
 
             mouseOverBackground_.Color(sf::Color(0, 0, 0, NEW_ALPHA));
 
-            auto const FINAL_SCALE_RATIO{ MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_
-                                          / mouseOverCreatureSprite_.getLocalBounds().width };
-            auto const CURRENT_SCALE_RATIO{ FINAL_SCALE_RATIO * RATIO };
-
-            mouseOverCreatureSprite_.setScale(CURRENT_SCALE_RATIO, CURRENT_SCALE_RATIO);
-
-            auto const SPRITE_LEFT{
+            auto const IMAGE_LEFT{
                 mousePosV_.x
                 - ((mousePosV_.x
                     - (mouseOverBackgroundRectFinal_.left + MOUSEOVER_FINAL_INNER_EDGE_PAD_))
                    * RATIO)
             };
 
-            auto const SPRITE_TOP{
+            auto const IMAGE_TOP{
                 mousePosV_.y
                 - ((mousePosV_.y
                     - (mouseOverBackgroundRectFinal_.top + MOUSEOVER_FINAL_INNER_EDGE_PAD_))
                    * RATIO)
             };
 
-            mouseOverCreatureSprite_.setPosition(SPRITE_LEFT, SPRITE_TOP);
+            mouseOverCreatureSprite_.setPosition(IMAGE_LEFT, IMAGE_TOP);
+
+            auto const IMAGE_WIDTH_AVAIL{ BG_WIDTH - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 3.0f) };
+            auto const IMAGE_HEIGHT_AVAIL{ BG_HEIGHT - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 2.0f) };
+            if ((IMAGE_WIDTH_AVAIL > 1.0f) && (IMAGE_HEIGHT_AVAIL > 1.0f))
+            {
+                sfml_util::ScaleSpriteToFit(
+                    mouseOverCreatureSprite_,
+                    std::min(IMAGE_WIDTH_AVAIL, MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_),
+                    IMAGE_HEIGHT_AVAIL);
+            }
         }
     }
 
@@ -970,7 +971,7 @@ namespace stage
         auto const TEXT_HEIGHT{ mouseOverTextRegionUPtr_->GetEntityRegion().height };
 
         mouseOverBackgroundRectFinal_.width
-            = (MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_ + TEXT_WIDTH
+            = (MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_ + TEXT_WIDTH
                + (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 3.0f));
 
         mouseOverBackgroundRectFinal_.height
@@ -982,10 +983,18 @@ namespace stage
         mouseOverBackgroundRectFinal_.top
             = ((Stage::StageRegionHeight() * 0.5f) - (mouseOverBackgroundRectFinal_.height * 0.5f));
 
+        // temp scale the sprite to see what the final dimmensions will be so that the text can be
+        // positioned
+        sfml_util::ScaleSpriteToFit(
+            mouseOverCreatureSprite_, MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_, TEXT_HEIGHT);
+
         mouseOverTextRegionUPtr_->SetEntityPos(
-            (mouseOverBackgroundRectFinal_.left + MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_
+            (mouseOverBackgroundRectFinal_.left + mouseOverCreatureSprite_.getGlobalBounds().width
              + (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 2.0f)),
             (mouseOverBackgroundRectFinal_.top + MOUSEOVER_FINAL_INNER_EDGE_PAD_));
+
+        // set the sprite's actual start scale at zero
+        mouseOverCreatureSprite_.setScale(0.0f, 0.0f);
     }
 
 } // namespace stage

@@ -129,7 +129,7 @@ namespace stage
         const float CHAR_LISTBOX_POS_LEFT_;
         const float PARTY_LISTBOX_POS_LEFT_;
         const float MOUSEOVER_FINAL_INNER_EDGE_PAD_;
-        const float MOUSEOVER_CREATURE_IMAGE_WIDTH_FINAL_;
+        const float MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_;
         const sf::Color MOUSEOVER_COLORCYCLE_START_;
         const sf::Color HEROESPATH_ORANGE_;
         const sf::Color MOUSEOVER_COLORCYCLE_ALT_;

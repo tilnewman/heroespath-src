@@ -82,15 +82,19 @@ namespace sfml_util
         instanceUPtr_.reset();
     }
 
-    std::size_t
-        TextureCache::AddByKey(const std::string & GAMEDATAFILE_KEY_STR, const bool WILL_SMOOTH)
+    std::size_t TextureCache::AddByKey(
+        const std::string & GAMEDATAFILE_KEY_STR,
+        const bool WILL_SMOOTH,
+        const bool WILL_FLIP_HORIZ)
     {
         return AddByPath(
-            game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), WILL_SMOOTH);
+            game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR),
+            WILL_SMOOTH,
+            WILL_FLIP_HORIZ);
     }
 
-    std::size_t
-        TextureCache::AddByPath(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH)
+    std::size_t TextureCache::AddByPath(
+        const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
     {
         misc::SizetVec_t indexVec;
         if (strToVecMap_.Find(PATH_TO_TEXTURE_STR, indexVec))
@@ -117,7 +121,7 @@ namespace sfml_util
             return indexVec[0];
         }
 
-        auto const INDEX{ AddByPathInternal(PATH_TO_TEXTURE_STR, WILL_SMOOTH) };
+        auto const INDEX{ AddByPathInternal(PATH_TO_TEXTURE_STR, WILL_SMOOTH, WILL_FLIP_HORIZ) };
         strToVecMap_[PATH_TO_TEXTURE_STR] = misc::SizetVec_t(1, INDEX);
         return INDEX;
     }
@@ -159,14 +163,16 @@ namespace sfml_util
     }
 
     const misc::SizetVec_t TextureCache::AddAllInDirectoryByKey(
-        const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH)
+        const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
     {
         return AddAllInDirectoryByPath(
-            game::GameDataFile::Instance()->GetMediaPath(DIR_PATH_KEY), WILL_SMOOTH);
+            game::GameDataFile::Instance()->GetMediaPath(DIR_PATH_KEY),
+            WILL_SMOOTH,
+            WILL_FLIP_HORIZ);
     }
 
     const misc::SizetVec_t TextureCache::AddAllInDirectoryByPath(
-        const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH)
+        const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
     {
         misc::SizetVec_t indexVec;
 
@@ -192,7 +198,8 @@ namespace sfml_util
 
             for (auto const & PATH : filePaths)
             {
-                indexVec.emplace_back(AddByPathInternal(PATH.string(), WILL_SMOOTH));
+                indexVec.emplace_back(
+                    AddByPathInternal(PATH.string(), WILL_SMOOTH, WILL_FLIP_HORIZ));
             }
 
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -355,7 +362,7 @@ namespace sfml_util
     }
 
     std::size_t TextureCache::AddByPathInternal(
-        const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH)
+        const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
     {
         auto const INDEX{ EstablishNextAvailableIndex() };
 
@@ -367,6 +374,11 @@ namespace sfml_util
         try
         {
             sfml_util::Loaders::Texture(*cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
+
+            if (WILL_FLIP_HORIZ)
+            {
+                sfml_util::FlipHoriz(*cacheUVec_[INDEX]);
+            }
         }
         catch (...)
         {
