@@ -594,7 +594,7 @@ namespace sfml_util
 
                         if (SelectedIndex() == index)
                         {
-                            sprite.setColor(sf::Color::White);
+                            sprite.setColor(imageColor_ + sf::Color(100, 100, 100, 100));
                         }
                         else
                         {

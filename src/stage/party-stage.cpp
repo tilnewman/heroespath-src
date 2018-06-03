@@ -531,7 +531,8 @@ namespace stage
             sfml_util::FontManager::Color_Orange(),
             sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
-        characterListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
+        characterListBoxUPtr_->ImageColor(
+            characterListBoxUPtr_->GetHighlightColor() + sf::Color(100, 100, 100, 100));
 
         EntityAdd(characterListBoxUPtr_.get());
     }
