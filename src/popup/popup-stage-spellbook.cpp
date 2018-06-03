@@ -73,7 +73,7 @@ namespace popup
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
         if ((PACKAGE.package.PTR_ == nullptr) || (PACKAGE.package.PTR_->Selected() == nullptr)
-            || (!PACKAGE.package.PTR_->Selected()->SPELL_PTR_OPT))
+            || (!PACKAGE.package.PTR_->Selected()->SpellPtrOpt()))
         {
             return false;
         }
@@ -274,7 +274,7 @@ namespace popup
     void PopupStageSpellbook::SetupPlayerImage()
     {
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.GetImage(playerTexture_, popupInfo_.CreaturePtrOpt().value());
+        creatureImageLoader.Load(playerTexture_, popupInfo_.CreaturePtrOpt().value());
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);
@@ -419,7 +419,6 @@ namespace popup
             LISTBOX_RECT,
             listBoxItemsSVec,
             sfml_util::IStagePtr_t(this),
-            10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
@@ -456,7 +455,7 @@ namespace popup
 
         // setup spell image
         sfml_util::gui::SpellImageLoader spellImageLoader;
-        spellImageLoader.Get(spellTexture_, SPELL_PTR->Which());
+        spellImageLoader.Load(spellTexture_, SPELL_PTR->Which());
 
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
@@ -684,11 +683,11 @@ namespace popup
             "null.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (!!listBoxUPtr_->Selected()->SPELL_PTR_OPT),
+            (!!listBoxUPtr_->Selected()->SpellPtrOpt()),
             "popup::PopupStageSpellbook::CurrentSelectedSpell() called when the currently selected "
             "spell was somehow not initialized.");
 
-        return listBoxUPtr_->Selected()->SPELL_PTR_OPT.value();
+        return listBoxUPtr_->Selected()->SpellPtrOpt().value();
     }
 
 } // namespace popup

@@ -80,7 +80,7 @@ namespace stage
         , MOUSEOVER_COLORCYCLE_START_(sf::Color::Transparent)
         , HEROESPATH_ORANGE_(sfml_util::FontManager::Instance()->Color_Orange())
         , MOUSEOVER_COLORCYCLE_ALT_(
-              HEROESPATH_ORANGE_.r, HEROESPATH_ORANGE_.g, HEROESPATH_ORANGE_.b, 42)
+              HEROESPATH_ORANGE_.r, HEROESPATH_ORANGE_.g, HEROESPATH_ORANGE_.b, 32)
         , MOUSEOVER_COLORCYCLE_SPEED_(28.0f)
         , MOUSEOVER_COLORCYCLE_COUNT_(3)
         , listBoxInfo_()
@@ -167,7 +167,7 @@ namespace stage
 
             if (itemSPtr)
             {
-                if (partyListBoxUPtr_->Size() < partyListBoxUPtr_->CountLimit())
+                if (partyListBoxUPtr_->Size() < creature::PlayerParty::MAX_CHARACTER_COUNT_)
                 {
                     partyListBoxUPtr_->Add(itemSPtr);
                     characterListBoxUPtr_->Remove(itemSPtr);
@@ -230,9 +230,9 @@ namespace stage
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
-            if ((selectedItemSPtr) && selectedItemSPtr->CHARACTER_PTR_OPT)
+            if ((selectedItemSPtr) && selectedItemSPtr->CharacterPtrOpt())
             {
-                auto const CHARACTER_PTR{ selectedItemSPtr->CHARACTER_PTR_OPT.value() };
+                auto const CHARACTER_PTR{ selectedItemSPtr->CharacterPtrOpt().value() };
                 game::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
                 characterListBoxUPtr_->Remove(selectedItemSPtr);
                 partyListBoxUPtr_->Remove(selectedItemSPtr);
@@ -490,7 +490,7 @@ namespace stage
         }
 
         std::sort(std::begin(itemSVec), std::end(itemSVec), [](auto const & A, auto const & B) {
-            return (A->CHARACTER_PTR_OPT->Obj().Name() < B->CHARACTER_PTR_OPT->Obj().Name());
+            return (A->CharacterPtrOpt()->Obj().Name() < B->CharacterPtrOpt()->Obj().Name());
         });
 
         auto const CHAR_LIST_POS_LEFT{ CHAR_LISTBOX_POS_LEFT_ };
@@ -526,7 +526,6 @@ namespace stage
             CHAR_LIST_RECT,
             itemSVec,
             sfml_util::IStagePtr_t(this),
-            10.0f,
             6.0f,
             listBoxInfo_,
             sfml_util::FontManager::Color_Orange(),
@@ -558,15 +557,12 @@ namespace stage
             PARTY_LIST_RECT,
             sfml_util::gui::ListBoxItemSVec_t(),
             sfml_util::IStagePtr_t(this),
-            10.0f,
             6.0f,
             listBoxInfo_,
             sfml_util::FontManager::Color_Orange(),
             sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
-        partyListBoxUPtr_->CountLimit(creature::PlayerParty::MAX_CHARACTER_COUNT_);
-
         EntityAdd(partyListBoxUPtr_.get());
     }
 
@@ -613,7 +609,7 @@ namespace stage
 
         if (itemSPtr)
         {
-            return itemSPtr->CHARACTER_PTR_OPT;
+            return itemSPtr->CharacterPtrOpt();
         }
 
         return boost::none;
@@ -657,13 +653,15 @@ namespace stage
         {
             auto itemSPtr{ characterListBoxUPtr_->AtPos(mousePosV_) };
 
+            auto isItemFromCharacterListBox{ true };
             if (!itemSPtr)
             {
+                isItemFromCharacterListBox = false;
                 itemSPtr = partyListBoxUPtr_->AtPos(mousePosV_);
             }
 
-            if (itemSPtr && itemSPtr->CHARACTER_PTR_OPT
-                && (itemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename().empty() == false))
+            if (itemSPtr && itemSPtr->CharacterPtrOpt()
+                && (itemSPtr->CharacterPtrOpt()->Obj().ImageFilename().empty() == false))
             {
                 willShowMouseOverPopup_ = true;
 
@@ -671,18 +669,22 @@ namespace stage
 
                 sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
-                creatureImageLoader.GetImage(
-                    mouseOverCreatureTexture_, itemSPtr->CHARACTER_PTR_OPT.value());
+                creatureImageLoader.Load(
+                    mouseOverCreatureTexture_, itemSPtr->CharacterPtrOpt().value());
 
                 mouseOverCreatureSprite_.setTexture(mouseOverCreatureTexture_, true);
 
                 // start at size zero
                 mouseOverCreatureSprite_.setScale(0.0f, 0.0f);
 
-                SetupMouseOverPositionsAndDimmensions(itemSPtr->CHARACTER_PTR_OPT.value());
+                SetupMouseOverPositionsAndDimmensions(itemSPtr->CharacterPtrOpt().value());
+
+                auto const LISTBOX_ITEM_RECT{ (
+                    (isItemFromCharacterListBox) ? characterListBoxUPtr_->FullItemRect(itemSPtr)
+                                                 : partyListBoxUPtr_->FullItemRect(itemSPtr)) };
 
                 colorShakerRect_.Reset(
-                    itemSPtr->GetEntityRegion(),
+                    LISTBOX_ITEM_RECT,
                     MOUSEOVER_COLORCYCLE_START_,
                     MOUSEOVER_COLORCYCLE_ALT_,
                     MOUSEOVER_COLORCYCLE_SPEED_,
@@ -804,11 +806,11 @@ namespace stage
         for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!ITEM_SPTR->CHARACTER_PTR_OPT),
+                (!!ITEM_SPTR->CharacterPtrOpt()),
                 "stage::PartyStage::StartNewGame() found a partyListBoxUPtr_ ItemSPtr_t with an "
-                "uninitialized CHARACTER_PTR_OPT.");
+                "uninitialized CharacterPtrOpt().");
 
-            auto const CHARACTER_PTR{ ITEM_SPTR->CHARACTER_PTR_OPT.value() };
+            auto const CHARACTER_PTR{ ITEM_SPTR->CharacterPtrOpt().value() };
 
             charPVec.emplace_back(CHARACTER_PTR);
 
@@ -845,7 +847,7 @@ namespace stage
     {
         for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
-            if (ITEM_SPTR->CHARACTER_PTR_OPT && (ITEM_SPTR->CHARACTER_PTR_OPT->Obj().IsBeast()))
+            if (ITEM_SPTR->CharacterPtrOpt() && (ITEM_SPTR->CharacterPtrOpt()->Obj().IsBeast()))
             {
                 return true;
             }
@@ -858,8 +860,8 @@ namespace stage
     {
         for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
-            if (ITEM_SPTR->CHARACTER_PTR_OPT
-                && (ITEM_SPTR->CHARACTER_PTR_OPT->Obj().Role() == creature::role::Beastmaster))
+            if (ITEM_SPTR->CharacterPtrOpt()
+                && (ITEM_SPTR->CharacterPtrOpt()->Obj().Role() == creature::role::Beastmaster))
             {
                 return true;
             }

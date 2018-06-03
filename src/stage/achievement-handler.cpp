@@ -58,13 +58,11 @@ namespace stage
         if (FROM_TITLE_PTR_OPT)
         {
             fromTextureOpt = sf::Texture();
-
-            titleImageLoader.Get(fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
+            titleImageLoader.Load(fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
         }
 
         sf::Texture toTexture;
-
-        titleImageLoader.Get(toTexture, TO_TITLE_PTR->Which());
+        titleImageLoader.Load(toTexture, TO_TITLE_PTR->Which());
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME,

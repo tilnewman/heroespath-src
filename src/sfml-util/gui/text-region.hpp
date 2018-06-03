@@ -113,13 +113,13 @@ namespace sfml_util
             void HandleSliderBar(const sfml_util::gui::SliderBarPtrOpt_t);
             void HandleBox(const box::Info & BOX_INFO);
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-            virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual const std::string HandlerName() const { return GetEntityName(); }
-            virtual bool HandleCallback(const callback::SliderBarCallbackPackage_t &);
+            const std::string HandlerName() const override { return GetEntityName(); }
+            bool HandleCallback(const callback::SliderBarCallbackPackage_t &) override;
 
             const std::string GetText() const { return text_; }
             void SetText(const std::string &);
@@ -127,11 +127,11 @@ namespace sfml_util
             void Append(const TextRegion &);
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) {}
+            void OnClick(const sf::Vector2f &) override {}
 
             // Changes the font color by applying the current entity foreground
             // color to the sprite and textInfo_ member, but does not re-render the text.
-            virtual void OnColorChange();
+            void OnColorChange() override;
 
         private:
             void ResetDrawCache();

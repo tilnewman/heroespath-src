@@ -90,7 +90,7 @@ namespace sfml_util
                                 auto const CLASS_STR{ creature::wolfen_class::ToString(
                                     CLASS_ENUM) };
 
-                                auto const FILENAMES{ GetFilenames(
+                                auto const FILENAMES{ Filenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
@@ -107,7 +107,7 @@ namespace sfml_util
                                 if (fileIndex < FILENAMES.size())
                                 {
                                     sf::Texture texture;
-                                    GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
+                                    Load(texture, FILENAMES.at(fileIndex), false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
                                         texture,
@@ -150,7 +150,7 @@ namespace sfml_util
                                 auto const CLASS_STR{ creature::dragon_class::ToString(
                                     CLASS_ENUM) };
 
-                                auto const FILENAMES{ GetFilenames(
+                                auto const FILENAMES{ Filenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
@@ -167,7 +167,7 @@ namespace sfml_util
                                 if (fileIndex < FILENAMES.size())
                                 {
                                     sf::Texture texture;
-                                    GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
+                                    Load(texture, FILENAMES.at(fileIndex), false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
                                         texture,
@@ -202,7 +202,7 @@ namespace sfml_util
                         }
                         else
                         {
-                            auto const FILENAMES{ GetFilenames(
+                            auto const FILENAMES{ Filenames(
                                 RACE_ENUM,
                                 ROLE_ENUM,
                                 SEX_ENUM,
@@ -218,7 +218,7 @@ namespace sfml_util
                             if (fileIndex < FILENAMES.size())
                             {
                                 sf::Texture texture;
-                                GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
+                                Load(texture, FILENAMES.at(fileIndex), false);
 
                                 game::LoopManager::Instance()->TestingImageSet(
                                     texture,
@@ -277,23 +277,45 @@ namespace sfml_util
             return true;
         }
 
-        void CreatureImageLoader::GetImage(
-            sf::Texture & texture, const creature::CreaturePtr_t CREATURE_PTR) const
+        const std::string
+            CreatureImageLoader::Path(const creature::CreaturePtr_t CREATURE_PTR) const
         {
-            return GetImageFromFilename(
-                texture, CREATURE_PTR->ImageFilename(), CREATURE_PTR->IsPlayerCharacter());
+            return Path(CREATURE_PTR->ImageFilename());
         }
 
-        void CreatureImageLoader::GetImageFromFilename(
-            sf::Texture & texture, const std::string & FILENAME, const bool WILL_FACE_RIGHT) const
+        const std::string CreatureImageLoader::Path(const std::string & FILENAME) const
         {
-            return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
+            namespace bfs = boost::filesystem;
+
+            return misc::filesystem::MakePathPretty(
+                       bfs::path(imageDirectoryPath_) / bfs::path(FILENAME))
+                .string();
+        }
+
+        void CreatureImageLoader::Load(
+            sf::Texture & texture, const creature::CreaturePtr_t CREATURE_PTR) const
+        {
+            return Load(
+                texture, CREATURE_PTR->ImageFilename(), WillHorizFlipToFaceRight(CREATURE_PTR));
+        }
+
+        void CreatureImageLoader::Load(
+            sf::Texture & texture,
+            const std::string & FILENAME,
+            const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT) const
+        {
+            sfml_util::Loaders::Texture(texture, Path(FILENAME));
+
+            if (WILL_HORIZ_FLIP_TO_FACE_RIGHT)
+            {
+                sfml_util::FlipHoriz(texture);
+            }
         }
 
         const std::string
-            CreatureImageLoader::GetRandomFilename(const creature::CreaturePtr_t CREATURE_PTR) const
+            CreatureImageLoader::FilenameRandom(const creature::CreaturePtr_t CREATURE_PTR) const
         {
-            auto const FILENAMES{ GetFilenames(
+            auto const FILENAMES{ Filenames(
                 CREATURE_PTR->Race(),
                 CREATURE_PTR->Role(),
                 CREATURE_PTR->Sex(),
@@ -311,7 +333,7 @@ namespace sfml_util
 
         void CreatureImageLoader::EnsureFileExists(const std::string & FILENAME) const
         {
-            auto const FULL_PATH_STR{ MakeFullPathFromFilename(FILENAME) };
+            auto const FULL_PATH_STR{ Path(FILENAME) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (misc::filesystem::DoesFileExist(FULL_PATH_STR)),
@@ -320,20 +342,13 @@ namespace sfml_util
                     << "\") but that file either does not exist or is not a regular file.");
         }
 
-        void CreatureImageLoader::LoadImage(
-            sf::Texture & texture,
-            const std::string & IMAGE_FILE_NAME,
-            const bool WILL_FACE_RIGHT) const
+        bool CreatureImageLoader::WillHorizFlipToFaceRight(
+            const creature::CreaturePtr_t CREATURE_PTR) const
         {
-            sfml_util::Loaders::Texture(texture, MakeFullPathFromFilename(IMAGE_FILE_NAME));
-
-            if (WILL_FACE_RIGHT)
-            {
-                sfml_util::FlipHoriz(texture);
-            }
+            return CREATURE_PTR->IsPlayerCharacter();
         }
 
-        const std::vector<std::string> CreatureImageLoader::GetFilenames(
+        const std::vector<std::string> CreatureImageLoader::Filenames(
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
             const creature::sex::Enum SEX,
@@ -1711,15 +1726,6 @@ namespace sfml_util
                << ") -No filenames found for that creature information.";
 
             throw std::runtime_error(ss.str());
-        }
-
-        const std::string
-            CreatureImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
-        {
-            namespace bfs = boost::filesystem;
-            return misc::filesystem::MakePathPretty(
-                       bfs::path(imageDirectoryPath_) / bfs::path(FILENAME))
-                .string();
         }
 
     } // namespace gui

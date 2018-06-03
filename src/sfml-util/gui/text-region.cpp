@@ -285,6 +285,11 @@ namespace sfml_util
             }
         }
 
+        void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+        {
+            MoveEntityPos(POS_LEFT - entityRegion_.left, POS_TOP - entityRegion_.top);
+        }
+
         void TextRegion::MoveEntityPos(const float HORIZ, const float VERT)
         {
             GuiEntity::MoveEntityPos(HORIZ, VERT);
@@ -310,11 +315,6 @@ namespace sfml_util
             }
 
             ResetDrawCache();
-        }
-
-        void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
-        {
-            MoveEntityPos(POS_LEFT - entityRegion_.left, POS_TOP - entityRegion_.top);
         }
 
         bool TextRegion::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)

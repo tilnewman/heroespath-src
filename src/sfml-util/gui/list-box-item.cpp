@@ -11,15 +11,23 @@
 //
 #include "list-box-item.hpp"
 
+#include "avatar/portrait-factory.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
 #include "item/item.hpp"
+#include "sfml-util/gui/condition-image-loader.hpp"
+#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/item-image-loader.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/song-image-loader.hpp"
+#include "sfml-util/gui/spell-image-loader.hpp"
+#include "sfml-util/gui/title-image-loader.hpp"
+#include "sfml-util/texture-cache.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 
-#include <string>
 #include <tuple>
 
 namespace heroespath
@@ -31,14 +39,16 @@ namespace sfml_util
 
         ListBoxItem::ListBoxItem(const std::string & NAME, const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemBase"))
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
         {}
 
         ListBoxItem::ListBoxItem(
@@ -47,14 +57,16 @@ namespace sfml_util
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemTextOnly"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
         {}
 
         ListBoxItem::ListBoxItem(
@@ -66,15 +78,24 @@ namespace sfml_util
                   std::string(NAME).append("_ListBoxItemPlayerCharacter"),
                   TEXT_INFO,
                   sf::FloatRect())
-            , CHARACTER_PTR_OPT(CHARACTER_PTR)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(CHARACTER_PTR)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::CreatureImageLoader creatureImageLoader;
+
+            textureIndex_
+                = TextureCache::Instance()->AddByPath(creatureImageLoader.Path(CHARACTER_PTR));
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
@@ -83,139 +104,224 @@ namespace sfml_util
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(GAMESTATE_PTR)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(GAMESTATE_PTR)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            {
+                sf::Texture texture;
+
+                auto const AVATAR_ENUM{ GAMESTATE_PTR->Party().Avatar() };
+                avatar::PortraitFactory::Make(AVATAR_ENUM, texture);
+
+                std::ostringstream ss;
+                ss << "FAKE_PATH_FOR_LISTBOX_ITEM_GAME_STATE_PARTY_AVATAR_"
+                   << avatar::Avatar::ToString(AVATAR_ENUM);
+
+                textureIndex_ = TextureCache::Instance()->AddByPathFake(ss.str(), texture);
+            }
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const creature::ConditionPtr_t CONDITION_PTR_PARAM,
+            const creature::ConditionPtr_t CONDITION_PTR,
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(CONDITION_PTR_PARAM)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(CONDITION_PTR)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::ConditionImageLoader conditionImageLoader;
+
+            textureIndex_ = TextureCache::Instance()->AddByPath(
+                conditionImageLoader.Path(CONDITION_PTR->Which()));
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const item::ItemPtr_t ITEM_PTR_PARAM,
+            const item::ItemPtr_t ITEM_PTR,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(ITEM_PTR_PARAM)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(ITEM_PTR)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::ItemImageLoader itemImageMachine;
+            textureIndex_ = TextureCache::Instance()->AddByPath(itemImageMachine.Path(ITEM_PTR));
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const creature::TitlePtr_t & TITLE_PTR_PARAM,
+            const creature::TitlePtr_t & TITLE_PTR,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(TITLE_PTR_PARAM)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(TITLE_PTR)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::TitleImageLoader titleImageLoader;
+
+            textureIndex_
+                = TextureCache::Instance()->AddByPath(titleImageLoader.Path(TITLE_PTR->Which()));
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const spell::SpellPtr_t SPELL_PTR_PARAM,
+            const spell::SpellPtr_t SPELL_PTR,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(SPELL_PTR_PARAM)
-            , SONG_PTR_OPT(boost::none)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(SPELL_PTR)
+            , songPtrOpt_(boost::none)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::SpellImageLoader spellImageLoader;
+
+            textureIndex_
+                = TextureCache::Instance()->AddByPath(spellImageLoader.Path(SPELL_PTR->Which()));
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const song::SongPtr_t SONG_PTR_PARAM,
+            const song::SongPtr_t SONG_PTR,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemSong"), TEXT_INFO, sf::FloatRect())
-            , CHARACTER_PTR_OPT(boost::none)
-            , GAMESTATE_PTR_OPT(boost::none)
-            , ITEM_PTR_OPT(boost::none)
-            , COND_PTR_OPT(boost::none)
-            , TITLE_PTR_OPT(boost::none)
-            , SPELL_PTR_OPT(boost::none)
-            , SONG_PTR_OPT(SONG_PTR_PARAM)
-            , is_valid(IS_VALID)
-        {}
+            , creaturePtrOpt_(boost::none)
+            , gameStatePtrOpt_(boost::none)
+            , itemPtrOpt_(boost::none)
+            , conditionPtrOpt_(boost::none)
+            , titlePtrOpt_(boost::none)
+            , spellPtrOpt_(boost::none)
+            , songPtrOpt_(SONG_PTR)
+            , isValid_(IS_VALID)
+            , textureIndex_(0)
+            , sprite_()
+        {
+            sfml_util::gui::SongImageLoader songImageLoader;
+
+            textureIndex_
+                = TextureCache::Instance()->AddByPath(songImageLoader.Path(SONG_PTR->Which()));
+
+            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+        }
+
+        ListBoxItem::~ListBoxItem()
+        {
+            if (textureIndex_ != 0)
+            {
+                sfml_util::TextureCache::Instance()->RemoveByIndex(textureIndex_);
+            }
+        }
+
+        void ListBoxItem::draw(sf::RenderTarget & target, sf::RenderStates states) const
+        {
+            TextRegion::draw(target, states);
+
+            if (textureIndex_ != 0)
+            {
+                target.draw(sprite_, states);
+            }
+        }
+
+        void ListBoxItem::MoveEntityPos(const float HORIZ, const float VERT)
+        {
+            TextRegion::MoveEntityPos(HORIZ, VERT);
+            sprite_.move(HORIZ, VERT);
+        }
 
         bool operator==(const ListBoxItem & L, const ListBoxItem & R)
         {
+            // textureIndex_ and sprite_ intentionally excluded
             return std::tie(
-                       L.CHARACTER_PTR_OPT,
-                       L.GAMESTATE_PTR_OPT,
-                       L.ITEM_PTR_OPT,
-                       L.COND_PTR_OPT,
-                       L.TITLE_PTR_OPT,
-                       L.SPELL_PTR_OPT,
-                       L.SONG_PTR_OPT,
-                       L.is_valid)
+                       L.creaturePtrOpt_,
+                       L.gameStatePtrOpt_,
+                       L.itemPtrOpt_,
+                       L.conditionPtrOpt_,
+                       L.titlePtrOpt_,
+                       L.spellPtrOpt_,
+                       L.songPtrOpt_,
+                       L.isValid_)
                 == std::tie(
-                       R.CHARACTER_PTR_OPT,
-                       R.GAMESTATE_PTR_OPT,
-                       R.ITEM_PTR_OPT,
-                       R.COND_PTR_OPT,
-                       R.TITLE_PTR_OPT,
-                       R.SPELL_PTR_OPT,
-                       R.SONG_PTR_OPT,
-                       R.is_valid);
+                       R.creaturePtrOpt_,
+                       R.gameStatePtrOpt_,
+                       R.itemPtrOpt_,
+                       R.conditionPtrOpt_,
+                       R.titlePtrOpt_,
+                       R.spellPtrOpt_,
+                       R.songPtrOpt_,
+                       R.isValid_);
         }
 
         bool operator<(const ListBoxItem & L, const ListBoxItem & R)
         {
+            // textureIndex_ and sprite_ intentionally excluded
             return std::tie(
-                       L.CHARACTER_PTR_OPT,
-                       L.GAMESTATE_PTR_OPT,
-                       L.ITEM_PTR_OPT,
-                       L.COND_PTR_OPT,
-                       L.TITLE_PTR_OPT,
-                       L.SPELL_PTR_OPT,
-                       L.SONG_PTR_OPT,
-                       L.is_valid)
+                       L.creaturePtrOpt_,
+                       L.gameStatePtrOpt_,
+                       L.itemPtrOpt_,
+                       L.conditionPtrOpt_,
+                       L.titlePtrOpt_,
+                       L.spellPtrOpt_,
+                       L.songPtrOpt_,
+                       L.isValid_)
                 < std::tie(
-                       R.CHARACTER_PTR_OPT,
-                       R.GAMESTATE_PTR_OPT,
-                       R.ITEM_PTR_OPT,
-                       R.COND_PTR_OPT,
-                       R.TITLE_PTR_OPT,
-                       R.SPELL_PTR_OPT,
-                       R.SONG_PTR_OPT,
-                       R.is_valid);
+                       R.creaturePtrOpt_,
+                       R.gameStatePtrOpt_,
+                       R.itemPtrOpt_,
+                       R.conditionPtrOpt_,
+                       R.titlePtrOpt_,
+                       R.spellPtrOpt_,
+                       R.songPtrOpt_,
+                       R.isValid_);
         }
 
     } // namespace gui

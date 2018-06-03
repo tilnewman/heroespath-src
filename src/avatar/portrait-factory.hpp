@@ -17,12 +17,13 @@ namespace heroespath
 namespace avatar
 {
 
-    // Responsible for making textures of NPCs.
+    // Responsible for making default portrait images textures of Avatars/NPCs.
     class PortraitFactory
     {
     public:
         static void Make(const Avatar::Enum, sf::Texture &);
     };
+
 } // namespace avatar
 } // namespace heroespath
 

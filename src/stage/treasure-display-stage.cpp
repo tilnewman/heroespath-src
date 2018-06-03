@@ -909,7 +909,6 @@ namespace stage
             LISTBOX_REGION,
             listboxItemsSVec,
             sfml_util::IStagePtr_t(this),
-            MEASUREMENTS.listboxMargin,
             MEASUREMENTS.listboxItemSpacer,
             LISTBOX_BOXINFO,
             listboxColors.line,
@@ -1023,7 +1022,7 @@ namespace stage
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.GetImage(characterTexture_, CREATURE_PTR);
+        creatureImageLoader.Load(characterTexture_, CREATURE_PTR);
         sfml_util::Invert(characterTexture_);
         sfml_util::Mask(characterTexture_, sf::Color::White);
 
@@ -1282,22 +1281,22 @@ namespace stage
             {
                 auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
 
-                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
                 {
                     return treasure::ItemDetails(
-                        treasureListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
-                        LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
+                        treasureListboxUPtr_->FullItemRect(LISTBOX_ITEM_SPTR),
+                        LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
                 }
             }
             else if (inventoryListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
                 auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
 
-                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
                 {
                     return treasure::ItemDetails(
-                        inventoryListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
-                        LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
+                        inventoryListboxUPtr_->FullItemRect(LISTBOX_ITEM_SPTR),
+                        LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
                 }
             }
         }
@@ -1405,11 +1404,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_PTR_OPT->Obj().Name() > B->ITEM_PTR_OPT->Obj().Name();
+                return A->ItemPtrOpt()->Obj().Name() > B->ItemPtrOpt()->Obj().Name();
             }
             else
             {
-                return A->ITEM_PTR_OPT->Obj().Name() < B->ITEM_PTR_OPT->Obj().Name();
+                return A->ItemPtrOpt()->Obj().Name() < B->ItemPtrOpt()->Obj().Name();
             }
         });
 
@@ -1424,11 +1423,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_PTR_OPT->Obj().Price() > B->ITEM_PTR_OPT->Obj().Price();
+                return A->ItemPtrOpt()->Obj().Price() > B->ItemPtrOpt()->Obj().Price();
             }
             else
             {
-                return A->ITEM_PTR_OPT->Obj().Price() < B->ITEM_PTR_OPT->Obj().Price();
+                return A->ItemPtrOpt()->Obj().Price() < B->ItemPtrOpt()->Obj().Price();
             }
         });
 
@@ -1444,11 +1443,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_PTR_OPT->Obj().Weight() > B->ITEM_PTR_OPT->Obj().Weight();
+                return A->ItemPtrOpt()->Obj().Weight() > B->ItemPtrOpt()->Obj().Weight();
             }
             else
             {
-                return A->ITEM_PTR_OPT->Obj().Weight() < B->ITEM_PTR_OPT->Obj().Weight();
+                return A->ItemPtrOpt()->Obj().Weight() < B->ItemPtrOpt()->Obj().Weight();
             }
         });
 

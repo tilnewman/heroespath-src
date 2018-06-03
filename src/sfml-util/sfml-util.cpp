@@ -65,15 +65,17 @@ namespace sfml_util
     void ScaleSpriteToFit(
         sf::Sprite & s, const float WIDTH, const float HEIGHT, const float RESIZE_RATIO)
     {
-        auto const HEIGHT_ORIG{ std::max(s.getLocalBounds().height, 1.0f) };
-        auto const VERT_SCALE{ RESIZE_RATIO * (HEIGHT / HEIGHT_ORIG) };
-        s.setScale(VERT_SCALE, VERT_SCALE);
-
-        if (s.getGlobalBounds().width > WIDTH)
+        if (s.getLocalBounds().width > s.getLocalBounds().height)
         {
             auto const WIDTH_ORIG{ std::max(s.getLocalBounds().width, 1.0f) };
-            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / WIDTH_ORIG) };
-            s.setScale(HORIZ_SCALE, HORIZ_SCALE);
+            auto const SCALE{ RESIZE_RATIO * (WIDTH / WIDTH_ORIG) };
+            s.setScale(SCALE, SCALE);
+        }
+        else
+        {
+            auto const HEIGHT_ORIG{ std::max(s.getLocalBounds().height, 1.0f) };
+            auto const SCALE{ RESIZE_RATIO * (HEIGHT / HEIGHT_ORIG) };
+            s.setScale(SCALE, SCALE);
         }
     }
 

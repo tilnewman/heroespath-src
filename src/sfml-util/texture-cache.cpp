@@ -16,6 +16,7 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
@@ -118,6 +119,42 @@ namespace sfml_util
 
         auto const INDEX{ AddByPathInternal(PATH_TO_TEXTURE_STR, WILL_SMOOTH) };
         strToVecMap_[PATH_TO_TEXTURE_STR] = misc::SizetVec_t(1, INDEX);
+        return INDEX;
+    }
+
+    std::size_t TextureCache::AddByPathFake(
+        const std::string & FAKE_PATH_TO_TEXTURE_STR, const sf::Texture & TEXTURE)
+    {
+        misc::SizetVec_t indexVec;
+        if (strToVecMap_.Find(FAKE_PATH_TO_TEXTURE_STR, indexVec))
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (indexVec.empty() == false),
+                "sfml_util::TextureCache::AddByPathFake(fake_path=\""
+                    << FAKE_PATH_TO_TEXTURE_STR
+                    << "\", texture_size=" << sfml_util::VectorToString(TEXTURE.getSize())
+                    << ") failed because strToVecMap_ entry was an empty vec.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (indexVec[0] < cacheUVec_.size()),
+                "sfml_util::TextureCache::AddByPathFake(fake_path=\""
+                    << FAKE_PATH_TO_TEXTURE_STR
+                    << "\", texture_size=" << sfml_util::VectorToString(TEXTURE.getSize())
+                    << ") failed because strToVecMap_ entry=" << indexVec[0]
+                    << " was out of bounds with cacheUVec_.size()=" << cacheUVec_.size() << ".");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (cacheUVec_[indexVec[0]].get() != nullptr),
+                "sfml_util::TextureCache::AddByPathFake(fake_path=\""
+                    << FAKE_PATH_TO_TEXTURE_STR
+                    << "\", texture_size=" << sfml_util::VectorToString(TEXTURE.getSize())
+                    << ") failed because strToVecMap_ entry pointed to a null pointer.");
+
+            return indexVec[0];
+        }
+
+        auto const INDEX{ AddByPathInternalFake(TEXTURE) };
+        strToVecMap_[FAKE_PATH_TO_TEXTURE_STR] = misc::SizetVec_t(1, INDEX);
         return INDEX;
     }
 
@@ -335,6 +372,22 @@ namespace sfml_util
         {
             cacheUVec_[INDEX].reset();
             throw;
+        }
+
+        return INDEX;
+    }
+
+    std::size_t TextureCache::AddByPathInternalFake(const sf::Texture & TEXTURE)
+    {
+        auto const INDEX{ EstablishNextAvailableIndex() };
+
+        if (cacheUVec_[INDEX].get() == nullptr)
+        {
+            cacheUVec_[INDEX] = std::make_unique<sf::Texture>(TEXTURE);
+        }
+        else
+        {
+            *cacheUVec_[INDEX] = TEXTURE;
         }
 
         return INDEX;

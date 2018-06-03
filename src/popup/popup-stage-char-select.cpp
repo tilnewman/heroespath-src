@@ -217,7 +217,7 @@ namespace popup
             IMAGE_INDEX) };
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.GetImage(textureCurr_, CREATURE_PTR);
+        creatureImageLoader.Load(textureCurr_, CREATURE_PTR);
     }
 
 } // namespace popup

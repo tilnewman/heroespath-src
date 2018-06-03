@@ -319,6 +319,7 @@ namespace stage
         static const std::string POPUP_NAME_SPELL_RESULT_;
         static const std::string POPUP_NAME_MUSICSHEET_;
         static const std::string POPUP_NAME_SONG_RESULT_;
+        static const sf::FloatRect ERROR_RECT_;
 
     private:
         const float SCREEN_WIDTH_;

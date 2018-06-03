@@ -52,6 +52,8 @@ namespace sfml_util
 
             void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 
+            const std::string Path(const item::ItemPtr_t ITEM_PTR) const;
+
             // note that full paths are not returned, only the filenames, Load() will create a full
             // path from the filename
             const std::string

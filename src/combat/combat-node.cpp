@@ -116,7 +116,7 @@ namespace combat
         HealthChangeTasks();
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.GetImage(texture_, CREATURE_PTR);
+        creatureImageLoader.Load(texture_, CREATURE_PTR);
 
         sprite_.setTexture(texture_);
 
@@ -331,7 +331,7 @@ namespace combat
 
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
 
-                combatImageMachine.Get(
+                combatImageMachine.Load(
                     *wingTextureUPtr_,
                     sfml_util::gui::CombatImageType::Wing,
                     ((!isPlayer_) ? sfml_util::gui::image::Flip::Yes

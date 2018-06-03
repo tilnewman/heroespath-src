@@ -512,7 +512,6 @@ namespace stage
             STATUS_REGION,
             sfml_util::gui::ListBoxItemSVec_t(),
             sfml_util::IStagePtr_t(this),
-            15.0f,
             0.0f,
             STATUS_BOX_INFO,
             LISTBOX_LINE_COLOR_,

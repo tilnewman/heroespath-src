@@ -10,6 +10,7 @@
 // portrait-factory.hpp
 //
 #include "portrait-factory.hpp"
+#include "avatar/lpc-view.hpp"
 #include "sfml-util/loaders.hpp"
 
 namespace heroespath
@@ -19,17 +20,19 @@ namespace avatar
 
     void PortraitFactory::Make(const Avatar::Enum WHICH_AVATAR, sf::Texture & finalTexture)
     {
-        sf::Texture charTexture;
-        sfml_util::Loaders::Texture(charTexture, Avatar::ImagePath(WHICH_AVATAR));
+        sf::Texture texture;
+        sfml_util::Loaders::Texture(texture, Avatar::ImagePath(WHICH_AVATAR));
 
-        auto const WIDTH{ 64 };
-        auto const HEIGHT{ WIDTH };
-        sf::Sprite charSprite(charTexture, sf::IntRect(0, 192, WIDTH, HEIGHT));
+        sf::Sprite sprite(texture, LPCView::GetStandingRightFrameRect());
+
+        const sf::Vector2u SIZE_V(
+            static_cast<unsigned>(sprite.getLocalBounds().width),
+            static_cast<unsigned>(sprite.getLocalBounds().height));
 
         sf::RenderTexture renderTexture;
-        renderTexture.create(WIDTH, HEIGHT);
+        renderTexture.create(SIZE_V.x, SIZE_V.y);
         renderTexture.clear(sf::Color::Transparent);
-        renderTexture.draw(charSprite);
+        renderTexture.draw(sprite);
         renderTexture.display();
 
         finalTexture = renderTexture.getTexture();

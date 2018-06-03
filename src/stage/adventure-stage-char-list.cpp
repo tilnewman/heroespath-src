@@ -630,7 +630,7 @@ namespace stage
 
             auto & imagePair{ charImages_[CHARACTER_PTR] };
 
-            creatureImageLoader.GetImage(imagePair.first, CHARACTER_PTR);
+            creatureImageLoader.Load(imagePair.first, CHARACTER_PTR);
 
             sfml_util::Invert(imagePair.first);
             sfml_util::Mask(imagePair.first, sf::Color::White);

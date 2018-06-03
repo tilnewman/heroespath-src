@@ -80,7 +80,7 @@ namespace creature
         if (imageFilename_.empty())
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;
-            imageFilename_ = creatureImageLoader.GetRandomFilename(this);
+            imageFilename_ = creatureImageLoader.FilenameRandom(this);
         }
 
         actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.As<int>());

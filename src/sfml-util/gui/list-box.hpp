@@ -52,9 +52,6 @@ namespace sfml_util
         class ListBox;
         using ListBoxUPtr_t = std::unique_ptr<ListBox>;
 
-        using ImagePair_t = std::pair<std::shared_ptr<sf::Texture>, sf::Sprite>;
-        using ImageMap_t = misc::VectorMap<ListBoxItemSPtr_t, ImagePair_t>;
-
         // the callback type for ListBox is a wrapper class called ListBoxItem
         namespace callback
         {
@@ -112,13 +109,11 @@ namespace sfml_util
             ListBox & operator=(const ListBox &) = delete;
             ListBox & operator=(ListBox &&) = delete;
 
-        public:
             explicit ListBox(
                 const std::string & NAME,
                 const sf::FloatRect & REGION = sf::FloatRect(),
                 const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
                 const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
-                const float MARGIN = 0.0f,
                 const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
@@ -130,7 +125,6 @@ namespace sfml_util
                 const sf::FloatRect & REGION = sf::FloatRect(),
                 const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
                 const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
-                const float MARGIN = 0.0f,
                 const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
@@ -145,6 +139,7 @@ namespace sfml_util
                 imageColor_ = COLOR;
                 SetupForDraw();
             }
+
             const sf::Color ImageColor() const { return imageColor_; }
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
@@ -184,10 +179,8 @@ namespace sfml_util
             std::size_t Size() const { return items_.size(); }
             bool Empty() const { return items_.empty(); }
 
-            // returns true if the item was added, returns false if failed to add due to countLimit_
-            bool Add(const ListBoxItemSPtr_t & ITEM_SPTR);
-
-            bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
+            void Add(const ListBoxItemSPtr_t & ITEM_SPTR);
+            bool Remove(const ListBoxItemSPtr_t & ITEM_SPTR);
 
             bool RemoveSelected() { return Remove(Selected()); }
             void Clear() { items_.clear(); }
@@ -195,9 +188,6 @@ namespace sfml_util
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
             bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
-
-            // if there is an image at location, then return the rect of the image
-            const sf::FloatRect ImageRectOfItemAtPos(const sf::Vector2f & MOUSE_POS_V);
 
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
@@ -214,20 +204,14 @@ namespace sfml_util
             bool SelectPrev();
             bool SelectNext();
 
-            std::size_t CountLimit() const { return countLimit_; }
-            void CountLimit(const std::size_t NEW_COUNT_LIMIT) { countLimit_ = NEW_COUNT_LIMIT; }
+            const sf::FloatRect FullItemRect(const ListBoxItemSPtr_t &) const;
 
-        protected:
+        private:
             std::size_t CalcGreatestFirstDisplayedIndex() const;
             void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
             void OnClick(const sf::Vector2f &) override {}
             void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
             void SetupForDraw();
-
-            void LoadImageAndSetPosition(
-                ListBoxItemSPtr_t & LISTBOXITEM_SPTR,
-                const float POS_TOP,
-                const bool IS_SELECTED_ITEM);
 
             std::size_t CalcVisibleItems() const;
             std::size_t CalcLastVisibleIndex_Display() const;
@@ -240,21 +224,20 @@ namespace sfml_util
             bool IsPosWithinItemRegion(
                 const sf::Vector2f & POS_V, const ListBoxItemSPtr_t & ITEM_SPTR) const;
 
-        public:
-            static const sf::FloatRect ERROR_RECT_;
+            void ResetItemHeight();
 
-        protected:
-            const float IMAGE_HORIZ_PAD_;
-            const float IMAGE_SIZE_;
+        private:
+            static const sf::Color INVALID_ITEM_HIGHLIGHT_COLOR_;
+            //
+            const float HORIZ_PAD_;
+            sf::Vector2f itemSizeV_;
+            float betweenPadVert_;
             box::BoxUPtr_t boxUPtr_;
             SliderBarUPtr_t sliderbarUPtr_;
             sf::Color lineColor_;
             sf::Color highlightColor_;
-            float margin_;
-            float betweenPad_;
             IStagePtrOpt_t stagePtrOpt_;
             ListBoxItemSVec_t items_;
-            ImageMap_t imageMap_;
             sf::Color imageColor_;
             bool willPlaySfx_;
             callback::IListBoxCallbackHandlerPtrOpt_t callbackPtrOpt_;
@@ -270,8 +253,6 @@ namespace sfml_util
 
             // how many items are listed
             std::size_t visibleCount_;
-
-            std::size_t countLimit_;
         };
 
     } // namespace gui

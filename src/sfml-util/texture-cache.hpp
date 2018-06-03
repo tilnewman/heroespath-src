@@ -47,6 +47,9 @@ namespace sfml_util
         std::size_t
             AddByPath(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH = true);
 
+        std::size_t
+            AddByPathFake(const std::string & FAKE_PATH_TO_TEXTURE_STR, const sf::Texture &);
+
         // not recursive
         const misc::SizetVec_t
             AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH = true);
@@ -72,6 +75,8 @@ namespace sfml_util
 
         std::size_t
             AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH);
+
+        std::size_t AddByPathInternalFake(const sf::Texture &);
 
     private:
         static std::unique_ptr<TextureCache> instanceUPtr_;

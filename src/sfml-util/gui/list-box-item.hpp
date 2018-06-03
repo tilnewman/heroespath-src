@@ -14,6 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -76,7 +77,6 @@ namespace sfml_util
             ListBoxItem & operator=(const ListBoxItem &) = delete;
             ListBoxItem & operator=(ListBoxItem &&) = delete;
 
-        public:
             explicit ListBoxItem(const std::string & NAME, const bool IS_VALID = true);
 
             // used by the Combat Stage for a ListBox of text lines
@@ -103,48 +103,69 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const item::ItemPtr_t ITEM_PTR_PARAM,
+                const item::ItemPtr_t ITEM_PTR,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list conditions
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const creature::ConditionPtr_t CONDITION_PTR_PARAM,
+                const creature::ConditionPtr_t CONDITION_PTR,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list titles
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const creature::TitlePtr_t & TITLE_PTR_PARAM,
+                const creature::TitlePtr_t & TITLE_PTR,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list spells
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const spell::SpellPtr_t SPELL_PTR_PARAM,
+                const spell::SpellPtr_t SPELL_PTR,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list spells
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const song::SongPtr_t SONG_PTR_PARAM,
+                const song::SongPtr_t SONG_PTR,
                 const bool IS_VALID = true);
 
-            const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT;
-            const game::GameStatePtrOpt_t GAMESTATE_PTR_OPT;
-            const item::ItemPtrOpt_t ITEM_PTR_OPT;
-            const creature::ConditionPtrOpt_t COND_PTR_OPT;
-            const creature::TitlePtrOpt_t TITLE_PTR_OPT;
-            const spell::SpellPtrOpt_t SPELL_PTR_OPT;
-            const song::SongPtrOpt_t SONG_PTR_OPT;
-            bool is_valid;
+            virtual ~ListBoxItem();
+
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
+
+            const creature::CreaturePtrOpt_t CharacterPtrOpt() const { return creaturePtrOpt_; }
+            const game::GameStatePtrOpt_t GameStatePtrOpt() const { return gameStatePtrOpt_; }
+            const item::ItemPtrOpt_t ItemPtrOpt() const { return itemPtrOpt_; }
+            const creature::ConditionPtrOpt_t ConditionPtrOpt() const { return conditionPtrOpt_; }
+            const creature::TitlePtrOpt_t TitlePtrOpt() const { return titlePtrOpt_; }
+            const spell::SpellPtrOpt_t SpellPtrOpt() const { return spellPtrOpt_; }
+            const song::SongPtrOpt_t SongPtrOpt() const { return songPtrOpt_; }
+            bool IsValid() const { return isValid_; }
+            std::size_t TextureIndex() const { return textureIndex_; }
+            sf::Sprite & Sprite() { return sprite_; }
+            bool HasImage() const { return (textureIndex_ != 0); }
 
             friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);
             friend bool operator<(const ListBoxItem & L, const ListBoxItem & R);
+
+        private:
+            creature::CreaturePtrOpt_t creaturePtrOpt_;
+            game::GameStatePtrOpt_t gameStatePtrOpt_;
+            item::ItemPtrOpt_t itemPtrOpt_;
+            creature::ConditionPtrOpt_t conditionPtrOpt_;
+            creature::TitlePtrOpt_t titlePtrOpt_;
+            spell::SpellPtrOpt_t spellPtrOpt_;
+            song::SongPtrOpt_t songPtrOpt_;
+            bool isValid_;
+            std::size_t textureIndex_;
+            sf::Sprite sprite_;
         };
 
         using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;

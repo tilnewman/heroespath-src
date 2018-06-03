@@ -50,16 +50,19 @@ namespace sfml_util
 
             static float MaxDimmension() { return image::StandardDimmension(); }
 
-            void GetImage(sf::Texture & texture, const creature::CreaturePtr_t) const;
+            const std::string Path(const creature::CreaturePtr_t) const;
+            const std::string Path(const std::string & FILENAME) const;
 
-            void GetImageFromFilename(
+            void Load(sf::Texture & texture, const creature::CreaturePtr_t) const;
+
+            void Load(
                 sf::Texture & texture,
-                const std::string & FILENAME,
-                const bool WILL_FACE_RIGHT) const;
+                const std::string & IMAGE_FILE_NAME,
+                const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT = false) const;
 
-            const std::string GetRandomFilename(const creature::CreaturePtr_t) const;
+            const std::string FilenameRandom(const creature::CreaturePtr_t) const;
 
-            const std::vector<std::string> GetFilenames(
+            const std::vector<std::string> Filenames(
                 const creature::race::Enum RACE,
                 const creature::role::Enum ROLE,
                 const creature::sex::Enum SEX,
@@ -69,14 +72,9 @@ namespace sfml_util
 
             void EnsureFileExists(const std::string & FILENAME) const;
 
+            bool WillHorizFlipToFaceRight(const creature::CreaturePtr_t CREATURE_PTR) const;
+
         private:
-            void LoadImage(
-                sf::Texture & texture,
-                const std::string & IMAGE_FILE_NAME,
-                const bool WILL_FACE_RIGHT = false) const;
-
-            const std::string MakeFullPathFromFilename(const std::string & FILENAME) const;
-
             std::string imageDirectoryPath_;
         };
 

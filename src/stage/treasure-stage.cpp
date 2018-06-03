@@ -372,18 +372,18 @@ namespace stage
     {
         auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->Selected() };
 
-        if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+        if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
         {
             if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
                 || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
                 if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
                 {
-                    TakeItem(LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
+                    TakeItem(LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
                 }
                 else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR)
                 {
-                    PutItemBack(LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
+                    PutItemBack(LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
                 }
             }
 

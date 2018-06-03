@@ -188,13 +188,12 @@ namespace stage
                 BG_COLOR - sf::Color(40, 40, 40, 0)),
             BG_INFO);
 
-        // reate the ListBox
+        // create the ListBox
         gsListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "GameStateToLoad",
             GS_LB_RECT,
             listBoxItemSVec,
             sfml_util::IStagePtr_t(this),
-            10.0f,
             6.0f,
             BOX_INFO,
             sfml_util::FontManager::Color_Orange(),
@@ -228,7 +227,7 @@ namespace stage
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
                 << " returned a nullptr.");
 
-        auto const GAMESTATE_PTR{ listBoxItemSPtr->GAMESTATE_PTR_OPT.value() };
+        auto const GAMESTATE_PTR{ listBoxItemSPtr->GameStatePtrOpt().value() };
 
         sfml_util::gui::TextInfo descTextInfo(
             "",

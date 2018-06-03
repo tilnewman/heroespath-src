@@ -11,6 +11,7 @@
 //
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/gui/image-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -51,22 +52,27 @@ namespace sfml_util
 
             float MaxDimmension() const { return image::StandardDimmension(); }
 
-            void
-                Get(sf::Texture & texture,
-                    const typename EnumWrapper_t::Enum ENUM_VALUE_VALUE,
-                    const image::Flip WILL_FLIP_HORIZ = image::Flip::No) const
+            void Load(
+                sf::Texture & texture,
+                const typename EnumWrapper_t::Enum ENUM_VALUE,
+                const image::Flip WILL_FLIP_HORIZ = image::Flip::No) const
             {
-                namespace bfs = boost::filesystem;
-
-                auto const PATH{ bfs::path(imageDirectoryPath_)
-                                 / bfs::path(EnumWrapper_t::ImageFilename(ENUM_VALUE_VALUE)) };
-
-                sfml_util::Loaders::Texture(texture, PATH.string());
+                sfml_util::Loaders::Texture(texture, Path(ENUM_VALUE));
 
                 if (WILL_FLIP_HORIZ == image::Flip::Yes)
                 {
                     sfml_util::FlipHoriz(texture);
                 }
+            }
+
+            const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
+            {
+                namespace bfs = boost::filesystem;
+
+                return misc::filesystem::MakePathPretty(
+                           bfs::path(imageDirectoryPath_)
+                           / bfs::path(EnumWrapper_t::ImageFilename(ENUM_VALUE)))
+                    .string();
             }
 
             bool Test() const
@@ -92,7 +98,7 @@ namespace sfml_util
                     auto const ENUM_VALUE{ static_cast<typename EnumWrapper_t::Enum>(imageIndex) };
 
                     sf::Texture texture;
-                    Get(texture, ENUM_VALUE, ((willFlip) ? image::Flip::Yes : image::Flip::No));
+                    Load(texture, ENUM_VALUE, ((willFlip) ? image::Flip::Yes : image::Flip::No));
 
                     auto const MAX_DIMMENSION_U{ static_cast<unsigned>(MaxDimmension()) };
 

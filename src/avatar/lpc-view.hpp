@@ -51,10 +51,15 @@ namespace avatar
 
         void SetCenteredMapPos(const sf::Vector2f & NEW_POS_V) { sprite_.setPosition(NEW_POS_V); }
 
-    private:
-        const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;
+        static const sf::IntRect GetStandingRightFrameRect()
+        {
+            return FrameRect(FrameNumbers(Pose::Standing, sfml_util::Direction::Right).at(0));
+        }
 
-        const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM) const;
+    private:
+        static const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum);
+
+        static const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM);
 
         const Animation CreateAnimation(const Pose::Enum, const sfml_util::Direction::Enum) const;
 
@@ -64,6 +69,7 @@ namespace avatar
 
     private:
         static const int CELL_SIZE_;
+        static const int CELL_COUNT_;
         static const float FRAME_DURATION_SEC_WALK_;
         static const float FRAME_DURATION_SEC_GIVETAKE_;
         static const float FRAME_DURATION_SEC_SINGLEFRAME_;
@@ -72,7 +78,6 @@ namespace avatar
 
         Avatar::Enum whichAvatar_;
         std::size_t textureIndex_;
-        int textureSize_;
 
         // note that sprite_.getPosition() does not hold the actual top-left corner position of the
         // sprite, instead this holds the centered map coordinates position, see

@@ -226,6 +226,11 @@ namespace sfml_util
             Load(texture, ITEM_PTR->ImageFilename());
         }
 
+        const std::string ItemImageLoader::Path(const item::ItemPtr_t ITEM_PTR) const
+        {
+            return MakeFullPathFromFilename(ITEM_PTR->ImageFilename());
+        }
+
         const std::string ItemImageLoader::Filename(
             const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE) const
         {

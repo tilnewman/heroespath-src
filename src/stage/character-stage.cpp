@@ -1389,15 +1389,13 @@ namespace stage
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
-        characterImageFilenamesVec_ = creatureImageLoader.GetFilenames(RACE, ROLE, SEX);
+        characterImageFilenamesVec_ = creatureImageLoader.Filenames(RACE, ROLE, SEX);
 
         sfml_util::TextureVec_t characterTextureVec;
         for (auto const & NEXT_FILENAME_STR : characterImageFilenamesVec_)
         {
             sf::Texture texture;
-
-            creatureImageLoader.GetImageFromFilename(texture, NEXT_FILENAME_STR, true);
-
+            creatureImageLoader.Load(texture, NEXT_FILENAME_STR, true);
             characterTextureVec.emplace_back(texture);
         }
 
