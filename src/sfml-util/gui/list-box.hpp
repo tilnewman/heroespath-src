@@ -45,8 +45,12 @@ namespace sfml_util
         } // namespace box
 
         class ListBoxItem;
-        using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
-        using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
+        using ListBoxItemPtr_t = misc::NotNull<ListBoxItem *>;
+        using ListBoxItemPtrOpt_t = boost::optional<ListBoxItemPtr_t>;
+        using ListBoxItemUPtr_t = std::unique_ptr<ListBoxItem>;
+        using ListBoxItemUVec_t = std::vector<ListBoxItemUPtr_t>;
+        using ListBoxItemUVecIter_t = ListBoxItemUVec_t::iterator;
+        using ListBoxItemUVecCIter_t = ListBoxItemUVec_t::const_iterator;
 
         // types required for the ListBoxPtrPackage_t and IListBoxCallbackHandler below
         class ListBox;
@@ -112,23 +116,25 @@ namespace sfml_util
             explicit ListBox(
                 const std::string & NAME,
                 const sf::FloatRect & REGION = sf::FloatRect(),
-                const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
                 const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
-                const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
-                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none);
+                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none,
+                const sf::Color & IMAGE_COLOR = sf::Color::White,
+                const sf::Color & HIGHLIGHT_COLOR = NO_COLOR_,
+                const float BETWEEN_PAD = -1.0f);
 
             virtual ~ListBox();
 
             void Setup(
                 const sf::FloatRect & REGION = sf::FloatRect(),
-                const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
                 const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
-                const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
-                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none);
+                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none,
+                const sf::Color & IMAGE_COLOR = sf::Color::White,
+                const sf::Color & HIGHLIGHT_COLOR = NO_COLOR_,
+                const float BETWEEN_PAD = -1.0f);
 
             const std::string HandlerName() const override { return GetEntityName(); }
 
@@ -144,9 +150,9 @@ namespace sfml_util
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            ListBoxItemSPtr_t AtPos(const sf::Vector2f & POS_V);
+            ListBoxItemPtrOpt_t AtPos(const sf::Vector2f & POS_V);
 
-            const ListBoxItemSPtr_t Selected() const;
+            const ListBoxItemPtrOpt_t Selected() const;
 
             std::size_t DisplayIndex() const { return displayIndex_; }
 
@@ -174,16 +180,13 @@ namespace sfml_util
                     && (INDEX <= CalcLastVisibleIndex_Selection()));
             }
 
-            ListBoxItemSPtr_t At(const std::size_t INDEX) { return items_.at(INDEX); }
-
-            std::size_t Size() const { return items_.size(); }
-            bool Empty() const { return items_.empty(); }
-
-            void Add(const ListBoxItemSPtr_t & ITEM_SPTR);
-            bool Remove(const ListBoxItemSPtr_t & ITEM_SPTR);
-
-            bool RemoveSelected() { return Remove(Selected()); }
-            void Clear() { items_.clear(); }
+            ListBoxItemPtr_t At(const std::size_t);
+            void Add(ListBoxItemUPtr_t);
+            bool Remove(const ListBoxItemPtr_t);
+            bool RemoveSelected();
+            void Clear();
+            std::size_t Size() const;
+            bool Empty() const;
 
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
@@ -192,19 +195,31 @@ namespace sfml_util
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
             const sf::Color GetHighlightColor() const { return highlightColor_; }
-            void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
+            void SetHighlightColor(const sf::Color & NEW_COLOR) { highlightColor_ = NEW_COLOR; }
 
             bool WillPlaySoundEffects() const { return willPlaySfx_; }
-            void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
-
-            const ListBoxItemSVec_t Items() const { return items_; }
-            void Items(const ListBoxItemSVec_t & NEW_ITEMS_VEC);
+            void WillPlaySoundEffects(const bool WILL_PLAY_SFX) { willPlaySfx_ = WILL_PLAY_SFX; }
 
             // these two functions return true if the selection changed
             bool SelectPrev();
             bool SelectNext();
 
-            const sf::FloatRect FullItemRect(const ListBoxItemSPtr_t &) const;
+            const sf::FloatRect FullItemRect(const ListBoxItemPtr_t) const;
+
+            void MoveItemToOtherListBox(
+                const std::size_t ITEM_TO_MOVE_INDEX, ListBox & otherListBox);
+
+            void ResetAfterChange() { SetupForDraw(); }
+
+            ListBoxItemUVecIter_t begin() noexcept { return std::begin(items_); }
+            ListBoxItemUVecIter_t end() noexcept { return std::end(items_); }
+            ListBoxItemUPtr_t & Front() { return items_.front(); }
+            ListBoxItemUPtr_t & Back() { return items_.back(); }
+
+            const ListBoxItemUVecCIter_t begin() const noexcept { return std::begin(items_); }
+            const ListBoxItemUVecCIter_t end() const noexcept { return std::end(items_); }
+            const ListBoxItemUPtr_t & Front() const { return items_.front(); }
+            const ListBoxItemUPtr_t & Back() const { return items_.back(); }
 
         private:
             std::size_t CalcGreatestFirstDisplayedIndex() const;
@@ -222,11 +237,12 @@ namespace sfml_util
             void DrawLine(sf::RenderTarget & target, const float POS_TOP) const;
 
             bool IsPosWithinItemRegion(
-                const sf::Vector2f & POS_V, const ListBoxItemSPtr_t & ITEM_SPTR) const;
+                const sf::Vector2f & POS_V, const ListBoxItemPtr_t ITEM_PTR) const;
 
-            void ResetItemHeight();
+            void ResetItemSize();
 
         private:
+            static const sf::Color NO_COLOR_;
             static const sf::Color INVALID_ITEM_HIGHLIGHT_COLOR_;
             //
             const float HORIZ_PAD_;
@@ -237,7 +253,7 @@ namespace sfml_util
             sf::Color lineColor_;
             sf::Color highlightColor_;
             IStagePtrOpt_t stagePtrOpt_;
-            ListBoxItemSVec_t items_;
+            ListBoxItemUVec_t items_;
             sf::Color imageColor_;
             bool willPlaySfx_;
             callback::IListBoxCallbackHandlerPtrOpt_t callbackPtrOpt_;
@@ -254,6 +270,23 @@ namespace sfml_util
             // how many items are listed
             std::size_t visibleCount_;
         };
+
+        inline const ListBoxItemUVecIter_t begin(ListBox & listBox) noexcept
+        {
+            return listBox.begin();
+        }
+
+        inline const ListBoxItemUVecIter_t end(ListBox & listBox) noexcept { return listBox.end(); }
+
+        inline const ListBoxItemUVecCIter_t begin(const ListBox & LISTBOX) noexcept
+        {
+            return LISTBOX.begin();
+        }
+
+        inline const ListBoxItemUVecCIter_t end(const ListBox & LISTBOX) noexcept
+        {
+            return LISTBOX.end();
+        }
 
     } // namespace gui
 } // namespace sfml_util

@@ -16,6 +16,7 @@
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/spell-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "spell/spell.hpp"
@@ -72,8 +73,8 @@ namespace popup
     bool PopupStageSpellbook::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        if ((PACKAGE.package.PTR_ == nullptr) || (PACKAGE.package.PTR_->Selected() == nullptr)
-            || (!PACKAGE.package.PTR_->Selected()->SpellPtrOpt()))
+        if (!PACKAGE.package.PTR_->Selected()
+            || !PACKAGE.package.PTR_->Selected().value()->SpellPtrOpt())
         {
             return false;
         }
@@ -401,32 +402,28 @@ namespace popup
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
             1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
-        sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
-        for (auto const & NEXT_SPELL_PTR : popupInfo_.CreaturePtrOpt()->Obj().SpellsPVec())
-        {
-            listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
-            auto const LISTBOXITEM_SPTR(std::make_shared<sfml_util::gui::ListBoxItem>(
-                NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
-                listBoxItemTextInfo_,
-                NEXT_SPELL_PTR,
-                CanCastSpell(NEXT_SPELL_PTR)));
-
-            listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
-        }
-
         listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PopupStage'sSpellListBox",
             LISTBOX_RECT,
-            listBoxItemsSVec,
             sfml_util::IStagePtr_t(this),
-            6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
+            LISTBOX_IMAGE_COLOR_);
+
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+        for (auto const & SPELL_PTR : popupInfo_.CreaturePtrOpt()->Obj().SpellsPVec())
+        {
+            listBoxItemTextInfo_.text = SPELL_PTR->Name();
+
+            listBoxUPtr_->Add(listBoxItemFactory.Make(
+                listBoxUPtr_->GetEntityName(),
+                listBoxItemTextInfo_,
+                SPELL_PTR,
+                CanCastSpell(SPELL_PTR)));
+        }
 
         EntityAdd(listBoxUPtr_.get());
-        listBoxUPtr_->SelectedIndex(0);
-        listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
     void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtr_t SPELL_PTR)
@@ -683,11 +680,11 @@ namespace popup
             "null.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (!!listBoxUPtr_->Selected()->SpellPtrOpt()),
+            (listBoxUPtr_->Selected().value()->SpellPtrOpt()),
             "popup::PopupStageSpellbook::CurrentSelectedSpell() called when the currently selected "
             "spell was somehow not initialized.");
 
-        return listBoxUPtr_->Selected()->SpellPtrOpt().value();
+        return listBoxUPtr_->Selected().value()->SpellPtrOpt().value();
     }
 
 } // namespace popup

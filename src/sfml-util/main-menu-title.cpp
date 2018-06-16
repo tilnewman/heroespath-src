@@ -12,7 +12,7 @@
 #include "main-menu-title.hpp"
 
 #include "game/game-data-file.hpp"
-
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 
@@ -58,9 +58,9 @@ namespace sfml_util
         {
             willDrawTitle_ = true;
 
-            auto const TITLE_IMAGE_PATH{ game::GameDataFile::Instance()->GetMediaPath(
-                                             "media-images-buttons-mainmenu-dir")
-                                         + TITLE_IMAGE_FILENAME };
+            auto const TITLE_IMAGE_PATH{ misc::filesystem::CompletePath(
+                game::GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"),
+                TITLE_IMAGE_FILENAME) };
 
             sfml_util::Loaders::Texture(titleTexture_, TITLE_IMAGE_PATH);
             titleSprite_.setTexture(titleTexture_, true);
@@ -107,5 +107,6 @@ namespace sfml_util
             target.draw(titleSprite_, states);
         }
     }
+
 } // namespace sfml_util
 } // namespace heroespath

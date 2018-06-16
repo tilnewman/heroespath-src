@@ -576,17 +576,6 @@ namespace map
 
     void Map::ResetNonPlayers()
     {
-        // remove all Model's LPCView textures from the cache, and watch out for duplicates
-        std::set<std::size_t> textureIndexSet;
-        for (auto const & NPC_MODEL_PAIR : nonPlayers_)
-        {
-            textureIndexSet.insert(NPC_MODEL_PAIR.second.ViewTextureIndex());
-        }
-        for (auto const TEXTURE_INDEX : textureIndexSet)
-        {
-            sfml_util::TextureCache::Instance()->RemoveByIndex(TEXTURE_INDEX);
-        }
-
         nonPlayers_.Clear();
 
         for (auto const & NPC_PTR :

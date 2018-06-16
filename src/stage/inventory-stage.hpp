@@ -214,7 +214,7 @@ namespace stage
         bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM); // zero indexed
         bool HandlePlayerChangeTo(const creature::CreaturePtr_t, const bool IS_SLIDING_LEFT);
         void StartSlidingAnimation(const bool IS_SLIDING_LEFT);
-        void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
+        void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemPtrOpt_t &);
         void SetDescBoxText(const std::string &);
 
         void PopupCharacterSelectWindow(
@@ -292,10 +292,6 @@ namespace stage
             const std::string & TITLE_MSG = "");
 
         void SetDetailViewQuads();
-
-        void SortByName(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
-        void SortByPrice(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
-        void SortByWeight(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
 
         bool IfMouseDownIsOnDisabledButtonPopupRejection(
             const sfml_util::gui::FourStateButtonUPtr_t & BUTTON_UPTR,
@@ -449,9 +445,9 @@ namespace stage
         // members that manage the give/drop/share/gather actions
         ActionType actionType_;
         ContentType contentType_;
-        sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
+        sfml_util::gui::ListBoxItemPtrOpt_t listBoxItemToGivePtrOpt_;
         creature::CreaturePtrOpt_t creatureToGiveToPtrOpt_;
-        sfml_util::gui::ListBoxItemSPtr_t itemToDropSPtr_;
+        sfml_util::gui::ListBoxItemPtrOpt_t listBoxItemToDropPtrOpt_;
 
         // members that manage the item detail view
         bool isDetailViewFadingIn_;

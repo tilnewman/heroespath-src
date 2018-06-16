@@ -78,8 +78,8 @@ namespace item
 
         if (NAME.empty() == false)
         {
-            sfml_util::gui::ItemImageLoader itemImageMachine;
-            imageFilename_ = itemImageMachine.Filename(this, true);
+            sfml_util::gui::ItemImageLoader itemImageLoader;
+            imageFilename_ = itemImageLoader.Filename(this, true);
         }
     }
 

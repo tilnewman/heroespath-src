@@ -28,6 +28,8 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 #include <tuple>
 
 namespace heroespath
@@ -36,20 +38,6 @@ namespace sfml_util
 {
     namespace gui
     {
-
-        ListBoxItem::ListBoxItem(const std::string & NAME, const bool IS_VALID)
-            : TextRegion(std::string(NAME).append("_ListBoxItemBase"))
-            , creaturePtrOpt_(boost::none)
-            , gameStatePtrOpt_(boost::none)
-            , itemPtrOpt_(boost::none)
-            , conditionPtrOpt_(boost::none)
-            , titlePtrOpt_(boost::none)
-            , spellPtrOpt_(boost::none)
-            , songPtrOpt_(boost::none)
-            , isValid_(IS_VALID)
-            , textureIndex_(0)
-            , sprite_()
-        {}
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
@@ -65,7 +53,7 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {}
 
@@ -86,17 +74,17 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
-            textureIndex_ = TextureCache::Instance()->AddByPath(
-                creatureImageLoader.Path(CHARACTER_PTR),
+            cachedTextureOpt_ = CachedTextureOpt_t(CachedTexture(
+                boost::filesystem::path(creatureImageLoader.Path(CHARACTER_PTR)),
                 true,
-                creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR));
+                creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR)));
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -114,7 +102,7 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             {
@@ -127,10 +115,10 @@ namespace sfml_util
                 ss << "FAKE_PATH_FOR_LISTBOX_ITEM_GAME_STATE_PARTY_AVATAR_"
                    << avatar::Avatar::ToString(AVATAR_ENUM);
 
-                textureIndex_ = TextureCache::Instance()->AddByPathFake(ss.str(), texture);
+                cachedTextureOpt_ = CachedTextureOpt_t(CachedTexture(ss.str(), texture));
             }
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -148,15 +136,15 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             sfml_util::gui::ConditionImageLoader conditionImageLoader;
 
-            textureIndex_ = TextureCache::Instance()->AddByPath(
-                conditionImageLoader.Path(CONDITION_PTR->Which()));
+            cachedTextureOpt_ = CachedTextureOpt_t(CachedTexture(
+                boost::filesystem::path(conditionImageLoader.Path(CONDITION_PTR->Which()))));
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -173,12 +161,15 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
-            sfml_util::gui::ItemImageLoader itemImageMachine;
-            textureIndex_ = TextureCache::Instance()->AddByPath(itemImageMachine.Path(ITEM_PTR));
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sfml_util::gui::ItemImageLoader itemImageLoader;
+
+            cachedTextureOpt_ = CachedTextureOpt_t(
+                CachedTexture(boost::filesystem::path(itemImageLoader.Path(ITEM_PTR))));
+
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -195,15 +186,15 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             sfml_util::gui::TitleImageLoader titleImageLoader;
 
-            textureIndex_
-                = TextureCache::Instance()->AddByPath(titleImageLoader.Path(TITLE_PTR->Which()));
+            cachedTextureOpt_ = CachedTextureOpt_t(
+                CachedTexture(boost::filesystem::path(titleImageLoader.Path(TITLE_PTR->Which()))));
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -220,15 +211,15 @@ namespace sfml_util
             , spellPtrOpt_(SPELL_PTR)
             , songPtrOpt_(boost::none)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             sfml_util::gui::SpellImageLoader spellImageLoader;
 
-            textureIndex_
-                = TextureCache::Instance()->AddByPath(spellImageLoader.Path(SPELL_PTR->Which()));
+            cachedTextureOpt_ = CachedTextureOpt_t(
+                CachedTexture(boost::filesystem::path(spellImageLoader.Path(SPELL_PTR->Which()))));
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
         ListBoxItem::ListBoxItem(
@@ -245,30 +236,24 @@ namespace sfml_util
             , spellPtrOpt_(boost::none)
             , songPtrOpt_(SONG_PTR)
             , isValid_(IS_VALID)
-            , textureIndex_(0)
+            , cachedTextureOpt_(boost::none)
             , sprite_()
         {
             sfml_util::gui::SongImageLoader songImageLoader;
 
-            textureIndex_
-                = TextureCache::Instance()->AddByPath(songImageLoader.Path(SONG_PTR->Which()));
+            cachedTextureOpt_ = CachedTextureOpt_t(
+                CachedTexture(boost::filesystem::path(songImageLoader.Path(SONG_PTR->Which()))));
 
-            sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIndex_), true);
+            sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }
 
-        ListBoxItem::~ListBoxItem()
-        {
-            if (textureIndex_ != 0)
-            {
-                sfml_util::TextureCache::Instance()->RemoveByIndex(textureIndex_);
-            }
-        }
+        ListBoxItem::~ListBoxItem() {}
 
         void ListBoxItem::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
             TextRegion::draw(target, states);
 
-            if (textureIndex_ != 0)
+            if (cachedTextureOpt_)
             {
                 target.draw(sprite_, states);
             }
@@ -282,7 +267,7 @@ namespace sfml_util
 
         bool operator==(const ListBoxItem & L, const ListBoxItem & R)
         {
-            // textureIndex_ and sprite_ intentionally excluded
+            // cachedTexture_ and sprite_ are intentionally excluded
             return std::tie(
                        L.creaturePtrOpt_,
                        L.gameStatePtrOpt_,
@@ -305,7 +290,7 @@ namespace sfml_util
 
         bool operator<(const ListBoxItem & L, const ListBoxItem & R)
         {
-            // textureIndex_ and sprite_ intentionally excluded
+            // cachedTexture_ and sprite_ are intentionally excluded
             return std::tie(
                        L.creaturePtrOpt_,
                        L.gameStatePtrOpt_,

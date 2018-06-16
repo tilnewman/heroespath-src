@@ -316,7 +316,7 @@ namespace stage
 
         displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
-        PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
+        PromptUserBasedOnTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -370,24 +370,26 @@ namespace stage
         const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->Selected() };
-
-        if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
+        if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
+            || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
-                || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            auto const SELECTED_ITEM_PTR_OPT{ PACKAGE.package.PTR_->Selected() };
+
+            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
             {
+                auto const ITEM_PTR{ SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
+
                 if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
                 {
-                    TakeItem(LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
+                    TakeItem(ITEM_PTR);
                 }
                 else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR)
                 {
-                    PutItemBack(LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
+                    PutItemBack(ITEM_PTR);
                 }
-            }
 
-            return true;
+                return true;
+            }
         }
 
         return true;
@@ -409,15 +411,13 @@ namespace stage
             return A_PTR->Weight() > B_PTR->Weight();
         });
 
-        // create a vector of creature ptrs in the order of who should take items
-        auto const CHARACTER_INDEX{ displayStagePtr_->CharacterIndexShowingInventory() };
-
-        creature::CreaturePVec_t whoWillTakeItems(
-            1, game::Game::Instance()->State().Party().Characters()[CHARACTER_INDEX]);
+        creature::CreaturePVec_t whoWillTakeItems
+            = { game::Game::Instance()->State().Party().Characters().at(
+                displayStagePtr_->CharacterIndexShowingInventory()) };
 
         for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            if ((CHARACTER_PTR->IsBeast() == false) && (CHARACTER_PTR != whoWillTakeItems[0]))
+            if ((CHARACTER_PTR->IsBeast() == false) && (CHARACTER_PTR != whoWillTakeItems.front()))
             {
                 whoWillTakeItems.emplace_back(CHARACTER_PTR);
             }
@@ -519,7 +519,7 @@ namespace stage
         }
     }
 
-    void TreasureStage::PromptUserBasedonTreasureAvailability(
+    void TreasureStage::PromptUserBasedOnTreasureAvailability(
         const item::TreasureAvailable::Enum TREASURE_AVAILABLE,
         const item::TreasureImage::Enum TREASURE_IMAGE)
     {
@@ -578,7 +578,7 @@ namespace stage
             default:
             {
                 std::ostringstream ss;
-                ss << "stage::TreasureStage::PromptUserBasedonTreasureAvailability("
+                ss << "stage::TreasureStage::PromptUserBasedOnTreasureAvailability("
                    << treasureAvailable_ << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());

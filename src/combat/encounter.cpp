@@ -118,7 +118,7 @@ namespace combat
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Encounter");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Encounter");
             Acquire();
         }
 

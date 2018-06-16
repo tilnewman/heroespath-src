@@ -13,6 +13,7 @@
 
 #include "log/log-macros.hpp"
 #include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -31,30 +32,32 @@ namespace sfml_util
             const sf::Vector2f ListBoxEventPackage::INVALID_MOUSE_POS_V_{ -1.0f, -1.0f };
         } // namespace callback
 
+        const sf::Color ListBox::NO_COLOR_{ 0, 0, 0, 0 };
         const sf::Color ListBox::INVALID_ITEM_HIGHLIGHT_COLOR_{ 127, 32, 32, 64 };
 
         ListBox::ListBox(
             const std::string & NAME,
             const sf::FloatRect & REGION,
-            const ListBoxItemSVec_t & ITEM_VEC,
             const IStagePtrOpt_t ISTAGE_PTR_OPT,
-            const float BETWEEN_PAD,
             const box::Info & BOX_INFO,
             const sf::Color & LINE_COLOR,
-            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT)
+            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT,
+            const sf::Color & IMAGE_COLOR,
+            const sf::Color & HIGHLIGHT_COLOR,
+            const float BETWEEN_PAD)
             : GuiEntity(std::string(NAME).append("_ListBox"), REGION)
             , HORIZ_PAD_(sfml_util::ScreenRatioToPixelsHoriz(0.007f))
-            , itemSizeV_(REGION.width, sfml_util::ScreenRatioToPixelsVert(0.04f))
-            , betweenPadVert_(BETWEEN_PAD)
+            , itemSizeV_(0.0f, 0.0f) // remaining members are initailized in Setup()
+            , betweenPadVert_(0.0f)
             , boxUPtr_()
             , sliderbarUPtr_()
-            , lineColor_(LINE_COLOR)
-            , highlightColor_(BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20))
-            , stagePtrOpt_(ISTAGE_PTR_OPT)
-            , items_(ITEM_VEC)
+            , lineColor_(sf::Color::Transparent)
+            , highlightColor_(sf::Color::Transparent)
+            , stagePtrOpt_(boost::none)
+            , items_()
             , imageColor_(sf::Color::White)
             , willPlaySfx_(true)
-            , callbackPtrOpt_(CALLBACK_PTR_OPT)
+            , callbackPtrOpt_(boost::none)
             , displayIndex_(0)
             , selectionDisplayIndex_(0)
             , selectionOffsetIndex_(0)
@@ -62,12 +65,13 @@ namespace sfml_util
         {
             Setup(
                 REGION,
-                ITEM_VEC,
                 ISTAGE_PTR_OPT,
-                BETWEEN_PAD,
                 BOX_INFO,
                 LINE_COLOR,
-                callbackPtrOpt_);
+                CALLBACK_PTR_OPT,
+                IMAGE_COLOR,
+                HIGHLIGHT_COLOR,
+                BETWEEN_PAD);
         }
 
         ListBox::~ListBox()
@@ -88,23 +92,33 @@ namespace sfml_util
 
         void ListBox::Setup(
             const sf::FloatRect & REGION,
-            const ListBoxItemSVec_t & ITEM_VEC,
             const IStagePtrOpt_t ISTAGE_PTR_OPT,
-            const float BETWEEN_PAD,
             const box::Info & BOX_INFO,
             const sf::Color & LINE_COLOR,
-            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT)
+            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT,
+            const sf::Color & IMAGE_COLOR,
+            const sf::Color & HIGHLIGHT_COLOR,
+            const float BETWEEN_PAD)
         {
             SetEntityRegion(REGION);
 
-            ResetItemHeight();
+            ResetItemSize();
 
             items_.clear();
-            items_ = ITEM_VEC;
             stagePtrOpt_ = ISTAGE_PTR_OPT;
             betweenPadVert_ = BETWEEN_PAD;
             lineColor_ = LINE_COLOR;
             callbackPtrOpt_ = CALLBACK_PTR_OPT;
+            imageColor_ = IMAGE_COLOR;
+
+            highlightColor_
+                = ((HIGHLIGHT_COLOR == NO_COLOR_)
+                       ? (BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20))
+                       : HIGHLIGHT_COLOR);
+
+            betweenPadVert_
+                = ((BETWEEN_PAD < 0.0f) ? sfml_util::ScreenRatioToPixelsVert(0.00667f)
+                                        : BETWEEN_PAD);
 
             if (!boxUPtr_)
             {
@@ -179,8 +193,8 @@ namespace sfml_util
 
                 for (std::size_t i(displayIndex_); i <= LAST_INDEX_TO_DRAW; ++i)
                 {
-                    auto const ITEM_SPTR{ items_.at(i) };
-                    auto const ITEM_RECT{ FullItemRect(ITEM_SPTR) };
+                    auto const ITEM_PTR{ ListBoxItemPtr_t(items_.at(i).get()) };
+                    auto const ITEM_RECT{ FullItemRect(ITEM_PTR) };
 
                     if (SELECTION_INDEX == i)
                     {
@@ -188,9 +202,9 @@ namespace sfml_util
                             target, states, ITEM_RECT, sf::Color::Transparent, 0, highlightColor_);
                     }
 
-                    target.draw(*ITEM_SPTR, states);
+                    target.draw(*ITEM_PTR, states);
 
-                    if (ITEM_SPTR->IsValid() == false)
+                    if (ITEM_PTR->IsValid() == false)
                     {
                         sfml_util::DrawRectangle<float>(
                             target,
@@ -225,30 +239,30 @@ namespace sfml_util
             }
         }
 
-        ListBoxItemSPtr_t ListBox::AtPos(const sf::Vector2f & POS_V)
+        ListBoxItemPtrOpt_t ListBox::AtPos(const sf::Vector2f & POS_V)
         {
-            for (auto const & NEXT_ITEM_SPTR : items_)
+            for (auto const & NEXT_ITEM_UPTR : items_)
             {
-                if (NEXT_ITEM_SPTR->GetEntityWillDraw()
-                    && IsPosWithinItemRegion(POS_V, NEXT_ITEM_SPTR))
+                if (NEXT_ITEM_UPTR->GetEntityWillDraw()
+                    && IsPosWithinItemRegion(POS_V, NEXT_ITEM_UPTR.get()))
                 {
-                    return NEXT_ITEM_SPTR;
+                    return ListBoxItemPtr_t(NEXT_ITEM_UPTR.get());
                 }
             }
 
-            return ListBoxItemSPtr_t();
+            return boost::none;
         }
 
-        const ListBoxItemSPtr_t ListBox::Selected() const
+        const ListBoxItemPtrOpt_t ListBox::Selected() const
         {
             auto const INDEX{ SelectedIndex() };
             if (INDEX < items_.size())
             {
-                return items_[INDEX];
+                return ListBoxItemPtr_t(items_[INDEX].get());
             }
             else
             {
-                return ListBoxItemSPtr_t();
+                return boost::none;
             }
         }
 
@@ -320,21 +334,36 @@ namespace sfml_util
             SetupForDraw();
         }
 
-        void ListBox::Add(const ListBoxItemSPtr_t & ITEM_SPTR)
+        ListBoxItemPtr_t ListBox::At(const std::size_t INDEX)
         {
-            items_.emplace_back(ITEM_SPTR);
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (INDEX < items_.size()),
+                "sfml_util::gui::ListBox::At("
+                    << INDEX << ")(listbox_name=" << GetEntityName()
+                    << ") but that index is out of bounds.  Actual size is " << items_.size() - 1
+                    << ".");
+
+            return ListBoxItemPtr_t(items_[INDEX].get());
+        }
+
+        void ListBox::Add(ListBoxItemUPtr_t itemUPtr)
+        {
+            items_.emplace_back(std::move(itemUPtr));
 
             if (items_.size() == 1)
             {
-                ResetItemHeight();
+                ResetItemSize();
             }
 
             SetupForDraw();
         }
 
-        bool ListBox::Remove(const ListBoxItemSPtr_t & ITEM_SPTR)
+        bool ListBox::Remove(const ListBoxItemPtr_t ITEM_PTR)
         {
-            auto const FOUND_ITR{ std::find(items_.begin(), items_.end(), ITEM_SPTR) };
+            auto const FOUND_ITR{ std::find_if(
+                items_.begin(), items_.end(), [&](auto const & UPTR) {
+                    return (UPTR.get() == ITEM_PTR);
+                }) };
 
             if (FOUND_ITR == items_.end())
             {
@@ -354,24 +383,44 @@ namespace sfml_util
             }
         }
 
+        bool ListBox::RemoveSelected()
+        {
+            auto const SELECTED_PTR_OPT{ Selected() };
+
+            if (SELECTED_PTR_OPT)
+            {
+                return Remove(SELECTED_PTR_OPT.value());
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        void ListBox::Clear() { items_.clear(); }
+
+        std::size_t ListBox::Size() const { return items_.size(); }
+
+        bool ListBox::Empty() const { return items_.empty(); }
+
         bool ListBox::MouseUp(const sf::Vector2f & MOUSE_POS_V)
         {
             auto const DID_STATE_CHANGE{ GuiEntity::MouseUp(MOUSE_POS_V) };
 
-            auto const ORIG_SELECTED_ITEM_SPTR{ Selected() };
+            auto const ORIG_SELECTED_ITEM_PTR_OPT{ Selected() };
 
             auto const NUM_ITEMS{ items_.size() };
             for (std::size_t i(displayIndex_); i < NUM_ITEMS; ++i)
             {
-                auto const ITEM_SPTR{ items_[i] };
+                auto const ITEM_PTR{ ListBoxItemPtr_t(items_[i].get()) };
 
-                if (ITEM_SPTR->GetEntityWillDraw() == false)
+                if (ITEM_PTR->GetEntityWillDraw() == false)
                 {
                     break;
                 }
 
-                if (IsPosWithinItemRegion(MOUSE_POS_V, ITEM_SPTR)
-                    && (ORIG_SELECTED_ITEM_SPTR != ITEM_SPTR))
+                if (IsPosWithinItemRegion(MOUSE_POS_V, ITEM_PTR)
+                    && (ORIG_SELECTED_ITEM_PTR_OPT != ITEM_PTR))
                 {
                     SelectedIndex(i);
 
@@ -454,15 +503,6 @@ namespace sfml_util
             GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
         }
 
-        void ListBox::Items(const ListBoxItemSVec_t & NEW_ITEMS_VEC)
-        {
-            items_ = NEW_ITEMS_VEC;
-            DisplayIndex(0);
-            SelectedIndex(0);
-            sliderbarUPtr_->SetCurrentValue(0.0f);
-            SetupForDraw();
-        }
-
         bool ListBox::SelectPrev()
         {
             if (selectionOffsetIndex_ > 0)
@@ -503,24 +543,40 @@ namespace sfml_util
             }
         }
 
-        const sf::FloatRect ListBox::FullItemRect(const ListBoxItemSPtr_t & ITEM_SPTR) const
+        const sf::FloatRect ListBox::FullItemRect(const ListBoxItemPtr_t ITEM_PTR) const
         {
-            sf::FloatRect rect(ITEM_SPTR->GetEntityRegion());
+            sf::FloatRect rect(ITEM_PTR->GetEntityRegion());
 
             rect.left -= HORIZ_PAD_;
 
-            if (ITEM_SPTR->HasImage())
+            if (ITEM_PTR->HasImage())
             {
                 rect.left -= (itemSizeV_.y + HORIZ_PAD_);
             }
 
-            rect.top = ITEM_SPTR->GetEntityRegion().top
-                + ((itemSizeV_.y - ITEM_SPTR->GetEntityRegion().height) * 0.5f);
+            rect.top = ITEM_PTR->GetEntityRegion().top
+                + ((itemSizeV_.y - ITEM_PTR->GetEntityRegion().height) * 0.5f);
 
             rect.width = itemSizeV_.x;
             rect.height = itemSizeV_.y;
 
             return rect;
+        }
+
+        void ListBox::MoveItemToOtherListBox(
+            const std::size_t ITEM_TO_MOVE_INDEX, ListBox & otherListBox)
+        {
+            if (ITEM_TO_MOVE_INDEX < items_.size())
+            {
+                ListBoxItemPtr_t itemToMovePtr{ items_.at(ITEM_TO_MOVE_INDEX).get() };
+
+                ListBoxItemFactory listBoxItemFactory;
+
+                otherListBox.Add(
+                    listBoxItemFactory.MakeCopy(otherListBox.GetEntityName(), itemToMovePtr));
+
+                Remove(itemToMovePtr);
+            }
         }
 
         std::size_t ListBox::CalcGreatestFirstDisplayedIndex() const
@@ -682,16 +738,36 @@ namespace sfml_util
         }
 
         bool ListBox::IsPosWithinItemRegion(
-            const sf::Vector2f & POS_V, const ListBoxItemSPtr_t & ITEM_SPTR) const
+            const sf::Vector2f & POS_V, const ListBoxItemPtr_t ITEM_PTR) const
         {
-            return FullItemRect(ITEM_SPTR).contains(POS_V);
+            return FullItemRect(ITEM_PTR).contains(POS_V);
         }
 
-        void ListBox::ResetItemHeight()
+        void ListBox::ResetItemSize()
         {
-            itemSizeV_.y
-                = ((items_.empty()) ? sfml_util::ScreenRatioToPixelsVert(0.04f)
-                                    : items_.at(0)->GetEntityRegion().height);
+            itemSizeV_.x = GetEntityRegion().width;
+
+            if (items_.empty())
+            {
+                itemSizeV_.y = sfml_util::ScreenRatioToPixelsVert(0.04f);
+            }
+            else
+            {
+                // find and use the tallest item
+                auto tallestItemHeight{ items_.front()->GetEntityRegion().height };
+
+                for (auto const & LISTBOX_ITEM_UPTR : items_)
+                {
+                    auto const ITEM_HEIGHT{ LISTBOX_ITEM_UPTR->GetEntityRegion().height };
+
+                    if (ITEM_HEIGHT > tallestItemHeight)
+                    {
+                        tallestItemHeight = ITEM_HEIGHT;
+                    }
+                }
+
+                itemSizeV_.y = tallestItemHeight;
+            }
         }
 
     } // namespace gui

@@ -10,8 +10,7 @@
 // animation-single.hpp
 //
 #include "sfml-util/animation-base.hpp"
-#include "sfml-util/animation-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 
 #include <vector>
 
@@ -59,6 +58,7 @@ namespace sfml_util
         const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
+        CachedTexture cachedTexture_;
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
 

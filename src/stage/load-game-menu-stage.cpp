@@ -22,6 +22,7 @@
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
@@ -132,44 +133,6 @@ namespace stage
         sf::FloatRect GS_LB_RECT(
             gsListBoxPosLeft_, gsListBoxPosTop_, gsListBoxPosWidth_, gsListBoxPosHeight_);
 
-        // hand all GameState objects to the ListBox
-        // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
-        // function that doesn't actually load every game but a vector of profiles to use instead.
-        gamestatePVec_ = game::GameStateFactory::Instance()->LoadAllGames();
-        sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
-        std::size_t gameStateCount(0);
-
-        for (auto const & NEXT_GAMESTATE_PTR : gamestatePVec_)
-        {
-            std::ostringstream ss;
-            ss << "Started "
-               /*TODO MAP NAME INSTEAD OF STARTED DATE*/
-               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.year << "-"
-               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.month << "-"
-               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.day << ", Saved "
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.year << "-"
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.month << "-"
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.day << "  "
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.hours << ":"
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
-               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
-
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
-                28,
-                sf::Color::White,
-                sfml_util::Justified::Left);
-
-            ss.str("");
-            ss << ++gameStateCount;
-
-            auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                ss.str(), TEXT_INFO, NEXT_GAMESTATE_PTR);
-
-            listBoxItemSVec.emplace_back(LBI_SPTR);
-        }
-
         // establish the boxing options
         auto const BG_COLOR{ sfml_util::FontManager::Color_Orange()
                              - sf::Color(100, 100, 100, 220) };
@@ -192,12 +155,33 @@ namespace stage
         gsListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "GameStateToLoad",
             GS_LB_RECT,
-            listBoxItemSVec,
             sfml_util::IStagePtr_t(this),
-            6.0f,
             BOX_INFO,
             sfml_util::FontManager::Color_Orange(),
             sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+
+        // hand all GameState objects to the ListBox
+        // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
+        // function that doesn't actually load every game but a vector of profiles to use instead.
+        gamestatePVec_ = game::GameStateFactory::Instance()->LoadAllGames();
+
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+        for (auto const & GAMESTATE_PTR : gamestatePVec_)
+        {
+            std::ostringstream ss;
+            ss << "Last Saved " << GAMESTATE_PTR->DateTimeOfLastSave().date.year << "-"
+               << GAMESTATE_PTR->DateTimeOfLastSave().date.month << "-"
+               << GAMESTATE_PTR->DateTimeOfLastSave().date.day << "  "
+               << GAMESTATE_PTR->DateTimeOfLastSave().time.hours << ":"
+               << GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
+               << GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
+
+            const sfml_util::gui::TextInfo TEXT_INFO(
+                ss.str(), sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System));
+
+            gsListBoxUPtr_->Add(
+                listBoxItemFactory.Make(gsListBoxUPtr_->GetEntityName(), TEXT_INFO, GAMESTATE_PTR));
+        }
 
         EntityAdd(gsListBoxUPtr_.get());
 
@@ -214,27 +198,18 @@ namespace stage
 
         charTextRegionUVec_.clear();
 
-        // establish which item is selected and get the player list from that
-        // GameState's Party object
-        if (gsListBoxUPtr_->Empty())
+        auto const SELECTED_ITEM_PTR_OPT{ gsListBoxUPtr_->Selected() };
+        if (!SELECTED_ITEM_PTR_OPT | !SELECTED_ITEM_PTR_OPT.value()->GameStatePtrOpt())
         {
             return;
         }
 
-        auto listBoxItemSPtr{ gsListBoxUPtr_->Selected() };
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (listBoxItemSPtr),
-            "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
-                << " returned a nullptr.");
-
-        auto const GAMESTATE_PTR{ listBoxItemSPtr->GameStatePtrOpt().value() };
+        auto const GAMESTATE_PTR{ SELECTED_ITEM_PTR_OPT.value()->GameStatePtrOpt().value() };
 
         sfml_util::gui::TextInfo descTextInfo(
             "",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
-            26,
-            sf::Color::White,
-            sfml_util::Justified::Left);
+            sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
         auto const CHAR_LIST_POS_LEFT{ gsListBoxPosLeft_ + gsListBoxPosWidth_ + 75.0f };
@@ -244,7 +219,6 @@ namespace stage
         if (!locTextRegionUPtr_)
         {
             locTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
-
             EntityAdd(locTextRegionUPtr_.get());
         }
 

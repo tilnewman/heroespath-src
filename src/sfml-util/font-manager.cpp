@@ -14,10 +14,10 @@
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
 {
@@ -64,7 +64,7 @@ namespace sfml_util
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): FontManager");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: FontManager");
             Acquire();
         }
 
@@ -122,7 +122,8 @@ namespace sfml_util
         {
             auto & fontUPtr{ GetFontRef(FONT) };
             fontUPtr = std::make_unique<sf::Font>();
-            sfml_util::Loaders::Font(*fontUPtr, fontsDirPathStr_ + "/" + Font::Path(FONT));
+            sfml_util::Loaders::Font(
+                *fontUPtr, misc::filesystem::CompletePath(fontsDirPathStr_, Font::Path(FONT)));
         }
     }
 

@@ -152,17 +152,15 @@ namespace misc
 
         void Reserve(const std::size_t NEW_CAPACITY) { pairs_.reserve(NEW_CAPACITY); }
 
-        void Sort() { std::sort(std::begin(pairs_), std::end(pairs_)); }
+        iterator begin() noexcept { return std::begin(pairs_); }
+        iterator end() noexcept { return std::end(pairs_); }
+        Pair_t & Front() { return pairs_.front(); }
+        Pair_t & Back() { return pairs_.back(); }
 
-        iterator begin() { return std::begin(pairs_); }
-        iterator end() { return std::end(pairs_); }
-        iterator front() { return pairs_.front(); }
-        iterator back() { return pairs_.back(); }
-
-        const const_iterator begin() const { return std::begin(pairs_); }
-        const const_iterator end() const { return std::end(pairs_); }
-        const const_iterator front() const { return pairs_.front(); }
-        const const_iterator back() const { return pairs_.back(); }
+        const const_iterator begin() const noexcept { return std::begin(pairs_); }
+        const const_iterator end() const noexcept { return std::end(pairs_); }
+        const Pair_t & Front() const { return pairs_.front(); }
+        const Pair_t & Back() const { return pairs_.back(); }
 
         // clang-format off
         friend bool
@@ -185,27 +183,27 @@ namespace misc
     };
 
     template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm)
+    typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm) noexcept
     {
         return cpm.begin();
     }
 
     template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm)
+    typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm) noexcept
     {
         return cpm.end();
     }
 
     template <typename Key_t, typename Value_t>
     const typename VectorMap<Key_t, Value_t>::const_iterator
-        begin(const VectorMap<Key_t, Value_t> & CPM)
+        begin(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.begin();
     }
 
     template <typename Key_t, typename Value_t>
     const typename VectorMap<Key_t, Value_t>::const_iterator
-        end(const VectorMap<Key_t, Value_t> & CPM)
+        end(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.end();
     }

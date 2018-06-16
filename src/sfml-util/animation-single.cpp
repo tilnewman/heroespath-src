@@ -11,12 +11,9 @@
 //
 #include "animation-single.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/texture-cache.hpp"
-
 #include "game/game-data-file.hpp"
-
 #include "misc/real.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
 {
@@ -31,56 +28,74 @@ namespace sfml_util
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
         : Animation(ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO)
-        , sprite_()
-        , origSizeV_(0.0f, 0.0f)
+        , cachedTexture_(sfml_util::Animations::MediaPathKey(ENUM))
+        , sprite_(cachedTexture_.Get())
+        , origSizeV_(sfml_util::Animations::SizePair(ENUM))
         , rects_()
     {
-        auto const FRAME_SIZE_INT_PAIR{ sfml_util::Animations::SizePair(ENUM) };
-        origSizeV_.x = static_cast<float>(FRAME_SIZE_INT_PAIR.first);
-        origSizeV_.y = static_cast<float>(FRAME_SIZE_INT_PAIR.second);
-
         entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
         entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
 
-        auto const TEXTURE_ID_NUM{ TextureCache::Instance()->AddByPath(
-            game::GameDataFile::Instance()->GetMediaPath(sfml_util::Animations::MediaPathKey(ENUM)),
-            true) };
-
-        sprite_.setTexture(TextureCache::Instance()->GetByIndex(TEXTURE_ID_NUM));
         sprite_.setPosition(entityRegion_.left, entityRegion_.top);
         sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
         sprite_.setColor(colorFrom_);
 
-        auto const TEXTURE_WIDTH{ static_cast<int>(sprite_.getLocalBounds().width) };
-        auto const TEXTURE_HEIGHT{ static_cast<int>(sprite_.getLocalBounds().height) };
+        auto const TEXTURE_SIZE_V{ sfml_util::ConvertVector<unsigned, int>(
+            cachedTexture_.Get().getSize()) };
 
-        int posX(0);
-        int posY(0);
+        auto const FRAME_SIZE_V{ sfml_util::ConvertVector<float, int>(origSizeV_) };
 
-        while (posY < (TEXTURE_HEIGHT - FRAME_SIZE_INT_PAIR.first))
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((TEXTURE_SIZE_V.x >= FRAME_SIZE_V.x) && (TEXTURE_SIZE_V.y >= FRAME_SIZE_V.y)),
+            "sfml_util::AnimationSingleTexture::Constructor(enum="
+                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
+                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
+                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
+                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
+                << ") failed because the frame size was bigger than the image size. (image_size="
+                << sfml_util::VectorToString(TEXTURE_SIZE_V)
+                << ", frame_size=" << sfml_util::VectorToString(FRAME_SIZE_V) << ")");
+
+        sf::Vector2i posV{ 0, 0 };
+        while (posV.y < TEXTURE_SIZE_V.y)
         {
-            if (rects_.empty() == false)
+            while (posV.x < TEXTURE_SIZE_V.x)
             {
-                posY += FRAME_SIZE_INT_PAIR.second;
-            }
-
-            while (posX < (TEXTURE_WIDTH - FRAME_SIZE_INT_PAIR.first))
-            {
-                if (rects_.empty() == false)
-                {
-                    posX += FRAME_SIZE_INT_PAIR.first;
-                }
-
-                rects_.emplace_back(
-                    sf::IntRect(posX, posY, FRAME_SIZE_INT_PAIR.first, FRAME_SIZE_INT_PAIR.second));
+                rects_.emplace_back(sf::IntRect(posV, FRAME_SIZE_V));
+                posV.x += FRAME_SIZE_V.x;
             };
 
-            posX = 0;
+            posV.x = 0;
+            posV.y += FRAME_SIZE_V.y;
         };
+
+        auto const CALCULATED_FRAME_COUNT_EXPECTED{ static_cast<std::size_t>(
+            (TEXTURE_SIZE_V.x / FRAME_SIZE_V.x) * (TEXTURE_SIZE_V.y / FRAME_SIZE_V.y)) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (CALCULATED_FRAME_COUNT_EXPECTED == rects_.size()),
+            "sfml_util::AnimationSingleTexture::Constructor(enum="
+                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
+                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
+                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
+                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
+                << ") Failed to create the expected number "
+                   "of frames. (image_size="
+                << sfml_util::VectorToString(TEXTURE_SIZE_V) << ", frame_size="
+                << sfml_util::VectorToString(FRAME_SIZE_V) << ")  (actual=" << rects_.size()
+                << ", expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (rects_.empty() == false),
-            "sfml_util::AnimationSingleTexture::Constructor() Failed to find any frame rects.");
+            "sfml_util::AnimationSingleTexture::Constructor(enum="
+                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
+                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
+                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
+                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
+                << ") Failed to create any frames. (image_size="
+                << sfml_util::VectorToString(TEXTURE_SIZE_V)
+                << ", frame_size=" << sfml_util::VectorToString(FRAME_SIZE_V)
+                << ")  (expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
 
         sprite_.setTextureRect(rects_[0]);
     }

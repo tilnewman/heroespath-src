@@ -498,11 +498,11 @@ namespace combat
         const float ITEM_IMAGE_SCALE_DEFAULT(sfml_util::MapByRes(ITEM_IMAGE_SCALE_MIN, 1.0f));
 
         // find total item list height with default scale per item image
-        sfml_util::gui::ItemImageLoader itemImageMachine;
+        sfml_util::gui::ItemImageLoader itemImageLoader;
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            itemImageMachine.Load(nextItemText.texture, nextItemText.item_ptr);
+            itemImageLoader.Load(nextItemText.texture, nextItemText.item_ptr);
             nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
 

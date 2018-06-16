@@ -475,9 +475,9 @@ namespace creature
             }
             case Troll:
             {
-                return { role::Berserker, role::Brute,     role::Chieftain,
-                         role::Grunt,     role::Mountain,  role::Shaman,
-                         role::Smasher,   role::Strangler, role::Warlord };
+                return { role::Berserker, role::Brute,    role::Chieftain, role::Grunt,
+                         role::Mountain,  role::Shaman,   role::Smasher,   role::Strangler,
+                         role::Warlord,   role::TwoHeaded };
             }
             case Orc:
             {

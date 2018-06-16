@@ -59,6 +59,7 @@ namespace sfml_util
         sf::Sprite titleSprite_;
         bool willDrawTitle_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

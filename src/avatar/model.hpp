@@ -66,8 +66,6 @@ namespace avatar
         void MovingIntoReset();
         const game::NpcPtrOpt_t MovingIntoUpdate(const float TIME_ELAPSED);
 
-        std::size_t ViewTextureIndex() const { return view_.TextureIndex(); }
-
         void SetIsNextToPlayer(
             const bool IS_NEXT_TO_PLAYER,
             const sf::Vector2f & PLAYER_POS_V,

@@ -13,6 +13,8 @@
 #include "misc/enum-util.hpp"
 #include "sfml-util/music-enum.hpp"
 
+#include <SFML/System/Vector2.hpp>
+
 #include <string>
 #include <utility> //for std::pair
 
@@ -61,7 +63,7 @@ namespace sfml_util
         static const std::string ToString(const Enum);
         static const std::string MediaPathKey(const Enum);
         static bool IsMultiTexture(const Enum);
-        static const std::pair<int, int> SizePair(const Enum);
+        static const sf::Vector2f SizePair(const Enum);
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
     };

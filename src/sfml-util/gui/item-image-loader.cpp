@@ -23,10 +23,7 @@
 #include "misc/enum-util.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
-
 #include "sfml-util/loaders.hpp"
-
-#include <boost/filesystem.hpp>
 
 #include <cctype>
 #include <exception>
@@ -64,11 +61,13 @@ namespace sfml_util
 
             const std::string TEST_PRE_STR{ "ItemImageLoader Test " };
 
-            static auto allFilenames{ misc::filesystem::FindFilesInDirectory(
-                imageDirectoryPath_,
-                "",
-                FILE_EXT_STR_,
-                misc::filesystem::FilenameText::TO_EXCLUDE_VEC_) };
+            static auto allPaths{ misc::filesystem::FindFilesInDirectory(
+                imageDirectoryPath_, "", FILE_EXT_STR_) };
+
+            for (auto & pathStr : allPaths)
+            {
+                boost::algorithm::to_lower(pathStr);
+            }
 
             static auto const WEAPON_TYPE_WRAPPERS{ weapon::WeaponTypeWrapper::MakeCompleteSet() };
 
@@ -77,7 +76,8 @@ namespace sfml_util
             {
                 auto const & WEAPON_TYPE_WRAPPER{ WEAPON_TYPE_WRAPPERS.at(weaponIndex) };
 
-                auto const FILENAME{ Filename(WEAPON_TYPE_WRAPPER, false) };
+                auto const FILENAME{ boost::algorithm::to_lower_copy(
+                    Filename(WEAPON_TYPE_WRAPPER, false)) };
 
                 sf::Texture texture;
                 Load(texture, FILENAME);
@@ -90,9 +90,12 @@ namespace sfml_util
 
                 EnsureValidDimmensions(texture, WEAPON_TYPE_WRAPPER.ReadableName());
 
-                allFilenames.erase(
-                    std::remove(std::begin(allFilenames), std::end(allFilenames), FILENAME),
-                    std::end(allFilenames));
+                allPaths.erase(
+                    std::remove(
+                        std::begin(allPaths),
+                        std::end(allPaths),
+                        boost::algorithm::to_lower_copy(Path(FILENAME))),
+                    std::end(allPaths));
 
                 ++weaponIndex;
                 return false;
@@ -105,10 +108,10 @@ namespace sfml_util
             {
                 auto const & ARMOR_TYPE_WRAPPER{ ARMOR_TYPE_WRAPPERS.at(armorIndex) };
 
-                auto const FILENAME{ Filename(ARMOR_TYPE_WRAPPER) };
+                auto const FILENAME{ boost::algorithm::to_lower_copy(
+                    Filename(ARMOR_TYPE_WRAPPER)) };
 
-                // skip testing skin images because we need creatures for that, and skin images will
-                // get tested when we test creature creation
+                // skip testing skin images until below
                 if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
                 {
                     sf::Texture texture;
@@ -121,93 +124,132 @@ namespace sfml_util
                         TEST_PRE_STR + ARMOR_TYPE_WRAPPER.ReadableName());
 
                     EnsureValidDimmensions(texture, ARMOR_TYPE_WRAPPER.ReadableName());
-                }
 
-                allFilenames.erase(
-                    std::remove(std::begin(allFilenames), std::end(allFilenames), FILENAME),
-                    std::end(allFilenames));
+                    allPaths.erase(
+                        std::remove(
+                            std::begin(allPaths),
+                            std::end(allPaths),
+                            boost::algorithm::to_lower_copy(Path(FILENAME))),
+                        std::end(allPaths));
+                }
 
                 ++armorIndex;
                 return false;
             }
 
+            static std::size_t skinIndex{ 0 };
+            if (skinIndex <= 2)
+            {
+                auto const MATERIAL_ENUM{ [&]() {
+                    // keep in sync with material::SkinMaterial()
+                    if (0 == skinIndex)
+                    {
+                        return material::Hide;
+                    }
+                    else if (1 == skinIndex)
+                    {
+                        return material::Plant;
+                    }
+                    else
+                    {
+                        return material::Scales;
+                    }
+                }() };
+
+                auto const FILENAME{ boost::algorithm::to_lower_copy(
+                    GetSkinImageFilename(MATERIAL_ENUM)) };
+
+                sf::Texture texture;
+                Load(texture, FILENAME);
+
+                game::LoopManager::Instance()->TestingImageSet(texture, true, "item", FILENAME);
+                game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR + FILENAME);
+                EnsureValidDimmensions(texture, FILENAME);
+
+                allPaths.erase(
+                    std::remove(
+                        std::begin(allPaths),
+                        std::end(allPaths),
+                        boost::algorithm::to_lower_copy(Path(FILENAME))),
+                    std::end(allPaths));
+
+                ++skinIndex;
+                return false;
+            }
+
             // test misc items
             static auto miscIndex{ 1 }; // start at 1 to avoid misc_type::Not
-            static auto isJeweled{ true };
-            static auto isBone{ false };
             if (miscIndex < static_cast<int>(misc_type::Count))
             {
-                auto const ENUM{ static_cast<misc_type::Enum>(miscIndex) };
+                static auto extrasIndex{ 0 };
 
-                // skip misc items that are weapons or armor because they will require a TypeWrapper
-                // object to construct the image filename, and will have already been tested by
-                // ItemFactory
-                if (misc_type::IsWeapon(ENUM) || misc_type::IsArmor(ENUM))
+                if (extrasIndex < 4)
                 {
-                    ++miscIndex;
-                    return false;
-                }
-
-                auto const ENUM_STR{ misc_type::ToString(ENUM) };
-                auto const FILENAMES_VEC = Filenames(ENUM, isJeweled, isBone);
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (FILENAMES_VEC.empty() == false),
-                    "sfml_util::gui::ItemImageLoader::Test() While testing misc item #"
-                        << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
-                        << isJeweled << ", Filenames() returned an empty vector.");
-
-                static std::size_t fileIndex{ 0 };
-                if (fileIndex < FILENAMES_VEC.size())
-                {
-                    auto const NEXT_FILENAME{ FILENAMES_VEC[fileIndex] };
+                    auto const IS_JEWELED{ ((1 == extrasIndex) || (3 == extrasIndex)) };
+                    auto const IS_BONE{ (extrasIndex >= 2) };
+                    auto const ENUM{ static_cast<misc_type::Enum>(miscIndex) };
+                    auto const ENUM_STR{ misc_type::ToString(ENUM) };
+                    auto const FILENAMES_VEC{ Filenames(ENUM, IS_JEWELED, IS_BONE) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (NEXT_FILENAME.empty() == false),
-                        "sfml_util::gui::ItemImageLoader::Test() (rand)  "
-                            << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
-                            << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
-                            << isJeweled << ", found an empty filename string.");
+                        (FILENAMES_VEC.empty() == false),
+                        "sfml_util::gui::ItemImageLoader::Test() While testing misc item #"
+                            << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
+                            << IS_JEWELED << ", Filenames() returned an empty vector.");
 
-                    std::ostringstream ss;
-                    ss << "ItemImageLoader Testing \"" << ENUM_STR << "\", file_index=" << fileIndex
-                       << " (" << ((isJeweled) ? "jeweled" : "not-jeweled") << ")";
+                    static std::size_t fileIndex{ 0 };
+                    if (fileIndex < FILENAMES_VEC.size())
+                    {
+                        auto const FILENAME{ boost::algorithm::to_lower_copy(
+                            FILENAMES_VEC[fileIndex]) };
 
-                    game::LoopManager::Instance()->TestingStrIncrement(ss.str());
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (FILENAME.empty() == false),
+                            "sfml_util::gui::ItemImageLoader::Test() (rand)  "
+                                << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
+                                << "\", filename #" << fileIndex
+                                << ", is_jeweled=" << std::boolalpha << IS_JEWELED
+                                << ", found an empty filename string.");
 
-                    sf::Texture texture;
-                    Load(texture, NEXT_FILENAME);
+                        std::ostringstream ss;
+                        ss << "ItemImageLoader Testing \"" << ENUM_STR
+                           << "\", file_index=" << fileIndex << " ("
+                           << ((IS_JEWELED) ? "jeweled" : "not-jeweled") << ")";
 
-                    game::LoopManager::Instance()->TestingImageSet(
-                        texture, true, "items/misc", ENUM_STR, NEXT_FILENAME);
+                        game::LoopManager::Instance()->TestingStrIncrement(ss.str());
 
-                    EnsureValidDimmensions(texture, ENUM_STR);
+                        sf::Texture texture;
+                        Load(texture, FILENAME);
 
-                    allFilenames.erase(
-                        std::remove(
-                            std::begin(allFilenames), std::end(allFilenames), NEXT_FILENAME),
-                        std::end(allFilenames));
+                        game::LoopManager::Instance()->TestingImageSet(
+                            texture, true, "items/misc", ENUM_STR, FILENAME);
 
-                    ++fileIndex;
+                        EnsureValidDimmensions(texture, ENUM_STR);
+
+                        allPaths.erase(
+                            std::remove(
+                                std::begin(allPaths),
+                                std::end(allPaths),
+                                boost::algorithm::to_lower_copy(Path(FILENAME))),
+                            std::end(allPaths));
+
+                        ++fileIndex;
+                        return false;
+                    }
+
+                    fileIndex = 0;
+                    ++extrasIndex;
                     return false;
                 }
 
-                if (false == isJeweled)
-                {
-                    isJeweled = true;
-                    return false;
-                }
-                else
-                {
-                    isJeweled = false;
-                }
-
-                fileIndex = 0;
+                extrasIndex = 0;
                 ++miscIndex;
                 return false;
             }
 
-            for (auto const & FILENAME : allFilenames)
+            std::sort(std::begin(allPaths), std::end(allPaths));
+
+            for (auto const & FILENAME : allPaths)
             {
                 M_HP_LOG_WRN(
                     "sfml_util::gui::ItemImageLoader::Test() found the following item image "
@@ -228,38 +270,42 @@ namespace sfml_util
 
         const std::string ItemImageLoader::Path(const item::ItemPtr_t ITEM_PTR) const
         {
-            return MakeFullPathFromFilename(ITEM_PTR->ImageFilename());
+            return Path(ITEM_PTR->ImageFilename());
+        }
+
+        const std::string ItemImageLoader::Path(const std::string & FILE_NAME) const
+        {
+            return MakeFullPathFromFilename(FILE_NAME);
         }
 
         const std::string ItemImageLoader::Filename(
             const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE) const
         {
-            // it is important to check for weapon/armor status first, because some misc_types are
-            // weapons/armor and their image filenames will not be correctly identified by the
-            // misc_type logic
-
-            if (ITEM_PTR->IsWeapon())
-            {
-                return Filename(ITEM_PTR->WeaponInfo(), ITEM_PTR->IsJeweled());
-            }
-            else if (ITEM_PTR->IsArmor())
-            {
-                if (ITEM_PTR->ArmorInfo().IsSkin())
-                {
-                    return GetSkinImageFilename(ITEM_PTR->MaterialPrimary());
-                }
-                else
-                {
-                    return Filename(ITEM_PTR->ArmorInfo());
-                }
-            }
-            else if (ITEM_PTR->IsMisc())
+            if (ITEM_PTR->IsMisc())
             {
                 return Filename(
                     ITEM_PTR->MiscType(),
                     ITEM_PTR->IsJeweled(),
                     (ITEM_PTR->MaterialPrimary() == item::material::Bone),
                     WILL_RANDOMIZE);
+            }
+            else
+            {
+                if (ITEM_PTR->IsWeapon())
+                {
+                    return Filename(ITEM_PTR->WeaponInfo(), ITEM_PTR->IsJeweled());
+                }
+                else if (ITEM_PTR->IsArmor())
+                {
+                    if (ITEM_PTR->ArmorInfo().IsSkin())
+                    {
+                        return GetSkinImageFilename(ITEM_PTR->MaterialPrimary());
+                    }
+                    else
+                    {
+                        return Filename(ITEM_PTR->ArmorInfo());
+                    }
+                }
             }
 
             std::ostringstream ss;
@@ -273,7 +319,12 @@ namespace sfml_util
 
         bool ItemImageLoader::DoesFileExist(const item::ItemPtr_t ITEM_PTR) const
         {
-            return misc::filesystem::DoesFileExist(ITEM_PTR->ImageFilename());
+            return DoesFileExist(ITEM_PTR->ImageFilename());
+        }
+
+        bool ItemImageLoader::DoesFileExist(const std::string & IMAGE_FILE_NAME) const
+        {
+            return misc::filesystem::DoesFileExist(MakeFullPathFromFilename(IMAGE_FILE_NAME));
         }
 
         const std::vector<std::string> ItemImageLoader::Filenames(
@@ -666,9 +717,7 @@ namespace sfml_util
         const std::string
             ItemImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
         {
-            namespace bfs = boost::filesystem;
-            const bfs::path PATH{ bfs::path(imageDirectoryPath_) / bfs::path(FILENAME) };
-            return PATH.string();
+            return misc::filesystem::CompletePath(imageDirectoryPath_, FILENAME);
         }
 
         void ItemImageLoader::EnsureValidDimmensions(

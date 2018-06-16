@@ -13,7 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
 #include <string>
@@ -29,15 +29,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("CreateCharacters")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("create_char_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "create_char_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("create_char_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "create_char_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -54,16 +54,16 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Resume")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("resume_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "resume_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("resume_button_lit.png"),
-                std::string(BUTTONS_PATH).append("resume_button_faded.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "resume_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "resume_button_faded.png"),
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
                 WILL_BOX,
@@ -79,13 +79,13 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("StartGame")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("startgame_button_faded.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "startgame_button_faded.png"),
                 "",
                 "",
                 "",
@@ -101,15 +101,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Settings")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("settings_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "settings_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("settings_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "settings_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -126,15 +126,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Credits")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("credits_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "credits_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("credits_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "credits_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -151,15 +151,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Exit")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("exit_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "exit_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("exit_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "exit_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -176,15 +176,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Back")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("back_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "back_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("back_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "back_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -201,15 +201,15 @@ namespace sfml_util
             const float POS_LEFT, const float POS_TOP, const float SCALE, const bool WILL_BOX)
             : FourStateButton("Delete")
         {
-            auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const BUTTONS_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
                 "media-images-buttons-mainmenu-dir") };
 
             FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
-                std::string(BUTTONS_PATH).append("delete_button_normal.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "delete_button_normal.png"),
                 "",
-                std::string(BUTTONS_PATH).append("delete_button_lit.png"),
+                misc::filesystem::CompletePath(BUTTONS_PATH_STR, "delete_button_lit.png"),
                 "",
                 sfml_util::gui::MouseTextInfo(),
                 sfml_util::gui::TextInfo(),
@@ -221,6 +221,7 @@ namespace sfml_util
         {
             game::LoopManager::Instance()->TransitionTo_Previous();
         }
+
     } // namespace main_menu_buttons
 } // namespace sfml_util
 } // namespace heroespath

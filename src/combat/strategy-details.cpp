@@ -10,8 +10,11 @@
 // strategy-details.cpp
 //
 #include "strategy-details.hpp"
+
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
+
+#include <algorithm>
 
 namespace heroespath
 {
@@ -278,7 +281,7 @@ namespace combat
             }
 
             // sorting only because it will make future lookups faster
-            raceRoleChancesMap_.Sort();
+            std::sort(std::begin(raceRoleChancesMap_), std::end(raceRoleChancesMap_));
         }
 
         const Chances CreatureStrategies::Get(

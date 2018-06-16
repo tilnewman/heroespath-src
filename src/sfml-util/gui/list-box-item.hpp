@@ -13,6 +13,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -65,10 +66,8 @@ namespace sfml_util
 {
     namespace gui
     {
-
-        class TextInfo;
-
-        // TextRegion wrapper for anything the ListBox class may need to list...
+        // Responsible for being a TextRegion with an extra data member for whatever the ListBox
+        // contains.
         class ListBoxItem : public sfml_util::gui::TextRegion
         {
         public:
@@ -76,8 +75,6 @@ namespace sfml_util
             ListBoxItem(ListBoxItem &&) = delete;
             ListBoxItem & operator=(const ListBoxItem &) = delete;
             ListBoxItem & operator=(ListBoxItem &&) = delete;
-
-            explicit ListBoxItem(const std::string & NAME, const bool IS_VALID = true);
 
             // used by the Combat Stage for a ListBox of text lines
             ListBoxItem(
@@ -148,9 +145,8 @@ namespace sfml_util
             const spell::SpellPtrOpt_t SpellPtrOpt() const { return spellPtrOpt_; }
             const song::SongPtrOpt_t SongPtrOpt() const { return songPtrOpt_; }
             bool IsValid() const { return isValid_; }
-            std::size_t TextureIndex() const { return textureIndex_; }
+            bool HasImage() const { return (!!cachedTextureOpt_); }
             sf::Sprite & Sprite() { return sprite_; }
-            bool HasImage() const { return (textureIndex_ != 0); }
 
             friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);
             friend bool operator<(const ListBoxItem & L, const ListBoxItem & R);
@@ -164,12 +160,14 @@ namespace sfml_util
             spell::SpellPtrOpt_t spellPtrOpt_;
             song::SongPtrOpt_t songPtrOpt_;
             bool isValid_;
-            std::size_t textureIndex_;
-            sf::Sprite sprite_;
+            CachedTextureOpt_t cachedTextureOpt_;
+            mutable sf::Sprite sprite_;
         };
 
-        using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
-        using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
+        using ListBoxItemPtr_t = misc::NotNull<ListBoxItem *>;
+        using ListBoxItemPtrOpt_t = boost::optional<ListBoxItemPtr_t>;
+        using ListBoxItemUPtr_t = std::unique_ptr<ListBoxItem>;
+        using ListBoxItemUVec_t = std::vector<ListBoxItemUPtr_t>;
 
         bool operator==(const ListBoxItem & L, const ListBoxItem & R);
 

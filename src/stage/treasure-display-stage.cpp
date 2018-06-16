@@ -22,6 +22,8 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/list-box-helpers.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
@@ -147,32 +149,44 @@ namespace stage
     {
         if (PACKAGE.PTR_ == treasureAlphaButtonUPtr_.get())
         {
-            SortByName(*treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
+            sfml_util::gui::listbox::SortByItemName(
+                *treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == treasureMoneyButtonUPtr_.get())
         {
-            SortByPrice(*treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
+            sfml_util::gui::listbox::SortByItemPrice(
+                *treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == treasureWeightButtonUPtr_.get())
         {
-            SortByWeight(*treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
+            sfml_util::gui::listbox::SortByItemWeight(
+                *treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryAlphaButtonUPtr_.get())
         {
-            SortByName(*inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
+            sfml_util::gui::listbox::SortByItemName(
+                *inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryMoneyButtonUPtr_.get())
         {
-            SortByPrice(*inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
+            sfml_util::gui::listbox::SortByItemPrice(
+                *inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryWeightButtonUPtr_.get())
         {
-            SortByWeight(*inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
+            sfml_util::gui::listbox::SortByItemWeight(
+                *inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
+
             return true;
         }
         else if (PACKAGE.PTR_ == takeAllButtonUPtr_.get())
@@ -867,25 +881,6 @@ namespace stage
         sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
         const item::ItemPVec_t & ITEMS_PVEC)
     {
-        sfml_util::gui::TextInfo listboxTextInfo(
-            " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
-            sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left);
-
-        sfml_util::gui::ListBoxItemSVec_t listboxItemsSVec;
-
-        for (auto const & ITEM_PTR : ITEMS_PVEC)
-        {
-            listboxTextInfo.text = ITEM_PTR->Name();
-
-            listboxItemsSVec.emplace_back(std::make_shared<sfml_util::gui::ListBoxItem>(
-                "TreasureDisplayStage_CharacterInventoryListboxItem_" + ITEM_PTR->Name(),
-                listboxTextInfo,
-                ITEM_PTR));
-        }
-
         auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(listboxUPtr) };
 
         treasure::ListboxColors listboxColors;
@@ -907,15 +902,26 @@ namespace stage
         listboxUPtr = std::make_unique<sfml_util::gui::ListBox>(
             "TreasureDisplayStage's_CharacterInventoryListBox",
             LISTBOX_REGION,
-            listboxItemsSVec,
             sfml_util::IStagePtr_t(this),
-            MEASUREMENTS.listboxItemSpacer,
             LISTBOX_BOXINFO,
             listboxColors.line,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
+            listboxColors.image);
 
-        listboxUPtr->SelectedIndex(0);
-        listboxUPtr->ImageColor(listboxColors.image);
+        sfml_util::gui::TextInfo textInfo(
+            "",
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayDarker());
+
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+        for (auto const & ITEM_PTR : ITEMS_PVEC)
+        {
+            textInfo.text = ITEM_PTR->Name();
+
+            listboxUPtr->Add(
+                listBoxItemFactory.Make(listboxUPtr->GetEntityName(), textInfo, ITEM_PTR));
+        }
 
         GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr.get());
     }
@@ -1275,29 +1281,27 @@ namespace stage
     const treasure::ItemDetailsOpt_t
         TreasureDisplayStage::MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const
     {
-        if ((treasureListboxUPtr_) && (inventoryListboxUPtr_))
+        if (treasureListboxUPtr_)
         {
-            if (treasureListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
-            {
-                auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
+            auto const SELECTED_ITEM_PTR_OPT{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
 
-                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
-                {
-                    return treasure::ItemDetails(
-                        treasureListboxUPtr_->FullItemRect(LISTBOX_ITEM_SPTR),
-                        LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
-                }
+            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
+            {
+                return treasure::ItemDetails(
+                    treasureListboxUPtr_->FullItemRect(SELECTED_ITEM_PTR_OPT.value()),
+                    SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value());
             }
-            else if (inventoryListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
-            {
-                auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
+        }
 
-                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ItemPtrOpt())
-                {
-                    return treasure::ItemDetails(
-                        inventoryListboxUPtr_->FullItemRect(LISTBOX_ITEM_SPTR),
-                        LISTBOX_ITEM_SPTR->ItemPtrOpt().value());
-                }
+        if (inventoryListboxUPtr_)
+        {
+            auto const SELECTED_ITEM_PTR_OPT{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
+
+            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
+            {
+                return treasure::ItemDetails(
+                    inventoryListboxUPtr_->FullItemRect(SELECTED_ITEM_PTR_OPT.value()),
+                    SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value());
             }
         }
 
@@ -1397,62 +1401,5 @@ namespace stage
         GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, sortButtonUPtr.get());
     }
 
-    void TreasureDisplayStage::SortByName(sfml_util::gui::ListBox & listbox, bool & isSortReversed)
-    {
-        auto vec{ listbox.Items() };
-
-        std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
-            if (isSortReversed)
-            {
-                return A->ItemPtrOpt()->Obj().Name() > B->ItemPtrOpt()->Obj().Name();
-            }
-            else
-            {
-                return A->ItemPtrOpt()->Obj().Name() < B->ItemPtrOpt()->Obj().Name();
-            }
-        });
-
-        listbox.Items(vec);
-        isSortReversed = !isSortReversed;
-    }
-
-    void TreasureDisplayStage::SortByPrice(sfml_util::gui::ListBox & listbox, bool & isSortReversed)
-    {
-        auto vec{ listbox.Items() };
-
-        std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
-            if (isSortReversed)
-            {
-                return A->ItemPtrOpt()->Obj().Price() > B->ItemPtrOpt()->Obj().Price();
-            }
-            else
-            {
-                return A->ItemPtrOpt()->Obj().Price() < B->ItemPtrOpt()->Obj().Price();
-            }
-        });
-
-        listbox.Items(vec);
-        isSortReversed = !isSortReversed;
-    }
-
-    void
-        TreasureDisplayStage::SortByWeight(sfml_util::gui::ListBox & listbox, bool & isSortReversed)
-    {
-        auto vec{ listbox.Items() };
-
-        std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
-            if (isSortReversed)
-            {
-                return A->ItemPtrOpt()->Obj().Weight() > B->ItemPtrOpt()->Obj().Weight();
-            }
-            else
-            {
-                return A->ItemPtrOpt()->Obj().Weight() < B->ItemPtrOpt()->Obj().Weight();
-            }
-        });
-
-        listbox.Items(vec);
-        isSortReversed = !isSortReversed;
-    }
 } // namespace stage
 } // namespace heroespath

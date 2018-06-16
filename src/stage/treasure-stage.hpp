@@ -81,7 +81,7 @@ namespace stage
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
             const item::ItemCache & CACHE_HELD, const item::ItemCache & CACHE_LOCKBOX);
 
-        void PromptUserBasedonTreasureAvailability(
+        void PromptUserBasedOnTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
         void SetupForCollectionWithoutLockbox();

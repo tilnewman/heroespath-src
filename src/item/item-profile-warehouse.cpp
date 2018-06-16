@@ -51,7 +51,8 @@ namespace item
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ItemProfileWarehouse");
+            M_HP_LOG_ERR(
+                "Subsystem Instance() called but instanceUPtr_ was null: ItemProfileWarehouse");
             Acquire();
         }
 

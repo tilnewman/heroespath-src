@@ -59,7 +59,8 @@ namespace game
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): GameStateFactory");
+            M_HP_LOG_ERR(
+                "Subsystem Instance() called but instanceUPtr_ was null: GameStateFactory");
             Acquire();
         }
 

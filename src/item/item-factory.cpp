@@ -177,11 +177,11 @@ namespace item
 
             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            sfml_util::gui::ItemImageLoader itemImageMachine;
+            sfml_util::gui::ItemImageLoader itemImageLoader;
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
-                auto const DOES_FILE_EXIST{ misc::filesystem::DoesFileExist(
+                auto const DOES_FILE_EXIST{ itemImageLoader.DoesFileExist(
                     FILENAME_PROFILE_PAIR.first) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(

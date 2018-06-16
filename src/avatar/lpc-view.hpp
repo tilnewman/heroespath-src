@@ -12,6 +12,7 @@
 #include "avatar/animation.hpp"
 #include "avatar/avatar-enum.hpp"
 #include "avatar/pose-enum.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -41,8 +42,6 @@ namespace avatar
         const sf::Sprite & SpriteRef() const { return sprite_; }
 
         Avatar::Enum WhichAvatar() const { return whichAvatar_; }
-
-        std::size_t TextureIndex() const { return textureIndex_; }
 
         const sf::Sprite DefaultPoseSprite() const;
 
@@ -77,7 +76,7 @@ namespace avatar
         static const float FRAME_DURATION_SEC_BLINK_MAX_;
 
         Avatar::Enum whichAvatar_;
-        std::size_t textureIndex_;
+        sfml_util::CachedTexture cachedTexture_;
 
         // note that sprite_.getPosition() does not hold the actual top-left corner position of the
         // sprite, instead this holds the centered map coordinates position, see

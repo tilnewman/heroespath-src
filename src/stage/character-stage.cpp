@@ -242,15 +242,15 @@ namespace stage
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
             && popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
         {
-            game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::MainMenu);
+            game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::Menu);
             return true;
         }
         else if (
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
             && popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
         {
-            game::LoopManager::Instance()->SetTransitionBeforeFade(
-                sfml_util::LoopState::PartyCreation);
+            game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::Party);
+
             return true;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_1_)

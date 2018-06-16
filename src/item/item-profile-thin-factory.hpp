@@ -17,7 +17,6 @@ namespace item
 {
 
     // Responsible for creating thin profiles of items.
-    // This struct follows the Machine pattern.
     struct ItemProfileThinFactory
     {
         const ItemProfileThinVec_t MakeAllWeapons() const;

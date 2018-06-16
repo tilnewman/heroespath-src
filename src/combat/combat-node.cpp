@@ -327,11 +327,11 @@ namespace combat
         {
             if (!wingTextureUPtr_)
             {
-                sfml_util::gui::CombatImageLoader combatImageMachine;
+                sfml_util::gui::CombatImageLoader combatImageLoader;
 
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
 
-                combatImageMachine.Load(
+                combatImageLoader.Load(
                     *wingTextureUPtr_,
                     sfml_util::gui::CombatImageType::Wing,
                     ((!isPlayer_) ? sfml_util::gui::image::Flip::Yes

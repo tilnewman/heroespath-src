@@ -16,6 +16,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <algorithm>
 #include <cctype>
 #include <sstream>
 
@@ -206,7 +207,7 @@ namespace misc
 
             filePaths.clear();
 
-            numberToStrMap.Sort();
+            std::sort(std::begin(numberToStrMap), std::end(numberToStrMap));
 
             for (auto const & NUM_STR_PAIR : numberToStrMap)
             {
@@ -285,6 +286,25 @@ namespace misc
             }
 
             return false;
+        }
+
+        const std::string
+            CompletePath(const std::string & DIR_PATH_STR, const std::string & FILE_NAME)
+        {
+            return CompletePath(bfs::path(DIR_PATH_STR), bfs::path(FILE_NAME)).string();
+        }
+
+        const std::string
+            CompletePath(const boost::filesystem::path & DIR_PATH, const std::string & FILE_NAME)
+        {
+            return CompletePath(DIR_PATH, bfs::path(FILE_NAME)).string();
+        }
+
+        const boost::filesystem::path CompletePath(
+            const boost::filesystem::path & DIR_PATH,
+            const boost::filesystem::path & RELATIVE_FILE_PATH)
+        {
+            return MakePathPretty(DIR_PATH / RELATIVE_FILE_PATH);
         }
 
     } // namespace filesystem

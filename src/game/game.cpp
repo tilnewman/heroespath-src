@@ -40,7 +40,7 @@ namespace game
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Game");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Game");
             Acquire();
         }
 

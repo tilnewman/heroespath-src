@@ -126,6 +126,8 @@ namespace sfml_util
 
             void Append(const TextRegion &);
 
+            const TextInfo GetTextInfo() const { return textInfoOrig_; }
+
         protected:
             void OnClick(const sf::Vector2f &) override {}
 

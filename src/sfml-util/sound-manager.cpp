@@ -55,7 +55,7 @@ namespace sfml_util
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): SoundManager");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: SoundManager");
             Acquire();
         }
 

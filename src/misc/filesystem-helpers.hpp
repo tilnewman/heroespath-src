@@ -78,6 +78,16 @@ namespace misc
             const std::vector<std::string> & MATCH_STRINGS,
             const bool IS_CASE_SENSITIVE);
 
+        const std::string CompletePath(
+            const std::string & DIR_PATH_STR, const std::string & RELATIVE_FILE_PATH_STR);
+
+        const std::string CompletePath(
+            const boost::filesystem::path & DIR_PATH, const std::string & RELATIVE_FILE_PATH_STR);
+
+        const boost::filesystem::path CompletePath(
+            const boost::filesystem::path & DIR_PATH,
+            const boost::filesystem::path & RELATIVE_FILE_PATH);
+
     } // namespace filesystem
 } // namespace misc
 } // namespace heroespath

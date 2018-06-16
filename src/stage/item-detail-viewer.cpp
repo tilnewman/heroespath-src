@@ -185,8 +185,8 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageLoader itemImageMachine;
-        itemImageMachine.Load(texture_, ITEM_PTR_OPT.value());
+        sfml_util::gui::ItemImageLoader itemImageLoader;
+        itemImageLoader.Load(texture_, ITEM_PTR_OPT.value());
 
         sprite_.setTexture(texture_, true);
 

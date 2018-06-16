@@ -45,6 +45,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
@@ -510,14 +511,14 @@ namespace stage
         statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "ComabtStage'sStatus",
             STATUS_REGION,
-            sfml_util::gui::ListBoxItemSVec_t(),
             sfml_util::IStagePtr_t(this),
-            0.0f,
             STATUS_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
+            sf::Color::White,
+            LISTBOX_HIGHLIGHT_COLOR_,
+            0.0f);
 
-        statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
         EntityAdd(statusBoxUPtr_.get());
 
         // command box
@@ -1821,17 +1822,17 @@ namespace stage
 
         statusBoxTextInfo_.text = ss.str();
 
-        statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
-            "CombatStageStatusMsg", statusBoxTextInfo_));
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+
+        statusBoxUPtr_->Add(
+            listBoxItemFactory.Make(statusBoxUPtr_->GetEntityName(), statusBoxTextInfo_));
 
         statusBoxUPtr_->SelectNext();
-
         MoveTurnBoxObjectsOffScreen();
         statusMsgAnimColorShaker_.Reset();
         statusMsgAnimColorShaker_.Start();
         statusMsgAnimTimerSec_ = 0.0f;
         combatDisplayStagePtr_->SetIsStatusMessageAnimating(true);
-
         willClrShkInitStatusMsg_ = true;
     }
 
@@ -1839,8 +1840,10 @@ namespace stage
     {
         statusBoxTextInfo_.text = MSG_STR;
 
-        statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
-            "CombatStageStatusMsg", statusBoxTextInfo_));
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+
+        statusBoxUPtr_->Add(
+            listBoxItemFactory.Make(statusBoxUPtr_->GetEntityName(), statusBoxTextInfo_));
 
         statusBoxUPtr_->SelectNext();
 

@@ -446,6 +446,13 @@ if (false == willImageCheck_)
         }
         */
 
+        static auto hasTestingCompleted_Maps{ false };
+        if (false == hasTestingCompleted_Maps)
+        {
+            hasTestingCompleted_Maps = TestMaps();
+            return;
+        }
+
         static auto hasTestingCompleted_ItemFactory{ false };
         if (false == hasTestingCompleted_ItemFactory)
         {
@@ -484,13 +491,6 @@ if (false == willImageCheck_)
         if (false == hasTestingCompleted_ImageSet)
         {
             hasTestingCompleted_ImageSet = TestImageSet();
-            return;
-        }
-
-        static auto hasTestingCompleted_Maps{ false };
-        if (false == hasTestingCompleted_Maps)
-        {
-            hasTestingCompleted_Maps = TestMaps();
             return;
         }
 

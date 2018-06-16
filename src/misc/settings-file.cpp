@@ -44,7 +44,7 @@ namespace misc
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): SettingsFile");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: SettingsFile");
             Acquire();
         }
 

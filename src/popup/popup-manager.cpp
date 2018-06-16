@@ -58,7 +58,7 @@ namespace popup
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): PopupManager");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: PopupManager");
             Acquire();
         }
 

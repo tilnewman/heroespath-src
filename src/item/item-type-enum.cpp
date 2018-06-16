@@ -1045,7 +1045,7 @@ namespace item
             }
             case NecklaceJeweledAnkh:
             {
-                return "Ankh Necklace ";
+                return "Ankh Necklace";
             }
             case NecklaceSharkTooth:
             {

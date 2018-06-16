@@ -89,7 +89,8 @@ namespace creature
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ChanceFactory");
+                M_HP_LOG_ERR(
+                    "Subsystem Instance() called but instanceUPtr_ was null: ChanceFactory");
                 Acquire();
             }
 

@@ -296,10 +296,6 @@ namespace stage
             sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
             sf::Sprite & sprite);
 
-        void SortByName(sfml_util::gui::ListBox &, bool & isSortReversed);
-        void SortByPrice(sfml_util::gui::ListBox &, bool & isSortReversed);
-        void SortByWeight(sfml_util::gui::ListBox &, bool & isSortReversed);
-
     private:
         const treasure::ItemDetailsOpt_t
             MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const;

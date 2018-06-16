@@ -330,129 +330,129 @@ namespace sfml_util
         }
     }
 
-    const std::pair<int, int> Animations::SizePair(const Enum E)
+    const sf::Vector2f Animations::SizePair(const Enum E)
     {
         switch (E)
         {
             case Burst:
             {
-                return std::make_pair(120, 120);
+                return sf::Vector2f(120.0f, 120.0f);
             }
             case Campfire:
             {
-                return std::make_pair(81, 64);
+                return sf::Vector2f(81.0f, 64.0f);
             }
             case CandleFlame:
             {
-                return std::make_pair(128, 128);
+                return sf::Vector2f(128.0f, 128.0f);
             }
             case CandleFlame2:
             {
-                return std::make_pair(16, 24);
+                return sf::Vector2f(16.0f, 24.0f);
             }
             case DualCharge:
             {
-                return std::make_pair(133, 169);
+                return sf::Vector2f(133.0f, 169.0f);
             }
             case DualSwirl:
             {
-                return std::make_pair(140, 140);
+                return sf::Vector2f(140.0f, 140.0f);
             }
             case ExplosionLarge:
             {
-                return std::make_pair(320, 240);
+                return sf::Vector2f(320.0f, 240.0f);
             }
             case ExplosionSmall:
             {
-                return std::make_pair(128, 128);
+                return sf::Vector2f(128.0f, 128.0f);
             }
             case ExplosionMedium1:
             {
-                return std::make_pair(100, 100);
+                return sf::Vector2f(100.0f, 100.0f);
             }
             case ExplosionMedium2:
             {
-                return std::make_pair(100, 100);
+                return sf::Vector2f(100.0f, 100.0f);
             }
             case ExplosionMedium3:
             {
-                return std::make_pair(100, 100);
+                return sf::Vector2f(100.0f, 100.0f);
             }
             case FireTorch:
             {
-                return std::make_pair(128, 256);
+                return sf::Vector2f(128.0f, 256.0f);
             }
             case Flash:
             {
-                return std::make_pair(128, 128);
+                return sf::Vector2f(128.0f, 128.0f);
             }
             case FlashSparkle:
             {
-                return std::make_pair(128, 128);
+                return sf::Vector2f(128.0f, 128.0f);
             }
             case Inferno:
             {
-                return std::make_pair(256, 256);
+                return sf::Vector2f(256.0f, 256.0f);
             }
             case LightningBall:
             {
-                return std::make_pair(56, 65);
+                return sf::Vector2f(56.0f, 65.0f);
             }
             case LightningBolt:
             {
-                return std::make_pair(98, 203);
+                return sf::Vector2f(98.0f, 203.0f);
             }
             case OrbCharge:
             {
-                return std::make_pair(80, 67);
+                return sf::Vector2f(80.0f, 67.0f);
             }
             case OrbShimmer:
             {
-                return std::make_pair(184, 85);
+                return sf::Vector2f(184.0f, 85.0f);
             }
             case Puff:
             {
-                return std::make_pair(80, 80);
+                return sf::Vector2f(80.0f, 80.0f);
             }
             case PuffShort:
             {
-                return std::make_pair(100, 100);
+                return sf::Vector2f(100.0f, 100.0f);
             }
             case SelectSwirl:
             {
-                return std::make_pair(140, 140);
+                return sf::Vector2f(140.0f, 140.0f);
             }
             case Shimmer:
             {
-                return std::make_pair(186, 83);
+                return sf::Vector2f(186.0f, 83.0f);
             }
             case Smoke:
             {
-                return std::make_pair(164, 164);
+                return sf::Vector2f(164.0f, 164.0f);
             }
             case SmokeSwirl:
             {
-                return std::make_pair(256, 256);
+                return sf::Vector2f(256.0f, 256.0f);
             }
             case SpiderFlare:
             {
-                return std::make_pair(168, 148);
+                return sf::Vector2f(168.0f, 148.0f);
             }
             case SplashMagenta1:
             {
-                return std::make_pair(120, 120);
+                return sf::Vector2f(120.0f, 120.0f);
             }
             case SplashMagenta2:
             {
-                return std::make_pair(240, 240);
+                return sf::Vector2f(240.0f, 240.0f);
             }
             case SplashWhite:
             {
-                return std::make_pair(50, 47);
+                return sf::Vector2f(50.0f, 47.0f);
             }
             case SymbolReduce:
             {
-                return std::make_pair(177, 156);
+                return sf::Vector2f(177.0f, 156.0f);
             }
             case Count:
             default:

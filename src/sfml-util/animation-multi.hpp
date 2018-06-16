@@ -10,11 +10,8 @@
 // animation-multi.hpp
 //  An animation class sourced from multiples textures.
 //
-#include "animation-base.hpp"
-
-#include "misc/handy-types.hpp"
-
-#include <vector>
+#include "sfml-util/animation-base.hpp"
+#include "sfml-util/cached-texture.hpp"
 
 namespace heroespath
 {
@@ -51,7 +48,7 @@ namespace sfml_util
         // returns true if frame count wrapped around back to zero
         bool UpdateTime(const float SECONDS) override;
 
-        std::size_t FrameCount() const override { return textureIdVec_.size(); }
+        std::size_t FrameCount() const override { return cachedTextures_.Size(); }
 
         const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
@@ -60,11 +57,9 @@ namespace sfml_util
         const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
+        sfml_util::CachedTextures cachedTextures_;
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
-
-        // the size of this vec acts as a total frame count
-        misc::SizetVec_t textureIdVec_;
     };
 } // namespace sfml_util
 } // namespace heroespath

@@ -13,6 +13,7 @@
 
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "misc/platform.hpp"
 
 #include <memory>
@@ -39,7 +40,7 @@ namespace game
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): GameDataFile");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: GameDataFile");
             Acquire();
         }
 

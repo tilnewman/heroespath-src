@@ -90,7 +90,7 @@ namespace stage
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
-        sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
+        sfml_util::gui::ListBoxItemPtrOpt_t GetSelectedItemPtrOpt() const;
         const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;

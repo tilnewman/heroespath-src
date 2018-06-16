@@ -55,7 +55,7 @@ namespace game
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): LoopManager");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: LoopManager");
             Acquire();
         }
 
@@ -239,7 +239,7 @@ namespace game
         TransitionHelper(
             static_cast<TransOpt>(
                 TransOpt::MouseIgnore | TransOpt::MouseRestore | TransOpt::FinalExecute),
-            sfml_util::LoopState::MainMenu,
+            sfml_util::LoopState::Menu,
             std::make_shared<stage::LoopCmd_AddStage<stage::MainMenuStage>>(),
             sfml_util::music::Wind,
             sfml_util::music::Theme);
@@ -263,7 +263,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            sfml_util::LoopState::CharacterCreation,
+            sfml_util::LoopState::Character,
             std::make_shared<stage::LoopCmd_AddStage<stage::CharacterStage>>(),
             sfml_util::music::All,
             sfml_util::music::Wind);
@@ -274,7 +274,7 @@ namespace game
         TransitionHelper(
             static_cast<TransOpt>(
                 TransOpt::ClearQueue | TransOpt::MouseIgnore | TransOpt::MouseRestore),
-            sfml_util::LoopState::PartyCreation,
+            sfml_util::LoopState::Party,
             std::make_shared<stage::LoopCmd_AddStage<stage::PartyStage>>(),
             sfml_util::music::All,
             sfml_util::music::PartyCreation);
@@ -323,7 +323,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            sfml_util::LoopState::LoadGameMenu,
+            sfml_util::LoopState::Load,
             std::make_shared<stage::LoopCmd_AddStage<stage::LoadGameStage>>());
     }
 
@@ -521,7 +521,7 @@ namespace game
                 TransitionTo_Settings();
                 break;
             }
-            case sfml_util::LoopState::MainMenu:
+            case sfml_util::LoopState::Menu:
             {
                 TransitionTo_MainMenu();
                 break;
@@ -541,7 +541,7 @@ namespace game
                 TransitionTo_Credits();
                 break;
             }
-            case sfml_util::LoopState::PartyCreation:
+            case sfml_util::LoopState::Party:
             {
                 TransitionTo_PartyCreation();
                 break;
@@ -551,12 +551,12 @@ namespace game
                 TransitionTo_Camp();
                 break;
             }
-            case sfml_util::LoopState::LoadGameMenu:
+            case sfml_util::LoopState::Load:
             {
                 TransitionTo_LoadGameMenu();
                 break;
             }
-            case sfml_util::LoopState::CharacterCreation:
+            case sfml_util::LoopState::Character:
             {
                 TransitionTo_CharacterCreation();
                 break;

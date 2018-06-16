@@ -16,6 +16,7 @@
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/gui/list-box-item-factory.hpp"
 #include "sfml-util/gui/song-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "song/song.hpp"
@@ -53,24 +54,16 @@ namespace popup
         , LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190))
         , LISTBOX_LINE_COLOR_(sfml_util::FontManager::Color_GrayDark())
         , LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_)
-        ,
-
-        LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
-        ,
-
-        LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
+        , LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
         , LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_)
-        ,
-
-        listBoxItemTextInfo_(
-            " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
-            sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left)
-        ,
-
-        imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
+        , listBoxItemTextInfo_(
+              " ",
+              sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+              sfml_util::FontManager::Instance()->Size_Smallish(),
+              sfml_util::FontManager::Color_GrayDarker(),
+              sfml_util::Justified::Left)
+        , imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
         , currentSongIndex_(0)
     {}
@@ -80,8 +73,8 @@ namespace popup
     bool PopupStageMusicSheet::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        if ((PACKAGE.package.PTR_ == nullptr) || (PACKAGE.package.PTR_->Selected() == nullptr)
-            || (!PACKAGE.package.PTR_->Selected()->SongPtrOpt()))
+        if (!PACKAGE.package.PTR_->Selected()
+            || !PACKAGE.package.PTR_->Selected().value()->SongPtrOpt())
         {
             return false;
         }
@@ -391,34 +384,28 @@ namespace popup
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
             1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
-        sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
-        auto const SONG_PVEC{ popupInfo_.CreaturePtrOpt()->Obj().SongsPVec() };
-        for (auto const & NEXT_SONG_PTR : SONG_PVEC)
-        {
-            listBoxItemTextInfo_.text = NEXT_SONG_PTR->Name();
-
-            auto const LISTBOXITEM_SPTR(std::make_shared<sfml_util::gui::ListBoxItem>(
-                NEXT_SONG_PTR->Name() + "_MusicListBoxEntry",
-                listBoxItemTextInfo_,
-                NEXT_SONG_PTR,
-                CanPlaySong(NEXT_SONG_PTR)));
-
-            listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
-        }
-
         listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PopupStage'sMusicListBox",
             LISTBOX_RECT,
-            listBoxItemsSVec,
             sfml_util::IStagePtr_t(this),
-            6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
+            LISTBOX_IMAGE_COLOR_);
+
+        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
+        for (auto const & SONG_PTR : popupInfo_.CreaturePtrOpt()->Obj().SongsPVec())
+        {
+            listBoxItemTextInfo_.text = SONG_PTR->Name();
+
+            listBoxUPtr_->Add(listBoxItemFactory.Make(
+                listBoxUPtr_->GetEntityName(),
+                listBoxItemTextInfo_,
+                SONG_PTR,
+                CanPlaySong(SONG_PTR)));
+        }
 
         EntityAdd(listBoxUPtr_.get());
-        listBoxUPtr_->SelectedIndex(0);
-        listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
     void PopupStageMusicSheet::SetupPageRightText(const song::SongPtr_t SONG_PTR)
@@ -705,11 +692,11 @@ namespace popup
             "null.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (!!listBoxUPtr_->Selected()->SongPtrOpt()),
+            (listBoxUPtr_->Selected().value()->SongPtrOpt()),
             "popup::PopupStageMusicSheet::CurrentSelectedSong() called when the currently selected "
             "song was somehow not initialized.");
 
-        return listBoxUPtr_->Selected()->SongPtrOpt().value();
+        return listBoxUPtr_->Selected().value()->SongPtrOpt().value();
     }
 
 } // namespace popup

@@ -13,6 +13,7 @@
 
 #include "misc/boost-string-includes.hpp"
 
+#include <algorithm>
 #include <exception>
 #include <fstream>
 #include <iostream>
@@ -88,7 +89,8 @@ namespace misc
                 nextLine.clear();
             }
 
-            map_.Sort();
+            // sorting only because it will increase lookup performance
+            std::sort(std::begin(map_), std::end(map_));
 
             return (false == map_.Empty());
         }

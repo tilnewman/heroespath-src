@@ -51,35 +51,38 @@ namespace sfml_util
                     "sfml_util::gui::CreatureImageLoader::Test() Starting Tests...");
             }
 
-            static auto allFilenames{ misc::filesystem::FindFilesInDirectory(
-                imageDirectoryPath_, "", ".png", misc::filesystem::FilenameText::TO_EXCLUDE_VEC_) };
+            static auto allPaths{ misc::filesystem::FindFilesInDirectory(
+                imageDirectoryPath_, "", ".png") };
+
+            for (auto & pathStr : allPaths)
+            {
+                boost::algorithm::to_lower(pathStr);
+            }
 
             static misc::EnumUnderlying_t raceIndex{ 0 };
-            static misc::EnumUnderlying_t roleIndex{ 0 };
-            static misc::EnumUnderlying_t sexIndex{ 0 };
-            static misc::EnumUnderlying_t classIndex{ 0 };
-
             if (raceIndex < creature::race::Count)
             {
                 auto const RACE_ENUM{ static_cast<creature::race::Enum>(raceIndex) };
                 auto const RACE_STR{ creature::race::ToString(RACE_ENUM) };
                 auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
 
+                static misc::EnumUnderlying_t roleIndex{ 0 };
                 if (roleIndex < ROLE_VEC.size())
                 {
                     auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                     auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
 
+                    static misc::EnumUnderlying_t sexIndex{ 0 };
                     if (sexIndex < creature::sex::Count)
                     {
-                        static std::size_t fileIndex{ 0 };
-
                         auto const SEX_ENUM{ static_cast<creature::sex::Enum>(sexIndex) };
                         auto const SEX_STR{ creature::sex::ToString(SEX_ENUM) };
 
                         // test to ensure that BodyType maker will not throw
                         creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
 
+                        static misc::EnumUnderlying_t classIndex{ 0 };
+                        static std::size_t fileIndex{ 0 };
                         if (RACE_ENUM == creature::race::Wolfen)
                         {
                             if (classIndex < creature::wolfen_class::Count)
@@ -106,30 +109,27 @@ namespace sfml_util
 
                                 if (fileIndex < FILENAMES.size())
                                 {
+                                    auto const FILENAME{ FILENAMES.at(fileIndex) };
+
+                                    auto const PATH{ boost::algorithm::to_lower_copy(
+                                        Path(FILENAME)) };
+
                                     sf::Texture texture;
-                                    Load(texture, FILENAMES.at(fileIndex), false);
+                                    Load(texture, FILENAME, false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
-                                        texture,
-                                        true,
-                                        "Creature",
-                                        "(no type)",
-                                        FILENAMES.at(fileIndex));
+                                        texture, true, "Creature", "(no type)", PATH);
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageLoader Tested race=" << RACE_STR
                                        << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                       << " wolfen_class=" << CLASS_STR
-                                       << " filename=" << FILENAMES.at(fileIndex);
+                                       << " wolfen_class=" << CLASS_STR << " filename=" << FILENAME;
 
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                                    allFilenames.erase(
-                                        std::remove(
-                                            std::begin(allFilenames),
-                                            std::end(allFilenames),
-                                            FILENAMES.at(fileIndex)),
-                                        std::end(allFilenames));
+                                    allPaths.erase(
+                                        std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                        std::end(allPaths));
 
                                     ++fileIndex;
                                     return false;
@@ -166,30 +166,27 @@ namespace sfml_util
 
                                 if (fileIndex < FILENAMES.size())
                                 {
+                                    auto const FILENAME{ FILENAMES.at(fileIndex) };
+
+                                    auto const PATH{ boost::algorithm::to_lower_copy(
+                                        Path(FILENAME)) };
+
                                     sf::Texture texture;
-                                    Load(texture, FILENAMES.at(fileIndex), false);
+                                    Load(texture, FILENAME, false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
-                                        texture,
-                                        true,
-                                        "Creature",
-                                        "(no type)",
-                                        FILENAMES.at(fileIndex));
+                                        texture, true, "Creature", "(no type)", PATH);
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageLoader Tested race=" << RACE_STR
                                        << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                       << " dragon_class=" << CLASS_STR
-                                       << " filename=" << FILENAMES.at(fileIndex);
+                                       << " dragon_class=" << CLASS_STR << " filename=" << FILENAME;
 
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                                    allFilenames.erase(
-                                        std::remove(
-                                            std::begin(allFilenames),
-                                            std::end(allFilenames),
-                                            FILENAMES.at(fileIndex)),
-                                        std::end(allFilenames));
+                                    allPaths.erase(
+                                        std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                        std::end(allPaths));
 
                                     ++fileIndex;
                                     return false;
@@ -217,29 +214,26 @@ namespace sfml_util
 
                             if (fileIndex < FILENAMES.size())
                             {
+                                auto const FILENAME{ FILENAMES.at(fileIndex) };
+
+                                auto const PATH{ boost::algorithm::to_lower_copy(Path(FILENAME)) };
+
                                 sf::Texture texture;
-                                Load(texture, FILENAMES.at(fileIndex), false);
+                                Load(texture, FILENAME, false);
 
                                 game::LoopManager::Instance()->TestingImageSet(
-                                    texture,
-                                    true,
-                                    "Creature",
-                                    "(no type)",
-                                    FILENAMES.at(fileIndex));
+                                    texture, true, "Creature", "(no type)", PATH);
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageLoader Tested race=" << RACE_STR
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                   << " filename=" << FILENAMES.at(fileIndex);
+                                   << " filename=" << FILENAME;
 
                                 game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-                                allFilenames.erase(
-                                    std::remove(
-                                        std::begin(allFilenames),
-                                        std::end(allFilenames),
-                                        FILENAMES.at(fileIndex)),
-                                    std::end(allFilenames));
+                                allPaths.erase(
+                                    std::remove(std::begin(allPaths), std::end(allPaths), PATH),
+                                    std::end(allPaths));
 
                                 ++fileIndex;
                                 return false;
@@ -257,18 +251,19 @@ namespace sfml_util
                     return false;
                 }
 
-                sexIndex = 0;
                 roleIndex = 0;
                 ++raceIndex;
                 return false;
             }
 
-            for (auto const & FILENAME : allFilenames)
+            std::sort(std::begin(allPaths), std::end(allPaths));
+
+            for (auto const & PATH : allPaths)
             {
                 M_HP_LOG_WRN(
                     "sfml_util::gui::CreatureImageLoader::Test() found the following item image "
                     "unused: "
-                    << FILENAME);
+                    << PATH);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -285,11 +280,7 @@ namespace sfml_util
 
         const std::string CreatureImageLoader::Path(const std::string & FILENAME) const
         {
-            namespace bfs = boost::filesystem;
-
-            return misc::filesystem::MakePathPretty(
-                       bfs::path(imageDirectoryPath_) / bfs::path(FILENAME))
-                .string();
+            return misc::filesystem::CompletePath(imageDirectoryPath_, FILENAME);
         }
 
         void CreatureImageLoader::Load(
@@ -376,7 +367,7 @@ namespace sfml_util
 
                 if (ROLE == role::Grunt)
                 {
-                    return { "troll-grunt-1.png" };
+                    return { "troll-grunt-1.png", "troll-grunt-2.png" };
                 }
 
                 if (ROLE == role::Mountain)
@@ -404,7 +395,10 @@ namespace sfml_util
                     return { "troll-warlord.png" };
                 }
 
-                return { "troll-1.png" };
+                if (ROLE == role::TwoHeaded)
+                {
+                    return { "troll-two-headed.png" };
+                }
             }
 
             if (RACE == race::Orc)
@@ -989,7 +983,10 @@ namespace sfml_util
                     }
                     else
                     {
-                        return { "goblin-trader-male-1.png", "goblin-trader-male-2.png" };
+                        return { "goblin-trader-male-1.png", "goblin-trader-male-2.png",
+                                 "goblin-male-1.png",        "goblin-male-2.png",
+                                 "goblin-male-3.png",        "goblin-male-4.png",
+                                 "goblin-male-5.png" };
                     }
                 }
 
@@ -1306,6 +1303,7 @@ namespace sfml_util
                         filenames.emplace_back("cleric-human-male-1.png");
                         filenames.emplace_back("cleric-human-male-2.png");
                         filenames.emplace_back("cleric-human-male-3.png");
+                        filenames.emplace_back("cleric-human-male-4.png");
                     }
 
                     return filenames;
@@ -1358,11 +1356,9 @@ namespace sfml_util
                     }
                     else
                     {
-                        return { "sorcerer-human-male-1.png",
-                                 "sorcerer-human-male-2.png",
-                                 "sorcerer-human-male-2b.png",
-                                 "sorcerer-human-male-3.png",
-                                 "sorcerer-human-male-4.png" };
+                        return { "sorcerer-human-male-1.png",  "sorcerer-human-male-2.png",
+                                 "sorcerer-human-male-2b.png", "sorcerer-human-male-3.png",
+                                 "sorcerer-human-male-4.png",  "sorcerer-human-male-5.png" };
                     }
                 }
 
@@ -1393,7 +1389,8 @@ namespace sfml_util
                         return { "trader-human-1.png",
                                  "trader-human-2.png",
                                  "trader-human-3.png",
-                                 "trader-human-4.png" };
+                                 "trader-human-4.png",
+                                 "trader-human-5.png" };
                     }
                 }
 
@@ -1432,7 +1429,17 @@ namespace sfml_util
 
                 if (ROLE == role::Blacksmith)
                 {
-                    return { "human-blacksmith-male-1.png", "human-blacksmith-male-2.png" };
+                    if (SEX == sex::Male)
+                    {
+                        return { "human-blacksmith-male-1.png",
+                                 "human-blacksmith-male-2.png",
+                                 "human-blacksmith-male-3.png",
+                                 "human-blacksmith-male-4.png" };
+                    }
+                    else
+                    {
+                        return { "human-blacksmith-female-1.png" };
+                    }
                 }
 
                 if (ROLE == role::Shaman)
@@ -1479,21 +1486,15 @@ namespace sfml_util
                     }
                     else if (ROLE == role::Sorcerer)
                     {
-                        return { "pixie-female-3.png" };
+                        return { "pixie-female-1.png", "pixie-female-3.png" };
                     }
                     else if (ROLE == role::Cleric)
                     {
-                        return { "pixie-female-5.png" };
+                        return { "pixie-female-2.png", "pixie-female-5.png" };
                     }
                     else if (ROLE == role::Bard)
                     {
-                        return { "pixie-female-4.png" };
-                    }
-                    else
-                    {
-                        return { "pixie-1.png",        "pixie-2.png",        "pixie-female-1.png",
-                                 "pixie-female-2.png", "pixie-female-3.png", "pixie-female-4.png",
-                                 "pixie-female-5.png" };
+                        return { "pixie-female-4.png", "pixie-3.png" };
                     }
                 }
                 else
@@ -1505,7 +1506,7 @@ namespace sfml_util
                     else if (
                         (ROLE == role::Sorcerer) || (ROLE == role::Cleric) || (ROLE == role::Bard))
                     {
-                        return { "pixie-1.png", "pixie-2.png", "pixie-male-1.png" };
+                        return { "pixie-1.png", "pixie-2.png", "pixie-3.png", "pixie-male-1.png" };
                     }
                 }
             }

@@ -17,6 +17,8 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/texture-cache.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 namespace heroespath
 {
 namespace avatar
@@ -32,9 +34,8 @@ namespace avatar
 
     LPCView::LPCView(const Avatar::Enum WHICH_AVATAR, const sf::Vector2f & CENTERED_MAP_POS_V)
         : whichAvatar_(WHICH_AVATAR)
-        , textureIndex_(
-              sfml_util::TextureCache::Instance()->AddByPath(Avatar::ImagePath(whichAvatar_)))
-        , sprite_(sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_))
+        , cachedTexture_(boost::filesystem::path(Avatar::ImagePath(whichAvatar_)))
+        , sprite_(cachedTexture_.Get())
         , animation_(CreateAnimation(Pose::Standing, sfml_util::Direction::Right))
         , frameTimerSec_(0.0f)
         , frameIndex_(0)
@@ -42,9 +43,7 @@ namespace avatar
         auto const REQUIRED_DIMMENSION{ static_cast<unsigned>(CELL_SIZE_ * CELL_COUNT_) };
         const sf::Vector2u REQUIRED_SIZE_V(REQUIRED_DIMMENSION, REQUIRED_DIMMENSION);
 
-        auto const ACTUAL_SIZE_V{
-            sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_).getSize()
-        };
+        auto const ACTUAL_SIZE_V{ cachedTexture_.Get().getSize() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ACTUAL_SIZE_V == REQUIRED_SIZE_V),
@@ -133,7 +132,7 @@ namespace avatar
     const sf::Sprite LPCView::DefaultPoseSprite() const
     {
         return sf::Sprite(
-            sfml_util::TextureCache::Instance()->GetByIndex(textureIndex_),
+            cachedTexture_.Get(),
             FrameRect(FrameNumbers(Pose::Standing, sfml_util::Direction::Right).at(0)));
     }
 

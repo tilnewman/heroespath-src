@@ -36,7 +36,8 @@ namespace creature
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Non-Player CreatureWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() called but instanceUPtr_ was null: Non-Player "
+                         "CreatureWarehouse");
             Acquire();
         }
 

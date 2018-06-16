@@ -30,21 +30,21 @@ namespace sfml_util
             {
                 return "Intro";
             }
-            case MainMenu:
+            case Menu:
             {
-                return "MainMenu";
+                return "Menu";
             }
-            case LoadGameMenu:
+            case Load:
             {
-                return "LoadGameMenu";
+                return "Load";
             }
-            case CharacterCreation:
+            case Character:
             {
-                return "CharacterCreation";
+                return "Character";
             }
-            case PartyCreation:
+            case Party:
             {
-                return "PartyCreation";
+                return "Party";
             }
             case Adventure:
             {

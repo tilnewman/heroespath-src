@@ -53,6 +53,7 @@ namespace sfml_util
             void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 
             const std::string Path(const item::ItemPtr_t ITEM_PTR) const;
+            const std::string Path(const std::string & FILE_NAME) const;
 
             // note that full paths are not returned, only the filenames, Load() will create a full
             // path from the filename
@@ -60,6 +61,8 @@ namespace sfml_util
                 Filename(const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE = true) const;
 
             bool DoesFileExist(const item::ItemPtr_t ITEM_PTR) const;
+
+            bool DoesFileExist(const std::string & IMAGE_FILE_NAME) const;
 
         private:
             const std::vector<std::string> Filenames(
