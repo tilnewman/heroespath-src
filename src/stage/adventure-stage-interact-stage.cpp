@@ -259,8 +259,7 @@ namespace stage
             target.draw(contextSprite_);
             target.draw(subjectSprite_);
 
-            if (interactionManager_.Current().value().Obj().Type()
-                == interact::Interact::Conversation)
+            if (interactionManager_.Current().value()->Type() == interact::Interact::Conversation)
             {
                 target.draw(npcSprite_);
             }
