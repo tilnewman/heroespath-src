@@ -154,7 +154,6 @@ namespace sfml_util
             selectionDisplayIndex_ = 0;
             selectionOffsetIndex_ = 0;
             visibleCount_ = CalcVisibleItems();
-            SetupForDraw();
         }
 
         bool ListBox::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)
@@ -188,13 +187,50 @@ namespace sfml_util
 
             if (Empty() == false)
             {
+                std::size_t i{ 0 };
+                for (; i < displayIndex_; ++i)
+                {
+                    items_.at(i)->SetEntityWillDraw(false);
+                }
+
                 auto const LAST_INDEX_TO_DRAW{ std::min(
                     CalcLastVisibleIndex_Display(), items_.size() - 1) };
 
-                for (std::size_t i(displayIndex_); i <= LAST_INDEX_TO_DRAW; ++i)
+                for (; i <= LAST_INDEX_TO_DRAW; ++i)
                 {
-                    auto const ITEM_PTR{ ListBoxItemPtr_t(items_.at(i).get()) };
-                    auto const ITEM_RECT{ FullItemRect(ITEM_PTR) };
+                    auto itemPtr{ ListBoxItemPtr_t(items_.at(i).get()) };
+                    auto const ITEM_RECT{ FullItemRect(itemPtr) };
+
+                    itemPtr->SetEntityWillDraw(true);
+
+                    auto const TEXT_LEFT{ entityRegion_.left + HORIZ_PAD_ };
+
+                    auto const TEXT_TOP{ entityRegion_.top
+                                         + (static_cast<float>(i)
+                                            * (itemSizeV_.y + betweenPadVert_)) };
+
+                    itemPtr->SetEntityPos(TEXT_LEFT, TEXT_TOP);
+
+                    if (itemPtr->HasImage())
+                    {
+                        itemPtr->MoveEntityPos(itemSizeV_.y + HORIZ_PAD_, 0.0f);
+
+                        auto & sprite{ itemPtr->Sprite() };
+
+                        const sf::FloatRect IMAGE_RECT(
+                            entityRegion_.left + HORIZ_PAD_, TEXT_TOP, itemSizeV_.y, itemSizeV_.y);
+
+                        sfml_util::CenterAndScaleSpriteToFit(sprite, IMAGE_RECT);
+
+                        if (SelectedIndex() == i)
+                        {
+                            sprite.setColor(imageColor_ + sf::Color(100, 100, 100, 100));
+                        }
+                        else
+                        {
+                            sprite.setColor(imageColor_);
+                        }
+                    }
 
                     if (SELECTION_INDEX == i)
                     {
@@ -202,9 +238,9 @@ namespace sfml_util
                             target, states, ITEM_RECT, sf::Color::Transparent, 0, highlightColor_);
                     }
 
-                    target.draw(*ITEM_PTR, states);
+                    target.draw(*itemPtr, states);
 
-                    if (ITEM_PTR->IsValid() == false)
+                    if (itemPtr->IsValid() == false)
                     {
                         sfml_util::DrawRectangle<float>(
                             target,
@@ -227,6 +263,11 @@ namespace sfml_util
                     {
                         break;
                     }
+                }
+
+                for (; i < items_.size(); ++i)
+                {
+                    items_.at(i)->SetEntityWillDraw(false);
                 }
             }
 
@@ -286,8 +327,6 @@ namespace sfml_util
                         displayIndex_ = NEW_INDEX - visibleCount_;
                     }
                 }
-
-                SetupForDraw();
             }
         }
 
@@ -331,7 +370,6 @@ namespace sfml_util
             }
 
             displayIndex_ = selectionDisplayIndex_;
-            SetupForDraw();
         }
 
         ListBoxItemPtr_t ListBox::At(const std::size_t INDEX)
@@ -354,8 +392,6 @@ namespace sfml_util
             {
                 ResetItemSize();
             }
-
-            SetupForDraw();
         }
 
         bool ListBox::Remove(const ListBoxItemPtr_t ITEM_PTR)
@@ -378,7 +414,6 @@ namespace sfml_util
                     SelectPrev();
                 }
 
-                SetupForDraw();
                 return true;
             }
         }
@@ -439,8 +474,6 @@ namespace sfml_util
                             PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
 
                         callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
-
-                        SetupForDraw();
                     }
 
                     return true;
@@ -508,7 +541,6 @@ namespace sfml_util
             if (selectionOffsetIndex_ > 0)
             {
                 --selectionOffsetIndex_;
-                SetupForDraw();
                 return true;
             }
             else
@@ -521,8 +553,6 @@ namespace sfml_util
                     }
 
                     --selectionDisplayIndex_;
-
-                    SetupForDraw();
                     return true;
                 }
             }
@@ -599,8 +629,6 @@ namespace sfml_util
                     KEY_EVENT);
 
                 callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
-
-                SetupForDraw();
             }
         }
 
@@ -614,55 +642,6 @@ namespace sfml_util
                     PTR_PACKAGE, sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
 
                 callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
-
-                SetupForDraw();
-            }
-        }
-
-        void ListBox::SetupForDraw()
-        {
-            std::size_t index{ 0 };
-            for (auto & itemSPtr : items_)
-            {
-                if (IsIndexVisible_Display(index))
-                {
-                    itemSPtr->SetEntityWillDraw(true);
-
-                    auto const TEXT_LEFT{ entityRegion_.left + HORIZ_PAD_ };
-
-                    auto const TEXT_TOP{ entityRegion_.top
-                                         + (static_cast<float>(index)
-                                            * (itemSizeV_.y + betweenPadVert_)) };
-
-                    itemSPtr->SetEntityPos(TEXT_LEFT, TEXT_TOP);
-
-                    if (itemSPtr->HasImage())
-                    {
-                        itemSPtr->MoveEntityPos(itemSizeV_.y + HORIZ_PAD_, 0.0f);
-
-                        auto & sprite{ itemSPtr->Sprite() };
-
-                        const sf::FloatRect IMAGE_RECT(
-                            entityRegion_.left + HORIZ_PAD_, TEXT_TOP, itemSizeV_.y, itemSizeV_.y);
-
-                        sfml_util::CenterAndScaleSpriteToFit(sprite, IMAGE_RECT);
-
-                        if (SelectedIndex() == index)
-                        {
-                            sprite.setColor(imageColor_ + sf::Color(100, 100, 100, 100));
-                        }
-                        else
-                        {
-                            sprite.setColor(imageColor_);
-                        }
-                    }
-                }
-                else
-                {
-                    itemSPtr->SetEntityWillDraw(false);
-                }
-
-                ++index;
             }
         }
 

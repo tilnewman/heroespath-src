@@ -140,11 +140,7 @@ namespace sfml_util
 
             bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
 
-            void ImageColor(const sf::Color & COLOR)
-            {
-                imageColor_ = COLOR;
-                SetupForDraw();
-            }
+            void ImageColor(const sf::Color & COLOR) { imageColor_ = COLOR; }
 
             const sf::Color ImageColor() const { return imageColor_; }
 
@@ -209,8 +205,6 @@ namespace sfml_util
             void MoveItemToOtherListBox(
                 const std::size_t ITEM_TO_MOVE_INDEX, ListBox & otherListBox);
 
-            void ResetAfterChange() { SetupForDraw(); }
-
             ListBoxItemUVecIter_t begin() noexcept { return std::begin(items_); }
             ListBoxItemUVecIter_t end() noexcept { return std::end(items_); }
             ListBoxItemUPtr_t & Front() { return items_.front(); }
@@ -226,7 +220,6 @@ namespace sfml_util
             void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
             void OnClick(const sf::Vector2f &) override {}
             void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
-            void SetupForDraw();
 
             std::size_t CalcVisibleItems() const;
             std::size_t CalcLastVisibleIndex_Display() const;

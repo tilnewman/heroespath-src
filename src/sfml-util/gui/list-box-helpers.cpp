@@ -46,7 +46,6 @@ namespace sfml_util
                             }
                         });
 
-                    listBox.ResetAfterChange();
                     isSortReversed = !isSortReversed;
                 }
             }
@@ -71,7 +70,6 @@ namespace sfml_util
                             }
                         });
 
-                    listBox.ResetAfterChange();
                     isSortReversed = !isSortReversed;
                 }
             }
@@ -96,7 +94,6 @@ namespace sfml_util
                             }
                         });
 
-                    listBox.ResetAfterChange();
                     isSortReversed = !isSortReversed;
                 }
             }

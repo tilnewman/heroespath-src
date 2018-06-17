@@ -539,8 +539,6 @@ namespace stage
                     A->CharacterPtrOpt().value()->Name() < B->CharacterPtrOpt().value()->Name());
             });
 
-        characterListBoxUPtr_->ResetAfterChange();
-
         EntityAdd(characterListBoxUPtr_.get());
     }
 
