@@ -50,7 +50,7 @@ namespace misc
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (LAST_VALID_VALUE > 0),
-                msgSS.str() << "was given a last_valid_value that was not greater than zero.");
+                msgSS.str() << "was given a last_valid_value that was not > zero.");
 
             static EnumUnderlying_t flagValue{ 0 };
 
@@ -183,7 +183,7 @@ namespace misc
             return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
         }
 
-        static EnumUnderlying_t LargestValidValue() { return EnumWrapper_t::Count - 1; }
+        static constexpr EnumUnderlying_t LargestValidValue() { return EnumWrapper_t::Count - 1; }
 
         static const std::string Name(const EnumUnderlying_t ENUM_VALUE)
         {
@@ -224,39 +224,39 @@ namespace misc
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNot>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                     (EnumWrapper_t::Not == 0),
                     TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNothing>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                     (EnumWrapper_t::Nothing == 0),
                     TypeName() << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNever>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                     (EnumWrapper_t::Never == 0),
                     TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNone>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                     (EnumWrapper_t::None == 0),
                     TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                 (EnumWrapper_t::Count != 0),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
-                           << " is not greater than zero.");
+                           << " is not > zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (EnumWrapper_t::Count == LargestValidValue() + 1),
+            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+                (EnumWrapper_t::Count != LargestValidValue() + 1),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not one less than the largest valid value="
                            << LargestValidValue() << ".");
@@ -447,19 +447,22 @@ namespace misc
                     << " instead of " << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
                     << ".");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                 (EnumWrapper_t::None == 0), TypeName() << "::None was not zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                 (EnumWrapper_t::Last > 0),
                 TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
-                           << " is not greater than zero.");
+                           << " is not > zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (EnumWrapper_t::Last < LargestValidValue()),
-                TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
-                           << " is not less than the largest valid value=" << LargestValidValue()
-                           << ".");
+            if (EnumWrapper_t::Last > LargestValidValue())
+            {
+                std::ostringstream ss;
+                ss << TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+                   << " is not <= the largest valid value=" << LargestValidValue() << ".";
+
+                throw std::runtime_error(ss.str());
+            }
 
             return enum_util::Test<EnumWrapper_t>(LargestValidValue(), true);
         }
