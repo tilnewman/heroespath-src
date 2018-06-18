@@ -195,7 +195,7 @@ namespace stage
         , closestDragStat_(creature::Traits::Count)
         , raceRadioButtonUPtr_()
         , racetDescTextRegionUPtr_()
-        , roleRadioButtonSPtr_()
+        , roleRadioButtonUPtr_()
         , roletDescTextRegionUPtr_()
         , sexRadioButtonUPtr_()
         , nameTextEntryBoxUPtr_()
@@ -223,7 +223,7 @@ namespace stage
         }
 
         // was change to role
-        if (roleRadioButtonSPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
+        if (roleRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
         {
             return RoleChange();
         }
@@ -250,7 +250,6 @@ namespace stage
             && popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
         {
             game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::Party);
-
             return true;
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_HELP_1_)
@@ -690,7 +689,7 @@ namespace stage
 
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
-        roleRadioButtonSPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
+        roleRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
             sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
             "RoleSelection",
             REGION.left,
@@ -704,7 +703,7 @@ namespace stage
             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             -5.0f);
 
-        EntityAdd(roleRadioButtonSPtr_.get());
+        EntityAdd(roleRadioButtonUPtr_.get());
     }
 
     void CharacterStage::Setup_RaceDescriptionBox()
@@ -752,18 +751,18 @@ namespace stage
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const ROLE_SELECTED{ static_cast<creature::role::Enum>(
-            roleRadioButtonSPtr_->GetSelectedNumber()) };
+            roleRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const ROLE_ENUM{ (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_SELECTED) };
 
-        auto const ROLE_RADIOBUTTON_REGION{ roleRadioButtonSPtr_->GetEntityRegion() };
+        auto const ROLE_RADIOBUTTON_REGION{ roleRadioButtonUPtr_->GetEntityRegion() };
 
         const sf::FloatRect REGION(
             ROLE_RADIOBUTTON_REGION.left + ROLE_RADIOBUTTON_REGION.width + 15.0f,
             ROLE_RADIOBUTTON_REGION.top + sfml_util::MapByRes(25.0f, 75.0f),
             sfml_util::MapByRes(240.0f, 1750.0f),
-            roleRadioButtonSPtr_->GetEntityRegion().height - 30.0f);
+            roleRadioButtonUPtr_->GetEntityRegion().height - 30.0f);
 
         sfml_util::gui::TextInfo roleDescTextInfo(
             creature::role::Desc(ROLE_ENUM),
@@ -1385,7 +1384,7 @@ namespace stage
         auto const ROLE{ (
             (RACE == creature::race::Wolfen)
                 ? creature::role::Wolfen
-                : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
+                : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
@@ -1518,7 +1517,7 @@ namespace stage
         auto const ROLE{ (
             (RACE == creature::race::Wolfen)
                 ? creature::role::Wolfen
-                : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
+                : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
 
         // setup the final StatSet for the character
         creature::StatSet statSetFinal;
@@ -1586,7 +1585,7 @@ namespace stage
             }
         }
 
-        roleRadioButtonSPtr_->SetInvalidSelections(invalidRoleIndexes);
+        roleRadioButtonUPtr_->SetInvalidSelections(invalidRoleIndexes);
     }
 
     float CharacterStage::GetAttributeNumPosTop(const creature::Traits::Enum TRAIT_ENUM)
@@ -1649,7 +1648,7 @@ namespace stage
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const ROLE_ENUM{ static_cast<creature::role::Enum>(
-            roleRadioButtonSPtr_->GetSelectedNumber()) };
+            roleRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const WHICH_ROLE{ (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_ENUM) };
@@ -2175,7 +2174,7 @@ namespace stage
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const ROLE_SELECTED{ static_cast<creature::role::Enum>(
-            roleRadioButtonSPtr_->GetSelectedNumber()) };
+            roleRadioButtonUPtr_->GetSelectedNumber()) };
 
         auto const ROLE_ENUM{ (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_SELECTED) };
@@ -2803,7 +2802,7 @@ namespace stage
     {
         initialRollCounter_ = 0;
         raceRadioButtonUPtr_->SetSelectNumber(0);
-        roleRadioButtonSPtr_->SetSelectNumber(0);
+        roleRadioButtonUPtr_->SetSelectNumber(0);
         nameTextEntryBoxUPtr_->SetText("");
         statModifierTextVec_.clear();
 
@@ -2852,7 +2851,7 @@ namespace stage
         auto const ROLE_ENUM{ (
             (RACE_ENUM == creature::race::Wolfen)
                 ? creature::role::Wolfen
-                : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
+                : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
 
         creature::StatSet statSetFinal(statSetBase_);
 

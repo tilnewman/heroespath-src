@@ -361,7 +361,7 @@ namespace stage
         //
         sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t racetDescTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetUPtr_t roleRadioButtonSPtr_;
+        sfml_util::gui::RadioButtonSetUPtr_t roleRadioButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t roletDescTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
         sfml_util::gui::TextEntryBoxUPtr_t nameTextEntryBoxUPtr_;

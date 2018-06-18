@@ -407,16 +407,16 @@ namespace stage
 
                 i = 0;
                 appendedFirstName = false;
-                for (auto const & NEXT_BEAST_SPTR : BEAST_PVEC)
+                for (auto const & NEXT_BEAST_PTR : BEAST_PVEC)
                 {
                     ss << ((appendedFirstName) ? ", " : "")
                        << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and "
                                                                                          : "")
-                       << NEXT_BEAST_SPTR->Name() << " ";
+                       << NEXT_BEAST_PTR->Name() << " ";
 
-                    if (NEXT_BEAST_SPTR->Race() == creature::race::Dragon)
+                    if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
                     {
-                        ss << "the " << creature::role::ToString(NEXT_BEAST_SPTR->Role())
+                        ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role())
                            << " Dragon";
                     }
                     else

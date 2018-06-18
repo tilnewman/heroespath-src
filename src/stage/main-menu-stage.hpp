@@ -75,7 +75,6 @@ namespace stage
         sfml_util::gui::BackgroundImage backgroundImage_;
     };
 
-    using MainMenuStageSPtr_t = std::shared_ptr<MainMenuStage>;
 } // namespace stage
 } // namespace heroespath
 

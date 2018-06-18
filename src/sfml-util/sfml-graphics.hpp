@@ -41,8 +41,6 @@ namespace sfml_util
     //
     using SpriteVec_t = std::vector<sf::Sprite>;
     //
-    using RendTextSPtr_t = std::shared_ptr<sf::RenderTexture>;
-    //
     using FontPtr_t = misc::NotNull<sf::Font *>;
     using FontPtrOpt_t = boost::optional<FontPtr_t>;
     using FontUPtr_t = std::unique_ptr<sf::Font>;

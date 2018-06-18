@@ -86,8 +86,6 @@ namespace sfml_util
             float labelOffsetY_;
         };
 
-        using SliderBarLabeledSPtr_t = std::shared_ptr<SliderBarLabeled>;
-        using SliderBarLabeledSVec_t = std::vector<SliderBarLabeledSPtr_t>;
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

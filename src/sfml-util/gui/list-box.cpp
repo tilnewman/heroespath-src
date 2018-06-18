@@ -523,9 +523,9 @@ namespace sfml_util
             auto const DIFF_HORIZ{ POS_LEFT - GetEntityPos().x };
             auto const DIFF_VERT{ POS_TOP - GetEntityPos().y };
 
-            for (auto & itemSPtr : items_)
+            for (auto & itemUPtr : items_)
             {
-                itemSPtr->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+                itemUPtr->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
             }
 
             if (boxUPtr_)
