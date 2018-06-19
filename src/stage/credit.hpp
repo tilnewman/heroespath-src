@@ -10,6 +10,7 @@
 // credit.hpp
 //
 #include "sfml-util/animation-factory.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sfml-util.hpp"
 
 #include <memory>
@@ -83,7 +84,6 @@ namespace stage
             const unsigned int TITLE_FONT_SIZE,
             const std::string & CONTENT_TEXT,
             const MediaType::Enum MEDIA_TYPE,
-            const std::string & MEDIA_PATH,
             const float MEDIA_SCALE,
             const sfml_util::Animations::Enum ANIM_ENUM,
             const float ANIM_SCALE,
@@ -95,18 +95,20 @@ namespace stage
 
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);
 
+        bool IsVisible() const;
+
     private:
         sfml_util::gui::TextRegionUPtr_t titleTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t contentTextUPtr_;
         MediaType::Enum mediaType_;
-        std::string mediaPathKey_;
-        sf::Texture texture_;
+        sfml_util::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
         sfml_util::AnimationUPtr_t animUPtr_;
+        float screenSizeVert_;
     };
 
-    using CreditSPtr_t = std::shared_ptr<Credit>;
-    using CreditSVec_t = std::vector<CreditSPtr_t>;
+    using CreditUPtr_t = std::unique_ptr<Credit>;
+    using CreditUVec_t = std::vector<CreditUPtr_t>;
 
 } // namespace stage
 } // namespace heroespath

@@ -10,13 +10,13 @@
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
 //
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-
 #include "stage/credit.hpp"
 
 #include <memory>
@@ -62,14 +62,15 @@ namespace stage
         float creditBoxHeight_;
         float totalHeight_;
         float heightTracker_;
-        sf::Texture hpTitleTexture_;
+        sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite bpTitleSprite_;
         sfml_util::gui::box::Box box_;
         sfml_util::gui::BackgroundImage backgroundImage_;
-        CreditSVec_t creditSVec_;
+        CreditUVec_t creditUVec_;
         float scrollSpeed_;
         bool isKeyHeldDown_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

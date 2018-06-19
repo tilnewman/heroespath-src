@@ -66,6 +66,12 @@ namespace sfml_util
     }
 
     CachedTexture::CachedTexture(
+        const char * const GAME_DATAFILE_KEY, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
+        : path_(game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
+        , index_(TextureCache::Instance()->AddByPath(path_, WILL_SMOOTH, WILL_FLIP_HORIZ))
+    {}
+
+    CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
         : path_(game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
         , index_(TextureCache::Instance()->AddByPath(path_, WILL_SMOOTH, WILL_FLIP_HORIZ))

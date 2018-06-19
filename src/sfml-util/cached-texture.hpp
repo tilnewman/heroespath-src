@@ -44,12 +44,17 @@ namespace sfml_util
         CachedTexture & operator=(const CachedTexture &);
         CachedTexture & operator=(CachedTexture &&);
 
-        CachedTexture(
+        explicit CachedTexture(
+            const char * const GAME_DATAFILE_KEY,
+            const bool WILL_SMOOTH = true,
+            const bool WILL_FLIP_HORIZ = false);
+
+        explicit CachedTexture(
             const std::string & GAME_DATAFILE_KEY,
             const bool WILL_SMOOTH = true,
             const bool WILL_FLIP_HORIZ = false);
 
-        CachedTexture(
+        explicit CachedTexture(
             const boost::filesystem::path & PATH,
             const bool WILL_SMOOTH = true,
             const bool WILL_FLIP_HORIZ = false);

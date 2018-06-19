@@ -11,12 +11,11 @@
 //
 #include "credit.hpp"
 
+#include "game/game-data-file.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
-
-#include "game/game-data-file.hpp"
 
 namespace heroespath
 {
@@ -30,10 +29,10 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Text)
-        , mediaPathKey_("")
-        , texture_()
+        , cachedTextureOpt_(boost::none)
         , sprite_()
         , animUPtr_()
+        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
     {
         Setup(
             trackingRect,
@@ -42,7 +41,6 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            mediaPathKey_,
             1.0f,
             sfml_util::Animations::Count,
             1.0f,
@@ -59,10 +57,10 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Anim)
-        , mediaPathKey_(sfml_util::Animations::MediaPathKey(ANIM_ENUM))
-        , texture_()
+        , cachedTextureOpt_(boost::none)
         , sprite_()
         , animUPtr_()
+        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
     {
         Setup(
             trackingRect,
@@ -71,7 +69,6 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            mediaPathKey_,
             1.0f,
             ANIM_ENUM,
             ANIM_SCALE,
@@ -87,10 +84,10 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Image)
-        , mediaPathKey_(IMAGE_PATH_KEY)
-        , texture_()
-        , sprite_()
+        , cachedTextureOpt_(IMAGE_PATH_KEY)
+        , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
+        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
     {
         Setup(
             trackingRect,
@@ -99,7 +96,6 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            mediaPathKey_,
             IMAGE_SCALE,
             sfml_util::Animations::Count,
             1.0f,
@@ -114,10 +110,10 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Image)
-        , mediaPathKey_("media-images-logos-openfontlicense")
-        , texture_()
-        , sprite_()
+        , cachedTextureOpt_("media-images-logos-openfontlicense")
+        , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
+        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
     {
         Setup(
             trackingRect,
@@ -126,7 +122,6 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            mediaPathKey_,
             sfml_util::MapByRes(1.5f, 5.75f),
             sfml_util::Animations::Count,
             1.0f,
@@ -140,7 +135,6 @@ namespace stage
         const unsigned int TITLE_FONT_SIZE,
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
-        const std::string & MEDIA_PATH,
         const float MEDIA_SCALE,
         const sfml_util::Animations::Enum ANIM_ENUM,
         const float ANIM_SCALE,
@@ -148,10 +142,6 @@ namespace stage
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            sfml_util::Loaders::Texture(
-                texture_, game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH));
-
-            sprite_.setTexture(texture_);
             sprite_.setScale(MEDIA_SCALE, MEDIA_SCALE);
 
             auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f))
@@ -238,6 +228,11 @@ namespace stage
 
     void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
+        if (IsVisible() == false)
+        {
+            return;
+        }
+
         if (titleTextUPtr_)
         {
             target.draw(*titleTextUPtr_, states);
@@ -261,6 +256,11 @@ namespace stage
 
     void Credit::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        if (IsVisible() == false)
+        {
+            return;
+        }
+
         if (animUPtr_)
         {
             animUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
@@ -286,5 +286,45 @@ namespace stage
             animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
     }
+
+    bool Credit::IsVisible() const
+    {
+        std::vector<sf::FloatRect> rects;
+
+        if (titleTextUPtr_)
+        {
+            rects.emplace_back(titleTextUPtr_->GetEntityRegion());
+        }
+
+        if (contentTextUPtr_)
+        {
+            rects.emplace_back(contentTextUPtr_->GetEntityRegion());
+        }
+
+        if (animUPtr_)
+        {
+            rects.emplace_back(animUPtr_->GetEntityRegion());
+        }
+
+        rects.emplace_back(sprite_.getGlobalBounds());
+
+        for (auto const & RECT : rects)
+        {
+            auto const TOP_LIMIT{ -1.0f };
+            auto const BOTTOM_LIMIT{ screenSizeVert_ + 1.0f };
+
+            auto const TOP{ RECT.top };
+            auto const BOTTOM{ RECT.top + RECT.height };
+
+            if (((TOP > TOP_LIMIT) && (TOP < BOTTOM_LIMIT))
+                || ((BOTTOM > TOP_LIMIT) && (BOTTOM < BOTTOM_LIMIT)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 } // namespace stage
 } // namespace heroespath
