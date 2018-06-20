@@ -263,6 +263,7 @@ namespace stage
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
+        /*
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Quill Sword\"",
@@ -299,6 +300,7 @@ namespace stage
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DialogModern),
             "Created by Uwe Borchert\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
+        */
 
         totalHeight_ = trackingRect.top;
 
