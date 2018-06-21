@@ -654,7 +654,7 @@ namespace popup
         if (CanCastSpell(CurrentSelectedSpell()))
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::SpellSelect)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::SpellSelect)
                 .PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(

@@ -748,7 +748,7 @@ namespace stage
                                                      : sfml_util::sound_effect_set::Gem) };
 
             auto const SOUND_EFFECT{ sfml_util::SoundManager::Instance()
-                                         ->Getsound_effect_set(SOUND_EFFECT_SET)
+                                         ->GetSoundEffectSet(SOUND_EFFECT_SET)
                                          .SelectRandom() };
 
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -981,7 +981,7 @@ namespace stage
     void TreasureStage::PutItemBack(const item::ItemPtr_t ITEM_PTR)
     {
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
             .PlayRandom();
 
         displayStagePtr_->WhichCharacterInventoryIsDisplayed()->ItemRemove(ITEM_PTR);

@@ -29,17 +29,17 @@ namespace sfml_util
         SfxWrapper(const SfxWrapper &) = delete;
         SfxWrapper & operator=(const SfxWrapper &) = delete;
 
-    public:
+        SfxWrapper(SfxWrapper &&);
+        SfxWrapper & operator=(SfxWrapper &&);
+
         explicit SfxWrapper(
             const sound_effect::Enum ENUM = sound_effect::Count,
             SoundUPtr_t soundUPtr = SoundUPtr_t(),
-            SoundBufferUPtr_t BUFFER_UPTR = SoundBufferUPtr_t());
+            SoundBufferUPtr_t BUFFER_UPTR = SoundBufferUPtr_t(),
+            const bool WILL_LOOP = false,
+            const float VOLUME_RATIO = 1.0f);
 
         ~SfxWrapper();
-
-        SfxWrapper(SfxWrapper &&);
-
-        SfxWrapper & operator=(SfxWrapper &&);
 
         bool IsValid() const;
 
@@ -69,7 +69,36 @@ namespace sfml_util
         {
             if (IsValid())
             {
-                soundUPtr_->setVolume(((V < 0.0f) ? 0.0f : ((V > 100.0f) ? 100.0f : V)));
+                soundUPtr_->setVolume(
+                    ((V < 0.0f) ? 0.0f : ((V > 100.0f) ? 100.0f : V * volumeRatio_)));
+            }
+        }
+
+        float VolumeRatio() const { return volumeRatio_; }
+
+        void VolumeRatio(const float NEW_VOLUME_RATIO)
+        {
+            volumeRatio_ = NEW_VOLUME_RATIO;
+            Volume(Volume());
+        }
+
+        bool WillLoop() const
+        {
+            if (IsValid())
+            {
+                return soundUPtr_->getLoop();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        void WillLoop(const bool NEW_WILL_LOOP)
+        {
+            if (IsValid())
+            {
+                soundUPtr_->setLoop(NEW_WILL_LOOP);
             }
         }
 
@@ -85,10 +114,12 @@ namespace sfml_util
         sound_effect::Enum which_;
         SoundUPtr_t soundUPtr_;
         SoundBufferUPtr_t bufferUPtr_;
+        float volumeRatio_;
     };
 
     inline bool operator==(const SfxWrapper & L, const SfxWrapper & R)
     {
+        // intentionally omit volumeRatio_
         return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_)
             == std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
     }
@@ -97,11 +128,13 @@ namespace sfml_util
 
     inline bool operator<(const SfxWrapper & L, const SfxWrapper & R)
     {
+        // intentionally omit volumeRatio_
         return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_)
             < std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
     }
 
     using SfxWrapperVec_t = std::vector<SfxWrapper>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

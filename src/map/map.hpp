@@ -100,7 +100,7 @@ namespace map
         void PlayTransitionSfx(
             const sfml_util::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
 
-        void UpdateWalkMusic();
+        void UpdateWalkSfx();
 
         void ResetNonPlayers();
 
@@ -119,6 +119,8 @@ namespace map
             const sfml_util::FloatRectVec_t & WALK_RECTS,
             std::size_t & walkRectsIndex,
             sf::Vector2f & startingPosV);
+
+        void StopWalkSfxIfValid();
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;
@@ -142,8 +144,8 @@ namespace map
 
         WalkRectMap_t walkRectVecMap_;
         WalkSfxRegionLayers walkSfxLayers_;
-        sfml_util::music::Enum walkMusicWhich_;
-        bool walkMusicIsWalking_;
+        sfml_util::sound_effect::Enum walkSfx_;
+        bool walkSfxIsWalking_;
         misc::Timer sfxTimer_;
     };
 

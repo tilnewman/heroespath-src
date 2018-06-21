@@ -2763,7 +2763,7 @@ namespace stage
         if (CAN_GIVE_ITEM_STR.empty())
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::ItemGive)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemGive)
                 .PlayRandom();
 
             creaturePtr_->ItemRemove(ITEM_PTR);
@@ -2915,7 +2915,7 @@ namespace stage
         else
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
                 .PlayRandom();
 
             auto const ITEM_PTR{ listBoxItemToDropPtrOpt_.value()->ItemPtrOpt().value() };
@@ -3201,7 +3201,7 @@ namespace stage
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::Coin)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
             .PlayRandom();
 
         creaturePtr_->CoinsAdj(Coin_t(static_cast<int>(COUNT) * -1));
@@ -3218,7 +3218,7 @@ namespace stage
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::Gem)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
             .PlayRandom();
 
         creaturePtr_->GemsAdj(Gem_t(static_cast<int>(COUNT) * -1));
@@ -3235,7 +3235,7 @@ namespace stage
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
             .PlayRandom();
 
         creaturePtr_->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT) * -1));
@@ -3275,7 +3275,7 @@ namespace stage
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::Coin)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3315,7 +3315,7 @@ namespace stage
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::Gem)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3355,7 +3355,7 @@ namespace stage
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3386,7 +3386,7 @@ namespace stage
         }
 
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::Coin)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
             .PlayRandom();
 
         HandleCoinsGather(false);
@@ -3455,7 +3455,7 @@ namespace stage
         }
 
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::Gem)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
             .PlayRandom();
 
         HandleGemsGather(false);
@@ -3523,7 +3523,7 @@ namespace stage
         }
 
         sfml_util::SoundManager::Instance()
-            ->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard)
+            ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
             .PlayRandom();
 
         HandleMeteorShardsGather(false);

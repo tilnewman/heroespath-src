@@ -40,7 +40,7 @@ namespace popup
             case combat::CombatEnd::Win:
             {
                 sfml_util::SoundManager::Instance()
-                    ->Getsound_effect_set(sfml_util::sound_effect_set::CombatWin)
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatWin)
                     .PlayRandom();
 
                 sfml_util::Loaders::Texture(
@@ -54,7 +54,7 @@ namespace popup
             case combat::CombatEnd::Lose:
             {
                 sfml_util::SoundManager::Instance()
-                    ->Getsound_effect_set(sfml_util::sound_effect_set::CombatLose)
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
                     .PlayRandom();
 
                 sfml_util::Loaders::Texture(
@@ -69,7 +69,7 @@ namespace popup
             default:
             {
                 sfml_util::SoundManager::Instance()
-                    ->Getsound_effect_set(sfml_util::sound_effect_set::CombatLose)
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
                     .PlayRandom();
 
                 sfml_util::Loaders::Texture(

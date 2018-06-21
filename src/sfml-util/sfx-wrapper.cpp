@@ -19,14 +19,20 @@ namespace sfml_util
 {
 
     SfxWrapper::SfxWrapper(
-        const sound_effect::Enum ENUM, SoundUPtr_t soundUPtr, SoundBufferUPtr_t BUFFER_UPTR)
+        const sound_effect::Enum ENUM,
+        SoundUPtr_t soundUPtr,
+        SoundBufferUPtr_t BUFFER_UPTR,
+        const bool WILL_LOOP,
+        const float VOLUME_RATIO)
         : which_(ENUM)
         , soundUPtr_(std::move(soundUPtr))
         , bufferUPtr_(std::move(BUFFER_UPTR))
+        , volumeRatio_(VOLUME_RATIO)
     {
         if (IsValid())
         {
             soundUPtr_->setBuffer(*bufferUPtr_);
+            soundUPtr_->setLoop(WILL_LOOP);
         }
     }
 
@@ -42,6 +48,7 @@ namespace sfml_util
         : which_(SFXW.which_)
         , soundUPtr_(std::move(SFXW.soundUPtr_))
         , bufferUPtr_(std::move(SFXW.bufferUPtr_))
+        , volumeRatio_(SFXW.volumeRatio_)
     {}
 
     SfxWrapper & SfxWrapper::operator=(SfxWrapper && SFXW)
@@ -51,6 +58,7 @@ namespace sfml_util
             which_ = SFXW.which_;
             soundUPtr_ = std::move(SFXW.soundUPtr_);
             bufferUPtr_ = std::move(SFXW.bufferUPtr_);
+            volumeRatio_ = SFXW.volumeRatio_;
         }
 
         return *this;
@@ -74,5 +82,6 @@ namespace sfml_util
         soundUPtr_.reset();
         bufferUPtr_.reset();
     }
+
 } // namespace sfml_util
 } // namespace heroespath

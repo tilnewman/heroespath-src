@@ -24,13 +24,13 @@ namespace map
     {
         explicit WalkSfxRegion(
             const sf::FloatRect & REGION = sf::FloatRect(),
-            const sfml_util::music::Enum MUSIC = sfml_util::music::Count)
+            const sfml_util::sound_effect::Enum SFX = sfml_util::sound_effect::Count)
             : region(REGION)
-            , music(MUSIC)
+            , sfx(SFX)
         {}
 
         sf::FloatRect region;
-        sfml_util::music::Enum music;
+        sfml_util::sound_effect::Enum sfx;
     };
 
     inline bool operator<(const WalkSfxRegion & L, const WalkSfxRegion & R)
@@ -51,13 +51,13 @@ namespace map
             , top_layers(TOP_LAYERS)
         {}
 
-        sfml_util::music::Enum FindSfx(const sf::Vector2f & POSITION) const
+        sfml_util::sound_effect::Enum FindSfx(const sf::Vector2f & POSITION) const
         {
             for (auto const & SFX_REGION : top_layers)
             {
                 if (SFX_REGION.region.contains(POSITION))
                 {
-                    return SFX_REGION.music;
+                    return SFX_REGION.sfx;
                 }
             }
 
@@ -65,16 +65,17 @@ namespace map
             {
                 if (SFX_REGION.region.contains(POSITION))
                 {
-                    return SFX_REGION.music;
+                    return SFX_REGION.sfx;
                 }
             }
 
-            return sfml_util::music::Count;
+            return sfml_util::sound_effect::Count;
         }
 
         WalkSfxRegionVec_t bottom_layers;
         WalkSfxRegionVec_t top_layers;
     };
+
 } // namespace map
 } // namespace heroespath
 

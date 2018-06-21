@@ -1581,6 +1581,7 @@ if (false == willImageCheck_)
         sfml_util::music::Test();
         sfml_util::sound_effect::Test();
         sfml_util::sound_effect_set::Test();
+        sfml_util::Footstep::Test();
         sfml_util::Font::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();

@@ -251,12 +251,12 @@ namespace misc
             }
 
             M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
-                (EnumWrapper_t::Count != 0),
+                (EnumWrapper_t::Count > 0),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not > zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
-                (EnumWrapper_t::Count != LargestValidValue() + 1),
+                (EnumWrapper_t::Count == LargestValidValue() + 1),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not one less than the largest valid value="
                            << LargestValidValue() << ".");

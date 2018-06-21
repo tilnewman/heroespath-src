@@ -43,7 +43,12 @@ namespace stage
                 sfml_util::Font::DialogModern,
                 sfml_util::Font::DefaultBoldFlavor,
                 sfml_util::Font::Handwriting },
-              true)
+              true,
+              { sfml_util::sound_effect::FootstepGrass,
+                sfml_util::sound_effect::FootstepGravel,
+                sfml_util::sound_effect::FootstepLeaves,
+                sfml_util::sound_effect::FootstepSolid,
+                sfml_util::sound_effect::FootstepWood })
         , interactionManager_()
         , adventureDisplayStagePtr_(new AdventureDisplayStage(interactionManager_))
     {}

@@ -32,8 +32,29 @@ namespace heroespath
 namespace sfml_util
 {
 
-    using SfxDelayPair_t = std::pair<sound_effect::Enum, float>;
-    using SfxDelayVec_t = std::vector<SfxDelayPair_t>;
+    // Responsible for storing all the information needed to play an sfx at some time in the future.
+    struct DelayedSfx
+    {
+        explicit DelayedSfx(
+            const sound_effect::Enum SFX_ENUM = sound_effect::Count,
+            const float DELAY_SEC = 0.0f,
+            const bool WILL_LOOP = false,
+            const float VOLUME_RATIO = 1.0f)
+            : sfx_enum(SFX_ENUM)
+            , delay_sec_remaining(DELAY_SEC)
+            , will_loop(WILL_LOOP)
+            , volume_ratio(VOLUME_RATIO)
+        {}
+
+        bool IsTimeToPlay() const { return delay_sec_remaining < 0.0f; }
+
+        sound_effect::Enum sfx_enum;
+        float delay_sec_remaining;
+        bool will_loop;
+        float volume_ratio;
+    };
+
+    using DelayedSfxVec_t = std::vector<DelayedSfx>;
 
     // A class that loads, stores, and distributes sounds
     class SoundManager
@@ -103,11 +124,20 @@ namespace sfml_util
 
         void MusicVolumeFadeToCurrent(const music::Enum);
 
-        const SfxSet & Getsound_effect_set(const sound_effect_set::Enum) const;
+        const SfxSet & GetSoundEffectSet(const sound_effect_set::Enum) const;
 
-        void SoundEffectPlay(const sound_effect::Enum);
+        void SoundEffectPlay(
+            const sound_effect::Enum,
+            const bool WILL_LOOP = false,
+            const float VOLUME_RATIO = 1.0f);
 
-        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM, const float PRE_DELAY_SEC);
+        void SoundEffectPlay(
+            const sound_effect::Enum SFX_ENUM,
+            const float PRE_DELAY_SEC,
+            const bool WILL_LOOP = false,
+            const float VOLUME_RATIO = 1.0f);
+
+        void SoundEffectStop(const sound_effect::Enum);
 
         void PlaySfx_AckMinor();
         void PlaySfx_AckMajor();
@@ -119,7 +149,23 @@ namespace sfml_util
 
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);
 
+        void PreLoadSfx(
+            const sound_effect::Enum,
+            const bool WILL_LOOP = false,
+            const float VOLUME_RATIO = 1.0f);
+
+        void PreLoadSfx(const SfxEnumVec_t &);
+
     private:
+        bool IsSfxEnumValid(const sound_effect::Enum SFX_ENUM) const
+        {
+            return (
+                (SFX_ENUM != sound_effect::None) && (SFX_ENUM != sound_effect::Count)
+                && (SFX_ENUM != sound_effect::Random));
+        }
+
+        SfxWrapper & GetSfxWrapper(const sound_effect::Enum SFX_ENUM);
+
         MusicUPtr_t OpenMusic(
             const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const;
 
@@ -134,11 +180,6 @@ namespace sfml_util
 
         SoundBufferUPtr_t LoadSfxBuffer(const sound_effect::Enum) const;
 
-        bool IsSfxDelayPairReadyToPlay(const SfxDelayPair_t & SDP) const
-        {
-            return (SDP.second < 0.0f);
-        }
-
     private:
         static std::string soundsDirectoryPath_;
         static std::string musicDirectoryPath_;
@@ -149,9 +190,10 @@ namespace sfml_util
         SfxSetVec_t sfxSetVec_;
         MusicInfoVec_t combatIntroMusicInfoVec_;
         SongSetVec_t songSetVec_;
-        SfxDelayVec_t sfxToPlayPairsVec_;
+        DelayedSfxVec_t delayedSfxVec_;
         SfxWrapperVec_t sfxWrapperVec_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

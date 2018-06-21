@@ -661,13 +661,13 @@ namespace popup
             if (SONG_PTR->Type() == song::SongType::Drum)
             {
                 sfml_util::SoundManager::Instance()
-                    ->Getsound_effect_set(sfml_util::sound_effect_set::DrumBlip)
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::DrumBlip)
                     .PlayRandom();
             }
             else if (SONG_PTR->Type() == song::SongType::Guitar)
             {
                 sfml_util::SoundManager::Instance()
-                    ->Getsound_effect_set(sfml_util::sound_effect_set::GuitarStrum)
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::GuitarStrum)
                     .PlayRandom();
             }
 

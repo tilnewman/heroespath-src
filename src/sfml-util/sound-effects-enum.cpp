@@ -21,6 +21,38 @@ namespace heroespath
 namespace sfml_util
 {
 
+    const std::string Footstep::ToString(const Footstep::Enum E)
+    {
+        switch (E)
+        {
+            case Grass:
+            {
+                return "Grass";
+            }
+            case Gravel:
+            {
+                return "Gravel";
+            }
+            case Leaves:
+            {
+                return "Leaves";
+            }
+            case Solid:
+            {
+                return "Solid";
+            }
+            case Wood:
+            {
+                return "Wood";
+            }
+            case Count:
+            default:
+            {
+                ThrowInvalidValueForFunction(E, "ToString");
+            }
+        }
+    }
+
     const std::string sound_effect::ToString(const sound_effect::Enum E)
     {
         switch (E)
@@ -1301,6 +1333,26 @@ namespace sfml_util
             {
                 return "stairs";
             }
+            case FootstepGrass:
+            {
+                return "footstep-grass";
+            }
+            case FootstepGravel:
+            {
+                return "footstep-gravel";
+            }
+            case FootstepLeaves:
+            {
+                return "footstep-leaves";
+            }
+            case FootstepSolid:
+            {
+                return "footstep-solid";
+            }
+            case FootstepWood:
+            {
+                return "footstep-wood";
+            }
             case None:
             {
                 return "None";
@@ -1327,9 +1379,9 @@ namespace sfml_util
         }
     }
 
-    const std::string sound_effect::Directory(const sound_effect::Enum E)
+    const std::string sound_effect::Directory(const sound_effect::Enum SFX_ENUM)
     {
-        switch (E)
+        switch (SFX_ENUM)
         {
             case WindGust1:
             case WindGust2:
@@ -1752,12 +1804,20 @@ namespace sfml_util
             {
                 return "sound-effects/map";
             }
+            case FootstepGrass:
+            case FootstepGravel:
+            case FootstepLeaves:
+            case FootstepSolid:
+            case FootstepWood:
+            {
+                return "sound-effects/footstep";
+            }
             case Count:
             case None:
             case Random:
             default:
             {
-                ThrowInvalidValueForFunction(E, "Directory");
+                ThrowInvalidValueForFunction(SFX_ENUM, "Directory");
             }
         }
     }
@@ -1899,6 +1959,34 @@ namespace sfml_util
         std::ostringstream ss;
         ss << "map::Level::Enum::MapTransitionFromString(\"" << NAME << "\")_InvalidValueError.";
         throw std::runtime_error(ss.str());
+    }
+
+    sound_effect::Enum sound_effect::FootstepToSfx(const Footstep::Enum E)
+    {
+        if (E == Footstep::Grass)
+        {
+            return sound_effect::FootstepGrass;
+        }
+        else if (E == Footstep::Gravel)
+        {
+            return sound_effect::FootstepGravel;
+        }
+        else if (E == Footstep::Leaves)
+        {
+            return sound_effect::FootstepLeaves;
+        }
+        else if (E == Footstep::Solid)
+        {
+            return sound_effect::FootstepSolid;
+        }
+        else if (E == Footstep::Wood)
+        {
+            return sound_effect::FootstepWood;
+        }
+        else
+        {
+            return sound_effect::Count;
+        }
     }
 
 } // namespace sfml_util

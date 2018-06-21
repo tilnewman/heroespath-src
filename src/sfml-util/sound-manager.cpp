@@ -41,7 +41,7 @@ namespace sfml_util
         , sfxSetVec_()
         , combatIntroMusicInfoVec_()
         , songSetVec_()
-        , sfxToPlayPairsVec_()
+        , delayedSfxVec_()
         , sfxWrapperVec_()
     {
         M_HP_LOG_DBG("Subsystem Construction: SoundManager");
@@ -471,72 +471,79 @@ namespace sfml_util
         }
     }
 
-    const SfxSet & SoundManager::Getsound_effect_set(const sound_effect_set::Enum E) const
+    const SfxSet & SoundManager::GetSoundEffectSet(const sound_effect_set::Enum E) const
     {
         auto const INDEX{ static_cast<std::size_t>(E) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (INDEX < sfxSetVec_.size()),
-            "SoundManager::Getsound_effect_set(enum="
+            "SoundManager::GetSoundEffectSet(enum="
                 << E << ", index=" << INDEX
                 << ") index was out of range with sfxSetVec_.size()=" << sfxSetVec_.size());
 
         return sfxSetVec_[INDEX];
     }
 
-    void SoundManager::SoundEffectPlay(const sound_effect::Enum SFX_ENUM)
+    void SoundManager::SoundEffectPlay(
+        const sound_effect::Enum SFX_ENUM, const bool WILL_LOOP, const float VOLUME_RATIO)
     {
-        if ((SFX_ENUM == sound_effect::None) || (SFX_ENUM == sound_effect::Count)
-            || (SFX_ENUM == sound_effect::Random))
+        if (IsSfxEnumValid(SFX_ENUM))
         {
-            return;
+            PreLoadSfx(SFX_ENUM, WILL_LOOP, VOLUME_RATIO);
+
+            // This restarts play from the beginning, which is the
+            // desired behavior even if it was already playing,
+            // because I decided that repeated plays of the same
+            // sfx will restart if not allowed to finish.
+            GetSfxWrapper(SFX_ENUM).Play();
         }
-
-        auto & sfxWrapper{ sfxWrapperVec_[static_cast<std::size_t>(SFX_ENUM)] };
-
-        if (sfxWrapper.IsValid() == false)
-        {
-            sfxWrapper
-                = SfxWrapper(SFX_ENUM, std::make_unique<sf::Sound>(), LoadSfxBuffer(SFX_ENUM));
-
-            sfxWrapper.Volume(SoundEffectVolume());
-        }
-
-        // This restarts play from the beginning, which is the
-        // desired behavior even if it was already playing,
-        // because I decided that repeated plays of the same
-        // sfx will restart if not allowed to finish.
-        sfxWrapper.Play();
     }
 
-    void SoundManager::SoundEffectPlay(const sound_effect::Enum E, const float PRE_DELAY_SEC)
+    void SoundManager::SoundEffectPlay(
+        const sound_effect::Enum SFX_ENUM,
+        const float PRE_DELAY_SEC,
+        const bool WILL_LOOP,
+        const float VOLUME_RATIO)
     {
-        if ((E != sound_effect::None) && (E != sound_effect::Count) && (E != sound_effect::Random))
+        if (IsSfxEnumValid(SFX_ENUM))
         {
-            sfxToPlayPairsVec_.emplace_back(std::make_pair(E, PRE_DELAY_SEC));
+            delayedSfxVec_.emplace_back(
+                DelayedSfx(SFX_ENUM, PRE_DELAY_SEC, WILL_LOOP, VOLUME_RATIO));
+        }
+    }
+
+    void SoundManager::SoundEffectStop(const sound_effect::Enum SFX_ENUM)
+    {
+        if (IsSfxEnumValid(SFX_ENUM))
+        {
+            auto & sfxWrapper{ GetSfxWrapper(SFX_ENUM) };
+            if (sfxWrapper.IsValid())
+            {
+                sfxWrapper.Stop();
+            }
         }
     }
 
     void SoundManager::PlaySfx_AckMinor()
     {
-        Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+        GetSoundEffectSet(sfml_util::sound_effect_set::Switch).PlayRandom();
     }
 
     void SoundManager::PlaySfx_AckMajor()
     {
-        Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+        GetSoundEffectSet(sfml_util::sound_effect_set::Thock).PlayRandom();
     }
 
     void SoundManager::PlaySfx_Reject() { SoundEffectPlay(sfml_util::sound_effect::PromptWarn); }
 
     void SoundManager::PlaySfx_TickOn()
     {
-        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+        GetSoundEffectSet(sfml_util::sound_effect_set::TickOn).PlayRandom();
     }
 
     void SoundManager::PlaySfx_TickOff()
     {
-        Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+        GetSoundEffectSet(sfml_util::sound_effect_set::TickOff).PlayRandom();
     }
 
     void SoundManager::PlaySfx_Keypress() { PlaySfx_AckMinor(); }
@@ -564,8 +571,50 @@ namespace sfml_util
 
         if (WILL_STOP_PLAYING_SFX)
         {
-            sfxToPlayPairsVec_.clear();
+            delayedSfxVec_.clear();
         }
+    }
+
+    void SoundManager::PreLoadSfx(
+        const sound_effect::Enum SFX_ENUM, const bool WILL_LOOP, const float VOLUME_RATIO)
+    {
+        auto & sfxWrapper{ GetSfxWrapper(SFX_ENUM) };
+
+        if (sfxWrapper.IsValid() == false)
+        {
+            sfxWrapper = SfxWrapper(
+                SFX_ENUM,
+                std::make_unique<sf::Sound>(),
+                LoadSfxBuffer(SFX_ENUM),
+                WILL_LOOP,
+                VOLUME_RATIO);
+        }
+        else
+        {
+            sfxWrapper.WillLoop(WILL_LOOP);
+            sfxWrapper.VolumeRatio(VOLUME_RATIO);
+        }
+
+        sfxWrapper.Volume(SoundEffectVolume());
+    }
+
+    void SoundManager::PreLoadSfx(const SfxEnumVec_t & SFX_VEC)
+    {
+        for (auto const SFX_ENUM : SFX_VEC)
+        {
+            PreLoadSfx(SFX_ENUM);
+        }
+    }
+
+    SfxWrapper & SoundManager::GetSfxWrapper(const sound_effect::Enum SFX_ENUM)
+    {
+        auto const INDEX{ static_cast<std::size_t>(SFX_ENUM) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (INDEX < sfxWrapperVec_.size()),
+            "SoundManager::GetSfxWrapper(" << SFX_ENUM << ") but that index was out of range.");
+
+        return sfxWrapperVec_[INDEX];
     }
 
     MusicUPtr_t SoundManager::OpenMusic(
@@ -875,27 +924,25 @@ namespace sfml_util
     {
         auto willCleanup{ false };
 
-        for (auto & sfxDelayPair : sfxToPlayPairsVec_)
+        for (auto & delayedSfx : delayedSfxVec_)
         {
-            sfxDelayPair.second -= ELAPSED_TIME_SEC;
+            delayedSfx.delay_sec_remaining -= ELAPSED_TIME_SEC;
 
-            if (IsSfxDelayPairReadyToPlay(sfxDelayPair))
+            if (delayedSfx.IsTimeToPlay())
             {
                 willCleanup = true;
-                SoundEffectPlay(sfxDelayPair.first);
+                SoundEffectPlay(delayedSfx.sfx_enum, delayedSfx.will_loop, delayedSfx.volume_ratio);
             }
         }
 
         if (willCleanup)
         {
-            sfxToPlayPairsVec_.erase(
+            delayedSfxVec_.erase(
                 std::remove_if(
-                    sfxToPlayPairsVec_.begin(),
-                    sfxToPlayPairsVec_.end(),
-                    [this](const auto & SFX_DELAY_PAIR) {
-                        return this->IsSfxDelayPairReadyToPlay(SFX_DELAY_PAIR);
-                    }),
-                sfxToPlayPairsVec_.end());
+                    std::begin(delayedSfxVec_),
+                    std::end(delayedSfxVec_),
+                    [](const auto & DELAYED_SFX) { return DELAYED_SFX.IsTimeToPlay(); }),
+                std::end(delayedSfxVec_));
         }
     }
 

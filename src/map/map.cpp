@@ -53,13 +53,13 @@ namespace map
         , nonPlayers_()
         , walkRectVecMap_()
         , walkSfxLayers_()
-        , walkMusicWhich_(sfml_util::music::Count)
-        , walkMusicIsWalking_(false)
+        , walkSfx_(sfml_util::sound_effect::Count)
+        , walkSfxIsWalking_(false)
         , sfxTimer_(game::GameDataFile::Instance()->GetCopyFloat(
               "heroespath-sound-map-sfx-time-between-updates"))
     {}
 
-    Map::~Map() = default;
+    Map::~Map() { StopWalkSfxIfValid(); }
 
     void Map::TransitionLevel(const Transition & TRANSITION)
     {
@@ -71,6 +71,8 @@ namespace map
     void Map::Load(
         const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM, const bool IS_TEST_LOAD)
     {
+        StopWalkSfxIfValid();
+
         transitionVec_.clear();
 
         Layout & layout{ mapDisplayUPtr_->GetLayoutRef() };
@@ -314,7 +316,7 @@ namespace map
         if (sfxTimer_.Update(TIME_ELAPSED))
         {
             mapDisplayUPtr_->UpdateAnimMusicVolume();
-            UpdateWalkMusic();
+            UpdateWalkSfx();
         }
     }
 
@@ -541,37 +543,28 @@ namespace map
         }
     }
 
-    void Map::UpdateWalkMusic()
+    void Map::UpdateWalkSfx()
     {
         auto const NEW_IS_WALKING{ (Player().GetView().WhichPose() == avatar::Pose::Walking) };
-        auto const NEW_WALK_MUSIC{ walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
+        auto const NEW_WALK_SFX{ walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
 
-        if (NEW_IS_WALKING
-            && ((NEW_WALK_MUSIC != walkMusicWhich_) || (NEW_IS_WALKING != walkMusicIsWalking_)))
+        if (NEW_IS_WALKING && ((NEW_WALK_SFX != walkSfx_) || (NEW_IS_WALKING != walkSfxIsWalking_)))
         {
-            if (sfml_util::music::Count != walkMusicWhich_)
-            {
-                sfml_util::SoundManager::Instance()->MusicStop(
-                    walkMusicWhich_, sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
-            }
+            StopWalkSfxIfValid();
 
-            if (NEW_WALK_MUSIC != sfml_util::music::Count)
+            if (NEW_WALK_SFX != sfml_util::sound_effect::Count)
             {
-                auto const VOLUME{ sfml_util::SoundManager::Instance()->SoundEffectVolume()
-                                   * WALK_SFX_VOLUME_RATIO_ };
-
-                sfml_util::SoundManager::Instance()->MusicStart(
-                    NEW_WALK_MUSIC, sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_, VOLUME);
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    NEW_WALK_SFX, true, WALK_SFX_VOLUME_RATIO_);
             }
         }
-        else if ((NEW_IS_WALKING == false) && (sfml_util::music::Count != walkMusicWhich_))
+        else if ((NEW_IS_WALKING == false) && (sfml_util::sound_effect::Count != walkSfx_))
         {
-            sfml_util::SoundManager::Instance()->MusicStop(
-                walkMusicWhich_, sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
+            sfml_util::SoundManager::Instance()->SoundEffectStop(walkSfx_);
         }
 
-        walkMusicWhich_ = NEW_WALK_MUSIC;
-        walkMusicIsWalking_ = NEW_IS_WALKING;
+        walkSfx_ = NEW_WALK_SFX;
+        walkSfxIsWalking_ = NEW_IS_WALKING;
     }
 
     void Map::ResetNonPlayers()
@@ -718,6 +711,14 @@ namespace map
         // no position found so set everything ot invalid
         walkRectsIndex = WALK_RECTS.size();
         startingPosV = sf::Vector2f(-1.0f, -1.0f);
+    }
+
+    void Map::StopWalkSfxIfValid()
+    {
+        if (sfml_util::sound_effect::Count != walkSfx_)
+        {
+            sfml_util::SoundManager::Instance()->SoundEffectStop(walkSfx_);
+        }
     }
 
 } // namespace map

@@ -577,14 +577,15 @@ namespace map
             throw;
         }
 
-        auto const MUSIC{ sfml_util::music::FootstepToMusic(static_cast<sfml_util::Footstep::Enum>(
-            sfml_util::Footstep::FromString(footstepName))) };
+        auto const SFX{ sfml_util::sound_effect::FootstepToSfx(
+            static_cast<sfml_util::Footstep::Enum>(
+                sfml_util::Footstep::FromString(footstepName))) };
 
-        if (MUSIC == sfml_util::music::Count)
+        if (SFX == sfml_util::sound_effect::Count)
         {
             std::ostringstream ss;
             ss << "map::Parser::Parse_WalkSfx() failed to translate footstep sfx name \""
-               << footstepName << "\" into a valid Footstep and then a valid music::Enum.";
+               << footstepName << "\" into a valid Footstep and then a valid sound_effect::Enum.";
 
             throw std::runtime_error(ss.str());
         }
@@ -601,11 +602,11 @@ namespace map
 
         if ("0" == typeStr)
         {
-            walkSfxLayers.bottom_layers.emplace_back(WalkSfxRegion(rect, MUSIC));
+            walkSfxLayers.bottom_layers.emplace_back(WalkSfxRegion(rect, SFX));
         }
         else
         {
-            walkSfxLayers.top_layers.emplace_back(WalkSfxRegion(rect, MUSIC));
+            walkSfxLayers.top_layers.emplace_back(WalkSfxRegion(rect, SFX));
         }
     }
 

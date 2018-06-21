@@ -540,7 +540,7 @@ namespace stage
             && (false == nameTextEntryBoxUPtr_->HasFocus()))
         {
             sfml_util::SoundManager::Instance()
-                ->Getsound_effect_set(sfml_util::sound_effect_set::Wind)
+                ->GetSoundEffectSet(sfml_util::sound_effect_set::Wind)
                 .PlayRandom();
 
             animStatsTimeCounterSec_ = 0.0f;

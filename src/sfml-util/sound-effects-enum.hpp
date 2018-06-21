@@ -20,6 +20,21 @@ namespace heroespath
 namespace sfml_util
 {
 
+    struct Footstep : public misc::EnumBaseCounting<Footstep, misc::EnumFirstValueValid>
+    {
+        enum Enum : misc::EnumUnderlying_t
+        {
+            Grass = 0,
+            Gravel,
+            Leaves,
+            Solid,
+            Wood,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+    };
+
     struct sound_effect : public misc::EnumBaseCounting<sound_effect, misc::EnumFirstValueValid>
     {
         enum Enum : misc::EnumUnderlying_t
@@ -343,6 +358,11 @@ namespace sfml_util
             DoorSqueakyOpen2,
             DoorSqueakyOpen3,
             Stairs,
+            FootstepGrass,
+            FootstepGravel,
+            FootstepLeaves,
+            FootstepSolid,
+            FootstepWood,
             Count,
             None,
             Random
@@ -371,6 +391,7 @@ namespace sfml_util
         static const std::string MapTransitionToString(const MapTransition);
         static MapTransition MapTransitionFromString(const std::string &);
         static sound_effect::Enum RandomMapTransitionSfx(const MapTransition, const DoorAction);
+        static Enum FootstepToSfx(const Footstep::Enum);
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;

@@ -35,8 +35,9 @@ namespace sfml_util
 
     Stage::Stage(
         const std::string & NAME,
-        const FontEnumVec_t & FONT_ENUM_VEC,
-        const bool WILL_CLEAR_CACHE_ON_EXIT)
+        const FontEnumVec_t & FONTS_TO_PRELOAD,
+        const bool WILL_CLEAR_CACHE_ON_EXIT,
+        const SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(sf::FloatRect(
               0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight()))
@@ -49,14 +50,16 @@ namespace sfml_util
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        FontManager::Instance()->Load(FONT_ENUM_VEC);
+        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
     Stage::Stage(
         const std::string & NAME,
         const sf::FloatRect & REGION,
-        const FontEnumVec_t & FONT_ENUM_VEC,
-        const bool WILL_CLEAR_CACHE_ON_EXIT)
+        const FontEnumVec_t & FONTS_TO_PRELOAD,
+        const bool WILL_CLEAR_CACHE_ON_EXIT,
+        const SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(REGION)
         , entityPVec_()
@@ -68,7 +71,8 @@ namespace sfml_util
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        FontManager::Instance()->Load(FONT_ENUM_VEC);
+        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
     Stage::Stage(
@@ -77,8 +81,9 @@ namespace sfml_util
         const float REGION_TOP,
         const float REGION_WIDTH,
         const float REGION_HEIGHT,
-        const FontEnumVec_t & FONT_ENUM_VEC,
-        const bool WILL_CLEAR_CACHE_ON_EXIT)
+        const FontEnumVec_t & FONTS_TO_PRELOAD,
+        const bool WILL_CLEAR_CACHE_ON_EXIT,
+        const SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_Stage"))
         , stageRegion_(sf::FloatRect(REGION_LEFT, REGION_TOP, REGION_WIDTH, REGION_HEIGHT))
         , entityPVec_()
@@ -90,7 +95,8 @@ namespace sfml_util
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        FontManager::Instance()->Load(FONT_ENUM_VEC);
+        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
     Stage::~Stage()
