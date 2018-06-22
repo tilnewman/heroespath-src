@@ -102,8 +102,6 @@ namespace sfml_util
                 sf::Sprite tJointBotSprite_;
             };
 
-            using CrossBoxSPtr_t = std::shared_ptr<CrossBox>;
-            using CrossBoxSVec_t = std::vector<CrossBoxSPtr_t>;
         } // namespace box
     } // namespace gui
 } // namespace sfml_util

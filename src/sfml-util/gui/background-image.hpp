@@ -24,8 +24,8 @@ namespace sfml_util
     {
 
         // Encapsulates a GuiEntity that manages a single background image with possible gradients.
-        // If both path.empty() and textureSPtr.get==nullptr, then a simple rectangle will be drawn
-        // and filled with the given color.
+        // If the BackgroundInfo's texture or texture path are invalid then a simple rectangle will
+        // be drawn and filled with the given color.
         class BackgroundImage : public sf::Drawable
         {
         public:

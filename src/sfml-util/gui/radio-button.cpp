@@ -133,16 +133,20 @@ namespace sfml_util
                 {
                     guiImage_.GetUpSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonDarkOff());
+
                     guiImage_.GetDownSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonDarkOn());
+
                     break;
                 }
                 case Brightness::Medium:
                 {
                     guiImage_.GetUpSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonMedOff());
+
                     guiImage_.GetDownSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonMedOn());
+
                     break;
                 }
                 case Brightness::Bright:
@@ -151,8 +155,10 @@ namespace sfml_util
                 {
                     guiImage_.GetUpSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonBrightOff());
+
                     guiImage_.GetDownSprite().setTextureRect(
                         GuiElements::GetRect_RadioButtonBrightOn());
+
                     break;
                 }
             }
@@ -169,7 +175,7 @@ namespace sfml_util
             , outerPad_(OUTER_PAD_DEFAULT_)
             , betweenPad_(BETWEEN_PAD_DEFAULT_)
             , currentSelection_(0)
-            , buttonSVec_()
+            , buttonUVec_()
             , box_(std::string(GetEntityName()).append("'s"))
             , downInWhichRegion_(0)
             , invalidSelectionVec_()
@@ -194,7 +200,7 @@ namespace sfml_util
             , outerPad_(OUTER_PAD)
             , betweenPad_(BETWEEN_PAD)
             , currentSelection_(INITIAL_SELECTION)
-            , buttonSVec_()
+            , buttonUVec_()
             , box_(std::string(GetEntityName()).append("'s"))
             , downInWhichRegion_(LABEL_VEC.size())
             , // set to an out-of-range value to mean 'not down in any region'
@@ -256,7 +262,7 @@ namespace sfml_util
                 sfml_util::gui::TextInfo nextTextInfo(TEXT_INFO);
                 nextTextInfo.text = LABEL_VEC[i];
 
-                buttonSVec_.emplace_back(std::make_shared<RadioButton>(
+                buttonUVec_.emplace_back(std::make_unique<RadioButton>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -266,7 +272,7 @@ namespace sfml_util
                     IsInvalid(i)));
             }
 
-            buttonSVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
+            buttonUVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
             PostSetupTasks(POS_LEFT, POS_TOP, BOX_INFO);
         }
 
@@ -305,7 +311,7 @@ namespace sfml_util
             {
                 std::ostringstream ss;
                 ss << GetEntityName() << "'s #" << i + 1;
-                buttonSVec_.emplace_back(std::make_shared<RadioButton>(
+                buttonUVec_.emplace_back(std::make_unique<RadioButton>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -318,7 +324,7 @@ namespace sfml_util
                     IsInvalid(i)));
             }
 
-            buttonSVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
+            buttonUVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
             PostSetupTasks(POS_LEFT, POS_TOP, BOX_INFO);
         }
 
@@ -328,17 +334,17 @@ namespace sfml_util
 
             auto const ORIGINAL_SELECTION{ currentSelection_ };
 
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
+            auto const NUM_BUTTONS{ buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
-                if (buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)
+                if (buttonUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)
                     && (downInWhichRegion_ == i))
                 {
                     if ((ORIGINAL_SELECTION != i) && (false == IsInvalid(i)))
                     {
                         SoundManager::Instance()->PlaySfx_MouseClick();
                         currentSelection_ = i;
-                        buttonSVec_[i]->SetIsInFirstState(false);
+                        buttonUVec_[i]->SetIsInFirstState(false);
                         wasButtonClicked = true;
                         OnClick(MOUSE_POS_V);
                         break;
@@ -349,26 +355,26 @@ namespace sfml_util
             if (true == wasButtonClicked)
             {
                 prevSelection_ = ORIGINAL_SELECTION;
-                buttonSVec_[ORIGINAL_SELECTION]->SetIsInFirstState(true);
+                buttonUVec_[ORIGINAL_SELECTION]->SetIsInFirstState(true);
             }
 
-            downInWhichRegion_ = buttonSVec_.size(); // reset to an invalid value
+            downInWhichRegion_ = buttonUVec_.size(); // reset to an invalid value
             return wasButtonClicked;
         }
 
         bool RadioButtonSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
+            auto const NUM_BUTTONS{ buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
-                if (buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V))
+                if (buttonUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V))
                 {
                     downInWhichRegion_ = i;
                     return true;
                 }
             }
 
-            downInWhichRegion_ = buttonSVec_.size(); // reset to an invalid value
+            downInWhichRegion_ = buttonUVec_.size(); // reset to an invalid value
             return false;
         }
 
@@ -405,18 +411,18 @@ namespace sfml_util
         void RadioButtonSet::PositionRadioButtons(const float POS_LEFT, const float POS_TOP)
         {
             // set the vertical positions of the radio buttons and find the maxX position
-            auto maxX(buttonSVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
+            auto maxX(buttonUVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
             auto posY(POS_TOP + outerPad_);
 
-            buttonSVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
+            buttonUVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
 
-            const std::size_t NUM_BUTTONS(buttonSVec_.size());
+            const std::size_t NUM_BUTTONS(buttonUVec_.size());
             for (std::size_t i(1); i < NUM_BUTTONS; ++i)
             {
-                posY += buttonSVec_[i - 1]->GetEntityRegion().height + betweenPad_;
-                buttonSVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
+                posY += buttonUVec_[i - 1]->GetEntityRegion().height + betweenPad_;
+                buttonUVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-                auto const NEXT_HORIZ_LIMIT{ buttonSVec_[i]->GetEntityRegion().width
+                auto const NEXT_HORIZ_LIMIT{ buttonUVec_[i]->GetEntityRegion().width
                                              + (outerPad_ * 2.0f) };
 
                 if (maxX < NEXT_HORIZ_LIMIT)
@@ -424,7 +430,8 @@ namespace sfml_util
                     maxX = NEXT_HORIZ_LIMIT;
                 }
             }
-            posY += buttonSVec_[buttonSVec_.size() - 1]->GetEntityRegion().height;
+
+            posY += buttonUVec_[buttonUVec_.size() - 1]->GetEntityRegion().height;
 
             // set the overall rect encompasing all radio buttons with their text
             SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, maxX, (posY - POS_TOP) + outerPad_));
@@ -432,16 +439,16 @@ namespace sfml_util
 
         void RadioButtonSet::RevertToPreviousSelection()
         {
-            buttonSVec_[prevSelection_]->SetIsInFirstState(false);
-            buttonSVec_[currentSelection_]->SetIsInFirstState(true);
+            buttonUVec_[prevSelection_]->SetIsInFirstState(false);
+            buttonUVec_[currentSelection_]->SetIsInFirstState(true);
             currentSelection_ = prevSelection_;
         }
 
         void RadioButtonSet::ChangeCurrentSelection(const std::size_t NEW_SELECTION)
         {
             prevSelection_ = currentSelection_;
-            buttonSVec_[currentSelection_]->SetIsInFirstState(true);
-            buttonSVec_[NEW_SELECTION]->SetIsInFirstState(false);
+            buttonUVec_[currentSelection_]->SetIsInFirstState(true);
+            buttonUVec_[NEW_SELECTION]->SetIsInFirstState(false);
             currentSelection_ = NEW_SELECTION;
         }
 
@@ -449,27 +456,26 @@ namespace sfml_util
         {
             target.draw(box_, states);
 
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
-            for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+            for (auto & buttonUPtr : buttonUVec_)
             {
-                buttonSVec_[i]->draw(target, states);
+                buttonUPtr->draw(target, states);
             }
         }
 
         void RadioButtonSet::SetSelectNumber(const std::size_t NEW_VAL)
         {
-            if (NEW_VAL >= buttonSVec_.size())
+            if (NEW_VAL >= buttonUVec_.size())
             {
                 std::ostringstream ss;
                 ss << "RadioButtonSet::SetSelectNumber(" << NEW_VAL
-                   << ") is out of range from the max of " << buttonSVec_.size() << ".";
+                   << ") is out of range from the max of " << buttonUVec_.size() << ".";
 
                 throw std::out_of_range(ss.str());
             }
 
-            buttonSVec_[currentSelection_]->SetIsInFirstState(true);
+            buttonUVec_[currentSelection_]->SetIsInFirstState(true);
             currentSelection_ = NEW_VAL;
-            buttonSVec_[currentSelection_]->SetIsInFirstState(false);
+            buttonUVec_[currentSelection_]->SetIsInFirstState(false);
             TriggerCallback();
         }
 
@@ -479,41 +485,41 @@ namespace sfml_util
 
             auto const ORIG_CURR_SEL{ currentSelection_ };
 
-            auto isCurrentSelectionValid(false);
-            auto hasSetFirstValid(false);
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
+            auto isCurrentSelectionValid{ false };
+            auto hasSetFirstValid{ false };
+            auto const NUM_BUTTONS{ buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
                 auto const IS_VALID{ !IsInvalid(i) };
 
-                if ((IS_VALID) && (ORIG_CURR_SEL == i))
+                if (IS_VALID && (ORIG_CURR_SEL == i))
                 {
                     isCurrentSelectionValid = true;
                 }
 
-                if ((IS_VALID) && (false == hasSetFirstValid))
+                if (IS_VALID && (false == hasSetFirstValid))
                 {
-                    buttonSVec_[i]->SetIsInFirstState(false);
+                    buttonUVec_[i]->SetIsInFirstState(false);
                     currentSelection_ = i;
                     hasSetFirstValid = true;
                 }
                 else
                 {
-                    buttonSVec_[i]->SetIsInFirstState(true);
+                    buttonUVec_[i]->SetIsInFirstState(true);
                 }
 
-                buttonSVec_[i]->SetValidity(IS_VALID);
+                buttonUVec_[i]->SetValidity(IS_VALID);
             }
 
             // restore original selection if it is still valid
             if (isCurrentSelectionValid)
             {
-                for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+                for (auto & buttonUPtr : buttonUVec_)
                 {
-                    buttonSVec_[i]->SetIsInFirstState(true);
+                    buttonUPtr->SetIsInFirstState(true);
                 }
 
-                buttonSVec_[ORIG_CURR_SEL]->SetIsInFirstState(false);
+                buttonUVec_[ORIG_CURR_SEL]->SetIsInFirstState(false);
                 currentSelection_ = ORIG_CURR_SEL;
             }
         }
@@ -522,29 +528,32 @@ namespace sfml_util
         {
             auto didStatesChange{ false };
 
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
+            auto const NUM_BUTTONS{ buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
-                const bool IS_IN_REGION(buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V));
-                const MouseState::Enum MOUSE_STATE(buttonSVec_[i]->GetMouseState());
+                auto & buttonUPtr{ buttonUVec_[i] };
+                auto const MOUSE_STATE{ buttonUPtr->GetMouseState() };
 
-                if (IS_IN_REGION && (MOUSE_STATE != MouseState::Down) && (currentSelection_ != i))
+                if ((MOUSE_STATE == MouseState::Down) || (currentSelection_ == i))
                 {
-                    if (buttonSVec_[i]->GetMouseState() != MouseState::Over)
+                    continue;
+                }
+
+                didStatesChange = true;
+
+                if (buttonUPtr->GetEntityRegion().contains(MOUSE_POS_V))
+                {
+                    if (MOUSE_STATE != MouseState::Over)
                     {
                         SoundManager::Instance()->PlaySfx_TickOn();
                     }
 
-                    buttonSVec_[i]->SetMouseState(MouseState::Over);
-                    didStatesChange = true;
+                    buttonUPtr->SetMouseState(MouseState::Over);
                     break;
                 }
-
-                if ((false == IS_IN_REGION) && (MOUSE_STATE != MouseState::Down)
-                    && (currentSelection_ != i))
+                else
                 {
-                    buttonSVec_[i]->SetMouseState(MouseState::Up);
-                    didStatesChange = true;
+                    buttonUPtr->SetMouseState(MouseState::Up);
                 }
             }
 
@@ -562,10 +571,9 @@ namespace sfml_util
         {
             GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-            auto const NUM_BUTTONS{ buttonSVec_.size() };
-            for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+            for (auto & buttonUPtr : buttonUVec_)
             {
-                buttonSVec_[i]->MoveEntityPos(HORIZ, VERT);
+                buttonUPtr->MoveEntityPos(HORIZ, VERT);
             }
 
             box_.MoveEntityPos(HORIZ, VERT);

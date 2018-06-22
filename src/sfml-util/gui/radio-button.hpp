@@ -53,6 +53,11 @@ namespace sfml_util
         class RadioButton : public TwoStateEntity
         {
         public:
+            RadioButton(const RadioButton &) = delete;
+            RadioButton(RadioButton &&) = delete;
+            RadioButton & operator=(const RadioButton &) = delete;
+            RadioButton & operator=(RadioButton &&) = delete;
+
             RadioButton(
                 const std::string & NAME,
                 const Brightness::Enum BRIGHTNESS,
@@ -95,8 +100,8 @@ namespace sfml_util
             virtual void SetupSprites(const Brightness::Enum BRIGHTNESS);
         };
 
-        using RadioButtonSPtr_t = std::shared_ptr<RadioButton>;
-        using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
+        using RadioButtonUPtr_t = std::unique_ptr<RadioButton>;
+        using RadioButtonUVec_t = std::vector<RadioButtonUPtr_t>;
 
         // Represents a set of radio buttons
         class RadioButtonSet : public GuiEntity
@@ -155,10 +160,9 @@ namespace sfml_util
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
                 const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             std::size_t GetSelectedNumber() const { return currentSelection_; }
-            const RadioButtonSPtr_t GetSelectedButton() { return buttonSVec_[currentSelection_]; }
 
             // throws on out of bounds, but will allow setting a grayed-out number
             void SetSelectNumber(const std::size_t);
@@ -167,18 +171,18 @@ namespace sfml_util
             const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionVec_; }
 
             // returns true if the currentSelection_ changed
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
             // cannot change any states, so always returns false
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
             // returns true if any MouseStates were changed
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-            virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual bool SetHasFocus(const bool);
+            bool SetHasFocus(const bool) override;
 
         protected:
             bool IsInvalid(const std::size_t INDEX) const;
@@ -192,9 +196,9 @@ namespace sfml_util
 
             void ChangeCurrentSelection(const std::size_t NEW_SELECTION);
 
-            virtual void OnClick(const sf::Vector2f &);
+            void OnClick(const sf::Vector2f &) override;
 
-            virtual void OnColorChange();
+            void OnColorChange() override;
 
             virtual void TriggerCallback();
 
@@ -207,7 +211,7 @@ namespace sfml_util
             float outerPad_;
             float betweenPad_;
             std::size_t currentSelection_;
-            RadioButtonSVec_t buttonSVec_;
+            RadioButtonUVec_t buttonUVec_;
             box::Box box_;
             std::size_t downInWhichRegion_;
             misc::SizetVec_t invalidSelectionVec_;
@@ -215,7 +219,7 @@ namespace sfml_util
         };
 
         using RadioButtonSetUPtr_t = std::unique_ptr<RadioButtonSet>;
-        using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
+        using RadioButtonSetUVec_t = std::vector<RadioButtonSetUPtr_t>;
 
     } // namespace gui
 } // namespace sfml_util

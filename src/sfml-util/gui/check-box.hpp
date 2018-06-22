@@ -35,6 +35,11 @@ namespace sfml_util
         class CheckBox : public TwoStateEntity
         {
         public:
+            CheckBox(const CheckBox &) = delete;
+            CheckBox(CheckBox &&) = delete;
+            CheckBox & operator=(const CheckBox &) = delete;
+            CheckBox & operator=(CheckBox &&) = delete;
+
             CheckBox(
                 const std::string & NAME,
                 const Brightness::Enum BRIGHTNESS,
@@ -68,18 +73,18 @@ namespace sfml_util
 
             void Setup(const float POS_LEFT, const float POS_TOP, const bool IS_INVALID);
 
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
         private:
             virtual void SetupSprites(const Brightness::Enum BRIGHTNESS);
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) {}
+            void OnClick(const sf::Vector2f &) override {}
         };
 
-        using CheckBoxSPtr_t = std::shared_ptr<CheckBox>;
-        using CheckBoxSVec_t = std::vector<CheckBoxSPtr_t>;
+        using CheckBoxUPtr_t = std::unique_ptr<CheckBox>;
+        using CheckBoxUVec_t = std::vector<CheckBoxUPtr_t>;
 
         // Represents a set of radio buttons
         class CheckBoxSet : public GuiEntity
@@ -90,7 +95,6 @@ namespace sfml_util
             CheckBoxSet & operator=(const CheckBoxSet &) = delete;
             CheckBoxSet & operator=(CheckBoxSet &&) = delete;
 
-        public:
             // Constructor for cases where each radio button's label text has a different style,
             // size, etc.
             CheckBoxSet(
@@ -136,28 +140,27 @@ namespace sfml_util
 
             void SetupInitialSelections();
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             const std::vector<std::size_t> GetCheckedNumbers() const;
-            const CheckBoxSVec_t GetCheckedBoxes();
 
             const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionsVec_; }
 
             // returns true if any boxes were checked or un-checked
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
             // cannot change any checkboxes, so always  returns false
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
             // returns true if any MouseStates were changed
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-            virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) {}
-            virtual void OnColorChange();
+            void OnClick(const sf::Vector2f &) override {}
+            void OnColorChange() override;
 
             bool IsInvalid(const std::size_t INDEX);
 
@@ -174,13 +177,11 @@ namespace sfml_util
             float betweenPad_;
             std::size_t downInWhichRegion_;
             std::deque<bool> currentSelections_;
-            CheckBoxSVec_t checkBoxSVec_;
+            CheckBoxUVec_t checkBoxUVec_;
             box::Box box_;
             misc::SizetVec_t invalidSelectionsVec_;
         };
 
-        using CheckBoxSetSPtr_t = std::shared_ptr<CheckBoxSet>;
-        using CheckBoxSetSVec_t = std::vector<CheckBoxSetSPtr_t>;
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

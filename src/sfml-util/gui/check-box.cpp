@@ -146,8 +146,10 @@ namespace sfml_util
                 {
                     guiImage_.GetUpSprite().setTextureRect(
                         GuiElements::GetRect_CheckBoxBrightOff());
+
                     guiImage_.GetDownSprite().setTextureRect(
                         GuiElements::GetRect_CheckBoxBrightOn());
+
                     break;
                 }
             }
@@ -172,7 +174,7 @@ namespace sfml_util
             , betweenPad_(BETWEEN_PAD)
             , downInWhichRegion_(TEXT_INFO_VEC.size())
             , currentSelections_(INITIAL_SELECTIONS)
-            , checkBoxSVec_()
+            , checkBoxUVec_()
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
@@ -197,7 +199,7 @@ namespace sfml_util
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
 
-                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
+                checkBoxUVec_.emplace_back(std::make_unique<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -227,7 +229,7 @@ namespace sfml_util
             , betweenPad_(BETWEEN_PAD)
             , downInWhichRegion_(TEXT_INFO_VEC.size())
             , currentSelections_(INITIAL_SELECTIONS)
-            , checkBoxSVec_()
+            , checkBoxUVec_()
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
@@ -251,7 +253,7 @@ namespace sfml_util
             {
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
-                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
+                checkBoxUVec_.emplace_back(std::make_unique<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -283,7 +285,7 @@ namespace sfml_util
             , betweenPad_(BETWEEN_PAD)
             , downInWhichRegion_(LABEL_VEC.size())
             , currentSelections_(INITIAL_SELECTIONS)
-            , checkBoxSVec_()
+            , checkBoxUVec_()
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
@@ -308,7 +310,7 @@ namespace sfml_util
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
 
-                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
+                checkBoxUVec_.emplace_back(std::make_unique<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -331,7 +333,7 @@ namespace sfml_util
             {
                 if (currentSelections_[i] == true)
                 {
-                    checkBoxSVec_[i]->SetIsInFirstState(false);
+                    checkBoxUVec_[i]->SetIsInFirstState(false);
                 }
             }
         }
@@ -340,10 +342,10 @@ namespace sfml_util
         {
             std::vector<std::size_t> checkedBoxNumbers;
 
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
+            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
-                if (false == checkBoxSVec_[i]->IsInFirstState())
+                if (false == checkBoxUVec_[i]->IsInFirstState())
                 {
                     checkedBoxNumbers.emplace_back(i);
                 }
@@ -352,34 +354,18 @@ namespace sfml_util
             return checkedBoxNumbers;
         }
 
-        const CheckBoxSVec_t CheckBoxSet::GetCheckedBoxes()
-        {
-            CheckBoxSVec_t checkedBoxes;
-
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
-            for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
-            {
-                if (false == checkBoxSVec_[i]->IsInFirstState())
-                {
-                    checkedBoxes.emplace_back(checkBoxSVec_[i]);
-                }
-            }
-
-            return checkedBoxes;
-        }
-
         bool CheckBoxSet::MouseUp(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
+            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
                 if ((false == IsInvalid(i))
-                    && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)
+                    && (checkBoxUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)
                         && (downInWhichRegion_ == i)))
                 {
                     SoundManager::Instance()->PlaySfx_AckMajor();
                     currentSelections_[i] = !currentSelections_[i];
-                    checkBoxSVec_[i]->SetIsInFirstState(!checkBoxSVec_[i]->IsInFirstState());
+                    checkBoxUVec_[i]->SetIsInFirstState(!checkBoxUVec_[i]->IsInFirstState());
                     return true;
                 }
             }
@@ -389,18 +375,18 @@ namespace sfml_util
 
         bool CheckBoxSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
+            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
                 if ((false == IsInvalid(i))
-                    && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)))
+                    && (checkBoxUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)))
                 {
                     downInWhichRegion_ = i;
                     return true;
                 }
             }
 
-            downInWhichRegion_ = checkBoxSVec_.size(); // reset to an invalid value
+            downInWhichRegion_ = checkBoxUVec_.size(); // reset to an invalid value
             return false;
         }
 
@@ -408,32 +394,33 @@ namespace sfml_util
         {
             bool wereAnyStatesChanged(false);
 
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
+            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
-                auto const MOUSE_STATE{ checkBoxSVec_[i]->GetMouseState() };
+                auto & checkBoxUPtr{ checkBoxUVec_[i] };
 
-                auto const IS_IN_REGION{ checkBoxSVec_[i]->GetEntityRegion().contains(
-                    MOUSE_POS_V) };
+                auto const MOUSE_STATE{ checkBoxUPtr->GetMouseState() };
 
-                if (IS_IN_REGION && (MOUSE_STATE != MouseState::Down)
-                    && (currentSelections_[i] == false))
+                if ((MOUSE_STATE == MouseState::Down) || (currentSelections_[i] != false))
                 {
-                    if (checkBoxSVec_[i]->GetMouseState() != MouseState::Over)
+                    continue;
+                }
+
+                wereAnyStatesChanged = true;
+
+                if (checkBoxUPtr->GetEntityRegion().contains(MOUSE_POS_V))
+                {
+                    if (MOUSE_STATE != MouseState::Over)
                     {
                         SoundManager::Instance()->PlaySfx_TickOn();
                     }
 
-                    checkBoxSVec_[i]->SetMouseState(MouseState::Over);
-                    wereAnyStatesChanged = true;
+                    checkBoxUPtr->SetMouseState(MouseState::Over);
                     break;
                 }
-
-                if ((false == IS_IN_REGION) && (MOUSE_STATE != MouseState::Down)
-                    && (currentSelections_[i] == false))
+                else
                 {
-                    checkBoxSVec_[i]->SetMouseState(MouseState::Up);
-                    wereAnyStatesChanged = true;
+                    checkBoxUPtr->SetMouseState(MouseState::Up);
                 }
             }
 
@@ -468,18 +455,18 @@ namespace sfml_util
         void CheckBoxSet::SetCheckboxPositions(const float POS_LEFT, const float POS_TOP)
         {
             // set the vertical positions of the radio buttons and find the maxX position
-            float maxX(checkBoxSVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
-            float posY(checkBoxSVec_[0]->GetEntityRegion().top);
+            float maxX(checkBoxUVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
+            float posY(checkBoxUVec_[0]->GetEntityRegion().top);
 
-            checkBoxSVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
+            checkBoxUVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
 
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
+            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
             for (std::size_t i(1); i < NUM_CHECKBOXES; ++i)
             {
-                posY += checkBoxSVec_[i - 1]->GetEntityRegion().height + betweenPad_;
-                checkBoxSVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
+                posY += checkBoxUVec_[i - 1]->GetEntityRegion().height + betweenPad_;
+                checkBoxUVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-                auto const NEXT_FAR_X_POINT{ checkBoxSVec_[i]->GetEntityRegion().width
+                auto const NEXT_FAR_X_POINT{ checkBoxUVec_[i]->GetEntityRegion().width
                                              + (outerPad_ * 2.0f) };
 
                 if (maxX < NEXT_FAR_X_POINT)
@@ -487,7 +474,8 @@ namespace sfml_util
                     maxX = NEXT_FAR_X_POINT;
                 }
             }
-            posY += checkBoxSVec_[checkBoxSVec_.size() - 1]->GetEntityRegion().height;
+
+            posY += checkBoxUVec_[checkBoxUVec_.size() - 1]->GetEntityRegion().height;
 
             // set the overall rect encompasing all radio buttons with their text
             SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, maxX, (posY - POS_TOP) + outerPad_));
@@ -497,10 +485,9 @@ namespace sfml_util
         {
             target.draw(box_, states);
 
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
-            for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+            for (auto & checkBoxUPtr : checkBoxUVec_)
             {
-                checkBoxSVec_[i]->draw(target, states);
+                checkBoxUPtr->draw(target, states);
             }
         }
 
@@ -517,14 +504,14 @@ namespace sfml_util
         {
             GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-            auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
-            for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+            for (auto & checkBoxUPtr : checkBoxUVec_)
             {
-                checkBoxSVec_[i]->MoveEntityPos(HORIZ, VERT);
+                checkBoxUPtr->MoveEntityPos(HORIZ, VERT);
             }
 
             box_.MoveEntityPos(HORIZ, VERT);
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

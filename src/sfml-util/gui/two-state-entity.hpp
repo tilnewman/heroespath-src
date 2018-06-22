@@ -38,7 +38,6 @@ namespace sfml_util
             TwoStateEntity & operator=(const TwoStateEntity &) = delete;
             TwoStateEntity & operator=(TwoStateEntity &&) = delete;
 
-        public:
             TwoStateEntity(
                 const std::string & NAME,
                 const float POS_LEFT,
@@ -65,23 +64,24 @@ namespace sfml_util
             {
                 return (MouseState::Down != guiImage_.GetMouseState());
             }
+
             virtual void SetIsInFirstState(const bool IS_IN_FIRST_STATE);
 
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
             virtual const std::string GetText() const { return guiText_.GetText(); }
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            virtual void SetMouseState(const MouseState::Enum);
+            void SetMouseState(const MouseState::Enum) override;
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-            virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) {}
+            void OnClick(const sf::Vector2f &) override {}
 
             // call this function after constructors and after the sprites have been setup
             virtual void PostSpriteSetup(const float POS_LEFT, const float POS_TOP);
@@ -96,6 +96,7 @@ namespace sfml_util
             // use guiImage_.upSprite_ as first state sprite, and guiImage_.downSprite for the
             // second state.
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

@@ -109,9 +109,6 @@ namespace sfml_util
             text_render::RenderedText renderedText_;
         };
 
-        using GuiTextSPtr_t = std::shared_ptr<GuiText>;
-        using GuiTextSVec_t = std::vector<GuiTextSPtr_t>;
-
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
