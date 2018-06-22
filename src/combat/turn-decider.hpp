@@ -39,9 +39,6 @@ namespace combat
     // forward declarations
     class TurnInfo;
 
-    class TurnDecider;
-    using TurnDeciderSPtr_t = std::shared_ptr<TurnDecider>;
-
     class CombatDisplay;
     using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 

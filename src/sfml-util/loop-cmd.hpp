@@ -450,8 +450,6 @@ namespace sfml_util
         const sf::Vector2f MOUSE_CLICK_POS_;
     };
 
-    using LoopCmdSPtr_t = std::shared_ptr<LoopCmd>;
-    using LoopCmdSVec_t = std::vector<LoopCmdSPtr_t>;
 } // namespace sfml_util
 } // namespace heroespath
 

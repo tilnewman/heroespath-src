@@ -64,7 +64,6 @@ namespace stage
             const std::string & PATH = "") override;
 
         void PerformNextTest() override;
-        void PerformStatsTests();
 
     private:
         void TestStatSetsCurrentAndNormal(
