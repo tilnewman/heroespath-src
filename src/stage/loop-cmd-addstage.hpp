@@ -56,37 +56,29 @@ namespace stage
 
         virtual ~LoopCmd_AddStage() = default;
 
-        virtual bool Execute()
+        void Execute() override
         {
             const sfml_util::IStagePtr_t ISTAGE_PTR{ new StageType_t() };
             ISTAGE_PTR->Setup();
             game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
-            return true;
         }
     };
 
     class LoopCmd_AddStage_Combat : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &) = delete;
-        LoopCmd_AddStage_Combat(LoopCmd_AddStage_Combat &&) = delete;
-        LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
-        LoopCmd_AddStage_Combat & operator=(LoopCmd_AddStage_Combat &&) = delete;
-
-    public:
         explicit LoopCmd_AddStage_Combat(const bool WILL_ADVANCE_TURN)
-            : LoopCmd("AddStage_Combat")
+            : LoopCmd("AddStage_CombatStage")
             , willAdvanceTurn_(WILL_ADVANCE_TURN)
         {}
 
         virtual ~LoopCmd_AddStage_Combat() = default;
 
-        virtual bool Execute()
+        void Execute() override
         {
             const sfml_util::IStagePtr_t ISTAGE_PTR(new stage::CombatStage(willAdvanceTurn_));
             ISTAGE_PTR->Setup();
             game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
-            return true;
         }
 
     private:
@@ -96,17 +88,11 @@ namespace stage
     class LoopCmd_AddStage_Inventory : public sfml_util::LoopCmd
     {
     public:
-        LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) = delete;
-        LoopCmd_AddStage_Inventory(LoopCmd_AddStage_Inventory &&) = delete;
-        LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) = delete;
-        LoopCmd_AddStage_Inventory & operator=(LoopCmd_AddStage_Inventory &&) = delete;
-
-    public:
         LoopCmd_AddStage_Inventory(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE)
-            : LoopCmd("AddStage_Inventory")
+            : LoopCmd("AddStage_InventoryStage")
             , turnCreaturePtr(TURN_CREATURE_PTR)
             , inventoryCreaturePtr(INVENTORY_CREATURE_PTR)
             , currentPhase_(CURRENT_PHASE)
@@ -114,14 +100,13 @@ namespace stage
 
         virtual ~LoopCmd_AddStage_Inventory() = default;
 
-        virtual bool Execute()
+        void Execute() override
         {
             const sfml_util::IStagePtr_t ISTAGE_PTR(
                 new InventoryStage(turnCreaturePtr, inventoryCreaturePtr, currentPhase_));
 
             ISTAGE_PTR->Setup();
             game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
-            return true;
         }
 
     private:

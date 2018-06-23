@@ -48,7 +48,6 @@ namespace game
         LoopManager & operator=(const LoopManager &) = delete;
         LoopManager & operator=(LoopManager &&) = delete;
 
-    public:
         LoopManager();
         ~LoopManager();
 
@@ -156,7 +155,7 @@ namespace game
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE);
 
-        sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmdPtr_t) { return loop_; }
+        sfml_util::Loop & CommandLoopAccess(const sfml_util::LoopCmd * const) { return loop_; }
 
     private:
         void TransitionTo_Intro();
@@ -169,22 +168,26 @@ namespace game
             loop_.Exit();
 
             loop_.AssignPopupCallbackHandlerInfo(POPUP_HANDLER_PTR, POPUP_INFO);
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 
-            cmdQueue_.push(
-                std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_ExitAfterKeypress>(false));
 
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
+
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
+
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeOut>(
                 popup::PopupManager::Color_Fade(), popup::PopupManager::SpeedMult_Fade(), true));
 
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-            cmdQueue_.push(
-                std::make_shared<sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t>>(
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t>>(
                     loop_, POPUP_INFO));
 
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
         }
 
         void TransitionFrom_Popup();
@@ -204,7 +207,7 @@ namespace game
         void TransitionHelper(
             const TransOpt OPTIONS,
             const sfml_util::LoopState::Enum NEW_STATE,
-            const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+            sfml_util::LoopCmdUPtr_t && loopCmdUPtr,
             const sfml_util::music::Enum MUSIC_TO_STOP = sfml_util::music::All,
             const sfml_util::music::Enum MUSIC_TO_START = sfml_util::music::None);
 
@@ -215,7 +218,7 @@ namespace game
         static std::string startupStageName_;
         //
         sfml_util::LoopState::Enum state_;
-        std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
+        sfml_util::LoopCmdUVec_t cmdQueueVec_;
         sfml_util::Loop loop_;
         popup::ResponseTypes::Enum popupResponse_;
         std::size_t popupSelection_;

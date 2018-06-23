@@ -37,7 +37,7 @@ namespace game
 
     LoopManager::LoopManager()
         : state_(sfml_util::LoopState::None)
-        , cmdQueue_()
+        , cmdQueueVec_()
         , loop_("DefaultLoop")
         , popupResponse_(popup::ResponseTypes::None)
         , popupSelection_(0)
@@ -136,20 +136,20 @@ namespace game
 
     void LoopManager::TransitionTo_Intro()
     {
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_RemoveAllStages>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
 
-        cmdQueue_.push(
-            std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Intro));
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Intro));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(true));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterKeypress>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_SetMouseVisibility>(false));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_AddStage_Default>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_AddStage_Default>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetHoldTime>(2.5f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_SetHoldTime>(2.5f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
         // set the theme music volume to 25% even if the config file has it set lower so it can
         // always be heard during the intro
@@ -160,30 +160,32 @@ namespace game
             targetVolumeToUse = VOLUME_IF_INTRO_OR_CAMP_STAGE;
         }
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StartMusic>(
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_StartMusic>(
             sfml_util::music::Theme,
             sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
             targetVolumeToUse));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetHoldTime>(2.0f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_SetHoldTime>(2.0f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_RemoveAllStages>());
-        cmdQueue_.push(std::make_shared<stage::LoopCmd_AddStage<stage::IntroStage>>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
+        cmdQueueVec_.emplace_back(std::make_unique<stage::LoopCmd_AddStage<stage::IntroStage>>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterFade>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeIn>(sf::Color::Black, 50.0f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterFade>());
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_FadeIn>(sf::Color::Black, 50.0f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetHoldTime>(4.0f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_SetHoldTime>(4.0f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(true));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterKeypress>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterFade>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(sf::Color::Black, 150.0f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterFade>());
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_FadeOut>(sf::Color::Black, 150.0f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
         TransitionTo_MainMenu();
     }
@@ -191,13 +193,13 @@ namespace game
     void LoopManager::TransitionFrom_Popup()
     {
         loop_.Exit();
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(prevState_));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_RemoveStage_Popup>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_StateChange>(prevState_));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveStage_Popup>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeIn>(
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeIn>(
             popup::PopupManager::Color_Fade(), popup::PopupManager::SpeedMult_Fade()));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
     }
 
     void LoopManager::TransitionTo_Exit()
@@ -205,18 +207,18 @@ namespace game
         CommandQueueClear();
         loop_.Exit();
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_IgnoreMouse>(true));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterKeypress>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 
-        cmdQueue_.push(
-            std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Exit));
-        cmdQueue_.push(
-            std::make_shared<sfml_util::LoopCmd_StopMusic>(sfml_util::music::Enum::All, 100.0f));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_RemoveAllStages>());
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Exit));
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_StopMusic>(sfml_util::music::Enum::All, 100.0f));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeOut>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
     }
 
     void LoopManager::TransitionTo_Credits()
@@ -224,13 +226,13 @@ namespace game
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseIgnore),
             sfml_util::LoopState::Credits,
-            std::make_shared<stage::LoopCmd_AddStage<stage::CreditsStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::CreditsStage>>(),
             sfml_util::music::All,
             sfml_util::music::Credits);
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(false));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_IgnoreMouse>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(true));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
         TransitionTo_MainMenu();
     }
 
@@ -240,7 +242,7 @@ namespace game
             static_cast<TransOpt>(
                 TransOpt::MouseIgnore | TransOpt::MouseRestore | TransOpt::FinalExecute),
             sfml_util::LoopState::Menu,
-            std::make_shared<stage::LoopCmd_AddStage<stage::MainMenuStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::MainMenuStage>>(),
             sfml_util::music::Wind,
             sfml_util::music::Theme);
     }
@@ -252,7 +254,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Settings,
-            std::make_shared<stage::LoopCmd_AddStage<stage::SettingsStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::SettingsStage>>(),
             sfml_util::music::All,
             sfml_util::music::Theme);
 
@@ -264,7 +266,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Character,
-            std::make_shared<stage::LoopCmd_AddStage<stage::CharacterStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::CharacterStage>>(),
             sfml_util::music::All,
             sfml_util::music::Wind);
     }
@@ -275,14 +277,14 @@ namespace game
             static_cast<TransOpt>(
                 TransOpt::ClearQueue | TransOpt::MouseIgnore | TransOpt::MouseRestore),
             sfml_util::LoopState::Party,
-            std::make_shared<stage::LoopCmd_AddStage<stage::PartyStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::PartyStage>>(),
             sfml_util::music::All,
             sfml_util::music::PartyCreation);
 
-        cmdQueue_.push(
-            std::make_shared<sfml_util::LoopCmd_FakeMouseClick>(sf::Vector2f(400.0f, 370.0f)));
+        cmdQueueVec_.emplace_back(
+            std::make_unique<sfml_util::LoopCmd_FakeMouseClick>(sf::Vector2f(400.0f, 370.0f)));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
     }
 
     void LoopManager::TransitionTo_Inn()
@@ -290,7 +292,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Inn,
-            std::make_shared<stage::LoopCmd_AddStage<stage::InnStage>>());
+            std::make_unique<stage::LoopCmd_AddStage<stage::InnStage>>());
     }
 
     void LoopManager::TransitionTo_Camp()
@@ -298,7 +300,7 @@ namespace game
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseRestore),
             sfml_util::LoopState::Camp,
-            std::make_shared<stage::LoopCmd_AddStage<stage::CampStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::CampStage>>(),
             sfml_util::music::All,
             sfml_util::music::None);
 
@@ -311,12 +313,12 @@ namespace game
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
             targetVolumeToUse = VOLUME_IF_INTRO_OR_CAMP_STAGE;
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StartMusic>(
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_StartMusic>(
             sfml_util::music::Theme,
             sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
             targetVolumeToUse));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
     }
 
     void LoopManager::TransitionTo_LoadGameMenu()
@@ -324,7 +326,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Load,
-            std::make_shared<stage::LoopCmd_AddStage<stage::LoadGameStage>>());
+            std::make_unique<stage::LoopCmd_AddStage<stage::LoadGameStage>>());
     }
 
     void LoopManager::TransitionTo_Combat(const bool WILL_ADVANCE_TURN)
@@ -332,7 +334,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Combat,
-            std::make_shared<stage::LoopCmd_AddStage_Combat>(WILL_ADVANCE_TURN),
+            std::make_unique<stage::LoopCmd_AddStage_Combat>(WILL_ADVANCE_TURN),
             sfml_util::music::All,
             sfml_util::music::None);
     }
@@ -342,7 +344,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Test,
-            std::make_shared<stage::LoopCmd_AddStage<stage::TestingStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::TestingStage>>(),
             sfml_util::music::All,
             sfml_util::music::None);
     }
@@ -353,7 +355,7 @@ namespace game
             static_cast<TransOpt>(
                 TransOpt::ClearQueue | TransOpt::FinalExecute | TransOpt::MouseRestore),
             sfml_util::LoopState::Treasure,
-            std::make_shared<stage::LoopCmd_AddStage<stage::TreasureStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::TreasureStage>>(),
             sfml_util::music::All,
             sfml_util::music::None);
     }
@@ -363,7 +365,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Adventure,
-            std::make_shared<stage::LoopCmd_AddStage<stage::AdventureStage>>(),
+            std::make_unique<stage::LoopCmd_AddStage<stage::AdventureStage>>(),
             sfml_util::music::All,
             sfml_util::music::None);
     }
@@ -378,7 +380,7 @@ namespace game
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Inventory,
-            std::make_shared<stage::LoopCmd_AddStage_Inventory>(
+            std::make_unique<stage::LoopCmd_AddStage_Inventory>(
                 TURN_CREATURE_PTR, INVENTORY_CREATURE_PTR, CURRENT_PHASE),
             sfml_util::music::None,
             sfml_util::music::Inventory);
@@ -387,7 +389,7 @@ namespace game
     void LoopManager::TransitionHelper(
         const TransOpt OPTIONS,
         const sfml_util::LoopState::Enum NEW_STATE,
-        const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
+        sfml_util::LoopCmdUPtr_t && loopCmdUPtr,
         const sfml_util::music::Enum MUSIC_TO_STOP,
         const sfml_util::music::Enum MUSIC_TO_START)
     {
@@ -400,63 +402,63 @@ namespace game
 
         if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::MouseIgnore))
         {
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(false));
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(true));
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_SetMouseVisibility>(false));
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_IgnoreMouse>(true));
         }
 
-        // cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(true) );
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_StateChange>(NEW_STATE));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(NEW_STATE));
-
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterKeypress>(false));
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 
         if (MUSIC_TO_STOP != sfml_util::music::None)
         {
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StopMusic>(MUSIC_TO_STOP));
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_StopMusic>(MUSIC_TO_STOP));
         }
 
         if (MUSIC_TO_START != sfml_util::music::None)
         {
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StartMusic>(MUSIC_TO_START));
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_StartMusic>(MUSIC_TO_START));
         }
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterFade>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterFade>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeOut>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_RemoveAllStages>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
 
-        cmdQueue_.push(ADD_STAGE_LOOP_CMD);
+        cmdQueueVec_.emplace_back(std::move(loopCmdUPtr));
 
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterFade>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeIn>());
-        cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterFade>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeIn>());
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
-        // cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_IgnoreKeystrokes>(false) );
+        // cmdQueue_.push( std::make_unique<sfml_util::LoopCmd_IgnoreKeystrokes>(false) );
 
         if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::MouseRestore))
         {
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_IgnoreMouse>(false));
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_SetMouseVisibility>(true));
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_IgnoreMouse>(false));
+            cmdQueueVec_.emplace_back(
+                std::make_unique<sfml_util::LoopCmd_SetMouseVisibility>(true));
         }
 
         if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::FinalExecute))
         {
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
+            cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
         }
     }
 
     bool LoopManager::Execute()
     {
-        while (false == cmdQueue_.empty())
+        while (false == cmdQueueVec_.empty())
         {
-            auto cmdSPtr{ cmdQueue_.front() };
-            cmdQueue_.pop();
+            // M_HP_LOG("LoopManager::Execute() executing: " << cmdQueueVec_.front()->GetName() );
 
-            // M_HP_LOG("LoopManager::Execute() executing: " << cmdSPtr->GetName() );
-
-            cmdSPtr->Execute();
+            cmdQueueVec_.front()->Execute();
+            cmdQueueVec_.erase(std::begin(cmdQueueVec_));
 
             auto const CURRENT_STATE{ loop_.GetState() };
             if (CURRENT_STATE != state_)
@@ -673,14 +675,7 @@ namespace game
         return CHANGE_RESULT;
     }
 
-    void LoopManager::CommandQueueClear()
-    {
-        const std::size_t CMD_COUNT(cmdQueue_.size());
-        for (std::size_t i(0); i < CMD_COUNT; ++i)
-        {
-            cmdQueue_.pop();
-        }
-    }
+    void LoopManager::CommandQueueClear() { cmdQueueVec_.clear(); }
 
 } // namespace game
 } // namespace heroespath

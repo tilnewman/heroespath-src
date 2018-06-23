@@ -8,7 +8,6 @@
 #define HEROESPATH_SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
 //
 // loop-cmd.hpp
-//  Code that encapsulates a command that performs some action on a Loop object.
 //
 #include "misc/not-null.hpp"
 #include "sfml-util/loop-state-enum.hpp"
@@ -27,46 +26,26 @@ namespace heroespath
 namespace sfml_util
 {
 
-    // interface class for all loop commands
-    class ILoopCmd
+    // Responsible for implementing a common base class for all LoopCmds.
+    class LoopCmd
     {
     public:
-        virtual ~ILoopCmd() = default;
+        explicit LoopCmd(const std::string & NAME)
+            : name_(std::string("LoopCommand").append(NAME))
+        {}
 
-        // all loop commands have meaningful names for logging
-        virtual const std::string GetName() const = 0;
+        virtual ~LoopCmd() = default;
+        virtual const std::string Name() const { return name_; }
+        virtual void Execute() = 0;
 
-        // perform some action on the loop
-        // significance of the return value to be defined by the derived type.
-        virtual bool Execute() = 0;
+    private:
+        std::string name_;
     };
 
-    using ILoopCmdPtr_t = misc::NotNull<ILoopCmd *>;
-    using ILoopCmdSPtr_t = std::shared_ptr<ILoopCmd>;
-    using ILoopCmdSVec_t = std::vector<ILoopCmdSPtr_t>;
+    using LoopCmdUPtr_t = std::unique_ptr<LoopCmd>;
+    using LoopCmdUVec_t = std::vector<LoopCmdUPtr_t>;
 
-    // A type that performs some action on a Loop
-    class LoopCmd : public ILoopCmd
-    {
-    public:
-        LoopCmd(const LoopCmd &) = delete;
-        LoopCmd(LoopCmd &&) = delete;
-        LoopCmd & operator=(const LoopCmd &) = delete;
-        LoopCmd & operator=(LoopCmd &&) = delete;
-
-    public:
-        explicit LoopCmd(const std::string & NAME);
-        virtual ~LoopCmd();
-
-        virtual const std::string GetName() const { return NAME_; }
-
-        virtual bool Execute() = 0;
-
-    protected:
-        const std::string NAME_;
-    };
-
-    // executes the loop
+    // Responsible for starting execution of the game loop
     class LoopCmd_Execute : public LoopCmd
     {
     public:
@@ -75,59 +54,58 @@ namespace sfml_util
         {}
 
         virtual ~LoopCmd_Execute() = default;
-
-        virtual bool Execute();
+        void Execute() override;
     };
 
-    // holds a LoopManager state change
+    // Responsible for causing a LoopManager state change
     class LoopCmd_StateChange : public LoopCmd
     {
     public:
         explicit LoopCmd_StateChange(const LoopState::Enum STATE_NUM)
             : LoopCmd("LoopStateChange")
-            , STATE_(STATE_NUM)
+            , newState_(STATE_NUM)
         {}
 
         virtual ~LoopCmd_StateChange() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " new_state=" << LoopState::ToString(STATE_);
+            ss << LoopCmd::Name() << "To=" << LoopState::ToString(newState_);
             return ss.str();
         }
 
     private:
-        const LoopState::Enum STATE_;
+        LoopState::Enum newState_;
     };
 
-    // Sets the visibility of the mouse the loop
+    // Responsible for setting the mouse visibility
     class LoopCmd_SetMouseVisibility : public LoopCmd
     {
     public:
         explicit LoopCmd_SetMouseVisibility(const bool IS_VISIBLE)
             : LoopCmd("SetMouseVisibility")
-            , IS_VISIBLE_(IS_VISIBLE)
+            , isVisible_(IS_VISIBLE)
         {}
 
         virtual ~LoopCmd_SetMouseVisibility() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " visible=" << std::boolalpha << IS_VISIBLE_;
+            ss << LoopCmd::Name() << "To=" << std::boolalpha << isVisible_;
             return ss.str();
         }
 
     private:
-        const bool IS_VISIBLE_;
+        bool isVisible_;
     };
 
-    // Starts the theme music playing in the Loop
+    // Responsible for starting music
     class LoopCmd_StartMusic : public LoopCmd
     {
     public:
@@ -136,73 +114,70 @@ namespace sfml_util
             const float SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
             const float TARGET_VOLUME = MusicOperator::VOLUME_USE_GLOBAL_)
             : LoopCmd("StartMusic")
-            , MUSIC_TO_START_(MUSIC_TO_START)
-            , TARGET_VOLUME_(TARGET_VOLUME)
-            , SPEED_MULT_(SPEED_MULT)
+            , musicToStart_(MUSIC_TO_START)
+            , targetVolume_(TARGET_VOLUME)
+            , speedMult_(SPEED_MULT)
         {}
 
         virtual ~LoopCmd_StartMusic() = default;
 
-        virtual bool Execute()
+        void Execute() override
         {
             sfml_util::SoundManager::Instance()->MusicStart(
-                MUSIC_TO_START_, SPEED_MULT_, TARGET_VOLUME_);
-
-            return true;
+                musicToStart_, speedMult_, targetVolume_);
         }
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
 
-            ss << NAME_ << " \"" << music::ToString(MUSIC_TO_START_)
-               << "\", target_vol=" << TARGET_VOLUME_ << ", speed_mult=" << SPEED_MULT_;
+            ss << LoopCmd::Name() << "_" << music::ToString(musicToStart_)
+               << "_AtVol=" << targetVolume_ << "_WithSpeedMult=" << speedMult_;
 
             return ss.str();
         }
 
     private:
-        const music::Enum MUSIC_TO_START_;
-        const float TARGET_VOLUME_;
-        const float SPEED_MULT_;
+        music::Enum musicToStart_;
+        float targetVolume_;
+        float speedMult_;
     };
 
-    // Instructs the Loop to start fading out the theme music
+    // Responsible for fading out music
     class LoopCmd_StopMusic : public LoopCmd
     {
     public:
         explicit LoopCmd_StopMusic(
             const music::Enum MUSIC_TO_STOP,
             const float SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_)
-            : LoopCmd("StopMusic")
-            , MUSIC_TO_STOP_(MUSIC_TO_STOP)
-            , SPEED_MULT_(SPEED_MULT)
+            : LoopCmd("MusicFadeOut")
+            , musicToStop_(MUSIC_TO_STOP)
+            , speedMult_(SPEED_MULT)
         {}
 
         virtual ~LoopCmd_StopMusic() = default;
 
-        virtual bool Execute()
+        void Execute() override
         {
-            sfml_util::SoundManager::Instance()->MusicStop(MUSIC_TO_STOP_, SPEED_MULT_);
-            return true;
+            sfml_util::SoundManager::Instance()->MusicStop(musicToStop_, speedMult_);
         }
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
 
-            ss << NAME_ << "  \"" << music::ToString(MUSIC_TO_STOP_)
-               << "\", speed_mult=" << SPEED_MULT_;
+            ss << LoopCmd::Name() << "_" << music::ToString(musicToStop_)
+               << "_WithSpeedMult=" << speedMult_;
 
             return ss.str();
         }
 
     private:
-        const music::Enum MUSIC_TO_STOP_;
-        const float SPEED_MULT_;
+        music::Enum musicToStop_;
+        float speedMult_;
     };
 
-    // adds the default stage to a Loop
+    // Responsible for adding the default stage
     class LoopCmd_AddStage_Default : public LoopCmd
     {
     public:
@@ -211,35 +186,34 @@ namespace sfml_util
         {}
 
         virtual ~LoopCmd_AddStage_Default() = default;
-
-        virtual bool Execute();
+        void Execute() override;
     };
 
-    // adds a hold time to the loop
+    // Responsible for setting the hold time
     class LoopCmd_SetHoldTime : public LoopCmd
     {
     public:
         explicit LoopCmd_SetHoldTime(const float SECONDS)
             : LoopCmd("SetHoldTime")
-            , TIME_(SECONDS)
+            , holdTimeSec_(SECONDS)
         {}
 
         virtual ~LoopCmd_SetHoldTime() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " seconds=" << TIME_;
+            ss << LoopCmd::Name() << "To=" << holdTimeSec_;
             return ss.str();
         }
 
     private:
-        const float TIME_;
+        float holdTimeSec_;
     };
 
-    // adds a hold time to the loop
+    // Responsible for removing all stages
     class LoopCmd_RemoveAllStages : public LoopCmd
     {
     public:
@@ -248,11 +222,10 @@ namespace sfml_util
         {}
 
         virtual ~LoopCmd_RemoveAllStages() = default;
-
-        virtual bool Execute();
+        void Execute() override;
     };
 
-    // sets the loop to terminate after the current or next fade
+    // Responsible for setting the current game loop to exit after a fade-out
     class LoopCmd_ExitAfterFade : public LoopCmd
     {
     public:
@@ -261,11 +234,10 @@ namespace sfml_util
         {}
 
         virtual ~LoopCmd_ExitAfterFade() = default;
-
-        virtual bool Execute();
+        void Execute() override;
     };
 
-    // fades a loop object in
+    // Responsible starting a fade-in
     class LoopCmd_FadeIn : public LoopCmd
     {
     public:
@@ -274,31 +246,33 @@ namespace sfml_util
             const float SPEED_MULT = 200.0f,
             const bool WILL_HOLD_FADE = false)
             : LoopCmd(std::string("FadeIn"))
-            , SPEED_MULT_(SPEED_MULT)
-            , FADE_FROM_COLOR_(FADE_FROM_COLOR)
-            , WILL_HOLD_FADE_(WILL_HOLD_FADE)
+            , speedMult_(SPEED_MULT)
+            , fadeFromColor_(FADE_FROM_COLOR)
+            , willHoldAfter_(WILL_HOLD_FADE)
         {}
 
         virtual ~LoopCmd_FadeIn() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " fade_from_color=" << sfml_util::color::ColorToString(FADE_FROM_COLOR_)
-               << ", speed_mult=" << SPEED_MULT_ << ", will_hold_after_fade=" << std::boolalpha
-               << WILL_HOLD_FADE_;
+            ss << LoopCmd::Name()
+               << "_FromColor=" << sfml_util::color::ColorToString(fadeFromColor_)
+               << "_WithSpeedMult=" << speedMult_ << "_WillHoldAfter=" << std::boolalpha
+               << willHoldAfter_;
+
             return ss.str();
         }
 
     private:
-        const float SPEED_MULT_;
-        const sf::Color FADE_FROM_COLOR_;
-        bool WILL_HOLD_FADE_;
+        float speedMult_;
+        sf::Color fadeFromColor_;
+        bool willHoldAfter_;
     };
 
-    // fades-out a loop object in
+    // Responsible for starting a fade-out
     class LoopCmd_FadeOut : public LoopCmd
     {
     public:
@@ -307,147 +281,145 @@ namespace sfml_util
             const float SPEED_MULT = 300.0f,
             const bool WILL_HOLD_FADE = false)
             : LoopCmd(std::string("FadeOut"))
-            , SPEED_MULT_(SPEED_MULT)
-            , FADE_TO_COLOR_(FADE_TO_COLOR)
-            , WILL_HOLD_FADE_(WILL_HOLD_FADE)
+            , speedMult_(SPEED_MULT)
+            , fadeToColor_(FADE_TO_COLOR)
+            , willHoldAfter_(WILL_HOLD_FADE)
         {}
 
         virtual ~LoopCmd_FadeOut() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " fade_to_color=" << sfml_util::color::ColorToString(FADE_TO_COLOR_)
-               << ", speed_mult=" << SPEED_MULT_ << ", will_hold_after_fade=" << std::boolalpha
-               << WILL_HOLD_FADE_;
+            ss << LoopCmd::Name() << "To=" << sfml_util::color::ColorToString(fadeToColor_)
+               << "_WithSpeedMult=" << speedMult_ << "_WillHoldAfter=" << std::boolalpha
+               << willHoldAfter_;
+
             return ss.str();
         }
 
     private:
-        const float SPEED_MULT_;
-        const sf::Color FADE_TO_COLOR_;
-        const bool WILL_HOLD_FADE_;
+        float speedMult_;
+        sf::Color fadeToColor_;
+        bool willHoldAfter_;
     };
 
-    // sets the loop to terminate after keypresses
+    // Responsible for setting the game loop to exit after a keypress
     class LoopCmd_ExitAfterKeypress : public LoopCmd
     {
     public:
-        explicit LoopCmd_ExitAfterKeypress(const bool WILL_EXIT_ON_KEYSTROKE)
+        explicit LoopCmd_ExitAfterKeypress(const bool WILL_EXIT_ON_KEYPRESS)
             : LoopCmd("ExitOnKeypress")
-            , WILL_EXIT_ON_KEYSTROKE_(WILL_EXIT_ON_KEYSTROKE)
+            , willExitOnKeypress_(WILL_EXIT_ON_KEYPRESS)
         {}
 
         virtual ~LoopCmd_ExitAfterKeypress() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " willExitOnKeypress=" << std::boolalpha << WILL_EXIT_ON_KEYSTROKE_;
+            ss << LoopCmd::Name() << "To=" << std::boolalpha << willExitOnKeypress_;
             return ss.str();
         }
 
     private:
-        const bool WILL_EXIT_ON_KEYSTROKE_;
+        bool willExitOnKeypress_;
     };
 
-    // sets the loop to terminate after mouse clicks
+    // Responsible for setting the game loop to exit after a mouse-click
     class LoopCmd_ExitAfterMouseclick : public LoopCmd
     {
     public:
         explicit LoopCmd_ExitAfterMouseclick(const bool WILL_EXIT_ON_MOUSECLICK)
             : LoopCmd("ExitOnMouseclick")
-            , WILL_EXIT_ON_MOUSECLICK_(WILL_EXIT_ON_MOUSECLICK)
+            , willExitOnMouseClick_(WILL_EXIT_ON_MOUSECLICK)
         {}
 
         virtual ~LoopCmd_ExitAfterMouseclick() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " willExitOnMouseclicks=" << std::boolalpha << WILL_EXIT_ON_MOUSECLICK_;
+            ss << LoopCmd::Name() << "To=" << std::boolalpha << willExitOnMouseClick_;
             return ss.str();
         }
 
     private:
-        const bool WILL_EXIT_ON_MOUSECLICK_;
+        bool willExitOnMouseClick_;
     };
 
-    // removes focus from all GuiEntitys
+    // Responsible for removing focus from all GuiEntities
     class LoopCmd_RemoveFocus : public LoopCmd
     {
     public:
         LoopCmd_RemoveFocus()
-            : LoopCmd("RemoveFocus")
+            : LoopCmd("RemoveFocusFromAllEntities")
         {}
 
         virtual ~LoopCmd_RemoveFocus() = default;
-
-        virtual bool Execute();
+        void Execute() override;
     };
 
-    // ignores mouse movement
+    // Responsible for setting the game loop to ignore mouse movement
     class LoopCmd_IgnoreMouse : public LoopCmd
     {
     public:
         explicit LoopCmd_IgnoreMouse(const bool WILL_IGNORE_MOUSE)
             : LoopCmd("IgnoreMouse")
-            , WILL_IGNORE_MOUSE_(WILL_IGNORE_MOUSE)
+            , willIgnoreMouse_(WILL_IGNORE_MOUSE)
         {}
 
         virtual ~LoopCmd_IgnoreMouse() = default;
-
-        virtual bool Execute();
+        void Execute() override;
 
     private:
-        const bool WILL_IGNORE_MOUSE_;
+        bool willIgnoreMouse_;
     };
 
-    // ignores keystrokes
+    // Respobsible for setting the game loop to ignore keystrokes
     class LoopCmd_IgnoreKeystrokes : public LoopCmd
     {
     public:
         explicit LoopCmd_IgnoreKeystrokes(const bool WILL_IGNORE_KEYSTROKES)
             : LoopCmd("IgnoreKeystrokes")
-            , WILL_IGNORE_KEYSTROKES_(WILL_IGNORE_KEYSTROKES)
+            , willIgnoreKeyStrokes_(WILL_IGNORE_KEYSTROKES)
         {}
 
         virtual ~LoopCmd_IgnoreKeystrokes() = default;
-
-        virtual bool Execute();
+        void Execute() override;
 
     private:
-        const bool WILL_IGNORE_KEYSTROKES_;
+        bool willIgnoreKeyStrokes_;
     };
 
-    // fakes a mouse click at the given location
+    // Responsible fork faking a mouse click at the given location
     class LoopCmd_FakeMouseClick : public LoopCmd
     {
     public:
         explicit LoopCmd_FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
             : LoopCmd("FakeMouseClick")
-            , MOUSE_CLICK_POS_(MOUSE_POS_V)
+            , clickPosV_(MOUSE_POS_V)
         {}
 
         virtual ~LoopCmd_FakeMouseClick() = default;
 
-        virtual bool Execute();
+        void Execute() override;
 
-        virtual const std::string GetName() const
+        const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << NAME_ << " at " << sfml_util::VectorToString(MOUSE_CLICK_POS_);
+            ss << LoopCmd::Name() << "At=" << sfml_util::VectorToString(clickPosV_);
             return ss.str();
         }
 
     private:
-        const sf::Vector2f MOUSE_CLICK_POS_;
+        sf::Vector2f clickPosV_;
     };
 
 } // namespace sfml_util
