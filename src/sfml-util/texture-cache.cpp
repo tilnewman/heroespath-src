@@ -273,6 +273,11 @@ namespace sfml_util
 
         auto foundIter{ strToIndexesMap_.Find(PATH_TO_TEXTURE_STR_FINAL) };
 
+        if (foundIter == std::end(strToIndexesMap_))
+        {
+            foundIter = strToIndexesMap_.Find(PATH_TO_TEXTURE_STR_ORIG);
+        }
+
         M_ASSERT_OR_LOGANDTHROW_SS(
             (foundIter != std::end(strToIndexesMap_)),
             "sfml_util::TextureCache::RemoveByPath(path=\""
@@ -515,7 +520,6 @@ namespace sfml_util
     std::size_t TextureCache::AddByPathInternalFake(const sf::Texture & TEXTURE)
     {
         auto const INDEX{ FindNextAvailableIndex() };
-
         auto & textureUPtr{ textureUPtrs_[INDEX] };
 
         if (!textureUPtr)
@@ -528,7 +532,6 @@ namespace sfml_util
         }
 
         UpdateCoundAndSizeTracker(TEXTURE);
-
         return INDEX;
     }
 

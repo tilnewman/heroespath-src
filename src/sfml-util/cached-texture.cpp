@@ -24,27 +24,53 @@ namespace sfml_util
 
     CachedTexture::CachedTexture(const CachedTexture & CT)
         : path_(CT.path_)
-        , index_(TextureCache::Instance()->AddByPath(
-              path_)) // this call required to increment the reference count
-    {}
+        , index_(0) // set below
+        , isPathFake_(CT.isPathFake_)
+    {
+        if (CT.index_ > 0)
+        {
+            // AddByPath...() call required to increment the reference count
+            if (CT.isPathFake_)
+            {
+                index_ = TextureCache::Instance()->AddByPathFake(CT.path_, CT.Get());
+            }
+            else
+            {
+                index_ = TextureCache::Instance()->AddByPath(CT.path_);
+            }
+        }
+    }
 
     CachedTexture::CachedTexture(CachedTexture && ct)
         : path_(std::move(ct.path_))
         , index_(std::move(ct.index_))
+        , isPathFake_(std::move(ct.isPathFake_))
     {
         // zero the moved ct so it's destructor won't try to TextureCache::Remove...()
         ct.path_.clear();
         ct.index_ = 0;
+        ct.isPathFake_ = false;
     }
 
     CachedTexture & CachedTexture::operator=(const CachedTexture & CT)
     {
         if (this != &CT)
         {
-            path_ = CT.path_;
+            if (CT.index_ > 0)
+            {
+                // AddByPath...() call required to increment the reference count
+                if (CT.isPathFake_)
+                {
+                    index_ = TextureCache::Instance()->AddByPathFake(CT.path_, CT.Get());
+                }
+                else
+                {
+                    index_ = TextureCache::Instance()->AddByPath(CT.path_);
+                }
+            }
 
-            // this call required to increment the reference count
-            index_ = TextureCache::Instance()->AddByPath(path_);
+            path_ = CT.path_;
+            isPathFake_ = CT.isPathFake_;
         }
 
         return *this;
@@ -56,10 +82,12 @@ namespace sfml_util
         {
             path_ = std::move(ct.path_);
             index_ = std::move(ct.index_);
+            isPathFake_ = std::move(ct.isPathFake_);
 
             // zero the moved ct so it's destructor won't try to TextureCache::Remove...()
             ct.path_.clear();
             ct.index_ = 0;
+            ct.isPathFake_ = false;
         }
 
         return *this;
@@ -69,23 +97,27 @@ namespace sfml_util
         const char * const GAME_DATAFILE_KEY, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
         : path_(game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
         , index_(TextureCache::Instance()->AddByPath(path_, WILL_SMOOTH, WILL_FLIP_HORIZ))
+        , isPathFake_(false)
     {}
 
     CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
         : path_(game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
         , index_(TextureCache::Instance()->AddByPath(path_, WILL_SMOOTH, WILL_FLIP_HORIZ))
+        , isPathFake_(false)
     {}
 
     CachedTexture::CachedTexture(
         const boost::filesystem::path & PATH, const bool WILL_SMOOTH, const bool WILL_FLIP_HORIZ)
         : path_(PATH.string())
         , index_(TextureCache::Instance()->AddByPath(path_, WILL_SMOOTH, WILL_FLIP_HORIZ))
+        , isPathFake_(false)
     {}
 
     CachedTexture::CachedTexture(const std::string & FAKE_PATH, const sf::Texture & TEXTURE)
         : path_(FAKE_PATH)
         , index_(TextureCache::Instance()->AddByPathFake(path_, TEXTURE))
+        , isPathFake_(true)
     {}
 
     CachedTexture::~CachedTexture()

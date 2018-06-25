@@ -55,6 +55,8 @@
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 #include <chrono>
 #include <sstream>
 #include <string>
@@ -66,9 +68,50 @@ namespace heroespath
 namespace stage
 {
 
+    ImageInspectPacket::ImageInspectPacket(const sfml_util::CachedTextureOpt_t & CACHED_TEXTURE_OPT)
+        : cached_texture_opt(CACHED_TEXTURE_OPT)
+        , sprite()
+        , text()
+    {
+        if (cached_texture_opt)
+        {
+            sprite.setTexture(cached_texture_opt.value().Get(), true);
+
+            sfml_util::ScaleSpriteToFit(
+                sprite,
+                TestingStage::IMAGE_INSPECT_DIMMENSION_,
+                TestingStage::IMAGE_INSPECT_DIMMENSION_);
+
+            text = sf::Text(
+                boost::filesystem::path(cached_texture_opt.value().Path()).leaf().string(),
+                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                24);
+
+            text.setColor(sf::Color::Red);
+        }
+    }
+
+    void ImageInspectPacket::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        if (cached_texture_opt)
+        {
+            target.draw(sprite, states);
+
+            sfml_util::DrawRectangle(
+                target,
+                states,
+                text.getGlobalBounds(),
+                sf::Color::Transparent,
+                0.0f,
+                sf::Color::Black);
+
+            target.draw(text, states);
+        }
+    }
+
+    const float TestingStage::IMAGE_INSPECT_DIMMENSION_{ 256.0f };
     const std::size_t TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
     sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
-    const int TestingStage::IMAGE_COUNT_MAX_{ 11 };
 
     TestingStage::TestingStage()
         : Stage(
@@ -87,29 +130,25 @@ namespace stage
               true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , textureList_()
-        , ouroborosUPtr_()
+        , textures_()
+        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
         , sleepMilliseconds_(0)
-        , animBGTexture_()
-        , animBGSprite_()
-        , imageCount_(0)
-        , willImageCheck_(false)
+        , animBackgroundCachedTexture_("media-images-backgrounds-tile-wood")
+        , animBackgroundSprite_(animBackgroundCachedTexture_.Get())
+        , imageInspectPackets_()
+        , willInspectImages_(false)
+        , isInspectingImages_(false)
+        , imageInspectIndex_(0)
     {}
 
     TestingStage::~TestingStage() { Stage::ClearAllEntities(); }
 
     void TestingStage::Setup()
     {
-        ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("TestingStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        sfml_util::Loaders::Texture(
-            animBGTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
-
-        animBGSprite_.setTexture(animBGTexture_);
-        animBGSprite_.setPosition(0.0f, 0.0f);
+        animBackgroundSprite_.setPosition(0.0f, 0.0f);
     }
 
     void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -117,100 +156,13 @@ namespace stage
         sfml_util::Display::Instance()->ClearToBlack();
         Stage::Draw(target, STATES);
 
-        if (animUPtr_)
+        if (isInspectingImages_)
         {
-            target.draw(animBGSprite_, STATES);
-            animUPtr_->draw(target, STATES);
+            DrawImageInspect(target, STATES);
         }
-
-        auto const IMAGE_POS_TOP{ 1.0f };
+        else
         {
-            std::size_t imageDrawCount{ 0 };
-            auto posLeft{ SCREEN_WIDTH_ };
-
-            auto rItr(textureList_.rbegin());
-            for (; rItr != textureList_.rend(); ++rItr)
-            {
-                sf::Sprite sprite;
-                sprite.setTexture(*rItr);
-
-                // reduce size if any dimmension is greater than 256
-                auto const MAX_DIMMENSION{ 256.0f };
-                auto newHorizScale{ 1.0f };
-                if (sprite.getGlobalBounds().width > MAX_DIMMENSION)
-                {
-                    newHorizScale = MAX_DIMMENSION / sprite.getGlobalBounds().width;
-                    sprite.setScale(newHorizScale, newHorizScale);
-                }
-                if (sprite.getGlobalBounds().height > MAX_DIMMENSION)
-                {
-                    auto const NEW_VERT_SCALE{ MAX_DIMMENSION / sprite.getGlobalBounds().height };
-                    if (NEW_VERT_SCALE < newHorizScale)
-                    {
-                        sprite.setScale(NEW_VERT_SCALE, NEW_VERT_SCALE);
-                    }
-                }
-
-                posLeft -= (sprite.getGlobalBounds().width + 5.0f);
-                sprite.setPosition(posLeft, IMAGE_POS_TOP);
-                target.draw(sprite, STATES);
-                ++imageDrawCount;
-
-                if (posLeft < 0.0f)
-                {
-                    break;
-                }
-            }
-
-            while (textureList_.size() > imageDrawCount)
-            {
-                textureList_.erase(textureList_.begin());
-            }
-        }
-
-        {
-            // find out how tall the text lines will be
-            sf::Text testText(
-                "M",
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
-                sfml_util::FontManager::Instance()->Size_Normal());
-
-            // The extra +10 is added because testText's height is only an estimation.
-            auto const TEXT_HEIGHT{ testText.getGlobalBounds().height + 10.0f };
-
-            // The + 256 is to make room for the images, so text is not drawn over them.
-            auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
-
-            // The extra * 2 is added because without it, the text at the bottom is cut off.
-            auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
-
-            StrSizePairVec_t::reverse_iterator rItr{ testingBlurbsVec_.rbegin() };
-            for (; rItr != testingBlurbsVec_.rend(); ++rItr)
-            {
-                std::ostringstream ss;
-                ss << rItr->first;
-
-                if (rItr->second > 0)
-                {
-                    ss << " " << rItr->second;
-                }
-
-                sf::Text text(
-                    sf::String(ss.str()),
-                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
-                    sfml_util::FontManager::Instance()->Size_Normal());
-
-                text.setPosition(1.0f, posTop);
-
-                target.draw(text, STATES);
-
-                posTop -= TEXT_HEIGHT;
-
-                if (posTop < DO_NOT_PASS_TOP)
-                {
-                    break;
-                }
-            }
+            DrawNormal(target, STATES);
         }
     }
 
@@ -219,49 +171,74 @@ namespace stage
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
     }
 
-    bool TestingStage::KeyPress(const sf::Event::KeyEvent &)
+    bool TestingStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        /*
-if (false == willImageCheck_)
-{
-    if (KE.code == sf::Keyboard::F1)
-    {
-        sleepMilliseconds_ = 0;
-    }
-    else
-    {
-        auto const SPEED1{ 0 };
-        auto const SPEED2{ 500 };
-        auto const SPEED3{ 1000 };
-        auto const SPEED4{ 3000 };
-        if (sleepMilliseconds_ == SPEED1)
+        if (isInspectingImages_)
         {
-            sleepMilliseconds_ = SPEED2;
-            TestingStrAppend("System Tests Speed = 2");
-        }
-        else if (sleepMilliseconds_ == SPEED2)
-        {
-            sleepMilliseconds_ = SPEED3;
-            TestingStrAppend("System Tests Speed = 3");
-        }
-        else if (sleepMilliseconds_ == SPEED3)
-        {
-            sleepMilliseconds_ = SPEED4;
-            TestingStrAppend("System Tests Speed = 4");
+            auto const INSPECT_IMAGE_COUNT_HORIZ{ static_cast<std::size_t>(
+                SCREEN_WIDTH_ / IMAGE_INSPECT_DIMMENSION_) };
+
+            auto const INSPECT_IMAGE_COUNT_VERT{ static_cast<std::size_t>(
+                SCREEN_HEIGHT_ / IMAGE_INSPECT_DIMMENSION_) };
+
+            auto const INSPECT_IMAGE_COUNT{ INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
+
+            if ((KEY_EVENT.code == sf::Keyboard::Right) || (KEY_EVENT.code == sf::Keyboard::Down))
+            {
+                imageInspectIndex_ += INSPECT_IMAGE_COUNT;
+            }
+            else if ((KEY_EVENT.code == sf::Keyboard::Left) || (KEY_EVENT.code == sf::Keyboard::Up))
+            {
+                if (imageInspectIndex_ < INSPECT_IMAGE_COUNT)
+                {
+                    imageInspectIndex_ = 0;
+                }
+                else
+                {
+                    imageInspectIndex_ -= INSPECT_IMAGE_COUNT;
+                }
+            }
+
+            if (imageInspectIndex_ >= imageInspectPackets_.size())
+            {
+                game::LoopManager::Instance()->TransitionTo_Exit();
+            }
+
+            return true;
         }
         else
         {
-            sleepMilliseconds_ = SPEED1;
-            TestingStrAppend("System Tests Speed = 1");
+            if (KEY_EVENT.code == sf::Keyboard::I)
+            {
+                willInspectImages_ = true;
+            }
+        }
+
+        return false;
+    }
+
+    void TestingStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
+    {
+        if (isInspectingImages_)
+        {
+            auto const IMAGE_COUNT{ imageInspectPackets_.size() };
+            for (std::size_t i(imageInspectIndex_); i < IMAGE_COUNT; ++i)
+            {
+                auto const & PACKET{ imageInspectPackets_[i] };
+                if (PACKET.sprite.getGlobalBounds().contains(MOUSE_POS_V))
+                {
+                    auto const FILE_NAME{ std::string(PACKET.text.getString()) };
+
+                    M_HP_LOG_WRN("Image failed inspection: " << FILE_NAME);
+
+                    auto image{ PACKET.cached_texture_opt.value().Get().copyToImage() };
+                    image.saveToFile(FILE_NAME);
+
+                    break;
+                }
+            }
         }
     }
-}
-        */
-
-        return true;
-    }
-
-    void TestingStage::UpdateMouseDown(const sf::Vector2f &) { imageCount_ = 0; }
 
     void TestingStage::TestingStrAppend(const std::string & S)
     {
@@ -296,7 +273,6 @@ if (false == willImageCheck_)
             {
                 ++nextStrCountPair.second;
                 foundMatch = true;
-
                 M_HP_LOG(nextStrCountPair.first << " " << nextStrCountPair.second + 1);
             }
         }
@@ -308,20 +284,16 @@ if (false == willImageCheck_)
     }
 
     void TestingStage::TestingImageSet(
-        const sf::Texture & TEXTURE,
-        const bool WILL_CHECK_FOR_OUTLINE,
-        const std::string & CATEGORY_NAME,
-        const std::string & TYPE_NAME,
-        const std::string & PATH)
+        const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
-        textureList_.emplace_back(TEXTURE);
-        ++imageCount_;
+        sfml_util::CachedTexture cachedTexture{ boost::filesystem::path(PATH_STR) };
 
-        if (WILL_CHECK_FOR_OUTLINE && DoesImageHaveOutline(TEXTURE))
+        imageInspectPackets_.emplace_back(cachedTexture);
+        textures_.emplace_back(cachedTexture);
+
+        if (WILL_CHECK_FOR_OUTLINE && DoesImageHaveOutline(cachedTexture.Get()))
         {
-            M_HP_LOG_ERR(
-                "Testing Stage found an image with an outline:  "
-                << "category=" << CATEGORY_NAME << ", type=" << TYPE_NAME << ", path=" << PATH);
+            M_HP_LOG_ERR("Testing Stage found an image with an outline.  path=" << PATH_STR);
         }
     }
 
@@ -330,11 +302,6 @@ if (false == willImageCheck_)
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (game::LoopManager::Instance()->IsFading())
-        {
-            return;
-        }
-
-        if (willImageCheck_ && (IMAGE_COUNT_MAX_ <= imageCount_))
         {
             return;
         }
@@ -456,9 +423,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_ItemProfileReport{ false };
         if (false == hasTestingCompleted_ItemProfileReport)
         {
-            TestingStrAppend("Item Profile Report - Starting...");
             item::ItemProfilesReporter::LogReport();
-            TestingStrAppend("Item Profile Report - Complete.");
             hasTestingCompleted_ItemProfileReport = true;
             return;
         }
@@ -592,6 +557,11 @@ if (false == willImageCheck_)
             return;
         }
 
+        if (willInspectImages_)
+        {
+            isInspectingImages_ = true;
+        }
+
         static auto hasTestingCompleted_SoundManager{ false };
         if (false == hasTestingCompleted_SoundManager)
         {
@@ -606,8 +576,6 @@ if (false == willImageCheck_)
             TestingStrAppend("ALL SYSTEM TESTS PASSED");
             return;
         }
-
-        game::LoopManager::Instance()->TransitionTo_Exit();
     }
 
     void TestingStage::TestStatSetsCurrentAndNormal(
@@ -778,11 +746,12 @@ if (false == willImageCheck_)
             ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
-            sf::Texture texture;
-            sfml_util::Loaders::Texture(
-                texture, game::GameDataFile::Instance()->GetMediaPath(imagePathKeyVec[imageIndex]));
+            auto const IMAGE_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
+                imagePathKeyVec[imageIndex]) };
 
-            TestingImageSet(texture);
+            sf::Texture texture;
+            sfml_util::Loaders::Texture(texture, IMAGE_PATH_STR);
+            TestingImageSet(IMAGE_PATH_STR);
 
             ++imageIndex;
             return false;
@@ -812,9 +781,11 @@ if (false == willImageCheck_)
             ss << "TestCharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR) << "\"";
             TestingStrAppend(ss.str());
 
+            auto const IMAGE_PATH_STR{ avatar::Avatar::ImagePath(WHICH_AVATAR) };
+
             sf::Texture texture;
-            sfml_util::Loaders::Texture(texture, avatar::Avatar::ImagePath(WHICH_AVATAR));
-            TestingImageSet(texture);
+            sfml_util::Loaders::Texture(texture, IMAGE_PATH_STR);
+            TestingImageSet(IMAGE_PATH_STR);
 
             ++imageIndex;
             return false;
@@ -1460,6 +1431,147 @@ if (false == willImageCheck_)
         {
             TestingStrAppend("stage::TestingStage::TestFonts() Finished.");
             return true;
+        }
+    }
+
+    void TestingStage::DrawNormal(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        if (animUPtr_)
+        {
+            target.draw(animBackgroundSprite_, STATES);
+            animUPtr_->draw(target, STATES);
+        }
+
+        auto const IMAGE_POS_TOP{ 1.0f };
+        {
+            std::size_t imageDrawCount{ 0 };
+            auto posLeft{ SCREEN_WIDTH_ };
+
+            auto rItr(textures_.rbegin());
+            for (; rItr != textures_.rend(); ++rItr)
+            {
+                sf::Sprite sprite;
+                sprite.setTexture(rItr->Get());
+
+                // reduce size if any dimmension is greater than 256
+                auto const MAX_DIMMENSION{ 256.0f };
+                auto newHorizScale{ 1.0f };
+                if (sprite.getGlobalBounds().width > MAX_DIMMENSION)
+                {
+                    newHorizScale = MAX_DIMMENSION / sprite.getGlobalBounds().width;
+                    sprite.setScale(newHorizScale, newHorizScale);
+                }
+                if (sprite.getGlobalBounds().height > MAX_DIMMENSION)
+                {
+                    auto const NEW_VERT_SCALE{ MAX_DIMMENSION / sprite.getGlobalBounds().height };
+                    if (NEW_VERT_SCALE < newHorizScale)
+                    {
+                        sprite.setScale(NEW_VERT_SCALE, NEW_VERT_SCALE);
+                    }
+                }
+
+                posLeft -= (sprite.getGlobalBounds().width + 5.0f);
+                sprite.setPosition(posLeft, IMAGE_POS_TOP);
+                target.draw(sprite, STATES);
+                ++imageDrawCount;
+
+                if (posLeft < 0.0f)
+                {
+                    break;
+                }
+            }
+
+            while (textures_.size() > imageDrawCount)
+            {
+                textures_.erase(textures_.begin());
+            }
+        }
+
+        {
+            // find out how tall the text lines will be
+            sf::Text testText(
+                "M",
+                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->Size_Normal());
+
+            // The extra +10 is added because testText's height is only an estimation.
+            auto const TEXT_HEIGHT{ testText.getGlobalBounds().height + 10.0f };
+
+            // The + 256 is to make room for the images, so text is not drawn over them.
+            auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
+
+            // The extra * 2 is added because without it, the text at the bottom is cut off.
+            auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
+
+            StrSizePairVec_t::reverse_iterator rItr{ testingBlurbsVec_.rbegin() };
+            for (; rItr != testingBlurbsVec_.rend(); ++rItr)
+            {
+                std::ostringstream ss;
+                ss << rItr->first;
+
+                if (rItr->second > 0)
+                {
+                    ss << " " << rItr->second;
+                }
+
+                sf::Text text(
+                    sf::String(ss.str()),
+                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                    sfml_util::FontManager::Instance()->Size_Normal());
+
+                text.setPosition(1.0f, posTop);
+
+                target.draw(text, STATES);
+
+                posTop -= TEXT_HEIGHT;
+
+                if (posTop < DO_NOT_PASS_TOP)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    void TestingStage::DrawImageInspect(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        auto willLowerText{ false };
+        auto posX{ 0.0f };
+        auto posY{ 0.0f };
+        auto imageIndex{ imageInspectIndex_ };
+
+        while (posY < (SCREEN_HEIGHT_ - IMAGE_INSPECT_DIMMENSION_))
+        {
+            while (posX < (SCREEN_WIDTH_ - IMAGE_INSPECT_DIMMENSION_))
+            {
+                if (imageIndex >= imageInspectPackets_.size())
+                {
+                    return;
+                }
+
+                auto & packet{ imageInspectPackets_[imageIndex] };
+
+                packet.sprite.setPosition(posX, posY);
+
+                if (willLowerText)
+                {
+                    packet.text.setPosition(posX, posY + packet.text.getGlobalBounds().height);
+                }
+                else
+                {
+                    packet.text.setPosition(posX, posY);
+                }
+
+                willLowerText = !willLowerText;
+
+                target.draw(packet, STATES);
+
+                posX += IMAGE_INSPECT_DIMMENSION_;
+                ++imageIndex;
+            }
+
+            posX = 0.0f;
+            posY += IMAGE_INSPECT_DIMMENSION_;
         }
     }
 

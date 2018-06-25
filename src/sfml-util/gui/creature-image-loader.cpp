@@ -117,8 +117,14 @@ namespace sfml_util
                                     sf::Texture texture;
                                     Load(texture, FILENAME, false);
 
-                                    game::LoopManager::Instance()->TestingImageSet(
-                                        texture, true, "Creature", "(no type)", PATH);
+                                    auto imagePathFoundIter{ std::find(
+                                        std::begin(allPaths), std::end(allPaths), PATH) };
+
+                                    if (imagePathFoundIter != std::end(allPaths))
+                                    {
+                                        game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                        allPaths.erase(imagePathFoundIter);
+                                    }
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageLoader Tested race=" << RACE_STR
@@ -174,8 +180,14 @@ namespace sfml_util
                                     sf::Texture texture;
                                     Load(texture, FILENAME, false);
 
-                                    game::LoopManager::Instance()->TestingImageSet(
-                                        texture, true, "Creature", "(no type)", PATH);
+                                    auto imagePathFoundIter{ std::find(
+                                        std::begin(allPaths), std::end(allPaths), PATH) };
+
+                                    if (imagePathFoundIter != std::end(allPaths))
+                                    {
+                                        game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                        allPaths.erase(imagePathFoundIter);
+                                    }
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageLoader Tested race=" << RACE_STR
@@ -221,8 +233,14 @@ namespace sfml_util
                                 sf::Texture texture;
                                 Load(texture, FILENAME, false);
 
-                                game::LoopManager::Instance()->TestingImageSet(
-                                    texture, true, "Creature", "(no type)", PATH);
+                                auto imagePathFoundIter{ std::find(
+                                    std::begin(allPaths), std::end(allPaths), PATH) };
+
+                                if (imagePathFoundIter != std::end(allPaths))
+                                {
+                                    game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                    allPaths.erase(imagePathFoundIter);
+                                }
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageLoader Tested race=" << RACE_STR

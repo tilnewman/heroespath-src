@@ -113,7 +113,7 @@ namespace sfml_util
                             << "x" << MAX_DIMMENSION_U << ".  The actual size="
                             << texture.getSize().x << "x" << texture.getSize().y << ".");
 
-                    game::LoopManager::Instance()->TestingImageSet(texture);
+                    game::LoopManager::Instance()->TestingImageSet(Path(ENUM_VALUE));
 
                     if (willFlip)
                     {

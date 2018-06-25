@@ -119,17 +119,11 @@ namespace sfml_util
         }
     }
 
-    void Loop::TestingImageSet(
-        const sf::Texture & TEXTURE,
-        const bool WILL_CHECK_FOR_OUTLINE,
-        const std::string & CATEGORY_NAME,
-        const std::string & TYPE_NAME,
-        const std::string & PATH)
+    void Loop::TestingImageSet(const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
         for (auto & nextStagePtr : stagePVec_)
         {
-            nextStagePtr->TestingImageSet(
-                TEXTURE, WILL_CHECK_FOR_OUTLINE, CATEGORY_NAME, TYPE_NAME, PATH);
+            nextStagePtr->TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
         }
     }
 

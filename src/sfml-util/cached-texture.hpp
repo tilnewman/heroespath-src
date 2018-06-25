@@ -65,9 +65,14 @@ namespace sfml_util
 
         const sf::Texture & Get() const;
 
+        const std::string Path() const { return path_; }
+
+        bool IsPathFake() const { return isPathFake_; }
+
     private:
         std::string path_;
         std::size_t index_;
+        bool isPathFake_;
     };
 
     using CachedTextureOpt_t = boost::optional<CachedTexture>;
@@ -95,6 +100,8 @@ namespace sfml_util
         const sf::Texture & At(const std::size_t INDEX) const;
         const sf::Texture & Front() const;
         const sf::Texture & Back() const;
+
+        const std::string Path() const { return path_; }
 
     private:
         std::string path_;

@@ -13,13 +13,13 @@
 #include "creature/stat-set.hpp"
 #include "game/loop-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <boost/type_index.hpp>
 
-#include <list>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -33,6 +33,17 @@ namespace stage
 
     using StrSizePair_t = std::pair<std::string, std::size_t>;
     using StrSizePairVec_t = std::vector<StrSizePair_t>;
+
+    struct ImageInspectPacket : public sf::Drawable
+    {
+        ImageInspectPacket(const sfml_util::CachedTextureOpt_t & = boost::none);
+
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+        sfml_util::CachedTextureOpt_t cached_texture_opt;
+        sf::Sprite sprite;
+        sf::Text text;
+    };
 
     // A Stage class that allows visualizing testing info
     class TestingStage : public sfml_util::Stage
@@ -57,11 +68,7 @@ namespace stage
         void TestingStrIncrement(const std::string &) override;
 
         void TestingImageSet(
-            const sf::Texture &,
-            const bool WILL_CHECK_FOR_OUTLINE = false,
-            const std::string & CATEGORY_NAME = "",
-            const std::string & TYPE_NAME = "",
-            const std::string & PATH = "") override;
+            const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false) override;
 
         void PerformNextTest() override;
 
@@ -81,29 +88,31 @@ namespace stage
         bool PerformEnumTests();
         bool TestFonts();
 
+        void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
+        void DrawImageInspect(sf::RenderTarget &, const sf::RenderStates &);
+
         // see comment in .cpp file
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
         static sfml_util::AnimationUPtr_t animUPtr_;
-        static const int IMAGE_COUNT_MAX_;
+        static const float IMAGE_INSPECT_DIMMENSION_;
 
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
 
-        // given how large sf::Textures are and how this class uses them, a std::list is a huge
-        // speed improvement over std::vector
-        std::list<sf::Texture> textureList_;
-
+        std::vector<sfml_util::CachedTexture> textures_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;
-        sf::Texture animBGTexture_;
-        sf::Sprite animBGSprite_;
-        int imageCount_;
-        bool willImageCheck_;
+        sfml_util::CachedTexture animBackgroundCachedTexture_;
+        sf::Sprite animBackgroundSprite_;
+        std::vector<ImageInspectPacket> imageInspectPackets_;
+        bool willInspectImages_;
+        bool isInspectingImages_;
+        std::size_t imageInspectIndex_;
     };
 
 } // namespace stage

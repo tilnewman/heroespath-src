@@ -107,11 +107,7 @@ namespace sfml_util
         void TestingStrIncrement(const std::string &);
 
         void TestingImageSet(
-            const sf::Texture &,
-            const bool = false,
-            const std::string & = "",
-            const std::string & = "",
-            const std::string & = "");
+            const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false);
 
         bool IsKeyPressed(const sf::Keyboard::Key KEY) const
         {

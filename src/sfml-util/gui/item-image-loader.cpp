@@ -82,20 +82,22 @@ namespace sfml_util
                 sf::Texture texture;
                 Load(texture, FILENAME);
 
-                game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", WEAPON_TYPE_WRAPPER.ReadableName());
+                auto const IMAGE_PATH_STR{ boost::algorithm::to_lower_copy(
+                    MakeFullPathFromFilename(FILENAME)) };
+
+                auto imagePathFoundIter{ std::find(
+                    std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                if (imagePathFoundIter != std::end(allPaths))
+                {
+                    game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                    allPaths.erase(imagePathFoundIter);
+                }
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     TEST_PRE_STR + WEAPON_TYPE_WRAPPER.ReadableName());
 
                 EnsureValidDimmensions(texture, WEAPON_TYPE_WRAPPER.ReadableName());
-
-                allPaths.erase(
-                    std::remove(
-                        std::begin(allPaths),
-                        std::end(allPaths),
-                        boost::algorithm::to_lower_copy(Path(FILENAME))),
-                    std::end(allPaths));
 
                 ++weaponIndex;
                 return false;
@@ -117,20 +119,22 @@ namespace sfml_util
                     sf::Texture texture;
                     Load(texture, FILENAME);
 
-                    game::LoopManager::Instance()->TestingImageSet(
-                        texture, true, "item", ARMOR_TYPE_WRAPPER.ReadableName());
+                    auto const IMAGE_PATH_STR{ boost::algorithm::to_lower_copy(
+                        MakeFullPathFromFilename(FILENAME)) };
+
+                    auto imagePathFoundIter{ std::find(
+                        std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                    if (imagePathFoundIter != std::end(allPaths))
+                    {
+                        game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                        allPaths.erase(imagePathFoundIter);
+                    }
 
                     game::LoopManager::Instance()->TestingStrIncrement(
                         TEST_PRE_STR + ARMOR_TYPE_WRAPPER.ReadableName());
 
                     EnsureValidDimmensions(texture, ARMOR_TYPE_WRAPPER.ReadableName());
-
-                    allPaths.erase(
-                        std::remove(
-                            std::begin(allPaths),
-                            std::end(allPaths),
-                            boost::algorithm::to_lower_copy(Path(FILENAME))),
-                        std::end(allPaths));
                 }
 
                 ++armorIndex;
@@ -162,16 +166,20 @@ namespace sfml_util
                 sf::Texture texture;
                 Load(texture, FILENAME);
 
-                game::LoopManager::Instance()->TestingImageSet(texture, true, "item", FILENAME);
+                auto const IMAGE_PATH_STR{ boost::algorithm::to_lower_copy(
+                    MakeFullPathFromFilename(FILENAME)) };
+
+                auto imagePathFoundIter{ std::find(
+                    std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                if (imagePathFoundIter != std::end(allPaths))
+                {
+                    game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                    allPaths.erase(imagePathFoundIter);
+                }
+
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR + FILENAME);
                 EnsureValidDimmensions(texture, FILENAME);
-
-                allPaths.erase(
-                    std::remove(
-                        std::begin(allPaths),
-                        std::end(allPaths),
-                        boost::algorithm::to_lower_copy(Path(FILENAME))),
-                    std::end(allPaths));
 
                 ++skinIndex;
                 return false;
@@ -221,17 +229,19 @@ namespace sfml_util
                         sf::Texture texture;
                         Load(texture, FILENAME);
 
-                        game::LoopManager::Instance()->TestingImageSet(
-                            texture, true, "items/misc", ENUM_STR, FILENAME);
+                        auto const IMAGE_PATH_STR{ boost::algorithm::to_lower_copy(
+                            MakeFullPathFromFilename(FILENAME)) };
+
+                        auto imagePathFoundIter{ std::find(
+                            std::begin(allPaths), std::end(allPaths), IMAGE_PATH_STR) };
+
+                        if (imagePathFoundIter != std::end(allPaths))
+                        {
+                            game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                            allPaths.erase(imagePathFoundIter);
+                        }
 
                         EnsureValidDimmensions(texture, ENUM_STR);
-
-                        allPaths.erase(
-                            std::remove(
-                                std::begin(allPaths),
-                                std::end(allPaths),
-                                boost::algorithm::to_lower_copy(Path(FILENAME))),
-                            std::end(allPaths));
 
                         ++fileIndex;
                         return false;
@@ -392,7 +402,7 @@ namespace sfml_util
                 }
                 case misc_type::LockPicks:
                 {
-                    return MakeFilenames("lockpicks", 7);
+                    return MakeFilenames("lockpicks", 6);
                 }
                 case misc_type::Mirror:
                 {
@@ -400,7 +410,7 @@ namespace sfml_util
                 }
                 case misc_type::DrumLute:
                 {
-                    return MakeFilenames("drumlute", 21);
+                    return MakeFilenames("drumlute", 13);
                 }
                 case misc_type::Orb:
                 {
@@ -439,11 +449,11 @@ namespace sfml_util
                 }
                 case misc_type::DollBlessed:
                 {
-                    return MakeFilenames("doll", 5, 2);
+                    return MakeFilenames("doll", 4, 2);
                 }
                 case misc_type::DollCursed:
                 {
-                    return MakeFilenames("doll", 11, 6);
+                    return MakeFilenames("doll", 10, 5);
                 }
                 case misc_type::Doll:
                 {

@@ -124,14 +124,10 @@ namespace game
 
         void TestingStrIncrement(const std::string & S) { loop_.TestingStrIncrement(S); }
 
-        void TestingImageSet(
-            const sf::Texture & TEXTURE,
-            const bool WILL_CHECK_FOR_OUTLINE = false,
-            const std::string & CATEGORY_NAME = "",
-            const std::string & TYPE_NAME = "",
-            const std::string & PATH = "")
+        void
+            TestingImageSet(const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false)
         {
-            loop_.TestingImageSet(TEXTURE, WILL_CHECK_FOR_OUTLINE, CATEGORY_NAME, TYPE_NAME, PATH);
+            loop_.TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
         }
 
         void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }

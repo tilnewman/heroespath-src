@@ -1942,7 +1942,7 @@ namespace creature
 
                 sf::Texture texture;
                 titleImageLoader.Load(texture, NEXT_ENUM);
-                game::LoopManager::Instance()->TestingImageSet(texture);
+                game::LoopManager::Instance()->TestingImageSet(titleImageLoader.Path(NEXT_ENUM));
                 game::LoopManager::Instance()->TestingStrIncrement("Title Test #");
                 ++titleIndex;
                 return false;

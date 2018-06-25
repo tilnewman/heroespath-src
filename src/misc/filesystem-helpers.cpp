@@ -119,7 +119,7 @@ namespace misc
             for (auto const & PATH : FindFilesInDirectory(
                      bfs::path(DIR_PATH), FILENAME_PREFIX, FILENAME_EXTENSION, EXCLUDES))
             {
-                filePaths.emplace_back(PATH.string());
+                filePaths.emplace_back(MakePathPretty(PATH.string()));
             }
 
             return filePaths;

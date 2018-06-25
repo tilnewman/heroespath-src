@@ -122,16 +122,9 @@ namespace sfml_util
         virtual void TestingStrAppend(const std::string &) {}
         virtual void TestingStrIncrement(const std::string &) {}
 
-        virtual void TestingImageSet(
-            const sf::Texture &,
-            const bool = false,
-            const std::string & = "",
-            const std::string & = "",
-            const std::string & = "")
-        {}
+        virtual void TestingImageSet(const std::string &, const bool = false) {}
 
         virtual void PerformNextTest() {}
-
         virtual void ClearAllEntities();
 
         virtual bool IsMouseHeldDown() const { return isMouseHeldDown_; }
