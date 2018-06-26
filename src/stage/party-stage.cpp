@@ -45,13 +45,9 @@ namespace stage
 {
 
     const std::string PartyStage::POPUP_NAME_STR_NOT_ENOUGH_CHARS_{ "NotEnoughCharactersErrorMsg" };
-
     const std::string PartyStage::POPUP_NAME_STR_TOO_MANY_CHARS_{ "TooManyCharactersErrorMsg" };
-
     const std::string PartyStage::POPUP_NAME_STR_DELETE_CONFIRM_{ "CharacterDeleteConfirmMsg" };
-
     const std::string PartyStage::POPUP_NAME_STR_PARTY_IMAGE_SELECT_{ "PartyImageSelection" };
-
     const float PartyStage::MOUSEOVER_POPUP_DELAY_SEC_{ 1.0f };
     const float PartyStage::MOUSEOVER_SLIDER_SPEED_{ 4.0f };
     const float PartyStage::MOUSEOVER_BACKGROUND_FINAL_ALPHA_{ 120.0f };
@@ -154,47 +150,44 @@ namespace stage
     {
         ResetMouseOverPopupState();
 
-        // if this event was not triggered by a double-click then exit
-        if (PACKAGE.gui_event != sfml_util::GuiEvent::DoubleClick)
+        if (((PACKAGE.gui_event == sfml_util::GuiEvent::Keypress)
+             && (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            || (PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick))
         {
-            return false;
-        }
-
-        // handle double-clicks by moving items from one ListBox to the other
-
-        if (PACKAGE.package.PTR_ == characterListBoxUPtr_.get())
-        {
-            auto const SELECTED_ITEM_PTR_OPT{ characterListBoxUPtr_->Selected() };
-
-            if (SELECTED_ITEM_PTR_OPT)
+            if (PACKAGE.package.PTR_ == characterListBoxUPtr_.get())
             {
-                if (partyListBoxUPtr_->Size() < creature::PlayerParty::MAX_CHARACTER_COUNT_)
+                auto const SELECTED_ITEM_PTR_OPT{ characterListBoxUPtr_->Selected() };
+
+                if (SELECTED_ITEM_PTR_OPT)
                 {
-                    characterListBoxUPtr_->MoveItemToOtherListBox(
-                        characterListBoxUPtr_->SelectedIndex(), *partyListBoxUPtr_);
+                    if (partyListBoxUPtr_->Size() < creature::PlayerParty::MAX_CHARACTER_COUNT_)
+                    {
+                        characterListBoxUPtr_->MoveItemToOtherListBox(
+                            characterListBoxUPtr_->SelectedIndex(), *partyListBoxUPtr_);
+
+                        sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                    }
+                    else
+                    {
+                        sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+                    }
+
+                    return true;
+                }
+            }
+            else if (PACKAGE.package.PTR_ == partyListBoxUPtr_.get())
+            {
+                auto const SELECTED_ITEM_PTR_OPT{ partyListBoxUPtr_->Selected() };
+
+                if (SELECTED_ITEM_PTR_OPT)
+                {
+                    partyListBoxUPtr_->MoveItemToOtherListBox(
+                        partyListBoxUPtr_->SelectedIndex(), *characterListBoxUPtr_);
 
                     sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+
+                    return true;
                 }
-                else
-                {
-                    sfml_util::SoundManager::Instance()->PlaySfx_Reject();
-                }
-
-                return true;
-            }
-        }
-        else if (PACKAGE.package.PTR_ == partyListBoxUPtr_.get())
-        {
-            auto const SELECTED_ITEM_PTR_OPT{ partyListBoxUPtr_->Selected() };
-
-            if (SELECTED_ITEM_PTR_OPT)
-            {
-                partyListBoxUPtr_->MoveItemToOtherListBox(
-                    partyListBoxUPtr_->SelectedIndex(), *characterListBoxUPtr_);
-
-                sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
-
-                return true;
             }
         }
 
