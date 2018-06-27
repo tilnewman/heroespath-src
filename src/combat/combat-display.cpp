@@ -838,7 +838,7 @@ namespace combat
 
         if (COMBAT_NODE_PTR_OPT)
         {
-            return COMBAT_NODE_PTR_OPT->Obj().Creature();
+            return COMBAT_NODE_PTR_OPT.value()->Creature();
         }
         else
         {

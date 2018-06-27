@@ -153,7 +153,7 @@ namespace sfml_util
         {
             if (changeHandlerPtrOpt_)
             {
-                changeHandlerPtrOpt_->Obj().HandleCallback(this);
+                changeHandlerPtrOpt_.value()->HandleCallback(this);
             }
         }
 

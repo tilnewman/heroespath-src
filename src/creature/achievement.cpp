@@ -46,14 +46,14 @@ namespace creature
 
                 if ((NEXT_TITLE_PTR->AchievementCount() < count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
-                        >= titlePtrOpt->Obj().AchievementCount()))
+                        >= titlePtrOpt.value()->AchievementCount()))
                 {
                     titlePtrOpt = NEXT_TITLE_PTR;
                 }
             }
         }
 
-        if (titlePtrOpt && (titlePtrOpt->Obj().AchievementCount() > count_))
+        if (titlePtrOpt && (titlePtrOpt.value()->AchievementCount() > count_))
         {
             return boost::none;
         }
@@ -77,7 +77,7 @@ namespace creature
 
                 if ((NEXT_TITLE_PTR->AchievementCount() > count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
-                        <= titlePtrOpt->Obj().AchievementCount()))
+                        <= titlePtrOpt.value()->AchievementCount()))
                 {
                     titlePtrOpt = NEXT_TITLE_PTR;
                 }

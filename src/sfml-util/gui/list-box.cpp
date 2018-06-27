@@ -80,12 +80,12 @@ namespace sfml_util
             {
                 if (boxUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(boxUPtr_.get());
                 }
 
                 if (sliderbarUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(sliderbarUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(sliderbarUPtr_.get());
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace sfml_util
 
                 if (stagePtrOpt_)
                 {
-                    stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
+                    stagePtrOpt_.value()->EntityAdd(boxUPtr_.get());
                 }
             }
 
@@ -145,7 +145,7 @@ namespace sfml_util
 
                 if (stagePtrOpt_)
                 {
-                    stagePtrOpt_->Obj().EntityAdd(sliderbarUPtr_.get());
+                    stagePtrOpt_.value()->EntityAdd(sliderbarUPtr_.get());
                 }
             }
 
@@ -473,7 +473,7 @@ namespace sfml_util
                         const callback::ListBoxEventPackage PACKAGE(
                             PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
 
-                        callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
+                        callbackPtrOpt_.value()->HandleCallback(PACKAGE);
                     }
 
                     return true;
@@ -628,7 +628,7 @@ namespace sfml_util
                     false,
                     KEY_EVENT);
 
-                callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
+                callbackPtrOpt_.value()->HandleCallback(PACKAGE);
             }
         }
 
@@ -641,7 +641,7 @@ namespace sfml_util
                 const callback::ListBoxEventPackage PACKAGE(
                     PTR_PACKAGE, sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
 
-                callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
+                callbackPtrOpt_.value()->HandleCallback(PACKAGE);
             }
         }
 

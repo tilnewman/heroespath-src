@@ -372,7 +372,7 @@ namespace sfml_util
 
             if (textRegionCurrPtrOpt_)
             {
-                textRegionCurrPtrOpt_->Obj().draw(target, states);
+                textRegionCurrPtrOpt_.value()->draw(target, states);
             }
 
             if (boxUPtr_)
@@ -565,7 +565,7 @@ namespace sfml_util
             // center the text within the button image
             if (textRegionCurrPtrOpt_)
             {
-                textRegionCurrPtrOpt_->Obj().SetEntityPos(
+                textRegionCurrPtrOpt_.value()->SetEntityPos(
                     GetEntityRegion().left, GetEntityRegion().top);
             }
         }
@@ -574,7 +574,7 @@ namespace sfml_util
         {
             if ((false == isDisabled_) && callbackHandlerPtrOpt_)
             {
-                callbackHandlerPtrOpt_->Obj().HandleCallback(this);
+                callbackHandlerPtrOpt_.value()->HandleCallback(this);
             }
         }
 

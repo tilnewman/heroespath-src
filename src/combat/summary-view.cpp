@@ -81,8 +81,8 @@ namespace combat
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
-            combatNodePtrOpt_->Obj().IsSummaryView(false);
-            combatNodePtrOpt_->Obj().IsMoving(true);
+            combatNodePtrOpt_.value()->IsSummaryView(false);
+            combatNodePtrOpt_.value()->IsMoving(true);
         }
     }
 
@@ -140,8 +140,8 @@ namespace combat
 
         if (combatNodePtrOpt_)
         {
-            combatNodePtrOpt_->Obj().IsSummaryView(true);
-            combatNodePtrOpt_->Obj().IsMoving(false);
+            combatNodePtrOpt_.value()->IsSummaryView(true);
+            combatNodePtrOpt_.value()->IsMoving(false);
         }
     }
 
@@ -154,8 +154,8 @@ namespace combat
 
         if (combatNodePtrOpt_)
         {
-            combatNodePtrOpt_->Obj().IsSummaryView(false);
-            combatNodePtrOpt_->Obj().IsMoving(false);
+            combatNodePtrOpt_.value()->IsSummaryView(false);
+            combatNodePtrOpt_.value()->IsMoving(false);
         }
 
         ReleaseCombatNodePointer();
@@ -174,7 +174,7 @@ namespace combat
             healthTextRegionUPtr_->draw(target, states);
             condTextRegionUPtr_->draw(target, states);
 
-            if (combatNodePtrOpt_->Obj().Creature()->IsPlayerCharacter())
+            if (combatNodePtrOpt_.value()->Creature()->IsPlayerCharacter())
             {
                 armorTextRegionUPtr_->draw(target, states);
             }
@@ -194,7 +194,7 @@ namespace combat
                 NEXT_ITEM_WITH_TEXT.info_text_region_sptr->draw(target, states);
             }
 
-            combatNodePtrOpt_->Obj().draw(target, states);
+            combatNodePtrOpt_.value()->draw(target, states);
         }
     }
 

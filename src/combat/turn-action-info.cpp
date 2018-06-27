@@ -56,12 +56,12 @@ namespace combat
 
         if (spellPtrOpt_)
         {
-            ss << ", spell=" << spellPtrOpt_->Obj().Name();
+            ss << ", spell=" << spellPtrOpt_.value()->Name();
         }
 
         if (songPtrOpt_)
         {
-            ss << ", song=" << songPtrOpt_->Obj().Name();
+            ss << ", song=" << songPtrOpt_.value()->Name();
         }
 
         ss << ", targets=";

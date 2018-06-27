@@ -296,8 +296,8 @@ namespace map
         {
             if (!interactionManager_.Current())
             {
-                movingIntoNpcPtrOpt->Obj().RemakeConversationIfRandom();
-                if (movingIntoNpcPtrOpt->Obj().ConversationPoint().IsValid())
+                movingIntoNpcPtrOpt.value()->RemakeConversationIfRandom();
+                if (movingIntoNpcPtrOpt.value()->ConversationPoint().IsValid())
                 {
                     player_.StopWalking();
 
@@ -461,7 +461,7 @@ namespace map
             auto const CURRENT_INTERACTION_PTR_OPT{ interactionManager_.Current() };
             if (CURRENT_INTERACTION_PTR_OPT)
             {
-                if (CURRENT_INTERACTION_PTR_OPT->Obj().Type() == interact::Interact::Lock)
+                if (CURRENT_INTERACTION_PTR_OPT.value()->Type() == interact::Interact::Lock)
                 {
                     return;
                 }

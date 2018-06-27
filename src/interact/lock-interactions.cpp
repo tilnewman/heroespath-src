@@ -133,7 +133,7 @@ namespace interact
             {
                 characterPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
                 combat::Encounter::Instance()->LockPickCreaturePtr(characterPtrOpt_.value());
-                PopupAttempting(POPUP_HANDLER_PTR, characterPtrOpt_->Obj().Name());
+                PopupAttempting(POPUP_HANDLER_PTR, characterPtrOpt_.value()->Name());
                 return true;
             }
         }

@@ -220,7 +220,7 @@ namespace sfml_util
                 // popup stages process exclusively when present
                 if (popupStagePtrOpt_)
                 {
-                    popupStagePtrOpt_->Obj().SetMouseHover(NEW_MOUSE_POS_F, true);
+                    popupStagePtrOpt_.value()->SetMouseHover(NEW_MOUSE_POS_F, true);
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace sfml_util
             // popup stages process exclusively when present
             if (popupStagePtrOpt_)
             {
-                popupStagePtrOpt_->Obj().SetMouseHover(MOUSE_POS_NEW_F, false);
+                popupStagePtrOpt_.value()->SetMouseHover(MOUSE_POS_NEW_F, false);
             }
             else
             {
@@ -297,7 +297,7 @@ namespace sfml_util
     {
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_->Obj().UpdateTime(elapsedTimeSec_);
+            popupStagePtrOpt_.value()->UpdateTime(elapsedTimeSec_);
             Display::Instance()->DrawStage(popupStagePtrOpt_.value());
         }
     }
@@ -393,11 +393,11 @@ namespace sfml_util
         {
             if (EVENT.type == sf::Event::KeyPressed)
             {
-                popupStagePtrOpt_->Obj().KeyPress(EVENT.key);
+                popupStagePtrOpt_.value()->KeyPress(EVENT.key);
             }
             else
             {
-                popupStagePtrOpt_->Obj().KeyRelease(EVENT.key);
+                popupStagePtrOpt_.value()->KeyRelease(EVENT.key);
             }
         }
         else
@@ -443,7 +443,7 @@ namespace sfml_util
     {
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_->Obj().UpdateMousePos(NEW_MOUSE_POS);
+            popupStagePtrOpt_.value()->UpdateMousePos(NEW_MOUSE_POS);
         }
         else
         {
@@ -458,7 +458,7 @@ namespace sfml_util
     {
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_->Obj().UpdateMouseDown(MOUSE_POS_V);
+            popupStagePtrOpt_.value()->UpdateMouseDown(MOUSE_POS_V);
         }
         else
         {
@@ -480,7 +480,7 @@ namespace sfml_util
     {
         if (popupStagePtrOpt_)
         {
-            auto newEntityWithFocusPtrOpt{ popupStagePtrOpt_->Obj().UpdateMouseUp(MOUSE_POS_V) };
+            auto newEntityWithFocusPtrOpt{ popupStagePtrOpt_.value()->UpdateMouseUp(MOUSE_POS_V) };
 
             if (newEntityWithFocusPtrOpt)
             {
@@ -522,7 +522,7 @@ namespace sfml_util
 
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_->Obj().UpdateMouseWheel(
+            popupStagePtrOpt_.value()->UpdateMouseWheel(
                 NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
         }
         else
@@ -554,7 +554,7 @@ namespace sfml_util
             const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
-            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtrOpt_->Obj().HandleCallback(
+            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtrOpt_.value()->HandleCallback(
                 POPUP_RESPONSE_OBJ) };
 
             game::LoopManager::Instance()->ClearPopupResponse();

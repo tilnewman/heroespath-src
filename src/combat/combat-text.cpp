@@ -887,7 +887,7 @@ namespace combat
             }
             else
             {
-                if (HIT_INFO.Weapon()->Obj().IsBodypart() == false)
+                if (HIT_INFO.Weapon().value()->IsBodypart() == false)
                 {
                     ss << "and hits ";
                 }

@@ -49,7 +49,7 @@ namespace sfml_util
 
             if (RESULT && guiEntityPtrOpt_)
             {
-                guiEntityPtrOpt_->Obj().SetEntityPos(Position());
+                guiEntityPtrOpt_.value()->SetEntityPos(Position());
             }
 
             return RESULT;

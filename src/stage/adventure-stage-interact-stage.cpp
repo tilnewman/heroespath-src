@@ -60,7 +60,7 @@ namespace stage
         auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
-            return INTERACTION_PTR_OPT->Obj().OnButtonClick(
+            return INTERACTION_PTR_OPT.value()->OnButtonClick(
                 this,
                 sfml_util::gui::TextButtonPtr_t(
                     const_cast<sfml_util::gui::TextButton *>(PACKAGE.PTR_)));
@@ -98,7 +98,7 @@ namespace stage
                 {
                     if (interactionManager_.Current())
                     {
-                        interactionManager_.Current()->Obj().OnSuccess(this);
+                        interactionManager_.Current().value()->OnSuccess(this);
                         return true;
                     }
                 }
@@ -112,7 +112,7 @@ namespace stage
         {
             if (interactionManager_.Current())
             {
-                interactionManager_.Current()->Obj().OnSuccess(this);
+                interactionManager_.Current().value()->OnSuccess(this);
                 return true;
             }
         }
@@ -143,7 +143,7 @@ namespace stage
             auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
             if (INTERACTION_PTR_OPT)
             {
-                return INTERACTION_PTR_OPT->Obj().OnKeyRelease(this, KEY_EVENT.code);
+                return INTERACTION_PTR_OPT.value()->OnKeyRelease(this, KEY_EVENT.code);
             }
         }
 

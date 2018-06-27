@@ -427,7 +427,7 @@ namespace combat
         M_ASSERT_OR_LOGANDTHROW_SS(
             (creaturesThatHaveNotTakenTurnYetPVec.empty() == false),
             "combat::Encounter::SortAndSetTurnCreature("
-                << ((turnCreaturePtrOpt_) ? turnCreaturePtrOpt_->Obj().Name() : "nullptr")
+                << ((turnCreaturePtrOpt_) ? turnCreaturePtrOpt_.value()->Name() : "nullptr")
                 << ") resulted in an empty creaturesThatHaveNotTakenTurnYetPVec.");
 
         if (creaturesThatHaveNotTakenTurnYetPVec.size() > 1)

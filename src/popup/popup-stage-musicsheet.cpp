@@ -394,7 +394,7 @@ namespace popup
             LISTBOX_IMAGE_COLOR_);
 
         sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
-        for (auto const & SONG_PTR : popupInfo_.CreaturePtrOpt()->Obj().SongsPVec())
+        for (auto const & SONG_PTR : popupInfo_.CreaturePtrOpt().value()->SongsPVec())
         {
             listBoxItemTextInfo_.text = SONG_PTR->Name();
 
@@ -639,7 +639,7 @@ namespace popup
     bool PopupStageMusicSheet::DoesCharacterHaveEnoughManaToPlaySong(
         const song::SongPtr_t SONG_PTR) const
     {
-        return (popupInfo_.CreaturePtrOpt()->Obj().Mana() >= SONG_PTR->ManaCost());
+        return (popupInfo_.CreaturePtrOpt().value()->Mana() >= SONG_PTR->ManaCost());
     }
 
     bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtr_t SONG_PTR) const

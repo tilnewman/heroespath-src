@@ -820,7 +820,7 @@ namespace combat
 
         if (closestNodePtrOpt)
         {
-            return GetBlockingDistanceBetween(CREATURE_PTR, closestNodePtrOpt->Obj().Creature());
+            return GetBlockingDistanceBetween(CREATURE_PTR, closestNodePtrOpt.value()->Creature());
         }
         else
         {

@@ -347,11 +347,11 @@ namespace stage
 
         std::ostringstream ss;
         ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text5")
-           << charToUsePtrOpt->Obj().Name() << " "
+           << charToUsePtrOpt.value()->Name() << " "
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text6") << "  "
-           << creature::sex::HeSheIt(charToUsePtrOpt->Obj().Sex(), false) << " "
+           << creature::sex::HeSheIt(charToUsePtrOpt.value()->Sex(), false) << " "
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text7") << " "
-           << creature::sex::HimHerIt(charToUsePtrOpt->Obj().Sex(), false) << ", but ";
+           << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
         auto const BEAST_PVEC{ creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
         auto const NONLOAD_NONBEAST_PVEC{ misc::Vector::Exclude(

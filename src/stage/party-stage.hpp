@@ -117,7 +117,7 @@ namespace stage
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
         static const std::string POPUP_NAME_STR_DELETE_CONFIRM_;
         static const std::string POPUP_NAME_STR_PARTY_IMAGE_SELECT_;
-        static const float MOUSEOVER_POPUP_DELAY_SEC_;
+        static const float MOUSEOVER_POPUP_DELAY_SEC_; 
         static const float MOUSEOVER_SLIDER_SPEED_;
         static const float MOUSEOVER_BACKGROUND_FINAL_ALPHA_;
         //

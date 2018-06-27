@@ -412,7 +412,7 @@ namespace popup
             LISTBOX_IMAGE_COLOR_);
 
         sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
-        for (auto const & SPELL_PTR : popupInfo_.CreaturePtrOpt()->Obj().SpellsPVec())
+        for (auto const & SPELL_PTR : popupInfo_.CreaturePtrOpt().value()->SpellsPVec())
         {
             listBoxItemTextInfo_.text = SPELL_PTR->Name();
 
@@ -635,7 +635,7 @@ namespace popup
     bool PopupStageSpellbook::DoesCharacterHaveEnoughManaToCastSpell(
         const spell::SpellPtr_t SPELL_PTR) const
     {
-        return (popupInfo_.CreaturePtrOpt()->Obj().Mana() >= SPELL_PTR->ManaCost());
+        return (popupInfo_.CreaturePtrOpt().value()->Mana() >= SPELL_PTR->ManaCost());
     }
 
     bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtr_t SPELL_PTR) const

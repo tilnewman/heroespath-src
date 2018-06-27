@@ -406,22 +406,22 @@ namespace combat
         {
             case HitType::Weapon:
             {
-                ss << "[" << weaponPtrOpt_->Obj().Name() << "]";
+                ss << "[" << weaponPtrOpt_.value()->Name() << "]";
                 break;
             }
             case HitType::Spell:
             {
-                ss << "[" << spellPtrOpt_->Obj().Name() << "]";
+                ss << "[" << spellPtrOpt_.value()->Name() << "]";
                 break;
             }
             case HitType::Song:
             {
-                ss << "[" << songPtrOpt_->Obj().Name() << "]";
+                ss << "[" << songPtrOpt_.value()->Name() << "]";
                 break;
             }
             case HitType::Condition:
             {
-                ss << "[" << conditionPtrOpt_->Obj().Name() << "]";
+                ss << "[" << conditionPtrOpt_.value()->Name() << "]";
                 break;
             }
             case HitType::Pounce:

@@ -173,12 +173,12 @@ namespace sfml_util
 
     bool Stage::KeyPress(const sf::Event::KeyEvent & KE)
     {
-        return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_->Obj().KeyPress(KE)));
+        return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_.value()->KeyPress(KE)));
     }
 
     bool Stage::KeyRelease(const sf::Event::KeyEvent & KE)
     {
-        return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_->Obj().KeyRelease(KE)));
+        return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_.value()->KeyRelease(KE)));
     }
 
     void Stage::RemoveFocus()
@@ -261,9 +261,9 @@ namespace sfml_util
 
             // check if focused entity is hovered first
             if (entityWithFocusPtrOpt_
-                && (entityWithFocusPtrOpt_->Obj().GetEntityRegion().contains(MOUSE_POS_V)))
+                && (entityWithFocusPtrOpt_.value()->GetEntityRegion().contains(MOUSE_POS_V)))
             {
-                hoverText = entityWithFocusPtrOpt_->Obj().GetMouseHoverText();
+                hoverText = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
             }
 
             // if focused entity is not hovered, then look for any entity the mouse is hoving over

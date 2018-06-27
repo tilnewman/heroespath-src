@@ -287,7 +287,7 @@ namespace popup
         if (FROM_TITLE_PTR_OPT)
         {
             descSS << " has transitioned from a "
-                   << creature::Titles::Name(FROM_TITLE_PTR_OPT->Obj().Which()) << " to a "
+                   << creature::Titles::Name(FROM_TITLE_PTR_OPT.value()->Which()) << " to a "
                    << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
         }
         else

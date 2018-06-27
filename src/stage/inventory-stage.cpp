@@ -2781,7 +2781,7 @@ namespace stage
         {
             std::ostringstream ss;
             ss << "Can't give the " << ITEM_PTR->Name() << " to "
-               << creatureToGiveToPtrOpt_->Obj().Name() << " because:  " << CAN_GIVE_ITEM_STR;
+               << creatureToGiveToPtrOpt_.value()->Name() << " because:  " << CAN_GIVE_ITEM_STR;
 
             PopupRejectionWindow(ss.str());
             return false;
@@ -3831,13 +3831,13 @@ namespace stage
 
         if (TITLE_PTR_OPT)
         {
-            auto const ACHV_COUNT_REQUIRED{ TITLE_PTR_OPT->Obj().AchievementCount() };
+            auto const ACHV_COUNT_REQUIRED{ TITLE_PTR_OPT.value()->AchievementCount() };
             auto const ACHV_COUNT_CURRENT{ ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
             auto const NEEDED_COUNT{ ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
             std::ostringstream ss;
-            ss << ", need  " << NEEDED_COUNT << " more to achieve \"" << TITLE_PTR_OPT->Obj().Name()
-               << "\"";
+            ss << ", need  " << NEEDED_COUNT << " more to achieve \""
+               << TITLE_PTR_OPT.value()->Name() << "\"";
 
             return ss.str();
         }

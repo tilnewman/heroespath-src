@@ -264,7 +264,7 @@ namespace game
             }
             else if (CHARACTER_PTR_OPT)
             {
-                ss << "character version, character={" << CHARACTER_PTR_OPT->Obj().ToString()
+                ss << "character version, character={" << CHARACTER_PTR_OPT.value()->ToString()
                    << "}";
             }
             else
@@ -300,18 +300,18 @@ namespace game
 
             if (GAMESTATE_PTR_OPT)
             {
-                GAMESTATE_PTR_OPT->Obj().DateTimeOfLastSaveSet(
+                GAMESTATE_PTR_OPT.value()->DateTimeOfLastSaveSet(
                     sfml_util::DateTime::CurrentDateTime());
 
-                GAMESTATE_PTR_OPT->Obj().BeforeSerialize();
+                GAMESTATE_PTR_OPT.value()->BeforeSerialize();
                 outputTextArchive << *GAMESTATE_PTR_OPT.value();
-                GAMESTATE_PTR_OPT->Obj().AfterSerialize();
+                GAMESTATE_PTR_OPT.value()->AfterSerialize();
             }
             else
             {
-                CHARACTER_PTR_OPT->Obj().BeforeSerialize();
-                outputTextArchive << CHARACTER_PTR_OPT->Obj();
-                CHARACTER_PTR_OPT->Obj().AfterSerialize();
+                CHARACTER_PTR_OPT.value()->BeforeSerialize();
+                outputTextArchive << CHARACTER_PTR_OPT.value().Obj();
+                CHARACTER_PTR_OPT.value()->AfterSerialize();
             }
         }
         catch (const std::exception & E)

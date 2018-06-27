@@ -58,7 +58,7 @@ namespace stage
         if (FROM_TITLE_PTR_OPT)
         {
             fromTextureOpt = sf::Texture();
-            titleImageLoader.Load(fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
+            titleImageLoader.Load(fromTextureOpt.get(), FROM_TITLE_PTR_OPT.value()->Which());
         }
 
         sf::Texture toTexture;

@@ -424,7 +424,7 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                auto const SPELLS_PVEC{ turnCreaturePtrOpt_->Obj().SpellsPVec() };
+                auto const SPELLS_PVEC{ turnCreaturePtrOpt_.value()->SpellsPVec() };
 
                 auto const SELECTED_INDEX{ POPUP_RESPONSE.Selection() };
 
@@ -435,7 +435,7 @@ namespace stage
                         << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
                 spellBeingCastPtrOpt_ = SPELLS_PVEC.at(SELECTED_INDEX);
-                turnCreaturePtrOpt_->Obj().LastSpellCastNum(SELECTED_INDEX);
+                turnCreaturePtrOpt_.value()->LastSpellCastNum(SELECTED_INDEX);
                 HandleCast_Step2_SelectTargetOrPerformOnAll();
                 return true;
             }
@@ -1622,7 +1622,7 @@ namespace stage
                 }
             }
         }
-        else if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleOpponent)
+        else if (spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleOpponent)
         {
             if (CREATURE_AT_POS_PTR->IsPlayerCharacter())
             {
@@ -1639,7 +1639,7 @@ namespace stage
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ CREATURE_AT_POS_PTR });
             }
         }
-        else if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleCompanion)
+        else if (spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleCompanion)
         {
             if (CREATURE_AT_POS_PTR->IsPlayerCharacter() == false)
             {
@@ -1804,14 +1804,14 @@ namespace stage
     {
         return (
             (TurnPhase::NotATurn != turnPhase_) && turnCreaturePtrOpt_
-            && turnCreaturePtrOpt_->Obj().IsPlayerCharacter());
+            && turnCreaturePtrOpt_.value()->IsPlayerCharacter());
     }
 
     bool CombatStage::IsNonPlayerCharacterTurnValid() const
     {
         return (
             (TurnPhase::NotATurn != turnPhase_) && turnCreaturePtrOpt_
-            && (turnCreaturePtrOpt_->Obj().IsPlayerCharacter() == false));
+            && (turnCreaturePtrOpt_.value()->IsPlayerCharacter() == false));
     }
 
     void CombatStage::AppendInitialStatus()
@@ -1985,7 +1985,7 @@ namespace stage
                 }
                 else
                 {
-                    if (turnCreaturePtrOpt_->Obj().IsPlayerCharacter())
+                    if (turnCreaturePtrOpt_.value()->IsPlayerCharacter())
                     {
                         SetTurnPhase(TurnPhase::Determine);
                         SetUserActionAllowed(true);
@@ -1995,7 +1995,7 @@ namespace stage
                         SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
 
                         auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
-                        if (turnCreaturePtrOpt_->Obj().CanTakeAction() == false)
+                        if (turnCreaturePtrOpt_.value()->CanTakeAction() == false)
                         {
                             pauseToUse *= 3.0f;
                         }
@@ -2602,14 +2602,14 @@ namespace stage
     void CombatStage::HandleSong_Step2_PerformOnTargets(
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
-        auto const SONG_TARGET{ songBeingPlayedPtrOpt_->Obj().Target() };
+        auto const SONG_TARGET{ songBeingPlayedPtrOpt_.value()->Target() };
 
         if ((SONG_TARGET == combat::TargetType::Item)
             || (SONG_TARGET == combat::TargetType::QuestSpecific))
         {
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleSong_Step2_SelectTargetOrPerformOnAll("
-                  << "song=" << songBeingPlayedPtrOpt_->Obj().Name() << ") had a target_type of "
+                  << "song=" << songBeingPlayedPtrOpt_.value()->Name() << ") had a target_type of "
                   << combat::TargetType::ToString(SONG_TARGET)
                   << " which is not yet supported in combat stage.";
 
@@ -2676,7 +2676,7 @@ namespace stage
 
     void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll()
     {
-        auto const SPELL_TARGET{ spellBeingCastPtrOpt_->Obj().Target() };
+        auto const SPELL_TARGET{ spellBeingCastPtrOpt_.value()->Target() };
 
         if ((SPELL_TARGET == combat::TargetType::SingleCompanion)
             || (SPELL_TARGET == combat::TargetType::SingleOpponent))
@@ -2700,7 +2700,7 @@ namespace stage
         {
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleCast Step2 SelectTargetOrPerformOnAll("
-                  << "spell=" << spellBeingCastPtrOpt_->Obj().Name() << ") had a target_type of "
+                  << "spell=" << spellBeingCastPtrOpt_.value()->Name() << ") had a target_type of "
                   << combat::TargetType::ToString(SPELL_TARGET)
                   << " which is not yet supported in combat stage.";
 
@@ -3076,7 +3076,7 @@ namespace stage
     void CombatStage::SetupTurnBoxButtons(
         const creature::CreaturePtrOpt_t CREATURE_PTR_OPT, const bool WILL_DISABLE_ALL)
     {
-        if (CREATURE_PTR_OPT && CREATURE_PTR_OPT->Obj().IsPlayerCharacter()
+        if (CREATURE_PTR_OPT && CREATURE_PTR_OPT.value()->IsPlayerCharacter()
             && (WILL_DISABLE_ALL == false))
         {
             auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
@@ -3100,7 +3100,8 @@ namespace stage
             fightTBoxButtonUPtr_->SetMouseHoverText(MOT_FIGHT_STR);
 
             // cast/play button
-            if (turnCreaturePtrOpt_ && (turnCreaturePtrOpt_->Obj().Role() == creature::role::Bard))
+            if (turnCreaturePtrOpt_
+                && (turnCreaturePtrOpt_.value()->Role() == creature::role::Bard))
             {
                 castTBoxButtonUPtr_->SetText("(S)ong");
 
@@ -3449,17 +3450,17 @@ namespace stage
             {
                 preambleSS << "Click on the ";
 
-                if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleOpponent)
+                if (spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleOpponent)
                 {
                     preambleSS << "enemy creature";
                 }
                 else if (
-                    spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleCompanion)
+                    spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleCompanion)
                 {
                     preambleSS << "character";
                 }
 
-                preambleSS << " to cast " << spellBeingCastPtrOpt_->Obj().Name() << " on...\n\n"
+                preambleSS << " to cast " << spellBeingCastPtrOpt_.value()->Name() << " on...\n\n"
                            << "(Press Escape or X to Cancel)";
             }
         }
@@ -3477,7 +3478,7 @@ namespace stage
             auto const & HIT_INFO{ conditionEffectsVec_[conditionEffectsIndex_] };
 
             preambleSS << HIT_INFO.ActionPhrase().Compose(
-                HIT_INFO.ConditionPtrOpt()->Obj().Name(), TURN_CREATURE_PTR->Name());
+                HIT_INFO.ConditionPtrOpt().value()->Name(), TURN_CREATURE_PTR->Name());
         }
         else
         {
@@ -4383,13 +4384,13 @@ namespace stage
                             ++flyingAttackHits;
                         }
 
-                        if (NEXT_HIT_INFO.Weapon()->Obj().WeaponType()
+                        if (NEXT_HIT_INFO.Weapon().value()->WeaponType()
                             & item::weapon_type::Projectile)
                         {
                             ++projectileHits;
                         }
                         else if (
-                            NEXT_HIT_INFO.Weapon()->Obj().WeaponType() & item::weapon_type::Melee)
+                            NEXT_HIT_INFO.Weapon().value()->WeaponType() & item::weapon_type::Melee)
                         {
                             ++meleeHits;
                         }

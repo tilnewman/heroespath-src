@@ -74,11 +74,11 @@ namespace combat
     {
         if (HitType::Song == hit_type)
         {
-            return song_ptr_opt->Obj().VerbThirdPerson();
+            return song_ptr_opt.value()->VerbThirdPerson();
         }
         else if (HitType::Spell == hit_type)
         {
-            return spell_ptr_opt->Obj().VerbThirdPerson();
+            return spell_ptr_opt.value()->VerbThirdPerson();
         }
         else // roar case
         {
@@ -99,13 +99,13 @@ namespace combat
 
         if (HitType::Spell == hit_type)
         {
-            preSS << " casts " << spell_ptr_opt->Obj().Name();
+            preSS << " casts " << spell_ptr_opt.value()->Name();
         }
         else if (HitType::Song == hit_type)
         {
             // intentionally no prepend of empty space so that preamble can start with "'s"
-            preSS << song_ptr_opt->Obj().ActionPhrasePreamble() << " playing "
-                  << song_ptr_opt->Obj().Name();
+            preSS << song_ptr_opt.value()->ActionPhrasePreamble() << " playing "
+                  << song_ptr_opt.value()->Name();
         }
         else
         {

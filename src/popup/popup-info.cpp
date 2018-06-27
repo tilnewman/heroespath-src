@@ -309,7 +309,7 @@ namespace popup
 
         if (creaturePtrOpt_)
         {
-            ss << ", creature=" << creaturePtrOpt_->Obj().Name();
+            ss << ", creature=" << creaturePtrOpt_.value()->Name();
         }
 
         if (initialSelection_ != 0)
@@ -333,7 +333,7 @@ namespace popup
 
         if (creaturePtrOpt_)
         {
-            ss << ", creature=" << creaturePtrOpt_->Obj().NameAndRaceAndRole();
+            ss << ", creature=" << creaturePtrOpt_.value()->NameAndRaceAndRole();
         }
 
         if (areImgsCreatures_)

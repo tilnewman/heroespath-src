@@ -104,12 +104,12 @@ namespace sfml_util
             {
                 if (sliderBarUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_.get());
                 }
 
                 if (boxUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(boxUPtr_.get());
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace sfml_util
             {
                 if (sliderBarUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_.get());
                     sliderBarUPtr_.reset();
                 }
 
@@ -209,7 +209,7 @@ namespace sfml_util
                     sliderBarUPtr_.reset(SLIDERBAR_PTR_OPT->Ptr());
                     sliderBarUPtr_->SetOnChangeHandler(this);
                     sliderBarUPtr_->SetCurrentValue(0.0f);
-                    stagePtrOpt_->Obj().EntityAdd(sliderBarUPtr_.get());
+                    stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_.get());
                 }
             }
             else
@@ -246,7 +246,7 @@ namespace sfml_util
 
                 if (boxUPtr_)
                 {
-                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_.value()->EntityRemove(boxUPtr_.get());
                 }
 
                 boxUPtr_ = std::make_unique<box::Box>("TextRegion's", boxInfo_);
@@ -258,7 +258,7 @@ namespace sfml_util
                 // Q: So what to do when the stage draws the box AFTER and on top of the text,
                 //   such as the box's gradient covering the text?
                 // A: Have whatever stage owns this TextRegion draw this TextRegion last.
-                stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
+                stagePtrOpt_.value()->EntityAdd(boxUPtr_.get());
             }
         }
 
