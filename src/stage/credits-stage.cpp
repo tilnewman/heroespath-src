@@ -47,7 +47,7 @@ namespace stage
                   sfml_util::Font::DialogMedieval,
               },
               true)
-        , CREDIT_BOX_WIDTH_(sfml_util::MapByRes(1000.0f, 1500.0f))
+        , CREDIT_BOX_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.4f))
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , CREDITBOX_POS_LEFT_(
@@ -169,7 +169,7 @@ namespace stage
             "license.\nwww.opensource.org/licenses/zlib\n\nThis project came together quickly "
             "thanks to the completeness\n and simplicity of this library.\n\nwww.sfml-dev.org",
             "media-images-logos-sfml",
-            sfml_util::MapByRes(0.5f, 1.5f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.146f)));
 
         creditUVec_.emplace_back(
             std::make_unique<Credit>(trackingRect, "Art", "Ziesche Til Newman"));
@@ -184,14 +184,14 @@ namespace stage
             "Terrain Art",
             "Daniel Cook\nA beautiful (and free!) (for any use) set of tiles.\nwww.lostgarden.com",
             "media-images-logos-terrain",
-            sfml_util::MapByRes(0.75f, 2.0f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.117f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Map Editing Software",
             "Thorbjorn Lindeijer for Tiled\nAn incredible free mapping utility.\nwww.mapeditor.org",
             "media-images-logos-tiled",
-            sfml_util::MapByRes(0.75f, 1.5f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.15f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -202,7 +202,7 @@ namespace stage
             "Unported License\nwwww.creativecommons.org/licenses/by/3.0\nThe original music was "
             "trimmed and normalized.",
             "media-images-logos-sound",
-            sfml_util::MapByRes(1.0f, 2.0f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -211,7 +211,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was trimmed "
             "and normalized.",
             "media-images-logos-sound",
-            sfml_util::MapByRes(1.0f, 2.0f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -220,7 +220,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and "
             "normalized.",
             "media-images-logos-sound",
-            sfml_util::MapByRes(1.0f, 2.0f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -231,7 +231,7 @@ namespace stage
             "Attribution Unported 4.0 License\nwww.creativecommons.org/licenses/by/4.0\nThe "
             "original music was trimmed and normalized.",
             "media-images-logos-sound",
-            sfml_util::MapByRes(1.0f, 2.0f)));
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,

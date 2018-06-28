@@ -58,7 +58,7 @@ namespace stage
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
             const sfml_util::Animations::Enum ANIM_ENUM,
-            const float ANIM_SCALE,
+            const float ANIM_SIZE_HORIZ,
             const float ANIM_FRAME_TIME_SEC);
 
         // use to create general image credits
@@ -67,7 +67,7 @@ namespace stage
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
             const std::string & IMAGE_PATH_KEY,
-            const float IMAGE_SCALE);
+            const float IMAGE_SIZE_HORIZ);
 
         // specialization used to create font (image) credits
         Credit(
@@ -84,17 +84,13 @@ namespace stage
             const unsigned int TITLE_FONT_SIZE,
             const std::string & CONTENT_TEXT,
             const MediaType::Enum MEDIA_TYPE,
-            const float MEDIA_SCALE,
-            const sfml_util::Animations::Enum ANIM_ENUM,
-            const float ANIM_SCALE,
-            const float ANIM_FRAME_TIME_SEC);
+            const float MEDIA_SIZE_HORIZ = 0.0f,
+            const sfml_util::Animations::Enum ANIM_ENUM = sfml_util::Animations::Count,
+            const float ANIM_FRAME_TIME_SEC = 0.0f);
 
         void Draw(sf::RenderTarget & target, sf::RenderStates states);
-
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
-
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);
-
         bool IsVisible() const;
 
     private:

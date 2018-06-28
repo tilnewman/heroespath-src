@@ -40,11 +40,7 @@ namespace stage
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
-            mediaType_,
-            1.0f,
-            sfml_util::Animations::Count,
-            1.0f,
-            0.0f);
+            mediaType_);
     }
 
     Credit::Credit(
@@ -52,7 +48,7 @@ namespace stage
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
         const sfml_util::Animations::Enum ANIM_ENUM,
-        const float ANIM_SCALE,
+        const float ANIM_SIZE_HORIZ,
         const float ANIM_FRAME_TIME_SEC)
         : titleTextUPtr_()
         , contentTextUPtr_()
@@ -69,9 +65,8 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            1.0f,
+            ANIM_SIZE_HORIZ,
             ANIM_ENUM,
-            ANIM_SCALE,
             ANIM_FRAME_TIME_SEC);
     }
 
@@ -80,7 +75,7 @@ namespace stage
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
         const std::string & IMAGE_PATH_KEY,
-        const float IMAGE_SCALE)
+        const float IMAGE_SIZE_HORIZ)
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Image)
@@ -96,10 +91,7 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            IMAGE_SCALE,
-            sfml_util::Animations::Count,
-            1.0f,
-            0.0f);
+            IMAGE_SIZE_HORIZ);
     }
 
     Credit::Credit(
@@ -122,10 +114,7 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            sfml_util::MapByRes(1.5f, 5.75f),
-            sfml_util::Animations::Count,
-            1.0f,
-            0.0f);
+            sfml_util::ScreenRatioToPixelsHoriz(0.103f));
     }
 
     void Credit::Setup(
@@ -135,21 +124,23 @@ namespace stage
         const unsigned int TITLE_FONT_SIZE,
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
-        const float MEDIA_SCALE,
+        const float MEDIA_SIZE_HORIZ,
         const sfml_util::Animations::Enum ANIM_ENUM,
-        const float ANIM_SCALE,
         const float ANIM_FRAME_TIME_SEC)
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            sprite_.setScale(MEDIA_SCALE, MEDIA_SCALE);
+            auto const SCALE{ MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
+
+            sprite_.setScale(SCALE, SCALE);
 
             auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f))
                                  - (sprite_.getGlobalBounds().width * 0.5f) };
 
+            auto const TOP_PAD{ sfml_util::ScreenRatioToPixelsVert(0.0333f) };
+
             auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f))
-                                - (sprite_.getGlobalBounds().height * 0.5f)
-                                + sfml_util::MapByRes(30.0f, 90.0f) };
+                                - (sprite_.getGlobalBounds().height * 0.5f) + TOP_PAD };
 
             sprite_.setPosition(POS_LEFT, POS_TOP);
 
@@ -161,15 +152,19 @@ namespace stage
             animUPtr_ = sfml_util::AnimationFactory::Make(
                 ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 
+            auto const SCALE{ MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
+
             // correct size and position
-            auto const WIDTH{ animUPtr_->OrigSize().x * ANIM_SCALE };
-            auto const HEIGHT{ animUPtr_->OrigSize().y * ANIM_SCALE };
+            auto const WIDTH{ animUPtr_->OrigSize().x * SCALE };
+            auto const HEIGHT{ animUPtr_->OrigSize().y * SCALE };
 
             auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f))
                                  - (WIDTH * 0.5f) };
 
+            auto const TOP_PAD{ sfml_util::ScreenRatioToPixelsVert(0.0888f) };
+
             auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) - (HEIGHT * 0.5f)
-                                + sfml_util::MapByRes(80.0f, 200.0f) };
+                                + TOP_PAD };
 
             animUPtr_->SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT));
 
@@ -223,7 +218,8 @@ namespace stage
         trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
 
         // add space between credits
-        trackingRect.top += sfml_util::MapByRes(100.0f, 200.0f);
+        auto const VERT_SPACER{ sfml_util::ScreenRatioToPixelsVert(0.111f) };
+        trackingRect.top += VERT_SPACER;
     }
 
     void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
