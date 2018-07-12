@@ -307,6 +307,43 @@ namespace misc
             return MakePathPretty(DIR_PATH / RELATIVE_FILE_PATH);
         }
 
+        const std::string PathWithDepth(const std::string & PATH_STR, const std::size_t DEPTH)
+        {
+            return PathWithDepth(MakePathPretty(boost::filesystem::path(PATH_STR)), DEPTH).string();
+        }
+
+        const boost::filesystem::path
+            PathWithDepth(const boost::filesystem::path & PATH_ORIG, const std::size_t DEPTH)
+        {
+            auto const PATH_FINAL{ MakePathPretty(PATH_ORIG) };
+
+            if ((DEPTH == 0) || (std::rbegin(PATH_FINAL) == std::rend(PATH_FINAL)))
+            {
+                return boost::filesystem::path("");
+            }
+
+            std::vector<std::string> pathParts;
+            pathParts.reserve(DEPTH);
+
+            std::size_t i(0);
+            auto rPathIter{ std::rbegin(PATH_FINAL) };
+
+            do
+            {
+                pathParts.push_back(rPathIter->string());
+            } while ((++i < DEPTH) && (++rPathIter != std::rend(PATH_FINAL)));
+
+            std::ostringstream ss;
+
+            for (auto rPartsIter(std::rbegin(pathParts)); rPartsIter != std::rend(pathParts);
+                 ++rPartsIter)
+            {
+                ss << boost::filesystem::path::preferred_separator << *rPartsIter;
+            }
+
+            return boost::filesystem::path(ss.str());
+        }
+
     } // namespace filesystem
 } // namespace misc
 } // namespace heroespath

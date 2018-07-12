@@ -65,16 +65,6 @@ namespace sfml_util
 
         bool operator<(const TextInfo & L, const TextInfo & R)
         {
-            if (L.color != R.color)
-            {
-                return sfml_util::color::ColorLess(L.color, R.color);
-            }
-
-            if (L.blendMode != R.blendMode)
-            {
-                return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
-            }
-
             return std::tie(
                        L.text,
                        L.fontPtrOpt,
@@ -82,7 +72,9 @@ namespace sfml_util
                        L.style,
                        L.justified,
                        L.isOutlineOnly,
-                       L.outlineThickness)
+                       L.outlineThickness,
+                       L.color,
+                       L.blendMode)
                 < std::tie(
                        R.text,
                        R.fontPtrOpt,
@@ -90,7 +82,9 @@ namespace sfml_util
                        R.style,
                        R.justified,
                        R.isOutlineOnly,
-                       R.outlineThickness);
+                       R.outlineThickness,
+                       R.color,
+                       R.blendMode);
         }
 
         bool operator==(const TextInfo & L, const TextInfo & R)

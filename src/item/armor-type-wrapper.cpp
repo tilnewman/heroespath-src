@@ -26,7 +26,7 @@ namespace item
     namespace armor
     {
 
-        const std::string ArmorTypeWrapper::GLOVES_NAME_{ "Gloves" };
+        const std::string ArmorTypeWrapper::GLOVES_NAME_ { "Gloves" };
 
         ArmorTypeWrapper::ArmorTypeWrapper(
             const std::string & SYSTEM_NAME,
@@ -71,7 +71,7 @@ namespace item
                         {
                             for (misc::EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
                             {
-                                auto const ARMOR_TYPE_ENUM{ static_cast<armor_type::Enum>(i) };
+                                auto const ARMOR_TYPE_ENUM { static_cast<armor_type::Enum>(i) };
                                 if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
                                 {
                                     if (WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED
@@ -197,7 +197,7 @@ namespace item
 
         const std::string ArmorTypeWrapper::DetailsKeyName() const
         {
-            auto const SPECIFIC_NAME_WITHOUT_SPACES{ boost::algorithm::replace_all_copy(
+            auto const SPECIFIC_NAME_WITHOUT_SPACES { boost::algorithm::replace_all_copy(
                 specificName_, " ", "") };
 
             if (armor_type::DoesRequireBaseType(type_))
@@ -258,10 +258,10 @@ namespace item
                             ss << ",";
                         }
 
-                        auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+                        auto const ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE, misc::Wrap::Yes, misc::NoneEmpty::No, "&");
+                            ELEMENT_TYPE, misc::Wrap::Yes, "&", misc::NoneEmpty::No);
                     }
                 }
 
@@ -283,7 +283,7 @@ namespace item
             else
             {
                 // remove any spaces from the generalName_
-                auto const GENERAL_NAME_FILENAME_VERSION{ boost::algorithm::replace_all_copy(
+                auto const GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                     generalName_, " ", "") };
 
                 ss << GENERAL_NAME_FILENAME_VERSION;
@@ -357,13 +357,13 @@ namespace item
         {
             for (misc::EnumUnderlying_t a(0); a < armor_type::Count; ++a)
             {
-                auto const ARMOR_ENUM{ static_cast<armor_type::Enum>(a) };
+                auto const ARMOR_ENUM { static_cast<armor_type::Enum>(a) };
 
                 if (armor_type::DoesRequireBaseType(ARMOR_ENUM))
                 {
                     for (misc::EnumUnderlying_t b(0); b < base_type::Count; ++b)
                     {
-                        auto const BASE_ENUM{ static_cast<base_type::Enum>(b) };
+                        auto const BASE_ENUM { static_cast<base_type::Enum>(b) };
                         wrappers.emplace_back(ArmorTypeWrapper(ARMOR_ENUM, BASE_ENUM));
                     }
                 }
@@ -383,7 +383,7 @@ namespace item
                 case armor_type::Bracers:
                 case armor_type::Aventail:
                 {
-                    auto const IS_GLOVES{ IsGauntlets() && (base_type::Plain == base_) };
+                    auto const IS_GLOVES { IsGauntlets() && (base_type::Plain == base_) };
 
                     generalName_ = ((IS_GLOVES) ? GLOVES_NAME_ : armor_type::ToString(type_));
                     specificName_ = generalName_;
@@ -403,7 +403,7 @@ namespace item
 
                 case armor_type::Shield:
                 {
-                    auto const SHIELD_TYPE{ ShieldType() };
+                    auto const SHIELD_TYPE { ShieldType() };
                     generalName_ = armor_type::ToString(type_);
                     specificName_ = shield_type::ToString(SHIELD_TYPE);
                     systemName_ = specificName_;
@@ -412,7 +412,7 @@ namespace item
                 }
                 case armor_type::Helm:
                 {
-                    auto const HELM_TYPE{ HelmType() };
+                    auto const HELM_TYPE { HelmType() };
                     generalName_ = armor_type::ToString(type_);
                     specificName_ = helm_type::Name(HELM_TYPE);
                     systemName_ = helm_type::ToString(HELM_TYPE);
@@ -430,7 +430,7 @@ namespace item
                 }
                 case armor_type::Covering:
                 {
-                    auto const COVER_TYPE{ CoverType() };
+                    auto const COVER_TYPE { CoverType() };
                     generalName_ = cover_type::ToString(COVER_TYPE);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
@@ -640,7 +640,7 @@ namespace item
                 }
                 case armor_type::Covering:
                 {
-                    auto const COVER_TYPE{ CoverType() };
+                    auto const COVER_TYPE { CoverType() };
 
                     if (cover_type::Cape == COVER_TYPE)
                     {

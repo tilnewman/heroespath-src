@@ -26,18 +26,20 @@ namespace interact
     sfml_util::gui::TextButtonUPtr_t Button::Make(
         const sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANDLER_PTR)
     {
-        auto const DISPLAYED_NAME{ [&]() {
-            if ((sf::Keyboard::KeyCount == Key()) || (sf::Keyboard::Unknown == Key()))
+        auto const KEY { Key() };
+
+        auto const DISPLAYED_NAME { [&]() {
+            if ((sf::Keyboard::KeyCount == KEY) || (sf::Keyboard::Unknown == KEY))
             {
                 return Name();
             }
             else
             {
-                return Name() + "(" + sfml_util::KeyCodeToString(Key()) + ")";
+                return Name() + "(" + sfml_util::ToString(KEY) + ")";
             }
         }() };
 
-        auto uptr{ std::make_unique<sfml_util::gui::TextButton>(
+        auto uptr { std::make_unique<sfml_util::gui::TextButton>(
             Name(),
             0.0f,
             0.0f,

@@ -10,18 +10,16 @@
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
 //
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/ouroboros.hpp"
-
-#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -57,19 +55,16 @@ namespace stage
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
-        const sf::FloatRect SCREEN_RECT_;
         const float BUTTON_SCALE_;
         //
-        sf::Texture titleTexture_;
+        sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
         sfml_util::GradientRect gradient_;
-        sfml_util::main_menu_buttons::ResumeButtonUPtr_t resumeButtonUPtr_;
-        sfml_util::main_menu_buttons::CreateCharactersButtonUPtr_t createButtonUPtr_;
-        sfml_util::main_menu_buttons::SettingsButtonUPtr_t settingsButtonUPtr_;
-        sfml_util::main_menu_buttons::CreditsButtonUPtr_t creditsButtonUPtr_;
-        sfml_util::main_menu_buttons::ExitButtonUPtr_t exitButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t resumeButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t createButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t settingsButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t creditsButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t exitButtonUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
         sfml_util::gui::BackgroundImage backgroundImage_;

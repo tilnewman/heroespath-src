@@ -187,13 +187,11 @@ namespace stage
             contextSprite_.setTexture(INTERACTION_PTR->ContextTexture(), true);
             contextSprite_.setColor(sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_));
 
-            sfml_util::CenterAndScaleSpriteToFit(
-                contextSprite_, CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_);
+            sfml_util::FitAndReCenter(contextSprite_, CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_);
 
             subjectSprite_.setTexture(INTERACTION_PTR->SubjectTexture(), true);
 
-            sfml_util::CenterAndScaleSpriteToFit(
-                subjectSprite_, SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_);
+            sfml_util::FitAndReCenter(subjectSprite_, SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_);
 
             textRegionUPtr_->Setup(
                 INTERACTION_PTR->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
@@ -237,7 +235,7 @@ namespace stage
             if (INTERACTION_PTR->Type() == interact::Interact::Conversation)
             {
                 npcSprite_ = INTERACTION_PTR->NpcSprite();
-                sfml_util::CenterAndScaleSpriteToFit(npcSprite_, SUBJECT_REGION);
+                sfml_util::FitAndReCenter(npcSprite_, SUBJECT_REGION);
             }
         }
         else

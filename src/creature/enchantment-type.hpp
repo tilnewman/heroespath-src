@@ -40,7 +40,7 @@ namespace creature
         static void ToStringPopulate(
             std::ostringstream & ss,
             const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR = ", ");
+            const std::string & SEPARATOR);
     };
 
 } // namespace creature

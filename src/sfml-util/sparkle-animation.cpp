@@ -74,10 +74,10 @@ namespace sfml_util
 
             sprite_.rotate(misc::random::Float(0.5f, 3.0f));
 
-            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
             // set scale
-            auto const SCALE{ (
+            auto const SCALE { (
                 (SLIDER_POS < 0.5f) ? targetScale_ * (SLIDER_POS * 2.0f)
                                     : targetScale_ * (1.0f - ((SLIDER_POS - 0.5f) * 2.0f))) };
 
@@ -156,13 +156,13 @@ namespace sfml_util
                 emitTimerDurationSec_
                     = ValueWithRandomVariance(SEC_PER_EMIT_BASE_, SEC_PER_EMIT_VAR_RATIO_);
 
-                auto const ADJ_RECT{ sfml_util::MakeMinimalSquareAndCenter(REGION_) };
+                auto const ADJ_RECT { sfml_util::ShrinkToSquareAndReCenterCopy(REGION_) };
 
-                auto const POS_LEFT{ ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
-                auto const POS_TOP{ ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
+                auto const POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
+                auto const POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
 
-                const sf::Texture * const TEXTURE_PTR{ [&]() {
-                    auto const RAND{ misc::random::Int(2) };
+                const sf::Texture * const TEXTURE_PTR { [&]() {
+                    auto const RAND { misc::random::Int(2) };
                     if (RAND == 0)
                     {
                         return &sparkTexture1_;
@@ -184,7 +184,7 @@ namespace sfml_util
                     ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_)));
             }
 
-            auto areAllSparklesFinished{ true };
+            auto areAllSparklesFinished { true };
             for (auto & nextSparkle : sparkleVec_)
             {
                 if (nextSparkle.IsFinished() == false)
@@ -217,7 +217,7 @@ namespace sfml_util
             }
             else
             {
-                auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
+                auto const VARIATION_SPAN { BASE * VARIANCE_RATIO };
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }

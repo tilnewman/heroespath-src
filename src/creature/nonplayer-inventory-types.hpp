@@ -524,7 +524,7 @@ namespace creature
             static void ToStringPopulate(
                 std::ostringstream & ss,
                 const misc::EnumUnderlying_t ENUM_VALUE,
-                const std::string & SEPARATOR = ", ");
+                const std::string & SEPARATOR);
 
             static collector_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };

@@ -146,16 +146,8 @@ namespace stage
 
             namesButtonUVec_.emplace_back(std::make_unique<sfml_util::gui::FourStateButton>(
                 "AdventureStage'sCharacterList'sNameButtonFor_" + CHARACTER_PTR->Name(),
-                0.0f, // position set in SetupPositions_NameButtons()
-                0.0f,
-                sf::Texture(),
-                false,
-                sf::Texture(),
-                false,
-                sf::Texture(),
-                false,
-                sf::Texture(),
-                false,
+                sf::Vector2f(0.0f, 0.0f), // position set in SetupPositions_NameButtons()
+                sfml_util::gui::ButtonStateImageKeys(),
                 MOUSE_TEXT_INFO));
         }
 

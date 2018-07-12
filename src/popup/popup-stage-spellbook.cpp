@@ -29,11 +29,11 @@ namespace heroespath
 namespace popup
 {
 
-    const float PopupStageSpellbook::BACKGROUND_WIDTH_RATIO_{ 0.85f };
-    const float PopupStageSpellbook::COLOR_FADE_SPEED_{ 6.0f };
-    const sf::Uint8 PopupStageSpellbook::SPELL_IMAGE_ALPHA_{ 192 };
-    const sf::Color PopupStageSpellbook::UNABLE_TEXT_COLOR_{ sf::Color(127, 32, 32) };
-    const float PopupStageSpellbook::WARNING_DURATION_SEC_{ 2.0f };
+    const float PopupStageSpellbook::BACKGROUND_WIDTH_RATIO_ { 0.85f };
+    const float PopupStageSpellbook::COLOR_FADE_SPEED_ { 6.0f };
+    const sf::Uint8 PopupStageSpellbook::SPELL_IMAGE_ALPHA_ { 192 };
+    const sf::Color PopupStageSpellbook::UNABLE_TEXT_COLOR_ { sf::Color(127, 32, 32) };
+    const float PopupStageSpellbook::WARNING_DURATION_SEC_ { 2.0f };
 
     PopupStageSpellbook::PopupStageSpellbook(const popup::PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
@@ -211,12 +211,12 @@ namespace popup
 
     void PopupStageSpellbook::SetupOuterAndInnerRegion()
     {
-        auto const SPELLBOOK_WIDTH{ sfml_util::Display::Instance()->GetWinWidth()
-                                    * BACKGROUND_WIDTH_RATIO_ };
+        auto const SPELLBOOK_WIDTH { sfml_util::Display::Instance()->GetWinWidth()
+                                     * BACKGROUND_WIDTH_RATIO_ };
 
-        auto const SPELLBOOK_HEIGHT{ (static_cast<float>(backgroundTexture_.getSize().y)
-                                      * SPELLBOOK_WIDTH)
-                                     / static_cast<float>(backgroundTexture_.getSize().x) };
+        auto const SPELLBOOK_HEIGHT { (static_cast<float>(backgroundTexture_.getSize().y)
+                                       * SPELLBOOK_WIDTH)
+                                      / static_cast<float>(backgroundTexture_.getSize().x) };
 
         sf::FloatRect region;
         region.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
@@ -231,18 +231,17 @@ namespace popup
 
     void PopupStageSpellbook::SetupRegions()
     {
-        auto const LEFT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            popup::PopupManager::Rect_Spellbook_PageLeft()) };
+        const sf::FloatRect LEFT_PAGE_RECT_RAW { popup::PopupManager::Rect_Spellbook_PageLeft() };
 
-        auto const SCALE{ innerRegion_.width / static_cast<float>(backgroundTexture_.getSize().x) };
+        auto const SCALE { innerRegion_.width
+                           / static_cast<float>(backgroundTexture_.getSize().x) };
 
         pageRectLeft_.left = innerRegion_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
         pageRectLeft_.top = innerRegion_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
         pageRectLeft_.width = LEFT_PAGE_RECT_RAW.width * SCALE;
         pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
 
-        auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            popup::PopupManager::Rect_Spellbook_PageRight()) };
+        const sf::FloatRect RIGHT_PAGE_RECT_RAW { popup::PopupManager::Rect_Spellbook_PageRight() };
 
         pageRectRight_.left = innerRegion_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
         pageRectRight_.top = innerRegion_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
@@ -255,8 +254,7 @@ namespace popup
         popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
-        sfml_util::CenterAndScaleSpriteToFit(
-            accentSprite1_, pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
+        sfml_util::FitAndReCenter(accentSprite1_, pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
@@ -266,8 +264,7 @@ namespace popup
         popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
-        sfml_util::CenterAndScaleSpriteToFit(
-            accentSprite2_, pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
+        sfml_util::FitAndReCenter(accentSprite2_, pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
         accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
@@ -282,7 +279,7 @@ namespace popup
 
         playerSprite_.setTexture(playerTexture_);
 
-        auto const PLAYER_IMAGE_SCALE{ sfml_util::MapByRes(0.55f, 3.5f) };
+        auto const PLAYER_IMAGE_SCALE { sfml_util::MapByRes(0.55f, 3.5f) };
 
         playerSprite_.setScale(PLAYER_IMAGE_SCALE, PLAYER_IMAGE_SCALE);
         playerSprite_.setColor(sf::Color(255, 255, 255, 127));
@@ -291,7 +288,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupPlayerDetailsText()
     {
-        auto const CREATURE_PTR{ popupInfo_.CreaturePtrOpt().value() };
+        auto const CREATURE_PTR { popupInfo_.CreaturePtrOpt().value() };
 
         std::ostringstream ss;
         ss << CREATURE_PTR->Name() << "\n";
@@ -326,7 +323,7 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const sf::FloatRect DETAILS_TEXT_RECT{
+        const sf::FloatRect DETAILS_TEXT_RECT {
             pageRectLeft_.left + playerSprite_.getGlobalBounds().width
                 + sfml_util::MapByRes(10.0f, 40.0f),
             pageRectLeft_.top + sfml_util::MapByRes(20.0f, 80.0f),
@@ -347,7 +344,7 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const sf::FloatRect LISTBOX_LABEL_TEXTRECT{
+        const sf::FloatRect LISTBOX_LABEL_TEXTRECT {
             pageRectLeft_.left + sfml_util::MapByRes(10.0f, 40.0f),
             playerSprite_.getGlobalBounds().top + playerSprite_.getGlobalBounds().height
                 + sfml_util::MapByRes(20.0f, 80.0f),
@@ -371,7 +368,7 @@ namespace popup
         spellDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
         spellDescTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
 
-        auto unableTextColor{ UNABLE_TEXT_COLOR_ };
+        auto unableTextColor { UNABLE_TEXT_COLOR_ };
         unableTextColor.a = TEXT_COLOR.a;
 
         const sfml_util::gui::ColorSet UNABLE_EXT_COLOR_SET(
@@ -379,22 +376,22 @@ namespace popup
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
 
-        auto redXColor{ sf::Color::Red };
+        auto redXColor { sf::Color::Red };
         redXColor.a = IMAGE_COLOR.a;
         xSymbolSprite_.setColor(redXColor);
     }
 
     void PopupStageSpellbook::SetupSpellListbox()
     {
-        auto const LISTBOX_MARGIN{ sfml_util::MapByRes(15.0f, 45.0f) };
-        auto const LISTBOX_RECT_LEFT{ pageRectLeft_.left + LISTBOX_MARGIN };
-        auto const LISTBOX_RECT_TOP{ listBoxLabelTextRegionUPtr_->GetEntityRegion().top
-                                     + listBoxLabelTextRegionUPtr_->GetEntityRegion().height
-                                     + LISTBOX_MARGIN };
-        auto const LISTBOX_RECT_WIDTH{ pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
-        auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height)
-                                         - LISTBOX_RECT_TOP)
-                                        - (LISTBOX_MARGIN * 2.0f) };
+        auto const LISTBOX_MARGIN { sfml_util::MapByRes(15.0f, 45.0f) };
+        auto const LISTBOX_RECT_LEFT { pageRectLeft_.left + LISTBOX_MARGIN };
+        auto const LISTBOX_RECT_TOP { listBoxLabelTextRegionUPtr_->GetEntityRegion().top
+                                      + listBoxLabelTextRegionUPtr_->GetEntityRegion().height
+                                      + LISTBOX_MARGIN };
+        auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
+        auto const LISTBOX_RECT_HEIGHT { ((pageRectLeft_.top + pageRectLeft_.height)
+                                          - LISTBOX_RECT_TOP)
+                                         - (LISTBOX_MARGIN * 2.0f) };
 
         const sf::FloatRect LISTBOX_RECT(
             LISTBOX_RECT_LEFT, LISTBOX_RECT_TOP, LISTBOX_RECT_WIDTH, LISTBOX_RECT_HEIGHT);
@@ -438,7 +435,7 @@ namespace popup
 
         if (!spellTitleTextRegionUPtr_)
         {
-            const sf::FloatRect SPELL_TITLE_TEXTRECT{
+            const sf::FloatRect SPELL_TITLE_TEXTRECT {
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
             };
 
@@ -455,7 +452,7 @@ namespace popup
         spellImageLoader.Load(spellTexture_, SPELL_PTR->Which());
 
         spellSprite_.setTexture(spellTexture_);
-        auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
+        auto const SPELL_IMAGE_SCALE { sfml_util::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
         spellSprite_.setColor(imageColorSlider_.Current());
 
@@ -466,16 +463,16 @@ namespace popup
                 + spellTitleTextRegionUPtr_->GetEntityRegion().height
                 + sfml_util::MapByRes(5.0f, 60.0f));
 
-        auto const SYM_SCALE{ sfml_util::MapByRes(0.75f, 3.75f) };
+        auto const SYM_SCALE { sfml_util::MapByRes(0.75f, 3.75f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        auto const X_SYM_POS_LEFT{ (spellSprite_.getGlobalBounds().left
-                                    + (spellSprite_.getGlobalBounds().width * 0.5f))
-                                   - (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
+        auto const X_SYM_POS_LEFT { (spellSprite_.getGlobalBounds().left
+                                     + (spellSprite_.getGlobalBounds().width * 0.5f))
+                                    - (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
 
-        auto const X_SYM_POS_TOP{ (spellSprite_.getGlobalBounds().top
-                                   + (spellSprite_.getGlobalBounds().height * 0.5f))
-                                  - (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
+        auto const X_SYM_POS_TOP { (spellSprite_.getGlobalBounds().top
+                                    + (spellSprite_.getGlobalBounds().height * 0.5f))
+                                   - (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
 
         xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
 
@@ -495,19 +492,19 @@ namespace popup
 
         if (!spellDetailsTextUPtr_)
         {
-            auto const SPELLDETAILS_TEXTRECT_LEFT{ pageRectRight_.left };
+            auto const SPELLDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
-            auto const SPELLDETAILS_TEXTRECT_TOP{ spellSprite_.getGlobalBounds().top
-                                                  + spellSprite_.getGlobalBounds().height
-                                                  + sfml_util::MapByRes(10.0f, 90.0f) };
+            auto const SPELLDETAILS_TEXTRECT_TOP { spellSprite_.getGlobalBounds().top
+                                                   + spellSprite_.getGlobalBounds().height
+                                                   + sfml_util::MapByRes(10.0f, 90.0f) };
 
-            auto const SPELLDETAILS_TEXTRECT_WIDTH{ pageRectRight_.width };
-            auto const SPELLDETAILS_TEXTRECT_HEIGHT{ 0.0f };
+            auto const SPELLDETAILS_TEXTRECT_WIDTH { pageRectRight_.width };
+            auto const SPELLDETAILS_TEXTRECT_HEIGHT { 0.0f };
 
-            const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
-                                                        SPELLDETAILS_TEXTRECT_TOP,
-                                                        SPELLDETAILS_TEXTRECT_WIDTH,
-                                                        SPELLDETAILS_TEXTRECT_HEIGHT };
+            const sf::FloatRect SPELL_DETAILS_TEXTRECT { SPELLDETAILS_TEXTRECT_LEFT,
+                                                         SPELLDETAILS_TEXTRECT_TOP,
+                                                         SPELLDETAILS_TEXTRECT_WIDTH,
+                                                         SPELLDETAILS_TEXTRECT_HEIGHT };
 
             spellDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDetails",
@@ -531,7 +528,7 @@ namespace popup
         {
             willShowXImage_ = true;
 
-            auto const CURRENT_PHASE{ game::LoopManager::Instance()->GetPhase() };
+            auto const CURRENT_PHASE { game::LoopManager::Instance()->GetPhase() };
 
             if (CURRENT_PHASE & game::Phase::Combat)
             {
@@ -564,21 +561,21 @@ namespace popup
             sf::Text::Bold,
             sfml_util::Justified::Center);
 
-        auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
+        auto const VERT_SPACER { sfml_util::MapByRes(15.0f, 60.0f) };
 
-        auto const SPELL_UNABLE_TEXTRECT_LEFT{ pageRectRight_.left };
+        auto const SPELL_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        auto const SPELL_UNABLE_TEXTRECT_TOP{ spellDetailsTextUPtr_->GetEntityRegion().top
-                                              + spellDetailsTextUPtr_->GetEntityRegion().height
-                                              + VERT_SPACER };
+        auto const SPELL_UNABLE_TEXTRECT_TOP { spellDetailsTextUPtr_->GetEntityRegion().top
+                                               + spellDetailsTextUPtr_->GetEntityRegion().height
+                                               + VERT_SPACER };
 
-        auto const SPELL_UNABLE_TEXTRECT_WIDTH{ pageRectRight_.width };
-        auto const SPELL_UNABLE_TEXTRECT_HEIGHT{ 0.0f };
+        auto const SPELL_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };
+        auto const SPELL_UNABLE_TEXTRECT_HEIGHT { 0.0f };
 
-        const sf::FloatRect SPELL_UNABLE_TEXTRECT{ SPELL_UNABLE_TEXTRECT_LEFT,
-                                                   SPELL_UNABLE_TEXTRECT_TOP,
-                                                   SPELL_UNABLE_TEXTRECT_WIDTH,
-                                                   SPELL_UNABLE_TEXTRECT_HEIGHT };
+        const sf::FloatRect SPELL_UNABLE_TEXTRECT { SPELL_UNABLE_TEXTRECT_LEFT,
+                                                    SPELL_UNABLE_TEXTRECT_TOP,
+                                                    SPELL_UNABLE_TEXTRECT_WIDTH,
+                                                    SPELL_UNABLE_TEXTRECT_HEIGHT };
 
         unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SpellnbookPopupWindowSpellUnableToCast", SPELL_UNABLE_TEXTINFO, SPELL_UNABLE_TEXTRECT);
@@ -594,9 +591,9 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        auto const SPELL_DESC_HORIZ_MARGIN{ sfml_util::MapByRes(15.0f, 30.0f) };
-        auto const SPELL_DESC_TEXTRECT_LEFT{ pageRectRight_.left + SPELL_DESC_HORIZ_MARGIN };
-        auto spellDescTextRectTop{ 0.0f };
+        auto const SPELL_DESC_HORIZ_MARGIN { sfml_util::MapByRes(15.0f, 30.0f) };
+        auto const SPELL_DESC_TEXTRECT_LEFT { pageRectRight_.left + SPELL_DESC_HORIZ_MARGIN };
+        auto spellDescTextRectTop { 0.0f };
         if (willShowXImage_)
         {
             spellDescTextRectTop = unableTextUPtr_->GetEntityRegion().top
@@ -608,17 +605,17 @@ namespace popup
                 + spellDetailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
 
-        auto const SPELL_DESC_TEXTRECT_WIDTH{ pageRectRight_.width
-                                              - (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
+        auto const SPELL_DESC_TEXTRECT_WIDTH { pageRectRight_.width
+                                               - (SPELL_DESC_HORIZ_MARGIN * 2.0f) };
 
-        auto const SPELL_DESC_TEXTRECT_HEIGHT{
+        auto const SPELL_DESC_TEXTRECT_HEIGHT {
             ((pageRectRight_.top + pageRectRight_.height) - spellDescTextRectTop) - VERT_SPACER
         };
 
-        const sf::FloatRect SPELL_DESC_TEXTRECT{ SPELL_DESC_TEXTRECT_LEFT,
-                                                 spellDescTextRectTop,
-                                                 SPELL_DESC_TEXTRECT_WIDTH,
-                                                 SPELL_DESC_TEXTRECT_HEIGHT };
+        const sf::FloatRect SPELL_DESC_TEXTRECT { SPELL_DESC_TEXTRECT_LEFT,
+                                                  spellDescTextRectTop,
+                                                  SPELL_DESC_TEXTRECT_WIDTH,
+                                                  SPELL_DESC_TEXTRECT_HEIGHT };
 
         if (!spellDescTextUPtr_)
         {

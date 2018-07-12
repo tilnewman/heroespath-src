@@ -33,6 +33,7 @@
 #include "log/logger.hpp"
 #include "log/macros.hpp"
 #include "misc/configbase.hpp"
+#include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "misc/settings-file.hpp"
 #include "popup/popup-manager.hpp"

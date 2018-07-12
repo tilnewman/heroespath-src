@@ -32,7 +32,7 @@ namespace game
 
     std::unique_ptr<LoopManager> LoopManager::instanceUPtr_;
 
-    std::string LoopManager::startupStageName_{ sfml_util::LoopState::ToString(
+    std::string LoopManager::startupStageName_ { sfml_util::LoopState::ToString(
         sfml_util::LoopState::Intro) };
 
     LoopManager::LoopManager()
@@ -87,7 +87,7 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "LoopManager::Initialize() found instanceUPtr that was null.");
 
-        auto const STARTUP_STAGE_ENUM{ static_cast<sfml_util::LoopState::Enum>(
+        auto const STARTUP_STAGE_ENUM { static_cast<sfml_util::LoopState::Enum>(
             sfml_util::LoopState::FromString(startupStageName_)) };
 
         if (STARTUP_STAGE_ENUM != sfml_util::LoopState::Intro)
@@ -153,7 +153,7 @@ namespace game
 
         // set the theme music volume to 25% even if the config file has it set lower so it can
         // always be heard during the intro
-        auto const VOLUME_IF_INTRO_OR_CAMP_STAGE{ 25.0f };
+        auto const VOLUME_IF_INTRO_OR_CAMP_STAGE { 25.0f };
         float targetVolumeToUse(sfml_util::MusicOperator::VOLUME_USE_GLOBAL_);
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
         {
@@ -460,7 +460,7 @@ namespace game
             cmdQueueVec_.front()->Execute();
             cmdQueueVec_.erase(std::begin(cmdQueueVec_));
 
-            auto const CURRENT_STATE{ loop_.GetState() };
+            auto const CURRENT_STATE { loop_.GetState() };
             if (CURRENT_STATE != state_)
             {
                 prevState_ = state_;
@@ -589,18 +589,29 @@ namespace game
                 TransitionTo_Adventure();
                 break;
             }
+            case sfml_util::LoopState::Previous:
+            {
+                TransitionTo_Previous();
+                break;
+            }
             case sfml_util::LoopState::None:
             case sfml_util::LoopState::Popup:
             case sfml_util::LoopState::Query:
+            case sfml_util::LoopState::Start:
+            case sfml_util::LoopState::Next:
+            case sfml_util::LoopState::Save:
+            case sfml_util::LoopState::Help:
             case sfml_util::LoopState::Count:
             default:
             {
-                M_HP_LOG(
-                    "ERROR:  LoopManager::TransitionTo() called when STATE is "
-                    << sfml_util::LoopState::ToString(STATE) << ".  Going to Main Menu...");
+                std::ostringstream ss;
 
-                TransitionTo_MainMenu();
-                break;
+                ss << "sfml_util::LoopManager::TransitionTo(new_loop_state=\""
+                   << sfml_util::LoopState::ToString(STATE)
+                   << "\", will_adv_turn=" << std::boolalpha << WILL_ADVANCE_TURN
+                   << ") but that new_loop_state is invalid.";
+
+                throw std::range_error(ss.str());
             }
         }
     }
@@ -611,12 +622,12 @@ namespace game
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
-        auto const CHANGE_RESULT{ sfml_util::Display::Instance()->ChangeVideoMode(
+        auto const CHANGE_RESULT { sfml_util::Display::Instance()->ChangeVideoMode(
             NEW_RES, ANTIALIAS_LEVEL) };
 
         CURRENT_ISTAGE_PTR->HandleResolutionChange();
 
-        auto isPopupTypeResolutionChange{ true };
+        auto isPopupTypeResolutionChange { true };
 
         sfml_util::gui::TextInfo textInfo(
             "Keep this setting?",
@@ -637,8 +648,8 @@ namespace game
                 textInfo.justified = sfml_util::Justified::Left;
 
                 std::ostringstream ss;
-                ss << "Unable to switch to that resolution.  Switched to "
-                   << sfml_util::VideoModeToString(sfml_util::Display::GetCurrentVideoMode())
+                ss << "Unable to switch to that resolution.  Switched to video mode="
+                   << sfml_util::Display::GetCurrentVideoMode()
                    << " AA=" << sfml_util::Display::Instance()->AntialiasLevel() << ".  Keep?";
 
                 textInfo.text = ss.str();

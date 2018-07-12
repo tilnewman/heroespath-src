@@ -94,12 +94,44 @@ namespace sfml_util
             {
                 return "Test";
             }
+            case Previous:
+            {
+                return "Previous";
+            }
+            case Start:
+            {
+                return "Start";
+            }
+            case Next:
+            {
+                return "Next";
+            }
+            case Save:
+            {
+                return "Save";
+            }
+            case Help:
+            {
+                return "Help";
+            }
             case Count:
             default:
             {
                 ThrowInvalidValueForFunction(E, "ToString");
             }
         }
+    }
+
+    bool LoopState::HasFadedImage(const LoopState::Enum ENUM)
+    {
+        return ((ENUM == LoopState::Start) || (ENUM == LoopState::Load));
+    }
+
+    bool LoopState::WillTransition(const LoopState::Enum ENUM)
+    {
+        return (
+            (ENUM != LoopState::Start) && (ENUM != LoopState::Next) && (ENUM != LoopState::Save)
+            && (ENUM != LoopState::Help));
     }
 
 } // namespace sfml_util

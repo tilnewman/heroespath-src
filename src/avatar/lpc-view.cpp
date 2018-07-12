@@ -24,13 +24,13 @@ namespace heroespath
 namespace avatar
 {
 
-    const int LPCView::CELL_SIZE_{ 64 };
-    const int LPCView::CELL_COUNT_{ 8 };
-    const float LPCView::FRAME_DURATION_SEC_WALK_{ 0.05f };
-    const float LPCView::FRAME_DURATION_SEC_GIVETAKE_{ 0.1f };
-    const float LPCView::FRAME_DURATION_SEC_SINGLEFRAME_{ 1.5f };
-    const float LPCView::FRAME_DURATION_SEC_BLINK_MIN_{ 0.025f };
-    const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_{ 0.20f };
+    const int LPCView::CELL_SIZE_ { 64 };
+    const int LPCView::CELL_COUNT_ { 8 };
+    const float LPCView::FRAME_DURATION_SEC_WALK_ { 0.05f };
+    const float LPCView::FRAME_DURATION_SEC_GIVETAKE_ { 0.1f };
+    const float LPCView::FRAME_DURATION_SEC_SINGLEFRAME_ { 1.5f };
+    const float LPCView::FRAME_DURATION_SEC_BLINK_MIN_ { 0.025f };
+    const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_ { 0.20f };
 
     LPCView::LPCView(const Avatar::Enum WHICH_AVATAR, const sf::Vector2f & CENTERED_MAP_POS_V)
         : whichAvatar_(WHICH_AVATAR)
@@ -40,19 +40,17 @@ namespace avatar
         , frameTimerSec_(0.0f)
         , frameIndex_(0)
     {
-        auto const REQUIRED_DIMMENSION{ static_cast<unsigned>(CELL_SIZE_ * CELL_COUNT_) };
+        auto const REQUIRED_DIMMENSION { static_cast<unsigned>(CELL_SIZE_ * CELL_COUNT_) };
         const sf::Vector2u REQUIRED_SIZE_V(REQUIRED_DIMMENSION, REQUIRED_DIMMENSION);
 
-        auto const ACTUAL_SIZE_V{ cachedTexture_.Get().getSize() };
+        auto const ACTUAL_SIZE_V { cachedTexture_.Get().getSize() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ACTUAL_SIZE_V == REQUIRED_SIZE_V),
             "avatar::LPCView::LPCView(avatar_enum="
-                << WHICH_AVATAR
-                << ", centered_map_pos=" << sfml_util::VectorToString(CENTERED_MAP_POS_V)
-                << ") but the image loaded was not the required size of "
-                << sfml_util::VectorToString(REQUIRED_SIZE_V) << ", instead it was "
-                << sfml_util::VectorToString(ACTUAL_SIZE_V) << ".");
+                << WHICH_AVATAR << ", centered_map_pos=" << CENTERED_MAP_POS_V
+                << ") but the image loaded was not the required size of " << REQUIRED_SIZE_V
+                << ", instead it was " << ACTUAL_SIZE_V << ".");
 
         SetupSprite();
         sprite_.setPosition(CENTERED_MAP_POS_V);
@@ -298,8 +296,8 @@ namespace avatar
 
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM)
     {
-        auto const FRAME_INDEX_X{ [&]() {
-            auto const INDEX{ (FRAME_NUM % CELL_COUNT_) - 1 };
+        auto const FRAME_INDEX_X { [&]() {
+            auto const INDEX { (FRAME_NUM % CELL_COUNT_) - 1 };
             if (INDEX == -1)
             {
                 return CELL_COUNT_ - 1;
@@ -310,8 +308,8 @@ namespace avatar
             }
         }() };
 
-        auto const FRAME_INDEX_Y{ [&]() {
-            auto const INDEX{ FRAME_NUM / CELL_COUNT_ };
+        auto const FRAME_INDEX_Y { [&]() {
+            auto const INDEX { FRAME_NUM / CELL_COUNT_ };
             if ((FRAME_NUM % CELL_COUNT_) == 0)
             {
                 return INDEX - 1;
@@ -373,7 +371,7 @@ namespace avatar
     {
         sprite_.setTextureRect(FrameRect(animation_.frame_num_vec[frameIndex_]));
 
-        auto const SCALE{ Avatar::Scale(Avatar::Name(whichAvatar_)) };
+        auto const SCALE { Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
     }
 

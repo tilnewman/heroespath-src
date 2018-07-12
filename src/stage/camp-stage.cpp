@@ -56,7 +56,7 @@ namespace stage
               true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , mainMenuTitle_("")
+        , stageTitle_()
         , campfireTexture_()
         , campfireSprite_()
         , backgroundImage_("media-images-backgrounds-tile-darkknot")
@@ -142,7 +142,7 @@ namespace stage
     void CampStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundImage_, STATES);
-        target.draw(mainMenuTitle_, STATES);
+        target.draw(stageTitle_, STATES);
         target.draw(campfireSprite_, STATES);
         target.draw(botSymbol_, STATES);
         Stage::Draw(target, STATES);

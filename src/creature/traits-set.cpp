@@ -35,7 +35,7 @@ namespace creature
     Trait & TraitSet::Get(const Traits::Enum E)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (E < Traits::Count), "TraitSet::Get(" << E << ")_InvalidValueError");
+            (Traits::IsValid(E)), "TraitSet::Get(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
@@ -43,7 +43,7 @@ namespace creature
     const Trait & TraitSet::GetCopy(const Traits::Enum E) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (E < Traits::Count), "TraitSet::GetCopy(" << E << ")_InvalidValueError");
+            (Traits::IsValid(E)), "TraitSet::GetCopy(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
@@ -58,8 +58,8 @@ namespace creature
 
         for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
-            auto const NEXT_ENUM{ static_cast<Traits::Enum>(i) };
-            auto const NEXT_CURR{ traitVec_[static_cast<std::size_t>(i)].Current() };
+            auto const NEXT_ENUM { static_cast<Traits::Enum>(i) };
+            auto const NEXT_CURR { traitVec_[static_cast<std::size_t>(i)].Current() };
 
             if (NEXT_CURR != 0)
             {
@@ -91,7 +91,7 @@ namespace creature
             }
         }
 
-        auto const RESULT_STR{ ss.str() };
+        auto const RESULT_STR { ss.str() };
         if ((RESULT_STR.empty() == false) && WILL_WRAP)
         {
             return "(" + RESULT_STR + ")";
@@ -129,7 +129,7 @@ namespace creature
             ss << ", ";
         }
 
-        auto const TRAIT{ traitVec_[static_cast<std::size_t>(E)] };
+        auto const TRAIT { traitVec_[static_cast<std::size_t>(E)] };
 
         ss << Traits::Abbr(E) << "=";
 

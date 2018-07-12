@@ -31,7 +31,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const float Stage::MOUSE_DRAG_MIN_DISTANCE_{ 3.0f };
+    const float Stage::MOUSE_DRAG_MIN_DISTANCE_ { 3.0f };
 
     Stage::Stage(
         const std::string & NAME,
@@ -119,7 +119,7 @@ namespace sfml_util
 
     void Stage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
-        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+        const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
         isMouseHeldDownAndMoving_
             = (isMouseHeldDown_
@@ -195,8 +195,8 @@ namespace sfml_util
         // TODO Should we eliminate the current focus before we know if we are setting a new focus?
         entityWithFocusPtrOpt_ = boost::none;
 
-        auto const WAS_FOUND{ std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
-                              != std::end(entityPVec_) };
+        auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
+                               != std::end(entityPVec_) };
 
         if (WAS_FOUND)
         {
@@ -223,8 +223,8 @@ namespace sfml_util
 
     void Stage::EntityAdd(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
-        auto const WAS_FOUND{ std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
-                              != std::end(entityPVec_) };
+        auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
+                               != std::end(entityPVec_) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (WAS_FOUND == false),
@@ -237,7 +237,7 @@ namespace sfml_util
 
     bool Stage::EntityRemove(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
-        auto const ORIG_NUM_ENTITYS{ entityPVec_.size() };
+        auto const ORIG_NUM_ENTITYS { entityPVec_.size() };
 
         entityPVec_.erase(
             std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR), entityPVec_.end());
@@ -308,7 +308,7 @@ namespace sfml_util
                 hoverSfText_.getGlobalBounds().width + 20.0f,
                 hoverSfText_.getGlobalBounds().height + 8.0f);
 
-            auto const SCREEN_WIDTH{ Display::Instance()->GetWinWidth() };
+            auto const SCREEN_WIDTH { Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
             {
                 region.left = SCREEN_WIDTH - region.width;

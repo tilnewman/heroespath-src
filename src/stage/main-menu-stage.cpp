@@ -16,6 +16,7 @@
 #include "game/game-state.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
@@ -24,8 +25,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "misc/real.hpp"
 
 namespace heroespath
 {
@@ -40,28 +39,35 @@ namespace stage
                   sfml_util::Font::System,
               },
               true)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , SCREEN_RECT_(
-              0.0f,
-              0.0f,
-              sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight())
         , BUTTON_SCALE_(sfml_util::MapByRes(1.0f, 3.0f))
-        , titleTexture_()
-        , titleSprite_()
-        , gradient_()
-        , resumeButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::ResumeButton>(
-              0.0f, 0.0f, BUTTON_SCALE_, false))
-        , createButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::CreateCharactersButton>(
-              0.0f, 0.0f, BUTTON_SCALE_, false))
-        , settingsButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::SettingsButton>(
-              0.0f, 0.0f, BUTTON_SCALE_, false))
-        , creditsButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::CreditsButton>(
-              0.0f, 0.0f, BUTTON_SCALE_, false))
-        , exitButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::ExitButton>(
-              0.0f, 0.0f, BUTTON_SCALE_, false))
-        , ouroborosUPtr_()
+        , titleCachedTexture_("media-images-title-blacksymbol")
+        , titleSprite_(titleCachedTexture_.Get())
+        , gradient_(
+              sfml_util::DisplayRect(),
+              sfml_util::GradientInfo(
+                  sf::Color(0, 0, 0, 200),
+                  sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight))
+        , resumeButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+              sfml_util::LoopState::Load,
+              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              BUTTON_SCALE_))
+        , createButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+              sfml_util::LoopState::Character,
+              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              BUTTON_SCALE_))
+        , settingsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+              sfml_util::LoopState::Settings,
+              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              BUTTON_SCALE_))
+        , creditsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+              sfml_util::LoopState::Credits,
+              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              BUTTON_SCALE_))
+        , exitButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+              sfml_util::LoopState::Exit,
+              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              BUTTON_SCALE_))
+        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
         , backgroundImage_("media-images-backgrounds-tile-darkknot")
     {}
@@ -71,7 +77,6 @@ namespace stage
     bool MainMenuStage::HandleCallback(
         const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
-
         if (PACKAGE.PTR_ == resumeButtonUPtr_.get())
         {
             game::LoopManager::Instance()->TransitionTo_LoadGameMenu();
@@ -84,27 +89,13 @@ namespace stage
     void MainMenuStage::Setup()
     {
         // title image
-        sfml_util::Loaders::Texture(
-            titleTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
-
-        titleSprite_.setTexture(titleTexture_);
-        const float TITLE_IMAGE_SCALE(sfml_util::MapByRes(0.5f, 3.0f));
-        titleSprite_.setScale(TITLE_IMAGE_SCALE, TITLE_IMAGE_SCALE);
+        sfml_util::ScaleSize(titleSprite_, sfml_util::MapByRes(0.5f, 3.0f));
 
         titleSprite_.setPosition(
-            (SCREEN_WIDTH_ * 0.5f) - (titleSprite_.getGlobalBounds().width * 0.5f),
+            sfml_util::DisplayCenterHoriz(titleSprite_.getGlobalBounds().width),
             sfml_util::MapByRes(20.0f, 188.0f));
 
-        // gradient
-        gradient_.Setup(
-            SCREEN_RECT_,
-            sfml_util::GradientInfo(
-                sf::Color(0, 0, 0, 200),
-                sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight));
-
         // Ouroboros
-        ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("MainMenu's");
         EntityAdd(ouroborosUPtr_.get());
 
         // buttons
@@ -114,40 +105,35 @@ namespace stage
         creditsButtonUPtr_->SetScaleToRes();
         exitButtonUPtr_->SetScaleToRes();
 
-        auto const SPACE_BETWEEN_BUTTONS{ sfml_util::MapByRes(8.0f, 50.0f) };
-        auto const TITLE_TO_BUTTONS_SPACER{ sfml_util::MapByRes(160.0f, 1000.0f) };
+        auto const SPACE_BETWEEN_BUTTONS { sfml_util::MapByRes(8.0f, 50.0f) };
+        auto const TITLE_TO_BUTTONS_SPACER { sfml_util::MapByRes(160.0f, 1000.0f) };
 
         resumeButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (resumeButtonUPtr_->GetEntityRegion().width * 0.5f),
-            titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height
-                + TITLE_TO_BUTTONS_SPACER);
+            sfml_util::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
+            sfml_util::Bottom(titleSprite_.getGlobalBounds()) + TITLE_TO_BUTTONS_SPACER);
 
         createButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (createButtonUPtr_->GetEntityRegion().width * 0.5f),
-            resumeButtonUPtr_->GetEntityRegion().top + resumeButtonUPtr_->GetEntityRegion().height
-                + SPACE_BETWEEN_BUTTONS);
+            sfml_util::DisplayCenterHoriz(createButtonUPtr_->GetEntityRegion().width),
+            sfml_util::Bottom(resumeButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
 
         settingsButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (settingsButtonUPtr_->GetEntityRegion().width * 0.5f),
-            createButtonUPtr_->GetEntityRegion().top + createButtonUPtr_->GetEntityRegion().height
-                + SPACE_BETWEEN_BUTTONS);
+            sfml_util::DisplayCenterHoriz(settingsButtonUPtr_->GetEntityRegion().width),
+            sfml_util::Bottom(createButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
 
         creditsButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (creditsButtonUPtr_->GetEntityRegion().width * 0.5f),
-            settingsButtonUPtr_->GetEntityRegion().top
-                + settingsButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
+            sfml_util::DisplayCenterHoriz(creditsButtonUPtr_->GetEntityRegion().width),
+            sfml_util::Bottom(settingsButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
 
         exitButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (exitButtonUPtr_->GetEntityRegion().width * 0.5f),
-            creditsButtonUPtr_->GetEntityRegion().top + creditsButtonUPtr_->GetEntityRegion().height
-                + SPACE_BETWEEN_BUTTONS);
+            sfml_util::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
+            sfml_util::Bottom(creditsButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
 
         resumeButtonUPtr_->SetCallbackHandler(this);
 
-        auto const ARE_THERE_GAMES_TO_LOAD{ []() {
+        auto const ARE_THERE_GAMES_TO_LOAD { []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
             // that does not create all games in order to find just one
-            auto const GAMESTATE_PVEC{ game::GameStateFactory::Instance()->LoadAllGames() };
+            auto const GAMESTATE_PVEC { game::GameStateFactory::Instance()->LoadAllGames() };
             for (auto const & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
             {
                 delete NEXT_GAMESTATE_PTR.Ptr();

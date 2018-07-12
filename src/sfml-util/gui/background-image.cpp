@@ -48,7 +48,7 @@ namespace sfml_util
             , bgInfo_()
             , sprite_()
         {
-            auto const FULLSCREEN_RECT{ sfml_util::Display::Instance()->FullScreenRect() };
+            auto const FULLSCREEN_RECT { sfml_util::Display::Instance()->FullScreenRect() };
 
             const sfml_util::GradientInfo GRADIENT_INFO(
                 sf::Color(0, 0, 0, 200),
@@ -106,23 +106,23 @@ namespace sfml_util
             float textRectLeftToUse(0.0f);
             float textRectTopToUse(0.0f);
 
-            auto const WIDTH_DIFF{ static_cast<float>(bgInfo_.texture.getSize().x)
-                                   - bgInfo_.region.width };
+            auto const WIDTH_DIFF { static_cast<float>(bgInfo_.texture.getSize().x)
+                                    - bgInfo_.region.width };
 
             if (WIDTH_DIFF > 10.0f)
             {
                 textRectLeftToUse = misc::random::Float(0.0f, WIDTH_DIFF);
             }
 
-            auto const HEIGHT_DIFF{ static_cast<float>(bgInfo_.texture.getSize().y)
-                                    - bgInfo_.region.height };
+            auto const HEIGHT_DIFF { static_cast<float>(bgInfo_.texture.getSize().y)
+                                     - bgInfo_.region.height };
 
             if (HEIGHT_DIFF > 10.0f)
             {
                 textRectTopToUse = misc::random::Float(0.0f, HEIGHT_DIFF);
             }
 
-            auto const SCALE_MULT{ 1.0f / IMAGE_SCALE };
+            auto const SCALE_MULT { 1.0f / IMAGE_SCALE };
 
             const sf::FloatRect TEXTURE_RECT(
                 textRectLeftToUse,
@@ -132,7 +132,7 @@ namespace sfml_util
 
             // setup the sprite
             sprite_.setTexture(bgInfo_.texture);
-            sprite_.setTextureRect(sfml_util::ConvertRect<float, int>(TEXTURE_RECT));
+            sprite_.setTextureRect(sf::IntRect(TEXTURE_RECT));
             sprite_.setPosition(bgInfo_.region.left, bgInfo_.region.top);
             sprite_.setColor(bgInfo_.color);
             SetImageDetails(IMAGE_SCALE, WILL_SMOOTH_IMAGE);
@@ -140,7 +140,7 @@ namespace sfml_util
 
         void BackgroundImage::Reset()
         {
-            auto newBgInfo{ bgInfo_ };
+            auto newBgInfo { bgInfo_ };
 
             newBgInfo.region = sf::FloatRect(
                 0.0f,
@@ -159,7 +159,7 @@ namespace sfml_util
             }
             else
             {
-                sfml_util::DrawRectangle<float>(
+                sfml_util::DrawRectangle(
                     target, states, bgInfo_.region, bgInfo_.color, 0, bgInfo_.color);
             }
 

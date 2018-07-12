@@ -31,7 +31,7 @@ namespace sfml_util
         : Animation(ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO)
         , cachedTextures_(Animations::MediaPathKey(ENUM))
         , sprite_(cachedTextures_.Front())
-        , origSizeV_(sfml_util::ConvertVector<unsigned, float>(cachedTextures_.Front().getSize()))
+        , origSizeV_(sf::Vector2f(cachedTextures_.Front().getSize()))
     {
         entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
         entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
@@ -83,11 +83,10 @@ namespace sfml_util
 
             if (colorFrom_ != colorTo_)
             {
-                auto const RATIO_COMPLETE{ static_cast<float>(currentFrame_)
-                                           / static_cast<float>(cachedTextures_.Size() - 1) };
+                auto const RATIO_COMPLETE { static_cast<float>(currentFrame_)
+                                            / static_cast<float>(cachedTextures_.Size() - 1) };
 
-                sprite_.setColor(
-                    sfml_util::color::TransitionColor(colorFrom_, colorTo_, RATIO_COMPLETE));
+                sprite_.setColor(sfml_util::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));
             }
 
             sprite_.setScale(

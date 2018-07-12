@@ -10,21 +10,20 @@
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
 //
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliderbar-effects.hpp"
 #include "sfml-util/sliderbar-music.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
 
 #include <memory>
 #include <string>
@@ -39,6 +38,7 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
         , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
     public:
         SettingsStage(const SettingsStage &) = delete;
@@ -46,23 +46,28 @@ namespace stage
         SettingsStage & operator=(const SettingsStage &) = delete;
         SettingsStage & operator=(SettingsStage &&) = delete;
 
-    public:
         SettingsStage();
         virtual ~SettingsStage();
 
-        virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
+        bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual void HandleResolutionChange();
-        virtual bool KeyRelease(const sf::Event::KeyEvent &);
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override
+        {
+            return false;
+        }
+
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void HandleResolutionChange() override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         void Setup_StageRegionToFullscreen();
         void Setup_BackgroundImage();
-        void Setup_MainMenuTitle();
+        void Setup_StageTitle();
         void Setup_BottomSymbol();
         void Setup_BackButton();
         const sf::FloatRect Setup_WoodBackgroundBoxAndReturnInnerRect();
@@ -92,9 +97,9 @@ namespace stage
         bool hasStageAlreadyBeenSetup_;
         unsigned prevAALevel_;
         sfml_util::gui::BackgroundImage bgTileImage_;
-        sfml_util::MainMenuTitle mainMenuTitle_;
+        sfml_util::StageTitle stageTitle_;
         sfml_util::BottomSymbol bottomSymbol_;
-        sfml_util::main_menu_buttons::BackButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::box::Box bgBox_;
         sfml_util::gui::TextRegionUPtr_t resLabelTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
@@ -109,6 +114,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
         sf::Texture woodTexture_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

@@ -75,10 +75,8 @@ namespace sfml_util
             if (WILL_WRAP)
                 ss << "(";
 
-            ss << "fg_wf=" << sfml_util::color::ColorToString(foreground_with_focus)
-               << ", fg_wof=" << sfml_util::color::ColorToString(foreground_without_focus)
-               << ", bg_wf=" << sfml_util::color::ColorToString(background_with_focus)
-               << ", bg_wof=" << sfml_util::color::ColorToString(background_without_focus);
+            ss << "fg_wf=" << foreground_with_focus << ", fg_wof=" << foreground_without_focus
+               << ", bg_wf=" << background_with_focus << ", bg_wof=" << background_without_focus;
 
             if (WILL_WRAP)
                 ss << ")";
@@ -88,20 +86,16 @@ namespace sfml_util
 
         bool operator<(const ColorSet & L, const ColorSet & R)
         {
-            if (L.foreground_with_focus != R.foreground_with_focus)
-                return sfml_util::color::ColorLess(
-                    L.foreground_with_focus, R.foreground_with_focus);
-
-            if (L.background_with_focus != R.background_with_focus)
-                return sfml_util::color::ColorLess(
-                    L.background_with_focus, R.background_with_focus);
-
-            if (L.foreground_without_focus != R.foreground_without_focus)
-                return sfml_util::color::ColorLess(
-                    L.foreground_without_focus, R.foreground_without_focus);
-
-            return sfml_util::color::ColorLess(
-                L.background_without_focus, R.background_without_focus);
+            return std::tie(
+                       L.foreground_with_focus,
+                       L.background_with_focus,
+                       L.foreground_without_focus,
+                       L.background_without_focus)
+                < std::tie(
+                       R.foreground_with_focus,
+                       R.background_with_focus,
+                       R.foreground_without_focus,
+                       R.background_without_focus);
         }
 
         bool operator==(const ColorSet & L, const ColorSet & R)
@@ -117,6 +111,7 @@ namespace sfml_util
                        R.foreground_without_focus,
                        R.background_without_focus);
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

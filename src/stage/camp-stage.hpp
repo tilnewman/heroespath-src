@@ -12,11 +12,11 @@
 //
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <memory>
@@ -73,7 +73,7 @@ namespace stage
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
-        sfml_util::MainMenuTitle mainMenuTitle_;
+        sfml_util::StageTitle stageTitle_;
         sf::Texture campfireTexture_;
         sf::Sprite campfireSprite_;
         sfml_util::gui::BackgroundImage backgroundImage_;

@@ -220,7 +220,7 @@ namespace sfml_util
                         const sf::FloatRect IMAGE_RECT(
                             entityRegion_.left + HORIZ_PAD_, TEXT_TOP, itemSizeV_.y, itemSizeV_.y);
 
-                        sfml_util::CenterAndScaleSpriteToFit(sprite, IMAGE_RECT);
+                        sfml_util::FitAndReCenter(sprite, IMAGE_RECT);
 
                         if (SelectedIndex() == i)
                         {
@@ -234,7 +234,7 @@ namespace sfml_util
 
                     if (SELECTION_INDEX == i)
                     {
-                        sfml_util::DrawRectangle<float>(
+                        sfml_util::DrawRectangle(
                             target, states, ITEM_RECT, sf::Color::Transparent, 0, highlightColor_);
                     }
 
@@ -242,7 +242,7 @@ namespace sfml_util
 
                     if (itemPtr->IsValid() == false)
                     {
-                        sfml_util::DrawRectangle<float>(
+                        sfml_util::DrawRectangle(
                             target,
                             states,
                             ITEM_RECT,

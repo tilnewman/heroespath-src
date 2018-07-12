@@ -27,14 +27,14 @@ namespace heroespath
 namespace avatar
 {
 
-    const float Model::NUM_BLINKS_TIME_WINDOW_SEC_{ 1.5f };
-    const std::size_t Model::NUM_BLINKS_WITHIN_TIME_WINDOW_{ 3 };
-    const float Model::TIME_BETWEEN_BLINK_MIN_SEC_{ 0.25f };
-    const float Model::TIME_BETWEEN_BLINK_MAX_SEC_{ 4.0f };
-    const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 3.0f };
-    const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 5.0f };
-    const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
-    const float Model::WALKING_INTO_DURATION_SEC_{ 0.5f };
+    const float Model::NUM_BLINKS_TIME_WINDOW_SEC_ { 1.5f };
+    const std::size_t Model::NUM_BLINKS_WITHIN_TIME_WINDOW_ { 3 };
+    const float Model::TIME_BETWEEN_BLINK_MIN_SEC_ { 0.25f };
+    const float Model::TIME_BETWEEN_BLINK_MAX_SEC_ { 4.0f };
+    const float Model::TIME_BETWEEN_WALK_MIN_SEC_ { 3.0f };
+    const float Model::TIME_BETWEEN_WALK_MAX_SEC_ { 5.0f };
+    const float Model::WALK_TARGET_CLOSE_ENOUGH_ { 5.0f };
+    const float Model::WALKING_INTO_DURATION_SEC_ { 0.5f };
 
     Model::Model(const Avatar::Enum AVATAR_ENUM)
         : view_(
@@ -101,18 +101,18 @@ namespace avatar
 
     void Model::ChangeDirection()
     {
-        std::vector<sfml_util::Direction::Enum> dirVec{ sfml_util::Direction::Left,
-                                                        sfml_util::Direction::Right,
-                                                        sfml_util::Direction::Up,
-                                                        sfml_util::Direction::Down };
+        std::vector<sfml_util::Direction::Enum> dirVec { sfml_util::Direction::Left,
+                                                         sfml_util::Direction::Right,
+                                                         sfml_util::Direction::Up,
+                                                         sfml_util::Direction::Down };
 
         dirVec.erase(
             std::remove(std::begin(dirVec), std::end(dirVec), GetView().Direction()),
             std::end(dirVec));
 
-        auto const NEW_DIRECTION{ misc::Vector::SelectRandom(dirVec) };
+        auto const NEW_DIRECTION { misc::Vector::SelectRandom(dirVec) };
 
-        auto const RECT{ walkRects_[walkRectIndex_] };
+        auto const RECT { walkRects_[walkRectIndex_] };
 
         switch (NEW_DIRECTION)
         {
@@ -177,7 +177,7 @@ namespace avatar
 
     void Model::TurnToFacePos(const sf::Vector2f & POS_V)
     {
-        auto const DIRECTION{ sfml_util::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
+        auto const DIRECTION { sfml_util::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
 
         if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
         {
@@ -203,7 +203,7 @@ namespace avatar
         {
             blinkTimes_.erase(std::begin(blinkTimes_));
 
-            auto const TOTAL_TIME{ std::accumulate(
+            auto const TOTAL_TIME { std::accumulate(
                 std::begin(blinkTimes_), std::end(blinkTimes_), 0.0f) };
 
             if (TOTAL_TIME < NUM_BLINKS_TIME_WINDOW_SEC_)
@@ -230,7 +230,7 @@ namespace avatar
             {
                 view_.Set(Pose::Blink, view_.Direction());
                 blinkTimerSec_ = 0.0f;
-                auto const PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC{ timeUntilNextBlinkSec_ };
+                auto const PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC { timeUntilNextBlinkSec_ };
                 timeUntilNextBlinkSec_ = RandomBlinkDelay();
                 ExtendTimeUntilNextBlinkIfNeeded(PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC);
             }
@@ -239,7 +239,7 @@ namespace avatar
 
     void Model::UpdateWalkingAction(const float TIME_ELAPSED)
     {
-        auto const WAS_STANDING{ (Pose::Standing == action_) };
+        auto const WAS_STANDING { (Pose::Standing == action_) };
 
         if (WAS_STANDING)
         {
@@ -251,7 +251,7 @@ namespace avatar
                 walkRectIndex_ = RandomWalkRectIndex();
                 walkTargetPosV_ = RandomWalkTarget();
 
-                auto const NEW_DIRECTION{ WalkDirection(sfml_util::Direction::Count) };
+                auto const NEW_DIRECTION { WalkDirection(sfml_util::Direction::Count) };
 
                 if (NEW_DIRECTION != sfml_util::Direction::Count)
                 {
@@ -263,7 +263,7 @@ namespace avatar
         }
         else
         {
-            auto const NEW_DIRECTION{ WalkDirection(prevWalkDirection_) };
+            auto const NEW_DIRECTION { WalkDirection(prevWalkDirection_) };
 
             if (NEW_DIRECTION != prevWalkDirection_)
             {
@@ -289,7 +289,7 @@ namespace avatar
         }
         else
         {
-            auto const CURRENT_POS_V{ GetCenteredMapPos() };
+            auto const CURRENT_POS_V { GetCenteredMapPos() };
 
             std::vector<std::size_t> possibleWalkRectIndexes_;
             for (std::size_t i(0); i < walkRects_.size(); ++i)
@@ -334,7 +334,7 @@ namespace avatar
                     << walkRectIndex_ << ") was out of bounds with walkRects vector of size="
                     << walkRects_.size() << ".");
 
-            auto const RECT{ walkRects_[walkRectIndex_] };
+            auto const RECT { walkRects_[walkRectIndex_] };
 
             return sf::Vector2f(
                 misc::random::Float(RECT.left, RECT.left + RECT.width),
@@ -345,7 +345,7 @@ namespace avatar
     sfml_util::Direction::Enum
         Model::WalkDirection(const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
-        auto const CURRENT_POS_V{ GetCenteredMapPos() };
+        auto const CURRENT_POS_V { GetCenteredMapPos() };
 
         if (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Count)
         {

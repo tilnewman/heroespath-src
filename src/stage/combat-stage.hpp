@@ -206,26 +206,27 @@ namespace stage
         explicit CombatStage(const bool WILL_ADVANCE_TURN);
         virtual ~CombatStage();
 
-        virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
+        const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual const sfml_util::gui::IGuiEntityPtrOpt_t
-            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+
+        const sfml_util::gui::IGuiEntityPtrOpt_t
+            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 
-        virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
+        bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
         bool IsPlayerCharacterTurnValid() const;
         bool IsNonPlayerCharacterTurnValid() const;

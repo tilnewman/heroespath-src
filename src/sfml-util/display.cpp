@@ -161,7 +161,7 @@ namespace sfml_util
     void Display::TakeScreenshot()
     {
         // acquire screenshot
-        auto const WINDOW_SIZE{ winUPtr_->getSize() };
+        auto const WINDOW_SIZE { winUPtr_->getSize() };
         sf::Texture texture;
         if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
         {
@@ -174,7 +174,7 @@ namespace sfml_util
 
         texture.update(*winUPtr_);
 
-        auto const SCREENSHOT_IMAGE{ texture.copyToImage() };
+        auto const SCREENSHOT_IMAGE { texture.copyToImage() };
 
         namespace bfs = boost::filesystem;
 
@@ -198,7 +198,7 @@ namespace sfml_util
         }
 
         // find the next available filename
-        auto const DATE_TIME{ sfml_util::DateTime::CurrentDateTime() };
+        auto const DATE_TIME { sfml_util::DateTime::CurrentDateTime() };
         std::ostringstream ss;
         bfs::path filePathObj;
         for (std::size_t i(0);; ++i)
@@ -749,6 +749,7 @@ namespace sfml_util
         sf::VideoMode videoMode;
 
         const sf::VideoMode DESKTOP_REPORTED_MODE(sf::VideoMode::getDesktopMode());
+
         const sf::VideoMode CURR_VIDEO_MODE(
             DESKTOP_REPORTED_MODE.width,
             DESKTOP_REPORTED_MODE.height,
@@ -846,11 +847,11 @@ namespace sfml_util
             VM_PARAM.height,
             ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
 
-        auto const INTENDED_ANTIALIAS_LEVEL{ ANTIALIAS_LEVEL_PARAM };
+        auto const INTENDED_ANTIALIAS_LEVEL { ANTIALIAS_LEVEL_PARAM };
 
         // save original video mode for later comparrison
-        auto const ORIG_VIDEO_MODE{ GetCurrentVideoMode() };
-        auto const ORIG_ANTIALIAS_LEVEL{ winUPtr_->getSettings().antialiasingLevel };
+        auto const ORIG_VIDEO_MODE { GetCurrentVideoMode() };
+        auto const ORIG_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
 
         if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE)
             && (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
@@ -879,8 +880,8 @@ namespace sfml_util
         const bool WAS_SUCCESS(winUPtr_->isOpen());
         if (WAS_SUCCESS)
         {
-            auto const NEW_VIDEO_MODE{ GetCurrentVideoMode() };
-            auto const NEW_ANTIALIAS_LEVEL{ winUPtr_->getSettings().antialiasingLevel };
+            auto const NEW_VIDEO_MODE { GetCurrentVideoMode() };
+            auto const NEW_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
 
             // for some reason sfml is finiky on some hardware and has a habit of switching
             // back to the original video mode without warning or error

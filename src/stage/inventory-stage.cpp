@@ -57,48 +57,50 @@ namespace heroespath
 namespace stage
 {
 
-    const float InventoryStage::VIEW_CHANGE_SLIDER_SPEED_{ 4.0f };
-    const float InventoryStage::VIEW_CHANGE_BETWEEN_TIME_SEC_{ 0.5f };
-    const float InventoryStage::CREATURE_IMAGE_RIGHT_PAD_{ 10.0f };
-    const float InventoryStage::DETAILVIEW_SLIDER_SPEED_{ 4.0f };
-    const float InventoryStage::DETAILVIEW_TIMER_DURATION_SEC_{ 2.33f };
-    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_START_{ 20.0f };
-    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_END_{ 220.0f };
-    const float InventoryStage::DETAILVIEW_INNER_PAD_{ 20.0f };
+    const float InventoryStage::VIEW_CHANGE_SLIDER_SPEED_ { 4.0f };
+    const float InventoryStage::VIEW_CHANGE_BETWEEN_TIME_SEC_ { 0.5f };
+    const float InventoryStage::CREATURE_IMAGE_RIGHT_PAD_ { 10.0f };
+    const float InventoryStage::DETAILVIEW_SLIDER_SPEED_ { 4.0f };
+    const float InventoryStage::DETAILVIEW_TIMER_DURATION_SEC_ { 2.33f };
+    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_START_ { 20.0f };
+    const float InventoryStage::DETAILVIEW_COLOR_ALPHA_END_ { 220.0f };
+    const float InventoryStage::DETAILVIEW_INNER_PAD_ { 20.0f };
 
-    const std::string InventoryStage::POPUP_NAME_GIVE_{ "InventoryStage'sGivePopupName" };
+    const std::string InventoryStage::POPUP_NAME_GIVE_ { "InventoryStage'sGivePopupName" };
 
-    const std::string InventoryStage::POPUP_NAME_CHAR_SELECT_{
+    const std::string InventoryStage::POPUP_NAME_CHAR_SELECT_ {
         "InventoryStage'sCharacterSelectPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_NUMBER_SELECT_{
+    const std::string InventoryStage::POPUP_NAME_NUMBER_SELECT_ {
         "InventoryStage'sPopupNumberSelectPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_CONTENTSELECTION_{
+    const std::string InventoryStage::POPUP_NAME_CONTENTSELECTION_ {
         "InventoryStage'sShareGatherSelectionPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_DROPCONFIRM_{
+    const std::string InventoryStage::POPUP_NAME_DROPCONFIRM_ {
         "InventoryStage'sDropItemConfirmationPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_SPELLBOOK_{ "InventoryStage'sSpellbookPopupName" };
+    const std::string InventoryStage::POPUP_NAME_SPELLBOOK_ {
+        "InventoryStage'sSpellbookPopupName"
+    };
 
-    const std::string InventoryStage::POPUP_NAME_SPELL_RESULT_{
+    const std::string InventoryStage::POPUP_NAME_SPELL_RESULT_ {
         "InventoryStage'sSpellResultPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_MUSICSHEET_{
+    const std::string InventoryStage::POPUP_NAME_MUSICSHEET_ {
         "InventoryStage'sMusicSheetPopupName"
     };
 
-    const std::string InventoryStage::POPUP_NAME_SONG_RESULT_{
+    const std::string InventoryStage::POPUP_NAME_SONG_RESULT_ {
         "InventoryStage'sSongResultPopupName"
     };
 
-    const sf::FloatRect InventoryStage::ERROR_RECT_{ -1.0f, -1.0f, -1.0f, -1.0f };
+    const sf::FloatRect InventoryStage::ERROR_RECT_ { -1.0f, -1.0f, -1.0f, -1.0f };
 
     InventoryStage::InventoryStage(
         const creature::CreaturePtr_t TURN_CREATURE_PTR,
@@ -149,8 +151,12 @@ namespace stage
         , DESCBOX_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
         , LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_)
-        , mainMenuTitle_("inventory_button.png", true, 1.0f, 0.75f)
-        , CREATURE_IMAGE_POS_TOP_(mainMenuTitle_.Bottom(false))
+        , stageTitle_(
+              "media-images-buttons-gui-inventory-normal",
+              true,
+              0.0f,
+              sfml_util::ScreenRatioToPixelsVert(0.0633f))
+        , CREATURE_IMAGE_POS_TOP_(stageTitle_.Bottom(false))
         , LISTBOX_POS_TOP_(
               (CREATURE_IMAGE_POS_TOP_ + CREATURE_IMAGE_HEIGHT_MAX_)
               + (LISTBOX_HEIGHT_REDUCTION_ * 0.5f))
@@ -237,9 +243,6 @@ namespace stage
         , equipButtonUPtr_()
         , unequipButtonUPtr_()
         , dropButtonUPtr_()
-        , sortButtonNameTexture_()
-        , sortButtonPriceTexture_()
-        , sortButtonWeightTexture_()
         , eqSortButtonNameUPtr_()
         , eqSortButtonPriceUPtr_()
         , eqSortButtonWeightUPtr_()
@@ -484,7 +487,7 @@ namespace stage
             creatureToGiveToPtrOpt_
                 = game::Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
 
-            auto const CREATURE_TO_GIVE_TO_PTR{ creatureToGiveToPtrOpt_.value() };
+            auto const CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
             if (spellBeingCastPtrOpt_)
             {
@@ -527,7 +530,7 @@ namespace stage
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             && creatureToGiveToPtrOpt_)
         {
-            auto const CREATURE_TO_GIVE_TO_PTR{ creatureToGiveToPtrOpt_.value() };
+            auto const CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
             switch (contentType_)
             {
@@ -602,9 +605,9 @@ namespace stage
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
+            const spell::SpellPVec_t SPELLS_PVEC { creaturePtr_->SpellsPVec() };
 
-            auto const RESPONSE_SELECTION_INDEX{ POPUP_RESPONSE.Selection() };
+            auto const RESPONSE_SELECTION_INDEX { POPUP_RESPONSE.Selection() };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
@@ -612,7 +615,7 @@ namespace stage
                     << POPUP_RESPONSE.Selection()
                     << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
-            auto const SPELL_PTR{ SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
+            auto const SPELL_PTR { SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
 
             creaturePtr_->LastSpellCastNum(RESPONSE_SELECTION_INDEX);
             return HandleCast_Step1_TargetSelection(SPELL_PTR);
@@ -621,8 +624,8 @@ namespace stage
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            auto const SONGS_PVEC{ creaturePtr_->SongsPVec() };
-            auto const RESPONSE_SELECTION_INDEX{ POPUP_RESPONSE.Selection() };
+            auto const SONGS_PVEC { creaturePtr_->SongsPVec() };
+            auto const RESPONSE_SELECTION_INDEX { POPUP_RESPONSE.Selection() };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
@@ -660,7 +663,7 @@ namespace stage
     void InventoryStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(paperBgSprite_, STATES);
-        target.draw(mainMenuTitle_, STATES);
+        target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
         target.draw(creatureSprite_, STATES);
         Stage::Draw(target, STATES);
@@ -671,14 +674,14 @@ namespace stage
 
         if (detailViewTextUPtr_)
         {
-            sf::RenderStates statesBlendAdd{ STATES };
+            sf::RenderStates statesBlendAdd { STATES };
             statesBlendAdd.blendMode = sf::BlendAdd;
             target.draw(detailViewSprite_, statesBlendAdd);
 
             detailViewTextUPtr_->draw(target, STATES);
         }
 
-        auto newBlendModeStates{ STATES };
+        auto newBlendModeStates { STATES };
         newBlendModeStates.blendMode = sf::BlendAdd;
 
         if (sparkleAnimUPtr_)
@@ -823,7 +826,7 @@ namespace stage
         {
             sliderAnimTimerSec_ += ELAPSED_TIME_SECONDS;
 
-            auto const CUT_OFF_TIME_SEC{ 100.0f };
+            auto const CUT_OFF_TIME_SEC { 100.0f };
 
             if ((sliderAnimTimerSec_ > VIEW_CHANGE_BETWEEN_TIME_SEC_)
                 && (sliderAnimTimerSec_ < CUT_OFF_TIME_SEC))
@@ -909,7 +912,7 @@ namespace stage
 
     void InventoryStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
-        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+        const sf::Vector2f NEW_MOUSE_POS_F { NEW_MOUSE_POS };
         hasMouseMoved_ = true;
         HandleDetailViewMouseInterrupt(NEW_MOUSE_POS_F);
         Stage::UpdateMousePos(NEW_MOUSE_POS);
@@ -983,7 +986,7 @@ namespace stage
         insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
-            sf::FloatRect(0.0f, mainMenuTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
+            sf::FloatRect(0.0f, stageTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
 
         insTextRegionUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
@@ -1073,19 +1076,19 @@ namespace stage
 
     void InventoryStage::Setup_CreatureStats()
     {
-        auto const STR_MOD_STR{ creaturePtr_->TraitModifiedString(
+        auto const STR_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Strength, true) };
 
-        auto const ACC_MOD_STR{ creaturePtr_->TraitModifiedString(
+        auto const ACC_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Accuracy, true) };
 
-        auto const CHA_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Charm, true) };
+        auto const CHA_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Charm, true) };
 
-        auto const LCK_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Luck, true) };
+        auto const LCK_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Luck, true) };
 
-        auto const SPD_MOD_STR{ creaturePtr_->TraitModifiedString(creature::Traits::Speed, true) };
+        auto const SPD_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Speed, true) };
 
-        auto const INT_MOD_STR{ creaturePtr_->TraitModifiedString(
+        auto const INT_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Intelligence, true) };
 
         std::ostringstream ss;
@@ -1107,7 +1110,7 @@ namespace stage
         if (!statsTextRegionUPtr_)
         {
             const sf::FloatRect STATS_TEXT_RECT(
-                STATS_POS_LEFT_, mainMenuTitle_.Bottom(false) + 20.0f, 0.0f, 0.0f);
+                STATS_POS_LEFT_, stageTitle_.Bottom(false) + 20.0f, 0.0f, 0.0f);
 
             statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
@@ -1122,7 +1125,7 @@ namespace stage
 
     void InventoryStage::Setup_CenterText()
     {
-        auto const & INVENTORY{ creaturePtr_->Inventory() };
+        auto const & INVENTORY { creaturePtr_->Inventory() };
 
         std::ostringstream ss;
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
@@ -1139,7 +1142,7 @@ namespace stage
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const bool WAS_ALREADY_INSTANTIATED{ centerTextRegionUPtr_ };
+        const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
 
         if (WAS_ALREADY_INSTANTIATED)
         {
@@ -1148,7 +1151,7 @@ namespace stage
         else
         {
             const sf::FloatRect CENTER_TEXT_RECT(
-                0.0f, mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f), 0.0f, 0.0f);
+                0.0f, stageTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f), 0.0f, 0.0f);
 
             centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
@@ -1156,9 +1159,9 @@ namespace stage
             EntityAdd(centerTextRegionUPtr_.get());
         }
 
-        const float POS_LEFT{ ((WAS_ALREADY_INSTANTIATED == false) && creaturePtr_->IsBeast())
-                                  ? (SCREEN_WIDTH_ + 1.0f)
-                                  : (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f) };
+        const float POS_LEFT { ((WAS_ALREADY_INSTANTIATED == false) && creaturePtr_->IsBeast())
+                                   ? (SCREEN_WIDTH_ + 1.0f)
+                                   : (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f) };
 
         centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
         centerPosLeft_ = POS_LEFT;
@@ -1182,7 +1185,7 @@ namespace stage
             viewToUse = ViewType::Items;
         }
 
-        const bool IS_ALREADY_INSTANTIATED{ equippedListBoxUPtr_ };
+        const bool IS_ALREADY_INSTANTIATED { equippedListBoxUPtr_ };
 
         if (IS_ALREADY_INSTANTIATED)
         {
@@ -1262,7 +1265,7 @@ namespace stage
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
             1, true, DESCBOX_REGION_, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
-        const bool IS_EQ_ALREADY_INSTANTIATED{ unEquipListBoxUPtr_ };
+        const bool IS_EQ_ALREADY_INSTANTIATED { unEquipListBoxUPtr_ };
 
         sf::Vector2f origPosV(OUT_OF_SIGHT_POS_, OUT_OF_SIGHT_POS_);
 
@@ -1360,128 +1363,91 @@ namespace stage
 
     void InventoryStage::Setup_SortButtons()
     {
-        // load images
-        sfml_util::Loaders::Texture(
-            sortButtonNameTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
-
-        sfml_util::Loaders::Texture(
-            sortButtonPriceTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
-
-        sfml_util::Loaders::Texture(
-            sortButtonWeightTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
-
-        // setup sprites
-        sf::Sprite eqNameSprite;
-        sf::Sprite eqPriceSprite;
-        sf::Sprite eqWeightSprite;
-        sf::Sprite unEqNameSprite;
-        sf::Sprite unEqPriceSprite;
-        sf::Sprite unEqWeightSprite;
-
-        eqNameSprite.setTexture(sortButtonNameTexture_, true);
-        eqPriceSprite.setTexture(sortButtonPriceTexture_, true);
-        eqWeightSprite.setTexture(sortButtonWeightTexture_, true);
-        unEqNameSprite.setTexture(sortButtonNameTexture_, true);
-        unEqPriceSprite.setTexture(sortButtonPriceTexture_, true);
-        unEqWeightSprite.setTexture(sortButtonWeightTexture_, true);
-
-        eqNameSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-        eqPriceSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-        eqWeightSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-        unEqNameSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-        unEqPriceSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-        unEqWeightSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
-
-        eqNameSprite.setColor(SORT_ICON_COLOR_);
-        eqPriceSprite.setColor(SORT_ICON_COLOR_);
-        eqWeightSprite.setColor(SORT_ICON_COLOR_);
-        unEqNameSprite.setColor(SORT_ICON_COLOR_);
-        unEqPriceSprite.setColor(SORT_ICON_COLOR_);
-        unEqWeightSprite.setColor(SORT_ICON_COLOR_);
-
-        auto const THREE_ICONS_WIDTH{ eqNameSprite.getGlobalBounds().width
-                                      + eqPriceSprite.getGlobalBounds().width
-                                      + eqWeightSprite.getGlobalBounds().width };
-
-        auto const POS_HORIZ_NAME_EQ{ ((FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
-                                       - THREE_ICONS_WIDTH)
-                                      - (SORT_ICON_SPACER_ * 2.25f) };
-
-        auto const POS_HORIZ_NAME_UNEQ{ ((SECOND_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
-                                         - THREE_ICONS_WIDTH)
-                                        - (SORT_ICON_SPACER_ * 2.25f) };
-
-        auto const POS_VERT_NAME{ SORT_ICON_POS_TOP_
-                                  - (eqNameSprite.getGlobalBounds().height * 0.5f) };
-
-        auto const POS_HORIZ_PRICE_EQ{ POS_HORIZ_NAME_EQ + eqNameSprite.getGlobalBounds().width
-                                       + SORT_ICON_SPACER_ };
-
-        auto const POS_HORIZ_PRICE_UNEQ{
-            POS_HORIZ_NAME_UNEQ + unEqNameSprite.getGlobalBounds().width + SORT_ICON_SPACER_
-        };
-
-        auto const POS_VERT_PRICE{ SORT_ICON_POS_TOP_
-                                   - (eqPriceSprite.getGlobalBounds().height * 0.5f) };
-
-        auto const POS_HORIZ_WEIGHT_EQ{ POS_HORIZ_PRICE_EQ + eqPriceSprite.getGlobalBounds().width
-                                        + SORT_ICON_SPACER_ };
-
-        auto const POS_HORIZ_WEIGHT_UNEQ{
-            POS_HORIZ_PRICE_UNEQ + unEqPriceSprite.getGlobalBounds().width + SORT_ICON_SPACER_
-        };
-
-        auto const POS_VERT_WEIGHT{ SORT_ICON_POS_TOP_
-                                    - (eqWeightSprite.getGlobalBounds().height * 0.5f) };
-
-        eqNameSprite.setPosition(POS_HORIZ_NAME_EQ, POS_VERT_NAME);
-        eqPriceSprite.setPosition(POS_HORIZ_PRICE_EQ, POS_VERT_PRICE);
-        eqWeightSprite.setPosition(POS_HORIZ_WEIGHT_EQ, POS_VERT_WEIGHT);
-        unEqNameSprite.setPosition(POS_HORIZ_NAME_UNEQ, POS_VERT_NAME);
-        unEqPriceSprite.setPosition(POS_HORIZ_PRICE_UNEQ, POS_VERT_PRICE);
-        unEqWeightSprite.setPosition(POS_HORIZ_WEIGHT_UNEQ, POS_VERT_WEIGHT);
-
-        // setup actual buttons
         Setup_SortButton(
-            "InventoryStage's_EquippedListbox_SortByName_", eqSortButtonNameUPtr_, eqNameSprite);
+            "InventoryStage's_EquippedListbox_SortByName_",
+            "media-images-misc-abc",
+            eqSortButtonNameUPtr_);
 
         Setup_SortButton(
-            "InventoryStage's_EquippedListbox_SortByPrice_", eqSortButtonPriceUPtr_, eqPriceSprite);
+            "InventoryStage's_EquippedListbox_SortByPrice_",
+            "media-images-misc-money-bag",
+            eqSortButtonPriceUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_EquippedListbox_SortByWeight_",
-            eqSortButtonWeightUPtr_,
-            eqWeightSprite);
+            "media-images-misc-weight",
+            eqSortButtonWeightUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByName_",
-            unEqSortButtonNameUPtr_,
-            unEqNameSprite);
+            "media-images-misc-abc",
+            unEqSortButtonNameUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByPrice_",
-            unEqSortButtonPriceUPtr_,
-            unEqPriceSprite);
+            "media-images-misc-money-bag",
+            unEqSortButtonPriceUPtr_);
 
         Setup_SortButton(
             "InventoryStage's_UnequippedListbox_SortByWeight_",
-            unEqSortButtonWeightUPtr_,
-            unEqWeightSprite);
+            "media-images-misc-weight",
+            unEqSortButtonWeightUPtr_);
+
+        auto const THREE_ICONS_WIDTH { eqSortButtonNameUPtr_->GetEntityRegion().width
+                                       + eqSortButtonPriceUPtr_->GetEntityRegion().width
+                                       + eqSortButtonWeightUPtr_->GetEntityRegion().width };
+
+        auto const POS_HORIZ_NAME_EQ { ((FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
+                                        - THREE_ICONS_WIDTH)
+                                       - (SORT_ICON_SPACER_ * 2.25f) };
+
+        auto const POS_HORIZ_NAME_UNEQ { ((SECOND_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
+                                          - THREE_ICONS_WIDTH)
+                                         - (SORT_ICON_SPACER_ * 2.25f) };
+
+        auto const POS_VERT_NAME { SORT_ICON_POS_TOP_
+                                   - (eqSortButtonNameUPtr_->GetEntityRegion().height * 0.5f) };
+
+        auto const POS_HORIZ_PRICE_EQ {
+            POS_HORIZ_NAME_EQ + eqSortButtonNameUPtr_->GetEntityRegion().width + SORT_ICON_SPACER_
+        };
+
+        auto const POS_HORIZ_PRICE_UNEQ { POS_HORIZ_NAME_UNEQ
+                                          + unEqSortButtonNameUPtr_->GetEntityRegion().width
+                                          + SORT_ICON_SPACER_ };
+
+        auto const POS_VERT_PRICE { SORT_ICON_POS_TOP_
+                                    - (eqSortButtonPriceUPtr_->GetEntityRegion().height * 0.5f) };
+
+        auto const POS_HORIZ_WEIGHT_EQ {
+            POS_HORIZ_PRICE_EQ + eqSortButtonPriceUPtr_->GetEntityRegion().width + SORT_ICON_SPACER_
+        };
+
+        auto const POS_HORIZ_WEIGHT_UNEQ { POS_HORIZ_PRICE_UNEQ
+                                           + unEqSortButtonPriceUPtr_->GetEntityRegion().width
+                                           + SORT_ICON_SPACER_ };
+
+        auto const POS_VERT_WEIGHT { SORT_ICON_POS_TOP_
+                                     - (eqSortButtonWeightUPtr_->GetEntityRegion().height * 0.5f) };
+
+        eqSortButtonNameUPtr_->SetEntityPos(POS_HORIZ_NAME_EQ, POS_VERT_NAME);
+        eqSortButtonPriceUPtr_->SetEntityPos(POS_HORIZ_PRICE_EQ, POS_VERT_PRICE);
+        eqSortButtonWeightUPtr_->SetEntityPos(POS_HORIZ_WEIGHT_EQ, POS_VERT_WEIGHT);
+        unEqSortButtonNameUPtr_->SetEntityPos(POS_HORIZ_NAME_UNEQ, POS_VERT_NAME);
+        unEqSortButtonPriceUPtr_->SetEntityPos(POS_HORIZ_PRICE_UNEQ, POS_VERT_PRICE);
+        unEqSortButtonWeightUPtr_->SetEntityPos(POS_HORIZ_WEIGHT_UNEQ, POS_VERT_WEIGHT);
     }
 
     void InventoryStage::Setup_SortButton(
         const std::string & NAME,
-        sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
-        sf::Sprite & sprite)
+        const std::string & IMAGE_PATH_KEY,
+        sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr)
     {
         sortButtonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
-            NAME, sprite.getPosition().x, sprite.getPosition().y, *sprite.getTexture(), true);
+            NAME, sf::Vector2f(), sfml_util::gui::ButtonStateImageKeys(IMAGE_PATH_KEY));
 
-        sortButtonUPtr->Color(sprite.getColor());
-        sortButtonUPtr->Scale(sprite.getScale().x);
+        sortButtonUPtr->Color(SORT_ICON_COLOR_);
+        sortButtonUPtr->Scale(SORT_ICON_SCALE_);
         sortButtonUPtr->SetCallbackHandler(this);
 
         EntityAdd(sortButtonUPtr.get());
@@ -1544,7 +1510,7 @@ namespace stage
 
     void InventoryStage::Setup_DescBoxTitle()
     {
-        auto const TITLETEXT{ (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
+        auto const TITLETEXT { (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
 
         const sfml_util::gui::TextInfo DESC_TEXT_INFO(
             TITLETEXT,
@@ -1584,24 +1550,20 @@ namespace stage
             sf::Color::Black,
             sfml_util::Justified::Left);
 
-        auto const COLOR_DISABLED{ sf::Color(0, 0, 0, 180) };
-        auto const COLOR_OVER{ sfml_util::FontManager::Color_GrayDarker() };
-        auto const COLOR_DOWN{ COLOR_DISABLED };
+        auto const COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
+        auto const COLOR_OVER { sfml_util::FontManager::Color_GrayDarker() };
+        auto const COLOR_DOWN { COLOR_DISABLED };
 
         sfml_util::gui::TextInfo textInfoDisabled(textInfo);
         textInfoDisabled.color = COLOR_DISABLED;
         textInfoDisabled.text = TEXT;
 
-        const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO{ textInfo, COLOR_DOWN, COLOR_OVER };
+        const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO { textInfo, COLOR_DOWN, COLOR_OVER };
 
         buttonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
             "InventoryStage's" + TEXT,
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             MOUSE_TEXT_INFO,
             textInfoDisabled);
 
@@ -1633,7 +1595,7 @@ namespace stage
 
         if (ViewType::Spells == view_)
         {
-            auto const ROLE_ENUM{ creaturePtr_->Role() };
+            auto const ROLE_ENUM { creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->SetText("(S)ongs");
@@ -1652,7 +1614,7 @@ namespace stage
         }
         else
         {
-            auto const ROLE_ENUM{ creaturePtr_->Role() };
+            auto const ROLE_ENUM { creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->SetText("(S)ongs");
@@ -1707,7 +1669,7 @@ namespace stage
             shareButtonUPtr_->SetIsDisabled(true);
             gatherButtonUPtr_->SetIsDisabled(true);
 
-            const std::string DENY_MSG{
+            const std::string DENY_MSG {
                 "Beasts cannot carry items, coins, gems, or Meteor Shards."
             };
 
@@ -1733,7 +1695,7 @@ namespace stage
 
         if (ViewType::Items == view_)
         {
-            auto selectedItemPtrOpt{ unEquipListBoxUPtr_->Selected() };
+            auto selectedItemPtrOpt { unEquipListBoxUPtr_->Selected() };
 
             if (selectedItemPtrOpt && selectedItemPtrOpt.value()->ItemPtrOpt()
                 && (selectedItemPtrOpt.value()->ItemPtrOpt().value()->Name().empty() == false)
@@ -1994,7 +1956,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO{ (1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            auto const RATIO { (1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2004,15 +1966,15 @@ namespace stage
             }
             else
             {
-                auto const NEW_POS_LEFT{ CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO) };
+                auto const NEW_POS_LEFT { CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO) };
 
                 creatureSprite_.setPosition(NEW_POS_LEFT, creatureSprite_.getPosition().y);
 
                 // sometimes the new creature image is wider than the last,
                 // so the details text needs to move with the new image to avoid overlap
-                auto const SPRITE_WIDTH{ UpdateImageDetailsPosition() };
+                auto const SPRITE_WIDTH { UpdateImageDetailsPosition() };
 
-                auto const NEW_DETAILSTEXT_POS_LEFT_EDGE{ (
+                auto const NEW_DETAILSTEXT_POS_LEFT_EDGE { (
                     NEW_POS_LEFT + SPRITE_WIDTH + CREATURE_IMAGE_RIGHT_PAD_) };
 
                 if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionUPtr_->GetEntityPos().x)
@@ -2037,7 +1999,7 @@ namespace stage
     {
         if (false == hasDetailsChanged_)
         {
-            auto const RATIO{ detailsSlider_.Update(ELAPSED_TIME_SECONDS) };
+            auto const RATIO { detailsSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (isSlidingLeft_)
             {
@@ -2066,7 +2028,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO{ (1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            auto const RATIO { (1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2094,7 +2056,7 @@ namespace stage
     {
         if (false == hasCenterChanged_)
         {
-            auto const RATIO{ centerSlider_.Update(ELAPSED_TIME_SECONDS) };
+            auto const RATIO { centerSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (centerTextRegionUPtr_->GetEntityPos().x < SCREEN_WIDTH_)
             {
@@ -2127,7 +2089,7 @@ namespace stage
         {
             if (creaturePtr_->IsBeast() == false)
             {
-                auto const RATIO{ (1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)) };
+                auto const RATIO { (1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
                 if (isSlidingLeft_)
                 {
@@ -2156,7 +2118,7 @@ namespace stage
     {
         if (false == hasStatsChanged_)
         {
-            auto const RATIO{ statsSlider_.Update(ELAPSED_TIME_SECONDS) };
+            auto const RATIO { statsSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (isSlidingLeft_)
             {
@@ -2184,7 +2146,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO{ (1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            auto const RATIO { (1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2212,7 +2174,7 @@ namespace stage
     {
         if (false == hasListBoxChanged_)
         {
-            auto const RATIO{ listBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+            auto const RATIO { listBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (isSlidingLeft_)
             {
@@ -2240,7 +2202,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO{ (1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            auto const RATIO { (1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2268,14 +2230,14 @@ namespace stage
     {
         if (false == hasDescBoxChanged_)
         {
-            auto const RATIO{ descBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+            auto const RATIO { descBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
 
-            auto const POS_LEFT_SLIDING_LEFT{
+            auto const POS_LEFT_SLIDING_LEFT {
                 SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO)
             };
 
-            auto const POS_LEFT_SLIDING_RIGHT{ SECOND_LISTBOX_POS_LEFT_
-                                               + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
+            auto const POS_LEFT_SLIDING_RIGHT { SECOND_LISTBOX_POS_LEFT_
+                                                + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
 
             if (ViewType::Items == view_)
             {
@@ -2328,12 +2290,12 @@ namespace stage
         }
         else
         {
-            auto const RATIO{ (1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            auto const RATIO { (1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
-            auto const POS_LEFT_SLIDING_LEFT{ SECOND_LISTBOX_POS_LEFT_
-                                              + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
+            auto const POS_LEFT_SLIDING_LEFT { SECOND_LISTBOX_POS_LEFT_
+                                               + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
 
-            auto const POS_LEFT_SLIDING_RIGHT{
+            auto const POS_LEFT_SLIDING_RIGHT {
                 SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO)
             };
 
@@ -2415,7 +2377,7 @@ namespace stage
                 }
                 else
                 {
-                    auto const ITEM_PTR_OPT{ GetItemMouseIsOver(mousePosV_) };
+                    auto const ITEM_PTR_OPT { GetItemMouseIsOver(mousePosV_) };
                     if (ITEM_PTR_OPT)
                     {
                         isDetailViewFadingIn_ = false;
@@ -2444,7 +2406,7 @@ namespace stage
             }
         }
 
-        const sf::Color NEW_COLOR{
+        const sf::Color NEW_COLOR {
             0,
             0,
             0,
@@ -2526,12 +2488,12 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const SELECTED_ITEM_PTR_OPT{ unEquipListBoxUPtr_->Selected() };
+            auto const SELECTED_ITEM_PTR_OPT { unEquipListBoxUPtr_->Selected() };
 
             if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
             {
-                auto const ITEM_PTR{ SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
-                auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(ITEM_PTR) };
+                auto const ITEM_PTR { SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
+                auto const EQUIP_RESULT { creaturePtr_->ItemEquip(ITEM_PTR) };
                 if (EQUIP_RESULT.empty())
                 {
                     sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
@@ -2547,7 +2509,7 @@ namespace stage
                     std::ostringstream ss;
                     ss << "Cannot equip the " << ITEM_PTR->Name() << " because: " << EQUIP_RESULT;
 
-                    auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                    auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                         "InventoryStage'sEquipItemFailedPopup",
                         ss.str(),
                         popup::PopupButtons::Okay,
@@ -2584,11 +2546,11 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
-            auto const SELECTED_ITEM_PTR_OPT{ equippedListBoxUPtr_->Selected() };
+            auto const SELECTED_ITEM_PTR_OPT { equippedListBoxUPtr_->Selected() };
 
             if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
             {
-                auto const ITEM_PTR{ SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
+                auto const ITEM_PTR { SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
 
                 if (ITEM_PTR->IsBodypart())
                 {
@@ -2616,7 +2578,7 @@ namespace stage
     {
         actionType_ = ActionType::Give;
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_GIVE_,
             std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor")
                 .append("Shards\n\n...or (Escape) to Cancel"),
@@ -2645,7 +2607,7 @@ namespace stage
             PopupRejectionWindow(ss.str());
         }
 
-        auto const SELECTED_ITEM_PTR_OPT{ unEquipListBoxUPtr_->Selected() };
+        auto const SELECTED_ITEM_PTR_OPT { unEquipListBoxUPtr_->Selected() };
 
         if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
         {
@@ -2758,8 +2720,9 @@ namespace stage
             return false;
         }
 
-        auto const ITEM_PTR{ listBoxItemToGivePtrOpt_.value()->ItemPtrOpt().value() };
-        auto const CAN_GIVE_ITEM_STR{ creatureToGiveToPtrOpt_.value()->ItemIsAddAllowed(ITEM_PTR) };
+        auto const ITEM_PTR { listBoxItemToGivePtrOpt_.value()->ItemPtrOpt().value() };
+        auto const CAN_GIVE_ITEM_STR { creatureToGiveToPtrOpt_.value()->ItemIsAddAllowed(
+            ITEM_PTR) };
         if (CAN_GIVE_ITEM_STR.empty())
         {
             sfml_util::SoundManager::Instance()
@@ -2860,7 +2823,7 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const SELECTED_ITEM_PTR_OPT{ unEquipListBoxUPtr_->Selected() };
+            auto const SELECTED_ITEM_PTR_OPT { unEquipListBoxUPtr_->Selected() };
 
             if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
             {
@@ -2878,7 +2841,7 @@ namespace stage
 
                 actionType_ = ActionType::Drop;
 
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_DROPCONFIRM_,
                     "\nAre you sure you want to drop the "
                         + listBoxItemToDropPtrOpt_.value()->ItemPtrOpt().value()->Name() + "?",
@@ -2918,7 +2881,7 @@ namespace stage
                 ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
                 .PlayRandom();
 
-            auto const ITEM_PTR{ listBoxItemToDropPtrOpt_.value()->ItemPtrOpt().value() };
+            auto const ITEM_PTR { listBoxItemToDropPtrOpt_.value()->ItemPtrOpt().value() };
 
             // NOTE after this call listBoxItemToDropPtrOpt_ is left dangling
             unEquipListBoxUPtr_->Remove(listBoxItemToDropPtrOpt_.value());
@@ -2951,7 +2914,7 @@ namespace stage
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        auto const CURR_INDEX{ game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
+        auto const CURR_INDEX { game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
 
         if (CURR_INDEX == CHARACTER_NUM)
         {
@@ -3032,18 +2995,18 @@ namespace stage
     {
         if (LISTBOX_ITEM_PTR_OPT)
         {
-            auto const LISTBOX_ITEM_PTR{ LISTBOX_ITEM_PTR_OPT.value() };
+            auto const LISTBOX_ITEM_PTR { LISTBOX_ITEM_PTR_OPT.value() };
             std::ostringstream ss;
 
             if (LISTBOX_ITEM_PTR->ConditionPtrOpt())
             {
-                auto const CONDITION_PTR{ LISTBOX_ITEM_PTR->ConditionPtrOpt().value() };
+                auto const CONDITION_PTR { LISTBOX_ITEM_PTR->ConditionPtrOpt().value() };
 
                 ss << CONDITION_PTR->Name() << "\n\n" << CONDITION_PTR->LongDesc();
             }
             else if (LISTBOX_ITEM_PTR->TitlePtrOpt())
             {
-                auto const TITLE_PTR{ LISTBOX_ITEM_PTR->TitlePtrOpt().value() };
+                auto const TITLE_PTR { LISTBOX_ITEM_PTR->TitlePtrOpt().value() };
                 ss << TITLE_PTR->Name() << "\n\n" << TITLE_PTR->LongDesc();
             }
 
@@ -3061,7 +3024,7 @@ namespace stage
         descTextInfo.charSize = DESCBOX_TEXT_SIZE_;
         descTextInfo.text = TEXT;
 
-        const bool IS_DTR_ALREADY_INSTANTIATED{ descTextRegionUPtr_ };
+        const bool IS_DTR_ALREADY_INSTANTIATED { descTextRegionUPtr_ };
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -3089,7 +3052,7 @@ namespace stage
         const std::size_t CURRENT_CREATURE_ORDER_NUM(
             game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
-        auto const NUM_CHARACTERS{ game::Game::Instance()->State().Party().Characters().size() };
+        auto const NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
 
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
@@ -3112,7 +3075,7 @@ namespace stage
             }
         }
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_, PROMPT_TEXT, invalidTextVec) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
@@ -3126,7 +3089,7 @@ namespace stage
         std::ostringstream ss;
         ss << "\n" << REJECTION_PROMPT_TEXT;
 
-        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
             ss.str(),
             popup::PopupButtons::Cancel,
@@ -3143,7 +3106,7 @@ namespace stage
     void InventoryStage::PopupNumberSelectWindow(
         const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX)
     {
-        auto const POPUP_INFO_NUMBER_SELECT{
+        auto const POPUP_INFO_NUMBER_SELECT {
             popup::PopupManager::Instance()->CreateNumberSelectionPopupInfo(
                 POPUP_NAME_NUMBER_SELECT_,
                 PROMPT_TEXT,
@@ -3161,7 +3124,7 @@ namespace stage
     void InventoryStage::PopupDoneWindow(
         const std::string & PROMPT_TEXT, const bool WILL_PLAY_SOUNDEFFECT)
     {
-        auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO_DONE { popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupDone",
             PROMPT_TEXT,
             popup::PopupButtons::Okay,
@@ -3181,7 +3144,7 @@ namespace stage
         std::ostringstream ss;
         ss << PROMPT_TEXT << "\n\n(C)oins\n(G)ems\n(M)eteor Shards";
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_CONTENTSELECTION_,
             ss.str(),
             popup::PopupButtons::Cancel,
@@ -3250,12 +3213,12 @@ namespace stage
 
     void InventoryStage::HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        auto coinsOwnedByOtherPartyMembers{ 0_coin };
+        auto coinsOwnedByOtherPartyMembers { 0_coin };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_COINS_OWNED{ nextCreaturePtr->Inventory().Coins() };
+                auto const NEXT_CREATURE_COINS_OWNED { nextCreaturePtr->Inventory().Coins() };
                 if (NEXT_CREATURE_COINS_OWNED > 0_coin)
                 {
                     coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
@@ -3290,12 +3253,12 @@ namespace stage
 
     void InventoryStage::HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        auto gemsOwnedByOtherPartyMembers{ 0_gem };
+        auto gemsOwnedByOtherPartyMembers { 0_gem };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_GEMS_OWNED{ nextCreaturePtr->Inventory().Gems() };
+                auto const NEXT_CREATURE_GEMS_OWNED { nextCreaturePtr->Inventory().Gems() };
                 if (NEXT_CREATURE_GEMS_OWNED > 0_gem)
                 {
                     gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
@@ -3330,12 +3293,12 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        auto shardsOwnedByOtherPartyMembers{ 0_mshard };
+        auto shardsOwnedByOtherPartyMembers { 0_mshard };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_SHARDS{ nextCreaturePtr->Inventory().MeteorShards() };
+                auto const NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().MeteorShards() };
                 if (NEXT_CREATURE_SHARDS > 0_mshard)
                 {
                     shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS;
@@ -3372,7 +3335,7 @@ namespace stage
     {
         // ensure there are any coins to share
         {
-            Coin_t totalCoins{ 0 };
+            Coin_t totalCoins { 0 };
             for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
@@ -3391,13 +3354,13 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        auto const COINS_TOTAL{ creaturePtr_->Inventory().Coins().As<int>() };
+        auto const COINS_TOTAL { creaturePtr_->Inventory().Coins().As<int>() };
 
-        auto const HUMANOID_COUNT{ static_cast<int>(
+        auto const HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const COINS_TO_SHARE{ COINS_TOTAL / HUMANOID_COUNT };
-        auto const COINS_LEFT_OVER{ COINS_TOTAL % HUMANOID_COUNT };
+        auto const COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT };
+        auto const COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3408,7 +3371,7 @@ namespace stage
             }
         }
 
-        auto toHandOut{ COINS_LEFT_OVER };
+        auto toHandOut { COINS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -3441,7 +3404,7 @@ namespace stage
     {
         // ensure there are any gems to share
         {
-            Gem_t totalGems{ 0 };
+            Gem_t totalGems { 0 };
             for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
@@ -3460,13 +3423,13 @@ namespace stage
 
         HandleGemsGather(false);
 
-        auto const GEMS_TOTAL{ creaturePtr_->Inventory().Gems().As<int>() };
+        auto const GEMS_TOTAL { creaturePtr_->Inventory().Gems().As<int>() };
 
-        auto const HUMANOID_COUNT{ static_cast<int>(
+        auto const HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const GEMS_TO_SHARE{ GEMS_TOTAL / HUMANOID_COUNT };
-        auto const GEMS_LEFT_OVER{ GEMS_TOTAL % HUMANOID_COUNT };
+        auto const GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT };
+        auto const GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3477,7 +3440,7 @@ namespace stage
             }
         }
 
-        auto toHandOut{ GEMS_LEFT_OVER };
+        auto toHandOut { GEMS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -3509,7 +3472,7 @@ namespace stage
     {
         // ensure there are any shards to share
         {
-            MeteorShard_t totalShards{ 0 };
+            MeteorShard_t totalShards { 0 };
             for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalShards += CREATURE_PTR->Inventory().MeteorShards();
@@ -3528,13 +3491,13 @@ namespace stage
 
         HandleMeteorShardsGather(false);
 
-        const int METEORSHARDS_TOTAL{ creaturePtr_->Inventory().MeteorShards().As<int>() };
+        const int METEORSHARDS_TOTAL { creaturePtr_->Inventory().MeteorShards().As<int>() };
 
-        const int HUMANOID_COUNT{ static_cast<int>(
+        const int HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const METEORSHARDS_TO_SHARE{ METEORSHARDS_TOTAL / HUMANOID_COUNT };
-        auto const METEORSHARDS_LEFT_OVER{ METEORSHARDS_TOTAL % HUMANOID_COUNT };
+        auto const METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT };
+        auto const METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3547,7 +3510,7 @@ namespace stage
             }
         }
 
-        auto toHandOut{ METEORSHARDS_LEFT_OVER };
+        auto toHandOut { METEORSHARDS_LEFT_OVER };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -3609,7 +3572,7 @@ namespace stage
     {
         if (view_ == ViewType::Items)
         {
-            auto const UNEQUIP_MOUSEOVER_ITEM_PTR_OPT{ unEquipListBoxUPtr_->AtPos(MOUSE_POS_V) };
+            auto const UNEQUIP_MOUSEOVER_ITEM_PTR_OPT { unEquipListBoxUPtr_->AtPos(MOUSE_POS_V) };
 
             if (UNEQUIP_MOUSEOVER_ITEM_PTR_OPT
                 && UNEQUIP_MOUSEOVER_ITEM_PTR_OPT.value()->ItemPtrOpt())
@@ -3618,7 +3581,8 @@ namespace stage
             }
             else
             {
-                auto const EQUIP_MOUSEOVER_ITEM_PTR_OPT{ equippedListBoxUPtr_->AtPos(MOUSE_POS_V) };
+                auto const EQUIP_MOUSEOVER_ITEM_PTR_OPT { equippedListBoxUPtr_->AtPos(
+                    MOUSE_POS_V) };
 
                 if (EQUIP_MOUSEOVER_ITEM_PTR_OPT
                     && EQUIP_MOUSEOVER_ITEM_PTR_OPT.value()->ItemPtrOpt())
@@ -3635,7 +3599,7 @@ namespace stage
     {
         if (view_ == ViewType::Items)
         {
-            auto const UNEQUIP_MOUSEOVER_ITEM_PTR_OPT{ unEquipListBoxUPtr_->AtPos(MOUSE_POS_V) };
+            auto const UNEQUIP_MOUSEOVER_ITEM_PTR_OPT { unEquipListBoxUPtr_->AtPos(MOUSE_POS_V) };
 
             if (UNEQUIP_MOUSEOVER_ITEM_PTR_OPT)
             {
@@ -3643,7 +3607,8 @@ namespace stage
             }
             else
             {
-                auto const EQUIP_MOUSEOVER_ITEM_PTR_OPT{ equippedListBoxUPtr_->AtPos(MOUSE_POS_V) };
+                auto const EQUIP_MOUSEOVER_ITEM_PTR_OPT { equippedListBoxUPtr_->AtPos(
+                    MOUSE_POS_V) };
 
                 if (EQUIP_MOUSEOVER_ITEM_PTR_OPT)
                 {
@@ -3663,14 +3628,14 @@ namespace stage
             return;
         }
 
-        auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
+        auto const ITEM_PTR { ITEM_PTR_OPT.value() };
 
         sfml_util::gui::ItemImageLoader itemImageLoader;
         itemImageLoader.Load(detailViewTexture_, ITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
 
-        auto const DETAILVIEW_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 1.25f) };
+        auto const DETAILVIEW_IMAGE_SCALE { sfml_util::MapByRes(0.75f, 1.25f) };
 
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
 
@@ -3712,19 +3677,19 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Center);
 
-        auto const LEFT{ DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
+        auto const LEFT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
 
-        auto const TOP{ detailViewSprite_.getGlobalBounds().top
-                        + detailViewSprite_.getGlobalBounds().height + DETAILVIEW_INNER_PAD_ };
+        auto const TOP { detailViewSprite_.getGlobalBounds().top
+                         + detailViewSprite_.getGlobalBounds().height + DETAILVIEW_INNER_PAD_ };
 
-        auto const DOUBLE_INNER_PAD{ 2.0f * DETAILVIEW_INNER_PAD_ };
+        auto const DOUBLE_INNER_PAD { 2.0f * DETAILVIEW_INNER_PAD_ };
 
-        auto const WIDTH{ DETAILVIEW_WIDTH_ - DOUBLE_INNER_PAD };
+        auto const WIDTH { DETAILVIEW_WIDTH_ - DOUBLE_INNER_PAD };
 
-        auto const DETAILVIEW_SPRITE_BOTTOM{ detailViewSprite_.getGlobalBounds().top
-                                             + detailViewSprite_.getGlobalBounds().height };
+        auto const DETAILVIEW_SPRITE_BOTTOM { detailViewSprite_.getGlobalBounds().top
+                                              + detailViewSprite_.getGlobalBounds().height };
 
-        auto const HEIGHT{ (DETAILVIEW_HEIGHT_ - DETAILVIEW_SPRITE_BOTTOM) - DOUBLE_INNER_PAD };
+        auto const HEIGHT { (DETAILVIEW_HEIGHT_ - DETAILVIEW_SPRITE_BOTTOM) - DOUBLE_INNER_PAD };
 
         const sf::FloatRect TEXT_RECT(LEFT, TOP, WIDTH, HEIGHT);
 
@@ -3740,7 +3705,7 @@ namespace stage
             return;
         }
 
-        auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
+        auto const CREATURE_PTR { CREATURE_PTR_OPT.value() };
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
         creatureImageLoader.Load(detailViewTexture_, CREATURE_PTR);
@@ -3788,7 +3753,7 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        auto const DETAILVIEW_BOUNDS{ detailViewSprite_.getGlobalBounds() };
+        auto const DETAILVIEW_BOUNDS { detailViewSprite_.getGlobalBounds() };
 
         const sf::FloatRect TEXT_RECT(
             DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
@@ -3805,7 +3770,7 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
-        auto const & ACHIEVEMENT{ CREATURE_PTR->GetAchievements().Get(WHICH_ACHV) };
+        auto const & ACHIEVEMENT { CREATURE_PTR->GetAchievements().Get(WHICH_ACHV) };
 
         if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
@@ -3826,14 +3791,14 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
-        auto const & ACHIEVEMENTS{ CREATURE_PTR->GetAchievements() };
-        auto const TITLE_PTR_OPT{ ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
+        auto const & ACHIEVEMENTS { CREATURE_PTR->GetAchievements() };
+        auto const TITLE_PTR_OPT { ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
 
         if (TITLE_PTR_OPT)
         {
-            auto const ACHV_COUNT_REQUIRED{ TITLE_PTR_OPT.value()->AchievementCount() };
-            auto const ACHV_COUNT_CURRENT{ ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
-            auto const NEEDED_COUNT{ ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
+            auto const ACHV_COUNT_REQUIRED { TITLE_PTR_OPT.value()->AchievementCount() };
+            auto const ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
+            auto const NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
             std::ostringstream ss;
             ss << ", need  " << NEEDED_COUNT << " more to achieve \""
@@ -3966,8 +3931,8 @@ namespace stage
     {
         spellBeingCastPtrOpt_ = SPELL_PTR;
 
-        auto const SPELL_NAME{ SPELL_PTR->Name() };
-        auto const SPELL_TARGET{ SPELL_PTR->Target() };
+        auto const SPELL_NAME { SPELL_PTR->Name() };
+        auto const SPELL_TARGET { SPELL_PTR->Target() };
 
         if (SPELL_TARGET == combat::TargetType::SingleCompanion)
         {
@@ -4029,9 +3994,9 @@ namespace stage
         }
 
         combat::Text combatText;
-        bool isFightResultCollapsed{ false };
+        bool isFightResultCollapsed { false };
 
-        auto const ACTION_TEXT{ combatText.ActionTextIndexed(
+        auto const ACTION_TEXT { combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,
@@ -4040,7 +4005,7 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SPELL_RESULT_,
             ACTION_TEXT,
             popup::PopupButtons::Okay,
@@ -4049,9 +4014,9 @@ namespace stage
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+        auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
 
-        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
+        auto const HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
 
         if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
         {
@@ -4080,7 +4045,7 @@ namespace stage
 
     bool InventoryStage::HandleSpellsOrSongs()
     {
-        auto const IS_SPELLS{ (creaturePtr_->Role() != creature::role::Bard) };
+        auto const IS_SPELLS { (creaturePtr_->Role() != creature::role::Bard) };
 
         if (game::Phase::Combat == currentPhase_)
         {
@@ -4126,10 +4091,10 @@ namespace stage
 
         if (IS_SPELLS)
         {
-            auto const CAN_CAST_STR{ creaturePtr_->CanCastSpellsStr(true) };
+            auto const CAN_CAST_STR { creaturePtr_->CanCastSpellsStr(true) };
             if (CAN_CAST_STR.empty())
             {
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_, creaturePtr_, creaturePtr_->LastSpellCastNum()) };
 
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSpellbook>(
@@ -4142,10 +4107,10 @@ namespace stage
         }
         else
         {
-            auto const CAN_PLAY_STR{ creaturePtr_->CanPlaySongsStr(true) };
+            auto const CAN_PLAY_STR { creaturePtr_->CanPlaySongsStr(true) };
             if (CAN_PLAY_STR.empty())
             {
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateMusicPopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_, creaturePtr_, creaturePtr_->LastSongPlayedNum()) };
 
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(
@@ -4182,7 +4147,7 @@ namespace stage
             songBeingPlayedPtrOpt_ = SONG_PTR;
             combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
-            auto const TARGETS_PVEC{ (
+            auto const TARGETS_PVEC { (
                 (SONG_PTR->Target() == combat::TargetType::AllCompanions)
                     ? creature::Algorithms::Players()
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
@@ -4229,8 +4194,8 @@ namespace stage
 
         combat::Text combatText;
 
-        bool isFightResultCollapsed{ false };
-        auto const ACTION_TEXT{ combatText.ActionTextIndexed(
+        bool isFightResultCollapsed { false };
+        auto const ACTION_TEXT { combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,
@@ -4239,7 +4204,7 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SONG_RESULT_,
             ACTION_TEXT,
             popup::PopupButtons::Okay,
@@ -4248,8 +4213,8 @@ namespace stage
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
-        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
+        auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
+        auto const HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
 
         if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
         {
@@ -4281,31 +4246,31 @@ namespace stage
 
     void InventoryStage::SetDetailViewQuads()
     {
-        auto const SOURCE_LEFT{ detailViewSourceRect_.left };
-        auto const SOURCE_RGT{ detailViewSourceRect_.left + detailViewSourceRect_.width };
-        auto const SOURCE_TOP{ detailViewSourceRect_.top };
-        auto const SOURCE_BOTTOM{ detailViewSourceRect_.top + detailViewSourceRect_.height };
+        auto const SOURCE_LEFT { detailViewSourceRect_.left };
+        auto const SOURCE_RGT { detailViewSourceRect_.left + detailViewSourceRect_.width };
+        auto const SOURCE_TOP { detailViewSourceRect_.top };
+        auto const SOURCE_BOTTOM { detailViewSourceRect_.top + detailViewSourceRect_.height };
 
-        auto const TARGET_LEFT{ DETAILVIEW_POS_LEFT_ };
-        auto const TARGET_RGT{ DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_ };
-        auto const TARGET_TOP{ DETAILVIEW_POS_TOP_ };
-        auto const TARGET_BOTTOM{ DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_ };
+        auto const TARGET_LEFT { DETAILVIEW_POS_LEFT_ };
+        auto const TARGET_RGT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_ };
+        auto const TARGET_TOP { DETAILVIEW_POS_TOP_ };
+        auto const TARGET_BOTTOM { DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_ };
 
-        auto const RATIO{ detailViewSliderRatio_ };
+        auto const RATIO { detailViewSliderRatio_ };
 
-        auto const LEFT_MORE{ SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
-        auto const LEFT_LESS{ SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
-        auto const LEFT{ (SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS };
+        auto const LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        auto const LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
+        auto const LEFT { (SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS };
 
-        auto const RGT_MORE{ SOURCE_RGT - ((SOURCE_RGT - TARGET_RGT) * RATIO) };
-        auto const RGT_LESS{ SOURCE_RGT + ((TARGET_RGT - SOURCE_RGT) * RATIO) };
-        auto const RGT{ (SOURCE_RGT > TARGET_RGT) ? RGT_MORE : RGT_LESS };
+        auto const RGT_MORE { SOURCE_RGT - ((SOURCE_RGT - TARGET_RGT) * RATIO) };
+        auto const RGT_LESS { SOURCE_RGT + ((TARGET_RGT - SOURCE_RGT) * RATIO) };
+        auto const RGT { (SOURCE_RGT > TARGET_RGT) ? RGT_MORE : RGT_LESS };
 
-        auto const TOP{ SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+        auto const TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
 
-        auto const BOTTOM_MORE{ SOURCE_BOTTOM - ((SOURCE_BOTTOM - TARGET_BOTTOM) * RATIO) };
-        auto const BOTTOM_LESS{ SOURCE_BOTTOM + ((TARGET_BOTTOM - SOURCE_BOTTOM) * RATIO) };
-        auto const BOTTOM{ (SOURCE_BOTTOM > TARGET_BOTTOM) ? BOTTOM_MORE : BOTTOM_LESS };
+        auto const BOTTOM_MORE { SOURCE_BOTTOM - ((SOURCE_BOTTOM - TARGET_BOTTOM) * RATIO) };
+        auto const BOTTOM_LESS { SOURCE_BOTTOM + ((TARGET_BOTTOM - SOURCE_BOTTOM) * RATIO) };
+        auto const BOTTOM { (SOURCE_BOTTOM > TARGET_BOTTOM) ? BOTTOM_MORE : BOTTOM_LESS };
 
         detailViewQuads_[0].position = sf::Vector2f(LEFT, TOP);
         detailViewQuads_[1].position = sf::Vector2f(RGT, TOP);

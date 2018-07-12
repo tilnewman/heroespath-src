@@ -64,7 +64,7 @@ namespace combat
     const float CombatNode::WING_IMAGE_HORIZ_OFFSET_(0.333f);
     const double CombatNode::WING_IMAGE_ANIM_SPEED_(8.0);
     const float CombatNode::WING_IMAGE_ROTATION_MAX_(90.0f);
-    const std::size_t CombatNode::HEALTH_LINE_COUNT_{ 10 };
+    const std::size_t CombatNode::HEALTH_LINE_COUNT_ { 10 };
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
         : GuiEntity(
@@ -108,10 +108,10 @@ namespace combat
         , willShowSelectAnim_(false)
         , selectAnimSprite_()
     {
-        sfml_util::SetTextColor(nameTextObj_, NameColor());
+        sfml_util::SetColor(nameTextObj_, NameColor());
 
         UpdateConditionText();
-        sfml_util::SetTextColor(condTextObj_, sf::Color(200, 200, 200, 200));
+        sfml_util::SetColor(condTextObj_, sf::Color(200, 200, 200, 200));
 
         HealthChangeTasks();
 
@@ -167,8 +167,8 @@ namespace combat
 
     void CombatNode::SetRegion(const float NEW_RATIO)
     {
-        auto const ORIG_RECT{ GetEntityRegion() };
-        auto newRect{ ORIG_RECT };
+        auto const ORIG_RECT { GetEntityRegion() };
+        auto newRect { ORIG_RECT };
         newRect.width *= NEW_RATIO;
         newRect.left += (ORIG_RECT.width - newRect.width) * 0.5f;
         newRect.height *= NEW_RATIO;
@@ -259,13 +259,13 @@ namespace combat
         UpdateImagePosition();
         SetWingImagePosition();
 
-        auto const CROSSBONES_IMAGE_POS_LEFT{ (entityRegion_.left + (entityRegion_.width * 0.5f))
-                                              - (crossBonesSprite_.getGlobalBounds().width
-                                                 * 0.5f) };
+        auto const CROSSBONES_IMAGE_POS_LEFT { (entityRegion_.left + (entityRegion_.width * 0.5f))
+                                               - (crossBonesSprite_.getGlobalBounds().width
+                                                  * 0.5f) };
 
-        auto const CROSSBONES_IMAGE_POS_TOP{ (entityRegion_.top + (entityRegion_.height * 0.5f))
-                                             - (crossBonesSprite_.getGlobalBounds().height
-                                                * 0.5f) };
+        auto const CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top + (entityRegion_.height * 0.5f))
+                                              - (crossBonesSprite_.getGlobalBounds().height
+                                                 * 0.5f) };
 
         crossBonesSprite_.setPosition(CROSSBONES_IMAGE_POS_LEFT, CROSSBONES_IMAGE_POS_TOP);
     }
@@ -295,10 +295,9 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
+        sfml_util::SetColor(nameTextObj_, AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
 
-        sfml_util::SetTextColor(
-            condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
+        sfml_util::SetColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
         healthLineColorRed_ = AdjustColorForToneDown(HealthColorRed(), TONE_DOWN_VAL);
@@ -380,7 +379,7 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
-        auto const WILL_SETUP_SKULL_IMAGE{ (
+        auto const WILL_SETUP_SKULL_IMAGE { (
             isPlayer_ && creaturePtr_->IsDead() && (false == willShowCrossBones_)) };
 
         if (WILL_SETUP_SKULL_IMAGE)
@@ -472,7 +471,7 @@ namespace combat
 
     void CombatNode::SetWingImagePosition()
     {
-        auto const ORIG_ORIGIN{ wingSprite_.getOrigin() };
+        auto const ORIG_ORIGIN { wingSprite_.getOrigin() };
         wingSprite_.setOrigin(0.0f, 0.0f);
 
         wingSprite_.setPosition(
@@ -487,8 +486,8 @@ namespace combat
 
     void CombatNode::SetWingImageScaleAndOrigin()
     {
-        auto const WING_SCALE{ (entityRegion_.height / wingSprite_.getLocalBounds().height)
-                               * WING_IMAGE_SCALE_ };
+        auto const WING_SCALE { (entityRegion_.height / wingSprite_.getLocalBounds().height)
+                                * WING_IMAGE_SCALE_ };
 
         wingSprite_.setScale(WING_SCALE, WING_SCALE);
 
@@ -514,8 +513,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
-            sfml_util::SetTextColor(nameTextObj_, NameColor() + HIGHLIGHT_ADJ_COLOR_);
-            sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
+            sfml_util::SetColor(nameTextObj_, NameColor() + HIGHLIGHT_ADJ_COLOR_);
+            sfml_util::SetColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
             healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
             healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
 
@@ -529,8 +528,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
-            sfml_util::SetTextColor(nameTextObj_, NameColor());
-            sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_);
+            sfml_util::SetColor(nameTextObj_, NameColor());
+            sfml_util::SetColor(condTextObj_, CONDITION_COLOR_);
             healthLineColor_ = HealthColor();
             healthLineColorTick_ = HealthColorTick();
             sprite_.setColor(creatureImageColor_);
@@ -617,15 +616,15 @@ namespace combat
     void CombatNode::SelectAnimUpdate(const float SLIDER_RATIO)
     {
         // grow
-        auto const SCALE{ 1.0f + (sfml_util::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
+        auto const SCALE { 1.0f + (sfml_util::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
         selectAnimSprite_.setScale(SCALE, SCALE);
 
         // re-center
-        auto const HORIZ_ADJ{
+        auto const HORIZ_ADJ {
             (selectAnimSprite_.getGlobalBounds().width - sprite_.getGlobalBounds().width) * 0.5f
         };
 
-        auto const VERT_ADJ{
+        auto const VERT_ADJ {
             (selectAnimSprite_.getGlobalBounds().height - sprite_.getGlobalBounds().height) * 0.5f
         };
 
@@ -633,7 +632,7 @@ namespace combat
             sprite_.getPosition().x - HORIZ_ADJ, sprite_.getPosition().y - VERT_ADJ);
 
         // fade-out
-        auto color{ selectAnimSprite_.getColor() };
+        auto color { selectAnimSprite_.getColor() };
         color.a = static_cast<sf::Uint8>(sprite_.getColor().a * (1.0f - SLIDER_RATIO));
         selectAnimSprite_.setColor(color);
     }
@@ -642,20 +641,20 @@ namespace combat
 
     void CombatNode::SetupHealthLines()
     {
-        auto const POS_TOP{ nameTextObj_.getPosition().y
-                            + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+        auto const POS_TOP { nameTextObj_.getPosition().y
+                             + (nameTextObj_.getGlobalBounds().height * 2.0f) };
 
-        auto const LINE_LEN_MARGIN{ 0.25f * entityRegion_.width };
+        auto const LINE_LEN_MARGIN { 0.25f * entityRegion_.width };
 
-        auto const LINE_POS_LEFT{ entityRegion_.left + LINE_LEN_MARGIN };
+        auto const LINE_POS_LEFT { entityRegion_.left + LINE_LEN_MARGIN };
 
-        auto const LINE_LEN{ entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
+        auto const LINE_LEN { entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
 
-        auto const LINE_TICK_HEIGHT{ 4.0f };
+        auto const LINE_TICK_HEIGHT { 4.0f };
 
-        auto const LINE_RATIO_RIGHT{ LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
+        auto const LINE_RATIO_RIGHT { LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
 
-        auto const LINE_TOTAL_RIGHT{ LINE_POS_LEFT + LINE_LEN };
+        auto const LINE_TOTAL_RIGHT { LINE_POS_LEFT + LINE_LEN };
 
         healthLines_[0].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP);
         healthLines_[1].position = sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP);

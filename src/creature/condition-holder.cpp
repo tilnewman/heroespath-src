@@ -147,7 +147,7 @@ namespace creature
 
         bool Holder::Test()
         {
-            static auto hasInitialPrompt{ false };
+            static auto hasInitialPrompt { false };
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
@@ -155,11 +155,11 @@ namespace creature
                     "creature::condition::Holder::Test() Starting Tests...");
             }
 
-            static misc::EnumUnderlying_t condIndex{ 0 };
+            static misc::EnumUnderlying_t condIndex { 0 };
             if (condIndex < creature::Conditions::Count)
             {
-                auto const NEXT_ENUM{ static_cast<creature::Conditions::Enum>(condIndex) };
-                auto const CONDITION_PTR{ Get(NEXT_ENUM) };
+                auto const NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
+                auto const CONDITION_PTR { Get(NEXT_ENUM) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->Desc().empty() == false),
@@ -210,13 +210,15 @@ namespace creature
                 "creature::condition::Holder::Get(" << Conditions::ToString(E)
                                                     << ") was called when Holder was empty.");
 
+            auto const INDEX { static_cast<std::size_t>(E) };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (static_cast<std::size_t>(E) < conditionsUVec_.size()),
+                (INDEX < conditionsUVec_.size()),
                 "creature::condition::Holder::Get("
                     << Conditions::ToString(E)
                     << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
-            return conditionsUVec_.at(static_cast<std::size_t>(E)).get();
+            return conditionsUVec_[INDEX].get();
         }
 
     } // namespace condition

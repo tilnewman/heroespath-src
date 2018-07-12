@@ -40,23 +40,18 @@ namespace sfml_util
         sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
         sprite_.setColor(colorFrom_);
 
-        auto const TEXTURE_SIZE_V{ sfml_util::ConvertVector<unsigned, int>(
-            cachedTexture_.Get().getSize()) };
-
-        auto const FRAME_SIZE_V{ sfml_util::ConvertVector<float, int>(origSizeV_) };
+        const sf::Vector2i TEXTURE_SIZE_V(cachedTexture_.Get().getSize());
+        const sf::Vector2i FRAME_SIZE_V(origSizeV_);
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((TEXTURE_SIZE_V.x >= FRAME_SIZE_V.x) && (TEXTURE_SIZE_V.y >= FRAME_SIZE_V.y)),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
-                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
-                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
-                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
-                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
+                << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="
+                << TIME_PER_FRAME_SEC << ", color_from=" << COLOR_FROM << ", color_to=" << COLOR_TO
                 << ") failed because the frame size was bigger than the image size. (image_size="
-                << sfml_util::VectorToString(TEXTURE_SIZE_V)
-                << ", frame_size=" << sfml_util::VectorToString(FRAME_SIZE_V) << ")");
+                << TEXTURE_SIZE_V << ", frame_size=" << FRAME_SIZE_V << ")");
 
-        sf::Vector2i posV{ 0, 0 };
+        sf::Vector2i posV { 0, 0 };
         while (posV.y < TEXTURE_SIZE_V.y)
         {
             while (posV.x < TEXTURE_SIZE_V.x)
@@ -69,32 +64,26 @@ namespace sfml_util
             posV.y += FRAME_SIZE_V.y;
         };
 
-        auto const CALCULATED_FRAME_COUNT_EXPECTED{ static_cast<std::size_t>(
+        auto const CALCULATED_FRAME_COUNT_EXPECTED { static_cast<std::size_t>(
             (TEXTURE_SIZE_V.x / FRAME_SIZE_V.x) * (TEXTURE_SIZE_V.y / FRAME_SIZE_V.y)) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (CALCULATED_FRAME_COUNT_EXPECTED == rects_.size()),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
-                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
-                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
-                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
-                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
+                << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="
+                << TIME_PER_FRAME_SEC << ", color_from=" << COLOR_FROM << ", color_to=" << COLOR_TO
                 << ") Failed to create the expected number "
                    "of frames. (image_size="
-                << sfml_util::VectorToString(TEXTURE_SIZE_V) << ", frame_size="
-                << sfml_util::VectorToString(FRAME_SIZE_V) << ")  (actual=" << rects_.size()
-                << ", expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
+                << TEXTURE_SIZE_V << ", frame_size=" << FRAME_SIZE_V << ")  (actual="
+                << rects_.size() << ", expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (rects_.empty() == false),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
-                << Animations::ToString(ENUM) << ", region=" << sfml_util::RectToString(REGION)
-                << ", time_per_frames_sec=" << TIME_PER_FRAME_SEC
-                << ", color_from=" << sfml_util::color::ColorToString(COLOR_FROM)
-                << ", color_to=" << sfml_util::color::ColorToString(COLOR_TO)
-                << ") Failed to create any frames. (image_size="
-                << sfml_util::VectorToString(TEXTURE_SIZE_V)
-                << ", frame_size=" << sfml_util::VectorToString(FRAME_SIZE_V)
+                << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="
+                << TIME_PER_FRAME_SEC << ", color_from=" << COLOR_FROM << ", color_to=" << COLOR_TO
+                << ") Failed to create any frames. (image_size=" << TEXTURE_SIZE_V
+                << ", frame_size=" << FRAME_SIZE_V
                 << ")  (expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
 
         sprite_.setTextureRect(rects_[0]);
@@ -142,11 +131,10 @@ namespace sfml_util
 
             if (colorFrom_ != colorTo_)
             {
-                auto const RATIO_COMPLETE{ static_cast<float>(currentFrame_)
-                                           / static_cast<float>(rects_.size() - 1) };
+                auto const RATIO_COMPLETE { static_cast<float>(currentFrame_)
+                                            / static_cast<float>(rects_.size() - 1) };
 
-                sprite_.setColor(
-                    sfml_util::color::TransitionColor(colorFrom_, colorTo_, RATIO_COMPLETE));
+                sprite_.setColor(sfml_util::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));
             }
 
             sprite_.setScale(

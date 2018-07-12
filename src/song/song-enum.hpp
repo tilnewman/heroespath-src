@@ -9,6 +9,8 @@
 //
 // song-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -17,9 +19,10 @@ namespace heroespath
 namespace song
 {
 
-    struct Songs
+    // Responsible for identifying all songs that Bards can play in the game
+    struct Songs : public misc::EnumBaseCounting<Songs, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             RallyDrum = 0,
             SpiritResonance,
@@ -30,7 +33,10 @@ namespace song
             Count
         };
 
+        // straight name without spaces
         static const std::string ToString(const Enum);
+
+        // human readable with spaces
         static const std::string Name(const Enum);
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);

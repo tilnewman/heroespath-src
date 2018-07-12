@@ -282,7 +282,7 @@ namespace popup
                 {
                     if (false == boxInfo_.bg_info.hasTexture)
                     {
-                        ss << ", color=" << sfml_util::color::ColorToString(boxInfo_.bg_info.color);
+                        ss << ", color=" << boxInfo_.bg_info.color;
                     }
                 }
             }

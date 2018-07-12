@@ -270,9 +270,9 @@ namespace item
 
         static const std::vector<element_type::Enum> ValidCombinations()
         {
-            return ValidCombinations(static_cast<element_type::Enum>(
+            return ValidCombinations(
                 element_type::Fire | element_type::Frost | element_type::Honor
-                | element_type::Shadow));
+                | element_type::Shadow);
         }
     };
 

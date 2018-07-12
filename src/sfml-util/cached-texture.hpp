@@ -12,14 +12,13 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/texture-options-enum.hpp"
+
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <string>
 #include <vector>
-
-namespace sf
-{
-class Texture;
-}
 
 namespace boost
 {
@@ -46,34 +45,48 @@ namespace sfml_util
 
         explicit CachedTexture(
             const char * const GAME_DATAFILE_KEY,
-            const bool WILL_SMOOTH = true,
-            const bool WILL_FLIP_HORIZ = false);
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
 
         explicit CachedTexture(
             const std::string & GAME_DATAFILE_KEY,
-            const bool WILL_SMOOTH = true,
-            const bool WILL_FLIP_HORIZ = false);
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
 
         explicit CachedTexture(
             const boost::filesystem::path & PATH,
-            const bool WILL_SMOOTH = true,
-            const bool WILL_FLIP_HORIZ = false);
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
 
-        CachedTexture(const std::string & FAKE_PATH, const sf::Texture & TEXTURE);
+        CachedTexture(
+            const std::string & FAKE_PATH,
+            const sf::Texture & TEXTURE,
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
 
         ~CachedTexture();
 
         const sf::Texture & Get() const;
 
+        std::size_t Index() const { return index_; }
         const std::string Path() const { return path_; }
+        TextureOpt::Enum Options() const { return options_; }
 
-        bool IsPathFake() const { return isPathFake_; }
+        std::size_t RefCount() const;
+
+        friend bool operator==(const CachedTexture & L, const CachedTexture & R);
+        friend bool operator!=(const CachedTexture & L, const CachedTexture & R);
 
     private:
+        void Release();
+
         std::string path_;
         std::size_t index_;
-        bool isPathFake_;
+        TextureOpt::Enum options_;
     };
+
+    inline bool operator==(const CachedTexture & L, const CachedTexture & R)
+    {
+        return ((L.path_ == R.path_) && (L.index_ == R.index_) && (R.options_ == L.options_));
+    }
+
+    inline bool operator!=(const CachedTexture & L, const CachedTexture & R) { return !(L == R); }
 
     using CachedTextureOpt_t = boost::optional<CachedTexture>;
 
@@ -87,26 +100,45 @@ namespace sfml_util
         CachedTextures & operator=(const CachedTextures &);
         CachedTextures & operator=(CachedTextures &&);
 
-        CachedTextures(const std::string & GAME_DATAFILE_KEY, const bool WILL_SMOOTH = true);
-        CachedTextures(const boost::filesystem::path & DIR_PATH, const bool WILL_SMOOTH = true);
+        CachedTextures(
+            const std::string & GAME_DATAFILE_KEY,
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+
+        CachedTextures(
+            const boost::filesystem::path & DIR_PATH,
+            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
 
         ~CachedTextures();
 
-        const misc::SizetVec_t & Indexes() const { return indexes_; }
-
+        const std::vector<std::size_t> Indexes() const { return indexes_; }
         std::size_t Size() const { return indexes_.size(); }
+        const std::string Path() const { return path_; }
+        TextureOpt::Enum Options() const { return options_; }
+
+        std::size_t RefCount() const;
 
         const sf::Texture & operator[](const std::size_t INDEX) const;
         const sf::Texture & At(const std::size_t INDEX) const;
         const sf::Texture & Front() const;
         const sf::Texture & Back() const;
 
-        const std::string Path() const { return path_; }
+        friend bool operator==(const CachedTextures & L, const CachedTextures & R);
+        friend bool operator!=(const CachedTextures & L, const CachedTextures & R);
 
     private:
+        void Release();
+
         std::string path_;
-        misc::SizetVec_t indexes_;
+        std::vector<std::size_t> indexes_;
+        TextureOpt::Enum options_;
     };
+
+    inline bool operator==(const CachedTextures & L, const CachedTextures & R)
+    {
+        return ((L.path_ == R.path_) && (L.options_ == R.options_) && (L.indexes_ == R.indexes_));
+    }
+
+    inline bool operator!=(const CachedTextures & L, const CachedTextures & R) { return !(L == R); }
 
     using CachedTexturesOpt_t = boost::optional<CachedTextures>;
 

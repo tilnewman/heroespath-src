@@ -225,43 +225,8 @@ namespace sfml_util
 
             void Box::SetEntityPos(const float POS_LEFT, const float POS_TOP)
             {
-                GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
-
-                boxInfo_.region.left = POS_LEFT;
-                boxInfo_.region.top = POS_TOP;
-
-                topLine_.MoveEntityPos(
-                    sfml_util::RelativeOffset(topLine_.GetEntityPos().x, POS_LEFT),
-                    sfml_util::RelativeOffset(topLine_.GetEntityPos().y, POS_TOP));
-
-                rightLine_.MoveEntityPos(
-                    sfml_util::RelativeOffset(rightLine_.GetEntityPos().x, POS_LEFT),
-                    sfml_util::RelativeOffset(rightLine_.GetEntityPos().y, POS_TOP));
-
-                botLine_.MoveEntityPos(
-                    sfml_util::RelativeOffset(botLine_.GetEntityPos().x, POS_LEFT),
-                    sfml_util::RelativeOffset(botLine_.GetEntityPos().y, POS_TOP));
-
-                leftLine_.MoveEntityPos(
-                    sfml_util::RelativeOffset(leftLine_.GetEntityPos().x, POS_LEFT),
-                    sfml_util::RelativeOffset(leftLine_.GetEntityPos().y, POS_TOP));
-
-                cTopLeftSprite_.move(
-                    sfml_util::RelativeOffset(cTopLeftSprite_.getPosition().x, POS_LEFT),
-                    sfml_util::RelativeOffset(cTopLeftSprite_.getPosition().y, POS_TOP));
-
-                cTopRightSprite_.move(
-                    sfml_util::RelativeOffset(cTopRightSprite_.getPosition().x, POS_LEFT),
-                    sfml_util::RelativeOffset(cTopRightSprite_.getPosition().y, POS_TOP));
-
-                cBotLeftSprite_.move(
-                    sfml_util::RelativeOffset(cBotLeftSprite_.getPosition().x, POS_LEFT),
-                    sfml_util::RelativeOffset(cBotLeftSprite_.getPosition().y, POS_TOP));
-
-                cBotRightSprite_.move(
-                    sfml_util::RelativeOffset(cBotRightSprite_.getPosition().x, POS_LEFT),
-                    sfml_util::RelativeOffset(cBotRightSprite_.getPosition().y, POS_TOP));
-
+                auto const CURR_POS_V{ GetEntityPos() };
+                MoveEntityPos(POS_LEFT - CURR_POS_V.x, POS_TOP - CURR_POS_V.y);
                 backgroundImage_.SetPosition(POS_LEFT, POS_TOP);
             }
 

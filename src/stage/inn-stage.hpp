@@ -15,8 +15,8 @@
 #include "sfml-util/stage.hpp"
 
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
 
 #include <memory>
 

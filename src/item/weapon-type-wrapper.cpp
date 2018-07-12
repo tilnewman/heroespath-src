@@ -25,9 +25,9 @@ namespace item
     namespace weapon
     {
 
-        const std::string WeaponTypeWrapper::DAGGER_NAME_{ "Dagger" };
-        const std::string WeaponTypeWrapper::QUARTERSTAFF_NAME_{ "Quarterstaff" };
-        const std::string WeaponTypeWrapper::BOW_GENERAL_NAME_{ "Bow" };
+        const std::string WeaponTypeWrapper::DAGGER_NAME_ { "Dagger" };
+        const std::string WeaponTypeWrapper::QUARTERSTAFF_NAME_ { "Quarterstaff" };
+        const std::string WeaponTypeWrapper::BOW_GENERAL_NAME_ { "Bow" };
 
         WeaponTypeWrapper::WeaponTypeWrapper(const std::string & SYSTEM_NAME)
             : generalName_("")
@@ -47,7 +47,7 @@ namespace item
                 return;
             }
 
-            auto const SYSTEM_NAME_LOWERCASE{ boost::algorithm::to_lower_copy(SYSTEM_NAME) };
+            auto const SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
 
             if (SYSTEM_NAME_LOWERCASE == boost::algorithm::to_lower_copy(QUARTERSTAFF_NAME_))
             {
@@ -316,10 +316,10 @@ namespace item
                             ss << ",";
                         }
 
-                        auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+                        auto const ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE, misc::Wrap::Yes, misc::NoneEmpty::No, "&");
+                            ELEMENT_TYPE, misc::Wrap::Yes, "&", misc::NoneEmpty::No);
                     }
                 }
 
@@ -335,7 +335,7 @@ namespace item
             std::ostringstream ss;
 
             // remove any spaces from the generalName_
-            auto const GENERAL_NAME_FILENAME_VERSION{ boost::algorithm::replace_all_copy(
+            auto const GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                 generalName_, " ", "") };
 
             ss << GENERAL_NAME_FILENAME_VERSION;
@@ -418,13 +418,13 @@ namespace item
         bool
             WeaponTypeWrapper::SetupWithKnifeOrDaggerName(const std::string & SYSTEM_NAME_LOWERCASE)
         {
-            auto const KNIFE_NAME{ weapon_type::ToString(weapon_type::Knife) };
+            auto const KNIFE_NAME { weapon_type::ToString(weapon_type::Knife) };
 
-            auto const IS_KNIFE{ SYSTEM_NAME_LOWERCASE
-                                 == boost::algorithm::to_lower_copy(KNIFE_NAME) };
+            auto const IS_KNIFE { SYSTEM_NAME_LOWERCASE
+                                  == boost::algorithm::to_lower_copy(KNIFE_NAME) };
 
-            auto const IS_DAGGER{ SYSTEM_NAME_LOWERCASE
-                                  == boost::algorithm::to_lower_copy(DAGGER_NAME_) };
+            auto const IS_DAGGER { SYSTEM_NAME_LOWERCASE
+                                   == boost::algorithm::to_lower_copy(DAGGER_NAME_) };
 
             if (IS_KNIFE || IS_DAGGER)
             {
@@ -447,7 +447,7 @@ namespace item
             {
                 case weapon_type::BodyPart:
                 {
-                    auto const BODY_PART_TYPE{ BodyPartType() };
+                    auto const BODY_PART_TYPE { BodyPartType() };
                     generalName_ = body_part::ToString(BODY_PART_TYPE);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
@@ -483,7 +483,7 @@ namespace item
 
                 case weapon_type::Sword:
                 {
-                    auto const SWORD_TYPE{ SwordType() };
+                    auto const SWORD_TYPE { SwordType() };
 
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = sword_type::Name(SWORD_TYPE);
@@ -579,7 +579,7 @@ namespace item
 
                 case weapon_type::Axe:
                 {
-                    auto const AXE_TYPE{ AxeType() };
+                    auto const AXE_TYPE { AxeType() };
 
                     generalName_ = weapon_type::Name(type_);
 
@@ -630,7 +630,7 @@ namespace item
 
                 case weapon_type::Whip:
                 {
-                    auto const WHIP_TYPE{ WhipType() };
+                    auto const WHIP_TYPE { WhipType() };
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = whip_type::Name(WHIP_TYPE);
                     systemName_ = whip_type::ToString(WHIP_TYPE);
@@ -664,7 +664,7 @@ namespace item
 
                 case weapon_type::Club:
                 {
-                    auto const CLUB_TYPE{ ClubType() };
+                    auto const CLUB_TYPE { ClubType() };
 
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = club_type::ToString(ClubType());
@@ -716,7 +716,7 @@ namespace item
 
                 case weapon_type::Projectile:
                 {
-                    auto const PROJECTILE_TYPE{ ProjectileType() };
+                    auto const PROJECTILE_TYPE { ProjectileType() };
 
                     switch (PROJECTILE_TYPE)
                     {
@@ -801,7 +801,7 @@ namespace item
 
                 case weapon_type::BladedStaff:
                 {
-                    auto const BLADEDSTAFF_TYPE{ BladedStaffType() };
+                    auto const BLADEDSTAFF_TYPE { BladedStaffType() };
                     generalName_ = weapon_type::Name(weapon_type::BladedStaff);
                     specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
                     systemName_ = bladedstaff_type::ToString(BLADEDSTAFF_TYPE);
@@ -849,11 +849,11 @@ namespace item
                         }
                     }
 
-                    auto const POINTED_TYPE{ (
+                    auto const POINTED_TYPE { (
                         (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::None
                                                                        : weapon_type::Pointed) };
 
-                    auto const BLADED_TYPE{ (
+                    auto const BLADED_TYPE { (
                         ((BLADEDSTAFF_TYPE == bladedstaff_type::Spear)
                          || (BLADEDSTAFF_TYPE == bladedstaff_type::ShortSpear))
                             ? weapon_type::None

@@ -108,7 +108,7 @@ namespace sfml_util
 
             if (willDrawCursor_ && HasFocus())
             {
-                sfml_util::DrawRectangle<float>(
+                sfml_util::DrawRectangle(
                     target, states, cursorRect_, cursorColor_, 1, cursorColor_);
             }
         }

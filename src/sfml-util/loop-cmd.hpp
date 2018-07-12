@@ -258,8 +258,7 @@ namespace sfml_util
         const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << LoopCmd::Name()
-               << "_FromColor=" << sfml_util::color::ColorToString(fadeFromColor_)
+            ss << LoopCmd::Name() << "_FromColor=" << fadeFromColor_
                << "_WithSpeedMult=" << speedMult_ << "_WillHoldAfter=" << std::boolalpha
                << willHoldAfter_;
 
@@ -293,9 +292,8 @@ namespace sfml_util
         const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << LoopCmd::Name() << "To=" << sfml_util::color::ColorToString(fadeToColor_)
-               << "_WithSpeedMult=" << speedMult_ << "_WillHoldAfter=" << std::boolalpha
-               << willHoldAfter_;
+            ss << LoopCmd::Name() << "To=" << fadeToColor_ << "_WithSpeedMult=" << speedMult_
+               << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
 
             return ss.str();
         }
@@ -414,7 +412,7 @@ namespace sfml_util
         const std::string Name() const override
         {
             std::ostringstream ss;
-            ss << LoopCmd::Name() << "At=" << sfml_util::VectorToString(clickPosV_);
+            ss << LoopCmd::Name() << "At=" << clickPosV_;
             return ss.str();
         }
 

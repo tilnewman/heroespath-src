@@ -36,7 +36,10 @@ namespace misc
         void TestLog(const std::string &);
 
         template <typename EnumWrapper_t>
-        bool Test(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
+        void Test(
+            const EnumUnderlying_t LAST_VALID_VALUE,
+            const bool MUST_FIRST_STRING_TO_BE_EMPTY,
+            const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
             std::ostringstream msgSS;
             msgSS << "misc::enum_util::TestToString<"
@@ -46,13 +49,16 @@ namespace misc
                   << ", must_first_be_empty=" << std::boolalpha << MUST_FIRST_STRING_TO_BE_EMPTY
                   << ") ";
 
-            TestLog(msgSS.str() + "Starting...");
+            if (WILL_DISPLAY_MSG_ON_SCREEN)
+            {
+                TestLog(msgSS.str() + "Starting...");
+            }
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (LAST_VALID_VALUE > 0),
                 msgSS.str() << "was given a last_valid_value that was not > zero.");
 
-            static EnumUnderlying_t flagValue{ 0 };
+            static EnumUnderlying_t flagValue { 0 };
 
             // this is used to verify ToString() returns a unique string for each unique enum
             static std::vector<std::string> alreadyGeneratedStrings;
@@ -65,7 +71,7 @@ namespace misc
             {
                 while (flagValue <= LAST_VALID_VALUE)
                 {
-                    auto const FLAG_VALUE_TO_TEST_AND_REPORT{ flagValue++ };
+                    auto const FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
 
                     if (EnumWrapper_t::IsValid(static_cast<typename EnumWrapper_t::Enum>(
                             FLAG_VALUE_TO_TEST_AND_REPORT))
@@ -77,7 +83,7 @@ namespace misc
                         continue;
                     }
 
-                    auto const STRING{ EnumWrapper_t::ToString(
+                    auto const STRING { EnumWrapper_t::ToString(
                         static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
 
                     if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
@@ -95,18 +101,18 @@ namespace misc
                                         << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
                     }
 
-                    auto const IS_DUPLICATE{ std::find(
-                                                 std::begin(alreadyGeneratedStrings),
-                                                 std::end(alreadyGeneratedStrings),
-                                                 STRING)
-                                             != std::end(alreadyGeneratedStrings) };
+                    auto const IS_DUPLICATE { std::find(
+                                                  std::begin(alreadyGeneratedStrings),
+                                                  std::end(alreadyGeneratedStrings),
+                                                  STRING)
+                                              != std::end(alreadyGeneratedStrings) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (IS_DUPLICATE == false),
                         msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
                                     << "\" is a duplicate of a previous generated string.");
 
-                    auto const FROM_STRING_RESULT{ EnumWrapper_t::FromString(STRING) };
+                    auto const FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
@@ -133,9 +139,11 @@ namespace misc
                 throw;
             }
 
-            msgSS << "Done testing all " << flagValue << " values.";
-            TestLog(msgSS.str());
-            return true;
+            if (WILL_DISPLAY_MSG_ON_SCREEN)
+            {
+                msgSS << "Done testing all " << flagValue << " values.";
+                TestLog(msgSS.str());
+            }
         }
     } // namespace enum_util
 
@@ -208,7 +216,7 @@ namespace misc
             throw std::runtime_error(ss.str());
         }
 
-        static bool Test()
+        static void Test(const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (std::is_same<
@@ -261,7 +269,7 @@ namespace misc
                            << " is not one less than the largest valid value="
                            << LargestValidValue() << ".");
 
-            return enum_util::Test<EnumWrapper_t>(LargestValidValue(), false);
+            enum_util::Test<EnumWrapper_t>(LargestValidValue(), false, WILL_DISPLAY_MSG_ON_SCREEN);
         }
 
         static const std::string TypeName()
@@ -294,7 +302,7 @@ namespace misc
     };
 
     // Responsible for common operations of enums that are used as bit flags.
-    template <typename EnumWrapper_t>
+    template <typename EnumWrapper_t, NoneEmpty WILL_NONE_RETURN_EMPTY = NoneEmpty::Yes>
     class EnumBaseBitField
     {
     public:
@@ -313,53 +321,58 @@ namespace misc
         static const std::string ToString(
             const EnumUnderlying_t ENUM_VALUE,
             const Wrap WILL_WRAP = Wrap::No,
-            const NoneEmpty WILL_NONE_RETURN_EMPTY = NoneEmpty::Yes,
-            const std::string & SEPARATOR = ", ")
+            const std::string & SEPARATOR = ", ",
+            const NoneEmpty WILL_NONE_RETURN_EMPTY_PARAM = WILL_NONE_RETURN_EMPTY)
         {
+            std::ostringstream ss;
+
             if (ENUM_VALUE == EnumWrapper_t::None)
             {
-                if (WILL_NONE_RETURN_EMPTY == NoneEmpty::Yes)
+                if (WILL_NONE_RETURN_EMPTY_PARAM == NoneEmpty::Yes)
                 {
                     return "";
                 }
                 else
                 {
-                    return "None";
+                    ss << "None";
                 }
             }
-
-            std::ostringstream ss;
-
-            EnumWrapper_t::ToStringPopulate(ss, ENUM_VALUE, SEPARATOR);
+            else
+            {
+                EnumWrapper_t::ToStringPopulate(ss, ENUM_VALUE, SEPARATOR);
+            }
 
             if (ss.str().empty())
             {
                 ThrowInvalidValueForFunction(ENUM_VALUE, "ToString");
             }
-
-            if (WILL_WRAP == Wrap::Yes)
-            {
-                return "(" + ss.str() + ")";
-            }
             else
             {
-                return ss.str();
+                if (WILL_WRAP == Wrap::Yes)
+                {
+                    return "(" + ss.str() + ")";
+                }
+                else
+                {
+                    return ss.str();
+                }
             }
         }
 
         static EnumUnderlying_t FromString(const std::string & S)
         {
-            auto const TRIMMED{ boost::algorithm::trim_copy(S) };
+            auto const TRIMMED { boost::algorithm::trim_copy(S) };
 
             if (TRIMMED.empty())
             {
                 return EnumWrapper_t::None;
             }
 
-            std::string seperatorChars{ "" };
+            std::string seperatorChars { "" };
 
             for (auto const CHAR : TRIMMED)
             {
+                // spaces are not valid separators because some names will have spaces
                 if ((std::isalpha(CHAR) == false) && (std::isspace(CHAR) == false) && (CHAR != '-')
                     && (CHAR != ':'))
                 {
@@ -378,14 +391,17 @@ namespace misc
                 appbase::stringhelp::SplitByChars(TRIMMED, words, seperatorChars, true, true);
             }
 
-            EnumUnderlying_t result{ 0 };
+            EnumUnderlying_t result { 0 };
             for (auto const & WORD : words)
             {
-                EnumUnderlying_t flag{ 1 };
+                EnumUnderlying_t flag { 1 };
 
                 while (flag <= EnumWrapper_t::Last)
                 {
-                    if (boost::algorithm::iequals(WORD, EnumWrapper_t::ToString(flag)))
+                    if (boost::algorithm::iequals(
+                            WORD,
+                            EnumBaseBitField<EnumWrapper_t, WILL_NONE_RETURN_EMPTY>::ToString(
+                                flag, Wrap::No, "", NoneEmpty::No)))
                     {
                         result |= flag;
                         break;
@@ -400,10 +416,10 @@ namespace misc
 
         static int CountBitsSet(const EnumUnderlying_t ENUM_VALUE)
         {
-            int result{ 0 };
-            EnumUnderlying_t flag{ 1 };
+            int result { 0 };
+            EnumUnderlying_t flag { 1 };
 
-            while (flag != EnumWrapper_t::Last)
+            while (flag <= EnumWrapper_t::Last)
             {
                 if (ENUM_VALUE & flag)
                 {
@@ -423,8 +439,8 @@ namespace misc
 
         static EnumUnderlying_t LargestValidValue()
         {
-            EnumUnderlying_t finalValue{ 0 };
-            EnumUnderlying_t shiftingValue{ 1 };
+            EnumUnderlying_t finalValue { 0 };
+            EnumUnderlying_t shiftingValue { 1 };
             while (shiftingValue <= EnumWrapper_t::Last)
             {
                 finalValue |= shiftingValue;
@@ -433,7 +449,7 @@ namespace misc
             return finalValue;
         }
 
-        static bool Test()
+        static void Test(const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (std::is_same<
@@ -464,7 +480,10 @@ namespace misc
                 throw std::runtime_error(ss.str());
             }
 
-            return enum_util::Test<EnumWrapper_t>(LargestValidValue(), true);
+            enum_util::Test<EnumWrapper_t>(
+                LargestValidValue(),
+                (WILL_NONE_RETURN_EMPTY == NoneEmpty::Yes),
+                WILL_DISPLAY_MSG_ON_SCREEN);
         }
 
         static const std::string TypeName()
@@ -516,6 +535,166 @@ namespace misc
     };
 
 } // namespace misc
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T operator~(const T X)
+{
+    return static_cast<T>(~static_cast<misc::EnumUnderlying_t>(X));
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T operator|(const T L, const T R)
+{
+    return static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(L) | static_cast<misc::EnumUnderlying_t>(R));
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T operator&(const T L, const T R)
+{
+    return static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(L) & static_cast<misc::EnumUnderlying_t>(R));
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T operator^(const T L, const T R)
+{
+    return static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(L) ^ static_cast<misc::EnumUnderlying_t>(R));
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T & operator|=(T & l, const T R)
+{
+    l = static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(l) | static_cast<misc::EnumUnderlying_t>(R));
+    return l;
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T & operator&=(T & l, const T R)
+{
+    l = static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(l) & static_cast<misc::EnumUnderlying_t>(R));
+    return l;
+}
+
+template <typename T, typename = std::enable_if_t<std::is_enum<T>::value>>
+inline constexpr T & operator^=(T & l, const T R)
+{
+    l = static_cast<T>(
+        static_cast<misc::EnumUnderlying_t>(l) ^ static_cast<misc::EnumUnderlying_t>(R));
+    return l;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr void BitSet(T1 & orig, const T2 BITS_TO_SET)
+{
+    orig |= BITS_TO_SET;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr T1 BitSetCopy(const T1 ORIG, const T2 BITS_TO_SET)
+{
+    T1 copy { ORIG };
+    BitSet(copy, BITS_TO_SET);
+    return copy;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr void BitClear(T1 & orig, const T2 BITS_TO_CLEAR)
+{
+    orig &= ~BITS_TO_CLEAR;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr T1 BitClearCopy(const T1 ORIG, const T2 BITS_TO_CLEAR)
+{
+    T1 copy { ORIG };
+    BitClear(copy, BITS_TO_CLEAR);
+    return copy;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr void BitToggle(T1 & orig, const T2 BITS_TO_TOGGLE)
+{
+    orig ^= BITS_TO_TOGGLE;
+}
+
+template <
+    typename T1,
+    typename T2,
+    typename std::enable_if<
+        (std::is_enum<T1> {}
+         && (std::is_same<T1, T2> {} || std::is_same<T2, misc::EnumUnderlying_t> {}))
+            || (std::is_enum<T2> {}
+                && (std::is_same<T1, T2> {} || std::is_same<T1, misc::EnumUnderlying_t> {}))
+            || (std::is_same<T1, misc::EnumUnderlying_t> {}
+                && std::is_same<T2, misc::EnumUnderlying_t> {}),
+        int>::type
+    = 0>
+inline constexpr T1 BitToggleCopy(const T1 ORIG, const T2 BITS_TO_TOGGLE)
+{
+    T1 copy { ORIG };
+    BitToggle(copy, BITS_TO_TOGGLE);
+    return copy;
+}
+
 } // namespace heroespath
 
 #endif // HEROESPATH_MISC_ENUM_UTIL_HPP_INCLUDED

@@ -20,46 +20,58 @@ namespace misc
 {
 
     template <class T>
-    constexpr T abs(const T X)
+    constexpr typename std::enable_if_t<std::is_signed<T>::value, T> ABS(const T X)
     {
         return ((X < 0) ? -X : X);
     }
 
+    template <class T>
+    constexpr typename std::enable_if_t<!std::is_signed<T>::value, T> ABS(const T X)
+    {
+        return X;
+    }
+
     template <typename T>
-    constexpr typename std::enable_if<std::is_integral<T>::value, bool>::type
+    constexpr typename std::
+        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
         IsRealClose(const T A, const T B)
     {
         return (A == B);
     }
 
     template <typename T>
-    constexpr typename std::enable_if<!std::is_integral<T>::value, bool>::type
+    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
         IsRealClose(const T A, const T B)
     {
-        auto const MAX_OR_ONE{ std::max({ T(1), abs(A), abs(B) }) };
-        return (abs(A - B) < std::numeric_limits<T>::epsilon() * MAX_OR_ONE);
+        auto const MAX_OR_ONE { std::max({ T(1), ABS(A), ABS(B) }) };
+        return (ABS(A - B) < std::numeric_limits<T>::epsilon() * MAX_OR_ONE);
     }
 
     template <typename T>
-    constexpr typename std::enable_if<std::is_integral<T>::value, bool>::type IsRealOne(const T X)
+    constexpr typename std::
+        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
+        IsRealOne(const T X)
     {
         return (X == 1);
     }
 
     template <typename T>
-    constexpr typename std::enable_if<!std::is_integral<T>::value, bool>::type IsRealOne(const T X)
+    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool> IsRealOne(const T X)
     {
         return IsRealClose(X, T(1));
     }
 
     template <typename T>
-    constexpr typename std::enable_if<std::is_integral<T>::value, bool>::type IsRealZero(const T X)
+    constexpr typename std::
+        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
+        IsRealZero(const T X)
     {
         return (X == 0);
     }
 
     template <typename T>
-    constexpr typename std::enable_if<!std::is_integral<T>::value, bool>::type IsRealZero(const T X)
+    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
+        IsRealZero(const T X)
     {
         return IsRealClose(X, T(0));
     }

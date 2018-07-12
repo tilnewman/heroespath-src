@@ -17,6 +17,7 @@
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
 #include "item/item.hpp"
+#include "misc/enum-util.hpp"
 #include "sfml-util/gui/condition-image-loader.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/item-image-loader.hpp"
@@ -79,10 +80,15 @@ namespace sfml_util
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
+            auto imageOptions{ TextureOpt::Default };
+
+            if (creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR))
+            {
+                imageOptions |= TextureOpt::FlipHoriz;
+            }
+
             cachedTextureOpt_ = CachedTextureOpt_t(CachedTexture(
-                boost::filesystem::path(creatureImageLoader.Path(CHARACTER_PTR)),
-                true,
-                creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR)));
+                boost::filesystem::path(creatureImageLoader.Path(CHARACTER_PTR)), imageOptions));
 
             sprite_.setTexture(cachedTextureOpt_.value().Get(), true);
         }

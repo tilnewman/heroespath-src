@@ -20,9 +20,9 @@
 #include "sfml-util/gui/gui-entity-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/item-detail-viewer.hpp"
 #include "stage/treasure-stage-mover.hpp"
@@ -274,12 +274,6 @@ namespace stage
             }
         }
 
-        void SetupSortSprites(
-            const float LISTBOX_LEFT,
-            sf::Sprite & alphaSprite,
-            sf::Sprite & moneySprite,
-            sf::Sprite & weightSprite);
-
         enum class StageAddEntity
         {
             Will,
@@ -293,8 +287,10 @@ namespace stage
 
         void CreateOrReplaceListboxIconImage(
             const std::string & NAME,
-            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
-            sf::Sprite & sprite);
+            const std::string & IMAGE_PATH_KEY,
+            const sf::Color & COLOR,
+            const float SCALE,
+            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr);
 
     private:
         const treasure::ItemDetailsOpt_t
@@ -304,7 +300,7 @@ namespace stage
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 
         TreasureStagePtr_t treasureStagePtr_;
-        sfml_util::MainMenuTitle titleImage_;
+        sfml_util::StageTitle titleImage_;
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         treasure::StageMoverUPtr_t stageMoverUPtr_;
@@ -326,9 +322,6 @@ namespace stage
         sf::Texture coinsTexture_;
         sf::Sprite coinsSprite_;
         sf::Texture characterTexture_;
-        sf::Texture listboxSortIconAlphaTexture_;
-        sf::Texture listboxSortIconMoneyTexture_;
-        sf::Texture listboxSortIconWeightTexture_;
         sfml_util::gui::FourStateButtonUPtr_t treasureAlphaButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t treasureMoneyButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t treasureWeightButtonUPtr_;

@@ -40,6 +40,22 @@ namespace sfml_util
         {}
 
         GuiEntity::GuiEntity(
+            const std::string & NAME, const sf::Vector2f & POS_V, const ColorSet & COLORS)
+            : entityName_(std::string(NAME).append("_GuiEntity"))
+            , entityRegion_(sf::FloatRect(POS_V, sf::Vector2f(0.0f, 0.0f)))
+            , entityMouseState_(MouseState::Up)
+            , entityColorSet_(COLORS)
+            , entityFgColor_(COLORS.foreground_without_focus)
+            , entityBgColor_(COLORS.background_without_focus)
+            , entityHasFocus_(false)
+            , entityWillFocus_(true)
+            , entityWillDraw_(true)
+            , entityMouseHoverText_("")
+            , entityClockUPtr_()
+            , entityPrevPos_(0.0f, 0.0f)
+        {}
+
+        GuiEntity::GuiEntity(
             const std::string & NAME,
             const float POS_LEFT,
             const float POS_TOP,
@@ -272,16 +288,6 @@ namespace sfml_util
                 }
             }
 
-            if (L.entityFgColor_ != R.entityFgColor_)
-            {
-                return sfml_util::color::ColorLess(L.entityFgColor_, R.entityFgColor_);
-            }
-
-            if (L.entityBgColor_ != R.entityBgColor_)
-            {
-                return sfml_util::color::ColorLess(L.entityBgColor_, R.entityBgColor_);
-            }
-
             return std::tie(
                        L.entityName_,
                        L.entityMouseState_,
@@ -290,7 +296,9 @@ namespace sfml_util
                        L.entityWillFocus_,
                        L.entityWillDraw_,
                        L.entityMouseHoverText_,
-                       L.entityClockUPtr_)
+                       L.entityClockUPtr_,
+                       L.entityFgColor_,
+                       L.entityBgColor_)
                 < std::tie(
                        R.entityName_,
                        R.entityMouseState_,
@@ -299,7 +307,9 @@ namespace sfml_util
                        R.entityWillFocus_,
                        R.entityWillDraw_,
                        R.entityMouseHoverText_,
-                       R.entityClockUPtr_);
+                       R.entityClockUPtr_,
+                       R.entityFgColor_,
+                       R.entityBgColor_);
         }
 
         bool operator==(const GuiEntity & L, const GuiEntity & R)

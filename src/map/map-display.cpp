@@ -415,9 +415,9 @@ namespace map
 
     void MapDisplay::PositionMapSpriteTextureRect()
     {
-        auto const FLOAT_RECT{ sfml_util::ConvertRect<float, int>(offScreenRect_) };
-        offScreenSpriteBelow_.setTextureRect(FLOAT_RECT);
-        offScreenSpriteAbove_.setTextureRect(FLOAT_RECT);
+        const sf::IntRect INT_RECT{ offScreenRect_ };
+        offScreenSpriteBelow_.setTextureRect(INT_RECT);
+        offScreenSpriteAbove_.setTextureRect(INT_RECT);
     }
 
     void MapDisplay::SetupOffScreenTexture()

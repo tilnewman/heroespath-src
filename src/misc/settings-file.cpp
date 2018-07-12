@@ -146,7 +146,7 @@ namespace misc
 
             const unsigned ERROR_VALUE(1024);
 
-            auto const SAVED_ANTIALIAS_LEVEL{ static_cast<unsigned>(
+            auto const SAVED_ANTIALIAS_LEVEL { static_cast<unsigned>(
                 GetWithDefaultInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)) };
 
             if (SAVED_ANTIALIAS_LEVEL != ERROR_VALUE)
@@ -171,8 +171,7 @@ namespace misc
 
                 M_HP_LOG(
                     "SettingsFile::LoadAndRestore() setting display resolution to "
-                    << sfml_util::VideoModeToString(NEW_VIDEO_MODE)
-                    << " AA=" << SAVED_ANTIALIAS_LEVEL);
+                    << NEW_VIDEO_MODE << " AA=" << SAVED_ANTIALIAS_LEVEL);
 
                 sfml_util::Display::Instance()->ChangeVideoMode(
                     NEW_VIDEO_MODE, SAVED_ANTIALIAS_LEVEL);

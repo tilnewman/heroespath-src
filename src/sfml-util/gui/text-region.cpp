@@ -28,7 +28,7 @@ namespace sfml_util
     namespace gui
     {
 
-        const unsigned int TextRegion::DEFAULT_NO_RESIZE_{ 0 };
+        const unsigned int TextRegion::DEFAULT_NO_RESIZE_ { 0 };
 
         TextRegion::TextRegion(const std::string & NAME)
             : GuiEntity(std::string(NAME).append("_TextRegion"), 0.0f, 0.0f)
@@ -165,10 +165,10 @@ namespace sfml_util
                 WILL_ALLOW_SCROLLBAR));
 
             // position the text for on-screen coordinates
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            auto const NUM_LINES { renderedText_.vec_vec.size() };
             for (std::size_t l(0); l < NUM_LINES; ++l)
             {
-                auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
+                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
                     renderedText_.vec_vec[l][s].sf_text.move(REGION.left, REGION.top);
@@ -176,7 +176,7 @@ namespace sfml_util
             }
 
             // establish the region
-            auto heightToUse{ renderedText_.total_height };
+            auto heightToUse { renderedText_.total_height };
             if (REGION.height > 1.0f)
             {
                 heightToUse = REGION.height;
@@ -231,7 +231,7 @@ namespace sfml_util
 
                 sf::FloatRect newRegion(entityRegion_);
 
-                auto const FIRST_LINE_HEIGHT{ static_cast<float>(
+                auto const FIRST_LINE_HEIGHT { static_cast<float>(
                     renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
 
                 newRegion.top = entityRegion_.top - FIRST_LINE_HEIGHT;
@@ -275,7 +275,7 @@ namespace sfml_util
             {
                 if (TEXT_SNIP_NUMS.line_num < renderedText_.vec_vec.size())
                 {
-                    auto const & SEG_VEC{ renderedText_.vec_vec[TEXT_SNIP_NUMS.line_num] };
+                    auto const & SEG_VEC { renderedText_.vec_vec[TEXT_SNIP_NUMS.line_num] };
 
                     if (TEXT_SNIP_NUMS.seg_num < SEG_VEC.size())
                     {
@@ -294,10 +294,10 @@ namespace sfml_util
         {
             GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            auto const NUM_LINES { renderedText_.vec_vec.size() };
             for (std::size_t l(0); l < NUM_LINES; ++l)
             {
-                auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
+                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
                     renderedText_.vec_vec[l][s].sf_text.move(HORIZ, VERT);
@@ -334,14 +334,14 @@ namespace sfml_util
         void TextRegion::Append(const TextRegion & TEXT_REGION)
         {
             // add the new lines of text
-            auto const NUM_LINES{ TEXT_REGION.renderedText_.vec_vec.size() };
+            auto const NUM_LINES { TEXT_REGION.renderedText_.vec_vec.size() };
             for (std::size_t l(0); l < NUM_LINES; ++l)
             {
                 // adjust vertical positions
                 sfml_util::text_render::TextSnippetVec_t nextSnippetVec(
                     TEXT_REGION.renderedText_.vec_vec[l]);
 
-                auto const NUM_SNIPPETS{ nextSnippetVec.size() };
+                auto const NUM_SNIPPETS { nextSnippetVec.size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
                     nextSnippetVec[s].sf_text.move(0.0f, renderedText_.total_height);
@@ -379,13 +379,13 @@ namespace sfml_util
 
         void TextRegion::OnColorChange()
         {
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            auto const NUM_LINES { renderedText_.vec_vec.size() };
             for (std::size_t l(0); l < NUM_LINES; ++l)
             {
-                auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
+                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
-                    sfml_util::SetTextColor(renderedText_.vec_vec[l][s].sf_text, entityFgColor_);
+                    sfml_util::SetColor(renderedText_.vec_vec[l][s].sf_text, entityFgColor_);
                 }
             }
 
@@ -417,11 +417,11 @@ namespace sfml_util
             textSnipsToDrawVec_.reserve(100);
 
             // don't draw farther down than the region extends, keep track with posY
-            auto posY{ 0.0f };
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            auto posY { 0.0f };
+            auto const NUM_LINES { renderedText_.vec_vec.size() };
             for (std::size_t l(startLine_); l < NUM_LINES; ++l)
             {
-                auto const & SNIP_VEC{ renderedText_.vec_vec[l] };
+                auto const & SNIP_VEC { renderedText_.vec_vec[l] };
 
                 if (SNIP_VEC.empty())
                 {
@@ -447,16 +447,16 @@ namespace sfml_util
                     posY += t.getGlobalBounds().height;
                 }
 
-                auto const SCROLL_PAD{ (!sliderBarUPtr_)
-                                           ? 0.0f
-                                           : static_cast<float>(t.getCharacterSize()) };
+                auto const SCROLL_PAD { (!sliderBarUPtr_)
+                                            ? 0.0f
+                                            : static_cast<float>(t.getCharacterSize()) };
 
                 if (posY > (entityRegion_.height - SCROLL_PAD))
                 {
                     break;
                 }
 
-                auto const NUM_SNIPPETS{ SNIP_VEC.size() };
+                auto const NUM_SNIPPETS { SNIP_VEC.size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
                     textSnipsToDrawVec_.emplace_back(TextSnipNum(l, s));
@@ -478,14 +478,14 @@ namespace sfml_util
             }
 
             // establish how far down the user has scrolled
-            auto const SCROLL_POS{ SCROLL_RATIO
-                                   * (renderedText_.total_height - (REGION_HEIGHT * 0.8f)) };
+            auto const SCROLL_POS { SCROLL_RATIO
+                                    * (renderedText_.total_height - (REGION_HEIGHT * 0.8f)) };
 
-            auto const FIRST_LINE_HEIGHT{ static_cast<float>(
+            auto const FIRST_LINE_HEIGHT { static_cast<float>(
                 renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
 
             // establish which line to start drawing
-            auto startPosY{ SCROLL_POS / FIRST_LINE_HEIGHT };
+            auto startPosY { SCROLL_POS / FIRST_LINE_HEIGHT };
             if (startPosY < 0.0f)
             {
                 startPosY = 0.0f;
@@ -494,10 +494,10 @@ namespace sfml_util
             startLine_ = static_cast<std::size_t>(startPosY);
 
             // move the text to compensate
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            auto const NUM_LINES { renderedText_.vec_vec.size() };
             for (std::size_t l(0); l < NUM_LINES; ++l)
             {
-                auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
+                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
                 for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
                 {
                     renderedText_.vec_vec[l][s].sf_text.setPosition(

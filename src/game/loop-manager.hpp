@@ -153,6 +153,8 @@ namespace game
 
         sfml_util::Loop & CommandLoopAccess(const sfml_util::LoopCmd * const) { return loop_; }
 
+        void TransitionTo(const sfml_util::LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
+
     private:
         void TransitionTo_Intro();
 
@@ -187,8 +189,6 @@ namespace game
         }
 
         void TransitionFrom_Popup();
-
-        void TransitionTo(const sfml_util::LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
         enum TransOpt : unsigned
         {

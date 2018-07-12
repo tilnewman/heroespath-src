@@ -52,7 +52,7 @@ namespace combat
             static void ToStringPopulate(
                 std::ostringstream & ss,
                 const misc::EnumUnderlying_t ENUM_VALUE,
-                const std::string & SEPARATOR = ", ");
+                const std::string & SEPARATOR);
         };
 
         struct RefineType : public misc::EnumBaseBitField<RefineType>
@@ -80,7 +80,7 @@ namespace combat
             static void ToStringPopulate(
                 std::ostringstream & ss,
                 const misc::EnumUnderlying_t ENUM_VALUE,
-                const std::string & SEPARATOR = ", ");
+                const std::string & SEPARATOR);
         };
 
         struct AdvanceType : public misc::EnumBaseCounting<AdvanceType, misc::EnumFirstValueNone>

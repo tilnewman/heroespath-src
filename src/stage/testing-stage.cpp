@@ -52,6 +52,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/side-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/texture-options-enum.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 
@@ -77,7 +78,7 @@ namespace stage
         {
             sprite.setTexture(cached_texture_opt.value().Get(), true);
 
-            sfml_util::ScaleSpriteToFit(
+            sfml_util::Fit(
                 sprite,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_);
@@ -87,7 +88,7 @@ namespace stage
                 *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 24);
 
-            text.setColor(sf::Color::Red);
+            sfml_util::SetColor(text, sf::Color::Red);
         }
     }
 
@@ -109,8 +110,8 @@ namespace stage
         }
     }
 
-    const float TestingStage::IMAGE_INSPECT_DIMMENSION_{ 256.0f };
-    const std::size_t TestingStage::TEXT_LINES_COUNT_MAX_{ 100 };
+    const float TestingStage::IMAGE_INSPECT_DIMMENSION_ { 256.0f };
+    const std::size_t TestingStage::TEXT_LINES_COUNT_MAX_ { 100 };
     sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
 
     TestingStage::TestingStage()
@@ -147,7 +148,6 @@ namespace stage
     void TestingStage::Setup()
     {
         EntityAdd(ouroborosUPtr_.get());
-
         animBackgroundSprite_.setPosition(0.0f, 0.0f);
     }
 
@@ -175,13 +175,13 @@ namespace stage
     {
         if (isInspectingImages_)
         {
-            auto const INSPECT_IMAGE_COUNT_HORIZ{ static_cast<std::size_t>(
+            auto const INSPECT_IMAGE_COUNT_HORIZ { static_cast<std::size_t>(
                 SCREEN_WIDTH_ / IMAGE_INSPECT_DIMMENSION_) };
 
-            auto const INSPECT_IMAGE_COUNT_VERT{ static_cast<std::size_t>(
+            auto const INSPECT_IMAGE_COUNT_VERT { static_cast<std::size_t>(
                 SCREEN_HEIGHT_ / IMAGE_INSPECT_DIMMENSION_) };
 
-            auto const INSPECT_IMAGE_COUNT{ INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
+            auto const INSPECT_IMAGE_COUNT { INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
 
             if ((KEY_EVENT.code == sf::Keyboard::Right) || (KEY_EVENT.code == sf::Keyboard::Down))
             {
@@ -221,17 +221,17 @@ namespace stage
     {
         if (isInspectingImages_)
         {
-            auto const IMAGE_COUNT{ imageInspectPackets_.size() };
+            auto const IMAGE_COUNT { imageInspectPackets_.size() };
             for (std::size_t i(imageInspectIndex_); i < IMAGE_COUNT; ++i)
             {
-                auto const & PACKET{ imageInspectPackets_[i] };
+                auto const & PACKET { imageInspectPackets_[i] };
                 if (PACKET.sprite.getGlobalBounds().contains(MOUSE_POS_V))
                 {
-                    auto const FILE_NAME{ std::string(PACKET.text.getString()) };
+                    auto const FILE_NAME { std::string(PACKET.text.getString()) };
 
                     M_HP_LOG_WRN("Image failed inspection: " << FILE_NAME);
 
-                    auto image{ PACKET.cached_texture_opt.value().Get().copyToImage() };
+                    auto image { PACKET.cached_texture_opt.value().Get().copyToImage() };
                     image.saveToFile(FILE_NAME);
 
                     break;
@@ -257,7 +257,7 @@ namespace stage
 
         // okay, wow, if we pass "this" to Display::DrawStage(this) then the windows build seems to
         // slice the this pointer itself and crash hard, no real understanding here...
-        auto const THIS_STAGE_PTR{ this };
+        auto const THIS_STAGE_PTR { this };
 
         sfml_util::Display::Instance()->DrawStage(THIS_STAGE_PTR);
         sfml_util::Display::Instance()->DisplayFrameBuffer();
@@ -266,7 +266,7 @@ namespace stage
 
     void TestingStage::TestingStrIncrement(const std::string & S)
     {
-        auto foundMatch{ false };
+        auto foundMatch { false };
         for (auto & nextStrCountPair : testingBlurbsVec_)
         {
             if (nextStrCountPair.first == S)
@@ -286,7 +286,7 @@ namespace stage
     void TestingStage::TestingImageSet(
         const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
-        sfml_util::CachedTexture cachedTexture{ boost::filesystem::path(PATH_STR) };
+        sfml_util::CachedTexture cachedTexture { boost::filesystem::path(PATH_STR) };
 
         imageInspectPackets_.emplace_back(cachedTexture);
         textures_.emplace_back(cachedTexture);
@@ -306,7 +306,7 @@ namespace stage
             return;
         }
 
-        static auto hasPromptStart{ false };
+        static auto hasPromptStart { false };
         if (false == hasPromptStart)
         {
             hasPromptStart = true;
@@ -319,21 +319,21 @@ namespace stage
         // ReSaveWithBlackBorder("media-images-creaturess-dir");
         // ReSaveWithBlackBorder("media-images-items-dir");
 
-        static auto hasTestingCompleted_GameDataFile{ false };
+        static auto hasTestingCompleted_GameDataFile { false };
         if (false == hasTestingCompleted_GameDataFile)
         {
             hasTestingCompleted_GameDataFile = PerformGameDataFileTests();
             return;
         }
 
-        static auto hasTestingCompleted_Enums{ false };
+        static auto hasTestingCompleted_Enums { false };
         if (false == hasTestingCompleted_Enums)
         {
             hasTestingCompleted_Enums = PerformEnumTests();
             return;
         }
 
-        static auto hasTestingCompleted_Fonts{ false };
+        static auto hasTestingCompleted_Fonts { false };
         if (false == hasTestingCompleted_Fonts)
         {
             hasTestingCompleted_Fonts = TestFonts();
@@ -405,14 +405,14 @@ namespace stage
         }
         */
 
-        static auto hasTestingCompleted_Maps{ false };
+        static auto hasTestingCompleted_Maps { false };
         if (false == hasTestingCompleted_Maps)
         {
             hasTestingCompleted_Maps = TestMaps();
             return;
         }
 
-        static auto hasTestingCompleted_ItemFactory{ false };
+        static auto hasTestingCompleted_ItemFactory { false };
         if (false == hasTestingCompleted_ItemFactory)
         {
             static item::ItemFactory itemFactory;
@@ -420,7 +420,7 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_ItemProfileReport{ false };
+        static auto hasTestingCompleted_ItemProfileReport { false };
         if (false == hasTestingCompleted_ItemProfileReport)
         {
             item::ItemProfilesReporter::LogReport();
@@ -428,14 +428,14 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_InventoryFactory{ false };
+        static auto hasTestingCompleted_InventoryFactory { false };
         if (false == hasTestingCompleted_InventoryFactory)
         {
             hasTestingCompleted_InventoryFactory = TestInventoryFactory();
             return;
         }
 
-        static auto hasTestingCompleted_ArmorRatings{ false };
+        static auto hasTestingCompleted_ArmorRatings { false };
         if (false == hasTestingCompleted_ArmorRatings)
         {
             item::ArmorRatings armorRatings;
@@ -444,28 +444,28 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_ImageSet{ false };
+        static auto hasTestingCompleted_ImageSet { false };
         if (false == hasTestingCompleted_ImageSet)
         {
             hasTestingCompleted_ImageSet = TestImageSet();
             return;
         }
 
-        static auto hasTestingCompleted_CharacterImageSet{ false };
+        static auto hasTestingCompleted_CharacterImageSet { false };
         if (false == hasTestingCompleted_CharacterImageSet)
         {
             hasTestingCompleted_CharacterImageSet = TestCharacterImageSet();
             return;
         }
 
-        static auto hasTestingCompleted_Spells{ false };
+        static auto hasTestingCompleted_Spells { false };
         if (false == hasTestingCompleted_Spells)
         {
             hasTestingCompleted_Spells = spell::Holder::Test();
             return;
         }
 
-        static auto hasTestingCompleted_SpellsImageLoader{ false };
+        static auto hasTestingCompleted_SpellsImageLoader { false };
         if (false == hasTestingCompleted_SpellsImageLoader)
         {
             static sfml_util::gui::SpellImageLoader spellImageLoader;
@@ -473,14 +473,14 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Songs{ false };
+        static auto hasTestingCompleted_Songs { false };
         if (false == hasTestingCompleted_Songs)
         {
             hasTestingCompleted_Songs = song::Holder::Test();
             return;
         }
 
-        static auto hasTestingCompleted_SongsImageLoader{ false };
+        static auto hasTestingCompleted_SongsImageLoader { false };
         if (false == hasTestingCompleted_SongsImageLoader)
         {
             static sfml_util::gui::SongImageLoader songImageLoader;
@@ -488,14 +488,14 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Condition{ false };
+        static auto hasTestingCompleted_Condition { false };
         if (false == hasTestingCompleted_Condition)
         {
             hasTestingCompleted_Condition = creature::condition::Holder::Test();
             return;
         }
 
-        static auto hasTestingCompleted_ConditionImageLoader{ false };
+        static auto hasTestingCompleted_ConditionImageLoader { false };
         if (false == hasTestingCompleted_ConditionImageLoader)
         {
             static sfml_util::gui::ConditionImageLoader conditionImageLoader;
@@ -504,14 +504,14 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Title{ false };
+        static auto hasTestingCompleted_Title { false };
         if (false == hasTestingCompleted_Title)
         {
             hasTestingCompleted_Title = creature::title::Holder::Test();
             return;
         }
 
-        static auto hasTestingCompleted_TitleImageLoader{ false };
+        static auto hasTestingCompleted_TitleImageLoader { false };
         if (false == hasTestingCompleted_TitleImageLoader)
         {
             static sfml_util::gui::TitleImageLoader titleImageLoader;
@@ -519,14 +519,14 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_PopupManager{ false };
+        static auto hasTestingCompleted_PopupManager { false };
         if (false == hasTestingCompleted_PopupManager)
         {
             hasTestingCompleted_PopupManager = popup::PopupManager::Instance()->Test();
             return;
         }
 
-        static auto hasTestingCompleted_CombatImageLoader{ false };
+        static auto hasTestingCompleted_CombatImageLoader { false };
         if (false == hasTestingCompleted_CombatImageLoader)
         {
             static sfml_util::gui::CombatImageLoader combatImageLoader;
@@ -534,7 +534,7 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_ItemImageLoader{ false };
+        static auto hasTestingCompleted_ItemImageLoader { false };
         if (false == hasTestingCompleted_ItemImageLoader)
         {
             static sfml_util::gui::ItemImageLoader itemImageLoader;
@@ -542,7 +542,7 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_CreatureImageLoader{ false };
+        static auto hasTestingCompleted_CreatureImageLoader { false };
         if (false == hasTestingCompleted_CreatureImageLoader)
         {
             static sfml_util::gui::CreatureImageLoader creatureImageLoader;
@@ -550,7 +550,7 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Animations{ false };
+        static auto hasTestingCompleted_Animations { false };
         if (false == hasTestingCompleted_Animations)
         {
             hasTestingCompleted_Animations = TestAnimations();
@@ -562,20 +562,15 @@ namespace stage
             isInspectingImages_ = true;
         }
 
-        static auto hasTestingCompleted_SoundManager{ false };
+        static auto hasTestingCompleted_SoundManager { false };
         if (false == hasTestingCompleted_SoundManager)
         {
             hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
             return;
         }
 
-        static auto hasFinalPrompt{ false };
-        if (false == hasFinalPrompt)
-        {
-            hasFinalPrompt = true;
-            TestingStrAppend("ALL SYSTEM TESTS PASSED");
-            return;
-        }
+        std::cout << "ALL TESTS PASSED" << std::endl;
+        game::LoopManager::Instance()->TransitionTo_Exit();
     }
 
     void TestingStage::TestStatSetsCurrentAndNormal(
@@ -634,7 +629,7 @@ namespace stage
 
     bool TestingStage::TestImageSet()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -642,111 +637,139 @@ namespace stage
             return false;
         }
 
-        static std::vector<std::string> imagePathKeyVec = {
-            "media-images-gui-elements",
-            "media-images-title-intro",
-            "media-images-title-blacksymbol",
-            "media-images-backgrounds-tile-darkknot",
-            "media-images-backgrounds-tile-runes",
-            "media-images-backgrounds-tile-wood",
-            "media-images-backgrounds-tile-darkpaper",
-            "media-images-backgrounds-paper-2",
-            "media-images-backgrounds-paper-3",
-            "media-images-logos-sfml",
-            "media-images-logos-tiled",
-            "media-images-logos-terrain",
-            "media-images-logos-sound",
-            "media-images-logos-avalontrees",
-            "media-images-logos-renderedtrees",
-            "media-images-logos-manaworldtrees",
-            "media-images-logos-darkwoodpaper",
-            "media-images-logos-openfontlicense",
-            "media-images-gui-accents-symbol1",
-            "media-images-gui-accents-symbol2",
-            "media-images-gui-accents-symbol3",
-            "media-images-gui-accents-ouroboros",
-            "media-images-campfire",
-            "media-images-combat-dart",
-            "media-images-combat-arrow1",
-            "media-images-combat-arrow2",
-            "media-images-combat-arrow3",
-            "media-images-combat-arrow4",
-            "media-images-combat-stone1",
-            "media-images-combat-stone2",
-            "media-images-combat-stone3",
-            "media-images-combat-stone4",
-            "media-images-combat-crossbones",
-            "media-images-combat-crossswords",
-            "media-images-combat-run",
-            "media-images-misc-spark1",
-            "media-images-misc-spark2",
-            "media-images-misc-spark3",
-            "media-images-misc-cloud1",
-            "media-images-misc-cloud2",
-            "media-images-misc-cloud3",
-            "media-images-misc-note1",
-            "media-images-misc-note2",
-            "media-images-misc-note3",
-            "media-images-misc-note4",
-            "media-images-misc-note5",
-            "media-images-misc-note6",
-            "media-images-misc-x",
-            "media-images-misc-error",
-            "media-images-misc-money-bag",
-            "media-images-misc-abc",
-            "media-images-misc-weight",
-            "media-images-misc-knot-corner",
-            "media-images-misc-picture-frame",
-            "media-images-misc-door",
-            "media-images-misc-door-locked",
-            "media-images-misc-lock",
-            "media-images-misc-talk",
-            "media-images-chest-closed",
-            "media-images-chest-open",
-            "media-images-coins",
-            "media-images-lockbox-closed",
-            "media-images-lockbox-open",
-            "media-images-bones-bat",
-            "media-images-bones-beetle",
-            "media-images-bones-bone-pile-1",
-            "media-images-bones-bone-pile-2",
-            "media-images-bones-bone-pile-3",
-            "media-images-bones-cat",
-            "media-images-bones-cave-crawler",
-            "media-images-bones-griffin",
-            "media-images-bones-harpy",
-            "media-images-bones-skull-animal-1",
-            "media-images-bones-skull-animal-2",
-            "media-images-bones-skull-animal-3",
-            "media-images-bones-skull-bog",
-            "media-images-bones-skull-demon",
-            "media-images-bones-skull-dragon-1",
-            "media-images-bones-skull-dragon-2",
-            "media-images-bones-skull-dragon-3",
-            "media-images-bones-skull-dragon-4",
-            "media-images-bones-skull-giant",
-            "media-images-bones-skull-goblin",
-            "media-images-bones-skull-humaniod-pile-1",
-            "media-images-bones-skull-humaniod-pile-2",
-            "media-images-bones-skull-humaniod-pile-3",
-            "media-images-bones-skull-humaniod",
-            "media-images-bones-skull-minotaur",
-            "media-images-bones-skull-orc",
-            "media-images-bones-skull-snake",
-            "media-images-bones-three-headed-hound",
-            "media-images-bones-wolfen",
-            "media-images-trap",
-            "media-images-avatar-shadow",
-        };
+        static std::vector<std::string> imagePathKeyVec
+            = { "media-images-gui-elements",
+                "media-images-title-intro",
+                "media-images-title-blacksymbol",
+                "media-images-backgrounds-tile-darkknot",
+                "media-images-backgrounds-tile-runes",
+                "media-images-backgrounds-tile-wood",
+                "media-images-backgrounds-tile-darkpaper",
+                "media-images-backgrounds-paper-2",
+                "media-images-backgrounds-paper-3",
+                "media-images-logos-sfml",
+                "media-images-logos-tiled",
+                "media-images-logos-terrain",
+                "media-images-logos-sound",
+                "media-images-logos-avalontrees",
+                "media-images-logos-renderedtrees",
+                "media-images-logos-manaworldtrees",
+                "media-images-logos-darkwoodpaper",
+                "media-images-logos-openfontlicense",
+                "media-images-gui-accents-symbol1",
+                "media-images-gui-accents-symbol2",
+                "media-images-gui-accents-symbol3",
+                "media-images-gui-accents-ouroboros",
+                "media-images-campfire",
+                "media-images-combat-dart",
+                "media-images-combat-arrow1",
+                "media-images-combat-arrow2",
+                "media-images-combat-arrow3",
+                "media-images-combat-arrow4",
+                "media-images-combat-stone1",
+                "media-images-combat-stone2",
+                "media-images-combat-stone3",
+                "media-images-combat-stone4",
+                "media-images-combat-crossbones",
+                "media-images-combat-crossswords",
+                "media-images-combat-run",
+                "media-images-misc-spark1",
+                "media-images-misc-spark2",
+                "media-images-misc-spark3",
+                "media-images-misc-cloud1",
+                "media-images-misc-cloud2",
+                "media-images-misc-cloud3",
+                "media-images-misc-note1",
+                "media-images-misc-note2",
+                "media-images-misc-note3",
+                "media-images-misc-note4",
+                "media-images-misc-note5",
+                "media-images-misc-note6",
+                "media-images-misc-x",
+                "media-images-misc-error",
+                "media-images-misc-money-bag",
+                "media-images-misc-abc",
+                "media-images-misc-weight",
+                "media-images-misc-knot-corner",
+                "media-images-misc-picture-frame",
+                "media-images-misc-door",
+                "media-images-misc-door-locked",
+                "media-images-misc-lock",
+                "media-images-misc-talk",
+                "media-images-chest-closed",
+                "media-images-chest-open",
+                "media-images-coins",
+                "media-images-lockbox-closed",
+                "media-images-lockbox-open",
+                "media-images-bones-bat",
+                "media-images-bones-beetle",
+                "media-images-bones-bone-pile-1",
+                "media-images-bones-bone-pile-2",
+                "media-images-bones-bone-pile-3",
+                "media-images-bones-cat",
+                "media-images-bones-cave-crawler",
+                "media-images-bones-griffin",
+                "media-images-bones-harpy",
+                "media-images-bones-skull-animal-1",
+                "media-images-bones-skull-animal-2",
+                "media-images-bones-skull-animal-3",
+                "media-images-bones-skull-bog",
+                "media-images-bones-skull-demon",
+                "media-images-bones-skull-dragon-1",
+                "media-images-bones-skull-dragon-2",
+                "media-images-bones-skull-dragon-3",
+                "media-images-bones-skull-dragon-4",
+                "media-images-bones-skull-giant",
+                "media-images-bones-skull-goblin",
+                "media-images-bones-skull-humaniod-pile-1",
+                "media-images-bones-skull-humaniod-pile-2",
+                "media-images-bones-skull-humaniod-pile-3",
+                "media-images-bones-skull-humaniod",
+                "media-images-bones-skull-minotaur",
+                "media-images-bones-skull-orc",
+                "media-images-bones-skull-snake",
+                "media-images-bones-three-headed-hound",
+                "media-images-bones-wolfen",
+                "media-images-trap",
+                "media-images-avatar-shadow",
+                "media-images-buttons-mainmenu-previous-normal",
+                "media-images-buttons-mainmenu-previous-lit",
+                "media-images-buttons-mainmenu-start-normal",
+                "media-images-buttons-mainmenu-start-lit",
+                "media-images-buttons-mainmenu-start-faded",
+                "media-images-buttons-mainmenu-delete-normal",
+                "media-images-buttons-mainmenu-delete-lit",
+                "media-images-buttons-mainmenu-save-normal",
+                "media-images-buttons-mainmenu-save-lit",
+                "media-images-buttons-mainmenu-help-normal",
+                "media-images-buttons-mainmenu-help-lit",
+                "media-images-buttons-mainmenu-next-normal",
+                "media-images-buttons-mainmenu-next-lit",
+                "media-images-buttons-mainmenu-character-normal",
+                "media-images-buttons-mainmenu-character-lit",
+                "media-images-buttons-mainmenu-exit-normal",
+                "media-images-buttons-mainmenu-exit-lit",
+                "media-images-buttons-mainmenu-credits-normal",
+                "media-images-buttons-mainmenu-credits-lit",
+                "media-images-buttons-mainmenu-settings-normal",
+                "media-images-buttons-mainmenu-settings-lit",
+                "media-images-buttons-mainmenu-load-normal",
+                "media-images-buttons-mainmenu-load-lit",
+                "media-images-buttons-mainmenu-load-faded",
+                "media-images-buttons-mainmenu-party-normal",
+                "media-images-buttons-mainmenu-party-lit",
+                "media-images-buttons-gui-gears-normal",
+                "media-images-buttons-gui-gears-lit",
+                "media-images-buttons-gui-treasure-normal" };
 
-        static std::size_t imageIndex{ 0 };
+        static std::size_t imageIndex { 0 };
         if (imageIndex < imagePathKeyVec.size())
         {
             std::ostringstream ss;
             ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
-            auto const IMAGE_PATH_STR{ game::GameDataFile::Instance()->GetMediaPath(
+            auto const IMAGE_PATH_STR { game::GameDataFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
             sf::Texture texture;
@@ -764,7 +787,7 @@ namespace stage
 
     bool TestingStage::TestCharacterImageSet()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -772,16 +795,16 @@ namespace stage
             return false;
         }
 
-        static misc::EnumUnderlying_t imageIndex{ 0 };
+        static misc::EnumUnderlying_t imageIndex { 0 };
         if (imageIndex < avatar::Avatar::Count)
         {
-            auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(imageIndex) };
+            auto const WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
 
             std::ostringstream ss;
             ss << "TestCharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR) << "\"";
             TestingStrAppend(ss.str());
 
-            auto const IMAGE_PATH_STR{ avatar::Avatar::ImagePath(WHICH_AVATAR) };
+            auto const IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
 
             sf::Texture texture;
             sfml_util::Loaders::Texture(texture, IMAGE_PATH_STR);
@@ -799,7 +822,7 @@ namespace stage
     {
         static interact::InteractionManager interactionManager;
 
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -827,8 +850,8 @@ namespace stage
 
         static misc::VectorMap<map::Level::Enum, MapAndTransitions> transitions;
 
-        auto const ParseMap{ [](const map::Level::Enum LEVEL_ENUM, const std::string & ERROR_MSG) {
-            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(
+        auto const ParseMap { [](const map::Level::Enum LEVEL_ENUM, const std::string & ERROR_MSG) {
+            map::MapUPtr_t mapUPtr { std::make_unique<map::Map>(
                 sf::FloatRect(0.0f, 0.0f, 128.0f, 256.0f), interactionManager) };
 
             try
@@ -850,13 +873,13 @@ namespace stage
             return MapAndTransitions(LEVEL_ENUM, entryLevels, exitLevels);
         } };
 
-        static auto hasFirstPassLoad{ false };
+        static auto hasFirstPassLoad { false };
         if (false == hasFirstPassLoad)
         {
-            static misc::EnumUnderlying_t mapIndex{ 0 };
+            static misc::EnumUnderlying_t mapIndex { 0 };
             if (mapIndex < map::Level::Count)
             {
-                auto const WHICH_LEVEL{ static_cast<map::Level::Enum>(mapIndex) };
+                auto const WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
 
                 std::ostringstream ss;
                 ss << "TestMaps() Testing \"" << map::Level::ToString(WHICH_LEVEL)
@@ -875,17 +898,17 @@ namespace stage
             return false;
         }
 
-        static auto hasTestedTransitions{ false };
+        static auto hasTestedTransitions { false };
         if (false == hasTestedTransitions)
         {
-            static auto transitionIter{ std::begin(transitions) };
+            static auto transitionIter { std::begin(transitions) };
             if (transitionIter == std::end(transitions))
             {
                 hasTestedTransitions = true;
             }
             else
             {
-                auto const CURRENT_LEVEL{ transitionIter->first };
+                auto const CURRENT_LEVEL { transitionIter->first };
 
                 std::ostringstream ss;
                 ss << "TestMaps() Testing \"" << map::Level::ToString(CURRENT_LEVEL)
@@ -895,13 +918,13 @@ namespace stage
 
                 for (auto const ENTRY_LEVEL : transitionIter->second.entry_levels)
                 {
-                    auto const ENTRY_TRANSITIONS{ transitions[ENTRY_LEVEL] };
+                    auto const ENTRY_TRANSITIONS { transitions[ENTRY_LEVEL] };
 
-                    auto const WAS_FOUND{ std::find(
-                                              std::begin(ENTRY_TRANSITIONS.exit_levels),
-                                              std::end(ENTRY_TRANSITIONS.exit_levels),
-                                              CURRENT_LEVEL)
-                                          != std::end(ENTRY_TRANSITIONS.exit_levels) };
+                    auto const WAS_FOUND { std::find(
+                                               std::begin(ENTRY_TRANSITIONS.exit_levels),
+                                               std::end(ENTRY_TRANSITIONS.exit_levels),
+                                               CURRENT_LEVEL)
+                                           != std::end(ENTRY_TRANSITIONS.exit_levels) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (WAS_FOUND),
@@ -914,13 +937,13 @@ namespace stage
 
                 for (auto const EXIT_LEVEL : transitionIter->second.exit_levels)
                 {
-                    auto const EXIT_TRANSITIONS{ transitions[EXIT_LEVEL] };
+                    auto const EXIT_TRANSITIONS { transitions[EXIT_LEVEL] };
 
-                    auto const WAS_FOUND{ std::find(
-                                              std::begin(EXIT_TRANSITIONS.entry_levels),
-                                              std::end(EXIT_TRANSITIONS.entry_levels),
-                                              CURRENT_LEVEL)
-                                          != std::end(EXIT_TRANSITIONS.entry_levels) };
+                    auto const WAS_FOUND { std::find(
+                                               std::begin(EXIT_TRANSITIONS.entry_levels),
+                                               std::end(EXIT_TRANSITIONS.entry_levels),
+                                               CURRENT_LEVEL)
+                                           != std::end(EXIT_TRANSITIONS.entry_levels) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (WAS_FOUND),
@@ -944,7 +967,7 @@ namespace stage
 
     bool TestingStage::PerformGameDataFileTests()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -979,7 +1002,7 @@ namespace stage
                 "heroespath-fight-rank-damage-bonus-ratio",
                 "heroespath-fight-chance-enemies-ignore-unconscious" };
 
-        static std::size_t keyIndex{ 0 };
+        static std::size_t keyIndex { 0 };
         if (keyIndex < keyVec.size())
         {
             std::ostringstream ss;
@@ -998,7 +1021,7 @@ namespace stage
 
     bool TestingStage::TestAnimations()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -1006,15 +1029,15 @@ namespace stage
             return false;
         }
 
-        const long ANIM_FRAME_SLEEP_MS{ 0 };
+        const long ANIM_FRAME_SLEEP_MS { 0 };
 
-        static std::size_t animIndex{ 0 };
+        static std::size_t animIndex { 0 };
 
         if (animIndex < sfml_util::Animations::Count)
         {
             if (!animUPtr_)
             {
-                auto const ENUM{ static_cast<sfml_util::Animations::Enum>(animIndex) };
+                auto const ENUM { static_cast<sfml_util::Animations::Enum>(animIndex) };
 
                 std::ostringstream ss;
                 ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
@@ -1046,7 +1069,7 @@ namespace stage
 
     bool TestingStage::TestInventoryFactory()
     {
-        static auto didPostInitial{ false };
+        static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
@@ -1056,22 +1079,22 @@ namespace stage
 
         static creature::nonplayer::InventoryFactory inventoryFactory;
 
-        static misc::EnumUnderlying_t raceIndex{ 0 };
-        static misc::EnumUnderlying_t roleIndex{ 0 };
+        static misc::EnumUnderlying_t raceIndex { 0 };
+        static misc::EnumUnderlying_t roleIndex { 0 };
 
         if (raceIndex < static_cast<int>(creature::race::Count))
         {
-            auto const RACE_ENUM{ static_cast<creature::race::Enum>(raceIndex) };
-            auto const RACE_STR{ creature::race::ToString(RACE_ENUM) };
-            auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
+            auto const RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
+            auto const RACE_STR { creature::race::ToString(RACE_ENUM) };
+            auto const ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
             if (roleIndex < static_cast<misc::EnumUnderlying_t>(ROLE_VEC.size()))
             {
-                auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
+                auto const ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                auto const ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
-                const int RANK_BASE{ 50 };
-                const int RANK_MAX{ [&]() {
+                const int RANK_BASE { 50 };
+                const int RANK_MAX { [&]() {
                     if (RACE_ENUM == creature::race::Dragon)
                     {
                         return RANK_BASE
@@ -1140,8 +1163,8 @@ namespace stage
 
     bool TestingStage::DoesImageHaveOutline(const sf::Texture & TEXTURE) const
     {
-        const unsigned OFFSET{ 10 };
-        const unsigned RUN_LENGTH{ 20 };
+        const unsigned OFFSET { 10 };
+        const unsigned RUN_LENGTH { 20 };
 
         if ((TEXTURE.getSize().x < (OFFSET + RUN_LENGTH + 1))
             || (TEXTURE.getSize().y < (OFFSET + RUN_LENGTH + 1)))
@@ -1150,12 +1173,12 @@ namespace stage
             return false;
         }
 
-        auto const WIDTH{ TEXTURE.getSize().x };
-        auto const HEIGHT{ TEXTURE.getSize().y };
+        auto const WIDTH { TEXTURE.getSize().x };
+        auto const HEIGHT { TEXTURE.getSize().y };
 
-        sf::Image image{ TEXTURE.copyToImage() };
+        sf::Image image { TEXTURE.copyToImage() };
 
-        std::size_t outlineDetectedCount{ 0 };
+        std::size_t outlineDetectedCount { 0 };
 
         enum CornerSide
         {
@@ -1172,11 +1195,11 @@ namespace stage
 
         for (int cs(0); cs < CornerSide::Count; ++cs)
         {
-            auto const ENUM{ static_cast<CornerSide>(cs) };
+            auto const ENUM { static_cast<CornerSide>(cs) };
 
-            auto wereAllColorsEqual{ true };
+            auto wereAllColorsEqual { true };
 
-            auto const FIRST_COLOR{ [&]() {
+            auto const FIRST_COLOR { [&]() {
                 switch (ENUM)
                 {
                     case TopLeftTop:
@@ -1221,7 +1244,7 @@ namespace stage
 
             for (unsigned rl(0); rl < RUN_LENGTH; ++rl)
             {
-                auto const NEXT_COLOR{ [&]() {
+                auto const NEXT_COLOR { [&]() {
                     switch (ENUM)
                     {
                         case TopLeftTop:
@@ -1403,14 +1426,16 @@ namespace stage
         sfml_util::sound_effect_set::Test();
         sfml_util::Footstep::Test();
         sfml_util::Font::Test();
+        sfml_util::TextureOpt::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
+        song::Songs::Test();
         return true;
     }
 
     bool TestingStage::TestFonts()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -1418,11 +1443,11 @@ namespace stage
             return false;
         }
 
-        static misc::EnumUnderlying_t fontIndex{ 0 };
+        static misc::EnumUnderlying_t fontIndex { 0 };
 
         if (fontIndex < sfml_util::Font::Count)
         {
-            auto const FONT_ENUM{ static_cast<sfml_util::Font::Enum>(fontIndex) };
+            auto const FONT_ENUM { static_cast<sfml_util::Font::Enum>(fontIndex) };
             sfml_util::FontManager::Instance()->GetFont(FONT_ENUM);
             ++fontIndex;
             return false;
@@ -1442,10 +1467,10 @@ namespace stage
             animUPtr_->draw(target, STATES);
         }
 
-        auto const IMAGE_POS_TOP{ 1.0f };
+        auto const IMAGE_POS_TOP { 1.0f };
         {
-            std::size_t imageDrawCount{ 0 };
-            auto posLeft{ SCREEN_WIDTH_ };
+            std::size_t imageDrawCount { 0 };
+            auto posLeft { SCREEN_WIDTH_ };
 
             auto rItr(textures_.rbegin());
             for (; rItr != textures_.rend(); ++rItr)
@@ -1454,8 +1479,8 @@ namespace stage
                 sprite.setTexture(rItr->Get());
 
                 // reduce size if any dimmension is greater than 256
-                auto const MAX_DIMMENSION{ 256.0f };
-                auto newHorizScale{ 1.0f };
+                auto const MAX_DIMMENSION { 256.0f };
+                auto newHorizScale { 1.0f };
                 if (sprite.getGlobalBounds().width > MAX_DIMMENSION)
                 {
                     newHorizScale = MAX_DIMMENSION / sprite.getGlobalBounds().width;
@@ -1463,7 +1488,7 @@ namespace stage
                 }
                 if (sprite.getGlobalBounds().height > MAX_DIMMENSION)
                 {
-                    auto const NEW_VERT_SCALE{ MAX_DIMMENSION / sprite.getGlobalBounds().height };
+                    auto const NEW_VERT_SCALE { MAX_DIMMENSION / sprite.getGlobalBounds().height };
                     if (NEW_VERT_SCALE < newHorizScale)
                     {
                         sprite.setScale(NEW_VERT_SCALE, NEW_VERT_SCALE);
@@ -1495,15 +1520,15 @@ namespace stage
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
-            auto const TEXT_HEIGHT{ testText.getGlobalBounds().height + 10.0f };
+            auto const TEXT_HEIGHT { testText.getGlobalBounds().height + 10.0f };
 
             // The + 256 is to make room for the images, so text is not drawn over them.
-            auto DO_NOT_PASS_TOP{ IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
+            auto DO_NOT_PASS_TOP { IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
 
             // The extra * 2 is added because without it, the text at the bottom is cut off.
-            auto posTop{ SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
+            auto posTop { SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
 
-            StrSizePairVec_t::reverse_iterator rItr{ testingBlurbsVec_.rbegin() };
+            StrSizePairVec_t::reverse_iterator rItr { testingBlurbsVec_.rbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
                 std::ostringstream ss;
@@ -1535,10 +1560,10 @@ namespace stage
 
     void TestingStage::DrawImageInspect(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        auto willLowerText{ false };
-        auto posX{ 0.0f };
-        auto posY{ 0.0f };
-        auto imageIndex{ imageInspectIndex_ };
+        auto willLowerText { false };
+        auto posX { 0.0f };
+        auto posY { 0.0f };
+        auto imageIndex { imageInspectIndex_ };
 
         while (posY < (SCREEN_HEIGHT_ - IMAGE_INSPECT_DIMMENSION_))
         {
@@ -1549,7 +1574,7 @@ namespace stage
                     return;
                 }
 
-                auto & packet{ imageInspectPackets_[imageIndex] };
+                auto & packet { imageInspectPackets_[imageIndex] };
 
                 packet.sprite.setPosition(posX, posY);
 

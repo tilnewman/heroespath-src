@@ -152,15 +152,15 @@ namespace sfml_util
         if (willLogFrameRate_ && (frameRateSampleCount_ > 0))
         {
             // find min, max, and average framerate
-            auto min{ frameRateVec_[0] };
-            auto max{ 0.0f };
-            auto sum{ 0.0f };
+            auto min { frameRateVec_[0] };
+            auto max { 0.0f };
+            auto sum { 0.0f };
 
             // Skip the first framerate number because it includes time spent
             // logging the prev framerate.
             for (std::size_t i(1); i < frameRateSampleCount_; ++i)
             {
-                auto const NEXT_FRAMERATE{ frameRateVec_[i] };
+                auto const NEXT_FRAMERATE { frameRateVec_[i] };
 
                 sum += NEXT_FRAMERATE;
 
@@ -175,9 +175,9 @@ namespace sfml_util
                 }
             }
 
-            auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
+            auto const AVERAGE_FRAMERATE { sum / static_cast<float>(frameRateSampleCount_) };
 
-            const float STANDARD_DEVIATION{ misc::Vector::StandardDeviation(
+            const float STANDARD_DEVIATION { misc::Vector::StandardDeviation(
                 frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE, true) };
 
             M_HP_LOG(
@@ -195,7 +195,7 @@ namespace sfml_util
 
     bool Loop::ProcessOneSecondTasks(const sf::Vector2i & NEW_MOUSE_POS, const bool HAS_MOUSE_MOVED)
     {
-        auto willProcessOneSecondTasks{ false };
+        auto willProcessOneSecondTasks { false };
 
         if (false == continueFading_)
         {
@@ -215,7 +215,7 @@ namespace sfml_util
             {
                 isMouseHovering_ = true;
 
-                auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+                const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
                 // popup stages process exclusively when present
                 if (popupStagePtrOpt_)
@@ -241,7 +241,7 @@ namespace sfml_util
         {
             isMouseHovering_ = false;
 
-            auto const MOUSE_POS_NEW_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+            const sf::Vector2f MOUSE_POS_NEW_F(NEW_MOUSE_POS);
 
             // popup stages process exclusively when present
             if (popupStagePtrOpt_)
@@ -329,8 +329,7 @@ namespace sfml_util
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(
-                        NEW_MOUSE_POS) };
+                    const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
                     ProcessMouseButtonLeftPressed(NEW_MOUSE_POS_F);
                 }
@@ -344,8 +343,7 @@ namespace sfml_util
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(
-                        NEW_MOUSE_POS) };
+                    const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
                     ProcessMouseButtonLeftReleased(NEW_MOUSE_POS_F);
                 }
@@ -371,8 +369,7 @@ namespace sfml_util
 
             std::ostringstream ss;
             ss << "Key " << ((EVENT.type == sf::Event::KeyReleased) ? "released" : "pressed")
-               << ": " << sfml_util::KeyCodeToString(EVENT.key.code)
-               << ((willIgnoreKeystrokes_) ? " IGNORED" : "");
+               << ": " << EVENT.key.code << ((willIgnoreKeystrokes_) ? " IGNORED" : "");
 
             M_HP_LOG(ss.str());
         }
@@ -480,11 +477,11 @@ namespace sfml_util
     {
         if (popupStagePtrOpt_)
         {
-            auto newEntityWithFocusPtrOpt{ popupStagePtrOpt_.value()->UpdateMouseUp(MOUSE_POS_V) };
+            auto newEntityWithFocusPtrOpt { popupStagePtrOpt_.value()->UpdateMouseUp(MOUSE_POS_V) };
 
             if (newEntityWithFocusPtrOpt)
             {
-                auto const NEW_ENTITY_WITH_FOCUS_PTR{ newEntityWithFocusPtrOpt.value() };
+                auto const NEW_ENTITY_WITH_FOCUS_PTR { newEntityWithFocusPtrOpt.value() };
 
                 RemoveFocus();
                 NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
@@ -495,11 +492,11 @@ namespace sfml_util
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                auto newEntityWithFocusPtrOpt{ nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
+                auto newEntityWithFocusPtrOpt { nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
 
                 if (newEntityWithFocusPtrOpt)
                 {
-                    auto const NEW_ENTITY_WITH_FOCUS_PTR{ newEntityWithFocusPtrOpt.value() };
+                    auto const NEW_ENTITY_WITH_FOCUS_PTR { newEntityWithFocusPtrOpt.value() };
 
                     M_HP_LOG(
                         "MouseButtonLeftReleased caused focus in stage \""
@@ -518,7 +515,7 @@ namespace sfml_util
 
     void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i & NEW_MOUSE_POS)
     {
-        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+        const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
         if (popupStagePtrOpt_)
         {
@@ -541,8 +538,8 @@ namespace sfml_util
             return;
         }
 
-        auto const POPUP_RESPONSE_ENUM{ game::LoopManager::Instance()->GetPopupResponse() };
-        auto const POPUP_SELECTION{ game::LoopManager::Instance()->GetPopupSelection() };
+        auto const POPUP_RESPONSE_ENUM { game::LoopManager::Instance()->GetPopupResponse() };
+        auto const POPUP_SELECTION { game::LoopManager::Instance()->GetPopupSelection() };
 
         if (POPUP_RESPONSE_ENUM != popup::ResponseTypes::None)
         {
@@ -554,7 +551,7 @@ namespace sfml_util
             const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
-            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtrOpt_.value()->HandleCallback(
+            auto const WILL_RESET_CALLBACKHANDLER { popupCallbackPtrOpt_.value()->HandleCallback(
                 POPUP_RESPONSE_OBJ) };
 
             game::LoopManager::Instance()->ClearPopupResponse();
@@ -616,9 +613,9 @@ namespace sfml_util
         // reset loop variables
         willExit_ = false;
         fatalExitEvent_ = false;
-        auto soundManagerPtr{ sfml_util::SoundManager::Instance() };
+        auto soundManagerPtr { sfml_util::SoundManager::Instance() };
         frameRateVec_.resize(4096);
-        auto prevMousePos{ Display::Instance()->GetMousePosition() };
+        auto prevMousePos { Display::Instance()->GetMousePosition() };
 
         // consume pre-events
         Display::Instance()->ConsumeEvents();
@@ -626,8 +623,8 @@ namespace sfml_util
         clock_.restart();
         while (Display::Instance()->IsOpen() && (false == willExit_))
         {
-            auto const NEW_MOUSE_POS{ Display::Instance()->GetMousePosition() };
-            auto const HAS_MOUSE_MOVED{ NEW_MOUSE_POS != prevMousePos };
+            auto const NEW_MOUSE_POS { Display::Instance()->GetMousePosition() };
+            auto const HAS_MOUSE_MOVED { NEW_MOUSE_POS != prevMousePos };
 
             Display::Instance()->ClearToBlack();
             ProcessFramerate();

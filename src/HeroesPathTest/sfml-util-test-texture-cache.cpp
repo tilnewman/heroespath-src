@@ -1,34 +1,21 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-///////////////////////////////////////////////////////////////////////////////
-//
-// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
-// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from
-// the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-//  1. The origin of this software must not be misrepresented; you must not
-//     claim that you wrote the original software.  If you use this software
-//     in a product, an acknowledgment in the product documentation would be
-//     appreciated but is not required.
-//
-//  2. Altered source versions must be plainly marked as such, and must not
-//     be misrepresented as being the original software.
-//
-//  3. This notice may not be removed or altered from any source distribution.
-//
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+// "THE BEER-WARE LICENSE" (Revision 42):
+// <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
+// can do whatever you want with this stuff. If we meet some day, and you think
+// this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
+// ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfml-util_texture_cache_test"
 
 #include <boost/test/unit_test.hpp>
 
 #include "game/game-data-file.hpp"
+#include "game/startup-shutdown.hpp"
+#include "misc/filesystem-helpers.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <cstdlib>
@@ -36,222 +23,999 @@
 
 using namespace heroespath::sfml_util;
 
-BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
+inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
 {
-    TextureCache tc;
-    auto const INVALID_PATH_OR_KEY{ "xyz" };
-
-    BOOST_CHECK_THROW(tc.AddByKey(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.AddByPath(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.AddAllInDirectoryByKey(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.AddAllInDirectoryByPath(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.RemoveByKey(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.RemoveByPath(INVALID_PATH_OR_KEY), std::exception);
-
-    BOOST_REQUIRE_NO_THROW(tc.GetByIndex(0));
-
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(0));
-
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ 0 }));
-
-    // empty vectors result in no operations, so no exception is raised
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({}));
-
-    // RemoveAll() should never throw
-    BOOST_REQUIRE_NO_THROW(tc.RemoveAll());
+    if (A.getSize() == B.getSize())
+    {
+        return (
+            memcmp(A.getPixelsPtr(), B.getPixelsPtr(), (A.getSize().x * A.getSize().y * 4)) == 0);
+    }
+    else
+    {
+        return false;
+    }
 }
 
-BOOST_AUTO_TEST_CASE(
-    TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIndex_and_CheckSlotReuse)
+inline bool areImagesEqual(const sf::Texture & T, const sf::Image & I)
+{
+    return areImagesEqual(T.copyToImage(), I);
+}
+
+inline bool areImagesEqual(const sf::Texture & A, const sf::Texture & B)
+{
+    return areImagesEqual(A.copyToImage(), B.copyToImage());
+}
+
+inline void
+    applyImageOptions(sf::Image & image, const TextureOpt::Enum OPTIONS = TextureOpt::Default)
+{
+    if (OPTIONS & TextureOpt::Invert)
+    {
+        heroespath::sfml_util::Invert(image);
+    }
+
+    if (OPTIONS & TextureOpt::FlipHoriz)
+    {
+        image.flipHorizontally();
+    }
+
+    if (OPTIONS & TextureOpt::FlipVert)
+    {
+        image.flipVertically();
+    }
+}
+
+inline const sf::Image
+    quickLoadByPath(const std::string & PATH, const TextureOpt::Enum OPTIONS = TextureOpt::Default)
+{
+    sf::Texture texture;
+    heroespath::sfml_util::Loaders::Texture(texture, PATH);
+    sf::Image image(texture.copyToImage());
+    applyImageOptions(image, OPTIONS);
+    return image;
+}
+
+inline const sf::Image
+    quickLoadByKey(const std::string & KEY, const TextureOpt::Enum OPTIONS = TextureOpt::Default)
+{
+    return quickLoadByPath(heroespath::game::GameDataFile::Instance()->GetMediaPath(KEY), OPTIONS);
+}
+
+BOOST_AUTO_TEST_CASE(HelperFunctionTests)
 {
     heroespath::game::GameDataFile::Acquire();
     heroespath::game::GameDataFile::Instance()->Initialize();
 
-    TextureCache tc;
-    auto const KEY{ "media-images-gui-elements" };
-    auto const ID0{ tc.AddByKey(KEY) };
-    BOOST_CHECK(ID0 == 1);
-    BOOST_CHECK(tc.GetByIndex(ID0).getSize().x > 0.0f);
-    BOOST_CHECK(tc.GetByIndex(ID0).isSmooth() == true);
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByKey(KEY));
-    BOOST_CHECK(tc.GetByIndex(ID0).getSize().x < 1.0f);
-    auto const ID1{ tc.AddByKey(KEY, false) };
-    BOOST_CHECK_MESSAGE(ID1 == 1, "the first/original slot should be reused");
-    BOOST_CHECK(tc.GetByIndex(ID1).getSize().x > 0.0f);
-    BOOST_CHECK(tc.GetByIndex(ID1).isSmooth() == false);
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(ID1));
-    BOOST_CHECK(tc.GetByIndex(ID1).getSize().x < 1.0f);
+    const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
+    const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
+
+    BOOST_CHECK(areImagesEqual(quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+    BOOST_CHECK(
+        areImagesEqual(quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE2_PATH_KEY)) == false);
+
+    BOOST_CHECK(areImagesEqual(
+        quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Default)));
+
+    BOOST_CHECK(areImagesEqual(
+        quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Default)));
+
+    BOOST_CHECK(
+        areImagesEqual(
+            quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz))
+        == false);
+
+    BOOST_CHECK(
+        areImagesEqual(
+            quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipVert))
+        == false);
+
+    BOOST_CHECK(
+        areImagesEqual(
+            quickLoadByKey(IMAGE1_PATH_KEY), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Invert))
+        == false);
+
+    sf::Texture texture1;
+    heroespath::sfml_util::Loaders::Texture(
+        texture1, heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
+
+    BOOST_CHECK(areImagesEqual(texture1, quickLoadByKey(IMAGE1_PATH_KEY)));
+
+    sf::Texture texture2;
+    texture2.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
+    BOOST_CHECK(areImagesEqual(texture1, texture2));
+
+    heroespath::game::GameDataFile::Release();
 }
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
+BOOST_AUTO_TEST_CASE(TextureCacheTests)
 {
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+    heroespath::game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr);
 
-    TextureCache tc;
-    auto const KEY{ "media-images-gui-elements" };
-    auto const ID2{ tc.AddByKey(KEY) };
-    auto const PATH{ heroespath::game::GameDataFile::Instance()->GetMediaPath(KEY) };
-    BOOST_CHECK(ID2 == 1);
-    BOOST_CHECK(tc.GetByIndex(ID2).getSize().x > 0.0f);
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByPath(PATH));
-    BOOST_CHECK(tc.GetByIndex(ID2).getSize().x < 1.0f);
-}
+    TextureCache & tc = *heroespath::sfml_util::TextureCache::Instance();
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+    const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
+    const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
+    const std::string IMAGE3_PATH_KEY("media-images-logos-terrain");
 
-    TextureCache tc;
-    auto const KEY{ "media-images-gui-elements" };
-    auto const ID3{ tc.AddByKey(KEY) };
-    BOOST_CHECK(ID3 == 1);
-    BOOST_CHECK(tc.GetByIndex(ID3).getSize().x > 0.0f);
-    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ ID3 }));
-    BOOST_CHECK(tc.GetByIndex(ID3).getSize().x < 1.0f);
-}
+    const std::string IMAGE1_PATH(heroespath::misc::filesystem::MakePathPretty(
+        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)));
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
-    TextureCache tc;
-    auto const KEY{ "media-images-gui-elements" };
-    auto const ID4{ tc.AddByKey(KEY) };
-    BOOST_CHECK(ID4 == 1);
-    BOOST_CHECK(tc.GetByIndex(ID4).getSize().x > 0.0f);
-    BOOST_REQUIRE_NO_THROW(tc.RemoveAll());
-    BOOST_CHECK(tc.GetByIndex(ID4).getSize().x < 1.0f);
-}
+    const std::string IMAGE2_PATH(heroespath::misc::filesystem::MakePathPretty(
+        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+    const std::string IMAGE3_PATH(heroespath::misc::filesystem::MakePathPretty(
+        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
 
-    TextureCache tc;
-    auto const KEY{ "media-anim-images-dir-inferno" };
-    auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
-    auto const IDS_SIZE{ IDS.size() };
-    BOOST_CHECK(IDS_SIZE > 0);
+    const boost::filesystem::path IMAGE1_PATH_BFS(IMAGE1_PATH);
+    const boost::filesystem::path IMAGE2_PATH_BFS(IMAGE2_PATH);
+    const boost::filesystem::path IMAGE3_PATH_BFS(IMAGE3_PATH);
 
-    // verify the IDs supplied started at one and didn't skip any
-    for (std::size_t i(1); i <= IDS_SIZE; ++i)
+    const std::size_t IMAGES1_COUNT(33);
+    const std::size_t IMAGES2_COUNT(22);
+
+    const std::string IMAGES1_DIR_KEY("media-anim-images-dir-orbcharge");
+    const std::string IMAGES2_DIR_KEY("media-anim-images-dir-orbshimmer");
+
+    const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::MakePathPretty(
+        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
+
+    const std::string IMAGES2_DIR_PATH(heroespath::misc::filesystem::MakePathPretty(
+        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
+
+    const boost::filesystem::path IMAGES1_DIR_PATH_BFS(IMAGES1_DIR_PATH);
+    const boost::filesystem::path IMAGES2_DIR_PATH_BFS(IMAGES2_DIR_PATH);
+
+    const TextureOpt::Enum ALL_OPTIONS { TextureOpt::Smooth | TextureOpt::FlipHoriz
+                                         | TextureOpt::FlipVert | TextureOpt::Invert };
+
+    //
+    BOOST_CHECK_THROW(tc.AddByKey(""), std::exception);
+    BOOST_CHECK_THROW(tc.AddByPath(""), std::exception);
+    BOOST_CHECK_THROW(tc.AddByPathFake("", sf::Texture()), std::exception);
+    BOOST_CHECK_THROW(tc.AddDirectoryByKey(""), std::exception);
+    BOOST_CHECK_THROW(tc.AddDirectoryByPath(""), std::exception);
+    BOOST_CHECK_THROW(tc.GetByIndex(0), std::exception);
+    BOOST_CHECK_THROW(tc.GetByIndex(1), std::exception);
+    BOOST_CHECK_THROW(tc.GetOptionsByIndex(0), std::exception);
+    BOOST_CHECK_THROW(tc.GetPathByIndex(0), std::exception);
+    BOOST_CHECK_THROW(tc.GetRefCountByIndex(0), std::exception);
+    BOOST_CHECK_THROW(tc.RemoveByKey(""), std::exception);
+    BOOST_CHECK_THROW(tc.RemoveByKey("", ALL_OPTIONS), std::exception);
+    BOOST_CHECK_THROW(tc.RemoveByPath(""), std::exception);
+    BOOST_CHECK_THROW(tc.RemoveByPath("", ALL_OPTIONS), std::exception);
+    BOOST_CHECK_NO_THROW(tc.RemoveAll());
+
     {
-        BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
+        const auto IMAGE1_INDEX(tc.AddByKey(IMAGE1_PATH_KEY));
+
+        BOOST_CHECK(IMAGE1_INDEX == 0);
+        BOOST_CHECK(tc.GetOptionsByIndex(IMAGE1_INDEX) == TextureOpt::Default);
+        BOOST_CHECK(tc.GetPathByIndex(IMAGE1_INDEX) == IMAGE1_PATH);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+
+        BOOST_CHECK(areImagesEqual(tc.GetByIndex(IMAGE1_INDEX), quickLoadByKey(IMAGE1_PATH_KEY)));
+        BOOST_CHECK(areImagesEqual(
+            tc.GetByIndex(IMAGE1_INDEX), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Default)));
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX + 1), std::exception);
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX - 1), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, ALL_OPTIONS), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByPath(IMAGE1_PATH, ALL_OPTIONS), std::exception);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveAll());
+
+        BOOST_CHECK_THROW(tc.GetOptionsByIndex(IMAGE1_INDEX), std::exception);
+        BOOST_CHECK_THROW(tc.GetPathByIndex(IMAGE1_INDEX), std::exception);
+        BOOST_CHECK_THROW(tc.GetRefCountByIndex(IMAGE1_INDEX), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY), std::exception);
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX), std::exception);
     }
 
-    // verify and remove one-at-a-time
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
-        BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(ID));
+        const auto IMAGE1_INDEX(tc.AddByKey(IMAGE1_PATH_KEY));
+        BOOST_CHECK(IMAGE1_INDEX == 0);
+
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::None), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::Invert), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::FlipVert), std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::FlipVert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::Invert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipVert | TextureOpt::Invert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(tc.RemoveByPath(IMAGE1_PATH, TextureOpt::None), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByPath(IMAGE1_PATH, TextureOpt::Invert), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByPath(IMAGE1_PATH, TextureOpt::FlipHoriz), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByPath(IMAGE1_PATH, TextureOpt::FlipVert), std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByPath(
+                IMAGE1_PATH, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::FlipVert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByPath(
+                IMAGE1_PATH, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::Invert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByPath(
+                IMAGE1_PATH, TextureOpt::Enum(TextureOpt::FlipVert | TextureOpt::Invert)),
+            std::exception);
+
+        const auto IMAGE1B_INDEX(tc.AddByPath(IMAGE1_PATH, ALL_OPTIONS));
+
+        BOOST_CHECK(IMAGE1_INDEX != IMAGE1B_INDEX);
+        BOOST_CHECK(IMAGE1B_INDEX == 1);
+        BOOST_CHECK(tc.GetOptionsByIndex(IMAGE1B_INDEX) == ALL_OPTIONS);
+        BOOST_CHECK(tc.GetPathByIndex(IMAGE1B_INDEX) == IMAGE1_PATH);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1B_INDEX) == 1);
+
+        BOOST_CHECK(areImagesEqual(
+            tc.GetByIndex(IMAGE1B_INDEX), quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS)));
+
+        BOOST_CHECK(areImagesEqual(
+            tc.GetByIndex(IMAGE1B_INDEX), quickLoadByPath(IMAGE1_PATH, ALL_OPTIONS)));
+
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1B_INDEX) == 1);
+
+        BOOST_CHECK(
+            areImagesEqual(tc.GetByIndex(IMAGE1_INDEX), tc.GetByIndex(IMAGE1B_INDEX)) == false);
+
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::Invert), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::FlipVert), std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::FlipVert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipHoriz | TextureOpt::Invert)),
+            std::exception);
+
+        BOOST_CHECK_THROW(
+            tc.RemoveByKey(
+                IMAGE1_PATH_KEY, TextureOpt::Enum(TextureOpt::FlipVert | TextureOpt::Invert)),
+            std::exception);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, ALL_OPTIONS));
+
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1B_INDEX), std::exception);
+
+        BOOST_CHECK_NO_THROW(tc.GetByIndex(IMAGE1_INDEX));
+
+        BOOST_CHECK(tc.GetOptionsByIndex(IMAGE1_INDEX) == TextureOpt::Default);
+        BOOST_CHECK(tc.GetPathByIndex(IMAGE1_INDEX) == IMAGE1_PATH);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+
+        BOOST_CHECK(tc.AddByKey(IMAGE1_PATH_KEY) == IMAGE1_INDEX);
+
+        BOOST_CHECK(tc.GetOptionsByIndex(IMAGE1_INDEX) == TextureOpt::Default);
+        BOOST_CHECK(tc.GetPathByIndex(IMAGE1_INDEX) == IMAGE1_PATH);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 2);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY, TextureOpt::Default));
+
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByPath(IMAGE1_PATH));
+
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX), std::exception);
     }
 
-    // verify they are all removed
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
-    }
-}
+        const auto IMAGE1_INDEX(tc.AddByKey(IMAGE1_PATH_KEY));
+        BOOST_CHECK(IMAGE1_INDEX == 0);
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+        const auto IMAGE2_INDEX(tc.AddByKey(IMAGE2_PATH_KEY));
+        BOOST_CHECK(IMAGE2_INDEX == 1);
 
-    TextureCache tc;
-    auto const KEY{ "media-anim-images-dir-inferno" };
-    auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
-    auto const IDS_SIZE{ IDS.size() };
-    BOOST_CHECK(IDS_SIZE > 0);
+        const auto IMAGE3_INDEX(tc.AddByKey(IMAGE3_PATH_KEY));
+        BOOST_CHECK(IMAGE3_INDEX == 2);
 
-    // verify the IDs supplied started at one and didn't skip any
-    for (std::size_t i(1); i <= IDS_SIZE; ++i)
-    {
-        BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE2_PATH_KEY));
+
+        BOOST_CHECK(tc.AddByKey(IMAGE2_PATH_KEY) == 1);
     }
 
-    // verify each
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
+        const auto IMAGE1_INDEX(tc.AddByKey(IMAGE1_PATH_KEY));
+        BOOST_CHECK(IMAGE1_INDEX == 0);
+
+        const auto IMAGE2_INDEX(tc.AddByKey(IMAGE2_PATH_KEY));
+        BOOST_CHECK(IMAGE2_INDEX == (IMAGE1_INDEX + 1));
+
+        BOOST_CHECK_NO_THROW(tc.RemoveAll());
+
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY), std::exception);
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE2_PATH_KEY), std::exception);
+
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX), std::exception);
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE2_INDEX), std::exception);
+
+        const auto IMAGE3_INDEX(tc.AddByKey(IMAGE3_PATH_KEY));
+        BOOST_CHECK(IMAGE3_INDEX == 0);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveAll());
+
+        BOOST_CHECK_THROW(tc.RemoveByKey(IMAGE3_PATH_KEY), std::exception);
     }
 
-    tc.RemoveAll();
-
-    // verify they are all removed
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
-    }
-}
+        const auto IMAGE1_INDEX1(tc.AddByKey(IMAGE1_PATH_KEY));
+        BOOST_CHECK(IMAGE1_INDEX1 == 0);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 1);
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+        const auto IMAGE1_INDEX2(tc.AddByPath(IMAGE1_PATH, TextureOpt::Default));
+        BOOST_CHECK(IMAGE1_INDEX2 == IMAGE1_INDEX1);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 2);
 
-    TextureCache tc;
-    auto const KEY{ "media-anim-images-dir-inferno" };
-    auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
-    auto const IDS_SIZE{ IDS.size() };
-    BOOST_CHECK(IDS_SIZE > 0);
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY));
 
-    // verify the IDs supplied started at one and didn't skip any
-    for (std::size_t i(1); i <= IDS_SIZE; ++i)
-    {
-        BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 1);
+
+        BOOST_CHECK_NO_THROW(
+            areImagesEqual(tc.GetByIndex(IMAGE1_INDEX1), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+        BOOST_CHECK_NO_THROW(
+            areImagesEqual(tc.GetByIndex(IMAGE1_INDEX2), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY));
     }
 
-    // verify each
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
+        const auto IMAGE1_INDEX1(tc.AddByKey(IMAGE1_PATH_KEY));
+        BOOST_CHECK(IMAGE1_INDEX1 == 0);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 1);
+
+        sf::Texture texture;
+        const auto IMAGE1_INDEX2(tc.AddByPathFake(IMAGE1_PATH, texture, TextureOpt::Default));
+        BOOST_CHECK(IMAGE1_INDEX2 == IMAGE1_INDEX1);
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 2);
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY));
+
+        BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX1) == 1);
+
+        BOOST_CHECK_NO_THROW(
+            areImagesEqual(tc.GetByIndex(IMAGE1_INDEX1), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+        BOOST_CHECK_NO_THROW(
+            areImagesEqual(tc.GetByIndex(IMAGE1_INDEX1), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGE1_PATH_KEY));
     }
 
-    tc.RemoveByIndexVec(IDS);
-
-    // verify they are all removed
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
-    }
-}
+        auto const IMAGE1(quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS));
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
-{
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+        sf::Texture texture;
+        texture.loadFromImage(IMAGE1);
 
-    TextureCache tc;
-    auto const KEY{ "media-anim-images-dir-inferno" };
-    auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
-    auto const IDS_SIZE{ IDS.size() };
-    BOOST_CHECK(IDS_SIZE > 0);
+        const std::string FAKE_PATH("fake path");
+        const auto IMAGE1_INDEX(tc.AddByPathFake(FAKE_PATH, texture, ALL_OPTIONS));
+        BOOST_CHECK(IMAGE1_INDEX == 0);
 
-    // verify the IDs supplied started at one and didn't skip any
-    for (std::size_t i(1); i <= IDS_SIZE; ++i)
-    {
-        BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
+        BOOST_CHECK_NO_THROW(areImagesEqual(tc.GetByIndex(IMAGE1_INDEX), texture));
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByPath(FAKE_PATH, ALL_OPTIONS));
+
+        BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX), std::exception);
     }
 
-    // verify each
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
+        const auto IMAGE_INDEXES1(tc.AddDirectoryByKey(IMAGES1_DIR_KEY));
+        BOOST_CHECK(IMAGE_INDEXES1.size() == IMAGES1_COUNT);
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            const auto INDEX(IMAGE_INDEXES1.at(i));
+            BOOST_CHECK(INDEX == i);
+            BOOST_CHECK_NO_THROW(tc.GetByIndex(INDEX));
+            BOOST_CHECK(tc.GetRefCountByIndex(INDEX) == 1);
+        }
+
+        BOOST_CHECK_THROW(tc.AddByPath(IMAGES1_DIR_PATH), std::exception);
+        BOOST_CHECK_THROW(tc.AddByPathFake(IMAGES1_DIR_PATH, sf::Texture()), std::exception);
+
+        const auto IMAGE_INDEXES2(tc.AddDirectoryByPath(IMAGES1_DIR_PATH));
+        BOOST_CHECK(IMAGE_INDEXES1 == IMAGE_INDEXES2);
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            const auto INDEX(IMAGE_INDEXES2.at(i));
+            BOOST_CHECK_NO_THROW(tc.GetByIndex(INDEX));
+            BOOST_CHECK(tc.GetRefCountByIndex(INDEX) == 2);
+        }
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByPath(IMAGES1_DIR_PATH));
+
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            const auto INDEX(IMAGE_INDEXES1.at(i));
+            BOOST_CHECK_NO_THROW(tc.GetByIndex(INDEX));
+            BOOST_CHECK(tc.GetRefCountByIndex(INDEX) == 1);
+        }
+
+        const auto IMAGE_INDEXES3(tc.AddDirectoryByKey(IMAGES1_DIR_KEY, ALL_OPTIONS));
+        BOOST_CHECK(IMAGE_INDEXES3.size() == IMAGES1_COUNT);
+        BOOST_CHECK(IMAGE_INDEXES1 != IMAGE_INDEXES3);
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            const auto INDEX(IMAGE_INDEXES3.at(i));
+            BOOST_CHECK_NO_THROW(tc.GetByIndex(INDEX));
+
+            BOOST_CHECK(
+                areImagesEqual(tc.GetByIndex(INDEX), tc.GetByIndex(IMAGE_INDEXES1.at(i))) == false);
+        }
+
+        BOOST_CHECK_NO_THROW(tc.RemoveByKey(IMAGES1_DIR_KEY, TextureOpt::Default));
+
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            BOOST_CHECK_THROW(tc.GetByIndex(IMAGE_INDEXES1.at(i)), std::exception);
+        }
     }
 
-    tc.RemoveByKey(KEY);
-
-    // verify they are all removed
-    for (auto const ID : IDS)
     {
-        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
+        {
+            CachedTexture ct1A(IMAGE1_PATH_KEY);
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.Options() == TextureOpt::Default);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(ct1A.Path() == IMAGE1_PATH);
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct1B(ct1A);
+
+                BOOST_CHECK(ct1B.RefCount() == 2);
+                BOOST_CHECK(ct1A.RefCount() == 2);
+
+                BOOST_CHECK(ct1B == ct1A);
+
+                BOOST_CHECK(ct1B.Index() == 0);
+                BOOST_CHECK(ct1B.Index() == ct1A.Index());
+                BOOST_CHECK(ct1B.Options() == ct1A.Options());
+                BOOST_CHECK(ct1B.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct1B.RefCount() == ct1A.RefCount());
+                BOOST_CHECK(ct1B.RefCount() == 2);
+                BOOST_CHECK(ct1B.Path() == ct1A.Path());
+                BOOST_CHECK(ct1B.Path() == IMAGE1_PATH);
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(ct1B.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1B.Get()));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1B.Index()), ct1A.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1B.Get()));
+
+                CachedTexture ct1C(ct1B);
+
+                BOOST_CHECK(ct1C.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1A.RefCount() == 3);
+
+                BOOST_CHECK(ct1A == ct1B);
+                BOOST_CHECK(ct1B == ct1C);
+                BOOST_CHECK(ct1C == ct1A);
+
+                BOOST_CHECK(ct1C.Index() == 0);
+                BOOST_CHECK(ct1C.Index() == ct1A.Index());
+                BOOST_CHECK(ct1C.Options() == ct1A.Options());
+                BOOST_CHECK(ct1C.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct1C.RefCount() == ct1A.RefCount());
+                BOOST_CHECK(ct1C.RefCount() == 3);
+                BOOST_CHECK(ct1C.Path() == ct1A.Path());
+                BOOST_CHECK(ct1C.Path() == IMAGE1_PATH);
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(ct1C.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1C.Get()));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1C.Index()), ct1A.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1C.Get()));
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct1B(ct1A);
+
+                BOOST_CHECK(ct1A.RefCount() == 2);
+                BOOST_CHECK(ct1B.RefCount() == 2);
+                BOOST_CHECK(ct1B.Index() == 0);
+
+                CachedTexture ct1C(std::move(ct1B));
+
+                BOOST_CHECK(ct1A.RefCount() == 2);
+                BOOST_CHECK(ct1C.RefCount() == 2);
+
+                BOOST_CHECK(ct1C == ct1A);
+
+                BOOST_CHECK(ct1C.Index() == 0);
+                BOOST_CHECK(ct1C.Index() == ct1A.Index());
+                BOOST_CHECK(ct1C.Options() == ct1A.Options());
+                BOOST_CHECK(ct1C.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct1C.RefCount() == ct1A.RefCount());
+                BOOST_CHECK(ct1C.RefCount() == 2);
+                BOOST_CHECK(ct1C.Path() == ct1A.Path());
+                BOOST_CHECK(ct1C.Path() == IMAGE1_PATH);
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(ct1C.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1C.Get()));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1C.Index()), ct1A.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1C.Get()));
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct2(IMAGE2_PATH_BFS);
+
+                BOOST_CHECK(ct2.Index() == 1);
+                BOOST_CHECK(ct2.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct2.RefCount() == 1);
+                BOOST_CHECK(ct2.Path() == IMAGE2_PATH);
+                BOOST_CHECK(ct2 != ct1A);
+
+                BOOST_CHECK(areImagesEqual(ct2.Get(), quickLoadByKey(IMAGE2_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct2.Index()), ct2.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct2.Get()) == false);
+
+                CachedTexture ct3(IMAGE3_PATH_KEY);
+
+                BOOST_CHECK(ct3.Index() == 2);
+                BOOST_CHECK(ct3.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct3.RefCount() == 1);
+                BOOST_CHECK(ct3.Path() == IMAGE3_PATH);
+                BOOST_CHECK(ct3 != ct1A);
+                BOOST_CHECK(ct3 != ct2);
+
+                BOOST_CHECK(areImagesEqual(ct3.Get(), quickLoadByKey(IMAGE3_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct3.Index()), ct3.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct3.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct2.Get()) == false);
+
+                ct2 = ct3;
+
+                BOOST_CHECK(ct1A.Index() == 0);
+
+                BOOST_CHECK(ct2.RefCount() == 2);
+                BOOST_CHECK(ct3.RefCount() == 2);
+
+                BOOST_CHECK(ct2 == ct3);
+
+                BOOST_CHECK(ct2.Index() == 2);
+                BOOST_CHECK(ct2.Index() == ct3.Index());
+                BOOST_CHECK(ct2.Options() == ct3.Options());
+                BOOST_CHECK(ct2.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct2.RefCount() == ct3.RefCount());
+                BOOST_CHECK(ct2.RefCount() == 2);
+                BOOST_CHECK(ct2.Path() == ct3.Path());
+                BOOST_CHECK(ct2.Path() == IMAGE3_PATH);
+                BOOST_CHECK(ct2 != ct1A);
+                BOOST_CHECK(ct3 != ct1A);
+
+                BOOST_CHECK(areImagesEqual(ct2.Get(), quickLoadByKey(IMAGE3_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct3.Index()), ct2.Get()));
+                BOOST_CHECK(areImagesEqual(ct2.Get(), ct3.Get()));
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct2(IMAGE2_PATH_BFS);
+                BOOST_CHECK(ct2.Index() == 1);
+                BOOST_CHECK(ct2.RefCount() == 1);
+
+                CachedTexture ct3(IMAGE3_PATH_KEY);
+
+                BOOST_CHECK(ct2.Index() == 1);
+                BOOST_CHECK(ct2.RefCount() == 1);
+
+                BOOST_CHECK(ct3.Index() == 2);
+                BOOST_CHECK(ct3.RefCount() == 1);
+
+                ct2 = std::move(ct3);
+
+                BOOST_CHECK(ct2.Index() == 2);
+                BOOST_CHECK(ct2.RefCount() == 1);
+
+                BOOST_CHECK(ct2 != ct1A);
+
+                BOOST_CHECK(ct2.Index() == 2);
+                BOOST_CHECK(ct2.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct2.RefCount() == 1);
+                BOOST_CHECK(ct2.Path() == IMAGE3_PATH);
+
+                BOOST_CHECK(areImagesEqual(ct2.Get(), quickLoadByKey(IMAGE3_PATH_KEY)));
+                BOOST_CHECK(areImagesEqual(ct2.Get(), ct1A.Get()) == false);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct1B(IMAGE1_PATH_KEY);
+                const CachedTexture ct1C(IMAGE1_PATH_KEY);
+
+                BOOST_CHECK(ct1A.Index() == 0);
+                BOOST_CHECK(ct1B.Index() == 0);
+                BOOST_CHECK(ct1C.Index() == 0);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction1 = [](const CachedTexture & A, const CachedTexture B) {
+                    BOOST_CHECK(A == B);
+                    BOOST_CHECK(A.RefCount() == 4);
+                    BOOST_CHECK(B.RefCount() == 4);
+                };
+
+                testFunction1(ct1A, ct1A);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                testFunction1(ct1A, ct1B);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                testFunction1(ct1A, ct1C);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                testFunction1(ct1B, ct1A);
+                testFunction1(ct1B, ct1B);
+                testFunction1(ct1B, ct1C);
+
+                testFunction1(ct1C, ct1A);
+                testFunction1(ct1C, ct1B);
+                testFunction1(ct1C, ct1C);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction2A = [](const CachedTexture & A, const CachedTexture B) {
+                    BOOST_CHECK(A == B);
+                    BOOST_CHECK(A.RefCount() == 4);
+                    BOOST_CHECK(B.RefCount() == 4);
+                };
+
+                testFunction2A(ct1A, CachedTexture(ct1A));
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction2B = [](const CachedTexture & A, const CachedTexture B) {
+                    BOOST_CHECK(A == B);
+                    BOOST_CHECK(A.RefCount() == 5);
+                    BOOST_CHECK(B.RefCount() == 5);
+                };
+
+                testFunction2B(CachedTexture(ct1B), ct1B);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction2C = [](const CachedTexture & A, const CachedTexture B) {
+                    BOOST_CHECK(A == B);
+                    BOOST_CHECK(A.RefCount() == 5);
+                    BOOST_CHECK(B.RefCount() == 5);
+                };
+
+                testFunction2C(CachedTexture(ct1A), ct1B);
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction3A = [](const CachedTexture & A, CachedTexture && b) {
+                    BOOST_CHECK(A == b);
+                    BOOST_CHECK(A.RefCount() == 4);
+                    BOOST_CHECK(b.RefCount() == 4);
+                };
+
+                testFunction3A(ct1A, CachedTexture(ct1A));
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+
+                auto testFunction3B = [](const CachedTexture & A, CachedTexture && b) {
+                    BOOST_CHECK(A == b);
+                    BOOST_CHECK(A.RefCount() == 3);
+                    BOOST_CHECK(b.RefCount() == 3);
+                };
+
+                testFunction3B(ct1A, std::move(ct1B));
+
+                BOOST_CHECK(ct1A.RefCount() == 3);
+                BOOST_CHECK(ct1B.RefCount() == 3);
+                BOOST_CHECK(ct1C.RefCount() == 3);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                const CachedTexture ct1B(IMAGE1_PATH_BFS);
+
+                BOOST_CHECK(ct1B.Index() == 0);
+                BOOST_CHECK(ct1B.Options() == TextureOpt::Default);
+                BOOST_CHECK(ct1B.RefCount() == 2);
+                BOOST_CHECK(ct1B.Path() == ct1A.Path());
+                BOOST_CHECK(ct1B == ct1A);
+
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1B.Index()), ct1B.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1B.Get()));
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                const CachedTexture ct1B(IMAGE1_PATH_BFS, ALL_OPTIONS);
+
+                BOOST_CHECK(ct1B.Index() == 1);
+                BOOST_CHECK(ct1B.Options() == ALL_OPTIONS);
+                BOOST_CHECK(ct1A.Options() != ct1B.Options());
+                BOOST_CHECK(ct1B.RefCount() == 1);
+                BOOST_CHECK(ct1A.RefCount() == 1);
+                BOOST_CHECK(ct1B.Path() == ct1A.Path());
+                BOOST_CHECK(ct1B != ct1A);
+
+                BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1B.Index()), ct1B.Get()));
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1B.Get()) == false);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct2(IMAGE2_PATH_KEY, ALL_OPTIONS);
+                BOOST_CHECK(ct2.Index() == 1);
+
+                BOOST_CHECK(ct1A.Options() != ct2.Options());
+                BOOST_CHECK(ct1A.Path() != ct2.Path());
+                BOOST_CHECK(ct1A != ct2);
+
+                BOOST_CHECK(areImagesEqual(ct2.Get(), tc.GetByIndex(ct2.Index())));
+
+                BOOST_CHECK(
+                    areImagesEqual(ct2.Get(), quickLoadByKey(IMAGE2_PATH_KEY, ALL_OPTIONS)));
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct2.Get()) == false);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                CachedTexture ct1B(IMAGE1_PATH_BFS);
+                BOOST_CHECK(ct1A == ct1B);
+                BOOST_CHECK(ct1A.RefCount() == 2);
+                BOOST_CHECK(ct1B.RefCount() == 2);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                const CachedTexture ct1B(IMAGE1_PATH_BFS, ALL_OPTIONS);
+                BOOST_CHECK(ct1A != ct1B);
+
+                BOOST_CHECK(ct1A.Index() != ct1B.Index());
+                BOOST_CHECK(ct1A.Options() != ct1B.Options());
+                BOOST_CHECK(ct1A.Path() == ct1B.Path());
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            {
+                const CachedTexture ct1B(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz);
+                BOOST_CHECK(ct1B.Index() == 1);
+
+                const CachedTexture ct1C(IMAGE1_PATH_KEY, TextureOpt::FlipVert);
+                BOOST_CHECK(ct1C.Index() == 2);
+
+                BOOST_CHECK(ct1B != ct1C);
+                BOOST_CHECK(areImagesEqual(ct1B.Get(), ct1C.Get()) == false);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+
+            // create each way with different options and verify the options were applied
+            {
+                CachedTexture ct1B(IMAGE1_PATH_KEY.c_str(), TextureOpt::FlipHoriz);
+                CachedTexture ct1C(IMAGE1_PATH_KEY, TextureOpt::FlipVert);
+                CachedTexture ct1D(IMAGE1_PATH_BFS, TextureOpt::Invert);
+                sf::Texture texture;
+                texture.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
+                CachedTexture ct1E("FAKE PATH", texture, ALL_OPTIONS);
+
+                BOOST_CHECK(ct1A.Index() == 0);
+                BOOST_CHECK(ct1B.Index() == 1);
+                BOOST_CHECK(ct1C.Index() == 2);
+                BOOST_CHECK(ct1D.Index() == 3);
+                BOOST_CHECK(ct1E.Index() == 4);
+
+                BOOST_CHECK(ct1A.RefCount() == 1);
+                BOOST_CHECK(ct1B.RefCount() == 1);
+                BOOST_CHECK(ct1C.RefCount() == 1);
+                BOOST_CHECK(ct1D.RefCount() == 1);
+                BOOST_CHECK(ct1E.RefCount() == 1);
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1B.Get(), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1C.Get(), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipVert)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1D.Get(), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Invert)));
+
+                BOOST_CHECK(
+                    areImagesEqual(ct1E.Get(), quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS)));
+
+                BOOST_CHECK(
+                    areImagesEqual(ct1A.Get().copyToImage(), quickLoadByKey(IMAGE1_PATH_KEY)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1B.Get().copyToImage(),
+                    quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipHoriz)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1C.Get().copyToImage(),
+                    quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::FlipVert)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1D.Get().copyToImage(), quickLoadByKey(IMAGE1_PATH_KEY, TextureOpt::Invert)));
+
+                BOOST_CHECK(areImagesEqual(
+                    ct1E.Get().copyToImage(), quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS)));
+
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1B.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1C.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1D.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1A.Get(), ct1E.Get()) == false);
+
+                BOOST_CHECK(areImagesEqual(ct1B.Get(), ct1C.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1B.Get(), ct1D.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1B.Get(), ct1E.Get()) == false);
+
+                BOOST_CHECK(areImagesEqual(ct1C.Get(), ct1D.Get()) == false);
+                BOOST_CHECK(areImagesEqual(ct1C.Get(), ct1E.Get()) == false);
+
+                BOOST_CHECK(areImagesEqual(ct1D.Get(), ct1E.Get()) == false);
+            }
+
+            BOOST_CHECK(ct1A.Index() == 0);
+            BOOST_CHECK(ct1A.RefCount() == 1);
+            BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
+        }
+
+        BOOST_CHECK_THROW(tc.GetByIndex(0), std::exception);
+    }
+
+    {
+        CachedTextures cs1A(IMAGES1_DIR_KEY);
+        BOOST_CHECK((cs1A.Path() == IMAGES1_DIR_PATH));
+        BOOST_CHECK((cs1A.Options() == TextureOpt::Default));
+        BOOST_CHECK((cs1A.RefCount() == 1));
+        auto INDEXES1 { cs1A.Indexes() };
+        BOOST_CHECK((INDEXES1.size() == IMAGES1_COUNT));
+        BOOST_CHECK(cs1A.Size() == IMAGES1_COUNT);
+        BOOST_CHECK(cs1A == cs1A);
+        BOOST_CHECK((cs1A != cs1A) == false);
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            BOOST_CHECK(INDEXES1[i] == i);
+            BOOST_CHECK(areImagesEqual(cs1A[i], cs1A.At(i)));
+        }
+        BOOST_CHECK((cs1A.Size() == IMAGES1_COUNT));
+        BOOST_CHECK(areImagesEqual(cs1A.Front(), cs1A[0]));
+        BOOST_CHECK(areImagesEqual(cs1A.Back(), cs1A[cs1A.Size() - 1]));
+
+        CachedTextures cs1B(IMAGES1_DIR_PATH_BFS);
+        BOOST_CHECK((cs1B.Path() == IMAGES1_DIR_PATH));
+        BOOST_CHECK((cs1B.Options() == TextureOpt::Default));
+        BOOST_CHECK((cs1B.RefCount() == 2));
+        auto INDEXES2 { cs1B.Indexes() };
+        BOOST_CHECK(INDEXES1 == INDEXES2);
+        BOOST_CHECK((INDEXES2.size() == IMAGES1_COUNT));
+        BOOST_CHECK(cs1B.Size() == IMAGES1_COUNT);
+        BOOST_CHECK(cs1B == cs1A);
+        BOOST_CHECK((cs1B != cs1A) == false);
+        for (std::size_t i(0); i < IMAGES1_COUNT; ++i)
+        {
+            BOOST_CHECK(INDEXES1[i] == INDEXES2[i]);
+            BOOST_CHECK(areImagesEqual(cs1B[i], cs1B.At(i)));
+            BOOST_CHECK(areImagesEqual(cs1B[i], cs1A.At(i)));
+        }
+        BOOST_CHECK((cs1B.Size() == IMAGES1_COUNT));
+        BOOST_CHECK(areImagesEqual(cs1B.Front(), cs1B[0]));
+        BOOST_CHECK(areImagesEqual(cs1B.Back(), cs1B[cs1B.Size() - 1]));
+
+        CachedTextures cs1C(cs1A);
+        BOOST_CHECK((cs1A == cs1C));
+
+        BOOST_CHECK((cs1A.RefCount() == 3));
+        BOOST_CHECK((cs1B.RefCount() == 3));
+        BOOST_CHECK((cs1C.RefCount() == 3));
+
+        CachedTextures cs1D(std::move(cs1C));
+        BOOST_CHECK((cs1A == cs1D));
+
+        BOOST_CHECK((cs1A.RefCount() == 3));
+        BOOST_CHECK((cs1B.RefCount() == 3));
+        BOOST_CHECK((cs1D.RefCount() == 3));
+
+        CachedTextures cs2(IMAGES2_DIR_PATH_BFS);
+        BOOST_CHECK(cs2.Size() == IMAGES2_COUNT);
+        BOOST_CHECK(cs1D != cs2);
+
+        cs2 = cs1D;
+        BOOST_CHECK(cs2 == cs1D);
+
+        BOOST_CHECK((cs1A.RefCount() == 4));
+        BOOST_CHECK((cs1B.RefCount() == 4));
+        BOOST_CHECK((cs2.RefCount() == 4));
+
+        CachedTextures cs3(IMAGES2_DIR_PATH_BFS, ALL_OPTIONS);
+        cs3 = std::move(cs1B);
+        BOOST_CHECK(cs1A == cs3);
+        BOOST_CHECK(cs2 == cs3);
+
+        BOOST_CHECK((cs1A.RefCount() == 4));
+        BOOST_CHECK((cs2.RefCount() == 4));
     }
 }

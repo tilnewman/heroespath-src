@@ -36,8 +36,8 @@ namespace heroespath
 namespace combat
 {
 
-    const float ShakeAnimInfo::PAUSE_DURATION_SEC{ 1.0f };
-    const float ShakeAnimInfo::SHAKE_DURATION_SEC{ 0.65f };
+    const float ShakeAnimInfo::PAUSE_DURATION_SEC { 1.0f };
+    const float ShakeAnimInfo::SHAKE_DURATION_SEC { 0.65f };
 
     ShakeAnimInfo::ShakeAnimInfo()
         : slider(0.0f, 1.0f, 50.0)
@@ -53,7 +53,8 @@ namespace combat
 
     void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
-        auto const SHAKE_DISTANCE{ CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+        auto const SHAKE_DISTANCE { CombatAnimation::ShakeAnimDistance(
+            WILL_DOUBLE_SHAKE_DISTANCE) };
 
         slider.Reset(
             0.0f, SHAKE_DISTANCE, static_cast<double>(SLIDER_SPEED), (SHAKE_DISTANCE * 0.5f));
@@ -64,18 +65,18 @@ namespace combat
         shake_duration_timer_sec = 0.0f;
     }
 
-    const float CombatAnimation::SELECT_ANIM_SLIDER_SPEED_{ 8.0f };
-    const float CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_{ 0.06f };
+    const float CombatAnimation::SELECT_ANIM_SLIDER_SPEED_ { 8.0f };
+    const float CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ { 0.06f };
 
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_{
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_ {
         "media-anim-image-flash-sparkle"
     };
 
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_{
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_ {
         "media-anim-images-dir-shimmer"
     };
 
-    const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_{ 232 };
+    const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_ { 232 };
 
     CombatAnimation::CombatAnimation()
         : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
@@ -235,8 +236,8 @@ namespace combat
         projAnimWillSpin_ = !WILL_HIT;
 
         // establish the game data file path key to the projectile image
-        const std::string PATH_KEY_BASE_STR{ "media-images-combat-" };
-        std::string pathKey{ PATH_KEY_BASE_STR + "dart" };
+        const std::string PATH_KEY_BASE_STR { "media-images-combat-" };
+        std::string pathKey { PATH_KEY_BASE_STR + "dart" };
         if (WEAPON_PTR->WeaponInfo().IsBow())
         {
             std::ostringstream ss;
@@ -266,7 +267,7 @@ namespace combat
         projAnimSprite_.setOrigin(0.0f, 0.0f);
 
         // this is the scale for Sling projectiles (stones)
-        auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };
+        auto scale { sfml_util::MapByRes(0.05f, 0.55f) };
 
         if (WEAPON_PTR->WeaponInfo().IsBow()
             || (WEAPON_PTR->WeaponInfo().ProjectileType()
@@ -313,11 +314,12 @@ namespace combat
     void CombatAnimation::ProjectileShootAnimUpdate(
         const float SLIDER_POS, const sf::FloatRect & BATTLEFIELD_RECT)
     {
-        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x
-                                     + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
+        auto const SPRITE_POS_HORIZ {
+            projAnimBeginPosV_.x + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS)
+        };
 
-        auto const SPRITE_POS_VERT{ projAnimBeginPosV_.y
-                                    + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
+        auto const SPRITE_POS_VERT { projAnimBeginPosV_.y
+                                     + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
 
         projAnimSprite_.setPosition(SPRITE_POS_HORIZ, SPRITE_POS_VERT);
 
@@ -331,7 +333,7 @@ namespace combat
             projAnimSprite_.setOrigin(0.0f, 0.0f);
         }
 
-        auto const PROJ_ANIM_SPRITE_GBOUNDS{ projAnimSprite_.getGlobalBounds() };
+        auto const PROJ_ANIM_SPRITE_GBOUNDS { projAnimSprite_.getGlobalBounds() };
 
         if ((BATTLEFIELD_RECT.contains(PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
              == false)
@@ -399,10 +401,10 @@ namespace combat
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
         const bool WILL_MOVE_BACKGROUND)
     {
-        sf::Vector2f targetPosV{ 0.0f, 0.0f };
+        sf::Vector2f targetPosV { 0.0f, 0.0f };
         if (centeringAnimCombatNodePtrOpt_)
         {
-            auto const CENTERING_ANIM_COMBAT_NODE_PTR{ centeringAnimCombatNodePtrOpt_.value() };
+            auto const CENTERING_ANIM_COMBAT_NODE_PTR { centeringAnimCombatNodePtrOpt_.value() };
 
             auto const TARGET_POS_X(
                 CENTERING_ANIM_COMBAT_NODE_PTR->GetEntityPos().x
@@ -419,17 +421,17 @@ namespace combat
             targetPosV = COMBAT_DISPLAY_PTR->CenteringPosV();
         }
 
-        auto const BF_RECT{ COMBAT_DISPLAY_PTR->BattlefieldRect() };
+        auto const BF_RECT { COMBAT_DISPLAY_PTR->BattlefieldRect() };
 
-        auto const DIFF_X{ (BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x };
-        auto const DIFF_DIVISOR_X{ SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_ };
-        auto const MOVE_AMOUNT_X{ (DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS };
+        auto const DIFF_X { (BF_RECT.left + (BF_RECT.width * 0.5f)) - targetPosV.x };
+        auto const DIFF_DIVISOR_X { SCREEN_WIDTH_ / BATTLEFIELD_CENTERING_SPEED_ };
+        auto const MOVE_AMOUNT_X { (DIFF_X / DIFF_DIVISOR_X) * -1.0f * SLIDER_POS };
 
         COMBAT_DISPLAY_PTR->MoveBattlefieldHoriz(MOVE_AMOUNT_X, WILL_MOVE_BACKGROUND);
 
-        auto const DIFF_Y{ (BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y };
-        auto const DIFF_DIVISOR_Y{ SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_ };
-        auto const MOVE_AMOUNT_Y{ (DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS };
+        auto const DIFF_Y { (BF_RECT.top + (BF_RECT.height * 0.5f)) - targetPosV.y };
+        auto const DIFF_DIVISOR_Y { SCREEN_HEIGHT_ / BATTLEFIELD_CENTERING_SPEED_ };
+        auto const MOVE_AMOUNT_Y { (DIFF_Y / DIFF_DIVISOR_Y) * -1.0f * SLIDER_POS };
 
         COMBAT_DISPLAY_PTR->MoveBattlefieldVert(MOVE_AMOUNT_Y, WILL_MOVE_BACKGROUND);
 
@@ -503,7 +505,7 @@ namespace combat
         meleeMoveAnimOrigPosV_ = meleeMoveAnimMovingCombatNodePtrOpt_.value()->GetEntityPos();
         meleeMoveAnimTargetCombatNodePtrOpt_ = CREATURE_TARGET_COMBAT_NODE_PTR;
 
-        auto const MELEE_MOVE_ANIM_TARGET_COMBAT_NODE_PTR{
+        auto const MELEE_MOVE_ANIM_TARGET_COMBAT_NODE_PTR {
             meleeMoveAnimTargetCombatNodePtrOpt_.value()
         };
 
@@ -523,13 +525,13 @@ namespace combat
 
     void CombatAnimation::MeleeMoveTowardAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x
-                                  + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
-                                     * SLIDER_POS) };
+        auto const NEW_POS_HORIZ { meleeMoveAnimOrigPosV_.x
+                                   + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
+                                      * SLIDER_POS) };
 
-        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y
-                                 + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
-                                    * SLIDER_POS) };
+        auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y
+                                  + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
+                                     * SLIDER_POS) };
 
         meleeMoveAnimMovingCombatNodePtrOpt_.value()->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
@@ -538,20 +540,20 @@ namespace combat
 
     void CombatAnimation::MeleeMoveBackAnimStart()
     {
-        auto const TEMP_TARGET_POS_V{ meleeMoveAnimTargetPosV_ };
+        auto const TEMP_TARGET_POS_V { meleeMoveAnimTargetPosV_ };
         meleeMoveAnimTargetPosV_ = meleeMoveAnimOrigPosV_;
         meleeMoveAnimOrigPosV_ = TEMP_TARGET_POS_V;
     }
 
     void CombatAnimation::MeleeMoveBackAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x
-                                  + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
-                                     * SLIDER_POS) };
+        auto const NEW_POS_HORIZ { meleeMoveAnimOrigPosV_.x
+                                   + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
+                                      * SLIDER_POS) };
 
-        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y
-                                 + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
-                                    * SLIDER_POS) };
+        auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y
+                                  + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
+                                     * SLIDER_POS) };
 
         meleeMoveAnimMovingCombatNodePtrOpt_.value()->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
@@ -585,7 +587,7 @@ namespace combat
 
     float CombatAnimation::ShakeAnimDistance(const bool WILL_DOUBLE)
     {
-        auto distance{ sfml_util::MapByRes(16.0f, 48.0f) };
+        auto distance { sfml_util::MapByRes(16.0f, 48.0f) };
 
         if (WILL_DOUBLE)
         {
@@ -830,7 +832,7 @@ namespace combat
         }
         else
         {
-            auto areAllAnimsFinished{ true };
+            auto areAllAnimsFinished { true };
             for (auto & nextAnimUPtr : animUVec_)
             {
                 if (nextAnimUPtr->IsFinished() == false)
@@ -885,7 +887,7 @@ namespace combat
 
     bool CombatAnimation::SparksAnimUpdate(const float ELAPSED_TIME_SEC)
     {
-        auto areAllSparksAnimFinished{ true };
+        auto areAllSparksAnimFinished { true };
         for (auto & nextSparksAnimUPtr : sparksAnimUVec_)
         {
             if (nextSparksAnimUPtr->IsFinished() == false)
@@ -928,7 +930,7 @@ namespace combat
 
     bool CombatAnimation::PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC)
     {
-        auto areAllCloudAnimFinished{ true };
+        auto areAllCloudAnimFinished { true };
         for (auto & nextCloudAnimUPtr : cloudAnimUVec_)
         {
             if (nextCloudAnimUPtr->IsFinished() == false)
@@ -959,13 +961,13 @@ namespace combat
                 continue;
             }
 
-            auto region{ sfml_util::MakeMinimalSquareAndCenter(
+            auto region { sfml_util::ShrinkToSquareAndReCenterCopy(
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             // grow the shimmer animation to better cover the creature image
             if (ENUM == sfml_util::Animations::Shimmer)
             {
-                auto const ADJ{ sfml_util::MapByRes(40.0f, 120.0f) };
+                auto const ADJ { sfml_util::MapByRes(40.0f, 120.0f) };
                 region.left -= ADJ * 0.5f;
                 region.top -= ADJ * 1.25f;
                 region.width += ADJ * 2.0f;
@@ -1007,7 +1009,7 @@ namespace combat
 
     bool CombatAnimation::SongAnimUpdate(const float ELAPSED_TIME_SEC)
     {
-        auto areAllSongAnimFinished{ true };
+        auto areAllSongAnimFinished { true };
         for (auto & nextSongAnimUPtr : songAnimUVec_)
         {
             if (nextSongAnimUPtr->IsFinished() == false)
@@ -1047,7 +1049,7 @@ namespace combat
 
     bool CombatAnimation::SparkleAnimUpdate(const float ELAPSED_TIME_SEC)
     {
-        auto areAllSparkleAnimFinished{ true };
+        auto areAllSparkleAnimFinished { true };
         for (auto & nextSparkleAnimUPtr : sparkleAnimUVec_)
         {
             if (nextSparkleAnimUPtr->IsFinished() == false)
@@ -1062,7 +1064,7 @@ namespace combat
 
     bool CombatAnimation::SparkleAnimIsDone()
     {
-        auto areAllAnimsDone{ true };
+        auto areAllAnimsDone { true };
         for (auto const & NEXT_SPARKLEANIM_UPTR : sparkleAnimUVec_)
         {
             if ((NEXT_SPARKLEANIM_UPTR) && (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
@@ -1093,10 +1095,10 @@ namespace combat
 
         textAnimUVec_.clear();
 
-        std::size_t damageIndex{ 0 };
+        std::size_t damageIndex { 0 };
         for (auto const & NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            auto const NEXT_DAMAGE_VALUE{ DAMAGE_VEC[damageIndex++] };
+            auto const NEXT_DAMAGE_VALUE { DAMAGE_VEC[damageIndex++] };
 
             if ((NEXT_DAMAGE_VALUE.IsZero()) || (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
             {
@@ -1135,7 +1137,7 @@ namespace combat
         runAnimCombatNodePtrOpt_ = COMBAT_NODE_PTR;
         runAnimPosVOrig_ = runAnimCombatNodePtrOpt_.value()->GetEntityPos();
 
-        auto const OFFSCREEN_PAD{ 1000.0f };
+        auto const OFFSCREEN_PAD { 1000.0f };
         if (COMBAT_NODE_PTR->Creature()->IsPlayerCharacter())
         {
             runAnimPosVTarget_ = sf::Vector2f(0.0f - OFFSCREEN_PAD, 0.0f);
@@ -1149,18 +1151,18 @@ namespace combat
 
     void CombatAnimation::RunAnimUpdate(const float SLIDER_POS)
     {
-        auto const POS_LEFT{ runAnimPosVOrig_.x
-                             + ((runAnimPosVTarget_.x - runAnimPosVOrig_.x) * SLIDER_POS) };
+        auto const POS_LEFT { runAnimPosVOrig_.x
+                              + ((runAnimPosVTarget_.x - runAnimPosVOrig_.x) * SLIDER_POS) };
 
-        auto const POS_TOP{ runAnimPosVOrig_.y
-                            + ((runAnimPosVTarget_.y - runAnimPosVOrig_.y) * SLIDER_POS) };
+        auto const POS_TOP { runAnimPosVOrig_.y
+                             + ((runAnimPosVTarget_.y - runAnimPosVOrig_.y) * SLIDER_POS) };
 
         runAnimCombatNodePtrOpt_.value()->SetEntityPos(POS_LEFT, POS_TOP);
     }
 
     const creature::CreaturePtr_t CombatAnimation::RunAnimStop()
     {
-        auto const CREATURE_PTR{ runAnimCombatNodePtrOpt_.value()->Creature() };
+        auto const CREATURE_PTR { runAnimCombatNodePtrOpt_.value()->Creature() };
         runAnimCombatNodePtrOpt_ = boost::none;
         runAnimPosVOrig_ = sf::Vector2f(0.0f, 0.0f);
         runAnimPosVTarget_ = sf::Vector2f(0.0f, 0.0f);

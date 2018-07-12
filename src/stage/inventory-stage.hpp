@@ -21,11 +21,11 @@
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/margins.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <memory>
@@ -165,8 +165,8 @@ namespace stage
 
         void Setup_SortButton(
             const std::string & NAME,
-            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
-            sf::Sprite & sprite);
+            const std::string & IMAGE_PATH_KEY,
+            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr);
 
         void Setup_MenuButton(
             sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
@@ -342,7 +342,7 @@ namespace stage
         const unsigned int DESCBOX_TEXT_SIZE_;
         const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
         const sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
-        sfml_util::MainMenuTitle mainMenuTitle_;
+        sfml_util::StageTitle stageTitle_;
         const float CREATURE_IMAGE_POS_TOP_;
         const float LISTBOX_POS_TOP_;
         const float LISTBOX_HEIGHT_;
@@ -426,9 +426,6 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t unequipButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t dropButtonUPtr_;
 
-        sf::Texture sortButtonNameTexture_;
-        sf::Texture sortButtonPriceTexture_;
-        sf::Texture sortButtonWeightTexture_;
         sfml_util::gui::FourStateButtonUPtr_t eqSortButtonNameUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t eqSortButtonPriceUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t eqSortButtonWeightUPtr_;

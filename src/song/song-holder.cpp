@@ -100,7 +100,7 @@ namespace song
 
     bool Holder::Test()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -108,11 +108,11 @@ namespace song
                 "song::Holder::Test() Starting Tests...");
         }
 
-        static auto songIndex{ 0 };
+        static auto songIndex { 0 };
         if (songIndex < Songs::Count)
         {
-            auto const NEXT_ENUM{ static_cast<Songs::Enum>(songIndex) };
-            auto const SONG_PTR{ Get(NEXT_ENUM) };
+            auto const NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };
+            auto const SONG_PTR { Get(NEXT_ENUM) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->Name().empty() == false),
@@ -164,12 +164,17 @@ namespace song
                                  << ") was called when the holder was empty.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (static_cast<std::size_t>(E) < songsUVec_.size()),
+            (Songs::IsValid(E)), "song::Holder::Get(" << E << ") but that value is invalid.");
+
+        auto const INDEX { static_cast<std::size_t>(E) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (INDEX < songsUVec_.size()),
             "song::Holder::Get("
                 << Songs::ToString(E)
                 << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
-        return songsUVec_.at(static_cast<std::size_t>(E)).get();
+        return songsUVec_[INDEX].get();
     }
 
 } // namespace song

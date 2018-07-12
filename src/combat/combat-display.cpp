@@ -164,7 +164,7 @@ namespace combat
         offScreenSprite_.setTexture(bgTexture_);
 
         // setup offscreen texture
-        auto const BG_TEXTUER_SIZE{ bgTexture_.getSize() };
+        auto const BG_TEXTUER_SIZE { bgTexture_.getSize() };
 
         auto const OFFSCREEN_TEXTURE_SIZE_X(
             ((sfml_util::Display::Instance()->GetWinWidthu() / BG_TEXTUER_SIZE.x) + 1)
@@ -180,20 +180,16 @@ namespace combat
 
         // draw background texture to offscreen texture (tile)
         sf::RenderStates states;
-        const sf::Rect<unsigned> TILE_RECT(
-            0, 0, offScreenTexture_.getSize().x, offScreenTexture_.getSize().y);
+        const sf::FloatRect TILE_RECT(
+            sf::Rect<unsigned>(0, 0, offScreenTexture_.getSize().x, offScreenTexture_.getSize().y));
 
-        sfml_util::Tile2(
-            sfml_util::ConvertRect<unsigned, float>(TILE_RECT),
-            offScreenSprite_,
-            offScreenTexture_,
-            states);
+        sfml_util::Tile2(TILE_RECT, offScreenSprite_, offScreenTexture_, states);
 
         offScreenTexture_.display();
 
         // setup offscreen drawing sprite
         offScreenSprite_.setTexture(offScreenTexture_.getTexture());
-        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(battlefieldRect_));
+        offScreenSprite_.setTextureRect(sf::IntRect(battlefieldRect_));
         offScreenSprite_.setPosition(battlefieldRect_.left, battlefieldRect_.top);
     }
 
@@ -215,11 +211,11 @@ namespace combat
         if (isSummaryViewAllowed_ && isPlayerTurn_ && (false == isMouseHeldDownInBF_)
             && (GetIsStatusMessageAnimating() == false))
         {
-            auto const COMBAT_NODE_PTR_OPT{ combatTree_.GetNodePtrOpt(MOUSE_POS.x, MOUSE_POS.y) };
+            auto const COMBAT_NODE_PTR_OPT { combatTree_.GetNodePtrOpt(MOUSE_POS.x, MOUSE_POS.y) };
 
             if (COMBAT_NODE_PTR_OPT)
             {
-                auto const COMBAT_NODE_PTR{ COMBAT_NODE_PTR_OPT.value() };
+                auto const COMBAT_NODE_PTR { COMBAT_NODE_PTR_OPT.value() };
 
                 if (COMBAT_NODE_PTR->GetEntityWillDraw() == true)
                 {
@@ -236,7 +232,7 @@ namespace combat
 
     float CombatDisplay::SetZoomLevel(const float ZOOM_LEVEL)
     {
-        auto const ORIG_ZOOM_LEVEL{ zoomLevel_ };
+        auto const ORIG_ZOOM_LEVEL { zoomLevel_ };
         zoomLevel_ = ZOOM_LEVEL;
 
         if (misc::IsRealClose(ZOOM_LEVEL, ORIG_ZOOM_LEVEL))
@@ -245,7 +241,7 @@ namespace combat
         }
 
         // prevent zoom level from going too low
-        auto const MIN_ZOOM_LEVEL{ 0.1f };
+        auto const MIN_ZOOM_LEVEL { 0.1f };
         if (zoomLevel_ < MIN_ZOOM_LEVEL)
         {
             zoomLevel_ = MIN_ZOOM_LEVEL;
@@ -254,12 +250,12 @@ namespace combat
         nameCharSizeCurr_
             = static_cast<unsigned int>(static_cast<float>(NAME_CHAR_SIZE_ORIG_) * ZOOM_LEVEL);
 
-        auto const BATTLEFIELD_CENTER_BEFORE_V{ GetCenterOfAllNodes() };
+        auto const BATTLEFIELD_CENTER_BEFORE_V { GetCenterOfAllNodes() };
         PositionCombatTreeCells(false);
-        auto const BATTLEFIELD_CENTER_AFTER_V{ GetCenterOfAllNodes() };
+        auto const BATTLEFIELD_CENTER_AFTER_V { GetCenterOfAllNodes() };
 
-        auto const HORIZ_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.x - BATTLEFIELD_CENTER_AFTER_V.x };
-        auto const VERT_DIFF{ BATTLEFIELD_CENTER_BEFORE_V.y - BATTLEFIELD_CENTER_AFTER_V.y };
+        auto const HORIZ_DIFF { BATTLEFIELD_CENTER_BEFORE_V.x - BATTLEFIELD_CENTER_AFTER_V.x };
+        auto const VERT_DIFF { BATTLEFIELD_CENTER_BEFORE_V.y - BATTLEFIELD_CENTER_AFTER_V.y };
 
         // move nodes to keep the battlefield centered
         for (auto const & NEXT_COMBATNODE_PTR : combatTree_.GetCombatNodes())
@@ -313,7 +309,7 @@ namespace combat
 
     void CombatDisplay::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
-        auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+        const sf::Vector2f NEW_MOUSE_POS_F { NEW_MOUSE_POS };
 
         Stage::UpdateMousePos(NEW_MOUSE_POS);
 
@@ -332,7 +328,7 @@ namespace combat
         {
             Stage::UpdateMouseDown(MOUSE_POS_V);
 
-            auto const COMBAT_NODE_CLICKED_ON_PTR_OPT{ combatTree_.GetNodePtrOpt(
+            auto const COMBAT_NODE_CLICKED_ON_PTR_OPT { combatTree_.GetNodePtrOpt(
                 MOUSE_POS_V.x, MOUSE_POS_V.y) };
 
             if (!COMBAT_NODE_CLICKED_ON_PTR_OPT)
@@ -363,14 +359,14 @@ namespace combat
 
     const sf::Vector2f CombatDisplay::GetCenterOfAllNodes() const
     {
-        auto posHorizMin{ 0.0f };
-        auto posHorizMax{ 0.0f };
-        auto posVertMin{ 0.0f };
-        auto posVertMax{ 0.0f };
-        auto hasSetAnyValuesYet{ false };
+        auto posHorizMin { 0.0f };
+        auto posHorizMax { 0.0f };
+        auto posVertMin { 0.0f };
+        auto posVertMax { 0.0f };
+        auto hasSetAnyValuesYet { false };
         for (auto const & NEXT_COMBATNODE_PTR : combatTree_.GetCombatNodes())
         {
-            auto const NEXT_REGION{ NEXT_COMBATNODE_PTR->GetEntityRegion() };
+            auto const NEXT_REGION { NEXT_COMBATNODE_PTR->GetEntityRegion() };
             if (false == hasSetAnyValuesYet)
             {
                 posHorizMin = NEXT_REGION.left;
@@ -411,13 +407,13 @@ namespace combat
     void CombatDisplay::MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND)
     {
         // keep track of all original values in case undo is required
-        auto const ORIG_OFFSCREEN_SPRITE_RECT{ offScreenSprite_.getTextureRect() };
+        auto const ORIG_OFFSCREEN_SPRITE_RECT { offScreenSprite_.getTextureRect() };
 
         if (WILL_MOVE_BACKGROUND)
         {
             offScreenPosY_ += AMOUNT;
 
-            offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(
+            offScreenSprite_.setTextureRect(sf::IntRect(sf::FloatRect(
                 offScreenPosX_,
                 offScreenPosY_,
                 offScreenSprite_.getLocalBounds().width,
@@ -461,13 +457,13 @@ namespace combat
     void CombatDisplay::MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND)
     {
         // keep track of all original values in case undo is required
-        auto const ORIG_OFFSCREEN_SPRITE_RECT{ offScreenSprite_.getTextureRect() };
+        auto const ORIG_OFFSCREEN_SPRITE_RECT { offScreenSprite_.getTextureRect() };
 
         if (WILL_MOVE_BACKGROUND)
         {
             offScreenPosX_ += AMOUNT;
 
-            offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(sf::FloatRect(
+            offScreenSprite_.setTextureRect(sf::IntRect(sf::FloatRect(
                 offScreenPosX_,
                 offScreenPosY_,
                 offScreenSprite_.getLocalBounds().width,
@@ -535,7 +531,7 @@ namespace combat
         }
         else
         {
-            auto livingCreaturesPVec{ creature::Algorithms::FindByAlive(AMONG_PVEC) };
+            auto livingCreaturesPVec { creature::Algorithms::FindByAlive(AMONG_PVEC) };
 
             // sort by who is closest in terms of blocking position
             std::sort(
@@ -546,7 +542,7 @@ namespace combat
                         < std::abs(combatTree_.GetBlockingDistanceBetween(B_PTR, CREATURE_PTR));
                 });
 
-            auto const MIN_BLOCKING_DISTANCE{ std::abs(combatTree_.GetBlockingDistanceBetween(
+            auto const MIN_BLOCKING_DISTANCE { std::abs(combatTree_.GetBlockingDistanceBetween(
                 *livingCreaturesPVec.begin(), CREATURE_PTR)) };
 
             creature::CreaturePVec_t closestCreaturesPVec;
@@ -583,7 +579,7 @@ namespace combat
             return creaturePVec;
         }
 
-        auto const IS_FLYING{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_PTR).GetIsFlying() };
+        auto const IS_FLYING { Encounter::Instance()->GetTurnInfoCopy(CREATURE_PTR).GetIsFlying() };
 
         if (CREATURE_PTR->IsHoldingProjectileWeapon() || (IS_FLYING))
         {
@@ -595,13 +591,13 @@ namespace combat
         }
         else
         {
-            auto const ALLAROUND_CREATURES_PVEC{ FindCreaturesAllRoundOfType(
+            auto const ALLAROUND_CREATURES_PVEC { FindCreaturesAllRoundOfType(
                 CREATURE_PTR, WILL_FIND_PLAYERS, true) };
 
-            auto const NOTFLYING_ALLAROUND_CREATURES_PVEC{ creature::Algorithms::FindByIsFlying(
+            auto const NOTFLYING_ALLAROUND_CREATURES_PVEC { creature::Algorithms::FindByIsFlying(
                 ALLAROUND_CREATURES_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
-            auto const REACHABLE_CREATURES_PVEC{ (
+            auto const REACHABLE_CREATURES_PVEC { (
                 (IS_FLYING) ? ALLAROUND_CREATURES_PVEC : NOTFLYING_ALLAROUND_CREATURES_PVEC) };
 
             if (REACHABLE_CREATURES_PVEC.empty() == false)
@@ -621,7 +617,7 @@ namespace combat
         const bool WILL_FIND_PLAYERS,
         const bool LIVING_ONLY) const
     {
-        auto const COMBAT_NODES_ALL_AROUND_PVEC{ combatTree_.GetNodesAllAroundBlockingPos(
+        auto const COMBAT_NODES_ALL_AROUND_PVEC { combatTree_.GetNodesAllAroundBlockingPos(
             combatTree_.GetNodePtr(CREATURE_PTR)->GetBlockingPos()) };
 
         creature::CreaturePVec_t creaturePVec;
@@ -646,7 +642,7 @@ namespace combat
     const creature::CreaturePVec_t CombatDisplay::FindCreaturesAtBlockingPosOfType(
         const int BLOCKING_POS, const bool WILL_FIND_PLAYERS) const
     {
-        auto const COMBAT_NODES_AT_POS_PVEC{ combatTree_.GetNodesAtBlockingPos(BLOCKING_POS) };
+        auto const COMBAT_NODES_AT_POS_PVEC { combatTree_.GetNodesAtBlockingPos(BLOCKING_POS) };
 
         creature::CreaturePVec_t creaturesPVec;
         creaturesPVec.reserve(COMBAT_NODES_AT_POS_PVEC.size());
@@ -678,12 +674,12 @@ namespace combat
                 << CREATURE_OF_ORIGIN_PTR->Name()
                 << "\") was given a CREATURES_TO_FIND_AMONG_PVEC that was empty.");
 
-        auto const BLOCKING_POS_ORIGIN{ FindBlockingPos(CREATURE_OF_ORIGIN_PTR) };
+        auto const BLOCKING_POS_ORIGIN { FindBlockingPos(CREATURE_OF_ORIGIN_PTR) };
 
-        auto closestBlockingDistanceABS{ combatTree_.GetBlockingDistanceMax() + 1 };
+        auto closestBlockingDistanceABS { combatTree_.GetBlockingDistanceMax() + 1 };
         for (auto const & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(
+            auto const NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -697,7 +693,7 @@ namespace combat
 
         for (auto const & NEXT_CREATURE_PTR : CREATURES_TO_FIND_AMONG_PVEC)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(
+            auto const NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 FindBlockingPos(NEXT_CREATURE_PTR) - BLOCKING_POS_ORIGIN) };
 
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -791,7 +787,7 @@ namespace combat
         const int BLOCKING_POS_NEW(
             (ATTEMPTING_BLOCKING_POS_INCREMENT) ? (BLOCKING_POS + 1) : (BLOCKING_POS - 1));
 
-        const std::size_t OBSTACLE_CREATURE_COUNT_AT_NEW_POS{
+        const std::size_t OBSTACLE_CREATURE_COUNT_AT_NEW_POS {
             GetObstacleCreaturesAtBlockingPos(CREATURE_PTR, BLOCKING_POS_NEW).size()
         };
 
@@ -811,7 +807,7 @@ namespace combat
         // has an opposing creature blocking.
         for (auto const & NEXT_COMBATNODE_PTR : combatTree_.GetCombatNodes())
         {
-            auto const NEXT_CREATURE_PTR{ NEXT_COMBATNODE_PTR->Creature() };
+            auto const NEXT_CREATURE_PTR { NEXT_COMBATNODE_PTR->Creature() };
 
             if ((NEXT_COMBATNODE_PTR->GetBlockingPos() == BLOCKING_POS_NEW)
                 && (NEXT_CREATURE_PTR->IsPlayerCharacter() != CREATURE_PTR->IsPlayerCharacter())
@@ -834,7 +830,7 @@ namespace combat
     const creature::CreaturePtrOpt_t
         CombatDisplay::GetCreatureAtPosPtrOpt(const sf::Vector2f & POS_V)
     {
-        auto const COMBAT_NODE_PTR_OPT{ combatTree_.GetNodePtrOpt(POS_V.x, POS_V.y) };
+        auto const COMBAT_NODE_PTR_OPT { combatTree_.GetNodePtrOpt(POS_V.x, POS_V.y) };
 
         if (COMBAT_NODE_PTR_OPT)
         {
@@ -849,8 +845,8 @@ namespace combat
     void CombatDisplay::MoveCreatureBlockingPosition(
         const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_MOVE_FORWARD)
     {
-        auto const CREATURE_NODE_ID{ combatTree_.GetNodeId(CREATURE_PTR) };
-        auto blockingPos{ combatTree_.GetNodePtr(CREATURE_NODE_ID)->GetBlockingPos() };
+        auto const CREATURE_NODE_ID { combatTree_.GetNodeId(CREATURE_PTR) };
+        auto blockingPos { combatTree_.GetNodePtr(CREATURE_NODE_ID)->GetBlockingPos() };
 
         // Note: For player-characters (facing right), 'Forward' is moving to
         //      the right on the battlefield (increasing blocking pos), and
@@ -911,7 +907,7 @@ namespace combat
             "combat::CombatDisplay::AreAllCreaturesVisible() was given a "
                 << "CREATURES_TO_CHECK_PVEC that was empty.");
 
-        auto const COMBATNODES_PVEC{ GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
+        auto const COMBATNODES_PVEC { GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
 
         for (auto const & COMBAT_NODE_PTR : COMBATNODES_PVEC)
         {
@@ -931,17 +927,17 @@ namespace combat
             "combat::CombatDisplay::IsZoomOutRequired() was given a "
                 << "CREATURES_PVEC that was empty.");
 
-        auto horizPosDiffMax{ 0.0f };
-        auto vertPosDiffMax{ 0.0f };
+        auto horizPosDiffMax { 0.0f };
+        auto vertPosDiffMax { 0.0f };
 
-        auto const COMBAT_NODES_PVEC{ GetCombatNodesForCreatures(CREATURES_PVEC) };
+        auto const COMBAT_NODES_PVEC { GetCombatNodesForCreatures(CREATURES_PVEC) };
         for (auto const & OUTER_COMBAT_NODE_PTR : COMBAT_NODES_PVEC)
         {
             for (auto const & INNER_COMBAT_NODE_PTR : COMBAT_NODES_PVEC)
             {
                 if (OUTER_COMBAT_NODE_PTR != INNER_COMBAT_NODE_PTR)
                 {
-                    auto HORIZ_DIFF{ std::abs(
+                    auto HORIZ_DIFF { std::abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().x
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().x) };
 
@@ -950,7 +946,7 @@ namespace combat
                         horizPosDiffMax = HORIZ_DIFF;
                     }
 
-                    auto VERT_DIFF{ std::abs(
+                    auto VERT_DIFF { std::abs(
                         OUTER_COMBAT_NODE_PTR->GetEntityPos().y
                         - INNER_COMBAT_NODE_PTR->GetEntityPos().y) };
 
@@ -962,7 +958,7 @@ namespace combat
             }
         }
 
-        auto const TOLERANCE{ sfml_util::MapByRes(300.0f, 600.0f) };
+        auto const TOLERANCE { sfml_util::MapByRes(300.0f, 600.0f) };
 
         return (
             (horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth() - TOLERANCE))
@@ -991,11 +987,11 @@ namespace combat
                 + (COMBAT_NODE_PTR->GetEntityRegion().height * 0.5f));
         }
 
-        auto const HORIZ_AVG_POS{ std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f)
-                                  / static_cast<float>(horizPosVec.size()) };
+        auto const HORIZ_AVG_POS { std::accumulate(horizPosVec.begin(), horizPosVec.end(), 0.0f)
+                                   / static_cast<float>(horizPosVec.size()) };
 
-        auto const VERT_AVG_POS{ std::accumulate(vertPosVec.begin(), vertPosVec.end(), 0.0f)
-                                 / static_cast<float>(vertPosVec.size()) };
+        auto const VERT_AVG_POS { std::accumulate(vertPosVec.begin(), vertPosVec.end(), 0.0f)
+                                  / static_cast<float>(vertPosVec.size()) };
 
         return sf::Vector2f(HORIZ_AVG_POS, VERT_AVG_POS);
     }
@@ -1043,8 +1039,8 @@ namespace combat
             creaturesPVec.begin(),
             creaturesPVec.end(),
             [this](auto const & PTR_A, auto const & PTR_B) {
-                auto const COMBAT_NODE_PTR_A{ GetCombatNodeForCreature(PTR_A) };
-                auto const COMBAT_NODE_PTR_B{ GetCombatNodeForCreature(PTR_B) };
+                auto const COMBAT_NODE_PTR_A { GetCombatNodeForCreature(PTR_A) };
+                auto const COMBAT_NODE_PTR_B { GetCombatNodeForCreature(PTR_B) };
 
                 return std::tie(
                            COMBAT_NODE_PTR_A->GetEntityPos().x, COMBAT_NODE_PTR_A->GetEntityPos().y)
@@ -1076,14 +1072,14 @@ namespace combat
     const creature::CreaturePVec_t CombatDisplay::GetObstacleCreaturesAtBlockingPos(
         const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR, const int BLOCKING_POS) const
     {
-        auto const COMBAT_NODES_PVEC{ combatTree_.GetCombatNodes() };
+        auto const COMBAT_NODES_PVEC { combatTree_.GetCombatNodes() };
 
         creature::CreaturePVec_t creaturesPVec;
         creaturesPVec.reserve(COMBAT_NODES_PVEC.size());
 
         for (auto const & NEXT_COMBAT_NODE_PTR : COMBAT_NODES_PVEC)
         {
-            auto const NEXT_CREATURE_PTR{ NEXT_COMBAT_NODE_PTR->Creature() };
+            auto const NEXT_CREATURE_PTR { NEXT_COMBAT_NODE_PTR->Creature() };
 
             if ((NEXT_COMBAT_NODE_PTR->GetBlockingPos() == BLOCKING_POS)
                 && (NEXT_CREATURE_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include)
@@ -1103,7 +1099,7 @@ namespace combat
     const creature::CreaturePVec_t CombatDisplay::GetCreaturesInRoaringDistance(
         const creature::CreaturePtr_t CREATURE_ROARING_PTR) const
     {
-        auto const OPPONENT_CREATURES_PVEC{ creature::Algorithms::PlayersByType(
+        auto const OPPONENT_CREATURES_PVEC { creature::Algorithms::PlayersByType(
             ((CREATURE_ROARING_PTR->IsPlayerCharacter()) ? creature::Algorithms::TypeOpt::NonPlayer
                                                          : creature::Algorithms::TypeOpt::Player),
             creature::Algorithms::Living) };
@@ -1128,7 +1124,7 @@ namespace combat
     {
         creature::CreaturePVec_t creaturesFlyingPVec;
 
-        auto const COMBAT_NODES_PVEC{ combatTree_.GetCombatNodes() };
+        auto const COMBAT_NODES_PVEC { combatTree_.GetCombatNodes() };
         creaturesFlyingPVec.reserve(COMBAT_NODES_PVEC.size());
 
         for (auto const & COMBAT_NODE_PTR : COMBAT_NODES_PVEC)
@@ -1146,7 +1142,7 @@ namespace combat
     {
         CreatureBlockingPosMap_t creatureBlockingMap;
 
-        auto const COMBAT_NODES_PVEC{ combatTree_.GetCombatNodes() };
+        auto const COMBAT_NODES_PVEC { combatTree_.GetCombatNodes() };
 
         creatureBlockingMap.Reserve(COMBAT_NODES_PVEC.size());
 
@@ -1183,7 +1179,7 @@ namespace combat
         {
             if (COMBAT_NODE_PTR->Creature() == CREATURE_PTR)
             {
-                auto const REGION{ COMBAT_NODE_PTR->GetEntityRegion() };
+                auto const REGION { COMBAT_NODE_PTR->GetEntityRegion() };
                 return sf::Vector2f(
                     REGION.left + REGION.width * 0.5f, REGION.top + REGION.height * 0.5f);
             }
@@ -1196,7 +1192,7 @@ namespace combat
     {
         for (auto const & COMBAT_NODE_PTR : combatTree_.GetCombatNodes())
         {
-            auto const CREATURE_PTR{ COMBAT_NODE_PTR->Creature() };
+            auto const CREATURE_PTR { COMBAT_NODE_PTR->Creature() };
 
             if ((creature::race::WillInitiallyFly(CREATURE_PTR->Race()))
                 || (creature::role::WillInitiallyFly(CREATURE_PTR->Role())))
@@ -1250,7 +1246,7 @@ namespace combat
                 highestBlockingPos = COMBAT_NODE_PTR->GetBlockingPos();
             }
 
-            auto const SHOULDER_TO_SHOULDER_COUNT{ combatTree_.VertexCountByBlockingPos(
+            auto const SHOULDER_TO_SHOULDER_COUNT { combatTree_.VertexCountByBlockingPos(
                 COMBAT_NODE_PTR->GetBlockingPos()) };
 
             if (shoulderToShoulderMax < SHOULDER_TO_SHOULDER_COUNT)
@@ -1258,7 +1254,7 @@ namespace combat
                 shoulderToShoulderMax = SHOULDER_TO_SHOULDER_COUNT;
             }
 
-            auto const NEXT_NAME_WIDTH{ COMBAT_NODE_PTR->GetNameWidth() };
+            auto const NEXT_NAME_WIDTH { COMBAT_NODE_PTR->GetNameWidth() };
 
             if (maxNameWidth < NEXT_NAME_WIDTH)
             {
@@ -1320,32 +1316,33 @@ namespace combat
         misc::VectorMap<int, std::size_t> shoulderToShoulderBlockingMap;
         for (auto const & COMBAT_NODE_PTR : combatTree_.GetCombatNodes())
         {
-            auto const NEXT_BLOCKING_POS{ COMBAT_NODE_PTR->GetBlockingPos() };
+            auto const NEXT_BLOCKING_POS { COMBAT_NODE_PTR->GetBlockingPos() };
 
             // count the number of verts are shoulder-to-shoulder (vertical on screen) with this one
-            auto const SHOULDER_TO_SHOULDER_COUNT{ combatTree_.VertexCountByBlockingPos(
+            auto const SHOULDER_TO_SHOULDER_COUNT { combatTree_.VertexCountByBlockingPos(
                 NEXT_BLOCKING_POS) };
 
             // keep track of which shoulder-to-shoulder this vert/NEXT_BLOCKING_POS is
-            auto const SHOULDER_TO_SHOULDER_POS{
+            auto const SHOULDER_TO_SHOULDER_POS {
                 shoulderToShoulderBlockingMap[NEXT_BLOCKING_POS]++
             };
 
-            auto const POS_LEFT{ (battlefieldWidth_ * 0.5f)
-                                 + (static_cast<float>(NEXT_BLOCKING_POS)
-                                    * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) };
+            auto const POS_LEFT { (battlefieldWidth_ * 0.5f)
+                                  + (static_cast<float>(NEXT_BLOCKING_POS)
+                                     * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) };
 
-            auto const SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF{
+            auto const SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF {
                 (static_cast<float>(SHOULDER_TO_SHOULDER_COUNT) * 0.5f)
                 * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER
             };
 
-            auto const SHOULDER_TO_SHOULDER_POS_HEIGHT{ static_cast<float>(SHOULDER_TO_SHOULDER_POS)
-                                                        * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER };
+            auto const SHOULDER_TO_SHOULDER_POS_HEIGHT {
+                static_cast<float>(SHOULDER_TO_SHOULDER_POS) * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER
+            };
 
-            auto const POS_TOP{ ((battlefieldHeight_ * 0.5f)
-                                 - SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF)
-                                + SHOULDER_TO_SHOULDER_POS_HEIGHT };
+            auto const POS_TOP { ((battlefieldHeight_ * 0.5f)
+                                  - SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF)
+                                 + SHOULDER_TO_SHOULDER_POS_HEIGHT };
 
             const sf::FloatRect RECT(POS_LEFT, POS_TOP, CELL_WIDTH_ZOOM_ADJ, CELL_HEIGHT_ZOOM_ADJ);
 
@@ -1426,18 +1423,18 @@ namespace combat
     void CombatDisplay::InitialCreaturePositionsSetup(const bool WILL_POSITION_PLAYERS)
     {
         // get a list of all combat nodes, either of all players or non-players
-        CombatNodePVec_t cNodesOfPlayerTypePVec{ combatTree_.GetCombatNodesOfPlayerType(
+        CombatNodePVec_t cNodesOfPlayerTypePVec { combatTree_.GetCombatNodesOfPlayerType(
             WILL_POSITION_PLAYERS) };
 
         // assign combat_node's blocking positions
-        auto const WILL_BLOCKING_POSITIONS_INCREASE{ !WILL_POSITION_PLAYERS };
-        auto blockingPos{ 0 };
+        auto const WILL_BLOCKING_POSITIONS_INCREASE { !WILL_POSITION_PLAYERS };
+        auto blockingPos { 0 };
 
         for (int typeNumber(0); typeNumber < BlockingPosType::Count; ++typeNumber)
         {
             // move all combat_nodes with a role that matches the blocking type into a new vector
-            auto const BLOCKING_POS_TYPE{ static_cast<BlockingPosType::Enum>(typeNumber) };
-            auto const ROLES_VEC{ creature::role::RolesOfBlockingPosType(BLOCKING_POS_TYPE) };
+            auto const BLOCKING_POS_TYPE { static_cast<BlockingPosType::Enum>(typeNumber) };
+            auto const ROLES_VEC { creature::role::RolesOfBlockingPosType(BLOCKING_POS_TYPE) };
             CombatNodePVec_t cNodesOfBlockingTypeRolePVec;
 
             MoveCombatNodesOfGivenRolesIntoTargetVec(
@@ -1482,9 +1479,9 @@ namespace combat
         CombatNodePVec_t & targetCNodePVec)
     {
         auto findMatchingRoleOfCombatNode = [&ROLES_VEC](const CombatNodePtr_t & CNODE_PTR) {
-            auto const ROLE{ CNODE_PTR->Creature()->Role() };
+            auto const ROLE { CNODE_PTR->Creature()->Role() };
 
-            auto const FOUND_ITER{ std::find(std::begin(ROLES_VEC), std::end(ROLES_VEC), ROLE) };
+            auto const FOUND_ITER { std::find(std::begin(ROLES_VEC), std::end(ROLES_VEC), ROLE) };
 
             return (FOUND_ITER != std::end(ROLES_VEC));
         };

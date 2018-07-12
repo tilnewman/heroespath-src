@@ -69,77 +69,77 @@ namespace heroespath
 namespace stage
 {
 
-    const std::string CombatStage::POPUP_NAME_SPELLBOOK_{ "SPELLBOOK_POPUP_WINDOW_NAME" };
-    const std::string CombatStage::POPUP_NAME_MUSICSHEET_{ "MUSICSHEE_POPUP_WINDOW_NAME" };
-    const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_{
+    const std::string CombatStage::POPUP_NAME_SPELLBOOK_ { "SPELLBOOK_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_MUSICSHEET_ { "MUSICSHEE_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_WIN_ {
         "COMBAT_OVER_WIN_POPUP_WINDOW_NAME"
     };
-    const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_{
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_LOSE_ {
         "COMBAT_OVER_LOSE_POPUP_WINDOW_NAME"
     };
-    const std::string CombatStage::POPUP_NAME_COMBATOVER_RAN_{
+    const std::string CombatStage::POPUP_NAME_COMBATOVER_RAN_ {
         "COMBAT_OVER_RAN_POPUP_WINDOW_NAME"
     };
-    const std::string CombatStage::POPUP_NAME_ACHIEVEMENT_{ "ACHIEVEMENT_POPUP_WINDOW_NAME" };
+    const std::string CombatStage::POPUP_NAME_ACHIEVEMENT_ { "ACHIEVEMENT_POPUP_WINDOW_NAME" };
     //
-    const float CombatStage::PAUSE_LONG_SEC_{ 6.0f };
-    const float CombatStage::PAUSE_MEDIUM_SEC_{ 3.0f };
-    const float CombatStage::PAUSE_SHORT_SEC_{ 1.5f };
-    const float CombatStage::PAUSE_SHORTER_SEC_{ 0.75f };
-    const float CombatStage::PAUSE_ZERO_SEC_{ 0.1f };
-    const float CombatStage::POST_PAN_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::POST_ZOOMIN_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::CREATURE_TURN_PAUSE_SEC_{ PAUSE_LONG_SEC_ };
-    const float CombatStage::PRE_TURN_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::POST_TURN_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
-    const float CombatStage::PERFORM_PRE_REPORT_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
-    const float CombatStage::PERFORM_REPORT_PAUSE_SEC_{ PAUSE_LONG_SEC_ };
-    const float CombatStage::POST_PERFORM_REPORT_PAUSE_SEC_{ PAUSE_LONG_SEC_ };
-    const float CombatStage::POST_ZOOM_TURN_PAUSE_SEC_{ PAUSE_MEDIUM_SEC_ };
-    const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
-    const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
-    const float CombatStage::CONDITION_EFFECT_PAUSE_SEC_{ PAUSE_LONG_SEC_ };
-    const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_{ PAUSE_SHORT_SEC_ };
-    const float CombatStage::ACHIEVEMENT_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
-    const float CombatStage::END_PAUSE_SEC_{ PAUSE_ZERO_SEC_ };
+    const float CombatStage::PAUSE_LONG_SEC_ { 6.0f };
+    const float CombatStage::PAUSE_MEDIUM_SEC_ { 3.0f };
+    const float CombatStage::PAUSE_SHORT_SEC_ { 1.5f };
+    const float CombatStage::PAUSE_SHORTER_SEC_ { 0.75f };
+    const float CombatStage::PAUSE_ZERO_SEC_ { 0.1f };
+    const float CombatStage::POST_PAN_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_ZOOMOUT_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_ZOOMIN_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::CREATURE_TURN_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
+    const float CombatStage::PRE_TURN_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_TURN_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::PERFORM_PRE_REPORT_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::PERFORM_REPORT_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
+    const float CombatStage::POST_PERFORM_REPORT_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
+    const float CombatStage::POST_ZOOM_TURN_PAUSE_SEC_ { PAUSE_MEDIUM_SEC_ };
+    const float CombatStage::STATUSMSG_ANIM_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::POST_MELEEMOVE_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::POST_IMPACT_ANIM_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::CONDITION_EFFECT_PAUSE_SEC_ { PAUSE_LONG_SEC_ };
+    const float CombatStage::POST_SPELL_ANIM_PAUSE_SEC_ { PAUSE_SHORT_SEC_ };
+    const float CombatStage::ACHIEVEMENT_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
+    const float CombatStage::END_PAUSE_SEC_ { PAUSE_ZERO_SEC_ };
     //
-    const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_{ 0.4f };
+    const float CombatStage::DOUBLE_CLICK_WINDOW_SEC_ { 0.4f };
     //
-    const float CombatStage::SLIDER_SPEED_SLOWEST_{ 1.0f };
-    const float CombatStage::SLIDER_SPEED_SLOW_{ SLIDER_SPEED_SLOWEST_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_NORMAL_{ SLIDER_SPEED_SLOW_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_FAST_{ SLIDER_SPEED_NORMAL_ * 2.0f };
-    const float CombatStage::SLIDER_SPEED_FASTEST_{ SLIDER_SPEED_NORMAL_ * 10.0f };
-    const float CombatStage::ZOOM_SLIDER_SPEED_{ SLIDER_SPEED_SLOW_ };
-    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_{ SLIDER_SPEED_FASTEST_ };
-    const float CombatStage::ANIM_CENTERING_SLIDER_SPEED_{ SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_INITIAL_CENTERING_SLIDER_SPEED_{ SLIDER_SPEED_SLOWEST_ };
-    const float CombatStage::ANIM_CREATURE_POS_SLIDER_SPEED_{ SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_{ SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_DEATH_SLIDER_SPEED_{ SLIDER_SPEED_SLOWEST_ };
-    const float CombatStage::ANIM_MELEE_MOVE_SLIDER_SPEED_{ SLIDER_SPEED_FAST_ };
-    const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_{ SLIDER_SPEED_NORMAL_ };
-    const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_{ SLIDER_SPEED_FASTEST_ };
-    const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_{ SLIDER_SPEED_FASTEST_ * 3.0f };
-    const float CombatStage::ANIM_RUN_SLIDER_SPEED_{ SLIDER_SPEED_FAST_ };
+    const float CombatStage::SLIDER_SPEED_SLOWEST_ { 1.0f };
+    const float CombatStage::SLIDER_SPEED_SLOW_ { SLIDER_SPEED_SLOWEST_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_NORMAL_ { SLIDER_SPEED_SLOW_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FAST_ { SLIDER_SPEED_NORMAL_ * 2.0f };
+    const float CombatStage::SLIDER_SPEED_FASTEST_ { SLIDER_SPEED_NORMAL_ * 10.0f };
+    const float CombatStage::ZOOM_SLIDER_SPEED_ { SLIDER_SPEED_SLOW_ };
+    const float CombatStage::TEXT_COLOR_SHAKER_SPEED_ { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_CENTERING_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_INITIAL_CENTERING_SLIDER_SPEED_ { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_CREATURE_POS_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_DEATH_SLIDER_SPEED_ { SLIDER_SPEED_SLOWEST_ };
+    const float CombatStage::ANIM_MELEE_MOVE_SLIDER_SPEED_ { SLIDER_SPEED_FAST_ };
+    const float CombatStage::ANIM_IMPACT_SLIDER_SPEED_ { SLIDER_SPEED_NORMAL_ };
+    const float CombatStage::ANIM_CREATURE_SHAKE_SLIDER_SPEED_ { SLIDER_SPEED_FASTEST_ };
+    const float CombatStage::ANIM_IMPACT_SHAKE_SLIDER_SPEED_ { SLIDER_SPEED_FASTEST_ * 3.0f };
+    const float CombatStage::ANIM_RUN_SLIDER_SPEED_ { SLIDER_SPEED_FAST_ };
     //
-    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_{ (
+    const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_ { (
         sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
 
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_{ (sfml_util::FontManager::Color_Orange()
-                                                            - sf::Color(100, 100, 100, 235))
-                                                           + sf::Color(20, 20, 20, 20) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_ { (sfml_util::FontManager::Color_Orange()
+                                                             - sf::Color(100, 100, 100, 235))
+                                                            + sf::Color(20, 20, 20, 20) };
 
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_{
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_ {
         (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235))
         + sf::Color(40, 40, 40, 40)
     };
 
-    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_{ sf::Color::White };
-    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_{ sf::Color(150, 150, 150) };
-    const sf::Color CombatStage::LISTBOX_LINE_COLOR_{ sf::Color(255, 255, 255, 25) };
+    const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_ { sf::Color::White };
+    const sf::Color CombatStage::LISTBOX_NOTSELECTED_COLOR_ { sf::Color(150, 150, 150) };
+    const sf::Color CombatStage::LISTBOX_LINE_COLOR_ { sf::Color(255, 255, 255, 25) };
     //
     combat::RestoreInfo CombatStage::restoreInfo_;
 
@@ -290,7 +290,7 @@ namespace stage
         {
             if (turnCreaturePtrOpt_)
             {
-                auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+                auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
                 if (TURN_CREATURE_PTR->Role() == creature::role::Bard)
                 {
                     return HandleSong_Step1_ValidatePlayAndSelectSong(TURN_CREATURE_PTR);
@@ -376,8 +376,8 @@ namespace stage
         if (PACKAGE.PTR_ == zoomSliderBarUPtr_.get())
         {
             // only zoom out half the distance that the slider actually shows
-            auto const HALF_ZOOM_DIFFERENCE{ 1.0f
-                                             - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
+            auto const HALF_ZOOM_DIFFERENCE { 1.0f
+                                              - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
 
             combatDisplayStagePtr_->SetZoomLevel(HALF_ZOOM_DIFFERENCE);
             return true;
@@ -396,13 +396,13 @@ namespace stage
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_) && turnCreaturePtrOpt_)
         {
-            auto const CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+            auto const CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                auto const SONGS_PVEC{ CREATURE_PTR->SongsPVec() };
+                auto const SONGS_PVEC { CREATURE_PTR->SongsPVec() };
 
-                auto const SELECTED_INDEX{ POPUP_RESPONSE.Selection() };
+                auto const SELECTED_INDEX { POPUP_RESPONSE.Selection() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (SELECTED_INDEX < SONGS_PVEC.size()),
@@ -424,9 +424,9 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                auto const SPELLS_PVEC{ turnCreaturePtrOpt_.value()->SpellsPVec() };
+                auto const SPELLS_PVEC { turnCreaturePtrOpt_.value()->SpellsPVec() };
 
-                auto const SELECTED_INDEX{ POPUP_RESPONSE.Selection() };
+                auto const SELECTED_INDEX { POPUP_RESPONSE.Selection() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (SELECTED_INDEX < SPELLS_PVEC.size()),
@@ -601,7 +601,7 @@ namespace stage
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
 
         // the enemy turn action text can run long and thus needs to be constrained
-        auto const PAD{ 40.0f };
+        auto const PAD { 40.0f };
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 
@@ -674,12 +674,8 @@ namespace stage
 
         attackTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             ATTACKBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -698,12 +694,8 @@ namespace stage
 
         fightTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             FIGHTBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -722,12 +714,8 @@ namespace stage
 
         castTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sCast",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             CASTBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -746,12 +734,8 @@ namespace stage
 
         advanceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAdvance",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             ADVANCEBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -770,12 +754,8 @@ namespace stage
 
         retreatTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRetreat",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             RETREATBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -794,12 +774,8 @@ namespace stage
 
         blockTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sBlock",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             BLOCKBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -818,12 +794,8 @@ namespace stage
 
         skipTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sSkip",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             SKIPBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -842,12 +814,8 @@ namespace stage
 
         flyTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sFly",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             FLYBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -866,12 +834,8 @@ namespace stage
 
         landTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sLand",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             LANDBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -888,12 +852,8 @@ namespace stage
 
         roarTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRoar",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             ROARBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -912,12 +872,8 @@ namespace stage
 
         pounceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sPounce",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             POUNCEBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -936,12 +892,8 @@ namespace stage
 
         runTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRun",
-            0.0f,
-            0.0f,
-            "",
-            "",
-            "",
-            "",
+            sf::Vector2f(),
+            sfml_util::gui::ButtonStateImageKeys(),
             RUNBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
@@ -955,19 +907,15 @@ namespace stage
         const float COMMAND_REGION_PAD(10.0f);
         settingsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sSettingsGears",
-            0.0f,
-            0.0f,
-            std::string(game::GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui"))
-                .append("gears1_normal.png"),
-            "",
-            std::string(game::GameDataFile::Instance()->GetMediaPath("media-images-buttons-gui"))
-                .append("gears1_lit.png"),
-            "",
+            sf::Vector2f(0.0f, 0.0f),
+            sfml_util::gui::ButtonStateImageKeys(
+                "media-images-buttons-gui-gears-normal", "", "media-images-buttons-gui-gears-lit"),
             sfml_util::gui::MouseTextInfo(),
             sfml_util::gui::TextInfo(),
             false,
-            sfml_util::MapByRes(0.6f, 2.0f),
-            false);
+            false,
+            sf::Color::White,
+            sfml_util::MapByRes(0.6f, 2.0f));
 
         settingsButtonUPtr_->SetEntityPos(
             ((COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH)
@@ -979,16 +927,16 @@ namespace stage
         EntityAdd(settingsButtonUPtr_.get());
 
         // position turn buttons
-        auto const LEFT_ALIGN_PAD{ COMMAND_REGION.width * 0.25f };
-        auto const COLUMN_1_LEFT{ (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 1.0f)) - 15.0f };
-        auto const COLUMN_2_LEFT{ COMMAND_REGION.left + (LEFT_ALIGN_PAD * 2.0f) };
-        auto const COLUMN_3_LEFT{ (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
+        auto const LEFT_ALIGN_PAD { COMMAND_REGION.width * 0.25f };
+        auto const COLUMN_1_LEFT { (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 1.0f)) - 15.0f };
+        auto const COLUMN_2_LEFT { COMMAND_REGION.left + (LEFT_ALIGN_PAD * 2.0f) };
+        auto const COLUMN_3_LEFT { (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
 
-        auto const COLUMN_TOP{ settingsButtonUPtr_->GetEntityPos().y
-                               + settingsButtonUPtr_->GetEntityRegion().height
-                               - sfml_util::MapByRes(10.0f, 75.0f) };
+        auto const COLUMN_TOP { settingsButtonUPtr_->GetEntityPos().y
+                                + settingsButtonUPtr_->GetEntityRegion().height
+                                - sfml_util::MapByRes(10.0f, 75.0f) };
 
-        auto const COLUMN_VERT_PAD{ attackTBoxButtonUPtr_->GetEntityRegion().height / 1.5f };
+        auto const COLUMN_VERT_PAD { attackTBoxButtonUPtr_->GetEntityRegion().height / 1.5f };
 
         attackTBoxButtonUPtr_->SetEntityPos(
             COLUMN_1_LEFT - (attackTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
@@ -1239,7 +1187,7 @@ namespace stage
             combatAnimationUPtr_->RunAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
             if (slider_.IsDone())
             {
-                auto const CREATURE_PTR{ combatAnimationUPtr_->RunAnimStop() };
+                auto const CREATURE_PTR { combatAnimationUPtr_->RunAnimStop() };
 
                 combatDisplayStagePtr_->HandleCombatNodeElimination(CREATURE_PTR);
                 combat::Encounter::Instance()->Runaway(CREATURE_PTR);
@@ -1381,7 +1329,7 @@ namespace stage
 
         if (TurnPhase::CenterAndZoomIn == turnPhase_)
         {
-            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
             zoomSliderBarUPtr_->SetCurrentValue(
                 zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
@@ -1438,7 +1386,7 @@ namespace stage
 
         if (TurnPhase::CenterAndZoomOut == turnPhase_)
         {
-            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
             if (combatAnimationUPtr_->CenteringUpdate(SLIDER_POS, combatDisplayStagePtr_))
             {
@@ -1469,7 +1417,7 @@ namespace stage
         if (PreTurnPhase::PanToCenter == preTurnPhase_)
         {
             // the initial pan seems to take extra time getting started so speed it up here
-            auto sliderPosAdj{ 0.25f + slider_.Update(ELAPSED_TIME_SEC) };
+            auto sliderPosAdj { 0.25f + slider_.Update(ELAPSED_TIME_SEC) };
             if (sliderPosAdj > 1.0f)
             {
                 sliderPosAdj = 1.0f;
@@ -1488,7 +1436,7 @@ namespace stage
 
         if (PreTurnPhase::ZoomOut == preTurnPhase_)
         {
-            auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
+            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
             auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
             zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
 
@@ -1547,16 +1495,16 @@ namespace stage
     const sfml_util::gui::IGuiEntityPtrOpt_t
         CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
+        auto const WAS_MOUSE_HELD_DOWN_AND_MOVING { isMouseHeldDownAndMoving_ };
 
-        auto const GUI_ENTITY_WITH_FOCUS_PTR_OPT{ Stage::UpdateMouseUp(MOUSE_POS_V) };
+        auto const GUI_ENTITY_WITH_FOCUS_PTR_OPT { Stage::UpdateMouseUp(MOUSE_POS_V) };
 
         if (WAS_MOUSE_HELD_DOWN_AND_MOVING)
         {
             return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
         }
 
-        auto const CREATURE_AT_POS_PTR_OPT{ combatDisplayStagePtr_->GetCreatureAtPosPtrOpt(
+        auto const CREATURE_AT_POS_PTR_OPT { combatDisplayStagePtr_->GetCreatureAtPosPtrOpt(
             MOUSE_POS_V) };
 
         if (!CREATURE_AT_POS_PTR_OPT)
@@ -1565,7 +1513,7 @@ namespace stage
             return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
         }
 
-        auto const CREATURE_AT_POS_PTR{ CREATURE_AT_POS_PTR_OPT.value() };
+        auto const CREATURE_AT_POS_PTR { CREATURE_AT_POS_PTR_OPT.value() };
 
         if ((TurnPhase::Determine == turnPhase_)
             && (combatDisplayStagePtr_->GetIsSummaryViewInProgress() == false))
@@ -1636,7 +1584,7 @@ namespace stage
             {
                 combatAnimationUPtr_->SelectAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
-                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ CREATURE_AT_POS_PTR });
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t { CREATURE_AT_POS_PTR });
             }
         }
         else if (spellBeingCastPtrOpt_.value()->Target() == combat::TargetType::SingleCompanion)
@@ -1653,7 +1601,7 @@ namespace stage
             {
                 combatAnimationUPtr_->SelectAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
-                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ CREATURE_AT_POS_PTR });
+                HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t { CREATURE_AT_POS_PTR });
             }
         }
 
@@ -1716,7 +1664,7 @@ namespace stage
 
             if ((KE.code == sf::Keyboard::S) && turnCreaturePtrOpt_)
             {
-                auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+                auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
                 if (TURN_CREATURE_PTR->Role() == creature::role::Bard)
                 {
@@ -1765,7 +1713,7 @@ namespace stage
 
             if (turnCreaturePtrOpt_)
             {
-                auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+                auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
                 if (KE.code == sf::Keyboard::B)
                 {
@@ -1930,14 +1878,14 @@ namespace stage
         {
             // check for death by condition effect
             // use the condEffFightResult_
-            auto const & CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+            auto const & CREATURE_EFFECTS_VEC { fightResult_.Effects() };
             if ((CREATURE_EFFECTS_VEC.empty() == false) && (CREATURE_EFFECTS_VEC[0].WasKill())
                 && (CREATURE_EFFECTS_VEC[0].GetCreature()->IsPlayerCharacter() == false))
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
 
                 // Note:  This creature ptr should be the same as turnCreaturePtrOpt_
-                auto const CREATURE_PTR{ CREATURE_EFFECTS_VEC[0].GetCreature() };
+                auto const CREATURE_PTR { CREATURE_EFFECTS_VEC[0].GetCreature() };
 
                 if (CREATURE_PTR != turnCreaturePtrOpt_.value())
                 {
@@ -1946,7 +1894,7 @@ namespace stage
                                  "the current turnCreaturePtrOpt_.");
                 }
 
-                auto const COMBAT_NODE_PTR{ combatDisplayStagePtr_->GetCombatNodeForCreature(
+                auto const COMBAT_NODE_PTR { combatDisplayStagePtr_->GetCombatNodeForCreature(
                     CREATURE_PTR) };
 
                 conditionEffectsCenterPosV_ = COMBAT_NODE_PTR->GetEntityPos();
@@ -1994,7 +1942,7 @@ namespace stage
                     {
                         SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
 
-                        auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
+                        auto pauseToUse { PRE_TURN_PAUSE_SEC_ };
                         if (turnCreaturePtrOpt_.value()->CanTakeAction() == false)
                         {
                             pauseToUse *= 3.0f;
@@ -2025,7 +1973,7 @@ namespace stage
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
-            auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+            auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
             SetTurnPhase(TurnPhase::Determine);
             HandleEnemyTurnStep1_Decide(TURN_CREATURE_PTR);
@@ -2048,7 +1996,7 @@ namespace stage
 
                 // collect a list of all attacking and targeted creatures that need to be
                 // centered on the screen
-                creature::CreaturePVec_t allEffectedCreaturesPVec{ turnCreaturePtrOpt_.value() };
+                creature::CreaturePVec_t allEffectedCreaturesPVec { turnCreaturePtrOpt_.value() };
                 fightResult_.EffectedCreatures(allEffectedCreaturesPVec);
 
                 if (combatDisplayStagePtr_->AreAllCreaturesVisible(allEffectedCreaturesPVec))
@@ -2077,11 +2025,11 @@ namespace stage
 
         if (TurnPhase::PerformReport == turnPhase_)
         {
-            auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+            auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
             if ((isFightResultCollapsed_ == false)
                 && (performReportEffectIndex_ < CREATURE_EFFECTS_VEC.size()))
             {
-                auto const HIT_INFO_VEC_SIZE{
+                auto const HIT_INFO_VEC_SIZE {
                     CREATURE_EFFECTS_VEC.at(performReportEffectIndex_).GetHitInfoVec().size()
                 };
 
@@ -2115,7 +2063,7 @@ namespace stage
         if (TurnPhase::PostPerformPause == turnPhase_)
         {
             creature::CreaturePVec_t killedNonPlayerCreaturesPVec;
-            auto const CREATURE_EFFECTS{ fightResult_.Effects() };
+            auto const CREATURE_EFFECTS { fightResult_.Effects() };
             for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
             {
                 if ((NEXT_CREATURE_EFFECT.WasKill())
@@ -2222,7 +2170,7 @@ namespace stage
 
             case combat::TurnAction::Attack:
             {
-                auto const TARGETS_PVEC{ turnActionInfo_.Targets() };
+                auto const TARGETS_PVEC { turnActionInfo_.Targets() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TARGETS_PVEC.empty() == false),
@@ -2268,7 +2216,7 @@ namespace stage
 
             case combat::TurnAction::Cast:
             {
-                creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
+                creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
                 fightResult_ = creatureInteraction_.Cast(
@@ -2286,7 +2234,7 @@ namespace stage
 
             case combat::TurnAction::PlaySong:
             {
-                creature::CreaturePVec_t targetedCreaturesPVec{ turnActionInfo_.Targets() };
+                creature::CreaturePVec_t targetedCreaturesPVec { turnActionInfo_.Targets() };
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
                 fightResult_ = creatureInteraction_.PlaySong(
@@ -2305,7 +2253,7 @@ namespace stage
             case combat::TurnAction::SkyPounce:
             case combat::TurnAction::LandPounce:
             {
-                auto const TARGETS_PVEC{ turnActionInfo_.Targets() };
+                auto const TARGETS_PVEC { turnActionInfo_.Targets() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TARGETS_PVEC.empty() == false),
@@ -2395,7 +2343,7 @@ namespace stage
     // start pre-pause
     void CombatStage::StartTurn_Step2(const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
-        auto const IS_PLAYER_TURN{ TURN_CREATURE_PTR->IsPlayerCharacter() };
+        auto const IS_PLAYER_TURN { TURN_CREATURE_PTR->IsPlayerCharacter() };
         combatDisplayStagePtr_->SetIsPlayerTurn(IS_PLAYER_TURN);
 
         combatAnimationUPtr_->CenteringStop();
@@ -2428,7 +2376,7 @@ namespace stage
             {
                 SetTurnPhase(TurnPhase::PostCenterAndZoomInPause);
 
-                auto pauseToUse{ PRE_TURN_PAUSE_SEC_ };
+                auto pauseToUse { PRE_TURN_PAUSE_SEC_ };
                 if (TURN_CREATURE_PTR->CanTakeAction() == false)
                 {
                     pauseToUse *= 3.0f;
@@ -2587,7 +2535,7 @@ namespace stage
             SetUserActionAllowed(false);
             SetTurnActionPhase(TurnActionPhase::PlaySong);
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateMusicPopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
                 POPUP_NAME_MUSICSHEET_,
                 TURN_CREATURE_PTR,
                 TURN_CREATURE_PTR->LastSongPlayedNum()) };
@@ -2602,7 +2550,7 @@ namespace stage
     void CombatStage::HandleSong_Step2_PerformOnTargets(
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
-        auto const SONG_TARGET{ songBeingPlayedPtrOpt_.value()->Target() };
+        auto const SONG_TARGET { songBeingPlayedPtrOpt_.value()->Target() };
 
         if ((SONG_TARGET == combat::TargetType::Item)
             || (SONG_TARGET == combat::TargetType::QuestSpecific))
@@ -2623,7 +2571,7 @@ namespace stage
         {
             SetUserActionAllowed(false);
 
-            auto creaturesListeningPVec{ (
+            auto creaturesListeningPVec { (
                 (SONG_TARGET == combat::TargetType::AllCompanions)
                     ? creature::Algorithms::Players(creature::Algorithms::Living)
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
@@ -2664,7 +2612,7 @@ namespace stage
             SetUserActionAllowed(false);
             SetTurnActionPhase(TurnActionPhase::Cast);
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                 POPUP_NAME_SPELLBOOK_, TURN_CREATURE_PTR, TURN_CREATURE_PTR->LastSpellCastNum()) };
 
             game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSpellbook>(
@@ -2676,7 +2624,7 @@ namespace stage
 
     void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll()
     {
-        auto const SPELL_TARGET{ spellBeingCastPtrOpt_.value()->Target() };
+        auto const SPELL_TARGET { spellBeingCastPtrOpt_.value()->Target() };
 
         if ((SPELL_TARGET == combat::TargetType::SingleCompanion)
             || (SPELL_TARGET == combat::TargetType::SingleOpponent))
@@ -2715,11 +2663,11 @@ namespace stage
     void CombatStage::HandleCast_Step3_PerformOnTargets(
         const creature::CreaturePVec_t & CREATURES_TO_CAST_UPON_PVEC)
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         SetUserActionAllowed(false);
 
-        auto creaturesToCastUponCopyPVec{ CREATURES_TO_CAST_UPON_PVEC };
+        auto creaturesToCastUponCopyPVec { CREATURES_TO_CAST_UPON_PVEC };
         combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesToCastUponCopyPVec);
 
         turnActionInfo_
@@ -2741,7 +2689,7 @@ namespace stage
 
     bool CombatStage::HandleAdvance()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextAdvanceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -2771,7 +2719,7 @@ namespace stage
 
     bool CombatStage::HandleRetreat()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextRetreatStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -2802,7 +2750,7 @@ namespace stage
 
     bool CombatStage::HandleBlock()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextBlockStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -2836,7 +2784,7 @@ namespace stage
         if (skipTBoxButtonUPtr_->IsDisabled())
             return false;
 
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         SetUserActionAllowed(false);
 
@@ -2854,7 +2802,7 @@ namespace stage
 
     bool CombatStage::HandleFly()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextFlyStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -2889,7 +2837,7 @@ namespace stage
 
     bool CombatStage::HandleLand()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextLandStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -2924,12 +2872,12 @@ namespace stage
 
     bool CombatStage::HandleRoar()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextRoarStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        auto creaturesToCenterOnPVec{ combatDisplayStagePtr_->GetCreaturesInRoaringDistance(
+        auto creaturesToCenterOnPVec { combatDisplayStagePtr_->GetCreaturesInRoaringDistance(
             TURN_CREATURE_PTR) };
 
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
@@ -2970,7 +2918,7 @@ namespace stage
 
     bool CombatStage::HandlePounce(const bool IS_SKY_POUNCE)
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextPounceStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -3001,7 +2949,7 @@ namespace stage
 
     bool CombatStage::HandleWeaponChange()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::ChangeWeapon);
 
@@ -3014,7 +2962,7 @@ namespace stage
 
     bool CombatStage::HandleRun()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         auto const MOUSEOVER_STR(
             combatText_.MouseOverTextRunStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
@@ -3079,7 +3027,7 @@ namespace stage
         if (CREATURE_PTR_OPT && CREATURE_PTR_OPT.value()->IsPlayerCharacter()
             && (WILL_DISABLE_ALL == false))
         {
-            auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
+            auto const CREATURE_PTR { CREATURE_PTR_OPT.value() };
 
             // attack button
             auto const MOT_ATTACK_STR(
@@ -3235,7 +3183,7 @@ namespace stage
     {
         std::ostringstream ss;
         ss << "\n" << ((WILL_PREPEND_NEWLINE) ? "\n" : "") << PROMPT;
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
             "CombatStage'sQuickPopup",
             ss.str(),
             popup::PopupButtons::Okay,
@@ -3250,10 +3198,10 @@ namespace stage
 
     void CombatStage::SetupTurnBox()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
-        auto const EMPTY_STR{ " " }; // any short all-whitespace non-empty string will work here
-        auto const CAN_TAKE_ACTION_STR{ TURN_CREATURE_PTR->CanTakeActionStr() };
-        auto const CURR_WEAPONS_STR{ TURN_CREATURE_PTR->WeaponsString() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
+        auto const EMPTY_STR { " " }; // any short all-whitespace non-empty string will work here
+        auto const CAN_TAKE_ACTION_STR { TURN_CREATURE_PTR->CanTakeActionStr() };
+        auto const CURR_WEAPONS_STR { TURN_CREATURE_PTR->WeaponsString() };
 
         std::ostringstream weaponsSS;
         if (CURR_WEAPONS_STR.empty())
@@ -3280,7 +3228,7 @@ namespace stage
         std::ostringstream preambleSS;
         std::ostringstream enemyCondsSS;
 
-        auto isPreambleShowing{ false };
+        auto isPreambleShowing { false };
 
         if (IsPlayerCharacterTurnValid())
         {
@@ -3317,7 +3265,7 @@ namespace stage
 
             armorSS << "Armor Rating: " << TURN_CREATURE_PTR->ArmorRating();
 
-            auto const MANA_NORMAL{ TURN_CREATURE_PTR->ManaNormal() };
+            auto const MANA_NORMAL { TURN_CREATURE_PTR->ManaNormal() };
             if (MANA_NORMAL > 0_mana)
             {
                 armorSS << "\n\nMana: " << TURN_CREATURE_PTR->Mana() << "/" << MANA_NORMAL;
@@ -3371,7 +3319,7 @@ namespace stage
             }
             else
             {
-                auto const CONDITION_LIST_STR{ TURN_CREATURE_PTR->ConditionNames(6) };
+                auto const CONDITION_LIST_STR { TURN_CREATURE_PTR->ConditionNames(6) };
                 enemyCondsSS << "Condition";
 
                 if (boost::algorithm::contains(CONDITION_LIST_STR, ","))
@@ -3475,7 +3423,7 @@ namespace stage
 
             isPreambleShowing = true;
 
-            auto const & HIT_INFO{ conditionEffectsVec_[conditionEffectsIndex_] };
+            auto const & HIT_INFO { conditionEffectsVec_[conditionEffectsIndex_] };
 
             preambleSS << HIT_INFO.ActionPhrase().Compose(
                 HIT_INFO.ConditionPtrOpt().value()->Name(), TURN_CREATURE_PTR->Name());
@@ -3501,7 +3449,7 @@ namespace stage
              + titleTBoxTextRegionUPtr_->GetEntityRegion().height)
                 - VERT_POS_SHIFT);
 
-        auto const WEAPON_TBOXTEXT_REGION{ weaponTBoxTextRegionUPtr_->GetEntityRegion() };
+        auto const WEAPON_TBOXTEXT_REGION { weaponTBoxTextRegionUPtr_->GetEntityRegion() };
         armorTBoxTextRegionUPtr_->SetText(armorSS.str());
 
         armorTBoxTextRegionUPtr_->SetEntityPos(
@@ -3518,12 +3466,12 @@ namespace stage
              + armorTBoxTextRegionUPtr_->GetEntityRegion().height)
                 - VERT_POS_SHIFT);
 
-        auto enemyActionPosLeft{ (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f))
-                                 - (enemyActionTBoxRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        auto enemyActionPosLeft { (turnBoxRegion_.left + (turnBoxRegion_.width * 0.5f))
+                                  - (enemyActionTBoxRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto enemyActionPosTop{ (enemyCondsTBoxRegionUPtr_->GetEntityRegion().top
-                                 + enemyCondsTBoxRegionUPtr_->GetEntityRegion().height)
-                                - VERT_POS_SHIFT };
+        auto enemyActionPosTop { (enemyCondsTBoxRegionUPtr_->GetEntityRegion().top
+                                  + enemyCondsTBoxRegionUPtr_->GetEntityRegion().height)
+                                 - VERT_POS_SHIFT };
 
         if (enemyCondsSS.str() == EMPTY_STR)
         {
@@ -3555,7 +3503,7 @@ namespace stage
 
     void CombatStage::StartPerformAnim()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         SetTurnPhase(TurnPhase::PerformAnim);
 
@@ -3591,7 +3539,7 @@ namespace stage
             {
                 SetAnimPhase(AnimPhase::MoveToward);
 
-                auto const CREATURE_EFFECTS_VEC{ fightResult_.Effects() };
+                auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CREATURE_EFFECTS_VEC.size() == 1),
@@ -3614,21 +3562,21 @@ namespace stage
             {
                 // Note:  There should only be one CreatureEffect and one HitInfoVec when
                 // attacking with a projectile
-                auto const HIT_INFO{ fightResult_.GetHitInfo(0, 0) };
+                auto const HIT_INFO { fightResult_.GetHitInfo(0, 0) };
                 if (HIT_INFO.IsValid())
                 {
                     // at this point we are guaranteed fightResult_ contains at least one
                     // CreatureEffect and one HitInfo
-                    auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+                    auto const WEAPON_PTR_OPT { HIT_INFO.Weapon() };
                     if (WEAPON_PTR_OPT)
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_PTR_OPT.value());
 
-                        auto const CREATURE_ATTACKING_CENTER_POSV{
+                        auto const CREATURE_ATTACKING_CENTER_POSV {
                             combatDisplayStagePtr_->GetCombatNodeCenter(TURN_CREATURE_PTR)
                         };
 
-                        auto const CREATURE_DEFENDING_CENTER_POSV{
+                        auto const CREATURE_DEFENDING_CENTER_POSV {
                             combatDisplayStagePtr_->GetCombatNodeCenter(
                                 fightResult_.Effects()[0].GetCreature())
                         };
@@ -3689,7 +3637,7 @@ namespace stage
             {
                 combatSoundEffects_.PlayRoar(TURN_CREATURE_PTR);
 
-                creature::CreaturePVec_t creaturesToShakePVec{ creature::Algorithms::NonPlayers(
+                creature::CreaturePVec_t creaturesToShakePVec { creature::Algorithms::NonPlayers(
                     creature::Algorithms::Living) };
 
                 creaturesToShakePVec.emplace_back(TURN_CREATURE_PTR);
@@ -4034,10 +3982,10 @@ namespace stage
         const combat::FightResult & FIGHT_RESULT) const
     {
         // Note: Assume it is not possible for a weapon attack to target multiple creatures
-        auto const HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
+        auto const HIT_INFO { FIGHT_RESULT.GetHitInfo(0, 0) };
         if (HIT_INFO.IsValid())
         {
-            auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+            auto const WEAPON_PTR_OPT { HIT_INFO.Weapon() };
             if (WEAPON_PTR_OPT)
             {
                 return GetTurnActionPhaseFromWeaponType(WEAPON_PTR_OPT.value());
@@ -4079,7 +4027,7 @@ namespace stage
                 killedCreaturesPVec.emplace_back(NEXT_CREATURE_EFFECT.GetCreature());
             }
 
-            auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
+            auto const DAMAGE { NEXT_CREATURE_EFFECT.GetDamageTotal() };
             if (DAMAGE.IsNonZero())
             {
                 damageVec.emplace_back(DAMAGE);
@@ -4092,7 +4040,7 @@ namespace stage
         combatAnimationUPtr_->TextAnimStart(damageVec, combatNodePVec);
 
         // remove all conditions except for dead from the killed creatures
-        auto wasPlayerKilled{ false };
+        auto wasPlayerKilled { false };
         for (auto const & KILLED_CREATURE_PTR : killedCreaturesPVec)
         {
             if (KILLED_CREATURE_PTR->IsDead())
@@ -4127,7 +4075,7 @@ namespace stage
 
     void CombatStage::HandleAttackTasks(const creature::CreaturePtr_t CREATURE_TO_ATTACK_PTR)
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         SetUserActionAllowed(false);
 
@@ -4147,7 +4095,7 @@ namespace stage
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
         AnimationCenteringStart(
-            creature::CreaturePVec_t{ TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR });
+            creature::CreaturePVec_t { TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR });
 
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
 
@@ -4198,17 +4146,17 @@ namespace stage
             return;
         }
 
-        auto const HIT_INFO_VEC{ CREATURE_EFFECTS_VEC[performReportEffectIndex_].GetHitInfoVec() };
+        auto const HIT_INFO_VEC { CREATURE_EFFECTS_VEC[performReportEffectIndex_].GetHitInfoVec() };
         if (performReportHitIndex_ >= HIT_INFO_VEC.size())
         {
             return;
         }
 
-        auto const HIT_INFO{ HIT_INFO_VEC[performReportHitIndex_] };
+        auto const HIT_INFO { HIT_INFO_VEC[performReportHitIndex_] };
 
         if (HIT_INFO.IsWeapon())
         {
-            auto const REPORT_INDICIES{ ReportIndicies(
+            auto const REPORT_INDICIES { ReportIndicies(
                 performReportEffectIndex_, performReportHitIndex_) };
 
             if (soundEffectsPlayedSet_.find(REPORT_INDICIES) == soundEffectsPlayedSet_.end())
@@ -4232,11 +4180,11 @@ namespace stage
         // detect player runaway case
         if (IS_DETECTING_WIN == false)
         {
-            auto const ALL_LIVING_PVEC{ creature::Algorithms::PlayersByType(
+            auto const ALL_LIVING_PVEC { creature::Algorithms::PlayersByType(
                 creature::Algorithms::TypeOpt::Player, creature::Algorithms::Runaway) };
 
-            auto didAnyPlayersRunAway{ false };
-            auto areAllNonRunawaysIncapacitated{ true };
+            auto didAnyPlayersRunAway { false };
+            auto areAllNonRunawaysIncapacitated { true };
             for (auto const & NEXT_LIVING_PTR : ALL_LIVING_PVEC)
             {
                 if (combat::Encounter::Instance()->IsRunaway(NEXT_LIVING_PTR))
@@ -4264,11 +4212,11 @@ namespace stage
         }
 
         // detect all incapacitated cases
-        auto const ALL_LIVING_PVEC{ creature::Algorithms::PlayersByType(
+        auto const ALL_LIVING_PVEC { creature::Algorithms::PlayersByType(
             ((IS_DETECTING_WIN) ? creature::Algorithms::TypeOpt::NonPlayer
                                 : creature::Algorithms::TypeOpt::Player)) };
 
-        auto areAllIncapacitated{ true };
+        auto areAllIncapacitated { true };
         for (auto const & NEXT_LIVING_PTR : ALL_LIVING_PVEC)
         {
             if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false)
@@ -4314,7 +4262,7 @@ namespace stage
 
     bool CombatStage::PopulateAchievementsVec()
     {
-        auto const TURN_CREATURE_PTR{ turnCreaturePtrOpt_.value() };
+        auto const TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
         creatureTitlesVec_.clear();
 
@@ -4335,29 +4283,29 @@ namespace stage
         // TODO -these achievements still need to be implemented
 
         // gather achievements from fightResult_
-        auto const IS_TURN_CREATURE_FLYING{
+        auto const IS_TURN_CREATURE_FLYING {
             combat::Encounter::Instance()->GetTurnInfoCopy(TURN_CREATURE_PTR).GetIsFlying()
         };
 
-        auto flyingAttackHits{ 0 };
-        auto meleeHits{ 0 };
-        auto projectileHits{ 0 };
+        auto flyingAttackHits { 0 };
+        auto meleeHits { 0 };
+        auto projectileHits { 0 };
         creature::CreaturePVec_t playersDodgedStandingPVec;
         creature::CreaturePVec_t playersDodgedFlyingPVec;
-        auto didCastSpell{ false };
-        auto didPlaySong{ false };
-        auto didRoar{ false };
+        auto didCastSpell { false };
+        auto didPlaySong { false };
+        auto didRoar { false };
 
         for (auto const & NEXT_CREATURE_EFFECT : fightResult_.Effects())
         {
-            auto const NEXT_EFFECTED_CREATURE_PTR{ NEXT_CREATURE_EFFECT.GetCreature() };
+            auto const NEXT_EFFECTED_CREATURE_PTR { NEXT_CREATURE_EFFECT.GetCreature() };
 
-            auto const IS_EFFECTED_CREATURE_FLYING{ combat::Encounter::Instance()
-                                                        ->GetTurnInfoCopy(
-                                                            NEXT_EFFECTED_CREATURE_PTR)
-                                                        .GetIsFlying() };
+            auto const IS_EFFECTED_CREATURE_FLYING { combat::Encounter::Instance()
+                                                         ->GetTurnInfoCopy(
+                                                             NEXT_EFFECTED_CREATURE_PTR)
+                                                         .GetIsFlying() };
 
-            auto const & HIT_INFO_VEC{ NEXT_CREATURE_EFFECT.GetHitInfoVec() };
+            auto const & HIT_INFO_VEC { NEXT_CREATURE_EFFECT.GetHitInfoVec() };
             for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
             {
                 if (TURN_CREATURE_PTR->IsPlayerCharacter())
@@ -4464,8 +4412,8 @@ namespace stage
     {
         for (int i(0); i < COUNT; ++i)
         {
-            creature::TitlePtrOpt_t fromTitlePtrOpt{ boost::none };
-            creature::TitlePtrOpt_t toTitlePtrOpt{ boost::none };
+            creature::TitlePtrOpt_t fromTitlePtrOpt { boost::none };
+            creature::TitlePtrOpt_t toTitlePtrOpt { boost::none };
 
             if (stage::IncrementAchievementAndReturnTrueIfProcessingRequired(
                     CREATURE_PTR, ACH_ENUM, fromTitlePtrOpt, toTitlePtrOpt))
@@ -4488,7 +4436,7 @@ namespace stage
         }
         else
         {
-            auto const TITLE_TRANSITION{ creatureTitlesVec_[0] };
+            auto const TITLE_TRANSITION { creatureTitlesVec_[0] };
 
             creatureTitlesVec_.erase(
                 std::remove(creatureTitlesVec_.begin(), creatureTitlesVec_.end(), TITLE_TRANSITION),

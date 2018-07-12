@@ -12,6 +12,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -56,6 +57,26 @@ namespace sfml_util
                 = boost::optional<IFourStateButtonCallbackHandlerPtr_t>;
         } // namespace callback
 
+        // Responsible for wrapping a path for each of the four button states
+        struct ButtonStateImageKeys
+        {
+            ButtonStateImageKeys(
+                const std::string & UP = "",
+                const std::string & DOWN = "",
+                const std::string & OVER = "",
+                const std::string & DISABLED = "")
+                : up(UP)
+                , down(DOWN)
+                , over(OVER)
+                , disabled(DISABLED)
+            {}
+
+            std::string up;
+            std::string down;
+            std::string over;
+            std::string disabled;
+        };
+
         // Responsible for maintaining images and text for four possible states:
         // Mouse Not-Over (up), Mouse Over (over), Mouse Down (down), and also disabled.
         // The disabled state is used when the button cannot be pressed and will not
@@ -68,77 +89,31 @@ namespace sfml_util
             FourStateButton & operator=(const FourStateButton &) = delete;
             FourStateButton & operator=(FourStateButton &&) = delete;
 
-        public:
             // if using this constructor, Setup() must be called before any other functions
             explicit FourStateButton(const std::string & NAME);
 
             FourStateButton(
                 const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const std::string & IMAGE_PATH_UP,
-                const std::string & IMAGE_PATH_DOWN = "",
-                const std::string & IMAGE_PATH_OVER = "",
-                const std::string & IMAGE_PATH_DISABLED = "",
-                const MouseTextInfo & MOUSE_TEXT_INFO = MouseTextInfo(),
-                const TextInfo & TEXT_INFO_DISABLED = TextInfo(),
+                const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f),
+                const ButtonStateImageKeys & STATE_IMAGE_PATH_KEYS = ButtonStateImageKeys(),
+                const MouseTextInfo & STATE_TEXTINFO = MouseTextInfo(),
+                const TextInfo & DISABLED_TEXTINFO = TextInfo(),
                 const bool WILL_BOX = false,
-                const float SCALE = 1.0f,
                 const bool IS_DISABLED = false,
-                const sf::Color & SPRITE_COLOR = sf::Color::White);
-
-            FourStateButton(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const sf::Texture & IMAGE_UP,
-                const bool HAS_IMAGE_UP,
-                const sf::Texture & IMAGE_DOWN = sf::Texture(),
-                const bool HAS_IMAGE_DOWN = false,
-                const sf::Texture & IMAGE_OVER = sf::Texture(),
-                const bool HAS_IMAGE_OVER = false,
-                const sf::Texture & IMAGE_DISABLED = sf::Texture(),
-                const bool HAS_IMAGE_DISABLED = false,
-                const MouseTextInfo & MOUSE_TEXT_INFO = MouseTextInfo(),
-                const TextInfo & TEXT_INFO_DISABLED = TextInfo(),
-                const bool WILL_BOX = false,
-                const float SCALE = 1.0f,
-                const bool IS_DISABLED = false,
-                const sf::Color & SPRITE_COLOR = sf::Color::White);
+                const sf::Color & IMAGE_COLOR_OVERLAY = sf::Color::White,
+                const float FINAL_SCALE = 1.0f);
 
             virtual ~FourStateButton();
 
             virtual void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
-                const std::string & IMAGE_PATH_UP,
-                const std::string & IMAGE_PATH_DOWN = "",
-                const std::string & IMAGE_PATH_OVER = "",
-                const std::string & IMAGE_PATH_DISABLED = "",
-                const MouseTextInfo & MOUSE_TEXT_INFO = MouseTextInfo(),
-                const TextInfo & TEXT_INFO_DISABLED = TextInfo(),
+                const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f),
+                const ButtonStateImageKeys & STATE_IMAGE_PATH_KEYS = ButtonStateImageKeys(),
+                const MouseTextInfo & STATE_TEXTINFO = MouseTextInfo(),
+                const TextInfo & DISABLED_TEXTINFO = TextInfo(),
                 const bool WILL_BOX = false,
-                const float SCALE = 1.0f,
                 const bool IS_DISABLED = false,
-                const sf::Color & SPRITE_COLOR = sf::Color::White);
-
-            virtual void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
-                const sf::Texture & IMAGE_UP,
-                const bool HAS_IMAGE_UP,
-                const sf::Texture & IMAGE_DOWN = sf::Texture(),
-                const bool HAS_IMAGE_DOWN = false,
-                const sf::Texture & IMAGE_OVER = sf::Texture(),
-                const bool HAS_IMAGE_OVER = false,
-                const sf::Texture & IMAGE_DISABLED = sf::Texture(),
-                const bool HAS_IMAGE_DISABLED = false,
-                const MouseTextInfo & MOUSE_TEXT_INFO = MouseTextInfo(),
-                const TextInfo & TEXT_INFODISABLED = TextInfo(),
-                const bool WILL_BOX = false,
-                const float SCALE = 1.0f,
-                const bool IS_DISABLED = false,
-                const sf::Color & SPRITE_COLOR = sf::Color::White);
+                const sf::Color & IMAGE_COLOR_OVERLAY = sf::Color::White,
+                const float FINAL_SCALE = 1.0f);
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
@@ -162,21 +137,17 @@ namespace sfml_util
             virtual void SetScaleToRes();
             virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
 
-            const sf::Color Color() const { return color_; }
-            void Color(const sf::Color & NEW_COLOR)
-            {
-                color_ = NEW_COLOR;
-                Reset();
-            }
+            const sf::Color Color() const { return sprite_.getColor(); }
 
-            float Scale() const { return scale_; }
-            void Scale(const float NEW_SCALE);
+            void Color(const sf::Color & NEW_COLOR) { sprite_.setColor(NEW_COLOR); }
 
             virtual void SetText(
-                const std::string & TEXT_UP,
-                const std::string & TEXT_DOWN = "",
-                const std::string & TEXT_OVER = "",
-                const std::string & TEXT_DISABLED = "");
+                const std::string & UP,
+                const std::string & DOWN = "",
+                const std::string & OVER = "",
+                const std::string & DISABLED = "");
+
+            void Scale(const float NEW_SCALE);
 
         protected:
             void Reset();
@@ -186,29 +157,22 @@ namespace sfml_util
 
         protected:
             bool isDisabled_;
-            sf::Texture textureUp_;
-            sf::Texture textureDown_;
-            sf::Texture textureOver_;
-            sf::Texture textureDisabled_;
-            bool hasUp_;
-            bool hasDown_;
-            bool hasOver_;
-            bool hasDisabled_;
-            sf::Sprite buttonSprite_;
-            TextRegionPtrOpt_t textRegionCurrPtrOpt_;
-            TextRegionUPtr_t textRegionUpUPtr_;
-            TextRegionUPtr_t textRegionDownUPtr_;
-            TextRegionUPtr_t textRegionOverUPtr_;
-            TextRegionUPtr_t textRegionDisabledUPtr_;
+            sfml_util::CachedTextureOpt_t upTextureOpt_;
+            sfml_util::CachedTextureOpt_t downTextureOpt_;
+            sfml_util::CachedTextureOpt_t overTextureOpt_;
+            sfml_util::CachedTextureOpt_t disabledTextureOpt_;
+            sf::Sprite sprite_;
+            TextRegionPtrOpt_t currTextRegionPtrOpt_;
+            TextRegionUPtr_t upTextRegionUPtr_;
+            TextRegionUPtr_t downTextRegionUPtr_;
+            TextRegionUPtr_t overTextRegionUPtr_;
+            TextRegionUPtr_t disabledTextRegionUPtr_;
             box::BoxUPtr_t boxUPtr_;
-            float scale_;
-            sf::Color color_;
             callback::IFourStateButtonCallbackHandlerPtrOpt_t callbackHandlerPtrOpt_;
         };
 
         using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
         using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
-        using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
 
     } // namespace gui
 } // namespace sfml_util

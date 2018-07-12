@@ -53,9 +53,7 @@ namespace song
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "song::Songs::ToString(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                ThrowInvalidValueForFunction(E, "ToString");
             }
         }
     }
@@ -78,7 +76,7 @@ namespace song
             }
             case TripBeat:
             {
-                return "Tri pBeat";
+                return "Trip Beat";
             }
             case PanicStrings:
             {
@@ -91,9 +89,7 @@ namespace song
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "song::Songs::Name(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                ThrowInvalidValueForFunction(E, "Name");
             }
         }
     }
@@ -116,5 +112,6 @@ namespace song
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
+
 } // namespace song
 } // namespace heroespath

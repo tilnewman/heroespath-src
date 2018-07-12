@@ -134,6 +134,8 @@ namespace sfml_util
     protected:
         void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
 
+        virtual bool WillAllowMousePosStateChange() const { return true; }
+
     private:
         static const float MOUSE_DRAG_MIN_DISTANCE_;
         //

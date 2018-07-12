@@ -1,29 +1,11 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-///////////////////////////////////////////////////////////////////////////////
-//
-// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
-// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from
-// the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-//  1. The origin of this software must not be misrepresented; you must not
-//     claim that you wrote the original software.  If you use this software
-//     in a product, an acknowledgment in the product documentation would be
-//     appreciated but is not required.
-//
-//  2. Altered source versions must be plainly marked as such, and must not
-//     be misrepresented as being the original software.
-//
-//  3. This notice may not be removed or altered from any source distribution.
-//
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+// "THE BEER-WARE LICENSE" (Revision 42):
+// <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
+// can do whatever you want with this stuff. If we meet some day, and you think
+// this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
+// ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
 #include "misc/boost-optional-that-throws.hpp"
@@ -31,7 +13,10 @@
 #include "misc/real.hpp"
 
 #include <boost/test/unit_test.hpp>
+
 #include <iostream>
+#include <limits>
+#include <type_traits>
 
 using namespace heroespath::misc;
 
@@ -53,8 +38,81 @@ private:
 inline bool operator==(const Thing & L, const Thing & R) { return (L.get() == R.get()); }
 inline bool operator!=(const Thing & L, const Thing & R) { return !(L == R); }
 
+template <typename T>
+bool testTypeIsZero()
+{
+
+    bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
+                        && IsRealZero(
+                               std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
+
+    if constexpr (std::is_signed<T>::value)
+    {
+        if (IsRealZero(T(-1)) || !IsRealZero(T(-1) + T(1))
+            || IsRealZero(std::numeric_limits<T>::max())
+            || !IsRealZero(std::numeric_limits<T>::min() + std::numeric_limits<T>::max()))
+            ;
+        {
+            didPassTests = false;
+        }
+    }
+
+    return didPassTests;
+}
+
+template <typename T>
+bool testTypeIsRealZero()
+{
+    bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
+                        && IsRealZero(
+                               std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
+
+    if constexpr (std::is_signed<T>::value)
+    {
+        if (IsRealZero(T(-1)) || !IsRealZero(T(-1) + T(1))
+            || IsRealZero(std::numeric_limits<T>::max())
+            || IsRealZero(std::numeric_limits<T>::min())
+            || !IsRealZero(T(1) + std::numeric_limits<T>::min() + std::numeric_limits<T>::max()))
+        {
+            didPassTests = false;
+        }
+    }
+
+    return didPassTests;
+}
+
+template <typename T>
+bool testTypeIsRealOne()
+{
+    bool didPassTests {
+        IsRealOne(T(1)) && !IsRealOne(T(0)) && IsRealOne(T(0) + T(1))
+        && IsRealOne(T(1) + (std::numeric_limits<T>::max() - std::numeric_limits<T>::max()))
+    };
+
+    if constexpr (std::is_signed<T>::value)
+    {
+        if (IsRealOne(T(-1)) || !IsRealOne(T(-1) + T(2)))
+        {
+            didPassTests = false;
+        }
+    }
+
+    return didPassTests;
+}
+
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
+    BOOST_CHECK(testTypeIsRealZero<char>());
+    BOOST_CHECK(testTypeIsRealZero<short>());
+    BOOST_CHECK(testTypeIsRealZero<int>());
+    BOOST_CHECK(testTypeIsRealZero<long>());
+    BOOST_CHECK(testTypeIsRealZero<long long>());
+    BOOST_CHECK(testTypeIsRealZero<unsigned char>());
+    BOOST_CHECK(testTypeIsRealZero<unsigned short>());
+    BOOST_CHECK(testTypeIsRealZero<unsigned int>());
+    BOOST_CHECK(testTypeIsRealZero<unsigned long>());
+    BOOST_CHECK(testTypeIsRealZero<unsigned long long>());
+
     BOOST_CHECK(IsRealZero(0.0));
     BOOST_CHECK(IsRealZero(0.0f));
 
@@ -67,6 +125,17 @@ BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 
 BOOST_AUTO_TEST_CASE(Real_IsRealOne)
 {
+    BOOST_CHECK(testTypeIsRealOne<char>());
+    BOOST_CHECK(testTypeIsRealOne<short>());
+    BOOST_CHECK(testTypeIsRealOne<int>());
+    BOOST_CHECK(testTypeIsRealOne<long>());
+    BOOST_CHECK(testTypeIsRealOne<long long>());
+    BOOST_CHECK(testTypeIsRealOne<unsigned char>());
+    BOOST_CHECK(testTypeIsRealOne<unsigned short>());
+    BOOST_CHECK(testTypeIsRealOne<unsigned int>());
+    BOOST_CHECK(testTypeIsRealOne<unsigned long>());
+    BOOST_CHECK(testTypeIsRealOne<unsigned long long>());
+
     BOOST_CHECK(IsRealOne(1.0));
     BOOST_CHECK(IsRealOne(1.0f));
 
@@ -89,6 +158,12 @@ BOOST_AUTO_TEST_CASE(Real_IsRealClose)
 
     BOOST_CHECK(IsRealClose(0.0, 1.0) == false);
     BOOST_CHECK(IsRealClose(0.0, 0.00001) == false);
+
+    BOOST_CHECK(IsRealClose(0.0, 1.0) == false);
+
+    BOOST_CHECK(IsRealClose(999999999999.0f, 999999999999.0001f));
+    BOOST_CHECK(IsRealClose(999999999999.0, 999999999999.0001));
+    BOOST_CHECK(IsRealClose(999999999999999.0L, 999999999999999.0000001L));
 }
 
 BOOST_AUTO_TEST_CASE(NotNull_Tests)
@@ -97,11 +172,15 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     // heroespath::misc::NotNull<int *> notNull{ nullptr }; //should not compile
     // heroespath::misc::NotNull<int *> notNull{ 0 }; //should not compile
 
-    int * p0{ nullptr };
-    BOOST_CHECK_THROW(heroespath::misc::NotNull<int *> notNull0{ p0 }, std::exception);
+    std::cout << "(the next line output to the console will be an exception about a NotNull "
+                 "constructor given nullptr that is expected and can be ignored)"
+              << std::endl;
 
-    int one{ 1 };
-    heroespath::misc::NotNull<int *> notNull1A{ &one };
+    int * p0 { nullptr };
+    BOOST_CHECK_THROW(heroespath::misc::NotNull<int *> notNull0 { p0 }, std::exception);
+
+    int one { 1 };
+    heroespath::misc::NotNull<int *> notNull1A { &one };
     BOOST_CHECK(notNull1A.Obj() == one);
     BOOST_CHECK(notNull1A.Obj() == 1);
     // BOOST_CHECK(notNull1A != nullptr); // should not compile
@@ -110,7 +189,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1A == &one);
     BOOST_CHECK(&one == notNull1A);
 
-    const int TEMP_ONE{ *notNull1A };
+    const int TEMP_ONE { *notNull1A };
     BOOST_CHECK(TEMP_ONE == 1);
 
     BOOST_CHECK((notNull1A.Ptr() != &one) == false);
@@ -118,8 +197,8 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK((notNull1A != &one) == false);
     BOOST_CHECK((&one != notNull1A) == false);
 
-    int * p1{ &one };
-    heroespath::misc::NotNull<int *> notNull1B{ p1 };
+    int * p1 { &one };
+    heroespath::misc::NotNull<int *> notNull1B { p1 };
     BOOST_CHECK(notNull1B.Obj() == one);
     BOOST_CHECK(notNull1B.Obj() == 1);
 
@@ -127,20 +206,20 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1A.Ptr() == notNull1B.Ptr());
     BOOST_CHECK(notNull1A.Obj() == notNull1B.Obj());
 
-    heroespath::misc::NotNull<int *> notNull1C{ notNull1A };
+    heroespath::misc::NotNull<int *> notNull1C { notNull1A };
 
     BOOST_CHECK(notNull1A == notNull1C);
     BOOST_CHECK(notNull1A.Ptr() == notNull1C.Ptr());
     BOOST_CHECK(notNull1A.Obj() == notNull1C.Obj());
 
-    char c{ 'x' };
-    heroespath::misc::NotNull<char *> notNullC{ &c };
+    char c { 'x' };
+    heroespath::misc::NotNull<char *> notNullC { &c };
 
     // BOOST_CHECK(notNull1A != notNullC); //should not compile
     // BOOST_CHECK(notNull1A.Ptr() != notNullC.Ptr()); // should not compile
 
-    int * p2{ new int(2) };
-    heroespath::misc::NotNull<int *> notNull2{ p2 };
+    int * p2 { new int(2) };
+    heroespath::misc::NotNull<int *> notNull2 { p2 };
 
     BOOST_CHECK(notNull2.Ptr() == p2);
     BOOST_CHECK(p2 == notNull2.Ptr());
@@ -165,7 +244,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1B.Ptr() == notNull2.Ptr());
     BOOST_CHECK(notNull1B.Obj() == notNull2.Obj());
 
-    heroespath::misc::NotNull<int *> notNull3{ new int(3) };
+    heroespath::misc::NotNull<int *> notNull3 { new int(3) };
 
     BOOST_CHECK(notNull2 != notNull3);
     BOOST_CHECK(notNull2.Ptr() != notNull3.Ptr());
@@ -180,7 +259,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     notNull3.Obj() = 1;
     BOOST_CHECK(notNull3.Obj() == 1);
 
-    const heroespath::misc::NotNull<int *> NOTNULL4{ new int(4) };
+    const heroespath::misc::NotNull<int *> NOTNULL4 { new int(4) };
     BOOST_CHECK(NOTNULL4 != notNull3);
     BOOST_CHECK(NOTNULL4.Ptr() != notNull3.Ptr());
     BOOST_CHECK(NOTNULL4.Obj() != notNull3.Obj());
@@ -193,7 +272,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     delete notNull3.Ptr();
     delete NOTNULL4.Ptr();
 
-    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThing{ new Thing(69) };
+    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThing { new Thing(69) };
     BOOST_CHECK(notNullThing->Obj().get() == 69);
     BOOST_CHECK((*notNullThing).Obj().get() == 69);
     delete notNullThing->Ptr();
@@ -206,7 +285,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
     // uninitialized boost::optional to throw a std::runtime_error. So these tests make sure that
     // boost::optional behaves in the way required by the codebase.
 
-    boost::optional<Thing> optional{ boost::none };
+    boost::optional<Thing> optional { boost::none };
 
     BOOST_CHECK(optional.get_ptr() == nullptr);
     BOOST_CHECK(optional.get_value_or(Thing(69)).get() == 69);
@@ -224,14 +303,14 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
     using ThingPtrOpt_t = boost::optional<ThingPtr_t>;
 
     Thing myThing1(1);
-    ThingPtr_t thingPtr1{ &myThing1 };
+    ThingPtr_t thingPtr1 { &myThing1 };
 
     Thing myThing2(2);
-    ThingPtr_t thingPtr2{ &myThing2 };
+    ThingPtr_t thingPtr2 { &myThing2 };
 
-    ThingPtrOpt_t optInvalid{ boost::none };
-    ThingPtrOpt_t optValid1{ thingPtr1 };
-    ThingPtrOpt_t optValid2{ thingPtr2 };
+    ThingPtrOpt_t optInvalid { boost::none };
+    ThingPtrOpt_t optValid1 { thingPtr1 };
+    ThingPtrOpt_t optValid2 { thingPtr2 };
 
     BOOST_CHECK(optValid1 != optInvalid);
     BOOST_CHECK(optValid2 != optInvalid);
@@ -245,6 +324,6 @@ BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
     BOOST_CHECK(optValid1 == thingPtr1);
     BOOST_CHECK(optValid1 != thingPtr2);
 
-    ThingPtrOpt_t optExtra{ thingPtr1 };
+    ThingPtrOpt_t optExtra { thingPtr1 };
     BOOST_CHECK(optExtra == thingPtr1);
 }

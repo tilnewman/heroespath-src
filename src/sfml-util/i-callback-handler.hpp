@@ -68,6 +68,7 @@ namespace sfml_util
             virtual ~ICallbackHandler() = default;
             virtual const std::string HandlerName() const = 0;
             virtual Return_t HandleCallback(const Package_t &) = 0;
+            virtual bool WillAllowMousePosStateChange() const { return true; }
         };
 
     } // namespace callback

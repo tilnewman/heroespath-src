@@ -343,8 +343,7 @@ namespace popup
 
             StageRegionSet(region);
 
-            innerRegion_ = sfml_util::ConvertRect<int, float>(
-                BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
+            innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
         }
 
         // adjust regions based on the background image
@@ -568,9 +567,7 @@ namespace popup
             PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
             accentSprite1_.setTexture(accentTexture1_, true);
 
-            sfml_util::CenterAndScaleSpriteToFit(
-                accentSprite1_, textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
-
+            sfml_util::FitAndReCenter(accentSprite1_, textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
     }
@@ -598,28 +595,31 @@ namespace popup
         {
             case PopupImage::Banner:
             {
-                return sfml_util::ScaleRectCopy(PopupManager::Instance()->Rect_Banner(), SCALE);
+                return sfml_util::ScaleRectLinearCopy(
+                    PopupManager::Instance()->Rect_Banner(), SCALE);
             }
 
             case PopupImage::Regular:
             {
-                return sfml_util::ScaleRectCopy(PopupManager::Instance()->Rect_Regular(), SCALE);
+                return sfml_util::ScaleRectLinearCopy(
+                    PopupManager::Instance()->Rect_Regular(), SCALE);
             }
 
             case PopupImage::RegularSidebar:
             {
-                return sfml_util::ScaleRectCopy(
+                return sfml_util::ScaleRectLinearCopy(
                     PopupManager::Instance()->Rect_RegularSidebar(), SCALE);
             }
 
             case PopupImage::Large:
             {
-                return sfml_util::ScaleRectCopy(PopupManager::Instance()->Rect_Large(), SCALE);
+                return sfml_util::ScaleRectLinearCopy(
+                    PopupManager::Instance()->Rect_Large(), SCALE);
             }
 
             case PopupImage::LargeSidebar:
             {
-                return sfml_util::ScaleRectCopy(
+                return sfml_util::ScaleRectLinearCopy(
                     PopupManager::Instance()->Rect_LargeSidebar(), SCALE);
             }
 

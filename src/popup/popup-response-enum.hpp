@@ -36,7 +36,7 @@ namespace popup
         static void ToStringPopulate(
             std::ostringstream & ss,
             const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR = ", ");
+            const std::string & SEPARATOR);
 
         static bool IsAffirmative(const ResponseTypes::Enum);
     };

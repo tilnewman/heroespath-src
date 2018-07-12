@@ -41,12 +41,22 @@ namespace sfml_util
             Inventory,
             Treasure,
             Test,
+            Previous,
+            Start,
+            Next,
+            Save,
+            Help,
             Count
         };
 
         static const std::string ToString(const LoopState::Enum);
+        static bool HasFadedImage(const LoopState::Enum);
+        static bool WillTransition(const LoopState::Enum);
 
-        static bool TestHelper() { return EnumBaseCounting::Test(); }
+        static void TestHelper()
+        {
+            misc::EnumBaseCounting<LoopState, misc::EnumFirstValueNone>::Test();
+        }
     };
 
 } // namespace sfml_util

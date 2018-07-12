@@ -90,7 +90,7 @@ namespace popup
 
         accentSprite1_.setTexture(accentTexture1_, true);
 
-        sfml_util::CenterAndScaleSpriteToFit(accentSprite1_, textRegion_, 0.65f);
+        sfml_util::FitAndReCenter(accentSprite1_, textRegion_, 0.65f);
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }

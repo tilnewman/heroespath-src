@@ -19,17 +19,17 @@
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/character-stage-anim-num.hpp"
 
@@ -62,32 +62,6 @@ namespace stage
 
     class CharacterStage;
     using CharacterStagePtr_t = misc::NotNull<CharacterStage *>;
-
-    // wrapper class for the lower menu buttons
-    class MenuButton : public sfml_util::gui::FourStateButton
-    {
-    public:
-        MenuButton(const MenuButton &) = delete;
-        MenuButton(MenuButton &&) = delete;
-        MenuButton & operator=(const MenuButton &) = delete;
-        MenuButton & operator=(MenuButton &&) = delete;
-
-        MenuButton(
-            const std::string & NAME,
-            const std::string & IMAGE_FILENAME_UP,
-            const std::string & IMAGE_FILENAME_OVER,
-            const CharacterStagePtr_t CHARACTER_STAGE_PTR);
-
-        virtual ~MenuButton() = default;
-
-    protected:
-        void OnMousePosStateChange() override;
-        void OnClick(const sf::Vector2f &) override;
-
-    private:
-        CharacterStagePtr_t characterStagePtr_;
-    };
-    using MenuButtonUPtr_t = std::unique_ptr<MenuButton>;
 
     // encapsulates a stat modifier that is drawn to the screen
     struct StatModText : public sf::Drawable
@@ -190,7 +164,7 @@ namespace stage
         virtual bool AreAnyAnimNumStillMoving() const;
 
     private:
-        void Setup_Button(MenuButtonUPtr_t & buttonUPtr, const float VERT_POS);
+        void Setup_Button(sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float VERT_POS);
         void Setup_RaceRadioButtons();
         void Setup_RoleRadioButtons();
         void Setup_RaceDescriptionBox();
@@ -268,6 +242,8 @@ namespace stage
         bool CreateCharacter();
         creature::sex::Enum GetCurrentSelectedSex() const;
 
+        bool WillAllowMousePosStateChange() const override { return !AreAnyAnimNumStillMoving(); }
+
     private:
         static const creature::Trait_t STAT_INVALID_;
         static const creature::Trait_t STAT_INITIAL_MAX_;
@@ -300,7 +276,7 @@ namespace stage
         //
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         //
-        sfml_util::MainMenuTitle mainMenuTitle_;
+        sfml_util::StageTitle stageTitle_;
         //
         float attribVertOffset1_;
         float attribVertOffset2_;
@@ -310,10 +286,10 @@ namespace stage
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::AnimationUPtr_t smokeAnimUPtr_;
         //
-        MenuButtonUPtr_t backButtonUPtr_;
-        MenuButtonUPtr_t saveButtonUPtr_;
-        MenuButtonUPtr_t helpButtonUPtr_;
-        MenuButtonUPtr_t nextButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t saveButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t helpButtonUPtr_;
+        sfml_util::gui::MainMenuButtonUPtr_t nextButtonUPtr_;
         //
         creature::StatSet statSetBase_;
         creature::StatSet statSetRace_;

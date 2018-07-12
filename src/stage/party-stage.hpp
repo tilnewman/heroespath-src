@@ -18,13 +18,13 @@
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <memory>
@@ -117,7 +117,7 @@ namespace stage
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
         static const std::string POPUP_NAME_STR_DELETE_CONFIRM_;
         static const std::string POPUP_NAME_STR_PARTY_IMAGE_SELECT_;
-        static const float MOUSEOVER_POPUP_DELAY_SEC_; 
+        static const float MOUSEOVER_POPUP_DELAY_SEC_;
         static const float MOUSEOVER_SLIDER_SPEED_;
         static const float MOUSEOVER_BACKGROUND_FINAL_ALPHA_;
         //
@@ -136,7 +136,7 @@ namespace stage
         const float MOUSEOVER_COLORCYCLE_SPEED_;
         const std::size_t MOUSEOVER_COLORCYCLE_COUNT_;
         sfml_util::gui::box::Info listBoxInfo_;
-        sfml_util::MainMenuTitle mainMenuTitle_;
+        sfml_util::StageTitle stageTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t startButtonUPtr_;

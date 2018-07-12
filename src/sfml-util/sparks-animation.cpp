@@ -68,7 +68,7 @@ namespace sfml_util
                 return true;
             }
 
-            auto const SLIDER_POS{ (slider_.Update(ELAPSED_TIME_SEC) - 0.5f) * 2.0f };
+            auto const SLIDER_POS { (slider_.Update(ELAPSED_TIME_SEC) - 0.5f) * 2.0f };
 
             // set rotation (must preset position and scale prior to rotating...grumble)
             sprite_.setPosition(0.0f, 0.0f);
@@ -79,15 +79,15 @@ namespace sfml_util
             // sprite_.setOrigin(0.0f, 0.0f);
 
             // set position
-            auto const POS_X{ startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS) };
-            auto const POS_Y{ startPosV_.y + ((endPosV_.y - startPosV_.y) * SLIDER_POS) };
+            auto const POS_X { startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS) };
+            auto const POS_Y { startPosV_.y + ((endPosV_.y - startPosV_.y) * SLIDER_POS) };
             sprite_.setPosition(POS_X, POS_Y);
 
             // set color
-            sprite_.setColor(sfml_util::color::TransitionColor(startColor_, endColor_, SLIDER_POS));
+            sprite_.setColor(sfml_util::Transition(startColor_, endColor_, SLIDER_POS));
 
             // set scale
-            auto const SCALE{ startScale_ - ((endScale_ - startScale_) * (1.0f - SLIDER_POS)) };
+            auto const SCALE { startScale_ - ((endScale_ - startScale_) * (1.0f - SLIDER_POS)) };
             sprite_.setScale(SCALE, SCALE);
 
             // check if done animating
@@ -161,33 +161,33 @@ namespace sfml_util
             {
                 emitTimerSec_ -= SEC_PER_EMIT_;
 
-                auto const EMITTER_VERTICAL_SPAN{ (SPRAY_RATIO_MINOR_ * REGION_.height) };
-                auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f))
-                                           - (EMITTER_VERTICAL_SPAN * 0.5f))
-                                          + misc::random::Float(EMITTER_VERTICAL_SPAN) };
+                auto const EMITTER_VERTICAL_SPAN { (SPRAY_RATIO_MINOR_ * REGION_.height) };
+                auto const START_POS_TOP { ((REGION_.top + (REGION_.height * 0.5f))
+                                            - (EMITTER_VERTICAL_SPAN * 0.5f))
+                                           + misc::random::Float(EMITTER_VERTICAL_SPAN) };
 
-                auto const EMITTER_HORIZ_OFFSET{ misc::random::Float(
+                auto const EMITTER_HORIZ_OFFSET { misc::random::Float(
                     SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
-                auto const START_POS_LEFT{ (
+                auto const START_POS_LEFT { (
                     (WILL_EMIT_RIGHT_) ? REGION_.left + EMITTER_HORIZ_OFFSET
                                        : (REGION_.left + REGION_.width) - EMITTER_HORIZ_OFFSET) };
 
-                auto const TARGET_VERT_SPAN{ misc::random::Float(
+                auto const TARGET_VERT_SPAN { misc::random::Float(
                     REGION_.height * SPRAY_RATIO_MAJOR_) };
-                auto const END_POS_TOP{ (
+                auto const END_POS_TOP { (
                     (misc::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN
                                            : START_POS_TOP - TARGET_VERT_SPAN) };
 
-                auto const TARGET_HORIZ_SPAN_MIN{ (REGION_.width * SPRAY_RATIO_MINOR_) };
-                auto const TARGET_HORIZ_SPAN_MAX{ (REGION_.width * SPRAY_RATIO_MAJOR_) };
-                auto const TARGET_HORIZ_SPAN{ misc::random::Float(
+                auto const TARGET_HORIZ_SPAN_MIN { (REGION_.width * SPRAY_RATIO_MINOR_) };
+                auto const TARGET_HORIZ_SPAN_MAX { (REGION_.width * SPRAY_RATIO_MAJOR_) };
+                auto const TARGET_HORIZ_SPAN { misc::random::Float(
                     TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
-                auto const END_POS_LEFT{ (
+                auto const END_POS_LEFT { (
                     (WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN
                                        : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
-                const sf::Texture * const TEXTURE_PTR{ [&]() {
-                    auto const RAND{ misc::random::Int(2) };
+                const sf::Texture * const TEXTURE_PTR { [&]() {
+                    auto const RAND { misc::random::Int(2) };
                     if (RAND == 0)
                     {
                         return &sparkTexture1_;
@@ -247,7 +247,7 @@ namespace sfml_util
             }
             else
             {
-                auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
+                auto const VARIATION_SPAN { BASE * VARIANCE_RATIO };
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }

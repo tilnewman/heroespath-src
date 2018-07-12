@@ -88,6 +88,11 @@ namespace misc
             const boost::filesystem::path & DIR_PATH,
             const boost::filesystem::path & RELATIVE_FILE_PATH);
 
+        const std::string PathWithDepth(const std::string & PATH_STR, const std::size_t DEPTH);
+
+        const boost::filesystem::path
+            PathWithDepth(const boost::filesystem::path & PATH, const std::size_t DEPTH);
+
     } // namespace filesystem
 } // namespace misc
 } // namespace heroespath

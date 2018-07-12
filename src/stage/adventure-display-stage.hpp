@@ -14,9 +14,9 @@
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/gui/picture-frame.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
+#include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/adventure-stage-char-list.hpp"
 
@@ -66,7 +66,7 @@ namespace stage
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
         interact::InteractionManager & interactionManager_;
-        sfml_util::MainMenuTitle topImage_;
+        sfml_util::StageTitle topImage_;
         sfml_util::BottomSymbol bottomImage_;
         const sf::FloatRect MAP_OUTER_REGION_;
         sfml_util::gui::PictureFrame mapFrame_;

@@ -43,6 +43,8 @@ namespace misc
         using PairVec_t = std::vector<Pair_t>;
         using iterator = typename PairVec_t::iterator;
         using const_iterator = typename PairVec_t::const_iterator;
+        using reverse_iterator = typename PairVec_t::reverse_iterator;
+        using const_reverse_iterator = typename PairVec_t::const_reverse_iterator;
 
         VectorMap()
             : pairs_()
@@ -91,7 +93,7 @@ namespace misc
             }
 
             pairs_.emplace_back(std::make_pair(KEY, Value_t()));
-            return pairs_[pairs_.size() - 1].second;
+            return pairs_.back().second;
         }
 
         bool Find(const Key_t & KEY, Value_t & thing) const
@@ -154,11 +156,19 @@ namespace misc
 
         iterator begin() noexcept { return std::begin(pairs_); }
         iterator end() noexcept { return std::end(pairs_); }
+
+        reverse_iterator rbegin() noexcept { return std::rbegin(pairs_); }
+        reverse_iterator rend() noexcept { return std::rend(pairs_); }
+
         Pair_t & Front() { return pairs_.front(); }
         Pair_t & Back() { return pairs_.back(); }
 
         const const_iterator begin() const noexcept { return std::begin(pairs_); }
         const const_iterator end() const noexcept { return std::end(pairs_); }
+
+        const const_reverse_iterator rbegin() const noexcept { return std::rbegin(pairs_); }
+        const const_reverse_iterator rend() const noexcept { return std::rend(pairs_); }
+
         const Pair_t & Front() const { return pairs_.front(); }
         const Pair_t & Back() const { return pairs_.back(); }
 
@@ -189,9 +199,23 @@ namespace misc
     }
 
     template <typename Key_t, typename Value_t>
+    typename VectorMap<Key_t, Value_t>::reverse_iterator
+        rbegin(VectorMap<Key_t, Value_t> & cpm) noexcept
+    {
+        return cpm.rbegin();
+    }
+
+    template <typename Key_t, typename Value_t>
     typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm) noexcept
     {
         return cpm.end();
+    }
+
+    template <typename Key_t, typename Value_t>
+    typename VectorMap<Key_t, Value_t>::reverse_iterator
+        rend(VectorMap<Key_t, Value_t> & cpm) noexcept
+    {
+        return cpm.rend();
     }
 
     template <typename Key_t, typename Value_t>
@@ -202,10 +226,24 @@ namespace misc
     }
 
     template <typename Key_t, typename Value_t>
+    const typename VectorMap<Key_t, Value_t>::const_reverse_iterator
+        rbegin(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return CPM.rbegin();
+    }
+
+    template <typename Key_t, typename Value_t>
     const typename VectorMap<Key_t, Value_t>::const_iterator
         end(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.end();
+    }
+
+    template <typename Key_t, typename Value_t>
+    const typename VectorMap<Key_t, Value_t>::const_reverse_iterator
+        rend(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return CPM.rend();
     }
 
     template <typename Key_t, typename Value_t>

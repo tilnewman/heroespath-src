@@ -96,8 +96,7 @@ namespace combat
                         }
                         else
                         {
-                            e = static_cast<T>(
-                                static_cast<unsigned int>(e) | NEXT_ENUMCHANCE_PAIR.first);
+                            e |= NEXT_ENUMCHANCE_PAIR.first;
                         }
                     }
                 }

@@ -44,10 +44,10 @@ namespace popup
 
         imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
-        auto const SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
+        auto const SYM_SCALE { sfml_util::MapByRes(0.5f, 2.0f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        sfml_util::CenterSprite(xSymbolSprite_, imagesRect_);
+        sfml_util::CenterTo(xSymbolSprite_, imagesRect_);
 
         sf::FloatRect charDetailsTextRegion(textRegion_);
 
@@ -55,7 +55,7 @@ namespace popup
 
         charDetailsTextRegion.height = 0.0f;
 
-        auto charDetailsTextInfo{ popupInfo_.TextInfo() };
+        auto charDetailsTextInfo { popupInfo_.TextInfo() };
         charDetailsTextInfo.text = " ";
 
         charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -155,7 +155,7 @@ namespace popup
             return;
         }
 
-        auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
+        auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
             imageIndex_) };
 
         std::ostringstream ss;
@@ -185,7 +185,7 @@ namespace popup
     {
         if (imageIndex_ < popupInfo_.TextVec().size())
         {
-            auto const TEXT{ popupInfo_.TextVec()[imageIndex_] };
+            auto const TEXT { popupInfo_.TextVec()[imageIndex_] };
 
             if (TEXT.empty())
             {
@@ -213,7 +213,7 @@ namespace popup
 
     void PopupStageCharacterSelect::SetCurrentTexture(const std::size_t IMAGE_INDEX)
     {
-        auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
+        auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
             IMAGE_INDEX) };
 
         sfml_util::gui::CreatureImageLoader creatureImageLoader;
