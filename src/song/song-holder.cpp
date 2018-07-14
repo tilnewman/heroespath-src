@@ -108,7 +108,7 @@ namespace song
                 "song::Holder::Test() Starting Tests...");
         }
 
-        static auto songIndex { 0 };
+        static std::size_t songIndex { 0 };
         if (songIndex < Songs::Count)
         {
             auto const NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };

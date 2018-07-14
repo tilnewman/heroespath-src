@@ -76,7 +76,7 @@ namespace misc
             const std::vector<T> & B_VEC,
             const SortOpt SORT_OPTION = SortOpt::None)
         {
-            std::vector<T> finalVec{ A_VEC };
+            std::vector<T> finalVec { A_VEC };
             Append(B_VEC, finalVec, SORT_OPTION);
             return finalVec;
         }
@@ -84,7 +84,7 @@ namespace misc
         template <typename T>
         static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC, const T toExclude)
         {
-            std::vector<T> v{ toExclude };
+            std::vector<T> v { toExclude };
             return Exclude(ORIG_VEC, v);
         }
 
@@ -154,20 +154,20 @@ namespace misc
             const std::vector<T> & VEC,
             const std::size_t MAX_COUNT = 0,
             const JoinOpt OPTIONS = JoinOpt::None,
-            const std::string (*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string {
+            const std::string (*TO_STRING_FUNC)(const T &) = [](const T & X) -> const std::string {
                 std::ostringstream ss;
-                ss << x;
+                ss << X;
                 return ss.str();
             },
             bool (*ONLY_IF_FUNC)(const T) = [](const T) -> bool { return true; })
         {
-            const std::size_t VEC_ELEMENT_COUNT{ VEC.size() };
+            const std::size_t VEC_ELEMENT_COUNT { VEC.size() };
             if (VEC_ELEMENT_COUNT == 0)
             {
                 return ""; // skip wrapping on empty case
             }
 
-            std::size_t toJoinCount{ 0 };
+            std::size_t toJoinCount { 0 };
             std::vector<T> toJoinVec;
             for (auto const & NEXT_ELEMENT : VEC)
             {
@@ -181,7 +181,7 @@ namespace misc
                 }
             }
 
-            const std::size_t TO_JOIN_ELEMENT_COUNT{ toJoinVec.size() };
+            const std::size_t TO_JOIN_ELEMENT_COUNT { toJoinVec.size() };
             if (TO_JOIN_ELEMENT_COUNT == 0)
             {
                 return ""; // skip wrapping on empty case
@@ -260,14 +260,14 @@ namespace misc
                 return 0;
             }
 
-            auto const AVERAGE_DOUBLE{ static_cast<double>(AVERAGE_ORIG) };
+            auto const AVERAGE_DOUBLE { static_cast<double>(AVERAGE_ORIG) };
 
-            double deviationSum{ 0.0 };
+            double deviationSum { 0.0 };
 
-            std::size_t i{ ((WILL_IGNORE_FIRST_VALUE) ? 1U : 0U) };
+            std::size_t i { ((WILL_IGNORE_FIRST_VALUE) ? 1U : 0U) };
             for (; i < (COUNT - 1); ++i)
             {
-                auto const NEXT_VALUE{ static_cast<double>(VALUES[i]) };
+                auto const NEXT_VALUE { static_cast<double>(VALUES[i]) };
                 deviationSum += std::pow((NEXT_VALUE - AVERAGE_DOUBLE), 2);
             }
 
@@ -282,27 +282,25 @@ namespace misc
                 return false;
             }
 
-            for (auto const & NEXT : A)
-            {
-                if (std::find(B.begin(), B.end(), NEXT) == B.end())
-                {
-                    return false;
-                }
-            }
+            auto a { A };
+            auto b { B };
 
-            return true;
+            std::sort(a.begin(), a.end());
+            std::sort(b.begin(), b.end());
+
+            return (a == b);
         }
 
         template <typename T>
         static bool OrderlessCompareLess(const std::vector<T> & A, const std::vector<T> & B)
         {
-            auto a{ A };
-            auto b{ B };
+            auto a { A };
+            auto b { B };
 
             std::sort(a.begin(), a.end());
             std::sort(b.begin(), b.end());
 
-            return a < b;
+            return (a < b);
         }
 
         template <typename T>

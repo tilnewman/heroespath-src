@@ -9,6 +9,7 @@
 //
 // vector-map.hpp
 //
+#include "misc/assertlogandthrow.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vectors.hpp"
 
@@ -43,44 +44,43 @@ namespace misc
         using PairVec_t = std::vector<Pair_t>;
         using iterator = typename PairVec_t::iterator;
         using const_iterator = typename PairVec_t::const_iterator;
-        using reverse_iterator = typename PairVec_t::reverse_iterator;
-        using const_reverse_iterator = typename PairVec_t::const_reverse_iterator;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
         VectorMap()
             : pairs_()
         {}
 
         // it is up to the caller to ensure that no duplicates are added, if you care...
+        void Append(const Pair_t & PAIR) { pairs_.push_back(PAIR); }
+
+        // it is up to the caller to ensure that no duplicates are added, if you care...
         void Append(const Key_t & KEY, const Value_t & VALUE)
         {
-            pairs_.push_back(std::make_pair(KEY, VALUE));
+            Append(std::make_pair(KEY, VALUE));
+        }
+
+        bool AppendIfKeyNotFound(const Pair_t & PAIR)
+        {
+            if (Exists(PAIR.first))
+            {
+                return false;
+            }
+            else
+            {
+                Append(PAIR);
+                return true;
+            }
         }
 
         bool AppendIfKeyNotFound(const Key_t & KEY, const Value_t & VALUE)
         {
-            if (Exists(KEY) == false)
-            {
-                pairs_.push_back(std::make_pair(KEY, VALUE));
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return AppendIfKeyNotFound(std::make_pair(KEY, VALUE));
         }
 
-        bool Exists(const Key_t & KEY) const
-        {
-            for (auto const & PAIR : pairs_)
-            {
-                if (KEY == PAIR.first)
-                {
-                    return true;
-                }
-            }
+        bool Exists(const Key_t & KEY) const { return (Find(KEY) != std::end(pairs_)); }
 
-            return false;
-        }
+        bool Exists(const Pair_t & PAIR) const { return (Find(PAIR) != std::end(pairs_)); }
 
         Value_t & operator[](const Key_t & KEY)
         {
@@ -98,86 +98,140 @@ namespace misc
 
         bool Find(const Key_t & KEY, Value_t & thing) const
         {
-            for (auto const & PAIR : pairs_)
-            {
-                if (KEY == PAIR.first)
-                {
-                    thing = PAIR.second;
-                    return true;
-                }
-            }
+            const auto FOUND_ITER { Find(KEY) };
 
-            return false;
+            if (FOUND_ITER == std::end(pairs_))
+            {
+                return false;
+            }
+            else
+            {
+                thing = FOUND_ITER->second;
+                return true;
+            }
         }
 
         iterator Find(const Key_t & KEY)
         {
-            for (iterator iter(pairs_.begin()); iter != std::end(pairs_); ++iter)
-            {
-                if (KEY == iter->first)
-                {
-                    return iter;
-                }
-            }
+            return std::find_if(std::begin(pairs_), std::end(pairs_), [&KEY](const auto & PAIR) {
+                return (PAIR.first == KEY);
+            });
+        }
 
-            return std::end(pairs_);
+        iterator Find(const Pair_t & PAIR)
+        {
+            return std::find(std::begin(pairs_), std::end(pairs_), PAIR);
         }
 
         const_iterator Find(const Key_t & KEY) const
         {
-            for (const_iterator iter(pairs_.begin()); iter != std::end(pairs_); ++iter)
-            {
-                if (KEY == iter->first)
-                {
-                    return iter;
-                }
-            }
-
-            return std::end(pairs_);
+            return std::find_if(std::begin(pairs_), std::end(pairs_), [&KEY](const auto & PAIR) {
+                return (PAIR.first == KEY);
+            });
         }
 
-        void Erase(const Key_t & KEY)
+        const_iterator Find(const Pair_t & PAIR) const
         {
+            return std::find(std::begin(pairs_), std::end(pairs_), PAIR);
+        }
+
+        // returns the number of elements erased
+        std::size_t Erase(const Key_t & KEY)
+        {
+            const auto ORIG_SIZE { Size() };
+
             pairs_.erase(
                 std::remove_if(
                     std::begin(pairs_),
                     std::end(pairs_),
                     [&KEY](auto const & PAIR) { return (PAIR.first == KEY); }),
                 std::end(pairs_));
+
+            return ORIG_SIZE - Size();
         }
 
-        std::size_t Size() const { return pairs_.size(); }
+        // returns the number of elements erased
+        std::size_t Erase(const Pair_t & PAIR)
+        {
+            const auto ORIG_SIZE { Size() };
+            pairs_.erase(std::remove(std::begin(pairs_), std::end(pairs_), PAIR), std::end(pairs_));
+            return ORIG_SIZE - Size();
+        }
 
-        bool Empty() const { return pairs_.empty(); }
+        std::size_t Size() const noexcept { return pairs_.size(); }
 
-        void Clear() { return pairs_.clear(); }
+        bool Empty() const noexcept { return pairs_.empty(); }
+
+        void Clear() noexcept { return pairs_.clear(); }
 
         void Reserve(const std::size_t NEW_CAPACITY) { pairs_.reserve(NEW_CAPACITY); }
 
-        iterator begin() noexcept { return std::begin(pairs_); }
-        iterator end() noexcept { return std::end(pairs_); }
+        void Capacity() const noexcept { return pairs_.capacity(); }
 
-        reverse_iterator rbegin() noexcept { return std::rbegin(pairs_); }
-        reverse_iterator rend() noexcept { return std::rend(pairs_); }
+        void MaxSize() const noexcept { return pairs_.max_size(); }
 
-        Pair_t & Front() { return pairs_.front(); }
-        Pair_t & Back() { return pairs_.back(); }
+        constexpr iterator begin() noexcept { return std::begin(pairs_); }
+        constexpr iterator end() noexcept { return std::end(pairs_); }
 
-        const const_iterator begin() const noexcept { return std::begin(pairs_); }
-        const const_iterator end() const noexcept { return std::end(pairs_); }
+        constexpr const_iterator begin() const noexcept { return std::begin(pairs_); }
+        constexpr const_iterator end() const noexcept { return std::end(pairs_); }
 
-        const const_reverse_iterator rbegin() const noexcept { return std::rbegin(pairs_); }
-        const const_reverse_iterator rend() const noexcept { return std::rend(pairs_); }
+        constexpr const_iterator cbegin() const noexcept { return begin(); }
+        constexpr const_iterator cend() const noexcept { return end(); }
 
-        const Pair_t & Front() const { return pairs_.front(); }
-        const Pair_t & Back() const { return pairs_.back(); }
+        constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+        constexpr reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+
+        constexpr const_reverse_iterator rbegin() const noexcept
+        {
+            return const_reverse_iterator(end());
+        }
+        constexpr const_reverse_iterator rend() const noexcept
+        {
+            return const_reverse_iterator(begin());
+        }
+
+        constexpr const_reverse_iterator crbegin() const noexcept { return rbegin(); }
+        constexpr const_reverse_iterator crend() const noexcept { return rend(); }
+
+        Pair_t & Front()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (Empty() == false), "misc::VectorMap::Front() non-const, called when empty.");
+
+            return pairs_.front();
+        }
+
+        Pair_t & Back()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (Empty() == false), "misc::VectorMap::Back() non-const, called when empty.");
+
+            return pairs_.back();
+        }
+
+        const Pair_t & Front() const
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (Empty() == false), "misc::VectorMap::Front() const, called when empty.");
+
+            return pairs_.front();
+        }
+
+        const Pair_t & Back() const
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (Empty() == false), "misc::VectorMap::Back() const, called when empty.");
+
+            return pairs_.back();
+        }
 
         // clang-format off
         friend bool
-            operator== <> (const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+            operator== <>(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
 
         friend bool
-            operator< <> (const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+            operator< <>(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
         // clang-format on
 
     private:
@@ -193,57 +247,75 @@ namespace misc
     };
 
     template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm) noexcept
+    constexpr auto begin(VectorMap<Key_t, Value_t> & cpm) noexcept
     {
         return cpm.begin();
     }
 
     template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::reverse_iterator
-        rbegin(VectorMap<Key_t, Value_t> & cpm) noexcept
-    {
-        return cpm.rbegin();
-    }
-
-    template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm) noexcept
-    {
-        return cpm.end();
-    }
-
-    template <typename Key_t, typename Value_t>
-    typename VectorMap<Key_t, Value_t>::reverse_iterator
-        rend(VectorMap<Key_t, Value_t> & cpm) noexcept
-    {
-        return cpm.rend();
-    }
-
-    template <typename Key_t, typename Value_t>
-    const typename VectorMap<Key_t, Value_t>::const_iterator
-        begin(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    constexpr auto begin(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.begin();
     }
 
     template <typename Key_t, typename Value_t>
-    const typename VectorMap<Key_t, Value_t>::const_reverse_iterator
-        rbegin(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    constexpr auto cbegin(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return begin(CPM);
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto rbegin(VectorMap<Key_t, Value_t> & cpm) noexcept
+    {
+        return cpm.rbegin();
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto rbegin(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.rbegin();
     }
 
     template <typename Key_t, typename Value_t>
-    const typename VectorMap<Key_t, Value_t>::const_iterator
-        end(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    constexpr auto crbegin(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return rbegin(CPM);
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto end(VectorMap<Key_t, Value_t> & cpm) noexcept
+    {
+        return cpm.end();
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto end(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.end();
     }
 
     template <typename Key_t, typename Value_t>
-    const typename VectorMap<Key_t, Value_t>::const_reverse_iterator
-        rend(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    constexpr auto cend(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return end(CPM);
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto rend(VectorMap<Key_t, Value_t> & cpm) noexcept
+    {
+        return cpm.rend();
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto rend(const VectorMap<Key_t, Value_t> & CPM) noexcept
     {
         return CPM.rend();
+    }
+
+    template <typename Key_t, typename Value_t>
+    constexpr auto crend(const VectorMap<Key_t, Value_t> & CPM) noexcept
+    {
+        return rend(CPM);
     }
 
     template <typename Key_t, typename Value_t>
@@ -262,6 +334,24 @@ namespace misc
     bool operator<(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
     {
         return misc::Vector::OrderlessCompareLess(L.pairs_, R.pairs_);
+    }
+
+    template <typename Key_t, typename Value_t>
+    bool operator>(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return (R < L);
+    }
+
+    template <typename Key_t, typename Value_t>
+    bool operator<=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return !(L > R);
+    }
+
+    template <typename Key_t, typename Value_t>
+    bool operator>=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return !(L < R);
     }
 
 } // namespace misc

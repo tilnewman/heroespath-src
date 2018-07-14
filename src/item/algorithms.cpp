@@ -25,7 +25,7 @@ namespace item
         const misc::Vector::JoinOpt OPTIONS)
     {
         return misc::Vector::Join<ItemPtr_t>(
-            ITEM_PVEC, MAX_COUNT, OPTIONS, [](auto const ITEM_PTR) -> const std::string {
+            ITEM_PVEC, MAX_COUNT, OPTIONS, [](auto const & ITEM_PTR) -> const std::string {
                 return ITEM_PTR->Name();
             });
     }

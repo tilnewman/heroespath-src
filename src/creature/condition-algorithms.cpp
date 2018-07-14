@@ -31,7 +31,7 @@ namespace creature
             const SortOpt SORT_OPTION,
             const misc::Vector::JoinOpt JOIN_OPTIONS)
         {
-            auto tempVec{ CONDITIONS_VEC };
+            auto tempVec { CONDITIONS_VEC };
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             SortBySeverity(tempVec, SORT_OPTION);
 
@@ -39,7 +39,9 @@ namespace creature
                 tempVec,
                 MAX_COUNT,
                 JOIN_OPTIONS,
-                [](const Conditions::Enum E) -> const std::string { return Conditions::Name(E); });
+                [](const Conditions::Enum & E) -> const std::string {
+                    return Conditions::Name(E);
+                });
         }
 
         void Algorithms::SortBySeverity(CondEnumVec_t & conditionsVec, const SortOpt SORT_OPTION)
@@ -65,7 +67,7 @@ namespace creature
         const CondEnumVec_t Algorithms::SortBySeverityCopy(
             const CondEnumVec_t & CONDITIONS_VEC, const SortOpt SORT_OPTION)
         {
-            auto sortedConditionsVec{ CONDITIONS_VEC };
+            auto sortedConditionsVec { CONDITIONS_VEC };
             SortBySeverity(sortedConditionsVec, SORT_OPTION);
             return sortedConditionsVec;
         }
@@ -91,7 +93,7 @@ namespace creature
         const CondEnumVec_t Algorithms::RemoveByMinSeverityCopy(
             const CondEnumVec_t & CONDITIONS_VEC, const std::size_t MIN_SEVERITY)
         {
-            auto tempVec{ CONDITIONS_VEC };
+            auto tempVec { CONDITIONS_VEC };
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             return tempVec;
         }

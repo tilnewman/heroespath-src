@@ -29,14 +29,14 @@ namespace creature
 
     const CreaturePVec_t Algorithms::MakeIntoVector(const CreaturePtr_t CREATURE_PTR)
     {
-        return CreaturePVec_t{ CREATURE_PTR };
+        return CreaturePVec_t { CREATURE_PTR };
     }
 
     std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS)
     {
-        auto const PLAYERS_PVEC{ game::Game::Instance()->State().Party().Characters() };
+        auto const PLAYERS_PVEC { game::Game::Instance()->State().Party().Characters() };
 
-        std::size_t count{ 0 };
+        std::size_t count { 0 };
         for (auto const & NEXT_PLAYER_PTR : PLAYERS_PVEC)
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_PLAYER_PTR->IsAlive())
@@ -70,7 +70,7 @@ namespace creature
 
     std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS)
     {
-        std::size_t count{ 0 };
+        std::size_t count { 0 };
         for (auto const & NEXT_NONPLAYER_PTR : combat::Encounter::Instance()->LivingNonPlayers())
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_NONPLAYER_PTR->IsAlive())
@@ -150,7 +150,7 @@ namespace creature
                 CREATURE_PVEC,
                 MAX_COUNT,
                 JOIN_OPTIONS,
-                [](const CreaturePtr_t CPTR) -> const std::string {
+                [](const CreaturePtr_t & CPTR) -> const std::string {
                     return CPTR->NameAndRaceAndRole();
                 });
         }
@@ -160,7 +160,7 @@ namespace creature
                 CREATURE_PVEC,
                 MAX_COUNT,
                 JOIN_OPTIONS,
-                [](const CreaturePtr_t CPTR) -> const std::string { return CPTR->Name(); });
+                [](const CreaturePtr_t & CPTR) -> const std::string { return CPTR->Name(); });
         }
     }
 
@@ -522,7 +522,7 @@ namespace creature
                 [&](auto const & PTR) {
                     if (COND_ALL_OPTION == CondAllOpt::HasAll)
                     {
-                        auto hasAll{ true };
+                        auto hasAll { true };
                         for (auto const NEXT_COND_ENUM : CONDS_VEC)
                         {
                             if (PTR->HasCondition(NEXT_COND_ENUM)
