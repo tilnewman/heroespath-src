@@ -18,6 +18,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace boost
@@ -70,6 +71,8 @@ namespace sfml_util
 
         std::size_t RefCount() const;
 
+        friend void swap(CachedTexture & l, CachedTexture & r);
+
         friend bool operator==(const CachedTexture & L, const CachedTexture & R);
         friend bool operator!=(const CachedTexture & L, const CachedTexture & R);
 
@@ -81,9 +84,19 @@ namespace sfml_util
         TextureOpt::Enum options_;
     };
 
+    inline void swap(CachedTexture & l, CachedTexture & r)
+    {
+        // enable ADL (not always necessary, but good practice)
+        using std::swap;
+
+        swap(l.path_, r.path_);
+        swap(l.index_, r.index_);
+        swap(l.options_, r.options_);
+    }
+
     inline bool operator==(const CachedTexture & L, const CachedTexture & R)
     {
-        return ((L.path_ == R.path_) && (L.index_ == R.index_) && (R.options_ == L.options_));
+        return ((L.index_ == R.index_) && (R.options_ == L.options_) && (L.path_ == R.path_));
     }
 
     inline bool operator!=(const CachedTexture & L, const CachedTexture & R) { return !(L == R); }
@@ -122,6 +135,8 @@ namespace sfml_util
         const sf::Texture & Front() const;
         const sf::Texture & Back() const;
 
+        friend void swap(CachedTextures & l, CachedTextures & r);
+
         friend bool operator==(const CachedTextures & L, const CachedTextures & R);
         friend bool operator!=(const CachedTextures & L, const CachedTextures & R);
 
@@ -133,9 +148,19 @@ namespace sfml_util
         TextureOpt::Enum options_;
     };
 
+    inline void swap(CachedTextures & l, CachedTextures & r)
+    {
+        // enable ADL (not always necessary, but good practice)
+        using std::swap;
+
+        swap(l.path_, r.path_);
+        swap(l.indexes_, r.indexes_);
+        swap(l.options_, r.options_);
+    }
+
     inline bool operator==(const CachedTextures & L, const CachedTextures & R)
     {
-        return ((L.path_ == R.path_) && (L.options_ == R.options_) && (L.indexes_ == R.indexes_));
+        return ((L.options_ == R.options_) && (L.path_ == R.path_) && (L.indexes_ == R.indexes_));
     }
 
     inline bool operator!=(const CachedTextures & L, const CachedTextures & R) { return !(L == R); }

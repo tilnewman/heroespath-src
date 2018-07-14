@@ -30,8 +30,7 @@ namespace sfml_util
     {
         if (CT.path_.empty() == false)
         {
-            // AddByPath...() call required to increment the reference count because in this context
-            // a copy is made
+            // this call is required because copying must always increment the ref_count
             index_ = TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
         }
     }
@@ -53,8 +52,7 @@ namespace sfml_util
 
             if (CT.path_.empty() == false)
             {
-                // AddByPath...() call required to increment the reference count because in this
-                // context a copy is made
+                // this call is required because copying must always increment the ref_count
                 index_ = TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
             }
 
@@ -142,8 +140,7 @@ namespace sfml_util
     {
         if (CT.path_.empty() == false)
         {
-            // this call required to increment the reference count because in
-            // this context a copy is made
+            // this call is required because copying must always increment the ref_count
             indexes_ = TextureCache::Instance()->AddDirectoryByPath(CT.path_, CT.options_);
         }
     }
@@ -165,8 +162,7 @@ namespace sfml_util
 
             if (CT.path_.empty() == false)
             {
-                // this call required to increment the reference count because in this context a
-                // copy is made
+                // this call is required because copying must always increment the ref_count
                 indexes_ = TextureCache::Instance()->AddDirectoryByPath(CT.path_, CT.options_);
             }
 

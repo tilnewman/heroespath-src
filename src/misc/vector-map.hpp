@@ -186,6 +186,7 @@ namespace misc
         {
             return const_reverse_iterator(end());
         }
+
         constexpr const_reverse_iterator rend() const noexcept
         {
             return const_reverse_iterator(begin());
