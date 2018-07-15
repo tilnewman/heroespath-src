@@ -41,11 +41,11 @@ namespace stage
               {},
               false)
         , interactionManager_(interactionManager)
-        , topImage_("", true, 0.0f, sfml_util::ScreenRatioToPixelsVert(0.12f))
+        , stageTitle_("", true, 0.0f, sfml_util::ScreenRatioToPixelsVert(0.12f))
         , bottomImage_(0.75f, true, sf::Color::White)
         , MAP_OUTER_REGION_(
               sfml_util::MapByRes(75.0f, 100.0f),
-              topImage_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
+              stageTitle_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
               sfml_util::MapByRes(500.0f, 3000.0f),
               sfml_util::MapByRes(250.0f, 2500.0f))
         , mapFrame_()
@@ -80,7 +80,7 @@ namespace stage
     {
         target.draw(backgroundSprite_, STATES);
         target.draw(bottomImage_, STATES);
-        target.draw(topImage_, STATES);
+        target.draw(stageTitle_, STATES);
         target.draw(*characterListUPtr_, STATES);
         target.draw(*mapUPtr_, STATES);
         target.draw(mapFrame_, STATES);

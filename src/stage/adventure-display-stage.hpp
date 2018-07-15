@@ -66,7 +66,7 @@ namespace stage
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
         interact::InteractionManager & interactionManager_;
-        sfml_util::StageTitle topImage_;
+        sfml_util::StageTitle stageTitle_;
         sfml_util::BottomSymbol bottomImage_;
         const sf::FloatRect MAP_OUTER_REGION_;
         sfml_util::gui::PictureFrame mapFrame_;
