@@ -44,26 +44,6 @@ namespace sfml_util
         }
     }
 
-    SfxWrapper::SfxWrapper(SfxWrapper && SFXW)
-        : which_(SFXW.which_)
-        , soundUPtr_(std::move(SFXW.soundUPtr_))
-        , bufferUPtr_(std::move(SFXW.bufferUPtr_))
-        , volumeRatio_(SFXW.volumeRatio_)
-    {}
-
-    SfxWrapper & SfxWrapper::operator=(SfxWrapper && SFXW)
-    {
-        if (&SFXW != this)
-        {
-            which_ = SFXW.which_;
-            soundUPtr_ = std::move(SFXW.soundUPtr_);
-            bufferUPtr_ = std::move(SFXW.bufferUPtr_);
-            volumeRatio_ = SFXW.volumeRatio_;
-        }
-
-        return *this;
-    }
-
     bool SfxWrapper::IsValid() const
     {
         return (

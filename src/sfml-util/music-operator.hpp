@@ -51,10 +51,6 @@ namespace sfml_util
     class MusicOperator
     {
     public:
-        MusicOperator(const MusicOperator &) = delete;
-        MusicOperator & operator=(const MusicOperator &) = delete;
-
-    public:
         explicit MusicOperator(
             const MusicInfo & MUSIC_INFO = MusicInfo(),
             MusicUPtr_t musicUPtr = MusicUPtr_t(),
@@ -63,9 +59,10 @@ namespace sfml_util
 
         virtual ~MusicOperator();
 
-        MusicOperator(MusicOperator &&);
-
-        MusicOperator & operator=(MusicOperator &&);
+        // the unique_ptr member will implicitly delete copy operations
+        // default move operations will suffice
+        MusicOperator(MusicOperator &&) = default;
+        MusicOperator & operator=(MusicOperator &&) = default;
 
         bool IsValid() const;
 

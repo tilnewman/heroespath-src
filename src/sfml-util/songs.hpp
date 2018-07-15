@@ -38,6 +38,7 @@ namespace sfml_util
     inline bool operator!=(const SongSet & L, const SongSet & R) { return !(L == R); }
 
     using SongSetVec_t = std::vector<SongSet>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -26,12 +26,6 @@ namespace sfml_util
     class SfxWrapper
     {
     public:
-        SfxWrapper(const SfxWrapper &) = delete;
-        SfxWrapper & operator=(const SfxWrapper &) = delete;
-
-        SfxWrapper(SfxWrapper &&);
-        SfxWrapper & operator=(SfxWrapper &&);
-
         explicit SfxWrapper(
             const sound_effect::Enum ENUM = sound_effect::Count,
             SoundUPtr_t soundUPtr = SoundUPtr_t(),
@@ -40,6 +34,11 @@ namespace sfml_util
             const float VOLUME_RATIO = 1.0f);
 
         ~SfxWrapper();
+
+        // the unique_ptr members will implicitly delete copy operations
+        // default move operations will suffice
+        SfxWrapper(SfxWrapper &&) = default;
+        SfxWrapper & operator=(SfxWrapper &&) = default;
 
         bool IsValid() const;
 

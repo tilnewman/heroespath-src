@@ -93,30 +93,6 @@ namespace sfml_util
         }
     }
 
-    MusicOperator::MusicOperator(MusicOperator && MO)
-        : info_(MO.info_)
-        , targetVolume_(MO.targetVolume_)
-        , fadeInMult_(MO.fadeInMult_)
-        , fadeOutMult_(MO.fadeOutMult_)
-        , killAfterFadeOut_(MO.killAfterFadeOut_)
-        , musicUPtr_(std::move(MO.musicUPtr_))
-    {}
-
-    MusicOperator & MusicOperator::operator=(MusicOperator && MO)
-    {
-        if (&MO != this)
-        {
-            info_ = MO.info_;
-            targetVolume_ = MO.targetVolume_;
-            fadeInMult_ = MO.fadeInMult_;
-            fadeOutMult_ = MO.fadeOutMult_;
-            killAfterFadeOut_ = MO.killAfterFadeOut_;
-            musicUPtr_ = std::move(MO.musicUPtr_);
-        }
-
-        return *this;
-    }
-
     bool MusicOperator::IsValid() const
     {
         return (
@@ -207,7 +183,7 @@ namespace sfml_util
             {
                 fadeOutMult_ = 0.0f;
 
-                auto const DID_FADE_TO_ZERO{ (NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_) };
+                auto const DID_FADE_TO_ZERO { (NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_) };
 
                 if (killAfterFadeOut_ && DID_FADE_TO_ZERO)
                 {

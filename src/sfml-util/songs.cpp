@@ -30,5 +30,6 @@ namespace sfml_util
     {
         return std::tie(L.set, L.op) == std::tie(R.set, R.op);
     }
+
 } // namespace sfml_util
 } // namespace heroespath
