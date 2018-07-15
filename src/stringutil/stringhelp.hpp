@@ -74,7 +74,7 @@ namespace stringhelp
     const std::string NumToStdStr(const T NUM, const std::string & DEFAULT);
 
     // The INPUT_STR is split by SEP_CHAR and appended to outContainer.
-    // Returns the number of strings that were appended to the outContainer -NOT it's final size.
+    // Returns the number of strings that were appended to the outContainer -NOT its final size.
     // Empty string parameters will not crash/throw, as longs as they are null terminated.
     // An empty separator string will result in the entire unmodified input string being appended to
     // outContainer. Separator chars are removed, and not added to the outContainer in any way. Trim

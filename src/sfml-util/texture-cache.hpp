@@ -44,7 +44,7 @@ namespace sfml_util
 
     using PathOptToIndexesMap_t = misc::VectorMap<PathOptPair_t, TextureIndexes>;
 
-    using PathOptToIndexesPair_t = PathOptToIndexesMap_t::Pair_t;
+    using PathOptToIndexesPair_t = PathOptToIndexesMap_t::value_type;
 
     // Responsible for storing references counted textures paired with image options (such as
     // flip/invert/ect.) that can added and removed by the filesystem path but can be accessed by

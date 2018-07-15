@@ -80,7 +80,7 @@ namespace sfml_util
         CenterTo(a, B, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // rescales s to SCALE_V and then repositions it to the center of B (global)
+    // rescales s (local) to SCALE_V and then repositions it to the center of R
     template <
         typename T,
         typename Scale_t,
@@ -91,7 +91,9 @@ namespace sfml_util
 
         s.setPosition(
             CenterOf(sf::FloatRect(R))
-            - (sf::Vector2f(s.getGlobalBounds().width, s.getGlobalBounds().height) * 0.5f));
+            - sf::Vector2f(
+                  s.getLocalBounds().width * SCALE_V.x * 0.5f,
+                  s.getLocalBounds().height * SCALE_V.y * 0.5f));
     }
 
     // rescales s to SCALE and then repositions it to the center of B (global)

@@ -147,16 +147,16 @@ namespace combat
 
     bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const IS_RUNAWAY_PLAYER{
+        auto const IS_RUNAWAY_PLAYER {
             std::find(runawayPlayersVec_.begin(), runawayPlayersVec_.end(), CREATURE_PTR)
             != runawayPlayersVec_.end()
         };
 
-        auto const IS_RUNAWAY_NONPLAYER{ std::find(
-                                             std::begin(runawayNonPlayerPartyPVec_),
-                                             std::end(runawayNonPlayerPartyPVec_),
-                                             CREATURE_PTR)
-                                         != std::end(runawayNonPlayerPartyPVec_) };
+        auto const IS_RUNAWAY_NONPLAYER { std::find(
+                                              std::begin(runawayNonPlayerPartyPVec_),
+                                              std::end(runawayNonPlayerPartyPVec_),
+                                              CREATURE_PTR)
+                                          != std::end(runawayNonPlayerPartyPVec_) };
 
         return (IS_RUNAWAY_PLAYER || IS_RUNAWAY_NONPLAYER);
     }
@@ -184,7 +184,7 @@ namespace combat
 
     const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const FOUND_ITER{ turnInfoMap_.Find(CREATURE_PTR) };
+        auto const FOUND_ITER { turnInfoMap_.Find(CREATURE_PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (FOUND_ITER != turnInfoMap_.end()),
@@ -237,7 +237,7 @@ namespace combat
         // nonPlayerPartyPvec_ must be left alone because it will have already been populated.
         // Okay, wait, that is the responsibility of the Adventure Stage, and it hasn't been
         // implemented yet... SO TODO This will need to be triggered by the Adventure stage and
-        // moved to it's own object responsible for creating random sets of creatures for each
+        // moved to its own object responsible for creating random sets of creatures for each
         // fight.
         if (game::Game::Instance()->State().IsNewGame())
         {
@@ -272,7 +272,7 @@ namespace combat
         //  - runawayPlayersVec_ should be empty
         //  - nonPlayerPartyPVec_ should be emptied into deadNonPlayerPartyPVec_
         //  - deadNonPlayerPartyPVec_ retains all enemy CreaturePtr_ts for looting in Treasure Stage
-        //  - runawayNonPlayerPartyPVec_ should be empty, having all it's pointers
+        //  - runawayNonPlayerPartyPVec_ should be empty, having all its pointers
         //    free'd by the CreatureWarehouse because they will not contribute to looting during
         //    Treasure Stage and are no longer needed.
         //  - So all ...PVecs should be empty except deadNonPlayerPartyPVec_ unless all enemies ran
@@ -350,7 +350,7 @@ namespace combat
         //    will be free'd by the ItemWarehouse.
         //  - Everything in deadNonPlayerItemsHeld_ and deadNonPlayerItemsLockbox_ will be
         //    zero'd.
-        //  - deadNonPlayerPartyPVec_ will be empty and all it's held pointers free'd.
+        //  - deadNonPlayerPartyPVec_ will be empty and all its held pointers free'd.
         //
         item::ItemWarehouse::Access().Free(deadNonPlayerItemsHeld_.items_pvec);
         deadNonPlayerItemsHeld_.Reset();
@@ -363,14 +363,14 @@ namespace combat
 
     const item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
     {
-        item::ItemCache copy{ deadNonPlayerItemsHeld_ };
+        item::ItemCache copy { deadNonPlayerItemsHeld_ };
         deadNonPlayerItemsHeld_.Reset();
         return copy;
     }
 
     const item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
     {
-        item::ItemCache copy{ deadNonPlayerItemsLockbox_ };
+        item::ItemCache copy { deadNonPlayerItemsLockbox_ };
         deadNonPlayerItemsLockbox_.Reset();
         return copy;
     }
@@ -457,13 +457,13 @@ namespace combat
         std::ostringstream ss;
         for (auto itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
         {
-            auto const NEXT_RACEROLECOUNT_PAIR{ *itr };
+            auto const NEXT_RACEROLECOUNT_PAIR { *itr };
 
             if (itr != raceRoleMap.begin())
             {
                 ss << ", ";
 
-                auto nextItr{ itr };
+                auto nextItr { itr };
                 std::advance(nextItr, 1);
                 if (nextItr == raceRoleMap.end())
                 {

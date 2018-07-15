@@ -89,7 +89,8 @@ namespace stage
     void MainMenuStage::Setup()
     {
         // title image
-        sfml_util::ScaleSize(titleSprite_, sfml_util::MapByRes(0.5f, 3.0f));
+        const auto TITLE_SCALE { sfml_util::MapByRes(0.5f, 3.0f) };
+        titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
 
         titleSprite_.setPosition(
             sfml_util::DisplayCenterHoriz(titleSprite_.getGlobalBounds().width),

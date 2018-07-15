@@ -210,7 +210,7 @@ namespace sfml_util
         return Size(T, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // returns the size of S scaled by SCALE_V, same as (S.global().width * SCALE_V.x) and
+    // returns the size of S (global) scaled by SCALE_V, same as (S.global().width * SCALE_V.x) and
     // (S.global().height * SCALE_V.y)
     template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
     const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2<Scale_t> & SCALE_V)
@@ -218,7 +218,7 @@ namespace sfml_util
         return Size(S.getGlobalBounds(), SCALE_V);
     }
 
-    // returns the size of S scaled by SCALE, same as (S.global().width/height * SCALE)
+    // returns the size of S (global) scaled by SCALE, same as (S.global().width/height * SCALE)
     template <
         typename Scale_t = float,
         typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
@@ -290,21 +290,6 @@ namespace sfml_util
         ScaleSize(r, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // scales the size of s by SCALE_V, same as (s.global().width *= SCALE_V.x) and
-    // (s.global().height *= SCALE_V.y)
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void ScaleSize(sf::Sprite & s, const sf::Vector2<Scale_t> & SCALE_V)
-    {
-        s.setScale(ScaleCopy(s.getScale(), sf::Vector2f(SCALE_V)));
-    }
-
-    // scales the size of s by SCALE, same as (s.global().width/height *= SCALE)
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void ScaleSize(sf::Sprite & s, const Scale_t SCALE)
-    {
-        ScaleSize(s, sf::Vector2<Scale_t>(SCALE, SCALE));
-    }
-
     // returns a copy of R rescaled to SCALE_V and recentered
     template <
         typename T,
@@ -347,14 +332,14 @@ namespace sfml_util
         ScaleSizeAndReCenter(r, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // scales s by SCALE_V and then re-centers
+    // scales s (local) by SCALE_V and then re-centers
     template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
     void ScaleSizeAndReCenter(sf::Sprite & s, const sf::Vector2<Scale_t> & SCALE_V)
     {
         CenterTo(s, s.getGlobalBounds(), SCALE_V);
     }
 
-    // scales s by SCALE and then re-centers
+    // scales s (local) by SCALE and then re-centers
     template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
     void ScaleSizeAndReCenter(sf::Sprite & s, const Scale_t SCALE)
     {

@@ -315,7 +315,7 @@ namespace sfml_util
         Fit(orig, Size(LIMIT), SCALE);
     }
 
-    // rescales s (global) to the maximum size that fits within LIMIT and then
+    // rescales s (local) to the maximum size that fits within LIMIT and then
     // applies SCALE, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T,
@@ -323,13 +323,16 @@ namespace sfml_util
         typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
     void Fit(sf::Sprite & s, const sf::Vector2<T> & LIMIT, const Scale_t SCALE = 1.0f)
     {
-        const float NEW_SCALE { ScaleThatFits(Size(s), FitCopy(Size(s), LIMIT))
+        const float NEW_SCALE { ScaleThatFits(
+                                    sf::Vector2f(
+                                        s.getLocalBounds().width, s.getLocalBounds().height),
+                                    FitCopy(Size(s), LIMIT))
                                 * static_cast<float>(SCALE) };
 
         s.setScale(NEW_SCALE, NEW_SCALE);
     }
 
-    // rescales s (global) to the maximum size that fits within LIMIT and then
+    // rescales s (local) to the maximum size that fits within LIMIT and then
     // applies SCALE, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T,
@@ -354,7 +357,7 @@ namespace sfml_util
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // and then recentered to ORIG, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T1,
         typename T2,
@@ -364,9 +367,12 @@ namespace sfml_util
         const sf::Rect<T1> & ORIG, const sf::Vector2<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         /*
-        const sf::Vector2f CENTER_V{ CenterOf(ORIG) };
-        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), LIMIT, SCALE)
-        }; const sf::Vector2f NEW_POS_V{ CENTER_V - (NEW_SIZE_V * 0.5f) };
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_ORIG_V{ CenterOf(ORIG) };
+        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), LIMIT, SCALE) };
+        const sf::Vector2f NEW_POS_V{ CENTER_ORIG_V - (NEW_SIZE_V * 0.5f) };
         return { NEW_POS_V, NEW_SIZE_V };
         */
 
@@ -377,7 +383,7 @@ namespace sfml_util
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // and then recentered to ORIG, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T1,
         typename T2,
@@ -397,7 +403,7 @@ namespace sfml_util
     }
 
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // and then recentered to ORIG, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T1,
         typename T2,
@@ -410,7 +416,7 @@ namespace sfml_util
     }
 
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // and then recentered to orig, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T1,
         typename T2,
@@ -430,8 +436,8 @@ namespace sfml_util
     }
 
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
-    // rescaled to SCALE and then recentered, if either LIMIT is zero then that dimmension is
-    // ignored
+    // rescaled to SCALE and then recentered to ORIG, if either LIMIT is zero then that dimmension
+    // is ignored
     template <
         typename T1,
         typename T2,
@@ -441,9 +447,12 @@ namespace sfml_util
         const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
     {
         /*
-        const sf::Vector2f ORIG_CENTER_V{ CenterOf(ORIG) };
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_ORIG_V{ CenterOf(ORIG) };
         const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), Size(LIMIT), SCALE) };
-        const sf::Vector2f NEW_POS_V{ ORIG_CENTER_V - (NEW_SIZE_V * 0.5f) };
+        const sf::Vector2f NEW_POS_V{ CENTER_ORIG_V - (NEW_SIZE_V * 0.5f) };
         return { NEW_POS_V, NEW_SIZE_V };
         */
 
@@ -453,8 +462,35 @@ namespace sfml_util
             FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE)));
     }
 
+    // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE and then centered to LIMIT, if either LIMIT is zero then that dimmension
+    // is ignored
+    template <
+        typename T1,
+        typename T2,
+        typename Scale_t = float,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    constexpr const sf::Rect<T1> FitAndCenterCopy(
+        const sf::Rect<T1> & ORIG, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        /*
+         * This version of the code cannot be used since this function is constexpr.
+         * Keeping this here for reference.
+         *
+        const sf::Vector2f CENTER_LIMIT_V{ CenterOf(LIMIT) };
+        const sf::Vector2f NEW_SIZE_V{ FitCopy(Size(ORIG), Size(LIMIT), SCALE) };
+        const sf::Vector2f NEW_POS_V{ CENTER_LIMIT_V - (NEW_SIZE_V * 0.5f) };
+        return { NEW_POS_V, NEW_SIZE_V };
+        */
+
+        return sf::Rect<T1>(sf::FloatRect(
+            (sf::Vector2f(CenterOf(LIMIT))
+             - (FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE) * 0.5f)),
+            FitCopy(Size(sf::FloatRect(ORIG)), Size(LIMIT), SCALE)));
+    }
+
     // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
-    // SCALE and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // SCALE and then recentered to ORIG, if either LIMIT is zero then that dimmension is ignored
     template <
         typename T1,
         typename T2,
@@ -466,8 +502,22 @@ namespace sfml_util
         orig = FitAndReCenterCopy(orig, LIMIT, SCALE);
     }
 
-    // rescales s (global) to the maximum size that fits within LIMIT and is then rescaled to
-    // SCALE and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
+    // SCALE and then centered to LIMIT, if either LIMIT is zero then that dimmension is ignored
+    template <
+        typename T1,
+        typename T2,
+        typename Scale_t = float,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    constexpr void
+        FitAndCenter(sf::Rect<T1> & orig, const sf::Rect<T2> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        orig = FitAndCenterCopy(orig, LIMIT, SCALE);
+    }
+
+    // rescales s (local) to the maximum size that fits within LIMIT and is then rescaled to
+    // SCALE and then recentered to s's original center, if either LIMIT is zero then that
+    // dimmension is ignored
     template <
         typename T,
         typename Scale_t = float,
@@ -477,13 +527,18 @@ namespace sfml_util
         auto const ORIG_CENTER_LEFT { CenterOf(s).x };
         auto const ORIG_CENTER_TOP { CenterOf(s).y };
 
-        auto const NEW_SCALE { ScaleThatFits(Size(s), LIMIT) * SCALE };
+        auto const NEW_SCALE {
+            ScaleThatFits(sf::Vector2f(s.getLocalBounds().width, s.getLocalBounds().height), LIMIT)
+            * SCALE
+        };
+
         s.setScale(NEW_SCALE, NEW_SCALE);
         s.setPosition(sf::Vector2f(ORIG_CENTER_LEFT, ORIG_CENTER_TOP) - (Size(s, 0.5f)));
     }
 
-    // rescales s (global) to the maximum size that fits within LIMIT and is then rescaled to
-    // SCALE and then recentered, if either LIMIT is zero then that dimmension is ignored
+    // rescales s (local) to the maximum size that fits within LIMIT and is then rescaled to
+    // SCALE and then recentered to s's original center, if either LIMIT is zero then that
+    // dimmension is ignored
     template <
         typename T,
         typename Scale_t = float,
@@ -498,9 +553,9 @@ namespace sfml_util
         FitAndReCenter(s, sf::Vector2<T>(WIDTH_LIMIT, HEIGHT_LIMIT), SCALE);
     }
 
-    // rescales s (global) to the maximum size that fits within the size of LIMIT and is then
-    // rescaled to SCALE and then recentered, if either LIMIT is zero then that dimmension is
-    // ignored
+    // rescales s (local) to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE and then recentered to s's original center, if either LIMIT is zero then
+    // that dimmension is ignored
     template <
         typename T,
         typename Scale_t = float,
@@ -510,22 +565,55 @@ namespace sfml_util
         const float ORIG_CENTER_LEFT { CenterOf(s).x };
         const float ORIG_CENTER_TOP { CenterOf(s).y };
 
-        const float NEW_SCALE { ScaleThatFits(Size(s), Size(sf::FloatRect(LIMIT)))
+        const float NEW_SCALE { ScaleThatFits(
+                                    sf::Vector2f(
+                                        s.getLocalBounds().width, s.getLocalBounds().height),
+                                    Size(sf::FloatRect(LIMIT)))
                                 * static_cast<float>(SCALE) };
 
         s.setScale(NEW_SCALE, NEW_SCALE);
         s.setPosition(sf::Vector2f(ORIG_CENTER_LEFT, ORIG_CENTER_TOP) - (Size(s, 0.5f)));
     }
 
-    // rescales s (global) to the maximum size that fits within the size of LIMIT (global) and is
-    // then rescaled to SCALE and then recentered, if either LIMIT is zero then that dimmension is
-    // ignored
+    // rescales s (local) to the maximum size that fits within the size of LIMIT and is then
+    // rescaled to SCALE and then centered to LIMIT, if either LIMIT is zero then
+    // that dimmension is ignored
+    template <
+        typename T,
+        typename Scale_t = float,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    void FitAndCenter(sf::Sprite & s, const sf::Rect<T> & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        const float NEW_SCALE { ScaleThatFits(
+                                    sf::Vector2f(
+                                        s.getLocalBounds().width, s.getLocalBounds().height),
+                                    Size(sf::FloatRect(LIMIT)))
+                                * static_cast<float>(SCALE) };
+
+        s.setScale(NEW_SCALE, NEW_SCALE);
+        s.setPosition(CenterOf(LIMIT) - (Size(s, 0.5f)));
+    }
+
+    // rescales s (local) to the maximum size that fits within the size of LIMIT (global) and is
+    // then rescaled to SCALE and then recentered to s's original center, if either LIMIT is zero
+    // then that dimmension is ignored
     template <
         typename Scale_t = float,
         typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
     void FitAndReCenter(sf::Sprite & s, const sf::Sprite & LIMIT, const Scale_t SCALE = 1.0f)
     {
         FitAndReCenter(s, LIMIT.getGlobalBounds(), SCALE);
+    }
+
+    // rescales s (local) to the maximum size that fits within the size of LIMIT (global) and is
+    // then rescaled to SCALE and then centered to LIMIT, if either LIMIT is zero
+    // then that dimmension is ignored
+    template <
+        typename Scale_t = float,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    void FitAndCenter(sf::Sprite & s, const sf::Sprite & LIMIT, const Scale_t SCALE = 1.0f)
+    {
+        FitAndCenter(s, LIMIT.getGlobalBounds(), SCALE);
     }
 
 } // namespace sfml_util

@@ -44,17 +44,13 @@ namespace sfml_util
             using BoxUPtr_t = std::unique_ptr<Box>;
         } // namespace box
 
+        class ListBox;
+
         class ListBoxItem;
         using ListBoxItemPtr_t = misc::NotNull<ListBoxItem *>;
         using ListBoxItemPtrOpt_t = boost::optional<ListBoxItemPtr_t>;
         using ListBoxItemUPtr_t = std::unique_ptr<ListBoxItem>;
         using ListBoxItemUVec_t = std::vector<ListBoxItemUPtr_t>;
-        using ListBoxItemUVecIter_t = ListBoxItemUVec_t::iterator;
-        using ListBoxItemUVecCIter_t = ListBoxItemUVec_t::const_iterator;
-
-        // types required for the ListBoxPtrPackage_t and IListBoxCallbackHandler below
-        class ListBox;
-        using ListBoxUPtr_t = std::unique_ptr<ListBox>;
 
         // the callback type for ListBox is a wrapper class called ListBoxItem
         namespace callback
@@ -108,6 +104,13 @@ namespace sfml_util
             , public callback::ISliderBarCallbackHandler_t
         {
         public:
+            using value_type = ListBoxItemUPtr_t;
+            using container_type = ListBoxItemUVec_t;
+            using iterator = typename container_type::iterator;
+            using const_iterator = typename container_type::const_iterator;
+            using reverse_iterator = std::reverse_iterator<iterator>;
+            using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
             ListBox(const ListBox &) = delete;
             ListBox(ListBox &&) = delete;
             ListBox & operator=(const ListBox &) = delete;
@@ -205,15 +208,55 @@ namespace sfml_util
             void MoveItemToOtherListBox(
                 const std::size_t ITEM_TO_MOVE_INDEX, ListBox & otherListBox);
 
-            ListBoxItemUVecIter_t begin() noexcept { return std::begin(items_); }
-            ListBoxItemUVecIter_t end() noexcept { return std::end(items_); }
-            ListBoxItemUPtr_t & Front() { return items_.front(); }
-            ListBoxItemUPtr_t & Back() { return items_.back(); }
+            iterator begin() noexcept { return std::begin(items_); }
+            iterator end() noexcept { return std::end(items_); }
 
-            const ListBoxItemUVecCIter_t begin() const noexcept { return std::begin(items_); }
-            const ListBoxItemUVecCIter_t end() const noexcept { return std::end(items_); }
-            const ListBoxItemUPtr_t & Front() const { return items_.front(); }
-            const ListBoxItemUPtr_t & Back() const { return items_.back(); }
+            const_iterator begin() const noexcept { return std::begin(items_); }
+            const_iterator end() const noexcept { return std::end(items_); }
+
+            const_iterator cbegin() const noexcept { return begin(); }
+            const_iterator cend() const noexcept { return end(); }
+
+            reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+            reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+
+            const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+            const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
+
+            const_reverse_iterator crbegin() const noexcept { return rbegin(); }
+            const_reverse_iterator crend() const noexcept { return rend(); }
+
+            value_type & Front()
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (Empty() == false), "misc::VectorMap::Front() non-const, called when empty.");
+
+                return items_.front();
+            }
+
+            value_type & Back()
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (Empty() == false), "misc::VectorMap::Back() non-const, called when empty.");
+
+                return items_.back();
+            }
+
+            const value_type & Front() const
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (Empty() == false), "misc::VectorMap::Front() const, called when empty.");
+
+                return items_.front();
+            }
+
+            const value_type & Back() const
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (Empty() == false), "misc::VectorMap::Back() const, called when empty.");
+
+                return items_.back();
+            }
 
         private:
             std::size_t CalcGreatestFirstDisplayedIndex() const;
@@ -229,26 +272,51 @@ namespace sfml_util
 
             void DrawLine(sf::RenderTarget & target, const float POS_TOP) const;
 
-            bool IsPosWithinItemRegion(
-                const sf::Vector2f & POS_V, const ListBoxItemPtr_t ITEM_PTR) const;
-
-            void ResetItemSize();
-
         private:
             static const sf::Color NO_COLOR_;
             static const sf::Color INVALID_ITEM_HIGHLIGHT_COLOR_;
             //
-            const float HORIZ_PAD_;
+
+            // the size of the space between the left edge and an item's image and between that
+            // image and the item's text, etc.
+            float itemElementPadHoriz_;
+
+            // the amount of empty space between the top and bottom of an item's image
+            float itemImageVertPad_;
+
+            // the total size of each item on screen
             sf::Vector2f itemSizeV_;
-            float betweenPadVert_;
+
+            // the max side length of an item's image
+            float itemImageMaxSize_;
+
+            // size of the empty space between items drawn on the screen
+            float betweenItemsPadVert_;
+
+            // defines the visible border, or box, that surrounds the this ListBox
             box::BoxUPtr_t boxUPtr_;
+
             SliderBarUPtr_t sliderbarUPtr_;
+
+            // color of the lines drawn between items
             sf::Color lineColor_;
+
+            // color of the overlay drawn over each item
             sf::Color highlightColor_;
+
+            // each ListBox needs to be able to access its owning stage
             IStagePtrOpt_t stagePtrOpt_;
+
+            // the items contained in this ListBox
             ListBoxItemUVec_t items_;
+
+            // the color applied to all item images (not the item's text)
             sf::Color imageColor_;
+
+            // true if this ListBox will play default sound effects
             bool willPlaySfx_;
+
+            //
             callback::IListBoxCallbackHandlerPtrOpt_t callbackPtrOpt_;
 
             // which item is displayed at the top of the list
@@ -264,22 +332,21 @@ namespace sfml_util
             std::size_t visibleCount_;
         };
 
-        inline const ListBoxItemUVecIter_t begin(ListBox & listBox) noexcept
-        {
-            return listBox.begin();
-        }
+        using ListBoxUPtr_t = std::unique_ptr<ListBox>;
 
-        inline const ListBoxItemUVecIter_t end(ListBox & listBox) noexcept { return listBox.end(); }
+        inline auto begin(ListBox & lb) noexcept { return lb.begin(); }
+        inline auto begin(const ListBox & LB) noexcept { return LB.begin(); }
+        inline auto cbegin(const ListBox & LB) noexcept { return begin(LB); }
+        inline auto rbegin(ListBox & lb) noexcept { return lb.rbegin(); }
+        inline auto rbegin(const ListBox & LB) noexcept { return LB.rbegin(); }
+        inline auto crbegin(const ListBox & LB) noexcept { return rbegin(LB); }
 
-        inline const ListBoxItemUVecCIter_t begin(const ListBox & LISTBOX) noexcept
-        {
-            return LISTBOX.begin();
-        }
-
-        inline const ListBoxItemUVecCIter_t end(const ListBox & LISTBOX) noexcept
-        {
-            return LISTBOX.end();
-        }
+        inline auto end(ListBox & lb) noexcept { return lb.end(); }
+        inline auto end(const ListBox & LB) noexcept { return LB.end(); }
+        inline auto cend(const ListBox & LB) noexcept { return end(LB); }
+        inline auto rend(ListBox & lb) noexcept { return lb.rend(); }
+        inline auto rend(const ListBox & LB) noexcept { return LB.rend(); }
+        inline auto crend(const ListBox & LB) noexcept { return rend(LB); }
 
     } // namespace gui
 } // namespace sfml_util

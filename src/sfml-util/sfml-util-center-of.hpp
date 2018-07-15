@@ -27,11 +27,31 @@ namespace sfml_util
         return sf::Vector2<T>(sf::Vector2f(Position(R)) + (sf::Vector2f(R.width, R.height) * 0.5f));
     }
 
-    // returns the center of S, same as Center(S.getGlobalBounds())
+    // returns the horizontal center of R, same as (R.left + (R.width / 2))
+    template <typename T>
+    constexpr T CenterOfHoriz(const sf::Rect<T> & R)
+    {
+        return static_cast<T>(static_cast<float>(R.left) + (static_cast<float>(R.width) * 0.5f));
+    }
+
+    // returns the vertical center of R, same as (R.top + (R.height / 2))
+    template <typename T>
+    constexpr T CenterOfVert(const sf::Rect<T> & R)
+    {
+        return static_cast<T>(static_cast<float>(R.top) + (static_cast<float>(R.height) * 0.5f));
+    }
+
+    // returns the center of S (global), same as Center(S.getGlobalBounds())
     inline const sf::Vector2f CenterOf(const sf::Sprite & S)
     {
         return CenterOf(S.getGlobalBounds());
     }
+
+    // returns the horizontal center of S (global)
+    inline float CenterOfHoriz(const sf::Sprite & S) { return CenterOfHoriz(S.getGlobalBounds()); }
+
+    // returns the vertical center of S (global)
+    inline float CenterOfVert(const sf::Sprite & S) { return CenterOfVert(S.getGlobalBounds()); }
 
 } // namespace sfml_util
 } // namespace heroespath

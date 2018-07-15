@@ -19,8 +19,8 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const float StageTitle::DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_{ 0.6f };
-    const float StageTitle::TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_{ 0.56f };
+    const float StageTitle::DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_ { 0.6f };
+    const float StageTitle::TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_ { 0.56f };
 
     StageTitle::StageTitle(
         const std::string & TITLE_IMAGE_PATH_KEY,
@@ -47,50 +47,40 @@ namespace sfml_util
 
     void StageTitle::SetSizeAndReCenter(const float SIZE_HORIZ, const float SIZE_VERT)
     {
-        auto symbolWidth{ sfml_util::ScreenRatioToPixelsHoriz(
+        const auto SYMBOL_WIDTH_DEFAULT { sfml_util::ScreenRatioToPixelsHoriz(
             DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_) };
+
+        auto const SYMBOL_SCALE_DEFAULT { SYMBOL_WIDTH_DEFAULT
+                                          / symbolSprite_.getLocalBounds().width };
+
+        auto symbolWidth { SYMBOL_WIDTH_DEFAULT };
 
         if (SIZE_HORIZ > 0.0f)
         {
             symbolWidth = SIZE_HORIZ;
         }
 
-        auto const SYMBOL_SCALE_HORIZ{ symbolWidth / symbolSprite_.getLocalBounds().width };
+        auto const SYMBOL_SCALE_HORIZ { symbolWidth / symbolSprite_.getLocalBounds().width };
 
-        auto const DEFAULT_SCALE{ sfml_util::ScreenRatioToPixelsHoriz(
-                                      DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_)
-                                  / symbolSprite_.getLocalBounds().width };
-
-        auto symbolHeight{ symbolSprite_.getLocalBounds().height * DEFAULT_SCALE };
+        auto symbolHeight { symbolSprite_.getLocalBounds().height * SYMBOL_SCALE_DEFAULT };
 
         if (SIZE_VERT > 0.0f)
         {
             symbolHeight = SIZE_VERT;
         }
 
-        auto const SYMBOL_SCALE_VERT{ symbolHeight / symbolSprite_.getLocalBounds().height };
+        auto const SYMBOL_SCALE_VERT { symbolHeight / symbolSprite_.getLocalBounds().height };
 
         symbolSprite_.setScale(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
 
         symbolSprite_.setPosition(
-            (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
-                - (symbolSprite_.getGlobalBounds().width * 0.5f),
+            sfml_util::DisplayCenterHoriz(symbolSprite_.getGlobalBounds().width),
             sfml_util::ScreenRatioToPixelsVert(0.011f));
 
         if (titleCachedTextureOpt_)
         {
-            auto const TITLE_HEIGHT{ symbolSprite_.getGlobalBounds().height
-                                     * TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_ };
-
-            auto const TITLE_SCALE{ TITLE_HEIGHT / titleSprite_.getLocalBounds().height };
-
-            titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
-
-            titleSprite_.setPosition(
-                (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
-                    - (titleSprite_.getGlobalBounds().width * 0.5f),
-                (symbolSprite_.getPosition().y + (symbolSprite_.getGlobalBounds().height * 0.5f))
-                    - (titleSprite_.getGlobalBounds().height * 0.5f));
+            sfml_util::FitAndCenter(
+                titleSprite_, symbolSprite_, TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_);
         }
     }
 

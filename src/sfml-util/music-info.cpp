@@ -46,7 +46,7 @@ namespace sfml_util
             filename_ = music::Filename(which_);
             dirName_ = music::Directory(which_);
             // duration_ not set intentionally, see setter in header,
-            // and see it's only use in MusicOperator's constructor.
+            // and see its only use in MusicOperator's constructor.
         }
     }
 

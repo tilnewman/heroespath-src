@@ -135,6 +135,7 @@ namespace sfml_util
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             const creature::CreaturePtrOpt_t CharacterPtrOpt() const { return creaturePtrOpt_; }

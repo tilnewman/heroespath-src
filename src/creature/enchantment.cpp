@@ -48,11 +48,13 @@ namespace creature
 
         ss << EnchantmentType::ToString(type_);
 
-        auto const SepIfNotEmpty{ [](const std::string & S) { return ((S.empty()) ? "" : ", "); } };
+        auto const SepIfNotEmpty { [](const std::string & S) {
+            return ((S.empty()) ? "" : ", ");
+        } };
 
         if (IsUseableEver())
         {
-            auto const COUNT_REMAIN{ useInfo_.CountRemaining() };
+            auto const COUNT_REMAIN { useInfo_.CountRemaining() };
             if (COUNT_REMAIN > 0)
             {
                 ss << SepIfNotEmpty(ss.str()) << COUNT_REMAIN << " uses left";
@@ -66,14 +68,14 @@ namespace creature
                 ss << SepIfNotEmpty(ss.str()) << "";
             }
 
-            auto const SPELL{ useInfo_.Spell() };
+            auto const SPELL { useInfo_.Spell() };
             if (SPELL != spell::Spells::Count)
             {
                 ss << SepIfNotEmpty(ss.str()) << "casts the " << spell::Spells::Name(SPELL)
                    << " spell";
             }
 
-            auto const CONDS_REMOVED_VEC{ useInfo_.ConditionsRemoved() };
+            auto const CONDS_REMOVED_VEC { useInfo_.ConditionsRemoved() };
             if (CONDS_REMOVED_VEC.empty())
             {
                 ss << SepIfNotEmpty(ss.str()) << "removes the conditions: "
@@ -88,7 +90,7 @@ namespace creature
                << game::Phase::ToString(useInfo_.RestrictedToPhase());
         }
 
-        auto const TRAITS_STR{ traitSet_.ToString(false, false, false, true) };
+        auto const TRAITS_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAITS_STR.empty() == false)
         {
             ss << SepIfNotEmpty(ss.str()) << "Traits: " << TRAITS_STR;
@@ -112,7 +114,7 @@ namespace creature
 
                 // auto const MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY,
                 // MATERIAL_SECONDARY) }; above will range from 0-20 -add 10 to that and now you
-                // have how much mana is restored when used. this enchantment will need to set it's
+                // have how much mana is restored when used. this enchantment will need to set its
                 // own EFFECTS_STR based on these numbers
 
                 break;
@@ -188,7 +190,7 @@ namespace creature
     {
         item::ScoreHelper scoreHelper;
 
-        auto score{ scoreHelper.Score(traitSet_) };
+        auto score { scoreHelper.Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {

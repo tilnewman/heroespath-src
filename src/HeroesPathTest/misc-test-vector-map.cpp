@@ -27,8 +27,8 @@ using namespace heroespath::misc;
 using Test_t = int;
 using VectorMap_t = VectorMap<Test_t, Test_t>;
 using Vector_t = std::vector<Test_t>;
-using Pair_t = VectorMap_t::Pair_t;
-using PairVec_t = VectorMap_t::PairVec_t;
+using Pair_t = VectorMap_t::value_type;
+using PairVec_t = VectorMap_t::container_type;
 
 template <typename T>
 inline const T copyAndReverse(const T & C)

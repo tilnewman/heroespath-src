@@ -21,7 +21,6 @@ namespace heroespath
 {
 namespace misc
 {
-
     template <typename Key_t, typename Value_t>
     class VectorMap;
 
@@ -34,16 +33,25 @@ namespace misc
     template <typename Key_t, typename Value_t>
     bool operator<(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
 
+    template <typename Key_t, typename Value_t>
+    bool operator>(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
+    template <typename Key_t, typename Value_t>
+    bool operator<=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
+    template <typename Key_t, typename Value_t>
+    bool operator>=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
     // Responsible for implementing std::map with a vector in a way that performs
     // no sorting.  (all operations are in linear time)
     template <typename Key_t, typename Value_t>
     class VectorMap
     {
     public:
-        using Pair_t = std::pair<Key_t, Value_t>;
-        using PairVec_t = std::vector<Pair_t>;
-        using iterator = typename PairVec_t::iterator;
-        using const_iterator = typename PairVec_t::const_iterator;
+        using value_type = std::pair<Key_t, Value_t>;
+        using container_type = std::vector<value_type>;
+        using iterator = typename container_type::iterator;
+        using const_iterator = typename container_type::const_iterator;
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -52,7 +60,7 @@ namespace misc
         {}
 
         // it is up to the caller to ensure that no duplicates are added, if you care...
-        void Append(const Pair_t & PAIR) { pairs_.push_back(PAIR); }
+        void Append(const value_type & PAIR) { pairs_.push_back(PAIR); }
 
         // it is up to the caller to ensure that no duplicates are added, if you care...
         void Append(const Key_t & KEY, const Value_t & VALUE)
@@ -60,7 +68,7 @@ namespace misc
             Append(std::make_pair(KEY, VALUE));
         }
 
-        bool AppendIfKeyNotFound(const Pair_t & PAIR)
+        bool AppendIfKeyNotFound(const value_type & PAIR)
         {
             if (Exists(PAIR.first))
             {
@@ -80,7 +88,7 @@ namespace misc
 
         bool Exists(const Key_t & KEY) const { return (Find(KEY) != std::end(pairs_)); }
 
-        bool Exists(const Pair_t & PAIR) const { return (Find(PAIR) != std::end(pairs_)); }
+        bool Exists(const value_type & PAIR) const { return (Find(PAIR) != std::end(pairs_)); }
 
         Value_t & operator[](const Key_t & KEY)
         {
@@ -118,7 +126,7 @@ namespace misc
             });
         }
 
-        iterator Find(const Pair_t & PAIR)
+        iterator Find(const value_type & PAIR)
         {
             return std::find(std::begin(pairs_), std::end(pairs_), PAIR);
         }
@@ -130,7 +138,7 @@ namespace misc
             });
         }
 
-        const_iterator Find(const Pair_t & PAIR) const
+        const_iterator Find(const value_type & PAIR) const
         {
             return std::find(std::begin(pairs_), std::end(pairs_), PAIR);
         }
@@ -151,7 +159,7 @@ namespace misc
         }
 
         // returns the number of elements erased
-        std::size_t Erase(const Pair_t & PAIR)
+        std::size_t Erase(const value_type & PAIR)
         {
             const auto ORIG_SIZE { Size() };
             pairs_.erase(std::remove(std::begin(pairs_), std::end(pairs_), PAIR), std::end(pairs_));
@@ -195,7 +203,7 @@ namespace misc
         constexpr const_reverse_iterator crbegin() const noexcept { return rbegin(); }
         constexpr const_reverse_iterator crend() const noexcept { return rend(); }
 
-        Pair_t & Front()
+        value_type & Front()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (Empty() == false), "misc::VectorMap::Front() non-const, called when empty.");
@@ -203,7 +211,7 @@ namespace misc
             return pairs_.front();
         }
 
-        Pair_t & Back()
+        value_type & Back()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (Empty() == false), "misc::VectorMap::Back() non-const, called when empty.");
@@ -211,7 +219,7 @@ namespace misc
             return pairs_.back();
         }
 
-        const Pair_t & Front() const
+        const value_type & Front() const
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (Empty() == false), "misc::VectorMap::Front() const, called when empty.");
@@ -219,7 +227,7 @@ namespace misc
             return pairs_.front();
         }
 
-        const Pair_t & Back() const
+        const value_type & Back() const
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (Empty() == false), "misc::VectorMap::Back() const, called when empty.");
@@ -236,7 +244,7 @@ namespace misc
         // clang-format on
 
     private:
-        PairVec_t pairs_;
+        container_type pairs_;
 
     private:
         friend class boost::serialization::access;

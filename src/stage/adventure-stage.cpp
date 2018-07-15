@@ -61,7 +61,7 @@ namespace stage
 
         // See AdventureDisplayStage::Setup() for where this is actually done.
         // The AdventureDisplayStage gives itself to the LoopManager so that it
-        // can do so before adding it's own substages, so that it will be drawn
+        // can do so before adding its own substages, so that it will be drawn
         // before those substages.
         // game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
     }

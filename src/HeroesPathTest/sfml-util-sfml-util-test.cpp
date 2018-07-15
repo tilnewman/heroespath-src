@@ -54,6 +54,7 @@ BOOST_AUTO_TEST_CASE(CenterToTests)
     const sf::IntRect ZERO_RECT_I(ZERO_RECT_F);
     const sf::IntRect RECT_I(100, 200, 300, 400);
     const sf::FloatRect RECT_F(RECT_I);
+    const sf::Vector2f RECT_CENTER_V_F(250.0f, 400.0f);
     const sf::Vector2f SCALE_V_F(0.5f, 2.0f);
 
     BOOST_CHECK(CenterToCopy(sf::Vector2i(0, 0), ORIGIN_WRAP_RECT_I) == sf::Vector2i(0, 0));
@@ -97,8 +98,12 @@ BOOST_AUTO_TEST_CASE(CenterToTests)
     BOOST_CHECK(rectF == sf::FloatRect(-75.0f, -400.0f, 150.0f, 800.0f));
 
     //
+    const sf::Vector2f SIZE_V_F(123.0f, 456.0f);
+    const sf::Vector2f IMAGE_ZEROCENTERED_V_F(SIZE_V_F * -0.5f);
+    const sf::Vector2f RESIZE_V_F(SIZE_V_F.x * SCALE_V_F.x, SIZE_V_F.y * SCALE_V_F.y);
+    const sf::Vector2f IMAGE_RESIZED_RECTCENTERED_V_F(RECT_CENTER_V_F - (RESIZE_V_F * 0.5f));
     sf::Image image;
-    image.create(unsigned(123), unsigned(456));
+    image.create(unsigned(SIZE_V_F.x), unsigned(SIZE_V_F.y));
 
     sf::Texture texture;
     texture.loadFromImage(image);
@@ -107,16 +112,27 @@ BOOST_AUTO_TEST_CASE(CenterToTests)
 
     const sf::Vector2f POS_V_F(789.0f, 987.0f);
     sprite.setPosition(POS_V_F);
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
     CenterTo(sprite, ZERO_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(-61.5f, -228.0f, 123.0f, 456.0f));
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+    CenterTo(sprite, ZERO_RECT_I);
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
 
     sprite.setPosition(POS_V_F);
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
     CenterTo(sprite, ORIGIN_WRAP_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(-61.5f, -228.0f, 123.0f, 456.0f));
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+    CenterTo(sprite, ORIGIN_WRAP_RECT_I);
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
 
     sprite.setPosition(POS_V_F);
+    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
     CenterTo(sprite, RECT_I, SCALE_V_F);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(219.25f, -56.0f, 61.5f, 912.0f));
+    BOOST_CHECK(
+        sprite.getGlobalBounds() == sf::FloatRect(IMAGE_RESIZED_RECTCENTERED_V_F, RESIZE_V_F));
+    CenterTo(sprite, RECT_I, SCALE_V_F);
+    BOOST_CHECK(
+        sprite.getGlobalBounds() == sf::FloatRect(IMAGE_RESIZED_RECTCENTERED_V_F, RESIZE_V_F));
 }
 
 BOOST_AUTO_TEST_CASE(ColorTests)
@@ -381,11 +397,20 @@ BOOST_AUTO_TEST_CASE(FitTests)
         BOOST_CHECK(
             sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(1.0f, 10.0f)));
 
+        Fit(sprite1, WIDE_V_I);
+        BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
+
         BOOST_CHECK(
             sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(1.0f, 10.0f)));
 
         sprite1.setScale(1.0f, 1.0f);
         BOOST_CHECK(sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, TALL_V_F));
+
+        Fit(sprite1, WIDE_V_I, QUARTER_SCALE);
+        BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
+
+        BOOST_CHECK(
+            (sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(0.25f, 2.5f))));
 
         Fit(sprite1, WIDE_V_I, QUARTER_SCALE);
         BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
@@ -416,9 +441,15 @@ BOOST_AUTO_TEST_CASE(FitTests)
         Fit(spriteTall, WIDE_V_F);
         BOOST_CHECK(spriteTall.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 1.0f, 10.0f));
         BOOST_CHECK(spriteTall.getPosition() == ORIG_POS_1_V);
+        Fit(spriteTall, WIDE_V_F);
+        BOOST_CHECK(spriteTall.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 1.0f, 10.0f));
+        BOOST_CHECK(spriteTall.getPosition() == ORIG_POS_1_V);
 
         spriteWide.setScale(1.0f, 1.0f);
         auto const ORIG_POS_2_V(spriteWide.getPosition());
+        Fit(spriteWide, TALL_V_F);
+        BOOST_CHECK(spriteWide.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 10.0f, 1.0f));
+        BOOST_CHECK(spriteWide.getPosition() == ORIG_POS_2_V);
         Fit(spriteWide, TALL_V_F);
         BOOST_CHECK(spriteWide.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 10.0f, 1.0f));
         BOOST_CHECK(spriteWide.getPosition() == ORIG_POS_2_V);
@@ -459,6 +490,18 @@ BOOST_AUTO_TEST_CASE(FitTests)
     FitAndReCenter(tallRectFTemp, WIDE_RECT_F);
     BOOST_CHECK(tallRectFTemp == TALL_FITANDRCTO_WIDE_F);
 
+    // TALL_RECT_F(0.0f, 0.0f, 10.0f, 100.0f)
+    // WIDE_RECT_F_CENTER(50.0f, 5.0f)
+    // WIDE_RECT_F(0.0f, 0.0f, 100.0f, 10.0f)
+    // FIT(TALL to WIDE)=(0.0f, 0.0f, 1.0f, 10.0f)
+    // CENTERED=(49.5f, 0.0f, 1.0f, 10.0f)
+    const sf::Rect<float> TALL_FITANDCTO_WIDE_F(49.5f, 0.0f, 1.0f, 10.0f);
+    BOOST_CHECK(FitAndCenterCopy(TALL_RECT_F, WIDE_RECT_I) == TALL_FITANDCTO_WIDE_F);
+
+    tallRectFTemp = TALL_RECT_F;
+    FitAndCenter(tallRectFTemp, WIDE_RECT_F);
+    BOOST_CHECK(tallRectFTemp == TALL_FITANDCTO_WIDE_F);
+
     {
         sf::Image image;
         image.create(unsigned(10), unsigned(10));
@@ -469,6 +512,8 @@ BOOST_AUTO_TEST_CASE(FitTests)
         sf::Sprite sprite(texture);
         sprite.setPosition(10.0f, 10.0f);
 
+        FitAndReCenter(sprite, sf::Vector2i(2, 2));
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(14.0f, 14.0f, 2.0f, 2.0f));
         FitAndReCenter(sprite, sf::Vector2i(2, 2));
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(14.0f, 14.0f, 2.0f, 2.0f));
     }
@@ -483,6 +528,22 @@ BOOST_AUTO_TEST_CASE(FitTests)
         sf::Sprite sprite(texture);
         FitAndReCenter(sprite, WIDE_RECT_F);
         BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
+        FitAndReCenter(sprite, WIDE_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
+    }
+
+    {
+        sf::Image image;
+        image.create(unsigned(TALL_V_I.x), unsigned(TALL_V_I.y));
+
+        sf::Texture texture;
+        texture.loadFromImage(image);
+
+        sf::Sprite sprite(texture);
+        FitAndCenter(sprite, WIDE_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
+        FitAndCenter(sprite, WIDE_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
     }
 
     {
@@ -504,6 +565,31 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
         FitAndReCenter(spriteTall, spriteWide);
         BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
+        FitAndReCenter(spriteTall, spriteWide);
+        BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
+    }
+
+    {
+        sf::Image imageTall;
+        imageTall.create(unsigned(TALL_V_F.x), unsigned(TALL_V_F.y));
+
+        sf::Texture textureTall;
+        textureTall.loadFromImage(imageTall);
+
+        sf::Sprite spriteTall(textureTall);
+
+        sf::Image imageWide;
+        imageWide.create(unsigned(WIDE_V_F.x), unsigned(WIDE_V_F.y));
+
+        sf::Texture textureWide;
+        textureWide.loadFromImage(imageWide);
+
+        const sf::Sprite spriteWide(textureWide);
+
+        FitAndCenter(spriteTall, spriteWide);
+        BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
+        FitAndCenter(spriteTall, spriteWide);
+        BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
     }
 
     BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_V_F.x, TALL_V_F.y, WIDE_V_I.x, WIDE_V_I.y), 0.1f));
@@ -808,37 +894,6 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     auto temp2FloatRectRRF { RRF };
     ScaleSize(temp2FloatRectRRF, VHF);
     BOOST_CHECK(temp2FloatRectRRF == RRHF);
-
-    {
-        sf::Image image;
-        const sf::Vector2f SPRITE_SIZE_V { 10.0f, 100.0f };
-        image.create(unsigned(SPRITE_SIZE_V.x), unsigned(SPRITE_SIZE_V.y));
-
-        sf::Texture texture;
-        texture.loadFromImage(image);
-
-        sf::Sprite sprite(texture);
-        const sf::Vector2f SPRITE_POS_V { 123.0f, 456.0f };
-        sprite.setPosition(SPRITE_POS_V);
-        const sf::FloatRect SPRITE_BOUNDS_ORIG(SPRITE_POS_V, SPRITE_SIZE_V);
-        BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_BOUNDS_ORIG);
-
-        ScaleSize(sprite, SCALEV1);
-        ScaleSize(sprite, SCALEV1);
-
-        BOOST_CHECK(
-            sprite.getGlobalBounds() == sf::FloatRect(SPRITE_POS_V, sf::Vector2f(2.5f, 400.0f)));
-
-        sprite.setScale(V1F);
-        BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_BOUNDS_ORIG);
-
-        ScaleSize(sprite, HALF);
-        ScaleSize(sprite, HALF);
-
-        BOOST_CHECK(
-            sprite.getGlobalBounds()
-            == sf::FloatRect(SPRITE_POS_V, (SPRITE_SIZE_V * (HALF * HALF))));
-    }
 
     // ScaleSizeAndReCenterCopy() tests
     const sf::Rect<int> SSARC_RECT_ORIG(10, 10, 10, 10);

@@ -155,7 +155,7 @@ namespace stage
               "media-images-buttons-gui-inventory-normal",
               true,
               0.0f,
-              sfml_util::ScreenRatioToPixelsVert(0.0633f))
+              sfml_util::ScreenRatioToPixelsVert(0.12f))
         , CREATURE_IMAGE_POS_TOP_(stageTitle_.Bottom(false))
         , LISTBOX_POS_TOP_(
               (CREATURE_IMAGE_POS_TOP_ + CREATURE_IMAGE_HEIGHT_MAX_)
@@ -2732,7 +2732,7 @@ namespace stage
             creaturePtr_->ItemRemove(ITEM_PTR);
             creatureToGiveToPtrOpt_.value()->ItemAdd(ITEM_PTR);
 
-            // NOTE this call destroys the unEquippedListBox which destroys all of it's items, which
+            // NOTE this call destroys the unEquippedListBox which destroys all of its items, which
             // leaves listBoxItemToGivePtrOpt_ dangling
             Setup_DescBox(false);
             listBoxItemToGivePtrOpt_ = boost::none;

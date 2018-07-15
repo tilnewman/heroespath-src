@@ -29,7 +29,7 @@ namespace heroespath
 namespace stage
 {
 
-    const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_{ 0.0333f };
+    const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_ { 0.0333f };
 
     AdventureDisplayStage::AdventureDisplayStage(interact::InteractionManager & interactionManager)
         : Stage(
@@ -41,7 +41,7 @@ namespace stage
               {},
               false)
         , interactionManager_(interactionManager)
-        , topImage_("", true, 1.0f, 0.75f)
+        , topImage_("", true, 0.0f, sfml_util::ScreenRatioToPixelsVert(0.12f))
         , bottomImage_(0.75f, true, sf::Color::White)
         , MAP_OUTER_REGION_(
               sfml_util::MapByRes(75.0f, 100.0f),
@@ -125,13 +125,13 @@ namespace stage
     {
         characterListUPtr_->Setup();
 
-        auto const CHARACTER_LIST_LEFT{ (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
-                                        - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
+        auto const CHARACTER_LIST_LEFT { (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
+                                         - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const CHARACTER_LIST_TOP{ sfml_util::Display::Instance()->GetWinHeight()
-                                       - characterListUPtr_->GetEntityRegion().height
-                                       - bottomImage_.Height()
-                                       - sfml_util::MapByRes(30.0f, 90.0f) };
+        auto const CHARACTER_LIST_TOP { sfml_util::Display::Instance()->GetWinHeight()
+                                        - characterListUPtr_->GetEntityRegion().height
+                                        - bottomImage_.Height()
+                                        - sfml_util::MapByRes(30.0f, 90.0f) };
 
         characterListUPtr_->SetEntityPos(CHARACTER_LIST_LEFT, CHARACTER_LIST_TOP);
     }
@@ -232,20 +232,20 @@ namespace stage
     {
         sf::FloatRect interactRegion;
 
-        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH{ sfml_util::MapByRes(30.0f, 150.0f) };
+        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { sfml_util::MapByRes(30.0f, 150.0f) };
 
         interactRegion.left
             = MAP_REGION.left + MAP_REGION.width + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
-        auto const RIGHT_MARGIN{ sfml_util::MapByRes(50.0f, 300.0f) };
+        auto const RIGHT_MARGIN { sfml_util::MapByRes(50.0f, 300.0f) };
 
         interactRegion.width = (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
 
-        auto const TOP_MARGIN{ sfml_util::MapByRes(33.0f, 99.0f) };
+        auto const TOP_MARGIN { sfml_util::MapByRes(33.0f, 99.0f) };
 
         interactRegion.top = MAP_REGION.top + TOP_MARGIN;
 
-        auto const BOTTOM_MARGIN{ TOP_MARGIN / 2.0f };
+        auto const BOTTOM_MARGIN { TOP_MARGIN / 2.0f };
 
         interactRegion.height = MAP_REGION.height - (TOP_MARGIN + BOTTOM_MARGIN);
 

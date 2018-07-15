@@ -47,7 +47,7 @@ namespace item
     TreasureImage::Enum TreasureFactory::Make(
         const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam) const
     {
-        auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
+        auto const TREASURE_SCORES { CalculateTreasureSums(CHARACTER_PVEC) };
 
         itemCache_OutParam.coins = Coin_t::Make(TREASURE_SCORES.Coin());
         itemCache_OutParam.gems = Gem_t::Make(TREASURE_SCORES.Gem());
@@ -90,7 +90,7 @@ namespace item
         }
         else
         {
-            auto const LOCKBOX_COIN_SUM_MAX{ Score_t::Make(
+            auto const LOCKBOX_COIN_SUM_MAX { Score_t::Make(
                 game::GameDataFile::Instance()->GetCopyInt(
                     "heroespath-treasure-lockbox-coin-max")) };
 
@@ -110,23 +110,23 @@ namespace item
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
-        auto const COIN_AVG{ scores.Coin().As<float>()
-                             / static_cast<float>(CHARACTER_PVEC.size()) };
-
-        auto const GEM_AVG{ scores.Gem().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
-
-        auto const MAGIC_AVG{ scores.Magic().As<float>()
+        auto const COIN_AVG { scores.Coin().As<float>()
                               / static_cast<float>(CHARACTER_PVEC.size()) };
 
-        auto const RELIGIOUS_AVG{ scores.Religious().As<float>()
-                                  / static_cast<float>(CHARACTER_PVEC.size()) };
+        auto const GEM_AVG { scores.Gem().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
 
-        auto const T_SCORES_MAX{ creature::race::TreasureScoreMax() };
+        auto const MAGIC_AVG { scores.Magic().As<float>()
+                               / static_cast<float>(CHARACTER_PVEC.size()) };
 
-        auto const COIN_RATIO{ COIN_AVG / T_SCORES_MAX.Coin().As<float>() };
-        auto const GEM_RATIO{ GEM_AVG / T_SCORES_MAX.Gem().As<float>() };
-        auto const MAGIC_RATIO{ MAGIC_AVG / T_SCORES_MAX.Magic().As<float>() };
-        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / T_SCORES_MAX.Religious().As<float>() };
+        auto const RELIGIOUS_AVG { scores.Religious().As<float>()
+                                   / static_cast<float>(CHARACTER_PVEC.size()) };
+
+        auto const T_SCORES_MAX { creature::race::TreasureScoreMax() };
+
+        auto const COIN_RATIO { COIN_AVG / T_SCORES_MAX.Coin().As<float>() };
+        auto const GEM_RATIO { GEM_AVG / T_SCORES_MAX.Gem().As<float>() };
+        auto const MAGIC_RATIO { MAGIC_AVG / T_SCORES_MAX.Magic().As<float>() };
+        auto const RELIGIOUS_RATIO { RELIGIOUS_AVG / T_SCORES_MAX.Religious().As<float>() };
 
         return (COIN_RATIO + GEM_RATIO + MAGIC_RATIO + RELIGIOUS_RATIO) / 4.0f;
     }
@@ -142,45 +142,45 @@ namespace item
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
-        auto const COIN_BASE{ static_cast<int>(
+        auto const COIN_BASE { static_cast<int>(
             scores.Coin().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
 
-        auto const COIN_RAND_BASE{ static_cast<int>(
+        auto const COIN_RAND_BASE { static_cast<int>(
             scores.Coin().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
-        auto const COIN{ Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
+        auto const COIN { Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
-        auto const GEM_BASE{ static_cast<int>(
+        auto const GEM_BASE { static_cast<int>(
             scores.Gem().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-base")) };
 
-        auto const GEM_RAND_BASE{ static_cast<int>(
+        auto const GEM_RAND_BASE { static_cast<int>(
             scores.Gem().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
-        auto const GEM{ Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
+        auto const GEM { Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
-        auto const MAGIC_BASE{ static_cast<creature::Trait_t>(
+        auto const MAGIC_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
 
-        auto const MAGIC_RAND_BASE{ static_cast<creature::Trait_t>(
+        auto const MAGIC_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
-        auto const MAGIC{ Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
+        auto const MAGIC { Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
-        auto const RELIGIOUS_BASE{ static_cast<creature::Trait_t>(
+        auto const RELIGIOUS_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
 
-        auto const RELIGIOUS_RAND_BASE{ static_cast<creature::Trait_t>(
+        auto const RELIGIOUS_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
             * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
-        auto const RELIGIOUS{ Score_t::Make(
+        auto const RELIGIOUS { Score_t::Make(
             RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
 
         return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
@@ -201,14 +201,14 @@ namespace item
 
         // This 'amount' variable works both as an amount of treasure still to be acquired and
         // as a measure of how rare items can possibly be
-        auto amount{ TREASURE_SCORE };
+        auto amount { TREASURE_SCORE };
 
         // this is the vector of ALL ItemProfiles that can be selected
-        auto const & PROFILES{ (
+        auto const & PROFILES { (
             (IS_RELIGIOUS) ? ItemProfileWarehouse::Instance()->GetReligiousProfiles()
                            : ItemProfileWarehouse::Instance()->GetNormalProfiles()) };
 
-        auto const OWNED_SET_PROFILES{ SetItemsAlreadyOwned() };
+        auto const OWNED_SET_PROFILES { SetItemsAlreadyOwned() };
 
         // this temp vector contains the indexes into PROFILES along with that profile's
         // corresponding treasure score weight.  This vector defines which items are
@@ -217,7 +217,7 @@ namespace item
         possibleVec.reserve(
             PROFILES.size() / 4); // this value found by experiment to be a good guess
 
-        auto weightSum{ PopuplatePossibleVectorAndReturnWeightSum(
+        auto weightSum { PopuplatePossibleVectorAndReturnWeightSum(
             possibleVec, PROFILES, amount, IS_RELIGIOUS, OWNED_SET_PROFILES) };
 
         if (possibleVec.empty())
@@ -225,11 +225,11 @@ namespace item
             return 0;
         }
 
-        // This is an index of possibleVec that defines it's useable size.  Rather than repeatedly
+        // This is an index of possibleVec that defines its useable size.  Rather than repeatedly
         // populating possibleVec, this index allows it to be shrunk instead.  This also means that
         // weightSum is not the sum of all in possibleVec but instead the sum from possibleVec[0] to
         // possibleVec[possibleVecLimitIndex].
-        std::size_t possibleVecLimitIndex{ possibleVec.size() - 1 };
+        std::size_t possibleVecLimitIndex { possibleVec.size() - 1 };
 
         // this vector keeps track of which PROFILES have already been randomly selected
         misc::SizetVec_t selectedIndexVec;
@@ -237,7 +237,7 @@ namespace item
 
         while ((possibleVec.empty() == false) && (possibleVecLimitIndex > 0))
         {
-            auto & randomSelection{
+            auto & randomSelection {
                 possibleVec[SelectRandomWeighted(weightSum, possibleVec, possibleVecLimitIndex)]
             };
 
@@ -283,7 +283,7 @@ namespace item
 
         ItemFactory itemFactory;
 
-        auto const ITEM_PTR{ itemFactory.Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
+        auto const ITEM_PTR { itemFactory.Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
 
         itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }
@@ -297,12 +297,12 @@ namespace item
             (POSSIBLE_SELECTIONS.empty() == false),
             "combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
 
-        auto const RAND_WEIGHT{ misc::random::Double(WEIGHT_SUM) };
+        auto const RAND_WEIGHT { misc::random::Double(WEIGHT_SUM) };
 
-        double runningWeightSum{ 0.0 };
+        double runningWeightSum { 0.0 };
         for (std::size_t i(0); i <= INDEX_LIMIT; ++i)
         {
-            auto const SELECTION_SCORE{ POSSIBLE_SELECTIONS[i].score };
+            auto const SELECTION_SCORE { POSSIBLE_SELECTIONS[i].score };
 
             // skip possibilities with a score of zero, because that is how possibilties are marked
             // as already selected (how duplicates are prevented)
@@ -325,13 +325,13 @@ namespace item
         ownedSetProfiles.reserve(128); // found by experiment to be a good upper bound
 
         // populate setItemsOwnedProfiles with thin profiles of equipped and unequipped items
-        auto const CREATURE_PVEC{ creature::Algorithms::Players(creature::Algorithms::Runaway) };
+        auto const CREATURE_PVEC { creature::Algorithms::Players(creature::Algorithms::Runaway) };
 
         for (auto const & CREATURE_PTR : CREATURE_PVEC)
         {
             for (auto const & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {
-                auto const SET_TYPE_POFILE{ SetTypeProfile(*UNEQUIPPED_ITEM_PTR) };
+                auto const SET_TYPE_POFILE { SetTypeProfile(*UNEQUIPPED_ITEM_PTR) };
                 if (SET_TYPE_POFILE.DoesBelongToASet())
                 {
                     ownedSetProfiles.emplace_back(SET_TYPE_POFILE);
@@ -340,7 +340,7 @@ namespace item
 
             for (auto const & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
             {
-                auto const SET_TYPE_POFILE{ SetTypeProfile(*EQUIPPED_ITEM_PTR) };
+                auto const SET_TYPE_POFILE { SetTypeProfile(*EQUIPPED_ITEM_PTR) };
                 if (SET_TYPE_POFILE.DoesBelongToASet())
                 {
                     ownedSetProfiles.emplace_back(SET_TYPE_POFILE);
@@ -360,14 +360,14 @@ namespace item
     {
         possibleVec.clear();
 
-        auto weightSum{ 0.0 };
+        auto weightSum { 0.0 };
 
-        auto const NUM_PROFILES{ PROFILES.size() };
+        auto const NUM_PROFILES { PROFILES.size() };
         for (std::size_t i(0); i < NUM_PROFILES; ++i)
         {
-            auto const & PROFILE{ PROFILES[i] };
+            auto const & PROFILE { PROFILES[i] };
 
-            auto const SCORE{ (
+            auto const SCORE { (
                 (IS_RELIGIOUS) ? PROFILE.ReligiousScore() : PROFILE.TreasureScore()) };
 
             if (SCORE > MAX_SCORE)
@@ -410,7 +410,7 @@ namespace item
     {
         for (;; --possibleIndexLimit)
         {
-            auto const POSSIBLE_SELECTION_SCORE{ possibleVec[possibleIndexLimit].score };
+            auto const POSSIBLE_SELECTION_SCORE { possibleVec[possibleIndexLimit].score };
 
             // selections with a score of zero have already been randomly selected and the weightSum
             // already adjusted so skip them
@@ -437,9 +437,9 @@ namespace item
     {
         fallbackItemProfiles_.reserve(745); // this was the size measured on 2018-3-19
 
-        auto const & PROFILES{ ItemProfileWarehouse::Instance()->GetNormalProfiles() };
+        auto const & PROFILES { ItemProfileWarehouse::Instance()->GetNormalProfiles() };
 
-        auto const MAX_SCORE{ PROFILES[0].TreasureScore() * 2_score };
+        auto const MAX_SCORE { PROFILES[0].TreasureScore() * 2_score };
 
         for (auto const & PROFILE : PROFILES)
         {

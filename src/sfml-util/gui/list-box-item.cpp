@@ -80,7 +80,7 @@ namespace sfml_util
         {
             sfml_util::gui::CreatureImageLoader creatureImageLoader;
 
-            auto imageOptions{ TextureOpt::Default };
+            auto imageOptions { TextureOpt::Default };
 
             if (creatureImageLoader.WillHorizFlipToFaceRight(CHARACTER_PTR))
             {
@@ -114,7 +114,7 @@ namespace sfml_util
             {
                 sf::Texture texture;
 
-                auto const AVATAR_ENUM{ GAMESTATE_PTR->Party().Avatar() };
+                auto const AVATAR_ENUM { GAMESTATE_PTR->Party().Avatar() };
                 avatar::PortraitFactory::Make(AVATAR_ENUM, texture);
 
                 std::ostringstream ss;
@@ -263,6 +263,11 @@ namespace sfml_util
             {
                 target.draw(sprite_, states);
             }
+        }
+
+        void ListBoxItem::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+        {
+            MoveEntityPos(POS_LEFT - entityRegion_.left, POS_TOP - entityRegion_.top);
         }
 
         void ListBoxItem::MoveEntityPos(const float HORIZ, const float VERT)

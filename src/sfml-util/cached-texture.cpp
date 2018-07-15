@@ -40,7 +40,7 @@ namespace sfml_util
         , index_(std::move(ct.index_))
         , options_(std::move(ct.options_))
     {
-        // empty ct's path_ so it's destructor won't try to TextureCache::Remove()
+        // empty ct's path_ so its destructor won't try to TextureCache::Remove()
         ct.path_ = "";
     }
 
@@ -150,7 +150,7 @@ namespace sfml_util
         , indexes_(std::move(ct.indexes_))
         , options_(ct.options_)
     {
-        // zero the moved ct so it's destructor won't try to TextureCache::Remove...()
+        // zero the moved ct so its destructor won't try to TextureCache::Remove...()
         ct.path_ = "";
     }
 
@@ -183,7 +183,7 @@ namespace sfml_util
             indexes_ = std::move(ct.indexes_);
             options_ = std::move(ct.options_);
 
-            // zero the moved ct so it's destructor won't try to TextureCache::Remove...()
+            // zero the moved ct so its destructor won't try to TextureCache::Remove...()
             ct.path_ = "";
         }
 

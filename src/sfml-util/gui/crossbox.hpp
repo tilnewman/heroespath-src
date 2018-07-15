@@ -63,7 +63,7 @@ namespace sfml_util
 
                 virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-                // CrossBox has it's own Setup function "SetupCrossBox()",
+                // CrossBox has its own Setup function "SetupCrossBox()",
                 // so hide Box::SetupBox().
                 void SetupCrossBox(
                     const float POS_LEFT,
