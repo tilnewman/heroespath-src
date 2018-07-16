@@ -54,7 +54,7 @@ namespace stage
     // A Stage class that allows players to load saved games
     class LoadGameStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<LoadGameStage>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
     public:
@@ -75,7 +75,8 @@ namespace stage
             return false;
         }
 
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage> &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -89,7 +90,7 @@ namespace stage
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
         sf::Color gsListBoxBGColor_;
-        sfml_util::gui::ListBoxUPtr_t gsListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<LoadGameStage> gsListBoxUPtr_;
         //
         sfml_util::gui::TextRegionUPtr_t locTextRegionUPtr_;
         sfml_util::gui::TextRegionUVec_t charTextRegionUVec_;

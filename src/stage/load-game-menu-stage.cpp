@@ -53,10 +53,10 @@ namespace stage
               1.0f,
               sf::Vector2f(200.0f, sfml_util::DisplaySize().y - 100.0f)))
         , gsListBoxBGColor_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
-        , gsListBoxUPtr_(std::make_unique<sfml_util::gui::ListBox>(
+        , gsListBoxUPtr_(std::make_unique<sfml_util::gui::ListBox<LoadGameStage>>(
               "GameStateToLoad",
+              this,
               gsListBoxRect_,
-              sfml_util::IStagePtr_t(this),
               sfml_util::gui::box::Info(
                   1,
                   true,
@@ -68,8 +68,7 @@ namespace stage
                           - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
                       gsListBoxBGColor_ - sf::Color(40, 40, 40, 0)),
                   sfml_util::gui::BackgroundInfo(gsListBoxBGColor_)),
-              sfml_util::FontManager::Color_Orange(),
-              sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this)))
+              sfml_util::FontManager::Color_Orange()))
         , locTextRegionUPtr_()
         , charTextRegionUVec_()
         , charLabelTextRegionUPtr_()
@@ -95,7 +94,8 @@ namespace stage
         gamestatePVec_.clear();
     }
 
-    bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
+    bool LoadGameStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage> &)
     {
         // TODO Handle selection of a game to load and then load it,
         // including a call to all creatures StoreItemsInWarehouseAfterLoad(),

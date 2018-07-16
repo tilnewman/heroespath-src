@@ -299,7 +299,7 @@ namespace stage
     }
 
     bool InventoryStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+        const sfml_util::gui::callback::ListBoxEventPackage<InventoryStage> & PACKAGE)
     {
         if (PACKAGE.package.PTR_ == nullptr)
         {
@@ -1192,13 +1192,12 @@ namespace stage
             EntityRemove(equippedListBoxUPtr_.get());
         }
 
-        equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<InventoryStage>>(
             "InventoryStage'sLeftListBox",
+            this,
             LISTBOX_REGION_,
-            sfml_util::IStagePtr_t(this),
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
             LISTBOX_COLOR_IMAGE_);
 
         equippedListBoxUPtr_->WillPlaySoundEffects(false);
@@ -1275,13 +1274,12 @@ namespace stage
             EntityRemove(unEquipListBoxUPtr_.get());
         }
 
-        unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<InventoryStage>>(
             "InventoryStage'sUnEquipped",
+            this,
             DESCBOX_REGION_,
-            sfml_util::IStagePtr_t(this),
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
             LISTBOX_COLOR_IMAGE_);
 
         unEquipListBoxUPtr_->WillPlaySoundEffects(false);

@@ -35,7 +35,7 @@ namespace popup
     // Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
         : public PopupStageBase
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<PopupStageMusicSheet>
     {
     public:
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
@@ -49,7 +49,8 @@ namespace popup
 
         const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<PopupStageMusicSheet> &) override;
 
         using PopupStageBase::HandleCallback;
 
@@ -86,7 +87,7 @@ namespace popup
 
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t listBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<PopupStageMusicSheet> listBoxUPtr_;
         sf::Texture playerTexture_;
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;

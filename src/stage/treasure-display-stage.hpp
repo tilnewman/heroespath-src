@@ -125,7 +125,7 @@ namespace stage
     // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<TreasureDisplayStage>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
     public:
@@ -139,7 +139,8 @@ namespace stage
         virtual ~TreasureDisplayStage() = default;
 
         const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -221,7 +222,7 @@ namespace stage
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
-            sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
+            sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage> & listboxUPtr,
             const item::ItemPVec_t &);
 
         void SetupTreasure_ListboxLabel();
@@ -264,7 +265,7 @@ namespace stage
         {
             if (GUI_ENTITY_UPTR)
             {
-                const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
+                const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR { GUI_ENTITY_UPTR.get() };
                 EntityRemove(ENTITY_PTR);
                 return ENTITY_PTR;
             }
@@ -304,8 +305,8 @@ namespace stage
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         treasure::StageMoverUPtr_t stageMoverUPtr_;
-        sfml_util::gui::ListBoxUPtr_t treasureListboxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage> treasureListboxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage> inventoryListboxUPtr_;
         sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
         sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
         sfml_util::gui::TextRegionUPtr_t coinsTextUPtr_;

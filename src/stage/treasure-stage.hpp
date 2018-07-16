@@ -70,9 +70,9 @@ namespace stage
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         bool HandleListboxCallback(
-            const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
-            const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
-            const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE);
+            const sfml_util::gui::ListBox<TreasureDisplayStage> * const TREASURE_LISTBOX_PTR,
+            const sfml_util::gui::ListBox<TreasureDisplayStage> * const INVENTORY_LISTBOX_PTR,
+            const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE);
 
         void TakeAllItems();
         void Exit();

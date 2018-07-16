@@ -263,7 +263,8 @@ namespace stage
 
     CombatStage::~CombatStage() { Stage::ClearAllEntities(); }
 
-    bool CombatStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
+    bool CombatStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage<CombatStage> &)
     {
         return false;
     }
@@ -508,13 +509,12 @@ namespace stage
         const sfml_util::gui::box::Info STATUS_BOX_INFO(
             true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
 
-        statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<CombatStage>>(
             "ComabtStage'sStatus",
+            this,
             STATUS_REGION,
-            sfml_util::IStagePtr_t(this),
             STATUS_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
             sf::Color::White,
             LISTBOX_HIGHLIGHT_COLOR_,
             0.0f);

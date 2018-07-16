@@ -106,7 +106,7 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<CombatStage>
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
     public:
@@ -207,7 +207,9 @@ namespace stage
         virtual ~CombatStage();
 
         const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<CombatStage> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -424,7 +426,7 @@ namespace stage
         combat::TurnDecider turnDecider_;
         //
         sfml_util::gui::box::BoxUPtr_t commandBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t statusBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<CombatStage> statusBoxUPtr_;
         sfml_util::gui::TextInfo statusBoxTextInfo_;
         sfml_util::gui::SliderBarUPtr_t zoomSliderBarUPtr_;
         sfml_util::gui::box::BoxUPtr_t turnBoxUPtr_;

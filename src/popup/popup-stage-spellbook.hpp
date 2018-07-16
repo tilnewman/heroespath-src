@@ -34,7 +34,7 @@ namespace popup
 
     class PopupStageSpellbook
         : public PopupStageBase
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<PopupStageSpellbook>
     {
     public:
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
@@ -61,7 +61,9 @@ namespace popup
         const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
         using PopupStageBase::HandleCallback;
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<PopupStageSpellbook> &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -101,7 +103,7 @@ namespace popup
         sf::FloatRect pageRectRight_;
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t listBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<PopupStageSpellbook> listBoxUPtr_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;

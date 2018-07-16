@@ -135,7 +135,7 @@ namespace stage
     {}
 
     bool TreasureDisplayStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+        const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE)
     {
         return treasureStagePtr_->HandleListboxCallback(
             treasureListboxUPtr_.get(), inventoryListboxUPtr_.get(), PACKAGE);
@@ -877,7 +877,7 @@ namespace stage
 
     void TreasureDisplayStage::SetupListbox(
         const treasure::WhichListbox WHICH_LISTBOX,
-        sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
+        sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage> & listboxUPtr,
         const item::ItemPVec_t & ITEMS_PVEC)
     {
         auto const PREV_ENTITY_PTR { GetGuiEntityPtrAndRemoveIfNeeded(listboxUPtr) };
@@ -898,13 +898,12 @@ namespace stage
             listboxColors.colorSet,
             sfml_util::gui::BackgroundInfo(listboxColors.background));
 
-        listboxUPtr = std::make_unique<sfml_util::gui::ListBox>(
+        listboxUPtr = std::make_unique<sfml_util::gui::ListBox<TreasureDisplayStage>>(
             "TreasureDisplayStage's_CharacterInventoryListBox",
+            this,
             LISTBOX_REGION,
-            sfml_util::IStagePtr_t(this),
             LISTBOX_BOXINFO,
             listboxColors.line,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
             listboxColors.image);
 
         sfml_util::gui::TextInfo textInfo(

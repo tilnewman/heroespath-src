@@ -54,7 +54,7 @@ namespace stage
     // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<PartyStage>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
         , public popup::IPopupHandler_t
     {
@@ -68,7 +68,8 @@ namespace stage
         virtual ~PartyStage();
 
         const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<PartyStage> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -141,8 +142,8 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t startButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t deleteButtonUPtr_;
-        sfml_util::gui::ListBoxUPtr_t characterListBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t partyListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<PartyStage> characterListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<PartyStage> partyListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t upTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t partyTextRegionUPtr_;

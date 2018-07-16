@@ -87,7 +87,7 @@ namespace stage
     class InventoryStage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
-        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<InventoryStage>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         enum class ViewType
@@ -135,7 +135,8 @@ namespace stage
 
         const std::string HandlerName() const override { return GetStageName(); }
 
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<InventoryStage> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -407,8 +408,8 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t equippedListBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t unEquipListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<InventoryStage> equippedListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<InventoryStage> unEquipListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::box::BoxUPtr_t descBoxUPtr_;
@@ -432,6 +433,7 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonNameUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonPriceUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonWeightUPtr_;
+
         bool isSortReversedEqName_;
         bool isSortReversedEqPrice_;
         bool isSortReversedEqWeight_;

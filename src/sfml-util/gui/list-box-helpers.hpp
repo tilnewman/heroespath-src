@@ -9,6 +9,11 @@
 //
 // list-box-helpers.hpp
 //
+#include "item/item.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/list-box.hpp"
+
+#include <algorithm>
 
 namespace heroespath
 {
@@ -16,14 +21,83 @@ namespace sfml_util
 {
     namespace gui
     {
-        class ListBox;
-
         namespace listbox
         {
 
-            void SortByItemName(ListBox & listBox, bool & isSortReversed);
-            void SortByItemPrice(ListBox & listBox, bool & isSortReversed);
-            void SortByItemWeight(ListBox & listBox, bool & isSortReversed);
+            template <typename Stage_t>
+            void SortByItemName(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            {
+                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                {
+                    std::sort(
+                        std::begin(listBox),
+                        std::end(listBox),
+                        [&isSortReversed](auto const & A, auto const & B) {
+                            if (isSortReversed)
+                            {
+                                return B->ItemPtrOpt().value()->Name()
+                                    < A->ItemPtrOpt().value()->Name();
+                            }
+                            else
+                            {
+                                return A->ItemPtrOpt().value()->Name()
+                                    < B->ItemPtrOpt().value()->Name();
+                            }
+                        });
+
+                    isSortReversed = !isSortReversed;
+                }
+            }
+
+            template <typename Stage_t>
+            void SortByItemPrice(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            {
+                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                {
+                    std::sort(
+                        std::begin(listBox),
+                        std::end(listBox),
+                        [&isSortReversed](auto const & A, auto const & B) {
+                            if (isSortReversed)
+                            {
+                                return B->ItemPtrOpt().value()->Price()
+                                    < A->ItemPtrOpt().value()->Price();
+                            }
+                            else
+                            {
+                                return A->ItemPtrOpt().value()->Price()
+                                    < B->ItemPtrOpt().value()->Price();
+                            }
+                        });
+
+                    isSortReversed = !isSortReversed;
+                }
+            }
+
+            template <typename Stage_t>
+            void SortByItemWeight(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            {
+                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                {
+                    std::sort(
+                        std::begin(listBox),
+                        std::end(listBox),
+                        [&isSortReversed](auto const & A, auto const & B) {
+                            if (isSortReversed)
+                            {
+                                return B->ItemPtrOpt().value()->Weight()
+                                    < A->ItemPtrOpt().value()->Weight();
+                            }
+                            else
+                            {
+                                return A->ItemPtrOpt().value()->Weight()
+                                    < B->ItemPtrOpt().value()->Weight();
+                            }
+                        });
+
+                    isSortReversed = !isSortReversed;
+                }
+            }
 
         } // namespace listbox
     } // namespace gui

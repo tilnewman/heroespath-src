@@ -71,7 +71,7 @@ namespace popup
     PopupStageSpellbook::~PopupStageSpellbook() = default;
 
     bool PopupStageSpellbook::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+        const sfml_util::gui::callback::ListBoxEventPackage<PopupStageSpellbook> & PACKAGE)
     {
         if (!PACKAGE.package.PTR_->Selected()
             || !PACKAGE.package.PTR_->Selected().value()->SpellPtrOpt())
@@ -399,13 +399,12 @@ namespace popup
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
             1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
-        listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<PopupStageSpellbook>>(
             "PopupStage'sSpellListBox",
+            this,
             LISTBOX_RECT,
-            sfml_util::IStagePtr_t(this),
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this),
             LISTBOX_IMAGE_COLOR_);
 
         sfml_util::gui::ListBoxItemFactory listBoxItemFactory;

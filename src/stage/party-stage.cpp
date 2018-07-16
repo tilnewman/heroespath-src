@@ -136,7 +136,8 @@ namespace stage
         creature::CreatureWarehouse::Access().Free(unplayedCharactersPVec_);
     }
 
-    bool PartyStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    bool PartyStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage<PartyStage> & PACKAGE)
     {
         ResetMouseOverPopupState();
 
@@ -480,13 +481,12 @@ namespace stage
                 BG_COLOR - sf::Color(40, 40, 40, 0)),
             bgInfo);
 
-        characterListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        characterListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<PartyStage>>(
             "PartyStage'sCharacter",
+            this,
             CHAR_LIST_RECT,
-            sfml_util::IStagePtr_t(this),
             listBoxInfo_,
-            sfml_util::FontManager::Color_Orange(),
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::FontManager::Color_Orange());
 
         // load all players not yet assigned to a party/started game
         unplayedCharactersPVec_ = game::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
@@ -541,13 +541,12 @@ namespace stage
 
         listBoxInfo_.SetBoxAndBackgroundRegion(PARTY_LIST_RECT);
 
-        partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+        partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<PartyStage>>(
             "PartyStage'sParty",
+            this,
             PARTY_LIST_RECT,
-            sfml_util::IStagePtr_t(this),
             listBoxInfo_,
-            sfml_util::FontManager::Color_Orange(),
-            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
+            sfml_util::FontManager::Color_Orange());
 
         partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
         EntityAdd(partyListBoxUPtr_.get());

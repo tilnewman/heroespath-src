@@ -53,33 +53,33 @@ namespace stage
 {
 
     // all of these popup names must be unique
-    const std::string TreasureStage::POPUP_NAME_NO_TREASURE_{ "PopupName_AllEnemiesRan" };
+    const std::string TreasureStage::POPUP_NAME_NO_TREASURE_ { "PopupName_AllEnemiesRan" };
 
-    const std::string TreasureStage::POPUP_NAME_WORN_ONLY_{ "PopupName_HeldOnly" };
+    const std::string TreasureStage::POPUP_NAME_WORN_ONLY_ { "PopupName_HeldOnly" };
 
-    const std::string TreasureStage::POPUP_NAME_LOCKBOX_ONLY_{ "PopupName_LockboxOnly" };
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_ONLY_ { "PopupName_LockboxOnly" };
 
-    const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_HELD_{ "PopupName_LockboxAndWorn" };
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_HELD_ { "PopupName_LockboxAndWorn" };
 
-    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_{ "PopupName_LockPickFailure" };
+    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_ { "PopupName_LockPickFailure" };
 
-    const std::string TreasureStage::POPUP_NAME_DAMAGE_REPORT_{ "PopupName_DamageReport" };
+    const std::string TreasureStage::POPUP_NAME_DAMAGE_REPORT_ { "PopupName_DamageReport" };
 
-    const std::string TreasureStage::POPUP_NAME_ALL_CHARACTERS_DIED_{
+    const std::string TreasureStage::POPUP_NAME_ALL_CHARACTERS_DIED_ {
         "PopupName_AllCharactersDied"
     };
 
-    const std::string TreasureStage::POPUP_NAME_COIN_SHARE_{ "PopupName_CoinShare" };
+    const std::string TreasureStage::POPUP_NAME_COIN_SHARE_ { "PopupName_CoinShare" };
 
-    const std::string TreasureStage::POPUP_NAME_GEM_SHARE_{ "PopupName_GemShare" };
+    const std::string TreasureStage::POPUP_NAME_GEM_SHARE_ { "PopupName_GemShare" };
 
-    const std::string TreasureStage::POPUP_NAME_ITEM_TAKE_REJECTION_{
+    const std::string TreasureStage::POPUP_NAME_ITEM_TAKE_REJECTION_ {
         "PopupName_ItemTakeRejection"
     };
 
-    const std::string TreasureStage::POPUP_NAME_ALL_ITEMS_TAKEN_{ "PopupName_AllItemsTaken" };
+    const std::string TreasureStage::POPUP_NAME_ALL_ITEMS_TAKEN_ { "PopupName_AllItemsTaken" };
 
-    const std::string TreasureStage::POPUP_NAME_NOT_ALL_ITEMS_TAKEN_{
+    const std::string TreasureStage::POPUP_NAME_NOT_ALL_ITEMS_TAKEN_ {
         "PopupName_NotAllItemsTaken"
     };
 
@@ -302,7 +302,7 @@ namespace stage
         // create a fake collection of dead creatures, using the predetermined initial encounter
         combat::Encounter::Instance()->BeginCombatTasks();
         //
-        auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
+        auto const NONPLAYER_CREATURE_PVEC { creature::Algorithms::NonPlayers() };
         for (auto const & NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
         {
             combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
@@ -366,18 +366,18 @@ namespace stage
     }
 
     bool TreasureStage::HandleListboxCallback(
-        const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
-        const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
-        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+        const sfml_util::gui::ListBox<TreasureDisplayStage> * const TREASURE_LISTBOX_PTR,
+        const sfml_util::gui::ListBox<TreasureDisplayStage> * const INVENTORY_LISTBOX_PTR,
+        const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE)
     {
         if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            auto const SELECTED_ITEM_PTR_OPT{ PACKAGE.package.PTR_->Selected() };
+            auto const SELECTED_ITEM_PTR_OPT { PACKAGE.package.PTR_->Selected() };
 
             if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
             {
-                auto const ITEM_PTR{ SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
+                auto const ITEM_PTR { SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
 
                 if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
                 {
@@ -397,7 +397,7 @@ namespace stage
 
     void TreasureStage::TakeAllItems()
     {
-        item::ItemPVec_t & itemsPVec{ (
+        item::ItemPVec_t & itemsPVec { (
             (displayStagePtr_->IsShowingHeldItems()) ? itemCacheHeld_.items_pvec
                                                      : itemCacheLockbox_.items_pvec) };
 
@@ -449,7 +449,7 @@ namespace stage
         UpdateItemDisplay();
 
         // display a popup that reports how many items were taken
-        auto const NUM_ITEMS_REMAINING{ itemsPVec.size() };
+        auto const NUM_ITEMS_REMAINING { itemsPVec.size() };
         if (NUM_ITEMS_REMAINING == 0)
         {
             sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
@@ -458,7 +458,7 @@ namespace stage
             ss << "\n"
                << "All " << itemsToRemovePVec.size() << " items were taken.";
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ALL_ITEMS_TAKEN_,
                 ss.str(),
                 popup::PopupButtons::Okay,
@@ -470,7 +470,7 @@ namespace stage
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
                 "None of the items could be taken by any of your characters.",
                 popup::PopupButtons::Okay,
@@ -486,7 +486,7 @@ namespace stage
             ss << "\n"
                << NUM_ITEMS_REMAINING << " items could not be taken by any of your characters.";
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
                 ss.str(),
                 popup::PopupButtons::Okay,
@@ -531,7 +531,7 @@ namespace stage
                 ss << "\nYour enemies had no possessions on them and they carried no lockbox.  "
                    << "Click Continue to return to the Adventure screen.";
 
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NO_TREASURE_,
                     ss.str(),
                     popup::PopupButtons::Continue,
@@ -546,7 +546,7 @@ namespace stage
                 ss << "\nYour enemies were wearing possessions but they carried no lockbox.  "
                    << "Click Continue to search what they left behind.";
 
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_WORN_ONLY_,
                     ss.str(),
                     popup::PopupButtons::Continue,
@@ -563,7 +563,7 @@ namespace stage
                    << item::TreasureImage::ToContainerName(TREASURE_IMAGE)
                    << ".  Attempt to pick the lock?";
 
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                     ((TREASURE_AVAILABLE == item::TreasureAvailable::LockboxOnly)
                          ? POPUP_NAME_LOCKBOX_ONLY_
                          : POPUP_NAME_LOCKBOX_AND_HELD_),
@@ -625,7 +625,7 @@ namespace stage
         trap_ = combat::trap::Holder::SelectRandomWithSeverityRatioNear(
             combat::Encounter::Instance()->DefeatedPartyTreasureRatioPer());
 
-        auto const LOCK_PICKING_CREATURE_PTR_OPT{
+        auto const LOCK_PICKING_CREATURE_PTR_OPT {
             combat::Encounter::Instance()->LockPickCreaturePtrOpt()
         };
 
@@ -637,7 +637,7 @@ namespace stage
         fightResult_
             = creatureInteraction_.TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
             trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
@@ -650,9 +650,9 @@ namespace stage
     {
         if (creatureEffectIndex_ < fightResult_.Effects().size())
         {
-            bool ignored{ false };
+            bool ignored { false };
 
-            auto const LOCK_PICKING_CREATURE_PTR_OPT{
+            auto const LOCK_PICKING_CREATURE_PTR_OPT {
                 combat::Encounter::Instance()->LockPickCreaturePtrOpt()
             };
 
@@ -663,7 +663,7 @@ namespace stage
 
             combat::Text combatText;
 
-            auto const DAMAGE_TEXT{ combatText.ActionTextIndexed(
+            auto const DAMAGE_TEXT { combatText.ActionTextIndexed(
                 LOCK_PICKING_CREATURE_PTR_OPT.value(),
                 combat::TurnActionInfo(combat::TurnAction::TreasureUnlock),
                 fightResult_,
@@ -672,7 +672,7 @@ namespace stage
                 0,
                 ignored) };
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_DAMAGE_REPORT_,
                 "\n" + DAMAGE_TEXT,
                 popup::PopupButtons::Continue,
@@ -691,7 +691,7 @@ namespace stage
 
     bool TreasureStage::CheckAndHandleAllKilledByTrap()
     {
-        auto const ALL_LIVING_PVEC{ creature::Algorithms::PlayersByType(
+        auto const ALL_LIVING_PVEC { creature::Algorithms::PlayersByType(
             creature::Algorithms::TypeOpt::Player, creature::Algorithms::PlayerOpt::Living) };
 
         if (ALL_LIVING_PVEC.empty())
@@ -728,7 +728,7 @@ namespace stage
 
     bool TreasureStage::ShareAndShowPopupIfNeeded(const ShareType WHAT_IS_SHARED)
     {
-        auto const TOTAL_SHARED{ Share(WHAT_IS_SHARED) };
+        auto const TOTAL_SHARED { Share(WHAT_IS_SHARED) };
         if (TOTAL_SHARED == 0)
         {
             return false;
@@ -739,19 +739,19 @@ namespace stage
             ss << "\nThe party finds and shares " << TOTAL_SHARED << " "
                << ((WHAT_IS_SHARED == ShareType::Coins) ? "coins" : "gems") << ".";
 
-            auto const POPUP_NAME{ (
+            auto const POPUP_NAME { (
                 (WHAT_IS_SHARED == ShareType::Coins) ? POPUP_NAME_COIN_SHARE_
                                                      : POPUP_NAME_GEM_SHARE_) };
 
-            auto const SOUND_EFFECT_SET{ (
+            auto const SOUND_EFFECT_SET { (
                 (WHAT_IS_SHARED == ShareType::Coins) ? sfml_util::sound_effect_set::Coin
                                                      : sfml_util::sound_effect_set::Gem) };
 
-            auto const SOUND_EFFECT{ sfml_util::SoundManager::Instance()
-                                         ->GetSoundEffectSet(SOUND_EFFECT_SET)
-                                         .SelectRandom() };
+            auto const SOUND_EFFECT { sfml_util::SoundManager::Instance()
+                                          ->GetSoundEffectSet(SOUND_EFFECT_SET)
+                                          .SelectRandom() };
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME,
                 ss.str(),
                 popup::PopupButtons::Continue,
@@ -767,7 +767,7 @@ namespace stage
 
     int TreasureStage::Share(const ShareType WHAT_IS_SHARED)
     {
-        const int TOTAL{ (
+        const int TOTAL { (
             (WHAT_IS_SHARED == ShareType::Coins)
                 ? (itemCacheHeld_.coins.As<int>() + itemCacheLockbox_.coins.As<int>())
                 : (itemCacheHeld_.gems.As<int>() + itemCacheLockbox_.gems.As<int>())) };
@@ -777,11 +777,11 @@ namespace stage
             return 0;
         }
 
-        auto const HUMANOID_COUNT{ static_cast<int>(
+        auto const HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const SHARED_AMOUNT{ TOTAL / HUMANOID_COUNT };
-        auto const LEFTOVER_AMOUNT{ TOTAL % HUMANOID_COUNT };
+        auto const SHARED_AMOUNT { TOTAL / HUMANOID_COUNT };
+        auto const LEFTOVER_AMOUNT { TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -800,7 +800,7 @@ namespace stage
             }
         }
 
-        auto toHandOut{ LEFTOVER_AMOUNT };
+        auto toHandOut { LEFTOVER_AMOUNT };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
@@ -844,7 +844,7 @@ namespace stage
     {
         PlaySoundEffect_KeypressValid();
 
-        auto characterIndex{ [KEY]() -> std::size_t {
+        auto characterIndex { [KEY]() -> std::size_t {
             if (KEY == sf::Keyboard::Num1)
                 return 0;
             else if (KEY == sf::Keyboard::Num2)
@@ -859,7 +859,7 @@ namespace stage
                 return 5;
         }() };
 
-        auto const CHARACTER_INDEX_MAX{ displayStagePtr_->CharacterIndexMax() };
+        auto const CHARACTER_INDEX_MAX { displayStagePtr_->CharacterIndexMax() };
         if (characterIndex > CHARACTER_INDEX_MAX)
         {
             characterIndex = CHARACTER_INDEX_MAX;
@@ -875,7 +875,7 @@ namespace stage
         {
             PlaySoundEffect_KeypressValid();
 
-            auto characterIndex{ displayStagePtr_->CharacterIndex() };
+            auto characterIndex { displayStagePtr_->CharacterIndex() };
 
             if (0 == characterIndex)
             {
@@ -895,7 +895,7 @@ namespace stage
         {
             PlaySoundEffect_KeypressValid();
 
-            auto characterIndex{ displayStagePtr_->CharacterIndex() };
+            auto characterIndex { displayStagePtr_->CharacterIndex() };
 
             if (displayStagePtr_->CharacterIndexMax() == characterIndex)
             {
@@ -926,8 +926,8 @@ namespace stage
 
     void TreasureStage::TakeItem(const item::ItemPtr_t ITEM_PTR)
     {
-        auto creaturePtr{ displayStagePtr_->WhichCharacterInventoryIsDisplayed() };
-        auto const IS_ITEM_ADD_ALLOWED_STR{ creaturePtr->ItemIsAddAllowed(ITEM_PTR) };
+        auto creaturePtr { displayStagePtr_->WhichCharacterInventoryIsDisplayed() };
+        auto const IS_ITEM_ADD_ALLOWED_STR { creaturePtr->ItemIsAddAllowed(ITEM_PTR) };
 
         if (IS_ITEM_ADD_ALLOWED_STR.empty())
         {
@@ -965,7 +965,7 @@ namespace stage
             ss << creaturePtr->Name() << " can't take the " << ITEM_PTR->Name()
                << " because:  " << IS_ITEM_ADD_ALLOWED_STR;
 
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ITEM_TAKE_REJECTION_,
                 ss.str(),
                 popup::PopupButtons::Cancel,
