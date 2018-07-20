@@ -19,7 +19,6 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliderbar-effects.hpp"
 #include "sfml-util/sliderbar-music.hpp"
 #include "sfml-util/stage-title.hpp"

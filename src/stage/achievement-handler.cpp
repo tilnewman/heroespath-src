@@ -64,7 +64,7 @@ namespace stage
         sf::Texture toTexture;
         titleImageLoader.Load(toTexture, TO_TITLE_PTR->Which());
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
+        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME,
             CREATURE_PTR,
             FROM_TITLE_PTR_OPT,
@@ -82,8 +82,8 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE)
     {
-        creature::TitlePtrOpt_t fromTitlePtrOpt{ boost::none };
-        creature::TitlePtrOpt_t toTitlePtrOpt{ boost::none };
+        creature::TitlePtrOpt_t fromTitlePtrOpt { boost::none };
+        creature::TitlePtrOpt_t toTitlePtrOpt { boost::none };
 
         if (IncrementAchievementAndReturnTrueIfProcessingRequired(
                 CREATURE_PTR, ACHIEVEMENT_TYPE, fromTitlePtrOpt, toTitlePtrOpt))

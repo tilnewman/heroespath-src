@@ -76,7 +76,7 @@ namespace sfml_util
             TextRegion(
                 const std::string & NAME,
                 const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
+                const sf::FloatRect & REGION = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
                 const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
                 const box::Info & BOX_INFO = gui::box::Info(),
                 const Margins & MARGINS = Margins());
@@ -115,7 +115,9 @@ namespace sfml_util
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
+            void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const sf::Vector2f & V) override { MoveEntityPos(V.x, V.y); }
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             const std::string HandlerName() const override { return GetEntityName(); }

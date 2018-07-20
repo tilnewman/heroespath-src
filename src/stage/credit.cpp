@@ -130,17 +130,17 @@ namespace stage
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            auto const SCALE{ MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
+            auto const SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
 
             sprite_.setScale(SCALE, SCALE);
 
-            auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f))
-                                 - (sprite_.getGlobalBounds().width * 0.5f) };
+            auto const POS_LEFT { (trackingRect.left + (trackingRect.width * 0.5f))
+                                  - (sprite_.getGlobalBounds().width * 0.5f) };
 
-            auto const TOP_PAD{ sfml_util::ScreenRatioToPixelsVert(0.0333f) };
+            auto const TOP_PAD { sfml_util::ScreenRatioToPixelsVert(0.0333f) };
 
-            auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f))
-                                - (sprite_.getGlobalBounds().height * 0.5f) + TOP_PAD };
+            auto const POS_TOP { (trackingRect.top + (trackingRect.height * 0.5f))
+                                 - (sprite_.getGlobalBounds().height * 0.5f) + TOP_PAD };
 
             sprite_.setPosition(POS_LEFT, POS_TOP);
 
@@ -152,19 +152,19 @@ namespace stage
             animUPtr_ = sfml_util::AnimationFactory::Make(
                 ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 
-            auto const SCALE{ MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
+            auto const SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
 
             // correct size and position
-            auto const WIDTH{ animUPtr_->OrigSize().x * SCALE };
-            auto const HEIGHT{ animUPtr_->OrigSize().y * SCALE };
+            auto const WIDTH { animUPtr_->OrigSize().x * SCALE };
+            auto const HEIGHT { animUPtr_->OrigSize().y * SCALE };
 
-            auto const POS_LEFT{ (trackingRect.left + (trackingRect.width * 0.5f))
-                                 - (WIDTH * 0.5f) };
+            auto const POS_LEFT { (trackingRect.left + (trackingRect.width * 0.5f))
+                                  - (WIDTH * 0.5f) };
 
-            auto const TOP_PAD{ sfml_util::ScreenRatioToPixelsVert(0.0888f) };
+            auto const TOP_PAD { sfml_util::ScreenRatioToPixelsVert(0.0888f) };
 
-            auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) - (HEIGHT * 0.5f)
-                                + TOP_PAD };
+            auto const POS_TOP { (trackingRect.top + (trackingRect.height * 0.5f)) - (HEIGHT * 0.5f)
+                                 + TOP_PAD };
 
             animUPtr_->SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT));
 
@@ -195,20 +195,20 @@ namespace stage
             sfml_util::Justified::Center);
 
         // if there is a lot of text (multi-lined), reduce the size to look better
-        auto const NUM_NEWLINES{ static_cast<int>(
+        auto const NUM_NEWLINES { static_cast<int>(
             std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
 
         if (NUM_NEWLINES > 1)
         {
-            auto const FONT_SIZE_REDUCTION{ static_cast<unsigned int>(2 * NUM_NEWLINES) };
+            auto const FONT_SIZE_REDUCTION { static_cast<unsigned int>(2 * NUM_NEWLINES) };
 
-            if (textInfoContent.charSize > FONT_SIZE_REDUCTION)
+            if (textInfoContent.char_size > FONT_SIZE_REDUCTION)
             {
-                textInfoContent.charSize -= FONT_SIZE_REDUCTION;
+                textInfoContent.char_size -= FONT_SIZE_REDUCTION;
             }
             else
             {
-                textInfoContent.charSize = 1;
+                textInfoContent.char_size = 1;
             }
         }
 
@@ -218,7 +218,7 @@ namespace stage
         trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
 
         // add space between credits
-        auto const VERT_SPACER{ sfml_util::ScreenRatioToPixelsVert(0.111f) };
+        auto const VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.111f) };
         trackingRect.top += VERT_SPACER;
     }
 
@@ -306,11 +306,11 @@ namespace stage
 
         for (auto const & RECT : rects)
         {
-            auto const TOP_LIMIT{ -1.0f };
-            auto const BOTTOM_LIMIT{ screenSizeVert_ + 1.0f };
+            auto const TOP_LIMIT { -1.0f };
+            auto const BOTTOM_LIMIT { screenSizeVert_ + 1.0f };
 
-            auto const TOP{ RECT.top };
-            auto const BOTTOM{ RECT.top + RECT.height };
+            auto const TOP { RECT.top };
+            auto const BOTTOM { RECT.top + RECT.height };
 
             if (((TOP > TOP_LIMIT) && (TOP < BOTTOM_LIMIT))
                 || ((BOTTOM > TOP_LIMIT) && (BOTTOM < BOTTOM_LIMIT)))

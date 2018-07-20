@@ -34,7 +34,7 @@
 #include "popup/popup-stage-combat-over.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/list-element.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
@@ -366,30 +366,25 @@ namespace stage
     }
 
     bool TreasureStage::HandleListboxCallback(
-        const sfml_util::gui::ListBox<TreasureDisplayStage> * const TREASURE_LISTBOX_PTR,
-        const sfml_util::gui::ListBox<TreasureDisplayStage> * const INVENTORY_LISTBOX_PTR,
-        const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE)
+        const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
+        const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
+        const ItemListBoxEventPackage_t & PACKAGE)
     {
         if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            auto const SELECTED_ITEM_PTR_OPT { PACKAGE.package.PTR_->Selected() };
+            auto const ITEM_PTR { PACKAGE.package.PTR_->Selection()->Element() };
 
-            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
+            if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR.Ptr())
             {
-                auto const ITEM_PTR { SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value() };
-
-                if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
-                {
-                    TakeItem(ITEM_PTR);
-                }
-                else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR)
-                {
-                    PutItemBack(ITEM_PTR);
-                }
-
-                return true;
+                TakeItem(ITEM_PTR);
             }
+            else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR.Ptr())
+            {
+                PutItemBack(ITEM_PTR);
+            }
+
+            return true;
         }
 
         return true;

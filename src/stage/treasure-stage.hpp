@@ -19,7 +19,6 @@
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/list-box.hpp"
@@ -32,15 +31,11 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace item
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
-} // namespace sfml_util
-
+    class Item;
+    using ItemPtr_t = misc::NotNull<Item *>;
+} // namespace item
 namespace stage
 {
 
@@ -52,6 +47,17 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
     {
+        using ItemListBox_t = sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
+
+        using ItemListBoxPtr_t
+            = sfml_util::gui::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+
+        using ItemListBoxUPtr_t
+            = sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+
+        using ItemListBoxEventPackage_t
+            = sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage, item::ItemPtr_t>;
+
     public:
         TreasureStage(const TreasureStage &) = delete;
         TreasureStage(TreasureStage &&) = delete;
@@ -70,9 +76,9 @@ namespace stage
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         bool HandleListboxCallback(
-            const sfml_util::gui::ListBox<TreasureDisplayStage> * const TREASURE_LISTBOX_PTR,
-            const sfml_util::gui::ListBox<TreasureDisplayStage> * const INVENTORY_LISTBOX_PTR,
-            const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE);
+            const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
+            const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
+            const ItemListBoxEventPackage_t & PACKAGE);
 
         void TakeAllItems();
         void Exit();

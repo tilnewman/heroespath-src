@@ -46,7 +46,7 @@ namespace sfml_util
 
     CachedTexture & CachedTexture::operator=(const CachedTexture & CT)
     {
-        if (this != &CT)
+        if ((this != &CT) && (CT.index_ != index_))
         {
             Release();
 
@@ -67,11 +67,14 @@ namespace sfml_util
     {
         if (this != &ct)
         {
-            Release();
+            if (index_ != ct.index_)
+            {
+                Release();
 
-            path_ = std::move(ct.path_);
-            index_ = std::move(ct.index_);
-            options_ = std::move(ct.options_);
+                path_ = std::move(ct.path_);
+                index_ = std::move(ct.index_);
+                options_ = std::move(ct.options_);
+            }
 
             // zero the moved ct's index_ so it's destructor won't try to TextureCache::Remove...()
             ct.path_ = "";
@@ -80,8 +83,7 @@ namespace sfml_util
         return *this;
     }
 
-    CachedTexture::CachedTexture(
-        const char * const GAME_DATAFILE_KEY, const TextureOpt::Enum OPTIONS)
+    CachedTexture::CachedTexture(const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::MakePathPretty(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
@@ -89,22 +91,21 @@ namespace sfml_util
     {}
 
     CachedTexture::CachedTexture(
-        const std::string & GAME_DATAFILE_KEY, const TextureOpt::Enum OPTIONS)
+        const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::MakePathPretty(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
 
-    CachedTexture::CachedTexture(
-        const boost::filesystem::path & PATH, const TextureOpt::Enum OPTIONS)
+    CachedTexture::CachedTexture(const boost::filesystem::path & PATH, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::MakePathPretty(PATH).string())
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
 
     CachedTexture::CachedTexture(
-        const std::string & FAKE_PATH, const sf::Texture & TEXTURE, const TextureOpt::Enum OPTIONS)
+        const std::string & FAKE_PATH, const sf::Texture & TEXTURE, const ImageOptions & OPTIONS)
         : path_(FAKE_PATH)
         , index_(TextureCache::Instance()->AddByPathFake(path_, TEXTURE, OPTIONS))
         , options_(OPTIONS)
@@ -156,7 +157,7 @@ namespace sfml_util
 
     CachedTextures & CachedTextures::operator=(const CachedTextures & CT)
     {
-        if (this != &CT)
+        if ((this != &CT) && (CT.indexes_ != indexes_))
         {
             Release();
 
@@ -177,11 +178,14 @@ namespace sfml_util
     {
         if (this != &ct)
         {
-            Release();
+            if (ct.indexes_ != indexes_)
+            {
+                Release();
 
-            path_ = std::move(ct.path_);
-            indexes_ = std::move(ct.indexes_);
-            options_ = std::move(ct.options_);
+                path_ = std::move(ct.path_);
+                indexes_ = std::move(ct.indexes_);
+                options_ = std::move(ct.options_);
+            }
 
             // zero the moved ct so its destructor won't try to TextureCache::Remove...()
             ct.path_ = "";
@@ -191,7 +195,7 @@ namespace sfml_util
     }
 
     CachedTextures::CachedTextures(
-        const std::string & GAME_DATAFILE_KEY, const TextureOpt::Enum OPTIONS)
+        const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::MakePathPretty(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
@@ -199,7 +203,7 @@ namespace sfml_util
     {}
 
     CachedTextures::CachedTextures(
-        const boost::filesystem::path & DIR_PATH, const TextureOpt::Enum OPTIONS)
+        const boost::filesystem::path & DIR_PATH, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::MakePathPretty(DIR_PATH).string())
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
@@ -222,9 +226,8 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS(
             (INDEX < indexes_.size()),
             "sfml_util::CachedTextures::At("
-                << INDEX
-                << ") but that index was out of bounds.  (indexes_.size()=" << indexes_.size()
-                << ", path=\"" << path_ << "\", options=" << TextureOpt::ToString(options_) << ")");
+                << INDEX << ") but that index was out of bounds.  (indexes_.size()="
+                << indexes_.size() << ", path=\"" << path_ << "\", " << options_ << ")");
 
         return operator[](INDEX);
     }

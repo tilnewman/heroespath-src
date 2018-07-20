@@ -35,7 +35,7 @@ namespace item
         const WeaponDetails WeaponDetailLoader::LookupWeaponDetails(const std::string & NAME)
         {
             WeaponDetails details;
-            auto const WAS_FOUND{ weaponDetailsMap_.Find(NAME, details) };
+            auto const WAS_FOUND { weaponDetailsMap_.Find(NAME, details) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 WAS_FOUND,
@@ -68,16 +68,14 @@ namespace item
 
         void WeaponDetailLoader::LoadDetailsForKey(const std::string & WEAPON_NAME)
         {
-            using StrVec_t = std::vector<std::string>;
-
             WeaponDetails weaponDetails;
 
             // lookup detail value string in the GameDataFile
-            auto const KEY_STR{ "heroespath-item-weapon-details-" + WEAPON_NAME };
-            auto const VALUE_STR{ game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
+            auto const KEY_STR { "heroespath-item-weapon-details-" + WEAPON_NAME };
+            auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
             // break the line of text into comma separated field strings
-            StrVec_t fieldsVec;
+            std::vector<std::string> fieldsVec;
             appbase::stringhelp::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
             // verify there are eight fields

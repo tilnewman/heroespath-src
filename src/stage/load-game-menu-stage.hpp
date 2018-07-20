@@ -13,11 +13,11 @@
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -54,7 +54,8 @@ namespace stage
     // A Stage class that allows players to load saved games
     class LoadGameStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IListBoxCallbackHandler<LoadGameStage>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<LoadGameStage, game::GameStatePtr_t>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
     public:
@@ -75,8 +76,9 @@ namespace stage
             return false;
         }
 
-        bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage> &) override;
+        bool
+            HandleCallback(const sfml_util::gui::callback::
+                               ListBoxEventPackage<LoadGameStage, game::GameStatePtr_t> &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -89,18 +91,16 @@ namespace stage
         sfml_util::StageTitle stageTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
         sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
+        sf::Vector2f screenSizeV_;
+        sf::FloatRect gsListBoxRect_;
         sf::Color gsListBoxBGColor_;
-        sfml_util::gui::ListBoxUPtr_t<LoadGameStage> gsListBoxUPtr_;
-        //
+        sfml_util::gui::ColorSet gsListBoxColorSet_;
+        sfml_util::gui::box::Info gsListBoxInfo_;
+        sfml_util::gui::ListBoxUPtr_t<LoadGameStage, game::GameStatePtr_t> gsListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t locTextRegionUPtr_;
         sfml_util::gui::TextRegionUVec_t charTextRegionUVec_;
         sfml_util::gui::TextRegionUPtr_t charLabelTextRegionUPtr_;
-        //
-        sf::Vector2f screenSizeV_;
-        sf::FloatRect gsListBoxRect_;
-        //
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        //
         game::GameStatePVec_t gamestatePVec_;
     };
 

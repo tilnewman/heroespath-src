@@ -62,9 +62,9 @@ namespace stage
                                                                            sf::Color(
                                                                                180, 180, 180) };
 
-    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfml_util::FontManager::Color_Light() };
+    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfml_util::Colors::Light };
 
-    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfml_util::FontManager::Color_Orange() };
+    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfml_util::Colors::Orange };
 
     const std::string CharacterStage::POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_ {
         "BackButtonLeaveScreenComfirm"
@@ -624,7 +624,7 @@ namespace stage
             raceNameVec,
             0,
             sfml_util::Brightness::Bright,
-            misc::SizetVec_t(),
+            std::vector<std::size_t>(),
             BOX_INFO,
             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             0.0f);
@@ -670,7 +670,7 @@ namespace stage
             roleNameVec,
             0,
             sfml_util::Brightness::Bright,
-            misc::SizetVec_t(),
+            std::vector<std::size_t>(),
             BOX_INFO,
             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             -5.0f);
@@ -845,7 +845,7 @@ namespace stage
             sexNameVec,
             0,
             sfml_util::Brightness::Bright,
-            misc::SizetVec_t(),
+            std::vector<std::size_t>(),
             BOX_INFO,
             5.0f,
             0.0f);
@@ -1540,7 +1540,7 @@ namespace stage
     {
         auto const VALID_ROLES { creature::race::Roles(WHICH_RACE) };
 
-        misc::SizetVec_t invalidRoleIndexes;
+        std::vector<std::size_t> invalidRoleIndexes;
         invalidRoleIndexes.reserve(creature::role::PlayerRoleCount);
 
         auto const NUM_PLAYER_ROLES { static_cast<std::size_t>(creature::role::PlayerRoleCount) };

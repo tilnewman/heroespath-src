@@ -14,7 +14,6 @@
 #include "sfml-util/gui/i-gui-entity.hpp"
 #include "sfml-util/mouse-state-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 
 #include <memory>
 #include <string>
@@ -100,15 +99,12 @@ namespace sfml_util
 
             void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+
+            void MoveEntityPos(const sf::Vector2f & V) override { MoveEntityPos(V.x, V.y); }
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             void MoveEntityOffScreen();
             void MoveEntityBackFromOffScreen();
-
-            bool IsInEntityRegion(const sf::Vector2f & V) const override
-            {
-                return entityRegion_.contains(V);
-            }
 
             void SetEntityColors(const ColorSet & COLOR_SET) override;
             void SetEntityColorFg(const sf::Color & FG_COLOR) override;

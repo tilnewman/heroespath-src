@@ -18,7 +18,6 @@
 #include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "log/log-macros.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/types.hpp"
 
 #include <string>

@@ -157,10 +157,10 @@ namespace sfml_util
 
         protected:
             bool isDisabled_;
-            sfml_util::CachedTextureOpt_t upTextureOpt_;
-            sfml_util::CachedTextureOpt_t downTextureOpt_;
-            sfml_util::CachedTextureOpt_t overTextureOpt_;
-            sfml_util::CachedTextureOpt_t disabledTextureOpt_;
+            sfml_util::CachedTextureOpt_t upCachedTextureOpt_;
+            sfml_util::CachedTextureOpt_t downCachedTextureOpt_;
+            sfml_util::CachedTextureOpt_t overCachedTextureOpt_;
+            sfml_util::CachedTextureOpt_t disabledCachedTextureOpt_;
             sf::Sprite sprite_;
             TextRegionPtrOpt_t currTextRegionPtrOpt_;
             TextRegionUPtr_t upTextRegionUPtr_;

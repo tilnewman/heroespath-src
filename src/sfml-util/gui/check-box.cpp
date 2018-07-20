@@ -155,8 +155,8 @@ namespace sfml_util
             }
         }
 
-        const float CheckBoxSet::OUTER_PAD_DEFAULT_{ 6.0f };
-        const float CheckBoxSet::BETWEEN_PAD_DEFAULT_{ 6.0f };
+        const float CheckBoxSet::OUTER_PAD_DEFAULT_ { 6.0f };
+        const float CheckBoxSet::BETWEEN_PAD_DEFAULT_ { 6.0f };
 
         CheckBoxSet::CheckBoxSet(
             const std::string & NAME,
@@ -164,7 +164,7 @@ namespace sfml_util
             const float POS_TOP,
             const TextInfoVec_t & TEXT_INFO_VEC,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const gui::box::Info & BOX_INFO,
             const std::deque<bool> & INITIAL_SELECTIONS,
             const float OUTER_PAD,
@@ -178,7 +178,7 @@ namespace sfml_util
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
-            auto const NUM_CHECKBOXES{ TEXT_INFO_VEC.size() };
+            auto const NUM_CHECKBOXES { TEXT_INFO_VEC.size() };
 
             if (currentSelections_.empty())
             {
@@ -219,7 +219,7 @@ namespace sfml_util
             const float POS_TOP,
             const MouseTextInfoVec_t & TEXT_INFO_VEC,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const gui::box::Info & BOX_INFO,
             const std::deque<bool> & INITIAL_SELECTIONS,
             const float OUTER_PAD,
@@ -233,7 +233,7 @@ namespace sfml_util
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
-            auto const NUM_CHECKBOXES{ TEXT_INFO_VEC.size() };
+            auto const NUM_CHECKBOXES { TEXT_INFO_VEC.size() };
 
             if (currentSelections_.empty())
             {
@@ -275,7 +275,7 @@ namespace sfml_util
             const TextInfo & TEXT_INFO,
             const std::vector<std::string> & LABEL_VEC,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const gui::box::Info & BOX_INFO,
             const std::deque<bool> & INITIAL_SELECTIONS,
             const float OUTER_PAD,
@@ -289,7 +289,7 @@ namespace sfml_util
             , box_(std::string(GetEntityName()).append("'s"))
             , invalidSelectionsVec_(INVALID_SEL_VEC)
         {
-            auto const NUM_CHECKBOXES{ LABEL_VEC.size() };
+            auto const NUM_CHECKBOXES { LABEL_VEC.size() };
 
             if (currentSelections_.empty())
             {
@@ -328,7 +328,7 @@ namespace sfml_util
 
         void CheckBoxSet::SetupInitialSelections()
         {
-            auto const NUM_SELECTIONS{ currentSelections_.size() };
+            auto const NUM_SELECTIONS { currentSelections_.size() };
             for (std::size_t i(0); i < NUM_SELECTIONS; ++i)
             {
                 if (currentSelections_[i] == true)
@@ -342,7 +342,7 @@ namespace sfml_util
         {
             std::vector<std::size_t> checkedBoxNumbers;
 
-            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
+            auto const NUM_CHECKBOXES { checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
                 if (false == checkBoxUVec_[i]->IsInFirstState())
@@ -356,7 +356,7 @@ namespace sfml_util
 
         bool CheckBoxSet::MouseUp(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
+            auto const NUM_CHECKBOXES { checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
                 if ((false == IsInvalid(i))
@@ -375,7 +375,7 @@ namespace sfml_util
 
         bool CheckBoxSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
+            auto const NUM_CHECKBOXES { checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
                 if ((false == IsInvalid(i))
@@ -394,12 +394,12 @@ namespace sfml_util
         {
             bool wereAnyStatesChanged(false);
 
-            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
+            auto const NUM_CHECKBOXES { checkBoxUVec_.size() };
             for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
             {
-                auto & checkBoxUPtr{ checkBoxUVec_[i] };
+                auto & checkBoxUPtr { checkBoxUVec_[i] };
 
-                auto const MOUSE_STATE{ checkBoxUPtr->GetMouseState() };
+                auto const MOUSE_STATE { checkBoxUPtr->GetMouseState() };
 
                 if ((MOUSE_STATE == MouseState::Down) || (currentSelections_[i] != false))
                 {
@@ -429,7 +429,7 @@ namespace sfml_util
 
         bool CheckBoxSet::IsInvalid(const std::size_t INDEX)
         {
-            auto const NUM_INVALIDS{ invalidSelectionsVec_.size() };
+            auto const NUM_INVALIDS { invalidSelectionsVec_.size() };
             for (std::size_t i(0); i < NUM_INVALIDS; ++i)
             {
                 if (invalidSelectionsVec_[i] == INDEX)
@@ -460,14 +460,14 @@ namespace sfml_util
 
             checkBoxUVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
 
-            auto const NUM_CHECKBOXES{ checkBoxUVec_.size() };
+            auto const NUM_CHECKBOXES { checkBoxUVec_.size() };
             for (std::size_t i(1); i < NUM_CHECKBOXES; ++i)
             {
                 posY += checkBoxUVec_[i - 1]->GetEntityRegion().height + betweenPad_;
                 checkBoxUVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-                auto const NEXT_FAR_X_POINT{ checkBoxUVec_[i]->GetEntityRegion().width
-                                             + (outerPad_ * 2.0f) };
+                auto const NEXT_FAR_X_POINT { checkBoxUVec_[i]->GetEntityRegion().width
+                                              + (outerPad_ * 2.0f) };
 
                 if (maxX < NEXT_FAR_X_POINT)
                 {

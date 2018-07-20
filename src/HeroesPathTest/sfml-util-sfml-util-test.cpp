@@ -16,6 +16,8 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/sfml-util.hpp"
 
+#include <limits>
+
 #include "Test-stuff.hpp"
 
 using namespace test_stuff;
@@ -23,6 +25,31 @@ using namespace heroespath::sfml_util;
 using namespace heroespath::misc;
 
 using heroespath::misc::IsRealClose;
+
+BOOST_AUTO_TEST_CASE(ColorMathTests)
+{
+    BOOST_CHECK(sf::Color::Transparent == heroespath::sfml_util::Colors::None);
+
+    const sf::Color C0(0, 0, 0, 0);
+    const sf::Color C1(1, 1, 1, 1);
+    const sf::Color C254(254, 254, 254, 254);
+    const sf::Color C255(255, 255, 255, 255);
+
+    // sanity
+    BOOST_CHECK((C0 + C0) == C0);
+    BOOST_CHECK((C0 - C0) == C0);
+    BOOST_CHECK((C0 + C1) == C1);
+    BOOST_CHECK((C1 + C0) == C1);
+    BOOST_CHECK((C1 - C1) == C0);
+    BOOST_CHECK((C254 + C1) == C255);
+    BOOST_CHECK((C255 - C1) == C254);
+
+    // overflow and underflow should NOT wrap
+    BOOST_CHECK((C255 + C1) == C255);
+    BOOST_CHECK((C254 + C255) == C255);
+    BOOST_CHECK((C0 - C1) == C0);
+    BOOST_CHECK((C0 - C255) == C0);
+}
 
 BOOST_AUTO_TEST_CASE(CenterOfTests)
 {

@@ -23,9 +23,6 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
 #include "sfml-util/gui/list-box-helpers.hpp"
-#include "sfml-util/gui/list-box-item-factory.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "stage/treasure-stage.hpp"
@@ -39,10 +36,10 @@ namespace stage
 
         ListboxColors::ListboxColors()
             : image(sf::Color(255, 255, 255, 190))
-            , line(sfml_util::FontManager::Color_GrayDark())
+            , line(sfml_util::Colors::GrayDark)
             , foreground(line)
-            , background(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
-            , title(sfml_util::FontManager::Color_Orange() - sf::Color(130, 130, 130, 0))
+            , background(sfml_util::Colors::Orange - sf::Color(100, 100, 100, 220))
+            , title(sfml_util::Colors::Orange - sf::Color(130, 130, 130, 0))
             , colorSet(foreground, background)
             , icon(sf::Color(255, 255, 255, 127))
         {}
@@ -134,8 +131,7 @@ namespace stage
         , lockboxCache_()
     {}
 
-    bool TreasureDisplayStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage> & PACKAGE)
+    bool TreasureDisplayStage::HandleCallback(const ItemListBoxEventPackage_t & PACKAGE)
     {
         return treasureStagePtr_->HandleListboxCallback(
             treasureListboxUPtr_.get(), inventoryListboxUPtr_.get(), PACKAGE);
@@ -146,42 +142,42 @@ namespace stage
     {
         if (PACKAGE.PTR_ == treasureAlphaButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemName(
+            sfml_util::gui::listbox::SortByName(
                 *treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
 
             return true;
         }
         else if (PACKAGE.PTR_ == treasureMoneyButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemPrice(
+            sfml_util::gui::listbox::SortByPrice(
                 *treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
 
             return true;
         }
         else if (PACKAGE.PTR_ == treasureWeightButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemWeight(
+            sfml_util::gui::listbox::SortByWeight(
                 *treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
 
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryAlphaButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemName(
+            sfml_util::gui::listbox::SortByName(
                 *inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
 
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryMoneyButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemPrice(
+            sfml_util::gui::listbox::SortByPrice(
                 *inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
 
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryWeightButtonUPtr_.get())
         {
-            sfml_util::gui::listbox::SortByItemWeight(
+            sfml_util::gui::listbox::SortByWeight(
                 *inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
 
             return true;
@@ -605,7 +601,7 @@ namespace stage
     {
         auto const DEAD_ENEMY_CHARACTERS_PVEC { combat::Encounter::Instance()->DeadNonPlayers() };
 
-        misc::StrVec_t corpseKeyStrVec;
+        std::vector<std::string> corpseKeyStrVec;
         for (auto const & NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
         {
             auto const CORPSE_KEY_STR_VEC { creature::race::CorpseImageKeys(
@@ -807,7 +803,7 @@ namespace stage
             "(press spacebar to change treasure, use arrows or numbers to change characters)",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_GrayDark(),
+            sfml_util::Colors::GrayDark,
             sf::BlendAlpha,
             sf::Text::Italic,
             sfml_util::Justified::Left);
@@ -846,7 +842,7 @@ namespace stage
         const std::string & TEXT,
         const float VERT_POS)
     {
-        auto const COLOR_UP { sfml_util::FontManager::Color_GrayDarker() };
+        auto const COLOR_UP { sfml_util::Colors::GrayDarker };
         auto const COLOR_OVER { COLOR_UP - sf::Color(0, 0, 0, 127) };
         auto const COLOR_DOWN { sf::Color::Black };
 
@@ -877,7 +873,7 @@ namespace stage
 
     void TreasureDisplayStage::SetupListbox(
         const treasure::WhichListbox WHICH_LISTBOX,
-        sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage> & listboxUPtr,
+        sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t> & listboxUPtr,
         const item::ItemPVec_t & ITEMS_PVEC)
     {
         auto const PREV_ENTITY_PTR { GetGuiEntityPtrAndRemoveIfNeeded(listboxUPtr) };
@@ -898,27 +894,23 @@ namespace stage
             listboxColors.colorSet,
             sfml_util::gui::BackgroundInfo(listboxColors.background));
 
-        listboxUPtr = std::make_unique<sfml_util::gui::ListBox<TreasureDisplayStage>>(
-            "TreasureDisplayStage's_CharacterInventoryListBox",
-            this,
-            LISTBOX_REGION,
-            LISTBOX_BOXINFO,
-            listboxColors.line,
-            listboxColors.image);
+        listboxUPtr
+            = std::make_unique<sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>>(
+                "TreasureDisplayStage's_CharacterInventoryListBox",
+                this,
+                sfml_util::gui::ListBoxPacket(
+                    LISTBOX_BOXINFO, listboxColors.line, listboxColors.image));
 
         sfml_util::gui::TextInfo textInfo(
             "",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayDarker());
+            sfml_util::Colors::GrayDarker);
 
-        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
         for (auto const & ITEM_PTR : ITEMS_PVEC)
         {
-            textInfo.text = ITEM_PTR->Name();
-
-            listboxUPtr->Add(
-                listBoxItemFactory.Make(listboxUPtr->GetEntityName(), textInfo, ITEM_PTR));
+            listboxUPtr->Append(std::make_unique<sfml_util::gui::ListElement<item::ItemPtr_t>>(
+                ITEM_PTR, sfml_util::gui::TextInfo(textInfo, ITEM_PTR->Name())));
         }
 
         GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr.get());
@@ -941,7 +933,7 @@ namespace stage
             LABEL_TEXT,
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetGuiEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
@@ -1311,7 +1303,7 @@ namespace stage
             TEXT,
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             FONT_SIZE,
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetGuiEntityPtrAndRemoveIfNeeded(textRegionUPtr) };
@@ -1345,25 +1337,25 @@ namespace stage
     {
         if (treasureListboxUPtr_)
         {
-            auto const SELECTED_ITEM_PTR_OPT { treasureListboxUPtr_->AtPos(MOUSE_POS) };
+            auto const MOUSEOVER_ELEMENT_PTR_OPT { treasureListboxUPtr_->AtPos(MOUSE_POS) };
 
-            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
+            if (MOUSEOVER_ELEMENT_PTR_OPT)
             {
                 return treasure::ItemDetails(
-                    treasureListboxUPtr_->FullItemRect(SELECTED_ITEM_PTR_OPT.value()),
-                    SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value());
+                    treasureListboxUPtr_->ElementRegion(MOUSEOVER_ELEMENT_PTR_OPT.value(), true),
+                    MOUSEOVER_ELEMENT_PTR_OPT.value()->Element());
             }
         }
 
         if (inventoryListboxUPtr_)
         {
-            auto const SELECTED_ITEM_PTR_OPT { inventoryListboxUPtr_->AtPos(MOUSE_POS) };
+            auto const MOUSEOVER_ELEMENT_PTR_OPT { inventoryListboxUPtr_->AtPos(MOUSE_POS) };
 
-            if (SELECTED_ITEM_PTR_OPT && SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt())
+            if (MOUSEOVER_ELEMENT_PTR_OPT)
             {
                 return treasure::ItemDetails(
-                    inventoryListboxUPtr_->FullItemRect(SELECTED_ITEM_PTR_OPT.value()),
-                    SELECTED_ITEM_PTR_OPT.value()->ItemPtrOpt().value());
+                    inventoryListboxUPtr_->ElementRegion(MOUSEOVER_ELEMENT_PTR_OPT.value(), true),
+                    MOUSEOVER_ELEMENT_PTR_OPT.value()->Element());
             }
         }
 

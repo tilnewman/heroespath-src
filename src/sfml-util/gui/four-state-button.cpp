@@ -32,10 +32,10 @@ namespace sfml_util
         FourStateButton::FourStateButton(const std::string & NAME)
             : GuiEntity(std::string(NAME).append("_FourStateButton"), 0.0f, 0.0f)
             , isDisabled_(false)
-            , upTextureOpt_(boost::none)
-            , downTextureOpt_(boost::none)
-            , overTextureOpt_(boost::none)
-            , disabledTextureOpt_(boost::none)
+            , upCachedTextureOpt_(boost::none)
+            , downCachedTextureOpt_(boost::none)
+            , overCachedTextureOpt_(boost::none)
+            , disabledCachedTextureOpt_(boost::none)
             , sprite_()
             , currTextRegionPtrOpt_(boost::none)
             , upTextRegionUPtr_()
@@ -58,10 +58,10 @@ namespace sfml_util
             const float FINAL_SCALE)
             : GuiEntity(std::string(NAME).append("_FourStateButton"), POS_V)
             , isDisabled_(IS_DISABLED)
-            , upTextureOpt_(boost::none)
-            , downTextureOpt_(boost::none)
-            , overTextureOpt_(boost::none)
-            , disabledTextureOpt_(boost::none)
+            , upCachedTextureOpt_(boost::none)
+            , downCachedTextureOpt_(boost::none)
+            , overCachedTextureOpt_(boost::none)
+            , disabledCachedTextureOpt_(boost::none)
             , sprite_()
             , currTextRegionPtrOpt_(boost::none)
             , upTextRegionUPtr_()
@@ -97,29 +97,30 @@ namespace sfml_util
             // load textures
             if (STATE_IMAGE_PATH_KEYS.up.empty() == false)
             {
-                upTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.up);
+                upCachedTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.up);
             }
 
             if (STATE_IMAGE_PATH_KEYS.down.empty() == false)
             {
-                downTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.down);
+                downCachedTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.down);
             }
 
             if (STATE_IMAGE_PATH_KEYS.over.empty() == false)
             {
-                overTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.over);
+                overCachedTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.over);
             }
 
             if (STATE_IMAGE_PATH_KEYS.disabled.empty() == false)
             {
-                disabledTextureOpt_ = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.disabled);
+                disabledCachedTextureOpt_
+                    = sfml_util::CachedTexture(STATE_IMAGE_PATH_KEYS.disabled);
             }
 
             // validate TextInfo objects if text is given
             if (STATE_TEXTINFO.up.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (STATE_TEXTINFO.up.fontPtrOpt),
+                    (STATE_TEXTINFO.up.font_ptr_opt),
                     "FourStateButton::Setup(\"" << STATE_TEXTINFO.up.text
                                                 << "\") UP had an image but no font.");
             }
@@ -127,7 +128,7 @@ namespace sfml_util
             if (STATE_TEXTINFO.down.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (STATE_TEXTINFO.down.fontPtrOpt),
+                    (STATE_TEXTINFO.down.font_ptr_opt),
                     "FourStateButton::Setup(\"" << STATE_TEXTINFO.down.text
                                                 << "\") DOWN had an image but no font.");
             }
@@ -135,7 +136,7 @@ namespace sfml_util
             if (STATE_TEXTINFO.over.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (STATE_TEXTINFO.over.fontPtrOpt),
+                    (STATE_TEXTINFO.over.font_ptr_opt),
                     "FourStateButton::Setup(\"" << STATE_TEXTINFO.over.text
                                                 << "\") OVER had an image but no font.");
             }
@@ -143,7 +144,7 @@ namespace sfml_util
             if (DISABLED_TEXTINFO.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (DISABLED_TEXTINFO.fontPtrOpt),
+                    (DISABLED_TEXTINFO.font_ptr_opt),
                     "FourStateButton::Setup(\"" << DISABLED_TEXTINFO.text
                                                 << "\") DISABLED had an image but no font.");
             }
@@ -153,7 +154,7 @@ namespace sfml_util
 
             sf::FloatRect textRegionRect(POS_V, sf::Vector2f(0.0f, 0.0f));
 
-            if (STATE_TEXTINFO.up.fontPtrOpt && (STATE_TEXTINFO.up.text.empty() == false))
+            if (STATE_TEXTINFO.up.font_ptr_opt && (STATE_TEXTINFO.up.text.empty() == false))
             {
                 upTextRegionUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Up", STATE_TEXTINFO.up, textRegionRect);
@@ -167,9 +168,10 @@ namespace sfml_util
                         upTextRegionUPtr_->GetEntityRegion().width,
                         upTextRegionUPtr_->GetEntityRegion().height)));
             }
-            else if (upTextureOpt_)
+            else if (upCachedTextureOpt_)
             {
-                SetEntityRegion(sf::FloatRect(POS_V, sf::Vector2f(upTextureOpt_->Get().getSize())));
+                SetEntityRegion(
+                    sf::FloatRect(POS_V, sf::Vector2f(upCachedTextureOpt_->Get().getSize())));
             }
             else
             {
@@ -181,19 +183,19 @@ namespace sfml_util
                 throw std::runtime_error(ss.str());
             }
 
-            if (STATE_TEXTINFO.down.fontPtrOpt && (STATE_TEXTINFO.down.text.empty() == false))
+            if (STATE_TEXTINFO.down.font_ptr_opt && (STATE_TEXTINFO.down.text.empty() == false))
             {
                 downTextRegionUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Down", STATE_TEXTINFO.down, GetEntityRegion());
             }
 
-            if (STATE_TEXTINFO.over.fontPtrOpt && (STATE_TEXTINFO.over.text.empty() == false))
+            if (STATE_TEXTINFO.over.font_ptr_opt && (STATE_TEXTINFO.over.text.empty() == false))
             {
                 overTextRegionUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Over", STATE_TEXTINFO.over, GetEntityRegion());
             }
 
-            if (DISABLED_TEXTINFO.fontPtrOpt && (DISABLED_TEXTINFO.text.empty() == false))
+            if (DISABLED_TEXTINFO.font_ptr_opt && (DISABLED_TEXTINFO.text.empty() == false))
             {
                 disabledTextRegionUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Diabled", DISABLED_TEXTINFO, GetEntityRegion());
@@ -217,7 +219,7 @@ namespace sfml_util
 
         void FourStateButton::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            if (upTextureOpt_)
+            if (upCachedTextureOpt_)
             {
                 target.draw(sprite_, states);
             }
@@ -309,7 +311,7 @@ namespace sfml_util
 
         void FourStateButton::SetScaleToRes()
         {
-            if (upTextureOpt_)
+            if (upCachedTextureOpt_)
             {
                 Scale(sfml_util::MapByRes(0.65f, 2.25f));
             }
@@ -317,7 +319,7 @@ namespace sfml_util
 
         void FourStateButton::SetVertPositionToBottomOfScreenByRes(const float POS_LEFT)
         {
-            if (upTextureOpt_)
+            if (upCachedTextureOpt_)
             {
                 auto const POS_TOP { (sfml_util::Display::Instance()->GetWinHeight()
                                       - sprite_.getGlobalBounds().height)
@@ -330,7 +332,7 @@ namespace sfml_util
 
         void FourStateButton::Scale(const float NEW_SCALE)
         {
-            if (upTextureOpt_)
+            if (upCachedTextureOpt_)
             {
                 sprite_.setScale(NEW_SCALE, NEW_SCALE);
                 const sf::FloatRect NEW_REGION { Position(GetEntityRegion()), Size(sprite_) };
@@ -382,16 +384,16 @@ namespace sfml_util
                     currTextRegionPtrOpt_ = disabledTextRegionUPtr_.get();
                 }
 
-                if (disabledTextureOpt_)
+                if (disabledCachedTextureOpt_)
                 {
-                    sprite_.setTexture(disabledTextureOpt_->Get(), true);
+                    sprite_.setTexture(disabledCachedTextureOpt_->Get(), true);
                 }
             }
             else if (MouseState::Up == entityMouseState_)
             {
-                if (upTextureOpt_)
+                if (upCachedTextureOpt_)
                 {
-                    sprite_.setTexture(upTextureOpt_->Get(), true);
+                    sprite_.setTexture(upCachedTextureOpt_->Get(), true);
                 }
 
                 if (upTextRegionUPtr_)
@@ -401,14 +403,14 @@ namespace sfml_util
             }
             else
             {
-                if ((MouseState::Down == entityMouseState_) && downTextureOpt_)
+                if ((MouseState::Down == entityMouseState_) && downCachedTextureOpt_)
                 {
-                    sprite_.setTexture(downTextureOpt_->Get(), true);
+                    sprite_.setTexture(downCachedTextureOpt_->Get(), true);
                 }
 
-                if ((MouseState::Over == entityMouseState_) && overTextureOpt_)
+                if ((MouseState::Over == entityMouseState_) && overCachedTextureOpt_)
                 {
-                    sprite_.setTexture(overTextureOpt_->Get(), true);
+                    sprite_.setTexture(overCachedTextureOpt_->Get(), true);
                 }
 
                 if ((MouseState::Down == entityMouseState_) && (downTextRegionUPtr_))

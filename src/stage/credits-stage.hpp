@@ -15,7 +15,6 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/credit.hpp"
 

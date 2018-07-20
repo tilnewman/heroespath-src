@@ -37,5 +37,18 @@ namespace avatar
 
         finalTexture = renderTexture.getTexture();
     }
+
+    sfml_util::CachedTexture PortraitFactory::Make(
+        const std::string & FAKE_PATH_STR,
+        const Avatar::Enum WHICH_AVATAR,
+        const sfml_util::ImageOptions & OPTIONS)
+    {
+        sf::Texture texture;
+        Make(WHICH_AVATAR, texture);
+
+        return sfml_util::CachedTexture(
+            "TextureCreatedBy_avatar::PortraitFactory::Make()_" + FAKE_PATH_STR, texture, OPTIONS);
+    }
+
 } // namespace avatar
 } // namespace heroespath

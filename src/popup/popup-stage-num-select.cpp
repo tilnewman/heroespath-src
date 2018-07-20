@@ -24,7 +24,7 @@ namespace heroespath
 namespace popup
 {
 
-    const int PopupStageNumberSelect::NUMBER_SELECT_INVALID_{ -1 }; // any negative will work here
+    const int PopupStageNumberSelect::NUMBER_SELECT_INVALID_ { -1 }; // any negative will work here
 
     PopupStageNumberSelect::PopupStageNumberSelect(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
@@ -40,13 +40,13 @@ namespace popup
     bool PopupStageNumberSelect::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        auto const CURR_RATIO{ PACKAGE.PTR_->GetCurrentValue() };
+        auto const CURR_RATIO { PACKAGE.PTR_->GetCurrentValue() };
 
-        auto const CURR_VAL{ popupInfo_.NumberSelMin()
-                             + static_cast<std::size_t>(
-                                   CURR_RATIO
-                                   * static_cast<float>(
-                                         popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
+        auto const CURR_VAL { popupInfo_.NumberSelMin()
+                              + static_cast<std::size_t>(
+                                    CURR_RATIO
+                                    * static_cast<float>(
+                                          popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
 
         selection_ = static_cast<int>(CURR_VAL);
 
@@ -82,7 +82,7 @@ namespace popup
             woodTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
 
-        const sfml_util::gui::TextInfo MSG_TEXT_INFO{
+        const sfml_util::gui::TextInfo MSG_TEXT_INFO {
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -96,16 +96,16 @@ namespace popup
         EntityAdd(msgTextRegionUPtr_.get());
         SetupInfoText("(type a number or use the slider below)");
 
-        auto const TEXTENTRY_BOX_WIDTH{ textRegion_.width * 0.45f };
+        auto const TEXTENTRY_BOX_WIDTH { textRegion_.width * 0.45f };
 
-        auto const TEXTENTRY_BOX_POS_LEFT{ textRegion_.left
-                                           + ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f) };
+        auto const TEXTENTRY_BOX_POS_LEFT { textRegion_.left
+                                            + ((textRegion_.width - TEXTENTRY_BOX_WIDTH) * 0.5f) };
 
         // this 115 spacer value of 115 found to look good by experiment
-        auto const TEXTENTRY_BOX_POS_TOP{ msgTextRegionUPtr_->GetEntityPos().y - 115.0f };
+        auto const TEXTENTRY_BOX_POS_TOP { msgTextRegionUPtr_->GetEntityPos().y - 115.0f };
 
         // this textbox's min height, and fits pretty well here with the font size being "large"
-        auto const TEXTENTRY_BOX_HEIGHT{ 55.0f };
+        auto const TEXTENTRY_BOX_HEIGHT { 55.0f };
 
         const sf::FloatRect TEXTENTRY_REGION(
             TEXTENTRY_BOX_POS_LEFT,
@@ -123,7 +123,7 @@ namespace popup
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO{ woodTexture_, TEXTENTRY_REGION };
+        const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO { woodTexture_, TEXTENTRY_REGION };
 
         const sfml_util::gui::box::Info TEXTENTRY_BOX_INFO(
             true, TEXTENTRY_REGION, sfml_util::gui::ColorSet(sf::Color::White), TEXTENTRY_BG_INFO);
@@ -133,7 +133,7 @@ namespace popup
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             TEXTENTRY_BOX_INFO);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
@@ -174,7 +174,7 @@ namespace popup
 
     void PopupStageNumberSelect::SetupInfoText(const std::string & TEXT)
     {
-        auto const TEXT_TO_USE{ (TEXT.empty()) ? " " : TEXT };
+        auto const TEXT_TO_USE { (TEXT.empty()) ? " " : TEXT };
 
         const sfml_util::gui::TextInfo INFO_TEXT_INFO(
             TEXT_TO_USE,
@@ -190,11 +190,11 @@ namespace popup
 
         EntityAdd(msgTextRegionUPtr_.get());
 
-        auto const INFO_TEXT_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f))
-                                       - (msgTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        auto const INFO_TEXT_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
+                                        - (msgTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const INFO_TEXT_POS_TOP{ sliderbarPosTop_
-                                      - (2.0f * msgTextRegionUPtr_->GetEntityRegion().height) };
+        auto const INFO_TEXT_POS_TOP { sliderbarPosTop_
+                                       - (2.0f * msgTextRegionUPtr_->GetEntityRegion().height) };
 
         msgTextRegionUPtr_->SetEntityPos(
             INFO_TEXT_POS_LEFT + static_cast<float>(TEXT.size() / 2), INFO_TEXT_POS_TOP);
@@ -207,7 +207,7 @@ namespace popup
             return NUMBER_SELECT_INVALID_;
         }
 
-        auto const TEXT{ boost::algorithm::trim_copy(textEntryBoxUPtr_->GetText()) };
+        auto const TEXT { boost::algorithm::trim_copy(textEntryBoxUPtr_->GetText()) };
 
         int num(NUMBER_SELECT_INVALID_);
         try
@@ -224,7 +224,7 @@ namespace popup
 
     bool PopupStageNumberSelect::ProcessSelectNumber()
     {
-        auto const ORIG_SELECTION_NUM{ GetSelectNumber() };
+        auto const ORIG_SELECTION_NUM { GetSelectNumber() };
         selection_ = ORIG_SELECTION_NUM;
 
         if (ORIG_SELECTION_NUM < 0)
@@ -288,10 +288,10 @@ namespace popup
     {
         PopupStageBase::SetupSliderbar();
 
-        auto const SLIDERBAR_LENGTH{ textRegion_.width * 0.75f }; // found by experiment
+        auto const SLIDERBAR_LENGTH { textRegion_.width * 0.75f }; // found by experiment
 
-        auto const SLIDERBAR_POS_LEFT{ textRegion_.left
-                                       + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
+        auto const SLIDERBAR_POS_LEFT { textRegion_.left
+                                        + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
 
         sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
             "PopupStage's",

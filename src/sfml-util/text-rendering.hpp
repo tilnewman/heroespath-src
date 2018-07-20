@@ -65,8 +65,7 @@ namespace sfml_util
                 const std::string & TEXT,
                 const gui::TextInfo & TEXT_INFO)
             {
-                gui::SetupText(sf_text, TEXT_INFO);
-                sf_text.setString(TEXT);
+                gui::TextInfo(TEXT_INFO, TEXT).Apply(sf_text);
                 sf_text.setPosition(POS_LEFT, POS_TOP);
                 text_info.text = TEXT;
             }

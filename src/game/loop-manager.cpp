@@ -214,10 +214,14 @@ namespace game
 
         cmdQueueVec_.emplace_back(
             std::make_unique<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Exit));
+
         cmdQueueVec_.emplace_back(
             std::make_unique<sfml_util::LoopCmd_StopMusic>(sfml_util::music::Enum::All, 100.0f));
+
+        cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_ExitAfterFade>());
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeOut>());
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
+
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
     }
 
@@ -404,6 +408,7 @@ namespace game
         {
             cmdQueueVec_.emplace_back(
                 std::make_unique<sfml_util::LoopCmd_SetMouseVisibility>(false));
+
             cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_IgnoreMouse>(true));
         }
 

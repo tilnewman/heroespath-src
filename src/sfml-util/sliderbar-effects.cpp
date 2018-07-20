@@ -54,27 +54,27 @@ namespace sfml_util
 
     void SliderBarLabeled_Effects::OnChange(const float NEW_VALUE_PARAM)
     {
-        auto const NEW_VALUE_RANGE_CORRECTED{ NEW_VALUE_PARAM * 100.0f };
-        auto const NEW_VALUE_INT{ static_cast<int>(NEW_VALUE_RANGE_CORRECTED) };
+        auto const NEW_VALUE_RANGE_CORRECTED { NEW_VALUE_PARAM * 100.0f };
+        auto const NEW_VALUE_INT { static_cast<int>(NEW_VALUE_RANGE_CORRECTED) };
 
         SoundManager::Instance()->SoundEffectVolumeSet(static_cast<float>(NEW_VALUE_INT));
 
         willPlaySound_ = !willPreventPlayingSound_;
 
-        gui::TextInfo textInfo{ GetTextInfoFromSliderValue(NEW_VALUE_INT) };
+        gui::TextInfo textInfo { GetTextInfoFromSliderValue(NEW_VALUE_INT) };
 
         std::ostringstream ss;
 
         if (NEW_VALUE_INT == 0)
         {
             ss << "MUTE";
-            textInfo.fontPtrOpt
+            textInfo.font_ptr_opt
                 = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed);
         }
         else
         {
             ss << NEW_VALUE_INT;
-            textInfo.fontPtrOpt
+            textInfo.font_ptr_opt
                 = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
         }
 
@@ -101,18 +101,18 @@ namespace sfml_util
             }
         }
 
-        auto const POS_V{ GetEntityPos() };
+        auto const POS_V { GetEntityPos() };
 
         if (STYLE_.orientation == Orientation::Horiz)
         {
-            auto const SLIDER_RANGE{ LENGTH_
-                                     - (botOrLeftImage_.GetUpSprite().getLocalBounds().width
-                                        + topOrRightImage_.GetUpSprite().getLocalBounds().width
-                                        + padImage_.GetUpSprite().getLocalBounds().width - 8.0f) };
+            auto const SLIDER_RANGE { LENGTH_
+                                      - (botOrLeftImage_.GetUpSprite().getLocalBounds().width
+                                         + topOrRightImage_.GetUpSprite().getLocalBounds().width
+                                         + padImage_.GetUpSprite().getLocalBounds().width - 8.0f) };
 
             // magic number 3 moves passed the shadow
-            auto const SLIDER_POSX{ POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width
-                                    + (SLIDER_RANGE * (1.0f - currentVal_)) - 3.0f };
+            auto const SLIDER_POSX { POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width
+                                     + (SLIDER_RANGE * (1.0f - currentVal_)) - 3.0f };
 
             padImage_.GetUpSprite().setPosition(
                 SLIDER_POSX,
@@ -121,14 +121,16 @@ namespace sfml_util
         }
         else
         {
-            auto const SLIDER_RANGE{ LENGTH_
-                                     - (topOrRightImage_.GetUpSprite().getLocalBounds().height
-                                        + botOrLeftImage_.GetUpSprite().getLocalBounds().height
-                                        + padImage_.GetUpSprite().getLocalBounds().height - 5.0f) };
+            auto const SLIDER_RANGE { LENGTH_
+                                      - (topOrRightImage_.GetUpSprite().getLocalBounds().height
+                                         + botOrLeftImage_.GetUpSprite().getLocalBounds().height
+                                         + padImage_.GetUpSprite().getLocalBounds().height
+                                         - 5.0f) };
 
             // magic number 1 moves passed the shadow
-            auto const SLIDER_POSY{ POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height
-                                    + (SLIDER_RANGE * (1.0f - currentVal_)) - 1.0f };
+            auto const SLIDER_POSY { POS_V.y
+                                     + topOrRightImage_.GetUpSprite().getLocalBounds().height
+                                     + (SLIDER_RANGE * (1.0f - currentVal_)) - 1.0f };
 
             padImage_.GetUpSprite().setPosition(
                 POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f)
@@ -241,10 +243,10 @@ namespace sfml_util
         // change from screen to slider coords
         if (STYLE_.orientation == Orientation::Horiz)
         {
-            auto const MIN_SCREENX{ POS_V.x
-                                    + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
+            auto const MIN_SCREENX { POS_V.x
+                                     + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
 
-            auto const MAX_SCREENX{ (
+            auto const MAX_SCREENX { (
                 POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width)
                 - barImage_.GetUpSprite().getLocalBounds().height) };
 
@@ -267,10 +269,10 @@ namespace sfml_util
         }
         else
         {
-            auto const MIN_SCREENY{ POS_V.y
-                                    + topOrRightImage_.GetUpSprite().getLocalBounds().height };
+            auto const MIN_SCREENY { POS_V.y
+                                     + topOrRightImage_.GetUpSprite().getLocalBounds().height };
 
-            auto const MAX_SCREENY{ (
+            auto const MAX_SCREENY { (
                 POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height)
                 - barImage_.GetUpSprite().getLocalBounds().height) };
 

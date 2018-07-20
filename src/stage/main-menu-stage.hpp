@@ -18,7 +18,6 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <memory>

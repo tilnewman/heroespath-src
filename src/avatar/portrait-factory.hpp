@@ -10,7 +10,11 @@
 // portrait-factory.hpp
 //
 #include "avatar/avatar-enum.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/image-options.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+
+#include <string>
 
 namespace heroespath
 {
@@ -22,6 +26,10 @@ namespace avatar
     {
     public:
         static void Make(const Avatar::Enum, sf::Texture &);
+        static sfml_util::CachedTexture Make(
+            const std::string & FAKE_PATH_STR,
+            const Avatar::Enum,
+            const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
     };
 
 } // namespace avatar

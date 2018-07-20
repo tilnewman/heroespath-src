@@ -10,7 +10,6 @@
 // inventory-stage.hpp
 //
 #include "combat/creature-interaction.hpp"
-#include "combat/fight-results.hpp"
 #include "combat/turn-action-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -18,12 +17,12 @@
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/margins.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -67,6 +66,13 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
+
+    class Condition;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
+
+    class Title;
+    using TitlePtr_t = misc::NotNull<Title *>;
+
 } // namespace creature
 namespace item
 {
@@ -87,9 +93,34 @@ namespace stage
     class InventoryStage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
-        , public sfml_util::gui::callback::IListBoxCallbackHandler<InventoryStage>
+        , public sfml_util::gui::callback::IListBoxCallbackHandler<InventoryStage, item::ItemPtr_t>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<InventoryStage, creature::ConditionPtr_t>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<InventoryStage, spell::SpellPtr_t>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<InventoryStage, creature::TitlePtr_t>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
+        using ItemListBox_t = sfml_util::gui::ListBox<InventoryStage, item::ItemPtr_t>;
+        using ItemListElementPtr_t = sfml_util::gui::ListElementPtr_t<item::ItemPtr_t>;
+        using ItemListBoxUPtr_t = std::unique_ptr<ItemListBox_t>;
+        using ItemListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<item::ItemPtr_t>;
+
+        using CondListBox_t = sfml_util::gui::ListBox<InventoryStage, creature::ConditionPtr_t>;
+        using CondListBoxUPtr_t = std::unique_ptr<CondListBox_t>;
+
+        using CondListElementPtrOpt_t
+            = sfml_util::gui::ListElementPtrOpt_t<creature::ConditionPtr_t>;
+
+        using SpellListBox_t = sfml_util::gui::ListBox<InventoryStage, spell::SpellPtr_t>;
+        using SpellListBoxUPtr_t = std::unique_ptr<SpellListBox_t>;
+        using SpellListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<spell::SpellPtr_t>;
+
+        using TitleListBox_t = sfml_util::gui::ListBox<InventoryStage, creature::TitlePtr_t>;
+        using TitleListBoxUPtr_t = std::unique_ptr<TitleListBox_t>;
+        using TitleListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<creature::TitlePtr_t>;
+
         enum class ViewType
         {
             Items = 0,
@@ -126,7 +157,7 @@ namespace stage
         InventoryStage & operator=(const InventoryStage &) = delete;
         InventoryStage & operator=(InventoryStage &&) = delete;
 
-        explicit InventoryStage(
+        InventoryStage(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE);
@@ -136,7 +167,22 @@ namespace stage
         const std::string HandlerName() const override { return GetStageName(); }
 
         bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage<InventoryStage> &) override;
+            const sfml_util::gui::callback::ListBoxEventPackage<InventoryStage, item::ItemPtr_t> &)
+            override;
+
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
+                            InventoryStage,
+                            creature::ConditionPtr_t> &) override;
+
+        bool HandleCallback(const sfml_util::gui::callback::
+                                ListBoxEventPackage<InventoryStage, spell::SpellPtr_t> &) override
+        {
+            return false;
+        }
+
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
+                            InventoryStage,
+                            creature::TitlePtr_t> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -215,7 +261,7 @@ namespace stage
         bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM); // zero indexed
         bool HandlePlayerChangeTo(const creature::CreaturePtr_t, const bool IS_SLIDING_LEFT);
         void StartSlidingAnimation(const bool IS_SLIDING_LEFT);
-        void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemPtrOpt_t &);
+
         void SetDescBoxText(const std::string &);
 
         void PopupCharacterSelectWindow(
@@ -246,7 +292,7 @@ namespace stage
         void HandleGemsShare();
         void HandleMeteorShardsShare();
         void EndOfGiveShareGatherTasks();
-        float UpdateImageDetailsPosition(); // returns the sprite width
+        void UpdateImageDetailsPosition(); // returns the sprite width
 
         bool IsDetailViewFading() const
         {
@@ -259,7 +305,7 @@ namespace stage
         }
 
         const item::ItemPtrOpt_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
-        const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
+        const sfml_util::FloatRectOpt_t GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         void SetupDetailViewItem(const item::ItemPtrOpt_t);
         void SetupDetailViewCreature(const creature::CreaturePtrOpt_t CREATURE_PTR_OPT);
 
@@ -282,7 +328,7 @@ namespace stage
             const spell::SpellPtr_t, const creature::CreaturePVec_t &);
 
         bool HandleCast_Step3_DisplayResults();
-        void ForceSelectionAndDrawOfListBox();
+        void ForceSelectionAndDrawOfLeftListBox();
         bool HandleSpellsOrSongs();
         bool HandleSong_Step1_Play(const song::SongPtr_t);
         bool HandleSong_Step2_DisplayResults();
@@ -298,7 +344,45 @@ namespace stage
             const sfml_util::gui::FourStateButtonUPtr_t & BUTTON_UPTR,
             const sf::Vector2f & MOUSE_POS_V);
 
-    public:
+        template <typename Element_t>
+        bool HandleConditionOrTitleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage<InventoryStage, Element_t> &
+                PACKAGE)
+        {
+            if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click)
+                || (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange)
+                || (PACKAGE.keypress_event.code == sf::Keyboard::Up)
+                || (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+            {
+                SetDescBoxTextToSelectedForConditionOrTitle(*PACKAGE.package.PTR_);
+                return true;
+            }
+
+            return false;
+        }
+
+        template <typename Element_t>
+        bool SetDescBoxTextToSelectedForConditionOrTitle(
+            const sfml_util::gui::ListBox<InventoryStage, Element_t> & LISTBOX)
+        {
+            if (LISTBOX.Empty())
+            {
+                return false;
+            }
+            else
+            {
+                const auto COND_OR_TITLE_PTR { LISTBOX.Selection()->Element() };
+                SetDescBoxText(COND_OR_TITLE_PTR->Name() + "\n\n" + COND_OR_TITLE_PTR->LongDesc());
+                return true;
+            }
+        }
+
+        void FreeAllLeftListBoxes();
+
+        void LeftListBoxSetHorizPosition(const float NEW_POS_HORIZ);
+
+        void UpdateCreatureImage();
+
         static const float VIEW_CHANGE_SLIDER_SPEED_;
         static const float VIEW_CHANGE_BETWEEN_TIME_SEC_;
         static const float CREATURE_IMAGE_RIGHT_PAD_;
@@ -316,7 +400,6 @@ namespace stage
         static const std::string POPUP_NAME_SPELL_RESULT_;
         static const std::string POPUP_NAME_MUSICSHEET_;
         static const std::string POPUP_NAME_SONG_RESULT_;
-        static const sf::FloatRect ERROR_RECT_;
 
     private:
         const float SCREEN_WIDTH_;
@@ -334,6 +417,7 @@ namespace stage
         const float FIRST_LISTBOX_POS_LEFT_;
         const float SECOND_LISTBOX_POS_LEFT_;
         const float STATS_POS_LEFT_;
+        const sf::Color CHARATER_IMAGE_COLOR_;
         const sf::Color LISTBOX_COLOR_IMAGE_;
         const sf::Color LISTBOX_COLOR_LINE_;
         const sf::Color LISTBOX_COLOR_FG_;
@@ -347,10 +431,14 @@ namespace stage
         const float CREATURE_IMAGE_POS_TOP_;
         const float LISTBOX_POS_TOP_;
         const float LISTBOX_HEIGHT_;
-        const sf::FloatRect LISTBOX_REGION_;
-        const sf::FloatRect DESCBOX_REGION_;
+        const sf::FloatRect LISTBOX_REGION_LEFT_;
+        const sf::FloatRect LISTBOX_REGION_RIGHT_;
         const float DESCBOX_MARGIN_;
         const sfml_util::Margins DESCBOX_MARGINS_;
+        const sfml_util::gui::box::Info LISTBOX_BOX_INFO_LEFT_;
+        const sfml_util::gui::box::Info LISTBOX_BOX_INFO_RIGHT_;
+        const sfml_util::gui::ListBoxPacket LISTBOX_PACKET_LEFT_;
+        const sfml_util::gui::ListBoxPacket LISTBOX_PACKET_RIGHT_;
         const float DETAILVIEW_WIDTH_;
         const float DETAILVIEW_HEIGHT_;
         const float DETAILVIEW_POS_LEFT_;
@@ -360,13 +448,12 @@ namespace stage
         const float SORT_ICON_POS_TOP_;
         const sf::Color SORT_ICON_COLOR_;
 
-        sfml_util::gui::TextInfo listBoxItemTextInfo_;
+        const sfml_util::gui::TextInfo LIST_ELEMENT_TEXT_INFO_DEFAULT_;
         creature::CreaturePtr_t creaturePtr_;
         sfml_util::BottomSymbol bottomSymbol_;
-        sf::Texture paperBgTexture_;
+        sfml_util::CachedTexture paperBgCachedTexture_;
         sf::Sprite paperBgSprite_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        sf::Texture creatureTexture_;
         sf::Sprite creatureSprite_;
         ViewType view_;
         CharViewMap_t characterViewMap_;
@@ -408,8 +495,14 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<InventoryStage> equippedListBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<InventoryStage> unEquipListBoxUPtr_;
+
+        ItemListBoxUPtr_t itemLeftListBoxUPtr_; // equipped items
+        CondListBoxUPtr_t condLeftListBoxUPtr_;
+        SpellListBoxUPtr_t spellLeftListBoxUPtr_;
+        TitleListBoxUPtr_t titleLeftListBoxUPtr_;
+
+        ItemListBoxUPtr_t itemRightListBoxUPtr_; // unequipped items
+
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::box::BoxUPtr_t descBoxUPtr_;
@@ -444,9 +537,9 @@ namespace stage
         // members that manage the give/drop/share/gather actions
         ActionType actionType_;
         ContentType contentType_;
-        sfml_util::gui::ListBoxItemPtrOpt_t listBoxItemToGivePtrOpt_;
+        ItemListElementPtrOpt_t listElementToGivePtrOpt_;
         creature::CreaturePtrOpt_t creatureToGiveToPtrOpt_;
-        sfml_util::gui::ListBoxItemPtrOpt_t listBoxItemToDropPtrOpt_;
+        ItemListElementPtrOpt_t listElementToDropPtrOpt_;
 
         // members that manage the item detail view
         bool isDetailViewFadingIn_;
@@ -461,7 +554,7 @@ namespace stage
         sf::FloatRect detailViewSourceRect_;
         sf::VertexArray detailViewQuads_;
         sf::Sprite detailViewSprite_;
-        sf::Texture detailViewTexture_;
+        sfml_util::CachedTextureOpt_t detailViewCachedTextureOpt_;
         sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
@@ -482,6 +575,11 @@ namespace stage
         bool hasTakenActionSpellOrSong_;
 
         combat::CreatureInteraction creatureInteraction_;
+
+        // a mapping between creatures and their images
+        misc::VectorMap<creature::CreaturePtr_t, sfml_util::CachedTexture> creatureToImageMap_;
+
+        float creatureImageWidthScaled_;
     };
 
 } // namespace stage

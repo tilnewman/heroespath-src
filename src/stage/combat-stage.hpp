@@ -20,7 +20,6 @@
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/color-shaker.hpp"
@@ -30,7 +29,6 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
@@ -106,7 +104,8 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
-        , public sfml_util::gui::callback::IListBoxCallbackHandler<CombatStage>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<CombatStage, sfml_util::gui::NoElement_t>
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
     public:
@@ -208,8 +207,9 @@ namespace stage
 
         const std::string HandlerName() const override { return GetStageName(); }
 
-        bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage<CombatStage> &) override;
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
+                            CombatStage,
+                            sfml_util::gui::NoElement_t> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -426,7 +426,7 @@ namespace stage
         combat::TurnDecider turnDecider_;
         //
         sfml_util::gui::box::BoxUPtr_t commandBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<CombatStage> statusBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t<CombatStage, sfml_util::gui::NoElement_t> statusBoxUPtr_;
         sfml_util::gui::TextInfo statusBoxTextInfo_;
         sfml_util::gui::SliderBarUPtr_t zoomSliderBarUPtr_;
         sfml_util::gui::box::BoxUPtr_t turnBoxUPtr_;

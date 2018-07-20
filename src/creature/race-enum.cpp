@@ -759,10 +759,10 @@ namespace creature
     const item::TreasureScores
         race::TreasureScore(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM)
     {
-        Score_t coin{ 0_score };
-        Score_t gem{ 0_score };
-        Score_t magic{ 0_score };
-        Score_t rel{ 0_score };
+        Score_t coin { 0_score };
+        Score_t gem { 0_score };
+        Score_t magic { 0_score };
+        Score_t rel { 0_score };
 
         // these numbers intentionally max at 350, 300, 300, 300 -see comment below
         switch (RACE_ENUM)
@@ -1545,7 +1545,7 @@ namespace creature
             return race::Name(RACE_ENUM);
         }
 
-        auto const IS_ROLE_FIRST{ (
+        auto const IS_ROLE_FIRST { (
             (ROLE_ENUM == role::Firebrand) || (ROLE_ENUM == role::FourArmed)
             || (ROLE_ENUM == role::Giant) || (ROLE_ENUM == role::Mountain)
             || (ROLE_ENUM == role::Spike) || (ROLE_ENUM == role::Sylavin)
@@ -1637,8 +1637,8 @@ namespace creature
 
     const RankRange_t race::RaceRoleRanks(const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM)
     {
-        Rank_t min{ 1_rank };
-        Rank_t max{ 1_rank };
+        Rank_t min { 1_rank };
+        Rank_t max { 1_rank };
 
         switch (RACE_ENUM)
         {
@@ -2238,7 +2238,7 @@ namespace creature
         return RankRange_t(min, max);
     }
 
-    const misc::StrVec_t race::CorpseImageKeys(const race::Enum E)
+    const std::vector<std::string> race::CorpseImageKeys(const race::Enum E)
     {
         switch (E)
         {

@@ -13,8 +13,6 @@
 
 #include "game/game-data-file.hpp"
 
-#include "sfml-util/loaders.hpp"
-
 namespace heroespath
 {
 namespace popup
@@ -85,14 +83,11 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupAccentImage()
     {
-        sfml_util::Loaders::Texture(
-            accentTexture1_, game::GameDataFile::Instance()->GetMediaPath("media-images-trap"));
-
-        accentSprite1_.setTexture(accentTexture1_, true);
-
+        accent1CachedTextureOpt_ = sfml_util::CachedTexture("media-images-trap");
+        accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
         sfml_util::FitAndReCenter(accentSprite1_, textRegion_, 0.65f);
-
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
+
 } // namespace popup
 } // namespace heroespath

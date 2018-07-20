@@ -47,12 +47,12 @@
 #include "sfml-util/gui/song-image-loader.hpp"
 #include "sfml-util/gui/spell-image-loader.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
+#include "sfml-util/image-option-enum.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/side-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/texture-options-enum.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 
@@ -772,8 +772,6 @@ namespace stage
             auto const IMAGE_PATH_STR { game::GameDataFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
-            sf::Texture texture;
-            sfml_util::Loaders::Texture(texture, IMAGE_PATH_STR);
             TestingImageSet(IMAGE_PATH_STR);
 
             ++imageIndex;
@@ -805,9 +803,6 @@ namespace stage
             TestingStrAppend(ss.str());
 
             auto const IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
-
-            sf::Texture texture;
-            sfml_util::Loaders::Texture(texture, IMAGE_PATH_STR);
             TestingImageSet(IMAGE_PATH_STR);
 
             ++imageIndex;
@@ -1426,7 +1421,7 @@ namespace stage
         sfml_util::sound_effect_set::Test();
         sfml_util::Footstep::Test();
         sfml_util::Font::Test();
-        sfml_util::TextureOpt::Test();
+        sfml_util::ImageOpt::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
         song::Songs::Test();

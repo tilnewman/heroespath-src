@@ -120,7 +120,7 @@ namespace sfml_util
 
         if (IsLoaded(FONT) == false)
         {
-            auto & fontUPtr{ GetFontRef(FONT) };
+            auto & fontUPtr { GetFontRef(FONT) };
             fontUPtr = std::make_unique<sf::Font>();
             sfml_util::Loaders::Font(
                 *fontUPtr, misc::filesystem::CompletePath(fontsDirPathStr_, Font::Path(FONT)));
@@ -170,16 +170,6 @@ namespace sfml_util
 
         return false;
     }
-
-    const sf::Color FontManager::Color_GrayLight() { return sf::Color(200, 200, 200); }
-    const sf::Color FontManager::Color_GrayLighter() { return sf::Color(232, 232, 232); }
-    const sf::Color FontManager::Color_GrayDark() { return sf::Color(100, 100, 100); }
-    const sf::Color FontManager::Color_GrayDarker() { return sf::Color(64, 64, 64); }
-    const sf::Color FontManager::Color_Orange() { return sf::Color(255, 223, 181); }
-    const sf::Color FontManager::Color_Light() { return sf::Color(220, 220, 220); }
-    const sf::Color FontManager::Color_LightGold() { return sf::Color(255, 248, 220); }
-
-    sf::Uint8 FontManager::ColorValue_Highlight() { return 55; }
 
     const sf::Color FontManager::Color_PopupButtonUp(const popup::PopupButtonColor::Enum C)
     {

@@ -71,7 +71,7 @@ namespace stage
             textInfo_.color = sf::Color::White;
         }
 
-        sfml_util::gui::SetupText(textObj_, textInfo_);
+        textInfo_.Apply(textObj_);
     }
 
     bool AnimNum::UpdateTime(const float ELAPSED_TIME_SEC)

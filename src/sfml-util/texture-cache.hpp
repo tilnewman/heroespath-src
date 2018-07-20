@@ -10,11 +10,10 @@
 // texture-cache.hpp
 //
 #include "misc/enum-util.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
+#include "sfml-util/image-options.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/texture-options-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -25,7 +24,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    using PathOptPair_t = std::pair<std::string, TextureOpt::Enum>;
+    using PathOptPair_t = std::pair<std::string, ImageOptions>;
 
     using CountDataPair_t = std::pair<int, long long>;
 
@@ -33,13 +32,14 @@ namespace sfml_util
 
     struct TextureIndexes
     {
-        TextureIndexes(const std::size_t REF_COUNT = 0, const misc::SizetVec_t & INDEXES = {})
+        TextureIndexes(
+            const std::size_t REF_COUNT = 0, const std::vector<std::size_t> & INDEXES = {})
             : ref_count(REF_COUNT)
             , indexes(INDEXES)
         {}
 
         std::size_t ref_count;
-        misc::SizetVec_t indexes;
+        std::vector<std::size_t> indexes;
     };
 
     using PathOptToIndexesMap_t = misc::VectorMap<PathOptPair_t, TextureIndexes>;
@@ -65,11 +65,10 @@ namespace sfml_util
         // all Add...() functions increment the ref_count
         std::size_t AddByKey(
             const std::string & GAMEDATAFILE_KEY_STR,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const ImageOptions & OPTIONS = ImageOptions());
 
         std::size_t AddByPath(
-            const std::string & PATH_TO_TEXTURE_STR,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS = ImageOptions());
 
         // if the given fake path and options ARE already in the cache then:
         //  - the texture given will be assumed identical with what is already in the cache
@@ -84,27 +83,26 @@ namespace sfml_util
         std::size_t AddByPathFake(
             const std::string & FAKE_PATH_TO_TEXTURE_STR,
             const sf::Texture &,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const ImageOptions & OPTIONS = ImageOptions());
 
         // not recursive
-        const misc::SizetVec_t AddDirectoryByKey(
-            const std::string & DIR_PATH_KEY, const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+        const std::vector<std::size_t> AddDirectoryByKey(
+            const std::string & DIR_PATH_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         // not recursive
-        const misc::SizetVec_t AddDirectoryByPath(
-            const std::string & DIR_PATH_PARAM_STR,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+        const std::vector<std::size_t> AddDirectoryByPath(
+            const std::string & DIR_PATH_PARAM_STR, const ImageOptions & OPTIONS = ImageOptions());
 
         // all Remove...() functions decrement the ref_count
         void RemoveByKey(
             const std::string & GAMEDATAFILE_KEY_STR,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const ImageOptions & OPTIONS = ImageOptions());
 
         void RemoveByPath(
-            const std::string & PATH_TO_TEXTURE_STR,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS = ImageOptions());
 
         // reduces all ref_counts to zero and destroys all textures and saved paths
+        // once CachedTextures are in place this becomes not only useless but dangerous
         void RemoveAll();
 
         // the following functions (all functions that accept an INDEX) throw if INDEX is out of
@@ -114,7 +112,7 @@ namespace sfml_util
         // increment the reference count
         const sf::Texture & GetByIndex(const std::size_t INDEX) const;
 
-        TextureOpt::Enum GetOptionsByIndex(const std::size_t INDEX) const;
+        const ImageOptions GetOptionsByIndex(const std::size_t INDEX) const;
         const std::string GetPathByIndex(const std::size_t INDEX) const;
         std::size_t GetRefCountByIndex(const std::size_t INDEX) const;
 
@@ -126,17 +124,15 @@ namespace sfml_util
         std::size_t FindNextAvailableIndex();
 
         std::size_t AddByPathInternal(
-            const std::string & PATH_TO_TEXTURE_STR, const TextureOpt::Enum OPTIONS);
+            const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS);
 
-        std::size_t AddByPathInternalFake(const sf::Texture &, const TextureOpt::Enum OPTIONS);
+        std::size_t AddByPathInternalFake(const sf::Texture &, const ImageOptions & OPTIONS);
 
         void RemoveInternal(const std::size_t INDEX);
 
         long long TextureSizeInBytes(const sf::Texture &) const;
 
         void UpdateCountAndSizeTracker(const sf::Texture &);
-
-        void ApplyOptions(sf::Texture &, const TextureOpt::Enum OPTIONS) const;
 
         enum class LogDumpContext
         {

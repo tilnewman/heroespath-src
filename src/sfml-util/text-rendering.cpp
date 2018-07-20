@@ -28,7 +28,7 @@ namespace sfml_util
     namespace text_render
     {
 
-        const float Constants::SLIDERBAR_HORIZ_OFFSET_{ 18.0f };
+        const float Constants::SLIDERBAR_HORIZ_OFFSET_ { 18.0f };
 
         const gui::SliderBarPtrOpt_t RenderToArea(
             const std::string & NAME,
@@ -39,7 +39,7 @@ namespace sfml_util
             const Margins & MARGINS,
             const bool WILL_ALLOW_SCROLLBAR)
         {
-            gui::SliderBarPtrOpt_t sliderbarPtrOpt{ boost::none };
+            gui::SliderBarPtrOpt_t sliderbarPtrOpt { boost::none };
 
             // render the prompt text for the popup
             text_render::Render(renderedText, TEXT_INFO, REGION.width, MARGINS);
@@ -60,9 +60,9 @@ namespace sfml_util
             {
                 // re-render with smaller font if original size did not fit vertically
                 gui::TextInfo smallerTextInfo(TEXT_INFO);
-                if ((0 != SMALLER_FONT_SIZE) && (TEXT_INFO.charSize > SMALLER_FONT_SIZE))
+                if ((0 != SMALLER_FONT_SIZE) && (TEXT_INFO.char_size > SMALLER_FONT_SIZE))
                 {
-                    smallerTextInfo.charSize = SMALLER_FONT_SIZE;
+                    smallerTextInfo.char_size = SMALLER_FONT_SIZE;
 
                     renderedText.Reset();
                     text_render::Render(renderedText, smallerTextInfo, REGION.width, MARGINS);
@@ -92,8 +92,8 @@ namespace sfml_util
 
                     // re-render the text with the reduced horiz space to make room for the
                     // sliderbar
-                    auto const NEW_WIDTH{ ((REGION.width - MARGINS.left) - MARGINS.right)
-                                          - (Constants::SLIDERBAR_HORIZ_OFFSET_ * 2.0f) };
+                    auto const NEW_WIDTH { ((REGION.width - MARGINS.left) - MARGINS.right)
+                                           - (Constants::SLIDERBAR_HORIZ_OFFSET_ * 2.0f) };
 
                     renderedText.Reset();
                     text_render::Render(renderedText, smallerTextInfo, NEW_WIDTH, MARGINS);
@@ -108,7 +108,7 @@ namespace sfml_util
             const RenderedText & RENDERED_TEXT,
             const sf::FloatRect & REGION)
         {
-            gui::SliderBarPtrOpt_t sliderbarPtrOpt{ boost::none };
+            gui::SliderBarPtrOpt_t sliderbarPtrOpt { boost::none };
 
             // calculate the text's vertical position, which is vertically centered,
             // then verify still within bounds
@@ -187,7 +187,7 @@ namespace sfml_util
             const Margins & MARGINS)
         {
             gui::TextInfo numbersTextInfo(TEXT_INFO);
-            numbersTextInfo.fontPtrOpt
+            numbersTextInfo.font_ptr_opt
                 = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
             return Render(renderText, TEXT_INFO, numbersTextInfo, TEXT_INFO.text, REGION, MARGINS);
         }
@@ -204,12 +204,12 @@ namespace sfml_util
                 (false == TEXT.empty()), "TextRener::Render() was given an empty string.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!TEXT_INFO_CHAR.fontPtrOpt),
+                (!!TEXT_INFO_CHAR.font_ptr_opt),
                 "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_CHAR with a null"
                                         << " font pointer.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!TEXT_INFO_NUM.fontPtrOpt),
+                (!!TEXT_INFO_NUM.font_ptr_opt),
                 "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_NUM with a null"
                                         << " font pointer.");
 
@@ -285,7 +285,7 @@ namespace sfml_util
                 const std::size_t NUM_CHARS(textSnippetVecVec[l].size());
                 for (std::size_t c(0); c < NUM_CHARS; ++c)
                 {
-                    auto & sfText{ textSnippetVecVec[l][c].sf_text };
+                    auto & sfText { textSnippetVecVec[l][c].sf_text };
 
                     // adjust positions to fall within in the REGION given
                     sfText.setPosition(
@@ -326,18 +326,18 @@ namespace sfml_util
             TextSnippetVec_t textSnippetVec;
 
             // if not specified use the screen width for maximum line length
-            auto const INVALID_WIDTH{ Display::Instance()->GetWinWidth() };
+            auto const INVALID_WIDTH { Display::Instance()->GetWinWidth() };
 
-            auto const WIDTH_LIMIT_TO_USE{ (
+            auto const WIDTH_LIMIT_TO_USE { (
                 (misc::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG) };
 
-            auto const STR_LEN{ TEXT_INFO_SET.text.size() };
+            auto const STR_LEN { TEXT_INFO_SET.text.size() };
 
             while ((strIndex < STR_LEN) && (textPos.x <= WIDTH_LIMIT_TO_USE))
             {
                 char termChar(0);
-                auto const ORIG_STR_INDEX{ strIndex };
-                auto const ORIG_POS_X{ textPos.x };
+                auto const ORIG_STR_INDEX { strIndex };
+                auto const ORIG_POS_X { textPos.x };
 
                 TextSnippetVec_t nextTextSnippetVec(
                     RenderWord(TEXT_INFO_SET, textPos, heightTracker, strIndex, termChar));
@@ -364,7 +364,7 @@ namespace sfml_util
                         {
                             nextTextSnippetVec.pop_back();
 
-                            auto const LINE_LENGTH{ std::accumulate(
+                            auto const LINE_LENGTH { std::accumulate(
                                 std::begin(nextTextSnippetVec),
                                 std::end(nextTextSnippetVec),
                                 0.0f,
@@ -400,15 +400,15 @@ namespace sfml_util
             }
 
             // adjust for...okay, I don't know why this adjustment is needed.  zTn 2016-11-20
-            auto const NUM_SNIPPETS{ textSnippetVec.size() };
+            auto const NUM_SNIPPETS { textSnippetVec.size() };
             if (NUM_SNIPPETS > 1)
             {
-                auto const ADJ{ textSnippetVec[1].sf_text.getPosition().x
-                                - textSnippetVec[0].sf_text.getLocalBounds().width };
+                auto const ADJ { textSnippetVec[1].sf_text.getPosition().x
+                                 - textSnippetVec[0].sf_text.getLocalBounds().width };
 
                 for (std::size_t i(1); i < NUM_SNIPPETS; ++i)
                 {
-                    auto & sfText{ textSnippetVec[i].sf_text };
+                    auto & sfText { textSnippetVec[i].sf_text };
                     sfText.setPosition(sfText.getPosition().x - ADJ, sfText.getPosition().y);
                 }
             }

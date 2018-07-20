@@ -22,7 +22,7 @@ namespace interact
 
         namespace compose
         {
-            inline const StrVec_t MonkThings()
+            inline const std::vector<std::string> MonkThings()
             {
                 return { "the light", "peace", "wisdom", "enlightenment", "truth", "nirvana" };
             }

@@ -80,8 +80,8 @@ namespace stage
 
         // title
         {
-            auto const TITLE_WIDTH{ sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
-            auto const SCALE{ TITLE_WIDTH / bpTitleSprite_.getLocalBounds().width };
+            auto const TITLE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+            auto const SCALE { TITLE_WIDTH / bpTitleSprite_.getLocalBounds().width };
             bpTitleSprite_.setScale(SCALE, SCALE);
 
             bpTitleSprite_.setPosition(
@@ -91,8 +91,8 @@ namespace stage
         }
 
         // size of the box in which all the credits scroll
-        auto const MARGIN_TOP{ sfml_util::ScreenRatioToPixelsVert(0.022f) };
-        auto const MARGIN_BOTTOM{ sfml_util::ScreenRatioToPixelsVert(0.0555f) };
+        auto const MARGIN_TOP { sfml_util::ScreenRatioToPixelsVert(0.022f) };
+        auto const MARGIN_BOTTOM { sfml_util::ScreenRatioToPixelsVert(0.0555f) };
 
         creditBoxPosTop_
             = bpTitleSprite_.getPosition().y + bpTitleSprite_.getGlobalBounds().height + MARGIN_TOP;
@@ -124,9 +124,9 @@ namespace stage
                 true,
                 BOX_RECT,
                 sfml_util::gui::ColorSet(
-                    sfml_util::FontManager::Color_GrayLight(),
+                    sfml_util::Colors::GrayLight,
                     sf::Color::Transparent,
-                    sfml_util::FontManager::Color_GrayLight(),
+                    sfml_util::Colors::GrayLight,
                     sf::Color::Transparent));
 
             box_.SetupBox(boxInfo);
@@ -305,7 +305,7 @@ namespace stage
         totalHeight_ = trackingRect.top;
 
         // move down to initial positions
-        auto const MOVE_AMOUNT{ creditBoxHeight_ + 40.0f };
+        auto const MOVE_AMOUNT { creditBoxHeight_ + 40.0f };
         for (auto & creditUPtr : creditUVec_)
         {
             creditUPtr->Move(0.0f, MOVE_AMOUNT);

@@ -12,11 +12,12 @@
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/color-slider.hpp"
 #include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/list-element.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <string>
@@ -35,7 +36,8 @@ namespace popup
     // Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
         : public PopupStageBase
-        , public sfml_util::gui::callback::IListBoxCallbackHandler<PopupStageMusicSheet>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<PopupStageMusicSheet, song::SongPtr_t>
     {
     public:
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
@@ -49,8 +51,9 @@ namespace popup
 
         const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
-        bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage<PopupStageMusicSheet> &) override;
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
+                            PopupStageMusicSheet,
+                            song::SongPtr_t> &) override;
 
         using PopupStageBase::HandleCallback;
 
@@ -85,10 +88,11 @@ namespace popup
         static const sf::Uint8 IMAGE_ALPHA_;
         static const float WARNING_DURATION_SEC_;
 
+        const float PLAYER_IMAGE_HEIGHT_;
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<PopupStageMusicSheet> listBoxUPtr_;
-        sf::Texture playerTexture_;
+        sfml_util::gui::ListBoxUPtr_t<PopupStageMusicSheet, song::SongPtr_t> listBoxUPtr_;
+        sfml_util::CachedTexture playerCachedTexture_;
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
@@ -96,7 +100,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t detailsTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t unableTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextUPtr_;
-        sf::Texture songTexture_;
+        sfml_util::CachedTextureOpt_t songCachedTextureOpt_;
         sf::Sprite songSprite_;
         sfml_util::ColorShaker warnColorShaker_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
@@ -105,11 +109,12 @@ namespace popup
         const sf::Color LISTBOX_COLOR_BG_;
         const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
         sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
-        sfml_util::gui::TextInfo listBoxItemTextInfo_;
+        sfml_util::gui::TextInfo listElementTextInfo_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
         std::size_t currentSongIndex_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

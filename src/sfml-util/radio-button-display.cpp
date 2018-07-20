@@ -13,7 +13,6 @@
 
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
-#include "misc/handy-types.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-info.hpp"
@@ -75,7 +74,7 @@ namespace sfml_util
             mouseTextInfoVec,
             FindCurrentResolutionSelection(),
             sfml_util::Brightness::Bright,
-            misc::SizetVec_t(),
+            std::vector<std::size_t>(),
             resRadioButtonSetBoxInfo);
     }
 
@@ -122,9 +121,9 @@ namespace sfml_util
 
     std::size_t RadioButtonSet_DisplayChange::FindCurrentResolutionSelection()
     {
-        const sfml_util::Resolution CURRENT_RES{ sfml_util::Display::GetCurrentVideoMode() };
+        const sfml_util::Resolution CURRENT_RES { sfml_util::Display::GetCurrentVideoMode() };
 
-        auto const NUM_SUPPORTED_MODES{ resolutionVec_.size() };
+        auto const NUM_SUPPORTED_MODES { resolutionVec_.size() };
         auto resRadioButtonSetInitialSelection(NUM_SUPPORTED_MODES);
 
         for (std::size_t i(0); i < NUM_SUPPORTED_MODES; ++i)

@@ -22,10 +22,6 @@
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/list-box-item-factory.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/loaders.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -52,32 +48,32 @@ namespace stage
               sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
               1.0f,
               sf::Vector2f(200.0f, sfml_util::DisplaySize().y - 100.0f)))
-        , gsListBoxBGColor_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
-        , gsListBoxUPtr_(std::make_unique<sfml_util::gui::ListBox<LoadGameStage>>(
-              "GameStateToLoad",
-              this,
-              gsListBoxRect_,
-              sfml_util::gui::box::Info(
-                  1,
-                  true,
-                  gsListBoxRect_,
-                  sfml_util::gui::ColorSet(
-                      sfml_util::FontManager::Color_Orange(),
-                      gsListBoxBGColor_,
-                      sfml_util::FontManager::Color_Orange()
-                          - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
-                      gsListBoxBGColor_ - sf::Color(40, 40, 40, 0)),
-                  sfml_util::gui::BackgroundInfo(gsListBoxBGColor_)),
-              sfml_util::FontManager::Color_Orange()))
-        , locTextRegionUPtr_()
-        , charTextRegionUVec_()
-        , charLabelTextRegionUPtr_()
         , screenSizeV_(sfml_util::DisplaySize())
         , gsListBoxRect_(
               ((screenSizeV_.x * 0.1f) - 85.0f) + sfml_util::SpacerOld(800.0f),
               610.0f,
               (screenSizeV_.y * 0.5f),
               ((screenSizeV_.y * 0.5f) - ((screenSizeV_.y * 0.5f) * 0.5f)) + 50.0f)
+        , gsListBoxBGColor_(sfml_util::Colors::Orange - sf::Color(100, 100, 100, 220))
+        , gsListBoxColorSet_(
+              sfml_util::Colors::Orange,
+              gsListBoxBGColor_,
+              sfml_util::Colors::Orange - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+              gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
+        , gsListBoxInfo_(
+              1,
+              true,
+              gsListBoxRect_,
+              gsListBoxColorSet_,
+              sfml_util::gui::BackgroundInfo(gsListBoxBGColor_))
+        , gsListBoxUPtr_(
+              std::make_unique<sfml_util::gui::ListBox<LoadGameStage, game::GameStatePtr_t>>(
+                  "GameStateToLoad",
+                  this,
+                  sfml_util::gui::ListBoxPacket(gsListBoxInfo_, sfml_util::Colors::Orange)))
+        , locTextRegionUPtr_()
+        , charTextRegionUVec_()
+        , charLabelTextRegionUPtr_()
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("LoadGameStage's"))
         , gamestatePVec_()
     {}
@@ -95,7 +91,7 @@ namespace stage
     }
 
     bool LoadGameStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage> &)
+        const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage, game::GameStatePtr_t> &)
     {
         // TODO Handle selection of a game to load and then load it,
         // including a call to all creatures StoreItemsInWarehouseAfterLoad(),
@@ -116,7 +112,6 @@ namespace stage
         // function that doesn't actually load every game but a vector of profiles to use instead.
         gamestatePVec_ = game::GameStateFactory::Instance()->LoadAllGames();
 
-        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
         for (auto const & GAMESTATE_PTR : gamestatePVec_)
         {
             std::ostringstream ss;
@@ -130,13 +125,16 @@ namespace stage
             const sfml_util::gui::TextInfo TEXT_INFO(
                 ss.str(), sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System));
 
-            gsListBoxUPtr_->Add(
-                listBoxItemFactory.Make(gsListBoxUPtr_->GetEntityName(), TEXT_INFO, GAMESTATE_PTR));
+            gsListBoxUPtr_->Append(
+                std::make_unique<sfml_util::gui::ListElement<game::GameStatePtr_t>>(
+                    GAMESTATE_PTR, TEXT_INFO));
         }
 
         EntityAdd(gsListBoxUPtr_.get());
-
         SetupGameInfoDisplay();
+
+        SetFocus(gsListBoxUPtr_.get());
+        // gsListBoxUPtr_->SilentExerciseHack();
     }
 
     void LoadGameStage::SetupGameInfoDisplay()
@@ -149,13 +147,12 @@ namespace stage
 
         charTextRegionUVec_.clear();
 
-        auto const SELECTED_ITEM_PTR_OPT { gsListBoxUPtr_->Selected() };
-        if (!SELECTED_ITEM_PTR_OPT | !SELECTED_ITEM_PTR_OPT.value()->GameStatePtrOpt())
+        if (gsListBoxUPtr_->Empty())
         {
             return;
         }
 
-        auto const GAMESTATE_PTR { SELECTED_ITEM_PTR_OPT.value()->GameStatePtrOpt().value() };
+        auto const GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
 
         sfml_util::gui::TextInfo descTextInfo(
             "",

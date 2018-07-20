@@ -17,8 +17,6 @@
 #include "sfml-util/gui/two-state-entity.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "misc/handy-types.hpp"
-
 #include <deque>
 #include <memory>
 #include <string>
@@ -103,7 +101,7 @@ namespace sfml_util
                 const float POS_TOP,
                 const TextInfoVec_t & TEXT_INFO_VEC,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const gui::box::Info & BOX_INFO = gui::box::Info(),
                 const std::deque<bool> & INITIAL_SELECTIONS = std::deque<bool>(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
@@ -115,7 +113,7 @@ namespace sfml_util
                 const float POS_TOP,
                 const MouseTextInfoVec_t & TEXT_INFO_VEC,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const gui::box::Info & BOX_INFO = gui::box::Info(),
                 const std::deque<bool> & INITIAL_SELECTIONS = std::deque<bool>(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
@@ -130,7 +128,7 @@ namespace sfml_util
                 const TextInfo & TEXT_INFO,
                 const std::vector<std::string> & LABEL_VEC,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const gui::box::Info & BOX_INFO = gui::box::Info(),
                 const std::deque<bool> & INITIAL_SELECTIONS = std::deque<bool>(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
@@ -144,7 +142,10 @@ namespace sfml_util
 
             const std::vector<std::size_t> GetCheckedNumbers() const;
 
-            const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionsVec_; }
+            const std::vector<std::size_t> GetInvalidSelections() const
+            {
+                return invalidSelectionsVec_;
+            }
 
             // returns true if any boxes were checked or un-checked
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
@@ -179,7 +180,7 @@ namespace sfml_util
             std::deque<bool> currentSelections_;
             CheckBoxUVec_t checkBoxUVec_;
             box::Box box_;
-            misc::SizetVec_t invalidSelectionsVec_;
+            std::vector<std::size_t> invalidSelectionsVec_;
         };
 
     } // namespace gui

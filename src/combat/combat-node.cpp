@@ -30,16 +30,14 @@ namespace heroespath
 namespace combat
 {
 
-    const sf::Uint8
-        CombatNode::HIGHLIGHT_ADJ_VALUE_(sfml_util::FontManager::ColorValue_Highlight());
+    const sf::Uint8 CombatNode::HIGHLIGHT_ADJ_VALUE_(55);
 
     const sf::Color CombatNode::HIGHLIGHT_ADJ_COLOR_(
         sf::Color(HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, HIGHLIGHT_ADJ_VALUE_, 0));
 
     const sf::Color CombatNode::PLAYER_NAME_COLOR_(sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
 
-    const sf::Color
-        CombatNode::CONDITION_COLOR_(sfml_util::FontManager::Color_Light() - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::Colors::Light - HIGHLIGHT_ADJ_COLOR_);
 
     const sf::Color CombatNode::NONPLAYER_NAME_COLOR_(
         sf::Color(

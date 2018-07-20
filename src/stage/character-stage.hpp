@@ -27,7 +27,6 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"

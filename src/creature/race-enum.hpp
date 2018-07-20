@@ -16,7 +16,6 @@
 #include "creature/trait.hpp"
 #include "item/treasure-scores.hpp"
 #include "misc/enum-util.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -111,7 +110,7 @@ namespace creature
         static const item::TreasureScores TreasureScoreMax();
         static const std::string RaceRoleName(const race::Enum, const role::Enum);
         static const RankRange_t RaceRoleRanks(const race::Enum, const role::Enum);
-        static const misc::StrVec_t CorpseImageKeys(const race::Enum);
+        static const std::vector<std::string> CorpseImageKeys(const race::Enum);
     };
 
 } // namespace creature

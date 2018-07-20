@@ -24,7 +24,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/image-options.hpp"
 #include "sfml-util/sfml-util.hpp"
 
 #include <exception>
@@ -37,19 +37,19 @@ namespace heroespath
 namespace popup
 {
 
-    std::string PopupManager::windowTextureDirectoryPath_{ "" };
-    std::string PopupManager::accentTextureDirectoryPath_{ "" };
+    std::string PopupManager::windowTextureDirectoryPath_ { "" };
+    std::string PopupManager::accentTextureDirectoryPath_ { "" };
 
-    // set to match sfml_util::FontManager::Color_GrayDarker() before being set in the constructor
-    sf::Color PopupManager::fontColor_{ sf::Color(64, 64, 64, 255) };
+    // set to match sfml_util::Colors::GrayDarker before being set in the constructor
+    sf::Color PopupManager::fontColor_ { sf::Color(64, 64, 64, 255) };
 
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_;
 
     PopupManager::PopupManager()
-        : accentPathsVec_()
+        : accentPaths_()
     {
         M_HP_LOG_DBG("Subsystem Construction: PopupManager");
-        fontColor_ = sfml_util::FontManager::Color_GrayDarker();
+        fontColor_ = sfml_util::Colors::GrayDarker;
     }
 
     PopupManager::~PopupManager() { M_HP_LOG_DBG("Subsystem Destruction: PopupManager"); }
@@ -93,7 +93,7 @@ namespace popup
 
     bool PopupManager::Test()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -111,7 +111,7 @@ namespace popup
 
     const std::string PopupManager::BackgroundImagePath(const PopupImage::Enum IMAGE) const
     {
-        std::string filename{ "" };
+        std::string filename { "" };
         switch (IMAGE)
         {
             case PopupImage::Banner:
@@ -162,7 +162,7 @@ namespace popup
         }
 
         namespace bfs = boost::filesystem;
-        auto const PATH{ bfs::system_complete(
+        auto const PATH { bfs::system_complete(
             bfs::path(windowTextureDirectoryPath_) / bfs::path(filename)) };
 
         return PATH.string();
@@ -252,7 +252,7 @@ namespace popup
         const std::vector<std::string> & INVALID_MSG_VEC,
         const std::size_t INITIAL_SELECTION) const
     {
-        auto popupInfo{ CreateImageSelectionPopupInfo(
+        auto popupInfo { CreateImageSelectionPopupInfo(
             POPUP_NAME,
             PROMPT_TEXT,
             sfml_util::TextureVec_t(),
@@ -531,27 +531,26 @@ namespace popup
             SOUND_EFFECT);
     }
 
-    void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
+    sfml_util::CachedTexture PopupManager::LoadRandomAccentImage() const
     {
-        sfml_util::Loaders::Texture(texture, misc::Vector::SelectRandom(accentPathsVec_).string());
-
-        if (misc::random::Bool())
-        {
-            sfml_util::FlipHoriz(texture);
-        }
+        return sfml_util::CachedTexture(
+            misc::Vector::SelectRandom(accentPaths_),
+            sfml_util::ImageOptions(
+                ((misc::random::Bool()) ? sfml_util::ImageOpt::Default
+                                        : sfml_util::ImageOpt::FlipHoriz)));
     }
 
     void PopupManager::LoadAccentImagePaths()
     {
-        namespace fs = misc::filesystem;
+        namespace mfs = misc::filesystem;
+        namespace bfs = boost::filesystem;
 
-        auto const DIR_PATH{ fs::MakePathPretty(
-            boost::filesystem::path(accentTextureDirectoryPath_)) };
+        auto const DIR_PATH { mfs::MakePathPretty(bfs::path(accentTextureDirectoryPath_)) };
 
-        accentPathsVec_ = fs::FindFilesInDirectory(DIR_PATH, "accent-", ".png");
+        accentPaths_ = mfs::FindFilesInDirectory(DIR_PATH, "accent-", ".png");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (accentPathsVec_.empty() == false),
+            (accentPaths_.empty() == false),
             "popup::PopupManager::LoadAccentImagePaths() failed to load any files from: "
                 << DIR_PATH.string());
     }

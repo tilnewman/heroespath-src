@@ -12,7 +12,8 @@
 //
 #include "popup/popup-enums.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Color.hpp>
 
 #include <memory>
 #include <string>
@@ -58,7 +59,6 @@ namespace sfml_util
             TextInfo over;
         };
 
-        using MouseTextInfoUPtr_t = std::unique_ptr<MouseTextInfo>;
         using MouseTextInfoVec_t = std::vector<MouseTextInfo>;
 
         bool operator<(const MouseTextInfo & L, const MouseTextInfo & R);

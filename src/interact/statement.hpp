@@ -50,8 +50,6 @@ namespace interact
 
         namespace compose
         {
-            using StrVec_t = std::vector<std::string>;
-
             inline const std::string Random(const std::vector<std::string> & V)
             {
                 return ((V.empty()) ? std::string() : std::string(misc::Vector::SelectRandom(V)));
@@ -63,9 +61,9 @@ namespace interact
                 return ((VV.empty()) ? std::string(T()) : Random(misc::Vector::SelectRandom(VV)));
             }
 
-            const std::string RandomWithEmpty(const StrVec_t &);
+            const std::string RandomWithEmpty(const std::vector<std::string> &);
 
-            inline const std::string RandomOrEmpty(const StrVec_t & STR_VEC)
+            inline const std::string RandomOrEmpty(const std::vector<std::string> & STR_VEC)
             {
                 return ((misc::random::Bool()) ? "" : Random(STR_VEC));
             }
@@ -87,13 +85,15 @@ namespace interact
                 return ((S.empty()) ? S : S + POSTFIX);
             }
 
-            inline const StrVec_t PartyNames()
+            inline const std::vector<std::string> PartyNames()
             {
                 return { "strangers", "outlanders", "travelers", "wanderers", "adventurers" };
             }
 
-            const StrVec_t Combinations(
-                const StrVec_t & V1, const StrVec_t & V2, const std::string & SEPARATOR = " ");
+            const std::vector<std::string> Combinations(
+                const std::vector<std::string> & V1,
+                const std::vector<std::string> & V2,
+                const std::string & SEPARATOR = " ");
 
             bool DoesPartyHaveBeasts(const creature::PlayerParty &);
             bool DoesPartyHaveWolfens(const creature::PlayerParty &);
@@ -107,7 +107,7 @@ namespace interact
             const std::string CapFirstLetter(const std::string &);
 
             // Not using the real list because not all sound right in conversation.
-            inline const StrVec_t RaceNames()
+            inline const std::vector<std::string> RaceNames()
             {
                 return { "Gnome", "Pixie",   "Wolfen",      "Dragon", "Goblin",       "Troll",
                          "Orc",   "Newt",    "CaveCrawler", "Hydra",  "LizardWalker", "Minotaur",
@@ -117,7 +117,7 @@ namespace interact
             }
 
             // Not using the real list because not all sound right in conversation.
-            inline const StrVec_t RoleNames()
+            inline const std::vector<std::string> RoleNames()
             {
                 return { "Archer",   "Bard",    "Beastmaster", "Cleric",      "Knight",
                          "Sorcerer", "Thief",   "Mugger",      "Drunk",       "Berserker",
@@ -131,12 +131,12 @@ namespace interact
                 return ((misc::random::Bool()) ? Random(RaceNames()) : Random(RoleNames()));
             }
 
-            inline const StrVec_t TimesOfDay()
+            inline const std::vector<std::string> TimesOfDay()
             {
                 return { "day", "night", "morning", "afternoon", "evening" };
             }
 
-            inline const StrVec_t WeatherAdjectives()
+            inline const std::vector<std::string> WeatherAdjectives()
             {
                 return { "nice",       "lovely",    "pretty",    "pleasant",
                          "delightful", "gorgeous",  "beautiful", "wretched",
@@ -144,7 +144,7 @@ namespace interact
                          "grim",       "dreary",    "dismal",    "gloomy" };
             }
 
-            inline const StrVec_t JokeAdjectives()
+            inline const std::vector<std::string> JokeAdjectives()
             {
                 return { "drunken",
                          "blind",
@@ -192,7 +192,7 @@ namespace interact
                          "club-footed" };
             }
 
-            inline const StrVec_t JokeDescriptions()
+            inline const std::vector<std::string> JokeDescriptions()
             {
                 return { "who ate his dog",         "who jumped down the well",
                          "who can't count",         "who can't blink",

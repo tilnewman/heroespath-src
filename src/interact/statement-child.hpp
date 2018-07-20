@@ -24,12 +24,12 @@ namespace interact
 
         namespace compose
         {
-            inline const StrVec_t Parents()
+            inline const std::vector<std::string> Parents()
             {
                 return { "mother", "father", "mom", "dad", "mommy", "daddy", "ma", "pa" };
             }
 
-            inline const StrVec_t Relations()
+            inline const std::vector<std::string> Relations()
             {
                 return { "sister",
                          "brother",
@@ -44,10 +44,10 @@ namespace interact
                          "grandpa" };
             }
 
-            inline const StrVec_t ParentsAndRelations()
+            inline const std::vector<std::string> ParentsAndRelations()
             {
-                StrVec_t allVec{ Relations() };
-                const StrVec_t PARENTS_VEC{ Parents() };
+                std::vector<std::string> allVec { Relations() };
+                const std::vector<std::string> PARENTS_VEC { Parents() };
 
                 std::copy(
                     std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));

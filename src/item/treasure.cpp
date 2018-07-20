@@ -232,7 +232,7 @@ namespace item
         std::size_t possibleVecLimitIndex { possibleVec.size() - 1 };
 
         // this vector keeps track of which PROFILES have already been randomly selected
-        misc::SizetVec_t selectedIndexVec;
+        std::vector<std::size_t> selectedIndexVec;
         selectedIndexVec.reserve(64); // found by experiment to be a good upper bound
 
         while ((possibleVec.empty() == false) && (possibleVecLimitIndex > 0))

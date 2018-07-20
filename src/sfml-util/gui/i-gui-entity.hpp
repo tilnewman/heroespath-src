@@ -42,16 +42,15 @@ namespace sfml_util
             virtual void SetEntityWillDraw(const bool WILL_DRAW) = 0;
 
             virtual const sf::Vector2f GetEntityPos() const = 0;
-            virtual void SetEntityPos(const sf::Vector2f & V) = 0;
+            virtual void SetEntityPos(const sf::Vector2f &) = 0;
             virtual void SetEntityPos(const float LEFT, const float TOP) = 0;
+            virtual void MoveEntityPos(const sf::Vector2f &) = 0;
             virtual void MoveEntityPos(const float HORIZ, const float VERT) = 0;
 
             virtual const std::string GetEntityName() const = 0;
 
             virtual const sf::FloatRect GetEntityRegion() const = 0;
             virtual void SetEntityRegion(const sf::FloatRect & R) = 0;
-
-            virtual bool IsInEntityRegion(const sf::Vector2f & V) const = 0;
 
             virtual void SetEntityColors(const ColorSet & COLOR_SET) = 0;
             virtual void SetEntityColorFg(const sf::Color & FG_COLOR) = 0;

@@ -34,21 +34,23 @@ namespace interact
         {
             using namespace compose;
 
-            const StrVec_t DISMISS_REASONS{ ".",
-                                            ".  Excuse me."
-                                            ".  I'm meditating.",
-                                            ".  This is my time for quiet reflection.",
-                                            ".  This space is sacred.",
-                                            ".  I'm having a vision.",
-                                            ".  I must reach nirvana.",
-                                            ".  Enlightenment is near.",
-                                            ".  I have nothing for you.",
-                                            ".  Our auras quarrel.",
-                                            ".  None of you could ever understand.",
-                                            ".  I have chores to do.",
-                                            ".  Students are waiting.",
-                                            ".  I must find my master.",
-                                            ".  The master needs me." };
+            const std::vector<std::string> DISMISS_REASONS {
+                ".",
+                ".  Excuse me."
+                ".  I'm meditating.",
+                ".  This is my time for quiet reflection.",
+                ".  This space is sacred.",
+                ".  I'm having a vision.",
+                ".  I must reach nirvana.",
+                ".  Enlightenment is near.",
+                ".  I have nothing for you.",
+                ".  Our auras quarrel.",
+                ".  None of you could ever understand.",
+                ".  I have chores to do.",
+                ".  Students are waiting.",
+                ".  I must find my master.",
+                ".  The master needs me."
+            };
 
             switch (misc::random::Int(2))
             {

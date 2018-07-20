@@ -192,6 +192,10 @@ namespace sfml_util
 
     void Stage::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
+        const auto ORIG_ENTITY_WITH_FOCUS_NAME {
+            ((entityWithFocusPtrOpt_) ? entityWithFocusPtrOpt_.value()->GetEntityName() : "(None)")
+        };
+
         // TODO Should we eliminate the current focus before we know if we are setting a new focus?
         entityWithFocusPtrOpt_ = boost::none;
 
@@ -207,7 +211,9 @@ namespace sfml_util
             M_HP_LOG_ERR(
                 "sfml_util::Stage::SetFocus(entity="
                 << ENTITY_PTR->GetEntityName()
-                << ")  Attempt to set focus with an IGuiEntityPtr_t that was not in entityPVec_.");
+                << ")  Attempt to set focus with an IGuiEntityPtr_t that was not in entityPVec_.  "
+                   "orig_enity_with_focus=\""
+                << ORIG_ENTITY_WITH_FOCUS_NAME << "\"");
         }
     }
 
@@ -300,7 +306,7 @@ namespace sfml_util
                 sf::Color(50, 50, 50),
                 Justified::Left);
 
-            sfml_util::gui::SetupText(hoverSfText_, TEXT_INFO);
+            TEXT_INFO.Apply(hoverSfText_);
 
             sf::FloatRect region(
                 MOUSE_POS_V.x - 200.0f,
@@ -321,7 +327,7 @@ namespace sfml_util
 
             hoverSfText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
-            const gui::BackgroundInfo BG_INFO(FontManager::Color_Orange() - sf::Color(20, 0, 0, 0));
+            const gui::BackgroundInfo BG_INFO(sfml_util::Colors::Orange - sf::Color(20, 0, 0, 0));
 
             const gui::box::Info BOX_INFO(1, true, region, gui::ColorSet(), BG_INFO);
 

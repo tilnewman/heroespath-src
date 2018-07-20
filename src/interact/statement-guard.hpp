@@ -25,14 +25,17 @@ namespace interact
         namespace compose
         {
 
-            inline const StrVec_t RankLow() { return { "Private", "Corporal" }; }
+            inline const std::vector<std::string> RankLow() { return { "Private", "Corporal" }; }
 
-            inline const StrVec_t RankHigh() { return { "Sergeant", "Sarge", "Major", "General" }; }
-
-            inline const StrVec_t RankAll()
+            inline const std::vector<std::string> RankHigh()
             {
-                StrVec_t rankAll{ RankLow() };
-                auto const RANK_HIGH{ RankHigh() };
+                return { "Sergeant", "Sarge", "Major", "General" };
+            }
+
+            inline const std::vector<std::string> RankAll()
+            {
+                std::vector<std::string> rankAll { RankLow() };
+                auto const RANK_HIGH { RankHigh() };
                 std::copy(std::begin(RANK_HIGH), std::end(RANK_HIGH), std::back_inserter(rankAll));
                 return rankAll;
             }

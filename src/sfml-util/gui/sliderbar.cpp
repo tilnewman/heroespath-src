@@ -56,7 +56,7 @@ namespace sfml_util
         void SliderBar::SetupEntityRegion()
         {
             // setup bounding rect for SliderBar as a Clickable object itself
-            auto const POS_V{ GetEntityPos() };
+            auto const POS_V { GetEntityPos() };
 
             sf::FloatRect r;
             r.left = POS_V.x; // these values were already set in the constructor
@@ -89,10 +89,10 @@ namespace sfml_util
             // change from screen to slider coords
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                auto const MIN_SCREENX{ POS_V.x
-                                        + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
+                auto const MIN_SCREENX { POS_V.x
+                                         + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
 
-                auto const MAX_SCREENX{ (
+                auto const MAX_SCREENX { (
                     POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width)
                     - barImage_.GetUpSprite().getLocalBounds().height) };
 
@@ -114,10 +114,10 @@ namespace sfml_util
             }
             else
             {
-                auto const MIN_SCREENY{ POS_V.y
-                                        + topOrRightImage_.GetUpSprite().getLocalBounds().height };
+                auto const MIN_SCREENY { POS_V.y
+                                         + topOrRightImage_.GetUpSprite().getLocalBounds().height };
 
-                auto const MAX_SCREENY{ (
+                auto const MAX_SCREENY { (
                     POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height)
                     - barImage_.GetUpSprite().getLocalBounds().height) };
 
@@ -255,12 +255,12 @@ namespace sfml_util
                 SetupAllPositions();
 
                 // set the bar's length
-                auto const TARGET_LENGTH{ LENGTH_
-                                          - botOrLeftImage_.GetUpSprite().getLocalBounds().width
-                                          + (LENGTH_ / 80.0f) };
+                auto const TARGET_LENGTH { LENGTH_
+                                           - botOrLeftImage_.GetUpSprite().getLocalBounds().width
+                                           + (LENGTH_ / 80.0f) };
 
-                auto const CURRENT_LENGTH{ barImage_.GetUpSprite().getLocalBounds().width };
-                auto const NEW_SCALE{ TARGET_LENGTH / CURRENT_LENGTH };
+                auto const CURRENT_LENGTH { barImage_.GetUpSprite().getLocalBounds().width };
+                auto const NEW_SCALE { TARGET_LENGTH / CURRENT_LENGTH };
                 barImage_.GetUpSprite().setScale(NEW_SCALE, 1.0f);
 
                 // ensure the given length is long enough
@@ -356,12 +356,12 @@ namespace sfml_util
                 SetupAllPositions();
 
                 // set the length of the bar sprite
-                auto const TARGET_LENGTH{ LENGTH_
-                                          - botOrLeftImage_.GetUpSprite().getLocalBounds().height
-                                          + (LENGTH_ / 80.0f) };
+                auto const TARGET_LENGTH { LENGTH_
+                                           - botOrLeftImage_.GetUpSprite().getLocalBounds().height
+                                           + (LENGTH_ / 80.0f) };
 
-                auto const CURRENT_LENGTH{ barImage_.GetUpSprite().getLocalBounds().width };
-                auto const NEW_SCALE{ TARGET_LENGTH / CURRENT_LENGTH };
+                auto const CURRENT_LENGTH { barImage_.GetUpSprite().getLocalBounds().width };
+                auto const NEW_SCALE { TARGET_LENGTH / CURRENT_LENGTH };
                 barImage_.GetUpSprite().setScale(NEW_SCALE, 1.0f);
 
                 // ensure given length is long enough
@@ -384,7 +384,7 @@ namespace sfml_util
 
         bool SliderBar::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
         {
-            if (IsInEntityRegion(MOUSE_POS_V))
+            if (entityRegion_.contains(MOUSE_POS_V))
             {
                 if (WHEEL_MOTION < 0.0f)
                 {
@@ -464,16 +464,16 @@ namespace sfml_util
 
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                auto const SLIDER_RANGE{ LENGTH_
-                                         - (botOrLeftImage_.GetUpSprite().getLocalBounds().width
-                                            + topOrRightImage_.GetUpSprite().getLocalBounds().width
-                                            + padImage_.GetUpSprite().getLocalBounds().width
-                                            - 8.0f) };
+                auto const SLIDER_RANGE { LENGTH_
+                                          - (botOrLeftImage_.GetUpSprite().getLocalBounds().width
+                                             + topOrRightImage_.GetUpSprite().getLocalBounds().width
+                                             + padImage_.GetUpSprite().getLocalBounds().width
+                                             - 8.0f) };
 
                 // magic number 3 moves passed the shadow
-                auto const SLIDER_POSX{ POS_V.x
-                                        + botOrLeftImage_.GetUpSprite().getLocalBounds().width
-                                        + (SLIDER_RANGE * currentVal_) - 3.0f };
+                auto const SLIDER_POSX { POS_V.x
+                                         + botOrLeftImage_.GetUpSprite().getLocalBounds().width
+                                         + (SLIDER_RANGE * currentVal_) - 3.0f };
 
                 padImage_.SetEntityPos(
                     SLIDER_POSX,
@@ -482,16 +482,16 @@ namespace sfml_util
             }
             else
             {
-                auto const SLIDER_RANGE{ LENGTH_
-                                         - (topOrRightImage_.GetUpSprite().getLocalBounds().height
-                                            + botOrLeftImage_.GetUpSprite().getLocalBounds().height
-                                            + padImage_.GetUpSprite().getLocalBounds().height
-                                            - 5.0f) };
+                auto const SLIDER_RANGE { LENGTH_
+                                          - (topOrRightImage_.GetUpSprite().getLocalBounds().height
+                                             + botOrLeftImage_.GetUpSprite().getLocalBounds().height
+                                             + padImage_.GetUpSprite().getLocalBounds().height
+                                             - 5.0f) };
 
                 // magic number 1 moves passed the shadow
-                auto const SLIDER_POSY{ POS_V.y
-                                        + topOrRightImage_.GetUpSprite().getLocalBounds().height
-                                        + (SLIDER_RANGE * currentVal_) - 1.0f };
+                auto const SLIDER_POSY { POS_V.y
+                                         + topOrRightImage_.GetUpSprite().getLocalBounds().height
+                                         + (SLIDER_RANGE * currentVal_) - 1.0f };
 
                 padImage_.SetEntityPos(
                     POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f)

@@ -10,9 +10,8 @@
 // caced-texture.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/texture-options-enum.hpp"
+#include "sfml-util/image-options.hpp"
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -45,21 +44,18 @@ namespace sfml_util
         CachedTexture & operator=(CachedTexture &&);
 
         explicit CachedTexture(
-            const char * const GAME_DATAFILE_KEY,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         explicit CachedTexture(
-            const std::string & GAME_DATAFILE_KEY,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         explicit CachedTexture(
-            const boost::filesystem::path & PATH,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const boost::filesystem::path & PATH, const ImageOptions & OPTIONS = ImageOptions());
 
         CachedTexture(
             const std::string & FAKE_PATH,
             const sf::Texture & TEXTURE,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const ImageOptions & OPTIONS = ImageOptions());
 
         ~CachedTexture();
 
@@ -67,7 +63,7 @@ namespace sfml_util
 
         std::size_t Index() const { return index_; }
         const std::string Path() const { return path_; }
-        TextureOpt::Enum Options() const { return options_; }
+        const ImageOptions Options() const { return options_; }
 
         std::size_t RefCount() const;
 
@@ -81,7 +77,7 @@ namespace sfml_util
 
         std::string path_;
         std::size_t index_;
-        TextureOpt::Enum options_;
+        ImageOptions options_;
     };
 
     inline void swap(CachedTexture & l, CachedTexture & r)
@@ -114,19 +110,18 @@ namespace sfml_util
         CachedTextures & operator=(CachedTextures &&);
 
         CachedTextures(
-            const std::string & GAME_DATAFILE_KEY,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         CachedTextures(
             const boost::filesystem::path & DIR_PATH,
-            const TextureOpt::Enum OPTIONS = TextureOpt::Default);
+            const ImageOptions & OPTIONS = ImageOptions());
 
         ~CachedTextures();
 
         const std::vector<std::size_t> Indexes() const { return indexes_; }
         std::size_t Size() const { return indexes_.size(); }
         const std::string Path() const { return path_; }
-        TextureOpt::Enum Options() const { return options_; }
+        const ImageOptions Options() const { return options_; }
 
         std::size_t RefCount() const;
 
@@ -145,7 +140,7 @@ namespace sfml_util
 
         std::string path_;
         std::vector<std::size_t> indexes_;
-        TextureOpt::Enum options_;
+        ImageOptions options_;
     };
 
     inline void swap(CachedTextures & l, CachedTextures & r)

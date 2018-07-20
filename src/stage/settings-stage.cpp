@@ -425,7 +425,7 @@ namespace stage
                 LABELS_VEC,
                 aaInitialSelection,
                 sfml_util::Brightness::Bright,
-                misc::SizetVec_t(),
+                std::vector<std::size_t>(),
                 BOX_INFO);
 
             aaRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::ColorSet(
@@ -610,7 +610,7 @@ namespace stage
             ss.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sfml_util::Justified::Center);
 
         const sfml_util::GradientInfo GRADIENT_INFO(
@@ -647,7 +647,7 @@ namespace stage
             ss.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sfml_util::Justified::Left);
 
         if (false == hasStageAlreadyBeenSetup_)

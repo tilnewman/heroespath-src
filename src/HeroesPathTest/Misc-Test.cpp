@@ -11,6 +11,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
+#include "sfml-util/gui/list-no-element.hpp"
 
 #include <boost/test/unit_test.hpp>
 
@@ -18,6 +19,7 @@
 #include <limits>
 #include <type_traits>
 
+using namespace heroespath::sfml_util::gui;
 using namespace heroespath::misc;
 
 // a simple class used to test working with non-POD
@@ -294,7 +296,74 @@ BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
     BOOST_CHECK_THROW(optional->get(), std::exception);
     BOOST_CHECK_THROW((*optional).get(), std::exception);
     BOOST_CHECK_THROW(optional.value().get(), std::exception);
-    BOOST_CHECK_THROW(optional.get().get(), std::exception);
+    BOOST_CHECK_NO_THROW(optional.value_or(Thing(0)));
+    BOOST_CHECK(optional.value_or(Thing(0)) == Thing(0));
+}
+
+BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
+{
+    // first test that NoElement works as expected
+    BOOST_CHECK(NoElement_t() == NoElement_t());
+
+    NoElement_t noElement1;
+    NoElement_t noElement2;
+
+    BOOST_CHECK(noElement1 == noElement1);
+    BOOST_CHECK(noElement2 == noElement2);
+    BOOST_CHECK(noElement1 == noElement2);
+    BOOST_CHECK(noElement1 == NoElement_t());
+    BOOST_CHECK(noElement2 == NoElement_t());
+
+    // test that an optional of type sfml_util::gui::NoElement_t works in every way
+    boost::optional<NoElement_t> noOpt;
+    BOOST_CHECK(!noOpt);
+    BOOST_CHECK(!noOpt.is_initialized());
+    BOOST_CHECK(noOpt.get_value_or(noElement1) == noElement1);
+    BOOST_CHECK(noOpt.get_value_or(noElement1) == noElement2);
+    BOOST_CHECK_THROW(noOpt.get(), std::exception);
+    BOOST_CHECK(noOpt.get_ptr() == nullptr);
+    BOOST_CHECK_THROW(noOpt.value(), std::exception);
+    BOOST_CHECK_NO_THROW(noOpt.reset());
+
+    boost::optional<NoElement_t> noOptInit(noElement1);
+    BOOST_CHECK(noOptInit);
+    BOOST_CHECK(!!noOptInit);
+    BOOST_CHECK(noOptInit.is_initialized());
+    BOOST_CHECK(noOptInit.get_value_or(noElement1) == noElement1);
+    BOOST_CHECK(noOptInit.get_value_or(noElement1) == noElement2);
+    BOOST_CHECK(noOptInit.get() == noElement1);
+    BOOST_CHECK(noOptInit.get() == noElement2);
+    BOOST_CHECK(noOptInit.get_ptr() != nullptr);
+    BOOST_CHECK(noOptInit.value() == noElement1);
+
+    BOOST_CHECK_NO_THROW(noOptInit.reset());
+
+    BOOST_CHECK(!noOptInit);
+
+    noOptInit = noElement1;
+
+    BOOST_CHECK(noOptInit);
+    BOOST_CHECK(!!noOptInit);
+    BOOST_CHECK(noOptInit.is_initialized());
+    BOOST_CHECK(noOptInit.get_value_or(noElement1) == noElement1);
+    BOOST_CHECK(noOptInit.get_value_or(noElement1) == noElement2);
+    BOOST_CHECK(noOptInit.get() == noElement1);
+    BOOST_CHECK(noOptInit.get() == noElement2);
+    BOOST_CHECK(noOptInit.get_ptr() != nullptr);
+    BOOST_CHECK(noOptInit.value() == noElement1);
+
+    BOOST_CHECK(noOptInit == noElement1);
+    BOOST_CHECK(noOptInit == noElement2);
+
+    boost::optional<NoElement_t> noOptInitB(noElement1);
+    BOOST_CHECK(noOptInit == noOptInitB);
+    BOOST_CHECK(noOptInit.get() == noOptInitB.get());
+    BOOST_CHECK(noOptInit.value() == noOptInitB.value());
+
+    boost::optional<NoElement_t> noOptInit2(noElement2);
+    BOOST_CHECK(noOptInit == noOptInit2);
+    BOOST_CHECK(noOptInit.get() == noOptInit2.get());
+    BOOST_CHECK(noOptInit.value() == noOptInit2.value());
 }
 
 BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)

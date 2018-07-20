@@ -11,7 +11,6 @@
 //  Radio button drawing and handling code.
 //
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/gui/box.hpp"
@@ -130,7 +129,7 @@ namespace sfml_util
                 const std::vector<std::string> & LABEL_VEC,
                 const std::size_t INITIAL_SELECTION,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const box::Info & BOX_INFO = box::Info(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
                 const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
@@ -144,7 +143,7 @@ namespace sfml_util
                 const std::vector<std::string> & LABEL_VEC,
                 const std::size_t INITIAL_SELECTION,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const box::Info & BOX_INFO = box::Info(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
                 const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
@@ -155,7 +154,7 @@ namespace sfml_util
                 const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
                 const std::size_t INITIAL_SELECTION,
                 const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const std::vector<std::size_t> & INVALID_SEL_VEC = std::vector<std::size_t>(),
                 const box::Info & BOX_INFO = box::Info(),
                 const float OUTER_PAD = OUTER_PAD_DEFAULT_,
                 const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
@@ -167,8 +166,11 @@ namespace sfml_util
             // throws on out of bounds, but will allow setting a grayed-out number
             void SetSelectNumber(const std::size_t);
 
-            void SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC);
-            const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionVec_; }
+            void SetInvalidSelections(const std::vector<std::size_t> & INVALID_SELECTIONS_VEC);
+            const std::vector<std::size_t> GetInvalidSelections() const
+            {
+                return invalidSelectionVec_;
+            }
 
             // returns true if the currentSelection_ changed
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
@@ -214,7 +216,7 @@ namespace sfml_util
             RadioButtonUVec_t buttonUVec_;
             box::Box box_;
             std::size_t downInWhichRegion_;
-            misc::SizetVec_t invalidSelectionVec_;
+            std::vector<std::size_t> invalidSelectionVec_;
             std::size_t prevSelection_;
         };
 

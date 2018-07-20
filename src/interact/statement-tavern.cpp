@@ -38,7 +38,7 @@ namespace interact
 
             if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                auto const BEAST_RACE_NAME{ (
+                auto const BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
                                                   : std::string("dragon ")) };
 
@@ -81,15 +81,15 @@ namespace interact
 
             if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                auto const BEAST_RACE_NAME{ (
+                auto const BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
                                                   : std::string("dragon ")) };
 
-                auto const FIRST_PART{ Random(
+                auto const FIRST_PART { Random(
                     { "Does your " + std::string(BEAST_RACE_NAME),
                       "Nice " + std::string(BEAST_RACE_NAME) + ".  Does he" }) };
 
-                std::string secondPart{ "" };
+                std::string secondPart { "" };
                 switch (misc::random::Int(6))
                 {
                     case 0:
@@ -167,7 +167,7 @@ namespace interact
                 {
                     return AppendIf(RandomOrEmpty(TavernNoises())) + "Why did "
                         + Random({ "he", "she" }) + " leave me "
-                        + Random(std::vector<StrVec_t>{
+                        + Random(std::vector<std::vector<std::string>> {
                               Combinations(
                                   { "for my" }, { "brother", "sister", "cousin", "friend" }),
                               Combinations({ "for that", "for a" }, { RandomRaceOrRole() }) })
@@ -189,7 +189,7 @@ namespace interact
                 case 8:
                 {
                     return "You look like you could use "
-                        + Random(std::vector<StrVec_t>{
+                        + Random(std::vector<std::vector<std::string>> {
                               { "a drink", "a beer", "an ale" },
                               { "some of this "
                                 + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })

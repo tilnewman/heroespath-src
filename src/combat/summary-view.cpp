@@ -238,7 +238,7 @@ namespace combat
     {
         itemWithTextVec_.clear();
 
-        auto creaturePtr{ combatNodePtr->Creature() };
+        auto creaturePtr { combatNodePtr->Creature() };
         std::ostringstream ss;
         if (creaturePtr->Name() != creaturePtr->RaceName())
         {
@@ -256,7 +256,7 @@ namespace combat
             ss.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light());
+            sfml_util::Colors::Light);
 
         nameTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect());
@@ -268,7 +268,7 @@ namespace combat
             rankSS.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light());
+            sfml_util::Colors::Light);
 
         rankTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sRank", CREATURE_RANK_TEXT_INFO, sf::FloatRect());
@@ -288,7 +288,7 @@ namespace combat
             healthSS.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light());
+            sfml_util::Colors::Light);
 
         healthTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect());
@@ -300,7 +300,7 @@ namespace combat
             armorRatingSS.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light());
+            sfml_util::Colors::Light);
 
         armorTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect());
@@ -309,7 +309,7 @@ namespace combat
             creaturePtr->Body().ToString(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sf::BlendAlpha,
             sf::Text::Italic);
 
@@ -323,7 +323,7 @@ namespace combat
             condSS.str(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_Light());
+            sfml_util::Colors::Light);
 
         condTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect());
@@ -408,7 +408,7 @@ namespace combat
         item::ItemPVec_t weaponItemsToDisplay;
         item::ItemPVec_t weaponItemsToIgnore;
 
-        auto const ITEMS_EQUIPPED_VEC{ creaturePtr->Inventory().ItemsEquipped() };
+        auto const ITEMS_EQUIPPED_VEC { creaturePtr->Inventory().ItemsEquipped() };
         for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
@@ -465,14 +465,14 @@ namespace combat
         // then everything else (clothes, etc)
         for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
-            auto const IWTV_CITER{ std::find_if(
+            auto const IWTV_CITER { std::find_if(
                 itemWithTextVec_.begin(),
                 itemWithTextVec_.end(),
                 [NEXT_ITEM_PTR](const ItemWithText & IWT) {
                     return IWT.item_ptr == NEXT_ITEM_PTR;
                 }) };
 
-            auto const IV_CITER{ std::find_if(
+            auto const IV_CITER { std::find_if(
                 weaponItemsToIgnore.begin(),
                 weaponItemsToIgnore.end(),
                 [NEXT_ITEM_PTR](const item::ItemPtr_t ITEM_PTR_FROM_TOIGNORE) {
@@ -566,7 +566,7 @@ namespace combat
                 nextItemText.item_ptr->Name(),
                 sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::FontManager::Color_Light(),
+                sfml_util::Colors::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_NAME_RECT(
@@ -584,7 +584,7 @@ namespace combat
                 nextItemText.item_ptr->Desc(),
                 sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::FontManager::Color_Light(),
+                sfml_util::Colors::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_DESC_RECT(
@@ -628,7 +628,7 @@ namespace combat
                 infoSS.str(),
                 sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::FontManager::Color_Light(),
+                sfml_util::Colors::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect INFO_RECT(
@@ -651,7 +651,7 @@ namespace combat
                 longestItemHorizExtent = CURR_ITEM_HORIZ_EXTENT;
             }
 
-            const float CURR_ITEM_VERT_TEXT_EXTENT{ (
+            const float CURR_ITEM_VERT_TEXT_EXTENT { (
                 (infoSS.str() == " ")
                     ? (ITEM_DESC_RECT.top
                        + nextItemText.desc_text_region_sptr->GetEntityRegion().height)

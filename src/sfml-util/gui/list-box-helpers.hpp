@@ -10,7 +10,6 @@
 // list-box-helpers.hpp
 //
 #include "item/item.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/list-box.hpp"
 
 #include <algorithm>
@@ -24,79 +23,61 @@ namespace sfml_util
         namespace listbox
         {
 
-            template <typename Stage_t>
-            void SortByItemName(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            template <typename Stage_t, typename Element_t>
+            void SortByName(ListBox<Stage_t, Element_t> & listBox, bool & isSortReversed)
             {
-                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                if (isSortReversed)
                 {
-                    std::sort(
-                        std::begin(listBox),
-                        std::end(listBox),
-                        [&isSortReversed](auto const & A, auto const & B) {
-                            if (isSortReversed)
-                            {
-                                return B->ItemPtrOpt().value()->Name()
-                                    < A->ItemPtrOpt().value()->Name();
-                            }
-                            else
-                            {
-                                return A->ItemPtrOpt().value()->Name()
-                                    < B->ItemPtrOpt().value()->Name();
-                            }
-                        });
-
-                    isSortReversed = !isSortReversed;
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return B->Element()->Name() < A->Element()->Name();
+                    });
                 }
+                else
+                {
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return A->Element()->Name() < B->Element()->Name();
+                    });
+                }
+
+                isSortReversed = !isSortReversed;
             }
 
             template <typename Stage_t>
-            void SortByItemPrice(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            void SortByPrice(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
             {
-                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                if (isSortReversed)
                 {
-                    std::sort(
-                        std::begin(listBox),
-                        std::end(listBox),
-                        [&isSortReversed](auto const & A, auto const & B) {
-                            if (isSortReversed)
-                            {
-                                return B->ItemPtrOpt().value()->Price()
-                                    < A->ItemPtrOpt().value()->Price();
-                            }
-                            else
-                            {
-                                return A->ItemPtrOpt().value()->Price()
-                                    < B->ItemPtrOpt().value()->Price();
-                            }
-                        });
-
-                    isSortReversed = !isSortReversed;
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return B->Element()->Price() < A->Element()->Price();
+                    });
                 }
+                else
+                {
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return A->Element()->Price() < B->Element()->Price();
+                    });
+                }
+
+                isSortReversed = !isSortReversed;
             }
 
             template <typename Stage_t>
-            void SortByItemWeight(ListBox<Stage_t> & listBox, bool & isSortReversed)
+            void SortByWeight(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
             {
-                if ((listBox.Empty() == false) && (listBox.Front()->ItemPtrOpt()))
+                if (isSortReversed)
                 {
-                    std::sort(
-                        std::begin(listBox),
-                        std::end(listBox),
-                        [&isSortReversed](auto const & A, auto const & B) {
-                            if (isSortReversed)
-                            {
-                                return B->ItemPtrOpt().value()->Weight()
-                                    < A->ItemPtrOpt().value()->Weight();
-                            }
-                            else
-                            {
-                                return A->ItemPtrOpt().value()->Weight()
-                                    < B->ItemPtrOpt().value()->Weight();
-                            }
-                        });
-
-                    isSortReversed = !isSortReversed;
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return B->Element()->Weight() < A->Element()->Weight();
+                    });
                 }
+                else
+                {
+                    listBox.Sort([](auto const & A, auto const & B) {
+                        return A->Element()->Weight() < B->Element()->Weight();
+                    });
+                }
+
+                isSortReversed = !isSortReversed;
             }
 
         } // namespace listbox

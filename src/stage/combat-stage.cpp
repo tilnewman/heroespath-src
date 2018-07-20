@@ -45,8 +45,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/list-box-item-factory.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -126,15 +124,14 @@ namespace stage
     const float CombatStage::ANIM_RUN_SLIDER_SPEED_ { SLIDER_SPEED_FAST_ };
     //
     const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_ { (
-        sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235)) };
+        sfml_util::Colors::Orange - sf::Color(100, 100, 100, 235)) };
 
-    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_ { (sfml_util::FontManager::Color_Orange()
-                                                             - sf::Color(100, 100, 100, 235))
-                                                            + sf::Color(20, 20, 20, 20) };
+    const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_ {
+        (sfml_util::Colors::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20)
+    };
 
     const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_ {
-        (sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 235))
-        + sf::Color(40, 40, 40, 40)
+        (sfml_util::Colors::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40)
     };
 
     const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_ { sf::Color::White };
@@ -164,7 +161,7 @@ namespace stage
               " ",
               sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
               sfml_util::FontManager::Instance()->Size_Small(),
-              sfml_util::FontManager::Color_Orange(),
+              sfml_util::Colors::Orange,
               sfml_util::Justified::Left)
         , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
@@ -209,8 +206,7 @@ namespace stage
         , turnCreaturePtrOpt_(boost::none)
         ,
 
-        goldTextColorShaker_(
-            sfml_util::FontManager::Color_Orange(), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_)
+        goldTextColorShaker_(sfml_util::Colors::Orange, sf::Color::White, TEXT_COLOR_SHAKER_SPEED_)
         ,
 
         redTextColorShaker_(
@@ -263,8 +259,9 @@ namespace stage
 
     CombatStage::~CombatStage() { Stage::ClearAllEntities(); }
 
-    bool CombatStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage<CombatStage> &)
+    bool CombatStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
+                                     CombatStage,
+                                     sfml_util::gui::NoElement_t> &)
     {
         return false;
     }
@@ -509,15 +506,15 @@ namespace stage
         const sfml_util::gui::box::Info STATUS_BOX_INFO(
             true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
 
-        statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox<CombatStage>>(
-            "ComabtStage'sStatus",
-            this,
-            STATUS_REGION,
-            STATUS_BOX_INFO,
-            LISTBOX_LINE_COLOR_,
-            sf::Color::White,
-            LISTBOX_HIGHLIGHT_COLOR_,
-            0.0f);
+        statusBoxUPtr_
+            = std::make_unique<sfml_util::gui::ListBox<CombatStage, sfml_util::gui::NoElement_t>>(
+                "ComabtStage'sStatus",
+                this,
+                sfml_util::gui::ListBoxPacket(
+                    STATUS_BOX_INFO,
+                    LISTBOX_LINE_COLOR_,
+                    sfml_util::Colors::None,
+                    LISTBOX_HIGHLIGHT_COLOR_));
 
         EntityAdd(statusBoxUPtr_.get());
 
@@ -562,6 +559,7 @@ namespace stage
 
         const sfml_util::gui::box::Info TURNBOX_REGION_BOXINFO(
             true, turnBoxRegion_, sfml_util::gui::ColorSet(), TURNBOX_BACKGROUNDINFO);
+
         turnBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
             "CombatStage'sTurnBox", TURNBOX_REGION_BOXINFO);
 
@@ -570,7 +568,7 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
@@ -583,7 +581,7 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Colors::GrayLight,
             sfml_util::Justified::Left);
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
@@ -595,7 +593,7 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
@@ -614,7 +612,7 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Colors::GrayLight,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
@@ -627,7 +625,7 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Colors::GrayLight,
             sfml_util::Justified::Center);
 
         weaponTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -642,14 +640,14 @@ namespace stage
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_Orange(),
+            sfml_util::Colors::Orange,
             sfml_util::Justified::Left);
 
         const sfml_util::gui::TextInfo TESTING_TEXT_INFO(
             " ",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayLight(),
+            sfml_util::Colors::GrayLight,
             sfml_util::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
@@ -660,7 +658,7 @@ namespace stage
             "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion);
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(
-            sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
+            sfml_util::Colors::Orange - sf::Color(0, 0, 0, 176));
 
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
         turnButtonTextInfoDisabled.color = TURNBUTTON_DISABLED_COLOR;
@@ -670,7 +668,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(A)ttack";
 
         const sfml_util::gui::MouseTextInfo ATTACKBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         attackTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
@@ -690,7 +688,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(F)ight";
 
         const sfml_util::gui::MouseTextInfo FIGHTBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         fightTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
@@ -710,7 +708,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(S)pell";
 
         const sfml_util::gui::MouseTextInfo CASTBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         castTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sCast",
@@ -730,7 +728,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "A(d)vance";
 
         const sfml_util::gui::MouseTextInfo ADVANCEBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         advanceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAdvance",
@@ -750,7 +748,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "R(e)treat";
 
         const sfml_util::gui::MouseTextInfo RETREATBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         retreatTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRetreat",
@@ -770,7 +768,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(B)lock";
 
         const sfml_util::gui::MouseTextInfo BLOCKBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         blockTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sBlock",
@@ -790,7 +788,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "S(k)ip";
 
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         skipTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sSkip",
@@ -810,7 +808,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "Fl(y)";
 
         const sfml_util::gui::MouseTextInfo FLYBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         flyTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sFly",
@@ -830,7 +828,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(L)and";
 
         const sfml_util::gui::MouseTextInfo LANDBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         landTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sLand",
@@ -848,7 +846,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(R)oar";
 
         const sfml_util::gui::MouseTextInfo ROARBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         roarTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRoar",
@@ -868,7 +866,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "(P)ounce";
 
         const sfml_util::gui::MouseTextInfo POUNCEBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         pounceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sPounce",
@@ -888,7 +886,7 @@ namespace stage
         turnButtonTextInfoDisabled.text = "R(u)n";
 
         const sfml_util::gui::MouseTextInfo RUNBUTTON_MOUSETEXTINFO(
-            turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
+            turnButtonTextInfo, sfml_util::Colors::Light, sf::Color::White);
 
         runTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRun",
@@ -1023,7 +1021,7 @@ namespace stage
             "Zoom",
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_Light(),
+            sfml_util::Colors::Light,
             sfml_util::Justified::Left);
 
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(
@@ -1067,7 +1065,8 @@ namespace stage
     {
         target.draw(*commandBoxUPtr_, STATES);
         Stage::Draw(target, STATES);
-        statusBoxUPtr_->draw(target, STATES);
+
+        // statusBoxUPtr_->draw(target, STATES);
 
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause))
             || (IsNonPlayerCharacterTurnValid()
@@ -1364,11 +1363,11 @@ namespace stage
         if (willClrShkInitStatusMsg_ || (TurnPhase::StatusAnim == turnPhase_))
         {
             statusMsgAnimTimerSec_ += ELAPSED_TIME_SEC;
-            statusBoxUPtr_->SetHighlightColor(statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC));
+            // statusBoxUPtr_->SetHighlightColor(statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC));
 
             if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_PAUSE_SEC_)
             {
-                statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
+                // statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
                 combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
 
                 if (willClrShkInitStatusMsg_)
@@ -1770,10 +1769,9 @@ namespace stage
 
         statusBoxTextInfo_.text = ss.str();
 
-        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
-
-        statusBoxUPtr_->Add(
-            listBoxItemFactory.Make(statusBoxUPtr_->GetEntityName(), statusBoxTextInfo_));
+        statusBoxUPtr_->Append(
+            std::make_unique<sfml_util::gui::ListElement<sfml_util::gui::NoElement_t>>(
+                boost::none, statusBoxTextInfo_, boost::none));
 
         statusBoxUPtr_->SelectNext();
         MoveTurnBoxObjectsOffScreen();
@@ -1788,10 +1786,9 @@ namespace stage
     {
         statusBoxTextInfo_.text = MSG_STR;
 
-        sfml_util::gui::ListBoxItemFactory listBoxItemFactory;
-
-        statusBoxUPtr_->Add(
-            listBoxItemFactory.Make(statusBoxUPtr_->GetEntityName(), statusBoxTextInfo_));
+        statusBoxUPtr_->Append(
+            std::make_unique<sfml_util::gui::ListElement<sfml_util::gui::NoElement_t>>(
+                boost::none, statusBoxTextInfo_, boost::none));
 
         statusBoxUPtr_->SelectNext();
 

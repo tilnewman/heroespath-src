@@ -4,10 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXTURE_OPTIONS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXTURE_OPTIONS_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED
 //
-// texture-options-enum.hpp
+// image-option-enum.hpp
 //
 #include "misc/enum-util.hpp"
 
@@ -19,7 +19,7 @@ namespace sfml_util
 {
 
     // Responsible for enumerating all possible alterations for a cached texture.
-    struct TextureOpt : public misc::EnumBaseBitField<TextureOpt, misc::NoneEmpty::No>
+    struct ImageOpt : public misc::EnumBaseBitField<ImageOpt, misc::NoneEmpty::No>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -29,12 +29,17 @@ namespace sfml_util
             FlipHoriz = 1 << 1,
             FlipVert = 1 << 2,
             Invert = 1 << 3,
-            Last = Invert
+            InvertAfterMask = 1 << 4,
+            InvertIncludesAlpha = 1 << 5,
+            Last = InvertIncludesAlpha
         };
 
-        static const std::string ToString(const misc::EnumUnderlying_t ENUM_VALUE)
+        static const std::string ToString(
+            const misc::EnumUnderlying_t ENUM_VALUE,
+            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+            const std::string & SEPARATOR = "/")
         {
-            return EnumBaseBitField::ToString(ENUM_VALUE, misc::Wrap::Yes, "/");
+            return EnumBaseBitField::ToString(ENUM_VALUE, WILL_WRAP, SEPARATOR);
         }
 
         static void ToStringPopulate(
@@ -46,4 +51,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXTURE_OPTIONS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED

@@ -29,8 +29,9 @@ namespace sfml_util
         const float SIZE_VERT)
         : symbolCachedTexture_(
               "media-images-gui-accents-symbol2",
-              ((WILL_INVERT_SYMBOL) ? (TextureOpt::Default | TextureOpt::Invert)
-                                    : TextureOpt::Default))
+              ImageOptions(
+                  (WILL_INVERT_SYMBOL) ? (ImageOpt::Default | ImageOpt::Invert)
+                                       : ImageOpt::Default))
         , symbolSprite_(symbolCachedTexture_.Get())
         , titleCachedTextureOpt_(boost::none)
         , titleSprite_()

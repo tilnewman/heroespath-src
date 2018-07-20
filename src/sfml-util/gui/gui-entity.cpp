@@ -80,7 +80,7 @@ namespace sfml_util
         {
             if (MouseState::Down == entityMouseState_)
             {
-                if (IsInEntityRegion(MOUSE_POS_V))
+                if (entityRegion_.contains(MOUSE_POS_V))
                 {
                     entityMouseState_ = MouseState::Over;
 
@@ -122,7 +122,7 @@ namespace sfml_util
 
         bool GuiEntity::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            if (IsInEntityRegion(MOUSE_POS_V))
+            if (entityRegion_.contains(MOUSE_POS_V))
             {
                 entityMouseState_ = MouseState::Down;
                 return true;
@@ -135,7 +135,7 @@ namespace sfml_util
 
         bool GuiEntity::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
         {
-            if (IsInEntityRegion(MOUSE_POS_V))
+            if (entityRegion_.contains(MOUSE_POS_V))
             {
                 if (MouseState::Up == entityMouseState_)
                 {

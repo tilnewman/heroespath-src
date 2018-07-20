@@ -18,7 +18,7 @@ namespace heroespath
 namespace popup
 {
 
-    const float PopupStageImageFade::BEFORE_FADE_STARTS_DELAY_SEC_{ 2.0f };
+    const float PopupStageImageFade::BEFORE_FADE_STARTS_DELAY_SEC_ { 2.0f };
 
     PopupStageImageFade::PopupStageImageFade(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
@@ -42,12 +42,12 @@ namespace popup
             popupInfo_.TitleText(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sf::BlendAlpha,
             sf::Text::Bold,
             sfml_util::Justified::Center);
 
-        auto titleRegion{ textRegion_ };
+        auto titleRegion { textRegion_ };
         titleRegion.height = 0.0f;
 
         titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -57,10 +57,10 @@ namespace popup
             popupInfo_.DescText(),
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sfml_util::Justified::Center);
 
-        auto descRegion{ textRegion_ };
+        auto descRegion { textRegion_ };
         descRegion.height = 0.0f;
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -72,17 +72,17 @@ namespace popup
             descTextRegionUPtr_->GetEntityPos().x,
             (textRegion_.top + textRegion_.height) - descRegion.height);
 
-        auto const IMAGE_PAD{ sfml_util::MapByRes(15.0f, 35.0f) };
+        auto const IMAGE_PAD { sfml_util::MapByRes(15.0f, 35.0f) };
 
-        auto const IMAGE_TOP{ textRegionUPtr_->GetEntityRegion().top
-                              + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD };
+        auto const IMAGE_TOP { textRegionUPtr_->GetEntityRegion().top
+                               + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD };
 
-        auto const FREE_SPACE_VERT{ descTextRegionUPtr_->GetEntityPos().y
-                                    - (IMAGE_TOP + IMAGE_PAD) };
-        auto const FREE_SPACE_HORIZ{ textRegion_.width };
-        auto const IMAGE_MAX_DIMM{ sfml_util::MapByRes(110.0f, 750.0f) };
-        auto const IMAGE_WIDTH{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
-        auto const IMAGE_HEIGHT{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_VERT) };
+        auto const FREE_SPACE_VERT { descTextRegionUPtr_->GetEntityPos().y
+                                     - (IMAGE_TOP + IMAGE_PAD) };
+        auto const FREE_SPACE_HORIZ { textRegion_.width };
+        auto const IMAGE_MAX_DIMM { sfml_util::MapByRes(110.0f, 750.0f) };
+        auto const IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
+        auto const IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, FREE_SPACE_VERT) };
 
         descTextRegionUPtr_->SetEntityPos(
             descTextRegionUPtr_->GetEntityPos().x, IMAGE_TOP + IMAGE_HEIGHT + IMAGE_PAD);
@@ -101,13 +101,13 @@ namespace popup
         // assume popupInfo_.ImagesAt(0) and popupInfo_.ImagesAt(1) are the same size
         spritePrev_.setScale(1.0f, 1.0f);
         spriteCurr_.setScale(1.0f, 1.0f);
-        auto SCALE_VERT{ IMAGE_HEIGHT / spriteCurr_.getGlobalBounds().height };
+        auto SCALE_VERT { IMAGE_HEIGHT / spriteCurr_.getGlobalBounds().height };
         spritePrev_.setScale(SCALE_VERT, SCALE_VERT);
         spriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
 
         if (spriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
         {
-            auto const SCALE_HORIZ{ IMAGE_WIDTH / spriteCurr_.getGlobalBounds().width };
+            auto const SCALE_HORIZ { IMAGE_WIDTH / spriteCurr_.getGlobalBounds().width };
             spritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
             spriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
         }

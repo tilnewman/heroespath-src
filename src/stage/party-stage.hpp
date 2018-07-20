@@ -14,6 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-shaker-rect.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/background-image.hpp"
@@ -22,7 +23,6 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -54,10 +54,14 @@ namespace stage
     // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IListBoxCallbackHandler<PartyStage>
+        , public sfml_util::gui::callback::
+              IListBoxCallbackHandler<PartyStage, creature::CreaturePtr_t>
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
         , public popup::IPopupHandler_t
     {
+        using PartyListBox_t = sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>;
+        using PartyListBoxUPtr_t = std::unique_ptr<PartyListBox_t>;
+
     public:
         PartyStage(const PartyStage &) = delete;
         PartyStage(PartyStage &&) = delete;
@@ -68,8 +72,9 @@ namespace stage
         virtual ~PartyStage();
 
         const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage<PartyStage> &) override;
+        bool
+            HandleCallback(const sfml_util::gui::callback::
+                               ListBoxEventPackage<PartyStage, creature::CreaturePtr_t> &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -91,7 +96,6 @@ namespace stage
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
-        sfml_util::gui::ListBoxItemPtrOpt_t GetSelectedItemPtrOpt() const;
         const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
@@ -105,13 +109,14 @@ namespace stage
     private:
         void StartNewGame(const avatar::Avatar::Enum);
         void ResetMouseOverPopupState();
-        bool AreAnyCharactersBeasts() const;
-        bool AreAnyCharactersBeastmasters() const;
+        bool AreAnyInPartyBeasts() const;
+        bool AreAnyInPartyBeastmasters() const;
         void MissingBeastmasterPopup();
         void NotEnoughCharactersPopup();
         void PartyAvatarSelectionPopup();
         void UpdateWillDisplayCharacterCountWarning();
         void SetupMouseOverPositionsAndDimmensions(const creature::CreaturePtr_t);
+        bool DeleteCharacterIfSelected(PartyListBox_t &);
 
     private:
         static const std::string POPUP_NAME_STR_NOT_ENOUGH_CHARS_;
@@ -142,8 +147,8 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t startButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t deleteButtonUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<PartyStage> characterListBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<PartyStage> partyListBoxUPtr_;
+        PartyListBoxUPtr_t characterListBoxUPtr_;
+        PartyListBoxUPtr_t partyListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t upTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t partyTextRegionUPtr_;
@@ -163,7 +168,7 @@ namespace stage
         sf::Vector2f mousePosV_;
         sf::FloatRect mouseOverBackgroundRectFinal_;
         sf::Sprite mouseOverCreatureSprite_;
-        sf::Texture mouseOverCreatureTexture_;
+        sfml_util::CachedTextureOpt_t mouseOverCreatureTextureOpt_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
     };

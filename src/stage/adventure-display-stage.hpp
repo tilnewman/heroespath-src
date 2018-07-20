@@ -15,7 +15,6 @@
 #include "sfml-util/gui/picture-frame.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/adventure-stage-char-list.hpp"

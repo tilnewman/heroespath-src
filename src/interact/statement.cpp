@@ -56,17 +56,19 @@ namespace interact
         namespace compose
         {
 
-            const std::string RandomWithEmpty(const StrVec_t & STR_VEC)
+            const std::string RandomWithEmpty(const std::vector<std::string> & STR_VEC)
             {
-                StrVec_t v(STR_VEC);
+                std::vector<std::string> v(STR_VEC);
                 v.emplace_back("");
                 return misc::Vector::SelectRandom(STR_VEC);
             }
 
-            const StrVec_t Combinations(
-                const StrVec_t & V1, const StrVec_t & V2, const std::string & SEPARATOR)
+            const std::vector<std::string> Combinations(
+                const std::vector<std::string> & V1,
+                const std::vector<std::string> & V2,
+                const std::string & SEPARATOR)
             {
-                StrVec_t v;
+                std::vector<std::string> v;
 
                 for (auto const & S1 : V1)
                 {
@@ -113,7 +115,7 @@ namespace interact
                 }
                 else
                 {
-                    std::string s{ S };
+                    std::string s { S };
                     s[0] = boost::algorithm::to_upper_copy(std::string(1, S[0]))[0];
                     return s;
                 }

@@ -60,20 +60,9 @@ namespace sfml_util
         void UnloadAll();
         bool IsLoaded(const Font::Enum) const;
 
-        // colors
-        static const sf::Color Color_GrayLight();
-        static const sf::Color Color_GrayLighter();
-        static const sf::Color Color_GrayDark();
-        static const sf::Color Color_GrayDarker();
-        static const sf::Color Color_Orange();
-        static const sf::Color Color_Light();
-        static const sf::Color Color_LightGold();
-
         static const sf::Color Color_PopupButtonUp(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonDown(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonOver(const popup::PopupButtonColor::Enum);
-
-        static sf::Uint8 ColorValue_Highlight();
 
         // sizes
         unsigned int Size_Larger() const;

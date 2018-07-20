@@ -164,8 +164,8 @@ namespace sfml_util
             }
         }
 
-        const float RadioButtonSet::OUTER_PAD_DEFAULT_{ 6.0f };
-        const float RadioButtonSet::BETWEEN_PAD_DEFAULT_{ 6.0f };
+        const float RadioButtonSet::OUTER_PAD_DEFAULT_ { 6.0f };
+        const float RadioButtonSet::BETWEEN_PAD_DEFAULT_ { 6.0f };
 
         RadioButtonSet::RadioButtonSet(
             const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
@@ -191,7 +191,7 @@ namespace sfml_util
             const std::vector<std::string> & LABEL_VEC,
             const std::size_t INITIAL_SELECTION,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const box::Info & BOX_INFO,
             const float OUTER_PAD,
             const float BETWEEN_PAD)
@@ -229,7 +229,7 @@ namespace sfml_util
             const std::vector<std::string> & LABEL_VEC,
             const std::size_t INITIAL_SELECTION,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const box::Info & BOX_INFO,
             const float OUTER_PAD,
             const float BETWEEN_PAD)
@@ -243,7 +243,7 @@ namespace sfml_util
             // set to an out-of-range value to mean 'not down in any region'
             downInWhichRegion_ = LABEL_VEC.size();
 
-            auto const NUM_BUTTONS{ LABEL_VEC.size() };
+            auto const NUM_BUTTONS { LABEL_VEC.size() };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (NUM_BUTTONS > 0), entityName_ << " given an empty vector of string labels.");
@@ -282,7 +282,7 @@ namespace sfml_util
             const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
             const std::size_t INITIAL_SELECTION,
             const Brightness::Enum BRIGHTNESS,
-            const misc::SizetVec_t & INVALID_SEL_VEC,
+            const std::vector<std::size_t> & INVALID_SEL_VEC,
             const box::Info & BOX_INFO,
             const float OUTER_PAD,
             const float BETWEEN_PAD)
@@ -296,7 +296,7 @@ namespace sfml_util
             // set to an out-of-range value to mean 'not down in any region'
             downInWhichRegion_ = MOUSE_TEXT_INFO_VEC.size();
 
-            auto const NUM_BUTTONS{ MOUSE_TEXT_INFO_VEC.size() };
+            auto const NUM_BUTTONS { MOUSE_TEXT_INFO_VEC.size() };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (NUM_BUTTONS > 0), entityName_ << " given an empty vector of string labels.");
@@ -332,9 +332,9 @@ namespace sfml_util
         {
             bool wasButtonClicked(false);
 
-            auto const ORIGINAL_SELECTION{ currentSelection_ };
+            auto const ORIGINAL_SELECTION { currentSelection_ };
 
-            auto const NUM_BUTTONS{ buttonUVec_.size() };
+            auto const NUM_BUTTONS { buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
                 if (buttonUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)
@@ -364,7 +364,7 @@ namespace sfml_util
 
         bool RadioButtonSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto const NUM_BUTTONS{ buttonUVec_.size() };
+            auto const NUM_BUTTONS { buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
                 if (buttonUVec_[i]->GetEntityRegion().contains(MOUSE_POS_V))
@@ -380,7 +380,7 @@ namespace sfml_util
 
         bool RadioButtonSet::IsInvalid(const std::size_t INDEX) const
         {
-            auto const NUM_INVALIDS{ invalidSelectionVec_.size() };
+            auto const NUM_INVALIDS { invalidSelectionVec_.size() };
             for (std::size_t i(0); i < NUM_INVALIDS; ++i)
             {
                 if (invalidSelectionVec_[i] == INDEX)
@@ -422,8 +422,8 @@ namespace sfml_util
                 posY += buttonUVec_[i - 1]->GetEntityRegion().height + betweenPad_;
                 buttonUVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-                auto const NEXT_HORIZ_LIMIT{ buttonUVec_[i]->GetEntityRegion().width
-                                             + (outerPad_ * 2.0f) };
+                auto const NEXT_HORIZ_LIMIT { buttonUVec_[i]->GetEntityRegion().width
+                                              + (outerPad_ * 2.0f) };
 
                 if (maxX < NEXT_HORIZ_LIMIT)
                 {
@@ -479,18 +479,19 @@ namespace sfml_util
             TriggerCallback();
         }
 
-        void RadioButtonSet::SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC)
+        void RadioButtonSet::SetInvalidSelections(
+            const std::vector<std::size_t> & INVALID_SELECTIONS_VEC)
         {
             invalidSelectionVec_ = INVALID_SELECTIONS_VEC;
 
-            auto const ORIG_CURR_SEL{ currentSelection_ };
+            auto const ORIG_CURR_SEL { currentSelection_ };
 
-            auto isCurrentSelectionValid{ false };
-            auto hasSetFirstValid{ false };
-            auto const NUM_BUTTONS{ buttonUVec_.size() };
+            auto isCurrentSelectionValid { false };
+            auto hasSetFirstValid { false };
+            auto const NUM_BUTTONS { buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
-                auto const IS_VALID{ !IsInvalid(i) };
+                auto const IS_VALID { !IsInvalid(i) };
 
                 if (IS_VALID && (ORIG_CURR_SEL == i))
                 {
@@ -526,13 +527,13 @@ namespace sfml_util
 
         bool RadioButtonSet::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
         {
-            auto didStatesChange{ false };
+            auto didStatesChange { false };
 
-            auto const NUM_BUTTONS{ buttonUVec_.size() };
+            auto const NUM_BUTTONS { buttonUVec_.size() };
             for (std::size_t i(0); i < NUM_BUTTONS; ++i)
             {
-                auto & buttonUPtr{ buttonUVec_[i] };
-                auto const MOUSE_STATE{ buttonUPtr->GetMouseState() };
+                auto & buttonUPtr { buttonUVec_[i] };
+                auto const MOUSE_STATE { buttonUPtr->GetMouseState() };
 
                 if ((MOUSE_STATE == MouseState::Down) || (currentSelection_ == i))
                 {
@@ -587,7 +588,7 @@ namespace sfml_util
 
         bool RadioButtonSet::SetHasFocus(const bool HAS_FOCUS)
         {
-            auto const DID_FOCUS_CHANGE{ GuiEntity::SetHasFocus(HAS_FOCUS) };
+            auto const DID_FOCUS_CHANGE { GuiEntity::SetHasFocus(HAS_FOCUS) };
             box_.SetHasFocus(HAS_FOCUS);
             return DID_FOCUS_CHANGE;
         }

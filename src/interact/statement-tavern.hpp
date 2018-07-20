@@ -22,24 +22,24 @@ namespace interact
 
         namespace compose
         {
-            inline const StrVec_t TavernServers()
+            inline const std::vector<std::string> TavernServers()
             {
                 return { "server", "barkeep",      "barwhipe", "bartender",
                          "wench",  "serving girl", "bar maid" };
             }
 
-            inline const StrVec_t TavernDrinks()
+            inline const std::vector<std::string> TavernDrinks()
             {
                 return { "ale", "drink", "beer", "mead", "brew", "swill" };
             }
 
-            inline const StrVec_t TavernDrinkAdjectives()
+            inline const std::vector<std::string> TavernDrinkAdjectives()
             {
                 return { "delightful", "dreadful", "horrid",   "stinking",  "festering",
                          "rotting",    "murky",    "bubbling", "tasteless", "sour" };
             }
 
-            inline const StrVec_t TavernNoises()
+            inline const std::vector<std::string> TavernNoises()
             {
                 return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laugh)" };
             }

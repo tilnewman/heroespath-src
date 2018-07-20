@@ -85,26 +85,26 @@ namespace popup
         bgSprite_.setTexture(bgTexture_, true);
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
 
-        auto const HORIZ_RESCALE{ textRegion_.width / static_cast<float>(bgTexture_.getSize().x) };
+        auto const HORIZ_RESCALE { textRegion_.width / static_cast<float>(bgTexture_.getSize().x) };
 
         bgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
 
         if (bgSprite_.getGlobalBounds().height > textRegion_.height)
         {
-            auto VERT_RESCALE{ textRegion_.height / static_cast<float>(bgTexture_.getSize().y) };
+            auto VERT_RESCALE { textRegion_.height / static_cast<float>(bgTexture_.getSize().y) };
 
             bgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
         }
 
-        auto const BG_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f))
-                                - (bgSprite_.getGlobalBounds().width * 0.5f) };
+        auto const BG_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
+                                 - (bgSprite_.getGlobalBounds().width * 0.5f) };
 
-        auto const BG_POS_TOP{ (textRegion_.top + (textRegion_.height * 0.5f))
-                               - (bgSprite_.getGlobalBounds().height * 0.5f) };
+        auto const BG_POS_TOP { (textRegion_.top + (textRegion_.height * 0.5f))
+                                - (bgSprite_.getGlobalBounds().height * 0.5f) };
 
         bgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
 
-        auto const TITLE_TEXT{ [&]() {
+        auto const TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
             {
                 case combat::CombatEnd::Win:
@@ -128,7 +128,7 @@ namespace popup
             TITLE_TEXT,
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sf::BlendAlpha,
             sf::Text::Bold,
             sfml_util::Justified::Center);
@@ -136,14 +136,14 @@ namespace popup
         titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO, sf::FloatRect());
 
-        auto const TITLE_POS_LEFT{ (textRegion_.left + (textRegion_.width * 0.5f))
-                                   - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+        auto const TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
+                                    - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const TITLE_POS_TOP{ textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
+        auto const TITLE_POS_TOP { textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
 
         titleTextRegionUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
-        auto const DESC_TEXT{ [&]() {
+        auto const DESC_TEXT { [&]() {
             std::ostringstream descSS;
             switch (popupInfo_.HowCombatEnded())
             {
@@ -180,7 +180,7 @@ namespace popup
             DESC_TEXT,
             sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Colors::GrayDarker,
             sfml_util::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(

@@ -90,26 +90,25 @@ namespace sfml_util
     }
 
     std::size_t TextureCache::AddByKey(
-        const std::string & GAMEDATAFILE_KEY_STR, const TextureOpt::Enum OPTIONS)
+        const std::string & GAMEDATAFILE_KEY_STR, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (GAMEDATAFILE_KEY_STR.empty() == false),
-            "sfml_util::TextureCache::AddByKey(key=\""
-                << GAMEDATAFILE_KEY_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because key was empty.");
+            "sfml_util::TextureCache::AddByKey(key=\"" << GAMEDATAFILE_KEY_STR << "\", " << OPTIONS
+                                                       << ") failed because key was empty.");
 
         return AddByPath(
             game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
     }
 
     std::size_t TextureCache::AddByPath(
-        const std::string & PATH_TO_TEXTURE_STR_ORIG, const TextureOpt::Enum OPTIONS)
+        const std::string & PATH_TO_TEXTURE_STR_ORIG, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (PATH_TO_TEXTURE_STR_ORIG.empty() == false),
-            "sfml_util::TextureCache::AddByPath(path=\""
-                << PATH_TO_TEXTURE_STR_ORIG << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because path was empty.");
+            "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR_ORIG << "\", "
+                                                         << OPTIONS
+                                                         << ") failed because path was empty.");
 
         auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::MakePathPretty(
             PATH_TO_TEXTURE_STR_ORIG) };
@@ -124,21 +123,20 @@ namespace sfml_util
                 (foundIter->second.ref_count > 0),
                 "sfml_util::TextureCache::AddByPath(orig_path=\""
                     << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=\"" << PATH_TO_TEXTURE_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
-                    << ") failed because pathOptToIndexesMap_.ref_count=0.");
+                    << "\", " << OPTIONS << ") failed because pathOptToIndexesMap_.ref_count=0.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.indexes.empty() == false),
                 "sfml_util::TextureCache::AddByPath(orig_path=\""
                     << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=\"" << PATH_TO_TEXTURE_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.indexes vec was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.indexes.size() == 1),
                 "sfml_util::TextureCache::AddByPath(orig_path=\""
                     << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=\"" << PATH_TO_TEXTURE_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << "\", " << OPTIONS
                     << ") failed because that path+option was previously added by directory and "
                        "contains "
                     << foundIter->second.indexes.size() << " images.");
@@ -149,15 +147,14 @@ namespace sfml_util
                 (INDEX < textureUPtrs_.size()),
                 "sfml_util::TextureCache::AddByPath(orig_path=\""
                     << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=\"" << PATH_TO_TEXTURE_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
-                    << ") failed because pathOptToIndexesMap_.indexes[0]=" << INDEX
-                    << " is not < textureUPtrs_.size()=" << textureUPtrs_.size() << ".");
+                    << "\", " << OPTIONS << ") failed because pathOptToIndexesMap_.indexes[0]="
+                    << INDEX << " is not < textureUPtrs_.size()=" << textureUPtrs_.size() << ".");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (textureUPtrs_[INDEX]),
                 "sfml_util::TextureCache::AddByPath(path=\""
                     << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=\"" << PATH_TO_TEXTURE_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << "\", " << OPTIONS
                     << ") failed because "
                        "textureUPtrs_[pathOptToIndexesMap_.indexes[0]].get()==null.");
 
@@ -173,12 +170,12 @@ namespace sfml_util
     std::size_t TextureCache::AddByPathFake(
         const std::string & FAKE_PATH_TO_TEXTURE_STR,
         const sf::Texture & TEXTURE,
-        const TextureOpt::Enum OPTIONS)
+        const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (FAKE_PATH_TO_TEXTURE_STR.empty() == false),
             "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                 << ") failed because path was empty.");
 
         auto const PATH_OPTIONS_PAIR { std::make_pair(FAKE_PATH_TO_TEXTURE_STR, OPTIONS) };
@@ -191,19 +188,19 @@ namespace sfml_util
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.ref_count > 0),
                 "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                    << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.ref_count=0.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.indexes.empty() == false),
                 "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                    << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.indexes vec was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.indexes.size() == 1),
                 "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                    << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                     << ") failed because that path+option was previously added by directory and "
                        "contains "
                     << foundIter->second.indexes.size() << " images.");
@@ -213,14 +210,14 @@ namespace sfml_util
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (INDEX < textureUPtrs_.size()),
                 "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                    << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.indexes[0]=" << INDEX
                     << " is not < textureUPtrs_.size()=" << textureUPtrs_.size() << ".");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (textureUPtrs_[INDEX]),
                 "sfml_util::TextureCache::AddByPathFake(fake_path=\""
-                    << FAKE_PATH_TO_TEXTURE_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                     << ") failed because "
                        "textureUPtrs_[pathOptToIndexesMap_.indexes[0]].get()==null.");
 
@@ -233,26 +230,25 @@ namespace sfml_util
         return INDEX;
     }
 
-    const misc::SizetVec_t TextureCache::AddDirectoryByKey(
-        const std::string & DIR_PATH_KEY, const TextureOpt::Enum OPTIONS)
+    const std::vector<std::size_t> TextureCache::AddDirectoryByKey(
+        const std::string & DIR_PATH_KEY, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (DIR_PATH_KEY.empty() == false),
             "sfml_util::TextureCache::AddDirectoryByKey(key=\""
-                << DIR_PATH_KEY << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because path was empty.");
+                << DIR_PATH_KEY << "\", " << OPTIONS << ") failed because path was empty.");
 
         return AddDirectoryByPath(
             game::GameDataFile::Instance()->GetMediaPath(DIR_PATH_KEY), OPTIONS);
     }
 
-    const misc::SizetVec_t TextureCache::AddDirectoryByPath(
-        const std::string & DIR_PATH_PARAM_STR_ORIG, const TextureOpt::Enum OPTIONS)
+    const std::vector<std::size_t> TextureCache::AddDirectoryByPath(
+        const std::string & DIR_PATH_PARAM_STR_ORIG, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (DIR_PATH_PARAM_STR_ORIG.empty() == false),
             "sfml_util::TextureCache::AddDirectoryByPath(path=\""
-                << DIR_PATH_PARAM_STR_ORIG << "\", options=" << TextureOpt::ToString(OPTIONS)
+                << DIR_PATH_PARAM_STR_ORIG << "\", " << OPTIONS
                 << ") failed because path was empty.");
 
         auto const DIR_PATH_PARAM_STR_FINAL { misc::filesystem::MakePathPretty(
@@ -268,14 +264,14 @@ namespace sfml_util
                 (foundIter->second.ref_count > 0),
                 "sfml_util::TextureCache::AddDirectoryByPath(orig_dir_path=\""
                     << DIR_PATH_PARAM_STR_ORIG << "\", final_dir_path=\""
-                    << DIR_PATH_PARAM_STR_FINAL << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << DIR_PATH_PARAM_STR_FINAL << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.ref_count=0.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (foundIter->second.indexes.empty() == false),
                 "sfml_util::TextureCache::AddDirectoryByPath(orig_dir_path=\""
                     << DIR_PATH_PARAM_STR_ORIG << "\", final_dir_path=\""
-                    << DIR_PATH_PARAM_STR_FINAL << "\", options=" << TextureOpt::ToString(OPTIONS)
+                    << DIR_PATH_PARAM_STR_FINAL << "\", " << OPTIONS
                     << ") failed because pathOptToIndexesMap_.indexes vec was empty.");
 
             ++foundIter->second.ref_count;
@@ -304,8 +300,7 @@ namespace sfml_util
                 (textureIndexes.indexes.empty() == false),
                 "sfml_util::TextureCache::AddDirectoryByPath(orig_path=\""
                     << DIR_PATH_PARAM_STR_ORIG << "\", final_path=\"" << DIR_PATH_PARAM_STR_FINAL
-                    << "\", options=" << TextureOpt::ToString(OPTIONS)
-                    << ") failed to find any valid images at that path.");
+                    << "\", " << OPTIONS << ") failed to find any valid images at that path.");
 
             ++textureIndexes.ref_count;
 
@@ -317,25 +312,24 @@ namespace sfml_util
     }
 
     void TextureCache::RemoveByKey(
-        const std::string & GAMEDATAFILE_KEY_STR, const TextureOpt::Enum OPTIONS)
+        const std::string & GAMEDATAFILE_KEY_STR, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (GAMEDATAFILE_KEY_STR.empty() == false),
             "sfml_util::TextureCache::RemoveByKey(key=\""
-                << GAMEDATAFILE_KEY_STR << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because path was empty.");
+                << GAMEDATAFILE_KEY_STR << "\", " << OPTIONS << ") failed because path was empty.");
 
         RemoveByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
     }
 
     void TextureCache::RemoveByPath(
-        const std::string & PATH_TO_TEXTURE_STR_ORIG, const TextureOpt::Enum OPTIONS)
+        const std::string & PATH_TO_TEXTURE_STR_ORIG, const ImageOptions & OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (PATH_TO_TEXTURE_STR_ORIG.empty() == false),
-            "sfml_util::TextureCache::RemoveByPath(path=\""
-                << PATH_TO_TEXTURE_STR_ORIG << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because path was empty.");
+            "sfml_util::TextureCache::RemoveByPath(path=\"" << PATH_TO_TEXTURE_STR_ORIG << "\", "
+                                                            << OPTIONS
+                                                            << ") failed because path was empty.");
 
         auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::MakePathPretty(
             PATH_TO_TEXTURE_STR_ORIG) };
@@ -354,21 +348,19 @@ namespace sfml_util
             (foundIter != std::end(pathOptToIndexesMap_)),
             "sfml_util::TextureCache::RemoveByPath(orig_path=\""
                 << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL
-                << "\", options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because that path/option was not found.");
+                << "\", " << OPTIONS << ") failed because that path/option was not found.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (foundIter->second.ref_count > 0),
             "sfml_util::TextureCache::RemoveByPath(orig_path=\""
                 << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL
-                << "\" options=" << TextureOpt::ToString(OPTIONS)
-                << ") failed because pathOptToIndexesMap_.ref_count=0.");
+                << "\", " << OPTIONS << ") failed because pathOptToIndexesMap_.ref_count=0.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (foundIter->second.indexes.empty() == false),
             "sfml_util::TextureCache::RemoveByPath(orig_path=\""
                 << PATH_TO_TEXTURE_STR_ORIG << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL
-                << "\" options=" << TextureOpt::ToString(OPTIONS)
+                << "\", " << OPTIONS
                 << ") failed because pathOptToIndexesMap_.indexes vec was empty.");
 
         if (--foundIter->second.ref_count == 0)
@@ -379,8 +371,7 @@ namespace sfml_util
                     (INDEX < textureUPtrs_.size()),
                     "sfml_util::TextureCache::RemoveByPath(orig_path=\""
                         << PATH_TO_TEXTURE_STR_ORIG
-                        << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL
-                        << "\" options=" << TextureOpt::ToString(OPTIONS)
+                        << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL << "\", " << OPTIONS
                         << ") found a TextureIndexes object with that path but one of the "
                            "indexes in the vector ("
                         << INDEX << ") was out of bounds with textureUPtrs_.size()="
@@ -392,8 +383,7 @@ namespace sfml_util
                     (textureUPtr),
                     "sfml_util::TextureCache::RemoveByPath(orig_path=\""
                         << PATH_TO_TEXTURE_STR_ORIG
-                        << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL
-                        << "\" options=" << TextureOpt::ToString(OPTIONS)
+                        << "\", final_path=" << PATH_TO_TEXTURE_STR_FINAL << "\", " << OPTIONS
                         << ") found a TextureIndexes object with that path but one of the "
                            "indexes in the vector ("
                         << INDEX << ") referenced a TextureUPtr that was null.");
@@ -425,7 +415,7 @@ namespace sfml_util
         return *textureUPtr;
     }
 
-    TextureOpt::Enum TextureCache::GetOptionsByIndex(const std::size_t INDEX) const
+    const ImageOptions TextureCache::GetOptionsByIndex(const std::size_t INDEX) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (INDEX < textureUPtrs_.size()),
@@ -505,7 +495,7 @@ namespace sfml_util
             }
         }
 
-        return { { "", TextureOpt::None }, TextureIndexes() };
+        return { { "", ImageOptions::NoOptions() }, TextureIndexes() };
     }
 
     void TextureCache::Reset()
@@ -542,7 +532,7 @@ namespace sfml_util
     }
 
     std::size_t TextureCache::AddByPathInternal(
-        const std::string & PATH_TO_TEXTURE_STR, const TextureOpt::Enum OPTIONS)
+        const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS)
     {
         auto const INDEX { FindNextAvailableIndex() };
 
@@ -563,13 +553,13 @@ namespace sfml_util
             throw;
         }
 
-        ApplyOptions(*textureUPtr, OPTIONS);
+        OPTIONS.Apply(*textureUPtr);
         UpdateCountAndSizeTracker(*textureUPtr);
         return INDEX;
     }
 
     std::size_t TextureCache::AddByPathInternalFake(
-        const sf::Texture & TEXTURE, const TextureOpt::Enum OPTIONS)
+        const sf::Texture & TEXTURE, const ImageOptions & OPTIONS)
     {
         auto const INDEX { FindNextAvailableIndex() };
         auto & textureUPtr { textureUPtrs_[INDEX] };
@@ -583,7 +573,7 @@ namespace sfml_util
             *textureUPtr = TEXTURE;
         }
 
-        ApplyOptions(*textureUPtr, OPTIONS);
+        OPTIONS.Apply(*textureUPtr);
         UpdateCountAndSizeTracker(TEXTURE);
         return INDEX;
     }
@@ -638,26 +628,6 @@ namespace sfml_util
         }
     }
 
-    void TextureCache::ApplyOptions(sf::Texture & texture, const TextureOpt::Enum OPTIONS) const
-    {
-        texture.setSmooth(OPTIONS & TextureOpt::Smooth);
-
-        if (OPTIONS & TextureOpt::Invert)
-        {
-            sfml_util::Invert(texture);
-        }
-
-        if (OPTIONS & TextureOpt::FlipHoriz)
-        {
-            sfml_util::FlipHoriz(texture);
-        }
-
-        if (OPTIONS & TextureOpt::FlipVert)
-        {
-            sfml_util::FlipVert(texture);
-        }
-    }
-
     void TextureCache::DumpCacheToLog(const LogDumpContext CONTEXT) const
     {
         if ((cachedCount_ > 0) || (cachedDataBytes_ > 0) || (pathOptToIndexesMap_.Empty() == false))
@@ -674,8 +644,8 @@ namespace sfml_util
                 std::ostringstream lineSS;
                 lineSS << "\n\t"
                        << misc::filesystem::PathWithDepth(PATHOPTION_TO_INDEXES_PAIR.first.first, 4)
-                       << "\t" << TextureOpt::ToString(PATHOPTION_TO_INDEXES_PAIR.first.second)
-                       << "\t" << PATHOPTION_TO_INDEXES_PAIR.second.ref_count << "\t[";
+                       << "\t" << PATHOPTION_TO_INDEXES_PAIR.first.second << "\t"
+                       << PATHOPTION_TO_INDEXES_PAIR.second.ref_count << "\t[";
 
                 for (auto const INDEX : PATHOPTION_TO_INDEXES_PAIR.second.indexes)
                 {

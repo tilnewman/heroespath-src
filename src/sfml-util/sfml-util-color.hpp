@@ -36,11 +36,40 @@ namespace heroespath
 namespace sfml_util
 {
 
+    // Responsible for wrapping commonly used colors
+    struct Colors
+    {
+        static inline const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE)
+        {
+            return sf::Color(COLOR_VALUE, COLOR_VALUE, COLOR_VALUE, 0);
+        }
+
+        static const sf::Color None;
+        static const sf::Color GrayLight;
+        static const sf::Color GrayLighter;
+        static const sf::Color GrayDark;
+        static const sf::Color GrayDarker;
+        static const sf::Color Orange;
+        static const sf::Color Light;
+        static const sf::Color GoldLight;
+        static const sf::Color Highlight;
+    };
+
     // linux SFML lib does not seem to support outline fonts...
     void SetColor(sf::Text & text, const sf::Color & COLOR);
 
     // return a color between FROM and TO at the given RATIO
     const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO);
+
+    inline bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) == std::tie(R.r, R.g, R.b);
+    }
+
+    inline bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) < std::tie(R.r, R.g, R.b);
+    }
 
 } // namespace sfml_util
 } // namespace heroespath

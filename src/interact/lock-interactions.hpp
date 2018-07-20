@@ -10,7 +10,6 @@
 // lock-interactions.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/handy-types.hpp"
 #include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
@@ -54,7 +53,7 @@ namespace interact
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 
     private:
-        const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
+        const std::vector<std::string> MakeInvalidLockPickCharacterMessages() const;
 
         std::size_t CharacterIndexWhoPrevAttempted() const;
 

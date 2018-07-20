@@ -9,6 +9,8 @@
 //
 // popup-stage-base.hpp
 //
+#include "popup/popup-info.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -16,8 +18,6 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-window.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "popup/popup-info.hpp"
 
 #include <string>
 
@@ -107,9 +107,9 @@ namespace popup
         sfml_util::gui::TextButtonUPtr_t buttonContinueUPtr_;
         sfml_util::gui::TextButtonUPtr_t buttonOkayUPtr_;
         sfml_util::gui::SliderBarUPtr_t sliderbarUPtr_;
-        sf::Texture accentTexture1_;
+        sfml_util::CachedTextureOpt_t accent1CachedTextureOpt_;
         sf::Sprite accentSprite1_;
-        sf::Texture accentTexture2_;
+        sfml_util::CachedTextureOpt_t accent2CachedTextureOpt_;
         sf::Sprite accentSprite2_;
         float sliderbarPosTop_;
         int selection_;
@@ -121,7 +121,7 @@ namespace popup
         sfml_util::GradientRect gradient_;
         float buttonTextHeight_;
         float buttonVertPos_;
-        sf::Texture xSymbolTexture_;
+        sfml_util::CachedTextureOpt_t xSymbolCachedTextureOpt_;
         float keepAliveTimerSec_;
     };
 } // namespace popup

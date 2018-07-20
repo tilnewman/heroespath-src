@@ -10,9 +10,13 @@
 // text-info.hpp
 //  Code regarding the details about drawn text.
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/justified-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-util-color.hpp"
+
+#include <SFML/Graphics/BlendMode.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include <memory>
 #include <string>
@@ -25,11 +29,10 @@ namespace sfml_util
     namespace gui
     {
 
-        // Encapsulates all required information about drawing text except for position.
-        // Note:  Using all default values is not generally safe, and may cause some
-        //       functions to throw exceptions.  To be safe, always provide a non-empty
-        //       TEXT parameter, and a non-null FONT pointer, that will always work with
-        //       all functions.  You can use the IsValid() function to check these conditions.
+        // Responsible for wrapping all information required to draw text except for position.
+        //
+        // Note: A default constructed TextInfo is invalid and cannot be used, or exceptions will be
+        // thrown.  See IsValid().
         class TextInfo
         {
         public:
@@ -51,19 +54,49 @@ namespace sfml_util
                 const sf::Color & COLOR,
                 const Justified::Enum JUSTIFIED);
 
+            // this looks weird but there are many cases where one TextInfo is made very similar to
+            // another
+            TextInfo(
+                const TextInfo & TEXT_INFO_TO_COPY,
+                const std::string & TEXT,
+                const sf::Color & COLOR = sfml_util::Colors::None,
+                const unsigned CHAR_SIZE = 0);
+
+            TextInfo(const TextInfo &) = default;
+            TextInfo(TextInfo &&) = default;
+            TextInfo & operator=(const TextInfo &) = default;
+            TextInfo & operator=(TextInfo &&) = default;
+
             // returns true if there is non-empty text and a non-null font pointer
-            bool IsValid() const { return ((false == text.empty()) && fontPtrOpt); }
+            bool IsValid() const
+            {
+                return ((text.empty() == false) && font_ptr_opt && (char_size != 0));
+            }
+
+            // throws if IsValid()==false
+            void Apply(sf::Text &) const;
+
+            // throws if IsValid()==false
+            const sf::Text Make() const;
+
+            const std::string ToString(
+                const bool WILL_PREFIX = true,
+                const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+                const std::string & SEPARATOR = "/") const;
 
             std::string text;
-            FontPtrOpt_t fontPtrOpt;
-            unsigned int charSize;
+            FontPtrOpt_t font_ptr_opt;
+            unsigned int char_size;
             sf::Color color;
-            sf::BlendMode blendMode;
+            sf::BlendMode blend_mode;
             sf::Uint32 style;
             Justified::Enum justified;
-            bool isOutlineOnly;
-            float outlineThickness;
+            bool is_outline;
+            float outline_thickness;
         };
+
+        using TextInfoOpt_t = boost::optional<TextInfo>;
+        using TextInfoVec_t = std::vector<TextInfo>;
 
         bool operator<(const TextInfo & L, const TextInfo & R);
 
@@ -71,14 +104,15 @@ namespace sfml_util
 
         inline bool operator!=(const TextInfo & L, const TextInfo & R) { return !(L == R); }
 
-        using TextInfoUPtr_t = std::unique_ptr<TextInfo>;
-        using TextInfoVec_t = std::vector<TextInfo>;
-
-        // Helper function used to setup an sf::Text object
-        void SetupText(sf::Text & text, const TextInfo & TEXT_INFO);
-
     } // namespace gui
 } // namespace sfml_util
+
+inline std::ostream & operator<<(std::ostream & os, const sfml_util::gui::TextInfo & TI)
+{
+    os << TI.ToString();
+    return os;
+}
+
 } // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED

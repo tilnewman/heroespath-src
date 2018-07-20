@@ -10,6 +10,7 @@
 // boost-optional-that-throws.hpp
 //
 #include <boost/exception/to_string.hpp>
+#include <cstddef>
 #include <string>
 
 namespace boost
@@ -29,5 +30,16 @@ namespace boost
 #define BOOST_ENABLE_ASSERT_HANDLER
 #include <boost/optional.hpp>
 #undef BOOST_ENABLE_ASSERT_HANDLER
+
+using CharOpt_t = boost::optional<char>;
+using UCharOpt_t = boost::optional<unsigned char>;
+
+using IntOpt_t = boost::optional<int>;
+using UIntOpt_t = boost::optional<unsigned int>;
+
+using SizetOpt_t = boost::optional<std::size_t>;
+
+using FloatOpt_t = boost::optional<float>;
+using DoubleOpt_t = boost::optional<double>;
 
 #endif // HEROESPATH_MISC_BOOST_OPTIONAL_THAT_THROWS_HPP_INCLUDED

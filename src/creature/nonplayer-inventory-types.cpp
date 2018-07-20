@@ -166,8 +166,8 @@ namespace creature
             }
             else if (coverChanceMap.Size() > 1)
             {
-                auto highestChance{ 0.0f };
-                auto highestEnum{ coverChanceMap.begin()->first };
+                auto highestChance { 0.0f };
+                auto highestEnum { coverChanceMap.begin()->first };
                 for (auto const & NEXT_CHANCE_PAIR : coverChanceMap)
                 {
                     if (NEXT_CHANCE_PAIR.second > highestChance)
@@ -331,29 +331,29 @@ namespace creature
 
         wealth_type::Enum wealth_type::FromRankType(const rank_class::Enum RANK_CLASS)
         {
-            auto const RANK_CLASS_STR{ rank_class::ToString(RANK_CLASS) };
+            auto const RANK_CLASS_STR { rank_class::ToString(RANK_CLASS) };
 
             misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
-            auto wealthTypeChanceRemaining{ wealth_type::Count };
+            auto wealthTypeChanceRemaining { wealth_type::Count };
 
             for (std::size_t i(0); i < wealth_type::Count; ++i)
             {
-                auto const NEXT_WEALTH_TYPE{ static_cast<wealth_type::Enum>(i) };
-                auto const NEXT_WEALTH_TYPE_NAME{ wealth_type::ToString(NEXT_WEALTH_TYPE) };
+                auto const NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
+                auto const NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
                 std::ostringstream ss;
                 ss << "heroespath-wealthtype-chance-" << RANK_CLASS_STR << "-"
                    << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
-                auto const NEXT_VALUE_STR{ game::GameDataFile::Instance()->GetCopyStr(ss.str()) };
+                auto const NEXT_VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(ss.str()) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
                     wealthTypeChanceRemaining = NEXT_WEALTH_TYPE;
                 }
 
-                auto nextChanceValue{ 0.0f };
+                auto nextChanceValue { 0.0f };
                 try
                 {
                     nextChanceValue = boost::lexical_cast<float>(NEXT_VALUE_STR);
@@ -367,8 +367,8 @@ namespace creature
                     = ((nextChanceValue > 0.0f) ? (1.0f / nextChanceValue) : (0.0f));
             }
 
-            auto cumulative{ 0.0f };
-            auto const RAND{ misc::random::Float() };
+            auto cumulative { 0.0f };
+            auto const RAND { misc::random::Float() };
             for (auto const & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
             {
                 if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
@@ -413,17 +413,17 @@ namespace creature
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
-            auto const RACE_STR{ race::ToString(CHARACTER_PTR->Race()) };
+            auto const RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
 
-            auto const RACE_KEY{
+            auto const RACE_KEY {
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
                 + RACE_STR
             };
 
-            auto const RACE_COLLECTOR_PARTS_STR{ game::GameDataFile::Instance()->GetCopyStr(
+            auto const RACE_COLLECTOR_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
                 RACE_KEY) };
 
-            misc::StrVec_t racePartsVec;
+            std::vector<std::string> racePartsVec;
             appbase::stringhelp::SplitByChar(
                 RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
 
@@ -439,17 +439,17 @@ namespace creature
             float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
 
             // adjust for roles
-            auto const ROLE_STR{ role::ToString(CHARACTER_PTR->Role()) };
+            auto const ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
-            auto const ROLE_KEY{
+            auto const ROLE_KEY {
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
                 + ROLE_STR
             };
 
-            auto const ROLE_COLLECTOR_PARTS_STR{ game::GameDataFile::Instance()->GetCopyStr(
+            auto const ROLE_COLLECTOR_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
                 ROLE_KEY) };
 
-            misc::StrVec_t rolePartsVec;
+            std::vector<std::string> rolePartsVec;
             appbase::stringhelp::SplitByChar(
                 ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
 
@@ -517,7 +517,7 @@ namespace creature
             }
 
             // determine
-            collector_type::Enum collectorType{ None };
+            collector_type::Enum collectorType { None };
             if (misc::random::Float() < chancePractical)
             {
                 collectorType = static_cast<collector_type::Enum>(collectorType | Practical);
@@ -571,14 +571,14 @@ namespace creature
             {
                 auto const RACE_STR(race::ToString(CHARACTER_PTR->Race()));
 
-                auto const RACE_KEY{
+                auto const RACE_KEY {
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
                 };
 
-                auto const RACE_OWNSMAGIC_PARTS_STR{ game::GameDataFile::Instance()->GetCopyStr(
+                auto const RACE_OWNSMAGIC_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
                     RACE_KEY) };
 
-                misc::StrVec_t racePartsVec;
+                std::vector<std::string> racePartsVec;
                 appbase::stringhelp::SplitByChar(
                     RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
 
@@ -588,9 +588,9 @@ namespace creature
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << RACE_KEY);
 
-                auto const RARELY_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
-                auto const RELIGIOUS_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
-                auto const MAGICAL_RACE_ADJ{ ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
+                auto const RARELY_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
+                auto const RELIGIOUS_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
+                auto const MAGICAL_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
 
                 // Why do these values have to add up to one?
                 // After the role adjustments below the values most definitely don't sum to 1.0...?
@@ -608,21 +608,21 @@ namespace creature
 
             // adjust for role
             {
-                auto const ROLE_STR{ role::ToString(CHARACTER_PTR->Role()) };
+                auto const ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
                 std::ostringstream ss;
                 ss << "heroespath-nonplayer-ownershipprofile-"
                    << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
 
-                auto const ROLE_KEY{
+                auto const ROLE_KEY {
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
                     + ROLE_STR
                 };
 
-                auto const ROLE_OWNSMAGIC_PARTS_STR{ game::GameDataFile::Instance()->GetCopyStr(
+                auto const ROLE_OWNSMAGIC_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
                     ROLE_KEY) };
 
-                misc::StrVec_t rolePartsVec;
+                std::vector<std::string> rolePartsVec;
                 appbase::stringhelp::SplitByChar(
                     ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
 
@@ -730,7 +730,7 @@ namespace creature
 
         complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
-            auto const RACE_COMPLEXITY_STR{ game::GameDataFile::Instance()->GetCopyStr(
+            auto const RACE_COMPLEXITY_STR { game::GameDataFile::Instance()->GetCopyStr(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
                 + race::ToString(CHARACTER_PTR->Race())) };
 

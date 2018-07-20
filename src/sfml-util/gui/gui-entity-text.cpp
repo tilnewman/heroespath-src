@@ -107,7 +107,7 @@ namespace sfml_util
                 entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!MOUSE_TEXT_INFO.up.fontPtrOpt),
+                (!!MOUSE_TEXT_INFO.up.font_ptr_opt),
                 entityName_ << " GuiText::Setup(\"" << TEXT
                             << "\") was given an upTextInfo with a null font pointer.");
 
@@ -121,13 +121,13 @@ namespace sfml_util
             renderedText_.Reset();
 
             TextInfo textInfoChar(MOUSE_TEXT_INFO.up);
-            if ((MouseState::Down == entityMouseState_) && MOUSE_TEXT_INFO.down.fontPtrOpt)
+            if ((MouseState::Down == entityMouseState_) && MOUSE_TEXT_INFO.down.font_ptr_opt)
             {
                 textInfoChar = MOUSE_TEXT_INFO.down;
             }
             else
             {
-                if ((MouseState::Over == entityMouseState_) && MOUSE_TEXT_INFO.over.fontPtrOpt)
+                if ((MouseState::Over == entityMouseState_) && MOUSE_TEXT_INFO.over.font_ptr_opt)
                 {
                     textInfoChar = MOUSE_TEXT_INFO.over;
                 }
@@ -137,18 +137,18 @@ namespace sfml_util
 
             if (NUMBERS_FONT_PTR_OPT)
             {
-                textInfoNum.fontPtrOpt = NUMBERS_FONT_PTR_OPT;
+                textInfoNum.font_ptr_opt = NUMBERS_FONT_PTR_OPT;
                 numberFontPtrOpt_ = NUMBERS_FONT_PTR_OPT;
             }
             else
             {
                 if (numberFontPtrOpt_)
                 {
-                    textInfoNum.fontPtrOpt = numberFontPtrOpt_;
+                    textInfoNum.font_ptr_opt = numberFontPtrOpt_;
                 }
                 else
                 {
-                    textInfoNum.fontPtrOpt
+                    textInfoNum.font_ptr_opt
                         = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
                 }
             }
@@ -189,7 +189,7 @@ namespace sfml_util
 
         void GuiText::SetMouseState(const MouseState::Enum E)
         {
-            const bool WILL_RESET{ E != GetMouseState() };
+            const bool WILL_RESET { E != GetMouseState() };
 
             GuiEntity::SetMouseState(E);
 
@@ -212,7 +212,7 @@ namespace sfml_util
 
         bool GuiText::MouseUp(const sf::Vector2f & MOUSE_POS_V)
         {
-            const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::MouseUp(MOUSE_POS_V) };
+            const bool DID_MOUSE_STATE_CHANGE { GuiEntity::MouseUp(MOUSE_POS_V) };
 
             if (DID_MOUSE_STATE_CHANGE)
             {
@@ -224,7 +224,7 @@ namespace sfml_util
 
         bool GuiText::MouseDown(const sf::Vector2f & MOUSE_POS_V)
         {
-            const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::MouseDown(MOUSE_POS_V) };
+            const bool DID_MOUSE_STATE_CHANGE { GuiEntity::MouseDown(MOUSE_POS_V) };
 
             if (DID_MOUSE_STATE_CHANGE)
             {
@@ -236,7 +236,7 @@ namespace sfml_util
 
         bool GuiText::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
         {
-            const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::UpdateMousePos(MOUSE_POS_V) };
+            const bool DID_MOUSE_STATE_CHANGE { GuiEntity::UpdateMousePos(MOUSE_POS_V) };
 
             if (DID_MOUSE_STATE_CHANGE)
             {

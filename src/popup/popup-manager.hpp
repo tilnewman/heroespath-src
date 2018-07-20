@@ -17,6 +17,7 @@
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
@@ -43,13 +44,11 @@ namespace sfml_util
 namespace creature
 {
     class Creature;
-    using CreaturePtr = misc::NotNull<Creature *>;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace popup
 {
-
-    using PathVec_t = std::vector<boost::filesystem::path>;
 
     // A class that loads, stores, and distributes fonts by style.
     class PopupManager
@@ -222,7 +221,7 @@ namespace popup
             const std::string & TRAP_DESCRIPTION,
             const sfml_util::sound_effect::Enum SOUND_EFFECT) const;
 
-        void LoadRandomAccentImage(sf::Texture &) const;
+        sfml_util::CachedTexture LoadRandomAccentImage() const;
 
         void LoadAccentImagePaths();
 
@@ -232,7 +231,7 @@ namespace popup
         static sf::Color fontColor_;
         static std::unique_ptr<PopupManager> instanceUPtr_;
         //
-        PathVec_t accentPathsVec_;
+        std::vector<boost::filesystem::path> accentPaths_;
     };
 
 } // namespace popup

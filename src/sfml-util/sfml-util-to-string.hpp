@@ -11,6 +11,7 @@
 //
 #include "misc/enum-util.hpp"
 
+#include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -42,6 +43,103 @@ std::ostream & operator<<(std::ostream & os, const sf::Rect<T> & R)
 inline std::ostream & operator<<(std::ostream & os, const sf::VideoMode & VM)
 {
     os << "(" << VM.width << "x" << VM.height << ":" << VM.bitsPerPixel << ")";
+    return os;
+}
+
+inline std::ostream & operator<<(std::ostream & os, const sf::BlendMode & BM)
+{
+    os << "(";
+
+    if (BM == sf::BlendAlpha)
+    {
+        os << "Alpha";
+    }
+    else if (BM == sf::BlendAdd)
+    {
+        os << "Add";
+    }
+    else if (BM == sf::BlendMultiply)
+    {
+        os << "Multiply";
+    }
+    else if (BM == sf::BlendNone)
+    {
+        os << "None";
+    }
+    else
+    {
+        auto factorToString = [](const sf::BlendMode::Factor FACTOR) -> std::string {
+            switch (FACTOR)
+            {
+                case sf::BlendMode::Factor::Zero:
+                {
+                    return "Zero";
+                }
+                case sf::BlendMode::Factor::One:
+                {
+                    return "One";
+                }
+                case sf::BlendMode::Factor::SrcColor:
+                {
+                    return "SrcColor";
+                }
+                case sf::BlendMode::Factor::OneMinusSrcColor:
+                {
+                    return "OneMinusSrcColor";
+                }
+                case sf::BlendMode::Factor::DstColor:
+                {
+                    return "DstColor";
+                }
+                case sf::BlendMode::Factor::OneMinusDstColor:
+                {
+                    return "OneMinusDstColor";
+                }
+                case sf::BlendMode::Factor::SrcAlpha:
+                {
+                    return "SrcAlpha";
+                }
+                case sf::BlendMode::Factor::OneMinusSrcAlpha:
+                {
+                    return "OneMinusSrcAlpha";
+                }
+                case sf::BlendMode::Factor::DstAlpha:
+                {
+                    return "DstAlpha";
+                }
+                default:
+                case sf::BlendMode::Factor::OneMinusDstAlpha:
+                {
+                    return "OneMinusDstAlpha";
+                }
+            }
+        };
+
+        auto equationToString = [](const sf::BlendMode::Equation EQUATION) -> std::string {
+            switch (EQUATION)
+            {
+                case sf::BlendMode::Equation::Add:
+                {
+                    return "Add";
+                }
+                case sf::BlendMode::Equation::Subtract:
+                {
+                    return "Subtract";
+                }
+                default:
+                case sf::BlendMode::Equation::ReverseSubtract:
+                {
+                    return "ReverseSubtract";
+                }
+            }
+        };
+
+        os << factorToString(BM.colorSrcFactor) << "," << factorToString(BM.colorDstFactor) << ","
+           << equationToString(BM.colorEquation) << "," << factorToString(BM.alphaSrcFactor) << ","
+           << factorToString(BM.alphaDstFactor) << "," << equationToString(BM.alphaEquation);
+    }
+
+    os << ")";
     return os;
 }
 
@@ -715,6 +813,14 @@ namespace sfml_util
     {
         std::ostringstream ss;
         ss << ToStringHelper(OPTIONS, "Key") << KEY;
+        return ss.str();
+    }
+
+    inline const std::string ToString(
+        const sf::BlendMode BM, const ToStringPrefix::Enum OPTIONS = ToStringPrefix::Default)
+    {
+        std::ostringstream ss;
+        ss << ToStringHelper(OPTIONS, "BlendMode") << BM;
         return ss.str();
     }
 
