@@ -977,25 +977,6 @@ namespace sfml_util
                 return index;
             }
 
-            void SilentExerciseHack()
-            {
-                if (Empty())
-                {
-                    ResetIndexes();
-                    return;
-                }
-
-                willPreventCallbacks_ = true;
-                MuteAllSfx(true);
-                sf::Event::KeyEvent keyEvent;
-                keyEvent.code = sf::Keyboard::Down;
-                KeyRelease(keyEvent);
-                keyEvent.code = sf::Keyboard::Up;
-                KeyRelease(keyEvent);
-                MuteAllSfx(false);
-                willPreventCallbacks_ = false;
-            }
-
             const_iterator begin() const noexcept { return std::begin(elements_); }
             const_iterator end() const noexcept { return std::end(elements_); }
 
@@ -1197,7 +1178,6 @@ namespace sfml_util
                 willMuteAllSfx_ = false;
                 ResetIndexes();
                 maxVisibleCount_ = MaxVisibleElements();
-                SilentExerciseHack();
                 willPreventCallbacks_ = false;
             }
 

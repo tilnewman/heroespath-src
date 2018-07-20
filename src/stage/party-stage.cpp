@@ -293,7 +293,6 @@ namespace stage
         ResetMouseOverPopupState();
 
         Stage::SetFocus(characterListBoxUPtr_.get());
-        // characterListBoxUPtr_->SilentExerciseHack();
     }
 
     void PartyStage::Setup_Ouroboros() { EntityAdd(ouroborosUPtr_.get()); }

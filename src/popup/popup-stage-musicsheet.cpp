@@ -125,7 +125,6 @@ namespace popup
         SetupPageRightText(CurrentSelectedSong());
 
         SetFocus(listBoxUPtr_.get());
-        // listBoxUPtr_->SilentExerciseHack();
     }
 
     void PopupStageMusicSheet::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)

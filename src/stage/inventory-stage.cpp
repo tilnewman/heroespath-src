@@ -3925,22 +3925,18 @@ namespace stage
         if (itemLeftListBoxUPtr_)
         {
             SetFocus(itemLeftListBoxUPtr_.get());
-            itemLeftListBoxUPtr_->SilentExerciseHack();
         }
         else if (condLeftListBoxUPtr_)
         {
             SetFocus(condLeftListBoxUPtr_.get());
-            condLeftListBoxUPtr_->SilentExerciseHack();
         }
         else if (spellLeftListBoxUPtr_)
         {
             SetFocus(spellLeftListBoxUPtr_.get());
-            spellLeftListBoxUPtr_->SilentExerciseHack();
         }
         else if (titleLeftListBoxUPtr_)
         {
             SetFocus(titleLeftListBoxUPtr_.get());
-            titleLeftListBoxUPtr_->SilentExerciseHack();
         }
     }
 

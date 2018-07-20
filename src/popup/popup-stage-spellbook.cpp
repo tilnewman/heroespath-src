@@ -118,7 +118,6 @@ namespace popup
         SetupPageRightText(CurrentSelectedSpell());
 
         SetFocus(listBoxUPtr_.get());
-        // listBoxUPtr_->SilentExerciseHack();
     }
 
     void PopupStageSpellbook::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)

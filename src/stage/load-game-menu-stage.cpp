@@ -134,7 +134,6 @@ namespace stage
         SetupGameInfoDisplay();
 
         SetFocus(gsListBoxUPtr_.get());
-        // gsListBoxUPtr_->SilentExerciseHack();
     }
 
     void LoadGameStage::SetupGameInfoDisplay()
