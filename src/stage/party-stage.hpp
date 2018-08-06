@@ -8,21 +8,20 @@
 #define HEROESPATH_PARTYSTAGE_HPP_INCLUDED
 //
 // party-stage.hpp
-//  A Stage class that allows grouping of saved characters into a party.
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-shaker-rect.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -54,10 +53,10 @@ namespace stage
     // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::
-              IListBoxCallbackHandler<PartyStage, creature::CreaturePtr_t>
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
-        , public popup::IPopupHandler_t
+        , public sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>::Callback_t::
+              IHandler_t
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::gui::PopupCallback_t::IHandler_t
     {
         using PartyListBox_t = sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>;
         using PartyListBoxUPtr_t = std::unique_ptr<PartyListBox_t>;
@@ -71,16 +70,12 @@ namespace stage
         PartyStage();
         virtual ~PartyStage();
 
-        const std::string HandlerName() const override { return GetStageName(); }
-        bool
-            HandleCallback(const sfml_util::gui::callback::
-                               ListBoxEventPackage<PartyStage, creature::CreaturePtr_t> &) override;
+        bool HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t &) override;
 
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const popup::PopupResponse &) override;
-        bool HandleCallback_BackButton();
+        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
         bool HandleCallback_StartButton();
         bool HandleCallback_DeleteButton();
 
@@ -118,6 +113,9 @@ namespace stage
         void SetupMouseOverPositionsAndDimmensions(const creature::CreaturePtr_t);
         bool DeleteCharacterIfSelected(PartyListBox_t &);
 
+        const sfml_util::gui::MouseImageInfo MakeMouseImageInfoForMenuButton(
+            const std::string & IMAGE_PATH_KEY_UP, const std::string & IMAGE_PATH_KEY_OVER);
+
     private:
         static const std::string POPUP_NAME_STR_NOT_ENOUGH_CHARS_;
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
@@ -127,7 +125,7 @@ namespace stage
         static const float MOUSEOVER_SLIDER_SPEED_;
         static const float MOUSEOVER_BACKGROUND_FINAL_ALPHA_;
         //
-        const sfml_util::Font::Enum LISTBOX_FONT_ENUM_;
+        const sfml_util::GuiFont::Enum LISTBOX_FONT_ENUM_;
         const unsigned LISTBOX_FONT_SIZE_;
         const float LISTBOX_WIDTH_;
         const float LISTBOX_HEIGHT_;
@@ -141,12 +139,14 @@ namespace stage
         const sf::Color MOUSEOVER_COLORCYCLE_ALT_;
         const float MOUSEOVER_COLORCYCLE_SPEED_;
         const std::size_t MOUSEOVER_COLORCYCLE_COUNT_;
-        sfml_util::gui::box::Info listBoxInfo_;
+        sfml_util::BottomSymbol bottomSymbol_;
+
+        sfml_util::gui::BoxEntityInfo listBoxInfo_;
         sfml_util::StageTitle stageTitle_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
-        sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t startButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t deleteButtonUPtr_;
+        sfml_util::gui::BoxEntity backgroundBox_;
+        sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t startButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t deleteButtonUPtr_;
         PartyListBoxUPtr_t characterListBoxUPtr_;
         PartyListBoxUPtr_t partyListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
@@ -156,7 +156,6 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t warningTextRegionUPtr_;
         sfml_util::sliders::Slider<sf::Uint8, float> warningTextSlider_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        sfml_util::BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
         creature::CreaturePVec_t unplayedCharactersPVec_;
         sfml_util::ColorShakerRect colorShakerRect_;

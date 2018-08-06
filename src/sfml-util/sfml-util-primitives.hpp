@@ -9,45 +9,24 @@
 //
 // sfml-util-primitives.hpp
 //
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    template <typename Region_t, typename Thickness_t = float>
-    void DrawRectangle(
-        sf::RenderTarget & target,
-        const sf::RenderStates & STATES,
-        const sf::Rect<Region_t> REGION,
+    // the line thickness grows inside/within the REGION
+    const sf::RectangleShape MakeRectangle(
+        const sf::FloatRect & REGION,
         const sf::Color & LINE_COLOR = sf::Color::White,
-        const Thickness_t LINE_THICKNESS = Thickness_t(1),
-        const sf::Color & FILL_COLOR = sf::Color::Transparent)
-    {
-        sf::RectangleShape rs;
-        rs.setPosition(sf::Vector2f(Position<Region_t>(REGION)));
-        rs.setSize(sf::Vector2f(Size<Region_t>(REGION)));
-        rs.setFillColor(FILL_COLOR);
-        rs.setOutlineColor(LINE_COLOR);
-        rs.setOutlineThickness(static_cast<float>(LINE_THICKNESS));
-        target.draw(rs, STATES);
-    }
+        const float LINE_THICKNESS = 1.0f,
+        const sf::Color & FILL_COLOR = sf::Color::Transparent);
 
-    void DrawRectangleWithLineVerts(
-        const sf::FloatRect & RECT, const sf::Color & COLOR, std::vector<sf::Vertex> & verts);
-
-    void DrawQuad(
-        const sf::FloatRect & RECT,
-        const sf::Color & COLOR_LEFT,
-        const sf::Color & COLOR_RIGHT,
-        std::vector<sf::Vertex> & verts);
+    const sf::RectangleShape
+        MakeRectangleSolid(const sf::FloatRect & REGION, const sf::Color & COLOR);
 
 } // namespace sfml_util
 } // namespace heroespath

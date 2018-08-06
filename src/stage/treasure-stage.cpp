@@ -34,11 +34,10 @@
 #include "popup/popup-stage-combat-over.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/list-element.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
 #include "stage/treasure-display-stage.hpp"
 
 #include <algorithm>
@@ -86,12 +85,12 @@ namespace stage
     TreasureStage::TreasureStage()
         : Stage(
               "Treasure",
-              { sfml_util::Font::Default,
-                sfml_util::Font::System,
-                sfml_util::Font::SystemCondensed,
-                sfml_util::Font::Number,
-                sfml_util::Font::DefaultBoldFlavor,
-                sfml_util::Font::Handwriting },
+              { sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::DefaultBoldFlavor,
+                sfml_util::GuiFont::Handwriting },
               true)
         , displayStagePtr_(new TreasureDisplayStage(this))
         , treasureImageType_(item::TreasureImage::Count)
@@ -114,24 +113,25 @@ namespace stage
         Stage::ClearAllEntities();
     }
 
-    bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
+    bool TreasureStage::HandleCallback(
+        const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_TREASURE_)
+        if (PACKET_PTR->Name() == POPUP_NAME_NO_TREASURE_)
         {
             TransitionToAdventureStage();
             return false;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_WORN_ONLY_)
+        if (PACKET_PTR->Name() == POPUP_NAME_WORN_ONLY_)
         {
             SetupForCollection();
             return true;
         }
 
-        if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_)
-            || (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
+        if ((PACKET_PTR->Name() == POPUP_NAME_LOCKBOX_ONLY_)
+            || (PACKET_PTR->Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes)
+            if (PACKET_PTR->Response() == popup::ResponseTypes::Yes)
             {
                 lockPicking_.PopupCharacterSelection(this);
                 return false;
@@ -143,11 +143,11 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
+            if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
             {
-                if (lockPicking_.HandleCharacterSelectionPopupResponse(this, POPUP_RESPONSE))
+                if (lockPicking_.HandleCharacterSelectionPopupResponse(this, PACKET_PTR))
                 {
                     return false;
                 }
@@ -176,13 +176,13 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
+        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
         {
             SetupForCollectionWithoutLockbox();
             return true;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             if (lockPicking_.Attempt())
             {
@@ -196,8 +196,8 @@ namespace stage
             return false;
         }
 
-        if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_FAILURE_)
-            || (POPUP_RESPONSE.Info().Name() == POPUP_NAME_DAMAGE_REPORT_))
+        if ((PACKET_PTR->Name() == POPUP_NAME_LOCK_PICK_FAILURE_)
+            || (PACKET_PTR->Name() == POPUP_NAME_DAMAGE_REPORT_))
         {
             if (PromptPlayerWithDamagePopups() == DamagePopup::Displayed)
             {
@@ -214,7 +214,7 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_SUCCESS_)
+        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_SUCCESS_)
         {
             displayStagePtr_->UpdateTreasureImage(treasureImageType_);
 
@@ -243,7 +243,7 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COIN_SHARE_)
+        if (PACKET_PTR->Name() == POPUP_NAME_COIN_SHARE_)
         {
             if (ShareAndShowPopupIfNeeded(ShareType::Gems))
             {
@@ -263,7 +263,7 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_GEM_SHARE_)
+        if (PACKET_PTR->Name() == POPUP_NAME_GEM_SHARE_)
         {
             if (ProcessLockpickTitleAndPopupIfNeeded())
             {
@@ -276,13 +276,13 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             SetupForCollection();
             return true;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEM_TAKE_REJECTION_)
+        if (PACKET_PTR->Name() == POPUP_NAME_ITEM_TAKE_REJECTION_)
         {
             displayStagePtr_->CanDisplayItemDetail(true);
             return true;
@@ -368,18 +368,18 @@ namespace stage
     bool TreasureStage::HandleListboxCallback(
         const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
         const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-        const ItemListBoxEventPackage_t & PACKAGE)
+        const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
-            || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+        if ((PACKET_PTR->gui_event == sfml_util::GuiEvent::DoubleClick)
+            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
         {
-            auto const ITEM_PTR { PACKAGE.package.PTR_->Selection()->Element() };
+            auto const ITEM_PTR { PACKET_PTR->selected_element_ptr->Element() };
 
-            if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR.Ptr())
+            if (PACKET_PTR->listbox_ptr == TREASURE_LISTBOX_PTR.Ptr())
             {
                 TakeItem(ITEM_PTR);
             }
-            else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR.Ptr())
+            else if (PACKET_PTR->listbox_ptr == INVENTORY_LISTBOX_PTR.Ptr())
             {
                 PutItemBack(ITEM_PTR);
             }

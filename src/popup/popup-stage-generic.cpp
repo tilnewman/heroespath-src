@@ -27,5 +27,6 @@ namespace popup
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
     }
+
 } // namespace popup
 } // namespace heroespath

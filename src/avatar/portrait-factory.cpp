@@ -13,12 +13,18 @@
 #include "avatar/lpc-view.hpp"
 #include "sfml-util/loaders.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+
 namespace heroespath
 {
 namespace avatar
 {
 
-    void PortraitFactory::Make(const Avatar::Enum WHICH_AVATAR, sf::Texture & finalTexture)
+    sfml_util::CachedTexture PortraitFactory::Make(
+        const std::string & FAKE_PATH_STR,
+        const Avatar::Enum WHICH_AVATAR,
+        const sfml_util::ImageOptions & OPTIONS)
     {
         sf::Texture texture;
         sfml_util::Loaders::Texture(texture, Avatar::ImagePath(WHICH_AVATAR));
@@ -35,19 +41,10 @@ namespace avatar
         renderTexture.draw(sprite);
         renderTexture.display();
 
-        finalTexture = renderTexture.getTexture();
-    }
-
-    sfml_util::CachedTexture PortraitFactory::Make(
-        const std::string & FAKE_PATH_STR,
-        const Avatar::Enum WHICH_AVATAR,
-        const sfml_util::ImageOptions & OPTIONS)
-    {
-        sf::Texture texture;
-        Make(WHICH_AVATAR, texture);
-
         return sfml_util::CachedTexture(
-            "TextureCreatedBy_avatar::PortraitFactory::Make()_" + FAKE_PATH_STR, texture, OPTIONS);
+            "TextureCreatedBy_avatar::PortraitFactory::Make()_" + FAKE_PATH_STR,
+            renderTexture.getTexture(),
+            OPTIONS);
     }
 
 } // namespace avatar

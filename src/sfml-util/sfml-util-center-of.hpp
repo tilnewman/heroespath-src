@@ -12,8 +12,11 @@
 #include "sfml-util/sfml-util-position.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Vector2.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -42,16 +45,13 @@ namespace sfml_util
     }
 
     // returns the center of S (global), same as Center(S.getGlobalBounds())
-    inline const sf::Vector2f CenterOf(const sf::Sprite & S)
-    {
-        return CenterOf(S.getGlobalBounds());
-    }
+    const sf::Vector2f CenterOf(const sf::Sprite & S);
 
     // returns the horizontal center of S (global)
-    inline float CenterOfHoriz(const sf::Sprite & S) { return CenterOfHoriz(S.getGlobalBounds()); }
+    float CenterOfHoriz(const sf::Sprite & S);
 
     // returns the vertical center of S (global)
-    inline float CenterOfVert(const sf::Sprite & S) { return CenterOfVert(S.getGlobalBounds()); }
+    float CenterOfVert(const sf::Sprite & S);
 
 } // namespace sfml_util
 } // namespace heroespath

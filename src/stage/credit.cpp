@@ -15,7 +15,7 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 
 namespace heroespath
 {
@@ -29,7 +29,7 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Text)
-        , cachedTextureOpt_(boost::none)
+        , cachedTextureOpt_()
         , sprite_()
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
@@ -37,7 +37,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_);
@@ -53,7 +53,7 @@ namespace stage
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Anim)
-        , cachedTextureOpt_(boost::none)
+        , cachedTextureOpt_()
         , sprite_()
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
@@ -61,7 +61,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -87,7 +87,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -97,7 +97,7 @@ namespace stage
     Credit::Credit(
         sf::FloatRect & trackingRect,
         const std::string & TITLE_TEXT,
-        const sfml_util::FontPtr_t FONT_PTR,
+        const FontPtr_t FONT_PTR,
         const std::string & CONTENT_TEXT)
         : titleTextUPtr_()
         , contentTextUPtr_()
@@ -120,7 +120,7 @@ namespace stage
     void Credit::Setup(
         sf::FloatRect & trackingRect,
         const std::string & TITLE_TEXT,
-        const sfml_util::FontPtr_t TITLE_FONT_PTR,
+        const FontPtr_t TITLE_FONT_PTR,
         const unsigned int TITLE_FONT_SIZE,
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
@@ -189,7 +189,7 @@ namespace stage
 
         sfml_util::gui::TextInfo textInfoContent(
             CONTENT_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);

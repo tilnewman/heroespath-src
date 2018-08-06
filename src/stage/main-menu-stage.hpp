@@ -8,16 +8,12 @@
 #define HEROESPATH_MAINMENUSTAGE_HPP_INCLUDED
 //
 // credits-stage.hpp
-//  A Stage class that displays the rolling credits of the app.
 //
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/gradient.hpp"
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
 #include <memory>
@@ -32,7 +28,7 @@ namespace stage
     // Resume Game, Create Characters, Settings, Credits, Exit
     class MainMenuStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
         MainMenuStage(const MainMenuStage &) = delete;
@@ -40,25 +36,22 @@ namespace stage
         MainMenuStage & operator=(const MainMenuStage &) = delete;
         MainMenuStage & operator=(MainMenuStage &&) = delete;
 
-    public:
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        const std::string HandlerName() const override { return GetStageName(); }
-
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        {
+            return false;
+        }
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        const float BUTTON_SCALE_;
-        //
         sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
-        sfml_util::GradientRect gradient_;
         sfml_util::gui::MainMenuButtonUPtr_t resumeButtonUPtr_;
         sfml_util::gui::MainMenuButtonUPtr_t createButtonUPtr_;
         sfml_util::gui::MainMenuButtonUPtr_t settingsButtonUPtr_;
@@ -66,7 +59,7 @@ namespace stage
         sfml_util::gui::MainMenuButtonUPtr_t exitButtonUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
+        sfml_util::gui::BoxEntityUPtr_t backgroundImageUPtr_;
     };
 
 } // namespace stage

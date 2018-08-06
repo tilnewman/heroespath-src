@@ -14,9 +14,11 @@
 #include "sfml-util/sfml-util-display.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Vector2.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -87,17 +89,11 @@ namespace sfml_util
         Center(r, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // returns the position that would center something of size T.getSize() on the screen
-    inline const sf::Vector2f Center(const sf::Texture & T) { return CenterCopy(T.getSize()); }
-
     // returns the position that would center s to the center of the screen (global)
-    inline const sf::Vector2f CenterCopy(const sf::Sprite & S)
-    {
-        return CenterCopy(S.getGlobalBounds().width, S.getGlobalBounds().height);
-    }
+    const sf::Vector2f CenterCopy(const sf::Sprite & S);
 
     // changes s's position so that it is centered on the screen (global)
-    inline void Center(sf::Sprite & s) { s.setPosition(CenterCopy(s)); }
+    void Center(sf::Sprite & s);
 
     // returns the horizontal screen position that would center something of WIDTH
     template <

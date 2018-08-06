@@ -8,38 +8,45 @@
 #define HEROESPATH_POPUP_POPUPRESPONSE_HPP_INCLUDED
 //
 // popup-response.hpp
-//  Encapsulates everything about a popup window's result with a response from the user
 //
-#include "popup/popup-info.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "popup/popup-response-enum.hpp"
+
+#include <string>
 
 namespace heroespath
 {
 namespace popup
 {
 
-    // encapsulates everything about a popup window's response
+    // Responsible for wrapping everything about the player's response to a popup
     class PopupResponse
     {
     public:
         PopupResponse(
-            const PopupInfo & POPUP_INFO,
+            const std::string & POPUP_NAME,
             const ResponseTypes::Enum RESPONSE,
-            const std::size_t SELECTION)
-            : info_(POPUP_INFO)
+            const SizetOpt_t SELECTION_OPT)
+            : name_(POPUP_NAME)
             , response_(RESPONSE)
-            , selection_(SELECTION)
+            , selectionOpt_(SELECTION_OPT)
         {}
 
-        const PopupInfo Info() const { return info_; }
+        PopupResponse(const PopupResponse &) = default;
+        PopupResponse(PopupResponse &&) = default;
+        PopupResponse & operator=(const PopupResponse &) = default;
+        PopupResponse & operator=(PopupResponse &&) = default;
+
+        const std::string Name() const { return name_; }
         ResponseTypes::Enum Response() const { return response_; }
-        std::size_t Selection() const { return selection_; }
+        SizetOpt_t SelectionOpt() const { return selectionOpt_; }
 
     private:
-        PopupInfo info_;
+        std::string name_;
         ResponseTypes::Enum response_;
-        std::size_t selection_;
+        SizetOpt_t selectionOpt_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

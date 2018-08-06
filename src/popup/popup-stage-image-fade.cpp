@@ -11,6 +11,12 @@
 //
 #include "popup-stage-image-fade.hpp"
 
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+
 #include <algorithm>
 
 namespace heroespath
@@ -22,8 +28,6 @@ namespace popup
 
     PopupStageImageFade::PopupStageImageFade(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
-        , textureCurr_()
-        , texturePrev_()
         , spriteCurr_()
         , spritePrev_()
         , beforeFadeTimerSec_(0.0f)
@@ -40,9 +44,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo TITLE_TEXTINFO(
             popupInfo_.TitleText(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sf::BlendAlpha,
             sf::Text::Bold,
             sfml_util::Justified::Center);
@@ -55,9 +59,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo DESC_TEXTINFO(
             popupInfo_.DescText(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Center);
 
         auto descRegion { textRegion_ };
@@ -72,55 +76,41 @@ namespace popup
             descTextRegionUPtr_->GetEntityPos().x,
             (textRegion_.top + textRegion_.height) - descRegion.height);
 
-        auto const IMAGE_PAD { sfml_util::MapByRes(15.0f, 35.0f) };
+        auto const IMAGE_PAD_VERT { sfml_util::ScreenRatioToPixelsVert(0.0167f) };
 
-        auto const IMAGE_TOP { textRegionUPtr_->GetEntityRegion().top
-                               + textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD };
+        const sf::FloatRect IMAGE_REGION = [&]() {
+            auto const IMAGE_TOP { sfml_util::Bottom(textRegionUPtr_->GetEntityRegion())
+                                   + IMAGE_PAD_VERT };
 
-        auto const FREE_SPACE_VERT { descTextRegionUPtr_->GetEntityPos().y
-                                     - (IMAGE_TOP + IMAGE_PAD) };
-        auto const FREE_SPACE_HORIZ { textRegion_.width };
-        auto const IMAGE_MAX_DIMM { sfml_util::MapByRes(110.0f, 750.0f) };
-        auto const IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
-        auto const IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, FREE_SPACE_VERT) };
+            auto const MAX_HEIGHT { descTextRegionUPtr_->GetEntityPos().y
+                                    - (IMAGE_TOP + IMAGE_PAD_VERT) };
+
+            auto const IMAGE_MAX_DIMM { sfml_util::ScreenRatioToPixelsHoriz(0.086f) };
+
+            auto const IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, textRegion_.width) };
+            auto const IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
+
+            return sf::FloatRect(textRegion_.left, IMAGE_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }();
 
         descTextRegionUPtr_->SetEntityPos(
-            descTextRegionUPtr_->GetEntityPos().x, IMAGE_TOP + IMAGE_HEIGHT + IMAGE_PAD);
+            descTextRegionUPtr_->GetEntityPos().x,
+            sfml_util::Bottom(IMAGE_REGION) + IMAGE_PAD_VERT);
 
         if (popupInfo_.ImagesCount() == 1)
         {
-            spriteCurr_.setTexture(popupInfo_.ImagesAt(0), true);
+            spriteCurr_.setTexture(popupInfo_.ImagesAt(0).Get(), true);
         }
         else
         {
-            spritePrev_.setTexture(popupInfo_.ImagesAt(0), true);
-            spriteCurr_.setTexture(popupInfo_.ImagesAt(1), true);
+            spritePrev_.setTexture(popupInfo_.ImagesAt(0).Get(), true);
+            spriteCurr_.setTexture(popupInfo_.ImagesAt(1).Get(), true);
         }
 
-        // scale the image to fit in the free space
-        // assume popupInfo_.ImagesAt(0) and popupInfo_.ImagesAt(1) are the same size
         spritePrev_.setScale(1.0f, 1.0f);
         spriteCurr_.setScale(1.0f, 1.0f);
-        auto SCALE_VERT { IMAGE_HEIGHT / spriteCurr_.getGlobalBounds().height };
-        spritePrev_.setScale(SCALE_VERT, SCALE_VERT);
-        spriteCurr_.setScale(SCALE_VERT, SCALE_VERT);
-
-        if (spriteCurr_.getGlobalBounds().width > FREE_SPACE_HORIZ)
-        {
-            auto const SCALE_HORIZ { IMAGE_WIDTH / spriteCurr_.getGlobalBounds().width };
-            spritePrev_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-            spriteCurr_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-        }
-
-        spritePrev_.setPosition(
-            (textRegion_.left + (textRegion_.width * 0.5f))
-                - (spritePrev_.getGlobalBounds().width * 0.5f),
-            (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) - (spritePrev_.getGlobalBounds().height * 0.5f));
-
-        spriteCurr_.setPosition(
-            (textRegion_.left + (textRegion_.width * 0.5f))
-                - (spriteCurr_.getGlobalBounds().width * 0.5f),
-            (IMAGE_TOP + (IMAGE_HEIGHT * 0.5f)) - (spriteCurr_.getGlobalBounds().height * 0.5f));
+        sfml_util::FitAndCenterTo(spritePrev_, IMAGE_REGION);
+        sfml_util::FitAndCenterTo(spriteCurr_, IMAGE_REGION);
 
         spriteCurr_.setColor(sf::Color(255, 255, 255, 0));
     }
@@ -129,7 +119,7 @@ namespace popup
     {
         PopupStageBase::Draw(target, STATES);
 
-        if (popupInfo_.Images().size() > 1)
+        if (popupInfo_.ImagesCount() > 1)
         {
             target.draw(spritePrev_, STATES);
         }
@@ -175,5 +165,6 @@ namespace popup
         fadeAlpha_ = 256.0f; // anything greater than 255.0f will work here
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
+
 } // namespace popup
 } // namespace heroespath

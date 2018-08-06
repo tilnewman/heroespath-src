@@ -13,8 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 
@@ -34,20 +33,13 @@ namespace interact
         : interactionType_(INTERACTION_TYPE)
         , text_(TEXT)
         , buttons_(BUTTONS)
-        , subjectTexture_()
-        , contextTexture_()
+        , subjectCachedTexture_(SUBJECT_IMAGE_KEY)
+        , contextCachedTexture_(Interact::ImageKey(INTERACTION_TYPE))
         , sfxEnter_(SFX_ENTER)
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)
         , npcSprite_(NPC_SPRITE)
-    {
-        sfml_util::Loaders::Texture(
-            subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
-
-        sfml_util::Loaders::Texture(
-            contextTexture_,
-            game::GameDataFile::Instance()->GetMediaPath(Interact::ImageKey(INTERACTION_TYPE)));
-    }
+    {}
 
     void InteractionBase::PlayEnterSfx() const
     {
@@ -72,7 +64,7 @@ namespace interact
             ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::Colors::GrayDark,
+            sfml_util::defaults::GrayDark,
             sfml_util::Justified::Left);
     }
 

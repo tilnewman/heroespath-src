@@ -13,10 +13,35 @@
 #include "log/logger.hpp"
 #include "log/macros.hpp"
 #include "misc/platform.hpp"
+#include "misc/random.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-angles.hpp"
+#include "sfml-util/sfml-util-blend-mode.hpp"
+#include "sfml-util/sfml-util-center-of.hpp"
+#include "sfml-util/sfml-util-center-to.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-direction.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-distance.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-font.hpp"
+#include "sfml-util/sfml-util-image-manip.hpp"
+#include "sfml-util/sfml-util-keyboard.hpp"
+#include "sfml-util/sfml-util-overlap.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
+#include "sfml-util/sfml-util-rectangle-shape.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/sfml-util-sprite-texture.hpp"
+#include "sfml-util/sfml-util-vector-math.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfml-util/sfml-util-vertex.hpp"
+#include "sfml-util/sfml-util-video-mode.hpp"
 
+#include <iostream>
 #include <limits>
+#include <vector>
 
 #include "Test-stuff.hpp"
 
@@ -26,9 +51,628 @@ using namespace heroespath::misc;
 
 using heroespath::misc::IsRealClose;
 
+BOOST_AUTO_TEST_CASE(Vertex_Tests)
+{
+    const sf::Vector2f V0(0.0f, 0.0f);
+    const sf::Vector2f V1(1.0f, 1.0f);
+    const sf::Vector2f VN1(-1.0f, -1.0f);
+    const sf::Color CT(sf::Color::Transparent);
+    const sf::Vertex VX0(V0, CT, V0);
+    const sf::Vertex VX1(V1, CT, V1);
+
+    BOOST_CHECK(VX0 == VX0);
+    BOOST_CHECK((VX0 != VX0) == false);
+    BOOST_CHECK(VX0 != VX1);
+    BOOST_CHECK((VX0 == VX1) == false);
+
+    BOOST_CHECK(VX0 < VX1);
+    BOOST_CHECK((VX1 < VX0) == false);
+    BOOST_CHECK((VX0 < VX0) == false);
+
+    const sf::VertexArray VA_Q_E(sf::PrimitiveType::Quads);
+    BOOST_CHECK(VA_Q_E == VA_Q_E);
+    BOOST_CHECK((VA_Q_E != VA_Q_E) == false);
+    BOOST_CHECK((VA_Q_E < VA_Q_E) == false);
+
+    BOOST_CHECK(VA_Q_E.getBounds() == sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f));
+
+    const sf::VertexArray VA_L_E(sf::PrimitiveType::Lines);
+    BOOST_CHECK(VA_Q_E != VA_L_E);
+    BOOST_CHECK((VA_Q_E == VA_L_E) == false);
+    BOOST_CHECK(VA_L_E < VA_Q_E);
+    BOOST_CHECK((VA_Q_E < VA_L_E) == false);
+
+    auto makeVertexArray = [&](const sf::PrimitiveType PRIMITIVE_TYPE,
+                               const sf::Vector2f & V,
+                               const std::size_t SIZE) {
+        sf::VertexArray vertexArray(PRIMITIVE_TYPE, SIZE);
+        for (std::size_t i(0); i < SIZE; ++i)
+        {
+            vertexArray[i] = sf::Vertex(V, CT, V);
+        }
+        return vertexArray;
+    };
+
+    const sf::VertexArray VA_Q_0_10(makeVertexArray(sf::PrimitiveType::Quads, V0, 10));
+
+    BOOST_CHECK(VA_Q_E < VA_Q_0_10);
+    BOOST_CHECK(VA_Q_E != VA_Q_0_10);
+    BOOST_CHECK(VA_L_E < VA_Q_0_10);
+    BOOST_CHECK(VA_L_E != VA_Q_0_10);
+
+    const sf::VertexArray VA_Q_0_11(makeVertexArray(sf::PrimitiveType::Quads, V0, 11));
+
+    BOOST_CHECK(VA_Q_0_10 != VA_Q_0_11);
+    BOOST_CHECK(VA_Q_0_10 < VA_Q_0_11);
+
+    const sf::VertexArray VA_L_0_10(makeVertexArray(sf::PrimitiveType::Lines, V0, 10));
+
+    BOOST_CHECK(VA_L_0_10 != VA_Q_0_10);
+    BOOST_CHECK(VA_L_0_10 < VA_Q_0_10);
+
+    const sf::VertexArray VA_Q_1_10(makeVertexArray(sf::PrimitiveType::Quads, V1, 10));
+
+    BOOST_CHECK(VA_Q_0_10 != VA_Q_1_10);
+    BOOST_CHECK(VA_Q_0_10 < VA_Q_1_10);
+
+    //
+
+    BOOST_CHECK(CreateVector(Orientation::Horiz, 0.0f, 1.0f) == sf::Vector2f(0.0f, 1.0f));
+    BOOST_CHECK(CreateVector(Orientation::Vert, 0.0f, 1.0f) == sf::Vector2f(1.0f, 0.0f));
+    BOOST_CHECK(CreateVector(Orientation::Both, 0.0f, 1.0f) == sf::Vector2f(0.0f, 0.0f));
+    BOOST_CHECK(CreateVector(Orientation::Count, 0.0f, 1.0f) == sf::Vector2f(1.0f, 1.0f));
+
+    //
+
+    {
+        const sf::Vector2i TEST_V_I(123, 456);
+        BOOST_CHECK(ChangeVectorCopy(TEST_V_I, Orientation::Horiz, 789) == sf::Vector2i(789, 456));
+        BOOST_CHECK(ChangeVectorCopy(TEST_V_I, Orientation::Vert, 789) == sf::Vector2i(123, 789));
+        BOOST_CHECK(ChangeVectorCopy(TEST_V_I, Orientation::Both, 789) == sf::Vector2i(789, 789));
+        BOOST_CHECK(ChangeVectorCopy(TEST_V_I, Orientation::Count, 789) == TEST_V_I);
+    }
+
+    //
+
+    const sf::Vector2f POS_10_V { 10.0f, 10.0f };
+    const sf::Vector2f SIZE_10_V { 10.0f, 10.0f };
+    const sf::Vector2f SIZE_20_V { 20.0f, 20.0f };
+    const sf::FloatRect RECT_10 { 10.0f, 10.0f, 10.0f, 10.0f };
+    const std::vector<sf::Vector2f> POS_VEC_10_10 {
+        { 10.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 20.0f }, { 10.0f, 20.0f }
+    };
+    const std::vector<sf::Vector2f> POS_VEC_EMPTY;
+
+    for (heroespath::misc::EnumUnderlying_t i(0); i <= Orientation::Count; ++i)
+    {
+        const Orientation::Enum ORIENTATION { i };
+
+        BOOST_CHECK(MakeQuadVertexPositions(POS_10_V, SIZE_10_V, V0, ORIENTATION) == POS_VEC_10_10);
+
+        BOOST_CHECK(MakeQuadVertexPositions(POS_10_V, SIZE_10_V, VN1, ORIENTATION).empty());
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(POS_10_V, SIZE_10_V, SIZE_10_V, ORIENTATION) == POS_VEC_10_10);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(POS_10_V, SIZE_10_V, SIZE_20_V, ORIENTATION) == POS_VEC_10_10);
+    }
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, SIZE_10_V, Orientation::Count)
+        == POS_VEC_10_10);
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, SIZE_20_V, Orientation::Count)
+        == POS_VEC_10_10);
+
+    {
+        const std::vector<sf::Vector2f> POS_VEC_10_10_LIMIT_0_1 {
+            { 10.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 11.0f }, { 10.0f, 11.0f }
+        };
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(0.0f, 1.0f), Orientation::Count)
+            == POS_VEC_10_10_LIMIT_0_1);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(999.0f, 1.0f), Orientation::Count)
+            == POS_VEC_10_10_LIMIT_0_1);
+    }
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(0.0f, 10.0f), Orientation::Horiz)
+        == POS_VEC_10_10);
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(0.0f, 999.0f), Orientation::Horiz)
+        == POS_VEC_10_10);
+
+    {
+        const std::vector<sf::Vector2f> POS_VEC_10_10_LIMIT_1_0 {
+            { 10.0f, 10.0f }, { 11.0f, 10.0f }, { 11.0f, 20.0f }, { 10.0f, 20.0f }
+        };
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(1.0f, 0.0f), Orientation::Count)
+            == POS_VEC_10_10_LIMIT_1_0);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(1.0f, 999.0f), Orientation::Count)
+            == POS_VEC_10_10_LIMIT_1_0);
+    }
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(10.0f, 0.0f), Orientation::Vert)
+        == POS_VEC_10_10);
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(999.0f, 0.0f), Orientation::Vert)
+        == POS_VEC_10_10);
+
+    //
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(2.0f, 3.0f), Orientation::Count)
+        == (std::vector<sf::Vector2f> {
+               { 10.0f, 10.0f }, { 12.0f, 10.0f }, { 12.0f, 13.0f }, { 10.0f, 13.0f } }));
+
+    {
+        const std::vector<sf::Vector2f> POS_VEC_10_10_LIMIT_E4_0 {
+            { 16.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 20.0f }, { 16.0f, 20.0f }
+        };
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 0.0f), Orientation::Horiz)
+            == POS_VEC_10_10_LIMIT_E4_0);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 0.0f), Orientation::Both)
+            == POS_VEC_10_10_LIMIT_E4_0);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 999.0f), Orientation::Horiz)
+            == POS_VEC_10_10_LIMIT_E4_0);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 999.0f), Orientation::Both)
+            == POS_VEC_10_10_LIMIT_E4_0);
+    }
+
+    {
+        const std::vector<sf::Vector2f> POS_VEC_10_10_LIMIT_0_E4 {
+            { 10.0f, 16.0f }, { 20.0f, 16.0f }, { 20.0f, 20.0f }, { 10.0f, 20.0f }
+        };
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(0.0f, 4.0f), Orientation::Vert)
+            == POS_VEC_10_10_LIMIT_0_E4);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(0.0f, 4.0f), Orientation::Both)
+            == POS_VEC_10_10_LIMIT_0_E4);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(999.0f, 4.0f), Orientation::Vert)
+            == POS_VEC_10_10_LIMIT_0_E4);
+
+        BOOST_CHECK(
+            MakeQuadVertexPositions(
+                POS_10_V, SIZE_10_V, sf::Vector2f(999.0f, 4.0f), Orientation::Both)
+            == POS_VEC_10_10_LIMIT_0_E4);
+    }
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Horiz)
+        == (std::vector<sf::Vector2f> {
+               { 16.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 16.0f }, { 16.0f, 16.0f } }));
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Vert)
+        == (std::vector<sf::Vector2f> {
+               { 10.0f, 14.0f }, { 14.0f, 14.0f }, { 14.0f, 20.0f }, { 10.0f, 20.0f } }));
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Both)
+        == (std::vector<sf::Vector2f> {
+               { 16.0f, 14.0f }, { 20.0f, 14.0f }, { 20.0f, 20.0f }, { 16.0f, 20.0f } }));
+
+    BOOST_CHECK(
+        MakeQuadVertexPositions(POS_10_V, SIZE_10_V, sf::Vector2f(4.0f, 6.0f), Orientation::Count)
+        == (std::vector<sf::Vector2f> {
+               { 10.0f, 10.0f }, { 14.0f, 10.0f }, { 14.0f, 16.0f }, { 10.0f, 16.0f } }));
+
+    //
+
+    sf::VertexArray va;
+
+    //
+
+    AppendVertexesForQuad(
+        va, POS_10_V, RECT_10, sf::Color::Black, sf::Vector2f(-4.0f, 6.0f), Orientation::Count);
+
+    BOOST_CHECK(va.getVertexCount() == 0);
+
+    AppendVertexesForQuad(
+        va, POS_10_V, RECT_10, sf::Color::Black, sf::Vector2f(4.0f, -6.0f), Orientation::Count);
+
+    BOOST_CHECK(va.getVertexCount() == 0);
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuad(
+        va, POS_10_V, RECT_10, sf::Color::Black, sf::Vector2f(4.0f, 6.0f), Orientation::Count);
+
+    BOOST_CHECK(va.getVertexCount() == 4);
+
+    BOOST_CHECK(va[0].color == sf::Color::Black);
+    BOOST_CHECK(va[1].color == sf::Color::Black);
+    BOOST_CHECK(va[2].color == sf::Color::Black);
+    BOOST_CHECK(va[3].color == sf::Color::Black);
+
+    BOOST_CHECK(va[0].position == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].position == sf::Vector2f(14.0f, 10.0f));
+    BOOST_CHECK(va[2].position == sf::Vector2f(14.0f, 16.0f));
+    BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 16.0f));
+
+    BOOST_CHECK(va[0].texCoords == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].texCoords == sf::Vector2f(14.0f, 10.0f));
+    BOOST_CHECK(va[2].texCoords == sf::Vector2f(14.0f, 16.0f));
+    BOOST_CHECK(va[3].texCoords == sf::Vector2f(10.0f, 16.0f));
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuad(
+        va, POS_10_V, RECT_10, sf::Color::Green, sf::Vector2f(4.0f, 6.0f), Orientation::Both);
+
+    BOOST_CHECK(va.getVertexCount() == 4);
+
+    BOOST_CHECK(va[0].color == sf::Color::Green);
+    BOOST_CHECK(va[1].color == sf::Color::Green);
+    BOOST_CHECK(va[2].color == sf::Color::Green);
+    BOOST_CHECK(va[3].color == sf::Color::Green);
+
+    BOOST_CHECK(va[0].position == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].position == sf::Vector2f(14.0f, 10.0f));
+    BOOST_CHECK(va[2].position == sf::Vector2f(14.0f, 16.0f));
+    BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 16.0f));
+
+    BOOST_CHECK(va[0].texCoords == sf::Vector2f(16.0f, 14.0f));
+    BOOST_CHECK(va[1].texCoords == sf::Vector2f(20.0f, 14.0f));
+    BOOST_CHECK(va[2].texCoords == sf::Vector2f(20.0f, 20.0f));
+    BOOST_CHECK(va[3].texCoords == sf::Vector2f(16.0f, 20.0f));
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuadRepeatedOverLength(
+        va, POS_10_V, RECT_10, heroespath::sfml_util::Orientation::Count, 25.0f);
+
+    BOOST_CHECK(va.getVertexCount() == 0);
+
+    AppendVertexesForQuadRepeatedOverLength(
+        va, POS_10_V, RECT_10, heroespath::sfml_util::Orientation::Horiz, 0.0f);
+
+    BOOST_CHECK(va.getVertexCount() == 0);
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuadRepeatedOverLength(
+        va,
+        POS_10_V,
+        RECT_10,
+        heroespath::sfml_util::Orientation::Horiz,
+        5.0f,
+        sf::Color::Red,
+        5.0f);
+
+    BOOST_CHECK(va.getVertexCount() == 4);
+
+    BOOST_CHECK(va[0].color == sf::Color::Red);
+    BOOST_CHECK(va[1].color == sf::Color::Red);
+    BOOST_CHECK(va[2].color == sf::Color::Red);
+    BOOST_CHECK(va[3].color == sf::Color::Red);
+
+    BOOST_CHECK(va[0].position == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].position == sf::Vector2f(15.0f, 10.0f));
+    BOOST_CHECK(va[2].position == sf::Vector2f(15.0f, 15.0f));
+    BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 15.0f));
+
+    BOOST_CHECK(va[0].texCoords == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].texCoords == sf::Vector2f(15.0f, 10.0f));
+    BOOST_CHECK(va[2].texCoords == sf::Vector2f(15.0f, 15.0f));
+    BOOST_CHECK(va[3].texCoords == sf::Vector2f(10.0f, 15.0f));
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuadRepeatedOverLength(
+        va,
+        POS_10_V,
+        RECT_10,
+        heroespath::sfml_util::Orientation::Horiz,
+        5.0f,
+        sf::Color::White,
+        999.0f,
+        Orientation::Both);
+
+    BOOST_CHECK(va.getVertexCount() == 4);
+
+    BOOST_CHECK(va[0].position == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].position == sf::Vector2f(15.0f, 10.0f));
+    BOOST_CHECK(va[2].position == sf::Vector2f(15.0f, 20.0f));
+    BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 20.0f));
+
+    BOOST_CHECK(va[0].texCoords == sf::Vector2f(15.0f, 10.0f));
+    BOOST_CHECK(va[1].texCoords == sf::Vector2f(20.0f, 10.0f));
+    BOOST_CHECK(va[2].texCoords == sf::Vector2f(20.0f, 20.0f));
+    BOOST_CHECK(va[3].texCoords == sf::Vector2f(15.0f, 20.0f));
+
+    //
+
+    va.clear();
+
+    AppendVertexesForQuadRepeatedOverLength(
+        va,
+        POS_10_V,
+        RECT_10,
+        heroespath::sfml_util::Orientation::Horiz,
+        25.0f,
+        sf::Color::White,
+        5.0f,
+        Orientation::Vert);
+
+    BOOST_CHECK(va.getVertexCount() == 12);
+
+    BOOST_CHECK(va[0].position == sf::Vector2f(10.0f, 10.0f));
+    BOOST_CHECK(va[1].position == sf::Vector2f(20.0f, 10.0f));
+    BOOST_CHECK(va[2].position == sf::Vector2f(20.0f, 15.0f));
+    BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 15.0f));
+    //
+    BOOST_CHECK(va[4].position == sf::Vector2f(21.0f, 10.0f));
+    BOOST_CHECK(va[5].position == sf::Vector2f(31.0f, 10.0f));
+    BOOST_CHECK(va[6].position == sf::Vector2f(31.0f, 15.0f));
+    BOOST_CHECK(va[7].position == sf::Vector2f(21.0f, 15.0f));
+    //
+    BOOST_CHECK(va[8].position == sf::Vector2f(32.0f, 10.0f));
+    BOOST_CHECK(va[9].position == sf::Vector2f(35.0f, 10.0f));
+    BOOST_CHECK(va[10].position == sf::Vector2f(35.0f, 15.0f));
+    BOOST_CHECK(va[11].position == sf::Vector2f(32.0f, 15.0f));
+
+    BOOST_CHECK(va[0].texCoords == sf::Vector2f(10.0f, 15.0f));
+    BOOST_CHECK(va[1].texCoords == sf::Vector2f(20.0f, 15.0f));
+    BOOST_CHECK(va[2].texCoords == sf::Vector2f(20.0f, 20.0f));
+    BOOST_CHECK(va[3].texCoords == sf::Vector2f(10.0f, 20.0f));
+    //
+    BOOST_CHECK(va[4].texCoords == sf::Vector2f(10.0f, 15.0f));
+    BOOST_CHECK(va[5].texCoords == sf::Vector2f(20.0f, 15.0f));
+    BOOST_CHECK(va[6].texCoords == sf::Vector2f(20.0f, 20.0f));
+    BOOST_CHECK(va[7].texCoords == sf::Vector2f(10.0f, 20.0f));
+    //
+    BOOST_CHECK(va[8].texCoords == sf::Vector2f(10.0f, 15.0f));
+    BOOST_CHECK(va[9].texCoords == sf::Vector2f(13.0f, 15.0f));
+    BOOST_CHECK(va[10].texCoords == sf::Vector2f(13.0f, 20.0f));
+    BOOST_CHECK(va[11].texCoords == sf::Vector2f(10.0f, 20.0f));
+}
+
+BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
+{
+    auto areVectorValuesZero = [](const sf::Vector2f & V) {
+        return (!(V.x < 0.0f) && !(V.x > 0.0f) && !(V.y < 0.0f) && !(V.y > 0.0f));
+    };
+
+    auto areRectValuesZero = [](const sf::FloatRect & R) {
+        return (
+            !(R.left < 0.0f) && !(R.left > 0.0f) && !(R.top < 0.0f) && !(R.top > 0.0f)
+            && !(R.width < 0.0f) && !(R.width > 0.0f) && !(R.height < 0.0f) && !(R.height > 0.0f));
+    };
+
+    const sf::Vector2f VZ(0.0f, 0.0f);
+    BOOST_CHECK(areVectorValuesZero(VZ));
+
+    const sf::FloatRect RZ(0.0f, 0.0f, 0.0f, 0.0f);
+    BOOST_CHECK(areRectValuesZero(RZ));
+
+    //
+
+    BOOST_CHECK(areVectorValuesZero(sf::Vector2f()));
+    BOOST_CHECK(sf::Vector2f() == VZ);
+
+    BOOST_CHECK(areRectValuesZero(sf::FloatRect()));
+    BOOST_CHECK(sf::FloatRect() == RZ);
+
+    //
+
+    BOOST_CHECK(areVectorValuesZero(sf::Vector2f {}));
+    BOOST_CHECK(sf::Vector2f {} == VZ);
+
+    BOOST_CHECK(areRectValuesZero(sf::FloatRect {}));
+    BOOST_CHECK(sf::FloatRect {} == RZ);
+
+    //
+
+    sf::Vector2f v1;
+    BOOST_CHECK(areVectorValuesZero(v1));
+    BOOST_CHECK(v1 == VZ);
+
+    sf::FloatRect r1;
+    BOOST_CHECK(areRectValuesZero(r1));
+    BOOST_CHECK(r1 == RZ);
+
+    //
+
+    sf::Vector2f v2 {};
+    BOOST_CHECK(areVectorValuesZero(v2));
+    BOOST_CHECK(v2 == VZ);
+
+    sf::FloatRect r2 {};
+    BOOST_CHECK(areRectValuesZero(r2));
+    BOOST_CHECK(r2 == RZ);
+
+    //
+
+    {
+        struct NoInit
+        {
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+        NoInit ni;
+
+        BOOST_CHECK(areVectorValuesZero(ni.v));
+        BOOST_CHECK(ni.v == VZ);
+
+        BOOST_CHECK(areRectValuesZero(ni.r));
+        BOOST_CHECK(ni.r == RZ);
+
+        {
+            std::vector<NoInit> vec;
+            vec.resize(4096);
+            for (const auto & NI : vec)
+            {
+                BOOST_CHECK(areVectorValuesZero(NI.v));
+                BOOST_CHECK(NI.v == VZ);
+
+                BOOST_CHECK(areRectValuesZero(NI.r));
+                BOOST_CHECK(NI.r == RZ);
+            }
+        }
+
+        {
+            std::vector<NoInit> vec {};
+            vec.resize(4096);
+            for (const auto & NI : vec)
+            {
+                BOOST_CHECK(areVectorValuesZero(NI.v));
+                BOOST_CHECK(NI.v == VZ);
+
+                BOOST_CHECK(areRectValuesZero(NI.r));
+                BOOST_CHECK(NI.r == RZ);
+            }
+        }
+    }
+
+    {
+        struct DefaultInit
+        {
+            DefaultInit()
+                : v()
+                , r()
+            {}
+
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+
+        {
+            DefaultInit di;
+
+            BOOST_CHECK(areVectorValuesZero(di.v));
+            BOOST_CHECK(di.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(di.r));
+            BOOST_CHECK(di.r == RZ);
+        }
+
+        {
+            DefaultInit di2 {};
+
+            BOOST_CHECK(areVectorValuesZero(di2.v));
+            BOOST_CHECK(di2.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(di2.r));
+            BOOST_CHECK(di2.r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(DefaultInit().v));
+            BOOST_CHECK(DefaultInit().v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(DefaultInit().r));
+            BOOST_CHECK(DefaultInit().r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(DefaultInit {}.v));
+            BOOST_CHECK(DefaultInit {}.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(DefaultInit {}.r));
+            BOOST_CHECK(DefaultInit {}.r == RZ);
+        }
+    }
+
+    {
+        struct UniformInit
+        {
+            UniformInit()
+                : v {}
+                , r {}
+            {}
+
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+
+        {
+            UniformInit ui;
+
+            BOOST_CHECK(areVectorValuesZero(ui.v));
+            BOOST_CHECK(ui.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(ui.r));
+            BOOST_CHECK(ui.r == RZ);
+        }
+
+        {
+            UniformInit ui {};
+
+            BOOST_CHECK(areVectorValuesZero(ui.v));
+            BOOST_CHECK(ui.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(ui.r));
+            BOOST_CHECK(ui.r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(UniformInit().v));
+            BOOST_CHECK(UniformInit().v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(UniformInit().r));
+            BOOST_CHECK(UniformInit().r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(UniformInit {}.v));
+            BOOST_CHECK(UniformInit {}.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(UniformInit {}.r));
+            BOOST_CHECK(UniformInit {}.r == RZ);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(ColorMathTests)
 {
-    BOOST_CHECK(sf::Color::Transparent == heroespath::sfml_util::Colors::None);
+    BOOST_CHECK(sf::Color::Transparent == heroespath::sfml_util::defaults::None);
 
     const sf::Color C0(0, 0, 0, 0);
     const sf::Color C1(1, 1, 1, 1);
@@ -70,6 +714,10 @@ BOOST_AUTO_TEST_CASE(CenterOfTests)
     sprite.setPosition(-50.0f, -5.0f);
 
     BOOST_CHECK(CenterOf(sprite) == sf::Vector2f(0.0f, 0.0f));
+
+    sf::Sprite spriteDefault;
+    BOOST_CHECK(spriteDefault.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f));
+    BOOST_CHECK(CenterOf(spriteDefault) == sf::Vector2f(0.0f, 0.0f));
 }
 
 BOOST_AUTO_TEST_CASE(CenterToTests)
@@ -128,38 +776,41 @@ BOOST_AUTO_TEST_CASE(CenterToTests)
     const sf::Vector2f SIZE_V_F(123.0f, 456.0f);
     const sf::Vector2f IMAGE_ZEROCENTERED_V_F(SIZE_V_F * -0.5f);
     const sf::Vector2f RESIZE_V_F(SIZE_V_F.x * SCALE_V_F.x, SIZE_V_F.y * SCALE_V_F.y);
-    const sf::Vector2f IMAGE_RESIZED_RECTCENTERED_V_F(RECT_CENTER_V_F - (RESIZE_V_F * 0.5f));
     sf::Image image;
     image.create(unsigned(SIZE_V_F.x), unsigned(SIZE_V_F.y));
 
     sf::Texture texture;
     texture.loadFromImage(image);
 
-    sf::Sprite sprite(texture);
+    {
+        sf::Sprite sprite(texture);
 
-    const sf::Vector2f POS_V_F(789.0f, 987.0f);
-    sprite.setPosition(POS_V_F);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
-    CenterTo(sprite, ZERO_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
-    CenterTo(sprite, ZERO_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+        const sf::Vector2f POS_V_F(789.0f, 987.0f);
+        sprite.setPosition(POS_V_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
+        CenterTo(sprite, ZERO_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+        CenterTo(sprite, ZERO_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
 
-    sprite.setPosition(POS_V_F);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
-    CenterTo(sprite, ORIGIN_WRAP_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
-    CenterTo(sprite, ORIGIN_WRAP_RECT_I);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+        sprite.setPosition(POS_V_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
+        CenterTo(sprite, ORIGIN_WRAP_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
+        CenterTo(sprite, ORIGIN_WRAP_RECT_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(IMAGE_ZEROCENTERED_V_F, SIZE_V_F));
 
-    sprite.setPosition(POS_V_F);
-    BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
-    CenterTo(sprite, RECT_I, SCALE_V_F);
-    BOOST_CHECK(
-        sprite.getGlobalBounds() == sf::FloatRect(IMAGE_RESIZED_RECTCENTERED_V_F, RESIZE_V_F));
-    CenterTo(sprite, RECT_I, SCALE_V_F);
-    BOOST_CHECK(
-        sprite.getGlobalBounds() == sf::FloatRect(IMAGE_RESIZED_RECTCENTERED_V_F, RESIZE_V_F));
+        sprite.setPosition(POS_V_F);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(POS_V_F, SIZE_V_F));
+    }
+
+    {
+        sf::Sprite spriteDefault;
+        CenterTo(spriteDefault, ZERO_RECT_F);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == ZERO_RECT_F);
+        CenterTo(spriteDefault, ORIGIN_WRAP_RECT_F);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == ZERO_RECT_F);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(ColorTests)
@@ -283,12 +934,20 @@ BOOST_AUTO_TEST_CASE(DistanceTests)
     sf::Texture texture;
     texture.loadFromImage(image);
 
-    sf::Sprite sprite1(texture);
-    sprite1.setPosition(-5.0f, -5.0f);
+    {
+        sf::Sprite sprite1(texture);
+        sprite1.setPosition(-5.0f, -5.0f);
 
-    sf::Sprite sprite2(texture);
-    sprite2.setPosition(-2.0f, -1.0f);
-    BOOST_CHECK((Distance(sprite1, sprite2) == 5.0f));
+        sf::Sprite sprite2(texture);
+        sprite2.setPosition(-2.0f, -1.0f);
+        BOOST_CHECK((Distance(sprite1, sprite2) == 5.0f));
+    }
+
+    {
+        sf::Sprite spriteDefault1;
+        sf::Sprite spriteDefault2;
+        BOOST_CHECK((Distance(spriteDefault1, spriteDefault2) == 0.0f));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(FitTests)
@@ -305,6 +964,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
     const sf::Rect<int> WIDE_RECT_I(EMPTY_V_I, WIDE_V_I);
     const sf::Rect<float> TALL_RECT_F(EMPTY_V_F, TALL_V_F);
     const sf::Rect<float> WIDE_RECT_F(EMPTY_V_F, WIDE_V_F);
+    const sf::FloatRect RECT_ZERO_F(0.0f, 0.0f, 0.0f, 0.0f);
 
     const float HALF_SCALE(0.5f);
     const float DOUBLE_SCALE(2.0f);
@@ -418,13 +1078,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
         sprite1.setPosition(RAND_POS_V_F);
         BOOST_CHECK(sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, TALL_V_F));
 
-        Fit(sprite1, WIDE_V_I);
-        BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
-
-        BOOST_CHECK(
-            sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(1.0f, 10.0f)));
-
-        Fit(sprite1, WIDE_V_I);
+        Fit(sprite1, WIDE_V_F);
         BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
 
         BOOST_CHECK(
@@ -432,18 +1086,13 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
         sprite1.setScale(1.0f, 1.0f);
         BOOST_CHECK(sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, TALL_V_F));
+    }
 
-        Fit(sprite1, WIDE_V_I, QUARTER_SCALE);
-        BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
+    {
+        sf::Sprite spriteDefault;
 
-        BOOST_CHECK(
-            (sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(0.25f, 2.5f))));
-
-        Fit(sprite1, WIDE_V_I, QUARTER_SCALE);
-        BOOST_CHECK((Size(sprite1.getGlobalBounds()) == Size(sprite1)));
-
-        BOOST_CHECK(
-            (sprite1.getGlobalBounds() == sf::FloatRect(RAND_POS_V_F, sf::Vector2f(0.25f, 2.5f))));
+        Fit(spriteDefault, WIDE_V_F);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == RECT_ZERO_F);
     }
 
     {
@@ -468,15 +1117,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
         Fit(spriteTall, WIDE_V_F);
         BOOST_CHECK(spriteTall.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 1.0f, 10.0f));
         BOOST_CHECK(spriteTall.getPosition() == ORIG_POS_1_V);
-        Fit(spriteTall, WIDE_V_F);
-        BOOST_CHECK(spriteTall.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 1.0f, 10.0f));
-        BOOST_CHECK(spriteTall.getPosition() == ORIG_POS_1_V);
 
         spriteWide.setScale(1.0f, 1.0f);
         auto const ORIG_POS_2_V(spriteWide.getPosition());
-        Fit(spriteWide, TALL_V_F);
-        BOOST_CHECK(spriteWide.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 10.0f, 1.0f));
-        BOOST_CHECK(spriteWide.getPosition() == ORIG_POS_2_V);
         Fit(spriteWide, TALL_V_F);
         BOOST_CHECK(spriteWide.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 10.0f, 1.0f));
         BOOST_CHECK(spriteWide.getPosition() == ORIG_POS_2_V);
@@ -526,8 +1169,101 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK(FitAndCenterCopy(TALL_RECT_F, WIDE_RECT_I) == TALL_FITANDCTO_WIDE_F);
 
     tallRectFTemp = TALL_RECT_F;
-    FitAndCenter(tallRectFTemp, WIDE_RECT_F);
+    FitAndCenterTo(tallRectFTemp, WIDE_RECT_F);
     BOOST_CHECK(tallRectFTemp == TALL_FITANDCTO_WIDE_F);
+
+    /*{
+        // if FitAndCenterTo() to a rect with either width/height zero then only the other non-zero
+        // dimmension is used to scale
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(0, 0, 20, 40), sf::IntRect(10, 10, 20, 0))
+            == sf::IntRect(0, 0, 100, 200));
+
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-60, -220, 100, 200));
+
+        // if FitAndCenterTo() to a rect with both width/height zero then the resulting size is zero
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0))
+            == sf::IntRect(-10, -20, 0, 0));
+
+        //...even if scaled
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0), 69.0f)
+            == sf::IntRect(-10, -20, 0, 0));
+
+        // if FitAndCenterTo() with opposite dimmensions zero result in size of zero
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-10, -120, 0, 0));
+
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 100, 0))
+            == sf::IntRect(-60, -20, 0, 0));
+
+        // if FitAndCenterTo() with matching dimmensions zero results in a scale based on the
+    non-zero
+        // dimmension
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 100, 0))
+            == sf::IntRect(-110, -120, 100, 200));
+
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-60, -220, 100, 200));
+
+        // if FitAndCenterTo() with all sizes zero results in size of zero
+        BOOST_CHECK(
+            FitAndCenterCopy(sf::IntRect(10, 20, 0, 0), sf::IntRect(-10, -20, 0, 0))
+            == sf::IntRect(-10, -20, 0, 0));
+    }
+
+    {
+        // if FitAndReCenter() to a rect with either width/height zero then only the other non-zero
+        // dimmension is used to scale
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 100, 0))
+            == sf::IntRect(-65, -130, 100, 200));
+
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-65, -130, 100, 200));
+
+        // if FitAndReCenter() to a rect with both width/height zero then the resulting size is zero
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0))
+            == sf::IntRect(-15, -30, 0, 0));
+
+        //...even if scaled
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0), 69.0f)
+            == sf::IntRect(-15, -30, 0, 0));
+
+        // if FitAndReCenter() with opposite dimmensions zero result in size of zero
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-15, 20, 0, 0));
+
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 100, 0))
+            == sf::IntRect(10, -30, 0, 0));
+
+        // if FitAndReCenter() with matching dimmensions zero results in a scale based on the
+        // non-zero dimmension
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 100, 0))
+            == sf::IntRect(-65, -80, 100, 200));
+
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 0, 200))
+            == sf::IntRect(-40, -130, 100, 200));
+
+        // if FitAndReCenter() with all sizes zero results in size of zero
+        BOOST_CHECK(
+            FitAndReCenterCopy(sf::IntRect(10, 20, 0, 0), sf::IntRect(-10, -20, 0, 0))
+            == sf::IntRect(10, 20, 0, 0));
+    }*/
 
     {
         sf::Image image;
@@ -539,10 +1275,15 @@ BOOST_AUTO_TEST_CASE(FitTests)
         sf::Sprite sprite(texture);
         sprite.setPosition(10.0f, 10.0f);
 
-        FitAndReCenter(sprite, sf::Vector2i(2, 2));
+        FitAndReCenter(sprite, sf::Vector2f(2.0f, 2.0f));
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(14.0f, 14.0f, 2.0f, 2.0f));
-        FitAndReCenter(sprite, sf::Vector2i(2, 2));
+
+        FitAndReCenter(sprite, sf::Vector2f(2.0f, 2.0f));
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(14.0f, 14.0f, 2.0f, 2.0f));
+
+        sf::Sprite spriteDefault;
+        FitAndReCenter(spriteDefault, sf::Vector2f(2.0f, 2.0f));
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == RECT_ZERO_F);
     }
 
     {
@@ -557,6 +1298,10 @@ BOOST_AUTO_TEST_CASE(FitTests)
         BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
         FitAndReCenter(sprite, WIDE_RECT_F);
         BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDRCTO_WIDE_F);
+
+        sf::Sprite spriteDefault;
+        FitAndReCenter(spriteDefault, WIDE_RECT_F);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == RECT_ZERO_F);
     }
 
     {
@@ -567,9 +1312,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
         texture.loadFromImage(image);
 
         sf::Sprite sprite(texture);
-        FitAndCenter(sprite, WIDE_RECT_F);
+        FitAndCenterTo(sprite, WIDE_RECT_F);
         BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
-        FitAndCenter(sprite, WIDE_RECT_F);
+        FitAndCenterTo(sprite, WIDE_RECT_F);
         BOOST_CHECK(sprite.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
     }
 
@@ -613,10 +1358,15 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
         const sf::Sprite spriteWide(textureWide);
 
-        FitAndCenter(spriteTall, spriteWide);
+        FitAndCenterTo(spriteTall, spriteWide);
         BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
-        FitAndCenter(spriteTall, spriteWide);
+        FitAndCenterTo(spriteTall, spriteWide);
         BOOST_CHECK(spriteTall.getGlobalBounds() == TALL_FITANDCTO_WIDE_F);
+
+        sf::Sprite spriteDefault1;
+        sf::Sprite spriteDefault2;
+        FitAndReCenter(spriteDefault1, spriteDefault2);
+        BOOST_CHECK(spriteDefault1.getGlobalBounds() == RECT_ZERO_F);
     }
 
     BOOST_CHECK(IsRealClose(ScaleThatFits(TALL_V_F.x, TALL_V_F.y, WIDE_V_I.x, WIDE_V_I.y), 0.1f));
@@ -739,6 +1489,27 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(R1F >= R0F);
     BOOST_CHECK(R1F >= R0I);
 
+    const sf::Vector2f SCALEV1(0.5f, 2.0f);
+
+    auto tempRect1(R1F);
+    ScaleAndReCenter(tempRect1, 1.0f);
+    BOOST_CHECK(tempRect1 == R1F);
+    tempRect1 = R1F;
+    ScaleAndReCenter(tempRect1, 1.0f);
+    BOOST_CHECK(tempRect1 == R1F);
+    //
+    tempRect1 = R1F;
+    ScaleAndReCenter(tempRect1, HALF);
+    BOOST_CHECK(tempRect1 == sf::FloatRect(1.25f, 1.25f, 0.5f, 0.5f));
+    ScaleAndReCenter(tempRect1, DOUBLE);
+    BOOST_CHECK(tempRect1 == R1F);
+    //
+    tempRect1 = R1F;
+    ScaleAndReCenter(tempRect1, sf::Vector2f(HALF, DOUBLE));
+    BOOST_CHECK(tempRect1 == sf::FloatRect(1.25f, 0.5f, 0.5f, 2.0f));
+    ScaleAndReCenter(tempRect1, sf::Vector2f(DOUBLE, HALF));
+    BOOST_CHECK(tempRect1 == R1F);
+
     // test of ScaleCopy(Vector, SCALE)
     BOOST_CHECK(ScaleCopy(V0F, 0.0f) == V0F);
     BOOST_CHECK(ScaleCopy(V0F, 1.0f) == V0F);
@@ -833,7 +1604,6 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(temp5VRF == VRRF);
 
     // ScaleRectLinearCopy() tests
-    const sf::Vector2f SCALEV1(0.5f, 2.0f);
     const sf::Rect<int> INT_RECT_0(0, 0, 0, 0);
     const sf::Rect<int> INT_RECT_5(5, 5, 5, 5);
     const sf::Rect<int> INT_RECT_10(10, 10, 10, 10);
@@ -955,20 +1725,32 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
         sprite.setPosition(SPRITE_POS_V);
         sprite.setScale(V1F);
         BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_BOUNDS_ORIG);
-        ScaleSizeAndReCenter(sprite, HALF);
+        SetScaleAndReCenter(sprite, HALF);
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(2.5f, 2.5f, 5.0f, 5.0f));
 
         sprite.setPosition(SPRITE_POS_V);
         sprite.setScale(V1F);
         BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_BOUNDS_ORIG);
-        ScaleSizeAndReCenter(sprite, VDF);
+        SetScaleAndReCenter(sprite, VDF);
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(-5.0f, -5.0f, 20.0f, 20.0f));
 
         sprite.setPosition(SPRITE_POS_V);
         sprite.setScale(V1F);
         BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_BOUNDS_ORIG);
-        ScaleSizeAndReCenter(sprite, SCALEV1);
+        SetScaleAndReCenter(sprite, SCALEV1);
         BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(2.5f, -5.0f, 5.0f, 20.0f));
+    }
+
+    {
+        sf::Sprite spriteDefault;
+        SetScaleAndReCenter(spriteDefault, HALF);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == R0F);
+
+        SetScaleAndReCenter(spriteDefault, VDF);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == R0F);
+
+        SetScaleAndReCenter(spriteDefault, SCALEV1);
+        BOOST_CHECK(spriteDefault.getGlobalBounds() == R0F);
     }
 
     // Size() tests
@@ -1032,10 +1814,6 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
         sf::Texture texture;
         texture.loadFromImage(image);
 
-        BOOST_CHECK(Size(texture) == sf::Vector2u(SPRITE_SIZE_V));
-        BOOST_CHECK(Size(texture, HALF) == sf::Vector2u(SPRITE_SIZE_V * HALF));
-        BOOST_CHECK(Size(texture, CUSTOM_SCALE_V) == sf::Vector2u(5, 20));
-
         sf::Sprite sprite(texture);
         const sf::Vector2f SPRITE_POS_V { 0.0f, 0.0f };
         sprite.setPosition(SPRITE_POS_V);
@@ -1045,19 +1823,35 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
 
         BOOST_CHECK(Size(sprite) == SPRITE_SIZE_V);
         BOOST_CHECK(Size(sprite, HALF) == SPRITE_SIZE_V * HALF);
-        BOOST_CHECK(Size(sprite, CUSTOM_SCALE_V) == sf::Vector2f(5.0f, 20.0f));
+        BOOST_CHECK(Size(sprite, sf::Vector2f(CUSTOM_SCALE_V)) == sf::Vector2f(5.0f, 20.0f));
+    }
+
+    {
+        sf::Sprite spriteDefault;
+        BOOST_CHECK(Size(spriteDefault) == V0F);
+        BOOST_CHECK(Size(spriteDefault, HALF) == V0F);
+        BOOST_CHECK(Size(spriteDefault, sf::Vector2f(CUSTOM_SCALE_V)) == V0F);
     }
 
     // MininallyEnclosing() tests
     BOOST_CHECK(MininallyEnclosing(R0F, R0F) == R0F);
+    BOOST_CHECK(MininallyEnclosing(R0F, R0F, true) == R0F);
     BOOST_CHECK(MininallyEnclosing(R1F, R1F) == R1F);
+    BOOST_CHECK(MininallyEnclosing(R1F, R1F, true) == R1F);
     BOOST_CHECK(MininallyEnclosing(R0F, R1F) == sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
+    BOOST_CHECK(MininallyEnclosing(R0F, R1F, true) == R1F);
 
     const sf::Rect<int> RECT1(-10, -10, 10, 10);
     const sf::Rect<int> RECT2(10, 10, 10, 10);
     const sf::Rect<int> RECTE(-10, -10, 30, 30);
 
     BOOST_CHECK(MininallyEnclosing(RECT1, RECT2) == RECTE);
+    BOOST_CHECK(MininallyEnclosing(RECT1, RECT2, true) == RECTE);
+
+    const sf::Rect<int> RECT_TEST_A(0, 0, 0, 0);
+    const sf::Rect<int> RECT_TEST_B(1, 1, 0, 0);
+    BOOST_CHECK(MininallyEnclosing(RECT_TEST_A, RECT_TEST_B) == sf::Rect<int>(0, 0, 1, 1));
+    BOOST_CHECK(MininallyEnclosing(RECT_TEST_A, RECT_TEST_B, true) == R0I);
 
     {
         sf::Image image;
@@ -1075,6 +1869,13 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
 
         BOOST_CHECK(
             MininallyEnclosing(sprite1, sprite2) == sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f));
+    }
+
+    {
+        sf::Sprite spriteDefault1;
+        sf::Sprite spriteDefault2;
+
+        BOOST_CHECK(MininallyEnclosing(spriteDefault1, spriteDefault2) == R0F);
     }
 
     const sf::IntRect GS_RECT_I(10, 20, 30, 40);
@@ -1157,4 +1958,79 @@ BOOST_AUTO_TEST_CASE(ToStringTests)
     BOOST_CHECK(ToString(sf::Rect<int>(0, 0, 0, 0)) == "(0,0/0x0)");
     BOOST_CHECK(ToString(sf::Rect<int>(1, 2, 3, 4)) == "(1,2/3x4)");
     BOOST_CHECK(ToString(sf::VideoMode(1, 2, 8)) == "(1x2:8)");
+}
+
+BOOST_AUTO_TEST_CASE(SetSizeAndPosTests)
+{
+    srand(static_cast<unsigned>(time(nullptr)));
+    heroespath::misc::random::MersenneTwister::Seed();
+
+    std::vector<sf::Texture> textures;
+
+    auto makeSpriteOfPositionAndSize = [&](const sf::FloatRect & REGION) {
+        sf::Image image;
+        image.create(unsigned(REGION.width), unsigned(REGION.height));
+
+        textures.push_back(sf::Texture());
+        textures.back().loadFromImage(image);
+
+        sf::Sprite sprite(textures.back());
+        sprite.setPosition(Position(REGION));
+        return sprite;
+    };
+
+    const sf::FloatRect SPRITE_RECT(12.0f, 34.0f, 56.0f, 78.0f);
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const auto SIZE_ORIG { Size(sprite) };
+        const sf::FloatRect TARGET_RECT(0.0f, 0.0f, 0.0f, 0.0f);
+        SetSizeAndPos(sprite, TARGET_RECT);
+
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(sf::Vector2f(0.0f, 0.0f), SIZE_ORIG));
+    }
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const sf::FloatRect TARGET_RECT(SPRITE_RECT);
+        SetSizeAndPos(sprite, TARGET_RECT);
+        BOOST_CHECK(SPRITE_RECT == TARGET_RECT);
+        BOOST_CHECK(sprite.getGlobalBounds() == TARGET_RECT);
+        BOOST_CHECK(sprite.getGlobalBounds() == SPRITE_RECT);
+    }
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const auto SIZE_ORIG { Size(sprite) };
+        const sf::FloatRect TARGET_RECT(-12.0f, -34.0f, 0.0f, 0.0f);
+        SetSizeAndPos(sprite, TARGET_RECT);
+
+        BOOST_CHECK(
+            sprite.getGlobalBounds() == sf::FloatRect(sf::Vector2f(-12.0f, -34.0f), SIZE_ORIG));
+    }
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const sf::FloatRect TARGET_RECT(123.0f, 456.0f, 789.0f, 101.0f);
+        SetSizeAndPos(sprite, TARGET_RECT);
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(TARGET_RECT));
+    }
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const auto WIDTH_ORIG { sprite.getGlobalBounds().width };
+        const sf::FloatRect TARGET_RECT(123.0f, 456.0f, 0.0f, 101.0f);
+        SetSizeAndPos(sprite, TARGET_RECT);
+
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(123.0f, 456.0f, WIDTH_ORIG, 101.0f));
+    }
+
+    {
+        auto sprite { makeSpriteOfPositionAndSize(SPRITE_RECT) };
+        const auto HEIGHT_ORIG { sprite.getGlobalBounds().height };
+        const sf::FloatRect TARGET_RECT(123.0f, 456.0f, 789.0f, 0.0f);
+        SetSizeAndPos(sprite, TARGET_RECT);
+
+        BOOST_CHECK(sprite.getGlobalBounds() == sf::FloatRect(123.0f, 456.0f, 789.0f, HEIGHT_ORIG));
+    }
 }

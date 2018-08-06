@@ -24,12 +24,12 @@
 #include "map/map-display.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-overlap.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/texture-cache.hpp"
 
 #include <exception>
-#include <set>
 #include <sstream>
 
 namespace heroespath
@@ -371,7 +371,7 @@ namespace map
 
         for (auto & npcPtrModelPair : nonPlayers_)
         {
-            if (sf::intersects(
+            if (sfml_util::intersects(
                     npcPtrModelPair.second.GetView().SpriteRef(), PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 player_.MovingIntoSet(npcPtrModelPair.first);
@@ -671,7 +671,7 @@ namespace map
     }
 
     void Map::FindLocationToPlaceAvatar(
-        const sfml_util::FloatRectVec_t & WALK_RECTS,
+        const FloatRectVec_t & WALK_RECTS,
         std::size_t & walkRectsIndex,
         sf::Vector2f & startingPosV)
     {

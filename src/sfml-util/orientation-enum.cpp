@@ -7,41 +7,34 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// orientation.cpp
+// orientation-enum.cpp
 //
 #include "orientation-enum.hpp"
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    const std::string Orientation::ToString(const Orientation::Enum E)
+    const std::string Orientation::ToString(const Orientation::Enum ORIENTATION)
     {
-        if (E == Orientation::Horiz)
+        if (ORIENTATION == Orientation::Horiz)
         {
-            return "Horizontal";
+            return "Horiz";
+        }
+        else if (ORIENTATION == Orientation::Vert)
+        {
+            return "Vert";
+        }
+        else if (ORIENTATION == Orientation::Both)
+        {
+            return "HorizAndVert";
         }
         else
         {
-            if (E == Orientation::Vert)
-            {
-                return "Vertical";
-            }
-            else
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::Orientation::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
+            ThrowInvalidValueForFunction(ORIENTATION, "ToString");
         }
     }
 
-    bool Orientation::IsValid(const Orientation::Enum E)
-    {
-        return ((E == Orientation::Horiz) || (E == Orientation::Vert));
-    }
 } // namespace sfml_util
 } // namespace heroespath

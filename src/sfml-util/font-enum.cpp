@@ -16,7 +16,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::string Font::ToString(const Font::Enum FONT)
+    const std::string GuiFont::ToString(const GuiFont::Enum FONT)
     {
         switch (FONT)
         {
@@ -64,7 +64,7 @@ namespace sfml_util
         }
     }
 
-    const std::string Font::Name(const Font::Enum FONT)
+    const std::string GuiFont::Name(const GuiFont::Enum FONT)
     {
         switch (FONT)
         {
@@ -112,7 +112,7 @@ namespace sfml_util
         }
     }
 
-    const std::string Font::Path(const Font::Enum FONT)
+    const std::string GuiFont::Path(const GuiFont::Enum FONT)
     {
         switch (FONT)
         {

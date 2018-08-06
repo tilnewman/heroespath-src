@@ -10,8 +10,11 @@
 // sfml-util-position.hpp
 //
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Vector2.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -24,7 +27,7 @@ namespace sfml_util
         return { R.left, R.top };
     }
 
-    inline const sf::Vector2f Position(const sf::Sprite & S) { return S.getPosition(); }
+    const sf::Vector2f Position(const sf::Sprite & S);
 
     template <typename T>
     constexpr T Right(const sf::Rect<T> & RECT)
@@ -32,7 +35,7 @@ namespace sfml_util
         return (RECT.left + RECT.width);
     }
 
-    inline float Right(const sf::Sprite & SPRITE) { return Right(SPRITE.getGlobalBounds()); }
+    float Right(const sf::Sprite & SPRITE);
 
     template <typename T>
     constexpr T Bottom(const sf::Rect<T> & RECT)
@@ -40,7 +43,7 @@ namespace sfml_util
         return (RECT.top + RECT.height);
     }
 
-    inline float Bottom(const sf::Sprite & SPRITE) { return Bottom(SPRITE.getGlobalBounds()); }
+    float Bottom(const sf::Sprite & SPRITE);
 
 } // namespace sfml_util
 } // namespace heroespath

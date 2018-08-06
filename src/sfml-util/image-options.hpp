@@ -9,16 +9,21 @@
 //
 // image-options.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/image-option-enum.hpp"
 #include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Config.hpp>
 
-#include <ostream>
 #include <string>
-#include <tuple>
-#include <vector>
+
+namespace sf
+{
+class Image;
+class Color;
+class Texture;
+} // namespace sf
 
 namespace heroespath
 {
@@ -28,21 +33,27 @@ namespace sfml_util
     // Responsible for wrapping all information needed to modify an image.
     struct ImageOptions
     {
-        explicit ImageOptions(
-            const ImageOpt::Enum OPTION_ENUM = ImageOpt::Default,
-            const sf::Color & MASK_COLOR = sfml_util::Colors::None,
+        ImageOptions()
+            : option_enum(ImageOpt::Default)
+            , mask_color_opt(boost::none)
+            , mask_alpha(0)
+        {}
+
+        ImageOptions(
+            const ImageOpt::Enum OPTION_ENUM,
+            const ColorOpt_t & MASK_COLOR_OPT = boost::none,
             const sf::Uint8 MASK_ALPHA = 0)
             : option_enum(OPTION_ENUM)
-            , mask_color(MASK_COLOR)
+            , mask_color_opt(MASK_COLOR_OPT)
             , mask_alpha(MASK_ALPHA)
         {}
 
-        explicit ImageOptions(
+        ImageOptions(
             const misc::EnumUnderlying_t OPTION_ENUM_VALUE,
-            const sf::Color & MASK_COLOR = sfml_util::Colors::None,
+            const ColorOpt_t & MASK_COLOR_OPT = boost::none,
             const sf::Uint8 MASK_ALPHA = 0)
             : option_enum(ImageOpt::Enum(OPTION_ENUM_VALUE))
-            , mask_color(MASK_COLOR)
+            , mask_color_opt(MASK_COLOR_OPT)
             , mask_alpha(MASK_ALPHA)
         {}
 
@@ -53,7 +64,7 @@ namespace sfml_util
 
         bool IsMaskAlphaDefault() const { return (0 == mask_alpha); }
 
-        bool HasMask() const { return (sfml_util::Colors::None != mask_color); }
+        bool HasMask() const { return (!!mask_color_opt); }
 
         bool IsDefault() const
         {
@@ -80,34 +91,24 @@ namespace sfml_util
         static const ImageOptions NoOptions() { return ImageOptions(ImageOpt::None); }
 
         // same as default constructor
-        static const ImageOptions DefaultOptions() { return ImageOptions(); }
+        static const ImageOptions InvertedCharacterOptions()
+        {
+            return ImageOptions((ImageOpt::Default | ImageOpt::Invert), sf::Color::White);
+        }
 
         ImageOpt::Enum option_enum;
-        sf::Color mask_color;
+        ColorOpt_t mask_color_opt;
         sf::Uint8 mask_alpha;
     };
 
-    inline bool operator<(const ImageOptions & L, const ImageOptions & R)
-    {
-        return std::tie(L.option_enum, L.mask_color, L.mask_alpha)
-            < std::tie(R.option_enum, R.mask_color, R.mask_alpha);
-    }
-
-    inline bool operator==(const ImageOptions & L, const ImageOptions & R)
-    {
-        return std::tie(L.option_enum, L.mask_color, L.mask_alpha)
-            == std::tie(R.option_enum, R.mask_color, R.mask_alpha);
-    }
+    bool operator<(const ImageOptions & L, const ImageOptions & R);
+    bool operator==(const ImageOptions & L, const ImageOptions & R);
 
     inline bool operator!=(const ImageOptions & L, const ImageOptions & R) { return !(L == R); }
 
 } // namespace sfml_util
 
-inline std::ostream & operator<<(std::ostream & os, const sfml_util::ImageOptions & OPTIONS)
-{
-    os << OPTIONS.ToString();
-    return os;
-}
+std::ostream & operator<<(std::ostream & os, const sfml_util::ImageOptions & OPTIONS);
 
 } // namespace heroespath
 

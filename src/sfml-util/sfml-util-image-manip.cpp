@@ -9,6 +9,12 @@
 //
 #include "sfml-util-image-manip.hpp"
 
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+
 namespace heroespath
 {
 namespace sfml_util

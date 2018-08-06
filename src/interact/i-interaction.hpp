@@ -14,7 +14,9 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <memory>
 

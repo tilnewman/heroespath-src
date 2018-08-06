@@ -19,12 +19,12 @@
 #include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/tile.hpp"
 
 namespace heroespath
 {
@@ -35,59 +35,58 @@ namespace stage
         : Stage(
               "MainMenu",
               {
-                  sfml_util::Font::Default,
-                  sfml_util::Font::System,
+                  sfml_util::GuiFont::Default,
+                  sfml_util::GuiFont::System,
               },
               true)
-        , BUTTON_SCALE_(sfml_util::MapByRes(1.0f, 3.0f))
         , titleCachedTexture_("media-images-title-blacksymbol")
         , titleSprite_(titleCachedTexture_.Get())
-        , gradient_(
-              sfml_util::DisplayRect(),
-              sfml_util::GradientInfo(
-                  sf::Color(0, 0, 0, 200),
-                  sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight))
         , resumeButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Load,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
-              BUTTON_SCALE_))
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ScreenRatioToPixelsHoriz(0.305f)))
         , createButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Character,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
-              BUTTON_SCALE_))
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ScreenRatioToPixelsHoriz(0.17f)))
         , settingsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Settings,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
-              BUTTON_SCALE_))
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ScreenRatioToPixelsHoriz(0.201f)))
         , creditsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Credits,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
-              BUTTON_SCALE_))
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ScreenRatioToPixelsHoriz(0.177f)))
         , exitButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Exit,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
-              BUTTON_SCALE_))
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ScreenRatioToPixelsHoriz(0.114f)))
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
-        , backgroundImage_("media-images-backgrounds-tile-darkknot")
+        , backgroundImageUPtr_()
     {}
 
     MainMenuStage::~MainMenuStage() { Stage::ClearAllEntities(); }
 
-    bool MainMenuStage::HandleCallback(
-        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
-    {
-        if (PACKAGE.PTR_ == resumeButtonUPtr_.get())
-        {
-            game::LoopManager::Instance()->TransitionTo_LoadGameMenu();
-            return true;
-        }
-
-        return false;
-    }
-
     void MainMenuStage::Setup()
     {
+        // setup background image
+        sfml_util::gui::BoxEntityInfo backgroundBoxInfo;
+
+        backgroundBoxInfo.SetupImage(
+            sfml_util::CachedTexture("media-images-backgrounds-tile-darkknot"),
+            boost::none,
+            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated);
+
+        backgroundBoxInfo.SetupColor(
+            sf::Color::Transparent,
+            sf::Color(0, 0, 0, 200),
+            sfml_util::Side::None,
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+
+        backgroundImageUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+            GetStageName() + "'sBackground", StageRegion(), backgroundBoxInfo);
+
         // title image
         const auto TITLE_SCALE { sfml_util::MapByRes(0.5f, 3.0f) };
         titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
@@ -98,13 +97,6 @@ namespace stage
 
         // Ouroboros
         EntityAdd(ouroborosUPtr_.get());
-
-        // buttons
-        resumeButtonUPtr_->SetScaleToRes();
-        createButtonUPtr_->SetScaleToRes();
-        settingsButtonUPtr_->SetScaleToRes();
-        creditsButtonUPtr_->SetScaleToRes();
-        exitButtonUPtr_->SetScaleToRes();
 
         auto const SPACE_BETWEEN_BUTTONS { sfml_util::MapByRes(8.0f, 50.0f) };
         auto const TITLE_TO_BUTTONS_SPACER { sfml_util::MapByRes(160.0f, 1000.0f) };
@@ -129,8 +121,6 @@ namespace stage
             sfml_util::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
             sfml_util::Bottom(creditsButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
 
-        resumeButtonUPtr_->SetCallbackHandler(this);
-
         auto const ARE_THERE_GAMES_TO_LOAD { []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
             // that does not create all games in order to find just one
@@ -143,7 +133,10 @@ namespace stage
             return (GAMESTATE_PVEC.empty() == false);
         }() };
 
-        resumeButtonUPtr_->SetIsDisabled(ARE_THERE_GAMES_TO_LOAD == false);
+        if (ARE_THERE_GAMES_TO_LOAD == false)
+        {
+            resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Disabled);
+        }
 
         EntityAdd(resumeButtonUPtr_.get());
         EntityAdd(createButtonUPtr_.get());
@@ -154,8 +147,7 @@ namespace stage
 
     void MainMenuStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, STATES);
-        target.draw(gradient_);
+        target.draw(*backgroundImageUPtr_, STATES);
         target.draw(titleSprite_, STATES);
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
@@ -197,7 +189,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::R)
         {
-            if (false == resumeButtonUPtr_->IsDisabled())
+            if (resumeButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
             {
                 resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
                 sfml_util::SoundManager::Instance()->PlaySfx_Keypress();

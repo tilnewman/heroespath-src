@@ -20,16 +20,16 @@
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-angles.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/song-animation.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/text-animation.hpp"
 #include "spell/spell.hpp"
-
-#include <string>
 
 namespace heroespath
 {
@@ -89,33 +89,33 @@ namespace combat
 
         // any value greater than zero will work temporarily here
         slider_(1.0f)
-        , projAnimTexture_()
+        , projAnimCachedTextureOpt_()
         , projAnimSprite_()
         , projAnimBeginPosV_(0.0f, 0.0f)
         , projAnimEndPosV_(0.0f, 0.0f)
         , projAnimWillSpin_(false)
         , projAnimWillDraw_(false)
         , deadAnimNodesPVec_()
-        , centeringAnimCombatNodePtrOpt_(boost::none)
+        , centeringAnimCombatNodePtrOpt_()
         , centeringAnimCreaturesPVec_()
         , centeringAnimWillZoomOut_(false)
-        , repositionAnimCombatNodePtrOpt_(boost::none)
+        , repositionAnimCombatNodePtrOpt_()
         , repositionAnimPosV_(0.0f, 0.0f)
         , meleeMoveAnimOrigPosV_(0.0f, 0.0f)
         , meleeMoveAnimTargetPosV_(0.0f, 0.0f)
-        , meleeMoveAnimMovingCombatNodePtrOpt_(boost::none)
-        , meleeMoveAnimTargetCombatNodePtrOpt_(boost::none)
-        , shakeAnimWasCombatNodePtrOpt_(boost::none)
+        , meleeMoveAnimMovingCombatNodePtrOpt_()
+        , meleeMoveAnimTargetCombatNodePtrOpt_()
+        , shakeAnimWasCombatNodePtrOpt_()
         , shakeAnimCreatureWasSpeed_(0.0f)
         , shakeAnimInfoMap_()
-        , selectAnimCombatNodePtrOpt_(boost::none)
+        , selectAnimCombatNodePtrOpt_()
         , sparksAnimUVec_()
         , cloudAnimUVec_()
         , animUVec_()
         , songAnimUVec_()
         , sparkleAnimUVec_()
         , textAnimUVec_()
-        , runAnimCombatNodePtrOpt_(boost::none)
+        , runAnimCombatNodePtrOpt_()
         , runAnimPosVTarget_(0.0f, 0.0f)
         , runAnimPosVOrig_(0.0f, 0.0f)
     {}
@@ -256,11 +256,14 @@ namespace combat
             pathKey = PATH_KEY_BASE_STR + "arrow4";
         }
 
-        // load the projectile image
-        sfml_util::Loaders::Texture(
-            projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
+        const auto IMAGE_PATH { game::GameDataFile::Instance()->GetMediaPath(pathKey) };
 
-        projAnimSprite_.setTexture(projAnimTexture_, true);
+        if ((!projAnimCachedTextureOpt_) || (projAnimCachedTextureOpt_->Path() != IMAGE_PATH))
+        {
+            projAnimCachedTextureOpt_ = sfml_util::CachedTexture(pathKey);
+        }
+
+        projAnimSprite_.setTexture(projAnimCachedTextureOpt_->Get(), true);
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
 
         // scale the sprite down to a reasonable size
@@ -870,7 +873,7 @@ namespace combat
 
         for (auto const & NEXT_COMBATNODE_PTR : COMBAT_NODE_PVEC)
         {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
+            if (NEXT_COMBATNODE_PTR->WillDraw())
             {
                 sparksAnimUVec_.emplace_back(
                     std::make_unique<sfml_util::animation::SparksAnimation>(
@@ -908,7 +911,7 @@ namespace combat
 
         for (auto const & NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
+            if (NEXT_COMBATNODE_PTR->WillDraw())
             {
                 cloudAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
@@ -956,7 +959,7 @@ namespace combat
 
         for (auto const & NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            if (NEXT_COMBATNODE_PTR->WillDraw() == false)
             {
                 continue;
             }
@@ -985,7 +988,7 @@ namespace combat
 
         for (auto const & NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            if (NEXT_COMBATNODE_PTR->WillDraw() == false)
             {
                 continue;
             }
@@ -1030,7 +1033,7 @@ namespace combat
 
         for (auto const & NEXT_COMBATNODE_PTR : TARGETS_PVEC)
         {
-            if (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false)
+            if (NEXT_COMBATNODE_PTR->WillDraw() == false)
             {
                 continue;
             }
@@ -1100,7 +1103,7 @@ namespace combat
         {
             auto const NEXT_DAMAGE_VALUE { DAMAGE_VEC[damageIndex++] };
 
-            if ((NEXT_DAMAGE_VALUE.IsZero()) || (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
+            if ((NEXT_DAMAGE_VALUE.IsZero()) || (NEXT_COMBATNODE_PTR->WillDraw() == false))
             {
                 continue;
             }

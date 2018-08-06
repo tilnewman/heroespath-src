@@ -9,8 +9,10 @@
 //
 // cloud-animation.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <vector>
@@ -22,7 +24,7 @@ namespace sfml_util
     namespace animation
     {
 
-        // Responsible for storing all the information about a single spark
+        // Responsible for storing all the information about a single cloud
         class Cloud : public sf::Drawable
         {
         public:
@@ -60,7 +62,7 @@ namespace sfml_util
 
         using CloudVec_t = std::vector<Cloud>;
 
-        // Responsible for drawing emitted sparks
+        // Responsible for drawing emitted clouds
         class CloudAnimation : public sf::Drawable
         {
             CloudAnimation(const CloudAnimation &);
@@ -107,14 +109,15 @@ namespace sfml_util
             float emitTimerDurationSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sf::Texture cloudTexture1_;
-            sf::Texture cloudTexture2_;
-            sf::Texture cloudTexture3_;
+            sfml_util::CachedTexture cloudCachedTexture1_;
+            sfml_util::CachedTexture cloudCachedTexture2_;
+            sfml_util::CachedTexture cloudCachedTexture3_;
             CloudVec_t cloudVec_;
         };
 
         using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
         using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

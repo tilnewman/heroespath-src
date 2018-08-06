@@ -15,15 +15,12 @@
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
+#include "misc/random.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/combat-image-loader.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/image-loaders.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/random.hpp"
 
 namespace heroespath
 {
@@ -37,7 +34,7 @@ namespace combat
 
     const sf::Color CombatNode::PLAYER_NAME_COLOR_(sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
 
-    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::Colors::Light - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::defaults::Light - HIGHLIGHT_ADJ_COLOR_);
 
     const sf::Color CombatNode::NONPLAYER_NAME_COLOR_(
         sf::Color(
@@ -65,7 +62,7 @@ namespace combat
     const std::size_t CombatNode::HEALTH_LINE_COUNT_ { 10 };
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
-        : GuiEntity(
+        : Entity(
               std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
               sf::FloatRect())
         , creatureNameInfo_()
@@ -79,14 +76,15 @@ namespace combat
               *creatureNameInfo_.DefaultFont(),
               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , blockingPos_(0)
-        , texture_()
-        , sprite_()
+        , cachedTexture_(sfml_util::LoadAndCacheImage(CREATURE_PTR))
+        , sprite_(cachedTexture_.Get())
         , creatureImageColor_()
         , isSummaryView_(false)
         , isMoving_(false)
         , creaturePtr_(CREATURE_PTR)
-        , crossBonesTextureUPtr_()
-        , crossBonesSprite_()
+        , willDraw_(true)
+        , crossBonesCachedTexture_("media-images-combat-crossbones")
+        , crossBonesSprite_(crossBonesCachedTexture_.Get())
         , willShowCrossBones_(false)
         , healthRatioDisplayed_(0.0f)
 
@@ -97,8 +95,12 @@ namespace combat
 
         , healthLines_(sf::Lines, HEALTH_LINE_COUNT_)
         , isDead_(false)
-        , wingTextureUPtr_()
-        , wingSprite_()
+        , wingCachedTexture_(sfml_util::LoadAndCacheImage(
+              sfml_util::gui::CombatImageType::Wing,
+              sfml_util::ImageOptions(
+                  ((!isPlayer_) ? sfml_util::ImageOpt::FlipHoriz | sfml_util::ImageOpt::Default
+                                : sfml_util::ImageOpt::Default))))
+        , wingSprite_(wingCachedTexture_.Get())
         , isFlying_(false)
         , wingFlapSlider_(0.0f, WING_IMAGE_ROTATION_MAX_, WING_IMAGE_ANIM_SPEED_)
         , imagePosV_(0.0f, 0.0f)
@@ -112,11 +114,6 @@ namespace combat
         sfml_util::SetColor(condTextObj_, sf::Color(200, 200, 200, 200));
 
         HealthChangeTasks();
-
-        sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.Load(texture_, CREATURE_PTR);
-
-        sprite_.setTexture(texture_);
 
         if (isPlayer_)
         {
@@ -156,7 +153,7 @@ namespace combat
 
     void CombatNode::SetRegion(const sf::FloatRect & NEW_REGION)
     {
-        entityRegion_ = NEW_REGION;
+        Entity::SetEntityRegion(NEW_REGION);
         SetEntityPos(NEW_REGION.left, NEW_REGION.top); // see local override
         SetImageScale();
         SetCrossBonesImageScale();
@@ -184,12 +181,10 @@ namespace combat
     void CombatNode::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         // don't draw if outside the battlefield rect
-        if (false == GetEntityWillDraw())
+        if (false == WillDraw())
         {
             return;
         }
-
-        // sfml_util::DrawRectangle(target, states, sf::FloatRect(entityRegion_));
 
         // creature outline image
         {
@@ -244,7 +239,7 @@ namespace combat
 
     void CombatNode::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
-        GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
+        Entity::SetEntityPos(POS_LEFT, POS_TOP);
 
         SetTextPositions();
 
@@ -270,7 +265,7 @@ namespace combat
 
     void CombatNode::MoveEntityPos(const float HORIZ, const float VERT)
     {
-        GuiEntity::MoveEntityPos(HORIZ, VERT);
+        Entity::MoveEntityPos(HORIZ, VERT);
         nameTextObj_.move(HORIZ, VERT);
         condTextObj_.move(HORIZ, VERT);
 
@@ -286,7 +281,7 @@ namespace combat
 
     bool CombatNode::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
-        const bool DID_MOUSE_STATE_CHANGE(GuiEntity::UpdateMousePos(MOUSE_POS_V));
+        const bool DID_MOUSE_STATE_CHANGE(Entity::UpdateMousePos(MOUSE_POS_V));
         SetHighlight((sfml_util::MouseState::Over == entityMouseState_), DID_MOUSE_STATE_CHANGE);
         return DID_MOUSE_STATE_CHANGE;
     }
@@ -294,7 +289,6 @@ namespace combat
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
         sfml_util::SetColor(nameTextObj_, AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
-
         sfml_util::SetColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
@@ -322,30 +316,11 @@ namespace combat
     {
         if (IS_FLYING)
         {
-            if (!wingTextureUPtr_)
-            {
-                sfml_util::gui::CombatImageLoader combatImageLoader;
-
-                wingTextureUPtr_ = std::make_unique<sf::Texture>();
-
-                combatImageLoader.Load(
-                    *wingTextureUPtr_,
-                    sfml_util::gui::CombatImageType::Wing,
-                    ((!isPlayer_) ? sfml_util::gui::image::Flip::Yes
-                                  : sfml_util::gui::image::Flip::No));
-            }
-
-            wingSprite_.setTexture(*wingTextureUPtr_, true);
             wingSprite_.setColor(sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_));
             wingSprite_.setRotation(0.0f);
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
-
             wingFlapSlider_.Reset(0.0f, WING_IMAGE_ROTATION_MAX_);
-        }
-        else
-        {
-            wingTextureUPtr_.reset();
         }
 
         isFlying_ = IS_FLYING;
@@ -545,17 +520,6 @@ namespace combat
 
     void CombatNode::SetupSkullAndCrossBones()
     {
-        if (!crossBonesTextureUPtr_)
-        {
-            crossBonesTextureUPtr_ = std::make_unique<sf::Texture>();
-
-            sfml_util::Loaders::Texture(
-                *crossBonesTextureUPtr_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
-
-            crossBonesSprite_.setTexture(*crossBonesTextureUPtr_, true);
-        }
-
         crossBonesSprite_.setScale(1.0f, 1.0f);
         crossBonesSprite_.setPosition(0.0f, 0.0f);
         crossBonesSprite_.setColor(sf::Color(255, 255, 255, DECAL_IMAGE_ALPHA_));

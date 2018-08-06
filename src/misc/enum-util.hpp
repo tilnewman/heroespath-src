@@ -13,6 +13,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/vector-map.hpp"
+#include "misc/wrap-enum.hpp"
 #include "stringutil/stringhelp.hpp"
 
 #include <boost/type_index.hpp>
@@ -80,6 +81,7 @@ namespace misc
                         M_HP_LOG_DBG(
                             msgSS.str()
                             << "skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT);
+
                         continue;
                     }
 
@@ -146,12 +148,6 @@ namespace misc
             }
         }
     } // namespace enum_util
-
-    enum class Wrap : bool
-    {
-        No = false,
-        Yes = true
-    };
 
     enum class NoneEmpty : bool
     {

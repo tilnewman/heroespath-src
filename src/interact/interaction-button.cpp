@@ -10,8 +10,9 @@
 // interaction-button.cpp
 //
 #include "interaction-button.hpp"
+
 #include "sfml-util/gui/text-button.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-keyboard.hpp"
 
 namespace heroespath
 {
@@ -20,11 +21,11 @@ namespace interact
 
     Button::Button(const Buttons::Enum WHICH_BUTTON)
         : whichButton_(WHICH_BUTTON)
-        , ptrOpt_(boost::none)
+        , ptrOpt_()
     {}
 
     sfml_util::gui::TextButtonUPtr_t Button::Make(
-        const sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANDLER_PTR)
+        const sfml_util::gui::TextButton::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT)
     {
         auto const KEY { Key() };
 
@@ -44,7 +45,7 @@ namespace interact
             0.0f,
             0.0f,
             sfml_util::gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
-            CALLBACK_HANDLER_PTR) };
+            CALLBACK_HANDLER_PTR_OPT) };
 
         ptrOpt_ = uptr.get();
         return uptr;

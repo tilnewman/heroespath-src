@@ -8,17 +8,19 @@
 #define HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
 //
 // stage.hpp
-//  Helper classes and functions for managing GuiEntity's in a collection on screen.
+//  Helper classes and functions for managing Entity's in a collection on screen.
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+
 #include <memory>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -28,16 +30,14 @@ namespace sfml_util
 {
     namespace gui
     {
-        class IGuiEntity;
-        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
-        using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
-        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
+        class IEntity;
+        using IEntityPtr_t = misc::NotNull<IEntity *>;
+        using IEntityPVec_t = std::vector<IEntityPtr_t>;
+        using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
 
-        namespace box
-        {
-            class Box;
-            using BoxUPtr_t = std::unique_ptr<Box>;
-        } // namespace box
+        class BoxEntity;
+        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+
     } // namespace gui
 
     // A base class for types that hold and draw a group of on screen resources.
@@ -74,67 +74,64 @@ namespace sfml_util
 
         virtual ~Stage();
 
-        virtual void Setup() {}
+        void Setup() override {}
 
-        virtual const std::string GetStageName() const { return STAGE_NAME_; }
+        const std::string GetStageName() const override final { return STAGE_NAME_; }
 
-        virtual const sf::FloatRect StageRegion() const { return stageRegion_; }
-        virtual void StageRegionSet(const sf::FloatRect & RECT) { stageRegion_ = RECT; }
+        const sf::FloatRect StageRegion() const override final { return stageRegion_; }
+        void StageRegionSet(const sf::FloatRect & RECT) override final { stageRegion_ = RECT; }
 
-        virtual float StageRegionLeft() const { return stageRegion_.left; }
-        virtual float StageRegionTop() const { return stageRegion_.top; }
-        virtual float StageRegionWidth() const { return stageRegion_.width; }
-        virtual float StageRegionHeight() const { return stageRegion_.height; }
+        float StageRegionLeft() const override final { return stageRegion_.left; }
+        float StageRegionTop() const override final { return stageRegion_.top; }
+        float StageRegionWidth() const override final { return stageRegion_.width; }
+        float StageRegionHeight() const override final { return stageRegion_.height; }
 
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS);
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS) override;
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        virtual void
-            UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
+        void UpdateMouseWheel(
+            const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) override;
 
-        virtual const gui::IGuiEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
-        virtual bool KeyPress(const sf::Event::KeyEvent & KE);
-        virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
+        bool KeyPress(const sf::Event::KeyEvent & KE) override;
+        bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
-        virtual const gui::IGuiEntityPtrOpt_t GetEntityWithFocus() const
+        const gui::IEntityPtrOpt_t GetEntityWithFocus() const override final
         {
             return entityWithFocusPtrOpt_;
         }
 
-        virtual void RemoveFocus();
-        virtual void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
+        void RemoveFocus() override final;
+        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override final;
 
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
         // only a required function for the SettingsStage which can change resolution
-        virtual void HandleResolutionChange() {}
+        void HandleResolutionChange() override {}
 
         // throws if the entity to add was already there
-        virtual void EntityAdd(const gui::IGuiEntityPtr_t);
+        void EntityAdd(
+            const gui::IEntityPtr_t,
+            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override final;
 
         // returns false if the entity to remove was not found
-        virtual bool EntityRemove(const gui::IGuiEntityPtr_t);
+        bool EntityRemove(const gui::IEntityPtr_t) override final;
 
-        virtual void SetMouseHover(const sf::Vector2f &, const bool);
+        void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override final;
 
-        virtual void TestingStrAppend(const std::string &) {}
-        virtual void TestingStrIncrement(const std::string &) {}
+        void TestingStrAppend(const std::string &) override {}
+        void TestingStrIncrement(const std::string &) override {}
 
-        virtual void TestingImageSet(const std::string &, const bool = false) {}
+        void TestingImageSet(const std::string &, const bool = false) override {}
 
-        virtual void PerformNextTest() {}
-        virtual void ClearAllEntities();
+        void PerformNextTest() override {}
+        void ClearAllEntities() override final;
 
-        virtual bool IsMouseHeldDown() const { return isMouseHeldDown_; }
-        virtual bool IsMouseHeldDownAndMoving() const { return isMouseHeldDownAndMoving_; }
-        virtual const sf::Vector2f MouseDownPosV() const { return mouseDownPosV_; }
-
-    protected:
-        void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
-
-        virtual bool WillAllowMousePosStateChange() const { return true; }
+        bool IsMouseHeldDown() const override final { return isMouseHeldDown_; }
+        bool IsMouseHeldDownAndMoving() const override final { return isMouseHeldDownAndMoving_; }
+        const sf::Vector2f MouseDownPosV() const override final { return mouseDownPosV_; }
 
     private:
         static const float MOUSE_DRAG_MIN_DISTANCE_;
@@ -143,12 +140,12 @@ namespace sfml_util
         sf::FloatRect stageRegion_;
 
         // these are observer pointers whose lifetime is not controlled by this class
-        gui::IGuiEntityPVec_t entityPVec_;
+        gui::IEntityPVec_t entityPVec_;
 
         // a copy of a ptr in entityPVec_
-        gui::IGuiEntityPtrOpt_t entityWithFocusPtrOpt_;
+        gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
 
-        gui::box::BoxUPtr_t hoverTextBoxUPtr_;
+        gui::BoxEntityUPtr_t hoverTextBoxUPtr_;
         sf::Text hoverSfText_;
 
     protected:

@@ -12,8 +12,9 @@
 #include "popup-stage-combat-over.hpp"
 
 #include "game/game-data-file.hpp"
-
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -23,8 +24,11 @@ namespace popup
 
     PopupStageCombatOver::PopupStageCombatOver(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
-        , bgTexture_()
-        , bgSprite_()
+        , bgCachedTexture_(
+              PickImagePathKey(popupInfo_.HowCombatEnded()),
+              sfml_util::ImageOptions(
+                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Invert, sf::Color::White))
+        , bgSprite_(bgCachedTexture_.Get())
         , titleTextRegionUPtr_()
         , descTextRegionUPtr_()
     {}
@@ -35,74 +39,11 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        switch (popupInfo_.HowCombatEnded())
-        {
-            case combat::CombatEnd::Win:
-            {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatWin)
-                    .PlayRandom();
+        PlaySfxForHowCombatEnded(popupInfo_.HowCombatEnded());
 
-                sfml_util::Loaders::Texture(
-                    bgTexture_,
-                    game::GameDataFile::Instance()->GetMediaPath(
-                        "media-images-combat-crossswords"));
-
-                break;
-            }
-
-            case combat::CombatEnd::Lose:
-            {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
-                    .PlayRandom();
-
-                sfml_util::Loaders::Texture(
-                    bgTexture_,
-                    game::GameDataFile::Instance()->GetMediaPath("media-images-combat-crossbones"));
-
-                break;
-            }
-
-            case combat::CombatEnd::Ran:
-            case combat::CombatEnd::Count:
-            default:
-            {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
-                    .PlayRandom();
-
-                sfml_util::Loaders::Texture(
-                    bgTexture_,
-                    game::GameDataFile::Instance()->GetMediaPath("media-images-combat-run"));
-
-                break;
-            }
-        }
-
-        sfml_util::Invert(bgTexture_);
-        sfml_util::Mask(bgTexture_, sf::Color::White);
-        bgSprite_.setTexture(bgTexture_, true);
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
 
-        auto const HORIZ_RESCALE { textRegion_.width / static_cast<float>(bgTexture_.getSize().x) };
-
-        bgSprite_.setScale(HORIZ_RESCALE, HORIZ_RESCALE);
-
-        if (bgSprite_.getGlobalBounds().height > textRegion_.height)
-        {
-            auto VERT_RESCALE { textRegion_.height / static_cast<float>(bgTexture_.getSize().y) };
-
-            bgSprite_.setScale(VERT_RESCALE, VERT_RESCALE);
-        }
-
-        auto const BG_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
-                                 - (bgSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const BG_POS_TOP { (textRegion_.top + (textRegion_.height * 0.5f))
-                                - (bgSprite_.getGlobalBounds().height * 0.5f) };
-
-        bgSprite_.setPosition(BG_POS_LEFT, BG_POS_TOP);
+        sfml_util::FitAndCenterTo(bgSprite_, textRegion_);
 
         auto const TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
@@ -126,20 +67,22 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sf::BlendAlpha,
             sf::Text::Bold,
             sfml_util::Justified::Center);
 
         titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO, sf::FloatRect());
+            "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
 
         auto const TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
                                     - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const TITLE_POS_TOP { textRegion_.top + sfml_util::MapByRes(20.0f, 60.0f) };
+        const auto VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.0222f) };
+
+        auto const TITLE_POS_TOP { textRegion_.top + VERT_SPACER };
 
         titleTextRegionUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
@@ -178,20 +121,18 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
             DESC_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(
             textRegion_.left,
             titleTextRegionUPtr_->GetEntityRegion().top
-                + titleTextRegionUPtr_->GetEntityRegion().height
-                + sfml_util::MapByRes(20.0f, 60.0f),
+                + titleTextRegionUPtr_->GetEntityRegion().height + VERT_SPACER,
             textRegion_.width,
             textRegion_.height
-                - (titleTextRegionUPtr_->GetEntityRegion().height
-                   + (sfml_util::MapByRes(20.0f, 60.0f) * 2.0f)));
+                - (titleTextRegionUPtr_->GetEntityRegion().height + (VERT_SPACER * 2.0f)));
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatOverPopupDesc", COMBAT_DESC_TEXTINFO, COMBAT_DESC_RECT);
@@ -207,5 +148,63 @@ namespace popup
 
         Stage::Draw(target, STATES);
     }
+
+    const std::string
+        PopupStageCombatOver::PickImagePathKey(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
+    {
+        switch (HOW_COMBAT_ENDED)
+        {
+            case combat::CombatEnd::Win:
+            {
+                return "media-images-combat-crossswords";
+            }
+
+            case combat::CombatEnd::Lose:
+            {
+                return "media-images-combat-crossbones";
+            }
+
+            case combat::CombatEnd::Ran:
+            case combat::CombatEnd::Count:
+            default:
+            {
+                return "media-images-combat-run";
+            }
+        }
+    }
+
+    void PopupStageCombatOver::PlaySfxForHowCombatEnded(
+        const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
+    {
+        switch (HOW_COMBAT_ENDED)
+        {
+            case combat::CombatEnd::Win:
+            {
+                sfml_util::SoundManager::Instance()
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatWin)
+                    .PlayRandom();
+                break;
+            }
+
+            case combat::CombatEnd::Lose:
+            {
+                sfml_util::SoundManager::Instance()
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
+                    .PlayRandom();
+                break;
+            }
+
+            case combat::CombatEnd::Ran:
+            case combat::CombatEnd::Count:
+            default:
+            {
+                sfml_util::SoundManager::Instance()
+                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
+                    .PlayRandom();
+                break;
+            }
+        }
+    }
+
 } // namespace popup
 } // namespace heroespath

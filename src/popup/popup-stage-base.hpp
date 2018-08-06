@@ -11,13 +11,12 @@
 //
 #include "popup/popup-info.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/box.hpp"
+#include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-window.hpp"
 #include "sfml-util/stage.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <string>
 
@@ -29,8 +28,8 @@ namespace popup
     // Responsible for encapsulating all state and operations common to popup windows.
     class PopupStageBase
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
-        , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
+        , public sfml_util::gui::SliderBar::Callback_t::IHandler_t
+        , public sfml_util::gui::TextButton::Callback_t::IHandler_t
     {
     public:
         PopupStageBase(const PopupStageBase &) = delete;
@@ -41,11 +40,9 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
-
-        bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::TextButton::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
 
@@ -64,7 +61,7 @@ namespace popup
 
         virtual void SetupOuterAndInnerRegion();
 
-        void SetupFullscreenRegionsAndBackgroundImage(const sf::FloatRect &);
+        void SetupForFullScreenWithBorderRatio(const float BORDER_RATIO);
 
         virtual void SetupSliderbar();
 
@@ -74,12 +71,10 @@ namespace popup
         void EndKeepAliveTimer();
 
     private:
-        void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();
         void SetupButtons();
         void SetupTextRegion();
         void SetupText();
-        void SetupGradient();
         void SetupAccentSprite();
         void SetupRedXImage();
 
@@ -96,8 +91,7 @@ namespace popup
     protected:
         PopupInfo popupInfo_;
         sf::FloatRect innerRegion_;
-        sf::Texture backgroundTexture_;
-        sf::Sprite backgroundSprite_;
+        sfml_util::CachedTexture backgroundTexture_;
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect textRegion_;
         sfml_util::gui::TextButtonUPtr_t buttonSelectUPtr_;
@@ -117,13 +111,13 @@ namespace popup
         bool willShowXImage_;
 
     private:
-        sfml_util::gui::box::Box box_;
-        sfml_util::GradientRect gradient_;
+        sf::Sprite backgroundSprite_;
         float buttonTextHeight_;
         float buttonVertPos_;
         sfml_util::CachedTextureOpt_t xSymbolCachedTextureOpt_;
         float keepAliveTimerSec_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

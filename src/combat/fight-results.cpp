@@ -31,8 +31,8 @@ namespace combat
 
     FightResultSummary::FightResultSummary()
         : hit_type(HitType::Count)
-        , song_ptr_opt(boost::none)
-        , spell_ptr_opt(boost::none)
+        , song_ptr_opt()
+        , spell_ptr_opt()
         , effected_vec()
         , resisted_vec()
         , already_vec()
@@ -178,7 +178,7 @@ namespace combat
     {
         if (EFFECT_INDEX < creatureEffectVec_.size())
         {
-            auto const HIT_INFO_VEC{ creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
+            auto const HIT_INFO_VEC { creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
             if (HIT_INDEX < HIT_INFO_VEC.size())
             {
                 return HIT_INFO_VEC[HIT_INDEX];

@@ -17,13 +17,15 @@
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/image-loaders.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
+#include "sfml-util/sfml-util-vertex.hpp"
 
 #include <algorithm>
-#include <vector>
 
 namespace heroespath
 {
@@ -31,7 +33,7 @@ namespace stage
 {
 
     AdventureCharacterList::AdventureCharacterList(const sfml_util::IStagePtr_t ISTAGE_PTR)
-        : sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f)
+        : sfml_util::gui::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
         , ALPHA_FOR_LINES_(180)
         , ALPHA_FOR_TEXT_(160)
         , ALPHA_FOR_CHAR_IMAGES_(150)
@@ -53,27 +55,22 @@ namespace stage
         , manaColumnRects_()
         , conditionColumnRects_()
         , lineVerts_()
-        , quadVerts_()
+        , colorGradientBars_()
         , charImages_()
-        , charListSepLine_(
-              "AdventureStage_CharacterList_CharListSeparator_",
-              sfml_util::Orientation::Horiz,
-              sfml_util::Side::Top,
-              true)
+        , charListSepLine_()
     {}
 
     AdventureCharacterList::~AdventureCharacterList() = default;
 
-    bool AdventureCharacterList::HandleCallback(
-        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &)
-    {
-        return false;
-    }
-
     void AdventureCharacterList::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(&lineVerts_[0], lineVerts_.size(), sf::Lines, states);
-        target.draw(&quadVerts_[0], quadVerts_.size(), sf::Quads, states);
+
+        for (const auto & COLORED_RECT : colorGradientBars_)
+        {
+            target.draw(COLORED_RECT, states);
+        }
+
         target.draw(charListSepLine_, states);
 
         for (auto const & TEXT_REGION_UPTR : manaTextRegionsUVec_)
@@ -92,14 +89,14 @@ namespace stage
 
     void AdventureCharacterList::SetEntityPos(const float LEFT, const float TOP)
     {
-        GuiEntity::SetEntityPos(LEFT, TOP);
+        Entity::SetEntityPos(LEFT, TOP);
         Setup();
     }
 
     void AdventureCharacterList::Setup()
     {
         lineVerts_.clear();
-        quadVerts_.clear();
+        colorGradientBars_.clear();
 
         SetupNameButtons();
         SetupHealthNumbersText();
@@ -137,18 +134,17 @@ namespace stage
         {
             const sfml_util::gui::TextInfo TEXT_INFO {
                 CHARACTER_PTR->Name(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 sfml_util::FontManager::Instance()->Size_Large(),
                 FadedDarkColor_Text()
             };
 
-            const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO { TEXT_INFO };
-
-            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::gui::FourStateButton>(
+            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::gui::ImageTextEntity>(
                 "AdventureStage'sCharacterList'sNameButtonFor_" + CHARACTER_PTR->Name(),
-                sf::Vector2f(0.0f, 0.0f), // position set in SetupPositions_NameButtons()
-                sfml_util::gui::ButtonStateImageKeys(),
-                MOUSE_TEXT_INFO));
+                sfml_util::gui::MouseImageInfo(),
+                TEXT_INFO,
+                boost::none,
+                sfml_util::gui::ImageTextEntity::MouseStateSync::Image));
         }
 
         for (auto const & BUTTON_UPTR : namesButtonUVec_)
@@ -173,7 +169,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -209,7 +205,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -244,7 +240,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 CHARACTER_PTR->ConditionNames(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 sfml_util::FontManager::Instance()->Size_Normal(),
                 FadedDarkColor_Text()
             };
@@ -460,7 +456,8 @@ namespace stage
             auto const LENGTH { sfml_util::Display::Instance()->GetWinWidth()
                                 - (CHARLIST_SEP_SPACER_ * 2.0f) };
 
-            charListSepLine_.Setup(LEFT, TOP, static_cast<std::size_t>(LENGTH));
+            charListSepLine_.Setup(
+                LEFT, TOP, LENGTH, sfml_util::Orientation::Horiz, sfml_util::Side::Top, true);
         }
 
         {
@@ -514,16 +511,16 @@ namespace stage
 
             auto const TOP { (BOUNDS.top + (BOUNDS.height * 0.5f)) - (HEIGHT * 0.5f) };
 
-            sfml_util::DrawRectangleWithLineVerts(
+            sfml_util::AppendVertexesForQuad(
+                lineVerts_,
                 sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT),
-                FadedDarkColor_Line() - sf::Color(0, 0, 0, 50),
-                lineVerts_);
+                FadedDarkColor_Line() - sf::Color(0, 0, 0, 50));
 
             // establish the inner line (bounding box) coordinates
-            sfml_util::DrawRectangleWithLineVerts(
+            sfml_util::AppendVertexesForQuad(
+                lineVerts_,
                 sf::FloatRect(LEFT + 1.0f, TOP + 1.0f, WIDTH - 2.0f, HEIGHT - 2.0f),
-                FadedDarkColor_Line(),
-                lineVerts_);
+                FadedDarkColor_Line());
 
             // establish the inner colored bar coordinates
             auto const BAR_RATIO { (
@@ -559,11 +556,11 @@ namespace stage
                 COLOR_BAR_ALPHA) };
 
             // draw inner colored bar
-            sfml_util::DrawQuad(
+            colorGradientBars_.emplace_back(sfml_util::ColoredRect(
                 sf::FloatRect(LEFT + 2.0f, TOP + 2.0f, BAR_WIDTH, HEIGHT - 4.0f),
                 COLOR_BAR_LEFT,
                 COLOR_BAR_RIGHT,
-                quadVerts_);
+                sfml_util::Side::Left));
 
             auto const NUMBER_TEXT_TOP_SPACER { sfml_util::MapByRes(0.0f, 10.0f) };
 
@@ -616,21 +613,18 @@ namespace stage
     {
         charImages_.Clear();
 
-        sfml_util::gui::CreatureImageLoader creatureImageLoader;
-
         auto const CHARACTER_VEC { game::Game::Instance()->State().Party().Characters() };
         auto const NUM_CHARACTERS { CHARACTER_VEC.size() };
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
             auto const CHARACTER_PTR { CHARACTER_VEC[i] };
 
-            auto & imagePair { charImages_[CHARACTER_PTR] };
+            ImagePair_t imagePair(
+                sfml_util::LoadAndCacheImage(
+                    CHARACTER_PTR, sfml_util::ImageOptions::InvertedCharacterOptions()),
+                sf::Sprite());
 
-            creatureImageLoader.Load(imagePair.first, CHARACTER_PTR);
-
-            sfml_util::Invert(imagePair.first);
-            sfml_util::Mask(imagePair.first, sf::Color::White);
-            imagePair.second.setTexture(imagePair.first, true);
+            imagePair.second.setTexture(imagePair.first.Get(), true);
             imagePair.second.setColor(FadedDarkColor_CharacterImages());
 
             auto const RESIZE_RATIO { 0.9f };
@@ -654,6 +648,8 @@ namespace stage
                              - (imagePair.second.getGlobalBounds().height * 0.5f) };
 
             imagePair.second.setPosition(LEFT, TOP);
+
+            charImages_.Append(CHARACTER_PTR, imagePair);
         }
     }
 
@@ -677,21 +673,21 @@ namespace stage
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const
     {
-        auto darkColor { sfml_util::Colors::GrayDarker };
+        auto darkColor { sfml_util::defaults::GrayDarker };
         darkColor.a = ALPHA_FOR_LINES_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Text() const
     {
-        auto darkColor { sfml_util::Colors::GrayDarker };
+        auto darkColor { sfml_util::defaults::GrayDarker };
         darkColor.a = ALPHA_FOR_TEXT_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_CharacterImages() const
     {
-        auto darkColor { sfml_util::Colors::GrayDarker };
+        auto darkColor { sfml_util::defaults::GrayDarker };
         darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
         return darkColor;
     }

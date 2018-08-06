@@ -53,6 +53,7 @@ namespace map
         MapAnimVec_t & animation_vec;
         WalkSfxRegionLayers & walkSfxLayers;
     };
+
 } // namespace map
 } // namespace heroespath
 

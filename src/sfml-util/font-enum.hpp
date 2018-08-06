@@ -19,7 +19,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Font : public misc::EnumBaseCounting<Font, misc::EnumFirstValueValid>
+    struct GuiFont : public misc::EnumBaseCounting<GuiFont, misc::EnumFirstValueValid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -60,12 +60,12 @@ namespace sfml_util
             Count
         };
 
-        static const std::string ToString(const Font::Enum);
-        static const std::string Name(const Font::Enum);
-        static const std::string Path(const Font::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum);
+        static const std::string Path(const Enum);
     };
 
-    using FontEnumVec_t = std::vector<Font::Enum>;
+    using FontEnumVec_t = std::vector<GuiFont::Enum>;
 
 } // namespace sfml_util
 } // namespace heroespath

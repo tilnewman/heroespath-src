@@ -10,8 +10,14 @@
 // sliderbar-labeled.cpp
 //
 #include "sliderbar-labeled.hpp"
+
 #include "log/log-macros.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include <sstream>
 
 namespace heroespath
@@ -38,21 +44,26 @@ namespace sfml_util
                   LENGTH,
                   STYLE,
                   boost::none,
-                  INITIAL_VALUE)
+                  INITIAL_VALUE,
+                  true)
             , threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER)
-            , textRegion_("SliderBarLabeled's")
+            , textRegionUPtr_(std::make_unique<TextRegion>("SliderBarLabeled's"))
             , labelOffsetX_(LABEL_POS_OFFSET_LEFT)
             , labelOffsetY_(LABEL_POS_OFFSET_TOP)
         {
             std::ostringstream ss;
-            ss << static_cast<int>(GetCurrentValue());
+            ss << static_cast<int>(PositionRatio());
+
             TextInfo textInfo(THREE_TEXT_INFOS_HOLDER.up);
             textInfo.text = ss.str();
 
             const sf::FloatRect R(
                 POS_LEFT + LABEL_POS_OFFSET_LEFT, POS_TOP + LABEL_POS_OFFSET_TOP, 0.0f, 0.0f);
 
-            textRegion_.Setup(textInfo, R);
+            textRegionUPtr_->Setup(textInfo, R);
+
+            SetEntityRegion(sfml_util::MininallyEnclosing(
+                GetEntityRegion(), textRegionUPtr_->GetEntityRegion()));
         }
 
         SliderBarLabeled::~SliderBarLabeled() = default;
@@ -60,58 +71,33 @@ namespace sfml_util
         void SliderBarLabeled::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
             SliderBar::draw(target, states);
-            textRegion_.draw(target, states);
-        }
-
-        void SliderBarLabeled::SetLabelPos(const float POS_LEFT, const float POS_TOP)
-        {
-            textRegion_.SetEntityPos(POS_LEFT, POS_TOP);
-        }
-
-        void
-            SliderBarLabeled::SetLabelPosRelative(const float POS_REL_LEFT, const float POS_REL_TOP)
-        {
-            textRegion_.SetEntityPos(
-                textRegion_.GetEntityPos().x + POS_REL_LEFT,
-                textRegion_.GetEntityPos().y + POS_REL_TOP);
-        }
-
-        void SliderBarLabeled::SetEntityPos(const float POS_LEFT, const float POS_TOP)
-        {
-            SliderBar::SetEntityPos(POS_LEFT, POS_TOP);
-            textRegion_.SetEntityPos(POS_LEFT + labelOffsetX_, POS_TOP + labelOffsetY_);
+            target.draw(*textRegionUPtr_, states);
         }
 
         void SliderBarLabeled::MoveEntityPos(const float HORIZ, const float VERT)
         {
             SliderBar::MoveEntityPos(HORIZ, VERT);
-            textRegion_.MoveEntityPos(HORIZ, VERT);
+            textRegionUPtr_->MoveEntityPos(HORIZ, VERT);
         }
 
         void SliderBarLabeled::OnChange(const float NEW_VALUE_FLOAT)
         {
-            auto const NEW_VALUE_INT{ static_cast<int>(NEW_VALUE_FLOAT * 100.0f) };
+            sf::FloatRect textRect(textRegionUPtr_->GetEntityRegion());
+            textRect.width = 0.0f;
+            textRect.height = 0.0f;
 
-            TextInfo textInfo{ GetTextInfoFromSliderValue(NEW_VALUE_INT) };
+            textRegionUPtr_->Setup(CreateTextToDisplay(NEW_VALUE_FLOAT), textRect);
 
-            std::ostringstream newValueIntSS;
-            newValueIntSS << NEW_VALUE_INT;
-            textInfo.text = newValueIntSS.str();
-
-            sf::FloatRect textInfoRect(textRegion_.GetEntityRegion());
-            textInfoRect.width = 0.0f;
-            textInfoRect.height = 0.0f;
-
-            textRegion_.Setup(textInfo, textInfoRect);
+            SliderBar::OnChange(NEW_VALUE_FLOAT);
         }
 
-        const TextInfo SliderBarLabeled::GetTextInfoFromSliderValue(const int SLIDER_VAL) const
+        const TextInfo SliderBarLabeled::TextInfoFromCurrentPositionPercent(const int PERCENT) const
         {
-            if (SLIDER_VAL <= 0)
+            if (PERCENT <= 0)
             {
                 return threeTextInfosHolder_.down;
             }
-            else if (SLIDER_VAL >= 100)
+            else if (PERCENT >= 100)
             {
                 return threeTextInfosHolder_.over;
             }
@@ -121,11 +107,19 @@ namespace sfml_util
             }
         }
 
-        void SliderBarLabeled::ChangeTextInfo(const MouseTextInfo & TEXT_INFO_SET)
+        const TextInfo SliderBarLabeled::CreateTextToDisplay(const float CURRENT_POS_RATIO)
         {
-            threeTextInfosHolder_ = TEXT_INFO_SET;
-            OnChange(currentVal_);
+            auto const CURRENT_POS_PERCENT { static_cast<int>(CURRENT_POS_RATIO * 100.0f) };
+
+            TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT) };
+
+            std::ostringstream newValueIntSS;
+            newValueIntSS << CURRENT_POS_PERCENT;
+            textInfo.text = newValueIntSS.str();
+
+            return textInfo;
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

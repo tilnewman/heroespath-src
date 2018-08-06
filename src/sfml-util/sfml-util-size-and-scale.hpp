@@ -13,67 +13,17 @@
 #include "sfml-util/sfml-util-center-to.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Vector2.hpp>
 
 #include <algorithm>
-#include <cmath>
-#include <tuple>
-#include <type_traits>
+#include <vector>
 
 namespace sf
 {
-
-template <typename T1, typename T2>
-constexpr bool operator<(const sf::Vector2<T1> & L, const sf::Vector2<T2> & R)
-{
-    return std::tie(L.x, L.y) < std::tie(R.x, R.y);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator>(const sf::Vector2<T1> & L, const sf::Vector2<T2> & R)
-{
-    return (R < L);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator<=(const sf::Vector2<T1> & L, const sf::Vector2<T2> & R)
-{
-    return !(L > R);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator>=(const sf::Vector2<T1> & L, const sf::Vector2<T2> & R)
-{
-    return !(L < R);
-}
-
-template <typename T1, typename T2>
-constexpr bool operator<(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
-{
-    return std::tie(L.left, L.top, L.width, L.height) < std::tie(R.left, R.top, R.width, R.height);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator>(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
-{
-    return (R < L);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator<=(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
-{
-    return !(L > R);
-}
-
-template <typename T1, typename T2>
-inline constexpr bool operator>=(const sf::Rect<T1> & L, const sf::Rect<T2> & R)
-{
-    return !(L < R);
-}
+class Sprite;
+class Text;
 } // namespace sf
 
 namespace heroespath
@@ -192,39 +142,54 @@ namespace sfml_util
         return Size(R, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // returns the size of T scaled by SCALE_V, same as (T.getSize().x * SCALE_V.x) and
-    // (T.getSize().y * SCALE_V.y)
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    const sf::Vector2u Size(const sf::Texture & T, const sf::Vector2<Scale_t> & SCALE_V)
-    {
-        return ScaleCopy(T.getSize(), SCALE_V);
-    }
-
-    // returns the size of T scaled by SCALE, same as (T.getSize().x * SCALE) and (T.getSize().y *
-    // SCALE)
-    template <
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    const sf::Vector2u Size(const sf::Texture & T, const Scale_t SCALE = 1.0f)
-    {
-        return Size(T, sf::Vector2<Scale_t>(SCALE, SCALE));
-    }
-
     // returns the size of S (global) scaled by SCALE_V, same as (S.global().width * SCALE_V.x) and
     // (S.global().height * SCALE_V.y)
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2<Scale_t> & SCALE_V)
-    {
-        return Size(S.getGlobalBounds(), SCALE_V);
-    }
+    const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2f & SCALE_V);
 
     // returns the size of S (global) scaled by SCALE, same as (S.global().width/height * SCALE)
+    const sf::Vector2f Size(const sf::Sprite & S, const float SCALE = 1.0f);
+
+    // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
     template <
-        typename Scale_t = float,
+        typename T,
+        typename Scale_t,
         typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    const sf::Vector2f Size(const sf::Sprite & S, const Scale_t SCALE = 1.0f)
+    constexpr const sf::Rect<T>
+        ScaleAndReCenterCopy(const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
     {
-        return Size(S, sf::Vector2<Scale_t>(SCALE, SCALE));
+        return sf::Rect<T>(sf::FloatRect(
+            sf::Vector2f(CenterOf(R)) - (sf::Vector2f(ScaleCopy(Size(R), SCALE_V)) * 0.5f),
+            sf::Vector2f(ScaleCopy(Size(R), SCALE_V))));
+    }
+
+    // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
+    template <
+        typename T,
+        typename Scale_t,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    constexpr const sf::Rect<T> ScaleAndReCenterCopy(const sf::Rect<T> & R, const Scale_t & SCALE)
+    {
+        return ScaleAndReCenterCopy(R, sf::Vector2<Scale_t>(SCALE, SCALE));
+    }
+
+    // scales the size of r by SCALE and then re-centers to the orig center of R
+    template <
+        typename T,
+        typename Scale_t,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    constexpr void ScaleAndReCenter(sf::Rect<T> & r, const sf::Vector2<Scale_t> & SCALE_V)
+    {
+        r = ScaleAndReCenterCopy(r, SCALE_V);
+    }
+
+    // scales the size of r by SCALE and then re-centers to the orig center of R
+    template <
+        typename T,
+        typename Scale_t,
+        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
+    constexpr void ScaleAndReCenter(sf::Rect<T> & r, const Scale_t & SCALE)
+    {
+        r = ScaleAndReCenterCopy(r, SCALE);
     }
 
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
@@ -332,24 +297,68 @@ namespace sfml_util
         ScaleSizeAndReCenter(r, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // scales s (local) by SCALE_V and then re-centers
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void ScaleSizeAndReCenter(sf::Sprite & s, const sf::Vector2<Scale_t> & SCALE_V)
+    // sets s's scale (local) to SCALE_V and then re-centers
+    void SetScaleAndReCenter(sf::Sprite & s, const sf::Vector2f & SCALE_V);
+
+    // sets s's scale (local) to SCALE and then re-centers
+    void SetScaleAndReCenter(sf::Sprite & s, const float SCALE);
+
+    // multiplies s's scale (global) by SCALE_V and then re-centers
+    void ScaleAndReCenter(sf::Sprite & s, const sf::Vector2f & SCALE_V);
+
+    // multiplies s's scale (global) by SCALE and then re-centers
+    void ScaleAndReCenter(sf::Sprite & s, const float SCALE);
+
+    // wraps the size (global) of s to match R, then positions at R, if either size of R is zero or
+    // less then that dimmension is not rescaled
+    void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R);
+
+    // returns true if either x or y is zero or less
+    template <typename T>
+    constexpr bool IsEitherZeroOrLess(const sf::Vector2<T> & V)
     {
-        CenterTo(s, s.getGlobalBounds(), SCALE_V);
+        return (!(V.x > 0.0f) || !(V.y > 0.0f));
     }
 
-    // scales s (local) by SCALE and then re-centers
-    template <typename Scale_t, typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void ScaleSizeAndReCenter(sf::Sprite & s, const Scale_t SCALE)
+    // returns true if either width or height is zero or less
+    template <typename T>
+    constexpr bool IsEitherSizeZeroOrLess(const sf::Rect<T> & R)
     {
-        ScaleSizeAndReCenter(s, sf::Vector2<Scale_t>(SCALE, SCALE));
+        return IsEitherZeroOrLess(Size(R));
     }
+
+    // returns true if either the global bounds width or height is zero or less
+    bool IsEitherSizeZeroOrLess(const sf::Sprite & S);
+
+    // returns true if either the global bounds width or height is zero or less
+    bool IsEitherSizeZeroOrLess(const sf::Text & T);
 
     // returns the smallest sf::Rect that fully includes rects A and B
     template <typename T1, typename T2>
-    constexpr const sf::Rect<T1> MininallyEnclosing(const sf::Rect<T1> & A, const sf::Rect<T2> & B)
+    constexpr const sf::Rect<T1> MininallyEnclosing(
+        const sf::Rect<T1> & A,
+        const sf::Rect<T2> & B,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false)
     {
+        if (WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
+        {
+            const bool IS_EITHER_SIZE_ZERO_OR_LESS_A { IsEitherSizeZeroOrLess(A) };
+            const bool IS_EITHER_SIZE_ZERO_OR_LESS_B { IsEitherSizeZeroOrLess(B) };
+
+            if (IS_EITHER_SIZE_ZERO_OR_LESS_A && IS_EITHER_SIZE_ZERO_OR_LESS_B)
+            {
+                return { 0, 0, 0, 0 };
+            }
+            else if (IS_EITHER_SIZE_ZERO_OR_LESS_A)
+            {
+                return B;
+            }
+            else if (IS_EITHER_SIZE_ZERO_OR_LESS_B)
+            {
+                return A;
+            }
+        }
+
         const float MIN_LEFT { std::min(static_cast<float>(A.left), static_cast<float>(B.left)) };
         const float MIN_TOP { std::min(static_cast<float>(A.top), static_cast<float>(B.top)) };
         const float MAX_RIGHT { std::max(Right(sf::FloatRect(A)), Right(sf::FloatRect(B))) };
@@ -359,11 +368,57 @@ namespace sfml_util
             sf::FloatRect(MIN_LEFT, MIN_TOP, MAX_RIGHT - MIN_LEFT, MAX_BOTTOM - MIN_TOP));
     }
 
-    // returns the smallest sf::FloatRect that fully includes rects A and B
-    inline const sf::FloatRect MininallyEnclosing(const sf::Sprite & A, const sf::Sprite & B)
+    // returns the smallest sf::Rect that fully includes all the rects in V
+    template <typename T>
+    constexpr const sf::Rect<T> MininallyEnclosing(
+        const std::vector<sf::Rect<T>> & V,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false)
     {
-        return MininallyEnclosing(A.getGlobalBounds(), B.getGlobalBounds());
+        sf::Rect<T> r(0, 0, 0, 0);
+
+        if (V.size() >= 1)
+        {
+            if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsEitherSizeZeroOrLess(V.front()))
+            {
+                r = V.front();
+            }
+        }
+
+        if (V.size() > 1)
+        {
+            for (std::size_t i(1); i < V.size(); ++i)
+            {
+                if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsEitherSizeZeroOrLess(V[i]))
+                {
+                    r = MininallyEnclosing(r, V[i]);
+                }
+            }
+        }
+
+        return r;
     }
+
+    // returns the smallest sf::FloatRect that includes the global bounds of both
+    const sf::FloatRect MininallyEnclosing(
+        const sf::Sprite & A,
+        const sf::Sprite & B,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
+
+    // returns the smallest sf::FloatRect that includes the global bounds of both
+    const sf::FloatRect MininallyEnclosing(
+        const sf::Text & A,
+        const sf::Text & B,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
+
+    // returns the smallest sf::Rect that fully includes all the sprites (global) in V
+    const sf::FloatRect MininallyEnclosing(
+        const std::vector<sf::Sprite> & VEC,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
+
+    // returns the smallest sf::Rect that fully includes all the sprites (global) in V
+    const sf::FloatRect MininallyEnclosing(
+        const std::vector<sf::Text> & VEC,
+        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns a copy of R that has the smaller dimmension set equal to the larger then scaled to
     // SCALE

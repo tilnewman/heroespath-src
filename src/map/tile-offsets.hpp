@@ -10,7 +10,8 @@
 // tile-offsets.hpp
 //
 #include "misc/types.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/System/Vector2.hpp>
 
 #include <tuple>
 
@@ -39,6 +40,7 @@ namespace map
     }
 
     inline bool operator!=(const TileOffsets & L, const TileOffsets & R) { return !(L == R); }
+
 } // namespace map
 } // namespace heroespath
 

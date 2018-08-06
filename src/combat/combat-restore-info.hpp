@@ -11,7 +11,7 @@
 //
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
 #include <vector>
 
 namespace heroespath

@@ -11,12 +11,11 @@
 //
 #include "sparkle-animation.hpp"
 
-#include "game/game-data-file.hpp"
-
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "misc/random.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
 
@@ -120,26 +119,11 @@ namespace sfml_util
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , sparkTexture1_()
-            , sparkTexture2_()
-            , sparkTexture3_()
+            , sparkCachedTexture1_("media-images-misc-spark1")
+            , sparkCachedTexture2_("media-images-misc-spark2")
+            , sparkCachedTexture3_("media-images-misc-spark3")
             , sparkleVec_()
-        {
-            Loaders::Texture(
-                sparkTexture1_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark1"));
-
-            Loaders::Texture(
-                sparkTexture2_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark2"));
-
-            Loaders::Texture(
-                sparkTexture3_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark3"));
-
-            sparkleVec_.reserve(
-                static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
-        }
+        {}
 
         void SparkleAnimation::Update(const float ELAPSED_TIME_SEC)
         {
@@ -161,24 +145,24 @@ namespace sfml_util
                 auto const POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
                 auto const POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
 
-                const sf::Texture * const TEXTURE_PTR { [&]() {
+                const sf::Texture & RANDOM_TEXTURE_REF { [&]() {
                     auto const RAND { misc::random::Int(2) };
                     if (RAND == 0)
                     {
-                        return &sparkTexture1_;
+                        return sparkCachedTexture1_.Get();
                     }
                     else if (RAND == 1)
                     {
-                        return &sparkTexture2_;
+                        return sparkCachedTexture2_.Get();
                     }
                     else
                     {
-                        return &sparkTexture3_;
+                        return sparkCachedTexture3_.Get();
                     }
                 }() };
 
                 sparkleVec_.emplace_back(Sparkle(
-                    *TEXTURE_PTR,
+                    RANDOM_TEXTURE_REF,
                     sf::Vector2f(POS_LEFT, POS_TOP),
                     ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
                     ValueWithRandomVariance(SCALE_BASE_, SCALE_VAR_RATIO_)));
@@ -221,6 +205,7 @@ namespace sfml_util
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

@@ -12,8 +12,6 @@
 //
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -25,6 +23,8 @@ namespace sfml_util
 {
     namespace gui
     {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
         // Encapsulates a gui sliderbar with a label
         class SliderBarLabeled : public SliderBar
@@ -35,14 +35,13 @@ namespace sfml_util
             SliderBarLabeled & operator=(const SliderBarLabeled &) = delete;
             SliderBarLabeled & operator=(SliderBarLabeled &&) = delete;
 
-        public:
             SliderBarLabeled(
                 const std::string & NAME,
                 const float POS_LEFT,
                 const float POS_TOP,
                 const float LENGTH,
                 const SliderStyle & STYLE,
-                const MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
+                const MouseTextInfo & THREE_TEXT_INFOS,
                 const float INITIAL_VALUE = 0.0f,
                 const float LABEL_POS_OFFSET_LEFT = 0.0f,
                 const float LABEL_POS_OFFSET_TOP = 0.0f); // must be [0.0f, 1.0f]
@@ -51,28 +50,14 @@ namespace sfml_util
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            const sf::Vector2f GetLabelPos() const { return textRegion_.GetEntityPos(); }
-            void SetLabelPos(const float POS_LEFT, const float POS_TOP);
-            void SetLabelPosRelative(const float POS_REL_LEFT, const float POS_REL_TOP);
-
-            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual void SetLabelOffset(const float X, const float Y)
-            {
-                labelOffsetX_ = X;
-                labelOffsetY_ = Y;
-            }
-            virtual sf::Vector2f GetLabelOffset() const { return { labelOffsetX_, labelOffsetY_ }; }
-
-            void ChangeTextInfo(const MouseTextInfo &);
-
         protected:
-            void OnClick(const sf::Vector2f &) override {}
+            void OnChange(const float) override;
 
-            void OnChange(const float NEW_VALUE) override;
+            const TextInfo TextInfoFromCurrentPositionPercent(const int PERCENT) const;
 
-            const TextInfo GetTextInfoFromSliderValue(const int SLIDER_VAL) const;
+            virtual const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO);
 
         protected:
             // This var is not really about mouse text info but about the three TextInfo
@@ -81,7 +66,7 @@ namespace sfml_util
             // Down==when zero, Over==when 100, and Up==when all other values.
             MouseTextInfo threeTextInfosHolder_;
 
-            TextRegion textRegion_;
+            TextRegionUPtr_t textRegionUPtr_;
             float labelOffsetX_;
             float labelOffsetY_;
         };

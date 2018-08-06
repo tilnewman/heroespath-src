@@ -10,9 +10,12 @@
 // popup-stage-combat-over.hpp
 //
 #include "popup/popup-stage-base.hpp"
-
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
+
+#include <string>
 
 namespace heroespath
 {
@@ -36,7 +39,10 @@ namespace popup
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
-        sf::Texture bgTexture_;
+        const std::string PickImagePathKey(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
+        void PlaySfxForHowCombatEnded(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
+
+        sfml_util::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
         sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;

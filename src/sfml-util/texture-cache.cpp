@@ -17,7 +17,6 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>

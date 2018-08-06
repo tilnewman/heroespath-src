@@ -18,7 +18,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
@@ -30,26 +29,26 @@ namespace heroespath
 namespace map
 {
     // all of these strings must be lower case
-    const std::string Parser::XML_NODE_NAME_MAP_{ "map" };
-    const std::string Parser::XML_NODE_NAME_TILE_LAYER_{ "layer" };
-    const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_{ "objectgroup" };
-    const std::string Parser::XML_NODE_NAME_OBJECT_{ "object" };
-    const std::string Parser::XML_NODE_NAME_TILESET_{ "tileset" };
-    const std::string Parser::XML_NODE_NAME_PROPERTIES_{ "properties" };
-    const std::string Parser::XML_NODE_NAME_PROPERTY_{ "property" };
-    const std::string Parser::XML_NODE_NAME_ANIMATIONS_{ "animations" };
-    const std::string Parser::XML_NODE_NAME_WALKSFX_{ "walk-sfx" };
-    const std::string Parser::XML_ATTRIB_FETCH_PREFIX_{ "<xmlattr>." };
-    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_{ "collision" };
-    const std::string Parser::XML_ATTRIB_NAME_SHADOW_{ "shadow" };
-    const std::string Parser::XML_ATTRIB_NAME_GROUND_{ "ground" };
-    const std::string Parser::XML_ATTRIB_NAME_TYPE_{ "type" };
-    const std::string Parser::XML_ATTRIB_NAME_LEVEL_{ "level" };
-    const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_{ "transitions" };
-    const std::string Parser::XML_ATTRIB_NAME_VALUE_{ "value" };
-    const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_{ "walk-bounds" };
-    const std::string Parser::XML_ATTRIB_NAME_NAME_{ "name" };
-    const std::string Parser::XML_ATTRIB_NAME_DOORSFX_{ "doorsfx" };
+    const std::string Parser::XML_NODE_NAME_MAP_ { "map" };
+    const std::string Parser::XML_NODE_NAME_TILE_LAYER_ { "layer" };
+    const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_ { "objectgroup" };
+    const std::string Parser::XML_NODE_NAME_OBJECT_ { "object" };
+    const std::string Parser::XML_NODE_NAME_TILESET_ { "tileset" };
+    const std::string Parser::XML_NODE_NAME_PROPERTIES_ { "properties" };
+    const std::string Parser::XML_NODE_NAME_PROPERTY_ { "property" };
+    const std::string Parser::XML_NODE_NAME_ANIMATIONS_ { "animations" };
+    const std::string Parser::XML_NODE_NAME_WALKSFX_ { "walk-sfx" };
+    const std::string Parser::XML_ATTRIB_FETCH_PREFIX_ { "<xmlattr>." };
+    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_ { "collision" };
+    const std::string Parser::XML_ATTRIB_NAME_SHADOW_ { "shadow" };
+    const std::string Parser::XML_ATTRIB_NAME_GROUND_ { "ground" };
+    const std::string Parser::XML_ATTRIB_NAME_TYPE_ { "type" };
+    const std::string Parser::XML_ATTRIB_NAME_LEVEL_ { "level" };
+    const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_ { "transitions" };
+    const std::string Parser::XML_ATTRIB_NAME_VALUE_ { "value" };
+    const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_ { "walk-bounds" };
+    const std::string Parser::XML_ATTRIB_NAME_NAME_ { "name" };
+    const std::string Parser::XML_ATTRIB_NAME_DOORSFX_ { "doorsfx" };
 
     void Parser::Parse(ParsePacket & packet) const
     {
@@ -86,7 +85,7 @@ namespace map
 
         packet.layout.Reset();
 
-        auto const XML_PTREE_ROOT{ Parse_XML(packet.file_path) };
+        auto const XML_PTREE_ROOT { Parse_XML(packet.file_path) };
 
         Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
 
@@ -98,11 +97,11 @@ namespace map
         for (const BPTreeValue_t & CHILD_PAIR : XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_))
         {
             namespace ba = boost::algorithm;
-            auto const NODENAME_LOWER{ ba::to_lower_copy(CHILD_PAIR.first) };
+            auto const NODENAME_LOWER { ba::to_lower_copy(CHILD_PAIR.first) };
 
             if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_OBJECTS_LAYER_))
             {
-                auto const OBJECT_LAYER_NAME_LOWER{ ba::to_lower_copy(
+                auto const OBJECT_LAYER_NAME_LOWER { ba::to_lower_copy(
                     FetchXMLAttributeName(CHILD_PAIR.second)) };
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
@@ -134,7 +133,7 @@ namespace map
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
             {
-                auto const LAYER_TYPE{ LayerTypeFromName(
+                auto const LAYER_TYPE { LayerTypeFromName(
                     ba::to_lower_copy(FetchXMLAttributeName(CHILD_PAIR.second))) };
 
                 Prase_Layer_Generic(CHILD_PAIR.second, packet.layout, LAYER_TYPE);
@@ -207,10 +206,10 @@ namespace map
     void Parser::Parse_Layer_Tileset(
         const boost::property_tree::ptree & TILESET_PTREE, Layout & layout) const
     {
-        auto const IMAGE_PROPTREE{ TILESET_PTREE.get_child("image") };
+        auto const IMAGE_PROPTREE { TILESET_PTREE.get_child("image") };
 
         layout.texture_vec.emplace_back(sf::Texture());
-        auto const TEXTURE_INDEX{ layout.texture_vec.size() - 1 };
+        auto const TEXTURE_INDEX { layout.texture_vec.size() - 1 };
 
         layout.tiles_panel_vec.emplace_back(TilesPanel(
             FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
@@ -220,7 +219,7 @@ namespace map
             FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
             TEXTURE_INDEX));
 
-        TilesPanel & tilesPanel{ layout.tiles_panel_vec[layout.tiles_panel_vec.size() - 1] };
+        TilesPanel & tilesPanel { layout.tiles_panel_vec[layout.tiles_panel_vec.size() - 1] };
 
         namespace bfs = boost::filesystem;
         tilesPanel.path_obj = bfs::system_complete(
@@ -247,7 +246,7 @@ namespace map
         ssAllData << PTREE.get_child("data").data();
 
         layout.layer_vec.emplace_back(Layer());
-        Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
+        Layer & layer { layout.layer_vec[layout.layer_vec.size() - 1] };
 
         layer.type = TYPE;
 
@@ -322,10 +321,10 @@ namespace map
         {
             if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
-                auto const OBJECT_PTREE{ CHILD_PAIR.second };
+                auto const OBJECT_PTREE { CHILD_PAIR.second };
 
                 // the index is stored in an attribute field named "type"
-                auto const WALK_RECT_INDEX{ FetchXMLAttribute<std::size_t>(
+                auto const WALK_RECT_INDEX { FetchXMLAttribute<std::size_t>(
                     OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_) };
 
                 sf::FloatRect rect;
@@ -362,13 +361,13 @@ namespace map
         {
             if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
-                auto const OBJECT_PTREE{ CHILD_PAIR.second };
+                auto const OBJECT_PTREE { CHILD_PAIR.second };
 
                 // the anim enum name is stored in an attribute field named "name"
-                auto const ANIM_NAME{ FetchXMLAttribute<std::string>(
+                auto const ANIM_NAME { FetchXMLAttribute<std::string>(
                     OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
-                auto const ANIM_ENUM{ static_cast<sfml_util::Animations::Enum>(
+                auto const ANIM_ENUM { static_cast<sfml_util::Animations::Enum>(
                     sfml_util::Animations::FromString(ANIM_NAME)) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
@@ -439,10 +438,10 @@ namespace map
             throw;
         }
 
-        auto isEntry{ false };
-        Level::Enum level{ Level::Count };
+        auto isEntry { false };
+        Level::Enum level { Level::Count };
 
-        sfml_util::sound_effect::MapTransition transSfxType{
+        sfml_util::sound_effect::MapTransition transSfxType {
             sfml_util::sound_effect::MapTransition::Count
         };
 
@@ -465,7 +464,7 @@ namespace map
     {
         namespace ba = boost::algorithm;
 
-        auto wasEntrySet{ false };
+        auto wasEntrySet { false };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
@@ -474,9 +473,9 @@ namespace map
                 continue;
             }
 
-            auto const NAME_STR{ FetchXMLAttributeName(CHILD_PAIR.second) };
+            auto const NAME_STR { FetchXMLAttributeName(CHILD_PAIR.second) };
 
-            auto const VALUE_STR{ FetchXMLAttribute<std::string>(
+            auto const VALUE_STR { FetchXMLAttribute<std::string>(
                 CHILD_PAIR.second, XML_ATTRIB_NAME_VALUE_) };
 
             if (NAME_STR == XML_ATTRIB_NAME_TYPE_)
@@ -577,7 +576,7 @@ namespace map
             throw;
         }
 
-        auto const SFX{ sfml_util::sound_effect::FootstepToSfx(
+        auto const SFX { sfml_util::sound_effect::FootstepToSfx(
             static_cast<sfml_util::Footstep::Enum>(
                 sfml_util::Footstep::FromString(footstepName))) };
 
@@ -590,7 +589,7 @@ namespace map
             throw std::runtime_error(ss.str());
         }
 
-        std::string typeStr{ "" };
+        std::string typeStr { "" };
         try
         {
             typeStr = FetchXMLAttribute<std::string>(PTREE, XML_ATTRIB_NAME_TYPE_);
@@ -612,8 +611,8 @@ namespace map
 
     void Parser::SetupEmptyTexture(Layout & layout) const
     {
-        auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_v.x) };
-        auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_v.y) };
+        auto const TILE_WIDTH { static_cast<unsigned>(layout.tile_size_v.x) };
+        auto const TILE_HEIGHT { static_cast<unsigned>(layout.tile_size_v.y) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
@@ -623,7 +622,7 @@ namespace map
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();
 
-        const std::size_t EMPTY_TEXTURE_INDEX{ 0 };
+        const std::size_t EMPTY_TEXTURE_INDEX { 0 };
         layout.texture_vec.resize(EMPTY_TEXTURE_INDEX + 1);
         layout.texture_vec[EMPTY_TEXTURE_INDEX] = layout.empty_texture.getTexture();
 
@@ -662,14 +661,14 @@ namespace map
                 continue;
             }
 
-            auto const CHILD_PTREE{ CHILD_PAIR.second };
+            auto const CHILD_PTREE { CHILD_PAIR.second };
 
             try
             {
-                auto const LEFT{ FetchXMLAttribute<float>(CHILD_PTREE, "x") };
-                auto const TOP{ FetchXMLAttribute<float>(CHILD_PTREE, "y") };
-                auto const WIDTH{ FetchXMLAttribute<float>(CHILD_PTREE, "width") };
-                auto const HEIGHT{ FetchXMLAttribute<float>(CHILD_PTREE, "height") };
+                auto const LEFT { FetchXMLAttribute<float>(CHILD_PTREE, "x") };
+                auto const TOP { FetchXMLAttribute<float>(CHILD_PTREE, "y") };
+                auto const WIDTH { FetchXMLAttribute<float>(CHILD_PTREE, "width") };
+                auto const HEIGHT { FetchXMLAttribute<float>(CHILD_PTREE, "height") };
 
                 const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
                 rectsVec.emplace_back(RECT);

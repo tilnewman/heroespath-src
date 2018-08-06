@@ -9,11 +9,19 @@
 //
 // sfml-util-image-manip.hpp
 //
-#include <SFML/Graphics/Image.hpp>
+#include <SFML/Config.hpp>
+
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
+
+namespace sf
+{
+class Sprite;
+class Texture;
+class Image;
+class RenderTexture;
+class RenderTarget;
+} // namespace sf
 
 namespace heroespath
 {

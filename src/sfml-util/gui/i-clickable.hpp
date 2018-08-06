@@ -8,10 +8,10 @@
 #define HEROESPATH_SFMLUTIL_GUI_ICLICKABLE_HPP_INCLUDED
 //
 // i-clickable.hpp
-//  Interface for all click-able gui elements
 //
 #include "sfml-util/mouse-state-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/System/Vector2.hpp>
 
 #include <string>
 
@@ -22,26 +22,24 @@ namespace sfml_util
     namespace gui
     {
 
-        // Actions required of a gui element that is clickable.
+        // Responsible for a common interface for all "clickable" Entities.
         struct IClickable
         {
             IClickable() = default;
             virtual ~IClickable() = default;
 
             virtual MouseState::Enum GetMouseState() const = 0;
-            virtual void SetMouseState(const MouseState::Enum) = 0;
 
-            // returns true only if the entityMouseState_ has changed
-            // calls OnClick() only if the MOUSE_POS_V was within the entity's region
+            // returns true if the mouse state changed
+            virtual bool SetMouseState(const MouseState::Enum) = 0;
+
+            // returns true if the entityMouseState_ has changed, OnClick() or OnDoubleClick() might
+            // have been called
             virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
-            // returns true only if the entityMouseState_ changed due to the
-            // MOUSE_POS_V being within the entity's region
+            // returns true if the entityMouseState_ changed
             virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) = 0;
 
-            virtual bool IsHeldDown() const = 0;
-
-            // called from within the draw loop if RequiresMouseUpdates()
             // returns true only when entityMouseState_ changed.
             virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) = 0;
 
@@ -57,7 +55,7 @@ namespace sfml_util
 
             virtual bool WillAcceptFocus() const = 0;
             virtual void SetWillAcceptFocus(const bool) = 0;
-            virtual void FakeColorSetAsIfFocusIs(const bool) = 0;
+            virtual void FakeFocusColorsAsIfFocusIs(const bool) = 0;
 
             virtual const std::string GetMouseHoverText() = 0;
             virtual void SetMouseHoverText(const std::string &) = 0;
@@ -67,6 +65,7 @@ namespace sfml_util
             virtual void OnClick(const sf::Vector2f &) = 0;
             virtual void OnDoubleClick(const sf::Vector2f &) = 0;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

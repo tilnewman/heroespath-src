@@ -10,10 +10,10 @@
 // achievement-handler.cpp
 //
 #include "achievement-handler.hpp"
+
 #include "game/loop-manager.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-fade.hpp"
-#include "sfml-util/gui/title-image-loader.hpp"
 
 namespace heroespath
 {
@@ -46,38 +46,21 @@ namespace stage
     }
 
     void TitleTransitionPopup(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR)
     {
-        sfml_util::gui::TitleImageLoader titleImageLoader;
-
-        boost::optional<sf::Texture> fromTextureOpt;
-        if (FROM_TITLE_PTR_OPT)
-        {
-            fromTextureOpt = sf::Texture();
-            titleImageLoader.Load(fromTextureOpt.get(), FROM_TITLE_PTR_OPT.value()->Which());
-        }
-
-        sf::Texture toTexture;
-        titleImageLoader.Load(toTexture, TO_TITLE_PTR->Which());
-
         auto const POPUP_INFO { popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
-            POPUP_NAME,
-            CREATURE_PTR,
-            FROM_TITLE_PTR_OPT,
-            TO_TITLE_PTR,
-            fromTextureOpt,
-            toTexture) };
+            POPUP_NAME, CREATURE_PTR, FROM_TITLE_PTR_OPT, TO_TITLE_PTR) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
             POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE)

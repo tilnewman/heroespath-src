@@ -26,16 +26,16 @@ namespace combat
         : isFlying_(IS_FLYING)
         , turnActionInfo_(TURN_STATE)
         , strategyInfo_(STRATEGY_INFO)
-        , firstAttackedByCreaturePtrOpt_(boost::none)
-        , firstHitByCreaturePtrOpt_(boost::none)
-        , lastAttackedByCreaturePtrOpt_(boost::none)
-        , lastHitByCreaturePtrOpt_(boost::none)
-        , firstToMakeMusicPtrOpt_(boost::none)
-        , lastToMakeMusicPtrOpt_(boost::none)
-        , firstToCastPtrOpt_(boost::none)
-        , lastToCastPtrOpt_(boost::none)
+        , firstAttackedByCreaturePtrOpt_()
+        , firstHitByCreaturePtrOpt_()
+        , lastAttackedByCreaturePtrOpt_()
+        , lastHitByCreaturePtrOpt_()
+        , firstToMakeMusicPtrOpt_()
+        , lastToMakeMusicPtrOpt_()
+        , firstToCastPtrOpt_()
+        , lastToCastPtrOpt_()
         , mostDamagedHealthAbs_(0_health)
-        , mostDamagedCreaturePtrOpt_(boost::none)
+        , mostDamagedCreaturePtrOpt_()
         , castCount_(0)
         , songCount_(0)
         , wasHitLastTurn_(false)
@@ -53,7 +53,7 @@ namespace combat
 
     void TurnInfo::RemoveDeadCreatureTasks(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const CREATURE_PTR_OPT{ creature::CreaturePtrOpt_t(CREATURE_PTR) };
+        auto const CREATURE_PTR_OPT { creature::CreaturePtrOpt_t(CREATURE_PTR) };
 
         if (firstAttackedByCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {

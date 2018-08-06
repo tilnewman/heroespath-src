@@ -14,7 +14,7 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -29,14 +29,14 @@ namespace sfml_util
         const float TextEntryBox::CURSOR_BLINK_DELAY_SEC_(0.5);
 
         TextEntryBox::TextEntryBox(
-            const callback::ITextEntryBoxCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
+            const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
             const std::string & NAME,
             const sf::FloatRect & REGION,
             const TextInfo & TEXT_INFO,
             const sf::Color & CURSOR_COLOR,
-            const box::Info & BOX_INFO)
-            : GuiEntity(std::string(NAME).append("_TextEntryBox"), REGION)
-            , box_("TextEntryBox's")
+            const BoxEntityInfo & BOX_INFO)
+            : Entity(std::string(NAME).append("_TextEntryBox"), REGION)
+            , boxEntity_(NAME + "_TextEntryBox's", REGION, BOX_INFO)
             , textInfo_(TEXT_INFO)
             , cursorRect_()
             , cursorColor_(CURSOR_COLOR)
@@ -44,16 +44,20 @@ namespace sfml_util
             , textRegionUPtr_()
             , willDrawCursor_(false)
             , cursorBlinkTimer_(0.0f)
-            , callbackHandlerPtr_(CALLBACK_HANDLER_PTR)
+            , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
         {
-            Setup(REGION, TEXT_INFO, BOX_INFO);
+            Setup(REGION, TEXT_INFO, CURSOR_COLOR, BOX_INFO);
         }
 
         TextEntryBox::~TextEntryBox() = default;
 
         void TextEntryBox::Setup(
-            const sf::FloatRect & REGION, const TextInfo & TEXT_INFO, const box::Info & BOX_INFO)
+            const sf::FloatRect & REGION,
+            const TextInfo & TEXT_INFO,
+            const sf::Color & CURSOR_COLOR,
+            const BoxEntityInfo & BOX_INFO)
         {
+            cursorColor_ = CURSOR_COLOR;
             SetEntityRegion(REGION);
 
             innerRegion_ = REGION;
@@ -62,14 +66,13 @@ namespace sfml_util
             innerRegion_.width -= (INNER_PAD_ * 2.0f);
             innerRegion_.height -= (INNER_PAD_ * 2.0f);
 
-            cursorRect_ = innerRegion_;
-            cursorRect_.width = CURSOR_WIDTH_;
+            auto cursorRegion { innerRegion_ };
+            cursorRegion.width = CURSOR_WIDTH_;
+            cursorRect_.Rect(cursorRegion);
 
             textInfo_ = TEXT_INFO;
 
-            box::Info boxInfo(BOX_INFO);
-            boxInfo.SetBoxAndBackgroundRegion(REGION);
-            box_.SetupBox(boxInfo);
+            boxEntity_.Setup(boxEntity_.GetEntityRegion(), BOX_INFO);
         }
 
         void TextEntryBox::UpdateText()
@@ -84,22 +87,26 @@ namespace sfml_util
                     textInfo_,
                     r,
                     gui::TextRegion::DEFAULT_NO_RESIZE_,
-                    gui::box::Info());
+                    gui::BoxEntityInfo());
 
-                cursorRect_.left
-                    = innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f;
+                cursorRect_.SetPos(
+                    innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f,
+                    cursorRect_.Rect().top);
             }
             else
             {
                 textRegionUPtr_.reset();
             }
 
-            callbackHandlerPtr_->HandleCallback(this);
+            if (callbackHandlerPtrOpt_)
+            {
+                callbackHandlerPtrOpt_.value()->HandleCallback(this);
+            }
         }
 
         void TextEntryBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            target.draw(box_, states);
+            target.draw(boxEntity_, states);
 
             if (textRegionUPtr_)
             {
@@ -108,8 +115,7 @@ namespace sfml_util
 
             if (willDrawCursor_ && HasFocus())
             {
-                sfml_util::DrawRectangle(
-                    target, states, cursorRect_, cursorColor_, 1, cursorColor_);
+                target.draw(cursorRect_, states);
             }
         }
 
@@ -120,11 +126,13 @@ namespace sfml_util
 
             if (!textRegionUPtr_)
             {
-                cursorRect_.left = innerRegion_.left;
+                cursorRect_.SetPos(innerRegion_.left, cursorRect_.Rect().top);
             }
             else
             {
-                cursorRect_.left = innerRegion_.left + textRegionUPtr_->GetEntityRegion().width;
+                cursorRect_.SetPos(
+                    innerRegion_.left + textRegionUPtr_->GetEntityRegion().width,
+                    cursorRect_.Rect().top);
             }
         }
 
@@ -581,7 +589,7 @@ namespace sfml_util
             }
         }
 
-        void TextEntryBox::OnColorChange() { box_.SetEntityColors(entityColorSet_); }
+        void TextEntryBox::OnColorChange() { boxEntity_.SetEntityColors(entityFocusColors_); }
 
         void TextEntryBox::SetTextColor(const sf::Color & TEXT_COLOR)
         {
@@ -589,6 +597,7 @@ namespace sfml_util
             textInfo_.color = TEXT_COLOR;
             UpdateText();
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

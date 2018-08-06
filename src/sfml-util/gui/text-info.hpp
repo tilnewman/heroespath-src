@@ -8,17 +8,16 @@
 #define HEROESPATH_SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED
 //
 // text-info.hpp
-//  Code regarding the details about drawn text.
 //
 #include "misc/boost-optional-that-throws.hpp"
-#include "sfml-util/font-manager.hpp"
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-font.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
-#include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -30,16 +29,18 @@ namespace sfml_util
     {
 
         // Responsible for wrapping all information required to draw text except for position.
-        //
-        // Note: A default constructed TextInfo is invalid and cannot be used, or exceptions will be
-        // thrown.  See IsValid().
+        // A default constructed TextInfo is invalid because the text will be an empty string and
+        // because there will be no font.  If used, such a TextInfo will cause the text rendering
+        // code to throw exceptions.
         class TextInfo
         {
         public:
-            explicit TextInfo(
-                const std::string & TEXT = "",
-                const FontPtrOpt_t FONT_PTR_OPT = boost::none,
-                const unsigned int CHAR_SIZE = FontManager::Instance()->Size_Normal(),
+            TextInfo();
+
+            TextInfo(
+                const std::string & TEXT,
+                const FontPtrOpt_t & FONT_PTR_OPT,
+                const unsigned int CHAR_SIZE,
                 const sf::Color & COLOR = sf::Color::White,
                 const sf::BlendMode & BLEND_MODE = sf::BlendAlpha,
                 const sf::Uint32 STYLE = sf::Text::Style::Regular,
@@ -54,13 +55,14 @@ namespace sfml_util
                 const sf::Color & COLOR,
                 const Justified::Enum JUSTIFIED);
 
-            // this looks weird but there are many cases where one TextInfo is made very similar to
-            // another
             TextInfo(
                 const TextInfo & TEXT_INFO_TO_COPY,
                 const std::string & TEXT,
-                const sf::Color & COLOR = sfml_util::Colors::None,
-                const unsigned CHAR_SIZE = 0);
+                const ColorOpt_t & COLOR_OPT = boost::none,
+                const unsigned CHAR_SIZE = 0,
+                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
+
+            TextInfo(const TextInfo & TEXT_INFO_TO_COPY, const FontPtr_t NEW_FONT_PTR);
 
             TextInfo(const TextInfo &) = default;
             TextInfo(TextInfo &&) = default;
@@ -74,7 +76,7 @@ namespace sfml_util
             }
 
             // throws if IsValid()==false
-            void Apply(sf::Text &) const;
+            void Apply(sf::Text &, const FontPtrOpt_t & CUSTOM_FONT_PTR_OPT = boost::none) const;
 
             // throws if IsValid()==false
             const sf::Text Make() const;

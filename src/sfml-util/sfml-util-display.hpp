@@ -10,9 +10,6 @@
 // sfml-util-display.hpp
 //
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Vector2.hpp>
 
 namespace heroespath
 {
@@ -94,17 +91,15 @@ namespace sfml_util
     }
 
     // returns RATIO (percent) number of horizontal screen pixels, same as (DisplaySize().x * RATIO)
-    template <typename T, typename = std::enable_if_t<std::is_floating_point<T>::value>>
-    T ScreenRatioToPixelsHoriz(const T RATIO)
-    {
-        return static_cast<T>(static_cast<double>(RATIO) * static_cast<double>(DisplaySize().x));
-    }
+    inline float ScreenRatioToPixelsHoriz(const float RATIO) { return (RATIO * DisplaySize().x); }
 
     // returns RATIO (percent) number of vertical screen pixels, same as (DisplaySize().y * RATIO)
-    template <typename T, typename = std::enable_if_t<std::is_floating_point<T>::value>>
-    T ScreenRatioToPixelsVert(const T RATIO)
+    inline float ScreenRatioToPixelsVert(const float RATIO) { return (RATIO * DisplaySize().y); }
+
+    inline const sf::Vector2f ScreenRatiosToPixels(const float RATIO_HORIZ, const float RATIO_VERT)
     {
-        return static_cast<T>(static_cast<double>(RATIO) * static_cast<double>(DisplaySize().y));
+        return sf::Vector2f(
+            ScreenRatioToPixelsHoriz(RATIO_HORIZ), ScreenRatioToPixelsVert(RATIO_VERT));
     }
 
 } // namespace sfml_util

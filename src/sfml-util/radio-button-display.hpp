@@ -10,8 +10,8 @@
 // radio-button-display.hpp
 //  A specific RadioButtonSet for changing the display resolution.
 //
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/gui/radio-button.hpp"
+#include "sfml-util/gui/callback.hpp"
+//#include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/resolution.hpp"
 
@@ -21,10 +21,10 @@ namespace heroespath
 {
 namespace sfml_util
 {
-
+    /*
     // Represents a RadioButtonSet that changes the display
     class RadioButtonSet_DisplayChange
-        : public popup::IPopupHandler_t
+        : public sfml_util::gui::PopupCallback_t::IHandler_t
         , public sfml_util::gui::RadioButtonSet
     {
     public:
@@ -38,14 +38,13 @@ namespace sfml_util
         RadioButtonSet_DisplayChange(
             const float POS_LEFT,
             const float POS_TOP,
-            const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t,
+            const sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t,
             const sfml_util::IStagePtr_t);
 
         virtual ~RadioButtonSet_DisplayChange();
 
-        virtual const std::string HandlerName() const { return GetEntityName(); }
 
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        virtual bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &);
 
     protected:
         // if not found, resolutionVec_.size() is returned
@@ -60,7 +59,7 @@ namespace sfml_util
         const std::size_t ORIG_INVALID_SELECTION_;
         sfml_util::Resolution prevResolution_;
     };
-
+    */
 } // namespace sfml_util
 } // namespace heroespath
 

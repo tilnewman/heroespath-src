@@ -12,6 +12,8 @@
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/cached-texture.hpp"
 
+#include <SFML/Graphics/Sprite.hpp>
+
 #include <vector>
 
 namespace heroespath
@@ -41,30 +43,24 @@ namespace sfml_util
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        void SetEntityPos(const sf::Vector2f & V) override;
         void SetEntityPos(const float LEFT, const float TOP) override;
-
         void SetEntityRegion(const sf::FloatRect & R) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         std::size_t FrameCount() const override { return rects_.size(); }
 
         const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
-        void MoveEntityPos(const float HORIZ, const float VERT) override;
-
         // returns true if frame count wrapped around back to zero
         bool UpdateTime(const float SECONDS) override;
-
-        const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
         CachedTexture cachedTexture_;
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
-
-        // the size of this vector acts as a total frame count.
-        std::vector<sf::IntRect> rects_;
+        std::vector<sf::IntRect> rects_; // rects_.size() == frame count
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

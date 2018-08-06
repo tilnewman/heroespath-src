@@ -16,11 +16,11 @@
 #include <boost/type_index.hpp>
 
 #include <exception>
-#include <map>
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace heroespath
 {
@@ -175,7 +175,7 @@ namespace misc
         template <typename T>
         void Get(T & val, const std::string & KEY) const
         {
-            std::string value{ "" };
+            std::string value { "" };
             GetStr(value, KEY); // throws if key cannot be found
 
             try
@@ -198,6 +198,8 @@ namespace misc
         const std::string GetFileNameFullPathStr() const;
         const std::string GetSeparatorStr() const;
         const std::string GetCommentStr() const;
+
+        const std::vector<std::string> GetAllKeysPrefixedWith(const std::string & PREFIX) const;
 
     private:
         void HandleLoadSaveError(const std::string & ERR_MSG) const;

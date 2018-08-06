@@ -11,9 +11,8 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/gui-entity-slider.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/entity-slider.hpp"
+#include "sfml-util/gui/entity.hpp"
 
 #include <memory>
 #include <vector>
@@ -24,9 +23,9 @@ namespace sfml_util
 {
     namespace gui
     {
-        class IGuiEntity;
-        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
-        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
+        class IEntity;
+        using IEntityPtr_t = misc::NotNull<IEntity *>;
+        using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
     } // namespace gui
 } // namespace sfml_util
 
@@ -41,9 +40,9 @@ namespace stage
             Container
         };
 
-        using GuiEntitySliderVec_t = std::vector<sfml_util::gui::GuiEntitySlider>;
+        using EntitySliderVec_t = std::vector<sfml_util::gui::EntitySlider>;
 
-        // Responsible for managing the positions of GuiEntity objects that slide on and off screen.
+        // Responsible for managing the positions of Entity objects that slide on and off screen.
         // Entities on the left side of the screen are called Treasure objects because they
         // correspond to the source of Treasure.  Entities on the right side of the screen are
         // called Inventory objects because they correspond to a character's inventory.  This class
@@ -65,12 +64,12 @@ namespace stage
             bool AreInventoryObjectsMoving() const;
 
             void AddTreasureObject(
-                const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
+                const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
             void AddInventoryObject(
-                const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
+                const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
@@ -91,20 +90,20 @@ namespace stage
             bool UpdateTimeInventory(const float ELAPSED_TIME_SECONDS);
 
             void ReplaceEntity(
-                const sfml_util::gui::IGuiEntityPtr_t FROM_ENTITY_PTR,
-                const sfml_util::gui::IGuiEntityPtr_t TO_ENTITY_PTR);
+                const sfml_util::gui::IEntityPtr_t FROM_ENTITY_PTR,
+                const sfml_util::gui::IEntityPtr_t TO_ENTITY_PTR);
 
         private:
-            bool UpdateTime(
-                sfml_util::gui::GuiEntitySlider & slider, const float ELAPSED_TIME_SECONDS);
+            bool
+                UpdateTime(sfml_util::gui::EntitySlider & slider, const float ELAPSED_TIME_SECONDS);
 
         private:
             static const float SLIDE_SPEED_;
             //
             std::size_t inventoryCharIndex_;
             treasure::Type treasureType_;
-            GuiEntitySliderVec_t treasureSliders_;
-            GuiEntitySliderVec_t inventorySliders_;
+            EntitySliderVec_t treasureSliders_;
+            EntitySliderVec_t inventorySliders_;
         };
 
         using StageMoverUPtr_t = std::unique_ptr<StageMover>;

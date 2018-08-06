@@ -10,7 +10,9 @@
 // loaders.hpp
 //
 #include "sfml-util/sfml-audio.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <string>
 #include <vector>

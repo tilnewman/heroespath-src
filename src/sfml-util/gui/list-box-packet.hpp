@@ -9,8 +9,9 @@
 //
 // list-box-packet.hpp
 //
-#include "sfml-util/gui/box-info.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
 #include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -24,12 +25,6 @@ namespace sfml_util
     namespace gui
     {
 
-        namespace box
-        {
-            class Box;
-            using BoxUPtr_t = std::unique_ptr<Box>;
-        } // namespace box
-
         // Responsible for wrapping the details required to create a ListBox.
         // Note that the constructor takes pad values by screen ratio and then stores the actual
         // distances in pixels.  Also note that the highlight color is specified as an adjustment to
@@ -38,7 +33,8 @@ namespace sfml_util
         {
         public:
             explicit ListBoxPacket(
-                const box::Info & BOX_INFO = box::Info(),
+                const sf::FloatRect & REGION = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
+                const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
                 const sf::Color & IMAGE_COLOR = DEFAULT_IMAGE_COLOR_,
                 const sf::Color & HIGHLIGHT_COLOR_ADJ = DEFAULT_HIGHLIGHT_COLOR_ADJ_,
@@ -50,8 +46,10 @@ namespace sfml_util
                 = DEFAULT_ELEMENT_PAD_SCREEN_RATIO_V_,
                 const sf::Vector2f & IMAGE_PAD_SCREEN_RATIO_V = DEFAULT_IMAGE_PAD_SCREEN_RATIO_V_);
 
-            bool HasBoxInfo() const { return (box::Info() != boxInfo_); }
-            const box::Info BoxInfo() const { return boxInfo_; }
+            const sf::FloatRect Region() const { return region_; }
+
+            bool HasBoxInfo() const { return (BoxEntityInfo() != boxInfo_); }
+            const BoxEntityInfo BoxInfo() const { return boxInfo_; }
 
             bool HasLineColor() const { return (sf::Color::Transparent != lineColor_); }
             const sf::Color LineColor() const { return lineColor_; }
@@ -76,7 +74,6 @@ namespace sfml_util
             // size of the empty space surrounding an element image
             const sf::Vector2f ImagePad() const { return imagePadV_; }
 
-            static const box::Info DEFAULT_BOX_INFO_;
             static const sf::Color DEFAULT_IMAGE_COLOR_;
             static const sf::Color DEFAULT_HIGHLIGHT_COLOR_ADJ_;
             static const sf::Color DEFAULT_HIGHLIGHT_COLOR_INVALID_;
@@ -86,7 +83,8 @@ namespace sfml_util
             static const float DEFAULT_IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO_;
 
         private:
-            box::Info boxInfo_;
+            sf::FloatRect region_;
+            BoxEntityInfo boxInfo_;
             sf::Color lineColor_;
             sf::Color imageColor_;
             sf::Color highlightColor_;

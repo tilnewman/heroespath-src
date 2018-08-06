@@ -15,12 +15,16 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/image-util.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/image-util.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace sf
+{
+class Texture;
+}
 
 namespace heroespath
 {
@@ -48,7 +52,7 @@ namespace sfml_util
 
             bool Test() const;
 
-            float MaxDimmension() const { return image::StandardDimmension(); }
+            float MaxDimmension() const { return StandardImageDimmension(); }
 
             void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 

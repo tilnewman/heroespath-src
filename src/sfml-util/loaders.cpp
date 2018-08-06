@@ -14,7 +14,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -28,7 +27,7 @@ namespace sfml_util
     {
         namespace fs = misc::filesystem;
 
-        auto const PATH_STR_COMPLETE{ fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
@@ -54,7 +53,7 @@ namespace sfml_util
     {
         namespace fs = misc::filesystem;
 
-        auto const DIR_PATH_STR_COMPLETE{ fs::MakePathPretty(DIR_PATH_STR_ORIG) };
+        auto const DIR_PATH_STR_COMPLETE { fs::MakePathPretty(DIR_PATH_STR_ORIG) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (fs::DoesDirectoryExist(DIR_PATH_STR_COMPLETE)),
@@ -62,10 +61,10 @@ namespace sfml_util
                 << DIR_PATH_STR_COMPLETE
                 << "\") failed because either that path is not a directory or it does not exist.");
 
-        auto const FILE_PATH_STRINGS{ fs::FindFilesInDirectory(
+        auto const FILE_PATH_STRINGS { fs::FindFilesInDirectory(
             DIR_PATH_STR_COMPLETE, "", "", fs::FilenameText::TO_EXCLUDE_VEC_) };
 
-        auto const ORIG_SIZE{ textureVec.size() };
+        auto const ORIG_SIZE { textureVec.size() };
 
         for (auto const & PATH_STR : FILE_PATH_STRINGS)
         {
@@ -80,7 +79,7 @@ namespace sfml_util
     {
         namespace fs = misc::filesystem;
 
-        auto const PATH_STR_COMPLETE{ fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
@@ -99,7 +98,7 @@ namespace sfml_util
     {
         namespace fs = misc::filesystem;
 
-        auto const PATH_STR_COMPLETE{ fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
@@ -107,7 +106,7 @@ namespace sfml_util
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
-        auto musicUPtr{ std::make_unique<sf::Music>() };
+        auto musicUPtr { std::make_unique<sf::Music>() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (musicUPtr->openFromFile(PATH_STR_COMPLETE)),

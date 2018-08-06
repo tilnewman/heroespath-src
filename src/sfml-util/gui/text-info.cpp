@@ -15,14 +15,11 @@
 #include "misc/platform.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-blend-mode.hpp"
 
 #include <iomanip>
 #include <sstream>
 #include <tuple>
-
-#include "sfml-util/gui/list-element.hpp"
 
 namespace heroespath
 {
@@ -31,9 +28,21 @@ namespace sfml_util
     namespace gui
     {
 
+        TextInfo::TextInfo()
+            : text("")
+            , font_ptr_opt(boost::none)
+            , char_size(FontManager::Instance()->Size_Normal())
+            , color(sf::Color::White)
+            , blend_mode(sf::BlendAlpha)
+            , style(sf::Text::Style::Regular)
+            , justified(Justified::Left)
+            , is_outline(false)
+            , outline_thickness(0.0f)
+        {}
+
         TextInfo::TextInfo(
             const std::string & TEXT,
-            const FontPtrOpt_t FONT_PTR_OPT,
+            const FontPtrOpt_t & FONT_PTR_OPT,
             const unsigned int CHAR_SIZE,
             const sf::Color & COLOR,
             const sf::BlendMode & BLEND_MODE,
@@ -72,8 +81,9 @@ namespace sfml_util
         TextInfo::TextInfo(
             const TextInfo & TEXT_INFO_TO_COPY,
             const std::string & TEXT,
-            const sf::Color & COLOR,
-            const unsigned CHAR_SIZE)
+            const ColorOpt_t & COLOR_OPT,
+            const unsigned CHAR_SIZE,
+            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
             : TextInfo(TEXT_INFO_TO_COPY)
         {
             if (TEXT.empty() == false)
@@ -81,33 +91,54 @@ namespace sfml_util
                 text = TEXT;
             }
 
-            if (COLOR != sfml_util::Colors::None)
+            if (COLOR_OPT)
             {
-                color = COLOR;
+                color = COLOR_OPT.value();
             }
 
             if (CHAR_SIZE != 0)
             {
                 char_size = CHAR_SIZE;
             }
+
+            if (NUMBERS_FONT_PTR_OPT)
+            {
+                font_ptr_opt = NUMBERS_FONT_PTR_OPT;
+            }
         }
 
-        void TextInfo::Apply(sf::Text & sfText) const
+        TextInfo::TextInfo(const TextInfo & TEXT_INFO_TO_COPY, const FontPtr_t NEW_FONT_PTR)
+            : TextInfo(TEXT_INFO_TO_COPY, TEXT_INFO_TO_COPY.text, boost::none, 0, NEW_FONT_PTR)
+        {}
+
+        void TextInfo::Apply(sf::Text & sfText, const FontPtrOpt_t & CUSTOM_FONT_PTR_OPT) const
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (text.empty() == false),
                 "sfml_util::gui::TextInfo::Apply() but text was empty.  " << *this);
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!font_ptr_opt),
-                "sfml_util::gui::TextInfo::Apply() but font_ptr_opt was boost::none.  " << *this);
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
                 (char_size != 0),
                 "sfml_util::gui::TextInfo::Apply() but char_size was zero.  " << *this);
 
+            FontPtr_t fontPtrToUse = [&]() {
+                if (CUSTOM_FONT_PTR_OPT)
+                {
+                    return CUSTOM_FONT_PTR_OPT.value();
+                }
+                else
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (!!font_ptr_opt),
+                        "sfml_util::gui::TextInfo::Apply() but font_ptr_opt was boost::none.  "
+                            << *this);
+
+                    return font_ptr_opt.value();
+                }
+            }();
+
             sfText.setString(text);
-            sfText.setFont(*font_ptr_opt.value());
+            sfText.setFont(*fontPtrToUse);
             sfText.setStyle(style);
             sfText.setCharacterSize(char_size);
 
@@ -157,8 +188,8 @@ namespace sfml_util
             }
 
             ss << SEPARATOR << "Size" << char_size
-               << sfml_util::ToString(color, sfml_util::ToStringPrefix::Name) << SEPARATOR
-               << sfml_util::ToString(blend_mode, sfml_util::ToStringPrefix::Name) << SEPARATOR;
+               << sfml_util::ToString(color, misc::ToStringPrefix::SimpleName) << SEPARATOR
+               << sfml_util::ToString(blend_mode, misc::ToStringPrefix::SimpleName) << SEPARATOR;
 
             auto styleToString = [&SEPARATOR](const sf::Uint32 STYLE) {
                 std::ostringstream oss;

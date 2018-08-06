@@ -13,9 +13,11 @@
 #include "creature/name-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -33,7 +35,7 @@ namespace combat
 {
 
     // represents a node in the CombatTree
-    class CombatNode : public sfml_util::gui::GuiEntity
+    class CombatNode : public sfml_util::gui::Entity
     {
     public:
         CombatNode(const CombatNode &) = delete;
@@ -103,8 +105,10 @@ namespace combat
 
         float GetNameWidth() const { return nameTextObj_.getGlobalBounds().width; }
 
+        bool WillDraw() const { return willDraw_; }
+        void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
+
     protected:
-        void OnClick(const sf::Vector2f &) override {}
         const sf::Color HealthColor() const;
         const sf::Color HealthColorRed() const;
         const sf::Color HealthColorTick() const;
@@ -151,15 +155,16 @@ namespace combat
         sf::Text nameTextObj_;
         sf::Text condTextObj_;
         int blockingPos_;
-        sf::Texture texture_;
+        sfml_util::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
         sf::Color creatureImageColor_;
         bool isSummaryView_;
         bool isMoving_;
         creature::CreaturePtr_t creaturePtr_;
+        bool willDraw_;
 
         // members that control the display of skull and crossbones
-        sfml_util::TextureUPtr_t crossBonesTextureUPtr_;
+        sfml_util::CachedTexture crossBonesCachedTexture_;
         sf::Sprite crossBonesSprite_;
         bool willShowCrossBones_;
 
@@ -180,7 +185,7 @@ namespace combat
         bool isDead_;
 
         // members that control the flapping wing animation
-        sfml_util::TextureUPtr_t wingTextureUPtr_;
+        sfml_util::CachedTexture wingCachedTexture_;
         sf::Sprite wingSprite_;
         bool isFlying_;
         sfml_util::sliders::Slider<float> wingFlapSlider_;

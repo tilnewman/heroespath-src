@@ -18,9 +18,9 @@
 #include "map/map-display.hpp"
 #include "map/map.hpp"
 #include "sfml-util/direction-enum.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 #include "stage/adventure-stage.hpp"
 
@@ -32,29 +32,24 @@ namespace stage
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_ { 0.0333f };
 
     AdventureDisplayStage::AdventureDisplayStage(interact::InteractionManager & interactionManager)
-        : Stage(
-              "AdventureDisplay",
-              0.0f,
-              0.0f,
-              sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight(),
-              {},
-              false)
+        : Stage("AdventureDisplay", {}, false)
         , interactionManager_(interactionManager)
         , stageTitle_("", true, 0.0f, sfml_util::ScreenRatioToPixelsVert(0.12f))
         , bottomImage_(0.75f, true, sf::Color::White)
         , MAP_OUTER_REGION_(
-              sfml_util::MapByRes(75.0f, 100.0f),
-              stageTitle_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
-              sfml_util::MapByRes(500.0f, 3000.0f),
-              sfml_util::MapByRes(250.0f, 2500.0f))
-        , mapFrame_()
-        , MAP_INNER_REGION_(mapFrame_.Setup(MAP_OUTER_REGION_, sf::Color(239, 220, 234)))
+              sfml_util::ScreenRatioToPixelsHoriz(0.0586f),
+              sfml_util::Bottom(stageTitle_.Region()) - sfml_util::ScreenRatioToPixelsVert(0.0278f),
+              sfml_util::ScreenRatioToPixelsHoriz(0.4f),
+              sfml_util::ScreenRatioToPixelsVert(0.3f))
+        , MAP_INNER_REGION_(MAP_OUTER_REGION_)
         , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
         , interactStagePtr_(new stage::InteractStage(
               *mapUPtr_, CalcInteractRegion(MAP_OUTER_REGION_), interactionManager_))
         , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
-        , backgroundTexture_()
+        , bgCachedTexture_(
+              "media-images-backgrounds-paper-2",
+              sfml_util::ImageOpt::Default | sfml_util::ImageOpt::FlipVert)
+        , bgSprite_(bgCachedTexture_.Get())
         , moveTimerSec_(0.0f)
         , wasPressedLeft_(false)
         , wasPressedRight_(false)
@@ -78,12 +73,11 @@ namespace stage
 
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundSprite_, STATES);
+        target.draw(bgSprite_, STATES);
         target.draw(bottomImage_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(*characterListUPtr_, STATES);
         target.draw(*mapUPtr_, STATES);
-        target.draw(mapFrame_, STATES);
         Stage::Draw(target, STATES);
     }
 
@@ -125,33 +119,20 @@ namespace stage
     {
         characterListUPtr_->Setup();
 
-        auto const CHARACTER_LIST_LEFT { (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
+        auto const CHARACTER_LIST_LEFT { (StageRegionWidth() * 0.5f)
                                          - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const CHARACTER_LIST_TOP { sfml_util::Display::Instance()->GetWinHeight()
+        auto const CHARACTER_LIST_TOP { StageRegionHeight()
                                         - characterListUPtr_->GetEntityRegion().height
-                                        - bottomImage_.Height()
-                                        - sfml_util::MapByRes(30.0f, 90.0f) };
+                                        - bottomImage_.Region().height
+                                        - sfml_util::ScreenRatioToPixelsVert(0.0333f) };
 
         characterListUPtr_->SetEntityPos(CHARACTER_LIST_LEFT, CHARACTER_LIST_TOP);
     }
 
     void AdventureDisplayStage::Setup_BackgroundImage()
     {
-        sfml_util::Loaders::Texture(
-            backgroundTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
-
-        sfml_util::FlipVert(backgroundTexture_);
-
-        backgroundSprite_.setTexture(backgroundTexture_);
-        backgroundSprite_.setPosition(0.0f, 0.0f);
-
-        backgroundSprite_.setScale(
-            sfml_util::Display::Instance()->GetWinWidth()
-                / backgroundSprite_.getLocalBounds().width,
-            sfml_util::Display::Instance()->GetWinHeight()
-                / backgroundSprite_.getLocalBounds().height);
+        sfml_util::SetSizeAndPos(bgSprite_, StageRegion());
     }
 
     void AdventureDisplayStage::Setup_Map()
@@ -232,16 +213,18 @@ namespace stage
     {
         sf::FloatRect interactRegion;
 
-        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { sfml_util::MapByRes(30.0f, 150.0f) };
+        const auto VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.0333f) };
+
+        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { VERT_SPACER };
 
         interactRegion.left
             = MAP_REGION.left + MAP_REGION.width + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
-        auto const RIGHT_MARGIN { sfml_util::MapByRes(50.0f, 300.0f) };
+        auto const RIGHT_MARGIN { sfml_util::ScreenRatioToPixelsHoriz(0.04f) };
 
         interactRegion.width = (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
 
-        auto const TOP_MARGIN { sfml_util::MapByRes(33.0f, 99.0f) };
+        auto const TOP_MARGIN { VERT_SPACER };
 
         interactRegion.top = MAP_REGION.top + TOP_MARGIN;
 

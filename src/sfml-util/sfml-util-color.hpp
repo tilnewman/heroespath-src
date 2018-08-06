@@ -9,51 +9,59 @@
 //
 // sfml-util-color.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/to-string-prefix-enum.hpp"
+
 #include <SFML/Graphics/Color.hpp>
 
-#include <tuple>
+#include <string>
 
 namespace sf
 {
 
 class Text;
 
-inline constexpr bool operator<(const sf::Color & L, const sf::Color & R)
-{
-    return std::tie(L.r, L.g, L.b, L.a) < std::tie(R.r, R.g, R.b, R.a);
-}
+bool operator<(const sf::Color & L, const sf::Color & R);
+bool operator>(const sf::Color & L, const sf::Color & R);
+bool operator<=(const sf::Color & L, const sf::Color & R);
+bool operator>=(const sf::Color & L, const sf::Color & R);
 
-inline constexpr bool operator>(const sf::Color & L, const sf::Color & R) { return (R < L); }
+// operator== already provided by sfml
 
-inline constexpr bool operator<=(const sf::Color & L, const sf::Color & R) { return !(L > R); }
-
-inline constexpr bool operator>=(const sf::Color & L, const sf::Color & R) { return !(L < R); }
+std::ostream & operator<<(std::ostream & os, const sf::Color & C);
 
 } // namespace sf
 
 namespace heroespath
 {
+
+using ColorOpt_t = boost::optional<sf::Color>;
+
 namespace sfml_util
 {
 
-    // Responsible for wrapping commonly used colors
-    struct Colors
+    namespace defaults
     {
-        static inline const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE)
-        {
-            return sf::Color(COLOR_VALUE, COLOR_VALUE, COLOR_VALUE, 0);
-        }
+        const sf::Color COLOR {};
 
-        static const sf::Color None;
-        static const sf::Color GrayLight;
-        static const sf::Color GrayLighter;
-        static const sf::Color GrayDark;
-        static const sf::Color GrayDarker;
-        static const sf::Color Orange;
-        static const sf::Color Light;
-        static const sf::Color GoldLight;
-        static const sf::Color Highlight;
-    };
+        const sf::Color GrayLight { 200, 200, 200 };
+        const sf::Color GrayLighter { 232, 232, 232 };
+        const sf::Color GrayDark { 100, 100, 100 };
+        const sf::Color GrayDarker { 64, 64, 64 };
+        const sf::Color Orange { 255, 223, 181 };
+        const sf::Color Light { 220, 220, 220 };
+        const sf::Color GoldLight { 255, 248, 220 };
+
+        // same as sf::Color::Transparent
+        const sf::Color None { 0, 0, 0, 0 };
+
+    } // namespace defaults
+
+    const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE);
+
+    const std::string ToString(
+        const sf::Color & C,
+        const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
 
     // linux SFML lib does not seem to support outline fonts...
     void SetColor(sf::Text & text, const sf::Color & COLOR);
@@ -61,15 +69,8 @@ namespace sfml_util
     // return a color between FROM and TO at the given RATIO
     const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO);
 
-    inline bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R)
-    {
-        return std::tie(L.r, L.g, L.b) == std::tie(R.r, R.g, R.b);
-    }
-
-    inline bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R)
-    {
-        return std::tie(L.r, L.g, L.b) < std::tie(R.r, R.g, R.b);
-    }
+    bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R);
+    bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R);
 
 } // namespace sfml_util
 } // namespace heroespath

@@ -103,7 +103,7 @@ namespace game
                  SAVED_HEROESPATH_FILE_NAME_,
                  SAVED_HEROESPATH_FILE_EXT_))
         {
-            auto gameStatePtr{ new GameState() };
+            auto gameStatePtr { new GameState() };
 
             try
             {
@@ -153,7 +153,7 @@ namespace game
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
-            auto const CREATURE_PTR{ creatureFactory.MakeDefaultForDeserialization() };
+            auto const CREATURE_PTR { creatureFactory.MakeDefaultForDeserialization() };
 
             try
             {
@@ -242,17 +242,17 @@ namespace game
     }
 
     void GameStateFactory::Save(
-        const GameStatePtrOpt_t GAMESTATE_PTR_OPT,
-        const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
+        const GameStatePtrOpt_t & GAMESTATE_PTR_OPT,
+        const creature::CreaturePtrOpt_t & CHARACTER_PTR_OPT,
         const std::string & DIR_STR,
         const std::string & FILE_STR,
         const std::string & EXT_STR) const
     {
         namespace fs = misc::filesystem;
 
-        auto const DIR_PATH{ fs::MakeSubDirectoryPathFromCurrent(DIR_STR) };
+        auto const DIR_PATH { fs::MakeSubDirectoryPathFromCurrent(DIR_STR) };
 
-        auto makeFunctionDescStr{ [&]() {
+        auto makeFunctionDescStr { [&]() {
             std::ostringstream ss;
 
             ss << "GameStateFactory::Save(dir=" << DIR_PATH.string() << ", file_name=\"" << FILE_STR
@@ -290,7 +290,7 @@ namespace game
         }
 
         // find the next available filename to create and save to
-        auto const NEXT_AVAILABLE_FILE_PATH{ fs::FindFirstAvailableNumberedFilename(
+        auto const NEXT_AVAILABLE_FILE_PATH { fs::FindFirstAvailableNumberedFilename(
             DIR_PATH, FILE_STR, EXT_STR) };
 
         try

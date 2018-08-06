@@ -8,15 +8,20 @@
 #define HEROESPATH_SFMLUTIL_ISTAGE_HPP_INCLUDED
 //
 // i-stage.hpp
-//  Interface for all Stage objects.
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
-#include <memory>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Window/Event.hpp>
+
 #include <string>
-#include <vector>
+
+namespace sf
+{
+class RenderTarget;
+class RenderStates;
+} // namespace sf
 
 namespace heroespath
 {
@@ -25,9 +30,9 @@ namespace sfml_util
 
     namespace gui
     {
-        class IGuiEntity;
-        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
-        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
+        class IEntity;
+        using IEntityPtr_t = misc::NotNull<IEntity *>;
+        using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
     } // namespace gui
 
     // interface for all Stage classes
@@ -56,26 +61,28 @@ namespace sfml_util
             UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
             = 0;
 
-        virtual const gui::IGuiEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
+        virtual const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE) = 0;
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE) = 0;
 
-        virtual const gui::IGuiEntityPtrOpt_t GetEntityWithFocus() const = 0;
+        virtual const gui::IEntityPtrOpt_t GetEntityWithFocus() const = 0;
         virtual void RemoveFocus() = 0;
-        virtual void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR) = 0;
+        virtual void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) = 0;
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
 
         virtual void HandleResolutionChange() = 0;
 
         // throws if the entity to add was already there
-        virtual void EntityAdd(const gui::IGuiEntityPtr_t) = 0;
+        virtual void EntityAdd(
+            const gui::IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
+            = 0;
 
         // returns false if the entity to remove was not found
-        virtual bool EntityRemove(const gui::IGuiEntityPtr_t) = 0;
+        virtual bool EntityRemove(const gui::IEntityPtr_t) = 0;
 
-        virtual void SetMouseHover(const sf::Vector2f &, const bool) = 0;
+        virtual void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) = 0;
 
         virtual void TestingStrAppend(const std::string &) = 0;
         virtual void TestingStrIncrement(const std::string &) = 0;
@@ -92,7 +99,7 @@ namespace sfml_util
     };
 
     using IStagePtr_t = misc::NotNull<IStage *>;
-    using IStagePVec_t = std::vector<IStagePtr_t>;
+    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
 
 } // namespace sfml_util
 } // namespace heroespath

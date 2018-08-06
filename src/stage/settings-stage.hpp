@@ -10,17 +10,16 @@
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
 //
-#include "popup/i-popup-callback.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
-#include "sfml-util/gui/radio-button.hpp"
+#include "sfml-util/gui/radio-or-check-set.hpp"
+#include "sfml-util/gui/sliderbar-music.hpp"
+#include "sfml-util/gui/sliderbar-sfx.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sliderbar-effects.hpp"
-#include "sfml-util/sliderbar-music.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 
@@ -35,9 +34,9 @@ namespace stage
     // A simple class that displays the system and game settings
     class SettingsStage
         : public sfml_util::Stage
-        , public popup::IPopupHandler_t
-        , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public sfml_util::gui::PopupCallback_t::IHandler_t
+        //, public sfml_util::gui::RadioButtonSet::Callback_t::IHandler_t
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
         SettingsStage(const SettingsStage &) = delete;
@@ -48,12 +47,13 @@ namespace stage
         SettingsStage();
         virtual ~SettingsStage();
 
-        const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
-        bool HandleCallback(const popup::PopupResponse &) override;
+        // bool HandleCallback(const sfml_util::gui::RadioButton::Callback_t::PacketPtr_t &)
+        // override;
+
+        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
 
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -95,23 +95,22 @@ namespace stage
         const float SLIDER_LENGTH_VERT_;
         bool hasStageAlreadyBeenSetup_;
         unsigned prevAALevel_;
-        sfml_util::gui::BackgroundImage bgTileImage_;
+        sfml_util::gui::BoxEntity screenBgBox_;
         sfml_util::StageTitle stageTitle_;
         sfml_util::BottomSymbol bottomSymbol_;
         sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
-        sfml_util::gui::box::Box bgBox_;
+        sfml_util::gui::BoxEntityUPtr_t settingsBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t resLabelTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
+        // sfml_util::gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t aaLabelTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
+        // sfml_util::gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicVolLabelTextRegionUPtr_;
-        sfml_util::SliderBarLabeled_MusicUPtr_t musicVolSliderBarUPtr_;
+        sfml_util::gui::SliderBarMusicUPtr_t musicVolSliderBarUPtr_;
         sfml_util::gui::TextRegionUPtr_t effectsVolLabelTextRegionUPtr_;
-        sfml_util::SliderBarLabeled_EffectsUPtr_t effectsVolSliderBarUPtr_;
+        sfml_util::gui::SliderBarSfxUPtr_t effectsVolSliderBarUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
-        sf::Texture woodTexture_;
     };
 
 } // namespace stage

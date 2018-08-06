@@ -28,8 +28,8 @@ namespace combat
         const TurnAction::Enum ACTION, const creature::CreaturePVec_t & TARGETS_PVEC)
         : actionType_(ACTION)
         , targetsPVec_(TARGETS_PVEC)
-        , spellPtrOpt_(boost::none)
-        , songPtrOpt_(boost::none)
+        , spellPtrOpt_()
+        , songPtrOpt_()
     {}
 
     TurnActionInfo::TurnActionInfo(
@@ -37,14 +37,14 @@ namespace combat
         : actionType_(TurnAction::Cast)
         , targetsPVec_(TARGET_PVEC)
         , spellPtrOpt_(SPELL_PTR)
-        , songPtrOpt_(boost::none)
+        , songPtrOpt_()
     {}
 
     TurnActionInfo::TurnActionInfo(
         const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC)
         : actionType_(TurnAction::PlaySong)
         , targetsPVec_(TARGET_PVEC)
-        , spellPtrOpt_(boost::none)
+        , spellPtrOpt_()
         , songPtrOpt_(SONG_PTR)
     {}
 

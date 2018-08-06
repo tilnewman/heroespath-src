@@ -14,12 +14,13 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/loaders.hpp"
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -36,20 +37,18 @@ namespace stage
         : Stage(
               "Credits",
               {
-                  sfml_util::Font::Default,
-                  sfml_util::Font::DefaultBoldFlavor,
-                  sfml_util::Font::System,
-                  sfml_util::Font::SystemCondensed,
-                  sfml_util::Font::SignThinTallNarrow,
-                  sfml_util::Font::SignBoldShortWide,
-                  sfml_util::Font::Handwriting,
-                  sfml_util::Font::DialogModern,
-                  sfml_util::Font::DialogMedieval,
+                  sfml_util::GuiFont::Default,
+                  sfml_util::GuiFont::DefaultBoldFlavor,
+                  sfml_util::GuiFont::System,
+                  sfml_util::GuiFont::SystemCondensed,
+                  sfml_util::GuiFont::SignThinTallNarrow,
+                  sfml_util::GuiFont::SignBoldShortWide,
+                  sfml_util::GuiFont::Handwriting,
+                  sfml_util::GuiFont::DialogModern,
+                  sfml_util::GuiFont::DialogMedieval,
               },
               true)
         , CREDIT_BOX_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.4f))
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , CREDITBOX_POS_LEFT_(
               (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (CREDIT_BOX_WIDTH_ * 0.5f))
         , creditBoxPosTop_(0.0f)
@@ -58,11 +57,12 @@ namespace stage
         , heightTracker_(0.0f)
         , titleCachedTexture_("media-images-title-blacksymbol")
         , bpTitleSprite_(titleCachedTexture_.Get())
-        , box_("Credits")
-        , backgroundImage_()
+        , boxUPtr_()
         , creditUVec_()
         , scrollSpeed_(DEFAULT_SCROLL_SPEED_)
         , isKeyHeldDown_(false)
+        , aboveBlackRectangle_()
+        , belowBlackRectangle_()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits);
     }
@@ -80,14 +80,10 @@ namespace stage
 
         // title
         {
-            auto const TITLE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
-            auto const SCALE { TITLE_WIDTH / bpTitleSprite_.getLocalBounds().width };
-            bpTitleSprite_.setScale(SCALE, SCALE);
+            sfml_util::Fit(bpTitleSprite_, sfml_util::ScreenRatiosToPixels(0.5f, 0.0f));
 
             bpTitleSprite_.setPosition(
-                (CREDITBOX_POS_LEFT_ + (CREDIT_BOX_WIDTH_ * 0.5f))
-                    - (bpTitleSprite_.getGlobalBounds().width * 0.5f),
-                50.0f);
+                sfml_util::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), 50.0f);
         }
 
         // size of the box in which all the credits scroll
@@ -97,52 +93,61 @@ namespace stage
         creditBoxPosTop_
             = bpTitleSprite_.getPosition().y + bpTitleSprite_.getGlobalBounds().height + MARGIN_TOP;
 
-        creditBoxHeight_ = (SCREEN_HEIGHT_ - creditBoxPosTop_) - MARGIN_BOTTOM;
+        creditBoxHeight_ = (StageRegionHeight() - creditBoxPosTop_) - MARGIN_BOTTOM;
 
         // the rect that defines the credits box
         const sf::FloatRect CREDITS_BOX_RECT(
             CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
 
         // rune background
-        const sfml_util::GradientInfo RUNE_BACKGROUND_GRADIENT_INFO(
-            sf::Color(0, 0, 0, 200), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+        sfml_util::gui::BoxEntityInfo boxInfo;
 
-        const sfml_util::gui::BackgroundInfo RUNE_BACKGROUND_INFO(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-runes"),
-            CREDITS_BOX_RECT,
-            sf::Color::White,
-            RUNE_BACKGROUND_GRADIENT_INFO);
+        boxInfo.SetupImage(sfml_util::CachedTexture(
+            "media-images-backgrounds-tile-runes",
+            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
 
-        backgroundImage_.Setup(RUNE_BACKGROUND_INFO, 1.5f, true);
+        boxInfo.SetupBorder(true);
 
-        // box
-        {
-            const sf::FloatRect BOX_RECT(
-                CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
+        boxInfo.SetupColor(
+            sf::Color::Transparent,
+            sf::Color(0, 0, 0, 200),
+            sfml_util::Side::None,
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-            sfml_util::gui::box::Info boxInfo(
-                true,
-                BOX_RECT,
-                sfml_util::gui::ColorSet(
-                    sfml_util::Colors::GrayLight,
-                    sf::Color::Transparent,
-                    sfml_util::Colors::GrayLight,
-                    sf::Color::Transparent));
+        boxInfo.focus_colors = sfml_util::gui::FocusColors(
+            sfml_util::defaults::GrayLight,
+            sf::Color::Transparent,
+            sfml_util::defaults::GrayLight,
+            sf::Color::Transparent);
 
-            box_.SetupBox(boxInfo);
-        }
+        boxUPtr_
+            = std::make_unique<sfml_util::gui::BoxEntity>("Credits", CREDITS_BOX_RECT, boxInfo);
+
+        // draw solid black rectangles above and below the credits box to hide the
+        // scrolling credits when outside the box
+        aboveBlackRectangle_ = sfml_util::MakeRectangleSolid(
+            sf::FloatRect(0.0f, 0.0f, StageRegionWidth(), creditBoxPosTop_ - 5.0f),
+            sf::Color::Black);
+
+        belowBlackRectangle_ = sfml_util::MakeRectangleSolid(
+            sf::FloatRect(
+                0.0f,
+                creditBoxPosTop_ + creditBoxHeight_ + 5.0f,
+                StageRegionWidth(),
+                StageRegionHeight()),
+            sf::Color::Black);
 
         // establish baseline TextInfo objects
         sfml_util::gui::TextInfo creditTextInfoSmall(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             20,
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
 
         sfml_util::gui::TextInfo creditTextInfoLarge(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             24,
             sf::Color::White,
             sfml_util::Justified::Center);
@@ -236,7 +241,7 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Neo Euler\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             "Hermann Zapf\nCopyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the "
             "SIL Open Font "
             "License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
@@ -244,14 +249,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Modern Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Gentium Plus\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
             "J.Victor Gaultney\nAnnie Olsen\nIska Routamaa\nBecca "
             "Hirsbrunner\nCopyright (c) SIL International, "
             "2003-2014\nwww.scripts.sil.org/Gentium\nUnder the "
@@ -260,14 +265,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Goudy Bookletter 1911\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
         /*
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Quill Sword\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
             "by Daniel Zadorozny\n2015 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
@@ -275,14 +280,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Queen & Country\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SignBoldShortWide),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SignBoldShortWide),
             "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.  "
             "If you like it,\nplease e-mail the author at iconian@aol.com."));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Valley Forge\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
             "by Daniel Zadorozny\n2008 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
@@ -290,14 +295,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Square Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DialogModern),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DialogModern),
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Mops Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DialogModern),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DialogModern),
             "Created by Uwe Borchert\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
         */
@@ -360,7 +365,7 @@ namespace stage
 
     void CreditsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, STATES);
+        target.draw(*boxUPtr_, STATES);
 
         Stage::Draw(target, STATES);
 
@@ -371,24 +376,9 @@ namespace stage
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when outside the box
-        sfml_util::DrawRectangle(
-            target,
-            STATES,
-            sf::FloatRect(0.0f, 0.0f, SCREEN_WIDTH_, creditBoxPosTop_ - 5.0f),
-            sf::Color::Black,
-            1.0f,
-            sf::Color::Black);
+        target.draw(aboveBlackRectangle_, STATES);
+        target.draw(belowBlackRectangle_, STATES);
 
-        sfml_util::DrawRectangle(
-            target,
-            STATES,
-            sf::FloatRect(
-                0.0f, creditBoxPosTop_ + creditBoxHeight_ + 5.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_),
-            sf::Color::Black,
-            1.0f,
-            sf::Color::Black);
-
-        target.draw(box_, STATES);
         target.draw(bpTitleSprite_, STATES);
     }
 

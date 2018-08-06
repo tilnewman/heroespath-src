@@ -12,9 +12,10 @@
 #include "interact/i-interaction.hpp"
 #include "interact/interaction-button.hpp"
 #include "interact/interaction-text-enum.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-#include "sfml-util/sfml-graphics.hpp"
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <string>
 
@@ -48,9 +49,9 @@ namespace interact
 
         ButtonVec_t & Buttons() final { return buttons_; }
 
-        const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
+        const sf::Texture & SubjectTexture() const final { return subjectCachedTexture_.Get(); }
 
-        const sf::Texture & ContextTexture() const final { return contextTexture_; }
+        const sf::Texture & ContextTexture() const final { return contextCachedTexture_.Get(); }
 
         void PlayEnterSfx() const final;
 
@@ -84,8 +85,8 @@ namespace interact
         Interact::Enum interactionType_;
         sfml_util::gui::TextInfo text_;
         ButtonVec_t buttons_;
-        sf::Texture subjectTexture_;
-        sf::Texture contextTexture_;
+        sfml_util::CachedTexture subjectCachedTexture_;
+        sfml_util::CachedTexture contextCachedTexture_;
         sfml_util::sound_effect::Enum sfxEnter_;
         sfml_util::sound_effect::Enum sfxExit_;
         bool isLocked_;

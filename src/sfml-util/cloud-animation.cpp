@@ -11,10 +11,10 @@
 //
 #include "cloud-animation.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/random.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
 
@@ -137,23 +137,11 @@ namespace sfml_util
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , cloudTexture1_()
-            , cloudTexture2_()
-            , cloudTexture3_()
+            , cloudCachedTexture1_("media-images-misc-cloud1")
+            , cloudCachedTexture2_("media-images-misc-cloud2")
+            , cloudCachedTexture3_("media-images-misc-cloud3")
             , cloudVec_()
         {
-            Loaders::Texture(
-                cloudTexture1_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud1"));
-
-            Loaders::Texture(
-                cloudTexture2_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud2"));
-
-            Loaders::Texture(
-                cloudTexture3_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-cloud3"));
-
             cloudVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
         }
 
@@ -176,6 +164,7 @@ namespace sfml_util
                 auto const HORIZ_RAND_SPAN { (REGION_.width * 0.5f) * CENTER_VAR_RATIO_ };
                 auto const HORIZ_BASE { HORIZ_CENTER - (HORIZ_RAND_SPAN * 0.5f) };
                 auto const HORIZ_START_POS { HORIZ_BASE + misc::random::Float(HORIZ_RAND_SPAN) };
+
                 auto const HORIZ_END_POS { (
                     (HORIZ_START_POS < HORIZ_CENTER)
                         ? (HORIZ_START_POS - misc::random::Float(HORIZ_RAND_SPAN))
@@ -185,21 +174,27 @@ namespace sfml_util
                 auto const VERT_RAND_SPAN { (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
                 auto const VERT_BASE { VERT_CENTER - (VERT_RAND_SPAN * 0.5f) };
                 auto const VERT_START_POS { VERT_BASE + misc::random::Float(VERT_RAND_SPAN) };
+
                 auto const VERT_END_POS { (
                     (VERT_START_POS < VERT_CENTER)
                         ? (VERT_START_POS - misc::random::Float(VERT_RAND_SPAN))
                         : (VERT_START_POS + misc::random::Float(VERT_RAND_SPAN))) };
 
-                sf::Texture & textureRef { cloudTexture1_ };
-                auto const WHICH_TEXTURE_NUM { misc::random::Int(2) };
-                if (WHICH_TEXTURE_NUM == 0)
-                {
-                    textureRef = cloudTexture2_;
-                }
-                else if (WHICH_TEXTURE_NUM == 1)
-                {
-                    textureRef = cloudTexture3_;
-                }
+                const sf::Texture & RANDOM_CLOUD_TEXTURE_REF = [&]() {
+                    auto const WHICH_TEXTURE_NUM { misc::random::Int(2) };
+                    if (WHICH_TEXTURE_NUM == 2)
+                    {
+                        return cloudCachedTexture2_.Get();
+                    }
+                    else if (WHICH_TEXTURE_NUM == 1)
+                    {
+                        return cloudCachedTexture3_.Get();
+                    }
+                    else
+                    {
+                        return cloudCachedTexture1_.Get();
+                    }
+                }();
 
                 auto rotationSpeedToUse { ValueWithRandomVariance(
                     ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_) };
@@ -209,7 +204,7 @@ namespace sfml_util
                 }
 
                 cloudVec_.emplace_back(Cloud(
-                    textureRef,
+                    RANDOM_CLOUD_TEXTURE_REF,
                     sf::Vector2f(HORIZ_START_POS, VERT_START_POS),
                     sf::Vector2f(HORIZ_END_POS, VERT_END_POS),
                     ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
@@ -264,6 +259,7 @@ namespace sfml_util
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

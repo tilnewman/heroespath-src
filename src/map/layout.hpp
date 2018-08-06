@@ -11,7 +11,9 @@
 //
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <string>
 
@@ -49,7 +51,7 @@ namespace map
         sf::Vector2i tile_count_v;
         LayerVec_t layer_vec;
         TilesPanelVec_t tiles_panel_vec;
-        sfml_util::TextureVec_t texture_vec;
+        std::vector<sf::Texture> texture_vec;
         sf::RenderTexture empty_texture;
     };
 } // namespace map

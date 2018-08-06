@@ -12,7 +12,6 @@
 #include "loop-cmd-popup.hpp"
 
 #include "game/loop-manager.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-generic.hpp"
 #include "sfml-util/display.hpp"

@@ -9,8 +9,11 @@
 //
 // text-animation.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include <memory>
 #include <string>
@@ -64,6 +67,7 @@ namespace sfml_util
 
         using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
         using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

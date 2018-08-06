@@ -11,7 +11,9 @@
 //
 #include "character-stage-anim-num.hpp"
 
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <sstream>
 #include <tuple>
@@ -162,6 +164,11 @@ namespace stage
         return (timerSec_ >= 3.0f);
     }
 
+    void AnimNum::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        target.draw(textObj_, states);
+    }
+
     bool operator==(const AnimNum & L, const AnimNum & R)
     {
         if (((misc::IsRealClose(L.startLeft_, R.startLeft_))
@@ -200,5 +207,6 @@ namespace stage
                    R.isHeldDown_,
                    R.textInfo_);
     }
+
 } // namespace stage
 } // namespace heroespath

@@ -11,10 +11,19 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/gui/text-region.hpp"
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace heroespath
 {
+namespace sfml_util
+{
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    } // namespace gui
+} // namespace sfml_util
+
 namespace popup
 {
 
@@ -27,7 +36,6 @@ namespace popup
         PopupStageImageFade & operator=(const PopupStageImageFade &) = delete;
         PopupStageImageFade & operator=(PopupStageImageFade &&) = delete;
 
-    public:
         explicit PopupStageImageFade(const PopupInfo &);
         virtual ~PopupStageImageFade();
 
@@ -39,8 +47,6 @@ namespace popup
     private:
         static const float BEFORE_FADE_STARTS_DELAY_SEC_;
 
-        sf::Texture textureCurr_;
-        sf::Texture texturePrev_;
         sf::Sprite spriteCurr_;
         sf::Sprite spritePrev_;
         float beforeFadeTimerSec_;

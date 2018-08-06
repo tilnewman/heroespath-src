@@ -12,94 +12,109 @@
 #include "horiz-symbol.hpp"
 
 #include "sfml-util/display.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
-#include "game/game-data-file.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-vertex.hpp"
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    const sf::Color BottomSymbol::DEFAULT_COLOR_{ sf::Color(255, 255, 255, 127) };
+    const sf::Color BottomSymbol::DEFAULT_COLOR_ { sf::Color(255, 255, 255, 127) };
 
     BottomSymbol::BottomSymbol(
-        const float VERT_SCALE,
-        const bool WILL_INVERT_COLOR,
-        const sf::Color & COLOR,
-        const float VERT_OFFSET_RATIO)
-        : sprite1_()
-        , sprite2_()
-        , sprite3_()
-        , sprite4_()
-        , texture_()
+        const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
+        : cachedTextureOpt_()
+        , vertexArray_(sf::PrimitiveType::Quads)
+        , region_(0.0f, 0.0f, 0.0f, 0.0f)
     {
-        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR, VERT_OFFSET_RATIO);
+        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR);
     }
-
-    BottomSymbol::~BottomSymbol() = default;
 
     void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(sprite1_, states);
-        target.draw(sprite2_, states);
-        target.draw(sprite3_, states);
-        target.draw(sprite4_, states);
+        target.draw(vertexArray_, states);
     }
 
     void BottomSymbol::Setup(
-        const float VERT_SCALE,
-        const bool WILL_INVERT_COLOR,
-        const sf::Color & COLOR,
-        const float VERT_OFFSET_RATIO)
+        const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
     {
-        sfml_util::Loaders::Texture(
-            texture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
+        cachedTextureOpt_ = CachedTexture(
+            "media-images-gui-accents-symbol1",
+            ImageOpt::Default | ((WILL_INVERT_COLOR) ? ImageOpt::Invert : ImageOpt::None));
 
-        if (WILL_INVERT_COLOR)
-        {
-            sfml_util::Invert(texture_);
-        }
+        const sf::FloatRect TEXTURE_REGION(
+            sf::Vector2f(0.0f, 0.0f), sf::Vector2f(cachedTextureOpt_->Get().getSize()));
 
-        sprite1_.setTexture(texture_);
-        sprite2_.setTexture(texture_);
-        sprite3_.setTexture(texture_);
-        sprite4_.setTexture(texture_);
+        const auto IMAGE_HEIGHT { ScreenRatioToPixelsVert(0.137f) * VERT_SCALE };
+        const auto IMAGE_SIZE_V { FitCopy(Size(TEXTURE_REGION), sf::Vector2f(0.0f, IMAGE_HEIGHT)) };
+        auto const POS_TOP { (sfml_util::Display::Instance()->GetWinHeight() - IMAGE_SIZE_V.y) };
 
-        sprite1_.setColor(COLOR);
-        sprite2_.setColor(COLOR);
-        sprite3_.setColor(COLOR);
-        sprite4_.setColor(COLOR);
+        auto const PAD { 8.0f };
+        auto const THREE_PADS { PAD * 3.0f };
+        auto const HALF_SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() * 0.5f };
 
-        auto const SCALE{ sfml_util::MapByRes(1.0f, 5.0f) };
-        sprite1_.setScale(SCALE, SCALE * VERT_SCALE);
-        sprite2_.setScale(SCALE, SCALE * VERT_SCALE);
-        sprite3_.setScale(SCALE, SCALE * VERT_SCALE);
-        sprite4_.setScale(SCALE, SCALE * VERT_SCALE);
+        const sf::Vector2f POS_1_V(((HALF_SCREEN_WIDTH - IMAGE_SIZE_V.x) + PAD), POS_TOP);
+        const sf::Vector2f POS_2_V((HALF_SCREEN_WIDTH - PAD), POS_TOP);
 
-        auto const VERT_OFFSET{ sprite1_.getGlobalBounds().height * VERT_OFFSET_RATIO };
+        const sf::Vector2f POS_3_V(
+            ((HALF_SCREEN_WIDTH - (IMAGE_SIZE_V.x * 2.0f)) + THREE_PADS), POS_TOP);
 
-        auto const TOP{ (sfml_util::Display::Instance()->GetWinHeight()
-                         - sprite1_.getGlobalBounds().height)
-                        + VERT_OFFSET };
+        const sf::Vector2f POS_4_V(((HALF_SCREEN_WIDTH + IMAGE_SIZE_V.x) - THREE_PADS), POS_TOP);
 
-        auto const PAD{ 8.0f };
-        auto const THREE_PADS{ PAD * 3.0f };
-        auto const HALF_SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * 0.5f };
+        AppendVertexesForQuad(vertexArray_, POS_1_V, TEXTURE_REGION, COLOR);
+        AppendVertexesForQuad(vertexArray_, POS_2_V, TEXTURE_REGION, COLOR);
+        AppendVertexesForQuad(vertexArray_, POS_3_V, TEXTURE_REGION, COLOR);
+        AppendVertexesForQuad(vertexArray_, POS_4_V, TEXTURE_REGION, COLOR);
 
-        sprite1_.setPosition(((HALF_SCREEN_WIDTH - sprite1_.getGlobalBounds().width) + PAD), TOP);
-
-        sprite2_.setPosition((HALF_SCREEN_WIDTH - PAD), TOP);
-
-        sprite3_.setPosition(
-            ((HALF_SCREEN_WIDTH - (sprite1_.getGlobalBounds().width * 2.0f)) + THREE_PADS), TOP);
-
-        sprite4_.setPosition(
-            ((HALF_SCREEN_WIDTH + sprite1_.getGlobalBounds().width) - THREE_PADS), TOP);
+        region_ = vertexArray_.getBounds();
     }
 
-    float BottomSymbol::Bottom() const { return sfml_util::Display::Instance()->GetWinHeight(); }
+    const sf::Color BottomSymbol::Color() const
+    {
+        if (vertexArray_.getVertexCount() > 0)
+        {
+            return vertexArray_[0].color;
+        }
+        else
+        {
+            return defaults::None;
+        }
+    }
+
+    void BottomSymbol::Color(const sf::Color & NEW_COLOR)
+    {
+        const auto VERTEX_COUNT { vertexArray_.getVertexCount() };
+        for (std::size_t i(0); i < VERTEX_COUNT; ++i)
+        {
+            vertexArray_[i].color = NEW_COLOR;
+        }
+    }
+
+    void BottomSymbol::SetPos(const float POS_LEFT, const float POS_TOP)
+    {
+        if (vertexArray_.getVertexCount() > 0)
+        {
+            MovePos(POS_LEFT - vertexArray_[0].position.x, POS_TOP - vertexArray_[0].position.y);
+        }
+
+        region_.left = POS_LEFT;
+        region_.top = POS_TOP;
+    }
+
+    void BottomSymbol::MovePos(const float HORIZ, const float VERT)
+    {
+        const sf::Vector2f MOVE_V(HORIZ, VERT);
+
+        const auto VERTEX_COUNT { vertexArray_.getVertexCount() };
+        for (std::size_t i(0); i < VERTEX_COUNT; ++i)
+        {
+            vertexArray_[i].position += MOVE_V;
+        }
+
+        region_.left += HORIZ;
+        region_.top += VERT;
+    }
+
 } // namespace sfml_util
 } // namespace heroespath

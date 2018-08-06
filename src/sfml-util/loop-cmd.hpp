@@ -12,9 +12,7 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/loop.hpp"
-#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/stage.hpp"
 
 #include <memory>
 #include <sstream>
@@ -255,15 +253,7 @@ namespace sfml_util
 
         void Execute() override;
 
-        const std::string Name() const override
-        {
-            std::ostringstream ss;
-            ss << LoopCmd::Name() << "_FromColor=" << fadeFromColor_
-               << "_WithSpeedMult=" << speedMult_ << "_WillHoldAfter=" << std::boolalpha
-               << willHoldAfter_;
-
-            return ss.str();
-        }
+        const std::string Name() const override;
 
     private:
         float speedMult_;
@@ -289,14 +279,7 @@ namespace sfml_util
 
         void Execute() override;
 
-        const std::string Name() const override
-        {
-            std::ostringstream ss;
-            ss << LoopCmd::Name() << "To=" << fadeToColor_ << "_WithSpeedMult=" << speedMult_
-               << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
-
-            return ss.str();
-        }
+        const std::string Name() const override;
 
     private:
         float speedMult_;
@@ -409,12 +392,7 @@ namespace sfml_util
 
         void Execute() override;
 
-        const std::string Name() const override
-        {
-            std::ostringstream ss;
-            ss << LoopCmd::Name() << "At=" << clickPosV_;
-            return ss.str();
-        }
+        const std::string Name() const override;
 
     private:
         sf::Vector2f clickPosV_;

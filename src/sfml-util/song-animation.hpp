@@ -9,8 +9,10 @@
 //
 // song-animation.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <vector>
@@ -107,17 +109,18 @@ namespace sfml_util
             float emitTimerDurationSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sf::Texture noteTexture1_;
-            sf::Texture noteTexture2_;
-            sf::Texture noteTexture3_;
-            sf::Texture noteTexture4_;
-            sf::Texture noteTexture5_;
-            sf::Texture noteTexture6_;
+            sfml_util::CachedTexture noteCachedTexture1_;
+            sfml_util::CachedTexture noteCachedTexture2_;
+            sfml_util::CachedTexture noteCachedTexture3_;
+            sfml_util::CachedTexture noteCachedTexture4_;
+            sfml_util::CachedTexture noteCachedTexture5_;
+            sfml_util::CachedTexture noteCachedTexture6_;
             NoteVec_t noteVec_;
         };
 
         using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
         using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

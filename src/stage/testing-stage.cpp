@@ -15,27 +15,21 @@
 #include "combat/strategy-enums.hpp"
 #include "combat/target-enum.hpp"
 #include "creature/condition-holder.hpp"
-#include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
-#include "creature/player-party-factory.hpp"
-#include "creature/player-party.hpp"
 #include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
-#include "game/game-state-factory.hpp"
-#include "game/game-state.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
 #include "log/log-macros.hpp"
 #include "map/level-enum.hpp"
-#include "map/map-display.hpp"
 #include "map/map.hpp"
+#include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/types.hpp"
-#include "popup/popup-manager.hpp"
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -47,10 +41,14 @@
 #include "sfml-util/gui/song-image-loader.hpp"
 #include "sfml-util/gui/spell-image-loader.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
+#include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-option-enum.hpp"
-#include "sfml-util/loaders.hpp"
 #include "sfml-util/loop-state-enum.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/side-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "song/song-holder.hpp"
@@ -58,6 +56,7 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <sstream>
 #include <string>
@@ -85,7 +84,7 @@ namespace stage
 
             text = sf::Text(
                 boost::filesystem::path(cached_texture_opt.value().Path()).leaf().string(),
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 24);
 
             sfml_util::SetColor(text, sf::Color::Red);
@@ -98,13 +97,8 @@ namespace stage
         {
             target.draw(sprite, states);
 
-            sfml_util::DrawRectangle(
-                target,
-                states,
-                text.getGlobalBounds(),
-                sf::Color::Transparent,
-                0.0f,
-                sf::Color::Black);
+            target.draw(
+                sfml_util::MakeRectangleSolid(text.getGlobalBounds(), sf::Color::Black), states);
 
             target.draw(text, states);
         }
@@ -118,19 +112,17 @@ namespace stage
         : Stage(
               "Testing",
               {
-                  sfml_util::Font::Default,
-                  sfml_util::Font::DefaultBoldFlavor,
-                  sfml_util::Font::System,
-                  sfml_util::Font::SystemCondensed,
-                  sfml_util::Font::SignThinTallNarrow,
-                  sfml_util::Font::SignBoldShortWide,
-                  sfml_util::Font::Handwriting,
-                  sfml_util::Font::DialogModern,
-                  sfml_util::Font::DialogMedieval,
+                  sfml_util::GuiFont::Default,
+                  sfml_util::GuiFont::DefaultBoldFlavor,
+                  sfml_util::GuiFont::System,
+                  sfml_util::GuiFont::SystemCondensed,
+                  sfml_util::GuiFont::SignThinTallNarrow,
+                  sfml_util::GuiFont::SignBoldShortWide,
+                  sfml_util::GuiFont::Handwriting,
+                  sfml_util::GuiFont::DialogModern,
+                  sfml_util::GuiFont::DialogMedieval,
               },
               true)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , textures_()
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
@@ -141,6 +133,17 @@ namespace stage
         , willInspectImages_(false)
         , isInspectingImages_(false)
         , imageInspectIndex_(0)
+        , waitingForKeyOrClickId_(0)
+        , waitingForKeyOrClickMaxTimeSec_(30.0f)
+        , waitingForKeyOrClickElapsedTimeSec_(0.0f)
+        , isWaitingForKeyOrClickPaused_(false)
+        , waitingForKeyOrClick_CachedTextures_()
+        , waitingForKeyOrClick_ToDraw_Sprites_()
+        , waitingForKeyOrClick_ToDraw_GoldBars_()
+        , waitingForKeyOrClick_ToDraw_Borders_()
+        , waitingForKeyOrClick_ToDraw_RectangleShapes_()
+        , waitingForKeyOrClick_ToDraw_VertexArrays_()
+        , waitingForKeyOrClick_ToDraw_Texts_()
     {}
 
     TestingStage::~TestingStage() { Stage::ClearAllEntities(); }
@@ -164,11 +167,53 @@ namespace stage
         {
             DrawNormal(target, STATES);
         }
+
+        if (waitingForKeyOrClickId_ > 0)
+        {
+            for (const auto & SPRITE : waitingForKeyOrClick_ToDraw_Sprites_)
+            {
+                target.draw(SPRITE, STATES);
+            }
+
+            for (const auto & GOLDBAR : waitingForKeyOrClick_ToDraw_GoldBars_)
+            {
+                target.draw(GOLDBAR, STATES);
+            }
+
+            for (const auto & BORDER : waitingForKeyOrClick_ToDraw_Borders_)
+            {
+                target.draw(BORDER, STATES);
+            }
+
+            for (const auto & RECTANGLE_SHAPE : waitingForKeyOrClick_ToDraw_RectangleShapes_)
+            {
+                target.draw(RECTANGLE_SHAPE, STATES);
+            }
+
+            for (const auto & VERTEX_ARRAY : waitingForKeyOrClick_ToDraw_VertexArrays_)
+            {
+                target.draw(VERTEX_ARRAY, STATES);
+            }
+
+            for (const auto & SF_TEXT : waitingForKeyOrClick_ToDraw_Texts_)
+            {
+                target.draw(SF_TEXT, STATES);
+            }
+        }
     }
 
     void TestingStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+
+        if (!isWaitingForKeyOrClickPaused_ && (waitingForKeyOrClickId_ > 0))
+        {
+            waitingForKeyOrClickElapsedTimeSec_ += ELAPSED_TIME_SECONDS;
+            if (waitingForKeyOrClickElapsedTimeSec_ > waitingForKeyOrClickMaxTimeSec_)
+            {
+                ResetWaitingForKeyOrClick();
+            }
+        }
     }
 
     bool TestingStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
@@ -176,10 +221,10 @@ namespace stage
         if (isInspectingImages_)
         {
             auto const INSPECT_IMAGE_COUNT_HORIZ { static_cast<std::size_t>(
-                SCREEN_WIDTH_ / IMAGE_INSPECT_DIMMENSION_) };
+                StageRegionWidth() / IMAGE_INSPECT_DIMMENSION_) };
 
             auto const INSPECT_IMAGE_COUNT_VERT { static_cast<std::size_t>(
-                SCREEN_HEIGHT_ / IMAGE_INSPECT_DIMMENSION_) };
+                StageRegionHeight() / IMAGE_INSPECT_DIMMENSION_) };
 
             auto const INSPECT_IMAGE_COUNT { INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
 
@@ -214,6 +259,17 @@ namespace stage
             }
         }
 
+        if (KEY_EVENT.code == sf::Keyboard::P)
+        {
+            isWaitingForKeyOrClickPaused_ = !isWaitingForKeyOrClickPaused_;
+        }
+        else
+        {
+            ResetWaitingForKeyOrClick();
+        }
+
+        waitingForKeyOrClickElapsedTimeSec_ = 0.0f;
+
         return false;
     }
 
@@ -238,6 +294,8 @@ namespace stage
                 }
             }
         }
+
+        ResetWaitingForKeyOrClick();
     }
 
     void TestingStage::TestingStrAppend(const std::string & S)
@@ -299,6 +357,8 @@ namespace stage
 
     void TestingStage::PerformNextTest()
     {
+        static auto waitingForKeyOrClickCounter(0);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
         if (game::LoopManager::Instance()->IsFading())
@@ -319,258 +379,156 @@ namespace stage
         // ReSaveWithBlackBorder("media-images-creaturess-dir");
         // ReSaveWithBlackBorder("media-images-items-dir");
 
-        static auto hasTestingCompleted_GameDataFile { false };
-        if (false == hasTestingCompleted_GameDataFile)
-        {
-            hasTestingCompleted_GameDataFile = PerformGameDataFileTests();
-            return;
-        }
+        M_TESTING_STAGE_TEST(GameDataFile);
 
-        static auto hasTestingCompleted_Enums { false };
-        if (false == hasTestingCompleted_Enums)
-        {
-            hasTestingCompleted_Enums = PerformEnumTests();
-            return;
-        }
+        M_TESTING_STAGE_TEST_WAIT(GoldBar);
+        M_TESTING_STAGE_TEST_WAIT(GoldBar2);
+        M_TESTING_STAGE_TEST_WAIT(Border);
 
-        static auto hasTestingCompleted_Fonts { false };
-        if (false == hasTestingCompleted_Fonts)
-        {
-            hasTestingCompleted_Fonts = TestFonts();
-            return;
-        }
+        M_TESTING_STAGE_TEST(Enums);
+        M_TESTING_STAGE_TEST(Fonts);
+        M_TESTING_STAGE_TEST(Maps);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemFactory, item::ItemFactory);
+        M_TESTING_STAGE_TEST(ItemProfileReport);
+        M_TESTING_STAGE_TEST(InventoryFactory);
+        M_TESTING_STAGE_TEST(ArmorRatings);
+        M_TESTING_STAGE_TEST(ImageSet);
+        M_TESTING_STAGE_TEST(CharacterImageSet);
+        M_TESTING_STAGE_TEST(Spells);
 
-        /*
-        static auto hasTestingCompleted_FontMeasurements{ false };
-        if (false == hasTestingCompleted_FontMeasurements)
-        {
-            hasTestingCompleted_FontMeasurements = true;
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
+            SpellsImageLoader, sfml_util::gui::SpellImageLoader);
 
-            creature::NameInfo nameInfo;
+        M_TESTING_STAGE_TEST(Songs);
 
-            for (int sizeIndex(0); sizeIndex <= 2; ++sizeIndex)
-            {
-                auto const FONT_SIZE{ [sizeIndex]() {
-                    switch (sizeIndex)
-                    {
-                            // clang-format off
-                    case 0: { return sfml_util::FontManager::Instance()->Size_Normal(); }
-                    case 1: { return sfml_util::FontManager::Instance()->Size_Largeish(); }
-                    case 2: { return sfml_util::FontManager::Instance()->Size_Large(); }
-                    default: { return unsigned(0); }
-                            // clang-format on
-                    }
-                }() };
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, sfml_util::gui::SongImageLoader);
 
-                const std::string FONT_SIZE_STR{ [sizeIndex]() {
-                    switch (sizeIndex)
-                    {
-                            // clang-format off
-                    case 0: { return "Normal"; }
-                    case 1: { return "Largeish"; }
-                    case 2: { return "Large"; }
-                    default: { return "ERROR"; }
-                            // clang-format on
-                    }
-                }() };
+        M_TESTING_STAGE_TEST(Conditions);
 
-                std::vector<float> lengths;
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
+            ConditionImageLoader, sfml_util::gui::ConditionImageLoader);
 
-                for (int fontIndex(0); fontIndex <= 3; ++fontIndex)
-                {
-                    auto const FONT_ENUM{ static_cast<sfml_util::Font::Enum>(fontIndex) };
+        M_TESTING_STAGE_TEST(Titles);
 
-                    auto const LENGTH{ nameInfo.Length(sfml_util::gui::TextInfo(
-                        nameInfo.LargestName(),
-                        sfml_util::FontManager::Instance()->GetFont(FONT_ENUM),
-                        FONT_SIZE)) };
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, sfml_util::gui::TitleImageLoader);
 
-                    lengths.emplace_back(LENGTH);
+        M_TESTING_STAGE_TEST(PopupManager);
 
-                    M_HP_LOG_DBG(
-                        sfml_util::Font::ToString(FONT_ENUM)
-                        << "\t" << FONT_SIZE_STR << '\t' << LENGTH << '\t' << "(" << LENGTH << "/"
-                        << sfml_util::Display::Instance()->GetWinWidth()
-                        << ")=" << (LENGTH / sfml_util::Display::Instance()->GetWinWidth()));
-                }
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
+            CombatImageLoader, sfml_util::gui::CombatImageLoader);
 
-                misc::Vector::MinMaxAvgSum<float> mmas(lengths);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemImageLoader, sfml_util::gui::ItemImageLoader);
 
-                M_HP_LOG_DBG(
-                    "[" << mmas.min << ", " << mmas.avg << ", " << mmas.max
-                        << "]  std_dev=" << misc::Vector::StandardDeviation(lengths));
-            }
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
+            CreatureImageLoader, sfml_util::gui::CreatureImageLoader);
 
-            return;
-        }
-        */
-
-        static auto hasTestingCompleted_Maps { false };
-        if (false == hasTestingCompleted_Maps)
-        {
-            hasTestingCompleted_Maps = TestMaps();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemFactory { false };
-        if (false == hasTestingCompleted_ItemFactory)
-        {
-            static item::ItemFactory itemFactory;
-            hasTestingCompleted_ItemFactory = itemFactory.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemProfileReport { false };
-        if (false == hasTestingCompleted_ItemProfileReport)
-        {
-            item::ItemProfilesReporter::LogReport();
-            hasTestingCompleted_ItemProfileReport = true;
-            return;
-        }
-
-        static auto hasTestingCompleted_InventoryFactory { false };
-        if (false == hasTestingCompleted_InventoryFactory)
-        {
-            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
-            return;
-        }
-
-        static auto hasTestingCompleted_ArmorRatings { false };
-        if (false == hasTestingCompleted_ArmorRatings)
-        {
-            item::ArmorRatings armorRatings;
-            armorRatings.LogCommonArmorRatings();
-            hasTestingCompleted_ArmorRatings = true;
-            return;
-        }
-
-        static auto hasTestingCompleted_ImageSet { false };
-        if (false == hasTestingCompleted_ImageSet)
-        {
-            hasTestingCompleted_ImageSet = TestImageSet();
-            return;
-        }
-
-        static auto hasTestingCompleted_CharacterImageSet { false };
-        if (false == hasTestingCompleted_CharacterImageSet)
-        {
-            hasTestingCompleted_CharacterImageSet = TestCharacterImageSet();
-            return;
-        }
-
-        static auto hasTestingCompleted_Spells { false };
-        if (false == hasTestingCompleted_Spells)
-        {
-            hasTestingCompleted_Spells = spell::Holder::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_SpellsImageLoader { false };
-        if (false == hasTestingCompleted_SpellsImageLoader)
-        {
-            static sfml_util::gui::SpellImageLoader spellImageLoader;
-            hasTestingCompleted_SpellsImageLoader = spellImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_Songs { false };
-        if (false == hasTestingCompleted_Songs)
-        {
-            hasTestingCompleted_Songs = song::Holder::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_SongsImageLoader { false };
-        if (false == hasTestingCompleted_SongsImageLoader)
-        {
-            static sfml_util::gui::SongImageLoader songImageLoader;
-            hasTestingCompleted_SongsImageLoader = songImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_Condition { false };
-        if (false == hasTestingCompleted_Condition)
-        {
-            hasTestingCompleted_Condition = creature::condition::Holder::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ConditionImageLoader { false };
-        if (false == hasTestingCompleted_ConditionImageLoader)
-        {
-            static sfml_util::gui::ConditionImageLoader conditionImageLoader;
-            hasTestingCompleted_ConditionImageLoader = conditionImageLoader.Test();
-
-            return;
-        }
-
-        static auto hasTestingCompleted_Title { false };
-        if (false == hasTestingCompleted_Title)
-        {
-            hasTestingCompleted_Title = creature::title::Holder::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_TitleImageLoader { false };
-        if (false == hasTestingCompleted_TitleImageLoader)
-        {
-            static sfml_util::gui::TitleImageLoader titleImageLoader;
-            hasTestingCompleted_TitleImageLoader = titleImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_PopupManager { false };
-        if (false == hasTestingCompleted_PopupManager)
-        {
-            hasTestingCompleted_PopupManager = popup::PopupManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_CombatImageLoader { false };
-        if (false == hasTestingCompleted_CombatImageLoader)
-        {
-            static sfml_util::gui::CombatImageLoader combatImageLoader;
-            hasTestingCompleted_CombatImageLoader = combatImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_ItemImageLoader { false };
-        if (false == hasTestingCompleted_ItemImageLoader)
-        {
-            static sfml_util::gui::ItemImageLoader itemImageLoader;
-            hasTestingCompleted_ItemImageLoader = itemImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_CreatureImageLoader { false };
-        if (false == hasTestingCompleted_CreatureImageLoader)
-        {
-            static sfml_util::gui::CreatureImageLoader creatureImageLoader;
-            hasTestingCompleted_CreatureImageLoader = creatureImageLoader.Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_Animations { false };
-        if (false == hasTestingCompleted_Animations)
-        {
-            hasTestingCompleted_Animations = TestAnimations();
-            return;
-        }
+        M_TESTING_STAGE_TEST(Animations);
 
         if (willInspectImages_)
         {
             isInspectingImages_ = true;
         }
 
-        static auto hasTestingCompleted_SoundManager { false };
-        if (false == hasTestingCompleted_SoundManager)
-        {
-            hasTestingCompleted_SoundManager = sfml_util::SoundManager::Instance()->Test();
-            return;
-        }
+        M_TESTING_STAGE_TEST(FontSizes);
+
+        M_TESTING_STAGE_TEST(SoundManager);
 
         std::cout << "ALL TESTS PASSED" << std::endl;
         game::LoopManager::Instance()->TransitionTo_Exit();
+    }
+
+    bool TestingStage::PerformTest_Spells() { return spell::Holder::Test(); }
+
+    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(); }
+
+    bool TestingStage::PerformTest_Conditions() { return creature::condition::Holder::Test(); }
+
+    bool TestingStage::PerformTest_Titles() { return creature::title::Holder::Test(); }
+
+    bool TestingStage::PerformTest_SoundManager()
+    {
+        return sfml_util::SoundManager::Instance()->Test();
+    }
+
+    bool TestingStage::PerformTest_PopupManager()
+    {
+        return popup::PopupManager::Instance()->Test();
+    }
+
+    bool TestingStage::PerformTest_ItemProfileReport()
+    {
+        item::ItemProfilesReporter::LogReport();
+        return true;
+    }
+
+    bool TestingStage::PerformTest_ArmorRatings()
+    {
+        item::ArmorRatings armorRatings;
+        armorRatings.LogCommonArmorRatings();
+        return true;
+    }
+
+    bool TestingStage::PerformTest_FontSizes()
+    {
+        /*
+         * the NameInfo class changed and broke this logging function
+         *
+        creature::NameInfo nameInfo;
+
+        for (int sizeIndex(0); sizeIndex <= 2; ++sizeIndex)
+        {
+            auto const FONT_SIZE { [sizeIndex]() {
+                switch (sizeIndex)
+                {
+                    // clang-format off
+                    case 0: { return sfml_util::FontManager::Instance()->Size_Normal(); }
+                    case 1: { return sfml_util::FontManager::Instance()->Size_Largeish(); }
+                    case 2: { return sfml_util::FontManager::Instance()->Size_Large(); }
+                    default: { return unsigned(0); }
+                        // clang-format on
+                }
+            }() };
+
+            const std::string FONT_SIZE_STR { [sizeIndex]() {
+                switch (sizeIndex)
+                {
+                    // clang-format off
+                    case 0: { return "Normal"; }
+                    case 1: { return "Largeish"; }
+                    case 2: { return "Large"; }
+                    default: { return "ERROR"; }
+                        // clang-format on
+                }
+            }() };
+
+            std::vector<float> lengths;
+
+            for (int fontIndex(0); fontIndex <= 3; ++fontIndex)
+            {
+                auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
+
+                auto const LENGTH { nameInfo.Length(sfml_util::gui::TextInfo(
+                    nameInfo.LargestName(),
+                    sfml_util::FontManager::Instance()->GetFont(FONT_ENUM),
+                    FONT_SIZE)) };
+
+                lengths.emplace_back(LENGTH);
+
+                M_HP_LOG_DBG(
+                    sfml_util::GuiFont::ToString(FONT_ENUM)
+                    << "\t" << FONT_SIZE_STR << '\t' << LENGTH << '\t' << "(" << LENGTH << "/"
+                    << sfml_util::Display::Instance()->GetWinWidth()
+                    << ")=" << (LENGTH / sfml_util::Display::Instance()->GetWinWidth()));
+            }
+
+            misc::Vector::MinMaxAvgSum<float> mmas(lengths);
+
+            M_HP_LOG_DBG(
+                "[" << mmas.min << ", " << mmas.avg << ", " << mmas.max
+                    << "]  std_dev=" << misc::Vector::StandardDeviation(lengths));
+        }
+        */
+        return true;
     }
 
     void TestingStage::TestStatSetsCurrentAndNormal(
@@ -627,146 +585,25 @@ namespace stage
         */
     }
 
-    bool TestingStage::TestImageSet()
+    bool TestingStage::PerformTest_ImageSet()
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::TestImageSet() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::PerformTest_ImageSet() Starting Tests...");
             return false;
         }
 
-        static std::vector<std::string> imagePathKeyVec
-            = { "media-images-gui-elements",
-                "media-images-title-intro",
-                "media-images-title-blacksymbol",
-                "media-images-backgrounds-tile-darkknot",
-                "media-images-backgrounds-tile-runes",
-                "media-images-backgrounds-tile-wood",
-                "media-images-backgrounds-tile-darkpaper",
-                "media-images-backgrounds-paper-2",
-                "media-images-backgrounds-paper-3",
-                "media-images-logos-sfml",
-                "media-images-logos-tiled",
-                "media-images-logos-terrain",
-                "media-images-logos-sound",
-                "media-images-logos-avalontrees",
-                "media-images-logos-renderedtrees",
-                "media-images-logos-manaworldtrees",
-                "media-images-logos-darkwoodpaper",
-                "media-images-logos-openfontlicense",
-                "media-images-gui-accents-symbol1",
-                "media-images-gui-accents-symbol2",
-                "media-images-gui-accents-symbol3",
-                "media-images-gui-accents-ouroboros",
-                "media-images-campfire",
-                "media-images-combat-dart",
-                "media-images-combat-arrow1",
-                "media-images-combat-arrow2",
-                "media-images-combat-arrow3",
-                "media-images-combat-arrow4",
-                "media-images-combat-stone1",
-                "media-images-combat-stone2",
-                "media-images-combat-stone3",
-                "media-images-combat-stone4",
-                "media-images-combat-crossbones",
-                "media-images-combat-crossswords",
-                "media-images-combat-run",
-                "media-images-misc-spark1",
-                "media-images-misc-spark2",
-                "media-images-misc-spark3",
-                "media-images-misc-cloud1",
-                "media-images-misc-cloud2",
-                "media-images-misc-cloud3",
-                "media-images-misc-note1",
-                "media-images-misc-note2",
-                "media-images-misc-note3",
-                "media-images-misc-note4",
-                "media-images-misc-note5",
-                "media-images-misc-note6",
-                "media-images-misc-x",
-                "media-images-misc-error",
-                "media-images-misc-money-bag",
-                "media-images-misc-abc",
-                "media-images-misc-weight",
-                "media-images-misc-knot-corner",
-                "media-images-misc-picture-frame",
-                "media-images-misc-door",
-                "media-images-misc-door-locked",
-                "media-images-misc-lock",
-                "media-images-misc-talk",
-                "media-images-chest-closed",
-                "media-images-chest-open",
-                "media-images-coins",
-                "media-images-lockbox-closed",
-                "media-images-lockbox-open",
-                "media-images-bones-bat",
-                "media-images-bones-beetle",
-                "media-images-bones-bone-pile-1",
-                "media-images-bones-bone-pile-2",
-                "media-images-bones-bone-pile-3",
-                "media-images-bones-cat",
-                "media-images-bones-cave-crawler",
-                "media-images-bones-griffin",
-                "media-images-bones-harpy",
-                "media-images-bones-skull-animal-1",
-                "media-images-bones-skull-animal-2",
-                "media-images-bones-skull-animal-3",
-                "media-images-bones-skull-bog",
-                "media-images-bones-skull-demon",
-                "media-images-bones-skull-dragon-1",
-                "media-images-bones-skull-dragon-2",
-                "media-images-bones-skull-dragon-3",
-                "media-images-bones-skull-dragon-4",
-                "media-images-bones-skull-giant",
-                "media-images-bones-skull-goblin",
-                "media-images-bones-skull-humaniod-pile-1",
-                "media-images-bones-skull-humaniod-pile-2",
-                "media-images-bones-skull-humaniod-pile-3",
-                "media-images-bones-skull-humaniod",
-                "media-images-bones-skull-minotaur",
-                "media-images-bones-skull-orc",
-                "media-images-bones-skull-snake",
-                "media-images-bones-three-headed-hound",
-                "media-images-bones-wolfen",
-                "media-images-trap",
-                "media-images-avatar-shadow",
-                "media-images-buttons-mainmenu-previous-normal",
-                "media-images-buttons-mainmenu-previous-lit",
-                "media-images-buttons-mainmenu-start-normal",
-                "media-images-buttons-mainmenu-start-lit",
-                "media-images-buttons-mainmenu-start-faded",
-                "media-images-buttons-mainmenu-delete-normal",
-                "media-images-buttons-mainmenu-delete-lit",
-                "media-images-buttons-mainmenu-save-normal",
-                "media-images-buttons-mainmenu-save-lit",
-                "media-images-buttons-mainmenu-help-normal",
-                "media-images-buttons-mainmenu-help-lit",
-                "media-images-buttons-mainmenu-next-normal",
-                "media-images-buttons-mainmenu-next-lit",
-                "media-images-buttons-mainmenu-character-normal",
-                "media-images-buttons-mainmenu-character-lit",
-                "media-images-buttons-mainmenu-exit-normal",
-                "media-images-buttons-mainmenu-exit-lit",
-                "media-images-buttons-mainmenu-credits-normal",
-                "media-images-buttons-mainmenu-credits-lit",
-                "media-images-buttons-mainmenu-settings-normal",
-                "media-images-buttons-mainmenu-settings-lit",
-                "media-images-buttons-mainmenu-load-normal",
-                "media-images-buttons-mainmenu-load-lit",
-                "media-images-buttons-mainmenu-load-faded",
-                "media-images-buttons-mainmenu-party-normal",
-                "media-images-buttons-mainmenu-party-lit",
-                "media-images-buttons-gui-gears-normal",
-                "media-images-buttons-gui-gears-lit",
-                "media-images-buttons-gui-treasure-normal" };
+        static std::vector<std::string> imagePathKeyVec {
+            game::GameDataFile::Instance()->GetAllKeysPrefixedWith("media-images-")
+        };
 
         static std::size_t imageIndex { 0 };
         if (imageIndex < imagePathKeyVec.size())
         {
             std::ostringstream ss;
-            ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
+            ss << "PerformTest_ImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
             auto const IMAGE_PATH_STR { game::GameDataFile::Instance()->GetMediaPath(
@@ -778,18 +615,19 @@ namespace stage
             return false;
         }
 
-        TestingStrAppend("stage::TestingStage::TestImageSet() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::PerformTest_ImageSet() ALL Tests Passed.");
 
         return true;
     }
 
-    bool TestingStage::TestCharacterImageSet()
+    bool TestingStage::PerformTest_CharacterImageSet()
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::TestCharacterImageSet() Starting Tests...");
+            TestingStrAppend(
+                "stage::TestingStage::PerformTest_CharacterImageSet() Starting Tests...");
             return false;
         }
 
@@ -799,7 +637,8 @@ namespace stage
             auto const WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
 
             std::ostringstream ss;
-            ss << "TestCharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR) << "\"";
+            ss << "PerformTest_CharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR)
+               << "\"";
             TestingStrAppend(ss.str());
 
             auto const IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
@@ -809,11 +648,11 @@ namespace stage
             return false;
         }
 
-        TestingStrAppend("stage::TestingStage::TestCharacterImageSet() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::PerformTest_CharacterImageSet() ALL Tests Passed.");
         return true;
     }
 
-    bool TestingStage::TestMaps()
+    bool TestingStage::PerformTest_Maps()
     {
         static interact::InteractionManager interactionManager;
 
@@ -960,7 +799,7 @@ namespace stage
         return true;
     }
 
-    bool TestingStage::PerformGameDataFileTests()
+    bool TestingStage::PerformTest_GameDataFile()
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
@@ -1014,13 +853,13 @@ namespace stage
         return true;
     }
 
-    bool TestingStage::TestAnimations()
+    bool TestingStage::PerformTest_Animations()
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::TestAnimations() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::PerformTest_Animations() Starting Tests...");
             return false;
         }
 
@@ -1035,7 +874,8 @@ namespace stage
                 auto const ENUM { static_cast<sfml_util::Animations::Enum>(animIndex) };
 
                 std::ostringstream ss;
-                ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
+                ss << "PerformTest_Animations() \"" << sfml_util::Animations::ToString(ENUM)
+                   << "\"";
                 TestingStrAppend(ss.str());
 
                 animUPtr_ = sfml_util::AnimationFactory::Make(
@@ -1057,18 +897,19 @@ namespace stage
             return false;
         }
 
-        TestingStrAppend("stage::TestingStage::TestAnimations() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::PerformTest_Animations() ALL Tests Passed.");
 
         return true;
     }
 
-    bool TestingStage::TestInventoryFactory()
+    bool TestingStage::PerformTest_InventoryFactory()
     {
         static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            TestingStrAppend("stage::TestingStage::TestInventoryFactory() Starting Tests...");
+            TestingStrAppend(
+                "stage::TestingStage::PerformTest_InventoryFactory() Starting Tests...");
             return false;
         }
 
@@ -1148,7 +989,7 @@ namespace stage
             return false;
         }
 
-        TestingStrAppend("stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
+        TestingStrAppend("stage::TestingStage::PerformTest_InventoryFactory()  ALL TESTS PASSED.");
 
         raceIndex = 0;
         roleIndex = 0;
@@ -1362,7 +1203,7 @@ namespace stage
     }
     */
 
-    bool TestingStage::PerformEnumTests()
+    bool TestingStage::PerformTest_Enums()
     {
         item::category::Test();
         item::material::Test();
@@ -1420,7 +1261,7 @@ namespace stage
         sfml_util::sound_effect::Test();
         sfml_util::sound_effect_set::Test();
         sfml_util::Footstep::Test();
-        sfml_util::Font::Test();
+        sfml_util::GuiFont::Test();
         sfml_util::ImageOpt::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
@@ -1428,28 +1269,28 @@ namespace stage
         return true;
     }
 
-    bool TestingStage::TestFonts()
+    bool TestingStage::PerformTest_Fonts()
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::TestFonts() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::PerformTest_Fonts() Starting Tests...");
             return false;
         }
 
         static misc::EnumUnderlying_t fontIndex { 0 };
 
-        if (fontIndex < sfml_util::Font::Count)
+        if (fontIndex < sfml_util::GuiFont::Count)
         {
-            auto const FONT_ENUM { static_cast<sfml_util::Font::Enum>(fontIndex) };
+            auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
             sfml_util::FontManager::Instance()->GetFont(FONT_ENUM);
             ++fontIndex;
             return false;
         }
         else
         {
-            TestingStrAppend("stage::TestingStage::TestFonts() Finished.");
+            TestingStrAppend("stage::TestingStage::PerformTest_Fonts() Finished.");
             return true;
         }
     }
@@ -1465,7 +1306,7 @@ namespace stage
         auto const IMAGE_POS_TOP { 1.0f };
         {
             std::size_t imageDrawCount { 0 };
-            auto posLeft { SCREEN_WIDTH_ };
+            auto posLeft { StageRegionWidth() };
 
             auto rItr(textures_.rbegin());
             for (; rItr != textures_.rend(); ++rItr)
@@ -1511,7 +1352,7 @@ namespace stage
             // find out how tall the text lines will be
             sf::Text testText(
                 "M",
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
@@ -1521,7 +1362,7 @@ namespace stage
             auto DO_NOT_PASS_TOP { IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
 
             // The extra * 2 is added because without it, the text at the bottom is cut off.
-            auto posTop { SCREEN_HEIGHT_ - (TEXT_HEIGHT * 2.0f) };
+            auto posTop { StageRegionHeight() - (TEXT_HEIGHT * 2.0f) };
 
             StrSizePairVec_t::reverse_iterator rItr { testingBlurbsVec_.rbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
@@ -1536,7 +1377,7 @@ namespace stage
 
                 sf::Text text(
                     sf::String(ss.str()),
-                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                     sfml_util::FontManager::Instance()->Size_Normal());
 
                 text.setPosition(1.0f, posTop);
@@ -1560,9 +1401,9 @@ namespace stage
         auto posY { 0.0f };
         auto imageIndex { imageInspectIndex_ };
 
-        while (posY < (SCREEN_HEIGHT_ - IMAGE_INSPECT_DIMMENSION_))
+        while (posY < (StageRegionHeight() - IMAGE_INSPECT_DIMMENSION_))
         {
-            while (posX < (SCREEN_WIDTH_ - IMAGE_INSPECT_DIMMENSION_))
+            while (posX < (StageRegionWidth() - IMAGE_INSPECT_DIMMENSION_))
             {
                 if (imageIndex >= imageInspectPackets_.size())
                 {
@@ -1593,6 +1434,170 @@ namespace stage
             posX = 0.0f;
             posY += IMAGE_INSPECT_DIMMENSION_;
         }
+    }
+
+    void TestingStage::SetupWaitTest_GoldBar()
+    {
+        auto createGoldBars = [&](const float LEFT,
+                                  const float TOP,
+                                  const sfml_util::Orientation::Enum ORIENTATION,
+                                  const sfml_util::Side::Enum SIDE,
+                                  const bool WILL_CAP_ENDS) {
+            float posX { LEFT };
+            float posY { TOP };
+
+            const std::size_t GOLDBAR_COUNT { 50 };
+
+            for (std::size_t i(0); i < GOLDBAR_COUNT; ++i)
+            {
+                auto length { static_cast<float>(i) - 5.0f };
+                const auto EXTRA_LENGTH_TO_ADD_RATIO { misc::random::Float(10.0f) / 10.0f };
+                length += ((0 == i) ? 0.0f : EXTRA_LENGTH_TO_ADD_RATIO);
+
+                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
+                    sfml_util::gui::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
+
+                const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
+
+                if (ORIENTATION == sfml_util::Orientation::Horiz)
+                {
+                    posY += REGION.height;
+                }
+                else
+                {
+                    posX += REGION.width;
+                }
+            }
+            return sf::Vector2f(posX, posY);
+        };
+
+        auto createGoldBarsOfAllSides
+            = [&](const sf::Vector2f & POS_V, const sfml_util::Orientation::Enum ORIENTATION) {
+                  sf::Vector2f posV { POS_V };
+                  misc::EnumUnderlying_t flag(1);
+                  while (flag != sfml_util::Side::Last)
+                  {
+                      posV = createGoldBars(
+                          posV.x, posV.y, ORIENTATION, sfml_util::Side::Enum(flag), false);
+
+                      flag <<= 1;
+
+                      if (ORIENTATION == sfml_util::Orientation::Horiz)
+                      {
+                          posV.x += 30.0f;
+                      }
+                      else
+                      {
+                          posV.y += 50.0f;
+                      }
+                  }
+
+                  if (ORIENTATION == sfml_util::Orientation::Horiz)
+                  {
+                      posV.x += 20.0f;
+                  }
+                  else
+                  {
+                      posV.y += 20.0f;
+                  }
+
+                  flag = 1;
+                  while (flag != sfml_util::Side::Last)
+                  {
+                      posV = createGoldBars(
+                          posV.x, posV.y, ORIENTATION, sfml_util::Side::Enum(flag), true);
+
+                      flag <<= 1;
+
+                      if (ORIENTATION == sfml_util::Orientation::Horiz)
+                      {
+                          posV.x += 30.0f;
+                      }
+                      else
+                      {
+                          posV.y += 50.0f;
+                      }
+                  }
+              };
+
+        createGoldBarsOfAllSides(sf::Vector2f(500.0f, 50.0f), sfml_util::Orientation::Horiz);
+        createGoldBarsOfAllSides(sf::Vector2f(50.0f, 50.0f), sfml_util::Orientation::Vert);
+    }
+
+    void TestingStage::SetupWaitTest_GoldBar2()
+    {
+        const auto HORIZ_RESOLUTION { sfml_util::Display::Instance()->GetWinWidth() };
+        float posX { 10.0f };
+        float posY { 10.0f };
+        const std::size_t TEST_COUNT { 50 };
+        for (std::size_t i(0); i < TEST_COUNT; ++i)
+        {
+            auto size { static_cast<float>(i) - 5.0f };
+            const auto EXTRA_SIZE_TO_ADD_RATIO { misc::random::Float(10.0f) / 10.0f };
+            size += ((0 == i) ? 0.0f : EXTRA_SIZE_TO_ADD_RATIO);
+
+            waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
+                sfml_util::gui::GoldBar(sf::FloatRect(posX, posY, size, size)));
+
+            const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
+
+            posX += REGION.width + 10.0f;
+            if (posX > HORIZ_RESOLUTION)
+            {
+                posX = 10.0f;
+                posY += REGION.height + 10.0f;
+            }
+        }
+
+        posX = 10.0f;
+        posY = 10.0f;
+        for (std::size_t i(0); i < TEST_COUNT; ++i)
+        {
+            auto size { static_cast<float>(i) - 5.0f };
+            const auto EXTRA_SIZE_TO_ADD_RATIO { misc::random::Float(10.0f) / 10.0f };
+            size += ((0 == i) ? 0.0f : EXTRA_SIZE_TO_ADD_RATIO);
+
+            waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(sfml_util::gui::GoldBar(
+                sf::FloatRect(posX, posY, size, size), sfml_util::Orientation::Count, true));
+
+            const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
+
+            posX += REGION.width + 10.0f;
+            if (posX > HORIZ_RESOLUTION)
+            {
+                posX = 10.0f;
+                posY += REGION.height + 10.0f;
+            }
+        }
+    }
+
+    void TestingStage::SetupWaitTest_Border() { ResetWaitingForKeyOrClick(); }
+
+    void TestingStage::ResetWaitingForKeyOrClick()
+    {
+        waitingForKeyOrClickId_ = 0;
+        waitingForKeyOrClickElapsedTimeSec_ = 0.0f;
+        isWaitingForKeyOrClickPaused_ = false;
+
+        waitingForKeyOrClick_CachedTextures_.clear();
+        waitingForKeyOrClick_ToDraw_Sprites_.clear();
+        waitingForKeyOrClick_ToDraw_GoldBars_.clear();
+        waitingForKeyOrClick_ToDraw_Borders_.clear();
+        waitingForKeyOrClick_ToDraw_RectangleShapes_.clear();
+        waitingForKeyOrClick_ToDraw_VertexArrays_.clear();
+        waitingForKeyOrClick_ToDraw_Texts_.clear();
+    }
+
+    void TestingStage::AppendWaitTestTitle(const std::string & TITLE_STR)
+    {
+        sf::Text text(
+            TITLE_STR,
+            *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::FontManager::Instance()->Size_Larger());
+
+        text.setColor(sf::Color::White);
+        text.setPosition((StageRegionWidth() * 0.5f) - text.getGlobalBounds().width, 50.0f);
+        waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
     }
 
 } // namespace stage

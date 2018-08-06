@@ -13,7 +13,7 @@
 
 #include "log/log-macros.hpp"
 
-#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/gui/entity.hpp"
 
 namespace heroespath
 {
@@ -22,7 +22,7 @@ namespace stage
     namespace treasure
     {
 
-        const float StageMover::SLIDE_SPEED_{ 4.0f };
+        const float StageMover::SLIDE_SPEED_ { 4.0f };
 
         StageMover::StageMover(
             const Type INITIAL_TREASURE_TYPE, const std::size_t INITIAL_CHARACTER_INDEX)
@@ -85,20 +85,20 @@ namespace stage
         }
 
         void StageMover::AddTreasureObject(
-            const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
+            const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            treasureSliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
+            treasureSliders_.emplace_back(sfml_util::gui::EntitySlider(
                 IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
         void StageMover::AddInventoryObject(
-            const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
+            const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            inventorySliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
+            inventorySliders_.emplace_back(sfml_util::gui::EntitySlider(
                 IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
@@ -142,7 +142,7 @@ namespace stage
 
         bool StageMover::UpdateTimeTreasure(const float ELAPSED_TIME_SECONDS)
         {
-            auto areAnyFinished{ false };
+            auto areAnyFinished { false };
             for (auto & slider : treasureSliders_)
             {
                 if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
@@ -165,7 +165,7 @@ namespace stage
 
         bool StageMover::UpdateTimeInventory(const float ELAPSED_TIME_SECONDS)
         {
-            auto areAnyFinished{ false };
+            auto areAnyFinished { false };
             for (auto & slider : inventorySliders_)
             {
                 if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
@@ -187,8 +187,8 @@ namespace stage
         }
 
         void StageMover::ReplaceEntity(
-            const sfml_util::gui::IGuiEntityPtr_t FROM_ENTITY_PTR,
-            const sfml_util::gui::IGuiEntityPtr_t TO_ENTITY_PTR)
+            const sfml_util::gui::IEntityPtr_t FROM_ENTITY_PTR,
+            const sfml_util::gui::IEntityPtr_t TO_ENTITY_PTR)
         {
             for (auto & slider : treasureSliders_)
             {
@@ -210,9 +210,9 @@ namespace stage
         }
 
         bool StageMover::UpdateTime(
-            sfml_util::gui::GuiEntitySlider & slider, const float ELAPSED_TIME_SECONDS)
+            sfml_util::gui::EntitySlider & slider, const float ELAPSED_TIME_SECONDS)
         {
-            auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
+            auto const IS_STILL_MOVING { slider.UpdateTime(ELAPSED_TIME_SECONDS) };
             return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
         }
 

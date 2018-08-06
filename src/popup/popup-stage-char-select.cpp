@@ -16,8 +16,9 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-
-#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/image-loaders.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -28,6 +29,7 @@ namespace popup
     PopupStageCharacterSelect::PopupStageCharacterSelect(const PopupInfo & POPUP_INFO)
         : PopupStageImageSelect(POPUP_INFO)
         , charDetailsTextRegionUPtr_()
+        , creatureToTextureMap_()
     {}
 
     PopupStageCharacterSelect::~PopupStageCharacterSelect() = default;
@@ -83,7 +85,7 @@ namespace popup
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
             sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
+            sfml_util::gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
 
@@ -211,13 +213,25 @@ namespace popup
         }
     }
 
-    void PopupStageCharacterSelect::SetCurrentTexture(const std::size_t IMAGE_INDEX)
+    const sfml_util::CachedTexture &
+        PopupStageCharacterSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
     {
         auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
             IMAGE_INDEX) };
 
-        sfml_util::gui::CreatureImageLoader creatureImageLoader;
-        creatureImageLoader.Load(textureCurr_, CREATURE_PTR);
+        auto foundIter { creatureToTextureMap_.Find(CREATURE_PTR) };
+
+        if (foundIter == std::end(creatureToTextureMap_))
+        {
+            creatureToTextureMap_.Append(
+                CREATURE_PTR,
+                sfml_util::LoadAndCacheImage(
+                    CREATURE_PTR, sfml_util::ImageOptions::InvertedCharacterOptions()));
+
+            foundIter = creatureToTextureMap_.Find(CREATURE_PTR);
+        }
+
+        return foundIter->second;
     }
 
 } // namespace popup

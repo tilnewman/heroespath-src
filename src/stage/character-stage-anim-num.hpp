@@ -12,7 +12,6 @@
 //
 #include "creature/stat-set.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <memory>
@@ -69,10 +68,7 @@ namespace stage
 
         bool UpdateTimer(const float ELAPSED_TIME_SEC);
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const
-        {
-            target.draw(textObj_, states);
-        }
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         friend bool operator==(const AnimNum & L, const AnimNum & R);
 

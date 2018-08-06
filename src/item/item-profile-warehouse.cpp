@@ -17,7 +17,6 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -131,7 +130,7 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < misc_type::Count; ++i)
         {
-            auto const MISC_TYPE{ static_cast<misc_type::Enum>(i) };
+            auto const MISC_TYPE { static_cast<misc_type::Enum>(i) };
 
             if (misc_type::IsSummoning(MISC_TYPE) == false)
             {
@@ -147,7 +146,7 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < named_type::Count; ++i)
         {
-            auto const NAMED_TYPE{ static_cast<named_type::Enum>(i) };
+            auto const NAMED_TYPE { static_cast<named_type::Enum>(i) };
 
             for (auto const & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
             {
@@ -161,7 +160,7 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < set_type::Count; ++i)
         {
-            auto const SET_TYPE{ static_cast<set_type::Enum>(i) };
+            auto const SET_TYPE { static_cast<set_type::Enum>(i) };
 
             for (auto const & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
             {
@@ -177,16 +176,16 @@ namespace item
 
         for (misc::EnumUnderlying_t raceIndex(0); raceIndex < race::Count; ++raceIndex)
         {
-            auto const RACE_TYPE{ static_cast<race::Enum>(raceIndex) };
+            auto const RACE_TYPE { static_cast<race::Enum>(raceIndex) };
 
-            auto const ROLES_VEC{ race::Roles(RACE_TYPE) };
+            auto const ROLES_VEC { race::Roles(RACE_TYPE) };
 
             for (auto const ROLE_TYPE : ROLES_VEC)
             {
-                auto const ORIGINS_VEC{ race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
+                auto const ORIGINS_VEC { race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
                 for (auto const ORIGIN_TYPE : ORIGINS_VEC)
                 {
-                    auto const SUMMON_INFO{ SummonInfo(ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
+                    auto const SUMMON_INFO { SummonInfo(ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
 
                     if (ORIGIN_TYPE == origin_type::Statue)
                     {
@@ -199,7 +198,7 @@ namespace item
                     }
                     else
                     {
-                        auto const MISC_TYPE{ [&]() {
+                        auto const MISC_TYPE { [&]() {
                             if (RACE_TYPE == creature::race::Spider)
                             {
                                 return misc_type::SpiderEggs;
@@ -733,9 +732,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        auto const IS_MAGICAL{ (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
-                               || misc_type::IsUnique(MISC_TYPE)
-                               || misc_type::IsQuestItem(MISC_TYPE) };
+        auto const IS_MAGICAL { (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
+                                || misc_type::IsUnique(MISC_TYPE)
+                                || misc_type::IsQuestItem(MISC_TYPE) };
 
         for (auto const & MATERIAL_PAIR : materialFactory_.MakeForMiscType(MISC_TYPE, IS_MAGICAL))
         {

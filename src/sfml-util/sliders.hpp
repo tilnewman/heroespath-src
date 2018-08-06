@@ -12,18 +12,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 
-// prevent boost warnings that can be ignored
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic ignored "-Wundef"
-#endif
-
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
-
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic warning "-Wundef"
-#endif
-
 #include <boost/type_index.hpp>
 
 #include <type_traits>
@@ -95,8 +84,8 @@ namespace sfml_util
                 if (willContinue_)
                 {
                     age_ += ADJUSTMENT * spd_;
-                    auto const NEW_VAL{ static_cast<T>(0.5)
-                                        + (sin(std::fmod(age_, TWO_PI_)) * static_cast<T>(0.5)) };
+                    auto const NEW_VAL { static_cast<T>(0.5)
+                                         + (sin(std::fmod(age_, TWO_PI_)) * static_cast<T>(0.5)) };
 
                     if ((val_ < NEW_VAL) || (misc::IsRealClose(val_, NEW_VAL)))
                     {
@@ -255,7 +244,7 @@ namespace sfml_util
                     speed_ = SPEED;
                 }
 
-                auto initialToUse{ INITIAL };
+                auto initialToUse { INITIAL };
                 if (misc::IsRealZero(initialToUse))
                 {
                     initialToUse = THE_MIN;

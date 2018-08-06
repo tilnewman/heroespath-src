@@ -11,8 +11,11 @@
 //
 #include "stage-title.hpp"
 
-#include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath
 {
@@ -33,9 +36,8 @@ namespace sfml_util
                   (WILL_INVERT_SYMBOL) ? (ImageOpt::Default | ImageOpt::Invert)
                                        : ImageOpt::Default))
         , symbolSprite_(symbolCachedTexture_.Get())
-        , titleCachedTextureOpt_(boost::none)
+        , titleCachedTextureOpt_()
         , titleSprite_()
-        , bottomPad_(sfml_util::ScreenRatioToPixelsVert(0.039f))
     {
         if (TITLE_IMAGE_PATH_KEY.empty() == false)
         {
@@ -80,8 +82,10 @@ namespace sfml_util
 
         if (titleCachedTextureOpt_)
         {
-            sfml_util::FitAndCenter(
-                titleSprite_, symbolSprite_, TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_);
+            sfml_util::FitAndCenterTo(
+                titleSprite_,
+                sfml_util::ScaleAndReCenterCopy(
+                    symbolSprite_.getGlobalBounds(), TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_));
         }
     }
 
@@ -93,6 +97,11 @@ namespace sfml_util
         {
             target.draw(titleSprite_, states);
         }
+    }
+
+    float StageTitle::DefaultBottomPad() const
+    {
+        return sfml_util::ScreenRatioToPixelsVert(0.039f);
     }
 
 } // namespace sfml_util

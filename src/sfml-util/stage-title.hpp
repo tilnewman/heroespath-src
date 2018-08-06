@@ -10,7 +10,8 @@
 // stage-title.hpp
 //
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <string>
 
@@ -36,16 +37,11 @@ namespace sfml_util
 
         void SetSizeAndReCenter(const float SIZE_HORIZ = 0.0f, const float SIZE_VERT = 0.0f);
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         const sf::FloatRect Region() const { return symbolSprite_.getGlobalBounds(); }
 
-        float BottomPad() const { return bottomPad_; }
-
-        float Bottom(const bool WILL_PAD = true) const
-        {
-            return Region().top + Region().height + ((WILL_PAD) ? BottomPad() : 0.0f);
-        }
+        float DefaultBottomPad() const;
 
     private:
         static const float DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_;
@@ -55,7 +51,6 @@ namespace sfml_util
         sf::Sprite symbolSprite_;
         sfml_util::CachedTextureOpt_t titleCachedTextureOpt_;
         sf::Sprite titleSprite_;
-        float bottomPad_;
     };
 
 } // namespace sfml_util

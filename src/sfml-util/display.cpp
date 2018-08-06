@@ -16,7 +16,6 @@
 #include "sfml-util/date-time.hpp"
 #include "sfml-util/fade.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <exception>
 #include <sstream>
@@ -141,6 +140,18 @@ namespace sfml_util
     unsigned int Display::AntialiasLevel() const
     {
         return winUPtr_->getSettings().antialiasingLevel;
+    }
+
+    void Display::SetFrameRateLimit(const unsigned LIMIT)
+    {
+        frameRateLimit_ = LIMIT;
+        winUPtr_->setFramerateLimit(LIMIT);
+    }
+
+    void Display::SetVerticalSync(const bool WILL_SYNC)
+    {
+        willVerticalSync_ = WILL_SYNC;
+        winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
     }
 
     void Display::ConsumeEvents()

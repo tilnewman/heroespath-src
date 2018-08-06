@@ -8,16 +8,15 @@
 #define HEROESPATH_CAMPTAGE_HPP_INCLUDED
 //
 // camp-stage.hpp
-//  A Stage class that allows characters to camp the game
 //
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/gui/main-menu-buttons.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -39,7 +38,7 @@ namespace stage
     // A Stage class that allows the party to camp for resting and healing
     class CampStage
         : public sfml_util::Stage
-        , public popup::IPopupHandler_t
+        , public sfml_util::gui::PopupCallback_t::IHandler_t
     {
     public:
         CampStage(const CampStage &) = delete;
@@ -47,12 +46,10 @@ namespace stage
         CampStage & operator=(const CampStage &) = delete;
         CampStage & operator=(CampStage &&) = delete;
 
-    public:
         CampStage();
         virtual ~CampStage();
 
-        virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        virtual bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
@@ -71,12 +68,10 @@ namespace stage
         static const std::string NEWHEROESPATH_POPUP_NAME4_;
 
     private:
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
         sfml_util::StageTitle stageTitle_;
-        sf::Texture campfireTexture_;
+        sfml_util::CachedTexture campfireCachedTexture_;
         sf::Sprite campfireSprite_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
+        sfml_util::gui::BoxEntity backgroundBox_;
         sfml_util::AnimationUPtr_t fireAnimUPtr_;
         bool showNewGamePopup1_;
         bool showNewGamePopup2_;

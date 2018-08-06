@@ -10,7 +10,7 @@
 // resolution.hpp
 //  A class that contains all the info about a screen resolution.
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include <SFML/Window/VideoMode.hpp>
 
 #include <string>
 #include <vector>

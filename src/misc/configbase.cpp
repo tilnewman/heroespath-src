@@ -329,7 +329,7 @@ namespace misc
     {
         namespace ba = boost::algorithm;
 
-        auto const BOOL_STR{ ba::trim_copy(ba::to_lower_copy(S)) };
+        auto const BOOL_STR { ba::trim_copy(ba::to_lower_copy(S)) };
 
         if ((BOOL_STR == "true") || (BOOL_STR == "yes") || (BOOL_STR == "1"))
         {
@@ -357,5 +357,25 @@ namespace misc
     const std::string ConfigBase::GetSeparatorStr() const { return sepStr_; }
 
     const std::string ConfigBase::GetCommentStr() const { return commentStr_; }
+
+    const std::vector<std::string>
+        ConfigBase::GetAllKeysPrefixedWith(const std::string & PREFIX) const
+    {
+        std::vector<std::string> matchingValues;
+
+        if (PREFIX.empty() == false)
+        {
+            for (auto const & KEY_VALUE_PAIR : map_)
+            {
+                if (boost::algorithm::istarts_with(KEY_VALUE_PAIR.first, PREFIX))
+                {
+                    matchingValues.emplace_back(KEY_VALUE_PAIR.first);
+                }
+            }
+        }
+
+        return matchingValues;
+    }
+
 } // namespace misc
 } // namespace heroespath

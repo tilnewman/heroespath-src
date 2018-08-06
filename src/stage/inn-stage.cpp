@@ -11,19 +11,15 @@
 //
 #include "inn-stage.hpp"
 
-#include "game/game-data-file.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/tile.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
 
 namespace heroespath
 {
@@ -33,19 +29,21 @@ namespace stage
     InnStage::InnStage()
         : Stage(
               "Inn",
-              { sfml_util::Font::Default,
-                sfml_util::Font::System,
-                sfml_util::Font::SystemCondensed,
-                sfml_util::Font::Number,
-                sfml_util::Font::Handwriting },
+              { sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::Handwriting },
               true)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , titleSymbolTexture_()
-        , titleSymbolSprite_()
-        , backgroundImage_("media-images-backgrounds-tile-darkknot")
-        , candleTexture_()
-        , candleSprite_()
+        , stageTitle_()
+        , backgroundBox_(
+              "InnStage'sBackground",
+              StageRegion(),
+              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+                  "media-images-backgrounds-tile-darkknot",
+                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
+        , candleCachedTexture_("media-images-candle")
+        , candleSprite_(candleCachedTexture_.Get())
         , candleAnimUPtr_()
         , ouroborosUPtr_()
         , bottomSymbol_()
@@ -55,42 +53,37 @@ namespace stage
 
     void InnStage::Setup()
     {
-        // title symbol
-        sfml_util::Loaders::Texture(
-            titleSymbolTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
-
-        titleSymbolSprite_.setTexture(titleSymbolTexture_);
-        titleSymbolSprite_.setScale(0.60f, 0.60f);
-
-        titleSymbolSprite_.setPosition(
-            (SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
-
         // ouroboros
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("InnStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        // candle
-        sfml_util::Loaders::Texture(
-            candleTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-candle"));
+        // candle image
+        const sf::Vector2f CANDLE_POS_V(
+            StageRegionWidth() - sfml_util::ScreenRatioToPixelsHoriz(0.16f),
+            StageRegionHeight() - sfml_util::ScreenRatioToPixelsVert(0.222f));
 
-        candleSprite_.setTexture(candleTexture_);
-        candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
+        const sf::Vector2f CANDLE_SIZE_CONSTRAINTS_V(
+            sfml_util::ScreenRatioToPixelsHoriz(0.065f), 0.0f);
+
+        const sf::FloatRect CANDLE_REGION_CONSTRAINTS(CANDLE_POS_V, CANDLE_SIZE_CONSTRAINTS_V);
+
+        sfml_util::FitAndCenterTo(candleSprite_, CANDLE_REGION_CONSTRAINTS);
 
         // candle anim
         candleAnimUPtr_
             = sfml_util::AnimationFactory::Make(sfml_util::Animations::CandleFlame, 1.0f, 0.05f);
 
-        candleAnimUPtr_->SetEntityPos(SCREEN_WIDTH_ - 225.0f, SCREEN_HEIGHT_ - 290.0f);
+        candleAnimUPtr_->SetEntityPos(CANDLE_POS_V - sf::Vector2f(25.0f, 90.0f));
 
         EntityAdd(candleAnimUPtr_.get());
     }
 
     void InnStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, STATES);
+        target.draw(backgroundBox_, STATES);
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
+
 } // namespace stage
 } // namespace heroespath

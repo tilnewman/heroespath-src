@@ -118,7 +118,7 @@ namespace creature
     {
         TitleTransition(
             const CreaturePtr_t CREATURE_PTR,
-            const TitlePtrOpt_t FROM_TITLE_PTR_OPT,
+            const TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
             const TitlePtr_t TO_TITLE_PTR)
             : creaturePtr(CREATURE_PTR)
             , fromTitlePtrOpt(FROM_TITLE_PTR_OPT)

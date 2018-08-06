@@ -15,7 +15,7 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/color-slider.hpp"
-#include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/list-element.hpp"
 #include "sfml-util/sliders.hpp"
@@ -36,10 +36,12 @@ namespace popup
     // Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
         : public PopupStageBase
-        , public sfml_util::gui::callback::
-              IListBoxCallbackHandler<PopupStageMusicSheet, song::SongPtr_t>
+        , public sfml_util::gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>::Callback_t::
+              IHandler_t
     {
     public:
+        using SongListBox_t = sfml_util::gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>;
+
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
         PopupStageMusicSheet(PopupStageMusicSheet &&) = delete;
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) = delete;
@@ -47,13 +49,10 @@ namespace popup
 
     public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
+
         virtual ~PopupStageMusicSheet();
 
-        const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
-
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
-                            PopupStageMusicSheet,
-                            song::SongPtr_t> &) override;
+        bool HandleCallback(const SongListBox_t::Callback_t::PacketPtr_t &) override;
 
         using PopupStageBase::HandleCallback;
 
@@ -82,7 +81,7 @@ namespace popup
         const song::SongPtr_t CurrentSelectedSong() const;
 
     private:
-        static const float BACKGROUND_WIDTH_RATIO_;
+        static const float BORDER_SCREEN_RATIO_;
         static const float COLOR_FADE_SPEED_;
         static const sf::Color UNABLE_TEXT_COLOR_;
         static const sf::Uint8 IMAGE_ALPHA_;
@@ -107,8 +106,8 @@ namespace popup
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
         const sf::Color LISTBOX_COLOR_BG_;
-        const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
-        sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
+        const sfml_util::gui::FocusColors LISTBOX_COLORSET_;
+        sfml_util::gui::BoxEntityInfo listBoxBackgroundInfo_;
         sfml_util::gui::TextInfo listElementTextInfo_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;

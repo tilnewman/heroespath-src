@@ -9,21 +9,96 @@
 //
 #include "sfml-util-color.hpp"
 
+#include "misc/strings.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+
 #include <SFML/Graphics/Text.hpp>
+
+#include <tuple>
+
+namespace sf
+{
+
+bool operator<(const sf::Color & L, const sf::Color & R)
+{
+    return std::tie(L.r, L.g, L.b, L.a) < std::tie(R.r, R.g, R.b, R.a);
+}
+
+bool operator>(const sf::Color & L, const sf::Color & R) { return (R < L); }
+
+bool operator<=(const sf::Color & L, const sf::Color & R) { return !(L > R); }
+
+bool operator>=(const sf::Color & L, const sf::Color & R) { return !(L < R); }
+
+std::ostream & operator<<(std::ostream & os, const sf::Color & C)
+{
+    os << "(";
+
+    if (sf::Color::Black == C)
+    {
+        os << "Black";
+    }
+    else if (sf::Color::White == C)
+    {
+        os << "White";
+    }
+    else if (sf::Color::Red == C)
+    {
+        os << "Red";
+    }
+    else if (sf::Color::Green == C)
+    {
+        os << "Green";
+    }
+    else if (sf::Color::Blue == C)
+    {
+        os << "Blue";
+    }
+    else if (sf::Color::Yellow == C)
+    {
+        os << "Yellow";
+    }
+    else if (sf::Color::Magenta == C)
+    {
+        os << "Magenta";
+    }
+    else if (sf::Color::Cyan == C)
+    {
+        os << "Cyan";
+    }
+    else
+    {
+        os << static_cast<unsigned>(C.r) << "," << static_cast<unsigned>(C.g) << ","
+           << static_cast<unsigned>(C.b);
+
+        if (C.a != 255)
+        {
+            os << "," << static_cast<unsigned>(C.a);
+        }
+    }
+
+    os << ")";
+
+    return os;
+}
+} // namespace sf
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    const sf::Color Colors::None { 0, 0, 0, 0 };
-    const sf::Color Colors::GrayLight { 200, 200, 200 };
-    const sf::Color Colors::GrayLighter { 232, 232, 232 };
-    const sf::Color Colors::GrayDark { 100, 100, 100 };
-    const sf::Color Colors::GrayDarker { 64, 64, 64 };
-    const sf::Color Colors::Orange { 255, 223, 181 };
-    const sf::Color Colors::Light { 220, 220, 220 };
-    const sf::Color Colors::GoldLight { 255, 248, 220 };
+    const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE)
+    {
+        return sf::Color(COLOR_VALUE, COLOR_VALUE, COLOR_VALUE, 0);
+    }
+
+    const std::string ToString(const sf::Color & C, const misc::ToStringPrefix::Enum OPTIONS)
+    {
+        std::ostringstream ss;
+        ss << misc::MakeToStringPrefix(OPTIONS, "Color") << C;
+        return ss.str();
+    }
 
     void SetColor(sf::Text & text, const sf::Color & COLOR)
     {
@@ -57,6 +132,16 @@ namespace sfml_util
                   (static_cast<float>(TO.a) - static_cast<float>(FROM.a)) * RATIO)) };
 
         return sf::Color(RED, GREEN, BLUE, ALPHA);
+    }
+
+    bool IsEqualWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) == std::tie(R.r, R.g, R.b);
+    }
+
+    bool IsLessWithoutAlpha(const sf::Color & L, const sf::Color & R)
+    {
+        return std::tie(L.r, L.g, L.b) < std::tie(R.r, R.g, R.b);
     }
 
 } // namespace sfml_util

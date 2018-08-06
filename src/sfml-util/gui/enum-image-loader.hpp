@@ -12,10 +12,9 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/filesystem-helpers.hpp"
-#include "sfml-util/gui/image-util.hpp"
+#include "sfml-util/image-options.hpp"
+#include "sfml-util/image-util.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <boost/type_index.hpp>
 
@@ -43,26 +42,18 @@ namespace sfml_util
             {
                 namespace bfs = boost::filesystem;
 
-                auto const PATH{
+                auto const PATH {
                     bfs::system_complete(bfs::path(IMAGE_DIRECTORY_PATH)).normalize()
                 };
 
                 imageDirectoryPath_ = PATH.string();
             }
 
-            float MaxDimmension() const { return image::StandardDimmension(); }
+            float MaxDimmension() const { return StandardImageDimmension(); }
 
-            void Load(
-                sf::Texture & texture,
-                const typename EnumWrapper_t::Enum ENUM_VALUE,
-                const image::Flip WILL_FLIP_HORIZ = image::Flip::No) const
+            void Load(sf::Texture & texture, const typename EnumWrapper_t::Enum ENUM_VALUE) const
             {
                 sfml_util::Loaders::Texture(texture, Path(ENUM_VALUE));
-
-                if (WILL_FLIP_HORIZ == image::Flip::Yes)
-                {
-                    sfml_util::FlipHoriz(texture);
-                }
             }
 
             const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
@@ -77,12 +68,12 @@ namespace sfml_util
 
             bool Test() const
             {
-                auto makeLogPrefix{ []() {
+                auto makeLogPrefix { []() {
                     return "sfml_util::gui::EnumImageLoader<"
                         + boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "> ";
                 } };
 
-                static auto hasInitialPrompt{ false };
+                static auto hasInitialPrompt { false };
                 if (false == hasInitialPrompt)
                 {
                     hasInitialPrompt = true;
@@ -91,16 +82,15 @@ namespace sfml_util
                         makeLogPrefix() + "Starting Tests...");
                 }
 
-                static auto willFlip{ false };
-                static misc::EnumUnderlying_t imageIndex{ 0 };
+                static misc::EnumUnderlying_t imageIndex { 0 };
                 if (imageIndex < EnumWrapper_t::Count)
                 {
-                    auto const ENUM_VALUE{ static_cast<typename EnumWrapper_t::Enum>(imageIndex) };
+                    auto const ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(imageIndex) };
 
                     sf::Texture texture;
-                    Load(texture, ENUM_VALUE, ((willFlip) ? image::Flip::Yes : image::Flip::No));
+                    Load(texture, ENUM_VALUE);
 
-                    auto const MAX_DIMMENSION_U{ static_cast<unsigned>(MaxDimmension()) };
+                    auto const MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         ((texture.getSize().x == MAX_DIMMENSION_U)
@@ -108,19 +98,11 @@ namespace sfml_util
                         makeLogPrefix()
                             << "::Test() The call to Get(enum="
                             << EnumWrapper_t::ToString(ENUM_VALUE)
-                            << ", will_flip=" << std::boolalpha << willFlip
                             << ") returned an image that was not of size=" << MAX_DIMMENSION_U
                             << "x" << MAX_DIMMENSION_U << ".  The actual size="
                             << texture.getSize().x << "x" << texture.getSize().y << ".");
 
                     game::LoopManager::Instance()->TestingImageSet(Path(ENUM_VALUE));
-
-                    if (willFlip)
-                    {
-                        ++imageIndex;
-                    }
-
-                    willFlip = !willFlip;
                     return false;
                 }
 

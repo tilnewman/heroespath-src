@@ -10,8 +10,11 @@
 // ouroboros.hpp
 //  An animated snake eating its own tail for the background of main menu screens.
 //
-#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -22,7 +25,7 @@ namespace sfml_util
 {
 
     // manages an animated snake image that spins, grows/shrinks, and fades in/out
-    class Ouroboros : public gui::GuiEntity
+    class Ouroboros : public gui::Entity
     {
     public:
         Ouroboros(const Ouroboros &) = delete;
@@ -30,27 +33,28 @@ namespace sfml_util
         Ouroboros & operator=(const Ouroboros &) = delete;
         Ouroboros & operator=(Ouroboros &&) = delete;
 
-    public:
         explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);
         virtual ~Ouroboros();
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+
         virtual bool UpdateTime(const float ELAPSED_TIME_SEC);
-        virtual void OnClick(const sf::Vector2f &) {}
 
     private:
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
-        //
+        const float IMAGE_INITIAL_WIDTH_;
+        const float IMAGE_DRIFT_WIDTH_;
+        const float IMAGE_MIN_DRIFT_WIDTH_;
+        const float IMAGE_MAX_DRIFT_WIDTH_;
         float rotation_;
+        sfml_util::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
-        sf::Texture texture_;
         sliders::Drifter<float> sizeDrifter_;
         sliders::Drifter<float> shadeDrifter_;
         sliders::Drifter<float> rotSpeedDrifter_;
     };
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

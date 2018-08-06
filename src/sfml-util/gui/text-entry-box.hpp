@@ -8,15 +8,14 @@
 #define HEROESPATH_SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
 //
 // text-entry-box.hpp
-//  Code for a box that users can type a single line of text into, with a blinking cursor, etc.
 //
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/box-info.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/colored-rect.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -31,75 +30,65 @@ namespace sfml_util
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
-        class TextEntryBox;
-        namespace callback
-        {
-            using TextEntryBoxCallbackPackage_t = sfml_util::callback::PtrWrapper<TextEntryBox>;
-
-            using ITextEntryBoxCallbackHandler_t
-                = sfml_util::callback::ICallbackHandler<TextEntryBoxCallbackPackage_t, bool>;
-
-            using ITextEntryBoxCallbackHandlerPtr_t
-                = misc::NotNull<ITextEntryBoxCallbackHandler_t *>;
-
-        } // namespace callback
-
         // Encapsulates a single line of user type-able text with a blinking cursor
-        class TextEntryBox : public GuiEntity
+        class TextEntryBox : public Entity
         {
         public:
+            using Callback_t = Callback<TextEntryBox>;
+
             TextEntryBox(const TextEntryBox &) = delete;
             TextEntryBox(TextEntryBox &&) = delete;
             TextEntryBox & operator=(const TextEntryBox &) = delete;
             TextEntryBox & operator=(TextEntryBox &&) = delete;
 
-        public:
             TextEntryBox(
-                const callback::ITextEntryBoxCallbackHandlerPtr_t,
+                const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
                 const std::string & NAME,
                 const sf::FloatRect & REGION,
                 const TextInfo & TEXT_INFO,
                 const sf::Color & CURSOR_COLOR = sf::Color::White,
-                const box::Info & BOX_INFO = box::Info());
+                const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
 
             virtual ~TextEntryBox();
 
             void Setup(
                 const sf::FloatRect & REGION,
                 const TextInfo & TEXT_INFO,
-                const box::Info & BOX_INFO = box::Info());
+                const sf::Color & CURSOR_COLOR = sf::Color::White,
+                const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            virtual void SetText(const std::string & NEW_TEXT);
-            virtual const std::string GetText() const;
+            void SetText(const std::string & NEW_TEXT);
+            const std::string GetText() const;
 
-            virtual bool KeyPress(const sf::Event::KeyEvent &);
-            virtual bool KeyRelease(const sf::Event::KeyEvent &);
+            bool KeyPress(const sf::Event::KeyEvent &) override;
+            bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-            virtual bool UpdateTime(const float);
+            bool UpdateTime(const float) override;
 
-            virtual void SetTextColor(const sf::Color & TEXT_COLOR);
+            void SetTextColor(const sf::Color & TEXT_COLOR);
 
         protected:
+            void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
+
+        private:
             void UpdateText();
-            virtual void OnClick(const sf::Vector2f &) {}
-            virtual void OnColorChange();
+            void OnColorChange() override;
 
-        protected:
             static const float INNER_PAD_;
             static const float CURSOR_WIDTH_;
             static const float CURSOR_BLINK_DELAY_SEC_;
             //
-            box::Box box_;
+            BoxEntity boxEntity_;
             TextInfo textInfo_;
-            sf::FloatRect cursorRect_;
+            ColoredRect cursorRect_;
             sf::Color cursorColor_;
             sf::FloatRect innerRegion_;
             TextRegionUPtr_t textRegionUPtr_;
             bool willDrawCursor_;
             float cursorBlinkTimer_;
-            callback::ITextEntryBoxCallbackHandlerPtr_t callbackHandlerPtr_;
+            Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
         };
 
         using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;

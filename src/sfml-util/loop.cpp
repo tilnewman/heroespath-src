@@ -14,9 +14,9 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/vectors.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "sfml-util/date-time.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
@@ -44,24 +44,24 @@ namespace sfml_util
         , continueFading_(false)
         , willExitAfterFade_(false)
         , willExit_(false)
-        , popupStagePtrOpt_(boost::none)
+        , popupStagePtrOpt_()
         , elapsedTimeSec_(0.0f)
         , fatalExitEvent_(false)
         , holdTime_(NO_HOLD_TIME_)
         , holdTimeCounter_(0.0f)
         , willExitOnKeypress_(false)
         , willExitOnMouseclick_(false)
-        , entityWithFocusPtrOpt_(boost::none)
+        , entityWithFocusPtrOpt_()
         , willIgnoreMouse_(false)
         , willIgnoreKeystrokes_(false)
-        , popupInfo_(" ", sfml_util::gui::TextInfo(" "))
+        , popupInfoOpt_()
         , // okay to be initially without meaningful values
         hasFadeStarted_(false)
         , prevEventType_(sf::Event::EventType::Count)
         , prevKeyPressed_(sf::Keyboard::Key::Unknown)
         , isMouseHovering_(false)
         , takeScreenshot_(false)
-        , popupCallbackPtrOpt_(boost::none)
+        , popupCallbackPtrOpt_()
         , state_(LoopState::Intro)
         , frameRateVec_()
         , frameRateSampleCount_(0)
@@ -80,7 +80,7 @@ namespace sfml_util
         }
     }
 
-    void Loop::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
+    void Loop::SetFocus(const gui::IEntityPtr_t ENTITY_PTR)
     {
         entityWithFocusPtrOpt_ = ENTITY_PTR;
 
@@ -91,9 +91,10 @@ namespace sfml_util
     }
 
     void Loop::AssignPopupCallbackHandlerInfo(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const popup::PopupInfo & POPUP_INFO)
     {
-        popupInfo_ = POPUP_INFO;
+        popupInfoOpt_ = POPUP_INFO;
         popupCallbackPtrOpt_ = POPUP_HANDLER_PTR;
     }
 
@@ -533,7 +534,7 @@ namespace sfml_util
 
     void Loop::ProcessPopupCallback()
     {
-        if (!popupCallbackPtrOpt_)
+        if (!popupCallbackPtrOpt_ || !popupInfoOpt_)
         {
             return;
         }
@@ -546,13 +547,15 @@ namespace sfml_util
             M_HP_LOG(
                 "PopupCallback resp=\"" << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
                                         << "\" with selection=" << POPUP_SELECTION << " to popup=\""
-                                        << popupInfo_.Name() << "\"");
+                                        << popupInfoOpt_->Name() << "\"");
 
-            const popup::PopupResponse POPUP_RESPONSE_OBJ(
-                popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
+            popup::PopupResponse response(
+                popupInfoOpt_->Name(), POPUP_RESPONSE_ENUM, POPUP_SELECTION);
+
+            const sfml_util::gui::PopupCallback_t::PacketPtr_t CALLBACK_PACKET_PTR(&response);
 
             auto const WILL_RESET_CALLBACKHANDLER { popupCallbackPtrOpt_.value()->HandleCallback(
-                POPUP_RESPONSE_OBJ) };
+                CALLBACK_PACKET_PTR) };
 
             game::LoopManager::Instance()->ClearPopupResponse();
 

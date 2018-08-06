@@ -18,7 +18,6 @@
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 
@@ -46,11 +45,11 @@ namespace creature
 
         using namespace item;
 
-        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
+        auto const ROLE_ENUM { CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Knight)
         {
-            ItemPtr_t weaponPtr{ [&]() {
+            ItemPtr_t weaponPtr { [&]() {
                 ItemProfile profile;
                 switch (misc::random::Int(2))
                 {
@@ -93,7 +92,7 @@ namespace creature
         }
         else if (ROLE_ENUM == creature::role::Beastmaster)
         {
-            ItemPtr_t weaponPtr{ [&]() {
+            ItemPtr_t weaponPtr { [&]() {
                 ItemProfile profile;
                 switch (misc::random::Int(2))
                 {
@@ -218,7 +217,7 @@ namespace creature
 
     void PlayerInitialSetup::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
+        auto const ROLE_ENUM { CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Cleric)
         {
@@ -254,7 +253,7 @@ namespace creature
     {
         using namespace item;
 
-        auto const BODY{ CREATURE_PTR->Body() };
+        auto const BODY { CREATURE_PTR->Body() };
 
         if (BODY.HasBreath()
             && ((CREATURE_PTR->Role() == creature::role::Sylavin)
@@ -290,7 +289,7 @@ namespace creature
         ss << "heroespath-player-race-health-initial-"
            << creature::race::ToString(CHARACTER_PTR->Race());
 
-        auto const HEALTH_BASE{ Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str())) };
+        auto const HEALTH_BASE { Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str())) };
 
         ss.str("");
         ss << "heroespath-player-role-health-adjustment-initial-"
@@ -301,26 +300,26 @@ namespace creature
 
     void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const STARTING_HEALTH{ GetStartingHealth(CREATURE_PTR) };
+        auto const STARTING_HEALTH { GetStartingHealth(CREATURE_PTR) };
         CREATURE_PTR->HealthNormalSet(STARTING_HEALTH);
         CREATURE_PTR->HealthCurrentSet(STARTING_HEALTH);
     }
 
     void PlayerInitialSetup::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
+        auto const ROLE_ENUM { CREATURE_PTR->Role() };
 
         if ((ROLE_ENUM == creature::role::Sorcerer) || (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const INITIAL_MANA{ CREATURE_PTR->TraitNormal(Traits::Intelligence) / 2 };
+            auto const INITIAL_MANA { CREATURE_PTR->TraitNormal(Traits::Intelligence) / 2 };
             CREATURE_PTR->TraitNormalSet(Traits::Mana, INITIAL_MANA);
             CREATURE_PTR->TraitCurrentSet(Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA{ (CREATURE_PTR->TraitNormal(Traits::Intelligence)
-                                      + CREATURE_PTR->TraitNormal(Traits::Charm))
-                                     / 4 };
+            auto const INITIAL_MANA { (CREATURE_PTR->TraitNormal(Traits::Intelligence)
+                                       + CREATURE_PTR->TraitNormal(Traits::Charm))
+                                      / 4 };
 
             CREATURE_PTR->TraitNormalSet(Traits::Mana, INITIAL_MANA);
             CREATURE_PTR->TraitCurrentSet(Traits::Mana, INITIAL_MANA);
@@ -330,7 +329,7 @@ namespace creature
     void PlayerInitialSetup::EnsureItemAddedAndEquipped(
         const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR) const
     {
-        auto const ITEM_ADD_STR{ CREATURE_PTR->ItemAdd(ITEM_PTR) };
+        auto const ITEM_ADD_STR { CREATURE_PTR->ItemAdd(ITEM_PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_ADD_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
@@ -338,7 +337,7 @@ namespace creature
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_ADD_STR << ".");
 
-        auto const ITEM_EQUIP_STR{ CREATURE_PTR->ItemEquip(ITEM_PTR) };
+        auto const ITEM_EQUIP_STR { CREATURE_PTR->ItemEquip(ITEM_PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_EQUIP_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),

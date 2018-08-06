@@ -14,11 +14,12 @@
 #include "map/transition.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "sfml-util/colored-rect.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/gui/text-button.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -44,8 +45,8 @@ namespace stage
     // Responsible for the interaction region of the Adventure Stage.
     class InteractStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
-        , public popup::IPopupHandler_t
+        , public sfml_util::gui::TextButton::Callback_t::IHandler_t
+        , public sfml_util::gui::PopupCallback_t::IHandler_t
     {
     public:
         InteractStage(const InteractStage &) = delete;
@@ -59,11 +60,9 @@ namespace stage
 
         virtual ~InteractStage();
 
-        const std::string HandlerName() const final { return GetStageName(); }
+        bool HandleCallback(const sfml_util::gui::TextButton::Callback_t::PacketPtr_t &) final;
 
-        bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) final;
-
-        bool HandleCallback(const popup::PopupResponse &) override;
+        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;

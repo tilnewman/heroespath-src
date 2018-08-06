@@ -11,7 +11,12 @@
 //
 #include "sfml-util/sfml-util-center.hpp"
 
-#include <SFML/Graphics/Sprite.hpp>
+#include <cmath>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -36,10 +41,7 @@ namespace sfml_util
     }
 
     // returns the distance from the center of A to the center of B (global)
-    inline float Distance(const sf::Sprite & A, const sf::Sprite & B)
-    {
-        return Distance(CenterOf(A), CenterOf(B));
-    }
+    float Distance(const sf::Sprite & A, const sf::Sprite & B);
 
 } // namespace sfml_util
 } // namespace heroespath

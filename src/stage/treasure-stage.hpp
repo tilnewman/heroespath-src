@@ -8,7 +8,6 @@
 #define HEROESPATH_TREASURESTAGE_HPP_INCLUDED
 //
 // treasure-stage.hpp
-//  A Stage class that allows finding treasure and advancing after combat.
 //
 #include "combat/creature-interaction.hpp"
 #include "combat/fight-results.hpp"
@@ -20,9 +19,8 @@
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
 
@@ -45,7 +43,7 @@ namespace stage
     // A Stage class that allows starting the game
     class TreasureStage
         : public sfml_util::Stage
-        , public popup::IPopupHandler_t
+        , public sfml_util::gui::PopupCallback_t::IHandler_t
     {
         using ItemListBox_t = sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
 
@@ -54,9 +52,6 @@ namespace stage
 
         using ItemListBoxUPtr_t
             = sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
-
-        using ItemListBoxEventPackage_t
-            = sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
         TreasureStage(const TreasureStage &) = delete;
@@ -68,8 +63,7 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
-        const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const popup::PopupResponse &) override;
+        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -78,7 +72,7 @@ namespace stage
         bool HandleListboxCallback(
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-            const ItemListBoxEventPackage_t & PACKAGE);
+            const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR);
 
         void TakeAllItems();
         void Exit();
@@ -168,6 +162,8 @@ namespace stage
         interact::LockPicking lockPicking_;
         combat::CreatureInteraction creatureInteraction_;
     };
+
+    using TreasureStagePtr_t = misc::NotNull<TreasureStage *>;
 
 } // namespace stage
 } // namespace heroespath

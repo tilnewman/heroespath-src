@@ -12,14 +12,12 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "popup/popup-info.hpp"
 #include "sfml-util/fade.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/loop-state-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
-#include <list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -88,7 +86,7 @@ namespace sfml_util
 
         void RemoveFocus();
 
-        void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
+        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR);
 
         bool GetIgnoreMouse() const { return willIgnoreMouse_; }
         void SetIgnoreMouse(const bool B) { willIgnoreMouse_ = B; }
@@ -97,7 +95,8 @@ namespace sfml_util
         void SetIgnoreKeystrokes(const bool B) { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
-            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO);
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -160,16 +159,16 @@ namespace sfml_util
         float holdTimeCounter_;
         bool willExitOnKeypress_;
         bool willExitOnMouseclick_;
-        gui::IGuiEntityPtrOpt_t entityWithFocusPtrOpt_;
+        gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
         bool willIgnoreMouse_;
         bool willIgnoreKeystrokes_;
-        popup::PopupInfo popupInfo_;
+        popup::PopupInfoOpt_t popupInfoOpt_;
         bool hasFadeStarted_;
         sf::Event::EventType prevEventType_;
         sf::Keyboard::Key prevKeyPressed_;
         bool isMouseHovering_;
         bool takeScreenshot_;
-        popup::IPopupHandlerPtrOpt_t popupCallbackPtrOpt_;
+        sfml_util::gui::PopupCallback_t::IHandlerPtrOpt_t popupCallbackPtrOpt_;
         LoopState::Enum state_;
         std::vector<float> frameRateVec_;
         std::size_t frameRateSampleCount_;

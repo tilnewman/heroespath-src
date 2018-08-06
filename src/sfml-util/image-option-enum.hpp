@@ -28,9 +28,10 @@ namespace sfml_util
             Default = Smooth,
             FlipHoriz = 1 << 1,
             FlipVert = 1 << 2,
-            Invert = 1 << 3,
-            InvertAfterMask = 1 << 4,
-            InvertIncludesAlpha = 1 << 5,
+            Repeated = 1 << 3,
+            Invert = 1 << 4,
+            InvertAfterMask = 1 << 5,
+            InvertIncludesAlpha = 1 << 6,
             Last = InvertIncludesAlpha
         };
 

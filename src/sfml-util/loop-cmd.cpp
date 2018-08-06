@@ -12,6 +12,8 @@
 #include "loop-cmd.hpp"
 
 #include "game/loop-manager.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/stage.hpp"
 
 namespace heroespath
 {
@@ -97,6 +99,31 @@ namespace sfml_util
     void LoopCmd_FakeMouseClick::Execute()
     {
         game::LoopManager::Instance()->CommandLoopAccess(this).FakeMouseClick(clickPosV_);
+    }
+
+    const std::string LoopCmd_FadeIn::Name() const
+    {
+        std::ostringstream ss;
+        ss << LoopCmd::Name() << "_FromColor=" << fadeFromColor_ << "_WithSpeedMult=" << speedMult_
+           << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
+
+        return ss.str();
+    }
+
+    const std::string LoopCmd_FadeOut::Name() const
+    {
+        std::ostringstream ss;
+        ss << LoopCmd::Name() << "To=" << fadeToColor_ << "_WithSpeedMult=" << speedMult_
+           << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
+
+        return ss.str();
+    }
+
+    const std::string LoopCmd_FakeMouseClick::Name() const
+    {
+        std::ostringstream ss;
+        ss << LoopCmd::Name() << "At=" << clickPosV_;
+        return ss.str();
     }
 
 } // namespace sfml_util

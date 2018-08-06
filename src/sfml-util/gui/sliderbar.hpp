@@ -8,16 +8,15 @@
 #define HEROESPATH_SFMLUTIL_SLIDERBAR_HPP_INCLUDED
 //
 // sliderbar.hpp
-//  Code that draws a sliderbar with buttons at either end and a carrot in the center that can be
-//  dragged.
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/gui-entity-image.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/gui/sliderbar-style.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -30,49 +29,36 @@ namespace sfml_util
     namespace gui
     {
 
-        class SliderBar;
-        namespace callback
-        {
-            using SliderBarCallbackPackage_t = sfml_util::callback::PtrWrapper<SliderBar>;
-
-            using ISliderBarCallbackHandler_t
-                = sfml_util::callback::ICallbackHandler<SliderBarCallbackPackage_t, bool>;
-
-            using ISliderBarCallbackHandlerPtr_t = misc::NotNull<ISliderBarCallbackHandler_t *>;
-
-            using ISliderBarCallbackHandlerPtrOpt_t
-                = boost::optional<ISliderBarCallbackHandlerPtr_t>;
-        } // namespace callback
-
         // Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
-        class SliderBar : public GuiEntity
+        class SliderBar : public Entity
         {
         public:
+            using Callback_t = Callback<SliderBar>;
+
             SliderBar(const SliderBar &) = delete;
             SliderBar(SliderBar &&) = delete;
             SliderBar & operator=(const SliderBar &) = delete;
             SliderBar & operator=(SliderBar &&) = delete;
 
-        public:
             SliderBar(
                 const std::string & NAME,
                 const float POS_LEFT,
                 const float POS_TOP,
                 const float LENGTH,
                 const SliderStyle & STYLE,
-                const callback::ISliderBarCallbackHandlerPtrOpt_t CHANGE_HANDLER_PTR_OPT
-                = boost::none,
-                const float INITIAL_VALUE = 0.0f); // must be [0.0f, 1.0f]
+                const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT = boost::none,
+                const float INITIAL_POS_RATIO = 0.0f,
+                const bool WILL_INVERT_POSITION = false); // must be [0.0f, 1.0f]
 
             virtual ~SliderBar() = default;
 
-            float GetCurrentValue() const { return currentVal_; }
-            void SetCurrentValue(const float NEW_VAL);
-            virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V);
+            float PositionRatio() const { return currentPosRatio_; }
+
+            // calls the callback
+            void PositionRatio(const float NEW_VAL);
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            // Overrides from GuiEntity
             bool UpdateMouseWheel(
                 const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override;
 
@@ -82,32 +68,72 @@ namespace sfml_util
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual void SetOnChangeHandler(
-                const callback::ISliderBarCallbackHandlerPtr_t CHANGE_HANDLER_PTR)
+            float GetLength() const { return length_; }
+
+            void SetCallbackHandler(const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT)
             {
-                changeHandlerPtrOpt_ = CHANGE_HANDLER_PTR;
+                callbackHandlerPtrOpt_ = CALLBACK_HANDLER_PTR_OPT;
             }
 
-            float GetLength() const { return LENGTH_; }
-
         protected:
-            void OnClick(const sf::Vector2f &) override {}
+            float CalcPositionRatioChangeOnMouseUp(const sf::Vector2f & MOUSE_POS_V) const;
+            float CalcPositionRatioFromScreenPos(const sf::Vector2f & SCREEN_POS_V) const;
+
             virtual void OnChange(const float NEW_VALUE);
-            void Setup();
-            virtual void SetPadPosition();
-            void SetupAllPositions();
-            void SetupEntityRegion();
-            void SetEntityRegions();
+
+            const sf::IntRect TextureCoordsBaseOnStyle_BottomOrLeft(const SliderStyle STYLE) const;
+
+            const sf::IntRect
+                TextureCoordsBaseOnStyle_BottomOrLeft_Horizontal(const SliderStyle STYLE) const;
+
+            const sf::IntRect
+                TextureCoordsBaseOnStyle_BottomOrLeft_Vertical(const SliderStyle STYLE) const;
+
+            const sf::IntRect TextureCoordsBaseOnStyle_TopOrRight(const SliderStyle STYLE) const;
+
+            const sf::IntRect
+                TextureCoordsBaseOnStyle_TopOrRight_Horizontal(const SliderStyle STYLE) const;
+
+            const sf::IntRect
+                TextureCoordsBaseOnStyle_TopOrRight_Vertical(const SliderStyle STYLE) const;
+
+            const sf::IntRect TextureCoordsBasedOnStyle_Bar(const SliderStyle STYLE) const;
+            const sf::IntRect TextureCoordsBasedOnStyle_Pad(const SliderStyle STYLE) const;
+
+            // calls the callback
+            void UpdatePadPosition();
+
+            const sf::Vector2f CalcPadPosition() const;
+
+            void ResetMouseDownStatus();
+
+            void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
+
+        private:
+            float CalcPositionRatioChangeOnMouseUp_Inner(const sf::Vector2f & MOUSE_POS_V) const;
+            float CalcPositionRatioFromScreenPos_Inner(const sf::Vector2f & SCREEN_POS_V) const;
+
+        public:
+            static const float POS_OFFSET_HORIZ_;
+            static const float POS_OFFSET_VERT_;
 
         protected:
-            float currentVal_; // always [0.0f, 1.0f]
-            const float LENGTH_;
-            const SliderStyle STYLE_;
-            GuiImage botOrLeftImage_;
-            GuiImage topOrRightImage_;
-            GuiImage barImage_;
-            GuiImage padImage_;
-            callback::ISliderBarCallbackHandlerPtrOpt_t changeHandlerPtrOpt_;
+            static const float MOVE_AMOUNT_RATIO_;
+
+            float currentPosRatio_;
+            float length_;
+            SliderStyle style_;
+            sfml_util::CachedTexture guiElementsCachedTexture_;
+            sf::Sprite botOrLeftSprite_;
+            sf::Sprite topOrRightSprite_;
+            sf::Sprite barSprite_;
+            sf::Sprite padSprite_;
+            Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
+            bool botOrLeftIsMouseDown_;
+            bool topOrRightIsMouseDown_;
+            bool barIsMouseDown_;
+            bool padIsMouseDown_;
+            bool willInvertPosition_;
         };
 
         using SliderBarPtr_t = misc::NotNull<SliderBar *>;

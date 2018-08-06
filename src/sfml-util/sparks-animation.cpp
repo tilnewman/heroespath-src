@@ -11,12 +11,10 @@
 //
 #include "sparks-animation.hpp"
 
-#include "game/game-data-file.hpp"
-
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "misc/random.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath
 {
@@ -127,27 +125,14 @@ namespace sfml_util
             , emitTimerSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , sparkTexture1_()
-            , sparkTexture2_()
-            , sparkTexture3_()
+            , sparkCachedTexture1_(
+                  "media-images-misc-spark1", ImageOptions(ImageOpt::Default, sf::Color::Black))
+            , sparkCachedTexture2_(
+                  "media-images-misc-spark2", ImageOptions(ImageOpt::Default, sf::Color::Black))
+            , sparkCachedTexture3_(
+                  "media-images-misc-spark3", ImageOptions(ImageOpt::Default, sf::Color::Black))
             , sparkVec_()
         {
-            Loaders::Texture(
-                sparkTexture1_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark1"));
-
-            Loaders::Texture(
-                sparkTexture2_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark2"));
-
-            Loaders::Texture(
-                sparkTexture3_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-spark3"));
-
-            sfml_util::Mask(sparkTexture1_);
-            sfml_util::Mask(sparkTexture2_);
-            sfml_util::Mask(sparkTexture3_);
-
             sparkVec_.reserve(static_cast<std::size_t>((1.0f / SEC_PER_EMIT_) * DURATION_SEC) + 2);
         }
 
@@ -186,24 +171,24 @@ namespace sfml_util
                     (WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN
                                        : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
-                const sf::Texture * const TEXTURE_PTR { [&]() {
+                const sf::Texture & RANDOM_TEXTURE_REF { [&]() {
                     auto const RAND { misc::random::Int(2) };
                     if (RAND == 0)
                     {
-                        return &sparkTexture1_;
+                        return sparkCachedTexture1_.Get();
                     }
                     else if (RAND == 1)
                     {
-                        return &sparkTexture2_;
+                        return sparkCachedTexture2_.Get();
                     }
                     else
                     {
-                        return &sparkTexture3_;
+                        return sparkCachedTexture3_.Get();
                     }
                 }() };
 
                 sparkVec_.emplace_back(Spark(
-                    *TEXTURE_PTR,
+                    RANDOM_TEXTURE_REF,
                     sf::Vector2f(START_POS_LEFT, START_POS_TOP),
                     sf::Vector2f(END_POS_LEFT, END_POS_TOP),
                     ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
@@ -251,6 +236,7 @@ namespace sfml_util
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

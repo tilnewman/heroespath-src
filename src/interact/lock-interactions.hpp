@@ -11,8 +11,9 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -34,21 +35,24 @@ namespace interact
 
         bool Attempt() const;
 
-        void PopupCharacterSelection(const popup::IPopupHandlerPtr_t) const;
+        void PopupCharacterSelection(const sfml_util::gui::PopupCallback_t::IHandlerPtr_t) const;
 
         // returns true if a character was selected and characterPtr_ is not null,
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
-            const popup::IPopupHandlerPtr_t, const popup::PopupResponse &);
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t,
+            const sfml_util::gui::PopupCallback_t::PacketPtr_t &);
 
-        void PopupAttempting(const popup::IPopupHandlerPtr_t, const std::string &) const;
+        void PopupAttempting(
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t, const std::string &) const;
 
         void PopupSuccess(
-            const popup::IPopupHandlerPtr_t, const std::string & NAME_OF_WHAT_OPENED) const;
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t,
+            const std::string & NAME_OF_WHAT_OPENED) const;
 
         // returns true if a new title is achieved and the popup is displayed
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-            const popup::IPopupHandlerPtr_t);
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t);
 
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 

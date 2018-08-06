@@ -11,9 +11,11 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/pos-slider.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace heroespath
 {
@@ -67,7 +69,7 @@ namespace stage
         const float SLIDER_SPEED_;
 
         sf::VertexArray backgroundQuads_;
-        sf::Texture texture_;
+        sfml_util::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
         sfml_util::sliders::PosSlider slider_;
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;

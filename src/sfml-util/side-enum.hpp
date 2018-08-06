@@ -11,8 +11,6 @@
 //
 #include "misc/enum-util.hpp"
 
-#include <string>
-
 namespace heroespath
 {
 namespace sfml_util
@@ -22,8 +20,7 @@ namespace sfml_util
     {
         enum Enum : misc::EnumUnderlying_t
         {
-            Error = 0,
-            None = Error,
+            None = 0,
             Top = 1 << 0,
             Bottom = 1 << 1,
             Left = 1 << 2,

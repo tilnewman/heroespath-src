@@ -20,7 +20,7 @@
 #include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-image-manip.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -43,7 +43,7 @@ namespace sfml_util
 
         bool CreatureImageLoader::Test() const
         {
-            static auto didPostInitial{ false };
+            static auto didPostInitial { false };
             if (false == didPostInitial)
             {
                 didPostInitial = true;
@@ -51,7 +51,7 @@ namespace sfml_util
                     "sfml_util::gui::CreatureImageLoader::Test() Starting Tests...");
             }
 
-            static auto allPaths{ misc::filesystem::FindFilesInDirectory(
+            static auto allPaths { misc::filesystem::FindFilesInDirectory(
                 imageDirectoryPath_, "", ".png") };
 
             for (auto & pathStr : allPaths)
@@ -59,41 +59,41 @@ namespace sfml_util
                 boost::algorithm::to_lower(pathStr);
             }
 
-            static misc::EnumUnderlying_t raceIndex{ 0 };
+            static misc::EnumUnderlying_t raceIndex { 0 };
             if (raceIndex < creature::race::Count)
             {
-                auto const RACE_ENUM{ static_cast<creature::race::Enum>(raceIndex) };
-                auto const RACE_STR{ creature::race::ToString(RACE_ENUM) };
-                auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
+                auto const RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
+                auto const RACE_STR { creature::race::ToString(RACE_ENUM) };
+                auto const ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
-                static misc::EnumUnderlying_t roleIndex{ 0 };
+                static misc::EnumUnderlying_t roleIndex { 0 };
                 if (roleIndex < ROLE_VEC.size())
                 {
-                    auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                    auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
+                    auto const ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                    auto const ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
-                    static misc::EnumUnderlying_t sexIndex{ 0 };
+                    static misc::EnumUnderlying_t sexIndex { 0 };
                     if (sexIndex < creature::sex::Count)
                     {
-                        auto const SEX_ENUM{ static_cast<creature::sex::Enum>(sexIndex) };
-                        auto const SEX_STR{ creature::sex::ToString(SEX_ENUM) };
+                        auto const SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
+                        auto const SEX_STR { creature::sex::ToString(SEX_ENUM) };
 
                         // test to ensure that BodyType maker will not throw
                         creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
 
-                        static misc::EnumUnderlying_t classIndex{ 0 };
-                        static std::size_t fileIndex{ 0 };
+                        static misc::EnumUnderlying_t classIndex { 0 };
+                        static std::size_t fileIndex { 0 };
                         if (RACE_ENUM == creature::race::Wolfen)
                         {
                             if (classIndex < creature::wolfen_class::Count)
                             {
-                                auto const CLASS_ENUM{ static_cast<creature::wolfen_class::Enum>(
+                                auto const CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
                                     classIndex) };
 
-                                auto const CLASS_STR{ creature::wolfen_class::ToString(
+                                auto const CLASS_STR { creature::wolfen_class::ToString(
                                     CLASS_ENUM) };
 
-                                auto const FILENAMES{ Filenames(
+                                auto const FILENAMES { Filenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
@@ -109,15 +109,15 @@ namespace sfml_util
 
                                 if (fileIndex < FILENAMES.size())
                                 {
-                                    auto const FILENAME{ FILENAMES.at(fileIndex) };
+                                    auto const FILENAME { FILENAMES.at(fileIndex) };
 
-                                    auto const PATH{ boost::algorithm::to_lower_copy(
+                                    auto const PATH { boost::algorithm::to_lower_copy(
                                         Path(FILENAME)) };
 
                                     sf::Texture texture;
                                     Load(texture, FILENAME, false);
 
-                                    auto imagePathFoundIter{ std::find(
+                                    auto imagePathFoundIter { std::find(
                                         std::begin(allPaths), std::end(allPaths), PATH) };
 
                                     if (imagePathFoundIter != std::end(allPaths))
@@ -150,13 +150,13 @@ namespace sfml_util
                         {
                             if (classIndex < creature::dragon_class::Count)
                             {
-                                auto const CLASS_ENUM{ static_cast<creature::dragon_class::Enum>(
+                                auto const CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
                                     classIndex) };
 
-                                auto const CLASS_STR{ creature::dragon_class::ToString(
+                                auto const CLASS_STR { creature::dragon_class::ToString(
                                     CLASS_ENUM) };
 
-                                auto const FILENAMES{ Filenames(
+                                auto const FILENAMES { Filenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
@@ -172,15 +172,15 @@ namespace sfml_util
 
                                 if (fileIndex < FILENAMES.size())
                                 {
-                                    auto const FILENAME{ FILENAMES.at(fileIndex) };
+                                    auto const FILENAME { FILENAMES.at(fileIndex) };
 
-                                    auto const PATH{ boost::algorithm::to_lower_copy(
+                                    auto const PATH { boost::algorithm::to_lower_copy(
                                         Path(FILENAME)) };
 
                                     sf::Texture texture;
                                     Load(texture, FILENAME, false);
 
-                                    auto imagePathFoundIter{ std::find(
+                                    auto imagePathFoundIter { std::find(
                                         std::begin(allPaths), std::end(allPaths), PATH) };
 
                                     if (imagePathFoundIter != std::end(allPaths))
@@ -211,7 +211,7 @@ namespace sfml_util
                         }
                         else
                         {
-                            auto const FILENAMES{ Filenames(
+                            auto const FILENAMES { Filenames(
                                 RACE_ENUM,
                                 ROLE_ENUM,
                                 SEX_ENUM,
@@ -226,14 +226,14 @@ namespace sfml_util
 
                             if (fileIndex < FILENAMES.size())
                             {
-                                auto const FILENAME{ FILENAMES.at(fileIndex) };
+                                auto const FILENAME { FILENAMES.at(fileIndex) };
 
-                                auto const PATH{ boost::algorithm::to_lower_copy(Path(FILENAME)) };
+                                auto const PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
 
                                 sf::Texture texture;
                                 Load(texture, FILENAME, false);
 
-                                auto imagePathFoundIter{ std::find(
+                                auto imagePathFoundIter { std::find(
                                     std::begin(allPaths), std::end(allPaths), PATH) };
 
                                 if (imagePathFoundIter != std::end(allPaths))
@@ -324,7 +324,7 @@ namespace sfml_util
         const std::string
             CreatureImageLoader::FilenameRandom(const creature::CreaturePtr_t CREATURE_PTR) const
         {
-            auto const FILENAMES{ Filenames(
+            auto const FILENAMES { Filenames(
                 CREATURE_PTR->Race(),
                 CREATURE_PTR->Role(),
                 CREATURE_PTR->Sex(),
@@ -342,7 +342,7 @@ namespace sfml_util
 
         void CreatureImageLoader::EnsureFileExists(const std::string & FILENAME) const
         {
-            auto const FULL_PATH_STR{ Path(FILENAME) };
+            auto const FULL_PATH_STR { Path(FILENAME) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (misc::filesystem::DoesFileExist(FULL_PATH_STR)),
@@ -1165,8 +1165,8 @@ namespace sfml_util
 
                 if (ROLE == role::Knight)
                 {
-                    std::vector<std::string> filenames{ "knight-gnome-1.png",
-                                                        "knight-gnome-2.png" };
+                    std::vector<std::string> filenames { "knight-gnome-1.png",
+                                                         "knight-gnome-2.png" };
 
                     if (SEX == sex::Male)
                     {
@@ -1180,7 +1180,7 @@ namespace sfml_util
 
                 if (ROLE == role::Beastmaster)
                 {
-                    std::vector<std::string> filenames{
+                    std::vector<std::string> filenames {
                         "gnome-2.png", "gnome-3.png", "gnome-4.png", "gnome-6.png", "gnome-7.png"
                     };
 
@@ -1204,11 +1204,11 @@ namespace sfml_util
 
                 if (ROLE == role::Thief)
                 {
-                    std::vector<std::string> filenames{ "gnome-grunt.png",
-                                                        "gnome-2.png",
-                                                        "gnome-3.png",
-                                                        "gnome-6.png",
-                                                        "gnome-7.png" };
+                    std::vector<std::string> filenames { "gnome-grunt.png",
+                                                         "gnome-2.png",
+                                                         "gnome-3.png",
+                                                         "gnome-6.png",
+                                                         "gnome-7.png" };
 
                     if (SEX == sex::Female)
                     {
@@ -1228,8 +1228,8 @@ namespace sfml_util
             {
                 if (ROLE == role::Knight)
                 {
-                    std::vector<std::string> filenames{ "knight-human-1.png",
-                                                        "knight-human-2.png" };
+                    std::vector<std::string> filenames { "knight-human-1.png",
+                                                         "knight-human-2.png" };
 
                     if (SEX == sex::Male)
                     {
@@ -1242,7 +1242,7 @@ namespace sfml_util
 
                 if (ROLE == role::Archer)
                 {
-                    std::vector<std::string> filenames{ "archer-1.png", "archer-2.png" };
+                    std::vector<std::string> filenames { "archer-1.png", "archer-2.png" };
 
                     if (SEX == sex::Female)
                     {
@@ -1309,8 +1309,8 @@ namespace sfml_util
 
                 if (ROLE == role::Cleric)
                 {
-                    std::vector<std::string> filenames{ "cleric-human-1.png",
-                                                        "cleric-human-2.png" };
+                    std::vector<std::string> filenames { "cleric-human-1.png",
+                                                         "cleric-human-2.png" };
 
                     if (SEX == sex::Female)
                     {
@@ -1329,8 +1329,8 @@ namespace sfml_util
 
                 if (ROLE == role::Knight)
                 {
-                    std::vector<std::string> filenames{ "knight-human-1.png",
-                                                        "knight-human-2.png" };
+                    std::vector<std::string> filenames { "knight-human-1.png",
+                                                         "knight-human-2.png" };
 
                     if (SEX == sex::Male)
                     {
@@ -1343,11 +1343,11 @@ namespace sfml_util
 
                 if (ROLE == role::Thief)
                 {
-                    std::vector<std::string> filenames{ "thief-human-1.png",
-                                                        "thief-human-2.png",
-                                                        "thief-human-3.png",
-                                                        "thief-human-4.png",
-                                                        "thief-human-5.png" };
+                    std::vector<std::string> filenames { "thief-human-1.png",
+                                                         "thief-human-2.png",
+                                                         "thief-human-3.png",
+                                                         "thief-human-4.png",
+                                                         "thief-human-5.png" };
 
                     if (SEX == sex::Female)
                     {

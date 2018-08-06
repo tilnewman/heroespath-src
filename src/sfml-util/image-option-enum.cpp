@@ -22,6 +22,7 @@ namespace sfml_util
         AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Smooth, "Smooth", SEPARATOR);
         AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::FlipHoriz, "FlipHoriz", SEPARATOR);
         AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::FlipVert, "FlipVert", SEPARATOR);
+        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Repeated, "Repeated", SEPARATOR);
         AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Invert, "Invert", SEPARATOR);
 
         AppendNameIfBitIsSet(

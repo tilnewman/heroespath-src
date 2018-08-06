@@ -72,7 +72,7 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
-        auto const LOAD_SUCCESS{ Instance()->Load() };
+        auto const LOAD_SUCCESS { Instance()->Load() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LOAD_SUCCESS),
@@ -88,7 +88,7 @@ namespace game
 
     const std::string GameDataFile::GetMediaPath(const std::string & KEY) const
     {
-        auto const PATH_STR{ GetCopyStr(KEY) };
+        auto const PATH_STR { GetCopyStr(KEY) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (PATH_STR.empty() == false),

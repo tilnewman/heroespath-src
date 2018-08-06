@@ -49,7 +49,7 @@ namespace interact
         }
 
         sfml_util::gui::TextButtonUPtr_t
-            Make(const sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t);
+            Make(const sfml_util::gui::TextButton::Callback_t::IHandlerPtrOpt_t &);
 
     private:
         Buttons::Enum whichButton_;

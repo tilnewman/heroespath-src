@@ -7,27 +7,56 @@
 #ifndef HEROESPATH_SFMLUTIL_ORIENTATION_ENUM_HPP_INCLUDED
 #define HEROESPATH_SFMLUTIL_ORIENTATION_ENUM_HPP_INCLUDED
 //
-// orientation.hpp
+// orientation-enum.hpp
 //
-#include <string>
+#include "misc/enum-util.hpp"
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    struct Orientation
+    struct Orientation : public misc::EnumBaseCounting<Orientation, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Horiz = 0,
             Vert,
+            Both,
             Count
         };
 
-        static const std::string ToString(const Orientation::Enum E);
-        static bool IsValid(const Orientation::Enum E);
+        static const std::string ToString(const Orientation::Enum);
+
+        // if given Both and IS_OPPOSITE_OF_BOTH_COUNT==false then returns Both
+        static Enum Flip(const Enum ORIENTATION, const bool IS_OPPOSITE_OF_BOTH_COUNT = false)
+        {
+            if (ORIENTATION == Horiz)
+            {
+                return Vert;
+            }
+            else if (ORIENTATION == Vert)
+            {
+                return Horiz;
+            }
+            else if (ORIENTATION == Both)
+            {
+                if (IS_OPPOSITE_OF_BOTH_COUNT)
+                {
+                    return Count;
+                }
+                else
+                {
+                    return Both;
+                }
+            }
+            else
+            {
+                return Count;
+            }
+        }
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

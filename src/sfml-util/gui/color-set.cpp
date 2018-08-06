@@ -11,7 +11,8 @@
 //
 #include "color-set.hpp"
 
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 
 #include <sstream>
 #include <tuple>
@@ -23,60 +24,60 @@ namespace sfml_util
     namespace gui
     {
 
-        const sf::Uint8 ColorSet::DEFAULT_OFFSET_VALUE_(35);
-        const sf::Color ColorSet::DEFAULT_OFFSET_COLOR_(
+        const sf::Uint8 FocusColors::DEFAULT_OFFSET_VALUE_(35);
+        const sf::Color FocusColors::DEFAULT_OFFSET_COLOR_(
             DEFAULT_OFFSET_VALUE_, DEFAULT_OFFSET_VALUE_, DEFAULT_OFFSET_VALUE_, 0);
 
-        ColorSet::ColorSet()
-            : foreground_with_focus(sf::Color::White)
-            , background_with_focus(sf::Color::White)
-            , foreground_without_focus(sf::Color::White - DEFAULT_OFFSET_COLOR_)
-            , background_without_focus(sf::Color::White - DEFAULT_OFFSET_COLOR_)
+        FocusColors::FocusColors()
+            : foreground_with(sf::Color::White)
+            , background_with(sf::Color::White)
+            , foreground_without(sf::Color::White - DEFAULT_OFFSET_COLOR_)
+            , background_without(sf::Color::White - DEFAULT_OFFSET_COLOR_)
         {}
 
-        ColorSet::ColorSet(
+        FocusColors::FocusColors(
             const sf::Color & FG_WITH_FOCUS,
             const sf::Color & BG_WITH_FOCUS,
             const sf::Color & FG_WITHOUT_FOCUS,
             const sf::Color & BG_WITHOUT_FOCUS)
-            : foreground_with_focus(FG_WITH_FOCUS)
-            , background_with_focus(BG_WITH_FOCUS)
-            , foreground_without_focus(FG_WITHOUT_FOCUS)
-            , background_without_focus(BG_WITHOUT_FOCUS)
+            : foreground_with(FG_WITH_FOCUS)
+            , background_with(BG_WITH_FOCUS)
+            , foreground_without(FG_WITHOUT_FOCUS)
+            , background_without(BG_WITHOUT_FOCUS)
         {}
 
-        ColorSet::ColorSet(const sf::Color & FG)
-            : foreground_with_focus(FG)
-            , background_with_focus(sf::Color::White)
-            , foreground_without_focus(FG)
-            , background_without_focus(sf::Color::White)
+        FocusColors::FocusColors(const sf::Color & FG)
+            : foreground_with(FG)
+            , background_with(sf::Color::White)
+            , foreground_without(FG)
+            , background_without(sf::Color::White)
         {}
 
-        ColorSet::ColorSet(const sf::Color & FG_WITH_FOCUS, const sf::Color & BG_WITH_FOCUS)
-            : foreground_with_focus(FG_WITH_FOCUS)
-            , background_with_focus(BG_WITH_FOCUS)
-            , foreground_without_focus(FG_WITH_FOCUS)
-            , background_without_focus(BG_WITH_FOCUS)
+        FocusColors::FocusColors(const sf::Color & FG_WITH_FOCUS, const sf::Color & BG_WITH_FOCUS)
+            : foreground_with(FG_WITH_FOCUS)
+            , background_with(BG_WITH_FOCUS)
+            , foreground_without(FG_WITH_FOCUS)
+            , background_without(BG_WITH_FOCUS)
         {
-            foreground_without_focus -= DEFAULT_OFFSET_COLOR_;
-            background_without_focus -= DEFAULT_OFFSET_COLOR_;
+            foreground_without -= DEFAULT_OFFSET_COLOR_;
+            background_without -= DEFAULT_OFFSET_COLOR_;
         }
 
-        void ColorSet::ForceWithoutFocusToMatchWithFocus()
+        void FocusColors::ForceWithoutFocusToMatchWithFocus()
         {
-            foreground_without_focus = foreground_with_focus;
-            background_without_focus = background_with_focus;
+            foreground_without = foreground_with;
+            background_without = background_with;
         }
 
-        const std::string ColorSet::ToString(const bool WILL_WRAP) const
+        const std::string FocusColors::ToString(const bool WILL_WRAP) const
         {
             std::ostringstream ss;
 
             if (WILL_WRAP)
                 ss << "(";
 
-            ss << "fg_wf=" << foreground_with_focus << ", fg_wof=" << foreground_without_focus
-               << ", bg_wf=" << background_with_focus << ", bg_wof=" << background_without_focus;
+            ss << "fg_wf=" << foreground_with << ", fg_wof=" << foreground_without
+               << ", bg_wf=" << background_with << ", bg_wof=" << background_without;
 
             if (WILL_WRAP)
                 ss << ")";
@@ -84,32 +85,32 @@ namespace sfml_util
             return ss.str();
         }
 
-        bool operator<(const ColorSet & L, const ColorSet & R)
+        bool operator<(const FocusColors & L, const FocusColors & R)
         {
             return std::tie(
-                       L.foreground_with_focus,
-                       L.background_with_focus,
-                       L.foreground_without_focus,
-                       L.background_without_focus)
+                       L.foreground_with,
+                       L.background_with,
+                       L.foreground_without,
+                       L.background_without)
                 < std::tie(
-                       R.foreground_with_focus,
-                       R.background_with_focus,
-                       R.foreground_without_focus,
-                       R.background_without_focus);
+                       R.foreground_with,
+                       R.background_with,
+                       R.foreground_without,
+                       R.background_without);
         }
 
-        bool operator==(const ColorSet & L, const ColorSet & R)
+        bool operator==(const FocusColors & L, const FocusColors & R)
         {
             return std::tie(
-                       L.foreground_with_focus,
-                       L.background_with_focus,
-                       L.foreground_without_focus,
-                       L.background_without_focus)
+                       L.foreground_with,
+                       L.background_with,
+                       L.foreground_without,
+                       L.background_without)
                 == std::tie(
-                       R.foreground_with_focus,
-                       R.background_with_focus,
-                       R.foreground_without_focus,
-                       R.background_without_focus);
+                       R.foreground_with,
+                       R.background_with,
+                       R.foreground_without,
+                       R.background_without);
         }
 
     } // namespace gui

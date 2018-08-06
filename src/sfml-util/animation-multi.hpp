@@ -13,6 +13,8 @@
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/cached-texture.hpp"
 
+#include <SFML/Graphics/Sprite.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
@@ -27,7 +29,6 @@ namespace sfml_util
         AnimationMultiTexture & operator=(const AnimationMultiTexture &) = delete;
         AnimationMultiTexture & operator=(AnimationMultiTexture &&) = delete;
 
-    public:
         AnimationMultiTexture(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,
@@ -40,10 +41,9 @@ namespace sfml_util
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        void SetEntityPos(const sf::Vector2f & V) override;
         void SetEntityPos(const float LEFT, const float TOP) override;
-
         void SetEntityRegion(const sf::FloatRect & R) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         // returns true if frame count wrapped around back to zero
         bool UpdateTime(const float SECONDS) override;
@@ -52,15 +52,12 @@ namespace sfml_util
 
         const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
-        void MoveEntityPos(const float HORIZ, const float VERT) override;
-
-        const sf::Sprite Sprite() const override { return sprite_; }
-
     protected:
         sfml_util::CachedTextures cachedTextures_;
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

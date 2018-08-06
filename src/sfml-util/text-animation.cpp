@@ -14,7 +14,9 @@
 #include "misc/random.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-util.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
 #include <string>
@@ -55,7 +57,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT,
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 START_FONT_SIZE_,
                 START_COLOR_,
                 sfml_util::Justified::Center);
@@ -90,7 +92,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT_,
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 FONT_SIZE,
                 sfml_util::Transition(START_COLOR_, END_COLOR_, SLIDER_POS),
                 sf::BlendAlpha,
@@ -116,6 +118,7 @@ namespace sfml_util
             states.blendMode = sf::BlendAdd;
             target.draw(*textRegionUPtr_, states);
         }
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

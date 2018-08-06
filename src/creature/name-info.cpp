@@ -15,7 +15,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <sstream>
 #include <string>
@@ -25,9 +24,9 @@ namespace heroespath
 namespace creature
 {
 
-    const sfml_util::FontPtr_t NameInfo::DefaultFont() const
+    const FontPtr_t NameInfo::DefaultFont() const
     {
-        return sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System);
+        return sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System);
     }
 
     unsigned int NameInfo::DefaultSize() const

@@ -14,22 +14,21 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gradient.hpp"
-#include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/box-info.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
 namespace heroespath
 {
 namespace sfml_util
 {
-
+    /*
     const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(10);
 
     RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(
         const float POS_LEFT,
         const float POS_TOP,
-        const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
+        const sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
         const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR)
         : RadioButtonSet(CALLBACK_HANDLER_PTR, "DisplayChange")
         , ownerStagePtr_(OWNER_ISTAGE_PTR)
@@ -50,7 +49,7 @@ namespace sfml_util
         {
             sfml_util::gui::MouseTextInfo nextTextInfo(
                 NEXT_RESOLUTION.ToString(false),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 sfml_util::FontManager::Instance()->Size_Small());
 
             mouseTextInfoVec.emplace_back(nextTextInfo);
@@ -59,13 +58,13 @@ namespace sfml_util
         sfml_util::GradientInfo gradientInfo(
             sf::Color(0, 0, 0, 150), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-        sfml_util::gui::BackgroundInfo backgroundInfo(sf::Color(0, 0, 0, 60), gradientInfo);
+        sfml_util::gui::BoxEntityInfo backgroundInfo(sf::Color(0, 0, 0, 60), gradientInfo);
 
         sfml_util::gui::box::Info resRadioButtonSetBoxInfo(
             1.0f,
             true,
             sf::FloatRect(),
-            sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
+            sfml_util::gui::FocusColors(sf::Color(180, 180, 180)),
             backgroundInfo);
 
         Setup(
@@ -80,7 +79,8 @@ namespace sfml_util
 
     RadioButtonSet_DisplayChange::~RadioButtonSet_DisplayChange() = default;
 
-    bool RadioButtonSet_DisplayChange::HandleCallback(const popup::PopupResponse & POPUP)
+    bool RadioButtonSet_DisplayChange::HandleCallback(const
+    sfml_util::gui::PopupCallback_t::PacketPtr_t & POPUP)
     {
         M_HP_LOG(
             GetEntityName() << " HandlePopupCallback(response=\""
@@ -138,6 +138,7 @@ namespace sfml_util
 
         return resRadioButtonSetInitialSelection;
     }
+    */
 
 } // namespace sfml_util
 } // namespace heroespath

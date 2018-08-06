@@ -14,18 +14,19 @@
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/color-set.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/gui-entity-image.hpp"
+#include "sfml-util/gui/image-entity.hpp"
+#include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/item-detail-viewer.hpp"
 #include "stage/treasure-stage-mover.hpp"
+#include "stage/treasure-stage.hpp"
 
 #include <algorithm>
 #include <memory>
@@ -64,7 +65,7 @@ namespace stage
             sf::Color foreground;
             sf::Color background;
             sf::Color title;
-            sfml_util::gui::ColorSet colorSet;
+            sfml_util::gui::FocusColors colorSet;
             sf::Color icon;
         };
 
@@ -110,15 +111,14 @@ namespace stage
         using ItemDetailsOpt_t = boost::optional<ItemDetails>;
     } // namespace treasure
 
-    class TreasureStage;
-    using TreasureStagePtr_t = misc::NotNull<TreasureStage *>;
-
     // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::
-              IListBoxCallbackHandler<TreasureDisplayStage, item::ItemPtr_t>
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+
+        , public sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>::Callback_t::
+              IHandler_t
+
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
     {
         using ItemListBox_t = sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
 
@@ -127,9 +127,6 @@ namespace stage
 
         using ItemListBoxUPtr_t
             = sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
-
-        using ItemListBoxEventPackage_t
-            = sfml_util::gui::callback::ListBoxEventPackage<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
@@ -141,11 +138,10 @@ namespace stage
         explicit TreasureDisplayStage(const TreasureStagePtr_t);
         virtual ~TreasureDisplayStage() = default;
 
-        const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const ItemListBoxEventPackage_t &) override;
+        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t &) override;
 
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -218,7 +214,7 @@ namespace stage
         void SetupForCollection_LowerButtons();
 
         void SetupLowerButton(
-            sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
+            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr,
             const std::string & TEXT,
             const float VERT_POS);
 
@@ -262,12 +258,12 @@ namespace stage
         void ItemViewerInterruption();
 
         template <typename T>
-        const sfml_util::gui::IGuiEntityPtrOpt_t
-            GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
+        const sfml_util::gui::IEntityPtrOpt_t
+            GetEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
             if (GUI_ENTITY_UPTR)
             {
-                const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR { GUI_ENTITY_UPTR.get() };
+                const sfml_util::gui::IEntityPtr_t ENTITY_PTR { GUI_ENTITY_UPTR.get() };
                 EntityRemove(ENTITY_PTR);
                 return ENTITY_PTR;
             }
@@ -283,9 +279,9 @@ namespace stage
             Wont
         };
 
-        void GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
-            const sfml_util::gui::IGuiEntityPtrOpt_t PREV_GUI_ENTITY_PTR_OPT,
-            const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
+        void EntityPtrAddCurrAndReplacePrevIfNeeded(
+            const sfml_util::gui::IEntityPtrOpt_t & PREV_GUI_ENTITY_PTR_OPT,
+            const sfml_util::gui::IEntityPtr_t CURR_GUI_ENTITY_PTR,
             const StageAddEntity WILL_ADD = StageAddEntity::Will);
 
         void CreateOrReplaceListboxIconImage(
@@ -293,7 +289,7 @@ namespace stage
             const std::string & IMAGE_PATH_KEY,
             const sf::Color & COLOR,
             const float SCALE,
-            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr);
+            sfml_util::gui::ImageTextEntityUPtr_t & sortButtonUPtr);
 
     private:
         const treasure::ItemDetailsOpt_t
@@ -316,43 +312,44 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t weightTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t instrTextUPtr_;
 
-        sf::Texture backgroundTexture_;
-        sf::Sprite backgroundSprite_;
-        sf::Texture corpseTexture_;
+        sfml_util::CachedTexture bgCachedTexture_;
+        sf::Sprite bgSprite_;
+        sfml_util::CachedTextureOpt_t corpseCachedTextureOpt_;
         sf::Sprite corpseSprite_;
-        sf::Texture treasureTexture_;
+        sfml_util::CachedTextureOpt_t treasureCachedTextureOpt_;
         sf::Sprite treasureSprite_;
-        sf::Texture coinsTexture_;
+        sfml_util::CachedTexture coinsCachedTexture_;
         sf::Sprite coinsSprite_;
-        sf::Texture characterTexture_;
-        sfml_util::gui::FourStateButtonUPtr_t treasureAlphaButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t treasureMoneyButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t treasureWeightButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t inventoryAlphaButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t inventoryMoneyButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t inventoryWeightButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t treasureAlphaButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t treasureMoneyButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t treasureWeightButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t inventoryAlphaButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t inventoryMoneyButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t inventoryWeightButtonUPtr_;
         bool isSortOrderReversedTreasureAlpha_;
         bool isSortOrderReversedTreasureMoney_;
         bool isSortOrderReversedTreasureWeight_;
         bool isSortOrderReversedInventoryAlpha_;
         bool isSortOrderReversedInventoryMoney_;
         bool isSortOrderReversedInventoryWeight_;
-        sfml_util::gui::GuiImageUPtr_t characterImageUPtr_;
+        sfml_util::gui::ImageEntityUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;
-        sf::Texture redXTexture_;
-        sfml_util::gui::GuiImageUPtr_t redXImageUPtr_;
+        sfml_util::CachedTexture xCachedTexture_;
+        sfml_util::gui::ImageEntityUPtr_t redXImageUPtr_;
         float itemDetailTimer_;
         stage::ItemDetailViewer itemDetailViewer_;
         sf::Vector2f mousePos_;
         bool canDisplayItemDetail_;
-        sfml_util::gui::FourStateButtonUPtr_t takeAllButtonUPtr_;
-        sfml_util::gui::FourStateButtonUPtr_t doneButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t takeAllButtonUPtr_;
+        sfml_util::gui::ImageTextEntityUPtr_t doneButtonUPtr_;
 
         // These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;
         item::ItemCache lockboxCache_;
     };
+
+    using TreasureDisplayStagePtr_t = misc::NotNull<TreasureDisplayStage *>;
 
 } // namespace stage
 } // namespace heroespath

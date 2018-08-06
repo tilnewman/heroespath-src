@@ -8,7 +8,6 @@
 #define HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
 //
 // sliderbar-style.hpp
-//  A type that encapsulates the style of a SliderBar.
 //
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/orientation-enum.hpp"
@@ -20,7 +19,7 @@ namespace sfml_util
     namespace gui
     {
 
-        // encapsulates all the the style elements of a SliderBar
+        // Responsible for wrapping all the information about the style of a SliderBar
         struct SliderStyle
         {
             explicit SliderStyle(
@@ -30,24 +29,31 @@ namespace sfml_util
                 const bool IS_LINE_LARGE = true)
                 : orientation(ORIENTATION)
                 , brightness(BRIGHTNESS)
-                , willLabelArrows(WILL_LABEL_ARROWS)
-                , isLineLarge(IS_LINE_LARGE)
+                , will_label_arrows(WILL_LABEL_ARROWS)
+                , is_line_large(IS_LINE_LARGE)
             {}
+
+            SliderStyle(const SliderStyle &) = default;
+            SliderStyle(SliderStyle &&) = default;
+            SliderStyle & operator=(const SliderStyle &) = default;
+            SliderStyle & operator=(SliderStyle &&) = default;
 
             Orientation::Enum orientation;
             Brightness::Enum brightness;
-            bool willLabelArrows;
-            bool isLineLarge;
+            bool will_label_arrows;
+            bool is_line_large;
         };
 
         inline bool operator==(const SliderStyle & L, const SliderStyle & R)
         {
             return (
-                (L.brightness == R.brightness) && (L.isLineLarge == R.isLineLarge)
-                && (L.orientation == R.orientation) && (L.willLabelArrows == R.willLabelArrows));
+                (L.brightness == R.brightness) && (L.is_line_large == R.is_line_large)
+                && (L.orientation == R.orientation)
+                && (L.will_label_arrows == R.will_label_arrows));
         }
 
         inline bool operator!=(const SliderStyle & L, const SliderStyle & R) { return !(L == R); }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

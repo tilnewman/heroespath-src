@@ -13,7 +13,8 @@
 
 #include "item/item.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/item-image-loader.hpp"
+#include "sfml-util/image-loaders.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <sstream>
@@ -38,12 +39,12 @@ namespace stage
               SCREEN_HEIGHT_ * 0.85f)
         , SLIDER_SPEED_(6.0f)
         , backgroundQuads_(sf::Quads, 4)
-        , texture_()
+        , cachedTextureOpt_()
         , sprite_()
         , slider_()
         , textRegionUPtr_()
         , sourceRect()
-        , itemPtrOpt_(boost::none)
+        , itemPtrOpt_()
         , willShowImage_(false)
         , isBeforeAnyChange_(true)
         , isShowing_(false)
@@ -71,11 +72,11 @@ namespace stage
 
     void ItemDetailViewer::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const PRE_IS_MOVING_TOWARD{ slider_.Direction() == sfml_util::Moving::Toward };
-        auto const IS_FINISHED_MOVING{ slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
-        auto const IS_MOVING_TOWARD{ slider_.Direction() == sfml_util::Moving::Toward };
+        auto const PRE_IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
+        auto const IS_FINISHED_MOVING { slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
+        auto const IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
 
-        auto const PROGRESS_RATIO{ (
+        auto const PROGRESS_RATIO { (
             (IS_MOVING_TOWARD) ? slider_.ProgressRatio() : (1.0f - slider_.ProgressRatio())) };
 
         if (slider_.ProgressRatio() > 0.1f)
@@ -134,7 +135,7 @@ namespace stage
 
     void ItemDetailViewer::SetupBackgroundQuadColors(const float PROGRESS_RATIO)
     {
-        auto const BACKGROUND_COLOR{ sf::Color(
+        auto const BACKGROUND_COLOR { sf::Color(
             0, 0, 0, static_cast<sf::Uint8>(PROGRESS_RATIO * 255.0f)) };
 
         backgroundQuads_[0].color = BACKGROUND_COLOR;
@@ -145,29 +146,29 @@ namespace stage
 
     void ItemDetailViewer::SetupBackgroundQuadPositions(const float RATIO)
     {
-        auto const SOURCE_LEFT{ sourceRect.left };
-        auto const SOURCE_RIGHT{ sourceRect.left + sourceRect.width };
-        auto const SOURCE_TOP{ sourceRect.top };
-        auto const SOURCE_BOT{ sourceRect.top + sourceRect.height };
+        auto const SOURCE_LEFT { sourceRect.left };
+        auto const SOURCE_RIGHT { sourceRect.left + sourceRect.width };
+        auto const SOURCE_TOP { sourceRect.top };
+        auto const SOURCE_BOT { sourceRect.top + sourceRect.height };
 
-        auto const TARGET_LEFT{ TARGET_RECT_.left };
-        auto const TARGET_RIGHT{ TARGET_RECT_.left + TARGET_RECT_.width };
-        auto const TARGET_TOP{ TARGET_RECT_.top };
-        auto const TARGET_BOT{ TARGET_RECT_.top + TARGET_RECT_.height };
+        auto const TARGET_LEFT { TARGET_RECT_.left };
+        auto const TARGET_RIGHT { TARGET_RECT_.left + TARGET_RECT_.width };
+        auto const TARGET_TOP { TARGET_RECT_.top };
+        auto const TARGET_BOT { TARGET_RECT_.top + TARGET_RECT_.height };
 
-        auto const LEFT_MORE{ SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
-        auto const LEFT_LESS{ SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
-        auto const LEFT{ ((SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS) };
+        auto const LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        auto const LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
+        auto const LEFT { ((SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS) };
 
-        auto const RIGHT_MORE{ SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * RATIO) };
-        auto const RIGHT_LESS{ SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * RATIO) };
-        auto const RIGHT{ (SOURCE_RIGHT > TARGET_RIGHT) ? RIGHT_MORE : RIGHT_LESS };
+        auto const RIGHT_MORE { SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * RATIO) };
+        auto const RIGHT_LESS { SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * RATIO) };
+        auto const RIGHT { (SOURCE_RIGHT > TARGET_RIGHT) ? RIGHT_MORE : RIGHT_LESS };
 
-        auto const TOP{ SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+        auto const TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
 
-        auto const BOT_MORE{ SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * RATIO) };
-        auto const BOT_LESS{ SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * RATIO) };
-        auto const BOT{ (SOURCE_BOT > TARGET_BOT) ? BOT_MORE : BOT_LESS };
+        auto const BOT_MORE { SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * RATIO) };
+        auto const BOT_LESS { SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * RATIO) };
+        auto const BOT { (SOURCE_BOT > TARGET_BOT) ? BOT_MORE : BOT_LESS };
 
         backgroundQuads_[0].position = sf::Vector2f(LEFT, TOP);
         backgroundQuads_[1].position = sf::Vector2f(RIGHT, TOP);
@@ -185,10 +186,9 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageLoader itemImageLoader;
-        itemImageLoader.Load(texture_, ITEM_PTR_OPT.value());
+        cachedTextureOpt_ = sfml_util::LoadAndCacheImage(ITEM_PTR_OPT.value());
 
-        sprite_.setTexture(texture_, true);
+        sprite_.setTexture(cachedTextureOpt_->Get(), true);
 
         // found by experiment to look good at various resolutions
         const float SCALE(sfml_util::MapByRes(0.75f, 1.25f));
@@ -207,7 +207,7 @@ namespace stage
             return;
         }
 
-        auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
+        auto const ITEM_PTR { ITEM_PTR_OPT.value() };
 
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n" << ITEM_PTR->Desc() << "\n\n";
@@ -241,23 +241,23 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);
 
-        auto const TEXT_LEFT{ TARGET_RECT_.left + INNER_SPACER_ };
+        auto const TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
 
-        auto const TEXT_TOP{ sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
-                             + INNER_SPACER_ };
+        auto const TEXT_TOP { sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
+                              + INNER_SPACER_ };
 
-        auto const TEXT_WIDTH{ TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
+        auto const TEXT_WIDTH { TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
 
-        auto const SPRITE_BOTTOM{ sprite_.getPosition().y + sprite_.getGlobalBounds().height };
+        auto const SPRITE_BOTTOM { sprite_.getPosition().y + sprite_.getGlobalBounds().height };
 
-        auto const TEXT_HEIGHT{ (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
+        auto const TEXT_HEIGHT { (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
 
-        const sf::FloatRect TEXT_RECT{ TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };
+        const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };
 
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);

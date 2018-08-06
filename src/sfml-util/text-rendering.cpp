@@ -11,516 +11,330 @@
 //
 #include "text-rendering.hpp"
 
-#include "log/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
-#include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 
-#include <cctype> //for isDigit()
-#include <numeric>
+#include <cctype> //for std::isdigit()
 
 namespace heroespath
 {
 namespace sfml_util
 {
-    namespace text_render
+
+    const RenderedText TextRenderer::Render(
+        const gui::TextInfo & TEXT_INFO,
+        const sf::Vector2f & POS_V_ORIG,
+        const float WIDTH_LIMIT,
+        const FontPtrOpt_t & NUMBERS_FONT_PTR_OPT)
     {
+        RenderedText renderedText;
 
-        const float Constants::SLIDERBAR_HORIZ_OFFSET_ { 18.0f };
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!TEXT_INFO.font_ptr_opt),
+            "TextRender::Render(\"" << TEXT_INFO.text << "\") was given a TEXT_INFO with a null"
+                                    << " font pointer.");
 
-        const gui::SliderBarPtrOpt_t RenderToArea(
-            const std::string & NAME,
-            const gui::TextInfo & TEXT_INFO,
-            RenderedText & renderedText,
-            const sf::FloatRect & REGION,
-            const unsigned int SMALLER_FONT_SIZE,
-            const Margins & MARGINS,
-            const bool WILL_ALLOW_SCROLLBAR)
+        const FontPtr_t NUMBERS_FONT_PTR { (
+            (NUMBERS_FONT_PTR_OPT)
+                ? NUMBERS_FONT_PTR_OPT.value()
+                : sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number)) };
+
+        std::size_t textPosIndex(0);
+        sf::Vector2f posV { POS_V_ORIG };
+
+        const std::size_t TEXT_LENGTH(TEXT_INFO.text.size());
+        while (textPosIndex < TEXT_LENGTH)
         {
-            gui::SliderBarPtrOpt_t sliderbarPtrOpt { boost::none };
+            const SfTextVec_t SF_TEXT_VEC_LINE { RenderLine(
+                TEXT_INFO.text,
+                TEXT_INFO.char_size,
+                NUMBERS_FONT_PTR_OPT.value(),
+                NUMBERS_FONT_PTR,
+                posV,
+                WIDTH_LIMIT,
+                textPosIndex) };
 
-            // render the prompt text for the popup
-            text_render::Render(renderedText, TEXT_INFO, REGION.width, MARGINS);
-
-            // calculate the text's vertical position, which is vertically centered,
-            // then verify still within bounds
-            float vertPosToUse(
-                (REGION.top + (REGION.height * 0.5f)) - (renderedText.total_height * 0.5f));
-
-            if (vertPosToUse < REGION.top)
+            if (SF_TEXT_VEC_LINE.empty())
             {
-                vertPosToUse = REGION.top;
+                // something went wrong, bail
+                break;
             }
 
-            // check if the vertical size is too large
-            if (((vertPosToUse + renderedText.total_height) > (REGION.top + REGION.height))
-                && (REGION.height > 0.0f))
+            renderedText.text_vecs.emplace_back(SF_TEXT_VEC_LINE);
+            renderedText.SyncRegion();
+            posV.y = Bottom(renderedText.region) + 1.0f;
+        }
+
+        // apply justification
+        if ((TEXT_INFO.justified == Justified::Center) || (TEXT_INFO.justified == Justified::Right))
+        {
+            for (auto & sfTextVecLine : renderedText.text_vecs)
             {
-                // re-render with smaller font if original size did not fit vertically
-                gui::TextInfo smallerTextInfo(TEXT_INFO);
-                if ((0 != SMALLER_FONT_SIZE) && (TEXT_INFO.char_size > SMALLER_FONT_SIZE))
+                const auto LINE_LENGTH { MininallyEnclosing(sfTextVecLine).width };
+
+                float horizOffset { 0.0f };
+                if (TEXT_INFO.justified == Justified::Center)
                 {
-                    smallerTextInfo.char_size = SMALLER_FONT_SIZE;
-
-                    renderedText.Reset();
-                    text_render::Render(renderedText, smallerTextInfo, REGION.width, MARGINS);
-
-                    // re-calculate the vertical position after re-sizing the font
-                    vertPosToUse
-                        = ((REGION.top + (REGION.height * 0.5f))
-                           - (renderedText.total_height * 0.5f));
-
-                    if (vertPosToUse < REGION.top)
+                    if (WIDTH_LIMIT > 0.0f)
                     {
-                        vertPosToUse = REGION.top;
-                    }
-                }
-
-                if (((vertPosToUse + renderedText.total_height) > (REGION.top + REGION.height))
-                    && (REGION.height > 0.0f) && WILL_ALLOW_SCROLLBAR)
-                {
-                    // if the text still won't fit vertically, add the sliderbar, re-calculate,
-                    // and then configure the sliderbar.
-                    sliderbarPtrOpt = new gui::SliderBar(
-                        std::string(NAME).append("Vertical"),
-                        (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
-                        REGION.top + 5.0f,
-                        REGION.height - 10.0f,
-                        gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
-
-                    // re-render the text with the reduced horiz space to make room for the
-                    // sliderbar
-                    auto const NEW_WIDTH { ((REGION.width - MARGINS.left) - MARGINS.right)
-                                           - (Constants::SLIDERBAR_HORIZ_OFFSET_ * 2.0f) };
-
-                    renderedText.Reset();
-                    text_render::Render(renderedText, smallerTextInfo, NEW_WIDTH, MARGINS);
-                }
-            }
-
-            return sliderbarPtrOpt;
-        }
-
-        const gui::SliderBarPtrOpt_t ApplyToArea(
-            const std::string & NAME,
-            const RenderedText & RENDERED_TEXT,
-            const sf::FloatRect & REGION)
-        {
-            gui::SliderBarPtrOpt_t sliderbarPtrOpt { boost::none };
-
-            // calculate the text's vertical position, which is vertically centered,
-            // then verify still within bounds
-            float vertPosToUse(
-                (REGION.top + (REGION.height * 0.5f)) - (RENDERED_TEXT.total_height * 0.5f));
-
-            if (vertPosToUse < REGION.top)
-            {
-                vertPosToUse = REGION.top;
-            }
-
-            // check if the vertical size is too large
-            if (((vertPosToUse + RENDERED_TEXT.total_height) > (REGION.top + REGION.height))
-                && (REGION.height > 0.0f))
-            {
-                // if the text won't fit vertically, add the sliderbar
-                sliderbarPtrOpt = new gui::SliderBar(
-                    std::string(NAME).append("Vertical"),
-                    (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
-                    REGION.top + 5.0f,
-                    REGION.height - 10.0f,
-                    gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
-            }
-
-            return sliderbarPtrOpt;
-        }
-
-        void RenderAndDraw(RenderedText & renderedText, sf::RenderTexture & renderTexture)
-        {
-            renderTexture.create(
-                static_cast<unsigned>(renderedText.longest_line),
-                static_cast<unsigned>(renderedText.total_height));
-
-            renderTexture.clear(sf::Color::Transparent);
-
-            sf::RenderStates states;
-            text_render::Draw(renderedText, renderTexture, states);
-            renderTexture.display();
-        }
-
-        void Render(
-            RenderedText & renderText,
-            const gui::TextInfo & TEXT_INFO,
-            const float WIDTH_LIMIT,
-            const Margins & MARGINS)
-        {
-            sf::FloatRect r;
-            r.left = 0.0f;
-            r.top = 0.0f;
-            r.width = WIDTH_LIMIT;
-            r.height = 0.0f;
-
-            return Render(renderText, TEXT_INFO, r, MARGINS);
-        }
-
-        void Render(
-            RenderedText & renderText,
-            const gui::TextInfo & TEXT_INFO,
-            const float POS_LEFT,
-            const float POS_TOP,
-            const Margins & MARGINS)
-        {
-            sf::FloatRect r;
-            r.left = POS_LEFT;
-            r.top = POS_TOP;
-            r.width = 0.0f;
-            r.height = 0.0f;
-
-            return Render(renderText, TEXT_INFO, r, MARGINS);
-        }
-
-        void Render(
-            RenderedText & renderText,
-            const gui::TextInfo & TEXT_INFO,
-            const sf::FloatRect & REGION,
-            const Margins & MARGINS)
-        {
-            gui::TextInfo numbersTextInfo(TEXT_INFO);
-            numbersTextInfo.font_ptr_opt
-                = sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number);
-            return Render(renderText, TEXT_INFO, numbersTextInfo, TEXT_INFO.text, REGION, MARGINS);
-        }
-
-        void Render(
-            RenderedText & renderText,
-            const gui::TextInfo & TEXT_INFO_CHAR,
-            const gui::TextInfo & TEXT_INFO_NUM,
-            const std::string & TEXT,
-            const sf::FloatRect & REGION,
-            const Margins & MARGINS)
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (false == TEXT.empty()), "TextRener::Render() was given an empty string.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!TEXT_INFO_CHAR.font_ptr_opt),
-                "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_CHAR with a null"
-                                        << " font pointer.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!TEXT_INFO_NUM.font_ptr_opt),
-                "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_NUM with a null"
-                                        << " font pointer.");
-
-            std::size_t strIndex(0);
-            float heightTracker(0.0f);
-            sf::Vector2f textPos(0.0f, 0.0f);
-
-            // one vector of char TextSnippets per line
-            std::vector<TextSnippetVec_t> textSnippetVecVec;
-
-            float longestLine(0.0f);
-
-            // keep track of individual line lengths for justification below
-            std::vector<float> lineLengthVec;
-
-            const std::size_t STR_LEN(TEXT.size());
-            while (strIndex < STR_LEN)
-            {
-                TextSnippetVec_t nextTextSnippetVec(RenderLine(
-                    TextInfoSet(TEXT, TEXT_INFO_NUM, TEXT_INFO_CHAR),
-                    textPos,
-                    REGION.width - MARGINS.right,
-                    heightTracker,
-                    strIndex));
-
-                textSnippetVecVec.emplace_back(nextTextSnippetVec);
-
-                lineLengthVec.emplace_back(textPos.x);
-
-                if (longestLine < textPos.x)
-                {
-                    longestLine = textPos.x;
-                }
-
-                textPos.x = 0;
-                textPos.y += heightTracker + 1;
-                heightTracker = 0.0f;
-            }
-
-            // adjust positions
-            const std::size_t NUM_LINES(textSnippetVecVec.size());
-            for (std::size_t l(0); l < NUM_LINES; ++l)
-            {
-                // calculate justification offset
-                float offset(0.0f);
-                const float CURR_LINE_LEN(lineLengthVec[l]);
-                if (TEXT_INFO_CHAR.justified == Justified::Center)
-                {
-                    if (misc::IsRealClose(0.0f, REGION.width))
-                    {
-                        offset = ((longestLine * 0.5f) - (CURR_LINE_LEN * 0.5f));
+                        horizOffset = ((WIDTH_LIMIT * 0.5f) - (LINE_LENGTH * 0.5f));
                     }
                     else
                     {
-                        offset = ((REGION.width * 0.5f) - (CURR_LINE_LEN * 0.5f));
+                        horizOffset = ((renderedText.region.width * 0.5f) - (LINE_LENGTH * 0.5f));
                     }
                 }
-                else
+                else if (TEXT_INFO.justified == Justified::Right)
                 {
-                    if (TEXT_INFO_CHAR.justified == Justified::Right)
+                    if (WIDTH_LIMIT > 0.0f)
                     {
-                        if (misc::IsRealClose(0.0f, REGION.width))
-                        {
-                            offset = (longestLine - CURR_LINE_LEN);
-                        }
-                        else
-                        {
-                            offset = (REGION.width - CURR_LINE_LEN);
-                        }
-                    }
-                }
-
-                const std::size_t NUM_CHARS(textSnippetVecVec[l].size());
-                for (std::size_t c(0); c < NUM_CHARS; ++c)
-                {
-                    auto & sfText { textSnippetVecVec[l][c].sf_text };
-
-                    // adjust positions to fall within in the REGION given
-                    sfText.setPosition(
-                        sfText.getPosition().x + REGION.left,
-                        sfText.getPosition().y + REGION.top + MARGINS.top);
-
-                    // adjust position for the justification given
-                    sfText.setPosition(sfText.getPosition().x + offset, sfText.getPosition().y);
-
-                    // adjust for left margin
-                    sfText.setPosition(
-                        sfText.getPosition().x + MARGINS.left, sfText.getPosition().y);
-
-                    const float RIGHT_EDGE(sfText.getPosition().x + sfText.getLocalBounds().width);
-
-                    if (longestLine < RIGHT_EDGE)
-                    {
-                        longestLine = RIGHT_EDGE;
-                    }
-                }
-            }
-
-            renderText.longest_line = longestLine;
-
-            // zTn Um...where did this 8.0f come from?  2016/10/26
-            renderText.total_height = textPos.y + 8.0f + MARGINS.bottom + MARGINS.top;
-
-            renderText.vec_vec = std::move(textSnippetVecVec);
-        }
-
-        TextSnippetVec_t RenderLine(
-            const TextInfoSet & TEXT_INFO_SET,
-            sf::Vector2f & textPos,
-            const float WIDTH_LIMIT_ORIG,
-            float & heightTracker,
-            std::size_t & strIndex)
-        {
-            TextSnippetVec_t textSnippetVec;
-
-            // if not specified use the screen width for maximum line length
-            auto const INVALID_WIDTH { Display::Instance()->GetWinWidth() };
-
-            auto const WIDTH_LIMIT_TO_USE { (
-                (misc::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG) };
-
-            auto const STR_LEN { TEXT_INFO_SET.text.size() };
-
-            while ((strIndex < STR_LEN) && (textPos.x <= WIDTH_LIMIT_TO_USE))
-            {
-                char termChar(0);
-                auto const ORIG_STR_INDEX { strIndex };
-                auto const ORIG_POS_X { textPos.x };
-
-                TextSnippetVec_t nextTextSnippetVec(
-                    RenderWord(TEXT_INFO_SET, textPos, heightTracker, strIndex, termChar));
-
-                if (textPos.x <= WIDTH_LIMIT_TO_USE)
-                {
-                    // group snippets together if their fonts match
-                    GroupTextSnippets(textSnippetVec, nextTextSnippetVec);
-
-                    if ('\n' == termChar)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    // if a single word won't fit on a single line,
-                    // clip characters from the end until it will fit
-                    if (textSnippetVec.empty())
-                    {
-                        textPos.x = WIDTH_LIMIT_TO_USE;
-
-                        for (std::size_t i(0); i < nextTextSnippetVec.size(); ++i)
-                        {
-                            nextTextSnippetVec.pop_back();
-
-                            auto const LINE_LENGTH { std::accumulate(
-                                std::begin(nextTextSnippetVec),
-                                std::end(nextTextSnippetVec),
-                                0.0f,
-                                [](auto const SUBTOTAL, auto const & TEXT_SNIPPET) {
-                                    return SUBTOTAL + TEXT_SNIPPET.sf_text.getLocalBounds().width;
-                                }) };
-
-                            if (LINE_LENGTH < WIDTH_LIMIT_TO_USE)
-                            {
-                                break;
-                            }
-                        }
-
-                        if (false == nextTextSnippetVec.empty())
-                        {
-                            nextTextSnippetVec.pop_back();
-                        }
-
-                        for (auto const & NEXT_TEXT_SNIPPET : nextTextSnippetVec)
-                        {
-                            textSnippetVec.emplace_back(NEXT_TEXT_SNIPPET);
-                        }
-
-                        break;
+                        horizOffset = (WIDTH_LIMIT - LINE_LENGTH);
                     }
                     else
                     {
-                        strIndex = ORIG_STR_INDEX;
-                        textPos.x = ORIG_POS_X;
-                        break;
+                        horizOffset = (renderedText.region.width - LINE_LENGTH);
+                    }
+                }
+
+                if (horizOffset > 0.0f)
+                {
+                    for (auto & sfText : sfTextVecLine)
+                    {
+                        sfText.move(horizOffset, 0.0f);
                     }
                 }
             }
 
-            // adjust for...okay, I don't know why this adjustment is needed.  zTn 2016-11-20
-            auto const NUM_SNIPPETS { textSnippetVec.size() };
-            if (NUM_SNIPPETS > 1)
-            {
-                auto const ADJ { textSnippetVec[1].sf_text.getPosition().x
-                                 - textSnippetVec[0].sf_text.getLocalBounds().width };
-
-                for (std::size_t i(1); i < NUM_SNIPPETS; ++i)
-                {
-                    auto & sfText { textSnippetVec[i].sf_text };
-                    sfText.setPosition(sfText.getPosition().x - ADJ, sfText.getPosition().y);
-                }
-            }
-
-            return textSnippetVec;
+            renderedText.SyncRegion();
         }
 
-        TextSnippetVec_t RenderWord(
-            const TextInfoSet & TEXT_INFO_SET,
-            sf::Vector2f & textPos,
-            float & heightTracker,
-            std::size_t & strIndex,
-            char & termChar)
+        return renderedText;
+    }
+
+    const SfTextVec_t TextRenderer::RenderLine(
+        const std::string & TEXT,
+        const unsigned CHARACTER_SIZE,
+        const FontPtr_t & LETTERS_FONT_PTR,
+        const FontPtr_t & NUMBERS_FONT_PTR,
+        const sf::Vector2f & POS_V_ORIG,
+        const float WIDTH_LIMIT,
+        std::size_t & textPosIndex)
+    {
+        auto const TEXT_LENGTH { TEXT.size() };
+
+        SfTextVec_t sfTextVecLineComplete;
+        bool willPrefixSpaceToNextWord { false };
+
+        auto isHorizPosWithinLimit = [&](const float POS_LEFT) {
+            return (!(WIDTH_LIMIT > 0.0f) || (POS_LEFT < (POS_V_ORIG.x + WIDTH_LIMIT)));
+        };
+
+        sf::Vector2f posV { POS_V_ORIG };
+
+        while (textPosIndex < TEXT_LENGTH)
         {
-            char currChar(0);
-            TextSnippetVec_t textSnippetVec;
-            const std::size_t STR_LEN(TEXT_INFO_SET.text.size());
+            const auto TEXT_POS_BEFORE_RENDERING_WORD_INDEX { textPosIndex };
 
-            for (; strIndex < STR_LEN; ++strIndex)
+            posV.x = POS_V_ORIG.x + MininallyEnclosing(sfTextVecLineComplete).width + 1.0f;
+
+            char wordTerminatingChar { 0 };
+            SfTextVec_t sfTextVecWord { RenderWord(
+                TEXT,
+                CHARACTER_SIZE,
+                LETTERS_FONT_PTR,
+                NUMBERS_FONT_PTR,
+                posV,
+                textPosIndex,
+                willPrefixSpaceToNextWord,
+                wordTerminatingChar) };
+
+            willPrefixSpaceToNextWord = false;
+
+            if (sfTextVecWord.empty())
             {
-                char prevChar = currChar;
-                currChar = TEXT_INFO_SET.text[strIndex];
-
-                TextSnippet nextTextSnippet;
-
-                // replace font of numbers to a special font that makes the numbers look cool
-                if (isdigit(static_cast<unsigned char>(currChar)))
+                if (('\n' == wordTerminatingChar) && (sfTextVecLineComplete.empty()))
                 {
-                    nextTextSnippet.Setup(
-                        textPos.x, textPos.y, std::string(1, currChar), TEXT_INFO_SET.ti_num);
+                    // found only spaces and a newline, so add an empty vec to mark the empty line
+                    sfTextVecLineComplete.emplace_back(
+                        sf::Text(" ", *LETTERS_FONT_PTR, CHARACTER_SIZE));
+
+                    return sfTextVecLineComplete;
                 }
                 else
                 {
-                    nextTextSnippet.Setup(
-                        textPos.x, textPos.y, std::string(1, currChar), TEXT_INFO_SET.ti_char);
-                }
-
-                textPos.x += nextTextSnippet.sf_text.getLocalBounds().width + 1;
-
-                if (0 != prevChar)
-                {
-                    textPos.x += nextTextSnippet.sf_text.getFont()->getKerning(
-                        static_cast<sf::Uint32>(prevChar),
-                        static_cast<sf::Uint32>(currChar),
-                        nextTextSnippet.sf_text.getCharacterSize());
-                }
-
-                float textHeight(nextTextSnippet.sf_text.getFont()->getLineSpacing(
-                    nextTextSnippet.sf_text.getCharacterSize()));
-
-                if (nextTextSnippet.sf_text.getCharacterSize() < 30)
-                {
-                    textHeight -= static_cast<float>(
-                        (static_cast<int>(nextTextSnippet.sf_text.getCharacterSize()) / 5) * 2);
-                }
-
-                if (heightTracker < textHeight)
-                {
-                    heightTracker = textHeight;
-                }
-
-                textSnippetVec.emplace_back(nextTextSnippet);
-
-                // break after spaces, dashes, and new-lines
-                if ((' ' == currChar) || ('-' == currChar) || ('\n' == currChar))
-                {
+                    // something went wrong, end the line and bail
                     break;
                 }
             }
 
-            // keep track of the last character in case of newlines, or other special cases
-            termChar = currChar;
+            const auto SF_TEXT_VEC_WORD_BOUNDS_ORIG { MininallyEnclosing(sfTextVecWord) };
 
-            // move past the current character
-            ++strIndex;
-
-            // group snippets together if their fonts match
-            TextSnippetVec_t finalVec;
-            GroupTextSnippets(finalVec, textSnippetVec);
-
-            return finalVec;
-        }
-
-        void GroupTextSnippets(TextSnippetVec_t & resultVec, const TextSnippetVec_t & inputVec)
-        {
-            const std::size_t NUM_SNIPPETS(inputVec.size());
-
-            if (NUM_SNIPPETS > 0)
+            if ((SF_TEXT_VEC_WORD_BOUNDS_ORIG.width > 0.0f) == false)
             {
-                std::size_t i(0);
+                // something went wrong, end the line and bail
+                break;
+            }
 
-                if (resultVec.empty())
-                    resultVec.emplace_back(inputVec[i++]);
+            if (isHorizPosWithinLimit(Right(SF_TEXT_VEC_WORD_BOUNDS_ORIG)))
+            {
+                std::copy(
+                    std::begin(sfTextVecWord),
+                    std::end(sfTextVecWord),
+                    std::back_inserter(sfTextVecLineComplete));
 
-                for (; i < NUM_SNIPPETS; ++i)
+                if ('\n' == wordTerminatingChar)
                 {
-                    if (resultVec[resultVec.size() - 1].sf_text.getFont()
-                        == inputVec[i].sf_text.getFont())
-                    {
-                        resultVec[resultVec.size() - 1].text_info.text
-                            += inputVec[i].text_info.text;
-
-                        resultVec[resultVec.size() - 1].sf_text.setString(
-                            resultVec[resultVec.size() - 1].text_info.text);
-                    }
-                    else
-                    {
-                        resultVec.emplace_back(inputVec[i]);
-                    }
+                    break;
                 }
+
+                willPrefixSpaceToNextWord = (' ' == wordTerminatingChar);
+            }
+            else
+            {
+                if (sfTextVecLineComplete.empty())
+                {
+                    // at this point we know that nothing as been rendered to the line so far,
+                    // and that the first word is too long to fit horizontally, so truncate the
+                    // word,  whatever did not fit on this line will NOT be added to the next
+                    // line
+                    SfTextVec_t::iterator newEndIter { std::begin(sfTextVecWord) };
+                    while ((newEndIter != std::end(sfTextVecWord))
+                           && isHorizPosWithinLimit(Right(newEndIter->getGlobalBounds())))
+                    {
+                        ++newEndIter;
+                    }
+
+                    std::copy(
+                        std::begin(sfTextVecWord),
+                        newEndIter,
+                        std::back_inserter(sfTextVecLineComplete));
+                }
+                else
+                {
+                    // at this point we know there are already words on the current line and the
+                    // current word didn't fit, so backup textPosIndex to the start
+                    // of the word that didn't fit so it will be the start of the next line
+                    textPosIndex = TEXT_POS_BEFORE_RENDERING_WORD_INDEX;
+                }
+
+                // the line is full, end the line
+                break;
             }
         }
-    } // namespace text_render
+
+        return sfTextVecLineComplete;
+    }
+
+    const SfTextVec_t TextRenderer::RenderWord(
+        const std::string & TEXT,
+        const unsigned CHARACTER_SIZE,
+        const FontPtr_t & LETTERS_FONT_PTR,
+        const FontPtr_t & NUMBERS_FONT_PTR,
+        const sf::Vector2f & POS_V,
+        std::size_t & textPosIndex,
+        const bool WILL_PREFIX_SPACE,
+        char & terminatingChar)
+    {
+        SfTextVec_t sfTextVecLine;
+
+        const std::size_t TEXT_LENGTH { TEXT.size() };
+
+        if (textPosIndex >= TEXT_LENGTH)
+        {
+            terminatingChar = 0;
+            return sfTextVecLine;
+        }
+
+        // skip leading spaces
+        while (TEXT[textPosIndex++] == ' ')
+        {
+            if (textPosIndex >= TEXT_LENGTH)
+            {
+                terminatingChar = 0;
+                return sfTextVecLine;
+            }
+        }
+
+        // return empty vec with terminatingChar='\n' if newline was the first non-space found
+        if ('\n' == TEXT[textPosIndex])
+        {
+            terminatingChar = '\n';
+            return sfTextVecLine;
+        }
+
+        auto willCharUseLetterFont = [&](const char CHAR) {
+            return (std::isdigit(static_cast<unsigned char>(CHAR)) == false);
+        };
+
+        auto makeNewSfTextToTheRightOf = [&](const char CHAR, const sf::Text & LEFT_TEXT) {
+            sf::Text newSfText;
+
+            if (willCharUseLetterFont(CHAR))
+            {
+                newSfText = sf::Text(std::string(1, CHAR), *LETTERS_FONT_PTR, CHARACTER_SIZE);
+            }
+            else
+            {
+                newSfText = sf::Text(std::string(1, CHAR), *NUMBERS_FONT_PTR, CHARACTER_SIZE);
+            }
+
+            const auto LEFT_TEXT_BOUNDS { LEFT_TEXT.getGlobalBounds() };
+            newSfText.setPosition(Right(LEFT_TEXT_BOUNDS) + 1.0f, LEFT_TEXT_BOUNDS.top);
+
+            return newSfText;
+        };
+
+        auto appendCharOrAppendTextAndStartNew
+            = [&](bool & isCurrTextLetters, sf::Text & sfText, const char CHAR) {
+                  if (willCharUseLetterFont(CHAR) == isCurrTextLetters)
+                  {
+                      sfText.setString(sfText.getString() + CHAR);
+                  }
+                  else
+                  {
+                      isCurrTextLetters = !isCurrTextLetters;
+                      sfTextVecLine.emplace_back(sfText);
+                      sfText = makeNewSfTextToTheRightOf(CHAR, sfText);
+                  }
+              };
+
+        sf::Text sfText;
+        sfText.setPosition(POS_V);
+
+        if (WILL_PREFIX_SPACE)
+        {
+            bool tempToIgnore { true };
+            appendCharOrAppendTextAndStartNew(tempToIgnore, sfText, ' ');
+        }
+
+        char currChar(TEXT[textPosIndex]);
+
+        bool isCurrCharLetter { willCharUseLetterFont(currChar) };
+
+        appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
+
+        while (++textPosIndex < TEXT_LENGTH)
+        {
+            currChar = TEXT[textPosIndex];
+            terminatingChar = currChar;
+
+            if ((' ' == currChar) || ('\n' == currChar))
+            {
+                break;
+            }
+
+            appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
+        }
+
+        if (sfText.getString().isEmpty() == false)
+        {
+            sfTextVecLine.emplace_back(sfText);
+        }
+
+        return sfTextVecLine;
+    }
+
 } // namespace sfml_util
 } // namespace heroespath

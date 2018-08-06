@@ -9,24 +9,25 @@
 //
 // sfml-util-overlap.hpp
 //
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 namespace sf
 {
-
-// returns true if the two sprites intersect (global)
-inline bool intersects(const sf::Sprite & A, const sf::Sprite & B)
-{
-    return A.getGlobalBounds().intersects(B.getGlobalBounds());
+class Sprite;
 }
 
-// returns true if the sprite intersects with the rect (global)
-template <typename T>
-bool intersects(const sf::Sprite & A, const sf::Rect<T> & R)
+namespace heroespath
 {
-    return A.getGlobalBounds().intersects(sf::FloatRect(R));
-}
+namespace sfml_util
+{
 
-} // namespace sf
+    // returns true if the two sprites intersect (global)
+    bool intersects(const sf::Sprite & A, const sf::Sprite & B);
+
+    // returns true if the sprite intersects with the rect (global)
+    bool intersects(const sf::Sprite & A, const sf::FloatRect & R);
+
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFMLUTIL_OVERLAP_HPP_INCLUDED

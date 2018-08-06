@@ -11,13 +11,10 @@
 //  A Stage class that allows players to load previous games
 //
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/gui/box-info.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -54,11 +51,14 @@ namespace stage
     // A Stage class that allows players to load saved games
     class LoadGameStage
         : public sfml_util::Stage
-        , public sfml_util::gui::callback::
-              IListBoxCallbackHandler<LoadGameStage, game::GameStatePtr_t>
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::gui::ListBox<LoadGameStage, game::GameStatePtr_t>::Callback_t::
+              IHandler_t
     {
     public:
+        using GameListBox_t = sfml_util::gui::ListBox<LoadGameStage, game::GameStatePtr_t>;
+        using GameListBoxUPtr_t = std::unique_ptr<GameListBox_t>;
+
         LoadGameStage(const LoadGameStage &) = delete;
         LoadGameStage(LoadGameStage &&) = delete;
         LoadGameStage & operator=(const LoadGameStage &) = delete;
@@ -68,17 +68,13 @@ namespace stage
         LoadGameStage();
         virtual ~LoadGameStage();
 
-        const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t &) override;
 
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
-
-        bool
-            HandleCallback(const sfml_util::gui::callback::
-                               ListBoxEventPackage<LoadGameStage, game::GameStatePtr_t> &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -89,14 +85,13 @@ namespace stage
 
     private:
         sfml_util::StageTitle stageTitle_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
+        sfml_util::gui::BoxEntity backgroundBox_;
         sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
         sf::Vector2f screenSizeV_;
         sf::FloatRect gsListBoxRect_;
         sf::Color gsListBoxBGColor_;
-        sfml_util::gui::ColorSet gsListBoxColorSet_;
-        sfml_util::gui::box::Info gsListBoxInfo_;
-        sfml_util::gui::ListBoxUPtr_t<LoadGameStage, game::GameStatePtr_t> gsListBoxUPtr_;
+        sfml_util::gui::FocusColors gsListBoxFocusColors_;
+        GameListBoxUPtr_t gsListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t locTextRegionUPtr_;
         sfml_util::gui::TextRegionUVec_t charTextRegionUVec_;
         sfml_util::gui::TextRegionUPtr_t charLabelTextRegionUPtr_;

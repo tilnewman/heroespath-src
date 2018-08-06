@@ -10,8 +10,9 @@
 //  pos-slider.hpp
 //
 #include "sfml-util/moving-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/System/Vector2.hpp>
 
 namespace heroespath
 {
@@ -68,6 +69,7 @@ namespace sfml_util
             bool isMoving_;
             sfml_util::sliders::ZeroSliderOnce<float> slider_;
         };
+
     } // namespace sliders
 } // namespace sfml_util
 } // namespace heroespath

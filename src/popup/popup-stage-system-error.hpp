@@ -33,7 +33,7 @@ namespace popup
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
-        sf::Texture bgTexture_;
+        sfml_util::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
     };
 } // namespace popup

@@ -15,8 +15,10 @@
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/animation-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -269,7 +271,7 @@ namespace combat
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
         // members supporting the Projectile Shoot Animation
-        sf::Texture projAnimTexture_;
+        sfml_util::CachedTextureOpt_t projAnimCachedTextureOpt_;
         sf::Sprite projAnimSprite_;
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;

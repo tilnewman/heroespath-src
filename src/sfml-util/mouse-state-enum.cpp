@@ -19,9 +19,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::string MouseState::ToString(const MouseState::Enum E)
+    const std::string MouseState::ToString(const MouseState::Enum MOUSE_STATE)
     {
-        switch (E)
+        switch (MOUSE_STATE)
         {
             case Up:
             {
@@ -35,32 +35,17 @@ namespace sfml_util
             {
                 return "Down";
             }
+            case Disabled:
+            {
+                return "Disabled";
+            }
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::MouseState::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(MOUSE_STATE, "ToString");
             }
         }
     }
 
-    bool MouseState::IsValid(const MouseState::Enum E)
-    {
-        switch (E)
-        {
-            case Up:
-            case Over:
-            case Down:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
 } // namespace sfml_util
 } // namespace heroespath

@@ -12,8 +12,11 @@
 #include "sfml-util/sfml-util-center-of.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Vector2.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -80,31 +83,8 @@ namespace sfml_util
         CenterTo(a, B, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // rescales s (local) to SCALE_V and then repositions it to the center of R
-    template <
-        typename T,
-        typename Scale_t,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void CenterTo(sf::Sprite & s, const sf::Rect<T> & R, const sf::Vector2<Scale_t> & SCALE_V)
-    {
-        s.setScale(sf::Vector2f(SCALE_V));
-
-        s.setPosition(
-            CenterOf(sf::FloatRect(R))
-            - sf::Vector2f(
-                  s.getLocalBounds().width * SCALE_V.x * 0.5f,
-                  s.getLocalBounds().height * SCALE_V.y * 0.5f));
-    }
-
-    // rescales s to SCALE and then repositions it to the center of B (global)
-    template <
-        typename T,
-        typename Scale_t = float,
-        typename = std::enable_if_t<std::is_floating_point<Scale_t>::value>>
-    void CenterTo(sf::Sprite & s, const sf::Rect<T> & R, const Scale_t SCALE = 1.0f)
-    {
-        CenterTo(s, R, sf::Vector2<Scale_t>(SCALE, SCALE));
-    }
+    // repositions s to the center of R
+    void CenterTo(sf::Sprite & s, const sf::FloatRect & R);
 
 } // namespace sfml_util
 } // namespace heroespath

@@ -14,8 +14,11 @@
 #include "sfml-util/sfml-util-center.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Vector2.hpp>
+
+namespace sf
+{
+class Sprite;
+}
 
 namespace heroespath
 {
@@ -90,13 +93,10 @@ namespace sfml_util
 
     // returns the screen coordinate direction that the global center of B is from the global center
     // of A, returns DEFAULT if A and B are equal
-    inline sfml_util::Direction::Enum DirectionFromAToB(
+    sfml_util::Direction::Enum DirectionFromAToB(
         const sf::Sprite & A,
         const sf::Sprite & B,
-        const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count)
-    {
-        return DirectionFromAToB(CenterOf(A), CenterOf(B), DEFAULT);
-    }
+        const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count);
 
 } // namespace sfml_util
 } // namespace heroespath

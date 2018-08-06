@@ -14,10 +14,11 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/gui/gui-entity-slider.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/stage.hpp"
+
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -37,13 +38,9 @@ namespace sfml_util
 {
     namespace gui
     {
-        namespace box
-        {
-            class Box;
-            using BoxUPtr_t = std::unique_ptr<Box>;
-        } // namespace box
+        class BoxEntity;
+        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-        class IGuiEntity;
     } // namespace gui
 } // namespace sfml_util
 
@@ -94,13 +91,12 @@ namespace combat
     public:
         explicit CombatDisplay(
             const CombatAnimationPtr_t, const sf::FloatRect & REGION = sf::FloatRect());
+
         virtual ~CombatDisplay();
 
-        virtual void Setup();
+        void Setup() override;
 
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
-
-        virtual void SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING);
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
         bool StartSummaryView(const sf::Vector2f & MOUSE_POS);
 
@@ -110,11 +106,11 @@ namespace combat
         // returns false if no nodes will be drawn
         bool UpdateWhichNodesWillDraw();
 
-        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        virtual const sfml_util::gui::IGuiEntityPtrOpt_t
-            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        const sfml_util::gui::IEntityPtrOpt_t
+            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         const sf::Vector2f GetCenterOfAllNodes() const;
 
@@ -253,7 +249,7 @@ namespace combat
 
         void SetIsSummaryViewInProgress(const bool B) { isSummaryViewInProgress_ = B; }
 
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
         void CreatureToneDown(const float TONE_DOWN_VAL);
 
@@ -265,7 +261,6 @@ namespace combat
             CombatNodePVec_t & targetCNodePVec);
 
     public:
-        static const float BATTLEFIELD_MARGIN_;
         static const float POSITIONING_CELL_SIZE_RATIO_MIN_HORIZ_;
         static const float POSITIONING_CELL_SIZE_RATIO_MAX_HORIZ_;
         static const float POSITIONING_CELL_SIZE_RATIO_MIN_VERT_;
@@ -288,8 +283,8 @@ namespace combat
         //
         unsigned int nameCharSizeCurr_;
         sf::FloatRect battlefieldRect_;
-        sfml_util::gui::box::BoxUPtr_t boxUPtr_;
-        sf::Texture bgTexture_;
+        sfml_util::gui::BoxEntityUPtr_t boxUPtr_;
+        sfml_util::CachedTexture bgCachedTexture_;
         sf::RenderTexture offScreenTexture_;
         sf::Sprite offScreenSprite_;
         float offScreenPosX_;

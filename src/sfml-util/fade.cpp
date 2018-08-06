@@ -11,6 +11,8 @@
 //
 #include "fade.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
@@ -198,7 +200,7 @@ namespace sfml_util
         else if (currentColorAlpha_ > 255.0f)
             currentColorAlpha_ = 255.0f;
 
-        auto & quadZeroColor{ quad_[0].color };
+        auto & quadZeroColor { quad_[0].color };
         quadZeroColor.r = static_cast<sf::Uint8>(currentColorRed_);
         quadZeroColor.g = static_cast<sf::Uint8>(currentColorGreen_);
         quadZeroColor.b = static_cast<sf::Uint8>(currentColorBlue_);
@@ -246,5 +248,6 @@ namespace sfml_util
     {
         target.draw(quad_, states);
     }
+
 } // namespace sfml_util
 } // namespace heroespath

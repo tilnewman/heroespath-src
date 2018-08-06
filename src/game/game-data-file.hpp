@@ -8,7 +8,6 @@
 #define HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED
 //
 // game-data-file.hpp
-//  A Subsystem config file that contains game data
 //
 #include "misc/assertlogandthrow.hpp"
 #include "misc/configbase.hpp"

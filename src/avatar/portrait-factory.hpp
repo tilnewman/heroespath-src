@@ -11,8 +11,6 @@
 //
 #include "avatar/avatar-enum.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/image-options.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <string>
 
@@ -22,10 +20,8 @@ namespace avatar
 {
 
     // Responsible for making default portrait images textures of Avatars/NPCs.
-    class PortraitFactory
+    struct PortraitFactory
     {
-    public:
-        static void Make(const Avatar::Enum, sf::Texture &);
         static sfml_util::CachedTexture Make(
             const std::string & FAKE_PATH_STR,
             const Avatar::Enum,

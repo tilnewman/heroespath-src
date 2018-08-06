@@ -12,8 +12,11 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/gui-entity-slider.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/entity-slider.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <memory>
 #include <vector>
@@ -42,22 +45,28 @@ namespace combat
     using CombatNodePtrOpt_t = boost::optional<CombatNodePtr_t>;
 
     // wraps an image with text for display on the screen
-    struct ItemWithText
+    struct ItemWithText : public sf::Drawable
     {
         explicit ItemWithText(const item::ItemPtr_t ITEM_PTR);
+        virtual ~ItemWithText() = default;
 
-        sf::Sprite sprite;
-        sf::Texture texture;
-        sfml_util::gui::TextRegionSPtr_t name_text_region_sptr;
-        sfml_util::gui::TextRegionSPtr_t desc_text_region_sptr;
-        sfml_util::gui::TextRegionSPtr_t info_text_region_sptr;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
+        static const float ITEM_IMAGE_SCALE_MIN_;
+
         item::ItemPtr_t item_ptr;
+        sfml_util::CachedTexture cached_texture;
+        sf::Sprite sprite;
+        sfml_util::gui::TextRegionUPtr_t name_text_region_uptr;
+        sfml_util::gui::TextRegionUPtr_t desc_text_region_uptr;
+        sfml_util::gui::TextRegionUPtr_t info_text_region_uptr;
     };
 
-    using ItemWithTextVec_t = std::vector<ItemWithText>;
+    using ItemWithTextUPtr_t = std::unique_ptr<ItemWithText>;
+    using ItemWithTextUVec_t = std::vector<ItemWithTextUPtr_t>;
 
     // the infomation that displays when the mouse cursor is held over an enemy
-    class SummaryView
+    class SummaryView : public sf::Drawable
     {
     public:
         SummaryView(const SummaryView &) = delete;
@@ -67,6 +76,7 @@ namespace combat
 
     public:
         SummaryView();
+        virtual ~SummaryView() = default;
 
         void StartTransitionBack();
         void StartTransitionTo(
@@ -82,7 +92,7 @@ namespace combat
         void SetTransitionToComplete();
         void SetTransitionBackComplete();
 
-        void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -118,12 +128,11 @@ namespace combat
         const float BLOCK_POS_TOP_;
         const float IMAGE_EDGE_PAD_;
         const float IMAGE_BETWEEN_PAD_;
-        const sf::Uint8 IMAGE_COLOR_ALPHA_;
         //
         bool isTransToComplete_;
         bool isTransBackComplete_;
         sfml_util::Moving::Enum movingDir_;
-        ItemWithTextVec_t itemWithTextVec_;
+        ItemWithTextUVec_t itemWithTextUVec_;
         sf::VertexArray bgQuads_;
         CombatNodePtrOpt_t combatNodePtrOpt_;
         sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
@@ -132,7 +141,7 @@ namespace combat
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t armorTextRegionUPtr_;
-        sfml_util::gui::GuiEntitySlider geSlider_;
+        sfml_util::gui::EntitySlider geSlider_;
         bool preventNextTrans_;
     };
 

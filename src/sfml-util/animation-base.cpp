@@ -24,7 +24,7 @@ namespace sfml_util
         const sf::BlendMode & BLEND_MODE,
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
-        : gui::GuiEntity(Animations::ToString(ENUM) + "_Animation", REGION)
+        : gui::Entity(Animations::ToString(ENUM) + "_Animation", REGION)
         , which_(ENUM)
         , blendMode_(BLEND_MODE)
         , timePerFrameSec_(TIME_PER_FRAME_SEC)
@@ -39,9 +39,10 @@ namespace sfml_util
 
     void Animation::RandomVaryTimePerFrame()
     {
-        auto const VARY_SEC_MAX{ 0.02f };
+        auto const VARY_SEC_MAX { 0.02f };
         timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }
+
 } // namespace sfml_util
 } // namespace heroespath

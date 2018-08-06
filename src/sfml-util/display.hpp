@@ -14,7 +14,9 @@
 #include "misc/not-null.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/resolution.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 #include <memory>
 #include <string>
@@ -88,19 +90,12 @@ namespace sfml_util
                 0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
         }
 
-        void SetFrameRateLimit(const unsigned LIMIT)
-        {
-            frameRateLimit_ = LIMIT;
-            winUPtr_->setFramerateLimit(LIMIT);
-        }
+        void SetFrameRateLimit(const unsigned LIMIT);
 
         unsigned GetFrameRateLimit() const { return frameRateLimit_; }
 
-        void SetVerticalSync(const bool WILL_SYNC)
-        {
-            willVerticalSync_ = WILL_SYNC;
-            winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
-        }
+        void SetVerticalSync(const bool WILL_SYNC);
+
         bool GetVerticalSync() const { return willVerticalSync_; }
 
         void ConsumeEvents();
@@ -195,7 +190,7 @@ namespace sfml_util
         sf::Uint32 winStyle_;
         unsigned frameRateLimit_;
         bool willVerticalSync_;
-        WinUPtr_t winUPtr_;
+        std::unique_ptr<sf::RenderWindow> winUPtr_;
     };
 
 } // namespace sfml_util

@@ -11,7 +11,6 @@
 //
 #include "interact/interaction-manager.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
 namespace heroespath

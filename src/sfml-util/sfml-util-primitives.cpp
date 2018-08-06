@@ -9,44 +9,41 @@
 //
 #include "sfml-util-primitives.hpp"
 
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
+
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    void DrawRectangleWithLineVerts(
-        const sf::FloatRect & RECT, const sf::Color & COLOR, std::vector<sf::Vertex> & verts)
+    const sf::RectangleShape MakeRectangle(
+        const sf::FloatRect & REGION,
+        const sf::Color & LINE_COLOR,
+        const float LINE_THICKNESS,
+        const sf::Color & FILL_COLOR)
     {
-        auto const LEFT{ RECT.left };
-        auto const RIGHT{ RECT.left + RECT.width };
-        auto const TOP{ RECT.top };
-        auto const BOTTOM{ RECT.top + RECT.height };
+        const sf::Vector2f THICK_V(LINE_THICKNESS, LINE_THICKNESS);
 
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
+        sf::RectangleShape rs;
+        rs.setPosition(Position(REGION) + THICK_V);
+        rs.setSize(Size(REGION) - (THICK_V * 2.0f));
+        rs.setFillColor(FILL_COLOR);
+        rs.setOutlineColor(LINE_COLOR);
+        rs.setOutlineThickness(LINE_THICKNESS);
+
+        return rs;
     }
 
-    void DrawQuad(
-        const sf::FloatRect & RECT,
-        const sf::Color & COLOR_LEFT,
-        const sf::Color & COLOR_RIGHT,
-        std::vector<sf::Vertex> & verts)
+    const sf::RectangleShape
+        MakeRectangleSolid(const sf::FloatRect & REGION, const sf::Color & COLOR)
     {
-        auto const LEFT{ RECT.left };
-        auto const RIGHT{ RECT.left + RECT.width };
-        auto const TOP{ RECT.top };
-        auto const BOTTOM{ RECT.top + RECT.height };
-
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR_LEFT));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR_RIGHT));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR_RIGHT));
-        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR_LEFT));
+        return MakeRectangle(REGION, COLOR, 0.0f, COLOR);
     }
 
 } // namespace sfml_util

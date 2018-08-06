@@ -11,13 +11,14 @@
 //
 #include "interact/interaction-manager.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/direction-enum.hpp"
-#include "sfml-util/gui/picture-frame.hpp"
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/adventure-stage-char-list.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 
@@ -68,13 +69,12 @@ namespace stage
         sfml_util::StageTitle stageTitle_;
         sfml_util::BottomSymbol bottomImage_;
         const sf::FloatRect MAP_OUTER_REGION_;
-        sfml_util::gui::PictureFrame mapFrame_;
         const sf::FloatRect MAP_INNER_REGION_;
         map::MapUPtr_t mapUPtr_;
         InteractStagePtr_t interactStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
-        sf::Texture backgroundTexture_;
-        sf::Sprite backgroundSprite_;
+        sfml_util::CachedTexture bgCachedTexture_;
+        sf::Sprite bgSprite_;
         float moveTimerSec_;
         bool wasPressedLeft_;
         bool wasPressedRight_;

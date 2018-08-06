@@ -13,7 +13,8 @@
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/image-options.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/Texture.hpp>
 
 #include <memory>
 #include <string>
@@ -146,7 +147,7 @@ namespace sfml_util
 
     private:
         static std::unique_ptr<TextureCache> instanceUPtr_;
-        TextureUVec_t textureUPtrs_;
+        std::vector<std::unique_ptr<sf::Texture>> textureUPtrs_;
         PathOptToIndexesMap_t pathOptToIndexesMap_;
         NameToTextureInfoMap_t stageToCountDataMap_;
         int cachedCount_;

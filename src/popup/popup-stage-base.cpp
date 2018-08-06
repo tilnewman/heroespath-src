@@ -16,8 +16,10 @@
 #include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -35,8 +37,7 @@ namespace popup
         : Stage(POPUP_INFO.Name() + "_PopupStage", {}, false)
         , popupInfo_(POPUP_INFO)
         , innerRegion_()
-        , backgroundTexture_()
-        , backgroundSprite_()
+        , backgroundTexture_(PopupManager::Instance()->BackgroundImagePath(POPUP_INFO.Image()))
         , textRegionUPtr_()
         , textRegion_()
         , buttonSelectUPtr_()
@@ -46,62 +47,60 @@ namespace popup
         , buttonContinueUPtr_()
         , buttonOkayUPtr_()
         , sliderbarUPtr_()
-        , accent1CachedTextureOpt_(boost::none)
+        , accent1CachedTextureOpt_()
         , accentSprite1_()
-        , accent2CachedTextureOpt_(boost::none)
+        , accent2CachedTextureOpt_()
         , accentSprite2_()
         , sliderbarPosTop_(0.0f)
         , selection_(-1) // any negative value will work here
         , xSymbolSprite_()
         , willShowXImage_(false)
-        , box_("PopupWindow's", sfml_util::gui::box::Info())
-        , gradient_()
+        , backgroundSprite_(backgroundTexture_.Get())
         , buttonTextHeight_(0.0f)
         , buttonVertPos_(0.0f)
-        , xSymbolCachedTextureOpt_(boost::none)
+        , xSymbolCachedTextureOpt_()
         , keepAliveTimerSec_(POPUP_INFO.KeepAliveSec())
     {}
 
     PopupStageBase::~PopupStageBase() { Stage::ClearAllEntities(); }
 
-    bool
-        PopupStageBase::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &)
+    bool PopupStageBase::HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &)
     {
         return false;
     }
 
     bool PopupStageBase::HandleCallback(
-        const sfml_util::gui::callback::TextButtonCallbackPackage_t & PACKAGE)
+        const sfml_util::gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (PACKAGE.PTR_ == buttonSelectUPtr_.get())
+        if (PACKET_PTR == buttonSelectUPtr_.get())
         {
             return HandleSelect();
         }
-        else if (PACKAGE.PTR_ == buttonYesUPtr_.get())
+        else if (PACKET_PTR == buttonYesUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
         }
-        else if (PACKAGE.PTR_ == buttonNoUPtr_.get())
+        else if (PACKET_PTR == buttonNoUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
             return true;
         }
-        else if (PACKAGE.PTR_ == buttonCancelUPtr_.get())
+        else if (PACKET_PTR == buttonCancelUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
             return true;
         }
-        else if (PACKAGE.PTR_ == buttonContinueUPtr_.get())
+        else if (PACKET_PTR == buttonContinueUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
             return true;
         }
-        else if (PACKAGE.PTR_ == buttonOkayUPtr_.get())
+        else if (PACKET_PTR == buttonOkayUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
@@ -114,21 +113,11 @@ namespace popup
     void PopupStageBase::Setup()
     {
         sfml_util::SoundManager::Instance()->SoundEffectPlay(popupInfo_.SoundEffect());
-
-        SetupBackgroundImage();
         SetupOuterAndInnerRegion();
-
-        // darken the box gold bars a bit
-        box_.SetEntityColors(sfml_util::gui::ColorSet(sf::Color(200, 200, 200)));
-
-        // this call must occur after SetupOuterAndInnerRegion()
-        backgroundSprite_.setPosition(StageRegionLeft(), StageRegionTop());
-
         SetupVariousButtonPositionValues();
         SetupButtons();
         SetupTextRegion();
         SetupText();
-        SetupGradient();
         SetupAccentSprite();
         SetupSliderbar();
         SetupRedXImage();
@@ -136,15 +125,7 @@ namespace popup
 
     void PopupStageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        if (popupInfo_.Image() == PopupImage::Custom)
-        {
-            target.draw(box_, STATES);
-            target.draw(gradient_, STATES);
-        }
-        else
-        {
-            target.draw(backgroundSprite_, STATES);
-        }
+        target.draw(backgroundSprite_, STATES);
 
         if (popupInfo_.WillAddRandImage())
         {
@@ -278,99 +259,25 @@ namespace popup
         }
     }
 
-    void PopupStageBase::SetupBackgroundImage()
-    {
-        // Custom popups have no background image
-        if (popupInfo_.Image() != PopupImage::Custom)
-        {
-            sfml_util::Loaders::Texture(
-                backgroundTexture_,
-                PopupManager::Instance()->BackgroundImagePath(popupInfo_.Image()));
-
-            backgroundSprite_.setTexture(backgroundTexture_, true);
-        }
-    }
-
     void PopupStageBase::SetupOuterAndInnerRegion()
     {
         auto const BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
-
-        if (popupInfo_.Image() == PopupImage::Custom)
-        {
-            // establish a new popup window region for Custom popups
-            auto const SCREEN_WIDTH(sfml_util::Display::Instance()->GetWinWidth());
-            auto const SCREEN_HEIGHT(sfml_util::Display::Instance()->GetWinHeight());
-            auto const POPUP_WIDTH(SCREEN_WIDTH * popupInfo_.SizeX());
-            auto const POPUP_HEIGHT(SCREEN_HEIGHT * popupInfo_.SizeY());
-
-            const sf::FloatRect NEW_REGION(
-                (SCREEN_WIDTH * 0.5f) - (POPUP_WIDTH * 0.5f),
-                (SCREEN_HEIGHT * 0.5f) - (POPUP_HEIGHT * 0.5f),
-                POPUP_WIDTH,
-                POPUP_HEIGHT);
-
-            StageRegionSet(NEW_REGION);
-
-            // re-construct the box info object based on the NEW_REGION
-            sfml_util::gui::box::Info newBoxInfo(popupInfo_.BoxInfo());
-            newBoxInfo.SetBoxAndBackgroundRegion(NEW_REGION);
-
-            popupInfo_.SetBoxInfo(newBoxInfo);
-
-            // establish inner rect
-            innerRegion_ = NEW_REGION;
-            auto const PAD { 20.0f }; // found by experiment to look good in varying resolution
-            innerRegion_.left = PAD;
-            innerRegion_.top = PAD;
-            innerRegion_.width -= (PAD * 2.0f);
-            innerRegion_.height -= (PAD * 2.0f);
-        }
-        else
-        {
-            auto const TEXTURE_WIDTH { static_cast<float>(backgroundTexture_.getSize().x) };
-            auto const TEXTURE_HEIGHT { static_cast<float>(backgroundTexture_.getSize().y) };
-
-            sf::FloatRect region;
-            region.left
-                = (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (TEXTURE_WIDTH * 0.5f);
-
-            region.top
-                = (sfml_util::Display::Instance()->GetWinHeight() * 0.5f) - (TEXTURE_HEIGHT * 0.5f);
-
-            region.width = TEXTURE_WIDTH;
-            region.height = TEXTURE_HEIGHT;
-
-            StageRegionSet(region);
-
-            innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
-        }
-
-        // adjust regions based on the background image
+        innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
         backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
-
-        // set the stage region to fit the newly sized background paper/whatever image
-        auto const BACKGROUND_WIDTH { backgroundSprite_.getGlobalBounds().width };
-
-        auto const BACKGROUND_HEIGHT { backgroundSprite_.getGlobalBounds().height };
-
-        auto const BACKGROUND_POS_LEFT { (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
-                                         - (BACKGROUND_WIDTH * 0.5f) };
-
-        auto const BACKGROUND_POS_TOP { (sfml_util::Display::Instance()->GetWinHeight() * 0.5f)
-                                        - (BACKGROUND_HEIGHT * 0.5f) };
-
-        StageRegionSet(sf::FloatRect(
-            BACKGROUND_POS_LEFT, BACKGROUND_POS_TOP, BACKGROUND_WIDTH, BACKGROUND_HEIGHT));
+        sfml_util::Center(backgroundSprite_);
+        StageRegionSet(backgroundSprite_.getGlobalBounds());
     }
 
-    void PopupStageBase::SetupFullscreenRegionsAndBackgroundImage(const sf::FloatRect & REGION)
+    void PopupStageBase::SetupForFullScreenWithBorderRatio(const float BORDER_RATIO)
     {
+        const auto REGION { sfml_util::Margins(
+                                sfml_util::ScreenRatioToPixelsHoriz(BORDER_RATIO),
+                                sfml_util::ScreenRatioToPixelsVert(BORDER_RATIO))
+                                .ApplyShrink(sfml_util::Display::Instance()->FullScreenRect()) };
+
         StageRegionSet(REGION);
         innerRegion_ = REGION;
-
-        auto const SCALE { REGION.width / static_cast<float>(backgroundTexture_.getSize().x) };
-
-        backgroundSprite_.setScale(SCALE, SCALE);
+        sfml_util::SetSizeAndPos(backgroundSprite_, REGION);
     }
 
     void PopupStageBase::SetupVariousButtonPositionValues()
@@ -387,13 +294,7 @@ namespace popup
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
 
         auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfml_util::MapByRes(30.0f, 90.0f) };
-
-        auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN_EXTRA_FOR_CUSTOM {
-            (popupInfo_.Image() == PopupImage::Custom) ? 25.0f : 0.0f
-        };
-
-        auto const BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN
-                                   + POPUPBUTTON_TEXT_BOTTOM_MARGIN_EXTRA_FOR_CUSTOM };
+        auto const BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
 
         buttonVertPos_
             = (StageRegionTop() + innerRegion_.top + innerRegion_.height) - BUTTON_HEIGHT;
@@ -408,7 +309,7 @@ namespace popup
                 StageRegionLeft() + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonYesUPtr_.get());
         }
@@ -421,7 +322,7 @@ namespace popup
                     - 40.0f,
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonNoUPtr_.get());
         }
@@ -435,7 +336,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Cancel", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonCancelUPtr_.get());
         }
@@ -451,17 +352,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Continue", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
-
-            if (popupInfo_.Image() == PopupImage::Custom)
-            {
-                auto const POS_LEFT { MIDDLE
-                                      - (buttonContinueUPtr_->GetEntityRegion().width * 0.5f) };
-
-                auto const POS_TOP { buttonContinueUPtr_->GetEntityPos().y };
-
-                buttonContinueUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
-            }
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonContinueUPtr_.get());
         }
@@ -476,17 +367,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Okay", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
-
-            if (popupInfo_.Image() == PopupImage::Custom)
-            {
-                auto const POS_LEFT { MIDDLE - (buttonOkayUPtr_->GetEntityRegion().width * 0.5f)
-                                      - 10.0f };
-
-                auto const POS_TOP { buttonOkayUPtr_->GetEntityPos().y };
-
-                buttonOkayUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
-            }
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonOkayUPtr_.get());
         }
@@ -501,17 +382,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Select", popupInfo_.ButtonColor()),
-                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
-
-            if (popupInfo_.Image() == PopupImage::Custom)
-            {
-                auto const POS_LEFT { MIDDLE - (buttonSelectUPtr_->GetEntityRegion().width * 0.5f)
-                                      - 10.0f };
-
-                auto const POS_TOP { buttonSelectUPtr_->GetEntityPos().y };
-
-                buttonSelectUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
-            }
+                sfml_util::gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonSelectUPtr_.get());
         }
@@ -545,27 +416,17 @@ namespace popup
         }
     }
 
-    void PopupStageBase::SetupGradient()
-    {
-        const sf::FloatRect GRADIENT_RECT(
-            StageRegionLeft(),
-            textRegion_.top + textRegion_.height,
-            StageRegionWidth() - 1.0f,
-            (StageRegionHeight() - textRegion_.height) + 2.0f);
-
-        gradient_.Setup(
-            GRADIENT_RECT,
-            sfml_util::GradientInfo(
-                sf::Color::Black, 0, sfml_util::Side::Top, sf::Color(0, 0, 0, 20)));
-    }
-
     void PopupStageBase::SetupAccentSprite()
     {
         if (popupInfo_.WillAddRandImage())
         {
             accent1CachedTextureOpt_ = PopupManager::Instance()->LoadRandomAccentImage();
             accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
-            sfml_util::FitAndReCenter(accentSprite1_, textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
+
+            sfml_util::FitAndReCenter(
+                accentSprite1_,
+                sfml_util::ScaleAndReCenterCopy(textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
     }
@@ -627,7 +488,6 @@ namespace popup
 
                 throw std::invalid_argument(ss.str());
             }
-            case PopupImage::Custom:
             case PopupImage::Count:
             default:
             {
@@ -663,9 +523,9 @@ namespace popup
                 return sfml_util::MapByRes(1.0f, 4.75f);
             }
 
-            case PopupImage::Custom: // Custom popups are custom sized so no value needed here.
             case PopupImage::Spellbook: // Spellbook and MusicSheet are scale themselves to fit the
                                         // screen.
+
             case PopupImage::MusicSheet:
             case PopupImage::Count:
             default:

@@ -13,12 +13,15 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/image-loaders.hpp"
 #include "sfml-util/gui/list-no-element.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <boost/type_traits.hpp>
 
@@ -91,7 +94,7 @@ namespace sfml_util
                 const TextInfoOpt_t & TEXT_INFO_OPT,
                 const CachedTextureOpt_t & CACHED_TEXTURE_OPT,
                 const bool IS_VALID = true)
-                : elementOpt_(boost::none)
+                : elementOpt_()
                 , cachedTextureOpt_(CACHED_TEXTURE_OPT)
                 , sprite_()
                 , textRegionUPtr_()
@@ -128,7 +131,7 @@ namespace sfml_util
                 const TextInfoOpt_t & TEXT_INFO_OPT,
                 const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions(),
                 const bool IS_VALID = true)
-                : ListElement(ELEMENT, TEXT_INFO_OPT, image::Load(ELEMENT, OPTIONS), IS_VALID)
+                : ListElement(ELEMENT, TEXT_INFO_OPT, LoadAndCacheImage(ELEMENT, OPTIONS), IS_VALID)
             {}
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override
@@ -151,7 +154,7 @@ namespace sfml_util
 
                 if (textRegionUPtr_)
                 {
-                    textRegionUPtr_->MoveEntityPos(MOVE_V);
+                    textRegionUPtr_->MoveEntityPos(MOVE_V.x, MOVE_V.y);
                 }
 
                 sprite_.move(MOVE_V);
@@ -267,7 +270,7 @@ namespace sfml_util
             {
                 if (textRegionUPtr_)
                 {
-                    textRegionUPtr_->SetEntityPos(NEW_POS);
+                    textRegionUPtr_->SetEntityPos(NEW_POS.x, NEW_POS.y);
                 }
             }
 
@@ -287,7 +290,7 @@ namespace sfml_util
 
             void ImageFitCenterColor(const sf::FloatRect & RECT, const sf::Color & COLOR) const
             {
-                sfml_util::FitAndCenter(sprite_, RECT);
+                sfml_util::FitAndCenterTo(sprite_, RECT);
                 sprite_.setColor(COLOR);
             }
 

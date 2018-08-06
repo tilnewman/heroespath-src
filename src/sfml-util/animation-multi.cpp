@@ -13,8 +13,11 @@
 
 #include "game/game-data-file.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/texture-cache.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath
 {
@@ -49,22 +52,21 @@ namespace sfml_util
         target.draw(sprite_, states);
     }
 
-    void AnimationMultiTexture::SetEntityPos(const sf::Vector2f & V)
-    {
-        entityRegion_ = sf::FloatRect(V.x, V.y, entityRegion_.width, entityRegion_.height);
-        sprite_.setPosition(V);
-    }
-
     void AnimationMultiTexture::SetEntityPos(const float LEFT, const float TOP)
     {
-        SetEntityPos(sf::Vector2f(LEFT, TOP));
+        MoveEntityPos(LEFT - entityRegion_.left, TOP - entityRegion_.top);
     }
 
     void AnimationMultiTexture::SetEntityRegion(const sf::FloatRect & R)
     {
-        entityRegion_ = R;
-        sprite_.setPosition(R.left, R.top);
-        sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
+        Entity::SetEntityRegion(R);
+        sfml_util::SetSizeAndPos(sprite_, R);
+    }
+
+    void AnimationMultiTexture::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        Entity::MoveEntityPos(HORIZ, VERT);
+        sprite_.move(HORIZ, VERT);
     }
 
     bool AnimationMultiTexture::UpdateTime(const float SECONDS)
@@ -94,12 +96,6 @@ namespace sfml_util
         }
 
         return isFinished_;
-    }
-
-    void AnimationMultiTexture::MoveEntityPos(const float HORIZ, const float VERT)
-    {
-        GuiEntity::MoveEntityPos(HORIZ, VERT);
-        sprite_.move(HORIZ, VERT);
     }
 
 } // namespace sfml_util

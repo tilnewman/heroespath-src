@@ -20,7 +20,10 @@
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/collision-quad-tree.hpp"
 #include "sfml-util/direction-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <string>
 #include <vector>
@@ -91,14 +94,14 @@ namespace map
 
         const sf::Vector2f CalcOffScreenMapSize() const;
 
-        void SetupNPCShadowImage();
-
         void SetupAnimations();
 
         void StartAnimMusic();
         void StopAnimMusic();
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
+
+        void SetupNPCShadowImage();
 
     public:
         // how many extra tiles to draw offscreen that are outside the visible map area

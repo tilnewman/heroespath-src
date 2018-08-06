@@ -19,10 +19,9 @@
 #include "misc/timer.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/System/Vector2.hpp>
 
 #include <memory>
 #include <vector>
@@ -116,7 +115,7 @@ namespace map
         bool IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const;
 
         void FindLocationToPlaceAvatar(
-            const sfml_util::FloatRectVec_t & WALK_RECTS,
+            const FloatRectVec_t & WALK_RECTS,
             std::size_t & walkRectsIndex,
             sf::Vector2f & startingPosV);
 

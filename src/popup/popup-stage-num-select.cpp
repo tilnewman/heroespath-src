@@ -15,8 +15,8 @@
 #include "game/loop-manager.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -32,15 +32,14 @@ namespace popup
         , textEntryBoxUPtr_()
         , willSliderbarUpdate_(true)
         , willTextBoxUpdate_(true)
-        , woodTexture_()
     {}
 
     PopupStageNumberSelect::~PopupStageNumberSelect() = default;
 
     bool PopupStageNumberSelect::HandleCallback(
-        const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
+        const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        auto const CURR_RATIO { PACKAGE.PTR_->GetCurrentValue() };
+        auto const CURR_RATIO { PACKET_PTR->PositionRatio() };
 
         auto const CURR_VAL { popupInfo_.NumberSelMin()
                               + static_cast<std::size_t>(
@@ -62,7 +61,7 @@ namespace popup
     }
 
     bool PopupStageNumberSelect::HandleCallback(
-        const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &)
+        const sfml_util::gui::TextEntryBox::Callback_t::PacketPtr_t &)
     {
         selection_ = GetSelectNumber();
 
@@ -78,13 +77,9 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        sfml_util::Loaders::Texture(
-            woodTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
-
         const sfml_util::gui::TextInfo MSG_TEXT_INFO {
             " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
             sfml_util::Justified::Center
@@ -118,23 +113,23 @@ namespace popup
 
         const sfml_util::gui::TextInfo TEXTENTRY_TEXT_INFO(
             minNumSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Large(),
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO { woodTexture_, TEXTENTRY_REGION };
-
-        const sfml_util::gui::box::Info TEXTENTRY_BOX_INFO(
-            true, TEXTENTRY_REGION, sfml_util::gui::ColorSet(sf::Color::White), TEXTENTRY_BG_INFO);
+        sfml_util::gui::BoxEntityInfo boxInfo;
+        boxInfo.SetupImage(sfml_util::CachedTexture("media-images-backgrounds-tile-wood"));
+        boxInfo.SetupBorder(true);
+        boxInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color::White);
 
         textEntryBoxUPtr_ = std::make_unique<sfml_util::gui::TextEntryBox>(
-            sfml_util::gui::callback::ITextEntryBoxCallbackHandlerPtr_t(this),
+            sfml_util::gui::TextEntryBox::Callback_t::IHandlerPtr_t(this),
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
-            sfml_util::Colors::Light,
-            TEXTENTRY_BOX_INFO);
+            sfml_util::defaults::Light,
+            boxInfo);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
         EntityAdd(textEntryBoxUPtr_.get());
@@ -178,7 +173,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo INFO_TEXT_INFO(
             TEXT_TO_USE,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
             sfml_util::Justified::Center);
@@ -268,11 +263,11 @@ namespace popup
 
                 if (ORIG_SELECTION_NUM == static_cast<int>(popupInfo_.NumberSelMin()))
                 {
-                    sliderbarUPtr_->SetCurrentValue(0.0f);
+                    sliderbarUPtr_->PositionRatio(0.0f);
                 }
                 else
                 {
-                    sliderbarUPtr_->SetCurrentValue(
+                    sliderbarUPtr_->PositionRatio(
                         static_cast<float>(ORIG_SELECTION_NUM)
                         / static_cast<float>(popupInfo_.NumberSelMax()));
                 }
@@ -299,7 +294,7 @@ namespace popup
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
             sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
+            sfml_util::gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
     }

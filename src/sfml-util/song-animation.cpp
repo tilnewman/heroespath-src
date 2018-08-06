@@ -11,12 +11,10 @@
 //
 #include "song-animation.hpp"
 
-#include "game/game-data-file.hpp"
-
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "misc/random.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
 
@@ -139,38 +137,14 @@ namespace sfml_util
             , emitTimerDurationSec_(0.0f)
             , durationTimerSec_(0.0f)
             , isFinished_(false)
-            , noteTexture1_()
-            , noteTexture2_()
-            , noteTexture3_()
-            , noteTexture4_()
-            , noteTexture5_()
-            , noteTexture6_()
+            , noteCachedTexture1_("media-images-misc-note1")
+            , noteCachedTexture2_("media-images-misc-note2")
+            , noteCachedTexture3_("media-images-misc-note3")
+            , noteCachedTexture4_("media-images-misc-note4")
+            , noteCachedTexture5_("media-images-misc-note5")
+            , noteCachedTexture6_("media-images-misc-note6")
             , noteVec_()
         {
-            Loaders::Texture(
-                noteTexture1_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note1"));
-
-            Loaders::Texture(
-                noteTexture2_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note2"));
-
-            Loaders::Texture(
-                noteTexture3_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note3"));
-
-            Loaders::Texture(
-                noteTexture4_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note4"));
-
-            Loaders::Texture(
-                noteTexture5_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note5"));
-
-            Loaders::Texture(
-                noteTexture6_,
-                game::GameDataFile::Instance()->GetMediaPath("media-images-misc-note6"));
-
             noteVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
         }
 
@@ -213,35 +187,36 @@ namespace sfml_util
                             + misc::random::Float((REGION_.top + REGION_.height) - VERT_START_POS)))
                 };
 
-                sf::Texture & textureRef { noteTexture1_ };
-                auto const WHICH_TEXTURE_NUM { misc::random::Int(1, 100) };
-                if (WHICH_TEXTURE_NUM < 30)
-                {
-                    textureRef = noteTexture1_;
-                }
-                else if (WHICH_TEXTURE_NUM < 55)
-                {
-                    textureRef = noteTexture2_;
-                }
-                else if (WHICH_TEXTURE_NUM < 75)
-                {
-                    textureRef = noteTexture3_;
-                }
-                else if (WHICH_TEXTURE_NUM < 85)
-                {
-                    textureRef = noteTexture4_;
-                }
-                else if (WHICH_TEXTURE_NUM < 90)
-                {
-                    textureRef = noteTexture5_;
-                }
-                else
-                {
-                    textureRef = noteTexture6_;
-                }
+                const sf::Texture & RANDOM_TEXTURE_REF = [&]() {
+                    auto const WHICH_TEXTURE_NUM { misc::random::Int(1, 100) };
+                    if (WHICH_TEXTURE_NUM < 30)
+                    {
+                        return noteCachedTexture1_.Get();
+                    }
+                    else if (WHICH_TEXTURE_NUM < 55)
+                    {
+                        return noteCachedTexture2_.Get();
+                    }
+                    else if (WHICH_TEXTURE_NUM < 75)
+                    {
+                        return noteCachedTexture3_.Get();
+                    }
+                    else if (WHICH_TEXTURE_NUM < 85)
+                    {
+                        return noteCachedTexture4_.Get();
+                    }
+                    else if (WHICH_TEXTURE_NUM < 90)
+                    {
+                        return noteCachedTexture5_.Get();
+                    }
+                    else
+                    {
+                        return noteCachedTexture6_.Get();
+                    }
+                }();
 
                 noteVec_.emplace_back(Note(
-                    textureRef,
+                    RANDOM_TEXTURE_REF,
                     sf::Vector2f(HORIZ_START_POS, VERT_START_POS),
                     sf::Vector2f(HORIZ_END_POS, VERT_END_POS),
                     ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),
@@ -297,6 +272,7 @@ namespace sfml_util
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

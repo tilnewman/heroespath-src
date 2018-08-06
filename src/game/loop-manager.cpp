@@ -23,6 +23,8 @@
 #include "popup/popup-stage-res-change.hpp"
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-video-mode.hpp"
 #include "stage/loop-cmd-addstage.hpp"
 
 namespace heroespath
@@ -623,7 +625,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
@@ -636,7 +638,7 @@ namespace game
 
         sfml_util::gui::TextInfo textInfo(
             "Keep this setting?",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::Black,
             sfml_util::Justified::Center);

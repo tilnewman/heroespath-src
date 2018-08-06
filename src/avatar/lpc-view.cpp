@@ -14,8 +14,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/texture-cache.hpp"
 
 #include <boost/filesystem/path.hpp>
 

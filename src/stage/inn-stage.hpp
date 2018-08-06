@@ -10,13 +10,11 @@
 // inn-stage.hpp
 //  A Stage class that allows starting the game
 //
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/stage.hpp"
-
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/gui/main-menu-buttons.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/stage-title.hpp"
+#include "sfml-util/stage.hpp"
 
 #include <memory>
 
@@ -51,13 +49,9 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
     private:
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
-        //
-        sf::Texture titleSymbolTexture_;
-        sf::Sprite titleSymbolSprite_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
-        sf::Texture candleTexture_;
+        sfml_util::StageTitle stageTitle_;
+        sfml_util::gui::BoxEntity backgroundBox_;
+        sfml_util::CachedTexture candleCachedTexture_;
         sf::Sprite candleSprite_;
         sfml_util::AnimationUPtr_t candleAnimUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;

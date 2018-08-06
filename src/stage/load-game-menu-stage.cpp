@@ -21,11 +21,9 @@
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/tile.hpp"
 
 namespace heroespath
 {
@@ -35,17 +33,22 @@ namespace stage
     LoadGameStage::LoadGameStage()
         : Stage(
               "LoadGameMenu",
-              { sfml_util::Font::Default,
-                sfml_util::Font::System,
-                sfml_util::Font::SystemCondensed,
-                sfml_util::Font::Number,
-                sfml_util::Font::Handwriting },
+              { sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::Handwriting },
               true)
         , stageTitle_("media-images-buttons-mainmenu-load-normal")
-        , backgroundImage_("media-images-backgrounds-tile-darkknot")
+        , backgroundBox_(
+              "LoadGameStage'sBackground",
+              StageRegion(),
+              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+                  "media-images-backgrounds-tile-darkknot",
+                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Previous,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this),
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               1.0f,
               sf::Vector2f(200.0f, sfml_util::DisplaySize().y - 100.0f)))
         , screenSizeV_(sfml_util::DisplaySize())
@@ -54,23 +57,13 @@ namespace stage
               610.0f,
               (screenSizeV_.y * 0.5f),
               ((screenSizeV_.y * 0.5f) - ((screenSizeV_.y * 0.5f) * 0.5f)) + 50.0f)
-        , gsListBoxBGColor_(sfml_util::Colors::Orange - sf::Color(100, 100, 100, 220))
-        , gsListBoxColorSet_(
-              sfml_util::Colors::Orange,
+        , gsListBoxBGColor_(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
+        , gsListBoxFocusColors_(
+              sfml_util::defaults::Orange,
               gsListBoxBGColor_,
-              sfml_util::Colors::Orange - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+              sfml_util::defaults::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
               gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
-        , gsListBoxInfo_(
-              1,
-              true,
-              gsListBoxRect_,
-              gsListBoxColorSet_,
-              sfml_util::gui::BackgroundInfo(gsListBoxBGColor_))
-        , gsListBoxUPtr_(
-              std::make_unique<sfml_util::gui::ListBox<LoadGameStage, game::GameStatePtr_t>>(
-                  "GameStateToLoad",
-                  this,
-                  sfml_util::gui::ListBoxPacket(gsListBoxInfo_, sfml_util::Colors::Orange)))
+        , gsListBoxUPtr_()
         , locTextRegionUPtr_()
         , charTextRegionUVec_()
         , charLabelTextRegionUPtr_()
@@ -90,8 +83,7 @@ namespace stage
         gamestatePVec_.clear();
     }
 
-    bool LoadGameStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage<LoadGameStage, game::GameStatePtr_t> &)
+    bool LoadGameStage::HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t &)
     {
         // TODO Handle selection of a game to load and then load it,
         // including a call to all creatures StoreItemsInWarehouseAfterLoad(),
@@ -123,12 +115,26 @@ namespace stage
                << GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
 
             const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(), sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System));
+                ss.str(),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+                sfml_util::FontManager::Instance()->Size_Normal());
 
             gsListBoxUPtr_->Append(
                 std::make_unique<sfml_util::gui::ListElement<game::GameStatePtr_t>>(
                     GAMESTATE_PTR, TEXT_INFO));
         }
+
+        sfml_util::gui::BoxEntityInfo gsListBoxInfo;
+        gsListBoxInfo.SetupBorder(true);
+        gsListBoxInfo.focus_colors = gsListBoxFocusColors_;
+        gsListBoxInfo.SetupColor(gsListBoxBGColor_);
+
+        gsListBoxUPtr_ = std::make_unique<GameListBox_t>(
+            "LoadGameStage'sGame",
+            this,
+            this,
+            sfml_util::gui::ListBoxPacket(
+                gsListBoxRect_, gsListBoxInfo, sfml_util::defaults::Orange));
 
         EntityAdd(gsListBoxUPtr_.get());
         SetupGameInfoDisplay();
@@ -155,7 +161,7 @@ namespace stage
 
         sfml_util::gui::TextInfo descTextInfo(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
             sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
@@ -223,7 +229,7 @@ namespace stage
 
     void LoadGameStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, STATES);
+        target.draw(backgroundBox_, STATES);
         target.draw(stageTitle_, STATES);
         Stage::Draw(target, STATES);
     }

@@ -13,8 +13,10 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/texture-cache.hpp"
+
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <boost/filesystem/path.hpp>
 

@@ -10,7 +10,8 @@
 // walk-sfx.hpp
 //
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+
 #include <algorithm>
 #include <vector>
 

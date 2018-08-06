@@ -11,7 +11,8 @@
 //
 #include "creature/achievements.hpp"
 #include "creature/creature.hpp"
-#include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/callback.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -29,14 +30,14 @@ namespace stage
         const creature::CreaturePtr_t CHARACTER_PTR, const creature::TitlePtr_t & TITLE_PTR);
 
     void TitleTransitionPopup(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR);
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE);

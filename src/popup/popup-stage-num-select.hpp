@@ -24,7 +24,7 @@ namespace popup
     // Responsible for implementing the Number Selection Popup Stage.
     class PopupStageNumberSelect
         : public PopupStageBase
-        , public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
+        , public sfml_util::gui::TextEntryBox::Callback_t::IHandler_t
     {
     public:
         PopupStageNumberSelect(const PopupStageNumberSelect &) = delete;
@@ -38,12 +38,9 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
+        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
-
-        bool HandleCallback(
-            const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::TextEntryBox::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
@@ -62,7 +59,6 @@ namespace popup
         sfml_util::gui::TextEntryBoxUPtr_t textEntryBoxUPtr_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
-        sf::Texture woodTexture_;
     };
 
 } // namespace popup

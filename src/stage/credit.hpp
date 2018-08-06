@@ -11,7 +11,9 @@
 //
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-font.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
@@ -73,14 +75,14 @@ namespace stage
         Credit(
             sf::FloatRect & trackingRect,
             const std::string & TITLE_TEXT,
-            const sfml_util::FontPtr_t FONT_PTR,
+            const FontPtr_t FONT_PTR,
             const std::string & CONTENT_TEXT);
 
         // used to help construct all types of credits
         void Setup(
             sf::FloatRect & trackingRect,
             const std::string & TITLE_TEXT,
-            const sfml_util::FontPtr_t TITLE_FONT_PTR,
+            const FontPtr_t TITLE_FONT_PTR,
             const unsigned int TITLE_FONT_SIZE,
             const std::string & CONTENT_TEXT,
             const MediaType::Enum MEDIA_TYPE,

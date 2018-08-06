@@ -22,7 +22,6 @@
 #include "sfml-util/loop.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/resolution.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <queue>
 #include <string>
@@ -82,7 +81,8 @@ namespace game
 
         template <typename PopupType_t>
         void PopupWaitBeginSpecific(
-            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
@@ -90,7 +90,8 @@ namespace game
         }
 
         void PopupWaitBegin(
-            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(POPUP_HANDLER_PTR, POPUP_INFO);
         }
@@ -102,7 +103,7 @@ namespace game
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const sfml_util::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
@@ -160,7 +161,8 @@ namespace game
 
         template <typename PopupType_t>
         void TransitionTo_Popup(
-            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();

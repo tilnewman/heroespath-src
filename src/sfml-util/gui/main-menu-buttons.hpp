@@ -9,7 +9,7 @@
 //
 // main-menu-buttons.hpp
 //
-#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 
 #include <memory>
@@ -22,8 +22,9 @@ namespace sfml_util
     namespace gui
     {
 
-        // Responsible for defaulting a FourStateButton to be a main menu button
-        class MainMenuButton : public sfml_util::gui::FourStateButton
+        // Responsible for implementing an ImageTextEntity that behaves like a one of the standard
+        // menu stage buttons such as Back/Next/etc.
+        class MainMenuButton : public sfml_util::gui::ImageTextEntity
         {
         public:
             MainMenuButton(const MainMenuButton &) = delete;
@@ -31,22 +32,35 @@ namespace sfml_util
             MainMenuButton & operator=(const MainMenuButton &) = delete;
             MainMenuButton & operator=(MainMenuButton &&) = delete;
 
+            // if FORCED_IMAGE_WIDTH=0 it is ignored, if <0 then the default is used
             explicit MainMenuButton(
                 const LoopState::Enum TRANSITION_TO = LoopState::Count,
-                const callback::IFourStateButtonCallbackHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT
+                const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
                 = boost::none,
-                const float SCALE = 1.0f,
+                const float FORCED_IMAGE_WIDTH = 0.0f,
                 const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f));
 
             virtual ~MainMenuButton() = default;
 
+            static float DefaultWidth();
+
+            void PretendClicked(const sf::Vector2f & FAKE_MOUSE_POS_V = sf::Vector2f(-1.0f, -1.0f))
+            {
+                OnClick(FAKE_MOUSE_POS_V);
+            }
+
         protected:
             void OnClick(const sf::Vector2f &) override;
 
-            static const ButtonStateImageKeys
-                MakeButtonStateImageKeys(const LoopState::Enum TRANSITION_TO);
+            static const MouseImageInfo MakeMouseImageInfo(
+                const LoopState::Enum TRANSITION_TO,
+                const sf::Vector2f & POS_V,
+                const float FORCED_IMAGE_WIDTH);
 
         private:
+            static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
+            static const float SCREEN_SIZE_RATIO_HEIGHT_FROM_BOTTOM_DEFAULT_;
+
             sfml_util::LoopState::Enum transitionTo_;
         };
 

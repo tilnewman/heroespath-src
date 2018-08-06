@@ -28,13 +28,14 @@ class Font;
 
 namespace heroespath
 {
+
+using FontPtr_t = misc::NotNull<sf::Font *>;
+using FontPtrOpt_t = boost::optional<FontPtr_t>;
+using FontUPtr_t = std::unique_ptr<sf::Font>;
+using FontUVec_t = std::vector<FontUPtr_t>;
+
 namespace sfml_util
 {
-
-    using FontPtr_t = misc::NotNull<sf::Font *>;
-    using FontPtrOpt_t = boost::optional<FontPtr_t>;
-    using FontUPtr_t = std::unique_ptr<sf::Font>;
-    using FontUVec_t = std::vector<FontUPtr_t>;
 
     // A class that loads, stores, and distributes fonts.
     class FontManager
@@ -52,17 +53,18 @@ namespace sfml_util
         static void Acquire();
         static void Release();
 
-        const FontPtr_t GetFont(const Font::Enum);
-        void Load(const Font::Enum);
+        const FontPtr_t GetFont(const GuiFont::Enum);
+        void Load(const GuiFont::Enum);
         void Load(const FontEnumVec_t &);
-        void Unload(const Font::Enum);
+        void Unload(const GuiFont::Enum);
         void Unload(const FontEnumVec_t &);
         void UnloadAll();
-        bool IsLoaded(const Font::Enum) const;
+        bool IsLoaded(const GuiFont::Enum) const;
 
         static const sf::Color Color_PopupButtonUp(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonDown(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonOver(const popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonDisabled(const popup::PopupButtonColor::Enum);
 
         // sizes
         unsigned int Size_Larger() const;
@@ -77,7 +79,7 @@ namespace sfml_util
         const std::string NumberFontFamilyName() { return numberFontFamilyName_; }
 
     private:
-        FontUPtr_t & GetFontRef(const Font::Enum);
+        FontUPtr_t & GetFontRef(const GuiFont::Enum);
 
         static const unsigned int SIZE_LARGER_MAX_;
         static const unsigned int SIZE_LARGER_MIN_;

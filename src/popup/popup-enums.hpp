@@ -59,7 +59,6 @@ namespace popup
             RegularSidebar,
             Large,
             LargeSidebar,
-            Custom,
             Spellbook,
             MusicSheet,
             Count

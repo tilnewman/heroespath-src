@@ -12,6 +12,9 @@
 #include "popup-stage-treasure-trap.hpp"
 
 #include "game/game-data-file.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
 
 namespace heroespath
 {
@@ -48,7 +51,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo TITLE_TEXTINFO(
             "You sprung the trap!",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::DefaultBoldFlavor),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
             sfml_util::FontManager::Instance()->Size_Larger(),
             sf::Color(127, 32, 32),
             sf::BlendAlpha,
@@ -70,7 +73,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo DESC_TEXTINFO(
             popupInfo_.TextInfo().text,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Center);
@@ -85,7 +88,10 @@ namespace popup
     {
         accent1CachedTextureOpt_ = sfml_util::CachedTexture("media-images-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
-        sfml_util::FitAndReCenter(accentSprite1_, textRegion_, 0.65f);
+
+        sfml_util::FitAndReCenter(
+            accentSprite1_, sfml_util::ScaleAndReCenterCopy(textRegion_, 0.65f));
+
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 

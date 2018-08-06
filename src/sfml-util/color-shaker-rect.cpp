@@ -11,6 +11,8 @@
 //
 #include "color-shaker-rect.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
@@ -39,9 +41,9 @@ namespace sfml_util
     {
         if (colorShaker_.IsShaking())
         {
-            auto const WAS_MOVING_TOWARD{ colorShaker_.IsMovingToward() };
-            auto const NEW_COLOR{ colorShaker_.Update(ELAPSED_TIME_SECONDS) };
-            auto const IS_MOVING_TOWARD{ colorShaker_.IsMovingToward() };
+            auto const WAS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
+            auto const NEW_COLOR { colorShaker_.Update(ELAPSED_TIME_SECONDS) };
+            auto const IS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
 
             coloredRect_.Color(NEW_COLOR);
 

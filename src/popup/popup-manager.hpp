@@ -8,21 +8,20 @@
 #define HEROESPATH_POPUP_POPUPMANAGER_HPP_INCLUDED
 //
 // popup-manager.hpp
-//  Code to load and store popup window textures.
 //
 #include "combat/combat-over-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
 #include "sfml-util/cached-texture.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/justified-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <memory>
 #include <string>
@@ -30,16 +29,6 @@
 
 namespace heroespath
 {
-namespace sfml_util
-{
-    namespace gui
-    {
-        namespace box
-        {
-            class Info;
-        }
-    } // namespace gui
-} // namespace sfml_util
 
 namespace creature
 {
@@ -106,8 +95,8 @@ namespace popup
         // TextInfo creation helper functions
         const sfml_util::gui::TextInfo TextInfoDefault(
             const std::string & TEXT,
-            const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
-            const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Large()) const;
+            const sfml_util::Justified::Enum JUSTIFIED,
+            const unsigned int FONT_SIZE) const;
 
         // create popup window info objects
         // use this function to make popup windows with the typical paper image backgrounds
@@ -121,25 +110,11 @@ namespace popup
             = sfml_util::sound_effect::PromptGeneric,
             const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Normal()) const;
 
-        // use this function to create popup windows with a simple box and custom background color
-        const PopupInfo CreateBoxedPopupInfo(
-            const std::string & POPUP_NAME,
-            const std::string & PROMPT_TEXT,
-            const sf::Color & TEXT_COLOR,
-            const sfml_util::gui::box::Info & BOX_INFO,
-            const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
-            const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
-            const unsigned int FONT_SIZE
-            = sfml_util::FontManager::Instance()->Size_Smallish()) const;
-
         // use this function to create image select popup windows
         const PopupInfo CreateImageSelectionPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & PROMPT_TEXT,
-            const sfml_util::TextureVec_t & TEXTURE_VEC,
-            const bool ARE_IMAGES_CREATURES,
+            const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
             const std::size_t INITIAL_SELECTION = 0,
             const sfml_util::sound_effect::Enum SOUND_EFFECT
             = sfml_util::sound_effect::PromptGeneric,
@@ -165,9 +140,7 @@ namespace popup
             const std::string & POPUP_NAME,
             const creature::CreaturePtr_t CREATURE_PTR,
             const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
-            const creature::TitlePtr_t TO_TITLE_PTR,
-            const boost::optional<sf::Texture> & FROM_TEXTURE_OPT,
-            const sf::Texture & TO_TEXTURE) const;
+            const creature::TitlePtr_t TO_TITLE_PTR) const;
 
         // use this function to make the spellbook popup window
         const PopupInfo CreateSpellbookPopupInfo(

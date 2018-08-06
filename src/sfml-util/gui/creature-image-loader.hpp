@@ -15,13 +15,17 @@
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/image-util.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/image-util.hpp"
 
 #include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
+
+namespace sf
+{
+class Texture;
+}
 
 namespace heroespath
 {
@@ -48,7 +52,7 @@ namespace sfml_util
 
             bool Test() const;
 
-            static float MaxDimmension() { return image::StandardDimmension(); }
+            static float MaxDimmension() { return StandardImageDimmension(); }
 
             const std::string Path(const creature::CreaturePtr_t) const;
             const std::string Path(const std::string & FILENAME) const;

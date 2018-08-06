@@ -11,51 +11,153 @@
 //
 #include "colored-rect.hpp"
 
+#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/sfml-util-vertex.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
 {
 
     ColoredRect::ColoredRect(const sf::FloatRect & RECT, const sf::Color & COLOR)
-        : quads_(sf::Quads, 4)
+        : ColoredRect(RECT, COLOR, COLOR, Side::None, Corner::None)
+    {}
+
+    ColoredRect::ColoredRect(
+        const sf::FloatRect & RECT,
+        const sf::Color & COLOR_FROM,
+        const sf::Color & COLOR_TO,
+        const Side::Enum SIDES_WITH_FROM_COLOR,
+        const Corner::Enum CORNERS_WITH_FROM_COLOR)
+        : vertexes_(sf::Quads, 4)
     {
         Rect(RECT);
-        Color(COLOR);
+        Color(COLOR_FROM);
+
+        if (SIDES_WITH_FROM_COLOR & Side::Top)
+        {
+            vertexes_[2].color = COLOR_TO;
+            vertexes_[3].color = COLOR_TO;
+        }
+
+        if (SIDES_WITH_FROM_COLOR & Side::Bottom)
+        {
+            vertexes_[0].color = COLOR_TO;
+            vertexes_[1].color = COLOR_TO;
+        }
+
+        if (SIDES_WITH_FROM_COLOR & Side::Right)
+        {
+            vertexes_[0].color = COLOR_TO;
+            vertexes_[3].color = COLOR_TO;
+        }
+
+        if (SIDES_WITH_FROM_COLOR & Side::Left)
+        {
+            vertexes_[1].color = COLOR_TO;
+            vertexes_[2].color = COLOR_TO;
+        }
+
+        if (CORNERS_WITH_FROM_COLOR & Corner::TopLeft)
+        {
+            vertexes_[2].color = COLOR_TO;
+        }
+
+        if (CORNERS_WITH_FROM_COLOR & Corner::TopRight)
+        {
+            vertexes_[3].color = COLOR_TO;
+        }
+
+        if (CORNERS_WITH_FROM_COLOR & Corner::BottomRight)
+        {
+            vertexes_[0].color = COLOR_TO;
+        }
+
+        if (CORNERS_WITH_FROM_COLOR & Corner::BottomLeft)
+        {
+            vertexes_[1].color = COLOR_TO;
+        }
+    }
+
+    void ColoredRect::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        target.draw(vertexes_, states);
+    }
+
+    bool ColoredRect::IsGradient() const
+    {
+        return (
+            (vertexes_[0].color != vertexes_[1].color) || (vertexes_[0].color != vertexes_[2].color)
+            || (vertexes_[0].color != vertexes_[3].color));
+    }
+
+    const sf::Color ColoredRect::Color() const { return vertexes_[0].color; }
+
+    void ColoredRect::Color(const sf::Color & NEW_COLOR)
+    {
+        vertexes_[0].color = NEW_COLOR;
+        vertexes_[1].color = NEW_COLOR;
+        vertexes_[2].color = NEW_COLOR;
+        vertexes_[3].color = NEW_COLOR;
     }
 
     const sf::FloatRect ColoredRect::Rect() const
     {
         return sf::FloatRect(
-            quads_[0].position,
+            vertexes_[0].position,
             sf::Vector2f(
-                quads_[2].position.x - quads_[0].position.x,
-                quads_[2].position.y - quads_[0].position.y));
+                vertexes_[2].position.x - vertexes_[0].position.x,
+                vertexes_[2].position.y - vertexes_[0].position.y));
     }
 
-    void ColoredRect::Rect(const sf::FloatRect & NEW_RECT)
+    void ColoredRect::Rect(const sf::FloatRect & RECT_PARAM)
     {
-        quads_[0].position = sf::Vector2f(NEW_RECT.left, NEW_RECT.top);
-        quads_[1].position = sf::Vector2f(NEW_RECT.left + NEW_RECT.width, NEW_RECT.top);
+        const auto RECT_TO_USE = [&]() {
+            if (!(RECT_PARAM.width > 0.0f) || !(RECT_PARAM.height > 0.0f))
+            {
+                return sf::FloatRect(Position(RECT_PARAM), sf::Vector2f(0.0f, 0.0f));
+            }
+            else
+            {
+                return RECT_PARAM;
+            }
+        }();
 
-        quads_[2].position
-            = sf::Vector2f(NEW_RECT.left + NEW_RECT.width, NEW_RECT.top + NEW_RECT.height);
+        vertexes_[0].position = sf::Vector2f(RECT_TO_USE.left, RECT_TO_USE.top);
+        vertexes_[1].position = sf::Vector2f(RECT_TO_USE.left + RECT_TO_USE.width, RECT_TO_USE.top);
 
-        quads_[3].position = sf::Vector2f(NEW_RECT.left, NEW_RECT.top + NEW_RECT.height);
+        vertexes_[2].position = sf::Vector2f(
+            RECT_TO_USE.left + RECT_TO_USE.width, RECT_TO_USE.top + RECT_TO_USE.height);
+
+        vertexes_[3].position
+            = sf::Vector2f(RECT_TO_USE.left, RECT_TO_USE.top + RECT_TO_USE.height);
     }
 
-    const sf::Color ColoredRect::Color() const { return quads_[0].color; }
-
-    void ColoredRect::Color(const sf::Color & NEW_COLOR)
+    void ColoredRect::SetPos(const float POS_LEFT, const float POS_TOP)
     {
-        quads_[0].color = NEW_COLOR;
-        quads_[1].color = NEW_COLOR;
-        quads_[2].color = NEW_COLOR;
-        quads_[3].color = NEW_COLOR;
+        MovePos(POS_LEFT - vertexes_[0].position.x, POS_TOP - vertexes_[0].position.y);
     }
 
-    void ColoredRect::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    void ColoredRect::MovePos(const float HORIZ, const float VERT)
     {
-        target.draw(quads_, states);
+        const sf::Vector2f MOVE_V(HORIZ, VERT);
+
+        vertexes_[0].position += MOVE_V;
+        vertexes_[1].position += MOVE_V;
+        vertexes_[2].position += MOVE_V;
+        vertexes_[3].position += MOVE_V;
+    }
+
+    bool operator<(const ColoredRect & L, const ColoredRect & R)
+    {
+        return (L.vertexes_ < R.vertexes_);
+    }
+
+    bool operator==(const ColoredRect & L, const ColoredRect & R)
+    {
+        return (L.vertexes_ == R.vertexes_);
     }
 
 } // namespace sfml_util

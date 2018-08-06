@@ -9,9 +9,9 @@
 //
 // popup-stage-char-select.hpp
 //
+#include "misc/vector-map.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-image-select.hpp"
-
 #include "sfml-util/gui/text-region.hpp"
 
 #include <string>
@@ -32,7 +32,6 @@ namespace popup
         virtual ~PopupStageCharacterSelect();
 
         using PopupStageBase::HandleCallback;
-        using PopupStageBase::HandlerName;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -45,11 +44,15 @@ namespace popup
         void SetupContent(const bool WILL_ERASE) override;
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
-        void SetCurrentTexture(const std::size_t IMAGE_INDEX) override;
+
+        const sfml_util::CachedTexture &
+            GetCurrentCachedTexture(const std::size_t IMAGE_INDEX) override;
 
     private:
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        misc::VectorMap<creature::CreaturePtr_t, sfml_util::CachedTexture> creatureToTextureMap_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

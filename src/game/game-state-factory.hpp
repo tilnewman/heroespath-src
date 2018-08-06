@@ -80,8 +80,8 @@ namespace game
         // depending on which pointer is null...because can't include the
         // boost serializer includes here in this header file...grumble...zTn 2016-10-26
         void Save(
-            const GameStatePtrOpt_t GAMESTATE_PTR_OPT,
-            const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
+            const GameStatePtrOpt_t & GAMESTATE_PTR_OPT,
+            const creature::CreaturePtrOpt_t & CHARACTER_PTR_OPT,
             const std::string & DIR_STR,
             const std::string & FILE_STR,
             const std::string & EXT_STR) const;

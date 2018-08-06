@@ -16,7 +16,6 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/image-options.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <cstdlib>

@@ -15,7 +15,6 @@
 #include "creature/title.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "sfml-util/gui/title-image-loader.hpp"
 
 #include <exception>
 #include <memory>
@@ -1901,8 +1900,6 @@ namespace creature
                     "creature::Titles::Holder::Test() Starting Tests...");
             }
 
-            static sfml_util::gui::TitleImageLoader titleImageLoader;
-
             static misc::EnumUnderlying_t titleIndex { 0 };
             if (titleIndex < Titles::Count)
             {
@@ -1942,9 +1939,6 @@ namespace creature
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") Title is out of order.");
 
-                sf::Texture texture;
-                titleImageLoader.Load(texture, NEXT_ENUM);
-                game::LoopManager::Instance()->TestingImageSet(titleImageLoader.Path(NEXT_ENUM));
                 game::LoopManager::Instance()->TestingStrIncrement("Title Test #");
                 ++titleIndex;
                 return false;

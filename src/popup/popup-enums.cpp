@@ -149,10 +149,6 @@ namespace popup
             {
                 return "LargeSidebar";
             }
-            case Custom:
-            {
-                return "Custom";
-            }
             case Spellbook:
             {
                 return "Spellbook";
@@ -180,7 +176,6 @@ namespace popup
             case RegularSidebar:
             case Large:
             case LargeSidebar:
-            case Custom:
             case Spellbook:
             case MusicSheet:
             {

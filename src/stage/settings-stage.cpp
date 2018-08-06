@@ -17,13 +17,14 @@
 #include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/loaders.hpp"
 #include "sfml-util/radio-button-display.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/tile.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -37,26 +38,32 @@ namespace stage
     SettingsStage::SettingsStage()
         : Stage(
               "Settings",
-              { sfml_util::Font::Default,
-                sfml_util::Font::System,
-                sfml_util::Font::SystemCondensed,
-                sfml_util::Font::Number,
-                sfml_util::Font::Handwriting },
+              { sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::Handwriting },
               false)
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(sfml_util::Display::Instance()->AntialiasLevel())
-        , bgTileImage_("media-images-backgrounds-tile-darkknot")
+        , screenBgBox_(
+              "SettingsStage'sBackground",
+              StageRegion(),
+              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+                  "media-images-backgrounds-tile-darkknot",
+                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , stageTitle_("media-images-buttons-mainmenu-settings-normal")
         , bottomSymbol_()
         , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Previous,
-              sfml_util::gui::callback::IFourStateButtonCallbackHandlerPtrOpt_t(this)))
-        , bgBox_("SettingsStageWoodBackground")
+              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              -1.0f))
+        , settingsBoxUPtr_()
         , resLabelTextRegionUPtr_()
-        , resRadioButtonSetUPtr_()
+        //, resRadioButtonSetUPtr_()
         , aaLabelTextRegionUPtr_()
-        , aaRadioButtonSetUPtr_()
+        //, aaRadioButtonSetUPtr_()
         , musicVolLabelTextRegionUPtr_()
         , musicVolSliderBarUPtr_()
         , effectsVolLabelTextRegionUPtr_()
@@ -64,13 +71,12 @@ namespace stage
         , musicInfoLabelTextRegionUPtr_()
         , musicInfoDetailsTextRegionUPtr_()
         , revLabelTextRegionUPtr_()
-        , woodTexture_()
     {}
 
     SettingsStage::~SettingsStage() { Stage::ClearAllEntities(); }
 
-    bool SettingsStage::HandleCallback(
-        const sfml_util::callback::RadioButtonCallbackPackage_t & PACKAGE)
+    /*bool SettingsStage::HandleCallback(
+        const sfml_util::gui::RadioButton::Callback_t::PacketPtr_t & PACKAGE_PTR)
     {
         if (PACKAGE.PTR_ == aaRadioButtonSetUPtr_.get())
         {
@@ -91,15 +97,16 @@ namespace stage
         {
             return false;
         }
-    }
+    }*/
 
-    bool SettingsStage::HandleCallback(const popup::PopupResponse & POPUP)
+    bool SettingsStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &)
     {
+        /*
         M_HP_LOG(
             GetStageName() << " HandlePopupCallback(response=\""
-                           << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
+                           << popup::ResponseTypes::ToString(PACKET_PTR->Response()) << "\")");
 
-        if (POPUP.Response() == popup::ResponseTypes::No)
+        if (PACKET_PTR->Response() == popup::ResponseTypes::No)
         {
             M_HP_LOG(
                 GetStageName() << " Stage.  User rejected the new antialias level.  "
@@ -111,7 +118,7 @@ namespace stage
             HandleResolutionChange();
             return false;
         }
-        else if (POPUP.Response() == popup::ResponseTypes::Okay)
+        else if (PACKET_PTR->Response() == popup::ResponseTypes::Okay)
         {
             // case where the antialiasing mode was not supported and
             // need to revert back to original value
@@ -151,7 +158,7 @@ namespace stage
 
             return true;
         }
-        else
+        else*/
         {
             return true;
         }
@@ -189,10 +196,10 @@ namespace stage
 
     void SettingsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(bgTileImage_, STATES);
+        target.draw(screenBgBox_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
-        target.draw(bgBox_, STATES);
+        target.draw(*settingsBoxUPtr_, STATES);
         Stage::Draw(target, STATES);
     }
 
@@ -228,7 +235,7 @@ namespace stage
         StageRegionSet(STAGE_REGION);
     }
 
-    void SettingsStage::Setup_BackgroundImage() { bgTileImage_.Reset(); }
+    void SettingsStage::Setup_BackgroundImage() { ; }
 
     void SettingsStage::Setup_StageTitle() { stageTitle_.SetSizeAndReCenter(); }
 
@@ -244,8 +251,10 @@ namespace stage
 
     void SettingsStage::Setup_BackButton()
     {
-        backButtonUPtr_->SetScaleToRes();
-        backButtonUPtr_->SetVertPositionToBottomOfScreenByRes(sfml_util::MapByRes(50.0f, 300.0f));
+        backButtonUPtr_->SetEntityPos(
+            sfml_util::ScreenRatioToPixelsHoriz(0.039f),
+            sfml_util::CenterOfVert(bottomSymbol_.Region())
+                - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
     }
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
@@ -255,7 +264,8 @@ namespace stage
 
         auto const BG_BOX_LEFT { (StageRegionWidth() * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
 
-        auto const BG_BOX_TOP { stageTitle_.Bottom() };
+        auto const BG_BOX_TOP { sfml_util::Bottom(stageTitle_.Region())
+                                + stageTitle_.DefaultBottomPad() };
 
         const sf::FloatRect BG_BOX_RECT(BG_BOX_LEFT, BG_BOX_TOP, BG_BOX_WIDTH, BG_BOX_HEIGHT);
 
@@ -267,14 +277,18 @@ namespace stage
             BG_BOX_WIDTH - (BG_BOX_INNER_PAD * 2.0f),
             BG_BOX_HEIGHT - (BG_BOX_INNER_PAD * 2.0f));
 
-        sfml_util::Loaders::Texture(
-            woodTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+        sfml_util::gui::BoxEntityInfo bgBoxbgInfo;
 
-        sfml_util::gui::BackgroundInfo bgBoxbgInfo { woodTexture_, BG_BOX_RECT };
+        bgBoxbgInfo.SetupBorder(true);
 
-        bgBox_.SetupBox(sfml_util::gui::box::Info(
-            true, BG_BOX_RECT, sfml_util::gui::ColorSet(sf::Color::White), bgBoxbgInfo));
+        bgBoxbgInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color::White);
+
+        bgBoxbgInfo.SetupImage(sfml_util::CachedTexture(
+            "media-images-backgrounds-tile-wood",
+            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+
+        settingsBoxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+            "SettingsStageBackground", BG_BOX_RECT, bgBoxbgInfo);
 
         return BG_BOX_RECT_INNER;
     }
@@ -296,18 +310,17 @@ namespace stage
             CreateLabelTextInfo("Change Resolution"), sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
-    void
-        SettingsStage::Setup_ResolutionChangeRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT)
+    void SettingsStage::Setup_ResolutionChangeRadioButtonSet(const sf::FloatRect &)
     {
-        if (false == hasStageAlreadyBeenSetup_)
+        /*if (false == hasStageAlreadyBeenSetup_)
         {
             resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfml_util::MapByRes(20.0f, 50.0f),
-                sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
+                sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
                 sfml_util::IStagePtr_t(this));
 
-            resRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::ColorSet(
+            resRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::FocusColors(
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60),
                 sf::Color(180, 180, 180),
@@ -321,7 +334,7 @@ namespace stage
         auto const TOP { resLabelTextRegionUPtr_->GetEntityPos().y
                          + resLabelTextRegionUPtr_->GetEntityRegion().height };
 
-        resRadioButtonSetUPtr_->SetEntityPos(LEFT, TOP);
+        resRadioButtonSetUPtr_->SetEntityPos(LEFT, TOP);*/
     }
 
     void SettingsStage::Setup_AntiAliasLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -343,30 +356,30 @@ namespace stage
             CreateLabelTextInfo("Anti-\nAliasing"), sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
-    void SettingsStage::Setup_AntiAliasRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT)
+    void SettingsStage::Setup_AntiAliasRadioButtonSet(const sf::FloatRect &)
     {
-        if (false == hasStageAlreadyBeenSetup_)
+        /*if (false == hasStageAlreadyBeenSetup_)
         {
             const sfml_util::gui::TextInfo TEXT_INFO(
                 " ",
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 sfml_util::FontManager::Instance()->Size_Small());
 
             const std::vector<std::string> LABELS_VEC
                 = { "0   ", "1   ", "2   ", "4   ", "8   ", "16  " };
 
-            const sfml_util::GradientInfo GRADIENT_INFO(
+            sfml_util::gui::BoxEntityInfo radioButtonSetBoxInfo;
+
+            radioButtonSetBoxInfo.SetupColor(
+                sf::Color::Transparent,
                 sf::Color(0, 0, 0, 150),
+                sfml_util::Side::None,
                 sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-            const sfml_util::gui::BackgroundInfo BG_INFO(sf::Color(0, 0, 0, 60), GRADIENT_INFO);
+            radioButtonSetBoxInfo.SetupBorder(true, 1.0f);
 
-            const sfml_util::gui::box::Info BOX_INFO(
-                1.0f,
-                true,
-                sf::FloatRect(),
-                sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
-                BG_INFO);
+            radioButtonSetBoxInfo.focus_colors
+                = sfml_util::gui::FocusColors(sf::Color(180, 180, 180));
 
             // establish which antialiasing level is current
             std::size_t aaInitialSelection(0);
@@ -417,7 +430,7 @@ namespace stage
             }
 
             aaRadioButtonSetUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
-                sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
+                sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
                 "Antialias",
                 0.0f,
                 0.0f,
@@ -426,9 +439,9 @@ namespace stage
                 aaInitialSelection,
                 sfml_util::Brightness::Bright,
                 std::vector<std::size_t>(),
-                BOX_INFO);
+                radioButtonSetBoxInfo);
 
-            aaRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::ColorSet(
+            aaRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::FocusColors(
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60),
                 sf::Color(180, 180, 180),
@@ -443,7 +456,7 @@ namespace stage
         auto const TOP { aaLabelTextRegionUPtr_->GetEntityPos().y
                          + aaLabelTextRegionUPtr_->GetEntityRegion().height };
 
-        aaRadioButtonSetUPtr_->SetEntityPos(LEFT, TOP);
+        aaRadioButtonSetUPtr_->SetEntityPos(LEFT, TOP);*/
     }
 
     void SettingsStage::Setup_MusicVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -469,7 +482,7 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Music>(
+            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBarMusic>(
                 "MusicVolume",
                 0.0f,
                 0.0f,
@@ -490,13 +503,10 @@ namespace stage
                          + musicVolLabelTextRegionUPtr_->GetEntityRegion().height };
 
         musicVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
-        musicVolSliderBarUPtr_->ChangeTextInfo(CreateSliderbarValueTextInfoSet());
     }
 
     void SettingsStage::Setup_SfxVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
-
         if (false == hasStageAlreadyBeenSetup_)
         {
             effectsVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -504,7 +514,7 @@ namespace stage
                 CreateLabelTextInfo("Sound Effects\nVolume"),
                 sf::FloatRect(),
                 sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                sfml_util::gui::box::Info());
+                sfml_util::gui::BoxEntityInfo());
 
             EntityAdd(effectsVolLabelTextRegionUPtr_.get());
         }
@@ -516,17 +526,13 @@ namespace stage
 
         effectsVolLabelTextRegionUPtr_->Setup(
             CreateLabelTextInfo("Sound Effects\nVolume"), sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
-
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
     }
 
     void SettingsStage::Setup_SfxVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
-
         if (false == hasStageAlreadyBeenSetup_)
         {
-            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Effects>(
+            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBarSfx>(
                 "EffectsVolume",
                 0.0f,
                 0.0f,
@@ -547,9 +553,6 @@ namespace stage
                          + effectsVolLabelTextRegionUPtr_->GetEntityRegion().height };
 
         effectsVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
-        effectsVolSliderBarUPtr_->ChangeTextInfo(CreateSliderbarValueTextInfoSet());
-
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
     }
 
     void SettingsStage::Setup_MusicInfoLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -562,13 +565,15 @@ namespace stage
             EntityAdd(musicInfoLabelTextRegionUPtr_.get());
         }
 
-        auto const PAD { 30.0f };
+        // auto const PAD { 30.0f };
 
-        auto const LEFT { (aaRadioButtonSetUPtr_->GetEntityRegion().left - PAD)
-                          - sfml_util::MapByRes(10.0f, 30.0f) };
+        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+        // auto const LEFT { (aaRadioButtonSetUPtr_->GetEntityRegion().left - PAD)
+        //                  - sfml_util::MapByRes(10.0f, 30.0f) };
 
-        auto const TOP { aaRadioButtonSetUPtr_->GetEntityRegion().top
-                         + aaRadioButtonSetUPtr_->GetEntityRegion().height + PAD };
+        auto const TOP { sfml_util::ScreenRatioToPixelsVert(0.5f) };
+        // auto const TOP { aaRadioButtonSetUPtr_->GetEntityRegion().top
+        //                 + aaRadioButtonSetUPtr_->GetEntityRegion().height + PAD };
 
         auto const WIDTH { (BG_BOX_INNER_RECT.left + BG_BOX_INNER_RECT.width) - LEFT };
 
@@ -580,7 +585,8 @@ namespace stage
     {
         auto const PAD { sfml_util::MapByRes(20.0f, 60.0f) };
 
-        auto const LEFT { aaRadioButtonSetUPtr_->GetEntityPos().x };
+        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+        // auto const LEFT { aaRadioButtonSetUPtr_->GetEntityPos().x };
 
         auto const TOP { musicInfoLabelTextRegionUPtr_->GetEntityRegion().top
                          + musicInfoLabelTextRegionUPtr_->GetEntityRegion().height + PAD };
@@ -608,18 +614,22 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::Colors::Light,
+            sfml_util::defaults::Light,
             sfml_util::Justified::Center);
 
-        const sfml_util::GradientInfo GRADIENT_INFO(
-            sf::Color(0, 0, 0, 150), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+        sfml_util::gui::BoxEntityInfo musicBoxInfo;
 
-        const sfml_util::gui::BackgroundInfo BACKGROUND_INFO(sf::Color(0, 0, 0, 60), GRADIENT_INFO);
+        musicBoxInfo.SetupColor(
+            sf::Color::Transparent,
+            sf::Color(0, 0, 0, 150),
+            sfml_util::Side::None,
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-        const sfml_util::gui::box::Info BOX_INFO(
-            1.0f, true, RECT, sfml_util::gui::ColorSet(sf::Color(180, 180, 180)), BACKGROUND_INFO);
+        musicBoxInfo.SetupBorder(true, 1.0f);
+
+        musicBoxInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color(180, 180, 180));
 
         if (false == hasStageAlreadyBeenSetup_)
         {
@@ -629,13 +639,13 @@ namespace stage
                 RECT,
                 this,
                 sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                BOX_INFO);
+                musicBoxInfo);
 
             EntityAdd(musicInfoDetailsTextRegionUPtr_.get());
         }
 
         musicInfoDetailsTextRegionUPtr_->Setup(
-            TEXT_INFO, RECT, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, BOX_INFO);
+            TEXT_INFO, RECT, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, musicBoxInfo);
     }
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -645,9 +655,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::Colors::Light,
+            sfml_util::defaults::Light,
             sfml_util::Justified::Left);
 
         if (false == hasStageAlreadyBeenSetup_)
@@ -672,7 +682,7 @@ namespace stage
     {
         return sfml_util::gui::TextInfo(
             TITLE,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::SystemCondensed),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
@@ -682,7 +692,7 @@ namespace stage
     {
         return sfml_util::gui::MouseTextInfo(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Number),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
             sfml_util::FontManager::Instance()->Size_Small(),
             sf::Color::White,
             sf::Color(255, 200, 200));
@@ -691,8 +701,10 @@ namespace stage
     float SettingsStage::HorizPositionOfColumn(
         const std::size_t COLUMN_NUM, const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        auto const LEFT { resRadioButtonSetUPtr_->GetEntityRegion().left
-                          + resRadioButtonSetUPtr_->GetEntityRegion().width };
+        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+
+        // auto const LEFT { resRadioButtonSetUPtr_->GetEntityRegion().left
+        //                  + resRadioButtonSetUPtr_->GetEntityRegion().width };
 
         auto const REMAINING_RIGHT_SPACE { (BG_BOX_INNER_RECT.left + BG_BOX_INNER_RECT.width)
                                            - LEFT };

@@ -9,7 +9,10 @@
 //
 // boost-optional-that-throws.hpp
 //
+#include "misc/wrap-enum.hpp"
+
 #include <boost/exception/to_string.hpp>
+
 #include <cstddef>
 #include <string>
 
@@ -31,6 +34,8 @@ namespace boost
 #include <boost/optional.hpp>
 #undef BOOST_ENABLE_ASSERT_HANDLER
 
+namespace heroespath
+{
 using CharOpt_t = boost::optional<char>;
 using UCharOpt_t = boost::optional<unsigned char>;
 
@@ -41,5 +46,6 @@ using SizetOpt_t = boost::optional<std::size_t>;
 
 using FloatOpt_t = boost::optional<float>;
 using DoubleOpt_t = boost::optional<double>;
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_BOOST_OPTIONAL_THAT_THROWS_HPP_INCLUDED

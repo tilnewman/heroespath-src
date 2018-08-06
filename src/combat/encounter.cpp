@@ -50,10 +50,10 @@ namespace combat
         , turnOverPVec_()
         , turnIndex_(0)
         , turnInfoMap_()
-        , turnCreaturePtrOpt_(boost::none)
+        , turnCreaturePtrOpt_()
         , deadNonPlayerItemsHeld_()
         , deadNonPlayerItemsLockbox_()
-        , lockPickCreaturePtrOpt_(boost::none)
+        , lockPickCreaturePtrOpt_()
         , creatureStrategies_()
         , treasureFactory_()
     {

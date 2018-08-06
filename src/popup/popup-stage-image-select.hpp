@@ -11,7 +11,7 @@
 //
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
-
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sliders.hpp"
 
@@ -34,9 +34,8 @@ namespace popup
         virtual ~PopupStageImageSelect();
 
         using PopupStageBase::HandleCallback;
-        using PopupStageBase::HandlerName;
 
-        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -53,7 +52,8 @@ namespace popup
 
         virtual std::size_t CountMax() const;
         virtual void SetupContent(const bool) {}
-        virtual void SetCurrentTexture(const std::size_t IMAGE_INDEX);
+        virtual const sfml_util::CachedTexture &
+            GetCurrentCachedTexture(const std::size_t IMAGE_INDEX);
 
         bool KeyReleaseHandleNumbers(const sf::Event::KeyEvent &);
         bool KeyReleaseHandleLeft();
@@ -73,8 +73,7 @@ namespace popup
         bool isChangingImageAllowed_;
         bool isInitialAnimComplete_;
         bool willShowImageCount_;
-        sf::Texture textureCurr_;
-        sf::Texture texturePrev_;
+        sfml_util::CachedTextureOpt_t cachedTexturePrevOpt_;
         sf::Sprite spriteCurr_;
         sf::Sprite spritePrev_;
         bool areImagesMoving_;

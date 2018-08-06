@@ -11,15 +11,13 @@
 //
 #include "intro-stage.hpp"
 
-#include "sfml-util/display.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/music-operator.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/sound-manager.hpp"
-
 #include "game/game-data-file.hpp"
-
 #include "misc/real.hpp"
+#include "sfml-util/music-operator.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
 {
@@ -27,16 +25,9 @@ namespace stage
 {
 
     IntroStage::IntroStage()
-        : Stage(
-              "Intro",
-              0.0f,
-              0.0f,
-              sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight(),
-              {},
-              true)
-        , titleTexture_()
-        , titleSprite_()
+        : Stage("Intro", {}, true)
+        , titleCachedTexture_("media-images-title-intro")
+        , titleSprite_(titleCachedTexture_.Get())
         , initialDrawHoldCounter_(0)
     {}
 
@@ -51,16 +42,11 @@ namespace stage
 
     void IntroStage::Setup()
     {
-        sfml_util::Loaders::Texture(
-            titleTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-title-intro"));
+        const sf::Vector2f TITLE_IMAGE_INITIAL_SIZE_CONSTRAINTS_V(
+            sfml_util::ScreenRatioToPixelsHoriz(0.33f), 0.0f);
 
-        titleSprite_.setTexture(titleTexture_);
-
-        auto const SCALE{ sfml_util::MapByRes(0.4f, 2.5f) };
-        titleSprite_.setScale(SCALE, SCALE);
-
-        PositionTitleImage();
+        sfml_util::Fit(titleSprite_, TITLE_IMAGE_INITIAL_SIZE_CONSTRAINTS_V);
+        sfml_util::Center(titleSprite_);
     }
 
     void IntroStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -80,22 +66,12 @@ namespace stage
 
     void IntroStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const NEW_SCALE{ titleSprite_.getScale().x
-                              * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
+        auto const NEW_SCALE { titleSprite_.getScale().x
+                               * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
 
         titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
-        PositionTitleImage();
+        sfml_util::Center(titleSprite_);
     }
 
-    void IntroStage::PositionTitleImage()
-    {
-        auto const TITLE_POS_LEFT{ (StageRegionWidth() * 0.5f)
-                                   - (titleSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const TITLE_POS_TOP{ (StageRegionHeight() * 0.5f)
-                                  - (titleSprite_.getGlobalBounds().height * 0.5f) };
-
-        titleSprite_.setPosition(TITLE_POS_LEFT, TITLE_POS_TOP);
-    }
 } // namespace stage
 } // namespace heroespath

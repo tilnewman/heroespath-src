@@ -10,6 +10,7 @@
 // lock-interactions.cpp
 //
 #include "lock-interactions.hpp"
+
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
@@ -17,12 +18,11 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "misc/boost-optional-that-throws.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-image-fade.hpp"
-#include "sfml-util/gui/title-image-loader.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "stage/achievement-handler.hpp"
 
 #include <algorithm>
@@ -81,19 +81,14 @@ namespace interact
     }
 
     void LockPicking::PopupCharacterSelection(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR) const
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR) const
     {
         auto const INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
 
-        // clang-format off
-        auto const ARE_ANY_INVALID_MSGS_EMPTY{ std::any_of(
-            std::begin(INVALID_MSGS),
-            std::end(INVALID_MSGS),
-            [](auto const & MSG)
-            {
+        auto const ARE_ANY_INVALID_MSGS_EMPTY { std::any_of(
+            std::begin(INVALID_MSGS), std::end(INVALID_MSGS), [](auto const & MSG) {
                 return MSG.empty();
             }) };
-        // clang-format on
 
         if (ARE_ANY_INVALID_MSGS_EMPTY)
         {
@@ -123,15 +118,18 @@ namespace interact
     }
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupResponse & RESPONSE)
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (RESPONSE.Response() == popup::ResponseTypes::Select)
+        if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
         {
-            auto const SELECTION { RESPONSE.Selection() };
+            auto const SELECTION_OPT { PACKET_PTR->SelectionOpt() };
 
-            if (SELECTION < game::Game::Instance()->State().Party().Characters().size())
+            if (SELECTION_OPT < game::Game::Instance()->State().Party().Characters().size())
             {
-                characterPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
+                characterPtrOpt_
+                    = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION_OPT.value());
+
                 combat::Encounter::Instance()->LockPickCreaturePtr(characterPtrOpt_.value());
                 PopupAttempting(POPUP_HANDLER_PTR, characterPtrOpt_.value()->Name());
                 return true;
@@ -143,7 +141,8 @@ namespace interact
     }
 
     void LockPicking::PopupAttempting(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const std::string & CHARACTER_NAME) const
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const std::string & CHARACTER_NAME) const
     {
         auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_ATTEMPTING_,
@@ -159,7 +158,7 @@ namespace interact
     }
 
     void LockPicking::PopupSuccess(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & NAME_OF_WHAT_OPENED) const
     {
         auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
@@ -176,14 +175,12 @@ namespace interact
     }
 
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR)
+        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (!!characterPtrOpt_),
-            "interact::LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup("
-            "popupHandler="
-                << POPUP_HANDLER_PTR->HandlerName()
-                << ") was called when LockPicking::characterPtrOpt_ was uninitialized.");
+            "interact::LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup() "
+            "was called when LockPicking::characterPtrOpt_ was uninitialized.");
 
         return stage::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
             POPUP_HANDLER_PTR,

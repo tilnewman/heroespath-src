@@ -14,10 +14,11 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "sfml-util/gui/box-info.hpp"
-#include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 
 #include <algorithm>
 
@@ -31,20 +32,18 @@ namespace sfml_util
         const unsigned int TextRegion::DEFAULT_NO_RESIZE_ { 0 };
 
         TextRegion::TextRegion(const std::string & NAME)
-            : GuiEntity(std::string(NAME).append("_TextRegion"), 0.0f, 0.0f)
-            , boxInfo_()
-            , boxUPtr_()
+            : Entity(std::string(NAME).append("_TextRegion"), 0.0f, 0.0f)
+            , boxEntityUPtr_()
             , sliderBarUPtr_()
-            , stagePtrOpt_(boost::none)
-            , text_("")
+            , stagePtrOpt_()
             , renderedText_()
             , startLine_(0)
+            , stopLine_(0)
             , regionOrig_()
             , textInfoOrig_()
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
-            , textSnipsToDrawVec_()
         {}
 
         TextRegion::TextRegion(
@@ -52,22 +51,20 @@ namespace sfml_util
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
             const unsigned int SMALLER_FONT_SIZE,
-            const box::Info & BOX_INFO,
+            const BoxEntityInfo & BOX_INFO,
             const Margins & MARGINS)
-            : GuiEntity(std::string(NAME).append("_TextRegion"), REGION)
-            , boxInfo_()
-            , boxUPtr_()
+            : Entity(std::string(NAME).append("_TextRegion"), REGION)
+            , boxEntityUPtr_()
             , sliderBarUPtr_()
-            , stagePtrOpt_(boost::none)
-            , text_("")
+            , stagePtrOpt_()
             , renderedText_()
             , startLine_(0)
+            , stopLine_(0)
             , regionOrig_()
             , textInfoOrig_()
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
-            , textSnipsToDrawVec_()
         {
             Setup(TEXT_INFO, REGION, SMALLER_FONT_SIZE, BOX_INFO, MARGINS);
         }
@@ -78,22 +75,20 @@ namespace sfml_util
             const sf::FloatRect & REGION,
             const IStagePtr_t ISTAGE_PTR,
             const unsigned int SMALLER_FONT_SIZE,
-            const box::Info & BOX_INFO,
+            const BoxEntityInfo & BOX_INFO,
             const Margins & MARGINS)
-            : GuiEntity(std::string(NAME).append("_TextRegion"), REGION)
-            , boxInfo_()
-            , boxUPtr_()
+            : Entity(std::string(NAME).append("_TextRegion"), REGION)
+            , boxEntityUPtr_()
             , sliderBarUPtr_()
             , stagePtrOpt_(ISTAGE_PTR)
-            , text_("")
             , renderedText_()
             , startLine_(0)
+            , stopLine_(0)
             , regionOrig_()
             , textInfoOrig_()
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
-            , textSnipsToDrawVec_()
         {
             Setup(TEXT_INFO, REGION, stagePtrOpt_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, true);
         }
@@ -107,10 +102,7 @@ namespace sfml_util
                     stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_.get());
                 }
 
-                if (boxUPtr_)
-                {
-                    stagePtrOpt_.value()->EntityRemove(boxUPtr_.get());
-                }
+                stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_.get());
             }
         }
 
@@ -118,7 +110,7 @@ namespace sfml_util
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
             const unsigned int SMALLER_FONT_SIZE,
-            const box::Info & BOX_INFO,
+            const BoxEntityInfo & BOX_INFO,
             const Margins & MARGINS)
         {
             Setup(TEXT_INFO, REGION, stagePtrOpt_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, false);
@@ -126,10 +118,10 @@ namespace sfml_util
 
         void TextRegion::Setup(
             const TextInfo & TEXT_INFO,
-            const sf::FloatRect & REGION,
-            const IStagePtrOpt_t ISTAGE_PTR_OPT,
+            const sf::FloatRect & REGION_ORIG,
+            const IStagePtrOpt_t & ISTAGE_PTR_OPT,
             const unsigned int SMALLER_FONT_SIZE,
-            const box::Info & BOX_INFO,
+            const BoxEntityInfo & BOX_INFO,
             const Margins & MARGINS,
             const bool WILL_ALLOW_SCROLLBAR)
         {
@@ -143,58 +135,30 @@ namespace sfml_util
                 GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a"
                                 << " null font pointer.");
 
-            regionOrig_ = REGION;
-            textInfoOrig_ = TEXT_INFO;
-            smallFontSizeOrig_ = SMALLER_FONT_SIZE;
-            marginsOrig_ = MARGINS;
-            allowScrollbarOrig_ = WILL_ALLOW_SCROLLBAR;
+            // set member states
+            stagePtrOpt_ = ISTAGE_PTR_OPT;
+
+            // remember original values in case we need them
+            {
+                regionOrig_ = REGION_ORIG;
+                textInfoOrig_ = TEXT_INFO;
+                smallFontSizeOrig_ = SMALLER_FONT_SIZE;
+                marginsOrig_ = MARGINS;
+                allowScrollbarOrig_ = WILL_ALLOW_SCROLLBAR;
+            }
 
             // prevent color changes when clicking on text or on the scrollbar
             SetWillAcceptFocus(false);
 
-            text_ = TEXT_INFO.text;
-            stagePtrOpt_ = ISTAGE_PTR_OPT;
+            const auto TEXT_REGION { MARGINS.ApplyShrink(REGION_ORIG) };
+            HandleSliderBar(RenderText(TEXT_INFO, TEXT_REGION, MARGINS, SMALLER_FONT_SIZE));
 
-            HandleSliderBar(text_render::RenderToArea(
-                GetEntityName(),
-                TEXT_INFO,
-                renderedText_,
-                REGION,
-                SMALLER_FONT_SIZE,
-                MARGINS,
-                WILL_ALLOW_SCROLLBAR));
-
-            // position the text for on-screen coordinates
-            auto const NUM_LINES { renderedText_.vec_vec.size() };
-            for (std::size_t l(0); l < NUM_LINES; ++l)
-            {
-                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    renderedText_.vec_vec[l][s].sf_text.move(REGION.left, REGION.top);
-                }
-            }
-
-            // establish the region
-            auto heightToUse { renderedText_.total_height };
-            if (REGION.height > 1.0f)
-            {
-                heightToUse = REGION.height;
-            }
-
-            const sf::FloatRect OUTLINE_RECT(
-                REGION.left,
-                REGION.top,
-                std::max(REGION.width, renderedText_.longest_line),
-                heightToUse);
-
-            SetEntityRegion(OUTLINE_RECT);
-            HandleBox(BOX_INFO);
+            SetupEntityRegion(TEXT_REGION);
+            SetupBox(BOX_INFO);
             EstablishWhichLinesToDraw(0.0f);
-            ResetDrawCache();
         }
 
-        void TextRegion::HandleSliderBar(const sfml_util::gui::SliderBarPtrOpt_t SLIDERBAR_PTR_OPT)
+        void TextRegion::HandleSliderBar(const SliderBarPtrOpt_t SLIDERBAR_PTR_OPT)
         {
             if (stagePtrOpt_)
             {
@@ -207,8 +171,11 @@ namespace sfml_util
                 if (SLIDERBAR_PTR_OPT)
                 {
                     sliderBarUPtr_.reset(SLIDERBAR_PTR_OPT->Ptr());
-                    sliderBarUPtr_->SetOnChangeHandler(this);
-                    sliderBarUPtr_->SetCurrentValue(0.0f);
+
+                    sliderBarUPtr_->SetCallbackHandler(
+                        SliderBar::Callback_t::IHandlerPtrOpt_t(this));
+
+                    sliderBarUPtr_->PositionRatio(0.0f);
                     stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_.get());
                 }
             }
@@ -221,66 +188,22 @@ namespace sfml_util
             }
         }
 
-        void TextRegion::HandleBox(const box::Info & BOX_INFO)
-        {
-            // deal with the Box that may need to be created or destroyed
-            if (stagePtrOpt_ && (boxInfo_ != BOX_INFO) && (renderedText_.vec_vec.empty() == false)
-                && (renderedText_.vec_vec[0].empty() == false))
-            {
-                boxInfo_ = BOX_INFO;
-
-                sf::FloatRect newRegion(entityRegion_);
-
-                auto const FIRST_LINE_HEIGHT { static_cast<float>(
-                    renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
-
-                newRegion.top = entityRegion_.top - FIRST_LINE_HEIGHT;
-                newRegion.height = entityRegion_.height + FIRST_LINE_HEIGHT;
-
-                if (sliderBarUPtr_)
-                {
-                    sliderBarUPtr_->MoveEntityPos(25.0f, 0.0f);
-                }
-
-                boxInfo_.SetBoxAndBackgroundRegion(newRegion);
-
-                if (boxUPtr_)
-                {
-                    stagePtrOpt_.value()->EntityRemove(boxUPtr_.get());
-                }
-
-                boxUPtr_ = std::make_unique<box::Box>("TextRegion's", boxInfo_);
-
-                // Q: Why add the box to Stage's entitySSet?  Why not keep it as a class member
-                //   and draw it ourselves?  ztn 2016-10-8
-                // A: Because it is easier to let the Stage and its entityPSet_ handle all the
-                //   mouse events that keep the focus and other features working.
-                // Q: So what to do when the stage draws the box AFTER and on top of the text,
-                //   such as the box's gradient covering the text?
-                // A: Have whatever stage owns this TextRegion draw this TextRegion last.
-                stagePtrOpt_.value()->EntityAdd(boxUPtr_.get());
-            }
-        }
-
         void TextRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
             // Note:  Don't draw the Box or SliderBar here.  They are being drawn by the stage.
 
-            if (false == entityWillDraw_)
+            if ((false == entityWillDraw_) || renderedText_.text_vecs.empty())
             {
                 return;
             }
 
-            for (auto const & TEXT_SNIP_NUMS : textSnipsToDrawVec_)
+            for (std::size_t i(startLine_); i <= stopLine_; ++i)
             {
-                if (TEXT_SNIP_NUMS.line_num < renderedText_.vec_vec.size())
-                {
-                    auto const & SEG_VEC { renderedText_.vec_vec[TEXT_SNIP_NUMS.line_num] };
+                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[i] };
 
-                    if (TEXT_SNIP_NUMS.seg_num < SEG_VEC.size())
-                    {
-                        target.draw(SEG_VEC[TEXT_SNIP_NUMS.seg_num].sf_text, states);
-                    }
+                for (const auto & SF_TEXT : SF_TEXT_VEC_LINE)
+                {
+                    target.draw(SF_TEXT, states);
                 }
             }
         }
@@ -292,37 +215,23 @@ namespace sfml_util
 
         void TextRegion::MoveEntityPos(const float HORIZ, const float VERT)
         {
-            GuiEntity::MoveEntityPos(HORIZ, VERT);
+            Entity::MoveEntityPos(HORIZ, VERT);
 
-            auto const NUM_LINES { renderedText_.vec_vec.size() };
-            for (std::size_t l(0); l < NUM_LINES; ++l)
-            {
-                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    renderedText_.vec_vec[l][s].sf_text.move(HORIZ, VERT);
-                }
-            }
+            renderedText_.MovePos(HORIZ, VERT);
 
-            if (boxUPtr_)
-            {
-                boxUPtr_->MoveEntityPos(HORIZ, VERT);
-            }
+            boxEntityUPtr_->MoveEntityPos(HORIZ, VERT);
 
             if (sliderBarUPtr_)
             {
                 sliderBarUPtr_->MoveEntityPos(HORIZ, VERT);
             }
-
-            ResetDrawCache();
         }
 
-        bool TextRegion::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)
+        bool TextRegion::HandleCallback(const SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
         {
             if (sliderBarUPtr_)
             {
-                EstablishWhichLinesToDraw(PACKAGE.PTR_->GetCurrentValue());
-                ResetDrawCache();
+                EstablishWhichLinesToDraw(PACKET_PTR->PositionRatio());
                 return true;
             }
             else
@@ -333,66 +242,23 @@ namespace sfml_util
 
         void TextRegion::Append(const TextRegion & TEXT_REGION)
         {
-            // add the new lines of text
-            auto const NUM_LINES { TEXT_REGION.renderedText_.vec_vec.size() };
-            for (std::size_t l(0); l < NUM_LINES; ++l)
+            renderedText_.AppendLines(TEXT_REGION.renderedText_);
+
+            if (allowScrollbarOrig_ && (GetEntityRegion().height > 0.0f)
+                && (renderedText_.region.height > GetEntityRegion().height))
             {
-                // adjust vertical positions
-                sfml_util::text_render::TextSnippetVec_t nextSnippetVec(
-                    TEXT_REGION.renderedText_.vec_vec[l]);
-
-                auto const NUM_SNIPPETS { nextSnippetVec.size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    nextSnippetVec[s].sf_text.move(0.0f, renderedText_.total_height);
-                }
-
-                renderedText_.vec_vec.emplace_back(nextSnippetVec);
+                HandleSliderBar(MakeSliderBar(GetEntityRegion()));
             }
 
-            // adjust total height
-            renderedText_.total_height += TEXT_REGION.renderedText_.total_height;
-
-            // adjust longest line if needed
-            if (renderedText_.longest_line < TEXT_REGION.renderedText_.longest_line)
-            {
-                renderedText_.longest_line = TEXT_REGION.renderedText_.longest_line;
-            }
-
-            HandleSliderBar(
-                text_render::ApplyToArea(GetEntityName(), renderedText_, GetEntityRegion()));
-
-            // establish the new region
-            const sf::FloatRect OUTLINE_RECT(
-                entityRegion_.left,
-                entityRegion_.top,
-                renderedText_.longest_line,
-                entityRegion_.height);
-
-            SetEntityRegion(OUTLINE_RECT);
-
-            // keep the text_ member accurate
-            text_ += TEXT_REGION.text_;
-
-            ResetDrawCache();
+            SetupEntityRegion(GetEntityRegion());
+            textInfoOrig_.text += "\n" + TEXT_REGION.GetText();
+            EstablishWhichLinesToDraw(((sliderBarUPtr_) ? sliderBarUPtr_->PositionRatio() : 0.0f));
         }
 
         void TextRegion::OnColorChange()
         {
-            auto const NUM_LINES { renderedText_.vec_vec.size() };
-            for (std::size_t l(0); l < NUM_LINES; ++l)
-            {
-                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    sfml_util::SetColor(renderedText_.vec_vec[l][s].sf_text, entityFgColor_);
-                }
-            }
-
-            if (boxUPtr_)
-            {
-                boxUPtr_->SetEntityColors(entityColorSet_);
-            }
+            renderedText_.SetColor(entityFgColor_);
+            boxEntityUPtr_->SetEntityColors(entityFocusColors_);
         }
 
         void TextRegion::SetText(const std::string & NEW_TEXT)
@@ -404,108 +270,158 @@ namespace sfml_util
                 regionOrig_,
                 stagePtrOpt_,
                 smallFontSizeOrig_,
-                boxInfo_,
+                boxEntityUPtr_->Info(),
                 marginsOrig_,
                 allowScrollbarOrig_);
         }
 
-        void TextRegion::ResetDrawCache()
+        const SliderBarPtr_t TextRegion::MakeSliderBar(const sf::FloatRect & REGION) const
         {
-            textSnipsToDrawVec_.clear();
+            return new SliderBar(
+                GetEntityName() + "'s_",
+                Right(REGION) - SliderBar::POS_OFFSET_HORIZ_,
+                REGION.top + SliderBar::POS_OFFSET_VERT_,
+                REGION.height - (SliderBar::POS_OFFSET_VERT_ * 2.0f),
+                SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
+        }
 
-            // this number found by experiment to be a good upper bound
-            textSnipsToDrawVec_.reserve(100);
+        void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_ORIG)
+        {
+            // set the entity region to the TEXT_REGION except for height, if TEXT_REGION.height <=
+            // 0 then use the actual height of the rendered text
+            const sf::FloatRect ENTITY_REGION(
+                REGION_ORIG.left,
+                REGION_ORIG.top,
+                REGION_ORIG.width,
+                ((REGION_ORIG.height > 1.0f) ? REGION_ORIG.height : renderedText_.region.height));
 
-            // don't draw farther down than the region extends, keep track with posY
-            auto posY { 0.0f };
-            auto const NUM_LINES { renderedText_.vec_vec.size() };
-            for (std::size_t l(startLine_); l < NUM_LINES; ++l)
+            SetEntityRegion(ENTITY_REGION);
+        }
+
+        void TextRegion::SetupBox(const BoxEntityInfo & BOX_INFO)
+        {
+            if (boxEntityUPtr_ && stagePtrOpt_)
             {
-                auto const & SNIP_VEC { renderedText_.vec_vec[l] };
+                stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_.get());
+            }
 
-                if (SNIP_VEC.empty())
+            boxEntityUPtr_ = std::make_unique<BoxEntity>("TextRegion's", regionOrig_, BOX_INFO);
+
+            if (stagePtrOpt_)
+            {
+                stagePtrOpt_.value()->EntityAdd(boxEntityUPtr_.get(), true);
+            }
+        }
+
+        const SliderBarPtrOpt_t TextRegion::RenderText(
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION,
+            const Margins & MARGINS,
+            const unsigned int SMALLER_FONT_SIZE)
+        {
+            SliderBarPtrOpt_t sliderBarPtrOpt;
+
+            renderedText_ = TextRenderer::Render(TEXT_INFO, Position(REGION), REGION.width);
+
+            // note:  only shrink or making a sliderbar if the there is a vert AND horiz limit
+            auto isRenderedTextTallerThanLimit = [&]() {
+                return (
+                    (REGION.width > 0.0f) && (REGION.height > 0.0f)
+                    && (renderedText_.region.height > REGION.height));
+            };
+
+            if (isRenderedTextTallerThanLimit())
+            {
+                TextInfo newTextInfo { TEXT_INFO };
+
+                if ((SMALLER_FONT_SIZE > 0) && (TEXT_INFO.char_size > SMALLER_FONT_SIZE))
                 {
-                    continue;
+                    newTextInfo
+                        = TextInfo(TEXT_INFO, TEXT_INFO.text, TEXT_INFO.color, SMALLER_FONT_SIZE);
+
+                    renderedText_
+                        = TextRenderer::Render(newTextInfo, Position(REGION), REGION.width);
                 }
 
-                // remove extra space created by newline characters
-                sf::Text t(SNIP_VEC[0].sf_text);
-
-                t.setString(
-                    boost::algorithm::replace_all_copy(std::string(t.getString()), "\n", ""));
-
-                // there should be no empty lines, instead choose a value that fits
-                if (std::string(t.getString()).empty())
+                if (isRenderedTextTallerThanLimit())
                 {
-                    t.setString("\n");
+                    sliderBarPtrOpt = MakeSliderBar(REGION);
 
-                    // this magic number found by experiment
-                    posY += t.getGlobalBounds().height * 0.8f;
-                }
-                else
-                {
-                    posY += t.getGlobalBounds().height;
-                }
+                    const float WIDTH_LIMIT_SHRUNK { (REGION.width - SliderBar::POS_OFFSET_HORIZ_)
+                                                     - MARGINS.right };
 
-                auto const SCROLL_PAD { (!sliderBarUPtr_)
-                                            ? 0.0f
-                                            : static_cast<float>(t.getCharacterSize()) };
-
-                if (posY > (entityRegion_.height - SCROLL_PAD))
-                {
-                    break;
-                }
-
-                auto const NUM_SNIPPETS { SNIP_VEC.size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    textSnipsToDrawVec_.emplace_back(TextSnipNum(l, s));
+                    renderedText_
+                        = TextRenderer::Render(newTextInfo, Position(REGION), WIDTH_LIMIT_SHRUNK);
                 }
             }
+
+            return sliderBarPtrOpt;
         }
 
         void TextRegion::EstablishWhichLinesToDraw(const float SCROLL_RATIO)
         {
-            EstablishWhichLinesToDraw(SCROLL_RATIO, entityRegion_.height);
-        }
+            startLine_ = 0;
+            stopLine_ = 0;
 
-        void TextRegion::EstablishWhichLinesToDraw(
-            const float SCROLL_RATIO, const float REGION_HEIGHT)
-        {
-            if ((renderedText_.vec_vec.empty()) || (renderedText_.vec_vec[0].empty()))
+            if (renderedText_.text_vecs.empty())
             {
                 return;
             }
 
-            // establish how far down the user has scrolled
-            auto const SCROLL_POS { SCROLL_RATIO
-                                    * (renderedText_.total_height - (REGION_HEIGHT * 0.8f)) };
+            // um...where did this magic number come from?
+            auto const SCROLL_POS {
+                SCROLL_RATIO * (renderedText_.region.height - (GetEntityRegion().height * 0.8f))
+            };
 
-            auto const FIRST_LINE_HEIGHT { static_cast<float>(
-                renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
-
-            // establish which line to start drawing
-            auto startPosY { SCROLL_POS / FIRST_LINE_HEIGHT };
-            if (startPosY < 0.0f)
+            // find the line to start drawing
+            float startLineOrigPosTop { 0.0f };
+            while (startLine_ < renderedText_.text_vecs.size())
             {
-                startPosY = 0.0f;
-            }
-
-            startLine_ = static_cast<std::size_t>(startPosY);
-
-            // move the text to compensate
-            auto const NUM_LINES { renderedText_.vec_vec.size() };
-            for (std::size_t l(0); l < NUM_LINES; ++l)
-            {
-                auto const NUM_SNIPPETS { renderedText_.vec_vec[l].size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[startLine_] };
+                if (SF_TEXT_VEC_LINE.empty() == false)
                 {
-                    renderedText_.vec_vec[l][s].sf_text.setPosition(
-                        renderedText_.vec_vec[l][s].sf_text.getPosition().x,
-                        (entityRegion_.top + (static_cast<float>(l) * FIRST_LINE_HEIGHT))
-                            - SCROLL_POS);
+                    startLineOrigPosTop = SF_TEXT_VEC_LINE[0].getGlobalBounds().top;
+                    if ((startLineOrigPosTop - renderedText_.region.top) > SCROLL_POS)
+                    {
+                        break;
+                    }
                 }
+
+                ++startLine_;
             }
+
+            if (startLine_ > 0)
+            {
+                --startLine_;
+            }
+
+            // find the line to stop drawing
+            stopLine_ = startLine_;
+
+            while (stopLine_ < renderedText_.text_vecs.size())
+            {
+                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[stopLine_] };
+                if (SF_TEXT_VEC_LINE.empty() == false)
+                {
+                    const auto CURRENT_LINE_BOUNDS { MininallyEnclosing(SF_TEXT_VEC_LINE) };
+
+                    if (Bottom(CURRENT_LINE_BOUNDS) > Bottom(GetEntityRegion()))
+                    {
+                        break;
+                    }
+                }
+
+                ++stopLine_;
+            }
+
+            if (stopLine_ > startLine_)
+            {
+                --stopLine_;
+            }
+
+            // move all the text up to compensate for where the siderbar is
+            const auto AMOUNT_TO_MOVE_TEXT_UP { startLineOrigPosTop - renderedText_.region.top };
+            renderedText_.MovePos(0.0f, -1.0f * AMOUNT_TO_MOVE_TEXT_UP);
         }
 
     } // namespace gui

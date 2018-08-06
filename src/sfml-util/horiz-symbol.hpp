@@ -8,59 +8,56 @@
 #define HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
 //
 // horiz-symbol.hpp
-//  A symbol drawn at the bottom of menu screens
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
+
+#include <SFML/Graphics/VertexArray.hpp>
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    // Responsible for drawing the horizontal symbols at the bottom of Stages.
-    // A positive VERT_OFFSET_RATIO will move the symbols down, negative moves them up.
-    // The Bottom() of the symbol is always the bottom of the screen, even if
-    // VERT_OFFSET_RATIO is > 0 and some of the symbol is offscreen.
+    // Responsible for drawing the horizontal symbols at the bottom of Stages. Bottom(Region()) is
+    // always the bottom of the screen.
     class BottomSymbol : public sf::Drawable
     {
-    public:
-        BottomSymbol(const BottomSymbol &) = delete;
-        BottomSymbol(BottomSymbol &&) = delete;
-        BottomSymbol & operator=(const BottomSymbol &) = delete;
-        BottomSymbol & operator=(BottomSymbol &&) = delete;
-
     public:
         explicit BottomSymbol(
             const float VERT_SCALE = 1.0f,
             const bool WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR = DEFAULT_COLOR_,
-            const float VERT_OFFSET_RATIO = 0.0f);
+            const sf::Color & COLOR = DEFAULT_COLOR_);
 
-        virtual ~BottomSymbol();
+        BottomSymbol(const BottomSymbol &) = default;
+        BottomSymbol(BottomSymbol &&) = default;
+        BottomSymbol & operator=(const BottomSymbol &) = default;
+        BottomSymbol & operator=(BottomSymbol &&) = default;
 
         void Setup(
             const float VERT_SCALE = 1.0f,
             const bool WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR = DEFAULT_COLOR_,
-            const float VERT_OFFSET_RATIO = 0.0f);
+            const sf::Color & COLOR = DEFAULT_COLOR_);
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        float Height() const { return Bottom() - Top(); }
-        float Top() const { return sprite1_.getGlobalBounds().top; }
-        float Middle() const { return Top() + (Height() * 0.5f); }
-        float Bottom() const;
+        const sf::FloatRect Region() const { return region_; }
+
+        const sf::Color Color() const;
+
+        void Color(const sf::Color & NEW_COLOR);
+
+        void SetPos(const float POS_LEFT, const float POS_TOP);
+        void MovePos(const float HORIZ, const float VERT);
 
     public:
         static const sf::Color DEFAULT_COLOR_;
 
     private:
-        sf::Sprite sprite1_;
-        sf::Sprite sprite2_;
-        sf::Sprite sprite3_;
-        sf::Sprite sprite4_;
-        sf::Texture texture_;
+        CachedTextureOpt_t cachedTextureOpt_;
+        sf::VertexArray vertexArray_;
+        sf::FloatRect region_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

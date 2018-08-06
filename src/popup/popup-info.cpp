@@ -14,11 +14,8 @@
 #include "creature/creature.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <sstream>
-#include <vector>
 
 namespace heroespath
 {
@@ -36,12 +33,11 @@ namespace popup
         const PopupButtonColor::Enum BUTTON_COLOR,
         const bool WILL_ADD_RAND_IMAGE,
         const std::vector<std::size_t> & INVALID_CHAR_NUM_VEC,
-        const sfml_util::TextureVec_t & TEXTURE_VEC,
+        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
         const std::vector<std::string> & TEXT_VEC,
         const float IMAGE_FADE_SPEED,
-        const creature::CreaturePtrOpt_t CREATURE_PTR_OPT,
+        const creature::CreaturePtrOpt_t & CREATURE_PTR_OPT,
         const std::size_t INITIAL_SELECTION,
-        const bool ARE_IMAGES_CREATURES,
         const std::string & TITLE_TEXT,
         const std::string & DESC_TEXT,
         const float KEEP_ALIVE_SECONDS)
@@ -50,19 +46,17 @@ namespace popup
         , buttons_(BUTTONS)
         , image_(IMAGE)
         , soundEffect_(SOUND_EFFECT)
-        , boxInfo_()
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(BUTTON_COLOR)
         , willAddRandImage_(WILL_ADD_RAND_IMAGE)
-        , textureVec_(TEXTURE_VEC)
+        , textures_(TEXTURE_VEC)
         , numberMin_(0)
         , numberMax_(0)
         , numberInvalidVec_(INVALID_CHAR_NUM_VEC)
         , imageFadeSpeed_(IMAGE_FADE_SPEED)
         , creaturePtrOpt_(CREATURE_PTR_OPT)
         , initialSelection_(INITIAL_SELECTION)
-        , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_(TEXT_VEC)
         , howCombatEnded_(combat::CombatEnd::Count)
         , titleText_(TITLE_TEXT)
@@ -84,7 +78,7 @@ namespace popup
                 << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
                 << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
-        if ((imageFadeSpeed_ > 0.0f) && (textureVec_.empty()))
+        if ((imageFadeSpeed_ > 0.0f) && (textures_.empty()))
         {
             std::ostringstream ss;
             ss << "popup::PopupInfo(name=" << name_
@@ -106,44 +100,7 @@ namespace popup
     PopupInfo::PopupInfo(
         const std::string & NAME,
         const sfml_util::gui::TextInfo & TEXT_INFO,
-        const PopupButtons::Enum BUTTONS,
-        const sfml_util::gui::box::Info & BOX_INFO,
-        const float MAX_SIZE_RATIO_X,
-        const float MAX_SIZE_RATIO_Y,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
-        const PopupButtonColor::Enum BUTTON_COLOR,
-        const bool WILL_ADD_RAND_IMAGE)
-        : name_(NAME)
-        , textInfo_(TEXT_INFO)
-        , buttons_(BUTTONS)
-        , image_(PopupImage::Custom)
-        , soundEffect_(SOUND_EFFECT)
-        , boxInfo_(BOX_INFO)
-        , ratioX_(MAX_SIZE_RATIO_X)
-        , ratioY_(MAX_SIZE_RATIO_Y)
-        , buttonColor_(BUTTON_COLOR)
-        , willAddRandImage_(WILL_ADD_RAND_IMAGE)
-        , textureVec_()
-        , numberMin_(0)
-        , numberMax_(0)
-        , numberInvalidVec_()
-        , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creaturePtrOpt_(boost::none)
-        , initialSelection_(0)
-        , areImgsCreatures_(false)
-        , textVec_()
-        , howCombatEnded_(combat::CombatEnd::Count)
-        , titleText_("")
-        , descText_("")
-        , willIncludeItems_(false)
-        , keepAliveSeconds_(-1.0f) // any negative will work here
-    {}
-
-    PopupInfo::PopupInfo(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const sfml_util::TextureVec_t & TEXTURE_VEC,
-        const bool ARE_IMAGES_CREATURES,
+        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
         const std::size_t INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const PopupButtonColor::Enum BUTTON_COLOR)
@@ -152,19 +109,17 @@ namespace popup
         , buttons_(PopupButtons::SelectCancel)
         , image_(PopupImage::Large)
         , soundEffect_(SOUND_EFFECT)
-        , boxInfo_()
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(BUTTON_COLOR)
         , willAddRandImage_(true)
-        , textureVec_(TEXTURE_VEC)
+        , textures_(TEXTURE_VEC)
         , numberMin_(0)
         , numberMax_(0)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creaturePtrOpt_(boost::none)
+        , creaturePtrOpt_()
         , initialSelection_(INITIAL_SELECTION)
-        , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_()
         , howCombatEnded_(combat::CombatEnd::Count)
         , titleText_("")
@@ -173,11 +128,10 @@ namespace popup
         , keepAliveSeconds_(-1.0f) // any negative will work here
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            ((INITIAL_SELECTION < textureVec_.size())
-             || ((textureVec_.empty()) && areImgsCreatures_)),
+            ((INITIAL_SELECTION < textures_.size()) || textures_.empty()),
             "popup::PopupInfo::Constructor(image selection) INITIAL_SELECTION="
-                << INITIAL_SELECTION << " is NOT less than the texture_vec.size()"
-                << textureVec_.size());
+                << INITIAL_SELECTION << " is NOT less than the textures_vec.size()"
+                << textures_.size());
     }
 
     PopupInfo::PopupInfo(
@@ -190,19 +144,17 @@ namespace popup
         , buttons_(PopupButtons::SelectCancel)
         , image_(PopupImage::Large)
         , soundEffect_(sfml_util::sound_effect::PromptQuestion)
-        , boxInfo_()
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(PopupButtonColor::Dark)
         , willAddRandImage_(true)
-        , textureVec_()
+        , textures_()
         , numberMin_(THE_MIN)
         , numberMax_(THE_MAX)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creaturePtrOpt_(boost::none)
+        , creaturePtrOpt_()
         , initialSelection_(0)
-        , areImgsCreatures_(false)
         , textVec_()
         , howCombatEnded_(combat::CombatEnd::Count)
         , titleText_("")
@@ -221,19 +173,17 @@ namespace popup
         , buttons_(BUTTONS)
         , image_(PopupImage::Large)
         , soundEffect_(sfml_util::sound_effect::None)
-        , boxInfo_()
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(PopupButtonColor::Dark)
         , willAddRandImage_(false)
-        , textureVec_()
+        , textures_()
         , numberMin_(0)
         , numberMax_(0)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creaturePtrOpt_(boost::none)
+        , creaturePtrOpt_()
         , initialSelection_(0)
-        , areImgsCreatures_(false)
         , textVec_()
         , howCombatEnded_(HOW_COMBAT_ENDED)
         , titleText_("")
@@ -271,21 +221,6 @@ namespace popup
         {
             ss << ", image=" << PopupImage::ToString(image_);
             ss << ", button_color=" << PopupButtonColor::ToString(buttonColor_);
-
-            if (image_ == PopupImage::Custom)
-            {
-                if (false == boxInfo_.bg_info.path.empty())
-                {
-                    ss << ", bg_image=\"" << boxInfo_.bg_info.path << "\"";
-                }
-                else
-                {
-                    if (false == boxInfo_.bg_info.hasTexture)
-                    {
-                        ss << ", color=" << boxInfo_.bg_info.color;
-                    }
-                }
-            }
         }
 
         ss << ", accent_image=" << std::boolalpha << willAddRandImage_;
@@ -297,9 +232,9 @@ namespace popup
             ss << ", number_select=[" << numberMin_ << "," << numberMax_ << "]";
         }
 
-        if (textureVec_.size() > 0)
+        if (textures_.size() > 0)
         {
-            ss << ", images_count=" << textureVec_.size();
+            ss << ", images_count=" << textures_.size();
         }
 
         if (imageFadeSpeed_ > 0.0f)
@@ -334,11 +269,6 @@ namespace popup
         if (creaturePtrOpt_)
         {
             ss << ", creature=" << creaturePtrOpt_.value()->NameAndRaceAndRole();
-        }
-
-        if (areImgsCreatures_)
-        {
-            ss << ", are_images_creatures=true";
         }
 
         if (howCombatEnded_ != combat::CombatEnd::Count)

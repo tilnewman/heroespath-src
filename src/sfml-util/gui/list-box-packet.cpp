@@ -34,7 +34,8 @@ namespace sfml_util
         const float ListBoxPacket::DEFAULT_IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO_ { 0.03f };
 
         ListBoxPacket::ListBoxPacket(
-            const box::Info & BOX_INFO,
+            const sf::FloatRect & REGION,
+            const BoxEntityInfo & BOX_INFO,
             const sf::Color & LINE_COLOR,
             const sf::Color & IMAGE_COLOR,
             const sf::Color & HIGHLIGHT_COLOR_ADJ,
@@ -43,10 +44,11 @@ namespace sfml_util
             const float IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO,
             const sf::Vector2f & ELEMENT_PAD_SCREEN_RATIO_V,
             const sf::Vector2f & IMAGE_PAD_SCREEN_RATIO_V)
-            : boxInfo_(BOX_INFO)
+            : region_(REGION)
+            , boxInfo_(BOX_INFO)
             , lineColor_(LINE_COLOR)
             , imageColor_(IMAGE_COLOR)
-            , highlightColor_(BOX_INFO.bg_info.color + HIGHLIGHT_COLOR_ADJ)
+            , highlightColor_(BOX_INFO.color_from + HIGHLIGHT_COLOR_ADJ)
             , highlightColorInvalid_(HIGHLIGHT_COLOR_INVALID)
             , highlightImageColor_(IMAGE_COLOR + HIGHLIGHT_IMAGE_COLOR_ADJ)
             , imageMaxSize_(sfml_util::ScreenRatioToPixelsHoriz(IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO))
@@ -57,8 +59,7 @@ namespace sfml_util
                   sfml_util::ScreenRatioToPixelsHoriz(IMAGE_PAD_SCREEN_RATIO_V.x),
                   sfml_util::ScreenRatioToPixelsVert(IMAGE_PAD_SCREEN_RATIO_V.y))
             , elementSizeWithoutPadV_(
-                  BOX_INFO.region.width - (elementPadV_.x * 2.0f),
-                  imageMaxSize_ + (imagePadV_.y * 2.0f))
+                  REGION.width - (elementPadV_.x * 2.0f), imageMaxSize_ + (imagePadV_.y * 2.0f))
         {}
 
         float ListBoxPacket::ImageMaxLength(const bool WILL_INCLUDE_IMAGE_PAD) const

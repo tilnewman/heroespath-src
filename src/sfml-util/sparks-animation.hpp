@@ -9,8 +9,10 @@
 //
 // sparks-animation.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/cached-texture.hpp"
 #include "sfml-util/sliders.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <vector>
@@ -103,14 +105,15 @@ namespace sfml_util
             float emitTimerSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sf::Texture sparkTexture1_;
-            sf::Texture sparkTexture2_;
-            sf::Texture sparkTexture3_;
+            sfml_util::CachedTexture sparkCachedTexture1_;
+            sfml_util::CachedTexture sparkCachedTexture2_;
+            sfml_util::CachedTexture sparkCachedTexture3_;
             SparkVec_t sparkVec_;
         };
 
         using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
         using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
+
     } // namespace animation
 } // namespace sfml_util
 } // namespace heroespath

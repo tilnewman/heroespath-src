@@ -11,7 +11,6 @@
 //
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 namespace heroespath
 {

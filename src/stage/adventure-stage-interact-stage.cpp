@@ -10,11 +10,14 @@
 // adventure-stage-interact-stage.hpp
 //
 #include "adventure-stage-interact-stage.hpp"
+
 #include "interact/i-interaction.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/map.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+
 #include <numeric>
 
 namespace heroespath
@@ -22,12 +25,12 @@ namespace heroespath
 namespace stage
 {
 
-    const sf::Uint8 InteractStage::CONTEXT_IMAGE_ALPHA_{ 32 };
-    const sf::Uint8 InteractStage::BACKGROUND_ALPHA_{ 28 };
-    const float InteractStage::SUBJECT_REGION_WIDTH_RATIO_{ 0.2f };
-    const float InteractStage::SUBJECT_REGION_HEIGHT_RATIO_{ 0.5f };
-    const float InteractStage::SUBJECT_IMAGE_PAD_RATIO_{ 0.9f };
-    const float InteractStage::CONTEXT_IMAGE_PAD_RATIO_{ 0.8f };
+    const sf::Uint8 InteractStage::CONTEXT_IMAGE_ALPHA_ { 32 };
+    const sf::Uint8 InteractStage::BACKGROUND_ALPHA_ { 28 };
+    const float InteractStage::SUBJECT_REGION_WIDTH_RATIO_ { 0.2f };
+    const float InteractStage::SUBJECT_REGION_HEIGHT_RATIO_ { 0.5f };
+    const float InteractStage::SUBJECT_IMAGE_PAD_RATIO_ { 0.9f };
+    const float InteractStage::CONTEXT_IMAGE_PAD_RATIO_ { 0.8f };
 
     InteractStage::InteractStage(
         map::Map & map,
@@ -55,25 +58,25 @@ namespace stage
     InteractStage::~InteractStage() = default;
 
     bool InteractStage::HandleCallback(
-        const sfml_util::gui::callback::TextButtonCallbackPackage_t & PACKAGE)
+        const sfml_util::gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
+        auto const INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
                 this,
                 sfml_util::gui::TextButtonPtr_t(
-                    const_cast<sfml_util::gui::TextButton *>(PACKAGE.PTR_)));
+                    const_cast<sfml_util::gui::TextButton *>(PACKET_PTR.Ptr())));
         }
 
         return false;
     }
 
-    bool InteractStage::HandleCallback(const popup::PopupResponse & RESPONSE)
+    bool InteractStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET)
     {
-        if (RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET->Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (lockPicking_.HandleCharacterSelectionPopupResponse(this, RESPONSE))
+            if (lockPicking_.HandleCharacterSelectionPopupResponse(this, PACKET))
             {
                 return false;
             }
@@ -83,7 +86,7 @@ namespace stage
                 return true;
             }
         }
-        else if (RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        else if (PACKET->Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             // at this point the attempting popup has finished playing the sfx and closed
             if (lockPicking_.Attempt())
@@ -108,7 +111,7 @@ namespace stage
                 interactionManager_.Unlock();
             }
         }
-        else if (RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        else if (PACKET->Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             if (interactionManager_.Current())
             {
@@ -140,7 +143,7 @@ namespace stage
     {
         if (interactionManager_.IsLocked() == false)
         {
-            auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
+            auto const INTERACTION_PTR_OPT { interactionManager_.Current() };
             if (INTERACTION_PTR_OPT)
             {
                 return INTERACTION_PTR_OPT.value()->OnKeyRelease(this, KEY_EVENT.code);
@@ -160,38 +163,42 @@ namespace stage
     {
         if (INTERACTION_PTR_OPT)
         {
-            auto const INTERACTION_PTR{ INTERACTION_PTR_OPT.value() };
+            auto const INTERACTION_PTR { INTERACTION_PTR_OPT.value() };
 
-            const sf::FloatRect SUBJECT_REGION{ innerRect_.left,
-                                                innerRect_.top,
-                                                innerRect_.width * SUBJECT_REGION_WIDTH_RATIO_,
-                                                innerRect_.height * SUBJECT_REGION_HEIGHT_RATIO_ };
+            const sf::FloatRect SUBJECT_REGION { innerRect_.left,
+                                                 innerRect_.top,
+                                                 innerRect_.width * SUBJECT_REGION_WIDTH_RATIO_,
+                                                 innerRect_.height * SUBJECT_REGION_HEIGHT_RATIO_ };
 
-            auto const TEXT_REGION_TOP_MARGIN{ sfml_util::MapByRes(33.0f, 99.0f) };
+            auto const TEXT_REGION_TOP_MARGIN { sfml_util::MapByRes(33.0f, 99.0f) };
 
-            const sf::FloatRect TEXT_REGION{ innerRect_.left + SUBJECT_REGION.width,
-                                             innerRect_.top + TEXT_REGION_TOP_MARGIN,
-                                             innerRect_.width - SUBJECT_REGION.width,
-                                             SUBJECT_REGION.height - TEXT_REGION_TOP_MARGIN };
+            const sf::FloatRect TEXT_REGION { innerRect_.left + SUBJECT_REGION.width,
+                                              innerRect_.top + TEXT_REGION_TOP_MARGIN,
+                                              innerRect_.width - SUBJECT_REGION.width,
+                                              SUBJECT_REGION.height - TEXT_REGION_TOP_MARGIN };
 
-            const sf::FloatRect BUTTON_REGION{ innerRect_.left,
-                                               innerRect_.top + SUBJECT_REGION.height,
-                                               innerRect_.width,
-                                               innerRect_.height - SUBJECT_REGION.height };
+            const sf::FloatRect BUTTON_REGION { innerRect_.left,
+                                                innerRect_.top + SUBJECT_REGION.height,
+                                                innerRect_.width,
+                                                innerRect_.height - SUBJECT_REGION.height };
 
-            const sf::FloatRect CONTEXT_REGION{ TEXT_REGION.left,
-                                                TEXT_REGION.top,
-                                                TEXT_REGION.width,
-                                                TEXT_REGION.height + BUTTON_REGION.height };
+            const sf::FloatRect CONTEXT_REGION { TEXT_REGION.left,
+                                                 TEXT_REGION.top,
+                                                 TEXT_REGION.width,
+                                                 TEXT_REGION.height + BUTTON_REGION.height };
 
             contextSprite_.setTexture(INTERACTION_PTR->ContextTexture(), true);
             contextSprite_.setColor(sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_));
 
-            sfml_util::FitAndReCenter(contextSprite_, CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_);
+            sfml_util::FitAndCenterTo(
+                contextSprite_,
+                sfml_util::ScaleAndReCenterCopy(CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_));
 
             subjectSprite_.setTexture(INTERACTION_PTR->SubjectTexture(), true);
 
-            sfml_util::FitAndReCenter(subjectSprite_, SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_);
+            sfml_util::FitAndCenterTo(
+                subjectSprite_,
+                sfml_util::ScaleAndReCenterCopy(SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_));
 
             textRegionUPtr_->Setup(
                 INTERACTION_PTR->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
@@ -205,10 +212,11 @@ namespace stage
 
             for (auto & button : INTERACTION_PTR->Buttons())
             {
-                buttons_.emplace_back(button.Make(this));
+                buttons_.emplace_back(
+                    button.Make(sfml_util::gui::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
             }
 
-            auto const ALL_BUTTONS_HEIGHT{ std::accumulate(
+            auto const ALL_BUTTONS_HEIGHT { std::accumulate(
                 std::begin(buttons_),
                 std::end(buttons_),
                 0.0f,
@@ -216,11 +224,12 @@ namespace stage
                     return SUBTOTAL + UPTR->GetEntityRegion().height;
                 }) };
 
-            auto const BUTTON_REGION_HORIZ_MID{ BUTTON_REGION.left + (BUTTON_REGION.width * 0.5f) };
-            auto const BUTTON_REGION_VERT_MID{ BUTTON_REGION.top + (BUTTON_REGION.height * 0.5f) };
-            auto const BUTTON_VERT_START{ BUTTON_REGION_VERT_MID - (ALL_BUTTONS_HEIGHT * 0.5f) };
+            auto const BUTTON_REGION_HORIZ_MID { BUTTON_REGION.left
+                                                 + (BUTTON_REGION.width * 0.5f) };
+            auto const BUTTON_REGION_VERT_MID { BUTTON_REGION.top + (BUTTON_REGION.height * 0.5f) };
+            auto const BUTTON_VERT_START { BUTTON_REGION_VERT_MID - (ALL_BUTTONS_HEIGHT * 0.5f) };
 
-            auto vertPos{ BUTTON_VERT_START };
+            auto vertPos { BUTTON_VERT_START };
             for (auto & buttonUPtr : buttons_)
             {
                 buttonUPtr->SetEntityPos(

@@ -9,10 +9,17 @@
 //
 #include "image-options.hpp"
 
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-image-manip.hpp"
 
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Texture.hpp>
+
+#include <ostream>
 #include <sstream>
+#include <tuple>
 
 namespace heroespath
 {
@@ -22,6 +29,8 @@ namespace sfml_util
     void ImageOptions::Apply(sf::Texture & texture) const
     {
         texture.setSmooth(option_enum & ImageOpt::Smooth);
+
+        texture.setRepeated(option_enum & ImageOpt::Repeated);
 
         if (BitClearCopy(option_enum, ImageOpt::Smooth) > 0)
         {
@@ -43,7 +52,7 @@ namespace sfml_util
 
             if (HasMask())
             {
-                image.createMaskFromColor(mask_color, mask_alpha);
+                image.createMaskFromColor(mask_color_opt.value(), mask_alpha);
             }
 
             if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
@@ -73,6 +82,11 @@ namespace sfml_util
             ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Smooth";
         }
 
+        if (option_enum & ImageOpt::Repeated)
+        {
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Repeated";
+        }
+
         if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) == 0))
         {
             ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Invert"
@@ -81,11 +95,19 @@ namespace sfml_util
 
         if (HasMask())
         {
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask";
+            const auto C { mask_color_opt.value() };
+
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask" << C.r << "-" << C.g << "-"
+               << C.b;
+
+            if (C.a < 255)
+            {
+                ss << "-" << C.r;
+            }
 
             if (IsMaskAlphaDefault() == false)
             {
-                ss << "NewAlpha" << unsigned(mask_alpha);
+                ss << SEPARATOR << "MaskAlpha" << unsigned(mask_alpha);
             }
         }
 
@@ -119,5 +141,24 @@ namespace sfml_util
         }
     }
 
+    bool operator<(const ImageOptions & L, const ImageOptions & R)
+    {
+        return std::tie(L.option_enum, L.mask_color_opt, L.mask_alpha)
+            < std::tie(R.option_enum, R.mask_color_opt, R.mask_alpha);
+    }
+
+    bool operator==(const ImageOptions & L, const ImageOptions & R)
+    {
+        return std::tie(L.option_enum, L.mask_color_opt, L.mask_alpha)
+            == std::tie(R.option_enum, R.mask_color_opt, R.mask_alpha);
+    }
+
 } // namespace sfml_util
+
+std::ostream & operator<<(std::ostream & os, const sfml_util::ImageOptions & OPTIONS)
+{
+    os << OPTIONS.ToString();
+    return os;
+}
+
 } // namespace heroespath

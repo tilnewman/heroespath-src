@@ -11,11 +11,12 @@
 //
 #include "ouroboros.hpp"
 
-#include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-center.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath
 {
@@ -23,37 +24,29 @@ namespace sfml_util
 {
 
     Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_INVERT)
-        : GuiEntity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        : Entity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
+        , IMAGE_INITIAL_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.34f))
+        , IMAGE_DRIFT_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.12f))
+        , IMAGE_MIN_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ - (IMAGE_DRIFT_WIDTH_ * 0.5f))
+        , IMAGE_MAX_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ + (IMAGE_DRIFT_WIDTH_ * 0.5f))
         , rotation_(0.0f)
-        , sprite_()
-        , texture_()
+        , cachedTexture_(
+              "media-images-gui-accents-ouroboros",
+              ImageOpt::Default | ((WILL_INVERT) ? ImageOpt::Invert : ImageOpt::None))
+        , sprite_(cachedTexture_.Get())
         , sizeDrifter_(
-              sfml_util::MapByRes(0.45f, 2.25f) - 0.1f,
-              sfml_util::MapByRes(0.45f, 2.25f) + 0.1f,
+              IMAGE_MIN_DRIFT_WIDTH_,
+              IMAGE_MAX_DRIFT_WIDTH_,
               0.1,
               0.35,
-              sfml_util::MapByRes(0.45f, 2.25f) - 0.1f,
-              sfml_util::MapByRes(0.45f, 2.25f) + 0.1f)
+              IMAGE_INITIAL_WIDTH_,
+              IMAGE_MAX_DRIFT_WIDTH_)
         , shadeDrifter_(5.0f, 25.0f, 0.1, 0.75)
         , rotSpeedDrifter_(1.0f, 10.0f, 0.25, 0.75)
     {
-        sfml_util::Loaders::Texture(
-            texture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
-
-        if (WILL_INVERT == false)
-        {
-            sfml_util::Invert(texture_);
-        }
-
-        sprite_.setTexture(texture_);
-        sprite_.setScale(sfml_util::MapByRes(0.45f, 2.25f), sfml_util::MapByRes(0.45f, 2.25f));
-        sprite_.setPosition(
-            (SCREEN_WIDTH_ * 0.5f) - (sprite_.getGlobalBounds().width * 0.5f),
-            (SCREEN_HEIGHT_ * 0.5f) - (sprite_.getGlobalBounds().height * 0.5f)
-                + sfml_util::MapByRes(5.0f, 65.0f));
+        const sf::Vector2f IMAGE_INITIAL_CONSTRAINING_SIZE_V(IMAGE_INITIAL_WIDTH_, 0.0f);
+        sfml_util::Fit(sprite_, IMAGE_INITIAL_CONSTRAINING_SIZE_V);
+        sfml_util::Center(sprite_);
         sprite_.setColor(sf::Color(255, 255, 255, 20));
     }
 
@@ -70,22 +63,22 @@ namespace sfml_util
         // and orig scale
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
+
         sprite_.setOrigin(
             sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
+
         rotation_ += -1.0f * ELAPSED_TIME_SEC * rotSpeedDrifter_.Update(ELAPSED_TIME_SEC);
+
         sprite_.setRotation(rotation_);
 
-        const float NEW_SCALE(sizeDrifter_.Update(ELAPSED_TIME_SEC));
-        sprite_.setScale(NEW_SCALE, NEW_SCALE);
-
-        const float POS_LEFT((SCREEN_WIDTH_ * 0.5f));
-        const float POS_TOP((SCREEN_HEIGHT_ * 0.5f) + sfml_util::MapByRes(5.0f, 245.0f));
-        sprite_.setPosition(POS_LEFT, POS_TOP);
+        sfml_util::Fit(sprite_, sf::Vector2f(sizeDrifter_.Update(ELAPSED_TIME_SEC), 0.0f));
+        sfml_util::Center(sprite_);
 
         sprite_.setColor(sf::Color(
             255, 255, 255, static_cast<sf::Uint8>(shadeDrifter_.Update(ELAPSED_TIME_SEC))));
 
         return true;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

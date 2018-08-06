@@ -14,8 +14,6 @@
 #include "interact/conversation.hpp"
 #include "interact/locked-door.hpp"
 
-#include "sfml-util/sfml-graphics.hpp"
-
 namespace heroespath
 {
 namespace interact

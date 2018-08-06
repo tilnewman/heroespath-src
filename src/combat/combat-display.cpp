@@ -25,18 +25,17 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/tile.hpp"
+#include "sfml-util/image-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 
 #include <algorithm>
 #include <numeric>
 #include <sstream>
-#include <string>
 
 namespace heroespath
 {
@@ -60,7 +59,6 @@ namespace combat
         , vertDiff(TARGET_POS_TOP - COMBAT_NODE_PTR->GetEntityPos().y)
     {}
 
-    const float CombatDisplay::BATTLEFIELD_MARGIN_(0.0f);
     const float CombatDisplay::POSITIONING_CELL_SIZE_RATIO_MIN_HORIZ_(0.4f);
     const float CombatDisplay::POSITIONING_CELL_SIZE_RATIO_MAX_HORIZ_(4.0f);
     const float CombatDisplay::POSITIONING_CELL_SIZE_RATIO_MIN_VERT_(0.4f);
@@ -82,17 +80,17 @@ namespace combat
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfml_util::MapByRes(5.0f, 200.0f))
         , POSITIONING_BETWEEN_SPACER_VERT_(sfml_util::MapByRes(25.0f, 200.0f))
         , CELL_HEIGHT_(sfml_util::MapByRes(
-              sfml_util::gui::CreatureImageLoader::MaxDimmension()
-                  * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-              sfml_util::gui::CreatureImageLoader::MaxDimmension()
-                  * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
+              sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+              sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
         , NAME_CHAR_SIZE_ORIG_(sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , nameCharSizeCurr_(NAME_CHAR_SIZE_ORIG_)
         , battlefieldRect_()
         , boxUPtr_()
-        , bgTexture_()
+        , bgCachedTexture_(
+              "media-images-backgrounds-tile-darkpaper",
+              sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)
         , offScreenTexture_()
         , offScreenSprite_()
         , offScreenPosX_(0.0f)
@@ -138,53 +136,34 @@ namespace combat
 
         // establish primary drawing area as battlefieldRect_
         // StageRegionSet() must have already been called
-        battlefieldRect_ = sf::FloatRect(
-            StageRegionLeft(),
-            StageRegionTop(),
-            StageRegionWidth() - BATTLEFIELD_MARGIN_,
-            StageRegionHeight() - BATTLEFIELD_MARGIN_);
+        battlefieldRect_ = StageRegion();
 
         PositionCombatTreeCells(false);
 
         // battlefield bounding box
-        const sfml_util::gui::box::Info BOX_INFO(
-            true,
-            battlefieldRect_,
-            sfml_util::gui::ColorSet(sf::Color::White, sf::Color::Transparent));
+        sfml_util::gui::BoxEntityInfo boxInfo;
+        boxInfo.SetupBorder(true);
 
-        boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("CombatDisplay's'", BOX_INFO);
+        boxInfo.focus_colors
+            = sfml_util::gui::FocusColors(sf::Color::White, sf::Color::Transparent);
 
-        // load background texture
-        sfml_util::Loaders::Texture(
-            bgTexture_,
-            game::GameDataFile::Instance()->GetMediaPath(
-                "media-images-backgrounds-tile-darkpaper"));
-
-        bgTexture_.setRepeated(true);
-        offScreenSprite_.setTexture(bgTexture_);
+        boxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+            "CombatDisplay's'", battlefieldRect_, boxInfo);
 
         // setup offscreen texture
-        auto const BG_TEXTUER_SIZE { bgTexture_.getSize() };
-
-        auto const OFFSCREEN_TEXTURE_SIZE_X(
-            ((sfml_util::Display::Instance()->GetWinWidthu() / BG_TEXTUER_SIZE.x) + 1)
-            * BG_TEXTUER_SIZE.x);
-
-        auto const OFFSCREEN_TEXTURE_SIZE_Y(
-            ((sfml_util::Display::Instance()->GetWinHeightu() / BG_TEXTUER_SIZE.y) + 1)
-            * BG_TEXTUER_SIZE.y);
-
-        offScreenTexture_.create(OFFSCREEN_TEXTURE_SIZE_X, OFFSCREEN_TEXTURE_SIZE_Y);
+        const auto OFFSCREEN_SIZE_V_U { sf::Vector2u(sfml_util::Size(boxUPtr_->InnerRegion())) };
+        offScreenTexture_.create(OFFSCREEN_SIZE_V_U.x, OFFSCREEN_SIZE_V_U.y);
         offScreenTexture_.clear(sf::Color::Transparent);
         offScreenTexture_.setRepeated(true);
 
-        // draw background texture to offscreen texture (tile)
-        sf::RenderStates states;
-        const sf::FloatRect TILE_RECT(
-            sf::Rect<unsigned>(0, 0, offScreenTexture_.getSize().x, offScreenTexture_.getSize().y));
+        // make temp use of offScreenSprite_ to tile the background onto offScreenTexture_
+        offScreenSprite_.setPosition(0.0f, 0.0f);
+        offScreenSprite_.setTexture(bgCachedTexture_.Get());
 
-        sfml_util::Tile2(TILE_RECT, offScreenSprite_, offScreenTexture_, states);
+        offScreenSprite_.setTextureRect(
+            sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(offScreenTexture_.getSize())));
 
+        offScreenTexture_.draw(offScreenSprite_);
         offScreenTexture_.display();
 
         // setup offscreen drawing sprite
@@ -198,12 +177,7 @@ namespace combat
         target.draw(offScreenSprite_, STATES);
         target.draw(*boxUPtr_, STATES);
         Stage::Draw(target, STATES);
-        summaryViewUPtr_->Draw(target, STATES);
-    }
-
-    void CombatDisplay::SetMouseHover(const sf::Vector2f & MOUSE_POS, const bool IS_MOUSE_HOVERING)
-    {
-        Stage::SetMouseHover(MOUSE_POS, IS_MOUSE_HOVERING);
+        target.draw(*summaryViewUPtr_, STATES);
     }
 
     bool CombatDisplay::StartSummaryView(const sf::Vector2f & MOUSE_POS)
@@ -217,7 +191,7 @@ namespace combat
             {
                 auto const COMBAT_NODE_PTR { COMBAT_NODE_PTR_OPT.value() };
 
-                if (COMBAT_NODE_PTR->GetEntityWillDraw() == true)
+                if (COMBAT_NODE_PTR->WillDraw() == true)
                 {
                     combatAnimationPtr_->ShakeAnimTemporaryStop(COMBAT_NODE_PTR->Creature());
                     summaryViewUPtr_->SetupAndStartTransition(COMBAT_NODE_PTR, battlefieldRect_);
@@ -296,11 +270,11 @@ namespace combat
                        NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
             {
                 isAnyNodeDrawn = true;
-                COMBAT_NODE_PTR->SetEntityWillDraw(true);
+                COMBAT_NODE_PTR->WillDraw(true);
             }
             else
             {
-                COMBAT_NODE_PTR->SetEntityWillDraw(false);
+                COMBAT_NODE_PTR->WillDraw(false);
             }
         }
 
@@ -343,7 +317,7 @@ namespace combat
         prevMousePos_ = MOUSE_POS_V;
     }
 
-    const sfml_util::gui::IGuiEntityPtrOpt_t
+    const sfml_util::gui::IEntityPtrOpt_t
         CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
@@ -896,7 +870,7 @@ namespace combat
 
     bool CombatDisplay::IsCreatureVisible(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        return combatTree_.GetNodePtr(CREATURE_PTR)->GetEntityWillDraw();
+        return combatTree_.GetNodePtr(CREATURE_PTR)->WillDraw();
     }
 
     bool CombatDisplay::AreAllCreaturesVisible(
@@ -911,7 +885,7 @@ namespace combat
 
         for (auto const & COMBAT_NODE_PTR : COMBATNODES_PVEC)
         {
-            if (COMBAT_NODE_PTR->GetEntityWillDraw() == false)
+            if (COMBAT_NODE_PTR->WillDraw() == false)
             {
                 return false;
             }
@@ -1277,10 +1251,8 @@ namespace combat
         }
 
         const float CELL_WIDTH_MIN(sfml_util::MapByRes(
-            sfml_util::gui::CreatureImageLoader::MaxDimmension()
-                * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-            sfml_util::gui::CreatureImageLoader::MaxDimmension()
-                * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
+            sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+            sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
 
         const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
 

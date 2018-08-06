@@ -11,12 +11,13 @@
 //
 #include "creature/creature.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/gui/line.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/colored-rect.hpp"
+#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/gui/gold-bar.hpp"
+#include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -31,8 +32,8 @@ namespace stage
     // Responsible for displaying and managing player interactions with a
     // list of characters and associated information about them.
     class AdventureCharacterList
-        : public sfml_util::gui::GuiEntity
-        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::gui::Entity
+        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
     {
         AdventureCharacterList(const AdventureCharacterList &);
         AdventureCharacterList & operator=(const AdventureCharacterList &);
@@ -41,19 +42,17 @@ namespace stage
         explicit AdventureCharacterList(const sfml_util::IStagePtr_t);
         virtual ~AdventureCharacterList();
 
-        const std::string HandlerName() const override { return GetEntityName(); }
-
         bool HandleCallback(
-            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        {
+            return false;
+        }
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         void SetEntityPos(const float LEFT, const float TOP) override;
 
         void Setup();
-
-    protected:
-        void OnClick(const sf::Vector2f &) override {}
 
     private:
         void SetupNameButtons();
@@ -100,23 +99,23 @@ namespace stage
         const float CELL_TEXT_LEFT_SPACER_;
         const float CHARLIST_SEP_SPACER_;
         sfml_util::IStagePtr_t stagePtr_;
-        sfml_util::gui::FourStateButtonUVec_t namesButtonUVec_;
+        sfml_util::gui::ImageTextEntityUVec_t namesButtonUVec_;
         sfml_util::gui::TextRegionUVec_t condsTextRegionsUVec_;
         sfml_util::gui::TextRegionUVec_t healthTextRegionsUVec_;
         sfml_util::gui::TextRegionUVec_t manaTextRegionsUVec_;
-        sfml_util::FloatRectVec_t imageColumnRects_;
-        sfml_util::FloatRectVec_t nameColumnRects_;
-        sfml_util::FloatRectVec_t healthColumnRects_;
-        sfml_util::FloatRectVec_t manaColumnRects_;
-        sfml_util::FloatRectVec_t conditionColumnRects_;
+        FloatRectVec_t imageColumnRects_;
+        FloatRectVec_t nameColumnRects_;
+        FloatRectVec_t healthColumnRects_;
+        FloatRectVec_t manaColumnRects_;
+        FloatRectVec_t conditionColumnRects_;
         std::vector<sf::Vertex> lineVerts_;
-        std::vector<sf::Vertex> quadVerts_;
+        std::vector<sfml_util::ColoredRect> colorGradientBars_;
 
-        using ImagePair_t = std::pair<sf::Texture, sf::Sprite>;
+        using ImagePair_t = std::pair<sfml_util::CachedTexture, sf::Sprite>;
         using CharImageMap_t = misc::VectorMap<creature::CreaturePtr_t, ImagePair_t>;
         CharImageMap_t charImages_;
 
-        sfml_util::gui::Line charListSepLine_;
+        sfml_util::gui::GoldBar charListSepLine_;
     };
 
     using AdventureCharacterListUPtr_t = std::unique_ptr<AdventureCharacterList>;

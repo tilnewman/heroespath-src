@@ -9,32 +9,75 @@
 //
 // colored-rect.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "sfml-util/corner-enum.hpp"
+#include "sfml-util/side-enum.hpp"
+
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+
+#include <memory>
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    // A class allowing simple fading in and out of a color to any part of the screen.
+    // Responsible for implementing a rectangle on screen with either a solid color or a gradient of
+    // colors different colors at different corners.  Using the default constructed will result in a
+    // valid object that draws nothing.
     class ColoredRect : public sf::Drawable
     {
     public:
+        explicit ColoredRect(
+            const sf::FloatRect & RECT = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
+            const sf::Color & COLOR = sf::Color::Transparent);
+
+        // side colors are set before corner colors
         ColoredRect(
-            const sf::FloatRect & RECT = sf::FloatRect(),
-            const sf::Color & COLOR = sf::Color::Black);
+            const sf::FloatRect & RECT,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO,
+            const Side::Enum SIDES_WITH_FROM_COLOR,
+            const Corner::Enum CORNERS_WITH_FROM_COLOR = Corner::None);
+
+        ColoredRect(const ColoredRect &) = default;
+        ColoredRect(ColoredRect &&) = default;
+        ColoredRect & operator=(const ColoredRect &) = default;
+        ColoredRect & operator=(ColoredRect &&) = default;
+
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+        bool IsGradient() const;
+
+        bool IsSolidColor() const { return !IsGradient(); }
+
+        const sf::Color Color() const;
+
+        void Color(const sf::Color & NEW_COLOR);
 
         const sf::FloatRect Rect() const;
         void Rect(const sf::FloatRect & NEW_RECT);
 
-        const sf::Color Color() const;
-        void Color(const sf::Color & NEW_COLOR);
+        void SetPos(const float POS_LEFT, const float POS_TOP);
+        void MovePos(const float HORIZ, const float VERT);
 
-        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        friend bool operator<(const ColoredRect & L, const ColoredRect & R);
+        friend bool operator==(const ColoredRect & L, const ColoredRect & R);
 
     private:
-        sf::VertexArray quads_;
+        sf::VertexArray vertexes_;
     };
+
+    using ColoredRectOpt_t = boost::optional<ColoredRect>;
+    using ColoredRectUPtr_t = std::unique_ptr<ColoredRect>;
+
+    bool operator<(const ColoredRect & L, const ColoredRect & R);
+    bool operator==(const ColoredRect & L, const ColoredRect & R);
+
+    inline bool operator!=(const ColoredRect & L, const ColoredRect & R) { return !(L == R); }
 
 } // namespace sfml_util
 } // namespace heroespath

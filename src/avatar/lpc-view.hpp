@@ -14,9 +14,8 @@
 #include "avatar/pose-enum.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/direction-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
 
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace heroespath
 {

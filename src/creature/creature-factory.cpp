@@ -18,7 +18,6 @@
 #include "creature/stat-set.hpp"
 #include "game/game-state-factory.hpp"
 #include "misc/random.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
 
 #include <memory>
 
@@ -40,7 +39,7 @@ namespace creature
         const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
-        auto const CHARACTER_PTR{ MakeAndEquipPlayer(
+        auto const CHARACTER_PTR { MakeAndEquipPlayer(
             NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME) };
 
         game::GameStateFactory::Instance()->SaveCharacter(CHARACTER_PTR);
@@ -72,7 +71,7 @@ namespace creature
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        auto const VALID_ROLES{ race::Roles(RACE) };
+        auto const VALID_ROLES { race::Roles(RACE) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
@@ -83,7 +82,7 @@ namespace creature
                 << ", health=" << HEALTH << ", rank=" << RANK << ", experience=" << EXPERIENCE
                 << ") but that race/role combination is invalid.");
 
-        auto const CREATURE_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
+        auto const CREATURE_PTR { CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
         creature::nonplayer::InventoryFactory inventoryFactory;
@@ -111,7 +110,7 @@ namespace creature
         const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
-        auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(
+        auto const CHARACTER_PTR { CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
         PlayerInitialSetup playerSetup;

@@ -25,8 +25,8 @@ namespace heroespath
 namespace song
 {
 
-    const std::string Song::RESISTED_STR_{ " resisted." };
-    const std::string Song::FAILED_STR_{ " failed on " };
+    const std::string Song::RESISTED_STR_ { " resisted." };
+    const std::string Song::FAILED_STR_ { " failed on " };
 
     Song::Song(
         const Songs::Enum WHICH,
@@ -72,7 +72,7 @@ namespace song
     const std::string Song::DescDetails() const
     {
         std::ostringstream ss;
-        ss << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
+        ss << "A " << misc::NumberToStringWithOrdinalSuffix(rank_.As<int>()) << " rank"
            << combat::EffectType::Name(effectType_) << " magical ";
 
         if (SongType::Guitar == type_)
@@ -122,13 +122,13 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
+                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -162,22 +162,22 @@ namespace song
             case Songs::SpiritResonance:
 
             {
-                auto const RATIO_FROM_STATS{ creature::Stats::Ratio(
+                auto const RATIO_FROM_STATS { creature::Stats::Ratio(
                     CREATURE_PLAYING_PTR,
                     { creature::Traits::Intelligence, creature::Traits::Charm },
                     (creature::Stats::Luck | creature::Stats::RaceRoleBonus)) };
 
-                auto const RATIO_FROM_TRAIT_BONUS{ static_cast<float>(
-                                                       CREATURE_PLAYING_PTR->TraitBonusCurrent(
-                                                           creature::Traits::MagicEffect))
-                                                   / 100.0f };
+                auto const RATIO_FROM_TRAIT_BONUS { static_cast<float>(
+                                                        CREATURE_PLAYING_PTR->TraitBonusCurrent(
+                                                            creature::Traits::MagicEffect))
+                                                    / 100.0f };
 
-                auto const MANA_GAIN_ORIG{ Mana_t::Make(
+                auto const MANA_GAIN_ORIG { Mana_t::Make(
                     10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS)) };
 
-                auto const MANA_GAIN_MAX{ CREATURE_LISTENING_PTR->ManaMissing() };
+                auto const MANA_GAIN_MAX { CREATURE_LISTENING_PTR->ManaMissing() };
 
-                auto const MANA_GAIN_FINAL{ (
+                auto const MANA_GAIN_FINAL { (
                     (MANA_GAIN_ORIG > MANA_GAIN_MAX) ? MANA_GAIN_MAX : MANA_GAIN_ORIG) };
 
                 if (MANA_GAIN_FINAL > 0_mana)
@@ -209,7 +209,7 @@ namespace song
             }
             case Songs::RousingRhythm:
             {
-                const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
+                const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC {
                     creature::Conditions::AsleepNatural,
                     creature::Conditions::AsleepMagical,
                     creature::Conditions::Dazed,
@@ -279,7 +279,7 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
+                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         CREATURE_LISTENING_PTR,
@@ -291,7 +291,7 @@ namespace song
                             | creature::Stats::With::RankBonus
                             | creature::Stats::With::PlayerNaturalWins)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -337,7 +337,7 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
+                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         CREATURE_LISTENING_PTR,
@@ -349,7 +349,7 @@ namespace song
                             | creature::Stats::With::RankBonus
                             | creature::Stats::With::PlayerNaturalWins)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -396,13 +396,13 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
+                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
+                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 

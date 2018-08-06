@@ -16,7 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-direction.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -52,7 +52,7 @@ namespace avatar
         , walkRectIndex_(0)
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
-        , walkingIntoNpcPtrOpt_(boost::none)
+        , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
     {}
 
@@ -73,7 +73,7 @@ namespace avatar
         , walkRectIndex_(CURRENT_WALK_RECT_INDEX)
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
-        , walkingIntoNpcPtrOpt_(boost::none)
+        , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
     {}
 

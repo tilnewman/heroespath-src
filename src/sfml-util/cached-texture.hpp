@@ -12,13 +12,16 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/image-options.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Texture.hpp>
-
+#include <memory>
 #include <string>
-#include <utility>
 #include <vector>
+
+namespace sf
+{
+class Texture;
+}
 
 namespace boost
 {
@@ -65,12 +68,11 @@ namespace sfml_util
         const std::string Path() const { return path_; }
         const ImageOptions Options() const { return options_; }
 
+        // this value is not stored in this object so this call is expensive and only really
+        // provided for testing
         std::size_t RefCount() const;
 
         friend void swap(CachedTexture & l, CachedTexture & r);
-
-        friend bool operator==(const CachedTexture & L, const CachedTexture & R);
-        friend bool operator!=(const CachedTexture & L, const CachedTexture & R);
 
     private:
         void Release();
@@ -92,12 +94,25 @@ namespace sfml_util
 
     inline bool operator==(const CachedTexture & L, const CachedTexture & R)
     {
-        return ((L.index_ == R.index_) && (R.options_ == L.options_) && (L.path_ == R.path_));
+        return (L.Index() == R.Index());
     }
 
     inline bool operator!=(const CachedTexture & L, const CachedTexture & R) { return !(L == R); }
 
+    inline bool operator<(const CachedTexture & L, const CachedTexture & R)
+    {
+        return (L.Index() < R.Index());
+    }
+
+    inline bool operator>(const CachedTexture & L, const CachedTexture & R) { return (R < L); }
+
+    inline bool operator<=(const CachedTexture & L, const CachedTexture & R) { return !(L > R); }
+
+    inline bool operator>=(const CachedTexture & L, const CachedTexture & R) { return !(L < R); }
+
+    using CachedTextureUPtr_t = std::unique_ptr<CachedTexture>;
     using CachedTextureOpt_t = boost::optional<CachedTexture>;
+    using CachedTextureVec_t = std::vector<CachedTexture>;
 
     // Responsible for the cached lifetime of, and fast access to, all the images in a directory.
     class CachedTextures
@@ -123,6 +138,8 @@ namespace sfml_util
         const std::string Path() const { return path_; }
         const ImageOptions Options() const { return options_; }
 
+        // this value is not stored in this object so this call is expensive and only really
+        // provided for testing
         std::size_t RefCount() const;
 
         const sf::Texture & operator[](const std::size_t INDEX) const;
@@ -134,6 +151,7 @@ namespace sfml_util
 
         friend bool operator==(const CachedTextures & L, const CachedTextures & R);
         friend bool operator!=(const CachedTextures & L, const CachedTextures & R);
+        friend bool operator<(const CachedTextures & L, const CachedTextures & R);
 
     private:
         void Release();
@@ -155,11 +173,23 @@ namespace sfml_util
 
     inline bool operator==(const CachedTextures & L, const CachedTextures & R)
     {
-        return ((L.options_ == R.options_) && (L.path_ == R.path_) && (L.indexes_ == R.indexes_));
+        return (L.indexes_ == R.indexes_);
     }
 
     inline bool operator!=(const CachedTextures & L, const CachedTextures & R) { return !(L == R); }
 
+    inline bool operator<(const CachedTextures & L, const CachedTextures & R)
+    {
+        return (L.indexes_ < R.indexes_);
+    }
+
+    inline bool operator>(const CachedTextures & L, const CachedTextures & R) { return (R < L); }
+
+    inline bool operator<=(const CachedTextures & L, const CachedTextures & R) { return !(L > R); }
+
+    inline bool operator>=(const CachedTextures & L, const CachedTextures & R) { return !(L < R); }
+
+    using CachedTexturesUPtr_t = std::unique_ptr<CachedTextures>;
     using CachedTexturesOpt_t = boost::optional<CachedTextures>;
 
 } // namespace sfml_util

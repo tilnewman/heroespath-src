@@ -16,8 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
 
 namespace heroespath
 {
@@ -47,15 +46,15 @@ namespace sfml_util
     std::unique_ptr<FontManager> FontManager::instanceUPtr_;
 
     FontManager::FontManager()
-        : fontUVec_(Font::Count)
+        : fontUVec_(GuiFont::Count)
         , numberFontFamilyName_("")
         , fontsDirPathStr_(game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"))
     {
         M_HP_LOG_DBG("Subsystem Construction: FontManager");
 
-        Load(Font::Number);
-        numberFontFamilyName_ = GetFont(Font::Number)->getInfo().family;
-        Unload(Font::Number);
+        Load(GuiFont::Number);
+        numberFontFamilyName_ = GetFont(GuiFont::Number)->getInfo().family;
+        Unload(GuiFont::Number);
     }
 
     FontManager::~FontManager() { M_HP_LOG_DBG("Subsystem Destruction: FontManager"); }
@@ -91,10 +90,10 @@ namespace sfml_util
         instanceUPtr_.reset();
     }
 
-    const FontPtr_t FontManager::GetFont(const Font::Enum FONT)
+    const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (Font::IsValid(FONT)),
+            (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::GetFont(font_enum="
                 << static_cast<misc::EnumUnderlying_t>(FONT) << ") given an invalid font enum.");
 
@@ -102,7 +101,7 @@ namespace sfml_util
         {
             M_HP_LOG_WRN(
                 "sfml_util::FontManager::GetFont("
-                << Font::ToString(FONT) << "/" << Font::Name(FONT)
+                << GuiFont::ToString(FONT) << "/" << GuiFont::Name(FONT)
                 << ") asked to return a font that was not already loaded.  Loading now...");
 
             Load(FONT);
@@ -111,10 +110,10 @@ namespace sfml_util
         return GetFontRef(FONT).get();
     }
 
-    void FontManager::Load(const Font::Enum FONT)
+    void FontManager::Load(const GuiFont::Enum FONT)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (Font::IsValid(FONT)),
+            (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
                                                       << ") given an invalid font enum.");
 
@@ -123,7 +122,7 @@ namespace sfml_util
             auto & fontUPtr { GetFontRef(FONT) };
             fontUPtr = std::make_unique<sf::Font>();
             sfml_util::Loaders::Font(
-                *fontUPtr, misc::filesystem::CompletePath(fontsDirPathStr_, Font::Path(FONT)));
+                *fontUPtr, misc::filesystem::CompletePath(fontsDirPathStr_, GuiFont::Path(FONT)));
         }
     }
 
@@ -135,10 +134,10 @@ namespace sfml_util
         }
     }
 
-    void FontManager::Unload(const Font::Enum FONT)
+    void FontManager::Unload(const GuiFont::Enum FONT)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (Font::IsValid(FONT)),
+            (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
                                                         << ") given an invalid font enum.");
 
@@ -161,9 +160,9 @@ namespace sfml_util
         }
     }
 
-    bool FontManager::IsLoaded(const Font::Enum FONT) const
+    bool FontManager::IsLoaded(const GuiFont::Enum FONT) const
     {
-        if (Font::IsValid(FONT))
+        if (GuiFont::IsValid(FONT))
         {
             return !!fontUVec_.at(static_cast<std::size_t>(FONT));
         }
@@ -207,6 +206,18 @@ namespace sfml_util
         }
     }
 
+    const sf::Color FontManager::Color_PopupButtonDisabled(const popup::PopupButtonColor::Enum C)
+    {
+        if (C == popup::PopupButtonColor::Dark)
+        {
+            return sf::Color(0, 0, 0, 40);
+        }
+        else
+        {
+            return sf::Color(255, 255, 255, 70);
+        }
+    }
+
     unsigned int FontManager::Size_Larger() const
     {
         return sfml_util::MapByRes(SIZE_LARGER_MIN_, SIZE_LARGER_MAX_);
@@ -244,7 +255,7 @@ namespace sfml_util
 
     unsigned int FontManager::Size_CombatCreatureLabels() const { return Size_Smallish(); }
 
-    FontUPtr_t & FontManager::GetFontRef(const Font::Enum FONT)
+    FontUPtr_t & FontManager::GetFontRef(const GuiFont::Enum FONT)
     {
         return fontUVec_.at(static_cast<std::size_t>(FONT));
     }

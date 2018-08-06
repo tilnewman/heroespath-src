@@ -9,13 +9,15 @@
 //
 // collision-quad-tree.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include <SFML/Graphics/Rect.hpp>
+
 #include <vector>
 
 namespace heroespath
 {
 namespace sfml_util
 {
+    using FloatRectVec_t = std::vector<sf::FloatRect>;
 
     struct Quad
     {

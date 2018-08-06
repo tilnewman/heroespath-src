@@ -12,7 +12,8 @@
 #include "map/layer-type-enum.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <vector>
 
@@ -43,6 +44,7 @@ namespace map
     };
 
     using LayerVec_t = std::vector<Layer>;
+
 } // namespace map
 } // namespace heroespath
 

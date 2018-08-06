@@ -9,6 +9,10 @@
 //
 // strings.hpp
 //
+#include "misc/to-string-prefix-enum.hpp"
+
+#include <boost/type_index.hpp>
+
 #include <sstream>
 #include <string>
 
@@ -17,35 +21,70 @@ namespace heroespath
 namespace misc
 {
 
-    struct String
+    template <typename T = void>
+    const std::string MakeToStringPrefix(
+        const ToStringPrefix::Enum OPTIONS,
+        const std::string & CONTAINER_NAME,
+        const std::string & NAMESPACE_PREFIX_STR = "")
     {
+        std::ostringstream ss;
 
-        template <typename T>
-        static const std::string DecorateNumber(const T NUMBER)
+        if (OPTIONS & ToStringPrefix::Namespace)
         {
-            std::ostringstream ss;
-            ss << NUMBER;
+            std::string namespacePrefixToUse { NAMESPACE_PREFIX_STR };
 
-            if (NUMBER == 1)
+            if ((NAMESPACE_PREFIX_STR.size() > 2)
+                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 1] != ':')
+                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 2] != ':'))
             {
-                ss << "st";
-            }
-            else if (NUMBER == 2)
-            {
-                ss << "nd";
-            }
-            else if (NUMBER == 3)
-            {
-                ss << "rd";
-            }
-            else
-            {
-                ss << "th";
+                namespacePrefixToUse += "::";
             }
 
-            return ss.str();
+            ss << namespacePrefixToUse;
         }
-    };
+
+        if (OPTIONS & ToStringPrefix::SimpleName)
+        {
+            ss << CONTAINER_NAME;
+        }
+
+        if constexpr (std::is_same<T, void>::value == false)
+        {
+            if (OPTIONS & ToStringPrefix::Typename)
+            {
+                ss << "<" << boost::typeindex::type_id<T>().pretty_name() << ">";
+            }
+        }
+
+        return ss.str();
+    }
+
+    template <typename T>
+    const std::string NumberToStringWithOrdinalSuffix(const T NUMBER)
+    {
+        std::ostringstream ss;
+        ss << NUMBER;
+
+        if (NUMBER == 1)
+        {
+            ss << "st";
+        }
+        else if (NUMBER == 2)
+        {
+            ss << "nd";
+        }
+        else if (NUMBER == 3)
+        {
+            ss << "rd";
+        }
+        else
+        {
+            ss << "th";
+        }
+
+        return ss.str();
+    }
+
 } // namespace misc
 } // namespace heroespath
 

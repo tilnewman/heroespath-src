@@ -10,7 +10,7 @@
 // fade.hpp
 //  Helper classes and functions for fading the screen in and out.
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <memory>
 #include <vector>

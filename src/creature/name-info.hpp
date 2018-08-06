@@ -9,6 +9,7 @@
 //
 // name-info.hpp
 //
+#include "misc/vector-map.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
 #include <string>
@@ -23,7 +24,7 @@ namespace creature
     // characteristics.
     class NameInfo
     {
-        using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
+        using FontSizePair_t = std::pair<FontPtr_t, unsigned int>;
         using FontSizeToWidthMap_t = misc::VectorMap<FontSizePair_t, float>;
 
     public:
@@ -44,7 +45,7 @@ namespace creature
                 .x;
         }
 
-        const sfml_util::FontPtr_t DefaultFont() const;
+        const FontPtr_t DefaultFont() const;
 
         unsigned int DefaultSize() const;
 
@@ -63,15 +64,14 @@ namespace creature
         }
 
         const sfml_util::gui::TextInfo
-            MakeTextInfo(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+            MakeTextInfo(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
         {
             return sfml_util::gui::TextInfo(LargestName(), FONT_PTR, CHAR_SIZE);
         }
 
         const sf::Vector2f Size() const { return Size(MakeTextInfo()); }
 
-        const sf::Vector2f
-            Size(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        const sf::Vector2f Size(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
         {
             return Size(MakeTextInfo(FONT_PTR, CHAR_SIZE));
         }
@@ -80,8 +80,7 @@ namespace creature
 
         const sf::Vector2f ScreenRatio() const { return ConvertSizeToScreenRatio(Size()); }
 
-        const sf::Vector2f
-            ScreenRatio(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        const sf::Vector2f ScreenRatio(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
         {
             return ConvertSizeToScreenRatio(Size(FONT_PTR, CHAR_SIZE));
         }

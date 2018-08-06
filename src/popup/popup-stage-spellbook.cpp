@@ -15,6 +15,8 @@
 #include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfml-util/cached-texture.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "spell/spell.hpp"
 
@@ -26,7 +28,7 @@ namespace heroespath
 namespace popup
 {
 
-    const float PopupStageSpellbook::BACKGROUND_WIDTH_RATIO_ { 0.85f };
+    const float PopupStageSpellbook::BORDER_SCREEN_RATIO_ { 0.15f };
     const float PopupStageSpellbook::COLOR_FADE_SPEED_ { 6.0f };
     const sf::Uint8 PopupStageSpellbook::SPELL_IMAGE_ALPHA_ { 192 };
     const sf::Color PopupStageSpellbook::UNABLE_TEXT_COLOR_ { sf::Color(127, 32, 32) };
@@ -34,7 +36,7 @@ namespace popup
 
     PopupStageSpellbook::PopupStageSpellbook(const popup::PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
-        , playerCachedTextureOpt_(boost::none)
+        , playerCachedTextureOpt_()
         , playerSprite_()
         , pageRectLeft_()
         , pageRectRight_()
@@ -42,18 +44,18 @@ namespace popup
         , listBoxLabelTextRegionUPtr_()
         , listBoxUPtr_()
         , LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190))
-        , LISTBOX_LINE_COLOR_(sfml_util::Colors::GrayDark)
+        , LISTBOX_LINE_COLOR_(sfml_util::defaults::GrayDark)
         , LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_)
-        , LISTBOX_COLOR_BG_(sfml_util::Colors::Orange - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLOR_BG_(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
-        , LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_)
+        , listBoxBackgroundInfo_()
         , listElementTextInfo_(
               " ",
-              sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+              sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
               sfml_util::FontManager::Instance()->Size_Smallish(),
-              sfml_util::Colors::GrayDarker,
+              sfml_util::defaults::GrayDarker,
               sfml_util::Justified::Left)
-        , spellCachedTextureOpt_(boost::none)
+        , spellCachedTextureOpt_()
         , spellSprite_()
         , spellTitleTextRegionUPtr_()
         , spellDetailsTextUPtr_()
@@ -67,18 +69,18 @@ namespace popup
 
     PopupStageSpellbook::~PopupStageSpellbook() = default;
 
-    bool PopupStageSpellbook::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage<
-                                             PopupStageSpellbook,
-                                             spell::SpellPtr_t> & PACKAGE)
+    bool PopupStageSpellbook::HandleCallback(
+        const sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::
+            PacketPtr_t & PACKET_PTR)
     {
-        if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click)
-            || (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange)
-            || (PACKAGE.keypress_event.code == sf::Keyboard::Up)
-            || (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+        if ((PACKET_PTR->gui_event == sfml_util::GuiEvent::Click)
+            || (PACKET_PTR->gui_event == sfml_util::GuiEvent::SelectionChange)
+            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Up)
+            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Down))
         {
-            if (currentListboxIndex_ != PACKAGE.package.PTR_->SelectionIndex())
+            if (currentListboxIndex_ != PACKET_PTR->listbox_ptr->SelectionIndex())
             {
-                currentListboxIndex_ = PACKAGE.package.PTR_->SelectionIndex();
+                currentListboxIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
 
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
@@ -92,10 +94,10 @@ namespace popup
             }
         }
         else if (
-            (PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
-            || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            (PACKET_PTR->gui_event == sfml_util::GuiEvent::DoubleClick)
+            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
         {
-            currentListboxIndex_ = PACKAGE.package.PTR_->SelectionIndex();
+            currentListboxIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
             return HandleSpellCast();
         }
 
@@ -191,21 +193,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupOuterAndInnerRegion()
     {
-        auto const SPELLBOOK_WIDTH { sfml_util::Display::Instance()->GetWinWidth()
-                                     * BACKGROUND_WIDTH_RATIO_ };
-
-        auto const SPELLBOOK_HEIGHT { (static_cast<float>(backgroundTexture_.getSize().y)
-                                       * SPELLBOOK_WIDTH)
-                                      / static_cast<float>(backgroundTexture_.getSize().x) };
-
-        sf::FloatRect region;
-        region.left = ((sfml_util::Display::Instance()->GetWinWidth() - SPELLBOOK_WIDTH) * 0.5f);
-        region.top = ((sfml_util::Display::Instance()->GetWinHeight() - SPELLBOOK_HEIGHT) * 0.5f);
-
-        region.width = SPELLBOOK_WIDTH;
-        region.height = SPELLBOOK_HEIGHT;
-
-        SetupFullscreenRegionsAndBackgroundImage(region);
+        SetupForFullScreenWithBorderRatio(BORDER_SCREEN_RATIO_);
     }
 
     void PopupStageSpellbook::SetupRegions()
@@ -213,7 +201,7 @@ namespace popup
         const sf::FloatRect LEFT_PAGE_RECT_RAW { popup::PopupManager::Rect_Spellbook_PageLeft() };
 
         auto const SCALE { innerRegion_.width
-                           / static_cast<float>(backgroundTexture_.getSize().x) };
+                           / static_cast<float>(backgroundTexture_.Get().getSize().x) };
 
         pageRectLeft_.left = innerRegion_.left + (LEFT_PAGE_RECT_RAW.left * SCALE);
         pageRectLeft_.top = innerRegion_.top + (LEFT_PAGE_RECT_RAW.top * SCALE);
@@ -232,7 +220,11 @@ namespace popup
     {
         accent1CachedTextureOpt_ = popup::PopupManager::Instance()->LoadRandomAccentImage();
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
-        sfml_util::FitAndReCenter(accentSprite1_, pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
+
+        sfml_util::FitAndReCenter(
+            accentSprite1_,
+            sfml_util::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 
@@ -240,15 +232,19 @@ namespace popup
     {
         accent2CachedTextureOpt_ = popup::PopupManager::Instance()->LoadRandomAccentImage();
         accentSprite2_.setTexture(accent2CachedTextureOpt_->Get(), true);
-        sfml_util::FitAndReCenter(accentSprite2_, pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
+
+        sfml_util::FitAndReCenter(
+            accentSprite2_,
+            sfml_util::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+
         accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 
     void PopupStageSpellbook::SetupPlayerImage()
     {
-        playerCachedTextureOpt_ = sfml_util::gui::image::Load(
+        playerCachedTextureOpt_ = sfml_util::LoadAndCacheImage(
             popupInfo_.CreaturePtrOpt().value(),
-            sfml_util::ImageOptions(sfml_util::ImageOpt::Invert, sf::Color::White));
+            sfml_util::ImageOptions::InvertedCharacterOptions());
 
         playerSprite_.setTexture(playerCachedTextureOpt_->Get(), true);
 
@@ -291,9 +287,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Left);
 
         const sf::FloatRect DETAILS_TEXT_RECT {
@@ -312,9 +308,9 @@ namespace popup
     {
         const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
             "Spells",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Left);
 
         const sf::FloatRect LISTBOX_LABEL_TEXTRECT {
@@ -334,7 +330,7 @@ namespace popup
     {
         spellSprite_.setColor(IMAGE_COLOR);
 
-        const sfml_util::gui::ColorSet TEXT_COLOR_SET(
+        const sfml_util::gui::FocusColors TEXT_COLOR_SET(
             TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
 
         spellTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
@@ -344,7 +340,7 @@ namespace popup
         auto unableTextColor { UNABLE_TEXT_COLOR_ };
         unableTextColor.a = TEXT_COLOR.a;
 
-        const sfml_util::gui::ColorSet UNABLE_EXT_COLOR_SET(
+        const sfml_util::gui::FocusColors UNABLE_EXT_COLOR_SET(
             unableTextColor, unableTextColor, unableTextColor, unableTextColor);
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
@@ -369,15 +365,20 @@ namespace popup
         const sf::FloatRect LISTBOX_RECT(
             LISTBOX_RECT_LEFT, LISTBOX_RECT_TOP, LISTBOX_RECT_WIDTH, LISTBOX_RECT_HEIGHT);
 
-        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
-            1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
+        listBoxBackgroundInfo_.SetupColor(LISTBOX_COLOR_BG_);
+        listBoxBackgroundInfo_.SetupBorder(true, 1.0f);
+        listBoxBackgroundInfo_.focus_colors = LISTBOX_COLORSET_;
 
         listBoxUPtr_
             = std::make_unique<sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>>(
                 "PopupStage'sSpellListBox",
                 this,
+                this,
                 sfml_util::gui::ListBoxPacket(
-                    LISTBOX_BOX_INFO, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
+                    LISTBOX_RECT,
+                    listBoxBackgroundInfo_,
+                    LISTBOX_LINE_COLOR_,
+                    LISTBOX_IMAGE_COLOR_));
 
         for (auto const & SPELL_PTR : popupInfo_.CreaturePtrOpt().value()->SpellsPVec())
         {
@@ -396,9 +397,9 @@ namespace popup
         // setup spell title text
         const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(
             SPELL_PTR->Name(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Center);
 
         if (!spellTitleTextRegionUPtr_)
@@ -416,7 +417,7 @@ namespace popup
         }
 
         // setup spell image
-        spellCachedTextureOpt_ = sfml_util::gui::image::Load(SPELL_PTR->Which());
+        spellCachedTextureOpt_ = sfml_util::LoadAndCacheImage(SPELL_PTR->Which());
         spellSprite_.setTexture(spellCachedTextureOpt_->Get(), true);
 
         auto const SPELL_IMAGE_SCALE { sfml_util::MapByRes(0.75f, 4.0f) };
@@ -452,9 +453,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Center);
 
         if (!spellDetailsTextUPtr_)
@@ -521,7 +522,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo SPELL_UNABLE_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
             sfml_util::FontManager::Instance()->Size_Normal(),
             UNABLE_TEXT_COLOR_,
             sf::BlendAlpha,
@@ -553,9 +554,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::Default),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::Colors::GrayDarker,
+            sfml_util::defaults::GrayDarker,
             sfml_util::Justified::Center);
 
         auto const SPELL_DESC_HORIZ_MARGIN { sfml_util::MapByRes(15.0f, 30.0f) };

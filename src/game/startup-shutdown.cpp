@@ -42,7 +42,6 @@
 #include "sfml-util/gui/combat-image-loader.hpp"
 #include "sfml-util/gui/condition-image-loader.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/song-image-loader.hpp"
 #include "sfml-util/gui/spell-image-loader.hpp"
 #include "sfml-util/gui/title-image-loader.hpp"
@@ -94,7 +93,6 @@ namespace game
         item::armor::ArmorDetailLoader::LoadFromGameDataFile();
         item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
 
-        sfml_util::gui::GuiElements::LoadTexture();
         Setup_Display(APPLICATION_NAME);
         Setup_ManagerClassResourcePaths();
         Setup_SubsystemsAcquire();

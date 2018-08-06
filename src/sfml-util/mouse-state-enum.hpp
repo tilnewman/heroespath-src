@@ -9,6 +9,8 @@
 //
 // mouse-state-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,19 +18,20 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct MouseState
+    struct MouseState : public misc::EnumBaseCounting<MouseState, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Up = 0,
             Down,
             Over,
+            Disabled,
             Count
         };
 
-        static const std::string ToString(const MouseState::Enum E);
-        static bool IsValid(const MouseState::Enum E);
+        static const std::string ToString(const MouseState::Enum);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

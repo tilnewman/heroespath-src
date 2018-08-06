@@ -22,15 +22,14 @@
 #include "misc/vectors.hpp"
 #include "popup/popup-stage-generic.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/box-info.hpp"
-#include "sfml-util/gui/box.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/box-entity-info.hpp"
+#include "sfml-util/gui/box-entity.hpp"
+#include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
-#include "sfml-util/sfml-util.hpp"
 
 #include <exception>
-#include <memory>
 #include <sstream>
-#include <string>
 
 namespace heroespath
 {
@@ -40,7 +39,7 @@ namespace popup
     std::string PopupManager::windowTextureDirectoryPath_ { "" };
     std::string PopupManager::accentTextureDirectoryPath_ { "" };
 
-    // set to match sfml_util::Colors::GrayDarker before being set in the constructor
+    // set to match sfml_util::defaults::GrayDarker before being set in the constructor
     sf::Color PopupManager::fontColor_ { sf::Color(64, 64, 64, 255) };
 
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_;
@@ -49,7 +48,7 @@ namespace popup
         : accentPaths_()
     {
         M_HP_LOG_DBG("Subsystem Construction: PopupManager");
-        fontColor_ = sfml_util::Colors::GrayDarker;
+        fontColor_ = sfml_util::defaults::GrayDarker;
     }
 
     PopupManager::~PopupManager() { M_HP_LOG_DBG("Subsystem Destruction: PopupManager"); }
@@ -149,7 +148,6 @@ namespace popup
                 filename = "music-sheet.png";
                 break;
             }
-            case PopupImage::Custom:
             case PopupImage::Count:
             default:
             {
@@ -175,7 +173,7 @@ namespace popup
     {
         return sfml_util::gui::TextInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::Font::System),
+            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
             FONT_SIZE,
             fontColor_,
             JUSTIFIED);
@@ -198,27 +196,10 @@ namespace popup
             SOUND_EFFECT);
     }
 
-    const PopupInfo PopupManager::CreateBoxedPopupInfo(
-        const std::string & POPUP_NAME,
-        const std::string & PROMPT_TEXT,
-        const sf::Color & TEXT_COLOR,
-        const sfml_util::gui::box::Info & BOX_INFO,
-        const PopupButtons::Enum BUTTONS,
-        const sfml_util::Justified::Enum JUSTIFIED,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
-        const unsigned int FONT_SIZE) const
-    {
-        sfml_util::gui::TextInfo ti(TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE));
-        ti.color = TEXT_COLOR;
-
-        return PopupInfo(POPUP_NAME, ti, BUTTONS, BOX_INFO, 0.25f, 0.5f, SOUND_EFFECT);
-    }
-
     const PopupInfo PopupManager::CreateImageSelectionPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
-        const sfml_util::TextureVec_t & TEXTURE_VEC,
-        const bool ARE_IMAGES_CREATURES,
+        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
         const std::size_t INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const unsigned int FONT_SIZE) const
@@ -227,7 +208,6 @@ namespace popup
             POPUP_NAME,
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             TEXTURE_VEC,
-            ARE_IMAGES_CREATURES,
             INITIAL_SELECTION,
             SOUND_EFFECT);
     }
@@ -255,8 +235,7 @@ namespace popup
         auto popupInfo { CreateImageSelectionPopupInfo(
             POPUP_NAME,
             PROMPT_TEXT,
-            sfml_util::TextureVec_t(),
-            true,
+            sfml_util::CachedTextureVec_t(),
             INITIAL_SELECTION,
             sfml_util::sound_effect::PromptGeneric,
             sfml_util::FontManager::Instance()->Size_Smallish()) };
@@ -270,9 +249,7 @@ namespace popup
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
-        const creature::TitlePtr_t TO_TITLE_PTR,
-        const boost::optional<sf::Texture> & FROM_TEXTURE_OPT,
-        const sf::Texture & TO_TEXTURE) const
+        const creature::TitlePtr_t TO_TITLE_PTR) const
     {
         using namespace misc;
 
@@ -319,13 +296,13 @@ namespace popup
                    << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";
         }
 
-        sfml_util::TextureVec_t textureVec;
-        if (FROM_TITLE_PTR_OPT && FROM_TEXTURE_OPT)
+        sfml_util::CachedTextureVec_t textureVec;
+        if (FROM_TITLE_PTR_OPT)
         {
-            textureVec.emplace_back(*FROM_TEXTURE_OPT);
+            textureVec.emplace_back(sfml_util::LoadAndCacheImage(FROM_TITLE_PTR_OPT.value()));
         }
 
-        textureVec.emplace_back(TO_TEXTURE);
+        textureVec.emplace_back(sfml_util::LoadAndCacheImage(TO_TITLE_PTR));
 
         return PopupInfo(
             POPUP_NAME,
@@ -344,7 +321,6 @@ namespace popup
             100.0f,
             CREATURE_PTR,
             0,
-            false,
             titleSS.str(),
             descSS.str());
     }
@@ -366,7 +342,7 @@ namespace popup
             PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::TextureVec_t(),
+            sfml_util::CachedTextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             CREATURE_PTR,
@@ -390,7 +366,7 @@ namespace popup
             PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::TextureVec_t(),
+            sfml_util::CachedTextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             CREATURE_PTR,
@@ -484,12 +460,11 @@ namespace popup
             popup::PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::TextureVec_t(),
+            sfml_util::CachedTextureVec_t(),
             std::vector<std::string>(),
             popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             boost::none,
             0,
-            false,
             "",
             "",
             KEEP_ALIVE_SECONDS);

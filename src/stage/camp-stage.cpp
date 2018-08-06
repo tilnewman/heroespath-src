@@ -27,39 +27,41 @@
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
-#include "sfml-util/tile.hpp"
 
 namespace heroespath
 {
 namespace stage
 {
 
-    const std::string CampStage::NEWHEROESPATH_POPUP_NAME1_{ "NewGameIntroStoryPopup1" };
-    const std::string CampStage::NEWHEROESPATH_POPUP_NAME2_{ "NewGameIntroStoryPopup2" };
-    const std::string CampStage::NEWHEROESPATH_POPUP_NAME3_{ "NewGameIntroStoryPopup3" };
-    const std::string CampStage::NEWHEROESPATH_POPUP_NAME4_{ "NewGameIntroStoryPopup4" };
+    const std::string CampStage::NEWHEROESPATH_POPUP_NAME1_ { "NewGameIntroStoryPopup1" };
+    const std::string CampStage::NEWHEROESPATH_POPUP_NAME2_ { "NewGameIntroStoryPopup2" };
+    const std::string CampStage::NEWHEROESPATH_POPUP_NAME3_ { "NewGameIntroStoryPopup3" };
+    const std::string CampStage::NEWHEROESPATH_POPUP_NAME4_ { "NewGameIntroStoryPopup4" };
 
     CampStage::CampStage()
         : Stage(
               "Camp",
-              { sfml_util::Font::Default,
-                sfml_util::Font::System,
-                sfml_util::Font::SystemCondensed,
-                sfml_util::Font::Number,
-                sfml_util::Font::Handwriting },
+              { sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::Handwriting },
               true)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , stageTitle_()
-        , campfireTexture_()
-        , campfireSprite_()
-        , backgroundImage_("media-images-backgrounds-tile-darkknot")
+        , stageTitle_("")
+        , campfireCachedTexture_("media-images-campfire")
+        , campfireSprite_(campfireCachedTexture_.Get())
+        , backgroundBox_(
+              "CampStage'sBackground",
+              StageRegion(),
+              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+                  "media-images-backgrounds-tile-darkknot",
+                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , fireAnimUPtr_()
         , showNewGamePopup1_(false)
         , showNewGamePopup2_(false)
@@ -84,9 +86,9 @@ namespace stage
         Stage::ClearAllEntities();
     }
 
-    bool CampStage::HandleCallback(const popup::PopupResponse & PACKAGE)
+    bool CampStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        auto const CALLBACK_NAME{ PACKAGE.Info().Name() };
+        auto const CALLBACK_NAME { PACKET_PTR->Name() };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
         {
             showNewGamePopup2_ = true;
@@ -112,27 +114,27 @@ namespace stage
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("CampStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        // campfire background image
-        sfml_util::Loaders::Texture(
-            campfireTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
+        // campfire image
+        const auto CAMPFIRE_IMAGE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.286f) };
 
-        campfireSprite_.setTexture(campfireTexture_);
-        campfireSprite_.setScale(0.8f, 0.8f);
+        const auto CAMPFIRE_POS_LEFT { StageRegionWidth()
+                                       - sfml_util::ScreenRatioToPixelsHoriz(0.06f) };
+        const auto CAMPFIRE_POS_TOP { StageRegionHeight()
+                                      - sfml_util::ScreenRatioToPixelsVert(0.0667f) };
 
-        auto const CAMPFIRE_BOUNDS_BEFORE{ campfireSprite_.getGlobalBounds() };
+        const sf::FloatRect CAMPFIRE_CONSTRAINING_REGION(
+            CAMPFIRE_POS_LEFT, CAMPFIRE_POS_TOP, CAMPFIRE_IMAGE_WIDTH, 0.0f);
 
-        campfireSprite_.setPosition(
-            SCREEN_WIDTH_ - CAMPFIRE_BOUNDS_BEFORE.width - 75.0f,
-            SCREEN_HEIGHT_ - CAMPFIRE_BOUNDS_BEFORE.height - 60.0f);
+        sfml_util::FitAndCenterTo(campfireSprite_, CAMPFIRE_CONSTRAINING_REGION);
 
         // campfire animation
         fireAnimUPtr_
             = sfml_util::AnimationFactory::Make(sfml_util::Animations::Inferno, 1.2f, 0.05f);
 
-        fireAnimUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width) - 85.0f,
-            (SCREEN_HEIGHT_ - campfireSprite_.getGlobalBounds().height) - 175.0f);
+        const auto CAMPFIRE_ANIM_POS_V { sfml_util::CenterToCopy(
+            sfml_util::Size(fireAnimUPtr_->GetEntityRegion()), CAMPFIRE_CONSTRAINING_REGION) };
+
+        fireAnimUPtr_->SetEntityPos(CAMPFIRE_ANIM_POS_V);
 
         EntityAdd(fireAnimUPtr_.get());
 
@@ -141,7 +143,7 @@ namespace stage
 
     void CampStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundImage_, STATES);
+        target.draw(backgroundBox_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(campfireSprite_, STATES);
         target.draw(botSymbol_, STATES);
@@ -154,7 +156,7 @@ namespace stage
 
         if (showNewGamePopup1_)
         {
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME1_,
                 std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
                 popup::PopupButtons::Continue,
@@ -167,7 +169,7 @@ namespace stage
         }
         else if (showNewGamePopup2_)
         {
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME2_,
                 ComposeNewGamePopupText2(),
                 popup::PopupButtons::Continue,
@@ -180,7 +182,7 @@ namespace stage
         }
         else if (showNewGamePopup3_)
         {
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME3_,
                 ComposeNewGamePopupText3(),
                 popup::PopupButtons::Continue,
@@ -193,7 +195,7 @@ namespace stage
         }
         else if (showNewGamePopup4_)
         {
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME4_,
                 ComposeNewGamePopupText4(),
                 popup::PopupButtons::Continue,
@@ -255,7 +257,7 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText3()
     {
-        auto charToUsePtrOpt = creature::CreaturePtrOpt_t{ boost::none };
+        auto charToUsePtrOpt = creature::CreaturePtrOpt_t { boost::none };
 
         auto const PLAYERS_PVEC(creature::Algorithms::Players());
 
@@ -353,8 +355,8 @@ namespace stage
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text7") << " "
            << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
-        auto const BEAST_PVEC{ creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
-        auto const NONLOAD_NONBEAST_PVEC{ misc::Vector::Exclude(
+        auto const BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
+        auto const NONLOAD_NONBEAST_PVEC { misc::Vector::Exclude(
             NOTBEASTS_PVEC, charToUsePtrOpt.value()) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
