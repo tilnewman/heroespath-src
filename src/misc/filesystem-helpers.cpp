@@ -26,11 +26,44 @@ namespace misc
 {
     namespace filesystem
     {
-        const std::vector<std::string> FilenameText::TO_EXCLUDE_VEC_{
+        const std::vector<std::string> FilenameText::TO_EXCLUDE_VEC_ {
             ".txt", ".DS_Store", "sample.gif", ".html", ".htm"
         };
 
         namespace bfs = boost::filesystem;
+
+        const std::string Filename(const std::string & PATH_STR, const bool WILL_INCLUDE_EXTENSION)
+        {
+            std::string fileName { bfs::path(PATH_STR).filename().string() };
+
+            if (("." == fileName) || (".." == fileName) || ("/" == fileName) || ("\\" == fileName))
+            {
+                return "";
+            }
+            else
+            {
+                if (WILL_INCLUDE_EXTENSION == false)
+                {
+                    const std::string EXT { bfs::path(PATH_STR).extension().string() };
+                    if (EXT.empty() == false)
+                    {
+                        boost::algorithm::erase_last(fileName, EXT);
+                    }
+                }
+
+                return fileName;
+            }
+        }
+
+        const std::string Extension(const std::string & PATH_STR)
+        {
+            return bfs::path(PATH_STR).extension().string();
+        }
+
+        const std::string ExtensionWithoutDot(const std::string & PATH_STR)
+        {
+            return boost::erase_first_copy(Extension(PATH_STR), ".");
+        }
 
         const std::string MakePathPretty(const std::string & PATH_STR)
         {
@@ -83,22 +116,22 @@ namespace misc
 
             for (auto const & DIR_ENTRY : bfs::directory_iterator(DIR_PATH))
             {
-                auto const PATH{ DIR_ENTRY.path() };
+                auto const PATH { DIR_ENTRY.path() };
 
                 if (bfs::is_regular_file(PATH))
                 {
-                    auto const LEAF_STR{ PATH.leaf().string() };
+                    auto const FILE_NAME { PATH.filename().string() };
 
                     namespace ba = boost::algorithm;
 
-                    if (FILENAME_PREFIX.empty() || ba::starts_with(LEAF_STR, FILENAME_PREFIX))
+                    if (FILENAME_PREFIX.empty() || ba::starts_with(FILE_NAME, FILENAME_PREFIX))
                     {
                         if (FILENAME_EXTENSION.empty()
-                            || ba::ends_with(LEAF_STR, FILENAME_EXTENSION))
+                            || ba::ends_with(FILE_NAME, FILENAME_EXTENSION))
                         {
-                            if (DoesStringContainAnyOf(LEAF_STR, EXCLUDES, false) == false)
+                            if (DoesStringContainAnyOf(FILE_NAME, EXCLUDES, false) == false)
                             {
-                                filePaths.emplace_back(MakePathPretty(DIR_PATH / PATH.leaf()));
+                                filePaths.emplace_back(MakePathPretty(DIR_PATH / FILE_NAME));
                             }
                         }
                     }
@@ -141,7 +174,7 @@ namespace misc
 
             std::ostringstream filenameSS;
 
-            const std::size_t MAX_ATTEMPT_COUNT{ 1000000 };
+            const std::size_t MAX_ATTEMPT_COUNT { 1000000 };
             for (std::size_t i(1);; ++i)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
@@ -222,19 +255,19 @@ namespace misc
 
         int FindLastNumberInFilename(const boost::filesystem::path & PATH)
         {
-            auto const FILE_NAME_STR{ PATH.leaf().string() };
+            auto const FILE_NAME_STR { PATH.filename().string() };
 
             if (FILE_NAME_STR.empty())
             {
                 return 0;
             }
 
-            std::string numberStr{ "" };
-            auto i{ FILE_NAME_STR.size() - 1 };
+            std::string numberStr { "" };
+            auto i { FILE_NAME_STR.size() - 1 };
             do
             {
-                auto const CHAR{ FILE_NAME_STR.at(i) };
-                auto const IS_DIGIT{ std::isdigit(static_cast<unsigned char>(CHAR)) != 0 };
+                auto const CHAR { FILE_NAME_STR.at(i) };
+                auto const IS_DIGIT { std::isdigit(static_cast<unsigned char>(CHAR)) != 0 };
 
                 if ((numberStr.empty() == false) && (IS_DIGIT == false))
                 {
@@ -315,7 +348,7 @@ namespace misc
         const boost::filesystem::path
             PathWithDepth(const boost::filesystem::path & PATH_ORIG, const std::size_t DEPTH)
         {
-            auto const PATH_FINAL{ MakePathPretty(PATH_ORIG) };
+            auto const PATH_FINAL { MakePathPretty(PATH_ORIG) };
 
             if ((DEPTH == 0) || (std::rbegin(PATH_FINAL) == std::rend(PATH_FINAL)))
             {
@@ -326,7 +359,7 @@ namespace misc
             pathParts.reserve(DEPTH);
 
             std::size_t i(0);
-            auto rPathIter{ std::rbegin(PATH_FINAL) };
+            auto rPathIter { std::rbegin(PATH_FINAL) };
 
             do
             {

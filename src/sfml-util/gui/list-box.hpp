@@ -16,6 +16,7 @@
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/callback.hpp"
 #include "sfml-util/gui/entity.hpp"
+#include "sfml-util/gui/list-box-event-packet.hpp"
 #include "sfml-util/gui/list-box-packet.hpp"
 #include "sfml-util/gui/list-element.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
@@ -24,6 +25,10 @@
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include <boost/type_traits.hpp>
 
@@ -55,33 +60,7 @@ namespace sfml_util
             , public SliderBar::Callback_t::IHandler_t
         {
         public:
-            // Callbacks will not occur if the listbox is empty. Since this object is only created
-            // when not empty, then selection must be valid. If gui_event is Click or DoubleClick
-            // then mouse_pos_opt is initialized
-            struct EventPacket
-            {
-                EventPacket(
-                    misc::NotNull<ListBox<Stage_t, Element_t> *> LISTBOX_PTR,
-                    const GuiEvent::Enum GUI_EVENT,
-                    const sf::Event::KeyEvent & KEYPRESS_EVENT = sf::Event::KeyEvent())
-                    : listbox_ptr(LISTBOX_PTR)
-                    , gui_event(GUI_EVENT)
-                    , keypress_event(KEYPRESS_EVENT)
-                    , selected_element_ptr(LISTBOX_PTR->Selection())
-                {}
-
-                EventPacket(const EventPacket &) = default;
-                EventPacket(EventPacket &&) = default;
-                EventPacket & operator=(const EventPacket &) = default;
-                EventPacket & operator=(EventPacket &&) = default;
-
-                misc::NotNull<ListBox<Stage_t, Element_t> *> listbox_ptr;
-                GuiEvent::Enum gui_event;
-                sf::Event::KeyEvent keypress_event;
-                ListElementPtr_t<Element_t> selected_element_ptr;
-            };
-
-            using Callback_t = Callback<EventPacket>;
+            using Callback_t = Callback<ListBoxEventPacket<Stage_t, Element_t>>;
 
             using OwningStagePtr_t = misc::NotNull<Stage_t *>;
 
@@ -1124,7 +1103,10 @@ namespace sfml_util
             {
                 if (WillCallback())
                 {
-                    EventPacket eventPacket(this, GuiEvent::Keypress, KEY_EVENT);
+
+                    ListBoxEventPacket<Stage_t, Element_t> eventPacket(
+                        this, GuiEvent::Keypress, KEY_EVENT);
+
                     callbackHandlerPtr_->HandleCallback(&eventPacket);
                 }
             }
@@ -1164,7 +1146,7 @@ namespace sfml_util
             {
                 if (WillCallback())
                 {
-                    EventPacket eventPacket(this, GuiEvent::DoubleClick);
+                    ListBoxEventPacket<Stage_t, Element_t> eventPacket(this, GuiEvent::DoubleClick);
                     callbackHandlerPtr_->HandleCallback(&eventPacket);
                 }
             }

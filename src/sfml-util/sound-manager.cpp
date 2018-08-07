@@ -648,7 +648,7 @@ namespace sfml_util
 
         for (auto const & PATH : MUSIC_FILE_PATHS)
         {
-            auto const FILENAME { PATH.leaf().string() };
+            auto const FILENAME { PATH.filename().string() };
 
             std::vector<std::string> filenamePartsVec;
             appbase::stringhelp::SplitByChar(FILENAME, filenamePartsVec, '_', true, true);

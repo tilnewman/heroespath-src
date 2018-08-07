@@ -260,8 +260,6 @@ namespace combat
     private:
         static const float SELECT_ANIM_SLIDER_SPEED_;
         static const float ANIM_TIME_BETWEEN_FRAMES_DEFAULT_;
-        static const std::string ANIM_MEDIA_PATH_KEY_STR_SPARKLE_;
-        static const std::string ANIM_MEDIA_PATH_KEY_STR_SHIMMER_;
         static const sf::Uint8 ANIM_COLOR_ALT_VAL_;
 
         const float SCREEN_WIDTH_;

@@ -26,13 +26,23 @@ namespace sfml_util
         const sf::FloatRect & REGION,
         const sf::Color & LINE_COLOR,
         const float LINE_THICKNESS,
-        const sf::Color & FILL_COLOR)
+        const sf::Color & FILL_COLOR,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
     {
-        const sf::Vector2f THICK_V(LINE_THICKNESS, LINE_THICKNESS);
-
         sf::RectangleShape rs;
-        rs.setPosition(Position(REGION) + THICK_V);
-        rs.setSize(Size(REGION) - (THICK_V * 2.0f));
+
+        if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
+        {
+            rs.setPosition(Position(REGION));
+            rs.setSize(Size(REGION));
+        }
+        else
+        {
+            const sf::Vector2f THICK_V(LINE_THICKNESS, LINE_THICKNESS);
+            rs.setPosition(Position(REGION) + THICK_V);
+            rs.setSize(Size(REGION) - (THICK_V * 2.0f));
+        }
+
         rs.setFillColor(FILL_COLOR);
         rs.setOutlineColor(LINE_COLOR);
         rs.setOutlineThickness(LINE_THICKNESS);
@@ -40,10 +50,26 @@ namespace sfml_util
         return rs;
     }
 
-    const sf::RectangleShape
-        MakeRectangleSolid(const sf::FloatRect & REGION, const sf::Color & COLOR)
+    const sf::RectangleShape MakeRectangleSolid(
+        const sf::FloatRect & REGION,
+        const sf::Color & COLOR,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
     {
-        return MakeRectangle(REGION, COLOR, 0.0f, COLOR);
+        return MakeRectangle(REGION, COLOR, 0.0f, COLOR, WILL_GROW_BORDER_TO_CONTAIN_REGION);
+    }
+
+    const sf::RectangleShape MakeRectangleHollow(
+        const sf::FloatRect & REGION,
+        const sf::Color & COLOR,
+        const float LINE_THICKNESS,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
+    {
+        return MakeRectangle(
+            REGION,
+            COLOR,
+            LINE_THICKNESS,
+            sf::Color::Transparent,
+            WILL_GROW_BORDER_TO_CONTAIN_REGION);
     }
 
 } // namespace sfml_util

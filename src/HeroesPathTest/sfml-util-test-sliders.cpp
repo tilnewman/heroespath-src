@@ -8,7 +8,17 @@
 // ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfml-util_sliders_test"
 
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
 #include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
 #include "misc/real.hpp"
 #include "sfml-util/sliders.hpp"
@@ -60,9 +70,9 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
 {
     ts::Constants constants;
 
-    auto const THE_MIN{ 123.123 };
-    auto const THE_MAX{ 456.456 };
-    auto const SPEED{ 1.0 };
+    auto const THE_MIN { 123.123 };
+    auto const THE_MAX { 456.456 };
+    auto const SPEED { 1.0 };
 
     sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
 
@@ -82,9 +92,9 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
 
 BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
 {
-    auto const THE_MIN{ 123.123 };
-    auto const THE_MAX{ 456.456 };
-    auto const SPEED{ 1.0 };
+    auto const THE_MIN { 123.123 };
+    auto const THE_MAX { 456.456 };
+    auto const SPEED { 1.0 };
 
     sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
 
@@ -102,9 +112,9 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
 {
     ts::Constants constants;
 
-    auto const THE_MIN{ 123.123 };
-    auto const THE_MAX{ 456.456 };
-    auto const SPEED{ 1.0 };
+    auto const THE_MIN { 123.123 };
+    auto const THE_MAX { 456.456 };
+    auto const SPEED { 1.0 };
 
     sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
 
@@ -122,16 +132,16 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
 {
     ts::Constants constants;
 
-    auto const THE_MIN{ 123.123 };
-    auto const THE_MAX{ 456.456 };
-    auto const SPEED{ 1.0 };
+    auto const THE_MIN { 123.123 };
+    auto const THE_MAX { 456.456 };
+    auto const SPEED { 1.0 };
 
     sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
 
-    auto const ITERATIONS{ 1000 };
+    auto const ITERATIONS { 1000 };
     for (int i(0); i < ITERATIONS; ++i)
     {
-        auto const CURRENT{ slider.Update(0.1) };
+        auto const CURRENT { slider.Update(0.1) };
 
         BOOST_CHECK(
             IsRealClose(CURRENT, THE_MIN) || IsRealClose(CURRENT, THE_MAX)

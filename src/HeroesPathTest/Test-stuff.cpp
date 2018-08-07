@@ -13,7 +13,18 @@
 #include "Test-stuff.hpp"
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
+
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
 #include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
 namespace ts = test_stuff;
 
@@ -74,7 +85,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValues.emplace_back(i);
         }
@@ -90,7 +101,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             if (i == 0)
             {
@@ -112,7 +123,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.emplace_back(i);
             countingValuesWithDuplicate.emplace_back(i);
@@ -184,7 +195,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValues.emplace_back(i);
         }
@@ -200,7 +211,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             if (VALUE == 0)
             {
@@ -222,7 +233,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
-        for (int i{ 0 }; i <= VALUE; ++i)
+        for (int i { 0 }; i <= VALUE; ++i)
         {
             countingValuesWithDuplicate.emplace_back(i);
             countingValuesWithDuplicate.emplace_back(i);

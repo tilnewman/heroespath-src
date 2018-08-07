@@ -45,8 +45,6 @@ namespace map
             texture_vec.clear();
         }
 
-        const std::string EmptyTilesPanelName() const { return "empty"; }
-
         sf::Vector2i tile_size_v;
         sf::Vector2i tile_count_v;
         LayerVec_t layer_vec;
@@ -54,6 +52,7 @@ namespace map
         std::vector<sf::Texture> texture_vec;
         sf::RenderTexture empty_texture;
     };
+
 } // namespace map
 } // namespace heroespath
 

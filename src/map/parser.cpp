@@ -17,9 +17,9 @@
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
@@ -213,21 +213,14 @@ namespace map
 
         layout.tiles_panel_vec.emplace_back(TilesPanel(
             FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
-            FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source"),
+            misc::filesystem::Filename(FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source")),
             FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
             FetchXMLAttribute<int>(TILESET_PTREE, "tilecount"),
             FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
             TEXTURE_INDEX));
 
-        TilesPanel & tilesPanel { layout.tiles_panel_vec[layout.tiles_panel_vec.size() - 1] };
-
-        namespace bfs = boost::filesystem;
-        tilesPanel.path_obj = bfs::system_complete(
-            bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir"))
-            / bfs::path(tilesPanel.path_rel).leaf());
-
         sfml_util::Loaders::Texture(
-            layout.texture_vec[TEXTURE_INDEX], tilesPanel.path_obj.string());
+            layout.texture_vec[TEXTURE_INDEX], layout.tiles_panel_vec.back().path_str);
     }
 
     void Parser::Parse_Layer_Collisions(
@@ -622,17 +615,10 @@ namespace map
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();
 
-        const std::size_t EMPTY_TEXTURE_INDEX { 0 };
-        layout.texture_vec.resize(EMPTY_TEXTURE_INDEX + 1);
-        layout.texture_vec[EMPTY_TEXTURE_INDEX] = layout.empty_texture.getTexture();
+        layout.texture_vec.resize(1);
+        layout.texture_vec[0] = layout.empty_texture.getTexture();
 
-        layout.tiles_panel_vec.emplace_back(map::TilesPanel(
-            layout.EmptyTilesPanelName(),
-            "", // the empty/transparent texture has no file
-            0,
-            1,
-            1,
-            EMPTY_TEXTURE_INDEX));
+        layout.tiles_panel_vec.emplace_back(map::TilesPanel());
     }
 
     const std::string Parser::FetchXMLAttributeName(const boost::property_tree::ptree & PTREE) const

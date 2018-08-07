@@ -20,8 +20,6 @@ namespace sf
 {
 
 bool operator<(const sf::BlendMode & L, const sf::BlendMode & R);
-bool operator==(const sf::BlendMode & L, const sf::BlendMode & R);
-bool operator!=(const sf::BlendMode & L, const sf::BlendMode & R);
 
 std::ostream & operator<<(std::ostream & os, const sf::BlendMode & BM);
 

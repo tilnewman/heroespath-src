@@ -16,8 +16,6 @@
 #include "misc/filesystem-helpers.hpp"
 #include "misc/platform.hpp"
 
-#include <memory>
-
 namespace heroespath
 {
 namespace game
@@ -95,7 +93,7 @@ namespace game
             "GameDataFile::GetMediaPath(\"" << KEY
                                             << "\") failed to find that key in the config file.");
 
-        return mediaBasePathStr_ + PATH_STR;
+        return misc::filesystem::CompletePath(mediaBasePathStr_, PATH_STR);
     }
 
 } // namespace game

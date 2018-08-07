@@ -23,10 +23,19 @@ namespace sfml_util
         const sf::FloatRect & REGION,
         const sf::Color & LINE_COLOR = sf::Color::White,
         const float LINE_THICKNESS = 1.0f,
-        const sf::Color & FILL_COLOR = sf::Color::Transparent);
+        const sf::Color & FILL_COLOR = sf::Color::Transparent,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
-    const sf::RectangleShape
-        MakeRectangleSolid(const sf::FloatRect & REGION, const sf::Color & COLOR);
+    const sf::RectangleShape MakeRectangleSolid(
+        const sf::FloatRect & REGION,
+        const sf::Color & COLOR,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
+
+    const sf::RectangleShape MakeRectangleHollow(
+        const sf::FloatRect & REGION,
+        const sf::Color & COLOR,
+        const float LINE_THICKNESS = 1.0f,
+        const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
 } // namespace sfml_util
 } // namespace heroespath

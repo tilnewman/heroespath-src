@@ -67,15 +67,6 @@ namespace combat
 
     const float CombatAnimation::SELECT_ANIM_SLIDER_SPEED_ { 8.0f };
     const float CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ { 0.06f };
-
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_ {
-        "media-anim-image-flash-sparkle"
-    };
-
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_ {
-        "media-anim-images-dir-shimmer"
-    };
-
     const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_ { 232 };
 
     CombatAnimation::CombatAnimation()

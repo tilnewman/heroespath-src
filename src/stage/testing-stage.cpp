@@ -83,7 +83,7 @@ namespace stage
                 TestingStage::IMAGE_INSPECT_DIMMENSION_);
 
             text = sf::Text(
-                boost::filesystem::path(cached_texture_opt.value().Path()).leaf().string(),
+                misc::filesystem::Filename(cached_texture_opt.value().Path()),
                 *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 24);
 

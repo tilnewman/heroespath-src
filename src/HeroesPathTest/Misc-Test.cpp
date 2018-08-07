@@ -13,7 +13,17 @@
 #include "misc/real.hpp"
 #include "sfml-util/gui/list-no-element.hpp"
 
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
 #include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
 #include <iostream>
 #include <limits>
@@ -174,12 +184,12 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     // heroespath::misc::NotNull<int *> notNull{ nullptr }; //should not compile
     // heroespath::misc::NotNull<int *> notNull{ 0 }; //should not compile
 
-    std::cout << "(the next line output to the console will be an exception about a NotNull "
-                 "constructor given nullptr that is expected and can be ignored)"
-              << std::endl;
-
-    int * p0 { nullptr };
-    BOOST_CHECK_THROW(heroespath::misc::NotNull<int *> notNull0 { p0 }, std::exception);
+    // std::cout << "(the next line output to the console will be an exception about a NotNull "
+    //             "constructor given nullptr that is expected and can be ignored)"
+    //          << std::endl;
+    //
+    // int * p0 { nullptr };
+    // BOOST_CHECK_THROW(heroespath::misc::NotNull<int *> notNull0 { p0 }, std::exception);
 
     int one { 1 };
     heroespath::misc::NotNull<int *> notNull1A { &one };

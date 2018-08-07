@@ -20,7 +20,7 @@
 #include "item/treasure-image-enum.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/callback.hpp"
-#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/list-box-event-packet.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
 
@@ -34,6 +34,24 @@ namespace item
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
+
+namespace sfml_util
+{
+    namespace gui
+    {
+
+        template <typename Stage_t, typename Element_t>
+        class ListBox;
+
+        template <typename Stage_t, typename Element_t>
+        using ListBoxPtr_t = misc::NotNull<ListBox<Stage_t, Element_t> *>;
+
+        template <typename Stage_t, typename Element_t>
+        using ListBoxUPtr_t = std::unique_ptr<ListBox<Stage_t, Element_t>>;
+
+    } // namespace gui
+} // namespace sfml_util
+
 namespace stage
 {
 
@@ -72,7 +90,9 @@ namespace stage
         bool HandleListboxCallback(
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-            const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR);
+            const sfml_util::gui::Callback<
+                sfml_util::gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::
+                PacketPtr_t & PACKET_PTR);
 
         void TakeAllItems();
         void Exit();

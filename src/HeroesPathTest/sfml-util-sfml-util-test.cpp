@@ -8,7 +8,17 @@
 // ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfml-util_sfml-util_test"
 
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
 #include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
 #include "log/logger.hpp"
 #include "log/macros.hpp"
@@ -985,8 +995,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK((FitCopy(10, 100, 10.0, 0.0) == sf::Vector2i(10, 100)));
     BOOST_CHECK((FitCopy(100, 10, 10.0, 0.0) == sf::Vector2i(10, 1)));
 
-    BOOST_CHECK(
-        (FitCopy(40.0f, 30.0f, 20.0f, 10.0f) == sf::Vector2f(40.0f * (1.0f / 3.0f), 10.0f)));
+    const auto TEST_RESULT_1_V { FitCopy(40.0f, 30.0f, 20.0f, 10.0f) };
+    BOOST_CHECK(heroespath::misc::IsRealClose(TEST_RESULT_1_V.x, 40.0f * (1.0f / 3.0f)));
+    BOOST_CHECK(heroespath::misc::IsRealClose(TEST_RESULT_1_V.y, 10.0f));
 
     BOOST_CHECK((FitCopy(10.0f, 20.0f, 30.0f, 40.0f) == sf::Vector2f(20.0f, 40.0f)));
     BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 40.0f) == sf::Vector2f(0.0f, 40.0f)));

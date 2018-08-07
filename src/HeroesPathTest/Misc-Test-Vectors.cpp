@@ -8,7 +8,17 @@
 // ----------------------------------------------------------------------------
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_Vectors"
 
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
 #include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
 
 #include "Test-stuff.hpp"
 
@@ -27,7 +37,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t singleValue(1, VALUE);
-        const ts::IntVec_t SINGLE_VALUE_BEFORE{ singleValue };
+        const ts::IntVec_t SINGLE_VALUE_BEFORE { singleValue };
         misc::Vector::Append(EMPTY, singleValue, misc::Vector::SortOpt::None);
 
         BOOST_CHECK_MESSAGE(
@@ -53,7 +63,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t multipleValues(static_cast<std::size_t>(VALUE), VALUE);
-        const ts::IntVec_t MULTIPLE_VALUES_BEFORE{ multipleValues };
+        const ts::IntVec_t MULTIPLE_VALUES_BEFORE { multipleValues };
         misc::Vector::Append(EMPTY, multipleValues, misc::Vector::SortOpt::None);
 
         BOOST_CHECK_MESSAGE(
@@ -64,7 +74,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
 
         misc::Vector::Append(EMPTY, multipleValues, misc::Vector::SortOpt::SortAndUnique);
 
-        ts::IntVec_t sortedAndUniqued{ multipleValues };
+        ts::IntVec_t sortedAndUniqued { multipleValues };
 
         std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
 
@@ -87,13 +97,13 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
     for (auto const VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t reverseDuplicatedCountingValues;
-        for (int i{ VALUE }; i >= 0; --i)
+        for (int i { VALUE }; i >= 0; --i)
         {
             reverseDuplicatedCountingValues.emplace_back(i);
             reverseDuplicatedCountingValues.emplace_back(i);
         }
 
-        const ts::IntVec_t REV_DUP_COUNT_VALUES_BEFORE{ reverseDuplicatedCountingValues };
+        const ts::IntVec_t REV_DUP_COUNT_VALUES_BEFORE { reverseDuplicatedCountingValues };
 
         misc::Vector::Append(EMPTY, reverseDuplicatedCountingValues, misc::Vector::SortOpt::None);
 
@@ -104,7 +114,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
                 << ", reverse duplicated coutning values vec after="
                 << ts::vectorToString(reverseDuplicatedCountingValues));
 
-        ts::IntVec_t sortedAndUniqued{ reverseDuplicatedCountingValues };
+        ts::IntVec_t sortedAndUniqued { reverseDuplicatedCountingValues };
 
         std::sort(sortedAndUniqued.begin(), sortedAndUniqued.end());
 
@@ -129,8 +139,8 @@ BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
     ts::IntVec_t a;
     ts::IntVec_t b;
 
-    auto const A_BEFORE_EMPTY_APPEND{ a };
-    auto const B_BEFORE_EMPTY_APPEND{ b };
+    auto const A_BEFORE_EMPTY_APPEND { a };
+    auto const B_BEFORE_EMPTY_APPEND { b };
 
     misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
 
@@ -162,7 +172,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
 
     a.emplace_back(0);
 
-    auto const SINGLE_ZERO{ a };
+    auto const SINGLE_ZERO { a };
 
     misc::Vector::Append(a, b, misc::Vector::SortOpt::None);
 
@@ -198,7 +208,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
     const ts::IntVec_t A = { 1, 1, 2, 3 };
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t AB_NOSORT_EXPECTED = { 1, 1, 2, 3, 4, 5, 6, 6 };
-    auto const AB_NOSORT_RESULT{ misc::Vector::AndCopy(A, B) };
+    auto const AB_NOSORT_RESULT { misc::Vector::AndCopy(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
@@ -213,7 +223,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t AB_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    auto const AB_SORTANDUNIQUE_RESULT{ misc::Vector::AndCopy(
+    auto const AB_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
         A, B, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(
@@ -228,7 +238,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
     const ts::IntVec_t A = { 1, 1, 2, 3 };
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t BA_NOSORT_EXPECTED = { 4, 5, 6, 6, 1, 1, 2, 3 };
-    auto const BA_NOSORT_RESULT{ misc::Vector::AndCopy(B, A) };
+    auto const BA_NOSORT_RESULT { misc::Vector::AndCopy(B, A) };
 
     BOOST_CHECK_MESSAGE(
         (BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
@@ -243,7 +253,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
     const ts::IntVec_t B = { 4, 5, 6, 6 };
     const ts::IntVec_t BA_SORTANDUNIQUE_EXPECTED = { 1, 2, 3, 4, 5, 6 };
 
-    auto const BA_SORTANDUNIQUE_RESULT{ misc::Vector::AndCopy(
+    auto const BA_SORTANDUNIQUE_RESULT { misc::Vector::AndCopy(
         B, A, misc::Vector::SortOpt::SortAndUnique) };
 
     BOOST_CHECK_MESSAGE(
@@ -256,7 +266,7 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)
 BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptyEmpty)
 {
     const ts::IntVec_t EMPTY;
-    auto const EMPTYEMPTY_RESULT{ misc::Vector::Exclude(EMPTY, EMPTY) };
+    auto const EMPTYEMPTY_RESULT { misc::Vector::Exclude(EMPTY, EMPTY) };
 
     BOOST_CHECK_MESSAGE(
         (EMPTYEMPTY_RESULT == EMPTY),
@@ -267,7 +277,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_SomethingEmpty)
 {
     const ts::IntVec_t EMPTY;
     const ts::IntVec_t A = { 1, 2, 3 };
-    auto const AEMPTY_RESULT{ misc::Vector::Exclude(A, EMPTY) };
+    auto const AEMPTY_RESULT { misc::Vector::Exclude(A, EMPTY) };
 
     BOOST_CHECK_MESSAGE(
         (AEMPTY_RESULT == A),
@@ -280,7 +290,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_EmptySomething)
     const ts::IntVec_t EMPTY;
     const ts::IntVec_t A = { 1, 2, 3 };
 
-    auto const EMPTYA_RESULT{ misc::Vector::Exclude(EMPTY, A) };
+    auto const EMPTYA_RESULT { misc::Vector::Exclude(EMPTY, A) };
 
     BOOST_CHECK_MESSAGE(
         (EMPTYA_RESULT == EMPTY),
@@ -293,7 +303,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
     const ts::IntVec_t EMPTY;
     const ts::IntVec_t A = { 1, 2, 3 };
 
-    auto const DUPLICATE_RESULT{ misc::Vector::Exclude(A, A) };
+    auto const DUPLICATE_RESULT { misc::Vector::Exclude(A, A) };
 
     BOOST_CHECK_MESSAGE(
         (DUPLICATE_RESULT == EMPTY),
@@ -304,9 +314,9 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Duplicate)
 BOOST_AUTO_TEST_CASE(Vector_Exclude_Single)
 {
     const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
-    const int B{ 2 };
+    const int B { 2 };
     const ts::IntVec_t EXPECTED = { 1, 3, 3, 3 };
-    auto const SINGLE_RESULT{ misc::Vector::Exclude(A, B) };
+    auto const SINGLE_RESULT { misc::Vector::Exclude(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (SINGLE_RESULT == EXPECTED),
@@ -319,7 +329,7 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
     const ts::IntVec_t A = { 1, 2, 2, 3, 3, 3 };
     const ts::IntVec_t B = { 1, 1, 3 };
     const ts::IntVec_t EXPECTED = { 2, 2 };
-    auto const MUTLIPLE_RESULT{ misc::Vector::Exclude(A, B) };
+    auto const MUTLIPLE_RESULT { misc::Vector::Exclude(A, B) };
 
     BOOST_CHECK_MESSAGE(
         (MUTLIPLE_RESULT == EXPECTED),
@@ -331,10 +341,10 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
 {
     ts::Constants constants;
 
-    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1 };
-        auto const SINGLE_RESULT{ misc::Vector::SelectRandom(A) };
+        auto const SINGLE_RESULT { misc::Vector::SelectRandom(A) };
 
         BOOST_CHECK_MESSAGE((SINGLE_RESULT == 1), "SelectRandom single, result=" << SINGLE_RESULT);
     }
@@ -344,10 +354,10 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Duplicates)
 {
     ts::Constants constants;
 
-    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 1, 1 };
-        auto const DUPLICATE_RESULT{ misc::Vector::SelectRandom(A) };
+        auto const DUPLICATE_RESULT { misc::Vector::SelectRandom(A) };
 
         BOOST_CHECK_MESSAGE(
             (DUPLICATE_RESULT == 1), "SelectRandom duplicates, result=" << DUPLICATE_RESULT);
@@ -358,10 +368,10 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
 {
     ts::Constants constants;
 
-    for (int i{ 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
+    for (int i { 0 }; i < constants.RANDOM_RETRY_COUNT; ++i)
     {
         const ts::IntVec_t A = { 1, 2, 3 };
-        auto const MULT_RESULT{ misc::Vector::SelectRandom(A) };
+        auto const MULT_RESULT { misc::Vector::SelectRandom(A) };
 
         BOOST_CHECK_MESSAGE(
             (MULT_RESULT == 1) || (MULT_RESULT == 2) || (MULT_RESULT == 3),
@@ -374,33 +384,34 @@ BOOST_AUTO_TEST_CASE(Vector_Join_Empty)
     const ts::IntVec_t EMPTY;
     for (auto const VALUE : ts::TEST_COUNTS)
     {
-        auto const SIZET_VALUE{ static_cast<std::size_t>(VALUE) };
+        auto const SIZET_VALUE { static_cast<std::size_t>(VALUE) };
 
-        auto const EMPTY_RESULT_1{ misc::Vector::Join(EMPTY, SIZET_VALUE) };
+        auto const EMPTY_RESULT_1 { misc::Vector::Join(EMPTY, SIZET_VALUE) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_1 == ""),
             "Join(empty, " << VALUE << ") result=\"" << EMPTY_RESULT_1 << "\"");
 
-        auto const EMPTY_RESULT_2{ misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::Wrap) };
+        auto const EMPTY_RESULT_2 { misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::Wrap) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_2 == ""),
             "Join(empty, " << VALUE << ", Wrap) result=\"" << EMPTY_RESULT_2 << "\"");
 
-        auto const EMPTY_RESULT_3{ misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::And) };
+        auto const EMPTY_RESULT_3 { misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::And) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_3 == ""),
             "Join(empty, " << VALUE << ", And) result=\"" << EMPTY_RESULT_3 << "\"");
 
-        auto const EMPTY_RESULT_4{ misc::Vector::Join(EMPTY, SIZET_VALUE, misc::Vector::Ellipsis) };
+        auto const EMPTY_RESULT_4 { misc::Vector::Join(
+            EMPTY, SIZET_VALUE, misc::Vector::Ellipsis) };
 
         BOOST_CHECK_MESSAGE(
             (EMPTY_RESULT_4 == ""),
             "Join(empty, " << VALUE << ", Ellipsis) result=\"" << EMPTY_RESULT_4 << "\"");
 
-        auto const EMPTY_RESULT_5{ misc::Vector::Join(
+        auto const EMPTY_RESULT_5 { misc::Vector::Join(
             EMPTY,
             SIZET_VALUE,
             static_cast<misc::Vector::JoinOpt>(

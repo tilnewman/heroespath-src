@@ -13,6 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem-helpers.hpp"
 
 #include <exception>
 #include <sstream>
@@ -2457,16 +2458,14 @@ namespace avatar
 
     const std::string Avatar::ImagePath(const Avatar::Enum E)
     {
-        std::string keyStr{ (
+        std::string dirPathStr { (
             (Avatar::IsPlayer(E))
                 ? game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-player-dir")
                 : game::GameDataFile::Instance()->GetMediaPath(
                       "media-images-avatar-nonplayer-dir")) };
 
-        keyStr += boost::algorithm::to_lower_copy(Avatar::ToString(E));
-        keyStr += ".png";
-
-        return keyStr;
+        return misc::filesystem::CompletePath(
+            dirPathStr, boost::algorithm::to_lower_copy(Avatar::ToString(E)) + ".png");
     }
 
     Avatar::NameEnum Avatar::Name(const Avatar::Enum E)

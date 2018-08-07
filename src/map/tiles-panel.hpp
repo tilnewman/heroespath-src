@@ -9,10 +9,6 @@
 //
 // tiles-panel.hpp
 //
-#include "misc/types.hpp"
-
-#include <boost/filesystem.hpp>
-
 #include <string>
 #include <vector>
 
@@ -24,34 +20,32 @@ namespace map
     // Responsible for wrapping all the details about a single panel of map tile images.
     struct TilesPanel
     {
-        explicit TilesPanel(
-            const std::string & NAME = "",
-            const std::string & RELATIVE_PATH = "",
-            const int & FIRST_ID = 0,
-            const int & TILE_COUNT = 1,
-            const int & COLUMN = 1,
-            const std::size_t & TEXTURE_INDEX = 0)
-            : name(NAME)
-            , path_rel(RELATIVE_PATH)
-            , first_id(FIRST_ID)
-            , tile_count(TILE_COUNT)
-            , column(COLUMN)
-            , texture_index(TEXTURE_INDEX)
-            , path_obj()
-        {}
+        // creates a panel for the "empty" texture
+        TilesPanel();
 
-        bool OwnsId(const int ID) const
-        {
-            return ((ID >= first_id) && (ID < (first_id + tile_count)));
-        }
+        TilesPanel(
+            const std::string & NAME,
+            const std::string & FILE_NAME,
+            const int & FIRST_ID,
+            const int & TILE_COUNT,
+            const int & COLUMN,
+            const std::size_t & TEXTURE_INDEX);
+
+        TilesPanel(const TilesPanel &) = default;
+        TilesPanel(TilesPanel &&) = default;
+        TilesPanel & operator=(const TilesPanel &) = default;
+        TilesPanel & operator=(TilesPanel &&) = default;
+
+        bool OwnsId(const int ID) const;
+
+        static const std::string NameWithEmptyTexture() { return "empty"; }
 
         std::string name;
-        std::string path_rel; // path string relative to the .tmx map path
         int first_id;
         int tile_count;
         int column;
         std::size_t texture_index;
-        boost::filesystem::path path_obj;
+        std::string path_str;
     };
 
     using TilesPanelVec_t = std::vector<TilesPanel>;
@@ -70,6 +64,7 @@ namespace map
     };
 
     using TilesPanelForLayersVec_t = std::vector<TilesPanelForLayers>;
+
 } // namespace map
 } // namespace heroespath
 

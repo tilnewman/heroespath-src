@@ -28,6 +28,8 @@
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 #include <exception>
 #include <sstream>
 
@@ -509,7 +511,7 @@ namespace popup
     sfml_util::CachedTexture PopupManager::LoadRandomAccentImage() const
     {
         return sfml_util::CachedTexture(
-            misc::Vector::SelectRandom(accentPaths_),
+            boost::filesystem::path(misc::Vector::SelectRandom(accentPaths_)),
             sfml_util::ImageOptions(
                 ((misc::random::Bool()) ? sfml_util::ImageOpt::Default
                                         : sfml_util::ImageOpt::FlipHoriz)));
@@ -517,17 +519,13 @@ namespace popup
 
     void PopupManager::LoadAccentImagePaths()
     {
-        namespace mfs = misc::filesystem;
-        namespace bfs = boost::filesystem;
-
-        auto const DIR_PATH { mfs::MakePathPretty(bfs::path(accentTextureDirectoryPath_)) };
-
-        accentPaths_ = mfs::FindFilesInDirectory(DIR_PATH, "accent-", ".png");
+        accentPaths_ = misc::filesystem::FindFilesInDirectory(
+            accentTextureDirectoryPath_, "accent-", ".png");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (accentPaths_.empty() == false),
             "popup::PopupManager::LoadAccentImagePaths() failed to load any files from: "
-                << DIR_PATH.string());
+                << accentTextureDirectoryPath_);
     }
 
 } // namespace popup

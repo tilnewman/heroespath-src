@@ -20,10 +20,24 @@ namespace misc
 {
     namespace filesystem
     {
+
         struct FilenameText
         {
             static const std::vector<std::string> TO_EXCLUDE_VEC_;
         };
+
+        // returns the filename, if WILL_INCLUDE_EXTENSION then the dot and extension is appended if
+        // it exists
+        const std::string
+            Filename(const std::string & PATH_STR, const bool WILL_INCLUDE_EXTENSION = true);
+
+        // returns the filename extension, if only a dot is returned then there was a dot with
+        // nothing after, if empty is returned then there was no dot after the filename, same as
+        // bfs::extension()
+        const std::string Extension(const std::string & PATH_STR);
+
+        // returns all characters in the extension except for the leading dot
+        const std::string ExtensionWithoutDot(const std::string & PATH_STR);
 
         const std::string MakePathPretty(const std::string &);
         const boost::filesystem::path MakePathPretty(const boost::filesystem::path &);

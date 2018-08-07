@@ -11,6 +11,7 @@
 //
 #include "border.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -38,19 +39,8 @@ namespace sfml_util
 
             std::vector<sf::RectangleShape> rsVec;
 
-            auto makeRectangleShape = [](const sf::FloatRect & REGION_L,
-                                         const float LINE_THICKNESS_L,
-                                         const sf::Color & LINE_COLOR_L) {
-                sf::RectangleShape rs;
-                rs.setPosition(Position(REGION_L));
-                rs.setSize(Size(REGION_L));
-                rs.setFillColor(sf::Color::Transparent);
-                rs.setOutlineColor(LINE_COLOR_L);
-                rs.setOutlineThickness(LINE_THICKNESS_L);
-                return rs;
-            };
-
-            rsVec.emplace_back(makeRectangleShape(REGION, LINE_THICKNESS, LINE_COLOR));
+            rsVec.emplace_back(MakeRectangleHollow(
+                REGION, LINE_COLOR, LINE_THICKNESS, WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
             if (PAD_LINE_COLOR_ADJ != defaults::None)
             {
@@ -61,15 +51,21 @@ namespace sfml_util
                     Position(REGION) - LINE_THICKNESS_V,
                     Size(REGION) + (LINE_THICKNESS_V * 2.0f)) };
 
-                rsVec.emplace_back(
-                    makeRectangleShape(OUTER_REGION, LINE_THICKNESS, PAD_LINE_COLOR));
+                rsVec.emplace_back(MakeRectangleHollow(
+                    OUTER_REGION,
+                    PAD_LINE_COLOR,
+                    LINE_THICKNESS,
+                    WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
                 const auto INNER_REGION { sf::FloatRect(
                     Position(REGION) + LINE_THICKNESS_V,
                     Size(REGION) - (LINE_THICKNESS_V * 2.0f)) };
 
-                rsVec.emplace_back(
-                    makeRectangleShape(INNER_REGION, LINE_THICKNESS, PAD_LINE_COLOR));
+                rsVec.emplace_back(MakeRectangleHollow(
+                    INNER_REGION,
+                    PAD_LINE_COLOR,
+                    LINE_THICKNESS,
+                    WILL_GROW_BORDER_TO_CONTAIN_REGION));
             }
 
             rectangleShapesOpt_ = rsVec;

@@ -38,16 +38,8 @@ namespace sfml_util
             EnumImageLoader & operator=(EnumImageLoader &&) = delete;
 
             explicit EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
-                : imageDirectoryPath_("")
-            {
-                namespace bfs = boost::filesystem;
-
-                auto const PATH {
-                    bfs::system_complete(bfs::path(IMAGE_DIRECTORY_PATH)).normalize()
-                };
-
-                imageDirectoryPath_ = PATH.string();
-            }
+                : imageDirectoryPath_(misc::filesystem::MakePathPretty(IMAGE_DIRECTORY_PATH))
+            {}
 
             float MaxDimmension() const { return StandardImageDimmension(); }
 
@@ -58,12 +50,8 @@ namespace sfml_util
 
             const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
             {
-                namespace bfs = boost::filesystem;
-
-                return misc::filesystem::MakePathPretty(
-                           bfs::path(imageDirectoryPath_)
-                           / bfs::path(EnumWrapper_t::ImageFilename(ENUM_VALUE)))
-                    .string();
+                return misc::filesystem::CompletePath(
+                    imageDirectoryPath_, EnumWrapper_t::ImageFilename(ENUM_VALUE));
             }
 
             bool Test() const

@@ -12,7 +12,7 @@ option(ADDRESS_SANITIZER "Using Clang's Address Sanitizer" OFF)
 if(MSVC)
     file (READ ../build-flags/build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
 
-    set(SFML_PATH "C:/Program Files/SFML-2.4.1")
+    set(SFML_PATH "C:/Program Files/SFML-2.5.0")
     set(SFML_BIN_DIR ${SFML_PATH}/bin)
     message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
     set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
@@ -20,9 +20,9 @@ if(MSVC)
 
     set(SFML_LIBRARIES debug sfml-system-d.lib optimized sfml-system.lib debug sfml-window-d.lib optimized sfml-window.lib debug sfml-graphics-d.lib optimized sfml-graphics.lib debug sfml-audio-d.lib optimized sfml-audio.lib)
 
-    set(BOOST_INCLUDEDIR "C:/local/boost_1_66_0")
-    set(BOOST_LIBRARYDIR "C:/local/boost_1_66_0/lib32-msvc-14.1")
-    set(BOOST_ROOT "C:/local/boost_1_66_0/boost")
+    set(BOOST_INCLUDEDIR "C:/local/boost_1_67_0")
+    set(BOOST_LIBRARYDIR "C:/local/boost_1_67_0/lib32-msvc-14.1")
+    set(BOOST_ROOT "C:/local/boost_1_67_0/boost")
     set(Boost_COMPILER -vc90)
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress)
@@ -113,7 +113,7 @@ SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CUSTOM_LINK_FLAGS}" )
 message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with compile flags: ${CUSTOM_BUILD_FLAGS} and linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 
 if(MSVC)
-    set(CUSTOM_PROJECT_BOOST_VER "1.66.0")
+    set(CUSTOM_PROJECT_BOOST_VER "1.67.0")
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)

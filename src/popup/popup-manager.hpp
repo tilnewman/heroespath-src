@@ -21,8 +21,6 @@
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-#include <boost/filesystem/path.hpp>
-
 #include <memory>
 #include <string>
 #include <vector>
@@ -204,7 +202,7 @@ namespace popup
         static sf::Color fontColor_;
         static std::unique_ptr<PopupManager> instanceUPtr_;
         //
-        std::vector<boost::filesystem::path> accentPaths_;
+        std::vector<std::string> accentPaths_;
     };
 
 } // namespace popup

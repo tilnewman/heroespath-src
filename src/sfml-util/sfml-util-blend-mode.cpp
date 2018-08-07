@@ -35,26 +35,6 @@ bool operator<(const sf::BlendMode & L, const sf::BlendMode & R)
                R.alphaEquation);
 }
 
-bool operator==(const sf::BlendMode & L, const sf::BlendMode & R)
-{
-    return std::tie(
-               L.colorSrcFactor,
-               L.colorDstFactor,
-               L.colorEquation,
-               L.alphaSrcFactor,
-               L.alphaDstFactor,
-               L.alphaEquation)
-        == std::tie(
-               R.colorSrcFactor,
-               R.colorDstFactor,
-               R.colorEquation,
-               R.alphaSrcFactor,
-               R.alphaDstFactor,
-               R.alphaEquation);
-}
-
-bool operator!=(const sf::BlendMode & L, const sf::BlendMode & R) { return !(L == R); }
-
 std::ostream & operator<<(std::ostream & os, const sf::BlendMode & BM)
 {
     os << "(";

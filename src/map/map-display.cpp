@@ -490,7 +490,7 @@ namespace map
                 const map::TilesPanel & TILES_PANEL { TilesPanelFromId(TILE_NUM_ORIG) };
 
                 mapLayer.tiles_panel_vec.emplace_back(map::TilesPanelForLayers(
-                    (TILES_PANEL.name == layout_.EmptyTilesPanelName()),
+                    (TILES_PANEL.name == TilesPanel::NameWithEmptyTexture()),
                     TILES_PANEL.texture_index));
 
                 // get the actual tile number (id)

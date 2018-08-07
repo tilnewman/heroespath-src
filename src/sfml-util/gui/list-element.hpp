@@ -94,7 +94,7 @@ namespace sfml_util
                 const TextInfoOpt_t & TEXT_INFO_OPT,
                 const CachedTextureOpt_t & CACHED_TEXTURE_OPT,
                 const bool IS_VALID = true)
-                : elementOpt_()
+                : elementOpt_(ELEMENT_OPT)
                 , cachedTextureOpt_(CACHED_TEXTURE_OPT)
                 , sprite_()
                 , textRegionUPtr_()

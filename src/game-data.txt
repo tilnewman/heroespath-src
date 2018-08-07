@@ -49,25 +49,25 @@ heroespath-sound-map-animsfx-min-volume-ratio=      0.2
 heroespath-sound-map-sfx-time-between-updates=      0.2
 heroespath-sound-map-walk-sfx-volume-ratio=         0.5
 
-#directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
-system-media-dir-linux=                 ../../heroespath-media/
-system-media-dir-win=                   ../../../heroespath-media/
-media-fonts-dir=                        font/
-media-sounds-dir=                       sound/
-media-music-dir=                        sound/music/
-media-images-accents-dir=               image/gui/popup/accents/
-media-images-backgrounds-popup-dir=     image/gui/popup/backgrounds/
-media-images-creatures-dir=             image/creatures/
-media-images-items-dir=                 image/items/
-media-images-titles-dir=                image/achievement-titles/
-media-images-spells-dir=                image/spells/
-media-images-conditions-dir=            image/conditions/
-media-images-songs-dir=                 image/songs/
-media-images-combat-dir=                image/combat/
-media-images-avatar-player-dir=         image/avatars/player/
-media-images-avatar-nonplayer-dir=      image/avatars/non-player/
-media-maps-tile-dir=                    image/map-tiles/
-media-maps-dir=                         map/
+#directories (assume all are relative to media except for system-media-dir) (NEVER leave a trailing slash)
+system-media-dir-linux=                 ../../heroespath-media
+system-media-dir-win=                   ../../../heroespath-media
+media-fonts-dir=                        font
+media-sounds-dir=                       sound
+media-music-dir=                        sound/music
+media-images-accents-dir=               image/gui/popup/accents
+media-images-backgrounds-popup-dir=     image/gui/popup/backgrounds
+media-images-creatures-dir=             image/creatures
+media-images-items-dir=                 image/items
+media-images-titles-dir=                image/achievement-titles
+media-images-spells-dir=                image/spells
+media-images-conditions-dir=            image/conditions
+media-images-songs-dir=                 image/songs
+media-images-combat-dir=                image/combat
+media-images-avatar-player-dir=         image/avatars/player
+media-images-avatar-nonplayer-dir=      image/avatars/non-player
+media-maps-tile-dir=                    image/map-tiles
+media-maps-dir=                         map
 
 #animation files and folders
 media-anim-image-burst=             image/anim/burst_s_120x120x40/burst.png
@@ -87,20 +87,20 @@ media-anim-image-smoke=             image/anim/smoke_s_164x164x120/smoke.png
 media-anim-image-splash2=           image/anim/splash-magenta1_s_120x120x32/splash.png
 media-anim-image-splash3=           image/anim/splash-magenta2_s_240x240x51/splash.png
 #
-media-anim-images-dir-candleflame2= image/anim/candle-flame-2_m_16x24x8/
-media-anim-images-dir-dualcharge=   image/anim/dual-charge_m_133x69x14/
-media-anim-images-dir-explosion=    image/anim/explosion_m_320x240x90/
-media-anim-images-dir-inferno=      image/anim/inferno_m_256x256x50/
-media-anim-images-dir-lightningball=image/anim/lightning-ball_m_56x65x25/
-media-anim-images-dir-lightningbolt=image/anim/lightning-bolt_m_98x203x23/
-media-anim-images-dir-orbcharge=    image/anim/orb-charge_m_80x67x33/
-media-anim-images-dir-orbshimmer=   image/anim/orb-shimmer_m_184x85x22/
-media-anim-images-dir-shimmer=      image/anim/shimmer_m_186x83x36/
-media-anim-images-dir-smokesiwrl=   image/anim/smokeswirl_m_256x256x90/
-media-anim-images-dir-spiderflare=  image/anim/spider-flare_m_168x148x25/
-media-anim-images-dir-symbolreduce= image/anim/symbol-reduce_m_177x156x21/
-media-anim-images-dir-splash1=      image/anim/splash-white_m_50x47x24/
-media-anim-images-dir-campfire=     image/anim/campfire_m_81x64x40/
+media-anim-images-dir-candleflame2= image/anim/candle-flame-2_m_16x24x8
+media-anim-images-dir-dualcharge=   image/anim/dual-charge_m_133x69x14
+media-anim-images-dir-explosion=    image/anim/explosion_m_320x240x90
+media-anim-images-dir-inferno=      image/anim/inferno_m_256x256x50
+media-anim-images-dir-lightningball=image/anim/lightning-ball_m_56x65x25
+media-anim-images-dir-lightningbolt=image/anim/lightning-bolt_m_98x203x23
+media-anim-images-dir-orbcharge=    image/anim/orb-charge_m_80x67x33
+media-anim-images-dir-orbshimmer=   image/anim/orb-shimmer_m_184x85x22
+media-anim-images-dir-shimmer=      image/anim/shimmer_m_186x83x36
+media-anim-images-dir-smokesiwrl=   image/anim/smokeswirl_m_256x256x90
+media-anim-images-dir-spiderflare=  image/anim/spider-flare_m_168x148x25
+media-anim-images-dir-symbolreduce= image/anim/symbol-reduce_m_177x156x21
+media-anim-images-dir-splash1=      image/anim/splash-white_m_50x47x24
+media-anim-images-dir-campfire=     image/anim/campfire_m_81x64x40
 
 #images
 media-images-gui-elements=                  image/gui/elements/gui-elements-lamoot.png

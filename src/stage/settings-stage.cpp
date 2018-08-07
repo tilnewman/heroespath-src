@@ -20,7 +20,6 @@
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/radio-button-display.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
