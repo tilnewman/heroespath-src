@@ -392,7 +392,8 @@ namespace stage
         M_TESTING_STAGE_TEST(ItemProfileReport);
         M_TESTING_STAGE_TEST(InventoryFactory);
         M_TESTING_STAGE_TEST(ArmorRatings);
-        M_TESTING_STAGE_TEST(ImageSet);
+        M_TESTING_STAGE_TEST(IndividualImages);
+        M_TESTING_STAGE_TEST(DirectoryImages);
         M_TESTING_STAGE_TEST(CharacterImageSet);
         M_TESTING_STAGE_TEST(Spells);
 
@@ -585,13 +586,14 @@ namespace stage
         */
     }
 
-    bool TestingStage::PerformTest_ImageSet()
+    bool TestingStage::PerformTest_IndividualImages()
     {
-        static auto hasInitialPrompt { false };
-        if (false == hasInitialPrompt)
+        static auto hasIndividualStartPrompt { false };
+        if (false == hasIndividualStartPrompt)
         {
-            hasInitialPrompt = true;
-            TestingStrAppend("stage::TestingStage::PerformTest_ImageSet() Starting Tests...");
+            hasIndividualStartPrompt = true;
+            TestingStrAppend(
+                "stage::TestingStage::PerformTest_ImageSet() Starting Individual Image Tests...");
             return false;
         }
 
@@ -599,11 +601,18 @@ namespace stage
             game::GameDataFile::Instance()->GetAllKeysPrefixedWith("media-images-")
         };
 
+        imagePathKeyVec.erase(
+            std::remove_if(
+                std::begin(imagePathKeyVec),
+                std::end(imagePathKeyVec),
+                [](const auto & KEY_STR) { return boost::algorithm::icontains(KEY_STR, "-dir"); }),
+            std::end(imagePathKeyVec));
+
         static std::size_t imageIndex { 0 };
         if (imageIndex < imagePathKeyVec.size())
         {
             std::ostringstream ss;
-            ss << "PerformTest_ImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
+            ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
             auto const IMAGE_PATH_STR { game::GameDataFile::Instance()->GetMediaPath(
@@ -615,7 +624,70 @@ namespace stage
             return false;
         }
 
-        TestingStrAppend("stage::TestingStage::PerformTest_ImageSet() ALL Tests Passed.");
+        TestingStrAppend(
+            "stage::TestingStage::PerformTest_ImageSet() All Individual Image Tests Passed...");
+        return true;
+    }
+
+    bool TestingStage::PerformTest_DirectoryImages()
+    {
+        static auto hasDirectoryStartPrompt { false };
+        if (false == hasDirectoryStartPrompt)
+        {
+            hasDirectoryStartPrompt = true;
+            TestingStrAppend(
+                "stage::TestingStage::PerformTest_ImageSet() Starting Directory Image Tests...");
+            return false;
+        }
+
+        static std::vector<std::string> imageDirPathKeyVec {
+            game::GameDataFile::Instance()->GetAllKeysWith("-dir")
+        };
+
+        static std::vector<std::string> imagePathsVec;
+        static std::size_t imageIndex { 0 };
+        static std::size_t imageDirIndex { 0 };
+        if (imageDirIndex < imageDirPathKeyVec.size())
+        {
+            if (imageIndex == 0)
+            {
+                const auto IMAGE_DIR_PATH_KEY { imageDirPathKeyVec[imageDirIndex] };
+
+                const auto IMAGE_DIR_PATH { game::GameDataFile::Instance()->GetMediaPath(
+                    IMAGE_DIR_PATH_KEY) };
+
+                std::ostringstream ss;
+                ss << "PerformTest_DirectoryImages path: \"" << IMAGE_DIR_PATH << "\"";
+                TestingStrAppend(ss.str());
+
+                imagePathsVec = misc::filesystem::FindFilesInDirectory(
+                    IMAGE_DIR_PATH, "", ".png", misc::filesystem::FilenameText::TO_EXCLUDE_VEC_);
+            }
+
+            if (imageIndex < imagePathsVec.size())
+            {
+                const auto IMAGE_PATH_STR { imagePathsVec[imageIndex] };
+
+                std::ostringstream ss;
+                ss << "PerformTest_DirectoryImage: #" << imageIndex << "\t\"" << IMAGE_PATH_STR
+                   << "\"";
+
+                TestingStrAppend(ss.str());
+
+                TestingImageSet(IMAGE_PATH_STR);
+                ++imageIndex;
+            }
+            else
+            {
+                imageIndex = 0;
+                ++imageDirIndex;
+            }
+
+            return false;
+        }
+
+        TestingStrAppend(
+            "stage::TestingStage::PerformTest_ImageSet() All Directory Image Tests Passed...");
 
         return true;
     }

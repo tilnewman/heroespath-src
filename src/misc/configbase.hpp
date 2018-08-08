@@ -200,6 +200,7 @@ namespace misc
         const std::string GetCommentStr() const;
 
         const std::vector<std::string> GetAllKeysPrefixedWith(const std::string & PREFIX) const;
+        const std::vector<std::string> GetAllKeysWith(const std::string & SEARCH_FOR) const;
 
     private:
         void HandleLoadSaveError(const std::string & ERR_MSG) const;

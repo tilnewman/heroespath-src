@@ -124,7 +124,8 @@ namespace stage
             const creature::StatSet & ACTUAL,
             const creature::StatSet & EXPECTED);
 
-        bool PerformTest_ImageSet();
+        bool PerformTest_IndividualImages();
+        bool PerformTest_DirectoryImages();
         bool PerformTest_CharacterImageSet();
         bool PerformTest_Maps();
         bool PerformTest_GameDataFile();

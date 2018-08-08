@@ -377,5 +377,23 @@ namespace misc
         return matchingValues;
     }
 
+    const std::vector<std::string> ConfigBase::GetAllKeysWith(const std::string & SEARCH_FOR) const
+    {
+        std::vector<std::string> matchingValues;
+
+        if (SEARCH_FOR.empty() == false)
+        {
+            for (auto const & KEY_VALUE_PAIR : map_)
+            {
+                if (boost::algorithm::icontains(KEY_VALUE_PAIR.first, SEARCH_FOR))
+                {
+                    matchingValues.emplace_back(KEY_VALUE_PAIR.first);
+                }
+            }
+        }
+
+        return matchingValues;
+    }
+
 } // namespace misc
 } // namespace heroespath
