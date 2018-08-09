@@ -310,9 +310,7 @@ namespace sfml_util
 
                           if (LENGTH < (lenTopOrLeft + lenBotOrRight))
                           {
-                              const auto END_CAP_LENGTH_PARTIAL {
-                                  (LENGTH < (lenTopOrLeft + lenBotOrRight)) * 0.5f
-                              };
+                              const auto END_CAP_LENGTH_PARTIAL { LENGTH * 0.5f };
 
                               if (END_CAP_LENGTH_PARTIAL < 1.0f)
                               {
@@ -330,16 +328,38 @@ namespace sfml_util
                       return std::make_tuple(lenTopOrLeft, lenBotOrRight);
                   }();
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                POS_V,
-                TEXTURE_RECT_TOP_OR_LEFT,
-                sf::Color::White,
-                CreateVector(ORIENTATION, END_CAP_LENGTH_TOP_OR_LEFT, 0.0f));
+            if (END_CAP_LENGTH_TOP_OR_LEFT > 0.0f)
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    POS_V,
+                    TEXTURE_RECT_TOP_OR_LEFT,
+                    sf::Color::White,
+                    CreateVector(ORIENTATION, END_CAP_LENGTH_TOP_OR_LEFT, 0.0f));
+            }
 
-            const auto MIDDLE_LENGTH {
-                LENGTH - (END_CAP_LENGTH_TOP_OR_LEFT + END_CAP_LENGTH_BOT_OR_RIGHT)
-            };
+            const auto MIDDLE_LENGTH = [&,
+                                        END_CAP_LENGTH_TOP_OR_LEFT = END_CAP_LENGTH_TOP_OR_LEFT,
+                                        END_CAP_LENGTH_BOT_OR_RIGHT
+                                        = END_CAP_LENGTH_BOT_OR_RIGHT]() {
+                if (WILL_CAP_ENDS)
+                {
+                    if (LENGTH
+                        > ((END_CAP_LENGTH_TOP_OR_LEFT + END_CAP_LENGTH_BOT_OR_RIGHT) + 1.0f))
+                    {
+                        return (
+                            LENGTH - (END_CAP_LENGTH_TOP_OR_LEFT + END_CAP_LENGTH_BOT_OR_RIGHT));
+                    }
+                    else
+                    {
+                        return 0.0f;
+                    }
+                }
+                else
+                {
+                    return LENGTH;
+                }
+            }();
 
             const auto MIDDLE_POS_V
                 = [&,
@@ -359,8 +379,11 @@ namespace sfml_util
                       return v;
                   }();
 
-            sfml_util::AppendVertexesForQuadRepeatedOverLength(
-                vertexArray_, MIDDLE_POS_V, TEXTURE_RECT_MIDDLE, ORIENTATION, MIDDLE_LENGTH);
+            if (MIDDLE_LENGTH > 1.0f)
+            {
+                sfml_util::AppendVertexesForQuadRepeatedOverLength(
+                    vertexArray_, MIDDLE_POS_V, TEXTURE_RECT_MIDDLE, ORIENTATION, MIDDLE_LENGTH);
+            }
 
             const auto BOT_OR_RIGHT_POS_V = [&]() {
                 sf::Vector2f v { MIDDLE_POS_V };
@@ -377,13 +400,16 @@ namespace sfml_util
                 return v;
             }();
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                BOT_OR_RIGHT_POS_V,
-                TEXTURE_RECT_BOT_OR_RIGHT,
-                sf::Color::White,
-                CreateVector(ORIENTATION, END_CAP_LENGTH_BOT_OR_RIGHT, 0.0f),
-                Orientation::Both);
+            if (END_CAP_LENGTH_BOT_OR_RIGHT > 0.0f)
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    BOT_OR_RIGHT_POS_V,
+                    TEXTURE_RECT_BOT_OR_RIGHT,
+                    sf::Color::White,
+                    CreateVector(ORIENTATION, END_CAP_LENGTH_BOT_OR_RIGHT, 0.0f),
+                    Orientation::Both);
+            }
 
             outerRegion_ = innerRegion_ = vertexArray_.getBounds();
         }

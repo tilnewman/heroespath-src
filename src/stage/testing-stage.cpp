@@ -63,11 +63,12 @@
 #include <thread>
 #include <vector>
 
+#include <filesystem>
+
 namespace heroespath
 {
 namespace stage
 {
-
     ImageInspectPacket::ImageInspectPacket(const sfml_util::CachedTextureOpt_t & CACHED_TEXTURE_OPT)
         : cached_texture_opt(CACHED_TEXTURE_OPT)
         , sprite()
@@ -157,16 +158,6 @@ namespace stage
     void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         sfml_util::Display::Instance()->ClearToBlack();
-        Stage::Draw(target, STATES);
-
-        if (isInspectingImages_)
-        {
-            DrawImageInspect(target, STATES);
-        }
-        else
-        {
-            DrawNormal(target, STATES);
-        }
 
         if (waitingForKeyOrClickId_ > 0)
         {
@@ -198,6 +189,19 @@ namespace stage
             for (const auto & SF_TEXT : waitingForKeyOrClick_ToDraw_Texts_)
             {
                 target.draw(SF_TEXT, STATES);
+            }
+        }
+        else
+        {
+            Stage::Draw(target, STATES);
+
+            if (isInspectingImages_)
+            {
+                DrawImageInspect(target, STATES);
+            }
+            else
+            {
+                DrawNormal(target, STATES);
             }
         }
     }
@@ -1518,13 +1522,13 @@ namespace stage
             float posX { LEFT };
             float posY { TOP };
 
-            const std::size_t GOLDBAR_COUNT { 50 };
+            const std::size_t GOLDBAR_COUNT { 20 };
 
             for (std::size_t i(0); i < GOLDBAR_COUNT; ++i)
             {
-                auto length { static_cast<float>(i) - 5.0f };
-                const auto EXTRA_LENGTH_TO_ADD_RATIO { misc::random::Float(10.0f) / 10.0f };
-                length += ((0 == i) ? 0.0f : EXTRA_LENGTH_TO_ADD_RATIO);
+                auto length { static_cast<float>(i) };
+                // const auto EXTRA_LENGTH_TO_ADD_RATIO { misc::random::Float(10.0f) / 10.0f };
+                // length += ((0 == i) ? 0.0f : EXTRA_LENGTH_TO_ADD_RATIO);
 
                 waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
                     sfml_util::gui::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
@@ -1539,7 +1543,11 @@ namespace stage
                 {
                     posX += REGION.width;
                 }
+
+                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
+                    sfml_util::MakeRectangleHollow(REGION, sf::Color::Red, 1.0f, true));
             }
+
             return sf::Vector2f(posX, posY);
         };
 
@@ -1556,22 +1564,28 @@ namespace stage
 
                       if (ORIENTATION == sfml_util::Orientation::Horiz)
                       {
-                          posV.x += 30.0f;
+                          posV.y += 25.0f;
+                          posV.x = POS_V.x;
                       }
                       else
                       {
-                          posV.y += 50.0f;
+                          posV.x += 25.0f;
+                          posV.y = POS_V.y;
                       }
                   }
 
-                  if (ORIENTATION == sfml_util::Orientation::Horiz)
+                  if (ORIENTATION == sfml_util::Orientation::Vert)
                   {
-                      posV.x += 20.0f;
+                      posV.y += 50.0f;
+                      posV.x = POS_V.x;
                   }
                   else
                   {
-                      posV.y += 20.0f;
+                      posV.x += 50.0f;
+                      posV.y = POS_V.y;
                   }
+
+                  const auto START_POS_V { posV };
 
                   flag = 1;
                   while (flag != sfml_util::Side::Last)
@@ -1583,17 +1597,19 @@ namespace stage
 
                       if (ORIENTATION == sfml_util::Orientation::Horiz)
                       {
-                          posV.x += 30.0f;
+                          posV.y += 25.0f;
+                          posV.x = START_POS_V.x;
                       }
                       else
                       {
-                          posV.y += 50.0f;
+                          posV.x += 25.0f;
+                          posV.y = START_POS_V.y;
                       }
                   }
               };
 
         createGoldBarsOfAllSides(sf::Vector2f(500.0f, 50.0f), sfml_util::Orientation::Horiz);
-        createGoldBarsOfAllSides(sf::Vector2f(50.0f, 50.0f), sfml_util::Orientation::Vert);
+        // createGoldBarsOfAllSides(sf::Vector2f(50.0f, 50.0f), sfml_util::Orientation::Vert);
     }
 
     void TestingStage::SetupWaitTest_GoldBar2()
