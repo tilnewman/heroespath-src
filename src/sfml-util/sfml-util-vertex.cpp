@@ -273,7 +273,7 @@ namespace sfml_util
                         CreateVector(ORIENTATION, 0.0f, OPPOSITE_ORIENTATION_SIZE_LIMIT),
                         ORIENTATIONS_TO_DRAW_FROM_END);
 
-                    pos += (TEXTURE_LENGTH_OF_ORIENTATION + 1.0f);
+                    pos += TEXTURE_LENGTH_OF_ORIENTATION;
                 }
             }
 

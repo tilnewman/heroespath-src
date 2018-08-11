@@ -11,6 +11,7 @@
 //
 #include "gold-bar.hpp"
 
+#include "log/log-macros.hpp"
 #include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
@@ -243,30 +244,10 @@ namespace sfml_util
             return std::make_tuple(topOrLeftRect, botOrRightRect, middleRect);
         }
 
-        const std::tuple<sf::FloatRect, sf::FloatRect, sf::FloatRect, sf::FloatRect>
-            GoldBar::GetTextureRectsCorners() const
-        {
-            return std::make_tuple(
-                GuiImages::LineSmallCornerTopLeftF(),
-                GuiImages::LineSmallCornerTopRightF(),
-                GuiImages::LineSmallCornerBotLeftF(),
-                GuiImages::LineSmallCornerBotRightF());
-        }
-
-        const std::tuple<sf::FloatRect, sf::FloatRect, sf::FloatRect, sf::FloatRect>
-            GoldBar::GetTextureRectsSides() const
-        {
-            return std::make_tuple(
-                GuiImages::LineSmallHorizontalTopF(),
-                GuiImages::LineSmallVerticalRightF(),
-                GuiImages::LineSmallHorizontalBotF(),
-                GuiImages::LineSmallVerticalLeftF());
-        }
-
         void GoldBar::SetupVertexesAndRegionsForSingleBar(
             const float LEFT,
             const float TOP,
-            const float LENGTH,
+            const float LENGTH_ORIG,
             Orientation::Enum ORIENTATION_PARAM,
             const Side::Enum SIDE,
             const bool WILL_CAP_ENDS)
@@ -275,16 +256,34 @@ namespace sfml_util
                 ((ORIENTATION_PARAM == Orientation::Count) ? Orientation::Horiz : ORIENTATION_PARAM)
             };
 
-            length_ = LENGTH;
+            const auto LENGTH = [&]() {
+                if (LENGTH_ORIG < 0.0f)
+                {
+                    return 0.0f;
+                }
+                else
+                {
+                    if (ORIENTATION == Orientation::Horiz)
+                    {
+                        return std::floor(LEFT + LENGTH_ORIG) - std::floor(LEFT);
+                    }
+                    else
+                    {
+                        return std::floor(TOP + LENGTH_ORIG) - std::floor(TOP);
+                    }
+                }
+            }();
+
+            length_ = LENGTH_ORIG;
 
             vertexArray_.clear();
 
-            if ((LENGTH > 0.0f) == false)
+            if (LENGTH < 1.0f)
             {
                 return;
             }
 
-            const auto POS_V { sf::Vector2f(LEFT, TOP) };
+            const auto POS_V { sf::Vector2f(std::floor(LEFT), std::floor(TOP)) };
 
             const auto [TEXTURE_RECT_TOP_OR_LEFT, TEXTURE_RECT_BOT_OR_RIGHT, TEXTURE_RECT_MIDDLE]
                 = GetTextureRectsBar(ORIENTATION, SIDE);
@@ -328,7 +327,7 @@ namespace sfml_util
                       return std::make_tuple(lenTopOrLeft, lenBotOrRight);
                   }();
 
-            if (END_CAP_LENGTH_TOP_OR_LEFT > 0.0f)
+            if ((END_CAP_LENGTH_TOP_OR_LEFT < 1.0f) == false)
             {
                 sfml_util::AppendVertexesForQuad(
                     vertexArray_,
@@ -379,7 +378,7 @@ namespace sfml_util
                       return v;
                   }();
 
-            if (MIDDLE_LENGTH > 1.0f)
+            if ((MIDDLE_LENGTH < 1.0f) == false)
             {
                 sfml_util::AppendVertexesForQuadRepeatedOverLength(
                     vertexArray_, MIDDLE_POS_V, TEXTURE_RECT_MIDDLE, ORIENTATION, MIDDLE_LENGTH);
@@ -400,7 +399,7 @@ namespace sfml_util
                 return v;
             }();
 
-            if (END_CAP_LENGTH_BOT_OR_RIGHT > 0.0f)
+            if ((END_CAP_LENGTH_BOT_OR_RIGHT < 1.0f) == false)
             {
                 sfml_util::AppendVertexesForQuad(
                     vertexArray_,
@@ -415,64 +414,41 @@ namespace sfml_util
         }
 
         void GoldBar::SetupVertexesAndRegionsForSquare(
-            const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
+            const sf::FloatRect & REGION_ORIG, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
         {
+            const auto REGION = [&]() {
+                sf::FloatRect r;
+
+                r.width = std::floor(REGION_ORIG.left + REGION_ORIG.width)
+                    - std::floor(REGION_ORIG.left);
+
+                r.height = std::floor(REGION_ORIG.top + REGION_ORIG.height)
+                    - std::floor(REGION_ORIG.top);
+
+                r.left = std::floor(REGION_ORIG.left);
+                r.top = std::floor(REGION_ORIG.top);
+                return r;
+            }();
+
+            const sf::Vector2f POS_V { Position(REGION) };
+
+            outerRegion_ = sf::FloatRect(POS_V, sf::Vector2f(0.0f, 0.0f));
+            innerRegion_ = outerRegion_;
+
             if ((REGION.width < 1.0f) || (REGION.height < 1.0f))
             {
                 return;
             }
 
-            const auto POS_V { sfml_util::Position(REGION) };
+            const auto TEXTURE_RECT_SIDE_TOP { GuiImages::LineSmallHorizontalTopF() };
+            const auto TEXTURE_RECT_SIDE_RIGHT { GuiImages::LineSmallVerticalRightF() };
+            const auto TEXTURE_RECT_SIDE_BOT { GuiImages::LineSmallHorizontalBotF() };
+            const auto TEXTURE_RECT_SIDE_LEFT { GuiImages::LineSmallVerticalLeftF() };
 
-            const auto
-                [TEXTURE_RECT_SIDE_TOP,
-                 TEXTURE_RECT_SIDE_RIGHT,
-                 TEXTURE_RECT_SIDE_BOT,
-                 TEXTURE_RECT_SIDE_LEFT]
-                = GetTextureRectsSides();
-
-            const auto
-                [TEXTURE_RECT_CORNER_TOP_LEFT,
-                 TEXTURE_RECT_CORNER_TOP_RIGHT,
-                 TEXTURE_RECT_CORNER_BOT_RIGHT,
-                 TEXTURE_RECT_CORNER_BOT_LEFT]
-                = GetTextureRectsCorners();
-
-            const sf::Vector2f CORNER_SIZE_TOP_LEFT_V {
-                std::min(
-                    TEXTURE_RECT_CORNER_TOP_LEFT.width,
-                    (REGION.width - TEXTURE_RECT_CORNER_TOP_RIGHT.width)),
-                std::min(
-                    TEXTURE_RECT_CORNER_TOP_LEFT.height,
-                    (REGION.height - TEXTURE_RECT_CORNER_BOT_LEFT.height))
-            };
-
-            const sf::Vector2f CORNER_SIZE_TOP_RIGHT_V {
-                std::min(
-                    TEXTURE_RECT_CORNER_TOP_RIGHT.width,
-                    (REGION.width - TEXTURE_RECT_CORNER_TOP_LEFT.width)),
-                std::min(
-                    TEXTURE_RECT_CORNER_TOP_RIGHT.height,
-                    (REGION.height - TEXTURE_RECT_CORNER_BOT_RIGHT.height))
-            };
-
-            const sf::Vector2f CORNER_SIZE_BOT_RIGHT_V {
-                std::min(
-                    TEXTURE_RECT_CORNER_BOT_RIGHT.width,
-                    (REGION.width - TEXTURE_RECT_CORNER_BOT_LEFT.width)),
-                std::min(
-                    TEXTURE_RECT_CORNER_BOT_RIGHT.height,
-                    (REGION.height - TEXTURE_RECT_CORNER_TOP_RIGHT.height))
-            };
-
-            const sf::Vector2f CORNER_SIZE_BOT_LEFT_V {
-                std::min(
-                    TEXTURE_RECT_CORNER_BOT_LEFT.width,
-                    (REGION.width - TEXTURE_RECT_CORNER_BOT_RIGHT.width)),
-                std::min(
-                    TEXTURE_RECT_CORNER_BOT_LEFT.height,
-                    (REGION.height - TEXTURE_RECT_CORNER_TOP_LEFT.height))
-            };
+            const auto TEXTURE_RECT_CORNER_TOP_LEFT { GuiImages::LineSmallCornerTopLeftF() };
+            const auto TEXTURE_RECT_CORNER_TOP_RIGHT { GuiImages::LineSmallCornerTopRightF() };
+            const auto TEXTURE_RECT_CORNER_BOT_RIGHT { GuiImages::LineSmallCornerBotRightF() };
+            const auto TEXTURE_RECT_CORNER_BOT_LEFT { GuiImages::LineSmallCornerBotLeftF() };
 
             const auto
                 [OUTER_MOVE_TOP_LEFT_V,
@@ -487,52 +463,95 @@ namespace sfml_util
 
                       if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
                       {
-                          topLeftV = { -1.0f
-                                           * std::min(
-                                                 GuiImages::GetLineSmallBoxPadLeft(),
-                                                 CORNER_SIZE_TOP_LEFT_V.x),
-                                       -1.0f
-                                           * std::min(
-                                                 GuiImages::GetLineSmallBoxPadTop(),
-                                                 CORNER_SIZE_TOP_LEFT_V.y) };
+                          topLeftV = { -1.0f * GuiImages::GetLineSmallBoxPadLeft(),
+                                       -1.0f * GuiImages::GetLineSmallBoxPadTop() };
 
-                          topRightV = { std::min(
-                                            GuiImages::GetLineSmallBoxPadRight(),
-                                            CORNER_SIZE_TOP_RIGHT_V.x),
-                                        -1.0f
-                                            * std::min(
-                                                  GuiImages::GetLineSmallBoxPadTop(),
-                                                  CORNER_SIZE_TOP_RIGHT_V.y) };
+                          topRightV = { GuiImages::GetLineSmallBoxPadRight(),
+                                        -1.0f * GuiImages::GetLineSmallBoxPadTop() };
 
-                          botRightV = {
-                              std::min(
-                                  GuiImages::GetLineSmallBoxPadRight(), CORNER_SIZE_BOT_RIGHT_V.x),
-                              std::min(
-                                  GuiImages::GetLineSmallBoxPadBot(), CORNER_SIZE_BOT_RIGHT_V.y)
-                          };
+                          botRightV = { GuiImages::GetLineSmallBoxPadRight(),
+                                        GuiImages::GetLineSmallBoxPadBot() };
 
-                          botLeftV = {
-                              -1.0f
-                                  * std::min(
-                                        GuiImages::GetLineSmallBoxPadLeft(),
-                                        CORNER_SIZE_BOT_LEFT_V.x),
-                              std::min(GuiImages::GetLineSmallBoxPadBot(), CORNER_SIZE_BOT_LEFT_V.y)
-                          };
+                          botLeftV = { -1.0f * GuiImages::GetLineSmallBoxPadLeft(),
+                                       GuiImages::GetLineSmallBoxPadBot() };
                       }
 
                       return std::make_tuple(topLeftV, topRightV, botRightV, botLeftV);
                   }();
+
+            const auto CORNER_SIZE_TOP_LEFT_V = [&]() {
+                sf::Vector2f sizeV(0.0f, 0.0f);
+
+                if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
+                {
+                    const auto MIN_WIDTH { (
+                        std::abs(OUTER_MOVE_TOP_LEFT_V.x) + std::abs(OUTER_MOVE_TOP_RIGHT_V.x)) };
+
+                    const auto MIN_HEIGHT { (
+                        std::abs(OUTER_MOVE_TOP_LEFT_V.y) + std::abs(OUTER_MOVE_BOT_LEFT_V.y)) };
+
+                    const auto FULL_WIDTH { (
+                        TEXTURE_RECT_CORNER_TOP_LEFT.width + TEXTURE_RECT_CORNER_TOP_RIGHT.width) };
+
+                    const auto FULL_HEIGHT {
+                        (TEXTURE_RECT_CORNER_TOP_LEFT.height + TEXTURE_RECT_CORNER_BOT_LEFT.height)
+                    };
+
+                    if (REGION.width < FULL_WIDTH)
+                    {
+                        sizeV.x = std::floor(std::max(REGION.width * 0.5f, MIN_WIDTH * 0.5f));
+                    }
+                    else
+                    {
+                        sizeV.x = TEXTURE_RECT_CORNER_TOP_LEFT.width;
+                    }
+
+                    if (REGION.height < FULL_HEIGHT)
+                    {
+                        sizeV.y = std::floor(std::max(REGION.height * 0.5f, MIN_HEIGHT * 0.5f));
+                    }
+                    else
+                    {
+                        sizeV.y = TEXTURE_RECT_CORNER_TOP_LEFT.height;
+                    }
+                }
+                else
+                {
+                    if (REGION.width < (TEXTURE_RECT_CORNER_TOP_LEFT.width
+                                        + TEXTURE_RECT_CORNER_TOP_RIGHT.width))
+                    {
+                        sizeV.x = std::floor(REGION.width * 0.5f);
+                    }
+                    else
+                    {
+                        sizeV.x = TEXTURE_RECT_CORNER_TOP_LEFT.width;
+                    }
+
+                    if (REGION.height < (TEXTURE_RECT_CORNER_TOP_LEFT.height
+                                         + TEXTURE_RECT_CORNER_BOT_LEFT.height))
+                    {
+                        sizeV.y = std::floor(REGION.height * 0.5f);
+                    }
+                    else
+                    {
+                        sizeV.y = TEXTURE_RECT_CORNER_TOP_LEFT.height;
+                    }
+                }
+
+                return sizeV;
+            }();
+
+            // assume that all corner texture rects are square and the same...cause they are.
+            const sf::Vector2f CORNER_SIZE_TOP_RIGHT_V { CORNER_SIZE_TOP_LEFT_V };
+            const sf::Vector2f CORNER_SIZE_BOT_RIGHT_V { CORNER_SIZE_TOP_LEFT_V };
+            const sf::Vector2f CORNER_SIZE_BOT_LEFT_V { CORNER_SIZE_TOP_LEFT_V };
 
             const auto [SIDE_LEN_TOP, SIDE_LEN_RIGHT, SIDE_LEN_BOT, SIDE_LEN_LEFT] =
                 [&,
                  OUTER_MOVE_TOP_LEFT_V = OUTER_MOVE_TOP_LEFT_V,
                  OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
                  OUTER_MOVE_BOT_RIGHT_V = OUTER_MOVE_BOT_RIGHT_V,
-                 OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V,
-                 CORNER_SIZE_TOP_LEFT_V = CORNER_SIZE_TOP_LEFT_V,
-                 CORNER_SIZE_TOP_RIGHT_V = CORNER_SIZE_TOP_RIGHT_V,
-                 CORNER_SIZE_BOT_LEFT_V = CORNER_SIZE_BOT_LEFT_V,
-                 CORNER_SIZE_BOT_RIGHT_V = CORNER_SIZE_BOT_RIGHT_V]() {
+                 OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
                     float top { 0.0f };
                     float right { 0.0f };
                     float bot { 0.0f };
@@ -540,23 +559,28 @@ namespace sfml_util
 
                     top = std::max(
                         0.0f,
-                        ((REGION.width - CORNER_SIZE_TOP_LEFT_V.x) - CORNER_SIZE_TOP_RIGHT_V.x));
+                        ((REGION.width - CORNER_SIZE_TOP_LEFT_V.x)
+                         - (CORNER_SIZE_TOP_RIGHT_V.x + 1.0f)));
 
                     bot = std::max(
                         0.0f,
-                        ((REGION.width - CORNER_SIZE_BOT_LEFT_V.x) - CORNER_SIZE_BOT_RIGHT_V.x));
+                        ((REGION.width - CORNER_SIZE_BOT_LEFT_V.x)
+                         - (CORNER_SIZE_BOT_RIGHT_V.x + 1.0f)));
 
                     left = std::max(
                         0.0f,
-                        ((REGION.height - CORNER_SIZE_TOP_LEFT_V.y) - CORNER_SIZE_BOT_LEFT_V.y));
+                        ((REGION.height - CORNER_SIZE_TOP_LEFT_V.y)
+                         - (CORNER_SIZE_BOT_LEFT_V.y + 1.0f)));
 
                     right = std::max(
                         0.0f,
-                        ((REGION.height - CORNER_SIZE_TOP_RIGHT_V.y) - CORNER_SIZE_BOT_RIGHT_V.y));
+                        ((REGION.height - CORNER_SIZE_TOP_RIGHT_V.y)
+                         - (CORNER_SIZE_BOT_RIGHT_V.y + 1.0f)));
 
                     top += (std::abs(OUTER_MOVE_TOP_LEFT_V.x) + std::abs(OUTER_MOVE_TOP_RIGHT_V.x));
                     bot += (std::abs(OUTER_MOVE_BOT_LEFT_V.x) + std::abs(OUTER_MOVE_BOT_RIGHT_V.x));
                     left += (std::abs(OUTER_MOVE_TOP_LEFT_V.y) + std::abs(OUTER_MOVE_BOT_LEFT_V.y));
+
                     right
                         += (std::abs(OUTER_MOVE_TOP_RIGHT_V.y)
                             + std::abs(OUTER_MOVE_BOT_RIGHT_V.y));
@@ -584,21 +608,19 @@ namespace sfml_util
                       sf::Vector2f botLeft { 0.0f, 0.0f };
 
                       topLeft = POS_V;
+                      topLeft += OUTER_MOVE_TOP_LEFT_V;
 
                       topRight = sf::Vector2f(
-                          (topLeft.x + CORNER_SIZE_TOP_LEFT_V.x + SIDE_LEN_TOP), POS_V.y);
+                          (topLeft.x + CORNER_SIZE_TOP_LEFT_V.x + SIDE_LEN_TOP),
+                          POS_V.y + OUTER_MOVE_TOP_RIGHT_V.y);
 
                       botLeft = sf::Vector2f(
-                          POS_V.x, (topLeft.y + CORNER_SIZE_TOP_LEFT_V.y + SIDE_LEN_LEFT));
+                          POS_V.x + OUTER_MOVE_BOT_LEFT_V.x,
+                          (topLeft.y + CORNER_SIZE_TOP_LEFT_V.y + SIDE_LEN_LEFT));
 
                       botRight = sf::Vector2f(
                           (botLeft.x + CORNER_SIZE_BOT_LEFT_V.x + SIDE_LEN_BOT),
                           (topRight.y + CORNER_SIZE_TOP_RIGHT_V.y + SIDE_LEN_RIGHT));
-
-                      topLeft += OUTER_MOVE_TOP_LEFT_V;
-                      topRight += OUTER_MOVE_TOP_RIGHT_V;
-                      botRight += OUTER_MOVE_BOT_RIGHT_V;
-                      botLeft += OUTER_MOVE_BOT_LEFT_V;
 
                       return std::make_tuple(topLeft, topRight, botRight, botLeft);
                   }();
@@ -615,14 +637,16 @@ namespace sfml_util
 
                       const auto BOT_POS_V { sf::Vector2f(
                           CORNER_POS_BOT_LEFT.x + CORNER_SIZE_BOT_LEFT_V.x,
-                          CORNER_POS_BOT_LEFT.y + GuiImages::GetLineSmallBoxPadBot()) };
+                          (CORNER_POS_BOT_LEFT.y + CORNER_SIZE_BOT_LEFT_V.y)
+                              - TEXTURE_RECT_SIDE_BOT.height) };
 
                       const auto RIGHT_POS_V { sf::Vector2f(
-                          CORNER_POS_TOP_RIGHT.x + GuiImages::GetLineSmallBoxPadRight(),
+                          (CORNER_POS_TOP_RIGHT.x + CORNER_SIZE_TOP_RIGHT_V.x)
+                              - TEXTURE_RECT_SIDE_RIGHT.width,
                           CORNER_POS_TOP_RIGHT.y + CORNER_SIZE_TOP_RIGHT_V.y) };
 
                       const auto LEFT_POS_V { sf::Vector2f(
-                          CORNER_POS_TOP_LEFT.x + GuiImages::GetLineSmallBoxPadLeft(),
+                          CORNER_POS_TOP_LEFT.x,
                           CORNER_POS_TOP_LEFT.y + CORNER_SIZE_TOP_LEFT_V.y) };
 
                       return std::make_tuple(TOP_POS_V, RIGHT_POS_V, BOT_POS_V, LEFT_POS_V);
@@ -633,11 +657,7 @@ namespace sfml_util
                  SIDE_START_POS_TOP = SIDE_START_POS_TOP,
                  SIDE_START_POS_RIGHT = SIDE_START_POS_RIGHT,
                  SIDE_START_POS_BOT = SIDE_START_POS_BOT,
-                 SIDE_START_POS_LEFT = SIDE_START_POS_LEFT,
-                 TEXTURE_RECT_SIDE_TOP = TEXTURE_RECT_SIDE_TOP,
-                 TEXTURE_RECT_SIDE_RIGHT = TEXTURE_RECT_SIDE_RIGHT,
-                 TEXTURE_RECT_SIDE_BOT = TEXTURE_RECT_SIDE_BOT,
-                 TEXTURE_RECT_SIDE_LEFT = TEXTURE_RECT_SIDE_LEFT]() {
+                 SIDE_START_POS_LEFT = SIDE_START_POS_LEFT]() {
                     float heightTop { TEXTURE_RECT_SIDE_TOP.height };
                     float heightBot { TEXTURE_RECT_SIDE_BOT.height };
 
@@ -669,12 +689,16 @@ namespace sfml_util
                     return std::make_tuple(heightTop, widthRight, heightBot, widthLeft);
                 }();
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                CORNER_POS_TOP_LEFT,
-                TEXTURE_RECT_CORNER_TOP_LEFT,
-                sf::Color::White,
-                CORNER_SIZE_TOP_LEFT_V);
+            if (((CORNER_SIZE_TOP_LEFT_V.x < 1.0f) == false)
+                || ((CORNER_SIZE_TOP_LEFT_V.y < 1.0f) == false))
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    CORNER_POS_TOP_LEFT,
+                    TEXTURE_RECT_CORNER_TOP_LEFT,
+                    sf::Color::White,
+                    CORNER_SIZE_TOP_LEFT_V);
+            }
 
             sfml_util::AppendVertexesForQuadRepeatedOverLength(
                 vertexArray_,
@@ -685,13 +709,17 @@ namespace sfml_util
                 sf::Color::White,
                 SIDE_HEIGHT_TOP);
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                CORNER_POS_TOP_RIGHT,
-                TEXTURE_RECT_CORNER_TOP_RIGHT,
-                sf::Color::White,
-                CORNER_SIZE_TOP_RIGHT_V,
-                Orientation::Horiz);
+            if (((CORNER_SIZE_TOP_RIGHT_V.x < 1.0f) == false)
+                || ((CORNER_SIZE_TOP_RIGHT_V.y < 1.0f) == false))
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    CORNER_POS_TOP_RIGHT,
+                    TEXTURE_RECT_CORNER_TOP_RIGHT,
+                    sf::Color::White,
+                    CORNER_SIZE_TOP_RIGHT_V,
+                    Orientation::Horiz);
+            }
 
             sfml_util::AppendVertexesForQuadRepeatedOverLength(
                 vertexArray_,
@@ -703,13 +731,17 @@ namespace sfml_util
                 SIDE_WIDTH_RIGHT,
                 Orientation::Horiz);
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                CORNER_POS_BOT_RIGHT,
-                TEXTURE_RECT_CORNER_BOT_RIGHT,
-                sf::Color::White,
-                CORNER_SIZE_BOT_RIGHT_V,
-                Orientation::Both);
+            if (((CORNER_SIZE_BOT_RIGHT_V.x < 1.0f) == false)
+                || ((CORNER_SIZE_BOT_RIGHT_V.y < 1.0f) == false))
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    CORNER_POS_BOT_RIGHT,
+                    TEXTURE_RECT_CORNER_BOT_RIGHT,
+                    sf::Color::White,
+                    CORNER_SIZE_BOT_RIGHT_V,
+                    Orientation::Both);
+            }
 
             sfml_util::AppendVertexesForQuadRepeatedOverLength(
                 vertexArray_,
@@ -721,13 +753,17 @@ namespace sfml_util
                 SIDE_HEIGHT_BOT,
                 Orientation::Vert);
 
-            sfml_util::AppendVertexesForQuad(
-                vertexArray_,
-                CORNER_POS_BOT_LEFT,
-                TEXTURE_RECT_CORNER_BOT_LEFT,
-                sf::Color::White,
-                CORNER_SIZE_BOT_LEFT_V,
-                Orientation::Vert);
+            if (((CORNER_SIZE_BOT_LEFT_V.x < 1.0f) == false)
+                || ((CORNER_SIZE_BOT_LEFT_V.y < 1.0f) == false))
+            {
+                sfml_util::AppendVertexesForQuad(
+                    vertexArray_,
+                    CORNER_POS_BOT_LEFT,
+                    TEXTURE_RECT_CORNER_BOT_LEFT,
+                    sf::Color::White,
+                    CORNER_SIZE_BOT_LEFT_V,
+                    Orientation::Vert);
+            }
 
             sfml_util::AppendVertexesForQuadRepeatedOverLength(
                 vertexArray_,
@@ -738,25 +774,58 @@ namespace sfml_util
                 sf::Color::White,
                 SIDE_WIDTH_LEFT);
 
-            if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
-            {
-                innerRegion_ = REGION;
+            // M_HP_LOG_DBG(
+            //    "" << REGION << "\tCORNER_POS_BOT_LEFT.x=" << CORNER_POS_BOT_LEFT.x
+            //       << "\tCORNER_POS_BOT_LEFT.x+CORNER_SIZE_BOT_LEFT_V.x="
+            //       << CORNER_POS_BOT_LEFT.x + CORNER_SIZE_BOT_LEFT_V.x <<
+            //       "\tSIDE_START_POS_BOT.x="
+            //       << SIDE_START_POS_BOT.x << "\tSIDE_LEN_BOT=" << SIDE_LEN_BOT
+            //       << "\tCORNER_POS_BOT_RIGHT.x=" << CORNER_POS_BOT_RIGHT.x << "\t"
+            //       << CORNER_POS_TOP_RIGHT.x);
 
-                outerRegion_ = sf::FloatRect(
-                    CORNER_POS_TOP_LEFT, CORNER_POS_BOT_RIGHT + CORNER_SIZE_BOT_RIGHT_V);
+            const sf::Vector2f OUTER_TOP_LEFT_POS_V(
+                std::floor(CORNER_POS_TOP_LEFT.x), std::floor(CORNER_POS_TOP_LEFT.y));
+
+            const sf::Vector2f OUTER_BOT_RIGHT_POS_V(
+                std::floor(CORNER_POS_BOT_RIGHT.x + CORNER_SIZE_BOT_RIGHT_V.x),
+                std::floor(CORNER_POS_BOT_RIGHT.y + CORNER_SIZE_BOT_RIGHT_V.y));
+
+            const auto OUTER_SIZE_V { OUTER_BOT_RIGHT_POS_V - OUTER_TOP_LEFT_POS_V };
+
+            if (misc::IsRealZero(OUTER_SIZE_V.x) && misc::IsRealZero(OUTER_SIZE_V.y))
+            {
+                outerRegion_ = sf::FloatRect(OUTER_TOP_LEFT_POS_V, sf::Vector2f(0.0f, 0.0f));
+                innerRegion_ = outerRegion_;
             }
             else
             {
-                outerRegion_ = REGION;
+                outerRegion_ = sf::FloatRect(OUTER_TOP_LEFT_POS_V, OUTER_SIZE_V);
 
-                const sf::Vector2f INNER_POS_V(
-                    SIDE_START_POS_LEFT.x + SIDE_WIDTH_LEFT,
-                    SIDE_START_POS_TOP.y + SIDE_HEIGHT_TOP);
+                const auto OUTER_REGION_CENTER_POS_V { CenterOf(outerRegion_) };
 
-                const sf::Vector2f INNER_SIZE_V(
-                    SIDE_START_POS_RIGHT.x - INNER_POS_V.x, SIDE_START_POS_BOT.y - INNER_POS_V.y);
+                // assume that all corner texture rects are square and the same...cause they are.
 
-                innerRegion_ = sf::FloatRect(INNER_POS_V, INNER_SIZE_V);
+                if (OUTER_SIZE_V.x < ((SIDE_WIDTH_LEFT + SIDE_WIDTH_RIGHT) + 1.0f))
+                {
+                    innerRegion_.left = OUTER_REGION_CENTER_POS_V.x;
+                    innerRegion_.width = 0.0f;
+                }
+                else
+                {
+                    innerRegion_.left = outerRegion_.left + SIDE_WIDTH_LEFT;
+                    innerRegion_.width = OUTER_SIZE_V.x - (SIDE_WIDTH_LEFT + SIDE_WIDTH_RIGHT);
+                }
+
+                if (OUTER_SIZE_V.y < ((SIDE_HEIGHT_TOP + SIDE_HEIGHT_BOT) + 1.0f))
+                {
+                    innerRegion_.top = OUTER_REGION_CENTER_POS_V.y;
+                    innerRegion_.height = 0.0f;
+                }
+                else
+                {
+                    innerRegion_.top = outerRegion_.top + SIDE_HEIGHT_TOP;
+                    innerRegion_.height = OUTER_SIZE_V.y - (SIDE_HEIGHT_TOP + SIDE_HEIGHT_BOT);
+                }
             }
         }
 

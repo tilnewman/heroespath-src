@@ -119,14 +119,6 @@ namespace sfml_util
             const std::tuple<sf::FloatRect, sf::FloatRect, sf::FloatRect>
                 GetTextureRectsBar(const Orientation::Enum, const Side::Enum) const;
 
-            // return s in rotation order: top_left,top_right,bot_right,bot_left
-            const std::tuple<sf::FloatRect, sf::FloatRect, sf::FloatRect, sf::FloatRect>
-                GetTextureRectsCorners() const;
-
-            // returns in rotation order: top, right, bot, left
-            const std::tuple<sf::FloatRect, sf::FloatRect, sf::FloatRect, sf::FloatRect>
-                GetTextureRectsSides() const;
-
             void SetupVertexesAndRegionsForSingleBar(
                 const float LEFT,
                 const float TOP,
