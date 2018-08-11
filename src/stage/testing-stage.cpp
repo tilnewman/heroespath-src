@@ -388,7 +388,7 @@ namespace stage
         M_TESTING_STAGE_TEST(GameDataFile);
 
         // M_TESTING_STAGE_TEST_WAIT(GoldBar);
-        M_TESTING_STAGE_TEST_WAIT(GoldBar2);
+        // M_TESTING_STAGE_TEST_WAIT(GoldBar2);
         M_TESTING_STAGE_TEST_WAIT(Border);
 
         M_TESTING_STAGE_TEST(Enums);
@@ -1723,7 +1723,114 @@ namespace stage
             SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true);
     }
 
-    void TestingStage::SetupWaitTest_Border() { ResetWaitingForKeyOrClick(); }
+    void TestingStage::SetupWaitTest_Border()
+    {
+        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegionWidth() * StageRegionHeight()))
+                                     * 0.12f };
+
+        const auto BETWEEN_SPACER { SCREEN_EDGE_PAD * 0.025f };
+        const auto BETWEEN_ROW_VERT_SPACER { BETWEEN_SPACER * 4.0f };
+
+        auto makeHorizRowOfBorders = [&](const float LEFT,
+                                         const float TOP,
+                                         const bool WILL_DRAW_LINES,
+                                         const bool WILL_MAKE_SMALL,
+                                         const bool WILL_GROW_BORDER) {
+            const auto GROWTH_MIN { 0.333f };
+            const auto GROWTH_MAX { 10.0f };
+
+            float posX { LEFT };
+            float posY { TOP };
+
+            auto width { 0.0f };
+            auto height { 0.0f };
+
+            auto horizGrowthPrev { GROWTH_MIN };
+            auto vertGrowthPrev { GROWTH_MIN };
+            while (posX < (StageRegionWidth() - SCREEN_EDGE_PAD))
+            {
+                const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
+
+                if (WILL_DRAW_LINES)
+                {
+                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(
+                        sfml_util::gui::Border(REGION_INITIAL, WILL_GROW_BORDER));
+                }
+                else
+                {
+                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(sfml_util::gui::Border(
+                        REGION_INITIAL,
+                        1.0f,
+                        sf::Color::White,
+                        sfml_util::defaults::None,
+                        WILL_GROW_BORDER));
+                }
+
+                const auto REGION_OUTER {
+                    waitingForKeyOrClick_ToDraw_Borders_.back().OuterRegion()
+                };
+
+                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
+                    sfml_util::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
+
+                const auto REGION_INNER {
+                    waitingForKeyOrClick_ToDraw_Borders_.back().InnerRegion()
+                };
+
+                waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
+                    sfml_util::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
+
+                posX += REGION_OUTER.width + BETWEEN_SPACER;
+
+                if (WILL_MAKE_SMALL)
+                {
+                    const auto GROWTH_HORIZ { misc::random::Float(
+                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - horizGrowthPrev))) };
+
+                    horizGrowthPrev = GROWTH_HORIZ;
+
+                    width += GROWTH_HORIZ;
+
+                    const auto GROWTH_VERT { misc::random::Float(
+                        GROWTH_MIN, std::max(GROWTH_MIN, (1.0f - vertGrowthPrev))) };
+
+                    vertGrowthPrev = GROWTH_VERT;
+
+                    height += GROWTH_VERT;
+                }
+                else
+                {
+                    width += misc::random::Float(1.0f, GROWTH_MAX);
+                    height += misc::random::Float(1.0f, GROWTH_MAX);
+                }
+            }
+
+            const auto REGION_FINAL { waitingForKeyOrClick_ToDraw_Borders_.back().OuterRegion() };
+            return TOP + REGION_FINAL.height;
+        };
+
+        const auto BOTTOM_OF_FIRST_ROW { makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD, SCREEN_EDGE_PAD, true, true, false) };
+
+        const auto BOTTOM_OF_SECOND_ROW { makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD, BOTTOM_OF_FIRST_ROW + BETWEEN_ROW_VERT_SPACER, true, false, false) };
+
+        const auto BOTTOM_OF_THIRD_ROW { makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD,
+            BOTTOM_OF_SECOND_ROW + (BETWEEN_ROW_VERT_SPACER * 2.0f),
+            true,
+            true,
+            true) };
+
+        const auto BOTTOM_OF_FOURTH_ROW { makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD, BOTTOM_OF_THIRD_ROW + BETWEEN_ROW_VERT_SPACER, false, true, false) };
+
+        const auto BOTTOM_OF_FIFTH_ROW { makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD, BOTTOM_OF_FOURTH_ROW + BETWEEN_ROW_VERT_SPACER, false, false, false) };
+
+        makeHorizRowOfBorders(
+            SCREEN_EDGE_PAD, BOTTOM_OF_FIFTH_ROW + BETWEEN_ROW_VERT_SPACER, false, true, true);
+    }
 
     void TestingStage::ResetWaitingForKeyOrClick()
     {
