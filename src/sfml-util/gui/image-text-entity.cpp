@@ -11,6 +11,7 @@
 //
 #include "image-text-entity.hpp"
 
+#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/image-entity.hpp"
 #include "sfml-util/gui/text-entity.hpp"
@@ -57,7 +58,7 @@ namespace sfml_util
             const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
             const MouseStateSync::Enum MOUSE_STATE_SYNC,
             const bool WILL_SYNC_MOUSESTATES)
-            : Entity(NAME + "_ImageTextEntity_", 0.0f, 0.0f)
+            : Entity(NAME + "'s_ImageTextEntity_", 0.0f, 0.0f)
             , imageEntityUPtr_(std::move(IMAGE_ENTITY_UPTR))
             , textEntityUPtr_(std::move(TEXT_ENTITY_UPTR))
             , mouseStateSync_(MOUSE_STATE_SYNC)
@@ -78,9 +79,12 @@ namespace sfml_util
             : ImageTextEntity(
                   NAME + "_Constructor2_",
                   std::make_unique<sfml_util::gui::ImageEntity>(
-                      GetEntityName() + "'s_", MOUSE_IMAGE_INFO),
+                      NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
                   std::make_unique<sfml_util::gui::TextEntity>(
-                      GetEntityName() + "'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+                      NAME + "'s_ImageTextEntity_FromConstructor2_'s_",
+                      0.0f,
+                      0.0f,
+                      MOUSE_TEXT_INFO),
                   CALLBACK_HANDLER_PTR_OPT,
                   MOUSE_STATE_SYNC,
                   WILL_SYNC_MOUSESTATES)
@@ -96,9 +100,12 @@ namespace sfml_util
             : ImageTextEntity(
                   NAME + "_Constructor3_",
                   std::make_unique<sfml_util::gui::ImageEntity>(
-                      GetEntityName() + "'s_", MOUSE_IMAGE_INFO),
+                      NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
                   std::make_unique<sfml_util::gui::TextEntity>(
-                      GetEntityName() + "'s_", 0.0f, 0.0f, MouseTextInfo(TEXT_INFO)),
+                      NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
+                      0.0f,
+                      0.0f,
+                      MouseTextInfo(TEXT_INFO)),
                   CALLBACK_HANDLER_PTR_OPT,
                   MOUSE_STATE_SYNC,
                   WILL_SYNC_MOUSESTATES)
@@ -114,10 +121,13 @@ namespace sfml_util
             : ImageTextEntity(
                   NAME + "_Constructor4_",
                   std::make_unique<sfml_util::gui::ImageEntity>(
-                      GetEntityName() + "'s_",
+                      NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
                       sfml_util::gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
                   std::make_unique<sfml_util::gui::TextEntity>(
-                      GetEntityName() + "'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+                      NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
+                      0.0f,
+                      0.0f,
+                      MOUSE_TEXT_INFO),
                   CALLBACK_HANDLER_PTR_OPT,
                   MOUSE_STATE_SYNC,
                   WILL_SYNC_MOUSESTATES)
@@ -439,20 +449,20 @@ namespace sfml_util
         {
             if (imageEntityUPtr_ && textEntityUPtr_)
             {
-                SetEntityRegion(sfml_util::MininallyEnclosing(
+                Entity::SetEntityRegion(sfml_util::MininallyEnclosing(
                     imageEntityUPtr_->GetEntityRegion(), textEntityUPtr_->GetEntityRegion()));
             }
             else if (imageEntityUPtr_)
             {
-                SetEntityRegion(imageEntityUPtr_->GetEntityRegion());
+                Entity::SetEntityRegion(imageEntityUPtr_->GetEntityRegion());
             }
             else if (textEntityUPtr_)
             {
-                SetEntityRegion(textEntityUPtr_->GetEntityRegion());
+                Entity::SetEntityRegion(textEntityUPtr_->GetEntityRegion());
             }
             else
             {
-                SetEntityRegion(
+                Entity::SetEntityRegion(
                     sf::FloatRect(Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f)));
             }
         }

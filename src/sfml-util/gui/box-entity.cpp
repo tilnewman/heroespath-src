@@ -11,6 +11,7 @@
 //
 #include "box-entity.hpp"
 
+#include "log/log-macros.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
 
 #include <string>
@@ -166,27 +167,31 @@ namespace sfml_util
             if (backgroundInfo_.HasImage())
             {
                 spriteOpt_ = sf::Sprite(backgroundInfo_.cached_texture_opt->Get());
-                spriteOpt_->setPosition(Position(INNER_REGION));
 
                 if (backgroundInfo_.cached_texture_opt->Options().option_enum & ImageOpt::Repeated)
                 {
+                    spriteOpt_->setPosition(Position(INNER_REGION));
+                    SetSize(spriteOpt_.value(), backgroundInfo_.image_size);
+
                     spriteOpt_->setTextureRect(
                         sf::IntRect(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), Size(INNER_REGION))));
                 }
                 else
                 {
-                    if (backgroundInfo_.texture_rect_opt_)
+                    if (backgroundInfo_.texture_rect_opt)
                     {
-                        spriteOpt_->setTextureRect(backgroundInfo_.texture_rect_opt_.value());
+                        spriteOpt_->setTextureRect(backgroundInfo_.texture_rect_opt.value());
                     }
 
                     if (backgroundInfo_.will_size_instead_of_fit)
                     {
                         SetSizeAndPos(spriteOpt_.value(), INNER_REGION);
+                        SetSize(spriteOpt_.value(), backgroundInfo_.image_size);
                     }
                     else
                     {
                         FitAndCenterTo(spriteOpt_.value(), INNER_REGION);
+                        FitAndReCenter(spriteOpt_.value(), backgroundInfo_.image_size);
                     }
                 }
             }

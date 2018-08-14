@@ -102,9 +102,11 @@ namespace stage
         // rune background
         sfml_util::gui::BoxEntityInfo boxInfo;
 
-        boxInfo.SetupImage(sfml_util::CachedTexture(
-            "media-images-backgrounds-tile-runes",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+        boxInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-runes",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         boxInfo.SetupBorder(true);
 

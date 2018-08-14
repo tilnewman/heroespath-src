@@ -27,10 +27,11 @@ namespace sfml_util
             , line_color(defaults::None)
             , pad_line_color_adj(defaults::None)
             , cached_texture_opt()
-            , texture_rect_opt_()
+            , texture_rect_opt()
             , will_size_instead_of_fit(false)
             , focus_colors()
             , will_draw_color_over_sprite(true)
+            , image_size(0.0f, 0.0f)
         {}
 
         BoxEntityInfo::BoxEntityInfo(
@@ -48,10 +49,11 @@ namespace sfml_util
             , line_color(defaults::None)
             , pad_line_color_adj(defaults::None)
             , cached_texture_opt()
-            , texture_rect_opt_()
+            , texture_rect_opt()
             , will_size_instead_of_fit(false)
             , focus_colors()
             , will_draw_color_over_sprite(true)
+            , image_size(0.0f, 0.0f)
         {
             SetupColor(COLOR_FROM, COLOR_TO, SIDES_WITH_FROM_COLOR, CORNERS_WITH_FROM_COLOR);
         }
@@ -71,10 +73,11 @@ namespace sfml_util
             , line_color(defaults::None)
             , pad_line_color_adj(defaults::None)
             , cached_texture_opt()
-            , texture_rect_opt_()
+            , texture_rect_opt()
             , will_size_instead_of_fit(false)
             , focus_colors()
             , will_draw_color_over_sprite(true)
+            , image_size(0.0f, 0.0f)
         {
             SetupBorder(
                 WILL_GROW_BORDER_TO_CONTAIN_REGION, LINE_THICKNESS, LINE_COLOR, PAD_LINE_COLOR_ADJ);
@@ -82,6 +85,31 @@ namespace sfml_util
 
         BoxEntityInfo::BoxEntityInfo(
             const CachedTexture & CACHED_TEXTURE,
+            const float SQUARE_SIZE,
+            const IntRectOpt_t & TEXTURE_RECT_OPT)
+            : color_from(defaults::None)
+            , color_to(defaults::None)
+            , color_from_sides(Side::None)
+            , color_from_corners(Corner::None)
+            , will_draw_border(false)
+            , will_grow_border(false)
+            , line_thickness(0.0f)
+            , line_color(defaults::None)
+            , pad_line_color_adj(defaults::None)
+            , cached_texture_opt()
+            , texture_rect_opt(TEXTURE_RECT_OPT)
+            , will_size_instead_of_fit(false)
+            , focus_colors()
+            , will_draw_color_over_sprite(true)
+            , image_size(0.0f, 0.0f)
+        {
+            SetupImage(
+                CACHED_TEXTURE, sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE), TEXTURE_RECT_OPT, false);
+        }
+
+        BoxEntityInfo::BoxEntityInfo(
+            const CachedTexture & CACHED_TEXTURE,
+            const sf::Vector2f & TARGET_SIZE_V,
             const IntRectOpt_t & TEXTURE_RECT_OPT,
             const bool WILL_SIZE_INSTEAD_OF_FIT)
             : color_from(defaults::None)
@@ -94,12 +122,13 @@ namespace sfml_util
             , line_color(defaults::None)
             , pad_line_color_adj(defaults::None)
             , cached_texture_opt()
-            , texture_rect_opt_(TEXTURE_RECT_OPT)
+            , texture_rect_opt(TEXTURE_RECT_OPT)
             , will_size_instead_of_fit(false)
             , focus_colors()
             , will_draw_color_over_sprite(true)
+            , image_size(0.0f, 0.0f)
         {
-            SetupImage(CACHED_TEXTURE, TEXTURE_RECT_OPT, WILL_SIZE_INSTEAD_OF_FIT);
+            SetupImage(CACHED_TEXTURE, TARGET_SIZE_V, TEXTURE_RECT_OPT, WILL_SIZE_INSTEAD_OF_FIT);
         }
 
         void BoxEntityInfo::SetupColor(
@@ -128,11 +157,24 @@ namespace sfml_util
 
         void BoxEntityInfo::SetupImage(
             const CachedTexture & CACHED_TEXTURE,
+            const float SQUARE_SIZE,
+            const IntRectOpt_t & TEXTURE_RECT_OPT)
+        {
+            cached_texture_opt = CACHED_TEXTURE;
+            image_size = sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE);
+            texture_rect_opt = TEXTURE_RECT_OPT;
+            will_size_instead_of_fit = false;
+        }
+
+        void BoxEntityInfo::SetupImage(
+            const CachedTexture & CACHED_TEXTURE,
+            const sf::Vector2f & TARGET_SIZE_V,
             const IntRectOpt_t & TEXTURE_RECT_OPT,
             const bool WILL_SIZE_INSTEAD_OF_FIT)
         {
             cached_texture_opt = CACHED_TEXTURE;
-            texture_rect_opt_ = TEXTURE_RECT_OPT;
+            image_size = TARGET_SIZE_V;
+            texture_rect_opt = TEXTURE_RECT_OPT;
             will_size_instead_of_fit = WILL_SIZE_INSTEAD_OF_FIT;
         }
 

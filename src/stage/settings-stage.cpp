@@ -282,9 +282,11 @@ namespace stage
 
         bgBoxbgInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color::White);
 
-        bgBoxbgInfo.SetupImage(sfml_util::CachedTexture(
-            "media-images-backgrounds-tile-wood",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+        bgBoxbgInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-wood",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         settingsBoxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
             "SettingsStageBackground", BG_BOX_RECT, bgBoxbgInfo);

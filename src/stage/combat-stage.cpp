@@ -498,9 +498,11 @@ namespace stage
 
         sfml_util::gui::BoxEntityInfo statusBoxInfo;
 
-        statusBoxInfo.SetupImage(sfml_util::CachedTexture(
-            "media-images-backgrounds-tile-darkknot",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+        statusBoxInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-darkknot",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         statusBoxInfo.SetupColor(LISTBOX_BACKGROUND_COLOR_);
 
@@ -547,9 +549,11 @@ namespace stage
 
         sfml_util::gui::BoxEntityInfo commandBoxInfo;
 
-        commandBoxInfo.SetupImage(sfml_util::CachedTexture(
-            "media-images-backgrounds-tile-darkknot",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+        commandBoxInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-darkknot",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         commandBoxInfo.SetupBorder(true);
 
@@ -562,9 +566,11 @@ namespace stage
 
         sfml_util::gui::BoxEntityInfo turnBoxInfo;
 
-        turnBoxInfo.SetupImage(sfml_util::CachedTexture(
-            "media-images-backgrounds-tile-darkknot",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+        turnBoxInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-darkknot",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         turnBoxInfo.SetupBorder(true);
 

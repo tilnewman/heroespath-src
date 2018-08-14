@@ -10,6 +10,7 @@
 // image-entity.cpp
 //
 #include "image-entity.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sfml-util-position.hpp"
@@ -23,22 +24,12 @@ namespace sfml_util
 
         ImageEntity::ImageEntity(const std::string & NAME, const MouseImageInfo & MOUSE_IMAGE_INFO)
             : Entity(
-                  std::string(NAME).append("_ImageEntity(packet-constructor)_"),
+                  std::string(NAME).append("_ImageEntity(MouseImageInfo-constructor)_"),
                   ((MOUSE_IMAGE_INFO.up.HasTexture()) ? MOUSE_IMAGE_INFO.up.sprite.getGlobalBounds()
                                                       : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
             , mouseImageInfo_(MOUSE_IMAGE_INFO)
             , sprite_()
         {
-            if (mouseImageInfo_.will_draw_up_if_missing)
-            {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (mouseImageInfo_.up.HasTexture()),
-                    "ImageEntity(named=\""
-                        << GetEntityName() << "\")::ImageEntity(" << mouseImageInfo_
-                        << ") was set to draw the up image if there was no image for the current "
-                           "state, but the up image was invalid.");
-            }
-
             Sync();
         }
 
@@ -171,15 +162,21 @@ namespace sfml_util
 
             if (MOUSE_STATE_TO_DRAW == MouseState::Count)
             {
-                sprite_ = sf::Sprite();
+                const auto POSITION_V { sfml_util::Position(GetEntityRegion()) };
 
-                SetEntityRegion(sf::FloatRect(
-                    sfml_util::Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f)));
+                sprite_ = sf::Sprite();
+                sprite_.setPosition(POSITION_V);
+
+                const auto NEW_REGION { sf::FloatRect(POSITION_V, sf::Vector2f(0.0f, 0.0f)) };
+
+                entityRegion_ = NEW_REGION;
             }
             else
             {
                 sprite_ = mouseImageInfo_.FromMouseState(MOUSE_STATE_TO_DRAW).sprite;
-                SetEntityRegion(sprite_.getGlobalBounds());
+
+                const auto NEW_REGION { sprite_.getGlobalBounds() };
+                entityRegion_ = NEW_REGION;
             }
         }
 

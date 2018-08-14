@@ -148,6 +148,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     const sf::Vector2f SIZE_10_V { 10.0f, 10.0f };
     const sf::Vector2f SIZE_20_V { 20.0f, 20.0f };
     const sf::FloatRect RECT_10 { 10.0f, 10.0f, 10.0f, 10.0f };
+
     const std::vector<sf::Vector2f> POS_VEC_10_10 {
         { 10.0f, 10.0f }, { 20.0f, 10.0f }, { 20.0f, 20.0f }, { 10.0f, 20.0f }
     };
@@ -458,15 +459,15 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(va[2].position == sf::Vector2f(20.0f, 15.0f));
     BOOST_CHECK(va[3].position == sf::Vector2f(10.0f, 15.0f));
     //
-    BOOST_CHECK(va[4].position == sf::Vector2f(21.0f, 10.0f));
-    BOOST_CHECK(va[5].position == sf::Vector2f(31.0f, 10.0f));
-    BOOST_CHECK(va[6].position == sf::Vector2f(31.0f, 15.0f));
-    BOOST_CHECK(va[7].position == sf::Vector2f(21.0f, 15.0f));
+    BOOST_CHECK(va[4].position == sf::Vector2f(20.0f, 10.0f));
+    BOOST_CHECK(va[5].position == sf::Vector2f(30.0f, 10.0f));
+    BOOST_CHECK(va[6].position == sf::Vector2f(30.0f, 15.0f));
+    BOOST_CHECK(va[7].position == sf::Vector2f(20.0f, 15.0f));
     //
-    BOOST_CHECK(va[8].position == sf::Vector2f(32.0f, 10.0f));
+    BOOST_CHECK(va[8].position == sf::Vector2f(30.0f, 10.0f));
     BOOST_CHECK(va[9].position == sf::Vector2f(35.0f, 10.0f));
     BOOST_CHECK(va[10].position == sf::Vector2f(35.0f, 15.0f));
-    BOOST_CHECK(va[11].position == sf::Vector2f(32.0f, 15.0f));
+    BOOST_CHECK(va[11].position == sf::Vector2f(30.0f, 15.0f));
 
     BOOST_CHECK(va[0].texCoords == sf::Vector2f(10.0f, 15.0f));
     BOOST_CHECK(va[1].texCoords == sf::Vector2f(20.0f, 15.0f));
@@ -479,8 +480,8 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(va[7].texCoords == sf::Vector2f(10.0f, 20.0f));
     //
     BOOST_CHECK(va[8].texCoords == sf::Vector2f(10.0f, 15.0f));
-    BOOST_CHECK(va[9].texCoords == sf::Vector2f(13.0f, 15.0f));
-    BOOST_CHECK(va[10].texCoords == sf::Vector2f(13.0f, 20.0f));
+    BOOST_CHECK(va[9].texCoords == sf::Vector2f(15.0f, 15.0f));
+    BOOST_CHECK(va[10].texCoords == sf::Vector2f(15.0f, 20.0f));
     BOOST_CHECK(va[11].texCoords == sf::Vector2f(10.0f, 20.0f));
 }
 
@@ -979,6 +980,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
     const float HALF_SCALE(0.5f);
     const float DOUBLE_SCALE(2.0f);
 
+    BOOST_CHECK((FitCopy(10.0f, 100.0f, 0.0, 0.0) == TALL_V_F));
+    BOOST_CHECK((FitCopy(10.0f, 100.0f, -1.0, -0.1) == TALL_V_F));
+
     BOOST_CHECK((FitCopy(10.0f, 100.0f, 10.0, 100.0) == TALL_V_F));
     BOOST_CHECK((FitCopy(10.0f, 100.0f, 10.0, 100.0, HALF_SCALE) == (TALL_V_F * HALF_SCALE)));
 
@@ -1006,13 +1010,13 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK((FitCopy(10.0f, 20.0f, 30.0f, 0.0f) == sf::Vector2f(30.0f, 60.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 30.0f, 40.0f) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 20.0f, 0.0f, 40.0f) == sf::Vector2f(0.0f, 40.0f)));
-    BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 0.0f) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 0.0f) == sf::Vector2f(0.0f, 20.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 0.0f, 40.0f) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 30.0f, 0.0f) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 0.0f, 0.0f) == sf::Vector2f(0.0f, 0.0f)));
-    BOOST_CHECK((FitCopy(10.0f, 0.0f, 0.0f, 40.0f) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(10.0f, 0.0f, 0.0f, 40.0f) == sf::Vector2f(10.0f, 0.0f)));
     BOOST_CHECK((FitCopy(10.0f, 0.0f, 30.0f, 0.0f) == sf::Vector2f(30.0f, 0.0f)));
-    BOOST_CHECK((FitCopy(10.0f, 20.0f, 0.0f, 0.0f) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(10.0f, 20.0f, 0.0f, 0.0f) == sf::Vector2f(10.0f, 20.0f)));
 
     // repeat of the blocks above with scaling
     BOOST_CHECK((FitCopy(10.0f, 20.0f, 30.0f, 40.0f, DOUBLE_SCALE) == sf::Vector2f(40.0f, 80.0f)));
@@ -1022,13 +1026,13 @@ BOOST_AUTO_TEST_CASE(FitTests)
     BOOST_CHECK((FitCopy(10.0f, 20.0f, 30.0f, 0.0f, DOUBLE_SCALE) == sf::Vector2f(60.0f, 120.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 30.0f, 40.0f, HALF_SCALE) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 20.0f, 0.0f, 40.0f, DOUBLE_SCALE) == sf::Vector2f(0.0f, 80.0f)));
-    BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 0.0f, HALF_SCALE) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(0.0f, 20.0f, 30.0f, 0.0f, HALF_SCALE) == sf::Vector2f(0.0f, 10.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 0.0f, 40.0f, DOUBLE_SCALE) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 30.0f, 0.0f, HALF_SCALE) == sf::Vector2f(0.0f, 0.0f)));
     BOOST_CHECK((FitCopy(0.0f, 0.0f, 0.0f, 0.0f, DOUBLE_SCALE) == sf::Vector2f(0.0f, 0.0f)));
-    BOOST_CHECK((FitCopy(10.0f, 0.0f, 0.0f, 40.0f, HALF_SCALE) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(10.0f, 0.0f, 0.0f, 40.0f, HALF_SCALE) == sf::Vector2f(5.0f, 0.0f)));
     BOOST_CHECK((FitCopy(10.0f, 0.0f, 30.0f, 0.0f, DOUBLE_SCALE) == sf::Vector2f(60.0f, 0.0f)));
-    BOOST_CHECK((FitCopy(10.0f, 20.0f, 0.0f, 0.0f, HALF_SCALE) == sf::Vector2f(0.0f, 0.0f)));
+    BOOST_CHECK((FitCopy(10.0f, 20.0f, 0.0f, 0.0f, HALF_SCALE) == sf::Vector2f(5.0f, 10.0f)));
 
     const float FIT_SCALE { 0.1f };
     const sf::Vector2f TALL_TO_WIDE_SIZE_V_F(TALL_V_F * FIT_SCALE);

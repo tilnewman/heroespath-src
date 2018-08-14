@@ -774,15 +774,6 @@ namespace sfml_util
                 sf::Color::White,
                 SIDE_WIDTH_LEFT);
 
-            // M_HP_LOG_DBG(
-            //    "" << REGION << "\tCORNER_POS_BOT_LEFT.x=" << CORNER_POS_BOT_LEFT.x
-            //       << "\tCORNER_POS_BOT_LEFT.x+CORNER_SIZE_BOT_LEFT_V.x="
-            //       << CORNER_POS_BOT_LEFT.x + CORNER_SIZE_BOT_LEFT_V.x <<
-            //       "\tSIDE_START_POS_BOT.x="
-            //       << SIDE_START_POS_BOT.x << "\tSIDE_LEN_BOT=" << SIDE_LEN_BOT
-            //       << "\tCORNER_POS_BOT_RIGHT.x=" << CORNER_POS_BOT_RIGHT.x << "\t"
-            //       << CORNER_POS_TOP_RIGHT.x);
-
             const sf::Vector2f OUTER_TOP_LEFT_POS_V(
                 std::floor(CORNER_POS_TOP_LEFT.x), std::floor(CORNER_POS_TOP_LEFT.y));
 

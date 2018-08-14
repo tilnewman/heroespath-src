@@ -55,19 +55,7 @@ namespace sfml_util
 
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R)
     {
-        float scaleHoriz { 1.0f };
-        if (!misc::IsRealZero(R.width) && (s.getLocalBounds().width > 0.0f))
-        {
-            scaleHoriz = R.width / s.getLocalBounds().width;
-        }
-
-        float scaleVert { 1.0f };
-        if (!misc::IsRealZero(R.height) && (s.getLocalBounds().height > 0.0f))
-        {
-            scaleVert = R.height / s.getLocalBounds().height;
-        }
-
-        s.setScale(scaleHoriz, scaleVert);
+        SetSize(s, Size(R));
         s.setPosition(Position(R));
     }
 

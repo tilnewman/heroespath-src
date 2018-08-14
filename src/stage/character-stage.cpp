@@ -630,7 +630,29 @@ namespace stage
         radioButtonBoxInfo.SetupImage(woodCachedTexture_);
         radioButtonBoxInfo.SetupBorder(true);
         radioButtonBoxInfo.focus_colors = GUI_DEFAULT_COLORSET_;
-        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         raceRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
             sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
             "RaceSelection",

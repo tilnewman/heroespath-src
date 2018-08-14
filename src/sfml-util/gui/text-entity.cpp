@@ -11,6 +11,7 @@
 //
 #include "text-entity.hpp"
 
+#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
@@ -30,7 +31,7 @@ namespace sfml_util
             const std::string & NAME,
             const bool WILL_CACHE,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
-            : Entity(std::string(NAME).append("_TextEntity"), 0.0f, 0.0f)
+            : Entity(std::string(NAME).append("_TextEntity1"), 0.0f, 0.0f)
             , mouseTextInfo_()
             , profileToTextureMap_()
             , renderTexturesUVec_()
@@ -48,7 +49,7 @@ namespace sfml_util
             const float TEXT_WIDTH_LIMIT,
             const bool WILL_CACHE,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
-            : Entity(std::string(NAME).append("_TextEntity"), POS_LEFT, POS_TOP)
+            : Entity(std::string(NAME).append("_TextEntity2"), POS_LEFT, POS_TOP)
             , mouseTextInfo_(MOUSE_TEXT_INFO)
             , profileToTextureMap_()
             , renderTexturesUVec_()
@@ -76,13 +77,6 @@ namespace sfml_util
             const bool WILL_CACHE,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (mouseTextInfo_.up.IsValid()),
-                "TextEntity(named=\"" << entityName_ << "\")::Setup(pos=" << POS_LEFT << ","
-                                      << POS_TOP << ", width_limit=" << textWidthLimit_
-                                      << ", mouse_text_info=" << mouseTextInfo_
-                                      << ") was given an UP TextInfo object that was invalid.");
-
             sprite_ = sf::Sprite();
             profileToTextureMap_.Clear();
             renderTexturesUVec_.clear();

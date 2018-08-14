@@ -12,6 +12,7 @@
 #include "main-menu-buttons.hpp"
 
 #include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 

@@ -48,7 +48,7 @@ namespace stage
         , createButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Character,
               sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.17f)))
+              sfml_util::ScreenRatioToPixelsHoriz(0.43f)))
         , settingsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Settings,
               sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
@@ -74,9 +74,10 @@ namespace stage
         sfml_util::gui::BoxEntityInfo backgroundBoxInfo;
 
         backgroundBoxInfo.SetupImage(
-            sfml_util::CachedTexture("media-images-backgrounds-tile-darkknot"),
-            boost::none,
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated);
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-darkknot",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
         backgroundBoxInfo.SetupColor(
             sf::Color::Transparent,

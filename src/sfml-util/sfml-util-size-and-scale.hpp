@@ -309,8 +309,29 @@ namespace sfml_util
     // multiplies s's scale (global) by SCALE and then re-centers
     void ScaleAndReCenter(sf::Sprite & s, const float SCALE);
 
-    // wraps the size (global) of s to match R, then positions at R, if either size of R is zero or
-    // less then that dimmension is not rescaled
+    // sets the size (global) of s to match V, if either V is <= zero then that dimmension is not
+    // changed
+    template <typename T>
+    void SetSize(sf::Sprite & s, const sf::Vector2<T> & V_ORIG)
+    {
+        const sf::Vector2f V { V_ORIG };
+        auto newScaleV { s.getScale() };
+
+        if (!misc::IsRealZeroOrLess(V.x) && (s.getLocalBounds().width > 0.0f))
+        {
+            newScaleV.x = V.x / s.getLocalBounds().width;
+        }
+
+        if (!misc::IsRealZeroOrLess(V.y) && (s.getLocalBounds().height > 0.0f))
+        {
+            newScaleV.y = V.y / s.getLocalBounds().height;
+        }
+
+        s.setScale(newScaleV);
+    }
+
+    // sets the size (global) of s to match R, then positions at R, if either size of R is <= zero
+    // then that dimmension is not changed
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R);
 
     // returns true if either x or y is zero or less

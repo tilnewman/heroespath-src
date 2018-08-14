@@ -70,10 +70,25 @@ namespace misc
     }
 
     template <typename T>
+    constexpr typename std::
+        enable_if_t<(std::is_integral<T>::value && !std::is_same<T, bool>::value), bool>
+        IsRealZeroOrLess(const T X)
+    {
+        return (X <= 0);
+    }
+
+    template <typename T>
     constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
         IsRealZero(const T X)
     {
         return IsRealClose(X, T(0));
+    }
+
+    template <typename T>
+    constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
+        IsRealZeroOrLess(const T X)
+    {
+        return ((X < T(0)) || IsRealClose(X, T(0)));
     }
 
 } // namespace misc

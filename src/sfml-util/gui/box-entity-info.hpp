@@ -55,6 +55,14 @@ namespace sfml_util
             // will be configured to repeat within the full inner region
             explicit BoxEntityInfo(
                 const CachedTexture & CACHED_TEXTURE,
+                const float SQUARE_SIZE, // ignored if <= zero
+                const IntRectOpt_t & TEXTURE_RECT_OPT = boost::none);
+
+            // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
+            // will be configured to repeat within the full inner region
+            explicit BoxEntityInfo(
+                const CachedTexture & CACHED_TEXTURE,
+                const sf::Vector2f & TARGET_SIZE_V = sf::Vector2f(0.0f, 0.0f), // ignored if <= zero
                 const IntRectOpt_t & TEXTURE_RECT_OPT = boost::none,
                 const bool WILL_SIZE_INSTEAD_OF_FIT = false);
 
@@ -78,9 +86,19 @@ namespace sfml_util
                 const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None);
 
             // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
-            // will be configured to repeat within the full inner region
+            // will be configured to repeat within the full inner region, if TARGET_WIDTH is <= zero
+            // then the scale of the image is not changed
             void SetupImage(
                 const CachedTexture & CACHED_TEXTURE,
+                const float SQUARE_SIZE,
+                const IntRectOpt_t & TEXTURE_RECT_OPT = boost::none);
+
+            // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
+            // will be configured to repeat within the full inner region, if any value of
+            // TARGET_SIZE_V is zero or less then that dimmension is ignored
+            void SetupImage(
+                const CachedTexture & CACHED_TEXTURE,
+                const sf::Vector2f & TARGET_SIZE_V = sf::Vector2f(0.0f, 0.0f),
                 const IntRectOpt_t & TEXTURE_RECT_OPT = boost::none,
                 const bool WILL_SIZE_INSTEAD_OF_FIT = false);
 
@@ -122,10 +140,11 @@ namespace sfml_util
             sf::Color line_color;
             sf::Color pad_line_color_adj;
             CachedTextureOpt_t cached_texture_opt;
-            IntRectOpt_t texture_rect_opt_;
+            IntRectOpt_t texture_rect_opt;
             bool will_size_instead_of_fit;
             FocusColors focus_colors;
             bool will_draw_color_over_sprite;
+            sf::Vector2f image_size;
         };
 
         using BoxEntityInfoOpt_t = boost::optional<BoxEntityInfo>;
@@ -143,10 +162,11 @@ namespace sfml_util
                        L.line_color,
                        L.pad_line_color_adj,
                        L.cached_texture_opt,
-                       L.texture_rect_opt_,
+                       L.texture_rect_opt,
                        L.will_size_instead_of_fit,
                        L.focus_colors,
-                       L.will_draw_color_over_sprite)
+                       L.will_draw_color_over_sprite,
+                       L.image_size)
                 < std::tie(
                        R.color_from,
                        R.color_to,
@@ -158,10 +178,11 @@ namespace sfml_util
                        R.line_color,
                        R.pad_line_color_adj,
                        R.cached_texture_opt,
-                       R.texture_rect_opt_,
+                       R.texture_rect_opt,
                        R.will_size_instead_of_fit,
                        R.focus_colors,
-                       R.will_draw_color_over_sprite);
+                       R.will_draw_color_over_sprite,
+                       R.image_size);
         }
 
         inline bool operator==(const BoxEntityInfo & L, const BoxEntityInfo & R)
@@ -177,10 +198,11 @@ namespace sfml_util
                        L.line_color,
                        L.pad_line_color_adj,
                        L.cached_texture_opt,
-                       L.texture_rect_opt_,
+                       L.texture_rect_opt,
                        L.will_size_instead_of_fit,
                        L.focus_colors,
-                       L.will_draw_color_over_sprite)
+                       L.will_draw_color_over_sprite,
+                       L.image_size)
                 == std::tie(
                        R.color_from,
                        R.color_to,
@@ -192,10 +214,11 @@ namespace sfml_util
                        R.line_color,
                        R.pad_line_color_adj,
                        R.cached_texture_opt,
-                       R.texture_rect_opt_,
+                       R.texture_rect_opt,
                        R.will_size_instead_of_fit,
                        R.focus_colors,
-                       R.will_draw_color_over_sprite);
+                       R.will_draw_color_over_sprite,
+                       R.image_size);
         }
 
         inline bool operator!=(const BoxEntityInfo & L, const BoxEntityInfo & R)
