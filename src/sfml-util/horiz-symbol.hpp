@@ -9,9 +9,10 @@
 //
 // horiz-symbol.hpp
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
 
-#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace heroespath
 {
@@ -51,10 +52,13 @@ namespace sfml_util
 
     public:
         static const sf::Color DEFAULT_COLOR_;
+        static const std::string IMAGE_PATH_KEY_;
 
     private:
-        CachedTextureOpt_t cachedTextureOpt_;
-        sf::VertexArray vertexArray_;
+        sfml_util::ImageOpt::Enum MakeImageOpt(const bool WILL_INVERT_COLOR) const;
+
+        CachedTexture cachedTexture_;
+        std::vector<sf::Sprite> sprites_;
         sf::FloatRect region_;
     };
 

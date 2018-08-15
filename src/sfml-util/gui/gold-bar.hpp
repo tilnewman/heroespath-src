@@ -132,12 +132,15 @@ namespace sfml_util
 
             void SetupLengthToDefault(const Orientation::Enum ORIENTATION);
 
+            static const std::string IMAGE_PATH_KEY_;
+
             float length_;
             sf::FloatRect innerRegion_;
             sf::FloatRect outerRegion_;
             sf::VertexArray vertexArray_;
             CachedTexture guiElementsCachedTexture_;
             bool willGrowBorderToContainRegion_;
+            misc::NotNull<const sf::Texture *> texturePtr_;
         };
 
         using GoldBarOpt_t = boost::optional<GoldBar>;

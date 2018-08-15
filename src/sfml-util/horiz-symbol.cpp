@@ -21,11 +21,12 @@ namespace sfml_util
 {
 
     const sf::Color BottomSymbol::DEFAULT_COLOR_ { sf::Color(255, 255, 255, 127) };
+    const std::string BottomSymbol::IMAGE_PATH_KEY_ { "media-images-gui-accents-symbol1" };
 
     BottomSymbol::BottomSymbol(
         const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
-        : cachedTextureOpt_()
-        , vertexArray_(sf::PrimitiveType::Quads)
+        : cachedTexture_(IMAGE_PATH_KEY_, MakeImageOpt(WILL_INVERT_COLOR))
+        , sprites_()
         , region_(0.0f, 0.0f, 0.0f, 0.0f)
     {
         Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR);
@@ -33,87 +34,108 @@ namespace sfml_util
 
     void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(vertexArray_, states);
+        for (const auto & SPRITE : sprites_)
+        {
+            target.draw(SPRITE, states);
+        }
     }
 
     void BottomSymbol::Setup(
         const float VERT_SCALE, const bool WILL_INVERT_COLOR, const sf::Color & COLOR)
     {
-        cachedTextureOpt_ = CachedTexture(
-            "media-images-gui-accents-symbol1",
-            ImageOpt::Default | ((WILL_INVERT_COLOR) ? ImageOpt::Invert : ImageOpt::None));
+        sprites_.clear();
+
+        const auto NEW_IMAGE_OPT { MakeImageOpt(WILL_INVERT_COLOR) };
+        if (cachedTexture_.Options().option_enum != NEW_IMAGE_OPT)
+        {
+            cachedTexture_ = CachedTexture(IMAGE_PATH_KEY_, NEW_IMAGE_OPT);
+        }
 
         const sf::FloatRect TEXTURE_REGION(
-            sf::Vector2f(0.0f, 0.0f), sf::Vector2f(cachedTextureOpt_->Get().getSize()));
+            sf::Vector2f(0.0f, 0.0f), sf::Vector2f(cachedTexture_.Get().getSize()));
 
-        const auto IMAGE_HEIGHT { ScreenRatioToPixelsVert(0.137f) * VERT_SCALE };
-        const auto IMAGE_SIZE_V { FitCopy(Size(TEXTURE_REGION), sf::Vector2f(0.0f, IMAGE_HEIGHT)) };
-        auto const POS_TOP { (sfml_util::Display::Instance()->GetWinHeight() - IMAGE_SIZE_V.y) };
+        const auto FULL_SCREEN_RECT { sfml_util::Display::Instance()->FullScreenRect() };
 
-        auto const PAD { 8.0f };
-        auto const THREE_PADS { PAD * 3.0f };
-        auto const HALF_SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() * 0.5f };
+        const sf::Vector2f IMAGE_SIZE_CONTRAINTS_V(
+            0.0f, (ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
 
-        const sf::Vector2f POS_1_V(((HALF_SCREEN_WIDTH - IMAGE_SIZE_V.x) + PAD), POS_TOP);
-        const sf::Vector2f POS_2_V((HALF_SCREEN_WIDTH - PAD), POS_TOP);
+        auto const POS_TOP { (FULL_SCREEN_RECT.height - IMAGE_SIZE_CONTRAINTS_V.y) };
 
-        const sf::Vector2f POS_3_V(
-            ((HALF_SCREEN_WIDTH - (IMAGE_SIZE_V.x * 2.0f)) + THREE_PADS), POS_TOP);
+        auto const HALF_SCREEN_WIDTH { FULL_SCREEN_RECT.width * 0.5f };
 
-        const sf::Vector2f POS_4_V(((HALF_SCREEN_WIDTH + IMAGE_SIZE_V.x) - THREE_PADS), POS_TOP);
+        float counter { 0.0f };
+        float posMostLeft { HALF_SCREEN_WIDTH };
+        float posMostRight { HALF_SCREEN_WIDTH };
 
-        AppendVertexesForQuad(vertexArray_, POS_1_V, TEXTURE_REGION, COLOR);
-        AppendVertexesForQuad(vertexArray_, POS_2_V, TEXTURE_REGION, COLOR);
-        AppendVertexesForQuad(vertexArray_, POS_3_V, TEXTURE_REGION, COLOR);
-        AppendVertexesForQuad(vertexArray_, POS_4_V, TEXTURE_REGION, COLOR);
+        while ((posMostLeft > 0.0f) && (posMostRight < FULL_SCREEN_RECT.width))
+        {
+            sf::Sprite spriteLeft(cachedTexture_.Get());
+            sf::Sprite spriteRight(cachedTexture_.Get());
 
-        region_ = vertexArray_.getBounds();
+            Fit(spriteLeft, IMAGE_SIZE_CONTRAINTS_V);
+            Fit(spriteRight, IMAGE_SIZE_CONTRAINTS_V);
+
+            spriteLeft.setPosition(
+                HALF_SCREEN_WIDTH - (spriteLeft.getGlobalBounds().width * (counter + 1.0f)),
+                POS_TOP);
+
+            spriteRight.setPosition(
+                HALF_SCREEN_WIDTH + (spriteRight.getGlobalBounds().width * counter), POS_TOP);
+
+            spriteLeft.setColor(COLOR);
+            spriteRight.setColor(COLOR);
+
+            sprites_.emplace_back(spriteLeft);
+            sprites_.emplace_back(spriteRight);
+
+            posMostLeft = spriteLeft.getGlobalBounds().left;
+            posMostRight = Right(spriteRight);
+
+            counter += 1.0f;
+        }
+
+        region_ = MininallyEnclosing(sprites_);
     }
 
     const sf::Color BottomSymbol::Color() const
     {
-        if (vertexArray_.getVertexCount() > 0)
+        if (sprites_.empty())
         {
-            return vertexArray_[0].color;
+            return defaults::None;
         }
         else
         {
-            return defaults::None;
+            return sprites_[0].getColor();
         }
     }
 
     void BottomSymbol::Color(const sf::Color & NEW_COLOR)
     {
-        const auto VERTEX_COUNT { vertexArray_.getVertexCount() };
-        for (std::size_t i(0); i < VERTEX_COUNT; ++i)
+        for (auto & sprite : sprites_)
         {
-            vertexArray_[i].color = NEW_COLOR;
+            sprite.setColor(NEW_COLOR);
         }
     }
 
     void BottomSymbol::SetPos(const float POS_LEFT, const float POS_TOP)
     {
-        if (vertexArray_.getVertexCount() > 0)
-        {
-            MovePos(POS_LEFT - vertexArray_[0].position.x, POS_TOP - vertexArray_[0].position.y);
-        }
-
-        region_.left = POS_LEFT;
-        region_.top = POS_TOP;
+        MovePos(POS_LEFT - region_.left, POS_TOP - region_.top);
     }
 
     void BottomSymbol::MovePos(const float HORIZ, const float VERT)
     {
-        const sf::Vector2f MOVE_V(HORIZ, VERT);
-
-        const auto VERTEX_COUNT { vertexArray_.getVertexCount() };
-        for (std::size_t i(0); i < VERTEX_COUNT; ++i)
+        for (auto & sprite : sprites_)
         {
-            vertexArray_[i].position += MOVE_V;
+            sprite.move(HORIZ, VERT);
         }
 
         region_.left += HORIZ;
         region_.top += VERT;
+    }
+
+    sfml_util::ImageOpt::Enum BottomSymbol::MakeImageOpt(const bool WILL_INVERT_COLOR) const
+    {
+        return ImageOpt::Default | ((WILL_INVERT_COLOR) ? ImageOpt::Invert : ImageOpt::None);
     }
 
 } // namespace sfml_util

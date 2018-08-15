@@ -28,13 +28,16 @@ namespace sfml_util
     namespace gui
     {
 
+        const std::string GoldBar::IMAGE_PATH_KEY_ { "media-images-gui-elements" };
+
         GoldBar::GoldBar()
             : length_(0.0f)
             , innerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , outerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , vertexArray_(sf::PrimitiveType::Quads)
-            , guiElementsCachedTexture_("media-images-gui-elements")
+            , guiElementsCachedTexture_(IMAGE_PATH_KEY_)
             , willGrowBorderToContainRegion_(false)
+            , texturePtr_(&guiElementsCachedTexture_.Get())
         {}
 
         GoldBar::GoldBar(
@@ -48,8 +51,9 @@ namespace sfml_util
             , innerRegion_(POS_LEFT, POS_TOP, LENGTH, LENGTH)
             , outerRegion_(POS_LEFT, POS_TOP, LENGTH, LENGTH)
             , vertexArray_(sf::PrimitiveType::Quads)
-            , guiElementsCachedTexture_("media-images-gui-elements")
+            , guiElementsCachedTexture_(IMAGE_PATH_KEY_)
             , willGrowBorderToContainRegion_(false)
+            , texturePtr_(&guiElementsCachedTexture_.Get())
         {
             Setup(POS_LEFT, POS_TOP, LENGTH, ORIENTATION, SIDE, WILL_CAP_ENDS);
         }
@@ -60,8 +64,9 @@ namespace sfml_util
             , innerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , outerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , vertexArray_(sf::PrimitiveType::Quads)
-            , guiElementsCachedTexture_("media-images-gui-elements")
+            , guiElementsCachedTexture_(IMAGE_PATH_KEY_)
             , willGrowBorderToContainRegion_(false)
+            , texturePtr_(&guiElementsCachedTexture_.Get())
         {
             std::vector<sf::FloatRect> outerRegions;
             std::vector<sf::FloatRect> innerRegions;
@@ -87,8 +92,9 @@ namespace sfml_util
             , innerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , outerRegion_(0.0f, 0.0f, 0.0f, 0.0f)
             , vertexArray_(sf::PrimitiveType::Quads)
-            , guiElementsCachedTexture_("media-images-gui-elements")
+            , guiElementsCachedTexture_(IMAGE_PATH_KEY_)
             , willGrowBorderToContainRegion_(false)
+            , texturePtr_(&guiElementsCachedTexture_.Get())
         {
             const auto VERTEX_COUNT { VERTEX_ARRAY.getVertexCount() };
             for (std::size_t i(0); i < VERTEX_COUNT; ++i)
@@ -108,15 +114,16 @@ namespace sfml_util
             , innerRegion_(REGION)
             , outerRegion_(REGION)
             , vertexArray_(sf::PrimitiveType::Quads)
-            , guiElementsCachedTexture_("media-images-gui-elements")
+            , guiElementsCachedTexture_(IMAGE_PATH_KEY_)
             , willGrowBorderToContainRegion_(WILL_GROW_BORDER_TO_CONTAIN_REGION)
+            , texturePtr_(&guiElementsCachedTexture_.Get())
         {
             Setup(REGION, ORIENTATION, WILL_GROW_BORDER_TO_CONTAIN_REGION);
         }
 
         void GoldBar::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            states.texture = &guiElementsCachedTexture_.Get();
+            states.texture = texturePtr_.Ptr();
             target.draw(vertexArray_, states);
         }
 
