@@ -100,28 +100,42 @@ namespace stage
         // Ouroboros
         EntityAdd(ouroborosUPtr_.get());
 
-        auto const SPACE_BETWEEN_BUTTONS { sfml_util::MapByRes(8.0f, 50.0f) };
-        auto const TITLE_TO_BUTTONS_SPACER { sfml_util::MapByRes(160.0f, 1000.0f) };
+        auto const BETWEEN_BUTTONS_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
+
+        const auto BUTTONS_HEIGHT { (BETWEEN_BUTTONS_SPACER * 4.0f)
+                                    + resumeButtonUPtr_->GetEntityRegion().height
+                                    + createButtonUPtr_->GetEntityRegion().height
+                                    + settingsButtonUPtr_->GetEntityRegion().height
+                                    + creditsButtonUPtr_->GetEntityRegion().height
+                                    + exitButtonUPtr_->GetEntityRegion().height };
+
+        const auto BUTTONS_POS_VERT_CENTER {
+            sfml_util::Bottom(titleSprite_.getGlobalBounds())
+            + ((bottomSymbol_.Region().top - sfml_util::Bottom(titleSprite_.getGlobalBounds()))
+               * 0.5f)
+        };
+
+        const auto FIRST_BUTTON_POS_TOP { BUTTONS_POS_VERT_CENTER - (BUTTONS_HEIGHT * 0.5f) };
 
         resumeButtonUPtr_->SetEntityPos(
             sfml_util::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(titleSprite_.getGlobalBounds()) + TITLE_TO_BUTTONS_SPACER);
+            FIRST_BUTTON_POS_TOP);
 
         createButtonUPtr_->SetEntityPos(
             sfml_util::DisplayCenterHoriz(createButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(resumeButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
+            sfml_util::Bottom(resumeButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         settingsButtonUPtr_->SetEntityPos(
             sfml_util::DisplayCenterHoriz(settingsButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(createButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
+            sfml_util::Bottom(createButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         creditsButtonUPtr_->SetEntityPos(
             sfml_util::DisplayCenterHoriz(creditsButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(settingsButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
+            sfml_util::Bottom(settingsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         exitButtonUPtr_->SetEntityPos(
             sfml_util::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(creditsButtonUPtr_->GetEntityRegion()) + SPACE_BETWEEN_BUTTONS);
+            sfml_util::Bottom(creditsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         auto const ARE_THERE_GAMES_TO_LOAD { []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
