@@ -64,8 +64,6 @@
 #include <thread>
 #include <vector>
 
-#include <filesystem>
-
 namespace heroespath
 {
 namespace stage
@@ -387,8 +385,8 @@ namespace stage
 
         M_TESTING_STAGE_TEST(GameDataFile);
 
-        // M_TESTING_STAGE_TEST_WAIT(GoldBar);
-        // M_TESTING_STAGE_TEST_WAIT(GoldBar2);
+        M_TESTING_STAGE_TEST_WAIT(GoldBar);
+        M_TESTING_STAGE_TEST_WAIT(GoldBar2);
         M_TESTING_STAGE_TEST_WAIT(Border);
 
         M_TESTING_STAGE_TEST(Enums);

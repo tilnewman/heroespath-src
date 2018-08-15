@@ -53,6 +53,24 @@ namespace sfml_util
         ScaleAndReCenter(s, sf::Vector2f(SCALE, SCALE));
     }
 
+    void SetSize(sf::Sprite & s, const sf::Vector2f & V_ORIG)
+    {
+        const sf::Vector2f V { V_ORIG };
+        auto newScaleV { s.getScale() };
+
+        if (!misc::IsRealZeroOrLess(V.x) && (s.getLocalBounds().width > 0.0f))
+        {
+            newScaleV.x = V.x / s.getLocalBounds().width;
+        }
+
+        if (!misc::IsRealZeroOrLess(V.y) && (s.getLocalBounds().height > 0.0f))
+        {
+            newScaleV.y = V.y / s.getLocalBounds().height;
+        }
+
+        s.setScale(newScaleV);
+    }
+
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R)
     {
         SetSize(s, Size(R));

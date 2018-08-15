@@ -479,7 +479,10 @@ namespace sfml_util
                       return std::make_tuple(topLeftV, topRightV, botRightV, botLeftV);
                   }();
 
-            const auto CORNER_SIZE_TOP_LEFT_V = [&]() {
+            const auto CORNER_SIZE_TOP_LEFT_V = [&,
+                                                 OUTER_MOVE_TOP_LEFT_V = OUTER_MOVE_TOP_LEFT_V,
+                                                 OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
+                                                 OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
                 sf::Vector2f sizeV(0.0f, 0.0f);
 
                 if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
@@ -600,7 +603,6 @@ namespace sfml_util
                    SIDE_LEN_LEFT = SIDE_LEN_LEFT,
                    OUTER_MOVE_TOP_LEFT_V = OUTER_MOVE_TOP_LEFT_V,
                    OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
-                   OUTER_MOVE_BOT_RIGHT_V = OUTER_MOVE_BOT_RIGHT_V,
                    OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
                       sf::Vector2f topLeft { 0.0f, 0.0f };
                       sf::Vector2f topRight { 0.0f, 0.0f };
