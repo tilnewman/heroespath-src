@@ -653,6 +653,7 @@ namespace stage
 
 
 
+
         raceRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
             sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
             "RaceSelection",

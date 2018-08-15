@@ -37,6 +37,7 @@ namespace stage
               {
                   sfml_util::GuiFont::Default,
                   sfml_util::GuiFont::System,
+                  sfml_util::GuiFont::Number,
               },
               true)
         , titleCachedTexture_("media-images-title-blacksymbol")

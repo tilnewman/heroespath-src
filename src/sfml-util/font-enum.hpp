@@ -26,35 +26,37 @@ namespace sfml_util
             // Euler, slightly dolphin, nice and round with ample spacing
             Default = 0,
 
-            // Modern-Antiqua, bold with sharp flavorful ends, bold and tall (like a bold Euler with
-            // more flavor)
+            // Modern-Antiqua, bold with sharp flavorful ends, bold and tall
+            // (like a bold Euler with more flavor)
             DefaultBoldFlavor,
 
-            // Gentium-Plus, normal, tall, straight, and slightly condensed (very similar to
-            // GoudyBookletter but slightly wider)
+            // Gentium-Plus, normal, tall, straight, and slightly condensed
+            // (very similar to GoudyBookletter but slightly wider)
             System,
 
-            // Goudy-Bookletter, normal and wide but very condensed with ugly numbers (very similar
-            // to GentiumPlus but slightly more narrow)
+            // Goudy-Bookletter, normal and wide but very condensed with ugly numbers
+            // (very similar to GentiumPlus but slightly more narrow)
             SystemCondensed,
 
-            // Quill-Sword, rigid caliggraphy with medieval tails, very condensed (good for signs)
-            // (great flavorful numbers)
+            // Quill-Sword, rigid caliggraphy with medieval tails, very condensed
+            // (good for signs) (great flavorful numbers)
             SignThinTallNarrow,
 
             Number = SignThinTallNarrow,
 
-            // Queen-Country, very bold and short with medieval flavor (good for signs)
+            // Queen-Country, very bold and short with medieval flavor
+            // (good for signs)
             SignBoldShortWide,
 
-            // Valley-Forge, casual handwriting, slightly bold (good for writing on scrolls)
-            // used for popup window text buttons
+            // Valley-Forge, casual handwriting, slightly bold
+            // (good for writing on scrolls) (used for popup window text buttons)
             Handwriting,
 
             // Square-Antiqua
             DialogModern,
 
             // Mops-Antiqua
+            // (used for interaction text buttons)
             DialogMedieval,
 
             Count

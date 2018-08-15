@@ -115,6 +115,7 @@ namespace stage
                   sfml_util::GuiFont::Default,
                   sfml_util::GuiFont::DefaultBoldFlavor,
                   sfml_util::GuiFont::System,
+                  sfml_util::GuiFont::Number,
                   sfml_util::GuiFont::SystemCondensed,
                   sfml_util::GuiFont::SignThinTallNarrow,
                   sfml_util::GuiFont::SignBoldShortWide,
