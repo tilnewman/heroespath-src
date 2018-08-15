@@ -1515,7 +1515,7 @@ namespace stage
     void TestingStage::SetupWaitTest_GoldBar()
     {
         const auto SCREEN_EDGE_PAD { std::sqrt((StageRegionWidth() * StageRegionHeight()))
-                                     * 0.12f };
+                                     * 0.092f };
 
         const auto BETWEEN_PAD { SCREEN_EDGE_PAD * 0.025f };
 
