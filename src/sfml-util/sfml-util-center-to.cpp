@@ -19,7 +19,7 @@ namespace sfml_util
 
     void CenterTo(sf::Sprite & s, const sf::FloatRect & R)
     {
-        s.setPosition(CenterOf(R) - (Size(s) * 0.5f));
+        s.setPosition((CenterOf(R) - (Size(s) * 0.5f)) + s.getOrigin());
     }
 
 } // namespace sfml_util

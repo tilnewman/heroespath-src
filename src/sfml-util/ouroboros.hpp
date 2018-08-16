@@ -33,7 +33,7 @@ namespace sfml_util
         Ouroboros & operator=(const Ouroboros &) = delete;
         Ouroboros & operator=(Ouroboros &&) = delete;
 
-        explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);
+        explicit Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK = false);
         virtual ~Ouroboros();
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

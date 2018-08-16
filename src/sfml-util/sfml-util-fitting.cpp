@@ -33,7 +33,7 @@ namespace sfml_util
     {
         auto const ORIG_CENTER { CenterOf(s) };
         Fit(s, LIMIT);
-        s.setPosition(ORIG_CENTER - (Size(s, 0.5f)));
+        s.setPosition((ORIG_CENTER - (Size(s, 0.5f)) + s.getOrigin()));
     }
 
     void FitAndReCenter(sf::Sprite & s, const float WIDTH_LIMIT, const float HEIGHT_LIMIT)
@@ -54,7 +54,7 @@ namespace sfml_util
     void FitAndCenterTo(sf::Sprite & s, const sf::FloatRect & LIMIT)
     {
         Fit(s, Size(LIMIT));
-        s.setPosition(CenterOf(LIMIT) - (Size(s) * 0.5f));
+        s.setPosition((CenterOf(LIMIT) - (Size(s) * 0.5f)) + s.getOrigin());
     }
 
     void FitAndCenterTo(sf::Sprite & s, const sf::Sprite & LIMIT)

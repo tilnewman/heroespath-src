@@ -11,6 +11,8 @@
 //
 #include "ouroboros.hpp"
 
+#include "log/log-macros.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
@@ -23,7 +25,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_INVERT)
+    Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK)
         : Entity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
         , IMAGE_INITIAL_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.34f))
         , IMAGE_DRIFT_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.12f))
@@ -32,7 +34,7 @@ namespace sfml_util
         , rotation_(0.0f)
         , cachedTexture_(
               "media-images-gui-accents-ouroboros",
-              ImageOpt::Default | ((WILL_INVERT) ? ImageOpt::Invert : ImageOpt::None))
+              ImageOpt::Default | ((WILL_MAKE_BLACK) ? ImageOpt::None : ImageOpt::Invert))
         , sprite_(cachedTexture_.Get())
         , sizeDrifter_(
               IMAGE_MIN_DRIFT_WIDTH_,

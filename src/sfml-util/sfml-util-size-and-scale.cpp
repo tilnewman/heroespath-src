@@ -33,7 +33,7 @@ namespace sfml_util
     {
         const auto ORIG_CENTER { CenterOf(s) };
         s.setScale(SCALE_V);
-        s.setPosition(ORIG_CENTER - (Size(s) * 0.5f));
+        s.setPosition((ORIG_CENTER - (Size(s) * 0.5f)) + s.getOrigin());
     }
 
     void SetScaleAndReCenter(sf::Sprite & s, const float SCALE)
@@ -45,7 +45,7 @@ namespace sfml_util
     {
         const auto ORIG_CENTER { CenterOf(s) };
         s.setScale(s.getScale().x * SCALE_V.x, s.getScale().y * SCALE_V.y);
-        s.setPosition(ORIG_CENTER - (Size(s) * 0.5f));
+        s.setPosition((ORIG_CENTER - (Size(s) * 0.5f)) + s.getOrigin());
     }
 
     void ScaleAndReCenter(sf::Sprite & s, const float SCALE)
@@ -74,7 +74,7 @@ namespace sfml_util
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R)
     {
         SetSize(s, Size(R));
-        s.setPosition(Position(R));
+        s.setPosition(Position(R) + s.getOrigin());
     }
 
     bool IsEitherSizeZeroOrLess(const sf::Sprite & S) { return IsEitherZeroOrLess(Size(S)); }

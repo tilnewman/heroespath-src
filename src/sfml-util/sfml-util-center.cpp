@@ -18,7 +18,7 @@ namespace sfml_util
 
     const sf::Vector2f CenterCopy(const sf::Sprite & S)
     {
-        return CenterCopy(S.getGlobalBounds().width, S.getGlobalBounds().height);
+        return CenterCopy(S.getGlobalBounds().width, S.getGlobalBounds().height) + S.getOrigin();
     }
 
     void Center(sf::Sprite & s) { s.setPosition(CenterCopy(s)); }
