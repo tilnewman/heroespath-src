@@ -108,10 +108,10 @@ namespace combat
         , willShowSelectAnim_(false)
         , selectAnimSprite_()
     {
-        sfml_util::SetColor(nameTextObj_, NameColor());
+        nameTextObj_.setFillColor(NameColor());
 
         UpdateConditionText();
-        sfml_util::SetColor(condTextObj_, sf::Color(200, 200, 200, 200));
+        condTextObj_.setFillColor(sf::Color(200, 200, 200, 200));
 
         HealthChangeTasks();
 
@@ -288,8 +288,8 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        sfml_util::SetColor(nameTextObj_, AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
-        sfml_util::SetColor(condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
+        nameTextObj_.setFillColor(AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
+        condTextObj_.setFillColor(AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
         healthLineColorRed_ = AdjustColorForToneDown(HealthColorRed(), TONE_DOWN_VAL);
@@ -486,8 +486,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
-            sfml_util::SetColor(nameTextObj_, NameColor() + HIGHLIGHT_ADJ_COLOR_);
-            sfml_util::SetColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
+            nameTextObj_.setFillColor(NameColor() + HIGHLIGHT_ADJ_COLOR_);
+            condTextObj_.setFillColor(CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
             healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
             healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
 
@@ -501,8 +501,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
-            sfml_util::SetColor(nameTextObj_, NameColor());
-            sfml_util::SetColor(condTextObj_, CONDITION_COLOR_);
+            nameTextObj_.setFillColor(NameColor());
+            condTextObj_.setFillColor(CONDITION_COLOR_);
             healthLineColor_ = HealthColor();
             healthLineColorTick_ = HealthColorTick();
             sprite_.setColor(creatureImageColor_);

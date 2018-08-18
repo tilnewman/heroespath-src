@@ -33,6 +33,21 @@ namespace sfml_util
         const Corner::Enum CORNERS_WITH_FROM_COLOR)
         : vertexes_(sf::Quads, 4)
     {
+        Setup(RECT, COLOR_FROM, COLOR_TO, SIDES_WITH_FROM_COLOR, CORNERS_WITH_FROM_COLOR);
+    }
+
+    void ColoredRect::Setup(const sf::FloatRect & RECT, const sf::Color & COLOR)
+    {
+        Setup(RECT, COLOR, COLOR, Side::None, Corner::None);
+    }
+
+    void ColoredRect::Setup(
+        const sf::FloatRect & RECT,
+        const sf::Color & COLOR_FROM,
+        const sf::Color & COLOR_TO,
+        const Side::Enum SIDES_WITH_FROM_COLOR,
+        const Corner::Enum CORNERS_WITH_FROM_COLOR)
+    {
         Rect(RECT);
         Color(COLOR_FROM);
 

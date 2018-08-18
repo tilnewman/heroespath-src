@@ -87,7 +87,7 @@ namespace stage
                 *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                 24);
 
-            sfml_util::SetColor(text, sf::Color::Red);
+            text.setFillColor(sf::Color::Red);
         }
     }
 
@@ -1853,7 +1853,7 @@ namespace stage
             *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
             sfml_util::FontManager::Instance()->Size_Larger());
 
-        text.setColor(sf::Color::White);
+        text.setFillColor(sf::Color::White);
         text.setPosition((StageRegionWidth() * 0.5f) - text.getGlobalBounds().width, 50.0f);
         waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
     }

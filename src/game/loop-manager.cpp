@@ -462,10 +462,12 @@ namespace game
     {
         while (false == cmdQueueVec_.empty())
         {
-            // M_HP_LOG("LoopManager::Execute() executing: " << cmdQueueVec_.front()->GetName() );
+            // M_HP_LOG("LoopManager::Execute() executing: " << cmdQueueVec_.front()->Name());
 
-            cmdQueueVec_.front()->Execute();
+            sfml_util::LoopCmdUPtr_t currentCommandUPtr(cmdQueueVec_.front().release());
             cmdQueueVec_.erase(std::begin(cmdQueueVec_));
+
+            currentCommandUPtr->Execute();
 
             auto const CURRENT_STATE { loop_.GetState() };
             if (CURRENT_STATE != state_)

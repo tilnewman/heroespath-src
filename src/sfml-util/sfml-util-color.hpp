@@ -63,9 +63,6 @@ namespace sfml_util
         const sf::Color & C,
         const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default);
 
-    // linux SFML lib does not seem to support outline fonts...
-    void SetColor(sf::Text & text, const sf::Color & COLOR);
-
     // return a color between FROM and TO at the given RATIO
     const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO);
 

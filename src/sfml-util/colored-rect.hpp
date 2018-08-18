@@ -48,6 +48,16 @@ namespace sfml_util
         ColoredRect & operator=(const ColoredRect &) = default;
         ColoredRect & operator=(ColoredRect &&) = default;
 
+        void Setup(const sf::FloatRect & RECT, const sf::Color & COLOR);
+
+        // side colors are set before corner colors
+        void Setup(
+            const sf::FloatRect & RECT,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO,
+            const Side::Enum SIDES_WITH_FROM_COLOR,
+            const Corner::Enum CORNERS_WITH_FROM_COLOR = Corner::None);
+
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         bool IsGradient() const;

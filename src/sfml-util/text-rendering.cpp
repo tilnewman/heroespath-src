@@ -50,7 +50,7 @@ namespace sfml_util
             const SfTextVec_t SF_TEXT_VEC_LINE { RenderLine(
                 TEXT_INFO.text,
                 TEXT_INFO.char_size,
-                NUMBERS_FONT_PTR_OPT.value(),
+                TEXT_INFO.font_ptr_opt.value(),
                 NUMBERS_FONT_PTR,
                 posV,
                 WIDTH_LIMIT,

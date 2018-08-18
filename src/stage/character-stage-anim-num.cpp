@@ -96,7 +96,7 @@ namespace stage
             color_.g = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.b = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.a = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
-            sfml_util::SetColor(textObj_, color_);
+            textObj_.setFillColor(color_);
 
             isDoneMoving_ = (SLIDERX_RATIO >= 0.99f);
             return false;
@@ -119,7 +119,7 @@ namespace stage
                         color_.a = 0;
                     }
 
-                    sfml_util::SetColor(textObj_, color_);
+                    textObj_.setFillColor(color_);
                     return false;
                 }
                 else

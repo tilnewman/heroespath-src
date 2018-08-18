@@ -29,7 +29,7 @@ namespace sfml_util
     {
     public:
         explicit LoopCmd(const std::string & NAME)
-            : name_(std::string("LoopCommand").append(NAME))
+            : name_(std::string("LoopCommand-").append(NAME))
         {}
 
         virtual ~LoopCmd() = default;

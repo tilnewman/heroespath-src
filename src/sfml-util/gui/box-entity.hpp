@@ -83,23 +83,23 @@ namespace sfml_util
 
         private:
             BoxEntityInfo backgroundInfo_;
-            BorderOpt_t borderOpt_;
-            ColoredRectOpt_t coloredRectOpt_;
-            SpriteOpt_t spriteOpt_;
+            Border border_;
+            ColoredRect coloredRect_;
+            sf::Sprite sprite_;
         };
 
         using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
         inline bool operator<(const BoxEntity & L, const BoxEntity & R)
         {
-            return std::tie(L.backgroundInfo_, L.borderOpt_, L.coloredRectOpt_, L.spriteOpt_)
-                < std::tie(R.backgroundInfo_, R.borderOpt_, R.coloredRectOpt_, R.spriteOpt_);
+            return std::tie(L.backgroundInfo_, L.border_, L.coloredRect_, L.sprite_)
+                < std::tie(R.backgroundInfo_, R.border_, R.coloredRect_, R.sprite_);
         }
 
         inline bool operator==(const BoxEntity & L, const BoxEntity & R)
         {
-            return std::tie(L.backgroundInfo_, L.borderOpt_, L.coloredRectOpt_, L.spriteOpt_)
-                == std::tie(R.backgroundInfo_, R.borderOpt_, R.coloredRectOpt_, R.spriteOpt_);
+            return std::tie(L.backgroundInfo_, L.border_, L.coloredRect_, L.sprite_)
+                == std::tie(R.backgroundInfo_, R.border_, R.coloredRect_, R.sprite_);
         }
 
         inline bool operator!=(const BoxEntity & L, const BoxEntity & R) { return !(L == R); }

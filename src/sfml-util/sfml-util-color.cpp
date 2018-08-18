@@ -100,15 +100,6 @@ namespace sfml_util
         return ss.str();
     }
 
-    void SetColor(sf::Text & text, const sf::Color & COLOR)
-    {
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
-        text.setColor(COLOR);
-#else
-        text.setFillColor(COLOR);
-#endif
-    }
-
     const sf::Color Transition(const sf::Color & FROM, const sf::Color & TO, const float RATIO)
     {
         auto const RED { static_cast<sf::Uint8>(

@@ -11,9 +11,9 @@
 //  A Stage class that displays the rolling credits of the app.
 //
 #include "sfml-util/cached-texture.hpp"
+#include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/credit.hpp"
 
@@ -66,8 +66,8 @@ namespace stage
         CreditUVec_t creditUVec_;
         float scrollSpeed_;
         bool isKeyHeldDown_;
-        sf::RectangleShape aboveBlackRectangle_;
-        sf::RectangleShape belowBlackRectangle_;
+        sfml_util::ColoredRect blackRectUpper_;
+        sfml_util::ColoredRect blackRectLower_;
     };
 
 } // namespace stage

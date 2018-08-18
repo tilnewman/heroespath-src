@@ -13,6 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/gui/gui-images.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -50,8 +51,7 @@ namespace stage
               },
               true)
         , CREDIT_BOX_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.4f))
-        , CREDITBOX_POS_LEFT_(
-              (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) - (CREDIT_BOX_WIDTH_ * 0.5f))
+        , CREDITBOX_POS_LEFT_((StageRegionWidth() * 0.5f) - (CREDIT_BOX_WIDTH_ * 0.5f))
         , creditBoxPosTop_(0.0f)
         , creditBoxHeight_(0.0f)
         , totalHeight_(0.0f)
@@ -62,8 +62,8 @@ namespace stage
         , creditUVec_()
         , scrollSpeed_(DEFAULT_SCROLL_SPEED_)
         , isKeyHeldDown_(false)
-        , aboveBlackRectangle_()
-        , belowBlackRectangle_()
+        , blackRectUpper_()
+        , blackRectLower_()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits);
     }
@@ -76,27 +76,16 @@ namespace stage
 
     void CreditsStage::Setup()
     {
-        // default states are used for all drawing
-        sf::RenderStates states;
+        auto const VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.022f) };
 
-        // title
-        {
-            sfml_util::Fit(bpTitleSprite_, sfml_util::ScreenRatiosToPixels(0.5f, 0.0f));
+        sfml_util::Fit(bpTitleSprite_, sfml_util::ScreenRatiosToPixels(0.5f, 0.0f));
 
-            bpTitleSprite_.setPosition(
-                sfml_util::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), 50.0f);
-        }
+        bpTitleSprite_.setPosition(
+            sfml_util::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), VERT_SPACER);
 
-        // size of the box in which all the credits scroll
-        auto const MARGIN_TOP { sfml_util::ScreenRatioToPixelsVert(0.022f) };
-        auto const MARGIN_BOTTOM { sfml_util::ScreenRatioToPixelsVert(0.0555f) };
+        creditBoxPosTop_ = sfml_util::Bottom(bpTitleSprite_) + VERT_SPACER;
+        creditBoxHeight_ = (StageRegionHeight() - creditBoxPosTop_) - (VERT_SPACER * 2.0f);
 
-        creditBoxPosTop_
-            = bpTitleSprite_.getPosition().y + bpTitleSprite_.getGlobalBounds().height + MARGIN_TOP;
-
-        creditBoxHeight_ = (StageRegionHeight() - creditBoxPosTop_) - MARGIN_BOTTOM;
-
-        // the rect that defines the credits box
         const sf::FloatRect CREDITS_BOX_RECT(
             CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
 
@@ -107,7 +96,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-runes",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfml_util::ScreenRatioToPixelsHoriz(0.15f));
 
         boxInfo.SetupBorder(true);
 
@@ -128,11 +117,11 @@ namespace stage
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when outside the box
-        aboveBlackRectangle_ = sfml_util::MakeRectangleSolid(
+        blackRectUpper_.Setup(
             sf::FloatRect(0.0f, 0.0f, StageRegionWidth(), creditBoxPosTop_ - 5.0f),
             sf::Color::Black);
 
-        belowBlackRectangle_ = sfml_util::MakeRectangleSolid(
+        blackRectLower_.Setup(
             sf::FloatRect(
                 0.0f,
                 creditBoxPosTop_ + creditBoxHeight_ + 5.0f,
@@ -379,8 +368,8 @@ namespace stage
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when outside the box
-        target.draw(aboveBlackRectangle_, STATES);
-        target.draw(belowBlackRectangle_, STATES);
+        target.draw(blackRectUpper_, STATES);
+        target.draw(blackRectLower_, STATES);
 
         target.draw(bpTitleSprite_, STATES);
     }

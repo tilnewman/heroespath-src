@@ -78,7 +78,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f));
 
         backgroundBoxInfo.SetupColor(
             sf::Color::Transparent,
