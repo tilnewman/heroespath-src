@@ -41,15 +41,15 @@ namespace sfml_util
         {
             if (backgroundInfo_.will_draw_color_over_sprite)
             {
+                target.draw(sprite_, states);
                 target.draw(coloredRect_, states);
                 target.draw(border_, states);
-                target.draw(sprite_, states);
             }
             else
             {
+                target.draw(coloredRect_, states);
                 target.draw(sprite_, states);
                 target.draw(border_, states);
-                target.draw(coloredRect_, states);
             }
         }
 
