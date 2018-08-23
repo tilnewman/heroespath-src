@@ -149,6 +149,7 @@ namespace sfml_util
             const sf::Color & LINE_COLOR,
             const sf::Color & PAD_LINE_COLOR_ADJ)
         {
+            will_draw_border = true;
             will_grow_border = WILL_GROW_BORDER_TO_CONTAIN_REGION;
             line_thickness = LINE_THICKNESS;
             line_color = LINE_COLOR;

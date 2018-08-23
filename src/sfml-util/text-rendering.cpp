@@ -330,6 +330,7 @@ namespace sfml_util
 
         std::size_t textPosLastSpace { 0 };
         SfTextVec_t sfTextVecWordLastSpace;
+        sf::Text sfTextLastSpace;
 
         while (++textPosIndex < TEXT_LENGTH)
         {
@@ -338,17 +339,20 @@ namespace sfml_util
 
             if ((' ' == currChar) && (WIDTH_LIMIT > 0.0f))
             {
-                if (MinimallyEnclosing(sfTextVecWord).width < WIDTH_LIMIT)
+                if ((MinimallyEnclosing(sfTextVecWord).width + sfText.getGlobalBounds().width)
+                    < WIDTH_LIMIT)
                 {
                     textPosLastSpace = textPosIndex;
                     sfTextVecWordLastSpace = sfTextVecWord;
+                    sfTextLastSpace = sfText;
                 }
                 else
                 {
-                    if ((textPosLastSpace != 0) && !sfTextVecWordLastSpace.empty())
+                    if (textPosLastSpace != 0)
                     {
                         textPosIndex = textPosLastSpace;
                         sfTextVecWord = sfTextVecWordLastSpace;
+                        sfText = sfTextLastSpace;
                     }
 
                     terminatingChar = ' ';
