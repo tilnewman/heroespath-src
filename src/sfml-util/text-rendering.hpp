@@ -70,8 +70,9 @@ namespace sfml_util
         // empty vec with terminatingChar='\n' if a newline was the first non-space character found,
         // that final terminating character is NOT rendered so that the caller can decide if that
         // char needs to be fit on the current line or not
-        static const SfTextVec_t RenderWord(
+        static const SfTextVec_t RenderWords(
             const std::string & TEXT,
+            const float WIDTH_LIMIT,
             const unsigned CHARACTER_SIZE,
             const FontPtr_t & LETTERS_FONT_PTR,
             const FontPtr_t & NUMBERS_FONT_PTR,

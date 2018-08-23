@@ -195,6 +195,9 @@ namespace sfml_util
                 for (const auto & SF_TEXT : renderedText_.text_vecs[i])
                 {
                     target.draw(SF_TEXT, states);
+
+                    target.draw(
+                        sfml_util::MakeRectangleHollow(SF_TEXT.getGlobalBounds(), sf::Color::Red));
                 }
             }
         }

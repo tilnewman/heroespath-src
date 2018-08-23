@@ -161,12 +161,14 @@ namespace sfml_util
         while (textPosIndex < TEXT_LENGTH)
         {
             const auto TEXT_POS_BEFORE_RENDERING_WORD_INDEX { textPosIndex };
+            const auto CURRENT_WIDTH { MinimallyEnclosing(sfTextVecLine).width };
 
-            posV.x = POS_V_ORIG.x + MinimallyEnclosing(sfTextVecLine).width;
+            posV.x = POS_V_ORIG.x + CURRENT_WIDTH;
 
             char wordTerminatingChar { 0 };
-            SfTextVec_t sfTextVecWord { RenderWord(
+            SfTextVec_t sfTextVecWord { RenderWords(
                 TEXT,
+                WIDTH_LIMIT - CURRENT_WIDTH,
                 CHARACTER_SIZE,
                 LETTERS_FONT_PTR,
                 NUMBERS_FONT_PTR,
@@ -239,8 +241,9 @@ namespace sfml_util
         return sfTextVecLine;
     }
 
-    const SfTextVec_t TextRenderer::RenderWord(
+    const SfTextVec_t TextRenderer::RenderWords(
         const std::string & TEXT,
+        const float WIDTH_LIMIT,
         const unsigned CHARACTER_SIZE,
         const FontPtr_t & LETTERS_FONT_PTR,
         const FontPtr_t & NUMBERS_FONT_PTR,
@@ -296,7 +299,7 @@ namespace sfml_util
 
         auto appendCharOrAppendTextAndStartNew
             = [&](bool & isCurrTextLetters, sf::Text & sfText, const char CHAR) {
-                  if (willCharUseLetterFont(CHAR) == isCurrTextLetters)
+                  if ((CHAR == ' ') || (willCharUseLetterFont(CHAR) == isCurrTextLetters))
                   {
                       sfText.setString(sfText.getString() + CHAR);
                   }
@@ -325,14 +328,32 @@ namespace sfml_util
 
         appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
 
+        std::size_t textPosLastSpace { 0 };
+        SfTextVec_t sfTextVecWordLastSpace;
+
         while (++textPosIndex < TEXT_LENGTH)
         {
             currChar = TEXT[textPosIndex];
             terminatingChar = currChar;
 
-            if (' ' == currChar)
+            if ((' ' == currChar) && (WIDTH_LIMIT > 0.0f))
             {
-                break;
+                if (MinimallyEnclosing(sfTextVecWord).width < WIDTH_LIMIT)
+                {
+                    textPosLastSpace = textPosIndex;
+                    sfTextVecWordLastSpace = sfTextVecWord;
+                }
+                else
+                {
+                    if ((textPosLastSpace != 0) && !sfTextVecWordLastSpace.empty())
+                    {
+                        textPosIndex = textPosLastSpace;
+                        sfTextVecWord = sfTextVecWordLastSpace;
+                    }
+
+                    terminatingChar = ' ';
+                    break;
+                }
             }
             else if ('\n' == currChar)
             {
