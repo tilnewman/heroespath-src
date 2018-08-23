@@ -41,6 +41,7 @@ namespace sfml_util
                 ? NUMBERS_FONT_PTR_OPT.value()
                 : sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number)) };
 
+        // use the X character because it's height was found by experiment to look the best
         const auto BLANK_LINE_HEIGHT = [&]() {
             sf::Text sfTextForBlankLine("X", *TEXT_INFO.font_ptr_opt.value(), TEXT_INFO.char_size);
             return sfTextForBlankLine.getGlobalBounds().height;

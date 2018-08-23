@@ -718,7 +718,7 @@ namespace game
 
     void LoopManager::CommandQueueClear()
     {
-        M_HP_LOG_WRN("LoopManager::CommandQueueClear()");
+        M_HP_LOG_DBG("LoopManager::CommandQueueClear()");
         cmdQueueVec_.clear();
     }
 
