@@ -59,6 +59,7 @@ namespace stage
         , titleCachedTexture_("media-images-title-blacksymbol")
         , bpTitleSprite_(titleCachedTexture_.Get())
         , boxUPtr_()
+        , boxBorderUPtr_()
         , creditUVec_()
         , scrollSpeed_(DEFAULT_SCROLL_SPEED_)
         , isKeyHeldDown_(false)
@@ -98,8 +99,6 @@ namespace stage
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
             sfml_util::ScreenRatioToPixelsHoriz(0.15f));
 
-        boxInfo.SetupBorder(true);
-
         boxInfo.SetupColor(
             sf::Color::Transparent,
             sf::Color(0, 0, 0, 200),
@@ -114,6 +113,12 @@ namespace stage
 
         boxUPtr_
             = std::make_unique<sfml_util::gui::BoxEntity>("Credits", CREDITS_BOX_RECT, boxInfo);
+
+        sfml_util::gui::BoxEntityInfo boxBorderInfo;
+        boxBorderInfo.SetupBorder(true);
+
+        boxBorderUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+            "CreditsBorder", CREDITS_BOX_RECT, boxBorderInfo);
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when outside the box
@@ -190,6 +195,8 @@ namespace stage
             "media-images-logos-tiled",
             sfml_util::ScreenRatioToPixelsHoriz(0.15f)));
 
+        const auto SOUND_IMAGE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.05f) };
+
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "\"Battle\"\n\"Castlecall\"\n\"Deal with the Devil\"\n\"Menu Loop\"\n\"Mini Epic "
@@ -199,7 +206,7 @@ namespace stage
             "Unported License\nwwww.creativecommons.org/licenses/by/3.0\nThe original music was "
             "trimmed and normalized.",
             "media-images-logos-sound",
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
+            SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -208,7 +215,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by-sa/3.0\nThe original music was trimmed "
             "and normalized.",
             "media-images-logos-sound",
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
+            SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -217,7 +224,7 @@ namespace stage
             "License\nwww.creativecommons.org/licenses/by/3.0\nThe original music was trimmed and "
             "normalized.",
             "media-images-logos-sound",
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
+            SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -228,7 +235,7 @@ namespace stage
             "Attribution Unported 4.0 License\nwww.creativecommons.org/licenses/by/4.0\nThe "
             "original music was trimmed and normalized.",
             "media-images-logos-sound",
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f)));
+            SOUND_IMAGE_WIDTH));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
@@ -372,6 +379,8 @@ namespace stage
         target.draw(blackRectLower_, STATES);
 
         target.draw(bpTitleSprite_, STATES);
+
+        target.draw(*boxBorderUPtr_, STATES);
     }
 
     bool CreditsStage::KeyPress(const sf::Event::KeyEvent & KE)

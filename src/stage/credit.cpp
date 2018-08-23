@@ -115,7 +115,7 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            sfml_util::ScreenRatioToPixelsHoriz(0.103f));
+            sfml_util::ScreenRatioToPixelsHoriz(0.08f));
     }
 
     void Credit::Setup(
