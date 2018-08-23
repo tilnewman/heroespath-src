@@ -16,7 +16,6 @@
 #include "creature/player-party.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game-state-factory.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
@@ -138,6 +137,7 @@ namespace game
 
     void LoopManager::TransitionTo_Intro()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Intro() " << cmdQueueVec_.size());
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveAllStages>());
 
         cmdQueueVec_.emplace_back(
@@ -194,6 +194,7 @@ namespace game
 
     void LoopManager::TransitionFrom_Popup()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionFrom_Popup() " << cmdQueueVec_.size());
         loop_.Exit();
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_StateChange>(prevState_));
         cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_RemoveStage_Popup>());
@@ -206,6 +207,7 @@ namespace game
 
     void LoopManager::TransitionTo_Exit()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Exit() " << cmdQueueVec_.size());
         CommandQueueClear();
         loop_.Exit();
 
@@ -229,6 +231,7 @@ namespace game
 
     void LoopManager::TransitionTo_Credits()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Credits() " << cmdQueueVec_.size());
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseIgnore),
             sfml_util::LoopState::Credits,
@@ -244,6 +247,7 @@ namespace game
 
     void LoopManager::TransitionTo_MainMenu()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_MainMenu() " << cmdQueueVec_.size());
         TransitionHelper(
             static_cast<TransOpt>(
                 TransOpt::MouseIgnore | TransOpt::MouseRestore | TransOpt::FinalExecute),
@@ -255,6 +259,7 @@ namespace game
 
     void LoopManager::TransitionTo_Settings()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Settings() " << cmdQueueVec_.size());
         prevSettingsState_ = state_;
 
         TransitionHelper(
@@ -269,6 +274,7 @@ namespace game
 
     void LoopManager::TransitionTo_CharacterCreation()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_CharacterCreation() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Character,
@@ -279,6 +285,7 @@ namespace game
 
     void LoopManager::TransitionTo_PartyCreation()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_PartyCreation() " << cmdQueueVec_.size());
         TransitionHelper(
             static_cast<TransOpt>(
                 TransOpt::ClearQueue | TransOpt::MouseIgnore | TransOpt::MouseRestore),
@@ -295,6 +302,7 @@ namespace game
 
     void LoopManager::TransitionTo_Inn()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Inn() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Inn,
@@ -303,6 +311,7 @@ namespace game
 
     void LoopManager::TransitionTo_Camp()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Camp() " << cmdQueueVec_.size());
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseRestore),
             sfml_util::LoopState::Camp,
@@ -329,6 +338,7 @@ namespace game
 
     void LoopManager::TransitionTo_LoadGameMenu()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_LoadGameMenu() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Load,
@@ -337,6 +347,7 @@ namespace game
 
     void LoopManager::TransitionTo_Combat(const bool WILL_ADVANCE_TURN)
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Combat() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Combat,
@@ -347,6 +358,7 @@ namespace game
 
     void LoopManager::TransitionTo_Test()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Test() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Test,
@@ -357,6 +369,7 @@ namespace game
 
     void LoopManager::TransitionTo_Treasure()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Treasure() " << cmdQueueVec_.size());
         TransitionHelper(
             static_cast<TransOpt>(
                 TransOpt::ClearQueue | TransOpt::FinalExecute | TransOpt::MouseRestore),
@@ -368,6 +381,7 @@ namespace game
 
     void LoopManager::TransitionTo_Adventure()
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Adventure() " << cmdQueueVec_.size());
         TransitionHelper(
             TransOpt::All,
             sfml_util::LoopState::Adventure,
@@ -381,6 +395,7 @@ namespace game
         const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
         const game::Phase::Enum CURRENT_PHASE)
     {
+        M_HP_LOG_DBG("LoopManager::TransitionTo_Inventory() " << cmdQueueVec_.size());
         prevSettingsState_ = state_;
 
         TransitionHelper(
@@ -399,6 +414,9 @@ namespace game
         const sfml_util::music::Enum MUSIC_TO_STOP,
         const sfml_util::music::Enum MUSIC_TO_START)
     {
+        M_HP_LOG_DBG(
+            "LoopManager::TransitionHelper(" << sfml_util::LoopState::ToString(NEW_STATE) << ") "
+                                             << cmdQueueVec_.size());
         if ((OPTIONS == TransOpt::All) || (OPTIONS & TransOpt::ClearQueue))
         {
             CommandQueueClear();
@@ -462,10 +480,13 @@ namespace game
     {
         while (false == cmdQueueVec_.empty())
         {
-            // M_HP_LOG("LoopManager::Execute() executing: " << cmdQueueVec_.front()->Name());
-
             sfml_util::LoopCmdUPtr_t currentCommandUPtr(cmdQueueVec_.front().release());
             cmdQueueVec_.erase(std::begin(cmdQueueVec_));
+
+            M_HP_LOG(
+                "LoopManager::Execute() executing: " << currentCommandUPtr->Name()
+                                                     << ", ptr=" << currentCommandUPtr.get()
+                                                     << ", queueSize=" << cmdQueueVec_.size());
 
             currentCommandUPtr->Execute();
 
@@ -695,7 +716,11 @@ namespace game
         return CHANGE_RESULT;
     }
 
-    void LoopManager::CommandQueueClear() { cmdQueueVec_.clear(); }
+    void LoopManager::CommandQueueClear()
+    {
+        M_HP_LOG_WRN("LoopManager::CommandQueueClear()");
+        cmdQueueVec_.clear();
+    }
 
 } // namespace game
 } // namespace heroespath

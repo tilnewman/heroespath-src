@@ -449,7 +449,7 @@ namespace sfml_util
         {
             if (imageEntityUPtr_ && textEntityUPtr_)
             {
-                Entity::SetEntityRegion(sfml_util::MininallyEnclosing(
+                Entity::SetEntityRegion(sfml_util::MinimallyEnclosing(
                     imageEntityUPtr_->GetEntityRegion(), textEntityUPtr_->GetEntityRegion()));
             }
             else if (imageEntityUPtr_)

@@ -32,7 +32,7 @@ namespace sfml_util
             : rectangleShapesOpt_()
             , goldBarOpt_()
         {
-            if (!(REGION.width > 0.0f) || !(REGION.height > 0.0f))
+            if (IsSizeZeroOrLessEither(REGION))
             {
                 return;
             }
@@ -75,7 +75,7 @@ namespace sfml_util
             : rectangleShapesOpt_()
             , goldBarOpt_()
         {
-            if (!(REGION.width > 0.0f) || !(REGION.height > 0.0f))
+            if (IsSizeZeroOrLessEither(REGION))
             {
                 return;
             }

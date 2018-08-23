@@ -16,6 +16,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 
 namespace heroespath
 {
@@ -128,6 +129,8 @@ namespace stage
         const sfml_util::Animations::Enum ANIM_ENUM,
         const float ANIM_FRAME_TIME_SEC)
     {
+        const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
+
         if (MEDIA_TYPE == MediaType::Image)
         {
             auto const SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
@@ -144,7 +147,7 @@ namespace stage
 
             sprite_.setPosition(POS_LEFT, POS_TOP);
 
-            trackingRect.top += sprite_.getGlobalBounds().height;
+            trackingRect.top = sfml_util::Bottom(sprite_) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER;
         }
         else if (MEDIA_TYPE == MediaType::Anim)
         {
@@ -168,8 +171,8 @@ namespace stage
 
             animUPtr_->SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT));
 
-            // account for height of animation
-            trackingRect.top += animUPtr_->GetEntityRegion().height;
+            trackingRect.top = sfml_util::Bottom(animUPtr_->GetEntityRegion())
+                + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER;
         }
 
         const sfml_util::gui::TextInfo TEXT_INFO_TITLE(
@@ -182,10 +185,13 @@ namespace stage
         titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, trackingRect);
 
-        if (TITLE_TEXT != " ")
+        if (boost::algorithm::trim_copy(TITLE_TEXT).empty() == false)
         {
             trackingRect.top += titleTextUPtr_->GetEntityRegion().height;
         }
+
+        const auto BETWEEN_TEXT_VERTICAL_SPACER { sfml_util::ScreenRatioToPixelsVert(0.0065f) };
+        trackingRect.top += BETWEEN_TEXT_VERTICAL_SPACER;
 
         sfml_util::gui::TextInfo textInfoContent(
             CONTENT_TEXT,
@@ -215,7 +221,10 @@ namespace stage
         contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CreditContent", textInfoContent, trackingRect);
 
-        trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
+        if (boost::algorithm::trim_copy(CONTENT_TEXT).empty() == false)
+        {
+            trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
+        }
 
         // add space between credits
         auto const VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.111f) };

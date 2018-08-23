@@ -32,7 +32,6 @@ namespace stage
     const float CreditsStage::DEFAULT_SCROLL_SPEED_(25.0f);
     const float CreditsStage::SCROLL_SPEED_MULT_(100.0f);
     const float CreditsStage::SCROLL_SPEED_MAX_(400.0f);
-    const float CreditsStage::CREDIT_BOX_INNER_PAD_(20);
 
     CreditsStage::CreditsStage()
         : Stage(
@@ -52,6 +51,7 @@ namespace stage
               true)
         , CREDIT_BOX_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.4f))
         , CREDITBOX_POS_LEFT_((StageRegionWidth() * 0.5f) - (CREDIT_BOX_WIDTH_ * 0.5f))
+        , CREDIT_BOX_INNER_PAD_(sfml_util::ScreenRatioToPixelsHoriz(0.0333f))
         , creditBoxPosTop_(0.0f)
         , creditBoxHeight_(0.0f)
         , totalHeight_(0.0f)
@@ -160,11 +160,11 @@ namespace stage
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
-            " ",
-            "Special thanks to Laurent Gomila for the superb SFML\n(Simple Fast Multimedia "
-            "Library)\nused under the terms and conditions of the zlib/png "
+            "",
+            "Special thanks to Laurent Gomila for the Simple Fast Multimedia "
+            "Library used under the terms and conditions of the zlib/png "
             "license.\nwww.opensource.org/licenses/zlib\n\nThis project came together quickly "
-            "thanks to the completeness\n and simplicity of this library.\n\nwww.sfml-dev.org",
+            "thanks to the power and simplicity of this library.\n\nwww.sfml-dev.org",
             "media-images-logos-sfml",
             sfml_util::ScreenRatioToPixelsHoriz(0.146f)));
 

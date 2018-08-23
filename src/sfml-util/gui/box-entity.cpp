@@ -75,12 +75,15 @@ namespace sfml_util
 
         void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
         {
-            if (!(REGION_ORIG.width > 0.0f) || !(REGION_ORIG.height > 0.0f))
+            if (IsSizeZeroOrLessEither(REGION_ORIG))
             {
                 border_ = Border();
                 coloredRect_ = ColoredRect();
                 sprite_ = sf::Sprite();
-                Entity::SetEntityRegion(REGION_ORIG);
+
+                Entity::SetEntityRegion(
+                    sf::FloatRect(Position(REGION_ORIG), sf::Vector2f(0.0f, 0.0f)));
+
                 return;
             }
 

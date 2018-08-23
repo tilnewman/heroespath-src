@@ -94,7 +94,7 @@ namespace sfml_util
             counter += 1.0f;
         }
 
-        region_ = MininallyEnclosing(sprites_);
+        region_ = MinimallyEnclosing(sprites_);
     }
 
     const sf::Color BottomSymbol::Color() const

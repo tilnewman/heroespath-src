@@ -9,6 +9,7 @@
 //
 // sfml-util-size-and-scale.hpp
 //
+#include "misc/real.hpp"
 #include "sfml-util/sfml-util-center-of.hpp"
 #include "sfml-util/sfml-util-center-to.hpp"
 #include "sfml-util/sfml-util-center.hpp"
@@ -317,37 +318,69 @@ namespace sfml_util
     // then that dimmension is not changed
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R);
 
-    // returns true if either x or y is zero or less
+    // returns true if either width or height is <= 0
     template <typename T>
-    constexpr bool IsEitherZeroOrLess(const sf::Vector2<T> & V)
+    constexpr bool IsSizeZeroOrLessEither(const sf::Rect<T> & R)
     {
-        return (!(V.x > 0.0f) || !(V.y > 0.0f));
+        return IsZeroOrLessEither(Size(R));
     }
 
-    // returns true if either width or height is zero or less
+    // returns true if either width or height is < 1
     template <typename T>
-    constexpr bool IsEitherSizeZeroOrLess(const sf::Rect<T> & R)
+    constexpr bool IsSizeLessThanOneEither(const sf::Rect<T> & R)
     {
-        return IsEitherZeroOrLess(Size(R));
+        return IsLessThanOneEither(Size(R));
     }
 
-    // returns true if either the global bounds width or height is zero or less
-    bool IsEitherSizeZeroOrLess(const sf::Sprite & S);
+    // returns true if both width and height are <= 0
+    template <typename T>
+    constexpr bool IsSizeZeroOrLessBoth(const sf::Rect<T> & R)
+    {
+        return IsZeroOrLessBoth(Size(R));
+    }
 
-    // returns true if either the global bounds width or height is zero or less
-    bool IsEitherSizeZeroOrLess(const sf::Text & T);
+    // returns true if both width and height are < 1
+    template <typename T>
+    constexpr bool IsSizeLessThanOneBoth(const sf::Rect<T> & R)
+    {
+        return IsLessThanOneBoth(Size(R));
+    }
+
+    // returns true if either the global bounds width or height is <= 0
+    bool IsSizeZeroOrLessEither(const sf::Sprite & S);
+
+    // returns true if both the global bounds width and height are <= 0
+    bool IsSizeZeroOrLessBoth(const sf::Sprite & S);
+
+    // returns true if either the global bounds width or height is < 1
+    bool IsSizeLessThanOneEither(const sf::Sprite & S);
+
+    // returns true if both the global bounds width and height are < 1
+    bool IsSizeLessThanOneBoth(const sf::Sprite & S);
+
+    // returns true if either the global bounds width or height are <= 0
+    bool IsSizeZeroOrLessEither(const sf::Text & T);
+
+    // returns true if both the global bounds width and height are <= 0
+    bool IsSizeZeroOrLessBoth(const sf::Text & T);
+
+    // returns true if either the global bounds width or height are < 1
+    bool IsSizeLessThanOneEither(const sf::Text & T);
+
+    // returns true if both the global bounds width and height are < 1
+    bool IsSizeLessThanOneBoth(const sf::Text & T);
 
     // returns the smallest sf::Rect that fully includes rects A and B
     template <typename T1, typename T2>
-    constexpr const sf::Rect<T1> MininallyEnclosing(
+    constexpr const sf::Rect<T1> MinimallyEnclosing(
         const sf::Rect<T1> & A,
         const sf::Rect<T2> & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false)
     {
         if (WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
         {
-            const bool IS_EITHER_SIZE_ZERO_OR_LESS_A { IsEitherSizeZeroOrLess(A) };
-            const bool IS_EITHER_SIZE_ZERO_OR_LESS_B { IsEitherSizeZeroOrLess(B) };
+            const bool IS_EITHER_SIZE_ZERO_OR_LESS_A { IsSizeZeroOrLessEither(A) };
+            const bool IS_EITHER_SIZE_ZERO_OR_LESS_B { IsSizeZeroOrLessEither(B) };
 
             if (IS_EITHER_SIZE_ZERO_OR_LESS_A && IS_EITHER_SIZE_ZERO_OR_LESS_B)
             {
@@ -374,7 +407,7 @@ namespace sfml_util
 
     // returns the smallest sf::Rect that fully includes all the rects in V
     template <typename T>
-    constexpr const sf::Rect<T> MininallyEnclosing(
+    constexpr const sf::Rect<T> MinimallyEnclosing(
         const std::vector<sf::Rect<T>> & V,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false)
     {
@@ -382,7 +415,7 @@ namespace sfml_util
 
         if (V.size() >= 1)
         {
-            if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsEitherSizeZeroOrLess(V.front()))
+            if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsSizeZeroOrLessEither(V.front()))
             {
                 r = V.front();
             }
@@ -392,9 +425,9 @@ namespace sfml_util
         {
             for (std::size_t i(1); i < V.size(); ++i)
             {
-                if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsEitherSizeZeroOrLess(V[i]))
+                if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsSizeZeroOrLessEither(V[i]))
                 {
-                    r = MininallyEnclosing(r, V[i]);
+                    r = MinimallyEnclosing(r, V[i]);
                 }
             }
         }
@@ -403,24 +436,24 @@ namespace sfml_util
     }
 
     // returns the smallest sf::FloatRect that includes the global bounds of both
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const sf::Sprite & A,
         const sf::Sprite & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns the smallest sf::FloatRect that includes the global bounds of both
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const sf::Text & A,
         const sf::Text & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const std::vector<sf::Sprite> & VEC,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const std::vector<sf::Text> & VEC,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 

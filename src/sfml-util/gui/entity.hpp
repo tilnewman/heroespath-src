@@ -119,14 +119,17 @@ namespace sfml_util
             void SetEntityColorFg(const sf::Color & FG_COLOR) override;
             void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
             const FocusColors GetEntityColors() const override final { return entityFocusColors_; }
+
             const sf::Color GetEntityColorForeground() const override final
             {
                 return entityFgColor_;
             }
+
             const sf::Color GetEntityColorBackground() const override final
             {
                 return entityBgColor_;
             }
+
             void FakeFocusColorsAsIfFocusIs(const bool) override final;
 
             const std::string GetEntityName() const override final { return entityName_; }
@@ -154,7 +157,6 @@ namespace sfml_util
             sf::Color entityBgColor_;
             bool entityHasFocus_;
             bool entityWillFocus_;
-            bool entityWillDraw_;
             std::string entityMouseHoverText_;
             sf::Clock entityClock_;
             sf::Vector2f entityPrevPos_;

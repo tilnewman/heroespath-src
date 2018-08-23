@@ -10,6 +10,7 @@
 // sfml-util-vector-rect.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/real.hpp"
 #include "misc/strings.hpp"
 #include "sfml-util/orientation-enum.hpp"
 
@@ -113,6 +114,34 @@ namespace sfml_util
         const sf::IntRect INTRECT {};
 
     } // namespace defaults
+
+    // returns true if either x or y is <= 0
+    template <typename T>
+    constexpr bool IsZeroOrLessEither(const sf::Vector2<T> & V)
+    {
+        return (misc::IsRealZeroOrLess(V.x) || misc::IsRealZeroOrLess(V.y));
+    }
+
+    // returns true if both x and y are <= 0
+    template <typename T>
+    constexpr bool IsZeroOrLessBoth(const sf::Vector2<T> & V)
+    {
+        return (misc::IsRealZeroOrLess(V.x) && misc::IsRealZeroOrLess(V.y));
+    }
+
+    // returns true if either x or y is < 1
+    template <typename T>
+    constexpr bool IsLessThanOneEither(const sf::Vector2<T> & V)
+    {
+        return ((V.x < T(1)) || (V.y < T(1)));
+    }
+
+    // returns true if both x and y are < 1
+    template <typename T>
+    constexpr bool IsLessThanOneBoth(const sf::Vector2<T> & V)
+    {
+        return ((V.x < T(1)) && (V.y < T(1)));
+    }
 
     template <typename T>
     const std::string ToString(

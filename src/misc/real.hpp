@@ -88,7 +88,7 @@ namespace misc
     constexpr typename std::enable_if_t<std::is_floating_point<T>::value, bool>
         IsRealZeroOrLess(const T X)
     {
-        return ((X < T(0)) || IsRealClose(X, T(0)));
+        return ((X < T(0)) || IsRealZero(X));
     }
 
 } // namespace misc

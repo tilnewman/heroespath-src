@@ -24,6 +24,7 @@ namespace sfml_util
 
     RenderedText::RenderedText()
         : text_vecs()
+        , regions()
         , region(0.0f, 0.0f, 0.0f, 0.0f)
     {
         SyncRegion();
@@ -31,6 +32,7 @@ namespace sfml_util
 
     RenderedText::RenderedText(const SfTextVecVec_t & SF_TEXT_VEC_VEC)
         : text_vecs(SF_TEXT_VEC_VEC)
+        , regions()
         , region(0.0f, 0.0f, 0.0f, 0.0f)
     {
         SyncRegion();
@@ -44,13 +46,14 @@ namespace sfml_util
 
     void RenderedText::SyncRegion()
     {
-        std::vector<sf::FloatRect> frv;
+        regions.clear();
+
         for (const auto & SF_TEXT_VEC : text_vecs)
         {
-            frv.emplace_back(MininallyEnclosing(SF_TEXT_VEC));
+            regions.emplace_back(MinimallyEnclosing(SF_TEXT_VEC));
         }
 
-        region = sfml_util::MininallyEnclosing(frv);
+        region = sfml_util::MinimallyEnclosing(regions);
     }
 
     void RenderedText::AppendLines(const RenderedText & RENDERED_TEXT_TO_APPEND)
@@ -99,9 +102,7 @@ namespace sfml_util
             }
         }
 
-        // no need to SyncRegion(), we can just move the position
-        region.left += HORIZ;
-        region.top += VERT;
+        SyncRegion();
     }
 
     void RenderedText::CreateTextureAndRenderOffscreen(sf::RenderTexture & renderTexture) const

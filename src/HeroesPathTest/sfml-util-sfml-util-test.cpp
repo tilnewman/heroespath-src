@@ -706,6 +706,275 @@ BOOST_AUTO_TEST_CASE(ColorMathTests)
     BOOST_CHECK((C0 - C255) == C0);
 }
 
+BOOST_AUTO_TEST_CASE(ZeroOrLessTests)
+{
+    const float NEGATIVE(-0.0001f);
+    const float ZERO(0.0f);
+    const float POSITIVE(0.0001f);
+    const float ONE(1.0f);
+    const float LARGER(1.0001f);
+
+    const sf::Vector2f ZNV(ZERO, NEGATIVE);
+    const sf::Vector2f ZZV(ZERO, ZERO);
+    const sf::Vector2f ZPV(ZERO, POSITIVE);
+    const sf::Vector2f ZOV(ZERO, ONE);
+    const sf::Vector2f ZLV(ZERO, LARGER);
+    const sf::Vector2f NNV(NEGATIVE, NEGATIVE);
+    const sf::Vector2f NZV(NEGATIVE, ZERO);
+    const sf::Vector2f NPV(NEGATIVE, POSITIVE);
+    const sf::Vector2f NOV(NEGATIVE, ONE);
+    const sf::Vector2f NLV(NEGATIVE, LARGER);
+    const sf::Vector2f PNV(POSITIVE, NEGATIVE);
+    const sf::Vector2f PZV(POSITIVE, ZERO);
+    const sf::Vector2f PPV(POSITIVE, POSITIVE);
+    const sf::Vector2f POV(POSITIVE, ONE);
+    const sf::Vector2f PLV(POSITIVE, LARGER);
+    const sf::Vector2f ONV(ONE, NEGATIVE);
+    const sf::Vector2f OZV(ONE, ZERO);
+    const sf::Vector2f OPV(ONE, POSITIVE);
+    const sf::Vector2f OOV(ONE, ONE);
+    const sf::Vector2f OLV(ONE, LARGER);
+    const sf::Vector2f LNV(LARGER, NEGATIVE);
+    const sf::Vector2f LZV(LARGER, ZERO);
+    const sf::Vector2f LPV(LARGER, POSITIVE);
+    const sf::Vector2f LOV(LARGER, ONE);
+    const sf::Vector2f LLV(LARGER, LARGER);
+
+    BOOST_CHECK(IsZeroOrLessEither(ZNV));
+    BOOST_CHECK(IsZeroOrLessEither(ZZV));
+    BOOST_CHECK(IsZeroOrLessEither(ZPV));
+    BOOST_CHECK(IsZeroOrLessEither(ZOV));
+    BOOST_CHECK(IsZeroOrLessEither(ZLV));
+    BOOST_CHECK(IsZeroOrLessEither(NNV));
+    BOOST_CHECK(IsZeroOrLessEither(NZV));
+    BOOST_CHECK(IsZeroOrLessEither(NPV));
+    BOOST_CHECK(IsZeroOrLessEither(NOV));
+    BOOST_CHECK(IsZeroOrLessEither(NLV));
+    BOOST_CHECK(IsZeroOrLessEither(PNV));
+    BOOST_CHECK(IsZeroOrLessEither(PZV));
+    BOOST_CHECK(IsZeroOrLessEither(PPV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(POV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(PLV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(ONV));
+    BOOST_CHECK(IsZeroOrLessEither(OZV));
+    BOOST_CHECK(IsZeroOrLessEither(OPV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(OOV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(OLV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(LNV));
+    BOOST_CHECK(IsZeroOrLessEither(LZV));
+    BOOST_CHECK(IsZeroOrLessEither(LPV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(LOV) == false);
+    BOOST_CHECK(IsZeroOrLessEither(LLV) == false);
+
+    BOOST_CHECK(IsZeroOrLessBoth(ZNV));
+    BOOST_CHECK(IsZeroOrLessBoth(ZZV));
+    BOOST_CHECK(IsZeroOrLessBoth(ZPV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(ZOV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(ZLV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(NNV));
+    BOOST_CHECK(IsZeroOrLessBoth(NZV));
+    BOOST_CHECK(IsZeroOrLessBoth(NPV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(NOV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(NLV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(PNV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(PZV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(PPV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(POV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(PLV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(ONV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(OZV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(OPV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(OOV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(OLV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(LNV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(LZV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(LPV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(LOV) == false);
+    BOOST_CHECK(IsZeroOrLessBoth(LLV) == false);
+
+    BOOST_CHECK(IsLessThanOneEither(ZNV));
+    BOOST_CHECK(IsLessThanOneEither(ZZV));
+    BOOST_CHECK(IsLessThanOneEither(ZPV));
+    BOOST_CHECK(IsLessThanOneEither(ZOV));
+    BOOST_CHECK(IsLessThanOneEither(ZLV));
+    BOOST_CHECK(IsLessThanOneEither(NNV));
+    BOOST_CHECK(IsLessThanOneEither(NZV));
+    BOOST_CHECK(IsLessThanOneEither(NPV));
+    BOOST_CHECK(IsLessThanOneEither(NOV));
+    BOOST_CHECK(IsLessThanOneEither(NLV));
+    BOOST_CHECK(IsLessThanOneEither(PNV));
+    BOOST_CHECK(IsLessThanOneEither(PZV));
+    BOOST_CHECK(IsLessThanOneEither(PPV));
+    BOOST_CHECK(IsLessThanOneEither(POV));
+    BOOST_CHECK(IsLessThanOneEither(PLV));
+    BOOST_CHECK(IsLessThanOneEither(ONV));
+    BOOST_CHECK(IsLessThanOneEither(OZV));
+    BOOST_CHECK(IsLessThanOneEither(OPV));
+    BOOST_CHECK(IsLessThanOneEither(OOV) == false);
+    BOOST_CHECK(IsLessThanOneEither(OLV) == false);
+    BOOST_CHECK(IsLessThanOneEither(LNV));
+    BOOST_CHECK(IsLessThanOneEither(LZV));
+    BOOST_CHECK(IsLessThanOneEither(LPV));
+    BOOST_CHECK(IsLessThanOneEither(LOV) == false);
+    BOOST_CHECK(IsLessThanOneEither(LLV) == false);
+
+    BOOST_CHECK(IsLessThanOneBoth(ZNV));
+    BOOST_CHECK(IsLessThanOneBoth(ZZV));
+    BOOST_CHECK(IsLessThanOneBoth(ZPV));
+    BOOST_CHECK(IsLessThanOneBoth(ZOV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(ZLV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(NNV));
+    BOOST_CHECK(IsLessThanOneBoth(NZV));
+    BOOST_CHECK(IsLessThanOneBoth(NPV));
+    BOOST_CHECK(IsLessThanOneBoth(NOV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(NLV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(PNV));
+    BOOST_CHECK(IsLessThanOneBoth(PZV));
+    BOOST_CHECK(IsLessThanOneBoth(PPV));
+    BOOST_CHECK(IsLessThanOneBoth(POV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(PLV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(ONV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(OZV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(OPV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(OOV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(OLV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(LNV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(LZV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(LPV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(LOV) == false);
+    BOOST_CHECK(IsLessThanOneBoth(LLV) == false);
+
+    const sf::FloatRect ZNR(ZZV, ZNV);
+    const sf::FloatRect ZZR(ZZV, ZZV);
+    const sf::FloatRect ZPR(ZZV, ZPV);
+    const sf::FloatRect ZOR(ZZV, ZOV);
+    const sf::FloatRect ZLR(ZZV, ZLV);
+    const sf::FloatRect NNR(ZZV, NNV);
+    const sf::FloatRect NZR(ZZV, NZV);
+    const sf::FloatRect NPR(ZZV, NPV);
+    const sf::FloatRect NOR(ZZV, NOV);
+    const sf::FloatRect NLR(ZZV, NLV);
+    const sf::FloatRect PNR(ZZV, PNV);
+    const sf::FloatRect PZR(ZZV, PZV);
+    const sf::FloatRect PPR(ZZV, PPV);
+    const sf::FloatRect POR(ZZV, POV);
+    const sf::FloatRect PLR(ZZV, PLV);
+    const sf::FloatRect ONR(ZZV, ONV);
+    const sf::FloatRect OZR(ZZV, OZV);
+    const sf::FloatRect OPR(ZZV, OPV);
+    const sf::FloatRect OOR(ZZV, OOV);
+    const sf::FloatRect OLR(ZZV, OLV);
+    const sf::FloatRect LNR(ZZV, LNV);
+    const sf::FloatRect LZR(ZZV, LZV);
+    const sf::FloatRect LPR(ZZV, LPV);
+    const sf::FloatRect LOR(ZZV, LOV);
+    const sf::FloatRect LLR(ZZV, LLV);
+
+    BOOST_CHECK(IsSizeZeroOrLessEither(ZNR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(ZZR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(ZPR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(ZOR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(ZLR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(NNR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(NZR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(NPR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(NOR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(NLR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(PNR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(PZR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(PPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(POR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(PLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(ONR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(OZR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(OPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(OOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(OLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(LNR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(LZR));
+    BOOST_CHECK(IsSizeZeroOrLessEither(LPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(LOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessEither(LLR) == false);
+
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ZNR));
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ZZR));
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ZPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ZOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ZLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(NNR));
+    BOOST_CHECK(IsSizeZeroOrLessBoth(NZR));
+    BOOST_CHECK(IsSizeZeroOrLessBoth(NPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(NOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(NLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(PNR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(PZR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(PPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(POR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(PLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(ONR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(OZR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(OPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(OOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(OLR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(LNR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(LZR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(LPR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(LOR) == false);
+    BOOST_CHECK(IsSizeZeroOrLessBoth(LLR) == false);
+
+    BOOST_CHECK(IsSizeLessThanOneEither(ZNR));
+    BOOST_CHECK(IsSizeLessThanOneEither(ZZR));
+    BOOST_CHECK(IsSizeLessThanOneEither(ZPR));
+    BOOST_CHECK(IsSizeLessThanOneEither(ZOR));
+    BOOST_CHECK(IsSizeLessThanOneEither(ZLR));
+    BOOST_CHECK(IsSizeLessThanOneEither(NNR));
+    BOOST_CHECK(IsSizeLessThanOneEither(NZR));
+    BOOST_CHECK(IsSizeLessThanOneEither(NPR));
+    BOOST_CHECK(IsSizeLessThanOneEither(NOR));
+    BOOST_CHECK(IsSizeLessThanOneEither(NLR));
+    BOOST_CHECK(IsSizeLessThanOneEither(PNR));
+    BOOST_CHECK(IsSizeLessThanOneEither(PZR));
+    BOOST_CHECK(IsSizeLessThanOneEither(PPR));
+    BOOST_CHECK(IsSizeLessThanOneEither(POR));
+    BOOST_CHECK(IsSizeLessThanOneEither(PLR));
+    BOOST_CHECK(IsSizeLessThanOneEither(ONR));
+    BOOST_CHECK(IsSizeLessThanOneEither(OZR));
+    BOOST_CHECK(IsSizeLessThanOneEither(OPR));
+    BOOST_CHECK(IsSizeLessThanOneEither(OOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneEither(OLR) == false);
+    BOOST_CHECK(IsSizeLessThanOneEither(LNR));
+    BOOST_CHECK(IsSizeLessThanOneEither(LZR));
+    BOOST_CHECK(IsSizeLessThanOneEither(LPR));
+    BOOST_CHECK(IsSizeLessThanOneEither(LOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneEither(LLR) == false);
+
+    BOOST_CHECK(IsSizeLessThanOneBoth(ZNR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(ZZR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(ZPR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(ZOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(ZLR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(NNR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(NZR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(NPR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(NOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(NLR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(PNR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(PZR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(PPR));
+    BOOST_CHECK(IsSizeLessThanOneBoth(POR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(PLR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(ONR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(OZR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(OPR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(OOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(OLR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(LNR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(LZR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(LPR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(LOR) == false);
+    BOOST_CHECK(IsSizeLessThanOneBoth(LLR) == false);
+}
+
 BOOST_AUTO_TEST_CASE(CenterOfTests)
 {
     BOOST_CHECK(CenterOf(sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)) == sf::Vector2f(0.0f, 0.0f));
@@ -1848,25 +2117,25 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
         BOOST_CHECK(Size(spriteDefault, sf::Vector2f(CUSTOM_SCALE_V)) == V0F);
     }
 
-    // MininallyEnclosing() tests
-    BOOST_CHECK(MininallyEnclosing(R0F, R0F) == R0F);
-    BOOST_CHECK(MininallyEnclosing(R0F, R0F, true) == R0F);
-    BOOST_CHECK(MininallyEnclosing(R1F, R1F) == R1F);
-    BOOST_CHECK(MininallyEnclosing(R1F, R1F, true) == R1F);
-    BOOST_CHECK(MininallyEnclosing(R0F, R1F) == sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
-    BOOST_CHECK(MininallyEnclosing(R0F, R1F, true) == R1F);
+    // MinimallyEnclosing() tests
+    BOOST_CHECK(MinimallyEnclosing(R0F, R0F) == R0F);
+    BOOST_CHECK(MinimallyEnclosing(R0F, R0F, true) == R0F);
+    BOOST_CHECK(MinimallyEnclosing(R1F, R1F) == R1F);
+    BOOST_CHECK(MinimallyEnclosing(R1F, R1F, true) == R1F);
+    BOOST_CHECK(MinimallyEnclosing(R0F, R1F) == sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
+    BOOST_CHECK(MinimallyEnclosing(R0F, R1F, true) == R1F);
 
     const sf::Rect<int> RECT1(-10, -10, 10, 10);
     const sf::Rect<int> RECT2(10, 10, 10, 10);
     const sf::Rect<int> RECTE(-10, -10, 30, 30);
 
-    BOOST_CHECK(MininallyEnclosing(RECT1, RECT2) == RECTE);
-    BOOST_CHECK(MininallyEnclosing(RECT1, RECT2, true) == RECTE);
+    BOOST_CHECK(MinimallyEnclosing(RECT1, RECT2) == RECTE);
+    BOOST_CHECK(MinimallyEnclosing(RECT1, RECT2, true) == RECTE);
 
     const sf::Rect<int> RECT_TEST_A(0, 0, 0, 0);
     const sf::Rect<int> RECT_TEST_B(1, 1, 0, 0);
-    BOOST_CHECK(MininallyEnclosing(RECT_TEST_A, RECT_TEST_B) == sf::Rect<int>(0, 0, 1, 1));
-    BOOST_CHECK(MininallyEnclosing(RECT_TEST_A, RECT_TEST_B, true) == R0I);
+    BOOST_CHECK(MinimallyEnclosing(RECT_TEST_A, RECT_TEST_B) == sf::Rect<int>(0, 0, 1, 1));
+    BOOST_CHECK(MinimallyEnclosing(RECT_TEST_A, RECT_TEST_B, true) == R0I);
 
     {
         sf::Image image;
@@ -1883,14 +2152,14 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
         sprite2.setPosition(10.0f, 10.0f);
 
         BOOST_CHECK(
-            MininallyEnclosing(sprite1, sprite2) == sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f));
+            MinimallyEnclosing(sprite1, sprite2) == sf::FloatRect(-10.0f, -10.0f, 30.0f, 30.0f));
     }
 
     {
         sf::Sprite spriteDefault1;
         sf::Sprite spriteDefault2;
 
-        BOOST_CHECK(MininallyEnclosing(spriteDefault1, spriteDefault2) == R0F);
+        BOOST_CHECK(MinimallyEnclosing(spriteDefault1, spriteDefault2) == R0F);
     }
 
     const sf::IntRect GS_RECT_I(10, 20, 30, 40);

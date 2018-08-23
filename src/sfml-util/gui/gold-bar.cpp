@@ -82,8 +82,8 @@ namespace sfml_util
                 }
             }
 
-            outerRegion_ = MininallyEnclosing(outerRegions);
-            innerRegion_ = MininallyEnclosing(innerRegions);
+            outerRegion_ = MinimallyEnclosing(outerRegions);
+            innerRegion_ = MinimallyEnclosing(innerRegions);
             SetupLengthToDefault(ORIENTATION);
         }
 

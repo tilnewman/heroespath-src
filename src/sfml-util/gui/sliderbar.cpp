@@ -95,7 +95,7 @@ namespace sfml_util
                     1.0f);
             }
 
-            SetEntityRegion(sfml_util::MininallyEnclosing(
+            SetEntityRegion(sfml_util::MinimallyEnclosing(
                 { botOrLeftSprite_, topOrRightSprite_, barSprite_, padSprite_ }));
 
             UpdatePadPosition();

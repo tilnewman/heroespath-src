@@ -51,10 +51,10 @@ namespace stage
         static const float DEFAULT_SCROLL_SPEED_;
         static const float SCROLL_SPEED_MULT_;
         static const float SCROLL_SPEED_MAX_;
-        static const float CREDIT_BOX_INNER_PAD_;
         //
         const float CREDIT_BOX_WIDTH_;
         const float CREDITBOX_POS_LEFT_;
+        const float CREDIT_BOX_INNER_PAD_;
         //
         float creditBoxPosTop_;
         float creditBoxHeight_;

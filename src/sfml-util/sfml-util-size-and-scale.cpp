@@ -77,23 +77,56 @@ namespace sfml_util
         s.setPosition(Position(R) + s.getOrigin());
     }
 
-    bool IsEitherSizeZeroOrLess(const sf::Sprite & S) { return IsEitherZeroOrLess(Size(S)); }
-
-    bool IsEitherSizeZeroOrLess(const sf::Text & T)
+    bool IsSizeZeroOrLessEither(const sf::Sprite & S)
     {
-        return IsEitherZeroOrLess(Size(T.getGlobalBounds()));
+        return IsSizeZeroOrLessEither(S.getGlobalBounds());
     }
 
-    const sf::FloatRect MininallyEnclosing(
+    bool IsSizeZeroOrLessBoth(const sf::Sprite & S)
+    {
+        return IsSizeZeroOrLessBoth(S.getGlobalBounds());
+    }
+
+    bool IsSizeLessThanOneEither(const sf::Sprite & S)
+    {
+        return IsSizeLessThanOneEither(S.getGlobalBounds());
+    }
+
+    bool IsSizeLessThanOneBoth(const sf::Sprite & S)
+    {
+        return IsSizeLessThanOneBoth(S.getGlobalBounds());
+    }
+
+    bool IsSizeZeroOrLessEither(const sf::Text & T)
+    {
+        return IsSizeZeroOrLessEither(T.getGlobalBounds());
+    }
+
+    bool IsSizeZeroOrLessBoth(const sf::Text & T)
+    {
+        return IsSizeZeroOrLessBoth(T.getGlobalBounds());
+    }
+
+    bool IsSizeLessThanOneEither(const sf::Text & T)
+    {
+        return IsSizeLessThanOneEither(T.getGlobalBounds());
+    }
+
+    bool IsSizeLessThanOneBoth(const sf::Text & T)
+    {
+        return IsSizeLessThanOneBoth(T.getGlobalBounds());
+    }
+
+    const sf::FloatRect MinimallyEnclosing(
         const sf::Sprite & A,
         const sf::Sprite & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
-        return MininallyEnclosing(
+        return MinimallyEnclosing(
             A.getGlobalBounds(), B.getGlobalBounds(), WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const std::vector<sf::Sprite> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         std::vector<sf::FloatRect> frv;
@@ -102,17 +135,17 @@ namespace sfml_util
             frv.emplace_back(S.getGlobalBounds());
         }
 
-        return MininallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
+        return MinimallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const sf::Text & A, const sf::Text & B, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
-        return MininallyEnclosing(
+        return MinimallyEnclosing(
             A.getGlobalBounds(), B.getGlobalBounds(), WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
-    const sf::FloatRect MininallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const std::vector<sf::Text> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         std::vector<sf::FloatRect> frv;
@@ -121,7 +154,7 @@ namespace sfml_util
             frv.emplace_back(T.getGlobalBounds());
         }
 
-        return MininallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
+        return MinimallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
 } // namespace sfml_util

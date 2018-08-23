@@ -11,6 +11,7 @@
 //  A class that controls the running game loop with a queue of commands
 //
 #include "game/phase-enum.hpp"
+#include "log/log-macros.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-response-enum.hpp"
@@ -164,6 +165,9 @@ namespace game
             const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
+            M_HP_LOG_DBG(
+                "LoopManager::TransitionTo_Popup(" << POPUP_INFO.Name() << ") "
+                                                   << cmdQueueVec_.size());
             CommandQueueClear();
             loop_.Exit();
 

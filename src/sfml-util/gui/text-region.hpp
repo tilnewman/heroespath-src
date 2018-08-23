@@ -108,9 +108,9 @@ namespace sfml_util
 
             const TextInfo GetTextInfo() const { return textInfoOrig_; }
 
+            void ShrinkEntityRegionToFitText();
+
         protected:
-            // Changes the font color by applying the current entity foreground
-            // color to the sprite and textInfo_ member, but does not re-render the text.
             void OnColorChange() override;
 
             const SliderBarPtr_t MakeSliderBar(const sf::FloatRect & REGION) const;

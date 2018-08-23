@@ -34,7 +34,6 @@ namespace sfml_util
             , entityBgColor_(COLORS.background_without)
             , entityHasFocus_(false)
             , entityWillFocus_(true)
-            , entityWillDraw_(true)
             , entityMouseHoverText_("")
             , entityClock_()
             , entityPrevPos_(0.0f, 0.0f)
@@ -51,7 +50,6 @@ namespace sfml_util
             , entityBgColor_(COLORS.background_without)
             , entityHasFocus_(false)
             , entityWillFocus_(true)
-            , entityWillDraw_(true)
             , entityMouseHoverText_("")
             , entityClock_()
             , entityPrevPos_(0.0f, 0.0f)
@@ -71,7 +69,6 @@ namespace sfml_util
             , entityBgColor_(COLORS.background_without)
             , entityHasFocus_(false)
             , entityWillFocus_(true)
-            , entityWillDraw_(true)
             , entityMouseHoverText_("")
             , entityClock_()
             , entityPrevPos_(0.0f, 0.0f)
@@ -282,7 +279,6 @@ namespace sfml_util
                        L.entityFocusColors_,
                        L.entityHasFocus_,
                        L.entityWillFocus_,
-                       L.entityWillDraw_,
                        L.entityMouseHoverText_,
                        L.entityFgColor_,
                        L.entityBgColor_,
@@ -294,7 +290,6 @@ namespace sfml_util
                        R.entityFocusColors_,
                        R.entityHasFocus_,
                        R.entityWillFocus_,
-                       R.entityWillDraw_,
                        R.entityMouseHoverText_,
                        R.entityFgColor_,
                        R.entityBgColor_,
@@ -313,7 +308,6 @@ namespace sfml_util
                        L.entityBgColor_,
                        L.entityHasFocus_,
                        L.entityWillFocus_,
-                       L.entityWillDraw_,
                        L.entityMouseHoverText_,
                        L.entityPrevPos_)
                 == std::tie(
@@ -325,7 +319,6 @@ namespace sfml_util
                        R.entityBgColor_,
                        R.entityHasFocus_,
                        R.entityWillFocus_,
-                       R.entityWillDraw_,
                        R.entityMouseHoverText_,
                        R.entityPrevPos_);
         }

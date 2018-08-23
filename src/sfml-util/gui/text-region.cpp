@@ -18,6 +18,7 @@
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
 
 #include <algorithm>
@@ -126,11 +127,6 @@ namespace sfml_util
             const bool WILL_ALLOW_SCROLLBAR)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (false == TEXT_INFO.text.empty()),
-                GetEntityName() << " TextRegion::Setup() was given a TEXT_INFO.up.text string"
-                                << " that was empty.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
                 (!!TEXT_INFO.font_ptr_opt),
                 GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a"
                                 << " null font pointer.");
@@ -150,10 +146,9 @@ namespace sfml_util
             // prevent color changes when clicking on text or on the scrollbar
             SetWillAcceptFocus(false);
 
-            const auto TEXT_REGION { MARGINS.ApplyShrink(REGION_ORIG) };
-            HandleSliderBar(RenderText(TEXT_INFO, TEXT_REGION, MARGINS, SMALLER_FONT_SIZE));
-
-            SetupEntityRegion(TEXT_REGION);
+            const auto REGION_ACTUAL { MARGINS.ApplyShrink(REGION_ORIG) };
+            HandleSliderBar(RenderText(TEXT_INFO, REGION_ACTUAL, MARGINS, SMALLER_FONT_SIZE));
+            SetupEntityRegion(REGION_ACTUAL);
             SetupBox(BOX_INFO);
             EstablishWhichLinesToDraw(0.0f);
         }
@@ -192,16 +187,12 @@ namespace sfml_util
         {
             // Note:  Don't draw the Box or SliderBar here.  They are being drawn by the stage.
 
-            if ((false == entityWillDraw_) || renderedText_.text_vecs.empty())
-            {
-                return;
-            }
+            const auto RENDERED_TEXT_LINE_COUNT { renderedText_.text_vecs.size() };
 
-            for (std::size_t i(startLine_); i <= stopLine_; ++i)
+            for (std::size_t i(startLine_); ((i <= stopLine_) && (i < RENDERED_TEXT_LINE_COUNT));
+                 ++i)
             {
-                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[i] };
-
-                for (const auto & SF_TEXT : SF_TEXT_VEC_LINE)
+                for (const auto & SF_TEXT : renderedText_.text_vecs[i])
                 {
                     target.draw(SF_TEXT, states);
                 }
@@ -240,11 +231,13 @@ namespace sfml_util
             }
         }
 
+        void TextRegion::ShrinkEntityRegionToFitText() { SetEntityRegion(renderedText_.region); }
+
         void TextRegion::Append(const TextRegion & TEXT_REGION)
         {
             renderedText_.AppendLines(TEXT_REGION.renderedText_);
 
-            if (allowScrollbarOrig_ && (GetEntityRegion().height > 0.0f)
+            if (allowScrollbarOrig_ && !IsSizeZeroOrLessEither(GetEntityRegion())
                 && (renderedText_.region.height > GetEntityRegion().height))
             {
                 HandleSliderBar(MakeSliderBar(GetEntityRegion()));
@@ -285,15 +278,17 @@ namespace sfml_util
                 SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
         }
 
-        void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_ORIG)
+        void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_PARAM)
         {
-            // set the entity region to the TEXT_REGION except for height, if TEXT_REGION.height <=
-            // 0 then use the actual height of the rendered text
+            // set the entity region to the TEXT_REGION except for width and height, if either is
+            // <= 0 then use the actual size of the rendered text
             const sf::FloatRect ENTITY_REGION(
-                REGION_ORIG.left,
-                REGION_ORIG.top,
-                REGION_ORIG.width,
-                ((REGION_ORIG.height > 1.0f) ? REGION_ORIG.height : renderedText_.region.height));
+                REGION_PARAM.left,
+                REGION_PARAM.top,
+                ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? renderedText_.region.width
+                                                              : REGION_PARAM.width),
+                ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? renderedText_.region.height
+                                                               : REGION_PARAM.height));
 
             SetEntityRegion(ENTITY_REGION);
         }
@@ -320,6 +315,8 @@ namespace sfml_util
             const unsigned int SMALLER_FONT_SIZE)
         {
             SliderBarPtrOpt_t sliderBarPtrOpt;
+
+            renderedText_.Clear();
 
             renderedText_ = TextRenderer::Render(TEXT_INFO, Position(REGION), REGION.width);
 
@@ -360,68 +357,66 @@ namespace sfml_util
 
         void TextRegion::EstablishWhichLinesToDraw(const float SCROLL_RATIO)
         {
-            startLine_ = 0;
-            stopLine_ = 0;
+            startLine_ = stopLine_ = 0;
 
-            if (renderedText_.text_vecs.empty())
+            if (renderedText_.regions.empty() || IsSizeZeroOrLessEither(GetEntityRegion()))
             {
                 return;
             }
 
-            // um...where did this magic number come from?
-            auto const SCROLL_POS {
-                SCROLL_RATIO * (renderedText_.region.height - (GetEntityRegion().height * 0.8f))
-            };
+            const auto START_LINE_ORIG { startLine_ };
+            const auto HEIGHT_LIMIT { GetEntityRegion().height };
 
-            // find the line to start drawing
-            float startLineOrigPosTop { 0.0f };
-            while (startLine_ < renderedText_.text_vecs.size())
+            if (HEIGHT_LIMIT < renderedText_.region.height)
             {
-                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[startLine_] };
-                if (SF_TEXT_VEC_LINE.empty() == false)
-                {
-                    startLineOrigPosTop = SF_TEXT_VEC_LINE[0].getGlobalBounds().top;
-                    if ((startLineOrigPosTop - renderedText_.region.top) > SCROLL_POS)
+                // find the lowest start line that can be drawn
+                const std::size_t LOWEST_START_LINE = [&]() {
+                    float heightSumFromBottom { 0.0f };
+                    std::size_t lowestStartLine { renderedText_.regions.size() };
+                    for (; lowestStartLine--;)
                     {
-                        break;
+                        heightSumFromBottom += renderedText_.regions[lowestStartLine].height;
+
+                        if (heightSumFromBottom > HEIGHT_LIMIT)
+                        {
+                            return lowestStartLine + 1;
+                        }
+                    }
+
+                    return lowestStartLine;
+                }();
+
+                if (LOWEST_START_LINE >= renderedText_.regions.size())
+                {
+                    startLine_ = stopLine_ = renderedText_.regions.size() - 1;
+                }
+                else
+                {
+                    startLine_ = static_cast<std::size_t>(
+                        static_cast<float>(LOWEST_START_LINE) * SCROLL_RATIO);
+
+                    float heightSumFromTop { 0.0f };
+                    for (stopLine_ = LOWEST_START_LINE; stopLine_ < renderedText_.regions.size();
+                         ++stopLine_)
+                    {
+                        heightSumFromTop += renderedText_.regions[stopLine_].height;
+
+                        if (heightSumFromTop > HEIGHT_LIMIT)
+                        {
+                            break;
+                        }
                     }
                 }
-
-                ++startLine_;
             }
-
-            if (startLine_ > 0)
+            else
             {
-                --startLine_;
+                startLine_ = 0;
+                stopLine_ = renderedText_.regions.size() - 1;
             }
 
-            // find the line to stop drawing
-            stopLine_ = startLine_;
-
-            while (stopLine_ < renderedText_.text_vecs.size())
-            {
-                const auto & SF_TEXT_VEC_LINE { renderedText_.text_vecs[stopLine_] };
-                if (SF_TEXT_VEC_LINE.empty() == false)
-                {
-                    const auto CURRENT_LINE_BOUNDS { MininallyEnclosing(SF_TEXT_VEC_LINE) };
-
-                    if (Bottom(CURRENT_LINE_BOUNDS) > Bottom(GetEntityRegion()))
-                    {
-                        break;
-                    }
-                }
-
-                ++stopLine_;
-            }
-
-            if (stopLine_ > startLine_)
-            {
-                --stopLine_;
-            }
-
-            // move all the text up to compensate for where the siderbar is
-            const auto AMOUNT_TO_MOVE_TEXT_UP { startLineOrigPosTop - renderedText_.region.top };
-            renderedText_.MovePos(0.0f, -1.0f * AMOUNT_TO_MOVE_TEXT_UP);
+            renderedText_.MovePos(
+                0.0f,
+                renderedText_.regions[START_LINE_ORIG].top - renderedText_.regions[startLine_].top);
         }
 
     } // namespace gui

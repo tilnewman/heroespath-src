@@ -62,7 +62,7 @@ namespace sfml_util
 
             textRegionUPtr_->Setup(textInfo, R);
 
-            SetEntityRegion(sfml_util::MininallyEnclosing(
+            SetEntityRegion(sfml_util::MinimallyEnclosing(
                 GetEntityRegion(), textRegionUPtr_->GetEntityRegion()));
         }
 

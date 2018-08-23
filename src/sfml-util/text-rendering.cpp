@@ -41,13 +41,18 @@ namespace sfml_util
                 ? NUMBERS_FONT_PTR_OPT.value()
                 : sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number)) };
 
+        const auto BLANK_LINE_HEIGHT = [&]() {
+            sf::Text sfTextForBlankLine("X", *TEXT_INFO.font_ptr_opt.value(), TEXT_INFO.char_size);
+            return sfTextForBlankLine.getGlobalBounds().height;
+        }();
+
         std::size_t textPosIndex(0);
         sf::Vector2f posV { POS_V_ORIG };
 
         const std::size_t TEXT_LENGTH(TEXT_INFO.text.size());
         while (textPosIndex < TEXT_LENGTH)
         {
-            const SfTextVec_t SF_TEXT_VEC_LINE { RenderLine(
+            SfTextVec_t sfTextVecForLine { RenderLine(
                 TEXT_INFO.text,
                 TEXT_INFO.char_size,
                 TEXT_INFO.font_ptr_opt.value(),
@@ -56,23 +61,42 @@ namespace sfml_util
                 WIDTH_LIMIT,
                 textPosIndex) };
 
-            if (SF_TEXT_VEC_LINE.empty())
+            if (sfTextVecForLine.empty())
             {
-                // something went wrong, bail
-                break;
+                // drop the position down by one blank line
+                posV.y += BLANK_LINE_HEIGHT;
             }
+            else
+            {
+                // for some reason sfml does not actually draw the sf::Text where you tell it...
+                // this vertical shift corrects that...
+                auto lineRegion { MinimallyEnclosing(sfTextVecForLine) };
+                const auto VERTICAL_SHIFT { posV.y - lineRegion.top };
 
-            renderedText.text_vecs.emplace_back(SF_TEXT_VEC_LINE);
-            renderedText.SyncRegion();
-            posV.y = Bottom(renderedText.region) + 1.0f;
+                for (auto & sfText : sfTextVecForLine)
+                {
+                    sfText.move(0.0f, VERTICAL_SHIFT);
+                }
+
+                lineRegion.top += VERTICAL_SHIFT;
+
+                renderedText.text_vecs.emplace_back(sfTextVecForLine);
+                renderedText.regions.emplace_back(lineRegion);
+                posV.y = Bottom(lineRegion) + 1.0f;
+            }
         }
+
+        renderedText.region = sfml_util::MinimallyEnclosing(renderedText.regions);
 
         // apply justification
         if ((TEXT_INFO.justified == Justified::Center) || (TEXT_INFO.justified == Justified::Right))
         {
-            for (auto & sfTextVecLine : renderedText.text_vecs)
+            const auto LINE_VEC_COUNT { renderedText.text_vecs.size() };
+            for (std::size_t i(0); i < LINE_VEC_COUNT; ++i)
             {
-                const auto LINE_LENGTH { MininallyEnclosing(sfTextVecLine).width };
+                auto & lineVec { renderedText.text_vecs[i] };
+                auto & lineVecRegion { renderedText.regions[i] };
+                const auto LINE_LENGTH { lineVecRegion.width };
 
                 float horizOffset { 0.0f };
                 if (TEXT_INFO.justified == Justified::Center)
@@ -100,14 +124,15 @@ namespace sfml_util
 
                 if (horizOffset > 0.0f)
                 {
-                    for (auto & sfText : sfTextVecLine)
+                    for (auto & sfText : lineVec)
                     {
                         sfText.move(horizOffset, 0.0f);
+                        lineVecRegion.left += horizOffset;
                     }
                 }
             }
 
-            renderedText.SyncRegion();
+            renderedText.region = sfml_util::MinimallyEnclosing(renderedText.regions);
         }
 
         return renderedText;
@@ -124,7 +149,7 @@ namespace sfml_util
     {
         auto const TEXT_LENGTH { TEXT.size() };
 
-        SfTextVec_t sfTextVecLineComplete;
+        SfTextVec_t sfTextVecLine;
         bool willPrefixSpaceToNextWord { false };
 
         auto isHorizPosWithinLimit = [&](const float POS_LEFT) {
@@ -137,7 +162,7 @@ namespace sfml_util
         {
             const auto TEXT_POS_BEFORE_RENDERING_WORD_INDEX { textPosIndex };
 
-            posV.x = POS_V_ORIG.x + MininallyEnclosing(sfTextVecLineComplete).width + 1.0f;
+            posV.x = POS_V_ORIG.x + MinimallyEnclosing(sfTextVecLine).width;
 
             char wordTerminatingChar { 0 };
             SfTextVec_t sfTextVecWord { RenderWord(
@@ -154,24 +179,13 @@ namespace sfml_util
 
             if (sfTextVecWord.empty())
             {
-                if (('\n' == wordTerminatingChar) && (sfTextVecLineComplete.empty()))
-                {
-                    // found only spaces and a newline, so add an empty vec to mark the empty line
-                    sfTextVecLineComplete.emplace_back(
-                        sf::Text(" ", *LETTERS_FONT_PTR, CHARACTER_SIZE));
-
-                    return sfTextVecLineComplete;
-                }
-                else
-                {
-                    // something went wrong, end the line and bail
-                    break;
-                }
+                // found only spaces and newlines, or something went wrong, end the line and bail
+                break;
             }
 
-            const auto SF_TEXT_VEC_WORD_BOUNDS_ORIG { MininallyEnclosing(sfTextVecWord) };
+            const auto SF_TEXT_VEC_WORD_BOUNDS_ORIG { MinimallyEnclosing(sfTextVecWord) };
 
-            if ((SF_TEXT_VEC_WORD_BOUNDS_ORIG.width > 0.0f) == false)
+            if (IsSizeZeroOrLessEither(SF_TEXT_VEC_WORD_BOUNDS_ORIG))
             {
                 // something went wrong, end the line and bail
                 break;
@@ -182,7 +196,7 @@ namespace sfml_util
                 std::copy(
                     std::begin(sfTextVecWord),
                     std::end(sfTextVecWord),
-                    std::back_inserter(sfTextVecLineComplete));
+                    std::back_inserter(sfTextVecLine));
 
                 if ('\n' == wordTerminatingChar)
                 {
@@ -193,7 +207,7 @@ namespace sfml_util
             }
             else
             {
-                if (sfTextVecLineComplete.empty())
+                if (sfTextVecLine.empty())
                 {
                     // at this point we know that nothing as been rendered to the line so far,
                     // and that the first word is too long to fit horizontally, so truncate the
@@ -207,9 +221,7 @@ namespace sfml_util
                     }
 
                     std::copy(
-                        std::begin(sfTextVecWord),
-                        newEndIter,
-                        std::back_inserter(sfTextVecLineComplete));
+                        std::begin(sfTextVecWord), newEndIter, std::back_inserter(sfTextVecLine));
                 }
                 else
                 {
@@ -224,7 +236,7 @@ namespace sfml_util
             }
         }
 
-        return sfTextVecLineComplete;
+        return sfTextVecLine;
     }
 
     const SfTextVec_t TextRenderer::RenderWord(
@@ -237,52 +249,48 @@ namespace sfml_util
         const bool WILL_PREFIX_SPACE,
         char & terminatingChar)
     {
-        SfTextVec_t sfTextVecLine;
+        SfTextVec_t sfTextVecWord;
 
         const std::size_t TEXT_LENGTH { TEXT.size() };
 
         if (textPosIndex >= TEXT_LENGTH)
         {
             terminatingChar = 0;
-            return sfTextVecLine;
+            return sfTextVecWord;
         }
 
         // skip leading spaces
-        while (TEXT[textPosIndex++] == ' ')
+        while (TEXT[textPosIndex] == ' ')
         {
-            if (textPosIndex >= TEXT_LENGTH)
+            if (++textPosIndex >= TEXT_LENGTH)
             {
                 terminatingChar = 0;
-                return sfTextVecLine;
+                return sfTextVecWord;
             }
         }
 
         // return empty vec with terminatingChar='\n' if newline was the first non-space found
         if ('\n' == TEXT[textPosIndex])
         {
+            ++textPosIndex;
             terminatingChar = '\n';
-            return sfTextVecLine;
+            return sfTextVecWord;
         }
+
+        // this number found by experiment to be a good estimate for the game
+        sfTextVecWord.reserve(20);
 
         auto willCharUseLetterFont = [&](const char CHAR) {
             return (std::isdigit(static_cast<unsigned char>(CHAR)) == false);
         };
 
         auto makeNewSfTextToTheRightOf = [&](const char CHAR, const sf::Text & LEFT_TEXT) {
-            sf::Text newSfText;
+            sf::Text newSfText(
+                std::string(1, CHAR),
+                ((willCharUseLetterFont(CHAR)) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR),
+                CHARACTER_SIZE);
 
-            if (willCharUseLetterFont(CHAR))
-            {
-                newSfText = sf::Text(std::string(1, CHAR), *LETTERS_FONT_PTR, CHARACTER_SIZE);
-            }
-            else
-            {
-                newSfText = sf::Text(std::string(1, CHAR), *NUMBERS_FONT_PTR, CHARACTER_SIZE);
-            }
-
-            const auto LEFT_TEXT_BOUNDS { LEFT_TEXT.getGlobalBounds() };
-            newSfText.setPosition(Right(LEFT_TEXT_BOUNDS) + 1.0f, LEFT_TEXT_BOUNDS.top);
-
+            newSfText.setPosition(Right(LEFT_TEXT.getGlobalBounds()) + 1.0f, POS_V.y);
             return newSfText;
         };
 
@@ -295,12 +303,18 @@ namespace sfml_util
                   else
                   {
                       isCurrTextLetters = !isCurrTextLetters;
-                      sfTextVecLine.emplace_back(sfText);
+                      sfTextVecWord.emplace_back(sfText);
                       sfText = makeNewSfTextToTheRightOf(CHAR, sfText);
                   }
               };
 
-        sf::Text sfText;
+        char currChar(TEXT[textPosIndex]);
+
+        bool isCurrCharLetter { willCharUseLetterFont(currChar) };
+
+        sf::Text sfText(
+            "", ((isCurrCharLetter) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR), CHARACTER_SIZE);
+
         sfText.setPosition(POS_V);
 
         if (WILL_PREFIX_SPACE)
@@ -309,10 +323,6 @@ namespace sfml_util
             appendCharOrAppendTextAndStartNew(tempToIgnore, sfText, ' ');
         }
 
-        char currChar(TEXT[textPosIndex]);
-
-        bool isCurrCharLetter { willCharUseLetterFont(currChar) };
-
         appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
 
         while (++textPosIndex < TEXT_LENGTH)
@@ -320,8 +330,13 @@ namespace sfml_util
             currChar = TEXT[textPosIndex];
             terminatingChar = currChar;
 
-            if ((' ' == currChar) || ('\n' == currChar))
+            if (' ' == currChar)
             {
+                break;
+            }
+            else if ('\n' == currChar)
+            {
+                ++textPosIndex;
                 break;
             }
 
@@ -330,10 +345,10 @@ namespace sfml_util
 
         if (sfText.getString().isEmpty() == false)
         {
-            sfTextVecLine.emplace_back(sfText);
+            sfTextVecWord.emplace_back(sfText);
         }
 
-        return sfTextVecLine;
+        return sfTextVecWord;
     }
 
 } // namespace sfml_util

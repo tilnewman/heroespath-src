@@ -21,15 +21,15 @@ namespace heroespath
 namespace sfml_util
 {
 
-    // used to represent a line of text that might have different fonts per letter
+    // used to represent a single line of text, possibly with multiple fonts
     using SfTextVec_t = std::vector<sf::Text>;
 
-    // used to represent multiple lines of text
+    // used to represent multiple lines of text, possibly with multiple fonts
     using SfTextVecVec_t = std::vector<SfTextVec_t>;
 
-    // Responsible for wrapping the result of rendering text, which could contain renders to
-    // mutliple sf::Text objects based on multiple TextInfo objects.  A blank line will be
-    // represented by an sf::Text vec with one object with string=" ".
+    // Responsible for wrapping the result of rendering one TextInfo object into multiple sf::Text
+    // objects, possibly with multiple fonts.  A blank line, the space between two paragraphs for
+    // example, is represented by a SfTextVec_t with one sf::Text object with string set to " ".
     struct RenderedText
     {
         RenderedText();
@@ -60,6 +60,7 @@ namespace sfml_util
         void CreateTextureAndRenderOffscreen(sf::RenderTexture &) const;
 
         SfTextVecVec_t text_vecs;
+        std::vector<sf::FloatRect> regions;
         sf::FloatRect region;
     };
 
