@@ -25,8 +25,7 @@ namespace sfml_util
     namespace gui
     {
 
-        const float MainMenuButton::SCREEN_SIZE_RATIO_WIDTH_DEFAULT_(0.13f);
-        const float MainMenuButton::SCREEN_SIZE_RATIO_HEIGHT_FROM_BOTTOM_DEFAULT_(0.0333f);
+        const float MainMenuButton::SCREEN_SIZE_RATIO_WIDTH_DEFAULT_(0.115f);
 
         MainMenuButton::MainMenuButton(
             const LoopState::Enum TRANSITION_TO,

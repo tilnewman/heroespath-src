@@ -43,6 +43,7 @@
 #include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <memory>
@@ -236,25 +237,13 @@ namespace stage
     {
         EntityAdd(ouroborosUPtr_.get());
 
-        auto const MID_SCREEN_HORIZ { StageRegionWidth() * 0.5f };
+        // position menu buttons
+        const auto BETWEEN_BUTTON_SPACER { sfml_util::ScreenRatioToPixelsHoriz(0.2f) };
 
-        Setup_Button(
-            helpButtonUPtr_,
-            (MID_SCREEN_HORIZ - helpButtonUPtr_->GetEntityRegion().width) - 145.0f);
-
-        Setup_Button(saveButtonUPtr_, MID_SCREEN_HORIZ + 190.0f);
-
-        auto const BETWEEN_SPACER { sfml_util::MapByRes(40.0f, 600.0f) };
-
-        Setup_Button(
-            backButtonUPtr_,
-            (helpButtonUPtr_->GetEntityPos().x - helpButtonUPtr_->GetEntityRegion().width)
-                - BETWEEN_SPACER);
-
-        Setup_Button(
-            nextButtonUPtr_,
-            saveButtonUPtr_->GetEntityPos().x + saveButtonUPtr_->GetEntityRegion().width
-                + BETWEEN_SPACER);
+        Setup_Button(backButtonUPtr_, BETWEEN_BUTTON_SPACER);
+        Setup_Button(helpButtonUPtr_, BETWEEN_BUTTON_SPACER * 2.0f);
+        Setup_Button(saveButtonUPtr_, BETWEEN_BUTTON_SPACER * 3.0f);
+        Setup_Button(nextButtonUPtr_, BETWEEN_BUTTON_SPACER * 4.0f);
 
         Setup_RaceRadioButtons();
         Setup_RoleRadioButtons();
@@ -453,11 +442,13 @@ namespace stage
     }
 
     void CharacterStage::Setup_Button(
-        sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float POS_LEFT)
+        sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float POS_LEFT_CENTER)
     {
+        // lower than the center of the bottom symbol because that symbol hugs the bottom
         buttonUPtr->SetEntityPos(
-            POS_LEFT,
-            sfml_util::CenterOfVert(bottomSymbol_.Region())
+            POS_LEFT_CENTER - (buttonUPtr->GetEntityRegion().width * 0.5f),
+            (sfml_util::CenterOfVert(bottomSymbol_.Region())
+             + (bottomSymbol_.Region().height * 0.075f))
                 - (buttonUPtr->GetEntityRegion().height * 0.5f));
 
         EntityAdd(buttonUPtr.get());

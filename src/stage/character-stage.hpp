@@ -107,7 +107,8 @@ namespace stage
         virtual bool AreAnyAnimNumStillMoving() const;
 
     private:
-        void Setup_Button(sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float POS_LEFT);
+        void Setup_Button(
+            sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float POS_LEFT_CENTER);
         void Setup_RaceRadioButtons();
         void Setup_RoleRadioButtons();
         void Setup_RaceDescriptionBox();

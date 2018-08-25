@@ -59,7 +59,6 @@ namespace sfml_util
 
         private:
             static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
-            static const float SCREEN_SIZE_RATIO_HEIGHT_FROM_BOTTOM_DEFAULT_;
 
             sfml_util::LoopState::Enum transitionTo_;
         };
