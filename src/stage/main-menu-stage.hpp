@@ -11,6 +11,7 @@
 //
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/image-text-entity.hpp"
+#include "sfml-util/gui/main-menu-background.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/ouroboros.hpp"
@@ -59,7 +60,7 @@ namespace stage
         sfml_util::gui::MainMenuButtonUPtr_t exitButtonUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
-        sfml_util::gui::BoxEntityUPtr_t backgroundImageUPtr_;
+        sfml_util::gui::MainMenuBackground background_;
     };
 
 } // namespace stage

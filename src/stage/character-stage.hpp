@@ -20,6 +20,7 @@
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/callback.hpp"
 #include "sfml-util/gui/image-text-entity.hpp"
+#include "sfml-util/gui/main-menu-background.hpp"
 #include "sfml-util/gui/main-menu-buttons.hpp"
 #include "sfml-util/gui/radio-or-check-set.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
@@ -202,7 +203,7 @@ namespace stage
         //
         sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
-        sfml_util::gui::BoxEntity backgroundBox_;
+        sfml_util::gui::MainMenuBackground background_;
         sfml_util::AnimationUPtr_t smokeAnimUPtr_;
         //
         sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;

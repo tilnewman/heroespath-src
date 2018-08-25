@@ -100,12 +100,7 @@ namespace stage
         , stageTitle_("media-images-buttons-mainmenu-character-normal")
         , smokeAnimDrifterX_(0.0f, 1.0f, 0.1, 1.0) // these drifter values are reset below
         , smokeAnimDrifterY_(0.0f, 1.0f, 0.1, 1.0) // these drifter values are reset below
-        , backgroundBox_(
-              "CharacterStage'sBackgorund_",
-              StageRegion(),
-              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
-                  "media-images-backgrounds-tile-darkknot",
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
+        , background_()
         , smokeAnimUPtr_()
         , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
               sfml_util::LoopState::Previous,
@@ -368,7 +363,7 @@ namespace stage
 
     void CharacterStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(backgroundBox_, STATES);
+        target.draw(background_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);

@@ -64,31 +64,13 @@ namespace stage
               sfml_util::ScreenRatioToPixelsHoriz(0.114f)))
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
-        , backgroundImageUPtr_()
+        , background_()
     {}
 
     MainMenuStage::~MainMenuStage() { Stage::ClearAllEntities(); }
 
     void MainMenuStage::Setup()
     {
-        // setup background image
-        sfml_util::gui::BoxEntityInfo backgroundBoxInfo;
-
-        backgroundBoxInfo.SetupImage(
-            sfml_util::CachedTexture(
-                "media-images-backgrounds-tile-darkknot",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f));
-
-        backgroundBoxInfo.SetupColor(
-            sf::Color::Transparent,
-            sf::Color(0, 0, 0, 200),
-            sfml_util::Side::None,
-            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
-
-        backgroundImageUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
-            GetStageName() + "'sBackground", StageRegion(), backgroundBoxInfo);
-
         // title image
         const auto TITLE_SCALE { sfml_util::MapByRes(0.5f, 3.0f) };
         titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
@@ -163,7 +145,7 @@ namespace stage
 
     void MainMenuStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(*backgroundImageUPtr_, STATES);
+        target.draw(background_, STATES);
         target.draw(titleSprite_, STATES);
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
