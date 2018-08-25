@@ -146,7 +146,7 @@ namespace sfml_util
             // prevent color changes when clicking on text or on the scrollbar
             SetWillAcceptFocus(false);
 
-            const auto REGION_ACTUAL { MARGINS.ApplyShrink(REGION_ORIG) };
+            const auto REGION_ACTUAL { MARGINS.ApplyShrinkCopy(REGION_ORIG) };
             HandleSliderBar(RenderText(TEXT_INFO, REGION_ACTUAL, MARGINS, SMALLER_FONT_SIZE));
             SetupEntityRegion(REGION_ACTUAL);
             SetupBox(BOX_INFO);

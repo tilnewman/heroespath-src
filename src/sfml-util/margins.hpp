@@ -59,7 +59,7 @@ namespace sfml_util
             }
         }
 
-        const sf::FloatRect ApplyShrink(
+        const sf::FloatRect ApplyShrinkCopy(
             const sf::FloatRect & RECT, const bool WILL_PREVENT_NEGATIVE_SIZES = true) const
         {
             sf::FloatRect newRect { RECT };

@@ -25,6 +25,7 @@ namespace sfml_util
     {
 
         const sf::Uint8 FocusColors::DEFAULT_OFFSET_VALUE_(35);
+
         const sf::Color FocusColors::DEFAULT_OFFSET_COLOR_(
             DEFAULT_OFFSET_VALUE_, DEFAULT_OFFSET_VALUE_, DEFAULT_OFFSET_VALUE_, 0);
 

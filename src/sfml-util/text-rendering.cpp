@@ -300,7 +300,8 @@ namespace sfml_util
 
         auto appendCharOrAppendTextAndStartNew
             = [&](bool & isCurrTextLetters, sf::Text & sfText, const char CHAR) {
-                  if ((CHAR == ' ') || (willCharUseLetterFont(CHAR) == isCurrTextLetters))
+                  if ((CHAR == '.') || (CHAR == '-') || (CHAR == '+') || (CHAR == ' ')
+                      || (willCharUseLetterFont(CHAR) == isCurrTextLetters))
                   {
                       sfText.setString(sfText.getString() + CHAR);
                   }

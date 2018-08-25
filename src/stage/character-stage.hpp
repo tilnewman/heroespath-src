@@ -30,6 +30,7 @@
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/character-stage-anim-num.hpp"
+#include "stage/character-stage-stat-box.hpp"
 
 #include <memory>
 #include <string>
@@ -56,59 +57,6 @@ namespace sfml_util
 namespace stage
 {
 
-    class CharacterStage;
-    using CharacterStagePtr_t = misc::NotNull<CharacterStage *>;
-
-    // encapsulates a stat modifier that is drawn to the screen
-    struct StatModText : public sf::Drawable
-    {
-        StatModText(
-            const creature::Traits::Enum STAT,
-            const std::string & NAME, // name of race or role
-            const creature::Trait_t VAL,
-            const float POS_LEFT,
-            const float POS_TOP)
-            : value(VAL)
-            , stat(STAT)
-            , text_region_sptr(std::make_shared<sfml_util::gui::TextRegion>(
-                  std::string(NAME).append("StatModText")))
-        {
-            const sf::Int8 COLOR_BASE(100);
-            sf::Color color(COLOR_BASE, 255, COLOR_BASE);
-
-            if (VAL < 0)
-            {
-                color = sf::Color(255, COLOR_BASE, COLOR_BASE);
-            }
-
-            std::ostringstream ss;
-            ss << NAME << ((VAL > 0) ? "+" : "") << VAL;
-
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
-                sfml_util::FontManager::Instance()->Size_Small(),
-                color,
-                sfml_util::Justified::Left);
-
-            const sf::FloatRect RECT(POS_LEFT, POS_TOP, 0.0f, 0.0f);
-            text_region_sptr->Setup(TEXT_INFO, RECT);
-        }
-
-        virtual ~StatModText() = default;
-
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const
-        {
-            target.draw(*text_region_sptr, states);
-        }
-
-        creature::Trait_t value;
-        creature::Traits::Enum stat;
-        sfml_util::gui::TextRegionSPtr_t text_region_sptr;
-    };
-
-    using StatModTextVec_t = std::vector<StatModText>;
-
     // manages the CharacterCreation process
     class CharacterStage
         : public sfml_util::Stage
@@ -124,7 +72,6 @@ namespace stage
         CharacterStage & operator=(const CharacterStage &) = delete;
         CharacterStage & operator=(CharacterStage &&) = delete;
 
-    public:
         CharacterStage();
         virtual ~CharacterStage();
 
@@ -168,13 +115,6 @@ namespace stage
         void Setup_NameTextEntryBox();
         void Setup_SexRadioButtons();
         void Setup_SpacebarInstructionText();
-        void Setup_StatBackgroundBox(const float STATBOX_POS_TOP);
-
-        void Setup_StatLabels(
-            const float STATBOX_POS_TOP, const sfml_util::gui::TextInfo & STAT_TEXT_INFO);
-
-        void Setup_StatNumberPositions();
-        void Setup_FixedStats(const sfml_util::gui::TextInfo &);
         void Setup_SmokeAnimation(const float ATTRIB_BOX_TOP);
 
         // returns the vertical position on screen
@@ -207,7 +147,6 @@ namespace stage
         void Help3Popup();
         void CharacterCreationConfirmPopup(const std::size_t IMAGE_INDEX);
         void AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE);
-        float GetAttributeNumPosTop(const creature::Traits::Enum STAT);
 
         // returns true if any text was set that needs to be displayed
         bool GetStatHelpText(
@@ -218,11 +157,6 @@ namespace stage
         void HandleChangedStatModifiers();
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
-
-        // these functions return creature::Traits::Count on error or none result
-        creature::Traits::Enum GetHeldDownStat() const;
-        creature::Traits::Enum GetStatAbove(const creature::Traits::Enum STAT) const;
-        creature::Traits::Enum GetStatBelow(const creature::Traits::Enum STAT) const;
 
         float GetStatPosTop(const creature::Traits::Enum STAT) const; // returns <0.0f on error
         bool AreAnyStatsIgnored() const;
@@ -243,7 +177,6 @@ namespace stage
         static const creature::Trait_t STAT_INVALID_;
         static const creature::Trait_t STAT_INITIAL_MAX_;
         //
-        static const sfml_util::gui::FocusColors GUI_DEFAULT_COLORSET_;
         static const sf::Color LIGHT_TEXT_COLOR_;
         static const sf::Color DESC_TEXT_COLOR_;
         //
@@ -260,20 +193,12 @@ namespace stage
         static const double SMOKE_ANIM_SPEED_MIN_;
         static const double SMOKE_ANIM_SPEED_MAX_;
         //
-        const unsigned int SMALL_FONT_SIZE_;
-        const unsigned int RADIO_BOX_TEXT_SIZE_;
-        const float STATBOX_WIDTH_;
-        const float STATBOX_HEIGHT_;
-        const float STATBOX_POS_LEFT_;
-        const float STATS_POS_LEFT_;
-        const sfml_util::gui::FocusColors STATBOX_FOCUS_COLORS_;
+        const unsigned int DESC_TEXT_FONT_SIZE_;
+        const unsigned int RADIO_BUTTON_TEXT_SIZE_;
         //
+        StatBox statBox_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        //
         sfml_util::StageTitle stageTitle_;
-        //
-        float attribVertOffset1_;
-        float attribVertOffset2_;
         //
         sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
@@ -286,48 +211,6 @@ namespace stage
         sfml_util::gui::MainMenuButtonUPtr_t nextButtonUPtr_;
         //
         creature::StatSet statSetBase_;
-        creature::StatSet statSetRace_;
-        creature::StatSet statSetRole_;
-        creature::StatSet statSetFixedAnim_;
-        StatModTextVec_t statModifierTextVec_;
-        // bool willDrawStatModText_;
-        //
-        sfml_util::gui::TextRegion strLabelTextRegion_;
-        sfml_util::gui::TextRegion accLabelTextRegion_;
-        sfml_util::gui::TextRegion chaLabelTextRegion_;
-        sfml_util::gui::TextRegion lckLabelTextRegion_;
-        sfml_util::gui::TextRegion spdLabelTextRegion_;
-        sfml_util::gui::TextRegion intLabelTextRegion_;
-        //
-        float statsLineLength_;
-        float statsLine1PosTop_;
-        float statsLine2PosTop_;
-        float statsLine3PosTop_;
-        float statsLine4PosTop_;
-        float statsLine5PosTop_;
-        float statsLine6PosTop_;
-        float statsLineVertPosDiff_;
-        //
-        float statsFirstNumPosLeft_;
-        float statsStrPosTop_;
-        float statsAccPosTop_;
-        float statsChaPosTop_;
-        float statsLckPosTop_;
-        float statsSpdPosTop_;
-        float statsIntPosTop_;
-        //
-        sfml_util::gui::BoxEntityUPtr_t statsBoxUPtr_;
-        //
-        bool isAnimStats_;
-        bool isWaitingForStats_;
-        float animStatsDelayPerSec_;
-        float animStatsTimeCounterSec_;
-        AnimNumSVec_t animStatsSVec_;
-        AnimNumSVec_t fixedStatsSVec_;
-        int initialRollCounter_;
-        //
-        float dragStartY_;
-        creature::Traits::Enum closestDragStat_;
         //
         // sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t racetDescTextRegionUPtr_;
@@ -344,11 +227,7 @@ namespace stage
         sfml_util::sliders::Slider<sf::Uint8, float> nInsTextSlider_;
         //
         sfml_util::BottomSymbol bottomSymbol_;
-        //
-        // std::size_t selectedImageIndex_;
-
         std::vector<std::string> characterImageFilenamesVec_;
-
         sfml_util::CachedTexture woodCachedTexture_;
     };
 

@@ -11,6 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/to-string-prefix-enum.hpp"
+#include "sfml-util/gui/color-set.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -51,9 +52,13 @@ namespace sfml_util
         const sf::Color Orange { 255, 223, 181 };
         const sf::Color Light { 220, 220, 220 };
         const sf::Color GoldLight { 255, 248, 220 };
+        const sf::Color FocusIn { 220, 220, 220 };
+        const sf::Color FocusOut { 180, 180, 180 };
 
         // same as sf::Color::Transparent
         const sf::Color None { 0, 0, 0, 0 };
+
+        const sfml_util::gui::FocusColors GuiFocusColors { FocusIn, FocusIn, FocusOut, FocusOut };
 
     } // namespace defaults
 

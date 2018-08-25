@@ -276,7 +276,8 @@ namespace popup
         const auto REGION { sfml_util::Margins(
                                 sfml_util::ScreenRatioToPixelsHoriz(BORDER_RATIO),
                                 sfml_util::ScreenRatioToPixelsVert(BORDER_RATIO))
-                                .ApplyShrink(sfml_util::Display::Instance()->FullScreenRect()) };
+                                .ApplyShrinkCopy(
+                                    sfml_util::Display::Instance()->FullScreenRect()) };
 
         StageRegionSet(REGION);
         innerRegion_ = REGION;
