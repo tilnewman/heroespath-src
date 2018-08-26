@@ -18,6 +18,7 @@
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/sfml-util-primitives.hpp"
 
 namespace heroespath
 {
@@ -26,7 +27,8 @@ namespace stage
 
     StatBox::StatBox(
         sfml_util::IStagePtr_t owningStagePtr,
-        const sf::Vector2f & SIZE_V,
+        const float WIDTH,
+        const float HEIGHT_RATIO,
         const sf::Color & TEXT_COLOR)
         : owningStagePtr_(owningStagePtr)
         , boxUPtr_()
@@ -36,7 +38,6 @@ namespace stage
         , textLabels_()
         , textValues_()
         , vertexArray_(sf::Lines)
-        , rowHeight_(0.0f)
         , heldDown_(StatInvalid())
         , baseSet_()
         , modSet_()
@@ -44,11 +45,10 @@ namespace stage
         , modTextRegionVecs_()
         , willShowModValues_(true)
         , doAllStatsHaveValues_(false)
+        , textScale_(0.0f)
     {
-        const sf::FloatRect REGION_ORIG { sf::Vector2f(
-                                              sfml_util::DisplayCenterHoriz(SIZE_V.x),
-                                              sfml_util::DisplayCenterVert(SIZE_V.y)),
-                                          SIZE_V };
+        const sf::Vector2f SIZE_V(WIDTH, HEIGHT_RATIO * WIDTH);
+        const sf::FloatRect REGION_ORIG(sfml_util::CenterCopy(SIZE_V), SIZE_V);
 
         sfml_util::gui::BoxEntityInfo statsBoxInfo;
         statsBoxInfo.SetupImage(sfml_util::CachedTexture("media-images-backgrounds-tile-wood"));
@@ -62,11 +62,8 @@ namespace stage
 
         const auto REGION_INNER { RegionInner() };
         const auto REGION_FULL_HEIGHT { REGION_INNER.height / static_cast<float>(StatCount()) };
-        const auto REGION_NUMBER_WIDTH { REGION_INNER.width * 0.17f };
-
-        const sfml_util::Margins TEXT_MARGINS(
-            sfml_util::ScreenRatioToPixelsHoriz(0.00625f),
-            sfml_util::ScreenRatioToPixelsVert(0.01f));
+        const auto REGION_NUMBER_WIDTH { REGION_INNER.width * 0.2f };
+        const auto TEXT_SCALE_DOWN_RATIO { 0.9f };
 
         for (std::size_t i(0); i < StatCount(); ++i)
         {
@@ -74,28 +71,30 @@ namespace stage
 
             // the full row within the box
             const sf::FloatRect REGION_FULL(
-                REGION_INNER.left,
-                REGION_INNER.top + (static_cast<float>(i) * REGION_FULL_HEIGHT),
-                REGION_INNER.width,
-                REGION_FULL_HEIGHT);
+                REGION_INNER.left + 1.0f,
+                REGION_INNER.top + (static_cast<float>(i) * REGION_FULL_HEIGHT) + 1.0f,
+                REGION_INNER.width - 2.0f,
+                REGION_FULL_HEIGHT - 2.0f);
 
             fullRegions_.emplace_back(REGION_FULL);
 
             // left end of the row with margins where the stat label/name goes
-            const auto REGION_LABEL { TEXT_MARGINS.ApplyShrinkCopy(sf::FloatRect(
-                REGION_FULL.left,
-                REGION_FULL.top,
-                REGION_FULL.width - REGION_NUMBER_WIDTH,
-                REGION_FULL.height)) };
+            const sf::FloatRect REGION_LABEL(
+                REGION_FULL.left + 1.0f,
+                REGION_FULL.top + 1.0f,
+                (REGION_FULL.width - REGION_NUMBER_WIDTH) - 2.0f,
+                REGION_FULL.height - 2.0f);
 
             labelRegions_.emplace_back(REGION_LABEL);
 
             // right end of the row with margins where the actual stat number goes
             const sf::FloatRect REGION_NUMBER(
-                sfml_util::Right(REGION_LABEL),
-                REGION_LABEL.top,
-                REGION_NUMBER_WIDTH,
+                sfml_util::Right(REGION_LABEL) + 1.0f,
+                REGION_FULL.top + 1.0f,
+                (sfml_util::Right(REGION_FULL) - 1.0f) - (sfml_util::Right(REGION_LABEL) + 1.0f),
                 REGION_LABEL.height);
+
+            numberRegions_.emplace_back(REGION_NUMBER);
 
             // the stat name/label text
             sf::Text labelText(
@@ -105,14 +104,36 @@ namespace stage
 
             labelText.setColor(TEXT_COLOR);
 
-            const auto TEXT_SCALE { sfml_util::ScaleThatFits(
-                labelText.getGlobalBounds(), REGION_LABEL) };
+            if ((textScale_ > 0.0f) == false)
+            {
+                labelText.setString(StatName(creature::Traits::Intelligence));
 
-            labelText.setScale(TEXT_SCALE, TEXT_SCALE);
+                textScale_ = (REGION_LABEL.width / labelText.getGlobalBounds().width)
+                    * TEXT_SCALE_DOWN_RATIO;
 
-            labelText.setPosition(
-                REGION_LABEL.left,
-                sfml_util::CenterOfVert(REGION_LABEL) - (labelText.getGlobalBounds().width * 0.5f));
+                labelText.setString(StatName(TRAIT));
+            }
+
+            labelText.setScale(textScale_, textScale_);
+
+            {
+                const auto TEXT_HEIGHT { labelText.getGlobalBounds().height };
+                const auto REGION_HEIGHT { REGION_LABEL.height };
+                const auto REGION_CENTER_VERT { REGION_LABEL.top + (REGION_HEIGHT * 0.5f) };
+                const auto TEXT_POS_TOP { REGION_CENTER_VERT - (TEXT_HEIGHT * 0.5f) };
+
+                sfml_util::SetTextPosition(labelText, REGION_LABEL.left, TEXT_POS_TOP);
+
+                M_HP_LOG_WRN(
+                    "\n\torig=" << REGION_ORIG << "\n\touter=" << RegionOuter() << "\n\tinner="
+                                << RegionInner() << "\n\n\t" << labelText.getString().toAnsiString()
+                                << "\n\tTEXT_HEIGHT=" << TEXT_HEIGHT << "\n\tLABEL_REGION"
+                                << REGION_LABEL << "\n\tREGION_CENTER_VERT=" << REGION_CENTER_VERT
+                                << "\n\tTEXT_POS_TOP=" << TEXT_POS_TOP << "\n\tTEXT_REGION="
+                                << labelText.getGlobalBounds() << "\n\ttext_scale=" << textScale_
+                                << "\n\ttext_local_bounds=" << labelText.getLocalBounds()
+                                << "\n\n");
+            }
 
             textLabels_.emplace_back(labelText);
 
@@ -124,7 +145,7 @@ namespace stage
             // the horizontal line between the rows
             if (i < (StatCount() - 1))
             {
-                const sf::Color LINE_COLOR { 255, 255, 255, 20 };
+                const sf::Color LINE_COLOR { 255, 255, 255, 100 };
 
                 const auto LINE_POS_LEFT { REGION_FULL.left };
                 const auto LINE_POS_CENTER { sfml_util::CenterOfHoriz(REGION_FULL) };
@@ -146,8 +167,6 @@ namespace stage
 
             modTextRegionVecs_.emplace_back(sfml_util::gui::TextRegionUVec_t());
         }
-
-        rowHeight_ = fullRegions_.at(1).top - fullRegions_.at(0).top;
 
         Reset();
     }
@@ -190,6 +209,29 @@ namespace stage
             target.draw(SF_TEXT, states);
         }
 
+        target.draw(sfml_util::MakeRectangleHollow(RegionOuter(), sf::Color::Blue), states);
+
+        for (const auto & REGION : fullRegions_)
+        {
+            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Red), states);
+        }
+
+        for (const auto & REGION : labelRegions_)
+        {
+            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Green), states);
+        }
+
+        for (const auto & REGION : numberRegions_)
+        {
+            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Yellow), states);
+        }
+
+        for (const auto & SF_TEXT : textLabels_)
+        {
+            target.draw(
+                sfml_util::MakeRectangleHollow(SF_TEXT.getGlobalBounds(), sf::Color::Cyan), states);
+        }
+
         target.draw(vertexArray_, states);
     }
 
@@ -200,7 +242,6 @@ namespace stage
     }
 
     const sf::FloatRect StatBox::RegionOuter() const { return boxUPtr_->OuterRegion(); }
-
     const sf::FloatRect StatBox::RegionInner() const { return boxUPtr_->InnerRegion(); }
 
     void StatBox::SetVerticalPos(const float POS_TOP)
@@ -449,6 +490,9 @@ namespace stage
                 }
 
                 sfTextValue.setString(ss.str());
+
+                sfTextValue.setPosition(sfml_util::CenterToCopy(
+                    sfml_util::Size(sfTextValue.getGlobalBounds()), numberRegions_.at(i)));
             }
         }
     }

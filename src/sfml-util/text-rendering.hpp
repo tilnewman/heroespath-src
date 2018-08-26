@@ -55,7 +55,9 @@ namespace sfml_util
     private:
         // REGION.height is ignored, if the rendered text is taller than REGION.height then the
         // caller will managed that situation with a sliderbar, if REGION.width <= 0 then it is
-        // ignored (there is no length limit)
+        // ignored (there is no length limit).  The sf::Text objects returned have been localBounds
+        // position corrected all-together as one without using sfml_util::SetTextPosition() since
+        // that would produce incorrect results because multiple fonts could have been rendered.
         static const SfTextVec_t RenderLine(
             const std::string & TEXT,
             const unsigned CHARACTER_SIZE,
@@ -69,7 +71,11 @@ namespace sfml_util
         // spaces before rendering then continues until reaching a space or newline, returns an
         // empty vec with terminatingChar='\n' if a newline was the first non-space character found,
         // that final terminating character is NOT rendered so that the caller can decide if that
-        // char needs to be fit on the current line or not
+        // char needs to be fit on the current line or not.  The sf::Text objects that are returned
+        // have not had their positions corrected for localBounds position as is done by
+        // sfml_util::SetTextPosition(), because multiple fonts could be used and that would make
+        // such corrections wrong.  The localBounds position correction is performed by RenderLine()
+        // above.
         static const SfTextVec_t RenderWords(
             const std::string & TEXT,
             const float WIDTH_LIMIT,

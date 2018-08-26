@@ -49,7 +49,8 @@ namespace stage
     public:
         StatBox(
             sfml_util::IStagePtr_t owningStagePtr,
-            const sf::Vector2f & SIZE_V,
+            const float WIDTH,
+            const float HEIGHT_RATIO,
             const sf::Color & TEXT_COLOR);
 
         virtual ~StatBox();
@@ -88,7 +89,7 @@ namespace stage
         // returns StatInvalid() if TRAIT is Intelligence or invalid
         creature::Traits::Enum Next(const creature::Traits::Enum TRAIT) const;
 
-        float RowHeight() const { return rowHeight_; }
+        float RowHeight() const { return fullRegions_.front().height; }
         float NumberPosLeft() const { return labelRegions_.at(0).left; }
 
         // returns StatInvalid() if no stat is held down
@@ -120,6 +121,8 @@ namespace stage
             Sync();
         }
 
+        float TextScale() const { return textScale_; }
+
     private:
         // returns an empty string if TRAIT is invalid
         const std::string StatName(const creature::Traits::Enum TRAIT) const;
@@ -137,7 +140,6 @@ namespace stage
         std::vector<sf::Text> textLabels_;
         std::vector<sf::Text> textValues_;
         sf::VertexArray vertexArray_;
-        float rowHeight_;
         creature::Traits::Enum heldDown_;
         creature::StatSet baseSet_;
         creature::StatSet modSet_;
@@ -145,6 +147,7 @@ namespace stage
         std::vector<sfml_util::gui::TextRegionUVec_t> modTextRegionVecs_;
         bool willShowModValues_;
         bool doAllStatsHaveValues_;
+        float textScale_;
     };
 
 } // namespace stage

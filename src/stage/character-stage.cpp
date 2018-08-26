@@ -93,9 +93,8 @@ namespace stage
         , RADIO_BUTTON_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , statBox_(
               sfml_util::IStagePtr_t(this),
-              sf::Vector2f(
-                  sfml_util::ScreenRatioToPixelsHoriz(0.1375f),
-                  sfml_util::ScreenRatioToPixelsVert(0.215f)),
+              sfml_util::ScreenRatioToPixelsHoriz(0.3f), //(0.175f),
+              (4.0f / 3.0f),
               LIGHT_TEXT_COLOR_)
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("CharacterStage's"))
         , stageTitle_("media-images-buttons-mainmenu-character-normal")

@@ -32,6 +32,24 @@ namespace heroespath
 namespace sfml_util
 {
 
+    template <typename T>
+    constexpr T Width(const sf::Rect<T> & RECT)
+    {
+        return RECT.width;
+    }
+
+    float Width(const sf::Sprite &);
+    float Width(const sf::Text &);
+
+    template <typename T>
+    constexpr T Height(const sf::Rect<T> & RECT)
+    {
+        return RECT.height;
+    }
+
+    float Height(const sf::Sprite &);
+    float Height(const sf::Text &);
+
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
     template <
         typename T,

@@ -69,21 +69,11 @@ namespace sfml_util
             }
             else
             {
-                // for some reason sfml does not actually draw the sf::Text where you tell it...
-                // this vertical shift corrects that...
-                auto lineRegion { MinimallyEnclosing(sfTextVecForLine) };
-                const auto VERTICAL_SHIFT { posV.y - lineRegion.top };
-
-                for (auto & sfText : sfTextVecForLine)
-                {
-                    sfText.move(0.0f, VERTICAL_SHIFT);
-                }
-
-                lineRegion.top += VERTICAL_SHIFT;
-
                 renderedText.text_vecs.emplace_back(sfTextVecForLine);
-                renderedText.regions.emplace_back(lineRegion);
-                posV.y = Bottom(lineRegion) + 1.0f;
+
+                const auto LINE_REGION { MinimallyEnclosing(sfTextVecForLine) };
+                renderedText.regions.emplace_back(LINE_REGION);
+                posV.y = Bottom(LINE_REGION) + 1.0f;
             }
         }
 
@@ -239,6 +229,20 @@ namespace sfml_util
             }
         }
 
+        // RenderWords() does not correct for sf::Text localBounds position, so it must be done
+        // here.  Usually this would be corrected using sfml_util::SetTextPosition(), but this is
+        // not an option since there could be multiple fonts being rendered.  So instead the
+        // correction is made here on all sf::Text objects together as one line.
+        if (sfTextVecLine.empty() == false)
+        {
+            const auto CORRECTION_V { (POS_V_ORIG - Position(MinimallyEnclosing(sfTextVecLine))) };
+
+            for (auto & sfText : sfTextVecLine)
+            {
+                sfText.move(CORRECTION_V);
+            }
+        }
+
         return sfTextVecLine;
     }
 
@@ -294,6 +298,7 @@ namespace sfml_util
                 ((willCharUseLetterFont(CHAR)) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR),
                 CHARACTER_SIZE);
 
+            // intentionally not using sfml_util::SetTextPosition(), see comment in header
             newSfText.setPosition(Right(LEFT_TEXT.getGlobalBounds()) + 1.0f, POS_V.y);
             return newSfText;
         };
@@ -320,6 +325,7 @@ namespace sfml_util
         sf::Text sfText(
             "", ((isCurrCharLetter) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR), CHARACTER_SIZE);
 
+        // intentionally not using sfml_util::SetTextPosition(), see comment in header
         sfText.setPosition(POS_V);
 
         if (WILL_PREFIX_SPACE)

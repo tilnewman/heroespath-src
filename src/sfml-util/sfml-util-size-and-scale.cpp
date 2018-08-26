@@ -19,6 +19,12 @@ namespace heroespath
 namespace sfml_util
 {
 
+    float Width(const sf::Sprite & S) { return Width(S.getGlobalBounds()); }
+    float Width(const sf::Text & T) { return Width(T.getGlobalBounds()); }
+
+    float Height(const sf::Sprite & S) { return Height(S.getGlobalBounds()); }
+    float Height(const sf::Text & T) { return Height(T.getGlobalBounds()); }
+
     const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2f & SCALE_V)
     {
         return Size(S.getGlobalBounds(), SCALE_V);
