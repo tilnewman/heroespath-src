@@ -215,21 +215,39 @@ namespace sfml_util
             }
         }
 
-        // RenderWords() does not correct for sf::Text localBounds position, so it must be done
-        // here.  Usually this would be corrected using sfml_util::SetTextPosition(), but this is
-        // not an option since there could be multiple fonts being rendered.  So instead the
-        // correction is made here on all sf::Text objects together as one line.
         if (sfTextVecLine.empty() == false)
         {
-            const auto CORRECTION_V { (POS_V_ORIG - Position(regionOutParam)) };
-
-            for (auto & sfText : sfTextVecLine)
+            // Temporarily add an open parens to stretch out the vertical position and height.  The
+            // parens is used because it reaches high and low at the same time.  This helps make the
+            // spacing between multiple lines consistent.
             {
-                sfText.move(CORRECTION_V);
+                auto & sfText { sfTextVecLine.back() };
+                const auto TEXT_WIDTH_ORIG { sfText.getGlobalBounds().width };
+                std::string text { sfText.getString().toAnsiString() };
+                text += '(';
+                sfText.setString(text);
+                auto textRegionNew { sfText.getGlobalBounds() };
+                text.erase(text.size() - 1);
+                sfText.setString(text);
+                textRegionNew.width = TEXT_WIDTH_ORIG;
+                regionOutParam = MinimallyEnclosing(regionOutParam, textRegionNew, true);
             }
 
-            regionOutParam
-                = sf::FloatRect(Position(regionOutParam) + CORRECTION_V, Size(regionOutParam));
+            // RenderWords() does not correct for sf::Text localBounds position, so it must be done
+            // here.  Usually this would be corrected using sfml_util::SetTextPosition(), but this
+            // is not an option since there could be multiple fonts being rendered.  So instead the
+            // correction is made here on all sf::Text objects together as one line.
+            {
+                const auto CORRECTION_V { (POS_V_ORIG - Position(regionOutParam)) };
+
+                for (auto & sfText : sfTextVecLine)
+                {
+                    sfText.move(CORRECTION_V);
+                }
+
+                regionOutParam
+                    = sf::FloatRect(Position(regionOutParam) + CORRECTION_V, Size(regionOutParam));
+            }
         }
 
         return sfTextVecLine;
