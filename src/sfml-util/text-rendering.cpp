@@ -53,6 +53,8 @@ namespace sfml_util
         const std::size_t TEXT_LENGTH(TEXT_INFO.text.size());
         while (textPosIndex < TEXT_LENGTH)
         {
+            sf::FloatRect lineRegion;
+
             SfTextVec_t sfTextVecForLine { RenderLine(
                 TEXT_INFO.text,
                 TEXT_INFO.char_size,
@@ -60,7 +62,8 @@ namespace sfml_util
                 NUMBERS_FONT_PTR,
                 posV,
                 WIDTH_LIMIT,
-                textPosIndex) };
+                textPosIndex,
+                lineRegion) };
 
             if (sfTextVecForLine.empty())
             {
@@ -69,61 +72,26 @@ namespace sfml_util
             }
             else
             {
-                renderedText.text_vecs.emplace_back(sfTextVecForLine);
+                std::string temp;
+                for (const auto & SF_TEXT : sfTextVecForLine)
+                {
+                    temp += SF_TEXT.getString().toAnsiString();
+                }
 
-                const auto LINE_REGION { MinimallyEnclosing(sfTextVecForLine) };
-                renderedText.regions.emplace_back(LINE_REGION);
-                posV.y = Bottom(LINE_REGION) + 1.0f;
+                renderedText.text_vecs.emplace_back(sfTextVecForLine);
+                renderedText.regions.emplace_back(lineRegion);
+
+                renderedText.region
+                    = sfml_util::MinimallyEnclosing(renderedText.region, lineRegion, true);
+
+                posV.y = Bottom(lineRegion) + 1.0f;
             }
         }
 
-        renderedText.region = sfml_util::MinimallyEnclosing(renderedText.regions);
-
-        // apply justification
-        if ((TEXT_INFO.justified == Justified::Center) || (TEXT_INFO.justified == Justified::Right))
+        if ((TEXT_INFO.justified == sfml_util::Justified::Center)
+            || (TEXT_INFO.justified == sfml_util::Justified::Right))
         {
-            const auto LINE_VEC_COUNT { renderedText.text_vecs.size() };
-            for (std::size_t i(0); i < LINE_VEC_COUNT; ++i)
-            {
-                auto & lineVec { renderedText.text_vecs[i] };
-                auto & lineVecRegion { renderedText.regions[i] };
-                const auto LINE_LENGTH { lineVecRegion.width };
-
-                float horizOffset { 0.0f };
-                if (TEXT_INFO.justified == Justified::Center)
-                {
-                    if (WIDTH_LIMIT > 0.0f)
-                    {
-                        horizOffset = ((WIDTH_LIMIT * 0.5f) - (LINE_LENGTH * 0.5f));
-                    }
-                    else
-                    {
-                        horizOffset = ((renderedText.region.width * 0.5f) - (LINE_LENGTH * 0.5f));
-                    }
-                }
-                else if (TEXT_INFO.justified == Justified::Right)
-                {
-                    if (WIDTH_LIMIT > 0.0f)
-                    {
-                        horizOffset = (WIDTH_LIMIT - LINE_LENGTH);
-                    }
-                    else
-                    {
-                        horizOffset = (renderedText.region.width - LINE_LENGTH);
-                    }
-                }
-
-                if (horizOffset > 0.0f)
-                {
-                    for (auto & sfText : lineVec)
-                    {
-                        sfText.move(horizOffset, 0.0f);
-                        lineVecRegion.left += horizOffset;
-                    }
-                }
-            }
-
-            renderedText.region = sfml_util::MinimallyEnclosing(renderedText.regions);
+            renderedText.Justify(TEXT_INFO.justified, WIDTH_LIMIT);
         }
 
         return renderedText;
@@ -136,8 +104,11 @@ namespace sfml_util
         const FontPtr_t & NUMBERS_FONT_PTR,
         const sf::Vector2f & POS_V_ORIG,
         const float WIDTH_LIMIT,
-        std::size_t & textPosIndex)
+        std::size_t & textPosIndex,
+        sf::FloatRect & regionOutParam)
     {
+        regionOutParam = sf::FloatRect();
+
         auto const TEXT_LENGTH { TEXT.size() };
 
         SfTextVec_t sfTextVecLine;
@@ -152,11 +123,13 @@ namespace sfml_util
         while (textPosIndex < TEXT_LENGTH)
         {
             const auto TEXT_POS_BEFORE_RENDERING_WORD_INDEX { textPosIndex };
-            const auto CURRENT_WIDTH { MinimallyEnclosing(sfTextVecLine).width };
+            const auto CURRENT_WIDTH { regionOutParam.width };
 
             posV.x = POS_V_ORIG.x + CURRENT_WIDTH;
 
             char wordTerminatingChar { 0 };
+            sf::FloatRect wordsRegion;
+
             SfTextVec_t sfTextVecWord { RenderWords(
                 TEXT,
                 WIDTH_LIMIT - CURRENT_WIDTH,
@@ -166,7 +139,8 @@ namespace sfml_util
                 posV,
                 textPosIndex,
                 willPrefixSpaceToNextWord,
-                wordTerminatingChar) };
+                wordTerminatingChar,
+                wordsRegion) };
 
             willPrefixSpaceToNextWord = false;
 
@@ -176,27 +150,29 @@ namespace sfml_util
                 break;
             }
 
-            const auto SF_TEXT_VEC_WORD_BOUNDS_ORIG { MinimallyEnclosing(sfTextVecWord) };
-
-            if (IsSizeZeroOrLessEither(SF_TEXT_VEC_WORD_BOUNDS_ORIG))
+            if (IsSizeZeroOrLessEither(wordsRegion))
             {
                 // something went wrong, end the line and bail
                 break;
             }
 
-            if (isHorizPosWithinLimit(Right(SF_TEXT_VEC_WORD_BOUNDS_ORIG)))
+            if (isHorizPosWithinLimit(Right(wordsRegion)))
             {
                 std::copy(
                     std::begin(sfTextVecWord),
                     std::end(sfTextVecWord),
                     std::back_inserter(sfTextVecLine));
 
+                regionOutParam = MinimallyEnclosing(regionOutParam, wordsRegion, true);
+
                 if ('\n' == wordTerminatingChar)
                 {
                     break;
                 }
-
-                willPrefixSpaceToNextWord = (' ' == wordTerminatingChar);
+                else
+                {
+                    willPrefixSpaceToNextWord = (' ' == wordTerminatingChar);
+                }
             }
             else
             {
@@ -207,14 +183,21 @@ namespace sfml_util
                     // word,  whatever did not fit on this line will NOT be added to the next
                     // line
                     SfTextVec_t::iterator newEndIter { std::begin(sfTextVecWord) };
+
                     while ((newEndIter != std::end(sfTextVecWord))
                            && isHorizPosWithinLimit(Right(newEndIter->getGlobalBounds())))
                     {
                         ++newEndIter;
                     }
 
-                    std::copy(
-                        std::begin(sfTextVecWord), newEndIter, std::back_inserter(sfTextVecLine));
+                    SfTextVec_t::iterator iter { std::begin(sfTextVecWord) };
+                    while (iter != newEndIter)
+                    {
+                        sfTextVecLine.emplace_back(*iter);
+
+                        regionOutParam
+                            = MinimallyEnclosing(regionOutParam, iter->getGlobalBounds(), true);
+                    };
                 }
                 else
                 {
@@ -235,12 +218,15 @@ namespace sfml_util
         // correction is made here on all sf::Text objects together as one line.
         if (sfTextVecLine.empty() == false)
         {
-            const auto CORRECTION_V { (POS_V_ORIG - Position(MinimallyEnclosing(sfTextVecLine))) };
+            const auto CORRECTION_V { (POS_V_ORIG - Position(regionOutParam)) };
 
             for (auto & sfText : sfTextVecLine)
             {
                 sfText.move(CORRECTION_V);
             }
+
+            regionOutParam
+                = sf::FloatRect(Position(regionOutParam) + CORRECTION_V, Size(regionOutParam));
         }
 
         return sfTextVecLine;
@@ -255,8 +241,11 @@ namespace sfml_util
         const sf::Vector2f & POS_V,
         std::size_t & textPosIndex,
         const bool WILL_PREFIX_SPACE,
-        char & terminatingChar)
+        char & terminatingChar,
+        sf::FloatRect & regionOutParam)
     {
+        regionOutParam = sf::FloatRect();
+
         SfTextVec_t sfTextVecWord;
 
         const std::size_t TEXT_LENGTH { TEXT.size() };
@@ -314,6 +303,10 @@ namespace sfml_util
                   {
                       isCurrTextLetters = !isCurrTextLetters;
                       sfTextVecWord.emplace_back(sfText);
+
+                      regionOutParam
+                          = MinimallyEnclosing(regionOutParam, sfText.getGlobalBounds(), true);
+
                       sfText = makeNewSfTextToTheRightOf(CHAR, sfText);
                   }
               };
@@ -337,8 +330,9 @@ namespace sfml_util
         appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
 
         std::size_t textPosLastSpace { 0 };
-        SfTextVec_t sfTextVecWordLastSpace;
+        std::size_t sfTextLastSpaceSize { 0 };
         sf::Text sfTextLastSpace;
+        sf::FloatRect regionLastSpace;
 
         while (++textPosIndex < TEXT_LENGTH)
         {
@@ -347,20 +341,21 @@ namespace sfml_util
 
             if ((' ' == currChar) && (WIDTH_LIMIT > 0.0f))
             {
-                if ((MinimallyEnclosing(sfTextVecWord).width + sfText.getGlobalBounds().width)
-                    < WIDTH_LIMIT)
+                if ((regionOutParam.width + sfText.getGlobalBounds().width) < WIDTH_LIMIT)
                 {
                     textPosLastSpace = textPosIndex;
-                    sfTextVecWordLastSpace = sfTextVecWord;
+                    sfTextLastSpaceSize = sfTextVecWord.size();
                     sfTextLastSpace = sfText;
+                    regionLastSpace = regionOutParam;
                 }
                 else
                 {
                     if (textPosLastSpace != 0)
                     {
                         textPosIndex = textPosLastSpace;
-                        sfTextVecWord = sfTextVecWordLastSpace;
+                        sfTextVecWord.resize(sfTextLastSpaceSize);
                         sfText = sfTextLastSpace;
+                        regionOutParam = regionLastSpace;
                     }
 
                     terminatingChar = ' ';
@@ -379,6 +374,7 @@ namespace sfml_util
         if (sfText.getString().isEmpty() == false)
         {
             sfTextVecWord.emplace_back(sfText);
+            regionOutParam = MinimallyEnclosing(regionOutParam, sfText.getGlobalBounds(), true);
         }
 
         return sfTextVecWord;

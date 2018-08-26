@@ -11,6 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/justified-enum.hpp"
 
 #include <SFML/Graphics/Text.hpp>
 
@@ -41,7 +42,8 @@ namespace sfml_util
         RenderedText & operator=(RenderedText &&) = default;
 
         void Clear();
-        void SyncRegion();
+        void ResetRegions();
+        void ResetRegion();
         void AppendLines(const RenderedText & RENDERED_TEXT_TO_APPEND);
         void SetColor(const sf::Color & NEW_COLOR);
         void SetPos(const float LEFT, const float TOP);
@@ -57,7 +59,13 @@ namespace sfml_util
         // going to leave this comment here in the code in case the problem returns.
         //
         //  Wait...This might have been solved by setting the BlendMode to None...
+        //
+        // No changes are made to the given RenderTexture if either size of region is <= zero or if
+        // text_vecs.empty()
         void CreateTextureAndRenderOffscreen(sf::RenderTexture &) const;
+
+        // fails if called more than once, only works for Center and Right justifications
+        void Justify(const sfml_util::Justified::Enum, const float WIDTH_LIMIT);
 
         SfTextVecVec_t text_vecs;
         std::vector<sf::FloatRect> regions;

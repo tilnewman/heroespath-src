@@ -65,7 +65,8 @@ namespace sfml_util
             const FontPtr_t & NUMBERS_FONT_PTR,
             const sf::Vector2f & POS_V,
             const float WIDTH_LIMIT,
-            std::size_t & textPosIndex);
+            std::size_t & textPosIndex,
+            sf::FloatRect & regionOutParam);
 
         // returns an empty vec with terminatingChar=0 if textPosIndex >= TEXT.size(), skips leading
         // spaces before rendering then continues until reaching a space or newline, returns an
@@ -85,7 +86,8 @@ namespace sfml_util
             const sf::Vector2f & POS_V,
             std::size_t & textPosIndex,
             const bool WILL_PREFIX_SPACE,
-            char & terminatingChar);
+            char & terminatingChar,
+            sf::FloatRect & regionOutParam);
     };
 
 } // namespace sfml_util

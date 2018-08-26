@@ -102,7 +102,7 @@ namespace stage
                 *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
                 sfml_util::FontManager::Instance()->Size_Larger());
 
-            labelText.setColor(TEXT_COLOR);
+            labelText.setFillColor(TEXT_COLOR);
 
             if ((textScale_ > 0.0f) == false)
             {
@@ -116,24 +116,12 @@ namespace stage
 
             labelText.setScale(textScale_, textScale_);
 
-            {
-                const auto TEXT_HEIGHT { labelText.getGlobalBounds().height };
-                const auto REGION_HEIGHT { REGION_LABEL.height };
-                const auto REGION_CENTER_VERT { REGION_LABEL.top + (REGION_HEIGHT * 0.5f) };
-                const auto TEXT_POS_TOP { REGION_CENTER_VERT - (TEXT_HEIGHT * 0.5f) };
+            const auto REGION_CENTER_VERT { REGION_LABEL.top + (REGION_LABEL.height * 0.5f) };
 
-                sfml_util::SetTextPosition(labelText, REGION_LABEL.left, TEXT_POS_TOP);
+            const auto TEXT_POS_TOP { REGION_CENTER_VERT
+                                      - (labelText.getGlobalBounds().height * 0.5f) };
 
-                M_HP_LOG_WRN(
-                    "\n\torig=" << REGION_ORIG << "\n\touter=" << RegionOuter() << "\n\tinner="
-                                << RegionInner() << "\n\n\t" << labelText.getString().toAnsiString()
-                                << "\n\tTEXT_HEIGHT=" << TEXT_HEIGHT << "\n\tLABEL_REGION"
-                                << REGION_LABEL << "\n\tREGION_CENTER_VERT=" << REGION_CENTER_VERT
-                                << "\n\tTEXT_POS_TOP=" << TEXT_POS_TOP << "\n\tTEXT_REGION="
-                                << labelText.getGlobalBounds() << "\n\ttext_scale=" << textScale_
-                                << "\n\ttext_local_bounds=" << labelText.getLocalBounds()
-                                << "\n\n");
-            }
+            sfml_util::SetTextPosition(labelText, REGION_LABEL.left, TEXT_POS_TOP);
 
             textLabels_.emplace_back(labelText);
 
@@ -207,29 +195,6 @@ namespace stage
         for (const auto & SF_TEXT : textValues_)
         {
             target.draw(SF_TEXT, states);
-        }
-
-        target.draw(sfml_util::MakeRectangleHollow(RegionOuter(), sf::Color::Blue), states);
-
-        for (const auto & REGION : fullRegions_)
-        {
-            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Red), states);
-        }
-
-        for (const auto & REGION : labelRegions_)
-        {
-            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Green), states);
-        }
-
-        for (const auto & REGION : numberRegions_)
-        {
-            target.draw(sfml_util::MakeRectangleHollow(REGION, sf::Color::Yellow), states);
-        }
-
-        for (const auto & SF_TEXT : textLabels_)
-        {
-            target.draw(
-                sfml_util::MakeRectangleHollow(SF_TEXT.getGlobalBounds(), sf::Color::Cyan), states);
         }
 
         target.draw(vertexArray_, states);
