@@ -30,6 +30,8 @@ namespace sfml_util
         const FontPtrOpt_t & NUMBERS_FONT_PTR_OPT)
     {
         RenderedText renderedText;
+        renderedText.text_vecs.reserve(6);
+        renderedText.regions.reserve(6);
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (!!TEXT_INFO.font_ptr_opt),
@@ -112,6 +114,7 @@ namespace sfml_util
         auto const TEXT_LENGTH { TEXT.size() };
 
         SfTextVec_t sfTextVecLine;
+        sfTextVecLine.reserve(6);
         bool willPrefixSpaceToNextWord { false };
 
         auto isHorizPosWithinLimit = [&](const float POS_LEFT) {
@@ -275,7 +278,7 @@ namespace sfml_util
         }
 
         // this number found by experiment to be a good estimate for the game
-        sfTextVecWord.reserve(20);
+        sfTextVecWord.reserve(6);
 
         auto willCharUseLetterFont = [&](const char CHAR) {
             return (std::isdigit(static_cast<unsigned char>(CHAR)) == false);
