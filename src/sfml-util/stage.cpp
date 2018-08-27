@@ -336,7 +336,7 @@ namespace sfml_util
                 region.left = 0.0f;
             }
 
-            hoverSfText_.setPosition(region.left + 10.0f, region.top + 2.0f);
+            sfml_util::SetTextPosition(hoverSfText_, region.left + 10.0f, region.top + 2.0f);
 
             gui::BoxEntityInfo boxInfo;
             boxInfo.SetupColor(sfml_util::defaults::Orange - sf::Color(20, 0, 0, 0));

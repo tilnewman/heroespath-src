@@ -1457,7 +1457,7 @@ namespace stage
                     *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
                     sfml_util::FontManager::Instance()->Size_Normal());
 
-                text.setPosition(1.0f, posTop);
+                sfml_util::SetTextPosition(text, 1.0f, posTop);
 
                 target.draw(text, STATES);
 
@@ -1493,11 +1493,12 @@ namespace stage
 
                 if (willLowerText)
                 {
-                    packet.text.setPosition(posX, posY + packet.text.getGlobalBounds().height);
+                    sfml_util::SetTextPosition(
+                        packet.text, posX, posY + packet.text.getGlobalBounds().height);
                 }
                 else
                 {
-                    packet.text.setPosition(posX, posY);
+                    sfml_util::SetTextPosition(packet.text, posX, posY);
                 }
 
                 willLowerText = !willLowerText;

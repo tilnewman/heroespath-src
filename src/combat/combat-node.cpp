@@ -20,6 +20,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sfml-util-display.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
@@ -419,21 +420,24 @@ namespace combat
 
         if (DID_TRANSITION_TO_SUMMARY_VIEW)
         {
-            nameTextObj_.setPosition(
-                entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
+            sfml_util::SetTextPosition(
+                nameTextObj_, entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
 
-            condTextObj_.setPosition(
+            sfml_util::SetTextPosition(
+                condTextObj_,
                 sfml_util::Display::Instance()->GetWinWidth() + 1.0f,
                 sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
         }
         else
         {
-            nameTextObj_.setPosition(
+            sfml_util::SetTextPosition(
+                nameTextObj_,
                 (entityRegion_.left + (entityRegion_.width * 0.5f))
                     - (nameTextObj_.getGlobalBounds().width * 0.5f),
                 NAME_TEXT_POS_TOP);
 
-            condTextObj_.setPosition(
+            sfml_util::SetTextPosition(
+                condTextObj_,
                 (entityRegion_.left + (entityRegion_.width * 0.5f))
                     - (condTextObj_.getGlobalBounds().width * 0.5f),
                 COND_TEXT_POS_TOP);
