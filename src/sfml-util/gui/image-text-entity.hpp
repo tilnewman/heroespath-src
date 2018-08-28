@@ -148,6 +148,8 @@ namespace sfml_util
             // does not actually set the position, instead it moves relative to GetEntityPos()
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
+            using Entity::SetEntityPos;
+
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             void SetEntityRegion(const sf::FloatRect & R) override;

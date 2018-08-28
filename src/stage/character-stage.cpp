@@ -33,6 +33,7 @@
 #include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/even-spacer.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/gui/creature-image-loader.hpp"
@@ -44,6 +45,7 @@
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <memory>
@@ -236,14 +238,7 @@ namespace stage
     {
         EntityAdd(ouroborosUPtr_.get());
 
-        // position menu buttons
-        const auto BETWEEN_BUTTON_SPACER { sfml_util::ScreenRatioToPixelsHoriz(0.2f) };
-
-        Setup_Button(backButtonUPtr_, BETWEEN_BUTTON_SPACER);
-        Setup_Button(helpButtonUPtr_, BETWEEN_BUTTON_SPACER * 2.0f);
-        Setup_Button(saveButtonUPtr_, BETWEEN_BUTTON_SPACER * 3.0f);
-        Setup_Button(nextButtonUPtr_, BETWEEN_BUTTON_SPACER * 4.0f);
-
+        Setup_MenuButtons();
         Setup_RaceRadioButtons();
         Setup_RoleRadioButtons();
         Setup_RaceDescriptionBox();
@@ -440,17 +435,34 @@ namespace stage
         }*/
     }
 
-    void CharacterStage::Setup_Button(
-        sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr, const float POS_LEFT_CENTER)
+    void CharacterStage::Setup_MenuButtons()
     {
-        // lower than the center of the bottom symbol because that symbol hugs the bottom
-        buttonUPtr->SetEntityPos(
-            POS_LEFT_CENTER - (buttonUPtr->GetEntityRegion().width * 0.5f),
-            (sfml_util::CenterOfVert(bottomSymbol_.Region())
-             + (bottomSymbol_.Region().height * 0.075f))
-                - (buttonUPtr->GetEntityRegion().height * 0.5f));
+        const std::size_t MENU_BUTTON_COUNT { 4 };
+        const auto MENU_BUTTON_EXTRA_SPACER_RATIO { 0.0125f };
 
-        EntityAdd(buttonUPtr.get());
+        const sfml_util::EvenSpacer SPACER(
+            MENU_BUTTON_COUNT, StageRegionWidth(), MENU_BUTTON_EXTRA_SPACER_RATIO);
+
+        auto calcButtonPos = [&](const std::size_t BUTTON_INDEX_LEFT_TO_RIGHT,
+                                 const sf::Vector2f & BUTTON_SIZE_V) {
+            return sf::Vector2f(
+                SPACER.Position(BUTTON_INDEX_LEFT_TO_RIGHT, BUTTON_SIZE_V.x),
+                bottomSymbol_.VisibleVerticalCenter() - (BUTTON_SIZE_V.y * 0.5f));
+        };
+
+        auto setupButton = [&](sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr) {
+            static std::size_t buttonCounter(0);
+
+            buttonUPtr->SetEntityPos(
+                calcButtonPos(buttonCounter++, sfml_util::Size(buttonUPtr->GetEntityRegion())));
+
+            EntityAdd(buttonUPtr.get());
+        };
+
+        setupButton(backButtonUPtr_);
+        setupButton(helpButtonUPtr_);
+        setupButton(saveButtonUPtr_);
+        setupButton(nextButtonUPtr_);
     }
 
     void CharacterStage::Setup_RaceRadioButtons()

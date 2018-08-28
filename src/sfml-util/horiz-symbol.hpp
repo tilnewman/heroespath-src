@@ -43,6 +43,10 @@ namespace sfml_util
 
         const sf::FloatRect Region() const { return region_; }
 
+        // this horizontal symbol image has tendrils that reach up higher than those that reach
+        // below, making the true vertical center look too high.  This corrects for that.
+        float VisibleVerticalCenter() const { return (region_.top + (region_.height * 0.575f)); }
+
         const sf::Color Color() const;
 
         void Color(const sf::Color & NEW_COLOR);

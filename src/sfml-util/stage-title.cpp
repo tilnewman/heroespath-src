@@ -23,7 +23,7 @@ namespace sfml_util
 {
 
     const float StageTitle::DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_ { 0.6f };
-    const float StageTitle::TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_ { 0.56f };
+    const float StageTitle::TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_ { 0.65f };
 
     StageTitle::StageTitle(
         const std::string & TITLE_IMAGE_PATH_KEY,
