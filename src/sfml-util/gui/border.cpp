@@ -31,13 +31,53 @@ namespace sfml_util
             const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
             : rectangleShapesOpt_()
             , goldBarOpt_()
-            , regionOuter_(REGION)
-            , regionInner_(REGION)
+            , regionOuter_()
+            , regionInner_()
+            , willDraw_(false)
         {
+            Setup(
+                REGION,
+                LINE_THICKNESS,
+                LINE_COLOR,
+                PAD_LINE_COLOR_ADJ,
+                WILL_GROW_BORDER_TO_CONTAIN_REGION);
+        }
+
+        Border::Border(const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
+            : rectangleShapesOpt_()
+            , goldBarOpt_()
+            , regionOuter_()
+            , regionInner_()
+            , willDraw_(false)
+        {
+            Setup(REGION, WILL_GROW_BORDER_TO_CONTAIN_REGION);
+        }
+
+        void Border::Reset()
+        {
+            rectangleShapesOpt_ = boost::none;
+            goldBarOpt_ = boost::none;
+            regionOuter_ = sf::FloatRect();
+            regionInner_ = sf::FloatRect();
+            willDraw_ = false;
+        }
+
+        void Border::Setup(
+            const sf::FloatRect & REGION,
+            const float LINE_THICKNESS,
+            const sf::Color & LINE_COLOR,
+            const sf::Color & PAD_LINE_COLOR_ADJ,
+            const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
+        {
+            Reset();
+
             if (IsSizeZeroOrLessEither(REGION))
             {
                 return;
             }
+
+            regionOuter_ = REGION;
+            regionInner_ = REGION;
 
             std::vector<sf::RectangleShape> rsVec;
 
@@ -49,38 +89,34 @@ namespace sfml_util
                 const auto PAD_LINE_COLOR { LINE_COLOR - PAD_LINE_COLOR_ADJ };
                 const sf::Vector2f LINE_THICKNESS_V(LINE_THICKNESS, LINE_THICKNESS);
 
-                const auto OUTER_REGION { sf::FloatRect(
-                    Position(REGION) - LINE_THICKNESS_V,
-                    Size(REGION) + (LINE_THICKNESS_V * 2.0f)) };
+                regionOuter_ = sf::FloatRect(
+                    Position(REGION) - LINE_THICKNESS_V, Size(REGION) + (LINE_THICKNESS_V * 2.0f));
 
                 rsVec.emplace_back(MakeRectangleHollow(
-                    OUTER_REGION,
+                    regionOuter_,
                     PAD_LINE_COLOR,
                     LINE_THICKNESS,
                     WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
-                const auto INNER_REGION { sf::FloatRect(
-                    Position(REGION) + LINE_THICKNESS_V,
-                    Size(REGION) - (LINE_THICKNESS_V * 2.0f)) };
+                regionInner_ = sf::FloatRect(
+                    Position(REGION) + LINE_THICKNESS_V, Size(REGION) - (LINE_THICKNESS_V * 2.0f));
 
                 rsVec.emplace_back(MakeRectangleHollow(
-                    INNER_REGION,
+                    regionInner_,
                     PAD_LINE_COLOR,
                     LINE_THICKNESS,
                     WILL_GROW_BORDER_TO_CONTAIN_REGION));
             }
 
             rectangleShapesOpt_ = rsVec;
-            SetupOuterRegion();
-            SetupInnerRegion();
+            willDraw_ = true;
         }
 
-        Border::Border(const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
-            : rectangleShapesOpt_()
-            , goldBarOpt_()
-            , regionOuter_(REGION)
-            , regionInner_(REGION)
+        void Border::Setup(
+            const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION)
         {
+            Reset();
+
             if (IsSizeZeroOrLessEither(REGION))
             {
                 return;
@@ -91,22 +127,26 @@ namespace sfml_util
                 ((REGION.width < REGION.height) ? Orientation::Vert : Orientation::Horiz),
                 WILL_GROW_BORDER_TO_CONTAIN_REGION);
 
-            SetupOuterRegion();
-            SetupInnerRegion();
+            regionOuter_ = goldBarOpt_->OuterRegion();
+            regionInner_ = goldBarOpt_->InnerRegion();
+            willDraw_ = true;
         }
 
         void Border::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            if (rectangleShapesOpt_)
+            if (willDraw_)
             {
-                for (const auto & RECTANGLE_SHAPE : rectangleShapesOpt_.value())
+                if (rectangleShapesOpt_)
                 {
-                    target.draw(RECTANGLE_SHAPE, states);
+                    for (const auto & RECTANGLE_SHAPE : rectangleShapesOpt_.value())
+                    {
+                        target.draw(RECTANGLE_SHAPE, states);
+                    }
                 }
-            }
-            else if (goldBarOpt_)
-            {
-                target.draw(goldBarOpt_.value(), states);
+                else if (goldBarOpt_)
+                {
+                    target.draw(goldBarOpt_.value(), states);
+                }
             }
         }
 
@@ -224,52 +264,6 @@ namespace sfml_util
             else
             {
                 return 0.0f;
-            }
-        }
-
-        void Border::SetupOuterRegion()
-        {
-            if (rectangleShapesOpt_)
-            {
-                if (rectangleShapesOpt_->size() > 1)
-                {
-                    regionOuter_ = rectangleShapesOpt_.value()[1].getGlobalBounds();
-                }
-                else
-                {
-                    regionOuter_ = rectangleShapesOpt_->front().getGlobalBounds();
-                }
-            }
-            else if (goldBarOpt_)
-            {
-                regionOuter_ = goldBarOpt_->OuterRegion();
-            }
-            else
-            {
-                regionOuter_ = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f);
-            }
-        }
-
-        void Border::SetupInnerRegion()
-        {
-            if (rectangleShapesOpt_)
-            {
-                if (rectangleShapesOpt_->size() > 2)
-                {
-                    regionInner_ = rectangleShapesOpt_.value()[2].getGlobalBounds();
-                }
-                else
-                {
-                    regionInner_ = rectangleShapesOpt_->front().getGlobalBounds();
-                }
-            }
-            else if (goldBarOpt_)
-            {
-                regionInner_ = goldBarOpt_->InnerRegion();
-            }
-            else
-            {
-                regionInner_ = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f);
             }
         }
 

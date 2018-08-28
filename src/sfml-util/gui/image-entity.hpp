@@ -112,9 +112,13 @@ namespace sfml_util
             // call after changing mouseImageInfo_ or mouse state
             virtual void Sync();
 
+            bool WillDraw() const { return willDraw_; }
+            void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
+
         private:
             MouseImageInfo mouseImageInfo_;
             sf::Sprite sprite_;
+            bool willDraw_;
         };
 
         using ImageEntityPtr_t = misc::NotNull<ImageEntity *>;

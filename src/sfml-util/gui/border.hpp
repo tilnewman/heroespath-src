@@ -35,7 +35,7 @@ namespace sfml_util
         public:
             // pad lines will not be drawn unless a non-transparent PAD_LINE_COLOR_ADJ is provided
             Border(
-                const sf::FloatRect & REGION = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
+                const sf::FloatRect & REGION = sf::FloatRect(),
                 const float LINE_THICKNESS = 1.0f,
                 const sf::Color & LINE_COLOR = sf::Color::White,
                 const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None,
@@ -51,10 +51,22 @@ namespace sfml_util
             Border & operator=(const Border &) = default;
             Border & operator=(Border &&) = default;
 
+            // changes to a default invalid state that draws nothing
+            void Reset();
+
+            // pad lines will not be drawn unless a non-transparent PAD_LINE_COLOR_ADJ is provided
+            void Setup(
+                const sf::FloatRect & REGION,
+                const float LINE_THICKNESS,
+                const sf::Color & LINE_COLOR = sf::Color::White,
+                const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None,
+                const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
+
+            // use to create a border of gold bars
+            void Setup(const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION);
+
             void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-            bool WillDraw() const { return IsAny(); }
-            bool IsAny() const { return (rectangleShapesOpt_ || goldBarOpt_); }
             bool IsLine() const { return !!rectangleShapesOpt_; }
             bool IsGoldBars() const { return !!goldBarOpt_; }
 
@@ -77,34 +89,38 @@ namespace sfml_util
 
             float LineThickness() const;
 
+            bool WillDraw() const { return willDraw_; }
+            void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
+
             friend bool operator<(const Border & L, const Border & R);
             friend bool operator==(const Border & L, const Border & R);
 
         private:
-            void SetupOuterRegion();
-            void SetupInnerRegion();
-
             boost::optional<std::vector<sf::RectangleShape>> rectangleShapesOpt_;
             GoldBarOpt_t goldBarOpt_;
             sf::FloatRect regionOuter_;
             sf::FloatRect regionInner_;
+            bool willDraw_;
         };
 
         using BorderOpt_t = boost::optional<Border>;
         using BorderUPtr_t = std::unique_ptr<Border>;
 
+        // intentionally ignores willDraw_
         inline bool operator<(const Border & L, const Border & R)
         {
             return std::tie(L.rectangleShapesOpt_, L.goldBarOpt_)
                 < std::tie(R.rectangleShapesOpt_, R.goldBarOpt_);
         }
 
+        // intentionally ignores willDraw_
         inline bool operator==(const Border & L, const Border & R)
         {
             return std::tie(L.rectangleShapesOpt_, L.goldBarOpt_)
                 == std::tie(R.rectangleShapesOpt_, R.goldBarOpt_);
         }
 
+        // intentionally ignores willDraw_
         inline bool operator!=(const Border & L, const Border & R) { return !(L == R); }
 
     } // namespace gui

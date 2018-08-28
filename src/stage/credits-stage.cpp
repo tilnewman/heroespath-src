@@ -370,7 +370,7 @@ namespace stage
 
         for (auto & creditUPtr : creditUVec_)
         {
-            creditUPtr->Draw(target, STATES);
+            target.draw(*creditUPtr, STATES);
         }
 
         // draw solid black rectangles above and below the credits box to hide the

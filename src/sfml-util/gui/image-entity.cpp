@@ -29,6 +29,7 @@ namespace sfml_util
                                                       : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
             , mouseImageInfo_(MOUSE_IMAGE_INFO)
             , sprite_()
+            , willDraw_(false)
         {
             Sync();
         }
@@ -73,6 +74,7 @@ namespace sfml_util
                       COLOR_OPT,
                       WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION))
             , sprite_()
+            , willDraw_(false)
         {
             Sync();
         }
@@ -81,7 +83,10 @@ namespace sfml_util
 
         void ImageEntity::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            target.draw(sprite_, states);
+            if (willDraw_)
+            {
+                target.draw(sprite_, states);
+            }
         }
 
         void ImageEntity::Color(const sf::Color & COLOR)
@@ -162,21 +167,16 @@ namespace sfml_util
 
             if (MOUSE_STATE_TO_DRAW == MouseState::Count)
             {
-                const auto POSITION_V { sfml_util::Position(GetEntityRegion()) };
+                willDraw_ = false;
 
-                sprite_ = sf::Sprite();
-                sprite_.setPosition(POSITION_V);
-
-                const auto NEW_REGION { sf::FloatRect(POSITION_V, sf::Vector2f(0.0f, 0.0f)) };
-
-                entityRegion_ = NEW_REGION;
+                entityRegion_ = sf::FloatRect(
+                    sfml_util::Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f));
             }
             else
             {
+                willDraw_ = true;
                 sprite_ = mouseImageInfo_.FromMouseState(MOUSE_STATE_TO_DRAW).sprite;
-
-                const auto NEW_REGION { sprite_.getGlobalBounds() };
-                entityRegion_ = NEW_REGION;
+                entityRegion_ = sprite_.getGlobalBounds();
             }
         }
 

@@ -31,9 +31,18 @@ namespace sfml_util
         const sf::Color & COLOR_TO,
         const Side::Enum SIDES_WITH_FROM_COLOR,
         const Corner::Enum CORNERS_WITH_FROM_COLOR)
-        : vertexes_(sf::Quads, 4)
+        : vertexes_()
+        , willDraw_(false)
     {
         Setup(RECT, COLOR_FROM, COLOR_TO, SIDES_WITH_FROM_COLOR, CORNERS_WITH_FROM_COLOR);
+    }
+
+    void ColoredRect::Reset()
+    {
+        vertexes_.clear();
+        vertexes_.setPrimitiveType(sf::Quads);
+        vertexes_.resize(4);
+        willDraw_ = false;
     }
 
     void ColoredRect::Setup(const sf::FloatRect & RECT, const sf::Color & COLOR)
@@ -48,6 +57,7 @@ namespace sfml_util
         const Side::Enum SIDES_WITH_FROM_COLOR,
         const Corner::Enum CORNERS_WITH_FROM_COLOR)
     {
+        Reset();
         Rect(RECT);
         Color(COLOR_FROM);
 
@@ -94,11 +104,16 @@ namespace sfml_util
         {
             vertexes_[1].color = COLOR_TO;
         }
+
+        willDraw_ = true;
     }
 
     void ColoredRect::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(vertexes_, states);
+        if (willDraw_)
+        {
+            target.draw(vertexes_, states);
+        }
     }
 
     bool ColoredRect::IsGradient() const

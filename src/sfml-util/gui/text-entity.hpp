@@ -175,6 +175,9 @@ namespace sfml_util
                 willPlayMouseOverTickSfx_ = WILL_PLAY_SFX;
             }
 
+            bool WillDraw() const { return willDraw_; }
+            void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
+
         private:
             MouseTextInfo mouseTextInfo_;
             RenderProfileToTextureMap_t profileToTextureMap_;
@@ -183,6 +186,7 @@ namespace sfml_util
             float textWidthLimit_;
             bool willCache_;
             bool willPlayMouseOverTickSfx_;
+            bool willDraw_;
         };
 
         using TextEntityPtr_t = misc::NotNull<TextEntity *>;

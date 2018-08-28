@@ -45,7 +45,7 @@ namespace stage
     };
 
     // responsibe for drawing a credit on screen
-    class Credit
+    class Credit : public sf::Drawable
     {
     public:
         // use to create text only credits
@@ -90,7 +90,7 @@ namespace stage
             const sfml_util::Animations::Enum ANIM_ENUM = sfml_util::Animations::Count,
             const float ANIM_FRAME_TIME_SEC = 0.0f);
 
-        void Draw(sf::RenderTarget & target, sf::RenderStates states);
+        void draw(sf::RenderTarget &, sf::RenderStates) const override final;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);
         bool IsVisible() const;

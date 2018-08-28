@@ -231,7 +231,7 @@ namespace stage
         trackingRect.top += VERT_SPACER;
     }
 
-    void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
+    void Credit::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         if (IsVisible() == false)
         {

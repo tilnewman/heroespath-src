@@ -33,6 +33,8 @@ namespace sfml_util
             , border_()
             , coloredRect_()
             , sprite_()
+            , willDrawImage_(false)
+            , innerRegion_()
         {
             Setup(REGION, BACKGROUND_INFO);
         }
@@ -41,14 +43,23 @@ namespace sfml_util
         {
             if (backgroundInfo_.will_draw_color_over_sprite)
             {
-                target.draw(sprite_, states);
+                if (willDrawImage_)
+                {
+                    target.draw(sprite_, states);
+                }
+
                 target.draw(coloredRect_, states);
                 target.draw(border_, states);
             }
             else
             {
                 target.draw(coloredRect_, states);
-                target.draw(sprite_, states);
+
+                if (willDrawImage_)
+                {
+                    target.draw(sprite_, states);
+                }
+
                 target.draw(border_, states);
             }
         }
@@ -71,27 +82,28 @@ namespace sfml_util
             coloredRect_.MovePos(HORIZ, VERT);
             border_.MovePos(HORIZ, VERT);
             sprite_.move(HORIZ, VERT);
+            Entity::MoveEntityPos(HORIZ, VERT);
         }
 
         void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
         {
             if (IsSizeZeroOrLessEither(REGION_ORIG))
             {
-                border_ = Border();
-                coloredRect_ = ColoredRect();
-                sprite_ = sf::Sprite();
+                border_.WillDraw(false);
+                coloredRect_.WillDraw(false);
+                willDrawImage_ = false;
 
-                Entity::SetEntityRegion(
-                    sf::FloatRect(Position(REGION_ORIG), sf::Vector2f(0.0f, 0.0f)));
-
+                Entity::SetEntityRegion(REGION_ORIG);
+                innerRegion_ = REGION_ORIG;
                 return;
             }
 
             if (backgroundInfo_.HasBorder())
             {
+                border_.WillDraw(true);
                 if (backgroundInfo_.line_thickness > 0.0f)
                 {
-                    border_ = Border(
+                    border_.Setup(
                         REGION_ORIG,
                         backgroundInfo_.line_thickness,
                         backgroundInfo_.line_color,
@@ -100,31 +112,30 @@ namespace sfml_util
                 }
                 else
                 {
-                    border_ = Border(REGION_ORIG, backgroundInfo_.will_grow_border);
+                    border_.Setup(REGION_ORIG, backgroundInfo_.will_grow_border);
                 }
+
+                Entity::SetEntityRegion(border_.OuterRegion());
+                innerRegion_ = border_.InnerRegion();
             }
             else
             {
-                border_ = Border();
+                border_.WillDraw(false);
+                Entity::SetEntityRegion(REGION_ORIG);
+                innerRegion_ = REGION_ORIG;
             }
-
-            const auto OUTER_REGION { (
-                (backgroundInfo_.HasBorder()) ? border_.OuterRegion() : REGION_ORIG) };
-
-            // See Border.InnerRegion() -this might be the same as outer region...
-            const auto INNER_REGION { (
-                (backgroundInfo_.HasBorder()) ? border_.InnerRegion() : REGION_ORIG) };
 
             if (backgroundInfo_.HasColor())
             {
+                coloredRect_.WillDraw(true);
                 if (backgroundInfo_.HasColorSolid())
                 {
-                    coloredRect_ = ColoredRect(INNER_REGION, backgroundInfo_.color_from);
+                    coloredRect_.Setup(innerRegion_, backgroundInfo_.color_from);
                 }
                 else
                 {
-                    coloredRect_ = ColoredRect(
-                        INNER_REGION,
+                    coloredRect_.Setup(
+                        innerRegion_,
                         backgroundInfo_.color_from,
                         backgroundInfo_.color_to,
                         backgroundInfo_.color_from_sides,
@@ -133,22 +144,23 @@ namespace sfml_util
             }
             else
             {
-                coloredRect_ = ColoredRect();
+                coloredRect_.WillDraw(false);
             }
 
             if (backgroundInfo_.HasImage())
             {
+                willDrawImage_ = true;
                 sprite_ = sf::Sprite(backgroundInfo_.cached_texture_opt->Get());
 
                 if (backgroundInfo_.cached_texture_opt->Options().option_enum & ImageOpt::Repeated)
                 {
-                    sprite_.setPosition(Position(INNER_REGION));
+                    sprite_.setPosition(Position(innerRegion_));
 
                     const auto SPRITE_SIZE_BEFORE_V { Size(sprite_) };
                     SetSize(sprite_, backgroundInfo_.image_size);
                     const auto SPRITE_SIZE_AFTER_V { Size(sprite_) };
 
-                    sf::Vector2f textureRectSizeV { Size(INNER_REGION) };
+                    sf::Vector2f textureRectSizeV { Size(innerRegion_) };
 
                     if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.x) == false)
                     {
@@ -177,22 +189,20 @@ namespace sfml_util
 
                     if (backgroundInfo_.will_size_instead_of_fit)
                     {
-                        SetSizeAndPos(sprite_, INNER_REGION);
+                        SetSizeAndPos(sprite_, innerRegion_);
                         SetSize(sprite_, backgroundInfo_.image_size);
                     }
                     else
                     {
-                        FitAndCenterTo(sprite_, INNER_REGION);
+                        FitAndCenterTo(sprite_, innerRegion_);
                         FitAndReCenter(sprite_, backgroundInfo_.image_size);
                     }
                 }
             }
             else
             {
-                sprite_ = sf::Sprite();
+                willDrawImage_ = false;
             }
-
-            Entity::SetEntityRegion(OUTER_REGION);
         }
 
         void BoxEntity::OnColorChange()
@@ -203,22 +213,6 @@ namespace sfml_util
             border_.Color(GetEntityColorForeground());
 
             sprite_.setColor(GetEntityColorForeground());
-        }
-
-        const sf::FloatRect BoxEntity::InnerRegion() const
-        {
-            if (backgroundInfo_.HasBorder())
-            {
-                return border_.InnerRegion();
-            }
-            else if (backgroundInfo_.HasColor())
-            {
-                return coloredRect_.Rect();
-            }
-            else
-            {
-                return GetEntityRegion();
-            }
         }
 
     } // namespace gui

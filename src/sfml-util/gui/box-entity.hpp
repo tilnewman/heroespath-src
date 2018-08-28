@@ -76,7 +76,7 @@ namespace sfml_util
             const sf::FloatRect OuterRegion() const { return GetEntityRegion(); }
 
             // same as OuterRegion() if there is no border
-            const sf::FloatRect InnerRegion() const;
+            const sf::FloatRect InnerRegion() const { return innerRegion_; }
 
             friend bool operator<(const BoxEntity & L, const BoxEntity & R);
             friend bool operator==(const BoxEntity & L, const BoxEntity & R);
@@ -86,20 +86,46 @@ namespace sfml_util
             Border border_;
             ColoredRect coloredRect_;
             sf::Sprite sprite_;
+            bool willDrawImage_;
+            sf::FloatRect innerRegion_;
         };
 
         using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
         inline bool operator<(const BoxEntity & L, const BoxEntity & R)
         {
-            return std::tie(L.backgroundInfo_, L.border_, L.coloredRect_, L.sprite_)
-                < std::tie(R.backgroundInfo_, R.border_, R.coloredRect_, R.sprite_);
+            return std::tie(
+                       L.backgroundInfo_,
+                       L.border_,
+                       L.coloredRect_,
+                       L.sprite_,
+                       L.willDrawImage_,
+                       L.innerRegion_)
+                < std::tie(
+                       R.backgroundInfo_,
+                       R.border_,
+                       R.coloredRect_,
+                       R.sprite_,
+                       R.willDrawImage_,
+                       R.innerRegion_);
         }
 
         inline bool operator==(const BoxEntity & L, const BoxEntity & R)
         {
-            return std::tie(L.backgroundInfo_, L.border_, L.coloredRect_, L.sprite_)
-                == std::tie(R.backgroundInfo_, R.border_, R.coloredRect_, R.sprite_);
+            return std::tie(
+                       L.backgroundInfo_,
+                       L.border_,
+                       L.coloredRect_,
+                       L.sprite_,
+                       L.willDrawImage_,
+                       L.innerRegion_)
+                == std::tie(
+                       R.backgroundInfo_,
+                       R.border_,
+                       R.coloredRect_,
+                       R.sprite_,
+                       R.willDrawImage_,
+                       R.innerRegion_);
         }
 
         inline bool operator!=(const BoxEntity & L, const BoxEntity & R) { return !(L == R); }

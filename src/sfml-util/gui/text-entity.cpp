@@ -39,6 +39,7 @@ namespace sfml_util
             , textWidthLimit_(0.0f)
             , willCache_(WILL_CACHE)
             , willPlayMouseOverTickSfx_(WILL_PLAY_MOUSEOVER_TICK_SFX)
+            , willDraw_(false)
         {}
 
         TextEntity::TextEntity(
@@ -57,6 +58,7 @@ namespace sfml_util
             , textWidthLimit_(TEXT_WIDTH_LIMIT)
             , willCache_(WILL_CACHE)
             , willPlayMouseOverTickSfx_(WILL_PLAY_MOUSEOVER_TICK_SFX)
+            , willDraw_(false)
         {
             Setup(
                 POS_LEFT,
@@ -77,6 +79,7 @@ namespace sfml_util
             const bool WILL_CACHE,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
         {
+            willDraw_ = false;
             sprite_ = sf::Sprite();
             profileToTextureMap_.Clear();
             renderTexturesUVec_.clear();
@@ -93,7 +96,10 @@ namespace sfml_util
 
         void TextEntity::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            target.draw(sprite_, states);
+            if (willDraw_)
+            {
+                target.draw(sprite_, states);
+            }
         }
 
         bool TextEntity::SetMouseState(const MouseState::Enum MOUSE_STATE_NEW)
@@ -201,10 +207,11 @@ namespace sfml_util
                 }
 
                 SetEntityRegion(sprite_.getGlobalBounds());
+                willDraw_ = true;
             }
             else
             {
-                sprite_.setTexture(sf::Texture());
+                willDraw_ = false;
             }
         }
 

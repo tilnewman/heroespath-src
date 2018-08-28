@@ -48,9 +48,12 @@ namespace sfml_util
         ColoredRect & operator=(const ColoredRect &) = default;
         ColoredRect & operator=(ColoredRect &&) = default;
 
+        // changes to a default invalid state that draws nothing
+        void Reset();
+
         void Setup(const sf::FloatRect & RECT, const sf::Color & COLOR);
 
-        // side colors are set before corner colors
+        // side colors are set before corner colors, sets willDraw_ = true
         void Setup(
             const sf::FloatRect & RECT,
             const sf::Color & COLOR_FROM,
@@ -74,19 +77,27 @@ namespace sfml_util
         void SetPos(const float POS_LEFT, const float POS_TOP);
         void MovePos(const float HORIZ, const float VERT);
 
+        bool WillDraw() const { return willDraw_; }
+        void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
+
         friend bool operator<(const ColoredRect & L, const ColoredRect & R);
         friend bool operator==(const ColoredRect & L, const ColoredRect & R);
 
     private:
         sf::VertexArray vertexes_;
+        bool willDraw_;
     };
 
     using ColoredRectOpt_t = boost::optional<ColoredRect>;
     using ColoredRectUPtr_t = std::unique_ptr<ColoredRect>;
 
+    // intentionally ignores willDraw_
     bool operator<(const ColoredRect & L, const ColoredRect & R);
+
+    // intentionally ignores willDraw_
     bool operator==(const ColoredRect & L, const ColoredRect & R);
 
+    // intentionally ignores willDraw_
     inline bool operator!=(const ColoredRect & L, const ColoredRect & R) { return !(L == R); }
 
 } // namespace sfml_util
