@@ -51,7 +51,9 @@ namespace stage
         const sf::FloatRect REGION_ORIG(sfml_util::CenterCopy(SIZE_V), SIZE_V);
 
         sfml_util::gui::BoxEntityInfo statsBoxInfo;
-        statsBoxInfo.SetupImage(sfml_util::CachedTexture("media-images-backgrounds-tile-wood"));
+        statsBoxInfo.SetupImage(sfml_util::CachedTexture(
+            "media-images-backgrounds-tile-wood",
+            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
         statsBoxInfo.focus_colors = sfml_util::defaults::GuiFocusColors;
 

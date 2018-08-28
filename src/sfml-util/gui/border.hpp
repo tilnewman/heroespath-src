@@ -59,10 +59,10 @@ namespace sfml_util
             bool IsGoldBars() const { return !!goldBarOpt_; }
 
             // if WILL_GROW_BORDER_TO_CONTAIN_REGION==false returns the orig region
-            const sf::FloatRect OuterRegion() const;
+            const sf::FloatRect OuterRegion() const { return regionOuter_; }
 
             // if WILL_GROW_BORDER_TO_CONTAIN_REGION==true returns the orig region
-            const sf::FloatRect InnerRegion() const;
+            const sf::FloatRect InnerRegion() const { return regionInner_; }
 
             const sf::Color Color() const;
             void Color(const sf::Color &);
@@ -81,8 +81,13 @@ namespace sfml_util
             friend bool operator==(const Border & L, const Border & R);
 
         private:
+            void SetupOuterRegion();
+            void SetupInnerRegion();
+
             boost::optional<std::vector<sf::RectangleShape>> rectangleShapesOpt_;
             GoldBarOpt_t goldBarOpt_;
+            sf::FloatRect regionOuter_;
+            sf::FloatRect regionInner_;
         };
 
         using BorderOpt_t = boost::optional<Border>;
