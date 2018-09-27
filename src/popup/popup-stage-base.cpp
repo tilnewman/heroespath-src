@@ -291,9 +291,9 @@ namespace popup
         auto const TEMP_MOUSE_TEXT_INFO { sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
             creatureNameInfo.LargestLetterString(), popupInfo_.ButtonColor()) };
 
-        const sf::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
-                                       *TEMP_MOUSE_TEXT_INFO.up.font_ptr_opt.value(),
-                                       TEMP_MOUSE_TEXT_INFO.up.char_size };
+        const sfml_util::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
+                                              TEMP_MOUSE_TEXT_INFO.up.font_letters,
+                                              TEMP_MOUSE_TEXT_INFO.up.size };
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
 

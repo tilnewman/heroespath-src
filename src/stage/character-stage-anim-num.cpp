@@ -46,13 +46,13 @@ namespace stage
         , fadeCounter_(0.0f)
         , isHeldDown_(false)
         , textInfo_(TEXT_INFO)
-        , textObj_()
+        , text_()
         , sliderX_(misc::random::Float(0.5f, 0.7f))
         , // this controls the speed
         timerSec_(0.0f)
         , prevPosX_(-1.0f) // any negative value will work here
     {
-        textObj_.setPosition(START_LEFT, START_TOP);
+        text_.setPosition(START_LEFT, START_TOP);
         CreateNewTextRegion();
     }
 
@@ -73,7 +73,7 @@ namespace stage
             textInfo_.color = sf::Color::White;
         }
 
-        textInfo_.Apply(textObj_);
+        text_.setup(textInfo_);
     }
 
     bool AnimNum::UpdateTime(const float ELAPSED_TIME_SEC)
@@ -82,13 +82,14 @@ namespace stage
         {
             // position
             const float SLIDERX_RATIO(sliderX_.Update(ELAPSED_TIME_SEC));
-            textObj_.setPosition(
+
+            text_.setPosition(
                 startLeft_ + (SLIDERX_RATIO * distanceX_),
                 startTop_ + (SLIDERX_RATIO * distanceY_));
 
             // size
             const float SCALE(sfml_util::Map(SLIDERX_RATIO, 0.0f, 1.0f, 0.6f, 1.0f));
-            textObj_.setScale(SCALE, SCALE);
+            text_.setScale(SCALE, SCALE);
 
             // color
             auto const COLOR_VALF { static_cast<float>(colorVal_) };
@@ -96,7 +97,7 @@ namespace stage
             color_.g = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.b = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.a = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
-            textObj_.setFillColor(color_);
+            text_.setFillColor(color_);
 
             isDoneMoving_ = (SLIDERX_RATIO >= 0.99f);
             return false;
@@ -119,7 +120,7 @@ namespace stage
                         color_.a = 0;
                     }
 
-                    textObj_.setFillColor(color_);
+                    text_.setFillColor(color_);
                     return false;
                 }
                 else
@@ -137,7 +138,7 @@ namespace stage
 
     bool AnimNum::MouseDown(const float POS_LEFT, const float POS_TOP)
     {
-        if (textObj_.getGlobalBounds().contains(POS_LEFT, POS_TOP))
+        if (text_.getGlobalBounds().contains(POS_LEFT, POS_TOP))
         {
             isHeldDown_ = true;
             return true;
@@ -150,7 +151,7 @@ namespace stage
 
     bool AnimNum::UpdateTimer(const float ELAPSED_TIME_SEC)
     {
-        if (misc::IsRealClose(prevPosX_, textObj_.getPosition().x))
+        if (misc::IsRealClose(prevPosX_, text_.getPosition().x))
         {
             timerSec_ += ELAPSED_TIME_SEC;
         }
@@ -159,14 +160,14 @@ namespace stage
             timerSec_ = 0.0f;
         }
 
-        prevPosX_ = textObj_.getPosition().x;
+        prevPosX_ = text_.getPosition().x;
 
         return (timerSec_ >= 3.0f);
     }
 
     void AnimNum::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(textObj_, states);
+        target.draw(text_, states);
     }
 
     bool operator==(const AnimNum & L, const AnimNum & R)

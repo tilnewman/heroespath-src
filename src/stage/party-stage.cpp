@@ -73,7 +73,7 @@ namespace stage
         , MOUSEOVER_FINAL_INNER_EDGE_PAD_(sfml_util::ScreenRatioToPixelsHoriz(0.008f))
         , MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_(sfml_util::ScreenRatioToPixelsHoriz(0.115f))
         , MOUSEOVER_COLORCYCLE_START_(sf::Color::Transparent)
-        , HEROESPATH_ORANGE_(sfml_util::defaults::Orange)
+        , HEROESPATH_ORANGE_(sfml_util::color::Orange)
         , MOUSEOVER_COLORCYCLE_ALT_(
               HEROESPATH_ORANGE_.r, HEROESPATH_ORANGE_.g, HEROESPATH_ORANGE_.b, 32)
         , MOUSEOVER_COLORCYCLE_SPEED_(28.0f)
@@ -319,12 +319,11 @@ namespace stage
     {
         sfml_util::gui::TextInfo insTextInfo(
             "(double-click or use the arrow keys and enter to move characters back and forth)",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::GrayLight,
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Left);
+            sfml_util::color::GrayLight,
+            sfml_util::Justified::Left,
+            sf::Text::Italic);
 
         insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "Instructions", insTextInfo, sf::FloatRect());
@@ -346,12 +345,11 @@ namespace stage
 
         warningTextInfo_ = sfml_util::gui::TextInfo(
             warningSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sf::Color(255, 200, 200),
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Left);
+            sfml_util::Justified::Left,
+            sf::Text::Italic);
 
         warningTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "WarningsText", warningTextInfo_, sf::FloatRect());
@@ -371,9 +369,9 @@ namespace stage
     {
         sfml_util::gui::TextInfo labelTextInfo(
             "Unplayed Characters",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::defaults::Orange + sf::Color(0, 30, 30, 0));
+            sfml_util::color::Orange + sf::Color(0, 30, 30, 0));
 
         upTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CharacterLabel", labelTextInfo, sf::FloatRect());
@@ -391,9 +389,9 @@ namespace stage
     {
         sfml_util::gui::TextInfo labelTextInfo(
             "New Party",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::defaults::Orange + sf::Color(0, 30, 30, 0));
+            sfml_util::color::Orange + sf::Color(0, 30, 30, 0));
 
         partyTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "PartyLabel", labelTextInfo, sf::FloatRect());
@@ -420,22 +418,19 @@ namespace stage
         const sf::FloatRect CHAR_LIST_RECT(
             CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP, CHAR_LIST_WIDTH, CHAR_LIST_HEIGHT);
 
-        auto const BG_COLOR { sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220) };
+        auto const BG_COLOR { sfml_util::color::Orange - sf::Color(100, 100, 100, 220) };
 
         listBoxInfo_.SetupBorder(true, 1.0f);
         listBoxInfo_.SetupColor(BG_COLOR);
 
         listBoxInfo_.focus_colors = sfml_util::gui::FocusColors(
-            sfml_util::defaults::Orange,
+            sfml_util::color::Orange,
             BG_COLOR,
-            sfml_util::defaults::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
+            sfml_util::color::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
             BG_COLOR - sf::Color(40, 40, 40, 0));
 
         sfml_util::gui::ListBoxPacket charListBoxPacket(
-            CHAR_LIST_RECT,
-            listBoxInfo_,
-            sfml_util::defaults::Orange,
-            sf::Color(255, 255, 255, 190));
+            CHAR_LIST_RECT, listBoxInfo_, sfml_util::color::Orange, sf::Color(255, 255, 255, 190));
 
         characterListBoxUPtr_
             = std::make_unique<sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
@@ -444,10 +439,7 @@ namespace stage
         // load all players not yet assigned to a party/started game
         unplayedCharactersPVec_ = game::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
 
-        sfml_util::gui::TextInfo textInfo(
-            "",
-            sfml_util::FontManager::Instance()->GetFont(LISTBOX_FONT_ENUM_),
-            LISTBOX_FONT_SIZE_);
+        sfml_util::gui::TextInfo textInfo("", LISTBOX_FONT_ENUM_, LISTBOX_FONT_SIZE_);
 
         for (auto const & CHARACTER_PTR : unplayedCharactersPVec_)
         {
@@ -486,10 +478,7 @@ namespace stage
             PARTY_LIST_POS_LEFT, PARTY_LIST_POS_TOP, PARTY_LIST_WIDTH, PARTY_LIST_HEIGHT);
 
         sfml_util::gui::ListBoxPacket partyListBoxPacket(
-            PARTY_LIST_RECT,
-            listBoxInfo_,
-            sfml_util::defaults::Orange,
-            sf::Color(255, 255, 255, 190));
+            PARTY_LIST_RECT, listBoxInfo_, sfml_util::color::Orange, sf::Color(255, 255, 255, 190));
 
         partyListBoxUPtr_
             = std::make_unique<sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
@@ -871,9 +860,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::Light,
+            sfml_util::color::Light,
             sfml_util::Justified::Left);
 
         // initially the TextRegion is not positioned, see below

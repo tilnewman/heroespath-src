@@ -12,7 +12,6 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/image-options.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 
 #include <memory>
 #include <string>

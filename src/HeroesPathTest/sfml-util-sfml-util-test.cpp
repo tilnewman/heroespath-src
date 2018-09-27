@@ -61,6 +61,265 @@ using namespace heroespath::misc;
 
 using heroespath::misc::IsRealClose;
 
+BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
+{
+    auto areVectorValuesZero = [](const sf::Vector2f & V) {
+        return (!(V.x < 0.0f) && !(V.x > 0.0f) && !(V.y < 0.0f) && !(V.y > 0.0f));
+    };
+
+    auto areRectValuesZero = [](const sf::FloatRect & R) {
+        return (
+            !(R.left < 0.0f) && !(R.left > 0.0f) && !(R.top < 0.0f) && !(R.top > 0.0f)
+            && !(R.width < 0.0f) && !(R.width > 0.0f) && !(R.height < 0.0f) && !(R.height > 0.0f));
+    };
+
+    const sf::Vector2f VZ(0.0f, 0.0f);
+    BOOST_CHECK(areVectorValuesZero(VZ));
+
+    const sf::FloatRect RZ(0.0f, 0.0f, 0.0f, 0.0f);
+    BOOST_CHECK(areRectValuesZero(RZ));
+
+    //
+
+    BOOST_CHECK(areVectorValuesZero(sf::Vector2f()));
+    BOOST_CHECK(sf::Vector2f() == VZ);
+
+    BOOST_CHECK(areRectValuesZero(sf::FloatRect()));
+    BOOST_CHECK(sf::FloatRect() == RZ);
+
+    //
+
+    BOOST_CHECK(areVectorValuesZero(sf::Vector2f {}));
+    BOOST_CHECK(sf::Vector2f {} == VZ);
+
+    BOOST_CHECK(areRectValuesZero(sf::FloatRect {}));
+    BOOST_CHECK(sf::FloatRect {} == RZ);
+
+    //
+
+    sf::Vector2f v1;
+    BOOST_CHECK(areVectorValuesZero(v1));
+    BOOST_CHECK(v1 == VZ);
+
+    sf::FloatRect r1;
+    BOOST_CHECK(areRectValuesZero(r1));
+    BOOST_CHECK(r1 == RZ);
+
+    //
+
+    sf::Vector2f v2 {};
+    BOOST_CHECK(areVectorValuesZero(v2));
+    BOOST_CHECK(v2 == VZ);
+
+    sf::FloatRect r2 {};
+    BOOST_CHECK(areRectValuesZero(r2));
+    BOOST_CHECK(r2 == RZ);
+
+    //
+
+    {
+        struct NoInit
+        {
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+        NoInit ni;
+
+        BOOST_CHECK(areVectorValuesZero(ni.v));
+        BOOST_CHECK(ni.v == VZ);
+
+        BOOST_CHECK(areRectValuesZero(ni.r));
+        BOOST_CHECK(ni.r == RZ);
+
+        {
+            std::vector<NoInit> vec;
+            vec.resize(4096);
+            for (const auto & NI : vec)
+            {
+                BOOST_CHECK(areVectorValuesZero(NI.v));
+                BOOST_CHECK(NI.v == VZ);
+
+                BOOST_CHECK(areRectValuesZero(NI.r));
+                BOOST_CHECK(NI.r == RZ);
+            }
+        }
+
+        {
+            std::vector<NoInit> vec {};
+            vec.resize(4096);
+            for (const auto & NI : vec)
+            {
+                BOOST_CHECK(areVectorValuesZero(NI.v));
+                BOOST_CHECK(NI.v == VZ);
+
+                BOOST_CHECK(areRectValuesZero(NI.r));
+                BOOST_CHECK(NI.r == RZ);
+            }
+        }
+    }
+
+    {
+        struct DefaultInit
+        {
+            DefaultInit()
+                : v()
+                , r()
+            {}
+
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+
+        {
+            DefaultInit di;
+
+            BOOST_CHECK(areVectorValuesZero(di.v));
+            BOOST_CHECK(di.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(di.r));
+            BOOST_CHECK(di.r == RZ);
+        }
+
+        {
+            DefaultInit di2 {};
+
+            BOOST_CHECK(areVectorValuesZero(di2.v));
+            BOOST_CHECK(di2.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(di2.r));
+            BOOST_CHECK(di2.r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(DefaultInit().v));
+            BOOST_CHECK(DefaultInit().v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(DefaultInit().r));
+            BOOST_CHECK(DefaultInit().r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(DefaultInit {}.v));
+            BOOST_CHECK(DefaultInit {}.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(DefaultInit {}.r));
+            BOOST_CHECK(DefaultInit {}.r == RZ);
+        }
+    }
+
+    {
+        struct UniformInit
+        {
+            UniformInit()
+                : v {}
+                , r {}
+            {}
+
+            sf::Vector2f v;
+            sf::FloatRect r;
+        };
+
+        {
+            UniformInit ui;
+
+            BOOST_CHECK(areVectorValuesZero(ui.v));
+            BOOST_CHECK(ui.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(ui.r));
+            BOOST_CHECK(ui.r == RZ);
+        }
+
+        {
+            UniformInit ui {};
+
+            BOOST_CHECK(areVectorValuesZero(ui.v));
+            BOOST_CHECK(ui.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(ui.r));
+            BOOST_CHECK(ui.r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(UniformInit().v));
+            BOOST_CHECK(UniformInit().v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(UniformInit().r));
+            BOOST_CHECK(UniformInit().r == RZ);
+        }
+
+        {
+            BOOST_CHECK(areVectorValuesZero(UniformInit {}.v));
+            BOOST_CHECK(UniformInit {}.v == VZ);
+
+            BOOST_CHECK(areRectValuesZero(UniformInit {}.r));
+            BOOST_CHECK(UniformInit {}.r == RZ);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(ColorMathTests)
+{
+    const sf::Color C0(0, 0, 0, 0);
+    const sf::Color C1(1, 1, 1, 1);
+    const sf::Color C254(254, 254, 254, 254);
+    const sf::Color C255(255, 255, 255, 255);
+
+    // sanity
+    BOOST_CHECK((C0 + C0) == C0);
+    BOOST_CHECK((C0 - C0) == C0);
+    BOOST_CHECK((C0 + C1) == C1);
+    BOOST_CHECK((C1 + C0) == C1);
+    BOOST_CHECK((C1 - C1) == C0);
+    BOOST_CHECK((C254 + C1) == C255);
+    BOOST_CHECK((C255 - C1) == C254);
+
+    // overflow and underflow should NOT wrap
+    BOOST_CHECK((C255 + C1) == C255);
+    BOOST_CHECK((C254 + C255) == C255);
+    BOOST_CHECK((C0 - C1) == C0);
+    BOOST_CHECK((C0 - C255) == C0);
+}
+
+BOOST_AUTO_TEST_CASE(VectorAndRectTests)
+{
+    const sf::Vector2f V0(0.0f, 0.0f);
+    const sf::Vector2f V1(1.0f, 1.0f);
+    const sf::Vector2f VN(-1.0f, -1.0f);
+    const sf::FloatRect R0(V0, V0);
+    const sf::FloatRect R1(V1, V1);
+    const sf::FloatRect RN(VN, VN);
+
+    {
+        auto testRect { R0 };
+        SetPosition(testRect, V1);
+        BOOST_CHECK(testRect == sf::FloatRect(V1, V0));
+    }
+
+    {
+        auto testRect { R0 };
+        SetSize(testRect, V1);
+        BOOST_CHECK(testRect == sf::FloatRect(V0, V1));
+    }
+
+    {
+        auto testRect { RN };
+        AdjustPosition(testRect, V1);
+        BOOST_CHECK(testRect == sf::FloatRect(V0, VN));
+    }
+
+    {
+        auto testRect { R1 };
+        AdjustSize(testRect, VN);
+        BOOST_CHECK(testRect == sf::FloatRect(V1, V0));
+    }
+
+    {
+        auto testRect { R1 };
+        Move(testRect, VN);
+        BOOST_CHECK(testRect == sf::FloatRect(V0, V1));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(Vertex_Tests)
 {
     const sf::Vector2f V0(0.0f, 0.0f);
@@ -483,227 +742,6 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     BOOST_CHECK(va[9].texCoords == sf::Vector2f(15.0f, 15.0f));
     BOOST_CHECK(va[10].texCoords == sf::Vector2f(15.0f, 20.0f));
     BOOST_CHECK(va[11].texCoords == sf::Vector2f(10.0f, 20.0f));
-}
-
-BOOST_AUTO_TEST_CASE(SFML_Default_Values_Tests)
-{
-    auto areVectorValuesZero = [](const sf::Vector2f & V) {
-        return (!(V.x < 0.0f) && !(V.x > 0.0f) && !(V.y < 0.0f) && !(V.y > 0.0f));
-    };
-
-    auto areRectValuesZero = [](const sf::FloatRect & R) {
-        return (
-            !(R.left < 0.0f) && !(R.left > 0.0f) && !(R.top < 0.0f) && !(R.top > 0.0f)
-            && !(R.width < 0.0f) && !(R.width > 0.0f) && !(R.height < 0.0f) && !(R.height > 0.0f));
-    };
-
-    const sf::Vector2f VZ(0.0f, 0.0f);
-    BOOST_CHECK(areVectorValuesZero(VZ));
-
-    const sf::FloatRect RZ(0.0f, 0.0f, 0.0f, 0.0f);
-    BOOST_CHECK(areRectValuesZero(RZ));
-
-    //
-
-    BOOST_CHECK(areVectorValuesZero(sf::Vector2f()));
-    BOOST_CHECK(sf::Vector2f() == VZ);
-
-    BOOST_CHECK(areRectValuesZero(sf::FloatRect()));
-    BOOST_CHECK(sf::FloatRect() == RZ);
-
-    //
-
-    BOOST_CHECK(areVectorValuesZero(sf::Vector2f {}));
-    BOOST_CHECK(sf::Vector2f {} == VZ);
-
-    BOOST_CHECK(areRectValuesZero(sf::FloatRect {}));
-    BOOST_CHECK(sf::FloatRect {} == RZ);
-
-    //
-
-    sf::Vector2f v1;
-    BOOST_CHECK(areVectorValuesZero(v1));
-    BOOST_CHECK(v1 == VZ);
-
-    sf::FloatRect r1;
-    BOOST_CHECK(areRectValuesZero(r1));
-    BOOST_CHECK(r1 == RZ);
-
-    //
-
-    sf::Vector2f v2 {};
-    BOOST_CHECK(areVectorValuesZero(v2));
-    BOOST_CHECK(v2 == VZ);
-
-    sf::FloatRect r2 {};
-    BOOST_CHECK(areRectValuesZero(r2));
-    BOOST_CHECK(r2 == RZ);
-
-    //
-
-    {
-        struct NoInit
-        {
-            sf::Vector2f v;
-            sf::FloatRect r;
-        };
-        NoInit ni;
-
-        BOOST_CHECK(areVectorValuesZero(ni.v));
-        BOOST_CHECK(ni.v == VZ);
-
-        BOOST_CHECK(areRectValuesZero(ni.r));
-        BOOST_CHECK(ni.r == RZ);
-
-        {
-            std::vector<NoInit> vec;
-            vec.resize(4096);
-            for (const auto & NI : vec)
-            {
-                BOOST_CHECK(areVectorValuesZero(NI.v));
-                BOOST_CHECK(NI.v == VZ);
-
-                BOOST_CHECK(areRectValuesZero(NI.r));
-                BOOST_CHECK(NI.r == RZ);
-            }
-        }
-
-        {
-            std::vector<NoInit> vec {};
-            vec.resize(4096);
-            for (const auto & NI : vec)
-            {
-                BOOST_CHECK(areVectorValuesZero(NI.v));
-                BOOST_CHECK(NI.v == VZ);
-
-                BOOST_CHECK(areRectValuesZero(NI.r));
-                BOOST_CHECK(NI.r == RZ);
-            }
-        }
-    }
-
-    {
-        struct DefaultInit
-        {
-            DefaultInit()
-                : v()
-                , r()
-            {}
-
-            sf::Vector2f v;
-            sf::FloatRect r;
-        };
-
-        {
-            DefaultInit di;
-
-            BOOST_CHECK(areVectorValuesZero(di.v));
-            BOOST_CHECK(di.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(di.r));
-            BOOST_CHECK(di.r == RZ);
-        }
-
-        {
-            DefaultInit di2 {};
-
-            BOOST_CHECK(areVectorValuesZero(di2.v));
-            BOOST_CHECK(di2.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(di2.r));
-            BOOST_CHECK(di2.r == RZ);
-        }
-
-        {
-            BOOST_CHECK(areVectorValuesZero(DefaultInit().v));
-            BOOST_CHECK(DefaultInit().v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(DefaultInit().r));
-            BOOST_CHECK(DefaultInit().r == RZ);
-        }
-
-        {
-            BOOST_CHECK(areVectorValuesZero(DefaultInit {}.v));
-            BOOST_CHECK(DefaultInit {}.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(DefaultInit {}.r));
-            BOOST_CHECK(DefaultInit {}.r == RZ);
-        }
-    }
-
-    {
-        struct UniformInit
-        {
-            UniformInit()
-                : v {}
-                , r {}
-            {}
-
-            sf::Vector2f v;
-            sf::FloatRect r;
-        };
-
-        {
-            UniformInit ui;
-
-            BOOST_CHECK(areVectorValuesZero(ui.v));
-            BOOST_CHECK(ui.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(ui.r));
-            BOOST_CHECK(ui.r == RZ);
-        }
-
-        {
-            UniformInit ui {};
-
-            BOOST_CHECK(areVectorValuesZero(ui.v));
-            BOOST_CHECK(ui.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(ui.r));
-            BOOST_CHECK(ui.r == RZ);
-        }
-
-        {
-            BOOST_CHECK(areVectorValuesZero(UniformInit().v));
-            BOOST_CHECK(UniformInit().v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(UniformInit().r));
-            BOOST_CHECK(UniformInit().r == RZ);
-        }
-
-        {
-            BOOST_CHECK(areVectorValuesZero(UniformInit {}.v));
-            BOOST_CHECK(UniformInit {}.v == VZ);
-
-            BOOST_CHECK(areRectValuesZero(UniformInit {}.r));
-            BOOST_CHECK(UniformInit {}.r == RZ);
-        }
-    }
-}
-
-BOOST_AUTO_TEST_CASE(ColorMathTests)
-{
-    BOOST_CHECK(sf::Color::Transparent == heroespath::sfml_util::defaults::None);
-
-    const sf::Color C0(0, 0, 0, 0);
-    const sf::Color C1(1, 1, 1, 1);
-    const sf::Color C254(254, 254, 254, 254);
-    const sf::Color C255(255, 255, 255, 255);
-
-    // sanity
-    BOOST_CHECK((C0 + C0) == C0);
-    BOOST_CHECK((C0 - C0) == C0);
-    BOOST_CHECK((C0 + C1) == C1);
-    BOOST_CHECK((C1 + C0) == C1);
-    BOOST_CHECK((C1 - C1) == C0);
-    BOOST_CHECK((C254 + C1) == C255);
-    BOOST_CHECK((C255 - C1) == C254);
-
-    // overflow and underflow should NOT wrap
-    BOOST_CHECK((C255 + C1) == C255);
-    BOOST_CHECK((C254 + C255) == C255);
-    BOOST_CHECK((C0 - C1) == C0);
-    BOOST_CHECK((C0 - C255) == C0);
 }
 
 BOOST_AUTO_TEST_CASE(ZeroOrLessTests)

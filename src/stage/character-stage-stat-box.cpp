@@ -55,7 +55,7 @@ namespace stage
             "media-images-backgrounds-tile-wood",
             sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
-        statsBoxInfo.focus_colors = sfml_util::defaults::GuiFocusColors;
+        statsBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
 
         boxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
             "CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
@@ -99,9 +99,9 @@ namespace stage
             numberRegions_.emplace_back(REGION_NUMBER);
 
             // the stat name/label text
-            sf::Text labelText(
+            sfml_util::Text labelText(
                 StatName(TRAIT),
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+                sfml_util::GuiFont::SystemCondensed,
                 sfml_util::FontManager::Instance()->Size_Larger());
 
             labelText.setFillColor(TEXT_COLOR);
@@ -123,12 +123,12 @@ namespace stage
             const auto TEXT_POS_TOP { REGION_CENTER_VERT
                                       - (labelText.getGlobalBounds().height * 0.5f) };
 
-            sfml_util::SetTextPosition(labelText, REGION_LABEL.left, TEXT_POS_TOP);
+            labelText.setPosition(REGION_LABEL.left, TEXT_POS_TOP);
 
             textLabels_.emplace_back(labelText);
 
             // the stat value text
-            sf::Text valueText(labelText);
+            sfml_util::Text valueText(labelText);
             valueText.setString("");
             textValues_.emplace_back(valueText);
 
@@ -165,9 +165,9 @@ namespace stage
 
     void StatBox::Reset()
     {
-        for (auto & sfText : textValues_)
+        for (auto & text : textValues_)
         {
-            sfText.setString("");
+            text.setString("");
         }
 
         heldDown_ = StatInvalid();
@@ -189,14 +189,14 @@ namespace stage
     {
         // don't draw the box because the stage will do that
 
-        for (const auto & SF_TEXT : textLabels_)
+        for (const auto & TEXT : textLabels_)
         {
-            target.draw(SF_TEXT, states);
+            target.draw(TEXT, states);
         }
 
-        for (const auto & SF_TEXT : textValues_)
+        for (const auto & TEXT : textValues_)
         {
-            target.draw(SF_TEXT, states);
+            target.draw(TEXT, states);
         }
 
         target.draw(vertexArray_, states);
@@ -232,14 +232,14 @@ namespace stage
             rect.top += VERT_DIFF;
         }
 
-        for (auto & sfText : textLabels_)
+        for (auto & text : textLabels_)
         {
-            sfText.move(0.0f, VERT_DIFF);
+            text.move(0.0f, VERT_DIFF);
         }
 
-        for (auto & sfText : textValues_)
+        for (auto & text : textValues_)
         {
-            sfText.move(0.0f, VERT_DIFF);
+            text.move(0.0f, VERT_DIFF);
         }
 
         for (std::size_t i(0); i < vertexArray_.getVertexCount(); ++i)
@@ -337,7 +337,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Small(),
             TEXT_COLOR);
 
@@ -437,9 +437,9 @@ namespace stage
 
             currentSet_.Set(TRAIT, baseSet_.Get(TRAIT) + modSet_.Get(TRAIT));
 
-            auto & sfTextValue { textValues_.at(i) };
+            auto & textValue { textValues_.at(i) };
 
-            if (sfTextValue.getString().isEmpty())
+            if (textValue.empty())
             {
                 doAllStatsHaveValues_ = false;
             }
@@ -456,10 +456,10 @@ namespace stage
                     ss << baseSet_.Get(TRAIT);
                 }
 
-                sfTextValue.setString(ss.str());
+                textValue.setString(ss.str());
 
-                sfTextValue.setPosition(sfml_util::CenterToCopy(
-                    sfml_util::Size(sfTextValue.getGlobalBounds()), numberRegions_.at(i)));
+                textValue.setPosition(sfml_util::CenterToCopy(
+                    sfml_util::Size(textValue.getGlobalBounds()), numberRegions_.at(i)));
             }
         }
     }

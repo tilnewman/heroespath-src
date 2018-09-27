@@ -91,7 +91,7 @@ namespace sfml_util
             // if a rect border then the max dimmension is returned
             float Length() const { return length_; }
 
-            // returns defaults::None if !WillDraw()
+            // returns sf::Color::Transparent if !WillDraw()
             const sf::Color Color() const;
 
             void Color(const sf::Color &);

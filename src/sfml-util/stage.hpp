@@ -15,10 +15,10 @@
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+#include "sfml-util/text.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 #include <memory>
 #include <string>
@@ -146,7 +146,7 @@ namespace sfml_util
         gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
 
         gui::BoxEntityUPtr_t hoverTextBoxUPtr_;
-        sf::Text hoverSfText_;
+        sfml_util::Text hoverText_;
 
     protected:
         bool isMouseHeldDown_;

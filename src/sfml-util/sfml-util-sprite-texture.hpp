@@ -31,18 +31,6 @@ namespace heroespath
 using SpriteOpt_t = boost::optional<sf::Sprite>;
 using TextureOpt_t = boost::optional<sf::Texture>;
 
-namespace sfml_util
-{
-    namespace defaults
-    {
-
-        // the default sf:Sprite and sf::Texture are safe to draw and they end up drawing nothing
-        const sf::Sprite SPRITE {};
-        const sf::Texture TEXTURE {};
-
-    } // namespace defaults
-
-} // namespace sfml_util
 } // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFMLUTIL_SPRITE_HPP_INCLUDED

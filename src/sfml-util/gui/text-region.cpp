@@ -14,12 +14,14 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "sfml-util/gui/box-entity-info.hpp"
 #include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/text-rendering.hpp"
+
+#include <SFML/Graphics/RenderTexture.hpp>
 
 #include <algorithm>
 
@@ -37,7 +39,6 @@ namespace sfml_util
             , boxEntityUPtr_()
             , sliderBarUPtr_()
             , stagePtrOpt_()
-            , renderedText_()
             , startLine_(0)
             , stopLine_(0)
             , regionOrig_()
@@ -45,6 +46,9 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , renderTextureUPtr_()
+            , sprite_()
+            , willDraw_(false)
         {}
 
         TextRegion::TextRegion(
@@ -58,7 +62,6 @@ namespace sfml_util
             , boxEntityUPtr_()
             , sliderBarUPtr_()
             , stagePtrOpt_()
-            , renderedText_()
             , startLine_(0)
             , stopLine_(0)
             , regionOrig_()
@@ -66,6 +69,9 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , renderTextureUPtr_()
+            , sprite_()
+            , willDraw_(false)
         {
             Setup(TEXT_INFO, REGION, SMALLER_FONT_SIZE, BOX_INFO, MARGINS);
         }
@@ -82,7 +88,6 @@ namespace sfml_util
             , boxEntityUPtr_()
             , sliderBarUPtr_()
             , stagePtrOpt_(ISTAGE_PTR)
-            , renderedText_()
             , startLine_(0)
             , stopLine_(0)
             , regionOrig_()
@@ -90,6 +95,9 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , renderTextureUPtr_()
+            , sprite_()
+            , willDraw_(false)
         {
             Setup(TEXT_INFO, REGION, stagePtrOpt_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, true);
         }
@@ -126,12 +134,8 @@ namespace sfml_util
             const Margins & MARGINS,
             const bool WILL_ALLOW_SCROLLBAR)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (!!TEXT_INFO.font_ptr_opt),
-                GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a"
-                                << " null font pointer.");
-
             // set member states
+            willDraw_ = false;
             stagePtrOpt_ = ISTAGE_PTR_OPT;
 
             // remember original values in case we need them
@@ -150,7 +154,7 @@ namespace sfml_util
             HandleSliderBar(RenderText(TEXT_INFO, REGION_ACTUAL, MARGINS, SMALLER_FONT_SIZE));
             SetupEntityRegion(REGION_ACTUAL);
             SetupBox(BOX_INFO);
-            EstablishWhichLinesToDraw(0.0f);
+            // EstablishWhichLinesToDraw(0.0f);
         }
 
         void TextRegion::HandleSliderBar(const SliderBarPtrOpt_t SLIDERBAR_PTR_OPT)
@@ -185,17 +189,18 @@ namespace sfml_util
 
         void TextRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            // Note:  Don't draw the Box or SliderBar here.  They are being drawn by the stage.
+            // Don't draw the Box or SliderBar here.  They are being drawn by the stage.
 
-            const auto RENDERED_TEXT_LINE_COUNT { renderedText_.text_vecs.size() };
-
-            for (std::size_t i(startLine_); ((i <= stopLine_) && (i < RENDERED_TEXT_LINE_COUNT));
-                 ++i)
+            if (willDraw_)
             {
-                for (const auto & SF_TEXT : renderedText_.text_vecs[i])
-                {
-                    target.draw(SF_TEXT, states);
-                }
+                target.draw(sprite_, states);
+
+                // target.draw(sfml_util::MakeRectangleHollow(entityRegion_, sf::Color::Red),
+                // states);
+                //
+                // target.draw(
+                //    sfml_util::MakeRectangleHollow(sprite_.getGlobalBounds(), sf::Color::Yellow),
+                //    states);
             }
         }
 
@@ -207,10 +212,8 @@ namespace sfml_util
         void TextRegion::MoveEntityPos(const float HORIZ, const float VERT)
         {
             Entity::MoveEntityPos(HORIZ, VERT);
-
-            renderedText_.MovePos(HORIZ, VERT);
-
             boxEntityUPtr_->MoveEntityPos(HORIZ, VERT);
+            sprite_.move(HORIZ, VERT);
 
             if (sliderBarUPtr_)
             {
@@ -231,11 +234,14 @@ namespace sfml_util
             }
         }
 
-        void TextRegion::ShrinkEntityRegionToFitText() { SetEntityRegion(renderedText_.region); }
-
-        void TextRegion::Append(const TextRegion & TEXT_REGION)
+        void TextRegion::ShrinkEntityRegionToFitText()
         {
-            renderedText_.AppendLines(TEXT_REGION.renderedText_);
+            SetEntityRegion(sprite_.getGlobalBounds());
+        }
+
+        void TextRegion::Append(const TextRegion &)
+        {
+            /*renderedText_.AppendLines(TEXT_REGION.renderedText_);
 
             if (allowScrollbarOrig_ && !IsSizeZeroOrLessEither(GetEntityRegion())
                 && (renderedText_.region.height > GetEntityRegion().height))
@@ -245,12 +251,13 @@ namespace sfml_util
 
             SetupEntityRegion(GetEntityRegion());
             textInfoOrig_.text += "\n" + TEXT_REGION.GetText();
-            EstablishWhichLinesToDraw(((sliderBarUPtr_) ? sliderBarUPtr_->PositionRatio() : 0.0f));
+            EstablishWhichLinesToDraw(((sliderBarUPtr_) ? sliderBarUPtr_->PositionRatio() :
+            0.0f));*/
         }
 
         void TextRegion::OnColorChange()
         {
-            renderedText_.SetColor(entityFgColor_);
+            sprite_.setColor(entityFgColor_);
             boxEntityUPtr_->SetEntityColors(entityFocusColors_);
         }
 
@@ -285,9 +292,9 @@ namespace sfml_util
             const sf::FloatRect ENTITY_REGION(
                 REGION_PARAM.left,
                 REGION_PARAM.top,
-                ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? renderedText_.region.width
+                ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? Width(sprite_)
                                                               : REGION_PARAM.width),
-                ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? renderedText_.region.height
+                ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? Height(sprite_)
                                                                : REGION_PARAM.height));
 
             SetEntityRegion(ENTITY_REGION);
@@ -311,53 +318,56 @@ namespace sfml_util
         const SliderBarPtrOpt_t TextRegion::RenderText(
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
-            const Margins & MARGINS,
-            const unsigned int SMALLER_FONT_SIZE)
+            const Margins &,
+            const unsigned int)
         {
-            SliderBarPtrOpt_t sliderBarPtrOpt;
-
-            renderedText_.Clear();
-
-            renderedText_ = TextRenderer::Render(TEXT_INFO, Position(REGION), REGION.width);
-
-            // note:  only shrink or making a sliderbar if the there is a vert AND horiz limit
-            auto isRenderedTextTallerThanLimit = [&]() {
-                return (
-                    (REGION.width > 0.0f) && (REGION.height > 0.0f)
-                    && (renderedText_.region.height > REGION.height));
-            };
-
-            if (isRenderedTextTallerThanLimit())
+            if (TEXT_INFO.IsValid())
             {
-                TextInfo newTextInfo { TEXT_INFO };
-
-                if ((SMALLER_FONT_SIZE > 0) && (TEXT_INFO.char_size > SMALLER_FONT_SIZE))
-                {
-                    newTextInfo
-                        = TextInfo(TEXT_INFO, TEXT_INFO.text, TEXT_INFO.color, SMALLER_FONT_SIZE);
-
-                    renderedText_
-                        = TextRenderer::Render(newTextInfo, Position(REGION), REGION.width);
-                }
-
-                if (isRenderedTextTallerThanLimit())
-                {
-                    sliderBarPtrOpt = MakeSliderBar(REGION);
-
-                    const float WIDTH_LIMIT_SHRUNK { (REGION.width - SliderBar::POS_OFFSET_HORIZ_)
-                                                     - MARGINS.right };
-
-                    renderedText_
-                        = TextRenderer::Render(newTextInfo, Position(REGION), WIDTH_LIMIT_SHRUNK);
-                }
+                willDraw_ = text_render::Render(TEXT_INFO, REGION, renderTextureUPtr_, sprite_);
             }
 
-            return sliderBarPtrOpt;
+            return boost::none;
+
+            // SliderBarPtrOpt_t sliderBarPtrOpt;
+            //
+            //// note:  only shrink or making a sliderbar if the there is a vert AND horiz limit
+            // auto isRenderedTextTallerThanLimit = [&]() {
+            //    return (
+            //        (REGION.width > 0.0f) && (REGION.height > 0.0f)
+            //        && (Height(sprite_) > REGION.height));
+            //};
+            //
+            // if (isRenderedTextTallerThanLimit())
+            //{
+            //    TextInfo newTextInfo { TEXT_INFO };
+            //
+            //    if ((SMALLER_FONT_SIZE > 0) && (TEXT_INFO.size > SMALLER_FONT_SIZE))
+            //    {
+            //        newTextInfo
+            //            = TextInfo(TEXT_INFO, TEXT_INFO.text, TEXT_INFO.color, SMALLER_FONT_SIZE);
+            //
+            //        TextRendering::Render(newTextInfo, REGION.width, renderTexture_);
+            //        sprite_.setTexture(renderTexture_.getTexture(), true);
+            //    }
+            //
+            //    if (isRenderedTextTallerThanLimit())
+            //    {
+            //        sliderBarPtrOpt = MakeSliderBar(REGION);
+            //
+            //        const float WIDTH_LIMIT_SHRUNK { (REGION.width - SliderBar::POS_OFFSET_HORIZ_)
+            //                                         - MARGINS.right };
+            //
+            //        TextRendering::Render(newTextInfo, WIDTH_LIMIT_SHRUNK, renderTexture_);
+            //        sprite_.setTexture(renderTexture_.getTexture(), true);
+            //    }
+            //}
+            //
+            // return sliderBarPtrOpt;
         }
 
-        void TextRegion::EstablishWhichLinesToDraw(const float SCROLL_RATIO)
+        void TextRegion::EstablishWhichLinesToDraw(const float)
         {
-            startLine_ = stopLine_ = 0;
+            /*startLine_ = stopLine_ = 0;
 
             if (renderedText_.regions.empty() || IsSizeZeroOrLessEither(GetEntityRegion()))
             {
@@ -416,7 +426,8 @@ namespace sfml_util
 
             renderedText_.MovePos(
                 0.0f,
-                renderedText_.regions[START_LINE_ORIG].top - renderedText_.regions[startLine_].top);
+                renderedText_.regions[START_LINE_ORIG].top -
+            renderedText_.regions[startLine_].top);*/
         }
 
     } // namespace gui

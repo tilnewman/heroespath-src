@@ -24,14 +24,25 @@ namespace heroespath
 namespace creature
 {
 
-    const FontPtr_t NameInfo::DefaultFont() const
+    float NameInfo::DefaultTextEntryBoxWidth() const
     {
-        return sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System);
+        // The +1 is to accomodate the TextEntryBox's padding and margins
+        return Size(sfml_util::gui::TextInfo(
+                        LargestName() + LargestLetter(), DefaultFont(), DefaultSize()))
+            .x;
     }
+
+    sfml_util::GuiFont::Enum NameInfo::DefaultFont() const { return sfml_util::GuiFont::System; }
 
     unsigned int NameInfo::DefaultSize() const
     {
         return sfml_util::FontManager::Instance()->Size_Normal();
+    }
+
+    const sfml_util::gui::TextInfo NameInfo::MakeTextInfo(
+        const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const
+    {
+        return sfml_util::gui::TextInfo(LargestName(), FONT, CHAR_SIZE);
     }
 
     const sf::Vector2f NameInfo::Size(const sfml_util::gui::TextInfo & TEXT_INFO) const

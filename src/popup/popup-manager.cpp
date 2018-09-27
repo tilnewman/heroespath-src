@@ -41,7 +41,7 @@ namespace popup
     std::string PopupManager::windowTextureDirectoryPath_ { "" };
     std::string PopupManager::accentTextureDirectoryPath_ { "" };
 
-    // set to match sfml_util::defaults::GrayDarker before being set in the constructor
+    // set to match sfml_util::color::GrayDarker before being set in the constructor
     sf::Color PopupManager::fontColor_ { sf::Color(64, 64, 64, 255) };
 
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_;
@@ -50,7 +50,7 @@ namespace popup
         : accentPaths_()
     {
         M_HP_LOG_DBG("Subsystem Construction: PopupManager");
-        fontColor_ = sfml_util::defaults::GrayDarker;
+        fontColor_ = sfml_util::color::GrayDarker;
     }
 
     PopupManager::~PopupManager() { M_HP_LOG_DBG("Subsystem Destruction: PopupManager"); }
@@ -174,11 +174,7 @@ namespace popup
         const unsigned int FONT_SIZE) const
     {
         return sfml_util::gui::TextInfo(
-            TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
-            FONT_SIZE,
-            fontColor_,
-            JUSTIFIED);
+            TEXT, sfml_util::GuiFont::System, FONT_SIZE, fontColor_, JUSTIFIED);
     }
 
     const PopupInfo PopupManager::CreatePopupInfo(

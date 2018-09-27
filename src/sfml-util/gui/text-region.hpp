@@ -18,11 +18,18 @@
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/margins.hpp"
-#include "sfml-util/text-rendering.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace sf
+{
+class RenderTexture;
+}
 
 namespace heroespath
 {
@@ -31,6 +38,8 @@ namespace sfml_util
     class IStage;
     using IStagePtr_t = misc::NotNull<IStage *>;
     using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
+
+    using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
 
     namespace gui
     {
@@ -58,7 +67,7 @@ namespace sfml_util
             TextRegion(
                 const std::string & NAME,
                 const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
+                const sf::FloatRect & REGION = sf::FloatRect(),
                 const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
                 const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
                 const Margins & MARGINS = Margins());
@@ -137,7 +146,6 @@ namespace sfml_util
             BoxEntityUPtr_t boxEntityUPtr_;
             SliderBarUPtr_t sliderBarUPtr_;
             IStagePtrOpt_t stagePtrOpt_;
-            RenderedText renderedText_;
             std::size_t startLine_;
             std::size_t stopLine_;
             sf::FloatRect regionOrig_;
@@ -145,6 +153,9 @@ namespace sfml_util
             unsigned int smallFontSizeOrig_;
             Margins marginsOrig_;
             bool allowScrollbarOrig_;
+            RenderTextureUPtr_t renderTextureUPtr_;
+            sf::Sprite sprite_;
+            bool willDraw_;
         };
 
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;

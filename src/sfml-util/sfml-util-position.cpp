@@ -10,9 +10,9 @@
 #include "sfml-util-position.hpp"
 
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/text.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 namespace heroespath
 {
@@ -20,27 +20,19 @@ namespace sfml_util
 {
 
     const sf::Vector2f Position(const sf::Sprite & S) { return S.getPosition(); }
-    const sf::Vector2f Position(const sf::Text & T) { return T.getPosition(); }
+    const sf::Vector2f Position(const Text & T) { return T.getPosition(); }
 
     float Left(const sf::Sprite & S) { return Left(S.getGlobalBounds()); }
-    float Left(const sf::Text & T) { return Left(T.getGlobalBounds()); }
+    float Left(const Text & T) { return Left(T.getGlobalBounds()); }
 
     float Right(const sf::Sprite & S) { return Right(S.getGlobalBounds()); }
-    float Right(const sf::Text & T) { return Right(T.getGlobalBounds()); }
+    float Right(const Text & T) { return Right(T.getGlobalBounds()); }
 
     float Top(const sf::Sprite & S) { return Top(S.getGlobalBounds()); }
-    float Top(const sf::Text & T) { return Top(T.getGlobalBounds()); }
+    float Top(const Text & T) { return Top(T.getGlobalBounds()); }
 
     float Bottom(const sf::Sprite & S) { return Bottom(S.getGlobalBounds()); }
-    float Bottom(const sf::Text & T) { return Bottom(T.getGlobalBounds()); }
-
-    const sf::Vector2f SetTextPosition(sf::Text & sfText, const sf::Vector2f & NEW_POS_V)
-    {
-        const auto CORRECTION_V { ScaleCopy(Position(sfText.getLocalBounds()), sfText.getScale()) };
-        const auto CORRECTED_POS_V { NEW_POS_V - CORRECTION_V };
-        sfText.setPosition(CORRECTED_POS_V);
-        return CORRECTED_POS_V;
-    }
+    float Bottom(const Text & T) { return Bottom(T.getGlobalBounds()); }
 
 } // namespace sfml_util
 } // namespace heroespath

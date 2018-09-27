@@ -10,8 +10,6 @@
 // sfml-util-size-and-scale.hpp
 //
 #include "misc/real.hpp"
-#include "sfml-util/sfml-util-center-of.hpp"
-#include "sfml-util/sfml-util-center-to.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
@@ -24,13 +22,14 @@
 namespace sf
 {
 class Sprite;
-class Text;
 } // namespace sf
 
 namespace heroespath
 {
 namespace sfml_util
 {
+
+    class Text;
 
     template <typename T>
     constexpr T Width(const sf::Rect<T> & RECT)
@@ -39,7 +38,7 @@ namespace sfml_util
     }
 
     float Width(const sf::Sprite &);
-    float Width(const sf::Text &);
+    float Width(const Text &);
 
     template <typename T>
     constexpr T Height(const sf::Rect<T> & RECT)
@@ -48,7 +47,7 @@ namespace sfml_util
     }
 
     float Height(const sf::Sprite &);
-    float Height(const sf::Text &);
+    float Height(const Text &);
 
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
     template <
@@ -151,7 +150,7 @@ namespace sfml_util
         return ScaleCopy(sf::Vector2<T>(R.width, R.height), SCALE_V);
     }
 
-    // returns the size of R scaled by SCALE, same as (R.width * SCALE) and (R.height * SCALE)
+    // returns the size of R scaled by SCALE
     template <
         typename T,
         typename Scale_t = float,
@@ -161,12 +160,17 @@ namespace sfml_util
         return Size(R, sf::Vector2<Scale_t>(SCALE, SCALE));
     }
 
-    // returns the size of S (global) scaled by SCALE_V, same as (S.global().width * SCALE_V.x) and
-    // (S.global().height * SCALE_V.y)
+    // returns the size of S (global) scaled by SCALE_V
     const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2f & SCALE_V);
 
-    // returns the size of S (global) scaled by SCALE, same as (S.global().width/height * SCALE)
+    // returns the size of S (global) scaled by SCALE
     const sf::Vector2f Size(const sf::Sprite & S, const float SCALE = 1.0f);
+
+    // returns the size of T (global) scaled by SCALE_V
+    const sf::Vector2f Size(const Text & T, const sf::Vector2f & SCALE_V);
+
+    // returns the size of T (global) scaled by SCALE
+    const sf::Vector2f Size(const Text & T, const float SCALE = 1.0f);
 
     // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
     template <
@@ -377,16 +381,16 @@ namespace sfml_util
     bool IsSizeLessThanOneBoth(const sf::Sprite & S);
 
     // returns true if either the global bounds width or height are <= 0
-    bool IsSizeZeroOrLessEither(const sf::Text & T);
+    bool IsSizeZeroOrLessEither(const Text & T);
 
     // returns true if both the global bounds width and height are <= 0
-    bool IsSizeZeroOrLessBoth(const sf::Text & T);
+    bool IsSizeZeroOrLessBoth(const Text & T);
 
     // returns true if either the global bounds width or height are < 1
-    bool IsSizeLessThanOneEither(const sf::Text & T);
+    bool IsSizeLessThanOneEither(const Text & T);
 
     // returns true if both the global bounds width and height are < 1
-    bool IsSizeLessThanOneBoth(const sf::Text & T);
+    bool IsSizeLessThanOneBoth(const Text & T);
 
     // returns the smallest sf::Rect that fully includes rects A and B
     template <typename T1, typename T2>
@@ -461,8 +465,8 @@ namespace sfml_util
 
     // returns the smallest sf::FloatRect that includes the global bounds of both
     const sf::FloatRect MinimallyEnclosing(
-        const sf::Text & A,
-        const sf::Text & B,
+        const Text & A,
+        const Text & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
@@ -472,8 +476,7 @@ namespace sfml_util
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
     const sf::FloatRect MinimallyEnclosing(
-        const std::vector<sf::Text> & VEC,
-        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
+        const std::vector<Text> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns a copy of R that has the smaller dimmension set equal to the larger then scaled to
     // SCALE

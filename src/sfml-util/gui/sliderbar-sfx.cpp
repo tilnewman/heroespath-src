@@ -72,16 +72,12 @@ namespace sfml_util
             if (CURRENT_POS_PERCENT_INT == 0)
             {
                 ss << "MUTE";
-
-                textInfo.font_ptr_opt = sfml_util::FontManager::Instance()->GetFont(
-                    sfml_util::GuiFont::SystemCondensed);
+                textInfo.font_letters = sfml_util::GuiFont::SystemCondensed;
             }
             else
             {
                 ss << CURRENT_POS_PERCENT_INT;
-
-                textInfo.font_ptr_opt
-                    = sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number);
+                textInfo.font_letters = sfml_util::GuiFont::Number;
             }
 
             textInfo.text = ss.str();

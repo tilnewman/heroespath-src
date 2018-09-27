@@ -15,6 +15,7 @@
 #include "sfml-util/sfml-util-sprite-texture.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <tuple>

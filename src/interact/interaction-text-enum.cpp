@@ -10,7 +10,6 @@
 // interaction-text-enum.cpp
 //
 #include "interaction-text-enum.hpp"
-#include "sfml-util/font-manager.hpp"
 
 #include <exception>
 #include <sstream>
@@ -39,15 +38,14 @@ namespace interact
         }
     }
 
-    const FontPtr_t Text::Font(const Text::Enum TEXT_TYPE)
+    sfml_util::GuiFont::Enum Text::Font(const Text::Enum TEXT_TYPE)
     {
         switch (TEXT_TYPE)
         {
             case Text::System:
-                return sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default);
+                return sfml_util::GuiFont::Default;
             case Text::Dialog:
-                return sfml_util::FontManager::Instance()->GetFont(
-                    sfml_util::GuiFont::DialogMedieval);
+                return sfml_util::GuiFont::DialogMedieval;
             case Text::Count:
             default:
             {

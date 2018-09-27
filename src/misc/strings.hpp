@@ -85,6 +85,8 @@ namespace misc
         return ss.str();
     }
 
+    const std::string MakeLoggableString(const std::string &);
+
 } // namespace misc
 } // namespace heroespath
 

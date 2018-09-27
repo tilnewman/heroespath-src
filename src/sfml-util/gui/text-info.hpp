@@ -10,12 +10,11 @@
 // text-info.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
+#include "sfml-util/font-enum.hpp"
 #include "sfml-util/justified-enum.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-font.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include <ostream>
 #include <string>
@@ -25,61 +24,58 @@ namespace heroespath
 {
 namespace sfml_util
 {
+
+    class Text;
+
     namespace gui
     {
 
-        // Responsible for wrapping all information required to draw text except for position.
-        // A default constructed TextInfo is invalid because the text will be an empty string and
-        // because there will be no font.  If used, such a TextInfo will cause the text rendering
-        // code to throw exceptions.
-        class TextInfo
+        // Responsible for wrapping all information required to draw text except for position and
+        // blend mode. The default constructor creates an invalid TextInfo.  Rendering an invalid
+        // TextInfo will render nothing and cause a warning to be logged.
+        struct TextInfo
         {
-        public:
             TextInfo();
 
             TextInfo(
                 const std::string & TEXT,
-                const FontPtrOpt_t & FONT_PTR_OPT,
-                const unsigned int CHAR_SIZE,
+                const GuiFont::Enum LETTERS_FONT,
+                const unsigned int SIZE,
                 const sf::Color & COLOR = sf::Color::White,
-                const sf::BlendMode & BLEND_MODE = sf::BlendAlpha,
-                const sf::Uint32 STYLE = sf::Text::Style::Regular,
                 const Justified::Enum JUSTIFIED = Justified::Left,
-                const bool IS_OUTLINE_ONLY = false,
-                const float OUTLINE_THICKNESS = 0.0f);
+                const sf::Uint32 STYLE = 0); // 0=sf::Text::Style::Regular
 
-            TextInfo(
-                const std::string & TEXT,
-                const FontPtr_t FONT_PTR,
-                const unsigned int CHAR_SIZE,
-                const sf::Color & COLOR,
-                const Justified::Enum JUSTIFIED);
-
+            // creates a modified copy of another TextInfo, params with default values ignored
             TextInfo(
                 const TextInfo & TEXT_INFO_TO_COPY,
                 const std::string & TEXT,
-                const ColorOpt_t & COLOR_OPT = boost::none,
-                const unsigned CHAR_SIZE = 0,
-                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
+                const sf::Color & COLOR = sf::Color::Transparent,
+                const unsigned SIZE = 0,
+                const GuiFont::Enum LETTERS_FONT = GuiFont::Count,
+                const GuiFont::Enum NUMBERS_FONT = GuiFont::Count);
 
-            TextInfo(const TextInfo & TEXT_INFO_TO_COPY, const FontPtr_t NEW_FONT_PTR);
+            // creates a TextInfo that is a copy of another with different fonts, params with
+            // default values ignored
+            // TextInfo(
+            //    const TextInfo & TEXT_INFO_TO_COPY,
+            //    const GuiFont::Enum NEW_LETTERS_FONT,
+            //    const GuiFont::Enum NEW_NUMBERS_FONT = GuiFont::Count);
 
             TextInfo(const TextInfo &) = default;
             TextInfo(TextInfo &&) = default;
             TextInfo & operator=(const TextInfo &) = default;
             TextInfo & operator=(TextInfo &&) = default;
 
-            // returns true if there is non-empty text and a non-null font pointer
+            // returns true if size and fonts are valid and if text is not empty
             bool IsValid() const
             {
-                return ((text.empty() == false) && font_ptr_opt && (char_size != 0));
+                return (
+                    (text.empty() == false) && GuiFont::IsValid(font_letters)
+                    && GuiFont::IsValid(font_numbers) && (size > 0));
             }
 
-            // throws if IsValid()==false
-            void Apply(sf::Text &, const FontPtrOpt_t & CUSTOM_FONT_PTR_OPT = boost::none) const;
-
-            // throws if IsValid()==false
-            const sf::Text Make() const;
+            // returns true if IsValid() and color is not transparent
+            bool WillDraw() const { return (IsValid() && (color.a > 0)); }
 
             const std::string ToString(
                 const bool WILL_PREFIX = true,
@@ -87,23 +83,24 @@ namespace sfml_util
                 const std::string & SEPARATOR = "/") const;
 
             std::string text;
-            FontPtrOpt_t font_ptr_opt;
-            unsigned int char_size;
+            GuiFont::Enum font_letters;
+            GuiFont::Enum font_numbers;
+            unsigned int size;
             sf::Color color;
-            sf::BlendMode blend_mode;
             sf::Uint32 style;
             Justified::Enum justified;
-            bool is_outline;
-            float outline_thickness;
         };
 
         using TextInfoOpt_t = boost::optional<TextInfo>;
         using TextInfoVec_t = std::vector<TextInfo>;
 
+        // comparison ordered to group similar: font/justification/style/size/color/text
         bool operator<(const TextInfo & L, const TextInfo & R);
 
+        // comparison ordered for speed
         bool operator==(const TextInfo & L, const TextInfo & R);
 
+        // comparison ordered for speed
         inline bool operator!=(const TextInfo & L, const TextInfo & R) { return !(L == R); }
 
     } // namespace gui

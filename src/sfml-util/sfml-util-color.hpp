@@ -41,9 +41,9 @@ using ColorOpt_t = boost::optional<sf::Color>;
 namespace sfml_util
 {
 
-    namespace defaults
+    namespace color
     {
-        const sf::Color COLOR {};
+        // sf::Color::Transparent == { 0, 0, 0, 0 }
 
         const sf::Color GrayLight { 200, 200, 200 };
         const sf::Color GrayLighter { 232, 232, 232 };
@@ -55,12 +55,9 @@ namespace sfml_util
         const sf::Color FocusIn { 220, 220, 220 };
         const sf::Color FocusOut { 180, 180, 180 };
 
-        // same as sf::Color::Transparent
-        const sf::Color None { 0, 0, 0, 0 };
-
         const sfml_util::gui::FocusColors GuiFocusColors { FocusIn, FocusIn, FocusOut, FocusOut };
 
-    } // namespace defaults
+    } // namespace color
 
     const sf::Color MakeHighlight(const sf::Uint8 COLOR_VALUE);
 

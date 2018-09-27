@@ -149,12 +149,12 @@ BOOST_AUTO_TEST_CASE(MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(Bitfield::IsNonZeroValid(0) == false);
-    BOOST_CHECK(Bitfield::IsNonZeroValid(Bitfield::None) == false);
-    BOOST_CHECK(Bitfield::IsNonZeroValid(Bitfield::A));
-    BOOST_CHECK(Bitfield::IsNonZeroValid(Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::IsNonZeroValid(Bitfield::Last));
-    BOOST_CHECK(Bitfield::IsNonZeroValid(Bitfield::Last << 1) == false);
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(0) == false);
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::None) == false);
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::A));
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::A | Bitfield::B));
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::Last));
+    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::Last << 1) == false);
 
     //
 

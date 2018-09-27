@@ -10,9 +10,9 @@
 #include "sfml-util-size-and-scale.hpp"
 
 #include "sfml-util/sfml-util-center-to.hpp"
+#include "sfml-util/text.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 namespace heroespath
 {
@@ -20,10 +20,10 @@ namespace sfml_util
 {
 
     float Width(const sf::Sprite & S) { return Width(S.getGlobalBounds()); }
-    float Width(const sf::Text & T) { return Width(T.getGlobalBounds()); }
+    float Width(const Text & T) { return Width(T.getGlobalBounds()); }
 
     float Height(const sf::Sprite & S) { return Height(S.getGlobalBounds()); }
-    float Height(const sf::Text & T) { return Height(T.getGlobalBounds()); }
+    float Height(const Text & T) { return Height(T.getGlobalBounds()); }
 
     const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2f & SCALE_V)
     {
@@ -33,6 +33,16 @@ namespace sfml_util
     const sf::Vector2f Size(const sf::Sprite & S, const float SCALE)
     {
         return Size(S, sf::Vector2f(SCALE, SCALE));
+    }
+
+    const sf::Vector2f Size(const Text & T, const sf::Vector2f & SCALE_V)
+    {
+        return Size(T.getGlobalBounds(), SCALE_V);
+    }
+
+    const sf::Vector2f Size(const Text & T, const float SCALE)
+    {
+        return Size(T, sf::Vector2f(SCALE, SCALE));
     }
 
     void SetScaleAndReCenter(sf::Sprite & s, const sf::Vector2f & SCALE_V)
@@ -103,22 +113,19 @@ namespace sfml_util
         return IsSizeLessThanOneBoth(S.getGlobalBounds());
     }
 
-    bool IsSizeZeroOrLessEither(const sf::Text & T)
+    bool IsSizeZeroOrLessEither(const Text & T)
     {
         return IsSizeZeroOrLessEither(T.getGlobalBounds());
     }
 
-    bool IsSizeZeroOrLessBoth(const sf::Text & T)
-    {
-        return IsSizeZeroOrLessBoth(T.getGlobalBounds());
-    }
+    bool IsSizeZeroOrLessBoth(const Text & T) { return IsSizeZeroOrLessBoth(T.getGlobalBounds()); }
 
-    bool IsSizeLessThanOneEither(const sf::Text & T)
+    bool IsSizeLessThanOneEither(const Text & T)
     {
         return IsSizeLessThanOneEither(T.getGlobalBounds());
     }
 
-    bool IsSizeLessThanOneBoth(const sf::Text & T)
+    bool IsSizeLessThanOneBoth(const Text & T)
     {
         return IsSizeLessThanOneBoth(T.getGlobalBounds());
     }
@@ -145,14 +152,14 @@ namespace sfml_util
     }
 
     const sf::FloatRect MinimallyEnclosing(
-        const sf::Text & A, const sf::Text & B, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
+        const Text & A, const Text & B, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         return MinimallyEnclosing(
             A.getGlobalBounds(), B.getGlobalBounds(), WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
     const sf::FloatRect MinimallyEnclosing(
-        const std::vector<sf::Text> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
+        const std::vector<Text> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         std::vector<sf::FloatRect> frv;
         for (const auto & T : VEC)

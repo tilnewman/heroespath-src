@@ -12,6 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/to-string-prefix-enum.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 
 #include <SFML/Graphics/Font.hpp>
 
@@ -43,13 +44,6 @@ using FontUVec_t = std::vector<FontUPtr_t>;
 
 namespace sfml_util
 {
-
-    namespace defaults
-    {
-
-        const sf::Font FONT {};
-
-    }
 
     const std::string ToString(
         const sf::Font & F,

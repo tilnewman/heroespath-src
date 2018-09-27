@@ -15,6 +15,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-rendering.hpp"
 
@@ -33,8 +34,7 @@ namespace sfml_util
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
             : Entity(std::string(NAME).append("_TextEntity1"), 0.0f, 0.0f)
             , mouseTextInfo_()
-            , profileToTextureMap_()
-            , renderTexturesUVec_()
+            , cacheMap_()
             , sprite_()
             , textWidthLimit_(0.0f)
             , willCache_(WILL_CACHE)
@@ -52,8 +52,7 @@ namespace sfml_util
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX)
             : Entity(std::string(NAME).append("_TextEntity2"), POS_LEFT, POS_TOP)
             , mouseTextInfo_(MOUSE_TEXT_INFO)
-            , profileToTextureMap_()
-            , renderTexturesUVec_()
+            , cacheMap_()
             , sprite_()
             , textWidthLimit_(TEXT_WIDTH_LIMIT)
             , willCache_(WILL_CACHE)
@@ -81,8 +80,7 @@ namespace sfml_util
         {
             willDraw_ = false;
             sprite_ = sf::Sprite();
-            profileToTextureMap_.Clear();
-            renderTexturesUVec_.clear();
+            cacheMap_.Clear();
 
             willCache_ = WILL_CACHE;
             willPlayMouseOverTickSfx_ = WILL_PLAY_MOUSEOVER_TICK_SFX;
@@ -91,7 +89,7 @@ namespace sfml_util
             mouseTextInfo_ = MOUSE_TEXT_INFO;
             textWidthLimit_ = TEXT_WIDTH_LIMIT;
 
-            Sync();
+            TextEntity::Sync();
         }
 
         void TextEntity::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -143,6 +141,10 @@ namespace sfml_util
         void TextEntity::SetEntityRegion(const sf::FloatRect & R)
         {
             Entity::SetEntityRegion(R);
+
+            // TODO this is probably wrong, if the region size grows/shrinks then the cached text
+            // image should have whitespace added or be clipped, I don't think scaling the text
+            // image size is the right thing to do here...
             SetSizeAndPos(sprite_, R);
         }
 
@@ -167,51 +169,71 @@ namespace sfml_util
             {
                 mouseTextInfo_.disabled.text = TEXT;
             }
+
+            Sync();
         }
 
         void TextEntity::Sync()
         {
-            const TextInfo & TEXT_INFO { FromMouseState() };
+            const auto CURRENT_MOUSE_STATE { GetMouseState() };
+            willDraw_ = false;
 
-            if (TEXT_INFO.IsValid())
+            // make sure all text is rendered and cached
+            for (misc::EnumUnderlying_t mouseStateIndex(0); mouseStateIndex < MouseState::Count;
+                 ++mouseStateIndex)
             {
-                const RenderProfile RENDER_PROFILE(
-                    TEXT_INFO, mouseTextInfo_.numbers_font_ptr, textWidthLimit_);
+                const auto LOOP_MOUSE_STATE { static_cast<MouseState::Enum>(mouseStateIndex) };
+                const TextInfo & TEXT_INFO { mouseTextInfo_.FromMouseState(LOOP_MOUSE_STATE) };
 
-                const auto FOUND_ITER { profileToTextureMap_.Find(RENDER_PROFILE) };
-
-                if (FOUND_ITER == std::end(profileToTextureMap_))
+                if (TEXT_INFO.WillDraw() == false)
                 {
-                    renderTexturesUVec_.emplace_back(std::make_unique<sf::RenderTexture>());
+                    continue;
+                }
 
-                    const auto RENDERED_TEXT { TextRenderer::Render(
-                        TEXT_INFO,
-                        sf::Vector2f(0.0f, 0.0f),
-                        textWidthLimit_,
-                        mouseTextInfo_.numbers_font_ptr) };
+                auto finalRegion { MakeRectWithPosition(Position(entityRegion_)) };
+                auto & renderTextureUPtr { cacheMap_[TEXT_INFO] };
 
-                    RENDERED_TEXT.CreateTextureAndRenderOffscreen(*renderTexturesUVec_.back());
+                if (!renderTextureUPtr)
+                {
+                    const auto RENDER_RESULT { text_render::Render(
+                        TEXT_INFO, finalRegion, renderTextureUPtr, finalRegion) };
 
-                    const TextureCPtr_t TEXTURE_CPTR { &renderTexturesUVec_.back()->getTexture() };
-
-                    if (willCache_)
+                    if ((RENDER_RESULT == false) || !renderTextureUPtr)
                     {
-                        profileToTextureMap_.Append(RENDER_PROFILE, TEXTURE_CPTR);
+                        cacheMap_.Erase(TEXT_INFO);
+                        continue;
                     }
-
-                    sprite_.setTexture(*TEXTURE_CPTR, true);
                 }
-                else
+
+                if (LOOP_MOUSE_STATE == CURRENT_MOUSE_STATE)
                 {
-                    sprite_.setTexture(*FOUND_ITER->second, true);
-                }
+                    sprite_.setTexture(renderTextureUPtr->getTexture());
 
-                SetEntityRegion(sprite_.getGlobalBounds());
-                willDraw_ = true;
-            }
-            else
-            {
-                willDraw_ = false;
+                    const sf::Vector2u RENDERED_TEXT_SIZE_V_UINT { Size(finalRegion) };
+
+                    const auto WIDTH_LIMIT_UINT { (
+                        (textWidthLimit_ < 1.0f) ? 0 : static_cast<unsigned>(textWidthLimit_)) };
+
+                    const auto FINAL_WIDTH_UINT { (
+                        (WIDTH_LIMIT_UINT == 0)
+                            ? RENDERED_TEXT_SIZE_V_UINT.x
+                            : std::min(WIDTH_LIMIT_UINT, RENDERED_TEXT_SIZE_V_UINT.x)) };
+
+                    const auto FINAL_HEIGHT_UINT { RENDERED_TEXT_SIZE_V_UINT.y };
+
+                    const sf::Vector2i FINAL_TEXTURE_SIZE_V_INT { sf::Vector2u(
+                        FINAL_WIDTH_UINT, FINAL_HEIGHT_UINT) };
+
+                    const sf::IntRect FINAL_TEXTURE_IRECT(sf::Vector2i(), FINAL_TEXTURE_SIZE_V_INT);
+
+                    sprite_.setTextureRect(FINAL_TEXTURE_IRECT);
+                    sprite_.setPosition(Position(finalRegion));
+                    sprite_.setColor(TEXT_INFO.color);
+
+                    entityRegion_ = finalRegion;
+
+                    willDraw_ = true;
+                }
             }
         }
 

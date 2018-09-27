@@ -35,7 +35,7 @@ namespace combat
 
     const sf::Color CombatNode::PLAYER_NAME_COLOR_(sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
 
-    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::defaults::Light - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::color::Light - HIGHLIGHT_ADJ_COLOR_);
 
     const sf::Color CombatNode::NONPLAYER_NAME_COLOR_(
         sf::Color(
@@ -68,13 +68,13 @@ namespace combat
               sf::FloatRect())
         , creatureNameInfo_()
         , isPlayer_(CREATURE_PTR->IsPlayerCharacter())
-        , nameTextObj_(
+        , nameText_(
               CREATURE_PTR->Name(),
-              *creatureNameInfo_.DefaultFont(),
+              creatureNameInfo_.DefaultFont(),
               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
-        , condTextObj_(
+        , condText_(
               "",
-              *creatureNameInfo_.DefaultFont(),
+              creatureNameInfo_.DefaultFont(),
               sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , blockingPos_(0)
         , cachedTexture_(sfml_util::LoadAndCacheImage(CREATURE_PTR))
@@ -109,10 +109,10 @@ namespace combat
         , willShowSelectAnim_(false)
         , selectAnimSprite_()
     {
-        nameTextObj_.setFillColor(NameColor());
+        nameText_.setFillColor(NameColor());
 
         UpdateConditionText();
-        condTextObj_.setFillColor(sf::Color(200, 200, 200, 200));
+        condText_.setFillColor(sf::Color(200, 200, 200, 200));
 
         HealthChangeTasks();
 
@@ -174,8 +174,8 @@ namespace combat
 
     void CombatNode::SetCharacterSize(const unsigned int NEW_CHARACTER_SIZE)
     {
-        nameTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
-        condTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
+        nameText_.setCharacterSize(NEW_CHARACTER_SIZE);
+        condText_.setCharacterSize(NEW_CHARACTER_SIZE);
         SetupHealthLines();
     }
 
@@ -206,8 +206,8 @@ namespace combat
 
         if (isPlayer_)
         {
-            target.draw(nameTextObj_, states);
-            target.draw(condTextObj_, states);
+            target.draw(nameText_, states);
+            target.draw(condText_, states);
         }
 
         if (false == isSummaryView_)
@@ -231,8 +231,8 @@ namespace combat
 
                 if (false == isPlayer_)
                 {
-                    target.draw(nameTextObj_, states);
-                    target.draw(condTextObj_, states);
+                    target.draw(nameText_, states);
+                    target.draw(condText_, states);
                 }
             }
         }
@@ -267,8 +267,8 @@ namespace combat
     void CombatNode::MoveEntityPos(const float HORIZ, const float VERT)
     {
         Entity::MoveEntityPos(HORIZ, VERT);
-        nameTextObj_.move(HORIZ, VERT);
-        condTextObj_.move(HORIZ, VERT);
+        nameText_.move(HORIZ, VERT);
+        condText_.move(HORIZ, VERT);
 
         imagePosV_.x += HORIZ;
         imagePosV_.y += VERT;
@@ -289,8 +289,8 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        nameTextObj_.setFillColor(AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
-        condTextObj_.setFillColor(AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
+        nameText_.setFillColor(AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
+        condText_.setFillColor(AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
 
         healthLineColor_ = AdjustColorForToneDown(HealthColor(), TONE_DOWN_VAL);
         healthLineColorRed_ = AdjustColorForToneDown(HealthColorRed(), TONE_DOWN_VAL);
@@ -299,7 +299,7 @@ namespace combat
 
     void CombatNode::UpdateConditionText()
     {
-        condTextObj_.setString(
+        condText_.setString(
             creaturePtr_->ConditionNames(3, creature::condition::Severity::LEAST_BENEFITIAL));
 
         SetTextPositions();
@@ -412,34 +412,31 @@ namespace combat
     {
         const float NAME_TEXT_POS_TOP(
             (entityRegion_.top + (entityRegion_.height * 0.7f))
-            - (nameTextObj_.getGlobalBounds().height * 0.5f));
+            - (nameText_.getGlobalBounds().height * 0.5f));
 
         const float COND_TEXT_POS_TOP(
             (entityRegion_.top + entityRegion_.height)
-            - (condTextObj_.getGlobalBounds().height * 0.5f));
+            - (condText_.getGlobalBounds().height * 0.5f));
 
         if (DID_TRANSITION_TO_SUMMARY_VIEW)
         {
-            sfml_util::SetTextPosition(
-                nameTextObj_, entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
+            nameText_.setPosition(
+                entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
 
-            sfml_util::SetTextPosition(
-                condTextObj_,
+            condText_.setPosition(
                 sfml_util::Display::Instance()->GetWinWidth() + 1.0f,
                 sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
         }
         else
         {
-            sfml_util::SetTextPosition(
-                nameTextObj_,
+            nameText_.setPosition(
                 (entityRegion_.left + (entityRegion_.width * 0.5f))
-                    - (nameTextObj_.getGlobalBounds().width * 0.5f),
+                    - (nameText_.getGlobalBounds().width * 0.5f),
                 NAME_TEXT_POS_TOP);
 
-            sfml_util::SetTextPosition(
-                condTextObj_,
+            condText_.setPosition(
                 (entityRegion_.left + (entityRegion_.width * 0.5f))
-                    - (condTextObj_.getGlobalBounds().width * 0.5f),
+                    - (condText_.getGlobalBounds().width * 0.5f),
                 COND_TEXT_POS_TOP);
         }
 
@@ -490,8 +487,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
-            nameTextObj_.setFillColor(NameColor() + HIGHLIGHT_ADJ_COLOR_);
-            condTextObj_.setFillColor(CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
+            nameText_.setFillColor(NameColor() + HIGHLIGHT_ADJ_COLOR_);
+            condText_.setFillColor(CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
             healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
             healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
 
@@ -505,8 +502,8 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
-            nameTextObj_.setFillColor(NameColor());
-            condTextObj_.setFillColor(CONDITION_COLOR_);
+            nameText_.setFillColor(NameColor());
+            condText_.setFillColor(CONDITION_COLOR_);
             healthLineColor_ = HealthColor();
             healthLineColorTick_ = HealthColorTick();
             sprite_.setColor(creatureImageColor_);
@@ -607,8 +604,8 @@ namespace combat
 
     void CombatNode::SetupHealthLines()
     {
-        auto const POS_TOP { nameTextObj_.getPosition().y
-                             + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+        auto const POS_TOP { nameText_.getPosition().y
+                             + (nameText_.getGlobalBounds().height * 2.0f) };
 
         auto const LINE_LEN_MARGIN { 0.25f * entityRegion_.width };
 

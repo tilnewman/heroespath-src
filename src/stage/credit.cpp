@@ -38,7 +38,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_);
@@ -62,7 +62,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -88,7 +88,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -98,7 +98,7 @@ namespace stage
     Credit::Credit(
         sf::FloatRect & trackingRect,
         const std::string & TITLE_TEXT,
-        const FontPtr_t FONT_PTR,
+        const sfml_util::GuiFont::Enum FONT,
         const std::string & CONTENT_TEXT)
         : titleTextUPtr_()
         , contentTextUPtr_()
@@ -111,7 +111,7 @@ namespace stage
         Setup(
             trackingRect,
             TITLE_TEXT,
-            FONT_PTR,
+            FONT,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
@@ -121,7 +121,7 @@ namespace stage
     void Credit::Setup(
         sf::FloatRect & trackingRect,
         const std::string & TITLE_TEXT,
-        const FontPtr_t TITLE_FONT_PTR,
+        const sfml_util::GuiFont::Enum TITLE_FONT,
         const unsigned int TITLE_FONT_SIZE,
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
@@ -175,12 +175,20 @@ namespace stage
                 + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER;
         }
 
+        const auto TEXT_COLOR_BRIGHT { sf::Color::White };
+        const auto TEXT_COLOR_NOTASBRIGHT { sf::Color(255, 255, 255, 220) };
+
+        const auto WILL_TITLE_USE_BRIGHT_TEXT_COLOR { !(MEDIA_TYPE == MediaType::Text)
+                                                      && !TITLE_TEXT.empty() };
+
+        const auto TITLE_COLOR { (
+            (WILL_TITLE_USE_BRIGHT_TEXT_COLOR) ? TEXT_COLOR_BRIGHT : TEXT_COLOR_NOTASBRIGHT) };
+
+        const auto CONTENT_COLOR { (
+            (WILL_TITLE_USE_BRIGHT_TEXT_COLOR) ? TEXT_COLOR_NOTASBRIGHT : TEXT_COLOR_BRIGHT) };
+
         const sfml_util::gui::TextInfo TEXT_INFO_TITLE(
-            TITLE_TEXT,
-            TITLE_FONT_PTR,
-            TITLE_FONT_SIZE,
-            sf::Color(255, 255, 255, 200),
-            sfml_util::Justified::Center);
+            TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, sfml_util::Justified::Center);
 
         titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, trackingRect);
@@ -195,28 +203,28 @@ namespace stage
 
         sfml_util::gui::TextInfo textInfoContent(
             CONTENT_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sf::Color::White,
+            CONTENT_COLOR,
             sfml_util::Justified::Center);
 
         // if there is a lot of text (multi-lined), reduce the size to look better
-        auto const NUM_NEWLINES { static_cast<int>(
-            std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
-
-        if (NUM_NEWLINES > 1)
-        {
-            auto const FONT_SIZE_REDUCTION { static_cast<unsigned int>(2 * NUM_NEWLINES) };
-
-            if (textInfoContent.char_size > FONT_SIZE_REDUCTION)
-            {
-                textInfoContent.char_size -= FONT_SIZE_REDUCTION;
-            }
-            else
-            {
-                textInfoContent.char_size = 1;
-            }
-        }
+        // auto const NUM_NEWLINES { static_cast<int>(
+        //    std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
+        //
+        // if (NUM_NEWLINES > 1)
+        //{
+        //    auto const FONT_SIZE_REDUCTION { static_cast<unsigned int>(2 * NUM_NEWLINES) };
+        //
+        //    if (textInfoContent.size > FONT_SIZE_REDUCTION)
+        //    {
+        //        textInfoContent.size -= FONT_SIZE_REDUCTION;
+        //    }
+        //    else
+        //    {
+        //        textInfoContent.size = 1;
+        //    }
+        //}
 
         contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CreditContent", textInfoContent, trackingRect);

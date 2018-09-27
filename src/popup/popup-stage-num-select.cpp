@@ -79,7 +79,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo MSG_TEXT_INFO {
             " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
             sfml_util::Justified::Center
@@ -113,7 +113,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo TEXTENTRY_TEXT_INFO(
             minNumSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Large(),
             sf::Color::White,
             sfml_util::Justified::Left);
@@ -128,7 +128,7 @@ namespace popup
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
-            sfml_util::defaults::Light,
+            sfml_util::color::Light,
             boxInfo);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
@@ -173,7 +173,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo INFO_TEXT_INFO(
             TEXT_TO_USE,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
             sfml_util::Justified::Center);

@@ -135,10 +135,10 @@ namespace stage
               (INNER_RECT_.left + INNER_RECT_.width) - sfml_util::MapByRes(275.0f, 1200.0f))
         , CHARATER_IMAGE_COLOR_(sf::Color(255, 255, 255, 127))
         , LISTBOX_COLOR_IMAGE_(sf::Color(255, 255, 255, 190))
-        , LISTBOX_COLOR_LINE_(sfml_util::defaults::GrayDark)
+        , LISTBOX_COLOR_LINE_(sfml_util::color::GrayDark)
         , LISTBOX_COLOR_FG_(LISTBOX_COLOR_LINE_)
-        , LISTBOX_COLOR_BG_(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
-        , LISTBOX_COLOR_TITLE_(sfml_util::defaults::Orange - sf::Color(130, 130, 130, 0))
+        , LISTBOX_COLOR_BG_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLOR_TITLE_(sfml_util::color::Orange - sf::Color(130, 130, 130, 0))
         , DESCBOX_TEXT_COLOR_(LISTBOX_COLOR_TITLE_ - sf::Color(50, 50, 50, 0))
         , DESCBOX_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
@@ -169,9 +169,9 @@ namespace stage
         , SORT_ICON_COLOR_(sf::Color(255, 255, 255, 127))
         , LIST_ELEMENT_TEXT_INFO_DEFAULT_(
               "",
-              sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+              sfml_util::GuiFont::System,
               sfml_util::FontManager::Instance()->Size_Smallish(),
-              sfml_util::defaults::GrayDarker,
+              sfml_util::color::GrayDarker,
               sfml_util::Justified::Left)
         , creaturePtr_(INVENTORY_CREATURE_PTR)
         , bottomSymbol_(0.75f, true, sf::Color::White)
@@ -964,12 +964,11 @@ namespace stage
     {
         const sfml_util::gui::TextInfo INSTR_TEXT_INFO(
             "(use arrows or numbers to change characters, press 'a' to see achievements)",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::GrayDark,
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Left);
+            sfml_util::color::GrayDark,
+            sfml_util::Justified::Left,
+            sf::Text::Italic);
 
         insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "InventoryStage'sInstruction",
@@ -1017,9 +1016,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         sf::FloatRect detailsTextRect(
@@ -1080,9 +1079,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo STATS_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         if (!statsTextRegionUPtr_)
@@ -1115,9 +1114,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo CENTER_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
@@ -1471,7 +1470,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(
             titleText,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
             sfml_util::Justified::Center);
@@ -1501,7 +1500,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo DESC_TEXT_INFO(
             TITLETEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
             sfml_util::Justified::Center);
@@ -1532,13 +1531,13 @@ namespace stage
     {
         sfml_util::gui::TextInfo textInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Left);
 
         auto const COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
-        auto const COLOR_OVER { sfml_util::defaults::GrayDarker };
+        auto const COLOR_OVER { sfml_util::color::GrayDarker };
         auto const COLOR_DOWN { COLOR_DISABLED };
 
         const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO(
@@ -3603,7 +3602,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);
@@ -3668,7 +3667,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sf::Color::White,
             sfml_util::Justified::Left);

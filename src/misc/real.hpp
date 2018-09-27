@@ -44,7 +44,7 @@ namespace misc
         IsRealClose(const T A, const T B)
     {
         auto const MAX_OR_ONE { std::max({ T(1), ABS(A), ABS(B) }) };
-        return (ABS(A - B) < std::numeric_limits<T>::epsilon() * MAX_OR_ONE);
+        return (ABS(A - B) < (std::numeric_limits<T>::epsilon() * MAX_OR_ONE));
     }
 
     template <typename T>

@@ -14,8 +14,10 @@
 #include "misc/random.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sfml-util-font.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
@@ -57,7 +59,7 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT,
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 START_FONT_SIZE_,
                 START_COLOR_,
                 sfml_util::Justified::Center);
@@ -72,7 +74,6 @@ namespace sfml_util
             auto const TEXT_POS_TOP { START_POS_TOP };
 
             textRegionUPtr_->SetEntityPos(TEXT_POS_LEFT, TEXT_POS_TOP);
-
             textRegionUPtr_->SetEntityColorFgBoth(START_COLOR_);
         }
 
@@ -92,12 +93,11 @@ namespace sfml_util
 
             const gui::TextInfo TEXT_INFO(
                 TEXT_,
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 FONT_SIZE,
                 sfml_util::Transition(START_COLOR_, END_COLOR_, SLIDER_POS),
-                sf::BlendAlpha,
-                sf::Text::Bold,
-                sfml_util::Justified::Center);
+                sfml_util::Justified::Center,
+                sf::Text::Bold);
 
             sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
 

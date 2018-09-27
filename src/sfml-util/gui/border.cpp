@@ -84,7 +84,7 @@ namespace sfml_util
             rsVec.emplace_back(MakeRectangleHollow(
                 REGION, LINE_COLOR, LINE_THICKNESS, WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
-            if (PAD_LINE_COLOR_ADJ != defaults::None)
+            if (PAD_LINE_COLOR_ADJ != sf::Color::Transparent)
             {
                 const auto PAD_LINE_COLOR { LINE_COLOR - PAD_LINE_COLOR_ADJ };
                 const sf::Vector2f LINE_THICKNESS_V(LINE_THICKNESS, LINE_THICKNESS);
@@ -162,7 +162,7 @@ namespace sfml_util
             }
             else
             {
-                return defaults::None;
+                return sf::Color::Transparent;
             }
         }
 
@@ -237,7 +237,7 @@ namespace sfml_util
             }
             else
             {
-                return defaults::None;
+                return sf::Color::Transparent;
             }
         }
 
@@ -251,7 +251,7 @@ namespace sfml_util
             }
             else
             {
-                return defaults::None;
+                return sf::Color::Transparent;
             }
         }
 

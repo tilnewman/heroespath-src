@@ -15,7 +15,6 @@
 #include "sfml-util/gui/entity.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/text-rendering.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -33,61 +32,17 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    using RenderTexturePtr_t = misc::NotNull<sf::RenderTexture *>;
-    using RenderTexturePVec_t = std::vector<RenderTexturePtr_t>;
+
     using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
-    using RenderTextureUVec_t = std::vector<RenderTextureUPtr_t>;
 
     namespace gui
     {
 
-        using TextureCPtr_t = misc::NotNull<const sf::Texture *>;
-
-        // Rendering text into an image takes a lot of time, so TextEntity's (see below) cache the
-        // resulting images.  This class is responsible for identifying one such image.
-        struct RenderProfile
-        {
-            RenderProfile(
-                const TextInfo & TEXT_INFO,
-                const FontPtr_t & NUMBERS_FONT_PTR,
-                const float WIDTH_LIMIT)
-                : width_limit(static_cast<unsigned>(WIDTH_LIMIT))
-                , text_info(TEXT_INFO)
-                , numbers_font_ptr(NUMBERS_FONT_PTR)
-            {}
-
-            RenderProfile(const RenderProfile &) = default;
-            RenderProfile(RenderProfile &&) = default;
-            RenderProfile & operator=(const RenderProfile &) = default;
-            RenderProfile & operator=(RenderProfile &&) = default;
-
-            unsigned width_limit;
-            TextInfo text_info;
-            FontPtr_t numbers_font_ptr;
-        };
-
-        inline bool operator<(const RenderProfile & L, const RenderProfile & R)
-        {
-            return std::tie(L.width_limit, L.numbers_font_ptr, L.text_info)
-                < std::tie(R.width_limit, R.numbers_font_ptr, R.text_info);
-        }
-
-        inline bool operator==(const RenderProfile & L, const RenderProfile & R)
-        {
-            return std::tie(L.width_limit, L.numbers_font_ptr, L.text_info)
-                == std::tie(R.width_limit, R.numbers_font_ptr, R.text_info);
-        }
-
-        inline bool operator!=(const RenderProfile & L, const RenderProfile & R)
-        {
-            return !(L == R);
-        }
-
-        using RenderProfileToTextureMap_t = misc::VectorMap<RenderProfile, TextureCPtr_t>;
-
-        // Responsible for being an Entity that has different images for different MouseStates.
+        // Responsible for being an Entity that has different text for different MouseStates.
         class TextEntity : public Entity
         {
+            using CacheMap_t = misc::VectorMap<TextInfo, RenderTextureUPtr_t>;
+
         public:
             TextEntity(const TextEntity &) = delete;
             TextEntity(TextEntity &&) = delete;
@@ -180,8 +135,7 @@ namespace sfml_util
 
         private:
             MouseTextInfo mouseTextInfo_;
-            RenderProfileToTextureMap_t profileToTextureMap_;
-            RenderTextureUVec_t renderTexturesUVec_;
+            CacheMap_t cacheMap_;
             sf::Sprite sprite_;
             float textWidthLimit_;
             bool willCache_;

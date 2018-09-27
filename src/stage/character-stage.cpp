@@ -56,9 +56,9 @@ namespace heroespath
 namespace stage
 {
 
-    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfml_util::defaults::Light };
+    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfml_util::color::Light };
 
-    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfml_util::defaults::Orange };
+    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfml_util::color::Orange };
 
     const std::string CharacterStage::POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_ {
         "BackButtonLeaveScreenComfirm"
@@ -470,7 +470,7 @@ namespace stage
         /*
         sfml_util::gui::TextInfo raceRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -512,7 +512,7 @@ namespace stage
         /*
         sfml_util::gui::TextInfo roleRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -573,7 +573,7 @@ namespace stage
 
         sfml_util::gui::TextInfo raceDescTextInfo(
             RACE_DESC,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             30,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -619,7 +619,7 @@ namespace stage
 
         sfml_util::gui::TextInfo roleDescTextInfo(
             creature::role::Desc(ROLE_ENUM),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             30,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -653,10 +653,10 @@ namespace stage
 
         const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO(
             "(name your character here)",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Small(),
             LIGHT_TEXT_COLOR_,
-            sf::BlendAlpha,
+            sfml_util::Justified::Left,
             sf::Text::Italic);
 
         nInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -686,7 +686,7 @@ namespace stage
         sfml_util::gui::BoxEntityInfo textEntryBoxInfo;
         textEntryBoxInfo.SetupImage(woodCachedTexture_);
         textEntryBoxInfo.SetupBorder(true);
-        textEntryBoxInfo.focus_colors = sfml_util::defaults::GuiFocusColors;
+        textEntryBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
 
         sfml_util::gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
         nameEntryTextInfo.text = " ";
@@ -708,7 +708,7 @@ namespace stage
         /*
         sfml_util::gui::TextInfo sexRadioButtonSetTextInfo(
             " ",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
             LIGHT_TEXT_COLOR_,
             sfml_util::Justified::Left);
@@ -758,12 +758,11 @@ namespace stage
 
         sfml_util::gui::TextInfo insTextInfo(
             spacebarInstrTextSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Small(),
             LIGHT_TEXT_COLOR_,
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Center);
+            sfml_util::Justified::Center,
+            sf::Text::Italic);
 
         sbInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SpacebarInstructions", insTextInfo, sf::FloatRect());
@@ -899,7 +898,7 @@ namespace stage
 
         sfml_util::gui::TextInfo descTextInfo(
             "", // see below for where this is set to a valid value
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             DESC_TEXT_FONT_SIZE_,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Center);
@@ -2165,7 +2164,7 @@ namespace stage
 
             sfml_util::gui::TextInfo textInfo(
                 " ",
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
+                sfml_util::GuiFont::Number,
                 40,
                 sf::Color::White,
                 sfml_util::Justified::Left);

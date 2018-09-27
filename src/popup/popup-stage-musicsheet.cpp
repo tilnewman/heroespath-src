@@ -54,16 +54,16 @@ namespace popup
         , songSprite_()
         , warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f)
         , LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190))
-        , LISTBOX_LINE_COLOR_(sfml_util::defaults::GrayDark)
+        , LISTBOX_LINE_COLOR_(sfml_util::color::GrayDark)
         , LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_)
-        , LISTBOX_COLOR_BG_(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLOR_BG_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
         , listBoxBackgroundInfo_()
         , listElementTextInfo_(
               " ",
-              sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+              sfml_util::GuiFont::System,
               sfml_util::FontManager::Instance()->Size_Smallish(),
-              sfml_util::defaults::GrayDarker,
+              sfml_util::color::GrayDarker,
               sfml_util::Justified::Left)
         , imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
@@ -286,9 +286,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         const sf::FloatRect DETAILS_TEXT_RECT {
@@ -307,9 +307,9 @@ namespace popup
     {
         const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
             "Songs",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         const sf::FloatRect LISTBOX_LABEL_TEXTRECT {
@@ -375,9 +375,9 @@ namespace popup
         // setup song title text
         const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
             SONG_PTR->Name(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Center);
 
         if (!titleTextRegionUPtr_)
@@ -431,9 +431,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Center);
 
         auto const SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
@@ -498,12 +498,11 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
             UNABLE_TEXT_COLOR_,
-            sf::BlendAlpha,
-            sf::Text::Bold,
-            sfml_util::Justified::Center);
+            sfml_util::Justified::Center,
+            sf::Text::Bold);
 
         auto const VERT_SPACER { sfml_util::MapByRes(15.0f, 60.0f) };
 
@@ -530,9 +529,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Center);
 
         auto const SONG_DESC_HORIZ_MARGIN { sfml_util::MapByRes(15.0f, 30.0f) };

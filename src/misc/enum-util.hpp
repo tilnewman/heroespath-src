@@ -30,7 +30,7 @@ namespace heroespath
 namespace misc
 {
 
-    using EnumUnderlying_t = unsigned;
+    using EnumUnderlying_t = unsigned int;
 
     namespace enum_util
     {
@@ -43,9 +43,8 @@ namespace misc
             const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
             std::ostringstream msgSS;
-            msgSS << "misc::enum_util::TestToString<"
-                  << boost::typeindex::type_id<typename EnumWrapper_t::Enum>().pretty_name() << ", "
-                  << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
+            msgSS << "misc::enum_util::TestToString<" << EnumWrapper_t::TypeName() << ", "
+                  << EnumWrapper_t::UnderlyingTypeName()
                   << ">(last_valid_value=" << LAST_VALID_VALUE
                   << ", must_first_be_empty=" << std::boolalpha << MUST_FIRST_STRING_TO_BE_EMPTY
                   << ") ";
@@ -182,12 +181,39 @@ namespace misc
             return (ENUM_VALUE <= LargestValidValue());
         }
 
-        static bool IsNonZeroValid(const EnumUnderlying_t ENUM_VALUE)
+        static EnumUnderlying_t ToUnderlyingType(const EnumUnderlying_t ENUM_VALUE)
+        {
+            return ENUM_VALUE;
+        }
+
+        static bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE)
         {
             return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
         }
 
         static constexpr EnumUnderlying_t LargestValidValue() { return EnumWrapper_t::Count - 1; }
+
+        static const std::string ToStringNoThrow(const EnumUnderlying_t ENUM_VALUE)
+        {
+            if (IsValid(ENUM_VALUE))
+            {
+                return EnumWrapper_t::ToString(
+                    static_cast<typename EnumWrapper_t::Enum>(ENUM_VALUE));
+            }
+            else
+            {
+                if (ENUM_VALUE == EnumWrapper_t::Count)
+                {
+                    return "Count";
+                }
+                else
+                {
+                    std::ostringstream ss;
+                    ss << "(INVALID=" << ENUM_VALUE << ", MAX=" << LargestValidValue() << ")";
+                    return ss.str();
+                }
+            }
+        }
 
         static const std::string Name(const EnumUnderlying_t ENUM_VALUE)
         {
@@ -214,17 +240,14 @@ namespace misc
 
         static void Test(const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
+            using UnderlyingTypeActual_t =
+                typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (std::is_same<
-                    EnumUnderlying_t,
-                    typename std::underlying_type<typename EnumWrapper_t::Enum>::type>::value),
-                TypeName()
-                    << "Underlying type was "
-                    << boost::typeindex::type_id<
-                           typename std::underlying_type<typename EnumWrapper_t::Enum>::type>()
-                           .pretty_name()
-                    << " instead of " << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
-                    << ".");
+                (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+                TypeName() << "Underlying type was: "
+                           << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
+                           << " instead of what it should be: " << UnderlyingTypeName() << ".");
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNot>::value)
             {
@@ -273,15 +296,19 @@ namespace misc
             return boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "::Enum";
         }
 
-        static const std::string EnumValueToStringWithDebugInfo(const EnumUnderlying_t ENUM_VALUE)
+        static const std::string UnderlyingTypeName()
+        {
+            return boost::typeindex::type_id<EnumUnderlying_t>().pretty_name();
+        }
+
+        static const std::string InvalidEnumValueStringForFunction(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
         {
             std::ostringstream ss;
-            ss << ENUM_VALUE;
 
-            if (ENUM_VALUE > LargestValidValue())
-            {
-                ss << "(that value is higher than the maximum defined for this bitfield enum)";
-            }
+            ss << TypeName() << "::" << FUNCTION_NAME
+               << "(enum_value=INVALID=" << UnderlyingTypeName() << "=" << ENUM_VALUE
+               << ") largest_valid=" << LargestValidValue();
 
             return ss.str();
         }
@@ -289,11 +316,7 @@ namespace misc
         [[noreturn]] static void ThrowInvalidValueForFunction(
             const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
         {
-            std::ostringstream ssErr;
-            ssErr << TypeName() << "::" << FUNCTION_NAME << "("
-                  << EnumValueToStringWithDebugInfo(ENUM_VALUE) << ")_InvalidValueError";
-
-            throw std::range_error(ssErr.str());
+            throw std::range_error(InvalidEnumValueStringForFunction(ENUM_VALUE, FUNCTION_NAME));
         }
     };
 
@@ -309,7 +332,7 @@ namespace misc
             return (ENUM_VALUE <= LargestValidValue());
         }
 
-        static bool IsNonZeroValid(const EnumUnderlying_t ENUM_VALUE)
+        static bool IsValidAndNonZero(const EnumUnderlying_t ENUM_VALUE)
         {
             return ((ENUM_VALUE != 0) && IsValid(ENUM_VALUE));
         }
@@ -318,7 +341,8 @@ namespace misc
             const EnumUnderlying_t ENUM_VALUE,
             const Wrap WILL_WRAP = Wrap::No,
             const std::string & SEPARATOR = ", ",
-            const NoneEmpty WILL_NONE_RETURN_EMPTY_PARAM = WILL_NONE_RETURN_EMPTY)
+            const NoneEmpty WILL_NONE_RETURN_EMPTY_PARAM = WILL_NONE_RETURN_EMPTY,
+            const bool WILL_THROW_ON_ERROR = true)
         {
             std::ostringstream ss;
 
@@ -340,7 +364,16 @@ namespace misc
 
             if (ss.str().empty())
             {
-                ThrowInvalidValueForFunction(ENUM_VALUE, "ToString");
+                if (WILL_THROW_ON_ERROR)
+                {
+                    ThrowInvalidValueForFunction(ENUM_VALUE, "ToString");
+                }
+                else
+                {
+                    std::ostringstream ssError;
+                    ssError << "(INVALID=" << ENUM_VALUE << ", MAX=" << LargestValidValue() << ")";
+                    return ssError.str();
+                }
             }
             else
             {
@@ -353,6 +386,15 @@ namespace misc
                     return ss.str();
                 }
             }
+        }
+
+        static const std::string ToStringNoThrow(
+            const EnumUnderlying_t ENUM_VALUE,
+            const Wrap WILL_WRAP = Wrap::No,
+            const std::string & SEPARATOR = ", ",
+            const NoneEmpty WILL_NONE_RETURN_EMPTY_PARAM = WILL_NONE_RETURN_EMPTY)
+        {
+            return ToString(ENUM_VALUE, WILL_WRAP, SEPARATOR, WILL_NONE_RETURN_EMPTY_PARAM, false);
         }
 
         static EnumUnderlying_t FromString(const std::string & S)
@@ -435,29 +477,32 @@ namespace misc
 
         static EnumUnderlying_t LargestValidValue()
         {
-            EnumUnderlying_t finalValue { 0 };
-            EnumUnderlying_t shiftingValue { 1 };
-            while (shiftingValue <= EnumWrapper_t::Last)
+            static EnumUnderlying_t finalValue { 0 };
+
+            if (0 == finalValue)
             {
-                finalValue |= shiftingValue;
-                shiftingValue <<= 1;
+                EnumUnderlying_t shiftingValue { 1 };
+
+                while (shiftingValue <= EnumWrapper_t::Last)
+                {
+                    finalValue |= shiftingValue;
+                    shiftingValue <<= 1;
+                }
             }
+
             return finalValue;
         }
 
         static void Test(const bool WILL_DISPLAY_MSG_ON_SCREEN = true)
         {
+            using UnderlyingTypeActual_t =
+                typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (std::is_same<
-                    EnumUnderlying_t,
-                    typename std::underlying_type<typename EnumWrapper_t::Enum>::type>::value),
-                TypeName()
-                    << "Underlying type was "
-                    << boost::typeindex::type_id<
-                           typename std::underlying_type<typename EnumWrapper_t::Enum>::type>()
-                           .pretty_name()
-                    << " instead of " << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
-                    << ".");
+                (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+                TypeName() << "Underlying type was: "
+                           << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
+                           << " instead of what it should be: " << UnderlyingTypeName() << ".");
 
             M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
                 (EnumWrapper_t::None == 0), TypeName() << "::None was not zero.");
@@ -487,15 +532,19 @@ namespace misc
             return boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "::Enum";
         }
 
-        static const std::string EnumValueToStringWithDebugInfo(const EnumUnderlying_t ENUM_VALUE)
+        static const std::string UnderlyingTypeName()
+        {
+            return boost::typeindex::type_id<EnumUnderlying_t>().pretty_name();
+        }
+
+        static const std::string InvalidEnumValueStringForFunction(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
         {
             std::ostringstream ss;
-            ss << ENUM_VALUE;
 
-            if (ENUM_VALUE > LargestValidValue())
-            {
-                ss << "(that value is higher than the maximum defined for this bitfield enum)";
-            }
+            ss << TypeName() << "::" << FUNCTION_NAME
+               << "(enum_value=INVALID=" << UnderlyingTypeName() << "=" << ENUM_VALUE
+               << ") largest_valid=" << LargestValidValue();
 
             return ss.str();
         }
@@ -503,11 +552,7 @@ namespace misc
         [[noreturn]] static void ThrowInvalidValueForFunction(
             const EnumUnderlying_t ENUM_VALUE, const std::string & FUNCTION_NAME)
         {
-            std::ostringstream ssErr;
-            ssErr << TypeName() << "::" << FUNCTION_NAME << "("
-                  << EnumValueToStringWithDebugInfo(ENUM_VALUE) << ")_InvalidValueError";
-
-            throw std::range_error(ssErr.str());
+            throw std::range_error(InvalidEnumValueStringForFunction(ENUM_VALUE, FUNCTION_NAME));
         }
 
     protected:

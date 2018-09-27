@@ -44,7 +44,7 @@ namespace sfml_util
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
-        , hoverSfText_()
+        , hoverText_()
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
@@ -65,7 +65,7 @@ namespace sfml_util
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
-        , hoverSfText_()
+        , hoverText_()
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
@@ -89,7 +89,7 @@ namespace sfml_util
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
-        , hoverSfText_()
+        , hoverText_()
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
@@ -226,7 +226,7 @@ namespace sfml_util
         if (hoverTextBoxUPtr_)
         {
             target.draw(*hoverTextBoxUPtr_, STATES);
-            target.draw(hoverSfText_, STATES);
+            target.draw(hoverText_, STATES);
         }
     }
 
@@ -274,25 +274,25 @@ namespace sfml_util
     {
         if (IS_MOUSE_HOVERING)
         {
-            std::string hoverText("");
+            std::string text("");
 
             // check if focused entity is hovered first
             if (entityWithFocusPtrOpt_
                 && (entityWithFocusPtrOpt_.value()->GetEntityRegion().contains(MOUSE_POS_V)))
             {
-                hoverText = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
+                text = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
             }
 
             // if focused entity is not hovered, then look for any entity the mouse is hoving over
-            if (hoverText.empty())
+            if (text.empty())
             {
                 for (auto const & NEXT_ENTITY_PTR : entityPVec_)
                 {
                     if (NEXT_ENTITY_PTR->GetEntityRegion().contains(MOUSE_POS_V))
                     {
-                        hoverText = NEXT_ENTITY_PTR->GetMouseHoverText();
+                        text = NEXT_ENTITY_PTR->GetMouseHoverText();
 
-                        if (hoverText.empty() == false)
+                        if (text.empty() == false)
                         {
                             break;
                         }
@@ -300,7 +300,7 @@ namespace sfml_util
                 }
             }
 
-            if (hoverText.empty())
+            if (text.empty())
             {
                 if (hoverTextBoxUPtr_)
                 {
@@ -311,19 +311,19 @@ namespace sfml_util
             }
 
             const gui::TextInfo TEXT_INFO(
-                hoverText,
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+                text,
+                sfml_util::GuiFont::System,
                 FontManager::Instance()->Size_Smallish(),
                 sf::Color(50, 50, 50),
                 Justified::Left);
 
-            TEXT_INFO.Apply(hoverSfText_);
+            hoverText_.setup(TEXT_INFO);
 
             sf::FloatRect region(
                 MOUSE_POS_V.x - 200.0f,
                 MOUSE_POS_V.y + 10.0f,
-                hoverSfText_.getGlobalBounds().width + 20.0f,
-                hoverSfText_.getGlobalBounds().height + 8.0f);
+                hoverText_.getGlobalBounds().width + 20.0f,
+                hoverText_.getGlobalBounds().height + 8.0f);
 
             auto const SCREEN_WIDTH { Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
@@ -336,10 +336,10 @@ namespace sfml_util
                 region.left = 0.0f;
             }
 
-            sfml_util::SetTextPosition(hoverSfText_, region.left + 10.0f, region.top + 2.0f);
+            hoverText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
             gui::BoxEntityInfo boxInfo;
-            boxInfo.SetupColor(sfml_util::defaults::Orange - sf::Color(20, 0, 0, 0));
+            boxInfo.SetupColor(sfml_util::color::Orange - sf::Color(20, 0, 0, 0));
             boxInfo.SetupBorder(true, 1.0f);
 
             hoverTextBoxUPtr_

@@ -17,6 +17,8 @@
 #include "sfml-util/fade.hpp"
 #include "sfml-util/i-stage.hpp"
 
+#include <SFML/Graphics/Texture.hpp>
+
 #include <exception>
 #include <sstream>
 #include <string>

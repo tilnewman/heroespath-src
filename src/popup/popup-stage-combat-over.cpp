@@ -67,12 +67,11 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
             TITLE_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
+            sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::defaults::GrayDarker,
-            sf::BlendAlpha,
-            sf::Text::Bold,
-            sfml_util::Justified::Center);
+            sfml_util::color::GrayDarker,
+            sfml_util::Justified::Center,
+            sf::Text::Bold);
 
         titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
@@ -121,9 +120,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
             DESC_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(

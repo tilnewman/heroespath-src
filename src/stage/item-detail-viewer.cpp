@@ -241,7 +241,7 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
             sfml_util::Justified::Center);

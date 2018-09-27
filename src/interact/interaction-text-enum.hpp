@@ -10,6 +10,8 @@
 // interaction-text-enum.hpp
 //
 #include "misc/not-null.hpp"
+#include "sfml-util/font-enum.hpp"
+
 #include <string>
 
 namespace sf
@@ -34,7 +36,7 @@ namespace interact
         };
 
         static const std::string ToString(const Enum);
-        static const FontPtr_t Font(const Enum);
+        static sfml_util::GuiFont::Enum Font(const Enum);
     };
 
 } // namespace interact

@@ -14,6 +14,7 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/pos-slider.hpp"
+#include "sfml-util/sfml-util-vertex.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -38,8 +39,8 @@ namespace stage
         ItemDetailViewer & operator=(const ItemDetailViewer &) = delete;
         ItemDetailViewer & operator=(ItemDetailViewer &&) = delete;
 
-    public:
         ItemDetailViewer();
+        virtual ~ItemDetailViewer() = default;
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);

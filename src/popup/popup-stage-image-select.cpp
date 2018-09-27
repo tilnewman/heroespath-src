@@ -95,7 +95,7 @@ namespace popup
         {
             const sfml_util::gui::TextInfo TEXT_INFO(
                 "(there is only one image)",
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
                 PopupManager::Color_Font(),
                 sfml_util::Justified::Center);
@@ -328,7 +328,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
             PopupManager::Color_Font(),
             sfml_util::Justified::Center);

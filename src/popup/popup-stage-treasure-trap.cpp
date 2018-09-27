@@ -51,12 +51,11 @@ namespace popup
 
         const sfml_util::gui::TextInfo TITLE_TEXTINFO(
             "You sprung the trap!",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
+            sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Larger(),
             sf::Color(127, 32, 32),
-            sf::BlendAlpha,
-            sf::Text::Bold,
-            sfml_util::Justified::Center);
+            sfml_util::Justified::Center,
+            sf::Text::Bold);
 
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "PopupStageTreasureTrap's_Title",
@@ -73,7 +72,7 @@ namespace popup
 
         const sfml_util::gui::TextInfo DESC_TEXTINFO(
             popupInfo_.TextInfo().text,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Center);

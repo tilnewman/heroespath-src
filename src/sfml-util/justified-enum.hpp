@@ -9,6 +9,8 @@
 //
 // justified-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    struct Justified
+    struct Justified : public misc::EnumBaseCounting<Justified, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Left = 0,
             Right,
@@ -26,9 +28,9 @@ namespace sfml_util
             Count
         };
 
-        static const std::string ToString(const Justified::Enum E);
-        static bool IsValid(const Justified::Enum E);
+        static const std::string ToString(const Enum);
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -40,10 +40,10 @@ namespace stage
 
         ListboxColors::ListboxColors()
             : image(sf::Color(255, 255, 255, 190))
-            , line(sfml_util::defaults::GrayDark)
+            , line(sfml_util::color::GrayDark)
             , foreground(line)
-            , background(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
-            , title(sfml_util::defaults::Orange - sf::Color(130, 130, 130, 0))
+            , background(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
+            , title(sfml_util::color::Orange - sf::Color(130, 130, 130, 0))
             , colorSet(foreground, background)
             , icon(sf::Color(255, 255, 255, 127))
         {}
@@ -794,12 +794,11 @@ namespace stage
     {
         const sfml_util::gui::TextInfo TEXT_INFO(
             "(press spacebar to change treasure, use arrows or numbers to change characters)",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::GrayDark,
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Left);
+            sfml_util::color::GrayDark,
+            sfml_util::Justified::Left,
+            sf::Text::Italic);
 
         // initial position doesn't matter since the position must be set after rendering
         auto const EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
@@ -835,13 +834,13 @@ namespace stage
         const std::string & TEXT,
         const float VERT_POS)
     {
-        auto const COLOR_UP { sfml_util::defaults::GrayDarker };
+        auto const COLOR_UP { sfml_util::color::GrayDarker };
         auto const COLOR_OVER { COLOR_UP - sf::Color(0, 0, 0, 127) };
         auto const COLOR_DOWN { sf::Color::Black };
 
         sfml_util::gui::TextInfo textInfo(
             TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Largeish(),
             COLOR_UP,
             sfml_util::Justified::Left);
@@ -899,9 +898,9 @@ namespace stage
 
         sfml_util::gui::TextInfo textInfo(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::GrayDarker);
+            sfml_util::color::GrayDarker);
 
         for (auto const & ITEM_PTR : ITEMS_PVEC)
         {
@@ -927,9 +926,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             LABEL_TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
@@ -1295,9 +1294,9 @@ namespace stage
     {
         const sfml_util::gui::TextInfo TEXT_INFO(
             TEXT,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             FONT_SIZE,
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(textRegionUPtr) };

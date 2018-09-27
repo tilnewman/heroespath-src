@@ -185,4 +185,4 @@ namespace creature
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCRUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCLUDED

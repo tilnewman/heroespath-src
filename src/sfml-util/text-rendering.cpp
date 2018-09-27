@@ -7,399 +7,519 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// text-render.cpp
+// text-rendering.cpp
 //
 #include "text-rendering.hpp"
 
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "log/log-macros.hpp"
+#include "misc/boost-string-includes.hpp"
 
-#include <cctype> //for std::isdigit()
+#include <SFML/Graphics/Sprite.hpp>
 
-namespace heroespath
+namespace heroespath::sfml_util::text_render
 {
-namespace sfml_util
+namespace engine
 {
 
-    const RenderedText TextRenderer::Render(
-        const gui::TextInfo & TEXT_INFO,
-        const sf::Vector2f & POS_V_ORIG,
-        const float WIDTH_LIMIT,
-        const FontPtrOpt_t & NUMBERS_FONT_PTR_OPT)
+    // this is used as the vertical whitespace placeholder for blank lines
+    const char CharInfo::whitespace_placeholder_char { '(' };
+
+    const CleanedText CleanText(const gui::TextInfo & TEXT_INFO)
     {
-        RenderedText renderedText;
-        renderedText.text_vecs.reserve(6);
-        renderedText.regions.reserve(6);
+        CleanedText cleanedText;
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (!!TEXT_INFO.font_ptr_opt),
-            "TextRender::Render(\"" << TEXT_INFO.text << "\") was given a TEXT_INFO with a null"
-                                    << " font pointer.");
+        auto isLetterFontRequired { false };
+        auto isNumberFontRequired { false };
 
-        const FontPtr_t NUMBERS_FONT_PTR { (
-            (NUMBERS_FONT_PTR_OPT)
-                ? NUMBERS_FONT_PTR_OPT.value()
-                : sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number)) };
-
-        // use the X character because it's height was found by experiment to look the best
-        const auto BLANK_LINE_HEIGHT = [&]() {
-            sf::Text sfTextForBlankLine("X", *TEXT_INFO.font_ptr_opt.value(), TEXT_INFO.char_size);
-            return sfTextForBlankLine.getGlobalBounds().height;
-        }();
-
-        std::size_t textPosIndex(0);
-        sf::Vector2f posV { POS_V_ORIG };
-
-        const std::size_t TEXT_LENGTH(TEXT_INFO.text.size());
-        while (textPosIndex < TEXT_LENGTH)
+        // consider and then append characters one at a time
+        for (const char CHAR_ORIG : TEXT_INFO.text)
         {
-            sf::FloatRect lineRegion;
+            const CharInfo CHAR_INFO(CHAR_ORIG, TEXT_INFO);
 
-            SfTextVec_t sfTextVecForLine { RenderLine(
-                TEXT_INFO.text,
-                TEXT_INFO.char_size,
-                TEXT_INFO.font_ptr_opt.value(),
-                NUMBERS_FONT_PTR,
-                posV,
-                WIDTH_LIMIT,
-                textPosIndex,
-                lineRegion) };
-
-            if (sfTextVecForLine.empty())
+            if (CHAR_INFO.is_renderable == false)
             {
-                // drop the position down by one blank line
-                posV.y += BLANK_LINE_HEIGHT;
+                continue;
+            }
+
+            cleanedText.text += CHAR_INFO.which_char;
+
+            if (CHAR_INFO.is_newline)
+            {
+                ++cleanedText.newline_count;
+            }
+            else if (CHAR_INFO.requires_letter_font)
+            {
+                isLetterFontRequired = true;
+            }
+            else if (CHAR_INFO.requires_number_font)
+            {
+                isNumberFontRequired = true;
+            }
+        }
+
+        // trim leading whitespace
+        while ((cleanedText.text.empty() == false)
+               && CharInfo(cleanedText.text.front()).is_whitespace)
+        {
+            cleanedText.text.erase(std::begin(cleanedText.text));
+        }
+
+        // trim trailing whitespace
+        while ((cleanedText.text.empty() == false)
+               && CharInfo(cleanedText.text.back()).is_whitespace)
+        {
+            cleanedText.text.pop_back();
+        }
+
+        if (isLetterFontRequired)
+        {
+            if (isNumberFontRequired)
+            {
+                cleanedText.uniform_font = GuiFont::Count;
             }
             else
             {
-                std::string temp;
-                for (const auto & SF_TEXT : sfTextVecForLine)
-                {
-                    temp += SF_TEXT.getString().toAnsiString();
-                }
-
-                renderedText.text_vecs.emplace_back(sfTextVecForLine);
-                renderedText.regions.emplace_back(lineRegion);
-
-                renderedText.region
-                    = sfml_util::MinimallyEnclosing(renderedText.region, lineRegion, true);
-
-                posV.y = Bottom(lineRegion) + 1.0f;
+                cleanedText.uniform_font = TEXT_INFO.font_letters;
             }
         }
-
-        if ((TEXT_INFO.justified == sfml_util::Justified::Center)
-            || (TEXT_INFO.justified == sfml_util::Justified::Right))
+        else
         {
-            renderedText.Justify(TEXT_INFO.justified, WIDTH_LIMIT);
-        }
-
-        return renderedText;
-    }
-
-    const SfTextVec_t TextRenderer::RenderLine(
-        const std::string & TEXT,
-        const unsigned CHARACTER_SIZE,
-        const FontPtr_t & LETTERS_FONT_PTR,
-        const FontPtr_t & NUMBERS_FONT_PTR,
-        const sf::Vector2f & POS_V_ORIG,
-        const float WIDTH_LIMIT,
-        std::size_t & textPosIndex,
-        sf::FloatRect & regionOutParam)
-    {
-        regionOutParam = sf::FloatRect();
-
-        auto const TEXT_LENGTH { TEXT.size() };
-
-        SfTextVec_t sfTextVecLine;
-        sfTextVecLine.reserve(6);
-        bool willPrefixSpaceToNextWord { false };
-
-        auto isHorizPosWithinLimit = [&](const float POS_LEFT) {
-            return (!(WIDTH_LIMIT > 0.0f) || (POS_LEFT < (POS_V_ORIG.x + WIDTH_LIMIT)));
-        };
-
-        sf::Vector2f posV { POS_V_ORIG };
-
-        while (textPosIndex < TEXT_LENGTH)
-        {
-            const auto TEXT_POS_BEFORE_RENDERING_WORD_INDEX { textPosIndex };
-            const auto CURRENT_WIDTH { regionOutParam.width };
-
-            posV.x = POS_V_ORIG.x + CURRENT_WIDTH;
-
-            char wordTerminatingChar { 0 };
-            sf::FloatRect wordsRegion;
-
-            SfTextVec_t sfTextVecWord { RenderWords(
-                TEXT,
-                WIDTH_LIMIT - CURRENT_WIDTH,
-                CHARACTER_SIZE,
-                LETTERS_FONT_PTR,
-                NUMBERS_FONT_PTR,
-                posV,
-                textPosIndex,
-                willPrefixSpaceToNextWord,
-                wordTerminatingChar,
-                wordsRegion) };
-
-            willPrefixSpaceToNextWord = false;
-
-            if (sfTextVecWord.empty())
+            if (isNumberFontRequired)
             {
-                // found only spaces and newlines, or something went wrong, end the line and bail
-                break;
-            }
-
-            if (IsSizeZeroOrLessEither(wordsRegion))
-            {
-                // something went wrong, end the line and bail
-                break;
-            }
-
-            if (isHorizPosWithinLimit(Right(wordsRegion)))
-            {
-                std::copy(
-                    std::begin(sfTextVecWord),
-                    std::end(sfTextVecWord),
-                    std::back_inserter(sfTextVecLine));
-
-                regionOutParam = MinimallyEnclosing(regionOutParam, wordsRegion, true);
-
-                if ('\n' == wordTerminatingChar)
-                {
-                    break;
-                }
-                else
-                {
-                    willPrefixSpaceToNextWord = (' ' == wordTerminatingChar);
-                }
+                cleanedText.uniform_font = TEXT_INFO.font_numbers;
             }
             else
             {
-                if (sfTextVecLine.empty())
-                {
-                    // at this point we know that nothing as been rendered to the line so far,
-                    // and that the first word is too long to fit horizontally, so truncate the
-                    // word,  whatever did not fit on this line will NOT be added to the next
-                    // line
-                    SfTextVec_t::iterator newEndIter { std::begin(sfTextVecWord) };
-
-                    while ((newEndIter != std::end(sfTextVecWord))
-                           && isHorizPosWithinLimit(Right(newEndIter->getGlobalBounds())))
-                    {
-                        ++newEndIter;
-                    }
-
-                    SfTextVec_t::iterator iter { std::begin(sfTextVecWord) };
-                    while (iter != newEndIter)
-                    {
-                        sfTextVecLine.emplace_back(*iter);
-
-                        regionOutParam
-                            = MinimallyEnclosing(regionOutParam, iter->getGlobalBounds(), true);
-                    };
-                }
-                else
-                {
-                    // at this point we know there are already words on the current line and the
-                    // current word didn't fit, so backup textPosIndex to the start
-                    // of the word that didn't fit so it will be the start of the next line
-                    textPosIndex = TEXT_POS_BEFORE_RENDERING_WORD_INDEX;
-                }
-
-                // the line is full, end the line
-                break;
+                // default to using letter font if neither is required
+                cleanedText.uniform_font = TEXT_INFO.font_letters;
             }
         }
 
-        if (sfTextVecLine.empty() == false)
-        {
-            // Temporarily add an open parens to stretch out the vertical position and height.  The
-            // parens is used because it reaches high and low at the same time.  This helps make the
-            // spacing between multiple lines consistent.
-            {
-                auto & sfText { sfTextVecLine.back() };
-                const auto TEXT_WIDTH_ORIG { sfText.getGlobalBounds().width };
-                std::string text { sfText.getString().toAnsiString() };
-                text += '(';
-                sfText.setString(text);
-                auto textRegionNew { sfText.getGlobalBounds() };
-                text.erase(text.size() - 1);
-                sfText.setString(text);
-                textRegionNew.width = TEXT_WIDTH_ORIG;
-                regionOutParam = MinimallyEnclosing(regionOutParam, textRegionNew, true);
-            }
-
-            // RenderWords() does not correct for sf::Text localBounds position, so it must be done
-            // here.  Usually this would be corrected using sfml_util::SetTextPosition(), but this
-            // is not an option since there could be multiple fonts being rendered.  So instead the
-            // correction is made here on all sf::Text objects together as one line.
-            {
-                const auto CORRECTION_V { (POS_V_ORIG - Position(regionOutParam)) };
-
-                for (auto & sfText : sfTextVecLine)
-                {
-                    sfText.move(CORRECTION_V);
-                }
-
-                regionOutParam
-                    = sf::FloatRect(Position(regionOutParam) + CORRECTION_V, Size(regionOutParam));
-            }
-        }
-
-        return sfTextVecLine;
+        return cleanedText;
     }
 
-    const SfTextVec_t TextRenderer::RenderWords(
-        const std::string & TEXT,
-        const float WIDTH_LIMIT,
-        const unsigned CHARACTER_SIZE,
-        const FontPtr_t & LETTERS_FONT_PTR,
-        const FontPtr_t & NUMBERS_FONT_PTR,
-        const sf::Vector2f & POS_V,
-        std::size_t & textPosIndex,
-        const bool WILL_PREFIX_SPACE,
-        char & terminatingChar,
-        sf::FloatRect & regionOutParam)
+    const ParsedTextLine ParseAllAndSplitByFont(const Context & CONTEXT)
     {
-        regionOutParam = sf::FloatRect();
+        ParsedTextLine line;
+        ParsedTextSegment segment;
 
-        SfTextVec_t sfTextVecWord;
-
-        const std::size_t TEXT_LENGTH { TEXT.size() };
-
-        if (textPosIndex >= TEXT_LENGTH)
+        for (const char CHAR : CONTEXT.cleaned_text.text)
         {
-            terminatingChar = 0;
-            return sfTextVecWord;
+            const CharInfo CHAR_INFO(CHAR, CONTEXT.text_info, segment.font);
+
+            if (segment.font != CHAR_INFO.font)
+            {
+                line.AppendAndResetIfValid(segment);
+                segment.font = CHAR_INFO.font;
+            }
+
+            segment.text += CHAR;
         }
 
-        // skip leading spaces
-        while (TEXT[textPosIndex] == ' ')
+        // default to using the letters font if neither was required before reaching the end
+        if (GuiFont::IsValid(segment.font) == false)
         {
-            if (++textPosIndex >= TEXT_LENGTH)
+            segment.font = CONTEXT.text_info.font_letters;
+        }
+
+        line.AppendAndResetIfValid(segment);
+
+        return line;
+    }
+
+    void ParseAllAndSplitByNewlines(
+        const Context & CONTEXT, const ParsedTextSegment & SEGMENT, ParsedTextLines & lines)
+    {
+        const auto NEWLINE_CHAR_POS { SEGMENT.text.find("\n") };
+
+        if (NEWLINE_CHAR_POS == std::string::npos)
+        {
+            lines.AppendAndResetToCurrentLineIfValid(SEGMENT);
+        }
+        else
+        {
+            const ParsedTextSegment SEGMENT_BEFORE_NEWLINE(
+                SEGMENT.text.substr(0, NEWLINE_CHAR_POS), SEGMENT.font);
+
+            lines.AppendAndResetToCurrentLineIfValid(SEGMENT_BEFORE_NEWLINE);
+
+            if (lines.Empty())
             {
-                terminatingChar = 0;
-                return sfTextVecWord;
+                lines.AppendBlankLine();
+            }
+
+            lines.AppendBlankLine();
+
+            if (NEWLINE_CHAR_POS < (SEGMENT.text.size() - 1))
+            {
+                const ParsedTextSegment SEGMENT_AFTER_NEWLINE(
+                    SEGMENT.text.substr(NEWLINE_CHAR_POS + 1), SEGMENT.font);
+
+                ParseAllAndSplitByNewlines(CONTEXT, SEGMENT_AFTER_NEWLINE, lines);
+            }
+        }
+    }
+
+    const ParsedTextLines
+        ParseAllAndSplitByNewlines(const Context & CONTEXT, const ParsedTextLine & LINE)
+    {
+        ParsedTextLines newLines;
+
+        for (const auto & SEGMENT : LINE)
+        {
+            ParseAllAndSplitByNewlines(CONTEXT, SEGMENT, newLines);
+        }
+
+        return newLines;
+    }
+
+    const ParsedTextLine
+        ParseAndSplitByWord(const Context & CONTEXT, const ParsedTextSegment & SEGMENT_ORIG)
+    {
+        ParsedTextLine line;
+        ParsedTextSegment segmentNew;
+
+        for (const char CHAR : SEGMENT_ORIG.text)
+        {
+            segmentNew.font = SEGMENT_ORIG.font;
+
+            const auto CHAR_INFO { CharInfo(CHAR, CONTEXT.text_info) };
+
+            if (CHAR_INFO.is_word_break)
+            {
+                if (segmentNew.text != " ")
+                {
+                    line.AppendAndResetIfValid(segmentNew);
+                }
+
+                // dashes are a special case because we don't want "-word" segments
+                if (CHAR_INFO.is_dash)
+                {
+                    segmentNew = ParsedTextSegment("-", SEGMENT_ORIG.font);
+                    line.AppendAndResetIfValid(segmentNew);
+                    continue;
+                }
+            }
+
+            segmentNew.font = SEGMENT_ORIG.font;
+            segmentNew.text += CHAR;
+        }
+
+        line.AppendAndResetIfValid(segmentNew);
+
+        return line;
+    }
+
+    const ParsedTextLine ParseAndSplitByWord(const Context & CONTEXT, const ParsedTextLine & LINE)
+    {
+        ParsedTextLine newLine;
+
+        for (const auto & WHOLE_SEGMENT : LINE)
+        {
+            for (const auto & SUB_SEGMENT : ParseAndSplitByWord(CONTEXT, WHOLE_SEGMENT))
+            {
+                newLine.AppendAndResetIfValid(SUB_SEGMENT);
             }
         }
 
-        // return empty vec with terminatingChar='\n' if newline was the first non-space found
-        if ('\n' == TEXT[textPosIndex])
+        return newLine;
+    }
+
+    const ParsedTextLines
+        ParseAndSplitByWord(const Context & CONTEXT, const ParsedTextLines & LINES)
+    {
+        ParsedTextLines newLines;
+
+        for (const auto & LINE : LINES)
         {
-            ++textPosIndex;
-            terminatingChar = '\n';
-            return sfTextVecWord;
-        }
+            newLines.AppendBlankLine();
 
-        // this number found by experiment to be a good estimate for the game
-        sfTextVecWord.reserve(6);
-
-        auto willCharUseLetterFont = [&](const char CHAR) {
-            return (std::isdigit(static_cast<unsigned char>(CHAR)) == false);
-        };
-
-        auto makeNewSfTextToTheRightOf = [&](const char CHAR, const sf::Text & LEFT_TEXT) {
-            sf::Text newSfText(
-                std::string(1, CHAR),
-                ((willCharUseLetterFont(CHAR)) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR),
-                CHARACTER_SIZE);
-
-            // intentionally not using sfml_util::SetTextPosition(), see comment in header
-            newSfText.setPosition(Right(LEFT_TEXT.getGlobalBounds()) + 1.0f, POS_V.y);
-            return newSfText;
-        };
-
-        auto appendCharOrAppendTextAndStartNew
-            = [&](bool & isCurrTextLetters, sf::Text & sfText, const char CHAR) {
-                  if ((CHAR == '.') || (CHAR == '-') || (CHAR == '+') || (CHAR == ' ')
-                      || (willCharUseLetterFont(CHAR) == isCurrTextLetters))
-                  {
-                      sfText.setString(sfText.getString() + CHAR);
-                  }
-                  else
-                  {
-                      isCurrTextLetters = !isCurrTextLetters;
-                      sfTextVecWord.emplace_back(sfText);
-
-                      regionOutParam
-                          = MinimallyEnclosing(regionOutParam, sfText.getGlobalBounds(), true);
-
-                      sfText = makeNewSfTextToTheRightOf(CHAR, sfText);
-                  }
-              };
-
-        char currChar(TEXT[textPosIndex]);
-
-        bool isCurrCharLetter { willCharUseLetterFont(currChar) };
-
-        sf::Text sfText(
-            "", ((isCurrCharLetter) ? *LETTERS_FONT_PTR : *NUMBERS_FONT_PTR), CHARACTER_SIZE);
-
-        // intentionally not using sfml_util::SetTextPosition(), see comment in header
-        sfText.setPosition(POS_V);
-
-        if (WILL_PREFIX_SPACE)
-        {
-            bool tempToIgnore { true };
-            appendCharOrAppendTextAndStartNew(tempToIgnore, sfText, ' ');
-        }
-
-        appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
-
-        std::size_t textPosLastSpace { 0 };
-        std::size_t sfTextLastSpaceSize { 0 };
-        sf::Text sfTextLastSpace;
-        sf::FloatRect regionLastSpace;
-
-        while (++textPosIndex < TEXT_LENGTH)
-        {
-            currChar = TEXT[textPosIndex];
-            terminatingChar = currChar;
-
-            if ((' ' == currChar) && (WIDTH_LIMIT > 0.0f))
+            for (const auto & SEGMENT : ParseAndSplitByWord(CONTEXT, LINE))
             {
-                if ((regionOutParam.width + sfText.getGlobalBounds().width) < WIDTH_LIMIT)
+                newLines.AppendAndResetToCurrentLineIfValid(SEGMENT);
+            }
+        }
+
+        return newLines;
+    }
+
+    const ParsedTextLines ParseAndCollectWhitespace(const ParsedTextLines & LINES)
+    {
+        ParsedTextLines newLines;
+
+        for (const auto & LINE : LINES)
+        {
+            newLines.AppendBlankLine();
+
+            ParsedTextSegment newSegment;
+
+            for (const auto & SEGMENT : LINE)
+            {
+                if (SEGMENT.text.empty())
                 {
-                    textPosLastSpace = textPosIndex;
-                    sfTextLastSpaceSize = sfTextVecWord.size();
-                    sfTextLastSpace = sfText;
-                    regionLastSpace = regionOutParam;
+                    continue;
+                }
+
+                auto isSegmentAllWhiteSpace = [&]() {
+                    for (const char CHAR : SEGMENT.text)
+                    {
+                        if (CharInfo(CHAR).is_whitespace == false)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                };
+
+                if (isSegmentAllWhiteSpace())
+                {
+                    newSegment.text += SEGMENT.text;
                 }
                 else
                 {
-                    if (textPosLastSpace != 0)
-                    {
-                        textPosIndex = textPosLastSpace;
-                        sfTextVecWord.resize(sfTextLastSpaceSize);
-                        sfText = sfTextLastSpace;
-                        regionOutParam = regionLastSpace;
-                    }
-
-                    terminatingChar = ' ';
-                    break;
+                    newSegment.text += SEGMENT.text;
+                    newSegment.font = SEGMENT.font;
+                    newLines.AppendAndResetToCurrentLineIfValid(newSegment);
                 }
             }
-            else if ('\n' == currChar)
-            {
-                ++textPosIndex;
-                break;
-            }
-
-            appendCharOrAppendTextAndStartNew(isCurrCharLetter, sfText, currChar);
         }
 
-        if (sfText.getString().isEmpty() == false)
-        {
-            sfTextVecWord.emplace_back(sfText);
-            regionOutParam = MinimallyEnclosing(regionOutParam, sfText.getGlobalBounds(), true);
-        }
-
-        return sfTextVecWord;
+        return newLines;
     }
 
-} // namespace sfml_util
-} // namespace heroespath
+    const ParsedTextLines ParseAll(const Context & CONTEXT)
+    {
+        const auto LINE_SPLIT_BY_FONT { ParseAllAndSplitByFont(CONTEXT) };
+
+        const auto LINES_SPLIT_BY_FONT_AND_NEWLINES { ParseAllAndSplitByNewlines(
+            CONTEXT, LINE_SPLIT_BY_FONT) };
+
+        const auto ALL_PARSED_TEXT_LINES { ParseAndSplitByWord(
+            CONTEXT, LINES_SPLIT_BY_FONT_AND_NEWLINES) };
+
+        const auto ALL_PARSED_TEXT_LINES_WITH_COLLECTED_WHITESPACE { ParseAndCollectWhitespace(
+            ALL_PARSED_TEXT_LINES) };
+
+        return ALL_PARSED_TEXT_LINES_WITH_COLLECTED_WHITESPACE;
+    }
+
+    void RenderParsedTextSegment(
+        const Context & CONTEXT, const ParsedTextSegment & PARSED_TEXT_SEGMENT, Render & render)
+    {
+        // color is always White because the final rendered sprite sets the color
+        const Text TEXT(
+            CONTEXT.text_info,
+            PARSED_TEXT_SEGMENT.text,
+            PARSED_TEXT_SEGMENT.font,
+            sf::Color::White);
+
+        const auto TEXT_WIDTH { TEXT.getGlobalBounds().width };
+        const auto WIDTH_REMAINING { render.CurrentLineWidthRemaining(CONTEXT.width_limit) };
+
+        if (CONTEXT.HasWidthLimit() && (TEXT_WIDTH > WIDTH_REMAINING))
+        {
+            if (render.IsCurrentLineEmpty())
+            {
+                auto shrunkText { TEXT };
+
+                while ((shrunkText.empty() == false)
+                       && (shrunkText.getGlobalBounds().width > WIDTH_REMAINING))
+                {
+                    shrunkText.pop_back();
+                }
+
+                M_HP_LOG_WRN(
+                    "text_render::engine::RenderParsedTextSegment(context_cleaned_text=\""
+                    << misc::MakeLoggableString(CONTEXT.cleaned_text.text) << "\", segment_text=\""
+                    << PARSED_TEXT_SEGMENT.text << "\")  but that segment was "
+                    << (TEXT_WIDTH - WIDTH_REMAINING) << " wider than the width_limit ("
+                    << CONTEXT.width_limit
+                    << "), on a line that was empty, and so chars were removed from the end until "
+                       "it fit.  The final text is \""
+                    << shrunkText.getString() << "\".");
+
+                if (shrunkText.empty() == false)
+                {
+                    render.CurrentLineAppend(shrunkText);
+                }
+
+                render.AppendEmptyLine();
+            }
+            else
+            {
+                render.AppendEmptyLine();
+                RenderParsedTextSegment(CONTEXT, PARSED_TEXT_SEGMENT, render);
+            }
+        }
+        else
+        {
+            render.CurrentLineAppend(TEXT);
+        }
+    }
+
+    void RenderAll(
+        const Context & CONTEXT, const ParsedTextLines & PARSED_TEXT_LINES, Render & render)
+    {
+        for (const auto & LINE : PARSED_TEXT_LINES)
+        {
+            if (LINE.IsBlankLine())
+            {
+                render.AppendBlankLine(CONTEXT.tallest_char_height);
+            }
+            else
+            {
+                render.AppendEmptyLine();
+
+                for (const auto & SEGMENT : LINE)
+                {
+                    RenderParsedTextSegment(CONTEXT, SEGMENT, render);
+                }
+            }
+        }
+    }
+
+    const Render ParseAndRender(const Context & CONTEXT)
+    {
+        const auto CAN_USE_QUICK_RENDER { (CONTEXT.HasWidthLimit() == false)
+                                          && (CONTEXT.cleaned_text.newline_count == 0)
+                                          && GuiFont::IsValid(CONTEXT.cleaned_text.uniform_font) };
+
+        Render render;
+
+        if (CAN_USE_QUICK_RENDER)
+        {
+            const Text TEXT(
+                CONTEXT.cleaned_text.text,
+                CONTEXT.cleaned_text.uniform_font,
+                CONTEXT.text_info.size);
+
+            render.CurrentLineAppend(TEXT);
+        }
+        else
+        {
+            RenderAll(CONTEXT, ParseAll(CONTEXT), render);
+        }
+
+        render.FinalAlignmentAndSpacing(CONTEXT);
+        return render;
+    }
+
+    void DrawToTexture(const Render & RENDERED_TEXT, sf::RenderTexture & renderTexture)
+    {
+        const sf::Vector2u TEXT_SIZE { Size(RENDERED_TEXT.Region()) };
+
+        if ((renderTexture.getSize().x < TEXT_SIZE.x) && (renderTexture.getSize().y < TEXT_SIZE.y))
+        {
+            const auto ORIG_SIZE { renderTexture.getSize() };
+            const auto CREATE_TEXTURE_RESULT { renderTexture.create(TEXT_SIZE.x, TEXT_SIZE.y) };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (CREATE_TEXTURE_RESULT),
+                "sfml_util::text_render::engine::DrawToTexture(rendered_text="
+                    << RENDERED_TEXT.ToString() << ", render_texture_size_orig=" << ORIG_SIZE
+                    << ")  The sf::RenderTexture give was not big enough, but attempting to make "
+                       "one big enough by calling sf::RenderTexture::Create("
+                    << TEXT_SIZE << ") failed and returned false.");
+        }
+
+        renderTexture.setSmooth(true);
+        renderTexture.clear(sf::Color::Transparent);
+
+        // if you draw text to a transparent texture using BlendAlpha the result will be fuzy
+        // so use BlendNone and it will look good
+        sf::RenderStates states;
+        states.blendMode = sf::BlendNone;
+
+        renderTexture.draw(RENDERED_TEXT, states);
+        renderTexture.display();
+    }
+
+} // namespace engine
+
+bool Render(
+    const gui::TextInfo & TEXT_INFO,
+    const sf::FloatRect & REGION,
+    RenderTextureUPtr_t & renderTextureUPtr,
+    sf::FloatRect & actualRegion)
+{
+    auto logErrorMsgAndReturnErrorResult = [&](const std::string & ERROR_MSG) {
+        std::ostringstream ss;
+
+        ss << "sfml_util::text_render::Render(" << TEXT_INFO << ", region=" << REGION << ")  "
+           << ERROR_MSG;
+
+        M_HP_LOG_ERR(ss.str());
+
+        return false;
+    };
+
+    if (!TEXT_INFO.IsValid())
+    {
+        return logErrorMsgAndReturnErrorResult(
+            "No text was rendered because the TEXT_INFO object was invalid.");
+    }
+
+    const auto CLEANED_TEXT { engine::CleanText(TEXT_INFO) };
+
+    if (CLEANED_TEXT.text.empty())
+    {
+        return logErrorMsgAndReturnErrorResult("No text was rendered because the text was "
+                                               "empty after removing invalid characters.");
+    }
+
+    if (TEXT_INFO.text != CLEANED_TEXT.text)
+    {
+        M_HP_LOG_WRN(
+            "sfml_util::text_render::Render("
+            << TEXT_INFO << ", region=" << REGION
+            << ")  Original text was changed during engine::CleanText():\nold=\"" << TEXT_INFO.text
+            << "\"\nnew=\"" << CLEANED_TEXT.text << "\"");
+    }
+
+    const engine::Context CONTEXT(TEXT_INFO, CLEANED_TEXT, REGION.width);
+    const auto RENDER { ParseAndRender(CONTEXT) };
+
+    if (RENDER.IsValid())
+    {
+        if (!renderTextureUPtr)
+        {
+            renderTextureUPtr = std::make_unique<sf::RenderTexture>();
+        }
+
+        engine::DrawToTexture(RENDER, *renderTextureUPtr);
+        actualRegion = RENDER.CalcScreenRegion(Position(REGION));
+        return true;
+    }
+    else
+    {
+        std::ostringstream ss;
+        ss << "No text was rendered by RenderLines().  render=" << RENDER.ToString();
+        return logErrorMsgAndReturnErrorResult(ss.str());
+    }
+}
+
+bool Render(
+    const gui::TextInfo & TEXT_INFO,
+    const sf::FloatRect & REGION,
+    RenderTextureUPtr_t & renderTextureUPtr_,
+    sf::Sprite & sprite)
+{
+    sf::FloatRect finalRegion;
+    const auto RENDER_RESULT { Render(TEXT_INFO, REGION, renderTextureUPtr_, finalRegion) };
+
+    if (RENDER_RESULT && renderTextureUPtr_)
+    {
+        sprite.setTexture(renderTextureUPtr_->getTexture());
+        sprite.setTextureRect(sf::IntRect(sf::Vector2i(), sf::Vector2i(Size(finalRegion))));
+        sprite.setPosition(Position(finalRegion));
+        sprite.setColor(TEXT_INFO.color);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+} // namespace heroespath::sfml_util::text_render

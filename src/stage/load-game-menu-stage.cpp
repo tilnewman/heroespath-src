@@ -57,11 +57,11 @@ namespace stage
               610.0f,
               (screenSizeV_.y * 0.5f),
               ((screenSizeV_.y * 0.5f) - ((screenSizeV_.y * 0.5f) * 0.5f)) + 50.0f)
-        , gsListBoxBGColor_(sfml_util::defaults::Orange - sf::Color(100, 100, 100, 220))
+        , gsListBoxBGColor_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
         , gsListBoxFocusColors_(
-              sfml_util::defaults::Orange,
+              sfml_util::color::Orange,
               gsListBoxBGColor_,
-              sfml_util::defaults::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
+              sfml_util::color::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
               gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
         , gsListBoxUPtr_()
         , locTextRegionUPtr_()
@@ -116,7 +116,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO(
                 ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+                sfml_util::GuiFont::System,
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             gsListBoxUPtr_->Append(
@@ -133,8 +133,7 @@ namespace stage
             "LoadGameStage'sGame",
             this,
             this,
-            sfml_util::gui::ListBoxPacket(
-                gsListBoxRect_, gsListBoxInfo, sfml_util::defaults::Orange));
+            sfml_util::gui::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfml_util::color::Orange));
 
         EntityAdd(gsListBoxUPtr_.get());
         SetupGameInfoDisplay();
@@ -160,9 +159,7 @@ namespace stage
         auto const GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
 
         sfml_util::gui::TextInfo descTextInfo(
-            "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
-            sfml_util::FontManager::Instance()->Size_Smallish());
+            "", sfml_util::GuiFont::System, sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
         auto const CHAR_LIST_POS_LEFT { sfml_util::Right(gsListBoxRect_) + 75.0f };

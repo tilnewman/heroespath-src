@@ -19,48 +19,29 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::string Justified::ToString(const Justified::Enum E)
+    const std::string Justified::ToString(const Justified::Enum JUSTIFICATION)
     {
-        switch (E)
+        switch (JUSTIFICATION)
         {
-            case Left:
+            case Justified::Left:
             {
                 return "Left";
             }
-            case Right:
+            case Justified::Right:
             {
                 return "Right";
             }
-            case Center:
+            case Justified::Center:
             {
                 return "Center";
             }
-            case Count:
+            case Justified::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "sfml_util::Justified::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                ThrowInvalidValueForFunction(JUSTIFICATION, "ToString");
             }
         }
     }
 
-    bool Justified::IsValid(const Justified::Enum E)
-    {
-        switch (E)
-        {
-            case Left:
-            case Right:
-            case Center:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
 } // namespace sfml_util
 } // namespace heroespath

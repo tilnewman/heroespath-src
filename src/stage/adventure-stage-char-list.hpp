@@ -13,7 +13,6 @@
 #include "misc/vector-map.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/gui/gold-bar.hpp"
 #include "sfml-util/gui/image-text-entity.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -123,4 +122,4 @@ namespace stage
 } // namespace stage
 } // namespace heroespath
 
-#endif // HEROESPATH_STAGE_ADVENTURESTAGECHARLIST_STAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ADVENTURESTAGECHARLIST_HPP_INCLUDED

@@ -363,7 +363,7 @@ namespace stage
         {
             const sfml_util::gui::TextInfo TEXT_INFO(
                 " ",
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small());
 
             const std::vector<std::string> LABELS_VEC
@@ -615,9 +615,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::defaults::Light,
+            sfml_util::color::Light,
             sfml_util::Justified::Center);
 
         sfml_util::gui::BoxEntityInfo musicBoxInfo;
@@ -656,9 +656,9 @@ namespace stage
 
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::Light,
+            sfml_util::color::Light,
             sfml_util::Justified::Left);
 
         if (false == hasStageAlreadyBeenSetup_)
@@ -683,7 +683,7 @@ namespace stage
     {
         return sfml_util::gui::TextInfo(
             TITLE,
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
@@ -693,7 +693,7 @@ namespace stage
     {
         return sfml_util::gui::MouseTextInfo(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
+            sfml_util::GuiFont::Number,
             sfml_util::FontManager::Instance()->Size_Small(),
             sf::Color::White,
             sf::Color(255, 200, 200));

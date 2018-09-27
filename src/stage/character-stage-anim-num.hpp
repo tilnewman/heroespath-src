@@ -13,6 +13,9 @@
 #include "creature/stat-set.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/text.hpp"
+
+#include <SFML/Graphics/Drawable.hpp>
 
 #include <memory>
 #include <string>
@@ -55,14 +58,14 @@ namespace stage
         bool IsHeldDown() const { return isHeldDown_; }
         void MouseUp() { isHeldDown_ = false; }
 
-        void SetPosY(const float TOP) { textObj_.setPosition(textObj_.getPosition().x, TOP); }
+        void SetPosY(const float TOP) { text_.setPosition(text_.getPosition().x, TOP); }
 
         const sf::Vector2f GetPos() const
         {
-            return sf::Vector2f(textObj_.getPosition().x, textObj_.getPosition().y);
+            return sf::Vector2f(text_.getPosition().x, text_.getPosition().y);
         }
 
-        void SetPos(const float LEFT, const float TOP) { textObj_.setPosition(LEFT, TOP); }
+        void SetPos(const float LEFT, const float TOP) { text_.setPosition(LEFT, TOP); }
 
         bool MouseDown(const float POS_LEFT, const float POS_TOP);
 
@@ -88,7 +91,7 @@ namespace stage
         float fadeCounter_;
         bool isHeldDown_;
         sfml_util::gui::TextInfo textInfo_;
-        sf::Text textObj_;
+        sfml_util::Text text_;
         sfml_util::sliders::ZeroSliderOnce<float> sliderX_;
         float timerSec_;
         float prevPosX_;
@@ -100,6 +103,7 @@ namespace stage
     bool operator==(const AnimNum & L, const AnimNum & R);
 
     inline bool operator!=(const AnimNum & L, const AnimNum & R) { return !(L == R); }
+
 } // namespace stage
 } // namespace heroespath
 

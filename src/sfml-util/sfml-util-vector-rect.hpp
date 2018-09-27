@@ -13,6 +13,7 @@
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
 #include "sfml-util/orientation-enum.hpp"
+#include "sfml-util/sfml-util-position.hpp"
 
 #include <SFML/Graphics/Rect.hpp> //also includes System/Vector2.hpp
 
@@ -105,15 +106,99 @@ using IntRectOpt_t = boost::optional<sf::IntRect>;
 namespace sfml_util
 {
 
-    namespace defaults
+    template <typename T1, typename T2>
+    constexpr const sf::Rect<T1>
+        SetPositionCopy(const sf::Rect<T1> & R, const sf::Vector2<T2> & POS_V)
     {
-        const sf::Vector2f VECTOR2F {};
-        const sf::Vector2i VECTOR2I {};
-        const sf::Vector2u VECTOR2U {};
-        const sf::FloatRect FLOATRECT {};
-        const sf::IntRect INTRECT {};
+        return sf::Rect<T1>(static_cast<T1>(POS_V.x), static_cast<T1>(POS_V.y), R.width, R.height);
+    }
 
-    } // namespace defaults
+    template <typename T1, typename T2>
+    void SetPosition(sf::Rect<T1> & r, const sf::Vector2<T2> & POS_V)
+    {
+        r = SetPositionCopy(r, POS_V);
+    }
+
+    template <typename T1, typename T2>
+    constexpr const sf::Rect<T1> SetSizeCopy(const sf::Rect<T1> & R, const sf::Vector2<T2> & SIZE_V)
+    {
+        return sf::Rect<T1>(R.left, R.top, static_cast<T1>(SIZE_V.x), static_cast<T1>(SIZE_V.y));
+    }
+
+    template <typename T1, typename T2>
+    void SetSize(sf::Rect<T1> & r, const sf::Vector2<T2> & SIZE_V)
+    {
+        r = SetSizeCopy(r, SIZE_V);
+    }
+
+    template <typename T1, typename T2>
+    constexpr const sf::Rect<T1>
+        AdjustPositionCopy(const sf::Rect<T1> & R, const sf::Vector2<T2> & ADJ_V)
+    {
+        const auto NEW_LEFT { static_cast<T1>(
+            static_cast<float>(R.left) + static_cast<float>(ADJ_V.x)) };
+
+        const auto NEW_TOP { static_cast<T1>(
+            static_cast<float>(R.top) + static_cast<float>(ADJ_V.y)) };
+
+        return sf::Rect<T1>(NEW_LEFT, NEW_TOP, R.width, R.height);
+    }
+
+    template <typename T1, typename T2>
+    constexpr void AdjustPosition(sf::Rect<T1> & r, const sf::Vector2<T2> & ADJ_V)
+    {
+        r = AdjustPositionCopy(r, ADJ_V);
+    }
+
+    template <typename T1, typename T2>
+    constexpr const sf::Rect<T1>
+        AdjustSizeCopy(const sf::Rect<T1> & R, const sf::Vector2<T2> & ADJ_V)
+    {
+        const auto NEW_WIDTH { static_cast<T1>(
+            static_cast<float>(R.width) + static_cast<float>(ADJ_V.x)) };
+
+        const auto NEW_HEIGHT { static_cast<T1>(
+            static_cast<float>(R.height) + static_cast<float>(ADJ_V.y)) };
+
+        return sf::Rect<T1>(R.left, R.top, NEW_WIDTH, NEW_HEIGHT);
+    }
+
+    template <typename T1, typename T2>
+    constexpr void AdjustSize(sf::Rect<T1> & r, const sf::Vector2<T2> & ADJ_V)
+    {
+        r = AdjustSizeCopy(r, ADJ_V);
+    }
+
+    template <typename T1, typename T2>
+    constexpr void Move(sf::Rect<T1> & r, const sf::Vector2<T2> & MOVE_V)
+    {
+        AdjustPosition(r, MOVE_V);
+    }
+
+    template <typename T1, typename T2>
+    constexpr const sf::Rect<T1> MoveCopy(const sf::Rect<T1> & R, const sf::Vector2<T2> & MOVE_V)
+    {
+        return AdjustPositionCopy(R, MOVE_V);
+    }
+
+    template <typename Position_t, typename Size_t>
+    constexpr const sf::Rect<Position_t>
+        MakeRect(const sf::Vector2<Position_t> & POS_V, const sf::Vector2<Size_t> & SIZE_V)
+    {
+        return sf::Rect<Position_t>(POS_V, sf::Vector2<Position_t>(SIZE_V));
+    }
+
+    template <typename T>
+    constexpr const sf::Rect<T> MakeRectWithPosition(const sf::Vector2<T> & POS_V)
+    {
+        return sf::Rect<T>(POS_V, sf::Vector2<T>());
+    }
+
+    template <typename T>
+    constexpr const sf::Rect<T> MakeRectWithSize(const sf::Vector2<T> & SIZE_V)
+    {
+        return sf::Rect<T>(sf::Vector2<T>(), SIZE_V);
+    }
 
     // returns true if either x or y is <= 0
     template <typename T>

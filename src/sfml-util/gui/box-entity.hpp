@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFML_UTIL_GUI_BOX_ENTITY_HPP_INCRUDED
-#define HEROESPATH_SFML_UTIL_GUI_BOX_ENTITY_HPP_INCRUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_BOX_ENTITY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_BOX_ENTITY_HPP_INCLUDED
 //
 // box-entity.hpp
 //
@@ -16,6 +16,7 @@
 #include "sfml-util/gui/image-entity.hpp"
 #include "sfml-util/sfml-util-sprite-texture.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <memory>
@@ -134,4 +135,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFML_UTIL_GUI_BOX_ENTITY_HPP_INCRUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_BOX_ENTITY_HPP_INCLUDED

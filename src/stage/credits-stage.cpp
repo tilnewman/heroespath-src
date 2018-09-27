@@ -106,9 +106,9 @@ namespace stage
             sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
         boxInfo.focus_colors = sfml_util::gui::FocusColors(
-            sfml_util::defaults::GrayLight,
+            sfml_util::color::GrayLight,
             sf::Color::Transparent,
-            sfml_util::defaults::GrayLight,
+            sfml_util::color::GrayLight,
             sf::Color::Transparent);
 
         boxUPtr_
@@ -137,14 +137,14 @@ namespace stage
         // establish baseline TextInfo objects
         sfml_util::gui::TextInfo creditTextInfoSmall(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             20,
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
 
         sfml_util::gui::TextInfo creditTextInfoLarge(
             "",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             24,
             sf::Color::White,
             sfml_util::Justified::Center);
@@ -165,10 +165,10 @@ namespace stage
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
-            "",
-            "Special thanks to Laurent Gomila for the Simple Fast Multimedia "
-            "Library used under the terms and conditions of the zlib/png "
-            "license.\nwww.opensource.org/licenses/zlib\n\nThis project came together quickly "
+            "1as asdf \n2 laskjdfh akjsfdh",
+            "1Special thanks to Laurent Gomila for the Simple Fast Multimedia Library used under "
+            "the terms and conditions of the zlib/png-"
+            "license.\nwww.opensource.org/licenses/zlib\n2\n3This project came together quickly "
             "thanks to the power and simplicity of this library.\n\nwww.sfml-dev.org",
             "media-images-logos-sfml",
             sfml_util::ScreenRatioToPixelsHoriz(0.146f)));
@@ -240,7 +240,7 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Neo Euler\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             "Hermann Zapf\nCopyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the "
             "SIL Open Font "
             "License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
@@ -248,14 +248,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Modern Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
+            sfml_util::GuiFont::DefaultBoldFlavor,
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Gentium Plus\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             "J.Victor Gaultney\nAnnie Olsen\nIska Routamaa\nBecca "
             "Hirsbrunner\nCopyright (c) SIL International, "
             "2003-2014\nwww.scripts.sil.org/Gentium\nUnder the "
@@ -264,14 +264,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Goudy Bookletter 1911\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SystemCondensed),
+            sfml_util::GuiFont::SystemCondensed,
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
         /*
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Quill Sword\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
+            sfml_util::GuiFont::Number,
             "by Daniel Zadorozny\n2015 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
@@ -279,14 +279,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Queen & Country\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::SignBoldShortWide),
+            sfml_util::GuiFont::SignBoldShortWide,
             "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.  "
             "If you like it,\nplease e-mail the author at iconian@aol.com."));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Valley Forge\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::System),
+            sfml_util::GuiFont::System,
             "by Daniel Zadorozny\n2008 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
@@ -294,14 +294,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Square Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DialogModern),
+            sfml_util::GuiFont::DialogModern,
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             trackingRect,
             "Font \"Mops Antiqua\"",
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DialogModern),
+            sfml_util::GuiFont::DialogModern,
             "Created by Uwe Borchert\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
         */

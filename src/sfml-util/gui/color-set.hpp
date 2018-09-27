@@ -9,13 +9,9 @@
 //
 // color-set.hpp
 //
-#include "sfml-util/sfml-util-vector-rect.hpp"
-
 #include <SFML/Graphics/Color.hpp>
 
-#include <memory>
 #include <string>
-#include <vector>
 
 namespace heroespath
 {

@@ -10,6 +10,7 @@
 // name-info.hpp
 //
 #include "misc/vector-map.hpp"
+#include "sfml-util/font-enum.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
 #include <string>
@@ -24,7 +25,7 @@ namespace creature
     // characteristics.
     class NameInfo
     {
-        using FontSizePair_t = std::pair<FontPtr_t, unsigned int>;
+        using FontSizePair_t = std::pair<sfml_util::GuiFont::Enum, unsigned int>;
         using FontSizeToWidthMap_t = misc::VectorMap<FontSizePair_t, float>;
 
     public:
@@ -37,15 +38,9 @@ namespace creature
 
         std::size_t MaxCharacterCount() const { return 13; }
 
-        float DefaultTextEntryBoxWidth() const
-        {
-            // The +1 is to accomodate the TextEntryBox's padding and margins
-            return Size(sfml_util::gui::TextInfo(
-                            LargestName() + LargestLetter(), DefaultFont(), DefaultSize()))
-                .x;
-        }
+        float DefaultTextEntryBoxWidth() const;
 
-        const FontPtr_t DefaultFont() const;
+        sfml_util::GuiFont::Enum DefaultFont() const;
 
         unsigned int DefaultSize() const;
 
@@ -64,25 +59,24 @@ namespace creature
         }
 
         const sfml_util::gui::TextInfo
-            MakeTextInfo(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
-        {
-            return sfml_util::gui::TextInfo(LargestName(), FONT_PTR, CHAR_SIZE);
-        }
+            MakeTextInfo(const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const;
 
         const sf::Vector2f Size() const { return Size(MakeTextInfo()); }
 
-        const sf::Vector2f Size(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        const sf::Vector2f
+            Size(const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const
         {
-            return Size(MakeTextInfo(FONT_PTR, CHAR_SIZE));
+            return Size(MakeTextInfo(FONT, CHAR_SIZE));
         }
 
         const sf::Vector2f Size(const sfml_util::gui::TextInfo & TEXT_INFO) const;
 
         const sf::Vector2f ScreenRatio() const { return ConvertSizeToScreenRatio(Size()); }
 
-        const sf::Vector2f ScreenRatio(const FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+        const sf::Vector2f
+            ScreenRatio(const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const
         {
-            return ConvertSizeToScreenRatio(Size(FONT_PTR, CHAR_SIZE));
+            return ConvertSizeToScreenRatio(Size(FONT, CHAR_SIZE));
         }
 
         const sf::Vector2f ScreenRatio(const sfml_util::gui::TextInfo & TEXT_INFO) const

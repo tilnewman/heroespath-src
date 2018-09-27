@@ -44,12 +44,11 @@ namespace popup
 
         const sfml_util::gui::TextInfo TITLE_TEXTINFO(
             popupInfo_.TitleText(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::DefaultBoldFlavor),
+            sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::defaults::GrayDarker,
-            sf::BlendAlpha,
-            sf::Text::Bold,
-            sfml_util::Justified::Center);
+            sfml_util::color::GrayDarker,
+            sfml_util::Justified::Center,
+            sf::Text::Bold);
 
         auto titleRegion { textRegion_ };
         titleRegion.height = 0.0f;
@@ -59,9 +58,9 @@ namespace popup
 
         const sfml_util::gui::TextInfo DESC_TEXTINFO(
             popupInfo_.DescText(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::defaults::GrayDarker,
+            sfml_util::color::GrayDarker,
             sfml_util::Justified::Center);
 
         auto descRegion { textRegion_ };

@@ -82,9 +82,9 @@ namespace stage
                 TestingStage::IMAGE_INSPECT_DIMMENSION_,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_);
 
-            text = sf::Text(
+            text = sfml_util::Text(
                 misc::filesystem::Filename(cached_texture_opt.value().Path()),
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 24);
 
             text.setFillColor(sf::Color::Red);
@@ -186,9 +186,9 @@ namespace stage
                 target.draw(VERTEX_ARRAY, STATES);
             }
 
-            for (const auto & SF_TEXT : waitingForKeyOrClick_ToDraw_Texts_)
+            for (const auto & TEXT : waitingForKeyOrClick_ToDraw_Texts_)
             {
-                target.draw(SF_TEXT, STATES);
+                target.draw(TEXT, STATES);
             }
         }
         else
@@ -386,6 +386,7 @@ namespace stage
 
         M_TESTING_STAGE_TEST(GameDataFile);
 
+        M_TESTING_STAGE_TEST_WAIT(SfTextLocalOffsetProblem);
         M_TESTING_STAGE_TEST_WAIT(GoldBar);
         M_TESTING_STAGE_TEST_WAIT(GoldBar2);
         M_TESTING_STAGE_TEST_WAIT(Border);
@@ -515,7 +516,7 @@ namespace stage
 
                 auto const LENGTH { nameInfo.Length(sfml_util::gui::TextInfo(
                     nameInfo.LargestName(),
-                    sfml_util::FontManager::Instance()->GetFont(FONT_ENUM),
+                    FONT_ENUM,
                     FONT_SIZE)) };
 
                 lengths.emplace_back(LENGTH);
@@ -1340,6 +1341,8 @@ namespace stage
         sfml_util::Footstep::Test();
         sfml_util::GuiFont::Test();
         sfml_util::ImageOpt::Test();
+        sfml_util::Justified::Test();
+        // sfml_util::text_render::engine::StopReason::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
         song::Songs::Test();
@@ -1361,7 +1364,7 @@ namespace stage
         if (fontIndex < sfml_util::GuiFont::Count)
         {
             auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
-            sfml_util::FontManager::Instance()->GetFont(FONT_ENUM);
+            sfml_util::Text text("asdf", FONT_ENUM, 30);
             ++fontIndex;
             return false;
         }
@@ -1427,9 +1430,9 @@ namespace stage
 
         {
             // find out how tall the text lines will be
-            sf::Text testText(
+            sfml_util::Text testText(
                 "M",
-                *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
@@ -1452,12 +1455,12 @@ namespace stage
                     ss << " " << rItr->second;
                 }
 
-                sf::Text text(
-                    sf::String(ss.str()),
-                    *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::Text text(
+                    ss.str(),
+                    sfml_util::GuiFont::Default,
                     sfml_util::FontManager::Instance()->Size_Normal());
 
-                sfml_util::SetTextPosition(text, 1.0f, posTop);
+                text.setPosition(1.0f, posTop);
 
                 target.draw(text, STATES);
 
@@ -1493,12 +1496,11 @@ namespace stage
 
                 if (willLowerText)
                 {
-                    sfml_util::SetTextPosition(
-                        packet.text, posX, posY + packet.text.getGlobalBounds().height);
+                    packet.text.setPosition(posX, posY + packet.text.getGlobalBounds().height);
                 }
                 else
                 {
-                    sfml_util::SetTextPosition(packet.text, posX, posY);
+                    packet.text.setPosition(posX, posY);
                 }
 
                 willLowerText = !willLowerText;
@@ -1762,7 +1764,7 @@ namespace stage
                         REGION_INITIAL,
                         1.0f,
                         sf::Color::White,
-                        sfml_util::defaults::None,
+                        sf::Color::Transparent,
                         WILL_GROW_BORDER));
                 }
 
@@ -1849,14 +1851,51 @@ namespace stage
 
     void TestingStage::AppendWaitTestTitle(const std::string & TITLE_STR)
     {
-        sf::Text text(
+        const sfml_util::gui::TextInfo TEXT_INFO(
             TITLE_STR,
-            *sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Larger());
 
-        text.setFillColor(sf::Color::White);
-        text.setPosition((StageRegionWidth() * 0.5f) - text.getGlobalBounds().width, 50.0f);
+        sfml_util::Text text(TEXT_INFO);
+
+        const sf::Vector2f POS_V((StageRegionWidth() * 0.5f) - text.getGlobalBounds().width, 50.0f);
+
         waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
+    }
+
+    bool TestingStage::SetupWaitTest_SfTextLocalOffsetProblem()
+    {
+        auto setupTextTest
+            = [&](const sf::FloatRect & REGION, const unsigned FONT_SIZE, const float SCALE) {
+                  waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
+                      sfml_util::MakeRectangleHollow(REGION, sf::Color::Green));
+
+                  const sfml_util::gui::TextInfo TEXT_INFO(
+                      "This is text.", sfml_util::GuiFont::SystemCondensed, FONT_SIZE);
+
+                  sfml_util::Text text(TEXT_INFO);
+                  text.setScale(sf::Vector2f(SCALE, SCALE));
+                  text.setPosition(sfml_util::Position(REGION));
+
+                  waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
+                      sfml_util::MakeRectangleHollow(text.getGlobalBounds(), sf::Color::Yellow));
+
+                  waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
+              };
+
+        const float OFFSET { 100.0f };
+        const sf::Vector2f OFFSET_V(OFFSET, OFFSET);
+
+        const float SIZE { 600.0f };
+        const sf::Vector2f SIZE_V(SIZE, (SIZE * 0.5f));
+
+        sf::FloatRect region(OFFSET_V, SIZE_V);
+        setupTextTest(region, 100, 1.0f);
+
+        region.left = sfml_util::ScreenRatioToPixelsHoriz(0.5f);
+        setupTextTest(region, 50, 5.0f);
+
+        return true;
     }
 
 } // namespace stage

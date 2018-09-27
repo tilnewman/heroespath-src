@@ -278,9 +278,9 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_NAME_TEXT_INFO(
             ss.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light);
+            sfml_util::color::Light);
 
         nameTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect());
@@ -290,9 +290,9 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_RANK_TEXT_INFO(
             rankSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light);
+            sfml_util::color::Light);
 
         rankTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sRank", CREATURE_RANK_TEXT_INFO, sf::FloatRect());
@@ -310,9 +310,9 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
             healthSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light);
+            sfml_util::color::Light);
 
         healthTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect());
@@ -322,19 +322,19 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
             armorRatingSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light);
+            sfml_util::color::Light);
 
         armorTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect());
 
         const sfml_util::gui::TextInfo CREATURE_DESC_TEXT_INFO(
             creaturePtr->Body().ToString(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light,
-            sf::BlendAlpha,
+            sfml_util::color::Light,
+            sfml_util::Justified::Left,
             sf::Text::Italic);
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
@@ -345,9 +345,9 @@ namespace combat
 
         const sfml_util::gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
             condSS.str(),
-            sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+            sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::defaults::Light);
+            sfml_util::color::Light);
 
         condTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect());
@@ -577,9 +577,9 @@ namespace combat
 
             const sfml_util::gui::TextInfo ITEM_NAME_TEXT_INFO(
                 nextItemTextUPtr->item_ptr->Name(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::defaults::Light,
+                sfml_util::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_NAME_RECT(
@@ -597,9 +597,9 @@ namespace combat
 
             const sfml_util::gui::TextInfo ITEM_DESC_TEXT_INFO(
                 nextItemTextUPtr->item_ptr->Desc(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::defaults::Light,
+                sfml_util::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_DESC_RECT(
@@ -644,9 +644,9 @@ namespace combat
 
             const sfml_util::gui::TextInfo INFO_TEXT_INFO(
                 infoSS.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::defaults::Light,
+                sfml_util::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect INFO_RECT(

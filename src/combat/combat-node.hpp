@@ -16,6 +16,7 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui/entity.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/text.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -43,7 +44,6 @@ namespace combat
         CombatNode & operator=(const CombatNode &) = delete;
         CombatNode & operator=(CombatNode &&) = delete;
 
-    public:
         explicit CombatNode(const creature::CreaturePtr_t CREATURE_PTR);
 
         virtual ~CombatNode();
@@ -103,7 +103,7 @@ namespace combat
         void SelectAnimUpdate(const float SLIDER_RATIO);
         void SelectAnimStop();
 
-        float GetNameWidth() const { return nameTextObj_.getGlobalBounds().width; }
+        float GetNameWidth() const { return nameText_.getGlobalBounds().width; }
 
         bool WillDraw() const { return willDraw_; }
         void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
@@ -152,8 +152,8 @@ namespace combat
         //
         creature::NameInfo creatureNameInfo_;
         bool isPlayer_;
-        sf::Text nameTextObj_;
-        sf::Text condTextObj_;
+        sfml_util::Text nameText_;
+        sfml_util::Text condText_;
         int blockingPos_;
         sfml_util::CachedTexture cachedTexture_;
         sf::Sprite sprite_;

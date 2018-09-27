@@ -20,6 +20,7 @@
 #include "sfml-util/sfml-util-rectangle-shape.hpp"
 #include "sfml-util/sfml-util-vertex.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/text.hpp"
 
 #include <boost/type_index.hpp>
 
@@ -88,7 +89,7 @@ namespace stage
 
         sfml_util::CachedTextureOpt_t cached_texture_opt;
         sf::Sprite sprite;
-        sf::Text text;
+        sfml_util::Text text;
     };
 
     // A Stage class that allows visualizing testing info
@@ -153,6 +154,7 @@ namespace stage
         void SetupWaitTest_GoldBar();
         void SetupWaitTest_GoldBar2();
         void SetupWaitTest_Border();
+        bool SetupWaitTest_SfTextLocalOffsetProblem();
 
         void ResetWaitingForKeyOrClick();
 
@@ -186,7 +188,7 @@ namespace stage
         std::vector<sfml_util::gui::Border> waitingForKeyOrClick_ToDraw_Borders_;
         std::vector<sf::RectangleShape> waitingForKeyOrClick_ToDraw_RectangleShapes_;
         std::vector<sf::VertexArray> waitingForKeyOrClick_ToDraw_VertexArrays_;
-        std::vector<sf::Text> waitingForKeyOrClick_ToDraw_Texts_;
+        std::vector<sfml_util::Text> waitingForKeyOrClick_ToDraw_Texts_;
     };
 
 } // namespace stage

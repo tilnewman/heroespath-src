@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMRUTIR_BOX_ENTITY_INFO_HPP_INCRUDED
-#define HEROESPATH_SFMRUTIR_BOX_ENTITY_INFO_HPP_INCRUDED
+#ifndef HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED
 //
 // box-entity-info.hpp
 //
@@ -16,6 +16,8 @@
 #include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/side-enum.hpp"
+
+#include <SFML/Graphics/Color.hpp>
 
 #include <memory>
 #include <string>
@@ -37,10 +39,11 @@ namespace sfml_util
             // a background that draws nothing
             BoxEntityInfo();
 
-            // simple solid color if COLOR_TO==defaults::None||COLOR_FROM, otherwise a gradient
+            // simple solid color if COLOR_TO==sf::Color::Transparent||COLOR_FROM, otherwise a
+            // gradient
             explicit BoxEntityInfo(
                 const sf::Color & COLOR_FROM,
-                const sf::Color & COLOR_TO = defaults::None,
+                const sf::Color & COLOR_TO = sf::Color::Transparent,
                 const Side::Enum SIDES_WITH_FROM_COLOR = Side::None,
                 const Corner::Enum CORNERS_WITH_FROM_COLOR = Corner::None);
 
@@ -49,7 +52,7 @@ namespace sfml_util
                 const bool WILL_GROW_BORDER_TO_CONTAIN_REGION,
                 const float LINE_THICKNESS = 0.0f,
                 const sf::Color & LINE_COLOR = sf::Color::White,
-                const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None);
+                const sf::Color & PAD_LINE_COLOR_ADJ = sf::Color::Transparent);
 
             // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
             // will be configured to repeat within the full inner region
@@ -71,10 +74,11 @@ namespace sfml_util
             BoxEntityInfo & operator=(const BoxEntityInfo &) = default;
             BoxEntityInfo & operator=(BoxEntityInfo &&) = default;
 
-            // simple solid color if COLOR_TO==defaults::None||COLOR_FROM, otherwise a gradient
+            // simple solid color if COLOR_TO==sf::Color::Transparent||COLOR_FROM, otherwise a
+            // gradient
             void SetupColor(
                 const sf::Color & COLOR_FROM,
-                const sf::Color & COLOR_TO = defaults::None,
+                const sf::Color & COLOR_TO = sf::Color::Transparent,
                 const Side::Enum SIDES_WITH_FROM_COLOR = Side::None,
                 const Corner::Enum CORNERS_WITH_FROM_COLOR = Corner::None);
 
@@ -83,7 +87,7 @@ namespace sfml_util
                 const bool WILL_GROW_BORDER_TO_CONTAIN_REGION,
                 const float LINE_THICKNESS = 0.0f,
                 const sf::Color & LINE_COLOR = sf::Color::White,
-                const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None);
+                const sf::Color & PAD_LINE_COLOR_ADJ = sf::Color::Transparent);
 
             // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
             // will be configured to repeat within the full inner region, if TARGET_WIDTH is <= zero
@@ -112,7 +116,7 @@ namespace sfml_util
 
             bool HasColorSolid() const
             {
-                return ((defaults::None != color_from) && (color_from == color_to));
+                return ((sf::Color::Transparent != color_from) && (color_from == color_to));
             }
 
             bool HasColorGradient() const
@@ -230,4 +234,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMRUTIR_BACKGROUND_ENTITY_INFO_HPP_INCRUDED
+#endif // HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED

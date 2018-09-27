@@ -11,12 +11,14 @@
 //
 #include "text-info.hpp"
 
-#include "misc/assertlogandthrow.hpp"
-#include "misc/platform.hpp"
-#include "misc/real.hpp"
+#include "misc/strings.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-blend-mode.hpp"
+#include "sfml-util/sfml-util-color.hpp"
+#include "sfml-util/sfml-util-font.hpp"
+#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfml-util/text.hpp"
 
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <tuple>
@@ -30,60 +32,37 @@ namespace sfml_util
 
         TextInfo::TextInfo()
             : text("")
-            , font_ptr_opt(boost::none)
-            , char_size(FontManager::Instance()->Size_Normal())
+            , font_letters(GuiFont::Count)
+            , font_numbers(GuiFont::Number)
+            , size(FontManager::Instance()->Size_Normal())
             , color(sf::Color::White)
-            , blend_mode(sf::BlendAlpha)
             , style(sf::Text::Style::Regular)
             , justified(Justified::Left)
-            , is_outline(false)
-            , outline_thickness(0.0f)
         {}
 
         TextInfo::TextInfo(
             const std::string & TEXT,
-            const FontPtrOpt_t & FONT_PTR_OPT,
-            const unsigned int CHAR_SIZE,
+            const GuiFont::Enum LETTERS_FONT,
+            const unsigned int SIZE,
             const sf::Color & COLOR,
-            const sf::BlendMode & BLEND_MODE,
-            const sf::Uint32 STYLE,
             const Justified::Enum JUSTIFIED,
-            const bool IS_OUTLINE_ONLY,
-            const float OUTLINE_THICKNESS)
+            const sf::Uint32 STYLE)
             : text(TEXT)
-            , font_ptr_opt(FONT_PTR_OPT)
-            , char_size(CHAR_SIZE)
+            , font_letters(LETTERS_FONT)
+            , font_numbers(GuiFont::Number)
+            , size(SIZE)
             , color(COLOR)
-            , blend_mode(BLEND_MODE)
             , style(STYLE)
             , justified(JUSTIFIED)
-            , is_outline(IS_OUTLINE_ONLY)
-            , outline_thickness(OUTLINE_THICKNESS)
-        {}
-
-        TextInfo::TextInfo(
-            const std::string & TEXT,
-            const FontPtr_t FONT_PTR,
-            const unsigned int CHAR_SIZE,
-            const sf::Color & COLOR,
-            const Justified::Enum JUSTIFIED)
-            : text(TEXT)
-            , font_ptr_opt(FONT_PTR)
-            , char_size(CHAR_SIZE)
-            , color(COLOR)
-            , blend_mode(sf::BlendAlpha)
-            , style(sf::Text::Style::Regular)
-            , justified(JUSTIFIED)
-            , is_outline(false)
-            , outline_thickness(0.0f)
         {}
 
         TextInfo::TextInfo(
             const TextInfo & TEXT_INFO_TO_COPY,
             const std::string & TEXT,
-            const ColorOpt_t & COLOR_OPT,
-            const unsigned CHAR_SIZE,
-            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
+            const sf::Color & COLOR,
+            const unsigned SIZE,
+            const GuiFont::Enum LETTERS_FONT,
+            const GuiFont::Enum NUMBERS_FONT)
             : TextInfo(TEXT_INFO_TO_COPY)
         {
             if (TEXT.empty() == false)
@@ -91,133 +70,154 @@ namespace sfml_util
                 text = TEXT;
             }
 
-            if (COLOR_OPT)
+            if (COLOR != sf::Color::Transparent)
             {
-                color = COLOR_OPT.value();
+                color = COLOR;
             }
 
-            if (CHAR_SIZE != 0)
+            if (SIZE != 0)
             {
-                char_size = CHAR_SIZE;
+                size = SIZE;
             }
 
-            if (NUMBERS_FONT_PTR_OPT)
+            if (LETTERS_FONT != GuiFont::Count)
             {
-                font_ptr_opt = NUMBERS_FONT_PTR_OPT;
+                font_letters = LETTERS_FONT;
+            }
+
+            if (NUMBERS_FONT != GuiFont::Count)
+            {
+                font_numbers = NUMBERS_FONT;
             }
         }
 
-        TextInfo::TextInfo(const TextInfo & TEXT_INFO_TO_COPY, const FontPtr_t NEW_FONT_PTR)
-            : TextInfo(TEXT_INFO_TO_COPY, TEXT_INFO_TO_COPY.text, boost::none, 0, NEW_FONT_PTR)
-        {}
-
-        void TextInfo::Apply(sf::Text & sfText, const FontPtrOpt_t & CUSTOM_FONT_PTR_OPT) const
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (text.empty() == false),
-                "sfml_util::gui::TextInfo::Apply() but text was empty.  " << *this);
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (char_size != 0),
-                "sfml_util::gui::TextInfo::Apply() but char_size was zero.  " << *this);
-
-            FontPtr_t fontPtrToUse = [&]() {
-                if (CUSTOM_FONT_PTR_OPT)
-                {
-                    return CUSTOM_FONT_PTR_OPT.value();
-                }
-                else
-                {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        (!!font_ptr_opt),
-                        "sfml_util::gui::TextInfo::Apply() but font_ptr_opt was boost::none.  "
-                            << *this);
-
-                    return font_ptr_opt.value();
-                }
-            }();
-
-            sfText.setString(text);
-            sfText.setFont(*fontPtrToUse);
-            sfText.setStyle(style);
-            sfText.setCharacterSize(char_size);
-
-            // linux SFML lib does not seem to support outline fonts...
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
-            text.setColor(TEXT_INFO.color);
-#else
-            if (is_outline)
-            {
-                sfText.setFillColor(sf::Color::Transparent);
-                sfText.setOutlineColor(color);
-                sfText.setOutlineThickness(outline_thickness);
-            }
-            else
-            {
-                sfText.setFillColor(color);
-            }
-#endif
-        }
-
-        const sf::Text TextInfo::Make() const
-        {
-            sf::Text t;
-            Apply(t);
-            return t;
-        }
+        // TextInfo::TextInfo(
+        //    const TextInfo & TEXT_INFO_TO_COPY,
+        //    const GuiFont::Enum NEW_LETTERS_FONT,
+        //    const GuiFont::Enum NEW_NUMBERS_FONT)
+        //    : TextInfo(
+        //          TEXT_INFO_TO_COPY,
+        //          "",
+        //          sf::Color::Transparent,
+        //          0,
+        //          NEW_LETTERS_FONT,
+        //          NEW_NUMBERS_FONT)
+        //{}
 
         const std::string TextInfo::ToString(
             const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
         {
             std::ostringstream ss;
 
-            if (IsValid() == false)
+            if (*this == TextInfo())
             {
-                ss << "INVALID" << SEPARATOR;
-            }
-
-            ss << std::quoted(text) << SEPARATOR;
-
-            if (font_ptr_opt)
-            {
-                ss << font_ptr_opt.value()->getInfo().family;
+                ss << "DEFAULT" << SEPARATOR << "INVALID" << SEPARATOR << "WONT_DRAW";
             }
             else
             {
-                ss << "NoFont";
-            }
+                if (WillDraw() == false)
+                {
+                    ss << "INVALID" << SEPARATOR << "WONT_DRAW";
+                }
+                else if (IsValid() == false)
+                {
+                    ss << "INVALID";
+                }
 
-            ss << SEPARATOR << "Size" << char_size
-               << sfml_util::ToString(color, misc::ToStringPrefix::SimpleName) << SEPARATOR
-               << sfml_util::ToString(blend_mode, misc::ToStringPrefix::SimpleName) << SEPARATOR;
+                ss << SEPARATOR;
+                if (text.empty())
+                {
+                    ss << "(invalid, text is empty)";
+                }
+                else
+                {
+                    ss << misc::MakeLoggableString(text);
+                }
 
-            auto styleToString = [&SEPARATOR](const sf::Uint32 STYLE) {
-                std::ostringstream oss;
+                ss << SEPARATOR;
+                if (GuiFont::IsValid(font_letters))
+                {
+                    ss << GuiFont::ToString(font_letters);
+                }
+                else
+                {
+                    ss << "(invalid letter_font=" << GuiFont::ToUnderlyingType(font_letters) << ")";
+                }
 
-                if (STYLE & sf::Text::Style::Regular)
-                    oss << ((oss.str().empty()) ? "" : SEPARATOR) << "Regular";
+                if (GuiFont::Number != font_numbers)
+                {
+                    ss << SEPARATOR;
+                    if (GuiFont::IsValid(font_numbers))
+                    {
+                        ss << GuiFont::ToString(font_numbers);
+                    }
+                    else
+                    {
+                        ss << "(invalid number_font=" << GuiFont::ToUnderlyingType(font_numbers)
+                           << ")";
+                    }
+                }
 
-                if (STYLE & sf::Text::Style::Bold)
-                    oss << ((oss.str().empty()) ? "" : SEPARATOR) << "Bold";
+                ss << SEPARATOR << size;
+                ss << SEPARATOR << sfml_util::ToString(color, misc::ToStringPrefix::SimpleName);
 
-                if (STYLE & sf::Text::Style::Italic)
-                    oss << ((oss.str().empty()) ? "" : SEPARATOR) << "Italic";
+                ss << SEPARATOR;
+                if (sfml_util::Justified::IsValid(justified))
+                {
+                    ss << sfml_util::Justified::ToString(justified);
+                }
+                else
+                {
+                    ss << "(invalid justify=" << Justified::ToUnderlyingType(justified) << ")";
+                }
 
-                if (STYLE & sf::Text::Style::Underlined)
-                    oss << ((oss.str().empty()) ? "" : SEPARATOR) << "Underlined";
+                if (0 != style)
+                {
+                    auto separatorIfNotEmpty = [&](std::ostringstream & strstrm) -> std::string {
+                        if (strstrm.str().empty())
+                        {
+                            return "";
+                        }
+                        else
+                        {
+                            return SEPARATOR;
+                        }
+                    };
 
-                if (STYLE & sf::Text::Style::StrikeThrough)
-                    oss << ((oss.str().empty()) ? "" : SEPARATOR) << "StrikeThrough";
+                    std::ostringstream oss;
 
-                return oss.str();
-            };
+                    // if (STYLE & sf::Text::Style::Regular)
+                    //     oss << "Regular";
 
-            ss << styleToString(style) << SEPARATOR << sfml_util::Justified::ToString(justified)
-               << SEPARATOR;
+                    if (style & sf::Text::Style::Bold)
+                    {
+                        oss << "Bold";
+                    }
 
-            if (is_outline)
-            {
-                ss << "Outline" << outline_thickness << SEPARATOR;
+                    if (style & sf::Text::Style::Italic)
+                    {
+                        oss << separatorIfNotEmpty(oss) << "Italic";
+                    }
+
+                    if (style & sf::Text::Style::Underlined)
+                    {
+                        oss << separatorIfNotEmpty(oss) << "Underlined";
+                    }
+
+                    if (style & sf::Text::Style::StrikeThrough)
+                    {
+                        oss << separatorIfNotEmpty(oss) << "StrikeThrough";
+                    }
+
+                    if (oss.str().empty())
+                    {
+                        ss << "(invalid sf::Style=" << style << ")";
+                    }
+                    else
+                    {
+                        ss << oss.str();
+                    }
+                }
             }
 
             auto const PARTS_STR { (
@@ -237,52 +237,41 @@ namespace sfml_util
         bool operator<(const TextInfo & L, const TextInfo & R)
         {
             return std::tie(
-                       L.font_ptr_opt,
-                       L.char_size,
-                       L.style,
+                       L.font_letters,
+                       L.font_numbers,
                        L.justified,
-                       L.is_outline,
-                       L.outline_thickness,
+                       L.style,
+                       L.size,
                        L.color,
-                       L.blend_mode,
                        L.text)
                 < std::tie(
-                       R.font_ptr_opt,
-                       R.char_size,
-                       R.style,
+                       R.font_letters,
+                       R.font_numbers,
                        R.justified,
-                       R.is_outline,
-                       R.outline_thickness,
+                       R.style,
+                       R.size,
                        R.color,
-                       R.blend_mode,
                        R.text);
         }
 
         bool operator==(const TextInfo & L, const TextInfo & R)
         {
-            if (misc::IsRealClose(L.outline_thickness, R.outline_thickness) == false)
-            {
-                return false;
-            }
-
             return std::tie(
-                       L.font_ptr_opt,
-                       L.char_size,
+                       L.size,
+                       L.text,
+                       L.font_letters,
                        L.color,
-                       L.blend_mode,
-                       L.style,
                        L.justified,
-                       L.is_outline,
-                       L.text)
+                       L.font_numbers,
+                       L.style)
                 == std::tie(
-                       R.font_ptr_opt,
-                       R.char_size,
+                       R.size,
+                       R.text,
+                       R.font_letters,
                        R.color,
-                       R.blend_mode,
-                       R.style,
                        R.justified,
-                       R.is_outline,
-                       R.text);
+                       R.font_numbers,
+                       R.style);
         }
 
     } // namespace gui

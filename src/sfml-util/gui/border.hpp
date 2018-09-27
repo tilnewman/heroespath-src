@@ -14,7 +14,6 @@
 #include "sfml-util/gui/gold-bar.hpp"
 #include "sfml-util/sfml-util-rectangle-shape.hpp"
 
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 
 #include <memory>
@@ -38,7 +37,7 @@ namespace sfml_util
                 const sf::FloatRect & REGION = sf::FloatRect(),
                 const float LINE_THICKNESS = 1.0f,
                 const sf::Color & LINE_COLOR = sf::Color::White,
-                const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None,
+                const sf::Color & PAD_LINE_COLOR_ADJ = sf::Color::Transparent,
                 const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
             // use to create a border of gold bars
@@ -59,7 +58,7 @@ namespace sfml_util
                 const sf::FloatRect & REGION,
                 const float LINE_THICKNESS,
                 const sf::Color & LINE_COLOR = sf::Color::White,
-                const sf::Color & PAD_LINE_COLOR_ADJ = defaults::None,
+                const sf::Color & PAD_LINE_COLOR_ADJ = sf::Color::Transparent,
                 const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
             // use to create a border of gold bars

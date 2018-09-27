@@ -16,8 +16,8 @@
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfml-util/text.hpp"
 
-#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
 #include <memory>
@@ -137,8 +137,8 @@ namespace stage
         std::vector<sf::FloatRect> fullRegions_;
         std::vector<sf::FloatRect> labelRegions_;
         std::vector<sf::FloatRect> numberRegions_;
-        std::vector<sf::Text> textLabels_;
-        std::vector<sf::Text> textValues_;
+        std::vector<sfml_util::Text> textLabels_;
+        std::vector<sfml_util::Text> textValues_;
         sf::VertexArray vertexArray_;
         creature::Traits::Enum heldDown_;
         creature::StatSet baseSet_;

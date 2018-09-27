@@ -64,7 +64,7 @@ namespace interact
             ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::defaults::GrayDark,
+            sfml_util::color::GrayDark,
             sfml_util::Justified::Left);
     }
 

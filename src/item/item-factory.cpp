@@ -39,7 +39,7 @@ namespace item
 
     bool ItemFactory::Test() const
     {
-        static auto didPostInitial{ false };
+        static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
@@ -50,7 +50,7 @@ namespace item
             return false;
         }
 
-        static auto didPostItemProfileCreationStart{ false };
+        static auto didPostItemProfileCreationStart { false };
         if (false == didPostItemProfileCreationStart)
         {
             game::LoopManager::Instance()->TestingStrAppend(
@@ -61,7 +61,7 @@ namespace item
 
         static item::ItemProfileVec_t profiles;
 
-        static auto hasCreatedAllProfilesVector{ false };
+        static auto hasCreatedAllProfilesVector { false };
         if (false == hasCreatedAllProfilesVector)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -95,7 +95,7 @@ namespace item
             hasCreatedAllProfilesVector = true;
         }
 
-        static auto hasTestedForDuplicates{ false };
+        static auto hasTestedForDuplicates { false };
         if (false == hasTestedForDuplicates)
         {
             game::LoopManager::Instance()->TestingStrAppend(
@@ -104,18 +104,15 @@ namespace item
 
             std::sort(std::begin(profiles), std::end(profiles));
 
-            auto const FIRST_DUPLICATE_PROFILE_ITER{ std::unique(
-                std::begin(profiles), std::end(profiles)) };
-
             item::ItemProfileVec_t duplicateProfiles;
             std::copy(
-                FIRST_DUPLICATE_PROFILE_ITER,
+                std::unique(std::begin(profiles), std::end(profiles)),
                 std::end(profiles),
                 std::back_inserter(duplicateProfiles));
 
             if (duplicateProfiles.empty() == false)
             {
-                const std::size_t DUPLICATE_COUNT_TO_DISPLAY{ 10 };
+                const std::size_t DUPLICATE_COUNT_TO_DISPLAY { 10 };
 
                 M_HP_LOG_ERR(
                     "item::ItemFactory::Test() Normal Profiles Duplicate Test FAILED.  "
@@ -147,7 +144,7 @@ namespace item
         static misc::VectorMap<std::string, item::ItemProfile> imageFilenameProfileMap;
         imageFilenameProfileMap.Reserve(600); // there were 556 item images as of 2018-5-1
 
-        static auto hasCreatedAndTestedAll{ false };
+        static auto hasCreatedAndTestedAll { false };
         if (false == hasCreatedAndTestedAll)
         {
             game::LoopManager::Instance()->TestingStrAppend(
@@ -155,7 +152,7 @@ namespace item
 
             for (auto const & PROFILE : profiles)
             {
-                auto itemPtr{ Make(PROFILE) };
+                auto itemPtr { Make(PROFILE) };
                 TestItem(itemPtr, PROFILE);
                 imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImageFilename(), PROFILE);
                 ItemWarehouse::Access().Free(itemPtr);
@@ -168,7 +165,7 @@ namespace item
             return false;
         }
 
-        static auto didTestImages{ false };
+        static auto didTestImages { false };
         if (false == didTestImages)
         {
             std::ostringstream ss;
@@ -181,7 +178,7 @@ namespace item
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
-                auto const DOES_FILE_EXIST{ itemImageLoader.DoesFileExist(
+                auto const DOES_FILE_EXIST { itemImageLoader.DoesFileExist(
                     FILENAME_PROFILE_PAIR.first) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
@@ -199,7 +196,7 @@ namespace item
             return false;
         }
 
-        static auto didLogRandomItemsForNameAndDescriptionCheck{ false };
+        static auto didLogRandomItemsForNameAndDescriptionCheck { false };
         if (false == didLogRandomItemsForNameAndDescriptionCheck)
         {
             didLogRandomItemsForNameAndDescriptionCheck = true;
@@ -208,9 +205,9 @@ namespace item
             randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ Random Item Names and Descriptions To "
                                  "Verify ~~~~~~~~~~~~~~~~~~~~";
 
-            auto appendProfileNamesIf{ [&](auto ifLambda,
-                                           const std::string & CATEGORY_NAME = "",
-                                           const std::size_t ORIG_COUNT_TO_DISPLAY = 10) {
+            auto appendProfileNamesIf { [&](auto ifLambda,
+                                            const std::string & CATEGORY_NAME = "",
+                                            const std::size_t ORIG_COUNT_TO_DISPLAY = 10) {
                 ItemProfileVec_t tempProfiles;
                 tempProfiles.reserve(50000);
 
@@ -222,7 +219,7 @@ namespace item
                     }
                 }
 
-                auto const ACTUAL_COUNT_TO_DISPLAY{ (
+                auto const ACTUAL_COUNT_TO_DISPLAY { (
                     (ORIG_COUNT_TO_DISPLAY == 0) ? tempProfiles.size() : ORIG_COUNT_TO_DISPLAY) };
 
                 if (ACTUAL_COUNT_TO_DISPLAY > 1)
@@ -237,8 +234,8 @@ namespace item
 
                 for (std::size_t i(0); i < ACTUAL_COUNT_TO_DISPLAY; ++i)
                 {
-                    auto const & PROFILE{ misc::Vector::SelectRandom(tempProfiles) };
-                    auto itemPtr{ Make(PROFILE) };
+                    auto const & PROFILE { misc::Vector::SelectRandom(tempProfiles) };
+                    auto itemPtr { Make(PROFILE) };
 
                     randNameAndDescSS << "\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
                                       << itemPtr->Desc() << "\"\n\tItem={" << itemPtr->ToString()
@@ -374,7 +371,7 @@ namespace item
             M_HP_LOG_DBG(randNameAndDescSS.str());
         }
 
-        static auto didPostFinal{ false };
+        static auto didPostFinal { false };
         if (false == didPostFinal)
         {
             didPostFinal = true;
@@ -390,7 +387,7 @@ namespace item
 
     void ItemFactory::TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE) const
     {
-        auto makeErrorReportPrefix{ [&]() {
+        auto makeErrorReportPrefix { [&]() {
             std::ostringstream ss;
 
             ss << std::boolalpha << "item::ItemFactory::TestItem(\nitem={" << ITEM_PTR->ToString()
@@ -502,7 +499,7 @@ namespace item
                     << ITEM_PTR->IsArmor() << ") or misc_type(" << ITEM_PTR->IsMisc() << ").");
         }
 
-        auto const SUMMON_INFO{ ITEM_PTR->SummonInfo() };
+        auto const SUMMON_INFO { ITEM_PTR->SummonInfo() };
 
         // all summoning items are also misc items
         if (SUMMON_INFO.CanSummon())
@@ -591,7 +588,7 @@ namespace item
 
             if (ITEM_PTR->ArmorType() != armor_type::Skin)
             {
-                auto const IS_SPECIFIC_ARMOR_TYPE{ (
+                auto const IS_SPECIFIC_ARMOR_TYPE { (
                     (ITEM_PTR->ArmorType() == armor_type::Covering)
                     || (ITEM_PTR->ArmorType() == armor_type::Helm)
                     || (ITEM_PTR->ArmorType() == armor_type::Shield)) };
@@ -679,16 +676,16 @@ namespace item
                 << armor_type::ToString(ITEM_PROFILE.ArmorType())
                 << " but item=" << armor_type::ToString(ITEM_PTR->ArmorType()) << ".");
 
-        const bool IS_ITEM_EQUIPPABLE{ (ITEM_PTR->Category() & category::Equippable) > 0 };
+        const bool IS_ITEM_EQUIPPABLE { (ITEM_PTR->Category() & category::Equippable) > 0 };
 
         if (IS_ITEM_EQUIPPABLE)
         {
-            auto const IS_WEARABLE{ (ITEM_PTR->Category() & category::Wearable) > 0 };
-            auto const IS_ONE_HANDED{ (ITEM_PTR->Category() & category::OneHanded) > 0 };
-            auto const IS_TWO_HANDED{ (ITEM_PTR->Category() & category::TwoHanded) > 0 };
+            auto const IS_WEARABLE { (ITEM_PTR->Category() & category::Wearable) > 0 };
+            auto const IS_ONE_HANDED { (ITEM_PTR->Category() & category::OneHanded) > 0 };
+            auto const IS_TWO_HANDED { (ITEM_PTR->Category() & category::TwoHanded) > 0 };
 
-            auto const EQUIP_TYPE_COUNT{ ((IS_WEARABLE) ? 1 : 0) + ((IS_ONE_HANDED) ? 1 : 0)
-                                         + ((IS_TWO_HANDED) ? 1 : 0) };
+            auto const EQUIP_TYPE_COUNT { ((IS_WEARABLE) ? 1 : 0) + ((IS_ONE_HANDED) ? 1 : 0)
+                                          + ((IS_TWO_HANDED) ? 1 : 0) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (EQUIP_TYPE_COUNT == 1),
@@ -715,7 +712,7 @@ namespace item
 
         if (ITEM_PTR->IsMisc())
         {
-            const bool IS_MISCTYPE_EQUIPPABLE{
+            const bool IS_MISCTYPE_EQUIPPABLE {
                 (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equippable) > 0
             };
 
@@ -747,12 +744,12 @@ namespace item
                     << " but ITEM_PTR->IsArmor()=" << ITEM_PTR->IsArmor()
                     << " -these should match.");
 
-            auto const IS_QUEST{ misc_type::IsQuestItem(ITEM_PTR->MiscType()) };
-            auto const IS_UNIQUE{ misc_type::IsUnique(ITEM_PTR->MiscType()) };
-            auto const IS_STANDALONE{ misc_type::IsStandalone(ITEM_PTR->MiscType()) };
+            auto const IS_QUEST { misc_type::IsQuestItem(ITEM_PTR->MiscType()) };
+            auto const IS_UNIQUE { misc_type::IsUnique(ITEM_PTR->MiscType()) };
+            auto const IS_STANDALONE { misc_type::IsStandalone(ITEM_PTR->MiscType()) };
 
-            auto const MISC_CATEGORY_COUNT{ ((IS_QUEST) ? 1 : 0) + ((IS_UNIQUE) ? 1 : 0)
-                                            + ((IS_STANDALONE) ? 1 : 0) };
+            auto const MISC_CATEGORY_COUNT { ((IS_QUEST) ? 1 : 0) + ((IS_UNIQUE) ? 1 : 0)
+                                             + ((IS_STANDALONE) ? 1 : 0) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (MISC_CATEGORY_COUNT == 1),
@@ -769,8 +766,8 @@ namespace item
                 (ITEM_PTR->WeaponInfo().IsTypeValid()),
                 makeErrorReportPrefix() << "IsWeapon() but WeaponInfo().IsValid()==false.");
 
-            int typeCounter{ 0 };
-            auto incrementIf{ [&](const bool WILL_INCREMENT) {
+            int typeCounter { 0 };
+            auto incrementIf { [&](const bool WILL_INCREMENT) {
                 if (WILL_INCREMENT)
                 {
                     ++typeCounter;
@@ -804,9 +801,9 @@ namespace item
                     << ".");
         }
 
-        auto const IS_MISC{ ITEM_PTR->IsMisc() };
-        auto const IS_NONMISC_WEAPON{ ITEM_PTR->IsWeapon() && (ITEM_PTR->IsMisc() == false) };
-        auto const IS_NONMISC_ARMOR{ ITEM_PTR->IsArmor() && (ITEM_PTR->IsMisc() == false) };
+        auto const IS_MISC { ITEM_PTR->IsMisc() };
+        auto const IS_NONMISC_WEAPON { ITEM_PTR->IsWeapon() && (ITEM_PTR->IsMisc() == false) };
+        auto const IS_NONMISC_ARMOR { ITEM_PTR->IsArmor() && (ITEM_PTR->IsMisc() == false) };
 
         if (IS_MISC)
         {
@@ -887,9 +884,9 @@ namespace item
 
     const ItemPtr_t ItemFactory::MakeArmor(const ItemProfile & PROFILE) const
     {
-        auto const & ARMOR_TYPE_WRAPPER{ PROFILE.ArmorInfo() };
+        auto const & ARMOR_TYPE_WRAPPER { PROFILE.ArmorInfo() };
 
-        auto const ARMOR_DETAILS{ armor::ArmorDetailLoader::LookupArmorDetails(
+        auto const ARMOR_DETAILS { armor::ArmorDetailLoader::LookupArmorDetails(
             ARMOR_TYPE_WRAPPER.DetailsKeyName()) };
 
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
@@ -914,7 +911,7 @@ namespace item
         const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR) const
     {
         // TODO move to MaterialFactory
-        auto const MATERIALS_PAIR{ material::SkinMaterial(CREATURE_PTR->Race()) };
+        auto const MATERIALS_PAIR { material::SkinMaterial(CREATURE_PTR->Race()) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((MATERIALS_PAIR.first != material::Count)
@@ -933,13 +930,13 @@ namespace item
                         : material::ToString(MATERIALS_PAIR.second))
                 << ".");
 
-        const armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER{ BODY_PART };
+        const armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER { BODY_PART };
 
-        auto const ARMOR_RATING{ Armor_t::Make(
+        auto const ARMOR_RATING { Armor_t::Make(
             material::ArmorRatingBonusPri(MATERIALS_PAIR.first).As<int>()
             + CREATURE_PTR->Rank().As<int>()) };
 
-        auto const WEIGHT{ Weight_t::Make(
+        auto const WEIGHT { Weight_t::Make(
             10.0f * material::WeightMult(MATERIALS_PAIR.first, MATERIALS_PAIR.second)) };
 
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
@@ -961,9 +958,9 @@ namespace item
 
     const ItemPtr_t ItemFactory::MakeWeapon(const ItemProfile & PROFILE) const
     {
-        auto const & WEAPON_TYPE_WRAPPER{ PROFILE.WeaponInfo() };
+        auto const & WEAPON_TYPE_WRAPPER { PROFILE.WeaponInfo() };
 
-        auto const WEAPON_DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+        auto const WEAPON_DETAILS { weapon::WeaponDetailLoader::LookupWeaponDetails(
             WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
 
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
@@ -1000,16 +997,17 @@ namespace item
                        "Firebrand.");
         }
 
-        auto const WEAPON_DETAILS_NAME{ (
+        auto const WEAPON_DETAILS_NAME { (
             (body_part::Breath == BODY_PART) ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
                                                 + creature::role::ToString(CREATURE_PTR->Role()))
                                              : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
 
-        const weapon::WeaponDetails WEAPON_DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
-            WEAPON_DETAILS_NAME) };
+        const weapon::WeaponDetails WEAPON_DETAILS {
+            weapon::WeaponDetailLoader::LookupWeaponDetails(WEAPON_DETAILS_NAME)
+        };
 
         // TODO move into MaterialsFactory
-        auto const MATERIALS{ [BODY_PART]() {
+        auto const MATERIALS { [BODY_PART]() {
             if (BODY_PART == body_part::Bite)
             {
                 return std::make_pair(material::Tooth, material::Nothing);
@@ -1074,13 +1072,13 @@ namespace item
     Coin_t ItemFactory::CalculatePrice(
         const ItemProfile & PROFILE, const Coin_t BASE_PRICE_PARAM) const
     {
-        auto const BASE_PRICE_FINAL{ (
+        auto const BASE_PRICE_FINAL { (
             (BASE_PRICE_PARAM > 0_coin) ? BASE_PRICE_PARAM
                                         : TreasureScoreToCoins(PROFILE.TreasureScore())) };
 
-        Coin_t price{ BASE_PRICE_FINAL
-                      + material::PriceAdj(
-                            PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
+        Coin_t price { BASE_PRICE_FINAL
+                       + material::PriceAdj(
+                             PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
 
         if (PROFILE.IsPixie())
         {
@@ -1093,7 +1091,7 @@ namespace item
     Weight_t ItemFactory::CalculateWeight(
         const ItemProfile & PROFILE, const Weight_t BASE_WEIGHT_PARAM) const
     {
-        auto weight{ (
+        auto weight { (
             (BASE_WEIGHT_PARAM > 0_weight) ? BASE_WEIGHT_PARAM
                                            : misc_type::Weight(PROFILE.MiscType())) };
 

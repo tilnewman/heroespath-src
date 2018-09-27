@@ -12,8 +12,6 @@
 #include "misc/strings.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
 
-#include <SFML/Graphics/Text.hpp>
-
 #include <tuple>
 
 namespace sf

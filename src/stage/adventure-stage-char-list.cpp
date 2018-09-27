@@ -25,6 +25,8 @@
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-vertex.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include <algorithm>
 
 namespace heroespath
@@ -134,7 +136,7 @@ namespace stage
         {
             const sfml_util::gui::TextInfo TEXT_INFO {
                 CHARACTER_PTR->Name(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Large(),
                 FadedDarkColor_Text()
             };
@@ -169,7 +171,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
+                sfml_util::GuiFont::Number,
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -205,7 +207,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 ss.str(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Number),
+                sfml_util::GuiFont::Number,
                 sfml_util::FontManager::Instance()->Size_Smallish(),
                 FadedDarkColor_Text()
             };
@@ -240,7 +242,7 @@ namespace stage
 
             const sfml_util::gui::TextInfo TEXT_INFO {
                 CHARACTER_PTR->ConditionNames(),
-                sfml_util::FontManager::Instance()->GetFont(sfml_util::GuiFont::Default),
+                sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Normal(),
                 FadedDarkColor_Text()
             };
@@ -673,21 +675,21 @@ namespace stage
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const
     {
-        auto darkColor { sfml_util::defaults::GrayDarker };
+        auto darkColor { sfml_util::color::GrayDarker };
         darkColor.a = ALPHA_FOR_LINES_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Text() const
     {
-        auto darkColor { sfml_util::defaults::GrayDarker };
+        auto darkColor { sfml_util::color::GrayDarker };
         darkColor.a = ALPHA_FOR_TEXT_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_CharacterImages() const
     {
-        auto darkColor { sfml_util::defaults::GrayDarker };
+        auto darkColor { sfml_util::color::GrayDarker };
         darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
         return darkColor;
     }

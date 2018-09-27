@@ -14,13 +14,13 @@
 namespace sf
 {
 class Sprite;
-class Text;
 } // namespace sf
 
 namespace heroespath
 {
 namespace sfml_util
 {
+    class Text;
 
     template <typename T>
     constexpr const sf::Vector2<T> Position(const sf::Rect<T> & R)
@@ -29,7 +29,7 @@ namespace sfml_util
     }
 
     const sf::Vector2f Position(const sf::Sprite &);
-    const sf::Vector2f Position(const sf::Text &);
+    const sf::Vector2f Position(const Text &);
 
     template <typename T>
     constexpr T Left(const sf::Rect<T> & RECT)
@@ -38,7 +38,7 @@ namespace sfml_util
     }
 
     float Left(const sf::Sprite &);
-    float Left(const sf::Text &);
+    float Left(const Text &);
 
     template <typename T>
     constexpr T Right(const sf::Rect<T> & RECT)
@@ -47,7 +47,7 @@ namespace sfml_util
     }
 
     float Right(const sf::Sprite &);
-    float Right(const sf::Text &);
+    float Right(const Text &);
 
     template <typename T>
     constexpr T Top(const sf::Rect<T> & RECT)
@@ -56,7 +56,7 @@ namespace sfml_util
     }
 
     float Top(const sf::Sprite &);
-    float Top(const sf::Text &);
+    float Top(const Text &);
 
     template <typename T>
     constexpr T Bottom(const sf::Rect<T> & RECT)
@@ -65,17 +65,12 @@ namespace sfml_util
     }
 
     float Bottom(const sf::Sprite &);
-    float Bottom(const sf::Text &);
+    float Bottom(const Text &);
 
-    // sf::Text objects typically have non-zero localBound positions that must be corrected to scale
-    // and then used when when calling sf::Text::setPosition().  The actual/final/corrected position
-    // is returned.
-    const sf::Vector2f SetTextPosition(sf::Text & sfText, const sf::Vector2f & NEW_POS_V);
-
-    inline const sf::Vector2f
-        SetTextPosition(sf::Text & sfText, const float POS_LEFT, const float POS_TOP)
+    template <typename T>
+    const sf::Vector2<T> BottomRight(const sf::Rect<T> & R)
     {
-        return SetTextPosition(sfText, sf::Vector2f(POS_LEFT, POS_TOP));
+        return sf::Vector2<T>(Right(R), Bottom(R));
     }
 
 } // namespace sfml_util

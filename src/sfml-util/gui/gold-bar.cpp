@@ -172,7 +172,7 @@ namespace sfml_util
             }
             else
             {
-                return defaults::None;
+                return sf::Color::Transparent;
             }
         }
 

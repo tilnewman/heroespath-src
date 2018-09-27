@@ -15,6 +15,8 @@
 #include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sfml-util-vertex.hpp"
 
+#include <SFML/Graphics/Texture.hpp>
+
 namespace heroespath
 {
 namespace sfml_util
@@ -101,7 +103,7 @@ namespace sfml_util
     {
         if (sprites_.empty())
         {
-            return defaults::None;
+            return sf::Color::Transparent;
         }
         else
         {
