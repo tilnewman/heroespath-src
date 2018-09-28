@@ -17,7 +17,7 @@
 #include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/text-rendering.hpp"
+#include "sfml-util/text-renderer.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -195,7 +195,7 @@ namespace sfml_util
 
                 if (!renderTextureUPtr)
                 {
-                    const auto RENDER_RESULT { text_render::Render(
+                    const auto RENDER_RESULT { TextRenderer::ToTexture(
                         TEXT_INFO, finalRegion, renderTextureUPtr, finalRegion) };
 
                     if ((RENDER_RESULT == false) || !renderTextureUPtr)

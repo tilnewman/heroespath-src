@@ -17,6 +17,7 @@
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/sfml-util-size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -24,9 +25,7 @@ namespace stage
 {
 
     Credit::Credit(
-        sf::FloatRect & trackingRect,
-        const std::string & TITLE_TEXT,
-        const std::string & CONTENT_TEXT)
+        const float MAX_WIDTH, const std::string & TITLE_TEXT, const std::string & CONTENT_TEXT)
         : titleTextUPtr_()
         , contentTextUPtr_()
         , mediaType_(MediaType::Text)
@@ -34,9 +33,10 @@ namespace stage
         , sprite_()
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , region_()
     {
         Setup(
-            trackingRect,
+            MAX_WIDTH,
             TITLE_TEXT,
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -45,7 +45,7 @@ namespace stage
     }
 
     Credit::Credit(
-        sf::FloatRect & trackingRect,
+        const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
         const sfml_util::Animations::Enum ANIM_ENUM,
@@ -58,9 +58,10 @@ namespace stage
         , sprite_()
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , region_()
     {
         Setup(
-            trackingRect,
+            MAX_WIDTH,
             TITLE_TEXT,
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -72,7 +73,7 @@ namespace stage
     }
 
     Credit::Credit(
-        sf::FloatRect & trackingRect,
+        const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
         const std::string & IMAGE_PATH_KEY,
@@ -84,9 +85,10 @@ namespace stage
         , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , region_()
     {
         Setup(
-            trackingRect,
+            MAX_WIDTH,
             TITLE_TEXT,
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -96,7 +98,7 @@ namespace stage
     }
 
     Credit::Credit(
-        sf::FloatRect & trackingRect,
+        const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
         const sfml_util::GuiFont::Enum FONT,
         const std::string & CONTENT_TEXT)
@@ -107,9 +109,10 @@ namespace stage
         , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
         , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , region_()
     {
         Setup(
-            trackingRect,
+            MAX_WIDTH,
             TITLE_TEXT,
             FONT,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -119,7 +122,7 @@ namespace stage
     }
 
     void Credit::Setup(
-        sf::FloatRect & trackingRect,
+        const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
         const sfml_util::GuiFont::Enum TITLE_FONT,
         const unsigned int TITLE_FONT_SIZE,
@@ -129,25 +132,13 @@ namespace stage
         const sfml_util::Animations::Enum ANIM_ENUM,
         const float ANIM_FRAME_TIME_SEC)
     {
-        const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
-
         if (MEDIA_TYPE == MediaType::Image)
         {
             auto const SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
-
             sprite_.setScale(SCALE, SCALE);
 
-            auto const POS_LEFT { (trackingRect.left + (trackingRect.width * 0.5f))
-                                  - (sprite_.getGlobalBounds().width * 0.5f) };
-
-            auto const TOP_PAD { sfml_util::ScreenRatioToPixelsVert(0.0333f) };
-
-            auto const POS_TOP { (trackingRect.top + (trackingRect.height * 0.5f))
-                                 - (sprite_.getGlobalBounds().height * 0.5f) + TOP_PAD };
-
-            sprite_.setPosition(POS_LEFT, POS_TOP);
-
-            trackingRect.top = sfml_util::Bottom(sprite_) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER;
+            sprite_.setPosition(
+                sfml_util::DisplayCenterHoriz(sprite_.getGlobalBounds().width), 0.0f);
         }
         else if (MEDIA_TYPE == MediaType::Anim)
         {
@@ -156,23 +147,11 @@ namespace stage
                 ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 
             auto const SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
-
-            // correct size and position
             auto const WIDTH { animUPtr_->OrigSize().x * SCALE };
             auto const HEIGHT { animUPtr_->OrigSize().y * SCALE };
 
-            auto const POS_LEFT { (trackingRect.left + (trackingRect.width * 0.5f))
-                                  - (WIDTH * 0.5f) };
-
-            auto const TOP_PAD { sfml_util::ScreenRatioToPixelsVert(0.0888f) };
-
-            auto const POS_TOP { (trackingRect.top + (trackingRect.height * 0.5f)) - (HEIGHT * 0.5f)
-                                 + TOP_PAD };
-
-            animUPtr_->SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT));
-
-            trackingRect.top = sfml_util::Bottom(animUPtr_->GetEntityRegion())
-                + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER;
+            animUPtr_->SetEntityRegion(
+                sf::FloatRect(sfml_util::DisplayCenterHoriz(WIDTH), 0.0f, WIDTH, HEIGHT));
         }
 
         const auto TEXT_COLOR_BRIGHT { sf::Color::White };
@@ -190,16 +169,19 @@ namespace stage
         const sfml_util::gui::TextInfo TEXT_INFO_TITLE(
             TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, sfml_util::Justified::Center);
 
-        titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, trackingRect);
+        const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
 
-        if (boost::algorithm::trim_copy(TITLE_TEXT).empty() == false)
+        const auto TITLE_TEXT_POS_TOP { (
+            sfml_util::Bottom(CalcBounds()) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER) };
+
+        sf::FloatRect titleTextRegion(
+            sfml_util::DisplayCenterHoriz(MAX_WIDTH), TITLE_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+
+        if (TITLE_TEXT.empty() == false)
         {
-            trackingRect.top += titleTextUPtr_->GetEntityRegion().height;
+            titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, titleTextRegion);
         }
-
-        const auto BETWEEN_TEXT_VERTICAL_SPACER { sfml_util::ScreenRatioToPixelsVert(0.0065f) };
-        trackingRect.top += BETWEEN_TEXT_VERTICAL_SPACER;
 
         sfml_util::gui::TextInfo textInfoContent(
             CONTENT_TEXT,
@@ -208,44 +190,46 @@ namespace stage
             CONTENT_COLOR,
             sfml_util::Justified::Center);
 
-        // if there is a lot of text (multi-lined), reduce the size to look better
-        // auto const NUM_NEWLINES { static_cast<int>(
-        //    std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
-        //
-        // if (NUM_NEWLINES > 1)
-        //{
-        //    auto const FONT_SIZE_REDUCTION { static_cast<unsigned int>(2 * NUM_NEWLINES) };
-        //
-        //    if (textInfoContent.size > FONT_SIZE_REDUCTION)
-        //    {
-        //        textInfoContent.size -= FONT_SIZE_REDUCTION;
-        //    }
-        //    else
-        //    {
-        //        textInfoContent.size = 1;
-        //    }
-        //}
+        // if there is a lot of content text, reduce the font size to look better
+        auto const NUM_NEWLINES { static_cast<int>(
+            std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
 
-        contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "CreditContent", textInfoContent, trackingRect);
-
-        if (boost::algorithm::trim_copy(CONTENT_TEXT).empty() == false)
+        if (NUM_NEWLINES > 3)
         {
-            trackingRect.top += contentTextUPtr_->GetEntityRegion().height;
+            const int NEWLINE_COUNT_LIMIT { 10 };
+
+            const auto NEWLINE_RATIO { static_cast<float>(
+                                           std::min(NEWLINE_COUNT_LIMIT, NUM_NEWLINES))
+                                       / static_cast<float>(NEWLINE_COUNT_LIMIT) };
+
+            const auto FONT_SIZE_CURRENT_F { static_cast<float>(textInfoContent.size) };
+
+            auto const FONT_SIZE_REDUCTION_F { ((FONT_SIZE_CURRENT_F * 0.333f) * NEWLINE_RATIO) };
+
+            textInfoContent.size -= static_cast<unsigned int>(FONT_SIZE_REDUCTION_F);
         }
 
-        // add space between credits
-        auto const VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.111f) };
-        trackingRect.top += VERT_SPACER;
+        const auto BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER {
+            sfml_util::ScreenRatioToPixelsVert(0.0065f)
+        };
+
+        const auto CONTENT_TEXT_POS_TOP { (
+            sfml_util::Bottom(CalcBounds()) + BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER) };
+
+        sf::FloatRect contentTextRegion(
+            sfml_util::DisplayCenterHoriz(MAX_WIDTH), CONTENT_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+
+        if (CONTENT_TEXT.empty() == false)
+        {
+            contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "CreditContent", textInfoContent, contentTextRegion);
+        }
+
+        region_ = CalcBounds();
     }
 
     void Credit::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        if (IsVisible() == false)
-        {
-            return;
-        }
-
         if (titleTextUPtr_)
         {
             target.draw(*titleTextUPtr_, states);
@@ -269,16 +253,13 @@ namespace stage
 
     void Credit::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (IsVisible() == false)
-        {
-            return;
-        }
-
         if (animUPtr_)
         {
             animUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
         }
     }
+
+    void Credit::SetVerticalPosition(const float POS_TOP) { Move(0.0f, (POS_TOP - region_.top)); }
 
     void Credit::Move(const float ADJ_HORIZ, const float ADJ_VERT)
     {
@@ -298,9 +279,11 @@ namespace stage
         {
             animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
+
+        sfml_util::Move(region_, sf::Vector2f(ADJ_HORIZ, ADJ_VERT));
     }
 
-    bool Credit::IsVisible() const
+    const sf::FloatRect Credit::CalcBounds() const
     {
         std::vector<sf::FloatRect> rects;
 
@@ -319,24 +302,12 @@ namespace stage
             rects.emplace_back(animUPtr_->GetEntityRegion());
         }
 
-        rects.emplace_back(sprite_.getGlobalBounds());
-
-        for (auto const & RECT : rects)
+        if (sprite_.getTexture() != nullptr)
         {
-            auto const TOP_LIMIT { -1.0f };
-            auto const BOTTOM_LIMIT { screenSizeVert_ + 1.0f };
-
-            auto const TOP { RECT.top };
-            auto const BOTTOM { RECT.top + RECT.height };
-
-            if (((TOP > TOP_LIMIT) && (TOP < BOTTOM_LIMIT))
-                || ((BOTTOM > TOP_LIMIT) && (BOTTOM < BOTTOM_LIMIT)))
-            {
-                return true;
-            }
+            rects.emplace_back(sprite_.getGlobalBounds());
         }
 
-        return false;
+        return sfml_util::MinimallyEnclosing(rects, true);
     }
 
 } // namespace stage

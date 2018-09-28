@@ -48,25 +48,26 @@ namespace stage
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
     private:
+        void UpdateCreditAnimations(const float ELAPSED_TIME_SECONDS);
+        void UpdateCreditPositions(const float ELAPSED_TIME_SECONDS);
+        void UpdateScrollSpeed(const float ELAPSED_TIME_SECONDS);
+        bool IsCreditVisible(const Credit &) const;
+        void MoveCreditsToStartPos();
+        void MoveCreditsToReverseStartPos();
+
         static const float DEFAULT_SCROLL_SPEED_;
         static const float SCROLL_SPEED_MULT_;
         static const float SCROLL_SPEED_MAX_;
-        //
-        const float CREDIT_BOX_WIDTH_;
-        const float CREDITBOX_POS_LEFT_;
-        const float CREDIT_BOX_INNER_PAD_;
-        //
-        float creditBoxPosTop_;
-        float creditBoxHeight_;
-        float totalHeight_;
-        float heightTracker_;
+
         sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite bpTitleSprite_;
         sfml_util::gui::BoxEntityUPtr_t boxUPtr_;
         sfml_util::gui::BoxEntityUPtr_t boxBorderUPtr_;
         CreditUVec_t creditUVec_;
         float scrollSpeed_;
-        bool isKeyHeldDown_;
+        bool isKeyHeldArrowUp_;
+        bool isKeyHeldArrowDown_;
+        sf::Clock keyPressClock_;
         sfml_util::ColoredRect blackRectUpper_;
         sfml_util::ColoredRect blackRectLower_;
     };

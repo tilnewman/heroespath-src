@@ -19,7 +19,7 @@
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/text-rendering.hpp"
+#include "sfml-util/text-renderer.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -323,7 +323,7 @@ namespace sfml_util
         {
             if (TEXT_INFO.IsValid())
             {
-                willDraw_ = text_render::Render(TEXT_INFO, REGION, renderTextureUPtr_, sprite_);
+                willDraw_ = TextRenderer::ToSprite(TEXT_INFO, REGION, renderTextureUPtr_, sprite_);
             }
 
             return boost::none;

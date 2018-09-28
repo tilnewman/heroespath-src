@@ -50,13 +50,13 @@ namespace stage
     public:
         // use to create text only credits
         Credit(
-            sf::FloatRect & trackingRect,
+            const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT);
 
         // use to create animation credits
         Credit(
-            sf::FloatRect & trackingRect,
+            const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
             const sfml_util::Animations::Enum ANIM_ENUM,
@@ -65,7 +65,7 @@ namespace stage
 
         // use to create general image credits
         Credit(
-            sf::FloatRect & trackingRect,
+            const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
             const std::string & IMAGE_PATH_KEY,
@@ -73,14 +73,14 @@ namespace stage
 
         // specialization used to create font (image) credits
         Credit(
-            sf::FloatRect & trackingRect,
+            const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const sfml_util::GuiFont::Enum FONT,
             const std::string & CONTENT_TEXT);
 
         // used to help construct all types of credits
         void Setup(
-            sf::FloatRect & trackingRect,
+            const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const sfml_util::GuiFont::Enum TITLE_FONT,
             const unsigned int TITLE_FONT_SIZE,
@@ -92,10 +92,13 @@ namespace stage
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override final;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
+        void SetVerticalPosition(const float POS_TOP);
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);
-        bool IsVisible() const;
+        const sf::FloatRect Region() const { return region_; }
 
     private:
+        const sf::FloatRect CalcBounds() const;
+
         sfml_util::gui::TextRegionUPtr_t titleTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t contentTextUPtr_;
         MediaType::Enum mediaType_;
@@ -103,6 +106,7 @@ namespace stage
         sf::Sprite sprite_;
         sfml_util::AnimationUPtr_t animUPtr_;
         float screenSizeVert_;
+        sf::FloatRect region_;
     };
 
     using CreditUPtr_t = std::unique_ptr<Credit>;
