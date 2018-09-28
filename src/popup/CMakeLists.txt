@@ -1,12 +1,4 @@
-project("Popup")
+project("popup" VERSION 0.1.0 LANGUAGES CXX)
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
-target_link_libraries(${PROJECT_NAME}
-              Log
-              sfml-util
-		      sfml-util-gui
-              StringUtil
-              Misc
-		      Game
-		      Combat
-		      ${Boost_LIBRARIES})
+setup_target(${PROJECT_NAME})

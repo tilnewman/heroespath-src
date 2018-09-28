@@ -1,30 +1,22 @@
-cmake_minimum_required(VERSION 3.5)
-project("Heroes' Path")
-
-message(STATUS "System Detected: ${CMAKE_SYSTEM}")
-
-set(CUSTOM_BUILD_FLAGS "")
-set(CUSTOM_LINK_FLAGS "")
-
-option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
+cmake_minimum_required(VERSION 3.8)
+project("Heroes' Path" VERSION 0.0.8 LANGUAGES CXX)
 
 
-if(MSVC)
-    file (READ ../build-flags/build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-    set(SFML_PATH "C:/Program Files/SFML-2.5.0")
-    set(SFML_BIN_DIR ${SFML_PATH}/bin)
-    message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
-    set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
-    set(SFML_LIBRARY_DIRS ${SFML_PATH}/lib)
 
-    set(SFML_LIBRARIES debug sfml-system-d.lib optimized sfml-system.lib debug sfml-window-d.lib optimized sfml-window.lib debug sfml-graphics-d.lib optimized sfml-graphics.lib debug sfml-audio-d.lib optimized sfml-audio.lib)
+#compiler specific tasks
+set(custom_compile_flags "")
+set(custom_link_flags "")
 
-    set(BOOST_INCLUDEDIR "C:/local/boost_1_66_0")
-    set(BOOST_LIBRARYDIR "C:/local/boost_1_66_0/lib32-msvc-14.1")
-    set(BOOST_ROOT "C:/local/boost_1_66_0/boost")
-    set(Boost_COMPILER -vc90)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
+    file (READ ../build-flags/msvc.txt custom_compile_flags)
+
+    #On Windows, Boost has some trouble linking dynamically, these defines help
+    set(custom_compile_flags "${custom_compile_flags} -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK")
+
+    #copy pvs-studio suppression files for Visual Studio
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress DESTINATION ${CMAKE_BINARY_DIR}/game)
     endif()
@@ -50,7 +42,7 @@ if(MSVC)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stats.suppress DESTINATION ${CMAKE_BINARY_DIR}/stats)
     endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/heroespath.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/heroespath.suppress DESTINATION ${CMAKE_BINARY_DIR}/HeroesPath)
+        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/heroespath.suppress DESTINATION ${CMAKE_BINARY_DIR}/heroespath)
     endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/logbase.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/logbase.suppress DESTINATION ${CMAKE_BINARY_DIR}/logbase)
@@ -79,67 +71,121 @@ if(MSVC)
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress DESTINATION ${CMAKE_BINARY_DIR}/interact)
     endif()
-else()
-	set(SFML_INCLUDE_DIR "-I/usr/include/SFML")
-	set(SFML_LIBRARY_DIRS "/usr/lib")
-	set(SFML_LIBRARIES sfml-system sfml-window sfml-graphics sfml-audio)
-endif()
-	
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
-    set(CUSTOM_LINK_FLAGS "-pthread")
+    set(custom_link_flags "${custom_link_flags} -pthread")
+
+    #Valgrind stuff here
+    option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
 
     if(VALGRIND_BUILD)
-        file (READ ../build-flags/build-flags-gnu-valgrind.txt CUSTOM_BUILD_FLAGS)
         message("Compiler flags customized for Valgrind.")
+        file (READ ../build-flags/gnu-valgrind.txt custom_compile_flags)
     else()
-        file (READ ../build-flags/build-flags-gnu.txt CUSTOM_BUILD_FLAGS)
+        file (READ ../build-flags/gnu.txt custom_compile_flags)
     endif()
-endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
-    file (READ ../build-flags/build-flags-clang.txt CUSTOM_BUILD_FLAGS)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+
+    file (READ ../build-flags/clang.txt custom_compile_flags)
+
+    #Clang's Address Sanitizer stuff here
+    option(ADDRESS_SANITIZER "Using Clang's Address Sanitizer" OFF)
+
     if(ADDRESS_SANITIZER)
-	message("Using Clang's Address Sanitizer")
-	set(CUSTOM_BUILD_FLAGS "${CUSTOM_BUILD_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
-	set(CUSTOM_LINK_FLAGS "${CUSTOM_LINK_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+	    message("Using Clang's Address Sanitizer")
+	    set(custom_compile_flags ${custom_compile_flags} -fsanitize=address -fno-omit-frame-pointer)
+	    set(custom_link_flags ${custom_link_flags} -fsanitize=address -fno-omit-frame-pointer)
     endif()
+
+else()
+
+    message(FATAL_ERROR " Unknwon Compiler: ${CMAKE_CXX_COMPILER_ID}")
+
 endif()
 
-add_definitions( ${CUSTOM_BUILD_FLAGS} )
-SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CUSTOM_LINK_FLAGS}" )
 
-message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with compile flags: ${CUSTOM_BUILD_FLAGS} and linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
+#print/echo custom compile/link flags that were set above
+message( ${CMAKE_CXX_COMPILER_ID} " Compile Flags: " ${custom_compile_flags})
+message( ${CMAKE_CXX_COMPILER_ID} " Link Flags: " ${custom_link_flags})
 
-if(MSVC)
-    set(CUSTOM_PROJECT_BOOST_VER "1.66.0")
+
+#SFML
+find_package(SFML 2.5 COMPONENTS window graphics audio REQUIRED)
+
+
+#BOOST
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
+find_package(Boost COMPONENTS system date_time filesystem serialization unit_test_framework REQUIRED)
+
+
+#list of libraries, each named the same as the directory in which it resides
+set(library_names
+    misc
+    log
+    stringutil
+    sfml-util
+    popup
+    game
+    combat
+    item
+    song
+    spell
+    stage
+    creature
+    map
+    avatar
+    interact)
+
+
+#sets compiler flags, linker flags, and depenencies common to all targets
+function(setup_target name)
+    
+    #why the fuck doesn't target_compile_options line work?! Using set_target_properties instead...
+    #target_compile_options(${name} PUBLIC ${custom_compile_flags})
+    set_target_properties(${name} PROPERTIES COMPILE_FLAGS ${custom_compile_flags})
+
+    target_link_libraries(${name} PUBLIC ${custom_link_flags})
+    target_link_libraries(${name} PUBLIC Boost::system Boost::date_time Boost::filesystem Boost::serialization)
+    target_link_libraries(${name} PUBLIC sfml-window sfml-graphics sfml-audio)
+    
+    set(library_names_excluding_current ${library_names})
+    list(REMOVE_ITEM library_names_excluding_current ${name})
+    target_link_libraries(${name} PUBLIC ${library_names_excluding_current})
+        
+endfunction()
+
+
+#add libraries
+foreach(library_name ${library_names})
+    add_subdirectory(${library_name})
+endforeach()
+
+
+#add executables
+set(executable_directory_names heroespath unit-tests)
+foreach(executable_directory_name ${executable_directory_names})
+    add_subdirectory(${executable_directory_name})
+endforeach()
+
+
+#copy the game configuration file alongside the executables for windows
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  
+    foreach(executable_directory_name ${executable_directory_names})
+        
+        file(COPY game-data.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Release)
+        
+        file(COPY game-data.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Debug)
+        
+    endforeach()
+    
+else()
+
+    file(COPY game-data.txt DESTINATION heroespath)
+
 endif()
-
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
-set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
-FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem serialization unit_test_framework)
-message(STATUS "Using boost version: " ${Boost_VERSION})
-
-include_directories(${include_directories} . ${Boost_INCLUDE_DIRS} ${BOOST_INCLUDEDIR} ${SFML_INCLUDE_DIR})
-
-link_directories(${link_directories} ${Boost_LIBRARY_DIRS} ${BOOST_LIBRARYDIR})
-
-add_subdirectory(misc)
-add_subdirectory(log)
-add_subdirectory(stringutil)
-add_subdirectory(sfml-util)
-add_subdirectory(popup)
-add_subdirectory(game)
-add_subdirectory(HeroesPath)
-add_subdirectory(HeroesPathTest)
-add_subdirectory(combat)
-add_subdirectory(item)
-add_subdirectory(song)
-add_subdirectory(spell)
-add_subdirectory(stage)
-add_subdirectory(creature)
-add_subdirectory(map)
-add_subdirectory(avatar)
-add_subdirectory(interact)

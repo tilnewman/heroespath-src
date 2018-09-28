@@ -1,11 +1,6 @@
-project("sfml-util")
+project("sfml-util" VERSION 0.0.8 LANGUAGES CXX)
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
-target_link_libraries(${PROJECT_NAME}
-				${Boost_LIBRARIES}
-				Game
-				Song
-				Misc
-                Map
-				Popup)
+setup_target(${PROJECT_NAME})
 add_subdirectory(gui)
+target_link_libraries(${PROJECT_NAME} PUBLIC gui)

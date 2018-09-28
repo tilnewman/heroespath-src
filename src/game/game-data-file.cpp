@@ -74,8 +74,10 @@ namespace game
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LOAD_SUCCESS),
-            "game::GameDataFile::Initialize() misc::ConfigBase::Load() returned false.  Is the "
-            "\"game-data.txt\" file in the right place?");
+            "game::GameDataFile::Initialize() misc::ConfigBase::Load(\""
+                << Instance()->GetFileNameFullPathStr()
+                << "\") returned false.  Is the "
+                   "\"game-data.txt\" file in the right place?");
 
         mediaBasePathStr_ = GetCopyStr(mediaBasePathKeyStr_);
 

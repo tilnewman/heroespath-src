@@ -1,45 +1,12 @@
-project("HeroesPath")
-
-set(TARGET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-
-if(MSVC)
-    set(TARGET_BINARY_DIR_RELEASE ${TARGET_BINARY_DIR}/Release)
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR_RELEASE})
-
-    set(TARGET_BINARY_DIR_DEBUG ${TARGET_BINARY_DIR}/Debug)
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR_DEBUG})
-
-    file(GLOB files ${SFML_BIN_DIR}/*)
-    
-    foreach(file ${files})
-        file(COPY ${file} DESTINATION ${TARGET_BINARY_DIR_RELEASE})
-        file(COPY ${file} DESTINATION ${TARGET_BINARY_DIR_DEBUG})
-    endforeach()
-else()
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR})
-endif()
-
-
-
-include_directories(${include_directories}
-                    ${SFML_INCLUDE_DIR})
-
-link_directories(   ${link_directories}
-                    ${SFML_LIBRARY_DIRS} )
-
+project("heroespath" VERSION 0.1.0 LANGUAGES CXX)
 file(GLOB source_files *.?pp)
 add_executable(${PROJECT_NAME} ${source_files})
+setup_target(${PROJECT_NAME})
 
-target_link_libraries(  ${PROJECT_NAME}
-                        Misc
-                        Log
-                        sfml-util
-                        sfml-util-gui
-                        Game
-                        Stage
-                        Creature
-                        Combat
-			Popup
-			Avatar
-            ${SFML_LIBRARIES}
-                        ${Boost_LIBRARIES})
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+
+    set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "\$(SolutionDir)\$(Configuration)\\.")
+
+endif()

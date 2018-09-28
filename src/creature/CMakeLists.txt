@@ -1,8 +1,4 @@
-project("Creature")
+project("creature" VERSION 0.1.0 LANGUAGES CXX)
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
-target_link_libraries(  ${PROJECT_NAME}
-                        Game
-                        Item
-                        Spell
-                        ${Boost_LIBRARIES} )
+setup_target(${PROJECT_NAME})

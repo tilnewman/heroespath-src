@@ -1,0 +1,1 @@
+-DNDEBUG -O3 -lstdc++ -std=c++17 -ffast-math -DBOOST_NO_AUTO_PTR -Weverything -Wno-error -Wno-unused-command-line-argument -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-weak-vtables -Wno-disabled-macro-expansion -Wno-deprecated -Wno-covered-switch-default -Wno-inconsistent-missing-destructor-override

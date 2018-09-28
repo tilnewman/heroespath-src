@@ -1,0 +1,1 @@
+-DNDEBUG -O3 -std=c++17 -lstdc++ -ffast-math -DBOOST_NO_AUTO_PTR -pedantic -Wall -Wextra -Wshadow -Wfloat-equal -Wundef -Wswitch-default -Wswitch-enum -Wunreachable-code -Weffc++ -Wunused-parameter -Wfatal-errors -Wstrict-null-sentinel -Wconversion -Wsign-conversion
