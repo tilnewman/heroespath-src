@@ -5,6 +5,33 @@ project("Heroes' Path" VERSION 0.0.8 LANGUAGES CXX)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
+#list of library names (also the directory name)
+set(library_names
+    misc
+    log
+    sfml-util
+    sfutil
+    popup
+    game
+    combat
+    item
+    song
+    spell
+    stage
+    creature
+    map
+    avatar
+    interact)
+
+
+#list of directories with executables
+set(executable_directory_names heroespath unit-tests)
+
+
+#list of all sub-directories
+set(sub_directory_names ${library_names} ${executable_directory_names})
+
+
 #compiler specific tasks
 set(custom_compile_flags "")
 set(custom_link_flags "")
@@ -15,59 +42,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
     #On Windows, Boost has some trouble linking dynamically, these defines help
     set(custom_compile_flags "${custom_compile_flags} -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK")
-
-    #copy pvs-studio suppression files for Visual Studio
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/game.suppress DESTINATION ${CMAKE_BINARY_DIR}/game)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/combat.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/combat.suppress DESTINATION ${CMAKE_BINARY_DIR}/combat)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/creature.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/creature.suppress DESTINATION ${CMAKE_BINARY_DIR}/creature)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/item.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/item.suppress DESTINATION ${CMAKE_BINARY_DIR}/item)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/location.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/location.suppress DESTINATION ${CMAKE_BINARY_DIR}/location)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/spell.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/spell.suppress DESTINATION ${CMAKE_BINARY_DIR}/spell)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stage.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stage.suppress DESTINATION ${CMAKE_BINARY_DIR}/stage)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stats.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stats.suppress DESTINATION ${CMAKE_BINARY_DIR}/stats)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/heroespath.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/heroespath.suppress DESTINATION ${CMAKE_BINARY_DIR}/heroespath)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/logbase.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/logbase.suppress DESTINATION ${CMAKE_BINARY_DIR}/logbase)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/misc.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/misc.suppress DESTINATION ${CMAKE_BINARY_DIR}/misc)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util.suppress DESTINATION ${CMAKE_BINARY_DIR}/sfml-util)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stringutil.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stringutil.suppress DESTINATION ${CMAKE_BINARY_DIR}/stringutil)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/popup.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/popup.suppress DESTINATION ${CMAKE_BINARY_DIR}/popup)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/map.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/map.suppress DESTINATION ${CMAKE_BINARY_DIR}/map)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/avatar.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/avatar.suppress DESTINATION ${CMAKE_BINARY_DIR}/avatar)
-    endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress DESTINATION ${CMAKE_BINARY_DIR}/interact)
-    endif()
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
@@ -120,25 +94,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost COMPONENTS system date_time filesystem serialization unit_test_framework REQUIRED)
 
 
-#list of library names (also the directory name)
-set(library_names
-    misc
-    log
-    sfml-util
-    sfutil
-    popup
-    game
-    combat
-    item
-    song
-    spell
-    stage
-    creature
-    map
-    avatar
-    interact)
-
-
 #sets compiler flags, linker flags, and dependencies common to all targets
 function(setup_target name)
     
@@ -164,7 +119,6 @@ endforeach()
 
 
 #add executables
-set(executable_directory_names heroespath unit-tests)
 foreach(executable_directory_name ${executable_directory_names})
     add_subdirectory(${executable_directory_name})
 endforeach()
@@ -184,5 +138,35 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
 
     file(COPY game-data.txt DESTINATION heroespath)
+
+endif()
+
+
+#copy pvs-studio suppression files for Visual Studio
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+    set(suppress_files_directory "${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions")
+
+    file(GLOB suppress_file_names ${suppress_files_directory}/*.suppress)
+
+    set(suppress_names "")
+
+    foreach(suppress_file_name ${suppress_file_names})
+
+        set(name_without_extension "")
+        get_filename_component(name_without_extension ${suppress_file_name} NAME_WE)
+	set(suppress_names ${suppress_names} ${name_without_extension})
+
+    endforeach()
+
+    foreach(suppress_name ${suppress_names})
+
+	if(EXISTS ${CMAKE_BINARY_DIR}/${suppress_name})
+            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/${suppress_name})
+        else()
+            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/unit-tests)
+        endif()
+
+    endforeach()
 
 endif()
