@@ -13,7 +13,7 @@
 #include "creature/condition-enum.hpp"
 #include "creature/title-enum.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/combat-image-enum.hpp"
+#include "sfml-util/combat-image-enum.hpp"
 #include "sfml-util/image-options.hpp"
 #include "sfml-util/image-util.hpp"
 #include "song/song-enum.hpp"

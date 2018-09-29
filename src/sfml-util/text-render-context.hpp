@@ -9,7 +9,7 @@
 //
 // text-render-context.hpp
 //
-#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/text-info.hpp"
 #include "sfml-util/text-render-cleaning.hpp"
 #include "sfml-util/text.hpp"
 

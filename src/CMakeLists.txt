@@ -53,9 +53,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util.suppress DESTINATION ${CMAKE_BINARY_DIR}/sfml-util)
     endif()
-    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util-gui.suppress)
-        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/sfml-util-gui.suppress DESTINATION ${CMAKE_BINARY_DIR}/sfml-util/gui)
-    endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stringutil.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/stringutil.suppress DESTINATION ${CMAKE_BINARY_DIR}/stringutil)
     endif()
@@ -123,7 +120,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost COMPONENTS system date_time filesystem serialization unit_test_framework REQUIRED)
 
 
-#list of libraries, each named the same as the directory in which it resides
+#list of library names (also the directory name)
 set(library_names
     misc
     log

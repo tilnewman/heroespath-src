@@ -28,7 +28,7 @@
 #include "popup/popup-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-images.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"

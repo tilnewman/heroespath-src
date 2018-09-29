@@ -14,9 +14,9 @@
 #include "interact/i-interaction.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/map.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <numeric>
 

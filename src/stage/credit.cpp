@@ -14,10 +14,10 @@
 #include "game/game-data-file.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/text-region.hpp"
 
 namespace heroespath
 {

@@ -14,7 +14,7 @@
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <sstream>
 #include <string>

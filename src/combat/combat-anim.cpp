@@ -21,7 +21,6 @@
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-angles.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
@@ -29,6 +28,7 @@
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/text-animation.hpp"
+#include "sfml-util/text-region.hpp"
 #include "spell/spell.hpp"
 
 namespace heroespath

@@ -15,8 +15,8 @@
 #include "misc/not-null.hpp"
 #include "popup/popup-enums.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+#include "sfml-util/text-info.hpp"
 
 #include <string>
 #include <vector>

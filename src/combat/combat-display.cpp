@@ -24,14 +24,14 @@
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
+#include "sfml-util/box-entity.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/box-entity.hpp"
-#include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/image-util.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/text-info.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <algorithm>
 #include <numeric>

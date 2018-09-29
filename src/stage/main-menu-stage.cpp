@@ -19,12 +19,12 @@
 #include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-images.hpp"
-#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/text-info.hpp"
 
 namespace heroespath
 {

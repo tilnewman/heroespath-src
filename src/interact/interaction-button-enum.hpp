@@ -9,7 +9,7 @@
 //
 // interact-button-enum.hpp
 //
-#include "sfml-util/gui/text-button.hpp"
+#include "sfml-util/text-button.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
 

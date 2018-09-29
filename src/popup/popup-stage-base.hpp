@@ -12,9 +12,9 @@
 #include "popup/popup-info.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gui/text-button.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/text-button.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

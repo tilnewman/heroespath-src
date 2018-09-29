@@ -19,8 +19,8 @@
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/callback.hpp"
-#include "sfml-util/gui/list-box-event-packet.hpp"
+#include "sfml-util/callback.hpp"
+#include "sfml-util/list-box-event-packet.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
 

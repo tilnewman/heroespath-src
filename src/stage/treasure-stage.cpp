@@ -35,9 +35,9 @@
 #include "popup/popup-stage-image-fade.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/list-element.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/title-image-loader.hpp"
+#include "sfml-util/list-element.hpp"
+#include "sfml-util/text-region.hpp"
+#include "sfml-util/title-image-loader.hpp"
 #include "stage/treasure-display-stage.hpp"
 
 #include <algorithm>

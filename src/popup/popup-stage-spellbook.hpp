@@ -12,11 +12,11 @@
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
+#include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/color-slider.hpp"
-#include "sfml-util/gui/box-entity-info.hpp"
-#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/list-box.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <string>

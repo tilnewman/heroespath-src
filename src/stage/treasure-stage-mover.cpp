@@ -13,7 +13,7 @@
 
 #include "log/log-macros.hpp"
 
-#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/entity.hpp"
 
 namespace heroespath
 {

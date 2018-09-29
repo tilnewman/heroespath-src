@@ -9,9 +9,9 @@
 //
 // camp-stage.hpp
 //
+#include "sfml-util/box-entity.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/box-entity.hpp"
-#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"

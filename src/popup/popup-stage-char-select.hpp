@@ -12,7 +12,7 @@
 #include "misc/vector-map.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-image-select.hpp"
-#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <string>
 

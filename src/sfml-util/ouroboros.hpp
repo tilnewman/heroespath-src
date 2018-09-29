@@ -11,7 +11,7 @@
 //  An animated snake eating its own tail for the background of main menu screens.
 //
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/entity.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

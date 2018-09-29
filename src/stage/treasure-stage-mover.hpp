@@ -11,8 +11,8 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/entity-slider.hpp"
-#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/entity-slider.hpp"
+#include "sfml-util/entity.hpp"
 
 #include <memory>
 #include <vector>

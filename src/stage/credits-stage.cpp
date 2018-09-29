@@ -15,15 +15,15 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/gui/gui-images.hpp"
-#include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/text-info.hpp"
+#include "sfml-util/text-region.hpp"
 
 namespace heroespath
 {

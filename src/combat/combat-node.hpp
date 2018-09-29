@@ -14,7 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/entity.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/text.hpp"
 

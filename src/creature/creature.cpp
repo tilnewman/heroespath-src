@@ -25,7 +25,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
+#include "sfml-util/creature-image-loader.hpp"
 #include "song/song-holder.hpp"
 #include "song/song.hpp"
 #include "spell/spell-holder.hpp"

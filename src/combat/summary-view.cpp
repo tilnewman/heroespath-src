@@ -17,11 +17,11 @@
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfml-util/text-info.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

@@ -32,13 +32,12 @@
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/animation-factory.hpp"
+#include "sfml-util/box-entity.hpp"
+#include "sfml-util/creature-image-loader.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/even-spacer.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/box-entity.hpp"
-#include "sfml-util/gui/creature-image-loader.hpp"
-#include "sfml-util/gui/gui-images.hpp"
-#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-color.hpp"
@@ -47,6 +46,7 @@
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/text-info.hpp"
 
 #include <memory>
 #include <sstream>

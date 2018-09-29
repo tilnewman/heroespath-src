@@ -11,7 +11,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/gui/list-no-element.hpp"
+#include "sfml-util/list-no-element.hpp"
 
 #include "misc/platform.hpp"
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS

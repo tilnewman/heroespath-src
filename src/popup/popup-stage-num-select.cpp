@@ -16,7 +16,7 @@
 #include "misc/boost-string-includes.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-images.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 namespace heroespath

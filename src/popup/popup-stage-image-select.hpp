@@ -12,8 +12,8 @@
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sliders.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <queue>
 #include <string>

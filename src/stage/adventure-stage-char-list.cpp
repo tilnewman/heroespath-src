@@ -18,12 +18,12 @@
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sfml-util-vertex.hpp"
+#include "sfml-util/text-info.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 

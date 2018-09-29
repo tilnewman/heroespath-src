@@ -27,8 +27,8 @@
 #include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/gui-images.hpp"
-#include "sfml-util/gui/main-menu-buttons.hpp"
+#include "sfml-util/gui-images.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <algorithm>

@@ -12,9 +12,9 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/pos-slider.hpp"
 #include "sfml-util/sfml-util-vertex.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

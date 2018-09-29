@@ -12,14 +12,14 @@
 #include "stage.hpp"
 
 #include "game/loop-manager.hpp"
+#include "sfml-util/box-entity-info.hpp"
+#include "sfml-util/box-entity.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/entity.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/box-entity-info.hpp"
-#include "sfml-util/gui/box-entity.hpp"
-#include "sfml-util/gui/entity.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-util-distance.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/text-info.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <algorithm>

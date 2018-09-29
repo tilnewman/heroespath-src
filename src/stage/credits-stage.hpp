@@ -10,9 +10,9 @@
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
 //
+#include "sfml-util/box-entity.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gui/box-entity.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/stage.hpp"
 #include "stage/credit.hpp"

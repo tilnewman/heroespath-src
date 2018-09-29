@@ -11,7 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/to-string-prefix-enum.hpp"
-#include "sfml-util/gui/color-set.hpp"
+#include "sfml-util/color-set.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 

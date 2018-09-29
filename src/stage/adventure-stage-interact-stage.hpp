@@ -14,10 +14,10 @@
 #include "map/transition.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/callback.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gui/callback.hpp"
-#include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/text-button.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

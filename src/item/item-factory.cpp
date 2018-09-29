@@ -26,7 +26,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/gui/item-image-loader.hpp"
+#include "sfml-util/item-image-loader.hpp"
 
 #include <algorithm>
 #include <exception>

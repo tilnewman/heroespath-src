@@ -9,7 +9,7 @@
 //
 // text-renderer.hpp
 //
-#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/text-info.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 

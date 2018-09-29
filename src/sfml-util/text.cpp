@@ -11,9 +11,9 @@
 
 #include "misc/strings.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sfml-util-position.hpp"
+#include "sfml-util/text-info.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

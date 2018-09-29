@@ -21,7 +21,7 @@
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/gui-images.hpp"
+#include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sound-manager.hpp"
 

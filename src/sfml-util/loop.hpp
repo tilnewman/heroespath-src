@@ -13,9 +13,9 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
+#include "sfml-util/callback.hpp"
+#include "sfml-util/entity.hpp"
 #include "sfml-util/fade.hpp"
-#include "sfml-util/gui/callback.hpp"
-#include "sfml-util/gui/entity.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 
 #include <memory>

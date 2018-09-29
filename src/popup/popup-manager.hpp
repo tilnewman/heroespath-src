@@ -16,8 +16,8 @@
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
 #include "sfml-util/cached-texture.hpp"
+#include "sfml-util/callback.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/callback.hpp"
 #include "sfml-util/justified-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 

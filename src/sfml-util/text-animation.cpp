@@ -13,8 +13,8 @@
 
 #include "misc/random.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util-font.hpp"
+#include "sfml-util/text-region.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>

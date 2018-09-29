@@ -11,7 +11,7 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/gui/callback.hpp"
+#include "sfml-util/callback.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
 #include <string>

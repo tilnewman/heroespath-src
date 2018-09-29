@@ -11,7 +11,7 @@
 //  A class responsible for common state and operation of all animation objects.
 //
 #include "sfml-util/animation-enum.hpp"
-#include "sfml-util/gui/entity.hpp"
+#include "sfml-util/entity.hpp"
 
 #include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/Color.hpp>

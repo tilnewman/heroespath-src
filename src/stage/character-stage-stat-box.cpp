@@ -11,14 +11,14 @@
 //
 #include "character-stage-stat-box.hpp"
 
+#include "sfml-util/box-entity.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/box-entity.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/margins.hpp"
 #include "sfml-util/sfml-util-center.hpp"
 #include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sfml-util-primitives.hpp"
+#include "sfml-util/text-region.hpp"
 
 namespace heroespath
 {

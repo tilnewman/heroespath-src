@@ -16,7 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/item-image-loader.hpp"
+#include "sfml-util/item-image-loader.hpp"
 
 #include <exception>
 #include <iomanip>
