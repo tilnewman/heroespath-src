@@ -97,7 +97,7 @@ namespace combat
         , healthLines_(sf::Lines, HEALTH_LINE_COUNT_)
         , isDead_(false)
         , wingCachedTexture_(sfml_util::LoadAndCacheImage(
-              sfml_util::gui::CombatImageType::Wing,
+              sfml_util::CombatImageType::Wing,
               sfml_util::ImageOptions(
                   ((!isPlayer_) ? sfml_util::ImageOpt::FlipHoriz | sfml_util::ImageOpt::Default
                                 : sfml_util::ImageOpt::Default))))

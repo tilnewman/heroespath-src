@@ -104,21 +104,21 @@ namespace stage
         , smokeAnimDrifterY_(0.0f, 1.0f, 0.1, 1.0) // these drifter values are reset below
         , background_()
         , smokeAnimUPtr_()
-        , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Previous,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
-        , saveButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , saveButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Save,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
-        , helpButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , helpButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Help,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
-        , nextButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , nextButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Next,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , statSetBase_()
         //, raceRadioButtonUPtr_()
@@ -141,7 +141,7 @@ namespace stage
     CharacterStage::~CharacterStage() { Stage::ClearAllEntities(); }
 
     /*bool CharacterStage::HandleCallback(
-        const sfml_util::gui::RadioButton::Callback_t::PacketPtr_t & RADIOBUTTON_WRAPPER)
+        const sfml_util::RadioButton::Callback_t::PacketPtr_t & RADIOBUTTON_WRAPPER)
     {
         // was change to race
         if (raceRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
@@ -159,8 +159,7 @@ namespace stage
         return true;
     }*/
 
-    bool CharacterStage::HandleCallback(
-        const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CharacterStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if ((PACKET_PTR->Name() == POPUP_NAME_CREATECONFIRM_)
             && (popup::ResponseTypes::IsAffirmative(PACKET_PTR->Response())))
@@ -203,13 +202,13 @@ namespace stage
         return true;
     }
 
-    bool CharacterStage::HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &)
+    bool CharacterStage::HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &)
     {
         return false;
     }
 
     bool CharacterStage::HandleCallback(
-        const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->entity_ptr.Ptr() == helpButtonUPtr_.get())
         {
@@ -450,7 +449,7 @@ namespace stage
                 bottomSymbol_.VisibleVerticalCenter() - (BUTTON_SIZE_V.y * 0.5f));
         };
 
-        auto setupButton = [&](sfml_util::gui::MainMenuButtonUPtr_t & buttonUPtr) {
+        auto setupButton = [&](sfml_util::MainMenuButtonUPtr_t & buttonUPtr) {
             static std::size_t buttonCounter(0);
 
             buttonUPtr->SetEntityPos(
@@ -468,7 +467,7 @@ namespace stage
     void CharacterStage::Setup_RaceRadioButtons()
     {
         /*
-        sfml_util::gui::TextInfo raceRadioButtonSetTextInfo(
+        sfml_util::TextInfo raceRadioButtonSetTextInfo(
             " ",
             sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
@@ -485,12 +484,12 @@ namespace stage
             sfml_util::MapByRes(40.0f, 1525.0f), sfml_util::Bottom(stageTitle_.Region()), 0.0f,
         0.0f);
 
-        sfml_util::gui::BoxEntityInfo radioButtonBoxInfo;
+        sfml_util::BoxEntityInfo radioButtonBoxInfo;
         radioButtonBoxInfo.SetupImage(woodCachedTexture_);
         radioButtonBoxInfo.SetupBorder(true);
         radioButtonBoxInfo.focus_colors = sfml_util::Defaults::GuiFocusColors;
-        raceRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
-            sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        raceRadioButtonUPtr_ = std::make_unique<sfml_util::RadioButtonSet>(
+            sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
             "RaceSelection",
             REGION.left,
             REGION.top,
@@ -500,7 +499,7 @@ namespace stage
             sfml_util::Brightness::Bright,
             std::vector<std::size_t>(),
             radioButtonBoxInfo,
-            sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
+            sfml_util::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             0.0f);
 
         EntityAdd(raceRadioButtonUPtr_.get());
@@ -510,7 +509,7 @@ namespace stage
     void CharacterStage::Setup_RoleRadioButtons()
     {
         /*
-        sfml_util::gui::TextInfo roleRadioButtonSetTextInfo(
+        sfml_util::TextInfo roleRadioButtonSetTextInfo(
             " ",
             sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
@@ -533,13 +532,13 @@ namespace stage
 
         const sf::FloatRect REGION(sfml_util::MapByRes(15.0f, 1300.0f), POS_TOP, 0.0f, 0.0f);
 
-        sfml_util::gui::BoxEntityInfo radioButtonBoxInfo;
+        sfml_util::BoxEntityInfo radioButtonBoxInfo;
         radioButtonBoxInfo.SetupImage(woodCachedTexture_);
         radioButtonBoxInfo.SetupBorder(true);
         radioButtonBoxInfo.focus_colors = sfml_util::Defaults::GuiFocusColors;
 
-        roleRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
-            sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        roleRadioButtonUPtr_ = std::make_unique<sfml_util::RadioButtonSet>(
+            sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
             "RoleSelection",
             REGION.left,
             REGION.top,
@@ -549,7 +548,7 @@ namespace stage
             sfml_util::Brightness::Bright,
             std::vector<std::size_t>(),
             radioButtonBoxInfo,
-            sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
+            sfml_util::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             -5.0f);
 
         EntityAdd(roleRadioButtonUPtr_.get());
@@ -571,7 +570,7 @@ namespace stage
             sfml_util::MapByRes(232.0f, 1500.0f),
             raceRadioButtonUPtr_->GetEntityRegion().height - 30.0f);
 
-        sfml_util::gui::TextInfo raceDescTextInfo(
+        sfml_util::TextInfo raceDescTextInfo(
             RACE_DESC,
             sfml_util::GuiFont::System,
             30,
@@ -580,7 +579,7 @@ namespace stage
 
         if (!racetDescTextRegionUPtr_)
         {
-            racetDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            racetDescTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "RaceDescription",
                 raceDescTextInfo,
                 REGION,
@@ -617,7 +616,7 @@ namespace stage
             sfml_util::MapByRes(240.0f, 1750.0f),
             roleRadioButtonUPtr_->GetEntityRegion().height - 30.0f);
 
-        sfml_util::gui::TextInfo roleDescTextInfo(
+        sfml_util::TextInfo roleDescTextInfo(
             creature::role::Desc(ROLE_ENUM),
             sfml_util::GuiFont::System,
             30,
@@ -626,7 +625,7 @@ namespace stage
 
         if (!roletDescTextRegionUPtr_)
         {
-            roletDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            roletDescTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "RoleDescription",
                 roleDescTextInfo,
                 REGION,
@@ -651,7 +650,7 @@ namespace stage
             0.0f,
             0.0f);
 
-        const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO(
+        const sfml_util::TextInfo NAME_LABEL_TEXT_INFO(
             "(name your character here)",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -659,8 +658,8 @@ namespace stage
             sfml_util::Justified::Left,
             sf::Text::Italic);
 
-        nInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "NameLabel", NAME_LABEL_TEXT_INFO, REGION);
+        nInsTextRegionUPtr_
+            = std::make_unique<sfml_util::TextRegion>("NameLabel", NAME_LABEL_TEXT_INFO, REGION);
 
         nInsTextRegionUPtr_->SetEntityPos(
             (StageRegionWidth() * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f)
@@ -683,17 +682,17 @@ namespace stage
             WIDTH,
             55.0f);
 
-        sfml_util::gui::BoxEntityInfo textEntryBoxInfo;
+        sfml_util::BoxEntityInfo textEntryBoxInfo;
         textEntryBoxInfo.SetupImage(woodCachedTexture_);
         textEntryBoxInfo.SetupBorder(true);
         textEntryBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
 
-        sfml_util::gui::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
+        sfml_util::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
         nameEntryTextInfo.text = " ";
         nameEntryTextInfo.color = DESC_TEXT_COLOR_;
 
-        nameTextEntryBoxUPtr_ = std::make_unique<sfml_util::gui::TextEntryBox>(
-            sfml_util::gui::TextEntryBox::Callback_t::IHandlerPtr_t(this),
+        nameTextEntryBoxUPtr_ = std::make_unique<sfml_util::TextEntryBox>(
+            sfml_util::TextEntryBox::Callback_t::IHandlerPtr_t(this),
             "CharacterName",
             REGION,
             nameEntryTextInfo,
@@ -706,7 +705,7 @@ namespace stage
     void CharacterStage::Setup_SexRadioButtons()
     {
         /*
-        sfml_util::gui::TextInfo sexRadioButtonSetTextInfo(
+        sfml_util::TextInfo sexRadioButtonSetTextInfo(
             " ",
             sfml_util::GuiFont::System,
             RADIO_BUTTON_TEXT_SIZE_,
@@ -719,13 +718,13 @@ namespace stage
 
         const sf::FloatRect TEMP_EMPTY_REGION(0.0f, 0.0f, 0.0f, 0.0f);
 
-        sfml_util::gui::BoxEntityInfo radioButtonBoxInfo;
+        sfml_util::BoxEntityInfo radioButtonBoxInfo;
         radioButtonBoxInfo.SetupImage(woodCachedTexture_);
         radioButtonBoxInfo.SetupBorder(true);
         radioButtonBoxInfo.focus_colors = sfml_util::Defaults::GuiFocusColors;
 
-        sexRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
-            sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
+        sexRadioButtonUPtr_ = std::make_unique<sfml_util::RadioButtonSet>(
+            sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
             "SexSelection",
             0.0f,
             0.0f,
@@ -756,7 +755,7 @@ namespace stage
             << "(click the box below then hold the spacebar to change "
             << "attributes)\n(drag numbers up and down to customize)                ";
 
-        sfml_util::gui::TextInfo insTextInfo(
+        sfml_util::TextInfo insTextInfo(
             spacebarInstrTextSS.str(),
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -764,7 +763,7 @@ namespace stage
             sfml_util::Justified::Center,
             sf::Text::Italic);
 
-        sbInsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        sbInsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SpacebarInstructions", insTextInfo, sf::FloatRect());
 
         sbInsTextRegionUPtr_->SetEntityPos(
@@ -778,7 +777,7 @@ namespace stage
         */
     }
 
-    /*void CharacterStage::Setup_FixedStats(const sfml_util::gui::TextInfo & STAT_TEXT_INFO)
+    /*void CharacterStage::Setup_FixedStats(const sfml_util::TextInfo & STAT_TEXT_INFO)
     {
         // fill the fixed stats vector with dummy values initially...
         const std::size_t NUM_TRAITS(creature::Traits::StatCount);
@@ -896,14 +895,14 @@ namespace stage
             ATTR_DESC_WIDTH,
             sfml_util::MapByRes(310.0f, 2100.0f));
 
-        sfml_util::gui::TextInfo descTextInfo(
+        sfml_util::TextInfo descTextInfo(
             "", // see below for where this is set to a valid value
             sfml_util::GuiFont::System,
             DESC_TEXT_FONT_SIZE_,
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Center);
 
-        sfml_util::gui::TextRegionUVec_t textRegionUVec;
+        sfml_util::TextRegionUVec_t textRegionUVec;
 
         // Setup the strength attribute here because it is special.
         // See below where it is added by hand.
@@ -914,7 +913,7 @@ namespace stage
 
         auto const STRENGTH_BASE_TEXT { ss.str() };
 
-        sfml_util::gui::TextInfo strHelpTextInfo(descTextInfo);
+        sfml_util::TextInfo strHelpTextInfo(descTextInfo);
 
         Setup_AttributeHelpText(
             creature::Traits::Strength, REGION, strHelpTextInfo, textRegionUVec);
@@ -958,7 +957,7 @@ namespace stage
         descTextInfo.text = STRENGTH_BASE_TEXT;
         if (!attrDescTextRegionUPtr_)
         {
-            attrDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            attrDescTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "AttributeDescription", descTextInfo, REGION, sfml_util::IStagePtr_t(this));
 
             EntityAdd(attrDescTextRegionUPtr_.get());
@@ -980,8 +979,8 @@ namespace stage
         const creature::Traits::Enum TRAIT_ENUM,
         const std::string & DESC_KEY,
         const sf::FloatRect & REGION,
-        sfml_util::gui::TextInfo & descTextInfo,
-        sfml_util::gui::TextRegionUVec_t & textRegionUVec)
+        sfml_util::TextInfo & descTextInfo,
+        sfml_util::TextRegionUVec_t & textRegionUVec)
     {
         std::ostringstream ss;
 
@@ -989,15 +988,15 @@ namespace stage
            << game::GameDataFile::Instance()->GetCopyStr(DESC_KEY) << "\n\n";
 
         descTextInfo.text = ss.str();
-        textRegionUVec.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+        textRegionUVec.emplace_back(std::make_unique<sfml_util::TextRegion>(
             creature::Traits::ToString(TRAIT_ENUM) + "StatDesc",
             descTextInfo,
             REGION,
-            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-            sfml_util::gui::BoxEntityInfo(),
+            sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::BoxEntityInfo(),
             sfml_util::Margins()));
 
-        sfml_util::gui::TextInfo helpTextInfo(descTextInfo);
+        sfml_util::TextInfo helpTextInfo(descTextInfo);
 
         Setup_AttributeHelpText(TRAIT_ENUM, REGION, helpTextInfo, textRegionUVec);
     }
@@ -1005,19 +1004,19 @@ namespace stage
     void CharacterStage::Setup_AttributeHelpText(
         const creature::Traits::Enum TRAIT_ENUM,
         const sf::FloatRect & REGION,
-        sfml_util::gui::TextInfo & helpTextInfo,
-        sfml_util::gui::TextRegionUVec_t & textRegionUVec)
+        sfml_util::TextInfo & helpTextInfo,
+        sfml_util::TextRegionUVec_t & textRegionUVec)
     {
         GetStatHelpText(TRAIT_ENUM, helpTextInfo);
 
         if (helpTextInfo.text.empty() == false)
         {
-            textRegionUVec.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+            textRegionUVec.emplace_back(std::make_unique<sfml_util::TextRegion>(
                 creature::Traits::ToString(TRAIT_ENUM) + "AttributeDesc",
                 helpTextInfo,
                 REGION,
-                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                sfml_util::gui::BoxEntityInfo(),
+                sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::BoxEntityInfo(),
                 sfml_util::Margins()));
         }
     }
@@ -1171,7 +1170,7 @@ namespace stage
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
 
-        sfml_util::gui::CreatureImageLoader creatureImageLoader;
+        sfml_util::CreatureImageLoader creatureImageLoader;
         characterImageFilenamesVec_ = creatureImageLoader.Filenames(RACE, ROLE, SEX);
 
         sfml_util::CachedTextureVec_t characterTextureVec;
@@ -1374,8 +1373,7 @@ namespace stage
         roleRadioButtonUPtr_->SetInvalidSelections(invalidRoleIndexes);*/
     }
 
-    bool CharacterStage::GetStatHelpText(
-        const creature::Traits::Enum, sfml_util::gui::TextInfo &) const
+    bool CharacterStage::GetStatHelpText(const creature::Traits::Enum, sfml_util::TextInfo &) const
     {
         return false;
         /*// bail if no values yet
@@ -1982,8 +1980,7 @@ namespace stage
         }*/
     }
 
-    const sfml_util::gui::IEntityPtrOpt_t
-        CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::IEntityPtrOpt_t CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         /*if (AreAnyAnimNumStillMoving())
         {
@@ -2162,7 +2159,7 @@ namespace stage
             animStatsTimeCounterSec_ = 0.0f;
             animStatsDelayPerSec_ = misc::random::Float(0.05f, 0.25f);
 
-            sfml_util::gui::TextInfo textInfo(
+            sfml_util::TextInfo textInfo(
                 " ",
                 sfml_util::GuiFont::Number,
                 40,

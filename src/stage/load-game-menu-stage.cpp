@@ -43,12 +43,12 @@ namespace stage
         , backgroundBox_(
               "LoadGameStage'sBackground",
               StageRegion(),
-              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
-        , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Previous,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               1.0f,
               sf::Vector2f(200.0f, sfml_util::DisplaySize().y - 100.0f)))
         , screenSizeV_(sfml_util::DisplaySize())
@@ -61,7 +61,7 @@ namespace stage
         , gsListBoxFocusColors_(
               sfml_util::color::Orange,
               gsListBoxBGColor_,
-              sfml_util::color::Orange - sfml_util::gui::FocusColors::DEFAULT_OFFSET_COLOR_,
+              sfml_util::color::Orange - sfml_util::FocusColors::DEFAULT_OFFSET_COLOR_,
               gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
         , gsListBoxUPtr_()
         , locTextRegionUPtr_()
@@ -114,17 +114,16 @@ namespace stage
                << GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
                << GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
 
-            const sfml_util::gui::TextInfo TEXT_INFO(
+            const sfml_util::TextInfo TEXT_INFO(
                 ss.str(),
                 sfml_util::GuiFont::System,
                 sfml_util::FontManager::Instance()->Size_Normal());
 
-            gsListBoxUPtr_->Append(
-                std::make_unique<sfml_util::gui::ListElement<game::GameStatePtr_t>>(
-                    GAMESTATE_PTR, TEXT_INFO));
+            gsListBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<game::GameStatePtr_t>>(
+                GAMESTATE_PTR, TEXT_INFO));
         }
 
-        sfml_util::gui::BoxEntityInfo gsListBoxInfo;
+        sfml_util::BoxEntityInfo gsListBoxInfo;
         gsListBoxInfo.SetupBorder(true);
         gsListBoxInfo.focus_colors = gsListBoxFocusColors_;
         gsListBoxInfo.SetupColor(gsListBoxBGColor_);
@@ -133,7 +132,7 @@ namespace stage
             "LoadGameStage'sGame",
             this,
             this,
-            sfml_util::gui::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfml_util::color::Orange));
+            sfml_util::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfml_util::color::Orange));
 
         EntityAdd(gsListBoxUPtr_.get());
         SetupGameInfoDisplay();
@@ -158,7 +157,7 @@ namespace stage
 
         auto const GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
 
-        sfml_util::gui::TextInfo descTextInfo(
+        sfml_util::TextInfo descTextInfo(
             "", sfml_util::GuiFont::System, sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
@@ -168,7 +167,7 @@ namespace stage
         // setup location text
         if (!locTextRegionUPtr_)
         {
-            locTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
+            locTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>("LoadGameLocation");
             EntityAdd(locTextRegionUPtr_.get());
         }
 
@@ -184,7 +183,7 @@ namespace stage
         if (!charLabelTextRegionUPtr_)
         {
             charLabelTextRegionUPtr_
-                = std::make_unique<sfml_util::gui::TextRegion>("CharacterListLabel");
+                = std::make_unique<sfml_util::TextRegion>("CharacterListLabel");
 
             EntityAdd(charLabelTextRegionUPtr_.get());
         }
@@ -215,7 +214,7 @@ namespace stage
 
             const sf::FloatRect RECT(CHAR_LIST_POS_LEFT + 25.0f, posY, 0.0f, 0.0f);
 
-            auto textRegionUPtr { std::make_unique<sfml_util::gui::TextRegion>(
+            auto textRegionUPtr { std::make_unique<sfml_util::TextRegion>(
                 TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
 
             EntityAdd(textRegionUPtr.get());

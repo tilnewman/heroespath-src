@@ -17,44 +17,41 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    EntitySlider::EntitySlider(
+        const IEntityPtrOpt_t & ENTITY_PTR_OPT,
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float SLIDER_SPEED)
+        : PosSlider(FROM_POS_V, TO_POS_V, SLIDER_SPEED)
+        , guiEntityPtrOpt_(ENTITY_PTR_OPT)
     {
+        Setup(guiEntityPtrOpt_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+    }
 
-        EntitySlider::EntitySlider(
-            const IEntityPtrOpt_t & ENTITY_PTR_OPT,
-            const sf::Vector2f & FROM_POS_V,
-            const sf::Vector2f & TO_POS_V,
-            const float SLIDER_SPEED)
-            : PosSlider(FROM_POS_V, TO_POS_V, SLIDER_SPEED)
-            , guiEntityPtrOpt_(ENTITY_PTR_OPT)
+    EntitySlider::~EntitySlider() = default;
+
+    void EntitySlider::Setup(
+        const IEntityPtrOpt_t & ENTITY_PTR_OPT,
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float SLIDER_SPEED)
+    {
+        guiEntityPtrOpt_ = ENTITY_PTR_OPT;
+        PosSlider::Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+    }
+
+    bool EntitySlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        const bool RESULT { PosSlider::UpdateTime(ELAPSED_TIME_SECONDS) };
+
+        if (RESULT && guiEntityPtrOpt_)
         {
-            Setup(guiEntityPtrOpt_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+            guiEntityPtrOpt_.value()->SetEntityPos(Position());
         }
 
-        EntitySlider::~EntitySlider() = default;
+        return RESULT;
+    }
 
-        void EntitySlider::Setup(
-            const IEntityPtrOpt_t & ENTITY_PTR_OPT,
-            const sf::Vector2f & FROM_POS_V,
-            const sf::Vector2f & TO_POS_V,
-            const float SLIDER_SPEED)
-        {
-            guiEntityPtrOpt_ = ENTITY_PTR_OPT;
-            PosSlider::Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);
-        }
-
-        bool EntitySlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
-        {
-            const bool RESULT { PosSlider::UpdateTime(ELAPSED_TIME_SECONDS) };
-
-            if (RESULT && guiEntityPtrOpt_)
-            {
-                guiEntityPtrOpt_.value()->SetEntityPos(Position());
-            }
-
-            return RESULT;
-        }
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

@@ -35,118 +35,114 @@ namespace sfml_util
 
     using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
 
-    namespace gui
+    // Responsible for being an Entity that has different text for different MouseStates.
+    class TextEntity : public Entity
     {
+        using CacheMap_t = misc::VectorMap<TextInfo, RenderTextureUPtr_t>;
 
-        // Responsible for being an Entity that has different text for different MouseStates.
-        class TextEntity : public Entity
+    public:
+        TextEntity(const TextEntity &) = delete;
+        TextEntity(TextEntity &&) = delete;
+        TextEntity & operator=(const TextEntity &) = delete;
+        TextEntity & operator=(TextEntity &&) = delete;
+
+        TextEntity(
+            const std::string & NAME,
+            const bool WILL_CACHE = true,
+            const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+
+        TextEntity(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const bool WILL_CACHE = true,
+            const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+
+        virtual ~TextEntity();
+
+        void Setup(
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const bool WILL_CACHE = true,
+            const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
+        bool WillCache() const { return willCache_; }
+        void WillCache(const bool WILL_CACHE) { willCache_ = WILL_CACHE; }
+
+        // if returns true then the mouse state changed and Sync() was called
+        bool SetMouseState(const MouseState::Enum) override;
+
+        // does not actually set the position, instead it moves relative to GetEntityPos()
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
+
+        void SetEntityRegion(const sf::FloatRect & R) override;
+
+        TextInfo & Up() { return mouseTextInfo_.up; }
+        const TextInfo & Up() const { return mouseTextInfo_.up; }
+
+        TextInfo & Down() { return mouseTextInfo_.down; }
+        const TextInfo & Down() const { return mouseTextInfo_.down; }
+
+        TextInfo & Over() { return mouseTextInfo_.over; }
+        const TextInfo & Over() const { return mouseTextInfo_.over; }
+
+        TextInfo & Disabled() { return mouseTextInfo_.disabled; }
+        const TextInfo & Disabled() const { return mouseTextInfo_.disabled; }
+
+        const TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE) const
         {
-            using CacheMap_t = misc::VectorMap<TextInfo, RenderTextureUPtr_t>;
+            return mouseTextInfo_.FromMouseState(MOUSE_STATE);
+        }
 
-        public:
-            TextEntity(const TextEntity &) = delete;
-            TextEntity(TextEntity &&) = delete;
-            TextEntity & operator=(const TextEntity &) = delete;
-            TextEntity & operator=(TextEntity &&) = delete;
+        TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE)
+        {
+            return mouseTextInfo_.FromMouseState(MOUSE_STATE);
+        }
 
-            TextEntity(
-                const std::string & NAME,
-                const bool WILL_CACHE = true,
-                const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+        TextInfo & FromMouseState() { return FromMouseState(GetMouseState()); }
 
-            TextEntity(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const float TEXT_WIDTH_LIMIT = 0.0f,
-                const bool WILL_CACHE = true,
-                const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+        const TextInfo & FromMouseState() const { return FromMouseState(GetMouseState()); }
 
-            virtual ~TextEntity();
+        const std::string GetText() const { return FromMouseState().text; }
 
-            void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const float TEXT_WIDTH_LIMIT = 0.0f,
-                const bool WILL_CACHE = true,
-                const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);
+        void SetText(const std::string &);
 
-            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        virtual void Sync();
 
-            bool WillCache() const { return willCache_; }
-            void WillCache(const bool WILL_CACHE) { willCache_ = WILL_CACHE; }
+        const sf::Color OverlayColor() const { return sprite_.getColor(); }
+        void OverlayColor(const sf::Color & OVERLAY_COLOR) { sprite_.setColor(OVERLAY_COLOR); }
 
-            // if returns true then the mouse state changed and Sync() was called
-            bool SetMouseState(const MouseState::Enum) override;
+        bool WillPlayMouseOverTickSfx() const { return willPlayMouseOverTickSfx_; }
 
-            // does not actually set the position, instead it moves relative to GetEntityPos()
-            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void WillPlayMouseOverTickSfx(const bool WILL_PLAY_SFX)
+        {
+            willPlayMouseOverTickSfx_ = WILL_PLAY_SFX;
+        }
 
-            void MoveEntityPos(const float HORIZ, const float VERT) override;
+        bool WillDraw() const { return willDraw_; }
+        void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
 
-            void SetEntityRegion(const sf::FloatRect & R) override;
+    private:
+        MouseTextInfo mouseTextInfo_;
+        CacheMap_t cacheMap_;
+        sf::Sprite sprite_;
+        float textWidthLimit_;
+        bool willCache_;
+        bool willPlayMouseOverTickSfx_;
+        bool willDraw_;
+    };
 
-            TextInfo & Up() { return mouseTextInfo_.up; }
-            const TextInfo & Up() const { return mouseTextInfo_.up; }
+    using TextEntityPtr_t = misc::NotNull<TextEntity *>;
+    using TextEntityUPtr_t = std::unique_ptr<TextEntity>;
 
-            TextInfo & Down() { return mouseTextInfo_.down; }
-            const TextInfo & Down() const { return mouseTextInfo_.down; }
-
-            TextInfo & Over() { return mouseTextInfo_.over; }
-            const TextInfo & Over() const { return mouseTextInfo_.over; }
-
-            TextInfo & Disabled() { return mouseTextInfo_.disabled; }
-            const TextInfo & Disabled() const { return mouseTextInfo_.disabled; }
-
-            const TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE) const
-            {
-                return mouseTextInfo_.FromMouseState(MOUSE_STATE);
-            }
-
-            TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE)
-            {
-                return mouseTextInfo_.FromMouseState(MOUSE_STATE);
-            }
-
-            TextInfo & FromMouseState() { return FromMouseState(GetMouseState()); }
-
-            const TextInfo & FromMouseState() const { return FromMouseState(GetMouseState()); }
-
-            const std::string GetText() const { return FromMouseState().text; }
-
-            void SetText(const std::string &);
-
-            virtual void Sync();
-
-            const sf::Color OverlayColor() const { return sprite_.getColor(); }
-            void OverlayColor(const sf::Color & OVERLAY_COLOR) { sprite_.setColor(OVERLAY_COLOR); }
-
-            bool WillPlayMouseOverTickSfx() const { return willPlayMouseOverTickSfx_; }
-
-            void WillPlayMouseOverTickSfx(const bool WILL_PLAY_SFX)
-            {
-                willPlayMouseOverTickSfx_ = WILL_PLAY_SFX;
-            }
-
-            bool WillDraw() const { return willDraw_; }
-            void WillDraw(const bool WILL_DRAW) { willDraw_ = WILL_DRAW; }
-
-        private:
-            MouseTextInfo mouseTextInfo_;
-            CacheMap_t cacheMap_;
-            sf::Sprite sprite_;
-            float textWidthLimit_;
-            bool willCache_;
-            bool willPlayMouseOverTickSfx_;
-            bool willDraw_;
-        };
-
-        using TextEntityPtr_t = misc::NotNull<TextEntity *>;
-        using TextEntityUPtr_t = std::unique_ptr<TextEntity>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

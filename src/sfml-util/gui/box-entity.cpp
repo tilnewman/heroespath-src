@@ -21,200 +21,197 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    BoxEntity::BoxEntity(
+        const std::string & NAME,
+        const sf::FloatRect & REGION,
+        const BoxEntityInfo & BACKGROUND_INFO)
+        : Entity(NAME + "_Background_Constructor1", 0.0f, 0.0f)
+        , backgroundInfo_()
+        , border_()
+        , coloredRect_()
+        , sprite_()
+        , willDrawImage_(false)
+        , innerRegion_()
     {
+        Setup(REGION, BACKGROUND_INFO);
+    }
 
-        BoxEntity::BoxEntity(
-            const std::string & NAME,
-            const sf::FloatRect & REGION,
-            const BoxEntityInfo & BACKGROUND_INFO)
-            : Entity(NAME + "_Background_Constructor1", 0.0f, 0.0f)
-            , backgroundInfo_()
-            , border_()
-            , coloredRect_()
-            , sprite_()
-            , willDrawImage_(false)
-            , innerRegion_()
+    void BoxEntity::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        if (backgroundInfo_.will_draw_color_over_sprite)
         {
-            Setup(REGION, BACKGROUND_INFO);
+            if (willDrawImage_)
+            {
+                target.draw(sprite_, states);
+            }
+
+            target.draw(coloredRect_, states);
+            target.draw(border_, states);
+        }
+        else
+        {
+            target.draw(coloredRect_, states);
+
+            if (willDrawImage_)
+            {
+                target.draw(sprite_, states);
+            }
+
+            target.draw(border_, states);
+        }
+    }
+
+    void BoxEntity::Setup(const sf::FloatRect & REGION, const BoxEntityInfo & BACKGROUND_INFO)
+    {
+        backgroundInfo_ = BACKGROUND_INFO;
+        SetEntityColors(BACKGROUND_INFO.focus_colors);
+        SetEntityRegion(REGION);
+    }
+
+    void BoxEntity::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+    {
+        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - GetEntityPos() };
+        MoveEntityPos(DIFF_V.x, DIFF_V.y);
+    }
+
+    void BoxEntity::MoveEntityPos(const float HORIZ, const float VERT)
+    {
+        coloredRect_.MovePos(HORIZ, VERT);
+        border_.MovePos(HORIZ, VERT);
+        sprite_.move(HORIZ, VERT);
+        Entity::MoveEntityPos(HORIZ, VERT);
+    }
+
+    void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
+    {
+        if (IsSizeZeroOrLessEither(REGION_ORIG))
+        {
+            border_.WillDraw(false);
+            coloredRect_.WillDraw(false);
+            willDrawImage_ = false;
+
+            Entity::SetEntityRegion(REGION_ORIG);
+            innerRegion_ = REGION_ORIG;
+            return;
         }
 
-        void BoxEntity::draw(sf::RenderTarget & target, sf::RenderStates states) const
+        if (backgroundInfo_.HasBorder())
         {
-            if (backgroundInfo_.will_draw_color_over_sprite)
+            border_.WillDraw(true);
+            if (backgroundInfo_.line_thickness > 0.0f)
             {
-                if (willDrawImage_)
-                {
-                    target.draw(sprite_, states);
-                }
-
-                target.draw(coloredRect_, states);
-                target.draw(border_, states);
+                border_.Setup(
+                    REGION_ORIG,
+                    backgroundInfo_.line_thickness,
+                    backgroundInfo_.line_color,
+                    backgroundInfo_.pad_line_color_adj,
+                    backgroundInfo_.will_grow_border);
             }
             else
             {
-                target.draw(coloredRect_, states);
-
-                if (willDrawImage_)
-                {
-                    target.draw(sprite_, states);
-                }
-
-                target.draw(border_, states);
-            }
-        }
-
-        void BoxEntity::Setup(const sf::FloatRect & REGION, const BoxEntityInfo & BACKGROUND_INFO)
-        {
-            backgroundInfo_ = BACKGROUND_INFO;
-            SetEntityColors(BACKGROUND_INFO.focus_colors);
-            SetEntityRegion(REGION);
-        }
-
-        void BoxEntity::SetEntityPos(const float POS_LEFT, const float POS_TOP)
-        {
-            const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - GetEntityPos() };
-            MoveEntityPos(DIFF_V.x, DIFF_V.y);
-        }
-
-        void BoxEntity::MoveEntityPos(const float HORIZ, const float VERT)
-        {
-            coloredRect_.MovePos(HORIZ, VERT);
-            border_.MovePos(HORIZ, VERT);
-            sprite_.move(HORIZ, VERT);
-            Entity::MoveEntityPos(HORIZ, VERT);
-        }
-
-        void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
-        {
-            if (IsSizeZeroOrLessEither(REGION_ORIG))
-            {
-                border_.WillDraw(false);
-                coloredRect_.WillDraw(false);
-                willDrawImage_ = false;
-
-                Entity::SetEntityRegion(REGION_ORIG);
-                innerRegion_ = REGION_ORIG;
-                return;
+                border_.Setup(REGION_ORIG, backgroundInfo_.will_grow_border);
             }
 
-            if (backgroundInfo_.HasBorder())
-            {
-                border_.WillDraw(true);
-                if (backgroundInfo_.line_thickness > 0.0f)
-                {
-                    border_.Setup(
-                        REGION_ORIG,
-                        backgroundInfo_.line_thickness,
-                        backgroundInfo_.line_color,
-                        backgroundInfo_.pad_line_color_adj,
-                        backgroundInfo_.will_grow_border);
-                }
-                else
-                {
-                    border_.Setup(REGION_ORIG, backgroundInfo_.will_grow_border);
-                }
+            Entity::SetEntityRegion(border_.OuterRegion());
+            innerRegion_ = border_.InnerRegion();
+        }
+        else
+        {
+            border_.WillDraw(false);
+            Entity::SetEntityRegion(REGION_ORIG);
+            innerRegion_ = REGION_ORIG;
+        }
 
-                Entity::SetEntityRegion(border_.OuterRegion());
-                innerRegion_ = border_.InnerRegion();
+        if (backgroundInfo_.HasColor())
+        {
+            coloredRect_.WillDraw(true);
+            if (backgroundInfo_.HasColorSolid())
+            {
+                coloredRect_.Setup(innerRegion_, backgroundInfo_.color_from);
             }
             else
             {
-                border_.WillDraw(false);
-                Entity::SetEntityRegion(REGION_ORIG);
-                innerRegion_ = REGION_ORIG;
+                coloredRect_.Setup(
+                    innerRegion_,
+                    backgroundInfo_.color_from,
+                    backgroundInfo_.color_to,
+                    backgroundInfo_.color_from_sides,
+                    backgroundInfo_.color_from_corners);
             }
+        }
+        else
+        {
+            coloredRect_.WillDraw(false);
+        }
 
-            if (backgroundInfo_.HasColor())
+        if (backgroundInfo_.HasImage())
+        {
+            willDrawImage_ = true;
+            sprite_ = sf::Sprite(backgroundInfo_.cached_texture_opt->Get());
+
+            if (backgroundInfo_.cached_texture_opt->Options().option_enum & ImageOpt::Repeated)
             {
-                coloredRect_.WillDraw(true);
-                if (backgroundInfo_.HasColorSolid())
+                sprite_.setPosition(Position(innerRegion_));
+
+                const auto SPRITE_SIZE_BEFORE_V { Size(sprite_) };
+                SetSize(sprite_, backgroundInfo_.image_size);
+                const auto SPRITE_SIZE_AFTER_V { Size(sprite_) };
+
+                sf::Vector2f textureRectSizeV { Size(innerRegion_) };
+
+                if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.x) == false)
                 {
-                    coloredRect_.Setup(innerRegion_, backgroundInfo_.color_from);
+                    textureRectSizeV.x *= SPRITE_SIZE_BEFORE_V.x / SPRITE_SIZE_AFTER_V.x;
                 }
-                else
+
+                if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.y) == false)
                 {
-                    coloredRect_.Setup(
-                        innerRegion_,
-                        backgroundInfo_.color_from,
-                        backgroundInfo_.color_to,
-                        backgroundInfo_.color_from_sides,
-                        backgroundInfo_.color_from_corners);
+                    textureRectSizeV.y *= SPRITE_SIZE_BEFORE_V.y / SPRITE_SIZE_AFTER_V.y;
                 }
+
+                // All these extra steps are required because once the sprite scale is changed
+                // (no longer 1/1) calling sprite_.setTextureRect(x,y,w,h) actually sets it to
+                // (x,y,w*scale_x, h*scale_y).  So instead we call setTextureRect() with an
+                // inverse scaled width and height.
+
+                sprite_.setTextureRect(
+                    sf::IntRect(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), textureRectSizeV)));
             }
             else
             {
-                coloredRect_.WillDraw(false);
-            }
-
-            if (backgroundInfo_.HasImage())
-            {
-                willDrawImage_ = true;
-                sprite_ = sf::Sprite(backgroundInfo_.cached_texture_opt->Get());
-
-                if (backgroundInfo_.cached_texture_opt->Options().option_enum & ImageOpt::Repeated)
+                if (backgroundInfo_.texture_rect_opt)
                 {
-                    sprite_.setPosition(Position(innerRegion_));
+                    sprite_.setTextureRect(backgroundInfo_.texture_rect_opt.value());
+                }
 
-                    const auto SPRITE_SIZE_BEFORE_V { Size(sprite_) };
+                if (backgroundInfo_.will_size_instead_of_fit)
+                {
+                    SetSizeAndPos(sprite_, innerRegion_);
                     SetSize(sprite_, backgroundInfo_.image_size);
-                    const auto SPRITE_SIZE_AFTER_V { Size(sprite_) };
-
-                    sf::Vector2f textureRectSizeV { Size(innerRegion_) };
-
-                    if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.x) == false)
-                    {
-                        textureRectSizeV.x *= SPRITE_SIZE_BEFORE_V.x / SPRITE_SIZE_AFTER_V.x;
-                    }
-
-                    if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.y) == false)
-                    {
-                        textureRectSizeV.y *= SPRITE_SIZE_BEFORE_V.y / SPRITE_SIZE_AFTER_V.y;
-                    }
-
-                    // All these extra steps are required because once the sprite scale is changed
-                    // (no longer 1/1) calling sprite_.setTextureRect(x,y,w,h) actually sets it to
-                    // (x,y,w*scale_x, h*scale_y).  So instead we call setTextureRect() with an
-                    // inverse scaled width and height.
-
-                    sprite_.setTextureRect(
-                        sf::IntRect(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), textureRectSizeV)));
                 }
                 else
                 {
-                    if (backgroundInfo_.texture_rect_opt)
-                    {
-                        sprite_.setTextureRect(backgroundInfo_.texture_rect_opt.value());
-                    }
-
-                    if (backgroundInfo_.will_size_instead_of_fit)
-                    {
-                        SetSizeAndPos(sprite_, innerRegion_);
-                        SetSize(sprite_, backgroundInfo_.image_size);
-                    }
-                    else
-                    {
-                        FitAndCenterTo(sprite_, innerRegion_);
-                        FitAndReCenter(sprite_, backgroundInfo_.image_size);
-                    }
+                    FitAndCenterTo(sprite_, innerRegion_);
+                    FitAndReCenter(sprite_, backgroundInfo_.image_size);
                 }
             }
-            else
-            {
-                willDrawImage_ = false;
-            }
         }
-
-        void BoxEntity::OnColorChange()
+        else
         {
-            coloredRect_.Color(GetEntityColorBackground());
-
-            // the border has always been set to the foreground color for some reason...
-            border_.Color(GetEntityColorForeground());
-
-            sprite_.setColor(GetEntityColorForeground());
+            willDrawImage_ = false;
         }
+    }
 
-    } // namespace gui
+    void BoxEntity::OnColorChange()
+    {
+        coloredRect_.Color(GetEntityColorBackground());
+
+        // the border has always been set to the foreground color for some reason...
+        border_.Color(GetEntityColorForeground());
+
+        sprite_.setColor(GetEntityColorForeground());
+    }
+
 } // namespace sfml_util
 } // namespace heroespath

@@ -73,7 +73,7 @@ namespace stage
         sfml_util::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
         sfml_util::sliders::PosSlider slider_;
-        sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
+        sfml_util::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect sourceRect;
         item::ItemPtrOpt_t itemPtrOpt_;
         bool willShowImage_;

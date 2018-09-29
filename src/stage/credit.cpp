@@ -166,7 +166,7 @@ namespace stage
         const auto CONTENT_COLOR { (
             (WILL_TITLE_USE_BRIGHT_TEXT_COLOR) ? TEXT_COLOR_NOTASBRIGHT : TEXT_COLOR_BRIGHT) };
 
-        const sfml_util::gui::TextInfo TEXT_INFO_TITLE(
+        const sfml_util::TextInfo TEXT_INFO_TITLE(
             TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, sfml_util::Justified::Center);
 
         const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
@@ -179,11 +179,11 @@ namespace stage
 
         if (TITLE_TEXT.empty() == false)
         {
-            titleTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            titleTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, titleTextRegion);
         }
 
-        sfml_util::gui::TextInfo textInfoContent(
+        sfml_util::TextInfo textInfoContent(
             CONTENT_TEXT,
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -221,7 +221,7 @@ namespace stage
 
         if (CONTENT_TEXT.empty() == false)
         {
-            contentTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            contentTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "CreditContent", textInfoContent, contentTextRegion);
         }
 

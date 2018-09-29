@@ -403,31 +403,29 @@ namespace stage
         M_TESTING_STAGE_TEST(CharacterImageSet);
         M_TESTING_STAGE_TEST(Spells);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
-            SpellsImageLoader, sfml_util::gui::SpellImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SpellsImageLoader, sfml_util::SpellImageLoader);
 
         M_TESTING_STAGE_TEST(Songs);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, sfml_util::gui::SongImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, sfml_util::SongImageLoader);
 
         M_TESTING_STAGE_TEST(Conditions);
 
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
-            ConditionImageLoader, sfml_util::gui::ConditionImageLoader);
+            ConditionImageLoader, sfml_util::ConditionImageLoader);
 
         M_TESTING_STAGE_TEST(Titles);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, sfml_util::gui::TitleImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, sfml_util::TitleImageLoader);
 
         M_TESTING_STAGE_TEST(PopupManager);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
-            CombatImageLoader, sfml_util::gui::CombatImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(CombatImageLoader, sfml_util::CombatImageLoader);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemImageLoader, sfml_util::gui::ItemImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemImageLoader, sfml_util::ItemImageLoader);
 
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
-            CreatureImageLoader, sfml_util::gui::CreatureImageLoader);
+            CreatureImageLoader, sfml_util::CreatureImageLoader);
 
         M_TESTING_STAGE_TEST(Animations);
 
@@ -514,7 +512,7 @@ namespace stage
             {
                 auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
 
-                auto const LENGTH { nameInfo.Length(sfml_util::gui::TextInfo(
+                auto const LENGTH { nameInfo.Length(sfml_util::TextInfo(
                     nameInfo.LargestName(),
                     FONT_ENUM,
                     FONT_SIZE)) };
@@ -1535,7 +1533,7 @@ namespace stage
             while (((posX - LEFT) < SCREEN_EDGE_PAD) && ((posY - TOP) < SCREEN_EDGE_PAD))
             {
                 waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
-                    sfml_util::gui::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
+                    sfml_util::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
 
                 const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
 
@@ -1631,7 +1629,7 @@ namespace stage
             sf::Vector2f(SCREEN_EDGE_PAD * 1.9f, SCREEN_EDGE_PAD), sfml_util::Orientation::Vert);
 
         waitingForKeyOrClick_CachedTextures_.emplace_back(
-            sfml_util::CachedTexture(sfml_util::gui::GuiImages::PathKey()));
+            sfml_util::CachedTexture(sfml_util::GuiImages::PathKey()));
 
         sf::Sprite sprite(waitingForKeyOrClick_CachedTextures_.back().Get());
         sfml_util::Center(sprite);
@@ -1666,7 +1664,7 @@ namespace stage
             {
                 const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
 
-                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(sfml_util::gui::GoldBar(
+                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(sfml_util::GoldBar(
                     REGION_INITIAL, sfml_util::Orientation::Count, WILL_GROW_BORDER));
 
                 const auto REGION_OUTER {
@@ -1756,11 +1754,11 @@ namespace stage
                 if (WILL_DRAW_LINES)
                 {
                     waitingForKeyOrClick_ToDraw_Borders_.emplace_back(
-                        sfml_util::gui::Border(REGION_INITIAL, WILL_GROW_BORDER));
+                        sfml_util::Border(REGION_INITIAL, WILL_GROW_BORDER));
                 }
                 else
                 {
-                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(sfml_util::gui::Border(
+                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(sfml_util::Border(
                         REGION_INITIAL,
                         1.0f,
                         sf::Color::White,
@@ -1851,7 +1849,7 @@ namespace stage
 
     void TestingStage::AppendWaitTestTitle(const std::string & TITLE_STR)
     {
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        const sfml_util::TextInfo TEXT_INFO(
             TITLE_STR,
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Larger());
@@ -1870,7 +1868,7 @@ namespace stage
                   waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
                       sfml_util::MakeRectangleHollow(REGION, sf::Color::Green));
 
-                  const sfml_util::gui::TextInfo TEXT_INFO(
+                  const sfml_util::TextInfo TEXT_INFO(
                       "This is text.", sfml_util::GuiFont::SystemCondensed, FONT_SIZE);
 
                   sfml_util::Text text(TEXT_INFO);

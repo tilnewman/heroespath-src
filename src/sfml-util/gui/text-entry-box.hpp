@@ -24,76 +24,73 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+
+    // Encapsulates a single line of user type-able text with a blinking cursor
+    class TextEntryBox : public Entity
     {
+    public:
+        using Callback_t = Callback<TextEntryBox>;
 
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+        TextEntryBox(const TextEntryBox &) = delete;
+        TextEntryBox(TextEntryBox &&) = delete;
+        TextEntryBox & operator=(const TextEntryBox &) = delete;
+        TextEntryBox & operator=(TextEntryBox &&) = delete;
 
-        // Encapsulates a single line of user type-able text with a blinking cursor
-        class TextEntryBox : public Entity
-        {
-        public:
-            using Callback_t = Callback<TextEntryBox>;
+        TextEntryBox(
+            const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
+            const std::string & NAME,
+            const sf::FloatRect & REGION,
+            const TextInfo & TEXT_INFO,
+            const sf::Color & CURSOR_COLOR = sf::Color::White,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
 
-            TextEntryBox(const TextEntryBox &) = delete;
-            TextEntryBox(TextEntryBox &&) = delete;
-            TextEntryBox & operator=(const TextEntryBox &) = delete;
-            TextEntryBox & operator=(TextEntryBox &&) = delete;
+        virtual ~TextEntryBox();
 
-            TextEntryBox(
-                const Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
-                const std::string & NAME,
-                const sf::FloatRect & REGION,
-                const TextInfo & TEXT_INFO,
-                const sf::Color & CURSOR_COLOR = sf::Color::White,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
+        void Setup(
+            const sf::FloatRect & REGION,
+            const TextInfo & TEXT_INFO,
+            const sf::Color & CURSOR_COLOR = sf::Color::White,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
 
-            virtual ~TextEntryBox();
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            void Setup(
-                const sf::FloatRect & REGION,
-                const TextInfo & TEXT_INFO,
-                const sf::Color & CURSOR_COLOR = sf::Color::White,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo());
+        void SetText(const std::string & NEW_TEXT);
+        const std::string GetText() const;
 
-            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        bool KeyPress(const sf::Event::KeyEvent &) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-            void SetText(const std::string & NEW_TEXT);
-            const std::string GetText() const;
+        bool UpdateTime(const float) override;
 
-            bool KeyPress(const sf::Event::KeyEvent &) override;
-            bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void SetTextColor(const sf::Color & TEXT_COLOR);
 
-            bool UpdateTime(const float) override;
+    protected:
+        void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
 
-            void SetTextColor(const sf::Color & TEXT_COLOR);
+    private:
+        void UpdateText();
+        void OnColorChange() override;
 
-        protected:
-            void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
+        static const float INNER_PAD_;
+        static const float CURSOR_WIDTH_;
+        static const float CURSOR_BLINK_DELAY_SEC_;
+        //
+        BoxEntity boxEntity_;
+        TextInfo textInfo_;
+        ColoredRect cursorRect_;
+        sf::Color cursorColor_;
+        sf::FloatRect innerRegion_;
+        TextRegionUPtr_t textRegionUPtr_;
+        bool willDrawCursor_;
+        float cursorBlinkTimer_;
+        Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
+    };
 
-        private:
-            void UpdateText();
-            void OnColorChange() override;
+    using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
 
-            static const float INNER_PAD_;
-            static const float CURSOR_WIDTH_;
-            static const float CURSOR_BLINK_DELAY_SEC_;
-            //
-            BoxEntity boxEntity_;
-            TextInfo textInfo_;
-            ColoredRect cursorRect_;
-            sf::Color cursorColor_;
-            sf::FloatRect innerRegion_;
-            TextRegionUPtr_t textRegionUPtr_;
-            bool willDrawCursor_;
-            float cursorBlinkTimer_;
-            Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
-        };
-
-        using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

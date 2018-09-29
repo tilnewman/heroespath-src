@@ -26,7 +26,7 @@ namespace sfml_util
         {
             CharInfo(
                 const char CHAR,
-                const gui::TextInfo & TEXT_INFO,
+                const TextInfo & TEXT_INFO,
                 const GuiFont::Enum PREV_FONT = GuiFont::Count)
                 : CharInfo(CHAR, TEXT_INFO.font_letters, TEXT_INFO.font_numbers, PREV_FONT)
             {}

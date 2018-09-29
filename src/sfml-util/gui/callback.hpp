@@ -17,42 +17,39 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for defining all the types that are handy to have when working with callbacks
+    template <typename T>
+    struct Callback
     {
+        Callback() = delete;
+        ~Callback() = delete;
+        Callback(const Callback &) = delete;
+        Callback(Callback &&) = delete;
+        Callback & operator=(const Callback &) = delete;
+        Callback & operator=(Callback &&) = delete;
 
-        // Responsible for defining all the types that are handy to have when working with callbacks
-        template <typename T>
-        struct Callback
+        using Packet_t = T;
+        using PacketPtr_t = misc::NotNull<T *>;
+
+        // Responsible for declaring the interface of a callback handler. (typically a
+        // Stage) A callback is required to pass a non-null pointer to whatever initiated
+        // the callback.
+        struct IHandler_t
         {
-            Callback() = delete;
-            ~Callback() = delete;
-            Callback(const Callback &) = delete;
-            Callback(Callback &&) = delete;
-            Callback & operator=(const Callback &) = delete;
-            Callback & operator=(Callback &&) = delete;
+            // returns true if the callback was identified and handled (changed something)
+            virtual bool HandleCallback(const PacketPtr_t & CALLBACK_PACKET_PTR) = 0;
 
-            using Packet_t = T;
-            using PacketPtr_t = misc::NotNull<T *>;
-
-            // Responsible for declaring the interface of a callback handler. (typically a
-            // Stage) A callback is required to pass a non-null pointer to whatever initiated
-            // the callback.
-            struct IHandler_t
-            {
-                // returns true if the callback was identified and handled (changed something)
-                virtual bool HandleCallback(const PacketPtr_t & CALLBACK_PACKET_PTR) = 0;
-
-            protected:
-                ~IHandler_t() {}
-            };
-
-            using IHandlerPtr_t = misc::NotNull<IHandler_t *>;
-            using IHandlerPtrOpt_t = boost::optional<IHandlerPtr_t>;
+        protected:
+            ~IHandler_t() {}
         };
 
-        using PopupCallback_t = Callback<popup::PopupResponse>;
+        using IHandlerPtr_t = misc::NotNull<IHandler_t *>;
+        using IHandlerPtrOpt_t = boost::optional<IHandlerPtr_t>;
+    };
 
-    } // namespace gui
+    using PopupCallback_t = Callback<popup::PopupResponse>;
+
 } // namespace sfml_util
 } // namespace heroespath
 

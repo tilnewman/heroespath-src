@@ -39,7 +39,7 @@ namespace stage
         , backgroundBox_(
               "InnStage'sBackground",
               StageRegion(),
-              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , candleCachedTexture_("media-images-candle")

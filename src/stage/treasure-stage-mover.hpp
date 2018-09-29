@@ -21,12 +21,10 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class IEntity;
-        using IEntityPtr_t = misc::NotNull<IEntity *>;
-        using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
-    } // namespace gui
+    class IEntity;
+    using IEntityPtr_t = misc::NotNull<IEntity *>;
+    using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
+
 } // namespace sfml_util
 
 namespace stage
@@ -40,7 +38,7 @@ namespace stage
             Container
         };
 
-        using EntitySliderVec_t = std::vector<sfml_util::gui::EntitySlider>;
+        using EntitySliderVec_t = std::vector<sfml_util::EntitySlider>;
 
         // Responsible for managing the positions of Entity objects that slide on and off screen.
         // Entities on the left side of the screen are called Treasure objects because they
@@ -64,12 +62,12 @@ namespace stage
             bool AreInventoryObjectsMoving() const;
 
             void AddTreasureObject(
-                const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
+                const sfml_util::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
             void AddInventoryObject(
-                const sfml_util::gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
+                const sfml_util::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
@@ -90,12 +88,11 @@ namespace stage
             bool UpdateTimeInventory(const float ELAPSED_TIME_SECONDS);
 
             void ReplaceEntity(
-                const sfml_util::gui::IEntityPtr_t FROM_ENTITY_PTR,
-                const sfml_util::gui::IEntityPtr_t TO_ENTITY_PTR);
+                const sfml_util::IEntityPtr_t FROM_ENTITY_PTR,
+                const sfml_util::IEntityPtr_t TO_ENTITY_PTR);
 
         private:
-            bool
-                UpdateTime(sfml_util::gui::EntitySlider & slider, const float ELAPSED_TIME_SECONDS);
+            bool UpdateTime(sfml_util::EntitySlider & slider, const float ELAPSED_TIME_SECONDS);
 
         private:
             static const float SLIDE_SPEED_;

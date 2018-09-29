@@ -36,53 +36,50 @@ namespace creature
 } // namespace creature
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading Creature images.
+    class CreatureImageLoader
     {
+    public:
+        CreatureImageLoader(const CreatureImageLoader &) = delete;
+        CreatureImageLoader(CreatureImageLoader &&) = delete;
+        CreatureImageLoader & operator=(const CreatureImageLoader &) = delete;
+        CreatureImageLoader & operator=(CreatureImageLoader &&) = delete;
 
-        // Responsible for loading Creature images.
-        class CreatureImageLoader
-        {
-        public:
-            CreatureImageLoader(const CreatureImageLoader &) = delete;
-            CreatureImageLoader(CreatureImageLoader &&) = delete;
-            CreatureImageLoader & operator=(const CreatureImageLoader &) = delete;
-            CreatureImageLoader & operator=(CreatureImageLoader &&) = delete;
+        CreatureImageLoader();
 
-            CreatureImageLoader();
+        bool Test() const;
 
-            bool Test() const;
+        static float MaxDimmension() { return StandardImageDimmension(); }
 
-            static float MaxDimmension() { return StandardImageDimmension(); }
+        const std::string Path(const creature::CreaturePtr_t) const;
+        const std::string Path(const std::string & FILENAME) const;
 
-            const std::string Path(const creature::CreaturePtr_t) const;
-            const std::string Path(const std::string & FILENAME) const;
+        void Load(sf::Texture & texture, const creature::CreaturePtr_t) const;
 
-            void Load(sf::Texture & texture, const creature::CreaturePtr_t) const;
+        void Load(
+            sf::Texture & texture,
+            const std::string & IMAGE_FILE_NAME,
+            const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT = false) const;
 
-            void Load(
-                sf::Texture & texture,
-                const std::string & IMAGE_FILE_NAME,
-                const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT = false) const;
+        const std::string FilenameRandom(const creature::CreaturePtr_t) const;
 
-            const std::string FilenameRandom(const creature::CreaturePtr_t) const;
+        const std::vector<std::string> Filenames(
+            const creature::race::Enum RACE,
+            const creature::role::Enum ROLE,
+            const creature::sex::Enum SEX,
+            const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+            const creature::dragon_class::Enum DRAGON_CLASS
+            = creature::dragon_class::Hatchling) const;
 
-            const std::vector<std::string> Filenames(
-                const creature::race::Enum RACE,
-                const creature::role::Enum ROLE,
-                const creature::sex::Enum SEX,
-                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
-                const creature::dragon_class::Enum DRAGON_CLASS
-                = creature::dragon_class::Hatchling) const;
+        void EnsureFileExists(const std::string & FILENAME) const;
 
-            void EnsureFileExists(const std::string & FILENAME) const;
+        bool WillHorizFlipToFaceRight(const creature::CreaturePtr_t CREATURE_PTR) const;
 
-            bool WillHorizFlipToFaceRight(const creature::CreaturePtr_t CREATURE_PTR) const;
+    private:
+        std::string imageDirectoryPath_;
+    };
 
-        private:
-            std::string imageDirectoryPath_;
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

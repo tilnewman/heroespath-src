@@ -80,7 +80,7 @@ namespace sfml_util
         }
     }
 
-    void Loop::SetFocus(const gui::IEntityPtr_t ENTITY_PTR)
+    void Loop::SetFocus(const IEntityPtr_t ENTITY_PTR)
     {
         entityWithFocusPtrOpt_ = ENTITY_PTR;
 
@@ -91,7 +91,7 @@ namespace sfml_util
     }
 
     void Loop::AssignPopupCallbackHandlerInfo(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO)
     {
         popupInfoOpt_ = POPUP_INFO;
@@ -552,7 +552,7 @@ namespace sfml_util
             popup::PopupResponse response(
                 popupInfoOpt_->Name(), POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
-            const sfml_util::gui::PopupCallback_t::PacketPtr_t CALLBACK_PACKET_PTR(&response);
+            const sfml_util::PopupCallback_t::PacketPtr_t CALLBACK_PACKET_PTR(&response);
 
             auto const WILL_RESET_CALLBACKHANDLER { popupCallbackPtrOpt_.value()->HandleCallback(
                 CALLBACK_PACKET_PTR) };

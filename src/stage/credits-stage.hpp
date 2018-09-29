@@ -61,8 +61,8 @@ namespace stage
 
         sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite bpTitleSprite_;
-        sfml_util::gui::BoxEntityUPtr_t boxUPtr_;
-        sfml_util::gui::BoxEntityUPtr_t boxBorderUPtr_;
+        sfml_util::BoxEntityUPtr_t boxUPtr_;
+        sfml_util::BoxEntityUPtr_t boxBorderUPtr_;
         CreditUVec_t creditUVec_;
         float scrollSpeed_;
         bool isKeyHeldArrowUp_;

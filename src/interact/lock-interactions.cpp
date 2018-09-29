@@ -81,7 +81,7 @@ namespace interact
     }
 
     void LockPicking::PopupCharacterSelection(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR) const
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR) const
     {
         auto const INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
 
@@ -118,8 +118,8 @@ namespace interact
     }
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
         {
@@ -141,7 +141,7 @@ namespace interact
     }
 
     void LockPicking::PopupAttempting(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & CHARACTER_NAME) const
     {
         auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
@@ -158,7 +158,7 @@ namespace interact
     }
 
     void LockPicking::PopupSuccess(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & NAME_OF_WHAT_OPENED) const
     {
         auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
@@ -175,7 +175,7 @@ namespace interact
     }
 
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (!!characterPtrOpt_),

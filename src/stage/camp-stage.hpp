@@ -38,7 +38,7 @@ namespace stage
     // A Stage class that allows the party to camp for resting and healing
     class CampStage
         : public sfml_util::Stage
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
     {
     public:
         CampStage(const CampStage &) = delete;
@@ -49,7 +49,7 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        virtual bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &);
+        virtual bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
@@ -71,7 +71,7 @@ namespace stage
         sfml_util::StageTitle stageTitle_;
         sfml_util::CachedTexture campfireCachedTexture_;
         sf::Sprite campfireSprite_;
-        sfml_util::gui::BoxEntity backgroundBox_;
+        sfml_util::BoxEntity backgroundBox_;
         sfml_util::AnimationUPtr_t fireAnimUPtr_;
         bool showNewGamePopup1_;
         bool showNewGamePopup2_;

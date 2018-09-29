@@ -32,7 +32,7 @@ namespace sfml_util
 
     // invalid members and default parameters will not be used/set
     Text::Text(
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const std::string & CUSTOM_TEXT,
         const GuiFont::Enum FONT,
         const sf::Color & COLOR)
@@ -46,7 +46,7 @@ namespace sfml_util
     // invalid members and default parameters will not be used/set
     Text::Text(
         const sf::Vector2f & POS_V,
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const std::string & CUSTOM_TEXT,
         const GuiFont::Enum FONT,
         const sf::Color & COLOR)
@@ -78,7 +78,7 @@ namespace sfml_util
     }
 
     void Text::setup(
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const std::string & CUSTOM_TEXT,
         const GuiFont::Enum FONT,
         const sf::Color & COLOR)
@@ -88,7 +88,7 @@ namespace sfml_util
 
     void Text::setup(
         const sf::Vector2f & POS_V,
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const std::string & TEXT,
         const GuiFont::Enum FONT,
         const sf::Color & COLOR)

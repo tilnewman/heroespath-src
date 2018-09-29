@@ -35,7 +35,7 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -79,8 +79,8 @@ namespace popup
         bool areImagesMoving_;
         bool areImagesMovingLeft_;
         sf::FloatRect imagesRect_;
-        sfml_util::gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t imageWrnTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t imageNumTextRegionUPtr_;
         std::size_t imageIndex_;
         std::size_t imageIndexLastSoundOn_;
         std::size_t imageIndexLastSoundOff_;

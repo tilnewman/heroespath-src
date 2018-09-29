@@ -18,70 +18,67 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+    namespace listbox
     {
-        namespace listbox
+
+        template <typename Stage_t, typename Element_t>
+        void SortByName(ListBox<Stage_t, Element_t> & listBox, bool & isSortReversed)
         {
-
-            template <typename Stage_t, typename Element_t>
-            void SortByName(ListBox<Stage_t, Element_t> & listBox, bool & isSortReversed)
+            if (isSortReversed)
             {
-                if (isSortReversed)
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return B->Element()->Name() < A->Element()->Name();
-                    });
-                }
-                else
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return A->Element()->Name() < B->Element()->Name();
-                    });
-                }
-
-                isSortReversed = !isSortReversed;
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return B->Element()->Name() < A->Element()->Name();
+                });
+            }
+            else
+            {
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return A->Element()->Name() < B->Element()->Name();
+                });
             }
 
-            template <typename Stage_t>
-            void SortByPrice(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
-            {
-                if (isSortReversed)
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return B->Element()->Price() < A->Element()->Price();
-                    });
-                }
-                else
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return A->Element()->Price() < B->Element()->Price();
-                    });
-                }
+            isSortReversed = !isSortReversed;
+        }
 
-                isSortReversed = !isSortReversed;
+        template <typename Stage_t>
+        void SortByPrice(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
+        {
+            if (isSortReversed)
+            {
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return B->Element()->Price() < A->Element()->Price();
+                });
+            }
+            else
+            {
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return A->Element()->Price() < B->Element()->Price();
+                });
             }
 
-            template <typename Stage_t>
-            void SortByWeight(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
-            {
-                if (isSortReversed)
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return B->Element()->Weight() < A->Element()->Weight();
-                    });
-                }
-                else
-                {
-                    listBox.Sort([](auto const & A, auto const & B) {
-                        return A->Element()->Weight() < B->Element()->Weight();
-                    });
-                }
+            isSortReversed = !isSortReversed;
+        }
 
-                isSortReversed = !isSortReversed;
+        template <typename Stage_t>
+        void SortByWeight(ListBox<Stage_t, item::ItemPtr_t> & listBox, bool & isSortReversed)
+        {
+            if (isSortReversed)
+            {
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return B->Element()->Weight() < A->Element()->Weight();
+                });
+            }
+            else
+            {
+                listBox.Sort([](auto const & A, auto const & B) {
+                    return A->Element()->Weight() < B->Element()->Weight();
+                });
             }
 
-        } // namespace listbox
-    } // namespace gui
+            isSortReversed = !isSortReversed;
+        }
+
+    } // namespace listbox
 } // namespace sfml_util
 } // namespace heroespath
 

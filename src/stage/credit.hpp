@@ -23,11 +23,9 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+
 } // namespace sfml_util
 
 namespace stage
@@ -99,8 +97,8 @@ namespace stage
     private:
         const sf::FloatRect CalcBounds() const;
 
-        sfml_util::gui::TextRegionUPtr_t titleTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t contentTextUPtr_;
+        sfml_util::TextRegionUPtr_t titleTextUPtr_;
+        sfml_util::TextRegionUPtr_t contentTextUPtr_;
         MediaType::Enum mediaType_;
         sfml_util::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;

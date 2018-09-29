@@ -47,11 +47,8 @@ namespace sfml_util
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
-    namespace gui
-    {
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
-    } // namespace gui
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
 } // namespace sfml_util
 
@@ -61,11 +58,11 @@ namespace stage
     // manages the CharacterCreation process
     class CharacterStage
         : public sfml_util::Stage
-        //, public sfml_util::gui::RadioButtonSet::Callback_t::IHandler_t
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
-        , public sfml_util::gui::SliderBar::Callback_t::IHandler_t
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
-        , public sfml_util::gui::TextEntryBox::Callback_t::IHandler_t
+        //, public sfml_util::RadioButtonSet::Callback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
+        , public sfml_util::SliderBar::Callback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::TextEntryBox::Callback_t::IHandler_t
     {
     public:
         CharacterStage(const CharacterStage &) = delete;
@@ -78,17 +75,16 @@ namespace stage
 
         // required by callback handler
 
-        // bool HandleCallback(const sfml_util::gui::RadioButton::Callback_t::PacketPtr_t &)
+        // bool HandleCallback(const sfml_util::RadioButton::Callback_t::PacketPtr_t &)
         // override;
 
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::TextEntryBox::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const sfml_util::TextEntryBox::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -100,8 +96,7 @@ namespace stage
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        const sfml_util::gui::IEntityPtrOpt_t
-            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
         virtual bool AreAnyAnimNumStillMoving() const;
@@ -125,14 +120,14 @@ namespace stage
             const creature::Traits::Enum TRAIT_ENUM,
             const std::string & DESC_KEY,
             const sf::FloatRect & REGION,
-            sfml_util::gui::TextInfo & descTextInfo,
-            sfml_util::gui::TextRegionUVec_t & textRegionUVec);
+            sfml_util::TextInfo & descTextInfo,
+            sfml_util::TextRegionUVec_t & textRegionUVec);
 
         void Setup_AttributeHelpText(
             const creature::Traits::Enum TRAIT_ENUM,
             const sf::FloatRect & REGION,
-            sfml_util::gui::TextInfo & helpTextInfo,
-            sfml_util::gui::TextRegionUVec_t & textRegionUVec);
+            sfml_util::TextInfo & helpTextInfo,
+            sfml_util::TextRegionUVec_t & textRegionUVec);
 
         bool OnSaveButton();
         bool OnBackButton();
@@ -151,7 +146,7 @@ namespace stage
 
         // returns true if any text was set that needs to be displayed
         bool GetStatHelpText(
-            const creature::Traits::Enum WHICH_STAT, sfml_util::gui::TextInfo & textInfo) const;
+            const creature::Traits::Enum WHICH_STAT, sfml_util::TextInfo & textInfo) const;
 
         void UndoAndClearStatModifierChanges();
         void SetVisibleStatsToStatSetBase();
@@ -203,28 +198,28 @@ namespace stage
         //
         sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
-        sfml_util::gui::MainMenuBackground background_;
+        sfml_util::MainMenuBackground background_;
         sfml_util::AnimationUPtr_t smokeAnimUPtr_;
         //
-        sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t saveButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t helpButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t nextButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t backButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t saveButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t helpButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t nextButtonUPtr_;
         //
         creature::StatSet statSetBase_;
         //
-        // sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
-        sfml_util::gui::TextRegionUPtr_t racetDescTextRegionUPtr_;
-        // sfml_util::gui::RadioButtonSetUPtr_t roleRadioButtonUPtr_;
-        sfml_util::gui::TextRegionUPtr_t roletDescTextRegionUPtr_;
-        // sfml_util::gui::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
-        sfml_util::gui::TextEntryBoxUPtr_t nameTextEntryBoxUPtr_;
+        // sfml_util::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
+        sfml_util::TextRegionUPtr_t racetDescTextRegionUPtr_;
+        // sfml_util::RadioButtonSetUPtr_t roleRadioButtonUPtr_;
+        sfml_util::TextRegionUPtr_t roletDescTextRegionUPtr_;
+        // sfml_util::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
+        sfml_util::TextEntryBoxUPtr_t nameTextEntryBoxUPtr_;
         //
-        sfml_util::gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //
-        sfml_util::gui::TextRegionUPtr_t sbInsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t sbInsTextRegionUPtr_;
         sfml_util::sliders::Slider<sf::Uint8, float> sbInsTextSlider_;
-        sfml_util::gui::TextRegionUPtr_t nInsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t nInsTextRegionUPtr_;
         sfml_util::sliders::Slider<sf::Uint8, float> nInsTextSlider_;
         //
         sfml_util::BottomSymbol bottomSymbol_;

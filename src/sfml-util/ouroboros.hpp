@@ -25,7 +25,7 @@ namespace sfml_util
 {
 
     // manages an animated snake image that spins, grows/shrinks, and fades in/out
-    class Ouroboros : public gui::Entity
+    class Ouroboros : public Entity
     {
     public:
         Ouroboros(const Ouroboros &) = delete;

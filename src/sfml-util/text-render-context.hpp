@@ -25,7 +25,7 @@ namespace sfml_util
         struct Context
         {
             Context(
-                const gui::TextInfo & TEXT_INFO,
+                const TextInfo & TEXT_INFO,
                 const TextCleaner & TEXT_CLEANER,
                 const float WIDTH_LIMIT)
                 : text_info(TEXT_INFO)
@@ -44,7 +44,7 @@ namespace sfml_util
 
             bool HasWidthLimit() const { return (width_limit > 0.0f); }
 
-            gui::TextInfo text_info;
+            TextInfo text_info;
             TextCleaner text_cleaner;
             float width_limit;
             float blank_line_height;

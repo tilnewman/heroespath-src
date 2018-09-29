@@ -47,7 +47,7 @@ namespace popup
 
                 if (secondCounter_ > 0)
                 {
-                    sfml_util::gui::TextInfo textInfo(popupInfo_.TextInfo());
+                    sfml_util::TextInfo textInfo(popupInfo_.TextInfo());
 
                     std::ostringstream ss;
                     ss << textInfo.text << "\n" << secondCounter_;

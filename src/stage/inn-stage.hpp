@@ -50,7 +50,7 @@ namespace stage
 
     private:
         sfml_util::StageTitle stageTitle_;
-        sfml_util::gui::BoxEntity backgroundBox_;
+        sfml_util::BoxEntity backgroundBox_;
         sfml_util::CachedTexture candleCachedTexture_;
         sf::Sprite candleSprite_;
         sfml_util::AnimationUPtr_t candleAnimUPtr_;

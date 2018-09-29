@@ -239,7 +239,7 @@ namespace stage
 
         ss << "\n\n";
 
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        const sfml_util::TextInfo TEXT_INFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -259,7 +259,7 @@ namespace stage
 
         const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };
 
-        textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);
     }
 

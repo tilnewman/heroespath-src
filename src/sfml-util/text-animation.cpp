@@ -57,7 +57,7 @@ namespace sfml_util
             auto const END_POS_TOP { REGION.top };
             endPosV_ = sf::Vector2f(END_POS_LEFT, END_POS_TOP);
 
-            const gui::TextInfo TEXT_INFO(
+            const TextInfo TEXT_INFO(
                 TEXT,
                 sfml_util::GuiFont::Default,
                 START_FONT_SIZE_,
@@ -66,7 +66,7 @@ namespace sfml_util
 
             sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
 
-            textRegionUPtr_ = std::make_unique<gui::TextRegion>("TextAnimation's", TEXT_INFO, r);
+            textRegionUPtr_ = std::make_unique<TextRegion>("TextAnimation's", TEXT_INFO, r);
 
             auto const TEXT_POS_LEFT { START_POS_LEFT
                                        - (textRegionUPtr_->GetEntityRegion().width * 0.5f) };
@@ -91,7 +91,7 @@ namespace sfml_util
                                          static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
                                          * SLIDER_POS) };
 
-            const gui::TextInfo TEXT_INFO(
+            const TextInfo TEXT_INFO(
                 TEXT_,
                 sfml_util::GuiFont::Default,
                 FONT_SIZE,

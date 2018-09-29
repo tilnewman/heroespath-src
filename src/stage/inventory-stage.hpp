@@ -47,15 +47,12 @@ namespace sfml_util
         using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
     } // namespace animation
 
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-    } // namespace gui
 } // namespace sfml_util
 
 namespace creature
@@ -90,37 +87,35 @@ namespace stage
     // displays all the information about a player character including the inventory
     class InventoryStage
         : public sfml_util::Stage
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
-        , public sfml_util::gui::ListBox<InventoryStage, item::ItemPtr_t>::Callback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
+        , public sfml_util::ListBox<InventoryStage, item::ItemPtr_t>::Callback_t::IHandler_t
 
-        , public sfml_util::gui::ListBox<InventoryStage, creature::ConditionPtr_t>::Callback_t::
+        , public sfml_util::ListBox<InventoryStage, creature::ConditionPtr_t>::Callback_t::
               IHandler_t
 
-        , public sfml_util::gui::ListBox<InventoryStage, spell::SpellPtr_t>::Callback_t::IHandler_t
+        , public sfml_util::ListBox<InventoryStage, spell::SpellPtr_t>::Callback_t::IHandler_t
 
-        , public sfml_util::gui::ListBox<InventoryStage, creature::TitlePtr_t>::Callback_t::
-              IHandler_t
+        , public sfml_util::ListBox<InventoryStage, creature::TitlePtr_t>::Callback_t::IHandler_t
 
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
-        using ItemListBox_t = sfml_util::gui::ListBox<InventoryStage, item::ItemPtr_t>;
-        using ItemListElementPtr_t = sfml_util::gui::ListElementPtr_t<item::ItemPtr_t>;
+        using ItemListBox_t = sfml_util::ListBox<InventoryStage, item::ItemPtr_t>;
+        using ItemListElementPtr_t = sfml_util::ListElementPtr_t<item::ItemPtr_t>;
         using ItemListBoxUPtr_t = std::unique_ptr<ItemListBox_t>;
-        using ItemListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<item::ItemPtr_t>;
+        using ItemListElementPtrOpt_t = sfml_util::ListElementPtrOpt_t<item::ItemPtr_t>;
 
-        using CondListBox_t = sfml_util::gui::ListBox<InventoryStage, creature::ConditionPtr_t>;
+        using CondListBox_t = sfml_util::ListBox<InventoryStage, creature::ConditionPtr_t>;
         using CondListBoxUPtr_t = std::unique_ptr<CondListBox_t>;
 
-        using CondListElementPtrOpt_t
-            = sfml_util::gui::ListElementPtrOpt_t<creature::ConditionPtr_t>;
+        using CondListElementPtrOpt_t = sfml_util::ListElementPtrOpt_t<creature::ConditionPtr_t>;
 
-        using SpellListBox_t = sfml_util::gui::ListBox<InventoryStage, spell::SpellPtr_t>;
+        using SpellListBox_t = sfml_util::ListBox<InventoryStage, spell::SpellPtr_t>;
         using SpellListBoxUPtr_t = std::unique_ptr<SpellListBox_t>;
-        using SpellListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<spell::SpellPtr_t>;
+        using SpellListElementPtrOpt_t = sfml_util::ListElementPtrOpt_t<spell::SpellPtr_t>;
 
-        using TitleListBox_t = sfml_util::gui::ListBox<InventoryStage, creature::TitlePtr_t>;
+        using TitleListBox_t = sfml_util::ListBox<InventoryStage, creature::TitlePtr_t>;
         using TitleListBoxUPtr_t = std::unique_ptr<TitleListBox_t>;
-        using TitleListElementPtrOpt_t = sfml_util::gui::ListElementPtrOpt_t<creature::TitlePtr_t>;
+        using TitleListElementPtrOpt_t = sfml_util::ListElementPtrOpt_t<creature::TitlePtr_t>;
 
         enum class ViewType
         {
@@ -176,10 +171,9 @@ namespace stage
 
         bool HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -205,10 +199,10 @@ namespace stage
         void Setup_SortButton(
             const std::string & NAME,
             const std::string & IMAGE_PATH_KEY,
-            sfml_util::gui::ImageTextEntityUPtr_t & sortButtonUPtr);
+            sfml_util::ImageTextEntityUPtr_t & sortButtonUPtr);
 
         void Setup_MenuButton(
-            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr,
+            sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
             const std::string & TEXT,
             const float HORIZ_OFFSET_MULT);
 
@@ -333,13 +327,12 @@ namespace stage
         void SetDetailViewQuads();
 
         bool IfMouseDownIsOnDisabledButtonPopupRejection(
-            const sfml_util::gui::ImageTextEntityUPtr_t & BUTTON_UPTR,
-            const sf::Vector2f & MOUSE_POS_V);
+            const sfml_util::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V);
 
         template <typename Element_t>
-        bool HandleConditionOrTitleCallback(const typename sfml_util::gui::ListBox<
-                                            InventoryStage,
-                                            Element_t>::Callback_t::PacketPtr_t & PACKET_PTR)
+        bool HandleConditionOrTitleCallback(
+            const typename sfml_util::ListBox<InventoryStage, Element_t>::Callback_t::PacketPtr_t &
+                PACKET_PTR)
         {
             if ((PACKET_PTR->gui_event == sfml_util::GuiEvent::Click)
                 || (PACKET_PTR->gui_event == sfml_util::GuiEvent::SelectionChange)
@@ -355,7 +348,7 @@ namespace stage
 
         template <typename Element_t>
         bool SetDescBoxTextToSelectedForConditionOrTitle(
-            const sfml_util::gui::ListBox<InventoryStage, Element_t> & LISTBOX)
+            const sfml_util::ListBox<InventoryStage, Element_t> & LISTBOX)
         {
             if (LISTBOX.Empty())
             {
@@ -376,7 +369,7 @@ namespace stage
         void UpdateCreatureImage();
 
         void SetButtonDisabledIf(
-            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE);
+            sfml_util::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE);
 
         static const float VIEW_CHANGE_SLIDER_SPEED_;
         static const float VIEW_CHANGE_BETWEEN_TIME_SEC_;
@@ -420,7 +413,7 @@ namespace stage
         const sf::Color LISTBOX_COLOR_TITLE_;
         const sf::Color DESCBOX_TEXT_COLOR_;
         const unsigned int DESCBOX_TEXT_SIZE_;
-        const sfml_util::gui::FocusColors LISTBOX_COLORSET_;
+        const sfml_util::FocusColors LISTBOX_COLORSET_;
         sfml_util::StageTitle stageTitle_;
         const float CREATURE_IMAGE_POS_TOP_;
         const float LISTBOX_POS_TOP_;
@@ -429,8 +422,8 @@ namespace stage
         const sf::FloatRect LISTBOX_REGION_RIGHT_;
         const float DESCBOX_MARGIN_;
         const sfml_util::Margins DESCBOX_MARGINS_;
-        sfml_util::gui::BoxEntityInfo listBoxInfoLeft_;
-        sfml_util::gui::BoxEntityInfo listBoxInfoRight_;
+        sfml_util::BoxEntityInfo listBoxInfoLeft_;
+        sfml_util::BoxEntityInfo listBoxInfoRight_;
         // listBoxPacketLeft_;
         const float DETAILVIEW_WIDTH_;
         const float DETAILVIEW_HEIGHT_;
@@ -441,7 +434,7 @@ namespace stage
         const float SORT_ICON_POS_TOP_;
         const sf::Color SORT_ICON_COLOR_;
 
-        const sfml_util::gui::TextInfo LIST_ELEMENT_TEXT_INFO_DEFAULT_;
+        const sfml_util::TextInfo LIST_ELEMENT_TEXT_INFO_DEFAULT_;
         creature::CreaturePtr_t creaturePtr_;
         sfml_util::BottomSymbol bottomSymbol_;
         sfml_util::CachedTexture paperBgCachedTexture_;
@@ -484,10 +477,10 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> listBoxSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> descBoxSlider_;
 
-        sfml_util::gui::TextRegionUPtr_t detailsTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t detailsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t statsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t eqTitleTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
 
         ItemListBoxUPtr_t itemLeftListBoxUPtr_; // equipped items
         CondListBoxUPtr_t condLeftListBoxUPtr_;
@@ -496,29 +489,29 @@ namespace stage
 
         ItemListBoxUPtr_t itemRightListBoxUPtr_; // unequipped items
 
-        sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
-        sfml_util::gui::BoxEntityUPtr_t descBoxUPtr_;
-        sfml_util::gui::TextRegionUPtr_t centerTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t insTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
+        sfml_util::BoxEntityUPtr_t descBoxUPtr_;
+        sfml_util::TextRegionUPtr_t centerTextRegionUPtr_;
 
-        sfml_util::gui::ImageTextEntityUPtr_t backButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t itemsButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t titlesButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t condsButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t spellsButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t giveButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t shareButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t gatherButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t equipButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t unequipButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t dropButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t backButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t itemsButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t titlesButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t condsButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t spellsButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t giveButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t shareButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t gatherButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t equipButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t unequipButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t dropButtonUPtr_;
 
-        sfml_util::gui::ImageTextEntityUPtr_t eqSortButtonNameUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t eqSortButtonPriceUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t eqSortButtonWeightUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t unEqSortButtonNameUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t unEqSortButtonPriceUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t unEqSortButtonWeightUPtr_;
+        sfml_util::ImageTextEntityUPtr_t eqSortButtonNameUPtr_;
+        sfml_util::ImageTextEntityUPtr_t eqSortButtonPriceUPtr_;
+        sfml_util::ImageTextEntityUPtr_t eqSortButtonWeightUPtr_;
+        sfml_util::ImageTextEntityUPtr_t unEqSortButtonNameUPtr_;
+        sfml_util::ImageTextEntityUPtr_t unEqSortButtonPriceUPtr_;
+        sfml_util::ImageTextEntityUPtr_t unEqSortButtonWeightUPtr_;
 
         bool isSortReversedEqName_;
         bool isSortReversedEqPrice_;
@@ -548,7 +541,7 @@ namespace stage
         sf::VertexArray detailViewQuads_;
         sf::Sprite detailViewSprite_;
         sfml_util::CachedTextureOpt_t detailViewCachedTextureOpt_;
-        sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
+        sfml_util::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
         // members that support spell casting (and song playing)

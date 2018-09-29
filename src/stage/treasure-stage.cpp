@@ -113,8 +113,7 @@ namespace stage
         Stage::ClearAllEntities();
     }
 
-    bool TreasureStage::HandleCallback(
-        const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool TreasureStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->Name() == POPUP_NAME_NO_TREASURE_)
         {

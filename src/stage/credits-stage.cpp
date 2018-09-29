@@ -90,7 +90,7 @@ namespace stage
         }();
 
         // rune background
-        sfml_util::gui::BoxEntityInfo boxInfo;
+        sfml_util::BoxEntityInfo boxInfo;
 
         boxInfo.SetupImage(
             sfml_util::CachedTexture(
@@ -104,19 +104,18 @@ namespace stage
             sfml_util::Side::None,
             sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-        boxInfo.focus_colors = sfml_util::gui::FocusColors(
+        boxInfo.focus_colors = sfml_util::FocusColors(
             sfml_util::color::GrayLight,
             sf::Color::Transparent,
             sfml_util::color::GrayLight,
             sf::Color::Transparent);
 
-        boxUPtr_
-            = std::make_unique<sfml_util::gui::BoxEntity>("Credits", CREDITS_BOX_REGION, boxInfo);
+        boxUPtr_ = std::make_unique<sfml_util::BoxEntity>("Credits", CREDITS_BOX_REGION, boxInfo);
 
-        sfml_util::gui::BoxEntityInfo boxBorderInfo;
+        sfml_util::BoxEntityInfo boxBorderInfo;
         boxBorderInfo.SetupBorder(true);
 
-        boxBorderUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+        boxBorderUPtr_ = std::make_unique<sfml_util::BoxEntity>(
             "CreditsBorder", CREDITS_BOX_REGION, boxBorderInfo);
 
         // draw solid black rectangles above and below the credits box to hide the

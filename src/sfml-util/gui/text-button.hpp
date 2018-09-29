@@ -22,51 +22,47 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Base class for a text button that has different text styles for mouse positions
+    class TextButton : public TextEntity
     {
+    public:
+        using Callback_t = Callback<TextButton>;
 
-        // Base class for a text button that has different text styles for mouse positions
-        class TextButton : public TextEntity
-        {
-        public:
-            using Callback_t = Callback<TextButton>;
+        TextButton(const TextButton &) = delete;
+        TextButton(TextButton &&) = delete;
+        TextButton & operator=(const TextButton &) = delete;
+        TextButton & operator=(TextButton &&) = delete;
 
-            TextButton(const TextButton &) = delete;
-            TextButton(TextButton &&) = delete;
-            TextButton & operator=(const TextButton &) = delete;
-            TextButton & operator=(TextButton &&) = delete;
+        // if using this constructor, Setup() must be called before any other functions
+        TextButton(
+            const std::string & NAME, const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 
-            // if using this constructor, Setup() must be called before any other functions
-            TextButton(
-                const std::string & NAME,
-                const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
+        TextButton(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 
-            TextButton(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
+        virtual ~TextButton();
 
-            virtual ~TextButton();
+        void Setup(
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
 
-            void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const Callback_t::IHandlerPtrOpt_t CALLBACK_HANDLER_PTR_OPT);
+    protected:
+        void OnClick(const sf::Vector2f &) override;
 
-        protected:
-            void OnClick(const sf::Vector2f &) override;
+    private:
+        Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
+    };
 
-        private:
-            Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
-        };
+    using TextButtonUPtr_t = std::unique_ptr<TextButton>;
+    using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
 
-        using TextButtonUPtr_t = std::unique_ptr<TextButton>;
-        using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

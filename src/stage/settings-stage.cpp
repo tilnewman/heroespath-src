@@ -49,14 +49,14 @@ namespace stage
         , screenBgBox_(
               "SettingsStage'sBackground",
               StageRegion(),
-              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , stageTitle_("media-images-buttons-mainmenu-settings-normal")
         , bottomSymbol_()
-        , backButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Previous,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , settingsBoxUPtr_()
         , resLabelTextRegionUPtr_()
@@ -75,7 +75,7 @@ namespace stage
     SettingsStage::~SettingsStage() { Stage::ClearAllEntities(); }
 
     /*bool SettingsStage::HandleCallback(
-        const sfml_util::gui::RadioButton::Callback_t::PacketPtr_t & PACKAGE_PTR)
+        const sfml_util::RadioButton::Callback_t::PacketPtr_t & PACKAGE_PTR)
     {
         if (PACKAGE.PTR_ == aaRadioButtonSetUPtr_.get())
         {
@@ -98,7 +98,7 @@ namespace stage
         }
     }*/
 
-    bool SettingsStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &)
+    bool SettingsStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &)
     {
         /*
         M_HP_LOG(
@@ -276,11 +276,11 @@ namespace stage
             BG_BOX_WIDTH - (BG_BOX_INNER_PAD * 2.0f),
             BG_BOX_HEIGHT - (BG_BOX_INNER_PAD * 2.0f));
 
-        sfml_util::gui::BoxEntityInfo bgBoxbgInfo;
+        sfml_util::BoxEntityInfo bgBoxbgInfo;
 
         bgBoxbgInfo.SetupBorder(true);
 
-        bgBoxbgInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color::White);
+        bgBoxbgInfo.focus_colors = sfml_util::FocusColors(sf::Color::White);
 
         bgBoxbgInfo.SetupImage(
             sfml_util::CachedTexture(
@@ -288,7 +288,7 @@ namespace stage
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
             sfml_util::ScreenRatioToPixelsHoriz(0.06f));
 
-        settingsBoxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+        settingsBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
             "SettingsStageBackground", BG_BOX_RECT, bgBoxbgInfo);
 
         return BG_BOX_RECT_INNER;
@@ -298,7 +298,7 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            resLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            resLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "ResolutionChangeLabel", CreateLabelTextInfo("Change Resolution"), sf::FloatRect());
 
             EntityAdd(resLabelTextRegionUPtr_.get());
@@ -318,10 +318,10 @@ namespace stage
             resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfml_util::MapByRes(20.0f, 50.0f),
-                sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
+                sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
                 sfml_util::IStagePtr_t(this));
 
-            resRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::FocusColors(
+            resRadioButtonSetUPtr_->SetEntityColors(sfml_util::FocusColors(
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60),
                 sf::Color(180, 180, 180),
@@ -342,7 +342,7 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            aaLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            aaLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "AntiAliasSettingLabel", CreateLabelTextInfo("Anti-\nAliasing"), sf::FloatRect());
 
             EntityAdd(aaLabelTextRegionUPtr_.get());
@@ -361,7 +361,7 @@ namespace stage
     {
         /*if (false == hasStageAlreadyBeenSetup_)
         {
-            const sfml_util::gui::TextInfo TEXT_INFO(
+            const sfml_util::TextInfo TEXT_INFO(
                 " ",
                 sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small());
@@ -369,7 +369,7 @@ namespace stage
             const std::vector<std::string> LABELS_VEC
                 = { "0   ", "1   ", "2   ", "4   ", "8   ", "16  " };
 
-            sfml_util::gui::BoxEntityInfo radioButtonSetBoxInfo;
+            sfml_util::BoxEntityInfo radioButtonSetBoxInfo;
 
             radioButtonSetBoxInfo.SetupColor(
                 sf::Color::Transparent,
@@ -380,7 +380,7 @@ namespace stage
             radioButtonSetBoxInfo.SetupBorder(true, 1.0f);
 
             radioButtonSetBoxInfo.focus_colors
-                = sfml_util::gui::FocusColors(sf::Color(180, 180, 180));
+                = sfml_util::FocusColors(sf::Color(180, 180, 180));
 
             // establish which antialiasing level is current
             std::size_t aaInitialSelection(0);
@@ -430,8 +430,8 @@ namespace stage
                 }
             }
 
-            aaRadioButtonSetUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
-                sfml_util::gui::RadioButtonSetCallbackHandlerPtr_t(this),
+            aaRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet>(
+                sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
                 "Antialias",
                 0.0f,
                 0.0f,
@@ -442,7 +442,7 @@ namespace stage
                 std::vector<std::size_t>(),
                 radioButtonSetBoxInfo);
 
-            aaRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::FocusColors(
+            aaRadioButtonSetUPtr_->SetEntityColors(sfml_util::FocusColors(
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60),
                 sf::Color(180, 180, 180),
@@ -464,7 +464,7 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            musicVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            musicVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "MusicVolumeSettingLabel", CreateLabelTextInfo("Music\nVolume"), sf::FloatRect());
 
             EntityAdd(musicVolLabelTextRegionUPtr_.get());
@@ -483,12 +483,12 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBarMusic>(
+            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarMusic>(
                 "MusicVolume",
                 0.0f,
                 0.0f,
                 SLIDER_LENGTH_VERT_,
-                sfml_util::gui::SliderStyle(),
+                sfml_util::SliderStyle(),
                 CreateSliderbarValueTextInfoSet(),
                 0.5f,
                 0.0f,
@@ -510,12 +510,12 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            effectsVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            effectsVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "EffectsVolumeSettingLabel",
                 CreateLabelTextInfo("Sound Effects\nVolume"),
                 sf::FloatRect(),
-                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                sfml_util::gui::BoxEntityInfo());
+                sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::BoxEntityInfo());
 
             EntityAdd(effectsVolLabelTextRegionUPtr_.get());
         }
@@ -533,12 +533,12 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBarSfx>(
+            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarSfx>(
                 "EffectsVolume",
                 0.0f,
                 0.0f,
                 SLIDER_LENGTH_VERT_,
-                sfml_util::gui::SliderStyle(),
+                sfml_util::SliderStyle(),
                 CreateSliderbarValueTextInfoSet(),
                 0.5f,
                 0.0f,
@@ -560,7 +560,7 @@ namespace stage
     {
         if (false == hasStageAlreadyBeenSetup_)
         {
-            musicInfoLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            musicInfoLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "MusicInfoLabel", CreateLabelTextInfo("Music Currently Playing"), sf::FloatRect());
 
             EntityAdd(musicInfoLabelTextRegionUPtr_.get());
@@ -613,14 +613,14 @@ namespace stage
             ss << " ";
         }
 
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        const sfml_util::TextInfo TEXT_INFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::color::Light,
             sfml_util::Justified::Center);
 
-        sfml_util::gui::BoxEntityInfo musicBoxInfo;
+        sfml_util::BoxEntityInfo musicBoxInfo;
 
         musicBoxInfo.SetupColor(
             sf::Color::Transparent,
@@ -630,23 +630,23 @@ namespace stage
 
         musicBoxInfo.SetupBorder(true, 1.0f);
 
-        musicBoxInfo.focus_colors = sfml_util::gui::FocusColors(sf::Color(180, 180, 180));
+        musicBoxInfo.focus_colors = sfml_util::FocusColors(sf::Color(180, 180, 180));
 
         if (false == hasStageAlreadyBeenSetup_)
         {
-            musicInfoDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            musicInfoDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "SettingsStageMusicInfo",
                 TEXT_INFO,
                 RECT,
                 this,
-                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
                 musicBoxInfo);
 
             EntityAdd(musicInfoDetailsTextRegionUPtr_.get());
         }
 
         musicInfoDetailsTextRegionUPtr_->Setup(
-            TEXT_INFO, RECT, sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_, musicBoxInfo);
+            TEXT_INFO, RECT, sfml_util::TextRegion::DEFAULT_NO_RESIZE_, musicBoxInfo);
     }
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
@@ -654,7 +654,7 @@ namespace stage
         std::ostringstream ss;
         ss << "Revision: " << game::GameDataFile::Instance()->GetCopyStr("system-revision");
 
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        const sfml_util::TextInfo TEXT_INFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -663,7 +663,7 @@ namespace stage
 
         if (false == hasStageAlreadyBeenSetup_)
         {
-            revLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            revLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "RevisionNumber", TEXT_INFO, sf::FloatRect());
 
             EntityAdd(revLabelTextRegionUPtr_.get());
@@ -678,10 +678,9 @@ namespace stage
         revLabelTextRegionUPtr_->Setup(TEXT_INFO, sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
-    const sfml_util::gui::TextInfo
-        SettingsStage::CreateLabelTextInfo(const std::string & TITLE) const
+    const sfml_util::TextInfo SettingsStage::CreateLabelTextInfo(const std::string & TITLE) const
     {
-        return sfml_util::gui::TextInfo(
+        return sfml_util::TextInfo(
             TITLE,
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -689,9 +688,9 @@ namespace stage
             sfml_util::Justified::Center);
     }
 
-    const sfml_util::gui::MouseTextInfo SettingsStage::CreateSliderbarValueTextInfoSet() const
+    const sfml_util::MouseTextInfo SettingsStage::CreateSliderbarValueTextInfoSet() const
     {
-        return sfml_util::gui::MouseTextInfo(
+        return sfml_util::MouseTextInfo(
             "",
             sfml_util::GuiFont::Number,
             sfml_util::FontManager::Instance()->Size_Small(),

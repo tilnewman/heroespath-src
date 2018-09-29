@@ -17,31 +17,28 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+
+    // Responsible for implementing a BoxEntity that draws the standard menu stage background
+    // tiled image with gradient.
+    class MainMenuBackground : public sf::Drawable
     {
+    public:
+        MainMenuBackground();
 
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+        MainMenuBackground(const MainMenuBackground &) = delete;
+        MainMenuBackground(MainMenuBackground &&) = delete;
+        MainMenuBackground & operator=(const MainMenuBackground &) = delete;
+        MainMenuBackground & operator=(MainMenuBackground &&) = delete;
 
-        // Responsible for implementing a BoxEntity that draws the standard menu stage background
-        // tiled image with gradient.
-        class MainMenuBackground : public sf::Drawable
-        {
-        public:
-            MainMenuBackground();
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            MainMenuBackground(const MainMenuBackground &) = delete;
-            MainMenuBackground(MainMenuBackground &&) = delete;
-            MainMenuBackground & operator=(const MainMenuBackground &) = delete;
-            MainMenuBackground & operator=(MainMenuBackground &&) = delete;
+    private:
+        BoxEntityUPtr_t boxUPtr_;
+    };
 
-            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-
-        private:
-            BoxEntityUPtr_t boxUPtr_;
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -59,7 +59,7 @@ namespace stage
         , backgroundBox_(
               "CampStage'sBackground",
               StageRegion(),
-              sfml_util::gui::BoxEntityInfo(sfml_util::CachedTexture(
+              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , fireAnimUPtr_()
@@ -86,7 +86,7 @@ namespace stage
         Stage::ClearAllEntities();
     }
 
-    bool CampStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CampStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         auto const CALLBACK_NAME { PACKET_PTR->Name() };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)

@@ -43,14 +43,14 @@ namespace sfml_util
         // Justification can change position, the RenderTexture might have been re-used so its
         // size might not match Size(REGION) or Size(Result.region)
         static bool ToTexture(
-            const gui::TextInfo &,
+            const TextInfo &,
             const sf::FloatRect & BOUNDING_REGION,
             RenderTextureUPtr_t &,
             sf::FloatRect & finalRegion);
 
         // same as Render() above only this version will setup the sprite on success
         static bool ToSprite(
-            const gui::TextInfo &,
+            const TextInfo &,
             const sf::FloatRect & BOUNDING_REGION,
             RenderTextureUPtr_t &,
             sf::Sprite &);

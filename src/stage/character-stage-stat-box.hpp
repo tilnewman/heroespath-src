@@ -28,16 +28,13 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-        using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
 
-    } // namespace gui
 } // namespace sfml_util
 namespace stage
 {
@@ -133,7 +130,7 @@ namespace stage
         void Sync();
 
         sfml_util::IStagePtr_t owningStagePtr_;
-        sfml_util::gui::BoxEntityUPtr_t boxUPtr_;
+        sfml_util::BoxEntityUPtr_t boxUPtr_;
         std::vector<sf::FloatRect> fullRegions_;
         std::vector<sf::FloatRect> labelRegions_;
         std::vector<sf::FloatRect> numberRegions_;
@@ -144,7 +141,7 @@ namespace stage
         creature::StatSet baseSet_;
         creature::StatSet modSet_;
         creature::StatSet currentSet_;
-        std::vector<sfml_util::gui::TextRegionUVec_t> modTextRegionVecs_;
+        std::vector<sfml_util::TextRegionUVec_t> modTextRegionVecs_;
         bool willShowModValues_;
         bool doAllStatsHaveValues_;
         float textScale_;

@@ -168,12 +168,12 @@ namespace popup
         return PATH.string();
     }
 
-    const sfml_util::gui::TextInfo PopupManager::TextInfoDefault(
+    const sfml_util::TextInfo PopupManager::TextInfoDefault(
         const std::string & TEXT,
         const sfml_util::Justified::Enum JUSTIFIED,
         const unsigned int FONT_SIZE) const
     {
-        return sfml_util::gui::TextInfo(
+        return sfml_util::TextInfo(
             TEXT, sfml_util::GuiFont::System, FONT_SIZE, fontColor_, JUSTIFIED);
     }
 

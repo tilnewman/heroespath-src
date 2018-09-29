@@ -53,12 +53,12 @@ namespace creature
 
         const std::string LargestLetterString() const { return std::string(1, LargestLetter()); }
 
-        const sfml_util::gui::TextInfo MakeTextInfo() const
+        const sfml_util::TextInfo MakeTextInfo() const
         {
             return MakeTextInfo(DefaultFont(), DefaultSize());
         }
 
-        const sfml_util::gui::TextInfo
+        const sfml_util::TextInfo
             MakeTextInfo(const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const;
 
         const sf::Vector2f Size() const { return Size(MakeTextInfo()); }
@@ -69,7 +69,7 @@ namespace creature
             return Size(MakeTextInfo(FONT, CHAR_SIZE));
         }
 
-        const sf::Vector2f Size(const sfml_util::gui::TextInfo & TEXT_INFO) const;
+        const sf::Vector2f Size(const sfml_util::TextInfo & TEXT_INFO) const;
 
         const sf::Vector2f ScreenRatio() const { return ConvertSizeToScreenRatio(Size()); }
 
@@ -79,7 +79,7 @@ namespace creature
             return ConvertSizeToScreenRatio(Size(FONT, CHAR_SIZE));
         }
 
-        const sf::Vector2f ScreenRatio(const sfml_util::gui::TextInfo & TEXT_INFO) const
+        const sf::Vector2f ScreenRatio(const sfml_util::TextInfo & TEXT_INFO) const
         {
             return ConvertSizeToScreenRatio(Size(TEXT_INFO));
         }

@@ -26,7 +26,7 @@ namespace popup
 
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const sfml_util::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
@@ -99,7 +99,7 @@ namespace popup
 
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const sfml_util::TextInfo & TEXT_INFO,
         const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
         const std::size_t INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
@@ -136,7 +136,7 @@ namespace popup
 
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const sfml_util::TextInfo & TEXT_INFO,
         const std::size_t THE_MIN,
         const std::size_t THE_MAX)
         : name_(NAME)
@@ -165,7 +165,7 @@ namespace popup
 
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const sfml_util::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
         const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
         : name_(NAME)

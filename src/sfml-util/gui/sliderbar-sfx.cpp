@@ -21,87 +21,84 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+    bool SliderBarSfx::isConstructionAndInitFinished_ { false };
+
+    SliderBarSfx::SliderBarSfx(
+        const std::string & NAME,
+        const float POS_LEFT,
+        const float POS_TOP,
+        const float LENGTH,
+        const SliderStyle & STYLE,
+        const MouseTextInfo & THREE_TEXT_INFOS,
+        const float INITIAL_VALUE,
+        const float RELATIVE_LABEL_POS_LEFT,
+        const float RELATIVE_LABEL_POS_TOP)
+        : SliderBarLabeled(
+              std::string(NAME).append("_SliderBarMusic"),
+              POS_LEFT,
+              POS_TOP,
+              LENGTH,
+              STYLE,
+              THREE_TEXT_INFOS,
+              INITIAL_VALUE,
+              RELATIVE_LABEL_POS_LEFT,
+              RELATIVE_LABEL_POS_TOP)
+        , willPlaySfx_(false)
+        , timeSinceLastPlaySec_(0.0f)
     {
-        bool SliderBarSfx::isConstructionAndInitFinished_ { false };
+        PositionRatio(sfml_util::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
+        isConstructionAndInitFinished_ = true;
+    }
 
-        SliderBarSfx::SliderBarSfx(
-            const std::string & NAME,
-            const float POS_LEFT,
-            const float POS_TOP,
-            const float LENGTH,
-            const SliderStyle & STYLE,
-            const MouseTextInfo & THREE_TEXT_INFOS,
-            const float INITIAL_VALUE,
-            const float RELATIVE_LABEL_POS_LEFT,
-            const float RELATIVE_LABEL_POS_TOP)
-            : SliderBarLabeled(
-                  std::string(NAME).append("_SliderBarMusic"),
-                  POS_LEFT,
-                  POS_TOP,
-                  LENGTH,
-                  STYLE,
-                  THREE_TEXT_INFOS,
-                  INITIAL_VALUE,
-                  RELATIVE_LABEL_POS_LEFT,
-                  RELATIVE_LABEL_POS_TOP)
-            , willPlaySfx_(false)
-            , timeSinceLastPlaySec_(0.0f)
+    SliderBarSfx::~SliderBarSfx() = default;
+
+    void SliderBarSfx::OnChange(const float CURRENT_POS_RATIO)
+    {
+        auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
+        SoundManager::Instance()->SoundEffectVolumeSet(CURRENT_POS_PERCENT);
+        SliderBarLabeled::OnChange(CURRENT_POS_RATIO);
+    }
+
+    const TextInfo SliderBarSfx::CreateTextToDisplay(const float CURRENT_POS_RATIO)
+    {
+        auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
+        auto const CURRENT_POS_PERCENT_INT { static_cast<int>(CURRENT_POS_PERCENT) };
+        TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT_INT) };
+
+        std::ostringstream ss;
+
+        if (CURRENT_POS_PERCENT_INT == 0)
         {
-            PositionRatio(sfml_util::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
-            isConstructionAndInitFinished_ = true;
+            ss << "MUTE";
+            textInfo.font_letters = sfml_util::GuiFont::SystemCondensed;
+        }
+        else
+        {
+            ss << CURRENT_POS_PERCENT_INT;
+            textInfo.font_letters = sfml_util::GuiFont::Number;
         }
 
-        SliderBarSfx::~SliderBarSfx() = default;
+        textInfo.text = ss.str();
+        return textInfo;
+    }
 
-        void SliderBarSfx::OnChange(const float CURRENT_POS_RATIO)
+    bool SliderBarSfx::UpdateTime(const float ELAPSED_TIME_SEC)
+    {
+        if (isConstructionAndInitFinished_ && willPlaySfx_)
         {
-            auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
-            SoundManager::Instance()->SoundEffectVolumeSet(CURRENT_POS_PERCENT);
-            SliderBarLabeled::OnChange(CURRENT_POS_RATIO);
-        }
+            timeSinceLastPlaySec_ += ELAPSED_TIME_SEC;
 
-        const TextInfo SliderBarSfx::CreateTextToDisplay(const float CURRENT_POS_RATIO)
-        {
-            auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
-            auto const CURRENT_POS_PERCENT_INT { static_cast<int>(CURRENT_POS_PERCENT) };
-            gui::TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT_INT) };
-
-            std::ostringstream ss;
-
-            if (CURRENT_POS_PERCENT_INT == 0)
+            if (timeSinceLastPlaySec_ > 0.5f)
             {
-                ss << "MUTE";
-                textInfo.font_letters = sfml_util::GuiFont::SystemCondensed;
+                willPlaySfx_ = false;
+                timeSinceLastPlaySec_ = 0.0f;
+                SoundManager::Instance()->PlaySfx_Reject();
+                return true;
             }
-            else
-            {
-                ss << CURRENT_POS_PERCENT_INT;
-                textInfo.font_letters = sfml_util::GuiFont::Number;
-            }
-
-            textInfo.text = ss.str();
-            return textInfo;
         }
 
-        bool SliderBarSfx::UpdateTime(const float ELAPSED_TIME_SEC)
-        {
-            if (isConstructionAndInitFinished_ && willPlaySfx_)
-            {
-                timeSinceLastPlaySec_ += ELAPSED_TIME_SEC;
+        return false;
+    }
 
-                if (timeSinceLastPlaySec_ > 0.5f)
-                {
-                    willPlaySfx_ = false;
-                    timeSinceLastPlaySec_ = 0.0f;
-                    SoundManager::Instance()->PlaySfx_Reject();
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

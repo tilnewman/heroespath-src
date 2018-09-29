@@ -18,7 +18,7 @@ namespace sfml_util
     namespace text_rendering
     {
 
-        TextCleaner::TextCleaner(const gui::TextInfo & TEXT_INFO)
+        TextCleaner::TextCleaner(const TextInfo & TEXT_INFO)
             : text("")
             , newline_count(0)
             , uniform_font(GuiFont::Count)

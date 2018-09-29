@@ -19,54 +19,51 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for implementing an ImageTextEntity that behaves like a one of the standard
+    // menu stage buttons such as Back/Next/etc.
+    class MainMenuButton : public sfml_util::ImageTextEntity
     {
+    public:
+        MainMenuButton(const MainMenuButton &) = delete;
+        MainMenuButton(MainMenuButton &&) = delete;
+        MainMenuButton & operator=(const MainMenuButton &) = delete;
+        MainMenuButton & operator=(MainMenuButton &&) = delete;
 
-        // Responsible for implementing an ImageTextEntity that behaves like a one of the standard
-        // menu stage buttons such as Back/Next/etc.
-        class MainMenuButton : public sfml_util::gui::ImageTextEntity
+        // if FORCED_IMAGE_WIDTH=0 it is ignored, if <0 then the default is used
+        explicit MainMenuButton(
+            const LoopState::Enum TRANSITION_TO = LoopState::Count,
+            const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
+            = boost::none,
+            const float FORCED_IMAGE_WIDTH = 0.0f,
+            const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f));
+
+        virtual ~MainMenuButton() = default;
+
+        static float DefaultWidth();
+
+        void PretendClicked(const sf::Vector2f & FAKE_MOUSE_POS_V = sf::Vector2f(-1.0f, -1.0f))
         {
-        public:
-            MainMenuButton(const MainMenuButton &) = delete;
-            MainMenuButton(MainMenuButton &&) = delete;
-            MainMenuButton & operator=(const MainMenuButton &) = delete;
-            MainMenuButton & operator=(MainMenuButton &&) = delete;
+            OnClick(FAKE_MOUSE_POS_V);
+        }
 
-            // if FORCED_IMAGE_WIDTH=0 it is ignored, if <0 then the default is used
-            explicit MainMenuButton(
-                const LoopState::Enum TRANSITION_TO = LoopState::Count,
-                const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
-                = boost::none,
-                const float FORCED_IMAGE_WIDTH = 0.0f,
-                const sf::Vector2f & POS_V = sf::Vector2f(0.0f, 0.0f));
+    protected:
+        void OnClick(const sf::Vector2f &) override;
 
-            virtual ~MainMenuButton() = default;
+        static const MouseImageInfo MakeMouseImageInfo(
+            const LoopState::Enum TRANSITION_TO,
+            const sf::Vector2f & POS_V,
+            const float FORCED_IMAGE_WIDTH);
 
-            static float DefaultWidth();
+    private:
+        static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
 
-            void PretendClicked(const sf::Vector2f & FAKE_MOUSE_POS_V = sf::Vector2f(-1.0f, -1.0f))
-            {
-                OnClick(FAKE_MOUSE_POS_V);
-            }
+        sfml_util::LoopState::Enum transitionTo_;
+    };
 
-        protected:
-            void OnClick(const sf::Vector2f &) override;
+    using MainMenuButtonUPtr_t = std::unique_ptr<MainMenuButton>;
+    using MainMenuButtonUVec_t = std::vector<MainMenuButtonUPtr_t>;
 
-            static const MouseImageInfo MakeMouseImageInfo(
-                const LoopState::Enum TRANSITION_TO,
-                const sf::Vector2f & POS_V,
-                const float FORCED_IMAGE_WIDTH);
-
-        private:
-            static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
-
-            sfml_util::LoopState::Enum transitionTo_;
-        };
-
-        using MainMenuButtonUPtr_t = std::unique_ptr<MainMenuButton>;
-        using MainMenuButtonUVec_t = std::vector<MainMenuButtonUPtr_t>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

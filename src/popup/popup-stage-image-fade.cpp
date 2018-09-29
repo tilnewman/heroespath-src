@@ -42,7 +42,7 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        const sfml_util::gui::TextInfo TITLE_TEXTINFO(
+        const sfml_util::TextInfo TITLE_TEXTINFO(
             popupInfo_.TitleText(),
             sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
@@ -53,10 +53,10 @@ namespace popup
         auto titleRegion { textRegion_ };
         titleRegion.height = 0.0f;
 
-        titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        titleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "ImageFadePopupTitle", TITLE_TEXTINFO, titleRegion);
 
-        const sfml_util::gui::TextInfo DESC_TEXTINFO(
+        const sfml_util::TextInfo DESC_TEXTINFO(
             popupInfo_.DescText(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -66,7 +66,7 @@ namespace popup
         auto descRegion { textRegion_ };
         descRegion.height = 0.0f;
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "ImageFadePopupDesc", DESC_TEXTINFO, descRegion);
 
         descRegion = descTextRegionUPtr_->GetEntityRegion();

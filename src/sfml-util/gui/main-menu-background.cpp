@@ -18,35 +18,32 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    MainMenuBackground::MainMenuBackground()
+        : boxUPtr_()
     {
+        sfml_util::BoxEntityInfo backgroundBoxInfo;
 
-        MainMenuBackground::MainMenuBackground()
-            : boxUPtr_()
-        {
-            sfml_util::gui::BoxEntityInfo backgroundBoxInfo;
+        backgroundBoxInfo.SetupImage(
+            sfml_util::CachedTexture(
+                "media-images-backgrounds-tile-darkknot",
+                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+            sfml_util::ScreenRatioToPixelsHoriz(0.075f));
 
-            backgroundBoxInfo.SetupImage(
-                sfml_util::CachedTexture(
-                    "media-images-backgrounds-tile-darkknot",
-                    sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-                sfml_util::ScreenRatioToPixelsHoriz(0.075f));
+        backgroundBoxInfo.SetupColor(
+            sf::Color::Transparent,
+            sf::Color(0, 0, 0, 200),
+            sfml_util::Side::None,
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-            backgroundBoxInfo.SetupColor(
-                sf::Color::Transparent,
-                sf::Color(0, 0, 0, 200),
-                sfml_util::Side::None,
-                sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+        boxUPtr_ = std::make_unique<BoxEntity>(
+            "MainMenuBackground_", sfml_util::DisplayRect(), backgroundBoxInfo);
+    }
 
-            boxUPtr_ = std::make_unique<BoxEntity>(
-                "MainMenuBackground_", sfml_util::DisplayRect(), backgroundBoxInfo);
-        }
+    void MainMenuBackground::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        target.draw(*boxUPtr_, states);
+    }
 
-        void MainMenuBackground::draw(sf::RenderTarget & target, sf::RenderStates states) const
-        {
-            target.draw(*boxUPtr_, states);
-        }
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

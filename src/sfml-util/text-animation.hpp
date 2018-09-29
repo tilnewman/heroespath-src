@@ -23,11 +23,8 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
     namespace animation
     {
@@ -61,7 +58,7 @@ namespace sfml_util
             sf::Vector2f startPosV_;
             sf::Vector2f endPosV_;
             bool isFinished_;
-            gui::TextRegionUPtr_t textRegionUPtr_;
+            TextRegionUPtr_t textRegionUPtr_;
             sliders::ZeroSliderOnce<float> slider_;
         };
 

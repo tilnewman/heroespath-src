@@ -43,14 +43,12 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+
 } // namespace sfml_util
 
 namespace creature
@@ -96,15 +94,15 @@ namespace stage
     using ReportIndexesSet_t = std::set<ReportIndicies>;
 
     class CombatStage;
-    using CombatStageListBox_t = sfml_util::gui::ListBox<CombatStage, sfml_util::gui::NoElement_t>;
+    using CombatStageListBox_t = sfml_util::ListBox<CombatStage, sfml_util::NoElement_t>;
 
     // A Stage class that allows camping characters
     class CombatStage
         : public sfml_util::Stage
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
         , public CombatStageListBox_t::Callback_t::IHandler_t
-        , public sfml_util::gui::SliderBar::Callback_t::IHandler_t
+        , public sfml_util::SliderBar::Callback_t::IHandler_t
     {
     public:
         CombatStage(const CombatStage &) = delete;
@@ -205,11 +203,10 @@ namespace stage
 
         bool HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::SliderBar::Callback_t::PacketPtr_t &) override;
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -217,8 +214,7 @@ namespace stage
 
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        const sfml_util::gui::IEntityPtrOpt_t
-            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 
@@ -351,12 +347,12 @@ namespace stage
         void AnimationCenteringStart(const creature::CreaturePVec_t &);
 
         void MakeButton(
-            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr,
+            sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
             const std::string & TEXT,
             const std::string & HOVER_TEXT);
 
         void SetButtonDisabledIf(
-            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE);
+            sfml_util::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE);
 
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
@@ -428,11 +424,11 @@ namespace stage
         combat::Text combatText_;
         combat::TurnDecider turnDecider_;
         //
-        sfml_util::gui::BoxEntityUPtr_t commandBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<CombatStage, sfml_util::gui::NoElement_t> statusBoxUPtr_;
-        sfml_util::gui::TextInfo statusBoxTextInfo_;
-        sfml_util::gui::SliderBarUPtr_t zoomSliderBarUPtr_;
-        sfml_util::gui::BoxEntityUPtr_t turnBoxUPtr_;
+        sfml_util::BoxEntityUPtr_t commandBoxUPtr_;
+        sfml_util::ListBoxUPtr_t<CombatStage, sfml_util::NoElement_t> statusBoxUPtr_;
+        sfml_util::TextInfo statusBoxTextInfo_;
+        sfml_util::SliderBarUPtr_t zoomSliderBarUPtr_;
+        sfml_util::BoxEntityUPtr_t turnBoxUPtr_;
         sf::FloatRect turnBoxRegion_;
         combat::CombatSoundEffects combatSoundEffects_;
         ReportIndexesSet_t soundEffectsPlayedSet_;
@@ -467,7 +463,7 @@ namespace stage
         // so check before use during shutdown of the stage.
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
 
-        sfml_util::gui::ImageTextEntityUPtr_t settingsButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t settingsButtonUPtr_;
 
         // members that control pausing the CombatStage
         float pauseDurationSec_;
@@ -485,32 +481,32 @@ namespace stage
         bool isFightResultCollapsed_;
 
         // members displaying a player character's turn
-        sfml_util::gui::TextRegionUPtr_t titleTBoxTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t weaponTBoxTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t armorTBoxTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t infoTBoxTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t enemyActionTBoxRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t enemyCondsTBoxRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t zoomLabelTextRegionUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t attackTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t fightTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t castTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t advanceTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t retreatTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t blockTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t skipTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t flyTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t landTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t roarTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t pounceTBoxButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t runTBoxButtonUPtr_;
+        sfml_util::TextRegionUPtr_t titleTBoxTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t weaponTBoxTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t armorTBoxTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t infoTBoxTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t enemyActionTBoxRegionUPtr_;
+        sfml_util::TextRegionUPtr_t enemyCondsTBoxRegionUPtr_;
+        sfml_util::TextRegionUPtr_t zoomLabelTextRegionUPtr_;
+        sfml_util::ImageTextEntityUPtr_t attackTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t fightTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t castTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t advanceTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t retreatTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t blockTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t skipTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t flyTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t landTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t roarTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t pounceTBoxButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t runTBoxButtonUPtr_;
 
         // members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
 
         // testing display members
-        sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
 
         // members supporting double-click

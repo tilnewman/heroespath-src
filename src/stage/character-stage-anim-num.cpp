@@ -30,7 +30,7 @@ namespace stage
         const float START_TOP,
         const float TARGET_LEFT,
         const float TARGET_TOP,
-        const sfml_util::gui::TextInfo & TEXT_INFO)
+        const sfml_util::TextInfo & TEXT_INFO)
         : value_(VALUE)
         , whichStat_(WHICH_STAT)
         , ignoreMe_(VALUE < 0)

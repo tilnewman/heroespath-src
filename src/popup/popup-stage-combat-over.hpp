@@ -44,8 +44,8 @@ namespace popup
 
         sfml_util::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
-        sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t titleTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
     };
 } // namespace popup
 } // namespace heroespath

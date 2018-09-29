@@ -34,11 +34,9 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+
 } // namespace sfml_util
 namespace creature
 {
@@ -53,12 +51,11 @@ namespace stage
     // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
         : public sfml_util::Stage
-        , public sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>::Callback_t::
-              IHandler_t
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
+        , public sfml_util::ListBox<PartyStage, creature::CreaturePtr_t>::Callback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
     {
-        using PartyListBox_t = sfml_util::gui::ListBox<PartyStage, creature::CreaturePtr_t>;
+        using PartyListBox_t = sfml_util::ListBox<PartyStage, creature::CreaturePtr_t>;
         using PartyListBoxUPtr_t = std::unique_ptr<PartyListBox_t>;
 
     public:
@@ -72,10 +69,9 @@ namespace stage
 
         bool HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
         bool HandleCallback_StartButton();
         bool HandleCallback_DeleteButton();
 
@@ -113,7 +109,7 @@ namespace stage
         void SetupMouseOverPositionsAndDimmensions(const creature::CreaturePtr_t);
         bool DeleteCharacterIfSelected(PartyListBox_t &);
 
-        const sfml_util::gui::MouseImageInfo MakeMouseImageInfoForMenuButton(
+        const sfml_util::MouseImageInfo MakeMouseImageInfoForMenuButton(
             const std::string & IMAGE_PATH_KEY_UP, const std::string & IMAGE_PATH_KEY_OVER);
 
     private:
@@ -141,19 +137,19 @@ namespace stage
         const std::size_t MOUSEOVER_COLORCYCLE_COUNT_;
         sfml_util::BottomSymbol bottomSymbol_;
 
-        sfml_util::gui::BoxEntityInfo listBoxInfo_;
+        sfml_util::BoxEntityInfo listBoxInfo_;
         sfml_util::StageTitle stageTitle_;
-        sfml_util::gui::BoxEntity backgroundBox_;
-        sfml_util::gui::MainMenuButtonUPtr_t backButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t startButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t deleteButtonUPtr_;
+        sfml_util::BoxEntity backgroundBox_;
+        sfml_util::MainMenuButtonUPtr_t backButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t startButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t deleteButtonUPtr_;
         PartyListBoxUPtr_t characterListBoxUPtr_;
         PartyListBoxUPtr_t partyListBoxUPtr_;
-        sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t upTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t partyTextRegionUPtr_;
-        sfml_util::gui::TextInfo warningTextInfo_;
-        sfml_util::gui::TextRegionUPtr_t warningTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t insTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t upTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t partyTextRegionUPtr_;
+        sfml_util::TextInfo warningTextInfo_;
+        sfml_util::TextRegionUPtr_t warningTextRegionUPtr_;
         sfml_util::sliders::Slider<sf::Uint8, float> warningTextSlider_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         bool willDisplayCharacterCountWarningText_;
@@ -168,7 +164,7 @@ namespace stage
         sf::FloatRect mouseOverBackgroundRectFinal_;
         sf::Sprite mouseOverCreatureSprite_;
         sfml_util::CachedTextureOpt_t mouseOverCreatureTextureOpt_;
-        sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
     };
 

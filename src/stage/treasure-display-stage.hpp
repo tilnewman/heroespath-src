@@ -65,7 +65,7 @@ namespace stage
             sf::Color foreground;
             sf::Color background;
             sf::Color title;
-            sfml_util::gui::FocusColors colorSet;
+            sfml_util::FocusColors colorSet;
             sf::Color icon;
         };
 
@@ -115,18 +115,15 @@ namespace stage
     class TreasureDisplayStage
         : public sfml_util::Stage
 
-        , public sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>::Callback_t::
-              IHandler_t
+        , public sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>::Callback_t::IHandler_t
 
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
-        using ItemListBox_t = sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBox_t = sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
 
-        using ItemListBoxPtr_t
-            = sfml_util::gui::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxPtr_t = sfml_util::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
-        using ItemListBoxUPtr_t
-            = sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxUPtr_t = sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
@@ -140,8 +137,7 @@ namespace stage
 
         bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -214,7 +210,7 @@ namespace stage
         void SetupForCollection_LowerButtons();
 
         void SetupLowerButton(
-            sfml_util::gui::ImageTextEntityUPtr_t & buttonUPtr,
+            sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
             const std::string & TEXT,
             const float VERT_POS);
 
@@ -239,7 +235,7 @@ namespace stage
         void UpdateInventoryVisuals();
 
         void SetupInventoryText(
-            sfml_util::gui::TextRegionUPtr_t & textRegionUPtr,
+            sfml_util::TextRegionUPtr_t & textRegionUPtr,
             const std::string & NAME,
             const std::string & TEXT,
             const float HORIZ_POS,
@@ -258,12 +254,11 @@ namespace stage
         void ItemViewerInterruption();
 
         template <typename T>
-        const sfml_util::gui::IEntityPtrOpt_t
-            GetEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
+        const sfml_util::IEntityPtrOpt_t GetEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
             if (GUI_ENTITY_UPTR)
             {
-                const sfml_util::gui::IEntityPtr_t ENTITY_PTR { GUI_ENTITY_UPTR.get() };
+                const sfml_util::IEntityPtr_t ENTITY_PTR { GUI_ENTITY_UPTR.get() };
                 EntityRemove(ENTITY_PTR);
                 return ENTITY_PTR;
             }
@@ -280,8 +275,8 @@ namespace stage
         };
 
         void EntityPtrAddCurrAndReplacePrevIfNeeded(
-            const sfml_util::gui::IEntityPtrOpt_t & PREV_GUI_ENTITY_PTR_OPT,
-            const sfml_util::gui::IEntityPtr_t CURR_GUI_ENTITY_PTR,
+            const sfml_util::IEntityPtrOpt_t & PREV_GUI_ENTITY_PTR_OPT,
+            const sfml_util::IEntityPtr_t CURR_GUI_ENTITY_PTR,
             const StageAddEntity WILL_ADD = StageAddEntity::Will);
 
         void CreateOrReplaceListboxIconImage(
@@ -289,7 +284,7 @@ namespace stage
             const std::string & IMAGE_PATH_KEY,
             const sf::Color & COLOR,
             const float SCALE,
-            sfml_util::gui::ImageTextEntityUPtr_t & sortButtonUPtr);
+            sfml_util::ImageTextEntityUPtr_t & sortButtonUPtr);
 
     private:
         const treasure::ItemDetailsOpt_t
@@ -305,12 +300,12 @@ namespace stage
         treasure::StageMoverUPtr_t stageMoverUPtr_;
         ItemListBoxUPtr_t treasureListboxUPtr_;
         ItemListBoxUPtr_t inventoryListboxUPtr_;
-        sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
-        sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
-        sfml_util::gui::TextRegionUPtr_t coinsTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t gemsTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t weightTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t instrTextUPtr_;
+        sfml_util::TextRegionUPtr_t treasureLabelUPtr_;
+        sfml_util::TextRegionUPtr_t inventoryLabelUPtr_;
+        sfml_util::TextRegionUPtr_t coinsTextUPtr_;
+        sfml_util::TextRegionUPtr_t gemsTextUPtr_;
+        sfml_util::TextRegionUPtr_t weightTextUPtr_;
+        sfml_util::TextRegionUPtr_t instrTextUPtr_;
 
         sfml_util::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
@@ -320,29 +315,29 @@ namespace stage
         sf::Sprite treasureSprite_;
         sfml_util::CachedTexture coinsCachedTexture_;
         sf::Sprite coinsSprite_;
-        sfml_util::gui::ImageTextEntityUPtr_t treasureAlphaButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t treasureMoneyButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t treasureWeightButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t inventoryAlphaButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t inventoryMoneyButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t inventoryWeightButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t treasureAlphaButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t treasureMoneyButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t treasureWeightButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t inventoryAlphaButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t inventoryMoneyButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t inventoryWeightButtonUPtr_;
         bool isSortOrderReversedTreasureAlpha_;
         bool isSortOrderReversedTreasureMoney_;
         bool isSortOrderReversedTreasureWeight_;
         bool isSortOrderReversedInventoryAlpha_;
         bool isSortOrderReversedInventoryMoney_;
         bool isSortOrderReversedInventoryWeight_;
-        sfml_util::gui::ImageEntityUPtr_t characterImageUPtr_;
+        sfml_util::ImageEntityUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;
         sfml_util::CachedTexture xCachedTexture_;
-        sfml_util::gui::ImageEntityUPtr_t redXImageUPtr_;
+        sfml_util::ImageEntityUPtr_t redXImageUPtr_;
         float itemDetailTimer_;
         stage::ItemDetailViewer itemDetailViewer_;
         sf::Vector2f mousePos_;
         bool canDisplayItemDetail_;
-        sfml_util::gui::ImageTextEntityUPtr_t takeAllButtonUPtr_;
-        sfml_util::gui::ImageTextEntityUPtr_t doneButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t takeAllButtonUPtr_;
+        sfml_util::ImageTextEntityUPtr_t doneButtonUPtr_;
 
         // These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;

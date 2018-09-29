@@ -49,7 +49,7 @@ namespace popup
             GetCurrentCachedTexture(const std::size_t IMAGE_INDEX) override;
 
     private:
-        sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         misc::VectorMap<creature::CreaturePtr_t, sfml_util::CachedTexture> creatureToTextureMap_;
     };
 

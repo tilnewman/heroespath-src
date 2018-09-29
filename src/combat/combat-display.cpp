@@ -141,14 +141,13 @@ namespace combat
         PositionCombatTreeCells(false);
 
         // battlefield bounding box
-        sfml_util::gui::BoxEntityInfo boxInfo;
+        sfml_util::BoxEntityInfo boxInfo;
         boxInfo.SetupBorder(true);
 
-        boxInfo.focus_colors
-            = sfml_util::gui::FocusColors(sf::Color::White, sf::Color::Transparent);
+        boxInfo.focus_colors = sfml_util::FocusColors(sf::Color::White, sf::Color::Transparent);
 
-        boxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
-            "CombatDisplay's'", battlefieldRect_, boxInfo);
+        boxUPtr_
+            = std::make_unique<sfml_util::BoxEntity>("CombatDisplay's'", battlefieldRect_, boxInfo);
 
         // setup offscreen texture
         const auto OFFSCREEN_SIZE_V_U { sf::Vector2u(sfml_util::Size(boxUPtr_->InnerRegion())) };
@@ -317,8 +316,7 @@ namespace combat
         prevMousePos_ = MOUSE_POS_V;
     }
 
-    const sfml_util::gui::IEntityPtrOpt_t
-        CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::IEntityPtrOpt_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {

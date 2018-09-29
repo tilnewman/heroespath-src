@@ -60,7 +60,7 @@ namespace popup
         auto charDetailsTextInfo { popupInfo_.TextInfo() };
         charDetailsTextInfo.text = " ";
 
-        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "PopupWindow's_CharacterSelection_DetailsText",
             charDetailsTextInfo,
             charDetailsTextRegion);
@@ -79,13 +79,13 @@ namespace popup
             EntityRemove(sliderbarUPtr_.get());
         }
 
-        sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
+        sliderbarUPtr_ = std::make_unique<sfml_util::SliderBar>(
             "PopupStage's",
             SLIDERBAR_POS_LEFT,
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
-            sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::gui::SliderBar::Callback_t::IHandlerPtr_t(this));
+            sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
+            sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
 

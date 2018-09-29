@@ -29,7 +29,7 @@ namespace stage
     // Resume Game, Create Characters, Settings, Credits, Exit
     class MainMenuStage
         : public sfml_util::Stage
-        , public sfml_util::gui::ImageTextEntity::Callback_t::IHandler_t
+        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
         MainMenuStage(const MainMenuStage &) = delete;
@@ -40,8 +40,7 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        bool HandleCallback(
-            const sfml_util::gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -53,14 +52,14 @@ namespace stage
     private:
         sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
-        sfml_util::gui::MainMenuButtonUPtr_t resumeButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t createButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t settingsButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t creditsButtonUPtr_;
-        sfml_util::gui::MainMenuButtonUPtr_t exitButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t resumeButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t createButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t settingsButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t creditsButtonUPtr_;
+        sfml_util::MainMenuButtonUPtr_t exitButtonUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
-        sfml_util::gui::MainMenuBackground background_;
+        sfml_util::MainMenuBackground background_;
     };
 
 } // namespace stage

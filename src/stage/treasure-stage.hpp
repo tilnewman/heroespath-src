@@ -37,19 +37,15 @@ namespace item
 
 namespace sfml_util
 {
-    namespace gui
-    {
+    template <typename Stage_t, typename Element_t>
+    class ListBox;
 
-        template <typename Stage_t, typename Element_t>
-        class ListBox;
+    template <typename Stage_t, typename Element_t>
+    using ListBoxPtr_t = misc::NotNull<ListBox<Stage_t, Element_t> *>;
 
-        template <typename Stage_t, typename Element_t>
-        using ListBoxPtr_t = misc::NotNull<ListBox<Stage_t, Element_t> *>;
+    template <typename Stage_t, typename Element_t>
+    using ListBoxUPtr_t = std::unique_ptr<ListBox<Stage_t, Element_t>>;
 
-        template <typename Stage_t, typename Element_t>
-        using ListBoxUPtr_t = std::unique_ptr<ListBox<Stage_t, Element_t>>;
-
-    } // namespace gui
 } // namespace sfml_util
 
 namespace stage
@@ -61,15 +57,13 @@ namespace stage
     // A Stage class that allows starting the game
     class TreasureStage
         : public sfml_util::Stage
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
     {
-        using ItemListBox_t = sfml_util::gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBox_t = sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
 
-        using ItemListBoxPtr_t
-            = sfml_util::gui::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxPtr_t = sfml_util::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
-        using ItemListBoxUPtr_t
-            = sfml_util::gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxUPtr_t = sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
         TreasureStage(const TreasureStage &) = delete;
@@ -81,7 +75,7 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -90,9 +84,9 @@ namespace stage
         bool HandleListboxCallback(
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-            const sfml_util::gui::Callback<
-                sfml_util::gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::
-                PacketPtr_t & PACKET_PTR);
+            const sfml_util::Callback<
+                sfml_util::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::PacketPtr_t &
+                PACKET_PTR);
 
         void TakeAllItems();
         void Exit();

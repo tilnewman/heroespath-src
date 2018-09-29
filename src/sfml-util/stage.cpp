@@ -143,7 +143,7 @@ namespace sfml_util
         }
     }
 
-    const gui::IEntityPtrOpt_t Stage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const IEntityPtrOpt_t Stage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
@@ -189,7 +189,7 @@ namespace sfml_util
         }
     }
 
-    void Stage::SetFocus(const gui::IEntityPtr_t ENTITY_PTR)
+    void Stage::SetFocus(const IEntityPtr_t ENTITY_PTR)
     {
         const auto ORIG_ENTITY_WITH_FOCUS_NAME {
             ((entityWithFocusPtrOpt_) ? entityWithFocusPtrOpt_.value()->GetEntityName() : "(None)")
@@ -231,7 +231,7 @@ namespace sfml_util
     }
 
     void Stage::EntityAdd(
-        const gui::IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK)
+        const IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK)
     {
         auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
@@ -252,7 +252,7 @@ namespace sfml_util
         }
     }
 
-    bool Stage::EntityRemove(const gui::IEntityPtr_t ENTITY_PTR)
+    bool Stage::EntityRemove(const IEntityPtr_t ENTITY_PTR)
     {
         auto const ORIG_NUM_ENTITYS { entityPVec_.size() };
 
@@ -310,7 +310,7 @@ namespace sfml_util
                 return;
             }
 
-            const gui::TextInfo TEXT_INFO(
+            const TextInfo TEXT_INFO(
                 text,
                 sfml_util::GuiFont::System,
                 FontManager::Instance()->Size_Smallish(),
@@ -338,12 +338,12 @@ namespace sfml_util
 
             hoverText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
-            gui::BoxEntityInfo boxInfo;
+            BoxEntityInfo boxInfo;
             boxInfo.SetupColor(sfml_util::color::Orange - sf::Color(20, 0, 0, 0));
             boxInfo.SetupBorder(true, 1.0f);
 
             hoverTextBoxUPtr_
-                = std::make_unique<gui::BoxEntity>(GetStageName() + "'sHoverText", region, boxInfo);
+                = std::make_unique<BoxEntity>(GetStageName() + "'sHoverText", region, boxInfo);
         }
         else
         {

@@ -50,14 +50,14 @@ namespace stage
         const sf::Vector2f SIZE_V(WIDTH, HEIGHT_RATIO * WIDTH);
         const sf::FloatRect REGION_ORIG(sfml_util::CenterCopy(SIZE_V), SIZE_V);
 
-        sfml_util::gui::BoxEntityInfo statsBoxInfo;
+        sfml_util::BoxEntityInfo statsBoxInfo;
         statsBoxInfo.SetupImage(sfml_util::CachedTexture(
             "media-images-backgrounds-tile-wood",
             sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
         statsBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
 
-        boxUPtr_ = std::make_unique<sfml_util::gui::BoxEntity>(
+        boxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
             "CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
 
         owningStagePtr_->EntityAdd(boxUPtr_.get());
@@ -155,7 +155,7 @@ namespace stage
                     sf::Vertex(sf::Vector2f(LINE_POS_RIGHT, LINE_POS_TOP), sf::Color::Transparent));
             }
 
-            modTextRegionVecs_.emplace_back(sfml_util::gui::TextRegionUVec_t());
+            modTextRegionVecs_.emplace_back(sfml_util::TextRegionUVec_t());
         }
 
         Reset();
@@ -335,13 +335,13 @@ namespace stage
             return ss.str();
         }();
 
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        const sfml_util::TextInfo TEXT_INFO(
             TEXT,
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Small(),
             TEXT_COLOR);
 
-        modTextRegionVecs_.at(INDEX).emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+        modTextRegionVecs_.at(INDEX).emplace_back(std::make_unique<sfml_util::TextRegion>(
             "CharacterStageStatBoxModText_" + TEXT, TEXT_INFO));
 
         modSet_.Set(TRAIT, modSet_.Get(TRAIT) + VALUE);

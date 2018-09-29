@@ -24,7 +24,7 @@ namespace sfml_util
         const sf::BlendMode & BLEND_MODE,
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
-        : gui::Entity(Animations::ToString(ENUM) + "_Animation", REGION)
+        : Entity(Animations::ToString(ENUM) + "_Animation", REGION)
         , which_(ENUM)
         , blendMode_(BLEND_MODE)
         , timePerFrameSec_(TIME_PER_FRAME_SEC)

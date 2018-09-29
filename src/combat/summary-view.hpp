@@ -25,12 +25,10 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+
 } // namespace sfml_util
 namespace item
 {
@@ -57,9 +55,9 @@ namespace combat
         item::ItemPtr_t item_ptr;
         sfml_util::CachedTexture cached_texture;
         sf::Sprite sprite;
-        sfml_util::gui::TextRegionUPtr_t name_text_region_uptr;
-        sfml_util::gui::TextRegionUPtr_t desc_text_region_uptr;
-        sfml_util::gui::TextRegionUPtr_t info_text_region_uptr;
+        sfml_util::TextRegionUPtr_t name_text_region_uptr;
+        sfml_util::TextRegionUPtr_t desc_text_region_uptr;
+        sfml_util::TextRegionUPtr_t info_text_region_uptr;
     };
 
     using ItemWithTextUPtr_t = std::unique_ptr<ItemWithText>;
@@ -135,13 +133,13 @@ namespace combat
         ItemWithTextUVec_t itemWithTextUVec_;
         sf::VertexArray bgQuads_;
         CombatNodePtrOpt_t combatNodePtrOpt_;
-        sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t rankTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t healthTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t armorTextRegionUPtr_;
-        sfml_util::gui::EntitySlider geSlider_;
+        sfml_util::TextRegionUPtr_t nameTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t rankTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t healthTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t condTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t armorTextRegionUPtr_;
+        sfml_util::EntitySlider geSlider_;
         bool preventNextTrans_;
     };
 

@@ -29,11 +29,8 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class TextRegion;
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 } // namespace sfml_util
 namespace map
 {
@@ -45,8 +42,8 @@ namespace stage
     // Responsible for the interaction region of the Adventure Stage.
     class InteractStage
         : public sfml_util::Stage
-        , public sfml_util::gui::TextButton::Callback_t::IHandler_t
-        , public sfml_util::gui::PopupCallback_t::IHandler_t
+        , public sfml_util::TextButton::Callback_t::IHandler_t
+        , public sfml_util::PopupCallback_t::IHandler_t
     {
     public:
         InteractStage(const InteractStage &) = delete;
@@ -60,9 +57,9 @@ namespace stage
 
         virtual ~InteractStage();
 
-        bool HandleCallback(const sfml_util::gui::TextButton::Callback_t::PacketPtr_t &) final;
+        bool HandleCallback(const sfml_util::TextButton::Callback_t::PacketPtr_t &) final;
 
-        bool HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
@@ -95,8 +92,8 @@ namespace stage
         sf::Sprite subjectSprite_;
         sf::Sprite contextSprite_;
         sf::Sprite npcSprite_;
-        sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
-        std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
+        sfml_util::TextRegionUPtr_t textRegionUPtr_;
+        std::vector<sfml_util::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;
         sfml_util::ColoredRect backgroundColoredRect_;
     };

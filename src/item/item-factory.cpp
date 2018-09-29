@@ -174,7 +174,7 @@ namespace item
 
             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
-            sfml_util::gui::ItemImageLoader itemImageLoader;
+            sfml_util::ItemImageLoader itemImageLoader;
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {

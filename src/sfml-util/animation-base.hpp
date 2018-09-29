@@ -26,7 +26,7 @@ namespace sfml_util
 
     // Responsible for state and operations common to all animations in the game that work by
     // showing a changing image at a given frame rate.
-    class Animation : public gui::Entity
+    class Animation : public Entity
     {
     public:
         Animation(const Animation &) = delete;

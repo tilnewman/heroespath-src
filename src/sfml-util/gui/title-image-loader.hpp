@@ -17,25 +17,22 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading Title images.
+    class TitleImageLoader : public EnumImageLoader<creature::Titles>
     {
+    public:
+        TitleImageLoader(const TitleImageLoader &) = delete;
+        TitleImageLoader(TitleImageLoader &&) = delete;
+        TitleImageLoader & operator=(const TitleImageLoader &) = delete;
+        TitleImageLoader & operator=(TitleImageLoader &&) = delete;
 
-        // Responsible for loading Title images.
-        class TitleImageLoader : public EnumImageLoader<creature::Titles>
-        {
-        public:
-            TitleImageLoader(const TitleImageLoader &) = delete;
-            TitleImageLoader(TitleImageLoader &&) = delete;
-            TitleImageLoader & operator=(const TitleImageLoader &) = delete;
-            TitleImageLoader & operator=(TitleImageLoader &&) = delete;
+        TitleImageLoader()
+            : EnumImageLoader<creature::Titles>(
+                  game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"))
+        {}
+    };
 
-            TitleImageLoader()
-                : EnumImageLoader<creature::Titles>(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"))
-            {}
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

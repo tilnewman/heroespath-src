@@ -184,8 +184,8 @@ namespace stage
         // all these members are drawn during waitingForKeyOrClick tests
         sfml_util::CachedTextureVec_t waitingForKeyOrClick_CachedTextures_;
         std::vector<sf::Sprite> waitingForKeyOrClick_ToDraw_Sprites_;
-        std::vector<sfml_util::gui::GoldBar> waitingForKeyOrClick_ToDraw_GoldBars_;
-        std::vector<sfml_util::gui::Border> waitingForKeyOrClick_ToDraw_Borders_;
+        std::vector<sfml_util::GoldBar> waitingForKeyOrClick_ToDraw_GoldBars_;
+        std::vector<sfml_util::Border> waitingForKeyOrClick_ToDraw_Borders_;
         std::vector<sf::RectangleShape> waitingForKeyOrClick_ToDraw_RectangleShapes_;
         std::vector<sf::VertexArray> waitingForKeyOrClick_ToDraw_VertexArrays_;
         std::vector<sfml_util::Text> waitingForKeyOrClick_ToDraw_Texts_;

@@ -41,128 +41,124 @@ namespace sfml_util
 
     using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
 
-    namespace gui
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+
+    // Encapsulates text drawn and bounded to an area that might need a scroll bar
+    class TextRegion
+        : public Entity
+        , public SliderBar::Callback_t::IHandler_t
     {
+    public:
+        TextRegion(const TextRegion &) = delete;
+        TextRegion(TextRegion &&) = delete;
+        TextRegion & operator=(const TextRegion &) = delete;
+        TextRegion & operator=(TextRegion &&) = delete;
 
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+    public:
+        // if using this constructor, Setup() must be called before any other function
+        explicit TextRegion(const std::string & NAME);
 
-        // Encapsulates text drawn and bounded to an area that might need a scroll bar
-        class TextRegion
-            : public Entity
-            , public SliderBar::Callback_t::IHandler_t
-        {
-        public:
-            TextRegion(const TextRegion &) = delete;
-            TextRegion(TextRegion &&) = delete;
-            TextRegion & operator=(const TextRegion &) = delete;
-            TextRegion & operator=(TextRegion &&) = delete;
+        // If this constructor is used then no scrollbar will be created,
+        // even if the text height exceeds the REGION.
+        TextRegion(
+            const std::string & NAME,
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION = sf::FloatRect(),
+            const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
+            const Margins & MARGINS = Margins());
 
-        public:
-            // if using this constructor, Setup() must be called before any other function
-            explicit TextRegion(const std::string & NAME);
+        TextRegion(
+            const std::string & NAME,
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION,
+            const IStagePtr_t ISTAGE_PTR,
+            const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
+            const Margins & MARGINS = Margins());
 
-            // If this constructor is used then no scrollbar will be created,
-            // even if the text height exceeds the REGION.
-            TextRegion(
-                const std::string & NAME,
-                const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION = sf::FloatRect(),
-                const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
-                const Margins & MARGINS = Margins());
+        virtual ~TextRegion();
 
-            TextRegion(
-                const std::string & NAME,
-                const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
-                const IStagePtr_t ISTAGE_PTR,
-                const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
-                const Margins & MARGINS = Margins());
+        // If this Setup() is used then no scrollbar will be created,
+        // even if the text height exceeds the REGION
+        void Setup(
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION,
+            const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
+            const Margins & MARGINS = Margins());
 
-            virtual ~TextRegion();
+        void Setup(
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION,
+            const IStagePtrOpt_t & ISTAGE_PTR_OPT,
+            const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
+            const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
+            const Margins & MARGINS = Margins(),
+            const bool WILL_ALLOW_SCROLLBAR = true);
 
-            // If this Setup() is used then no scrollbar will be created,
-            // even if the text height exceeds the REGION
-            void Setup(
-                const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
-                const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
-                const Margins & MARGINS = Margins());
+        void HandleSliderBar(const SliderBarPtrOpt_t);
 
-            void Setup(
-                const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
-                const IStagePtrOpt_t & ISTAGE_PTR_OPT,
-                const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
-                const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
-                const Margins & MARGINS = Margins(),
-                const bool WILL_ALLOW_SCROLLBAR = true);
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            void HandleSliderBar(const SliderBarPtrOpt_t);
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t &) override;
 
-            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-            void MoveEntityPos(const float HORIZ, const float VERT) override;
+        const std::string GetText() const { return textInfoOrig_.text; }
+        void SetText(const std::string &);
 
-            bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t &) override;
+        void Append(const TextRegion &);
 
-            const std::string GetText() const { return textInfoOrig_.text; }
-            void SetText(const std::string &);
+        const TextInfo GetTextInfo() const { return textInfoOrig_; }
 
-            void Append(const TextRegion &);
+        void ShrinkEntityRegionToFitText();
 
-            const TextInfo GetTextInfo() const { return textInfoOrig_; }
+    protected:
+        void OnColorChange() override;
 
-            void ShrinkEntityRegionToFitText();
+        const SliderBarPtr_t MakeSliderBar(const sf::FloatRect & REGION) const;
 
-        protected:
-            void OnColorChange() override;
+        void SetupEntityRegion(const sf::FloatRect & REGION_ORIG);
 
-            const SliderBarPtr_t MakeSliderBar(const sf::FloatRect & REGION) const;
+        void SetupBox(const BoxEntityInfo & BOX_INFO);
 
-            void SetupEntityRegion(const sf::FloatRect & REGION_ORIG);
+        const SliderBarPtrOpt_t RenderText(
+            const TextInfo & TEXT_INFO,
+            const sf::FloatRect & REGION,
+            const Margins & MARGINS,
+            const unsigned int SMALLER_FONT_SIZE);
 
-            void SetupBox(const BoxEntityInfo & BOX_INFO);
+        void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
 
-            const SliderBarPtrOpt_t RenderText(
-                const TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
-                const Margins & MARGINS,
-                const unsigned int SMALLER_FONT_SIZE);
+    private:
+        void EstablishWhichLinesToDraw(const float SCROLL_RATIO);
 
-            void SetEntityRegion(const sf::FloatRect & R) override { Entity::SetEntityRegion(R); }
+    public:
+        static const unsigned int DEFAULT_NO_RESIZE_;
 
-        private:
-            void EstablishWhichLinesToDraw(const float SCROLL_RATIO);
+    protected:
+        BoxEntityUPtr_t boxEntityUPtr_;
+        SliderBarUPtr_t sliderBarUPtr_;
+        IStagePtrOpt_t stagePtrOpt_;
+        std::size_t startLine_;
+        std::size_t stopLine_;
+        sf::FloatRect regionOrig_;
+        TextInfo textInfoOrig_;
+        unsigned int smallFontSizeOrig_;
+        Margins marginsOrig_;
+        bool allowScrollbarOrig_;
+        RenderTextureUPtr_t renderTextureUPtr_;
+        sf::Sprite sprite_;
+        bool willDraw_;
+    };
 
-        public:
-            static const unsigned int DEFAULT_NO_RESIZE_;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
+    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
 
-        protected:
-            BoxEntityUPtr_t boxEntityUPtr_;
-            SliderBarUPtr_t sliderBarUPtr_;
-            IStagePtrOpt_t stagePtrOpt_;
-            std::size_t startLine_;
-            std::size_t stopLine_;
-            sf::FloatRect regionOrig_;
-            TextInfo textInfoOrig_;
-            unsigned int smallFontSizeOrig_;
-            Margins marginsOrig_;
-            bool allowScrollbarOrig_;
-            RenderTextureUPtr_t renderTextureUPtr_;
-            sf::Sprite sprite_;
-            bool willDraw_;
-        };
-
-        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-        using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
-        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

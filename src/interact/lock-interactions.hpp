@@ -35,24 +35,24 @@ namespace interact
 
         bool Attempt() const;
 
-        void PopupCharacterSelection(const sfml_util::gui::PopupCallback_t::IHandlerPtr_t) const;
+        void PopupCharacterSelection(const sfml_util::PopupCallback_t::IHandlerPtr_t) const;
 
         // returns true if a character was selected and characterPtr_ is not null,
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t,
-            const sfml_util::gui::PopupCallback_t::PacketPtr_t &);
+            const sfml_util::PopupCallback_t::IHandlerPtr_t,
+            const sfml_util::PopupCallback_t::PacketPtr_t &);
 
         void PopupAttempting(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t, const std::string &) const;
+            const sfml_util::PopupCallback_t::IHandlerPtr_t, const std::string &) const;
 
         void PopupSuccess(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t,
             const std::string & NAME_OF_WHAT_OPENED) const;
 
         // returns true if a new title is achieved and the popup is displayed
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t);
+            const sfml_util::PopupCallback_t::IHandlerPtr_t);
 
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 

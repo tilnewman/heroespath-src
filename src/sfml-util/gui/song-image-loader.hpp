@@ -17,25 +17,22 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading Song images.
+    class SongImageLoader : public EnumImageLoader<song::Songs>
     {
+    public:
+        SongImageLoader(const SongImageLoader &) = delete;
+        SongImageLoader(SongImageLoader &&) = delete;
+        SongImageLoader & operator=(const SongImageLoader &) = delete;
+        SongImageLoader & operator=(SongImageLoader &&) = delete;
 
-        // Responsible for loading Song images.
-        class SongImageLoader : public EnumImageLoader<song::Songs>
-        {
-        public:
-            SongImageLoader(const SongImageLoader &) = delete;
-            SongImageLoader(SongImageLoader &&) = delete;
-            SongImageLoader & operator=(const SongImageLoader &) = delete;
-            SongImageLoader & operator=(SongImageLoader &&) = delete;
+        SongImageLoader()
+            : EnumImageLoader<song::Songs>(
+                  game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"))
+        {}
+    };
 
-            SongImageLoader()
-                : EnumImageLoader<song::Songs>(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"))
-            {}
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

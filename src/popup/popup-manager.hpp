@@ -91,7 +91,7 @@ namespace popup
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 
         // TextInfo creation helper functions
-        const sfml_util::gui::TextInfo TextInfoDefault(
+        const sfml_util::TextInfo TextInfoDefault(
             const std::string & TEXT,
             const sfml_util::Justified::Enum JUSTIFIED,
             const unsigned int FONT_SIZE) const;

@@ -36,7 +36,7 @@ namespace combat
 {
 
     // represents a node in the CombatTree
-    class CombatNode : public sfml_util::gui::Entity
+    class CombatNode : public sfml_util::Entity
     {
     public:
         CombatNode(const CombatNode &) = delete;

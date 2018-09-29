@@ -49,7 +49,7 @@ namespace stage
         , contextSprite_()
         , npcSprite_()
         , textRegionUPtr_(
-              std::make_unique<sfml_util::gui::TextRegion>("AdventureStage'sInteractStage's"))
+              std::make_unique<sfml_util::TextRegion>("AdventureStage'sInteractStage's"))
         , buttons_()
         , lockPicking_()
         , backgroundColoredRect_(innerRect_, sf::Color(0, 0, 0, BACKGROUND_ALPHA_))
@@ -58,21 +58,20 @@ namespace stage
     InteractStage::~InteractStage() = default;
 
     bool InteractStage::HandleCallback(
-        const sfml_util::gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
+        const sfml_util::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         auto const INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
                 this,
-                sfml_util::gui::TextButtonPtr_t(
-                    const_cast<sfml_util::gui::TextButton *>(PACKET_PTR.Ptr())));
+                sfml_util::TextButtonPtr_t(const_cast<sfml_util::TextButton *>(PACKET_PTR.Ptr())));
         }
 
         return false;
     }
 
-    bool InteractStage::HandleCallback(const sfml_util::gui::PopupCallback_t::PacketPtr_t & PACKET)
+    bool InteractStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET)
     {
         if (PACKET->Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
@@ -213,7 +212,7 @@ namespace stage
             for (auto & button : INTERACTION_PTR->Buttons())
             {
                 buttons_.emplace_back(
-                    button.Make(sfml_util::gui::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
+                    button.Make(sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
             }
 
             auto const ALL_BUTTONS_HEIGHT { std::accumulate(

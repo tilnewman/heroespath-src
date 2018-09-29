@@ -24,7 +24,7 @@ namespace interact
 
     InteractionBase::InteractionBase(
         const Interact::Enum INTERACTION_TYPE,
-        const sfml_util::gui::TextInfo & TEXT,
+        const sfml_util::TextInfo & TEXT,
         const ButtonVec_t & BUTTONS,
         const std::string & SUBJECT_IMAGE_KEY,
         const sfml_util::sound_effect::Enum SFX_ENTER,
@@ -57,10 +57,10 @@ namespace interact
         }
     }
 
-    const sfml_util::gui::TextInfo
+    const sfml_util::TextInfo
         InteractionBase::MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE)
     {
-        return sfml_util::gui::TextInfo(
+        return sfml_util::TextInfo(
             ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
@@ -70,7 +70,7 @@ namespace interact
 
     bool InteractionBase::OnButtonClick(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
-        const sfml_util::gui::TextButtonPtr_t TEXT_BUTTON_PTR)
+        const sfml_util::TextButtonPtr_t TEXT_BUTTON_PTR)
     {
         for (auto const & BUTTON : buttons_)
         {

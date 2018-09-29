@@ -23,10 +23,7 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        struct TextInfo;
-    }
+    struct TextInfo;
 
     // Wraps an sf::Text to correct the local offset problem.  This class should be used everywhere
     // instead of sf::Text, that way we can completely ignore the local offset problem.  If you are
@@ -39,7 +36,7 @@ namespace sfml_util
 
         // invalid members and default parameters will not be used/set
         explicit Text(
-            const gui::TextInfo & TEXT_INFO,
+            const TextInfo & TEXT_INFO,
             const std::string & TEXT = "",
             const GuiFont::Enum FONT = GuiFont::Count,
             const sf::Color & COLOR = sf::Color::Transparent);
@@ -47,7 +44,7 @@ namespace sfml_util
         // invalid members and default parameters will not be used/set
         Text(
             const sf::Vector2f & POS_V,
-            const gui::TextInfo & TEXT_INFO,
+            const TextInfo & TEXT_INFO,
             const std::string & TEXT = "",
             const GuiFont::Enum FONT = GuiFont::Count,
             const sf::Color & COLOR = sf::Color::Transparent);
@@ -65,14 +62,14 @@ namespace sfml_util
         Text & operator=(Text &&) = default;
 
         void setup(
-            const gui::TextInfo & TEXT_INFO,
+            const TextInfo & TEXT_INFO,
             const std::string & CUSTOM_TEXT = "",
             const GuiFont::Enum FONT = GuiFont::Count,
             const sf::Color & COLOR = sf::Color::Transparent);
 
         void setup(
             const sf::Vector2f & POS_V,
-            const gui::TextInfo & TEXT_INFO,
+            const TextInfo & TEXT_INFO,
             const std::string & CUSTOM_TEXT = "",
             const GuiFont::Enum FONT = GuiFont::Count,
             const sf::Color & COLOR = sf::Color::Transparent);

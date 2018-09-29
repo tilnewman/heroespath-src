@@ -82,7 +82,7 @@ namespace game
 
         template <typename PopupType_t>
         void PopupWaitBeginSpecific(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
             popupResponse_ = popup::ResponseTypes::None;
@@ -91,7 +91,7 @@ namespace game
         }
 
         void PopupWaitBegin(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(POPUP_HANDLER_PTR, POPUP_INFO);
@@ -104,7 +104,7 @@ namespace game
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const sfml_util::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
@@ -162,7 +162,7 @@ namespace game
 
         template <typename PopupType_t>
         void TransitionTo_Popup(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO)
         {
             M_HP_LOG_DBG(

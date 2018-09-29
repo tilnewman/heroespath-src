@@ -17,25 +17,22 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading condition images.
+    class ConditionImageLoader : public EnumImageLoader<creature::Conditions>
     {
+    public:
+        ConditionImageLoader(const ConditionImageLoader &) = delete;
+        ConditionImageLoader(ConditionImageLoader &&) = delete;
+        ConditionImageLoader & operator=(const ConditionImageLoader &) = delete;
+        ConditionImageLoader & operator=(ConditionImageLoader &&) = delete;
 
-        // Responsible for loading condition images.
-        class ConditionImageLoader : public EnumImageLoader<creature::Conditions>
-        {
-        public:
-            ConditionImageLoader(const ConditionImageLoader &) = delete;
-            ConditionImageLoader(ConditionImageLoader &&) = delete;
-            ConditionImageLoader & operator=(const ConditionImageLoader &) = delete;
-            ConditionImageLoader & operator=(ConditionImageLoader &&) = delete;
+        ConditionImageLoader()
+            : EnumImageLoader<creature::Conditions>(
+                  game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"))
+        {}
+    };
 
-            ConditionImageLoader()
-                : EnumImageLoader<creature::Conditions>(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"))
-            {}
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

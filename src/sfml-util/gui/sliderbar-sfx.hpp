@@ -20,46 +20,43 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Encapsulates a gui sliderbar with a label that controls the sound effects volume.
+    class SliderBarSfx : public SliderBarLabeled
     {
+    public:
+        SliderBarSfx(const SliderBarSfx &) = delete;
+        SliderBarSfx(SliderBarSfx &&) = delete;
+        SliderBarSfx & operator=(const SliderBarSfx &) = delete;
+        SliderBarSfx & operator=(SliderBarSfx &&) = delete;
 
-        // Encapsulates a gui sliderbar with a label that controls the sound effects volume.
-        class SliderBarSfx : public SliderBarLabeled
-        {
-        public:
-            SliderBarSfx(const SliderBarSfx &) = delete;
-            SliderBarSfx(SliderBarSfx &&) = delete;
-            SliderBarSfx & operator=(const SliderBarSfx &) = delete;
-            SliderBarSfx & operator=(SliderBarSfx &&) = delete;
+        SliderBarSfx(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const float LENGTH,
+            const SliderStyle & STYLE,
+            const MouseTextInfo & THREE_TEXT_INFOS,
+            const float INITIAL_VALUE = 0.0f,
+            const float RELATIVE_LABEL_POS_LEFT = 0.0f,
+            const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
 
-            SliderBarSfx(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const float LENGTH,
-                const SliderStyle & STYLE,
-                const MouseTextInfo & THREE_TEXT_INFOS,
-                const float INITIAL_VALUE = 0.0f,
-                const float RELATIVE_LABEL_POS_LEFT = 0.0f,
-                const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
+        virtual ~SliderBarSfx();
 
-            virtual ~SliderBarSfx();
+        void OnChange(const float NEW_VALUE) override;
+        bool UpdateTime(const float) override;
 
-            void OnChange(const float NEW_VALUE) override;
-            bool UpdateTime(const float) override;
+    protected:
+        const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO) override;
 
-        protected:
-            const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO) override;
+    private:
+        static bool isConstructionAndInitFinished_;
+        bool willPlaySfx_;
+        float timeSinceLastPlaySec_;
+    };
 
-        private:
-            static bool isConstructionAndInitFinished_;
-            bool willPlaySfx_;
-            float timeSinceLastPlaySec_;
-        };
+    using SliderBarSfxUPtr_t = std::unique_ptr<SliderBarSfx>;
 
-        using SliderBarSfxUPtr_t = std::unique_ptr<SliderBarSfx>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

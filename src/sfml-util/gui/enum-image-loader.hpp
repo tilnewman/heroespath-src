@@ -24,88 +24,82 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for implementing loading and returned an image based on enum values.
+    template <typename EnumWrapper_t>
+    class EnumImageLoader
     {
+    public:
+        EnumImageLoader(const EnumImageLoader &) = delete;
+        EnumImageLoader(EnumImageLoader &&) = delete;
+        EnumImageLoader & operator=(const EnumImageLoader &) = delete;
+        EnumImageLoader & operator=(EnumImageLoader &&) = delete;
 
-        // Responsible for implementing loading and returned an image based on enum values.
-        template <typename EnumWrapper_t>
-        class EnumImageLoader
+        explicit EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
+            : imageDirectoryPath_(misc::filesystem::MakePathPretty(IMAGE_DIRECTORY_PATH))
+        {}
+
+        float MaxDimmension() const { return StandardImageDimmension(); }
+
+        void Load(sf::Texture & texture, const typename EnumWrapper_t::Enum ENUM_VALUE) const
         {
-        public:
-            EnumImageLoader(const EnumImageLoader &) = delete;
-            EnumImageLoader(EnumImageLoader &&) = delete;
-            EnumImageLoader & operator=(const EnumImageLoader &) = delete;
-            EnumImageLoader & operator=(EnumImageLoader &&) = delete;
+            sfml_util::Loaders::Texture(texture, Path(ENUM_VALUE));
+        }
 
-            explicit EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
-                : imageDirectoryPath_(misc::filesystem::MakePathPretty(IMAGE_DIRECTORY_PATH))
-            {}
+        const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
+        {
+            return misc::filesystem::CompletePath(
+                imageDirectoryPath_, EnumWrapper_t::ImageFilename(ENUM_VALUE));
+        }
 
-            float MaxDimmension() const { return StandardImageDimmension(); }
+        bool Test() const
+        {
+            auto makeLogPrefix { []() {
+                return "sfml_util::EnumImageLoader<"
+                    + boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "> ";
+            } };
 
-            void Load(sf::Texture & texture, const typename EnumWrapper_t::Enum ENUM_VALUE) const
+            static auto hasInitialPrompt { false };
+            if (false == hasInitialPrompt)
             {
-                sfml_util::Loaders::Texture(texture, Path(ENUM_VALUE));
-            }
-
-            const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
-            {
-                return misc::filesystem::CompletePath(
-                    imageDirectoryPath_, EnumWrapper_t::ImageFilename(ENUM_VALUE));
-            }
-
-            bool Test() const
-            {
-                auto makeLogPrefix { []() {
-                    return "sfml_util::gui::EnumImageLoader<"
-                        + boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "> ";
-                } };
-
-                static auto hasInitialPrompt { false };
-                if (false == hasInitialPrompt)
-                {
-                    hasInitialPrompt = true;
-
-                    game::LoopManager::Instance()->TestingStrAppend(
-                        makeLogPrefix() + "Starting Tests...");
-                }
-
-                static misc::EnumUnderlying_t imageIndex { 0 };
-                if (imageIndex < EnumWrapper_t::Count)
-                {
-                    auto const ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(
-                        imageIndex++) };
-
-                    sf::Texture texture;
-                    Load(texture, ENUM_VALUE);
-
-                    auto const MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
-
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        ((texture.getSize().x == MAX_DIMMENSION_U)
-                         || (texture.getSize().y == MAX_DIMMENSION_U)),
-                        makeLogPrefix()
-                            << "::Test() The call to Get(enum="
-                            << EnumWrapper_t::ToString(ENUM_VALUE)
-                            << ") returned an image that was not of size=" << MAX_DIMMENSION_U
-                            << "x" << MAX_DIMMENSION_U << ".  The actual size="
-                            << texture.getSize().x << "x" << texture.getSize().y << ".");
-
-                    game::LoopManager::Instance()->TestingImageSet(Path(ENUM_VALUE));
-                    return false;
-                }
+                hasInitialPrompt = true;
 
                 game::LoopManager::Instance()->TestingStrAppend(
-                    makeLogPrefix() + "  All Test Passed");
-
-                return true;
+                    makeLogPrefix() + "Starting Tests...");
             }
 
-        private:
-            std::string imageDirectoryPath_;
-        };
+            static misc::EnumUnderlying_t imageIndex { 0 };
+            if (imageIndex < EnumWrapper_t::Count)
+            {
+                auto const ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(imageIndex++) };
 
-    } // namespace gui
+                sf::Texture texture;
+                Load(texture, ENUM_VALUE);
+
+                auto const MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
+
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    ((texture.getSize().x == MAX_DIMMENSION_U)
+                     || (texture.getSize().y == MAX_DIMMENSION_U)),
+                    makeLogPrefix()
+                        << "::Test() The call to Get(enum=" << EnumWrapper_t::ToString(ENUM_VALUE)
+                        << ") returned an image that was not of size=" << MAX_DIMMENSION_U << "x"
+                        << MAX_DIMMENSION_U << ".  The actual size=" << texture.getSize().x << "x"
+                        << texture.getSize().y << ".");
+
+                game::LoopManager::Instance()->TestingImageSet(Path(ENUM_VALUE));
+                return false;
+            }
+
+            game::LoopManager::Instance()->TestingStrAppend(makeLogPrefix() + "  All Test Passed");
+
+            return true;
+        }
+
+    private:
+        std::string imageDirectoryPath_;
+    };
+
 } // namespace sfml_util
 } // namespace heroespath
 

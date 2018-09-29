@@ -29,7 +29,7 @@ namespace heroespath
 namespace sfml_util
 {
     bool TextRenderer::ToTexture(
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const sf::FloatRect & BOUNDING_REGION,
         RenderTextureUPtr_t & renderTextureUPtr,
         sf::FloatRect & finalRegion)
@@ -93,7 +93,7 @@ namespace sfml_util
     }
 
     bool TextRenderer::ToSprite(
-        const gui::TextInfo & TEXT_INFO,
+        const TextInfo & TEXT_INFO,
         const sf::FloatRect & BOUNDING_REGION,
         RenderTextureUPtr_t & renderTextureUPtr,
         sf::Sprite & sprite)

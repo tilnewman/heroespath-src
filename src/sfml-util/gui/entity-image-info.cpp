@@ -15,168 +15,160 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+    EntityImageInfo::EntityImageInfo(
+        const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
+        const FloatRectOpt_t & REGION_OPT,
+        const IntRectOpt_t & TEXTURE_REGION_OPT,
+        const ColorOpt_t & COLOR_OPT,
+        const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+        : cached_texture_opt()
+        , sprite()
+        , will_resize_instead_of_fit(WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
     {
-        EntityImageInfo::EntityImageInfo(
-            const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
-            const FloatRectOpt_t & REGION_OPT,
-            const IntRectOpt_t & TEXTURE_REGION_OPT,
-            const ColorOpt_t & COLOR_OPT,
-            const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
-            : cached_texture_opt()
-            , sprite()
-            , will_resize_instead_of_fit(WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+        Setup(
+            TEXTURE_OPT,
+            REGION_OPT,
+            TEXTURE_REGION_OPT,
+            COLOR_OPT,
+            WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
+    }
+
+    EntityImageInfo::EntityImageInfo(
+        const sfml_util::CachedTexture & TEXTURE,
+        const Vector2fOpt_t & POS_V_OPT,
+        const Vector2fOpt_t & SCALE_V_OPT,
+        const IntRectOpt_t & TEXTURE_REGION_OPT,
+        const ColorOpt_t & COLOR_OPT,
+        const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+        : cached_texture_opt()
+        , sprite()
+        , will_resize_instead_of_fit(WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+    {
+        Setup(
+            TEXTURE,
+            POS_V_OPT,
+            SCALE_V_OPT,
+            TEXTURE_REGION_OPT,
+            COLOR_OPT,
+            WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
+    }
+
+    void EntityImageInfo::Setup(
+        const sfml_util::CachedTexture & TEXTURE,
+        const Vector2fOpt_t & POS_V_OPT,
+        const Vector2fOpt_t & SCALE_V_OPT,
+        const IntRectOpt_t & TEXTURE_REGION_OPT,
+        const ColorOpt_t & COLOR_OPT,
+        const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+    {
+        will_resize_instead_of_fit = WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION;
+
+        FloatRectOpt_t rectOpt;
+
+        if (POS_V_OPT || SCALE_V_OPT)
         {
-            Setup(
-                TEXTURE_OPT,
-                REGION_OPT,
-                TEXTURE_REGION_OPT,
-                COLOR_OPT,
-                WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
-        }
+            rectOpt = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f);
 
-        EntityImageInfo::EntityImageInfo(
-            const sfml_util::CachedTexture & TEXTURE,
-            const Vector2fOpt_t & POS_V_OPT,
-            const Vector2fOpt_t & SCALE_V_OPT,
-            const IntRectOpt_t & TEXTURE_REGION_OPT,
-            const ColorOpt_t & COLOR_OPT,
-            const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
-            : cached_texture_opt()
-            , sprite()
-            , will_resize_instead_of_fit(WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
-        {
-            Setup(
-                TEXTURE,
-                POS_V_OPT,
-                SCALE_V_OPT,
-                TEXTURE_REGION_OPT,
-                COLOR_OPT,
-                WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
-        }
-
-        void EntityImageInfo::Setup(
-            const sfml_util::CachedTexture & TEXTURE,
-            const Vector2fOpt_t & POS_V_OPT,
-            const Vector2fOpt_t & SCALE_V_OPT,
-            const IntRectOpt_t & TEXTURE_REGION_OPT,
-            const ColorOpt_t & COLOR_OPT,
-            const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
-        {
-            will_resize_instead_of_fit = WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION;
-
-            FloatRectOpt_t rectOpt;
-
-            if (POS_V_OPT || SCALE_V_OPT)
+            if (POS_V_OPT)
             {
-                rectOpt = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f);
-
-                if (POS_V_OPT)
-                {
-                    rectOpt->left = POS_V_OPT->x;
-                    rectOpt->top = POS_V_OPT->y;
-                }
-
-                if (SCALE_V_OPT)
-                {
-                    const auto SIZE_V { sf::Vector2f(TEXTURE.Get().getSize()) };
-                    rectOpt->width = SCALE_V_OPT->x * SIZE_V.x;
-                    rectOpt->height = SCALE_V_OPT->y * SIZE_V.y;
-                }
+                rectOpt->left = POS_V_OPT->x;
+                rectOpt->top = POS_V_OPT->y;
             }
 
-            Setup(
-                TEXTURE,
-                rectOpt,
-                TEXTURE_REGION_OPT,
-                COLOR_OPT,
-                WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
-        }
-
-        void EntityImageInfo::Setup(
-            const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
-            const FloatRectOpt_t & REGION_OPT,
-            const IntRectOpt_t & TEXTURE_REGION_OPT,
-            const ColorOpt_t & COLOR_OPT,
-            const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
-        {
-            will_resize_instead_of_fit = WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION;
-
-            if (TEXTURE_OPT)
+            if (SCALE_V_OPT)
             {
-                cached_texture_opt = TEXTURE_OPT;
-                sprite.setTexture(cached_texture_opt->Get(), true);
-            }
-
-            if (TEXTURE_REGION_OPT)
-            {
-                sprite.setTextureRect(TEXTURE_REGION_OPT.value());
-            }
-
-            if (REGION_OPT)
-            {
-                SetRegion(REGION_OPT.value());
-            }
-
-            if (COLOR_OPT)
-            {
-                sprite.setColor(COLOR_OPT.value());
+                const auto SIZE_V { sf::Vector2f(TEXTURE.Get().getSize()) };
+                rectOpt->width = SCALE_V_OPT->x * SIZE_V.x;
+                rectOpt->height = SCALE_V_OPT->y * SIZE_V.y;
             }
         }
 
-        const std::string
-            EntityImageInfo::ToString(const bool WILL_PREFIX, const misc::Wrap WILL_WRAP) const
+        Setup(
+            TEXTURE, rectOpt, TEXTURE_REGION_OPT, COLOR_OPT, WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION);
+    }
+
+    void EntityImageInfo::Setup(
+        const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
+        const FloatRectOpt_t & REGION_OPT,
+        const IntRectOpt_t & TEXTURE_REGION_OPT,
+        const ColorOpt_t & COLOR_OPT,
+        const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
+    {
+        will_resize_instead_of_fit = WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION;
+
+        if (TEXTURE_OPT)
         {
-            std::ostringstream ss;
-
-            if (cached_texture_opt)
-            {
-                ss << "path\"" << cached_texture_opt->Path() << "\"";
-            }
-            else
-            {
-                ss << "no_image";
-            }
-
-            ss << "_region" << sprite.getGlobalBounds() << "_" << sprite.getColor() << "_scale"
-               << sprite.getScale() << ", will_";
-
-            if (will_resize_instead_of_fit)
-            {
-                ss << "resize";
-            }
-            else
-            {
-                ss << "fit";
-            }
-
-            auto const PARTS_STR { (
-                (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
-
-            if (WILL_PREFIX)
-            {
-                return std::string("EntityImageInfo")
-                           .append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
-                    + PARTS_STR;
-            }
-            else
-            {
-                return PARTS_STR;
-            }
+            cached_texture_opt = TEXTURE_OPT;
+            sprite.setTexture(cached_texture_opt->Get(), true);
         }
 
-        void EntityImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)
+        if (TEXTURE_REGION_OPT)
         {
-            if (will_resize_instead_of_fit)
-            {
-                SetSizeAndPos(sprite, NEW_GLOBAL_BOUNDS);
-            }
-            else
-            {
-                FitAndCenterTo(sprite, NEW_GLOBAL_BOUNDS);
-            }
+            sprite.setTextureRect(TEXTURE_REGION_OPT.value());
         }
 
-    } // namespace gui
+        if (REGION_OPT)
+        {
+            SetRegion(REGION_OPT.value());
+        }
+
+        if (COLOR_OPT)
+        {
+            sprite.setColor(COLOR_OPT.value());
+        }
+    }
+
+    const std::string
+        EntityImageInfo::ToString(const bool WILL_PREFIX, const misc::Wrap WILL_WRAP) const
+    {
+        std::ostringstream ss;
+
+        if (cached_texture_opt)
+        {
+            ss << "path\"" << cached_texture_opt->Path() << "\"";
+        }
+        else
+        {
+            ss << "no_image";
+        }
+
+        ss << "_region" << sprite.getGlobalBounds() << "_" << sprite.getColor() << "_scale"
+           << sprite.getScale() << ", will_";
+
+        if (will_resize_instead_of_fit)
+        {
+            ss << "resize";
+        }
+        else
+        {
+            ss << "fit";
+        }
+
+        auto const PARTS_STR { (
+            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+
+        if (WILL_PREFIX)
+        {
+            return std::string("EntityImageInfo").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
+                + PARTS_STR;
+        }
+        else
+        {
+            return PARTS_STR;
+        }
+    }
+
+    void EntityImageInfo::SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS)
+    {
+        if (will_resize_instead_of_fit)
+        {
+            SetSizeAndPos(sprite, NEW_GLOBAL_BOUNDS);
+        }
+        else
+        {
+            FitAndCenterTo(sprite, NEW_GLOBAL_BOUNDS);
+        }
+    }
+
 } // namespace sfml_util
 } // namespace heroespath

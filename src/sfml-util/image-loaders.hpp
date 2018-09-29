@@ -109,7 +109,7 @@ namespace sfml_util
         const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
-        const sfml_util::gui::CombatImageType::Enum WHICH_COMBAT_IMAGE,
+        const sfml_util::CombatImageType::Enum WHICH_COMBAT_IMAGE,
         const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
 
 } // namespace sfml_util

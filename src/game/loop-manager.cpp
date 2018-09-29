@@ -648,7 +648,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-        const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
@@ -659,7 +659,7 @@ namespace game
 
         auto isPopupTypeResolutionChange { true };
 
-        sfml_util::gui::TextInfo textInfo(
+        sfml_util::TextInfo textInfo(
             "Keep this setting?",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),

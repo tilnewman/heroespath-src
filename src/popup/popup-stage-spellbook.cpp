@@ -70,8 +70,8 @@ namespace popup
     PopupStageSpellbook::~PopupStageSpellbook() = default;
 
     bool PopupStageSpellbook::HandleCallback(
-        const sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::
-            PacketPtr_t & PACKET_PTR)
+        const sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t &
+            PACKET_PTR)
     {
         if ((PACKET_PTR->gui_event == sfml_util::GuiEvent::Click)
             || (PACKET_PTR->gui_event == sfml_util::GuiEvent::SelectionChange)
@@ -285,7 +285,7 @@ namespace popup
            << "Mana:  " << CREATURE_PTR->Mana() << "/" << CREATURE_PTR->ManaNormal() << "\n"
            << "\n";
 
-        const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
+        const sfml_util::TextInfo DETAILS_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -300,13 +300,13 @@ namespace popup
             0.0f
         };
 
-        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SpellnbookPopupWindowDetails", DETAILS_TEXTINFO, DETAILS_TEXT_RECT);
     }
 
     void PopupStageSpellbook::SetupSpellListboxLabel()
     {
-        const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
+        const sfml_util::TextInfo LISTBOX_LABEL_TEXTINFO(
             "Spells",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Largeish(),
@@ -321,7 +321,7 @@ namespace popup
             0.0f
         };
 
-        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SpellnbookPopupWindowSpellListLabel", LISTBOX_LABEL_TEXTINFO, LISTBOX_LABEL_TEXTRECT);
     }
 
@@ -330,8 +330,7 @@ namespace popup
     {
         spellSprite_.setColor(IMAGE_COLOR);
 
-        const sfml_util::gui::FocusColors TEXT_COLOR_SET(
-            TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
+        const sfml_util::FocusColors TEXT_COLOR_SET(TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
 
         spellTitleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
         spellDetailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
@@ -340,7 +339,7 @@ namespace popup
         auto unableTextColor { UNABLE_TEXT_COLOR_ };
         unableTextColor.a = TEXT_COLOR.a;
 
-        const sfml_util::gui::FocusColors UNABLE_EXT_COLOR_SET(
+        const sfml_util::FocusColors UNABLE_EXT_COLOR_SET(
             unableTextColor, unableTextColor, unableTextColor, unableTextColor);
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
@@ -369,22 +368,18 @@ namespace popup
         listBoxBackgroundInfo_.SetupBorder(true, 1.0f);
         listBoxBackgroundInfo_.focus_colors = LISTBOX_COLORSET_;
 
-        listBoxUPtr_
-            = std::make_unique<sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>>(
-                "PopupStage'sSpellListBox",
-                this,
-                this,
-                sfml_util::gui::ListBoxPacket(
-                    LISTBOX_RECT,
-                    listBoxBackgroundInfo_,
-                    LISTBOX_LINE_COLOR_,
-                    LISTBOX_IMAGE_COLOR_));
+        listBoxUPtr_ = std::make_unique<sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>>(
+            "PopupStage'sSpellListBox",
+            this,
+            this,
+            sfml_util::ListBoxPacket(
+                LISTBOX_RECT, listBoxBackgroundInfo_, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
 
         for (auto const & SPELL_PTR : popupInfo_.CreaturePtrOpt().value()->SpellsPVec())
         {
-            listBoxUPtr_->Append(std::make_unique<sfml_util::gui::ListElement<spell::SpellPtr_t>>(
+            listBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<spell::SpellPtr_t>>(
                 SPELL_PTR,
-                sfml_util::gui::TextInfo(listElementTextInfo_, SPELL_PTR->Name()),
+                sfml_util::TextInfo(listElementTextInfo_, SPELL_PTR->Name()),
                 boost::none,
                 CanCastSpell(SPELL_PTR)));
         }
@@ -395,7 +390,7 @@ namespace popup
     void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtr_t SPELL_PTR)
     {
         // setup spell title text
-        const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(
+        const sfml_util::TextInfo SPELL_TITLE_TEXTINFO(
             SPELL_PTR->Name(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Large(),
@@ -408,7 +403,7 @@ namespace popup
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
             };
 
-            spellTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            spellTitleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "SpellnbookPopupWindowSpellTitle", SPELL_TITLE_TEXTINFO, SPELL_TITLE_TEXTRECT);
         }
         else
@@ -451,7 +446,7 @@ namespace popup
            << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
            << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << "\n";
 
-        const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
+        const sfml_util::TextInfo SPELL_DETAILS_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -474,7 +469,7 @@ namespace popup
                                                          SPELLDETAILS_TEXTRECT_WIDTH,
                                                          SPELLDETAILS_TEXTRECT_HEIGHT };
 
-            spellDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            spellDetailsTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "SpellnbookPopupWindowSpellDetails",
                 SPELL_DETAILS_TEXTINFO,
                 SPELL_DETAILS_TEXTRECT);
@@ -520,7 +515,7 @@ namespace popup
             }
         }
 
-        const sfml_util::gui::TextInfo SPELL_UNABLE_TEXTINFO(
+        const sfml_util::TextInfo SPELL_UNABLE_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -544,14 +539,14 @@ namespace popup
                                                     SPELL_UNABLE_TEXTRECT_WIDTH,
                                                     SPELL_UNABLE_TEXTRECT_HEIGHT };
 
-        unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        unableTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SpellnbookPopupWindowSpellUnableToCast", SPELL_UNABLE_TEXTINFO, SPELL_UNABLE_TEXTRECT);
 
         // setup spell description text
         ss.str("");
         ss << SPELL_PTR->Desc() << "  " << SPELL_PTR->DescExtra();
 
-        const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(
+        const sfml_util::TextInfo SPELL_DESC_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -586,7 +581,7 @@ namespace popup
 
         if (!spellDescTextUPtr_)
         {
-            spellDescTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            spellDescTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "SpellnbookPopupWindowSpellDescription", SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT);
         }
         else

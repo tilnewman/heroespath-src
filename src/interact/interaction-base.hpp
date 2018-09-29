@@ -34,7 +34,7 @@ namespace interact
     public:
         InteractionBase(
             const Interact::Enum,
-            const sfml_util::gui::TextInfo & TEXT,
+            const sfml_util::TextInfo & TEXT,
             const ButtonVec_t & BUTTONS,
             const std::string & SUBJECT_IMAGE_KEY,
             const sfml_util::sound_effect::Enum SFX_ENTER = sfml_util::sound_effect::Count,
@@ -45,7 +45,7 @@ namespace interact
 
         Interact::Enum Type() const final { return interactionType_; }
 
-        const sfml_util::gui::TextInfo & Text() const final { return text_; }
+        const sfml_util::TextInfo & Text() const final { return text_; }
 
         ButtonVec_t & Buttons() final { return buttons_; }
 
@@ -57,11 +57,10 @@ namespace interact
 
         void PlayExitSfx() const final;
 
-        static const sfml_util::gui::TextInfo
+        static const sfml_util::TextInfo
             MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
-        bool OnButtonClick(
-            const stage::InteractStagePtr_t, const sfml_util::gui::TextButtonPtr_t) final;
+        bool OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::TextButtonPtr_t) final;
 
         bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) final;
 
@@ -83,7 +82,7 @@ namespace interact
 
     private:
         Interact::Enum interactionType_;
-        sfml_util::gui::TextInfo text_;
+        sfml_util::TextInfo text_;
         ButtonVec_t buttons_;
         sfml_util::CachedTexture subjectCachedTexture_;
         sfml_util::CachedTexture contextCachedTexture_;

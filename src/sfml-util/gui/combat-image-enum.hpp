@@ -15,30 +15,27 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    struct CombatImageType
     {
-
-        struct CombatImageType
+        enum Enum
         {
-            enum Enum
-            {
-                Wing = 0,
-                Arrow1,
-                Arrow2,
-                Arrow3,
-                Bolt,
-                Dart,
-                Stone1,
-                Stone2,
-                Stone3,
-                Stone4,
-                Count
-            };
-
-            static const std::string ToString(const Enum);
-            static const std::string ImageFilename(const Enum);
+            Wing = 0,
+            Arrow1,
+            Arrow2,
+            Arrow3,
+            Bolt,
+            Dart,
+            Stone1,
+            Stone2,
+            Stone3,
+            Stone4,
+            Count
         };
-    } // namespace gui
+
+        static const std::string ToString(const Enum);
+        static const std::string ImageFilename(const Enum);
+    };
 } // namespace sfml_util
 } // namespace heroespath
 

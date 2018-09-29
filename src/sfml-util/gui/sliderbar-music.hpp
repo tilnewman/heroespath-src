@@ -19,39 +19,36 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Encapsulates a gui sliderbar with a label that controls the music volume.
+    class SliderBarMusic : public SliderBarLabeled
     {
+    public:
+        SliderBarMusic(const SliderBarMusic &) = delete;
+        SliderBarMusic(SliderBarMusic &&) = delete;
+        SliderBarMusic & operator=(const SliderBarMusic &) = delete;
+        SliderBarMusic & operator=(SliderBarMusic &&) = delete;
 
-        // Encapsulates a gui sliderbar with a label that controls the music volume.
-        class SliderBarMusic : public SliderBarLabeled
-        {
-        public:
-            SliderBarMusic(const SliderBarMusic &) = delete;
-            SliderBarMusic(SliderBarMusic &&) = delete;
-            SliderBarMusic & operator=(const SliderBarMusic &) = delete;
-            SliderBarMusic & operator=(SliderBarMusic &&) = delete;
+        SliderBarMusic(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const float LENGTH,
+            const SliderStyle & STYLE,
+            const MouseTextInfo & THREE_TEXT_INFOS,
+            const float INITIAL_VALUE = 0.0f,
+            const float RELATIVE_LABEL_POS_LEFT = 0.0f,
+            const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
 
-            SliderBarMusic(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const float LENGTH,
-                const SliderStyle & STYLE,
-                const MouseTextInfo & THREE_TEXT_INFOS,
-                const float INITIAL_VALUE = 0.0f,
-                const float RELATIVE_LABEL_POS_LEFT = 0.0f,
-                const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
+        virtual ~SliderBarMusic();
 
-            virtual ~SliderBarMusic();
+    protected:
+        void OnChange(const float CURRENT_POS_RATIO) override;
+        const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO) override;
+    };
 
-        protected:
-            void OnChange(const float CURRENT_POS_RATIO) override;
-            const TextInfo CreateTextToDisplay(const float CURRENT_POS_RATIO) override;
-        };
+    using SliderBarMusicUPtr_t = std::unique_ptr<SliderBarMusic>;
 
-        using SliderBarMusicUPtr_t = std::unique_ptr<SliderBarMusic>;
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

@@ -17,25 +17,22 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading combat images.
+    class CombatImageLoader : public EnumImageLoader<CombatImageType>
     {
+    public:
+        CombatImageLoader & operator=(const CombatImageLoader &) = delete;
+        CombatImageLoader & operator=(CombatImageLoader &&) = delete;
+        CombatImageLoader(const CombatImageLoader &) = delete;
+        CombatImageLoader(CombatImageLoader &&) = delete;
 
-        // Responsible for loading combat images.
-        class CombatImageLoader : public EnumImageLoader<CombatImageType>
-        {
-        public:
-            CombatImageLoader & operator=(const CombatImageLoader &) = delete;
-            CombatImageLoader & operator=(CombatImageLoader &&) = delete;
-            CombatImageLoader(const CombatImageLoader &) = delete;
-            CombatImageLoader(CombatImageLoader &&) = delete;
+        CombatImageLoader()
+            : EnumImageLoader<CombatImageType>(
+                  game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"))
+        {}
+    };
 
-            CombatImageLoader()
-                : EnumImageLoader<CombatImageType>(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"))
-            {}
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

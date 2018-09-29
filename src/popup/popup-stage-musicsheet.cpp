@@ -284,7 +284,7 @@ namespace popup
            << "Mana:  " << CREATURE_PTR->Mana() << "/" << CREATURE_PTR->ManaNormal() << "\n"
            << "\n";
 
-        const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
+        const sfml_util::TextInfo DETAILS_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -299,13 +299,13 @@ namespace popup
             0.0f
         };
 
-        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "MusicSheetPopupWindowDetails", DETAILS_TEXTINFO, DETAILS_TEXT_RECT);
     }
 
     void PopupStageMusicSheet::SetupListboxLabelText()
     {
-        const sfml_util::gui::TextInfo LISTBOX_LABEL_TEXTINFO(
+        const sfml_util::TextInfo LISTBOX_LABEL_TEXTINFO(
             "Songs",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Largeish(),
@@ -320,7 +320,7 @@ namespace popup
             0.0f
         };
 
-        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "MusicSheetPopupWindowSongListLabel", LISTBOX_LABEL_TEXTINFO, LISTBOX_LABEL_TEXTRECT);
     }
 
@@ -347,22 +347,18 @@ namespace popup
         listBoxBackgroundInfo_.SetupBorder(true, 1.0f);
         listBoxBackgroundInfo_.focus_colors = LISTBOX_COLORSET_;
 
-        listBoxUPtr_
-            = std::make_unique<sfml_util::gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>>(
-                "PopupStage'sMusicListBox",
-                this,
-                this,
-                sfml_util::gui::ListBoxPacket(
-                    LISTBOX_RECT,
-                    listBoxBackgroundInfo_,
-                    LISTBOX_LINE_COLOR_,
-                    LISTBOX_IMAGE_COLOR_));
+        listBoxUPtr_ = std::make_unique<sfml_util::ListBox<PopupStageMusicSheet, song::SongPtr_t>>(
+            "PopupStage'sMusicListBox",
+            this,
+            this,
+            sfml_util::ListBoxPacket(
+                LISTBOX_RECT, listBoxBackgroundInfo_, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
 
         for (auto const & SONG_PTR : popupInfo_.CreaturePtrOpt().value()->SongsPVec())
         {
-            listBoxUPtr_->Append(std::make_unique<sfml_util::gui::ListElement<song::SongPtr_t>>(
+            listBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<song::SongPtr_t>>(
                 SONG_PTR,
-                sfml_util::gui::TextInfo(listElementTextInfo_, SONG_PTR->Name()),
+                sfml_util::TextInfo(listElementTextInfo_, SONG_PTR->Name()),
                 boost::none,
                 CanPlaySong(SONG_PTR)));
         }
@@ -373,7 +369,7 @@ namespace popup
     void PopupStageMusicSheet::SetupPageRightText(const song::SongPtr_t SONG_PTR)
     {
         // setup song title text
-        const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
+        const sfml_util::TextInfo SONG_TITLE_TEXTINFO(
             SONG_PTR->Name(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Large(),
@@ -386,7 +382,7 @@ namespace popup
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
             };
 
-            titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            titleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "MusicSheetPopupWindowSongTitle", SONG_TITLE_TEXTINFO, SONG_TITLE_TEXTRECT);
         }
         else
@@ -429,7 +425,7 @@ namespace popup
            << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
            << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << "\n";
 
-        const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
+        const sfml_util::TextInfo SONG_DETAILS_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -452,7 +448,7 @@ namespace popup
 
         if (!detailsTextUPtr_)
         {
-            detailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            detailsTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "MusicsheetPopupWindowSongDetails", SONG_DETAILS_TEXTINFO, SONG_DETAILS_TEXTRECT);
         }
         else
@@ -496,7 +492,7 @@ namespace popup
             }
         }
 
-        const sfml_util::gui::TextInfo SONG_UNABLE_TEXTINFO(
+        const sfml_util::TextInfo SONG_UNABLE_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -520,14 +516,14 @@ namespace popup
                                                    SONG_UNABLE_TEXTRECT_WIDTH,
                                                    SONG_UNABLE_TEXTRECT_HEIGHT };
 
-        unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        unableTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "MusicsheetPopupWindowSongUnableToCast", SONG_UNABLE_TEXTINFO, SONG_UNABLE_TEXTRECT);
 
         // setup song description text
         ss.str("");
         ss << SONG_PTR->Desc() << "  " << SONG_PTR->DescExtra();
 
-        const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(
+        const sfml_util::TextInfo SONG_DESC_TEXTINFO(
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
@@ -561,7 +557,7 @@ namespace popup
 
         if (!descTextUPtr_)
         {
-            descTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            descTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "SongnbookPopupWindowSongDescription", SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT);
         }
         else
@@ -576,8 +572,7 @@ namespace popup
     {
         songSprite_.setColor(IMAGE_COLOR);
 
-        const sfml_util::gui::FocusColors TEXT_COLOR_SET(
-            TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
+        const sfml_util::FocusColors TEXT_COLOR_SET(TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
 
         titleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
         detailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
@@ -586,7 +581,7 @@ namespace popup
         auto unableTextColor { UNABLE_TEXT_COLOR_ };
         unableTextColor.a = TEXT_COLOR.a;
 
-        const sfml_util::gui::FocusColors UNABLE_EXT_COLOR_SET(
+        const sfml_util::FocusColors UNABLE_EXT_COLOR_SET(
             unableTextColor, unableTextColor, unableTextColor, unableTextColor);
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);

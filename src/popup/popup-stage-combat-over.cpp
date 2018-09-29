@@ -65,7 +65,7 @@ namespace popup
             }
         }() };
 
-        const sfml_util::gui::TextInfo COMBAT_TITLE_TEXTINFO(
+        const sfml_util::TextInfo COMBAT_TITLE_TEXTINFO(
             TITLE_TEXT,
             sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
@@ -73,7 +73,7 @@ namespace popup
             sfml_util::Justified::Center,
             sf::Text::Bold);
 
-        titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        titleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
 
         auto const TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
@@ -118,7 +118,7 @@ namespace popup
             return descSS.str();
         }() };
 
-        const sfml_util::gui::TextInfo COMBAT_DESC_TEXTINFO(
+        const sfml_util::TextInfo COMBAT_DESC_TEXTINFO(
             DESC_TEXT,
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
@@ -133,7 +133,7 @@ namespace popup
             textRegion_.height
                 - (titleTextRegionUPtr_->GetEntityRegion().height + (VERT_SPACER * 2.0f)));
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "CombatOverPopupDesc", COMBAT_DESC_TEXTINFO, COMBAT_DESC_RECT);
     }
 

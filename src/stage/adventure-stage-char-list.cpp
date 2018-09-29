@@ -35,7 +35,7 @@ namespace stage
 {
 
     AdventureCharacterList::AdventureCharacterList(const sfml_util::IStagePtr_t ISTAGE_PTR)
-        : sfml_util::gui::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
+        : sfml_util::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
         , ALPHA_FOR_LINES_(180)
         , ALPHA_FOR_TEXT_(160)
         , ALPHA_FOR_CHAR_IMAGES_(150)
@@ -134,19 +134,17 @@ namespace stage
 
         for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            const sfml_util::gui::TextInfo TEXT_INFO {
-                CHARACTER_PTR->Name(),
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Large(),
-                FadedDarkColor_Text()
-            };
+            const sfml_util::TextInfo TEXT_INFO { CHARACTER_PTR->Name(),
+                                                  sfml_util::GuiFont::Default,
+                                                  sfml_util::FontManager::Instance()->Size_Large(),
+                                                  FadedDarkColor_Text() };
 
-            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::gui::ImageTextEntity>(
+            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::ImageTextEntity>(
                 "AdventureStage'sCharacterList'sNameButtonFor_" + CHARACTER_PTR->Name(),
-                sfml_util::gui::MouseImageInfo(),
+                sfml_util::MouseImageInfo(),
                 TEXT_INFO,
                 boost::none,
-                sfml_util::gui::ImageTextEntity::MouseStateSync::Image));
+                sfml_util::ImageTextEntity::MouseStateSync::Image));
         }
 
         for (auto const & BUTTON_UPTR : namesButtonUVec_)
@@ -169,7 +167,7 @@ namespace stage
             std::ostringstream ss;
             ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
 
-            const sfml_util::gui::TextInfo TEXT_INFO {
+            const sfml_util::TextInfo TEXT_INFO {
                 ss.str(),
                 sfml_util::GuiFont::Number,
                 sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -182,7 +180,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            healthTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+            healthTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
                 "AdventureStage'sCharacterList'sHealthTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -205,7 +203,7 @@ namespace stage
             std::ostringstream ss;
             ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();
 
-            const sfml_util::gui::TextInfo TEXT_INFO {
+            const sfml_util::TextInfo TEXT_INFO {
                 ss.str(),
                 sfml_util::GuiFont::Number,
                 sfml_util::FontManager::Instance()->Size_Smallish(),
@@ -218,7 +216,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            manaTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+            manaTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
                 "AdventureStage'sCharacterList'sManaTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -240,12 +238,10 @@ namespace stage
         {
             auto const CHARACTER_PTR { CHARACTER_PVEC[i] };
 
-            const sfml_util::gui::TextInfo TEXT_INFO {
-                CHARACTER_PTR->ConditionNames(),
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Normal(),
-                FadedDarkColor_Text()
-            };
+            const sfml_util::TextInfo TEXT_INFO { CHARACTER_PTR->ConditionNames(),
+                                                  sfml_util::GuiFont::Default,
+                                                  sfml_util::FontManager::Instance()->Size_Normal(),
+                                                  FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f, // actual position will be set by SetupPositions_Conditions()
@@ -253,7 +249,7 @@ namespace stage
                 conditionColumnRects_[i].width - (CELL_TEXT_LEFT_SPACER_ * 2.0f),
                 conditionColumnRects_[i].height);
 
-            condsTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
+            condsTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
                 "AdventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));

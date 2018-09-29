@@ -42,25 +42,25 @@ namespace stage
               true)
         , titleCachedTexture_("media-images-title-blacksymbol")
         , titleSprite_(titleCachedTexture_.Get())
-        , resumeButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , resumeButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Load,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfml_util::ScreenRatioToPixelsHoriz(0.305f)))
-        , createButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , createButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Character,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfml_util::ScreenRatioToPixelsHoriz(0.43f)))
-        , settingsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , settingsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Settings,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfml_util::ScreenRatioToPixelsHoriz(0.201f)))
-        , creditsButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , creditsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Credits,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfml_util::ScreenRatioToPixelsHoriz(0.177f)))
-        , exitButtonUPtr_(std::make_unique<sfml_util::gui::MainMenuButton>(
+        , exitButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Exit,
-              sfml_util::gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfml_util::ScreenRatioToPixelsHoriz(0.114f)))
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
         , bottomSymbol_()

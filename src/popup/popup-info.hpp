@@ -39,7 +39,7 @@ namespace popup
         // default constructor for most popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const sfml_util::TextInfo & TEXT_INFO,
             const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
             const sfml_util::sound_effect::Enum SOUND_EFFECT
@@ -59,7 +59,7 @@ namespace popup
         // use this constructor for image selection popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const sfml_util::TextInfo & TEXT_INFO,
             const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
             const std::size_t INITIAL_SELECTION,
             const sfml_util::sound_effect::Enum SOUND_EFFECT
@@ -69,14 +69,14 @@ namespace popup
         // use this constructor for number selection popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const sfml_util::TextInfo & TEXT_INFO,
             const std::size_t THE_MIN,
             const std::size_t THE_MAX);
 
         // use this constructor for end-of-combat popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const sfml_util::TextInfo & TEXT_INFO,
             const PopupButtons::Enum BUTTONS,
             const combat::CombatEnd::Enum HOW_COMBAT_ENDED);
 
@@ -88,7 +88,7 @@ namespace popup
         const std::string Name() const { return name_; }
         PopupButtons::Enum Buttons() const { return buttons_; }
         PopupImage::Enum Image() const { return image_; }
-        const sfml_util::gui::TextInfo TextInfo() const { return textInfo_; }
+        const sfml_util::TextInfo TextInfo() const { return textInfo_; }
         sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
         float SizeX() const { return ratioX_; }
         float SizeY() const { return ratioY_; }
@@ -137,7 +137,7 @@ namespace popup
         const std::string ToStringCommon(const bool WILL_WRAP, const bool WILL_SHORTEN) const;
         //
         std::string name_;
-        sfml_util::gui::TextInfo textInfo_;
+        sfml_util::TextInfo textInfo_;
         PopupButtons::Enum buttons_;
         PopupImage::Enum image_;
         sfml_util::sound_effect::Enum soundEffect_;

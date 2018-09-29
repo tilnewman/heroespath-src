@@ -28,17 +28,13 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
-        class IEntity;
-        using IEntityPtr_t = misc::NotNull<IEntity *>;
-        using IEntityPVec_t = std::vector<IEntityPtr_t>;
-        using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
+    class IEntity;
+    using IEntityPtr_t = misc::NotNull<IEntity *>;
+    using IEntityPVec_t = std::vector<IEntityPtr_t>;
+    using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
 
-        class BoxEntity;
-        using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
-
-    } // namespace gui
+    class BoxEntity;
+    using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
     // A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
@@ -93,18 +89,18 @@ namespace sfml_util
         void UpdateMouseWheel(
             const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) override;
 
-        const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
-        const gui::IEntityPtrOpt_t GetEntityWithFocus() const override final
+        const IEntityPtrOpt_t GetEntityWithFocus() const override final
         {
             return entityWithFocusPtrOpt_;
         }
 
         void RemoveFocus() override final;
-        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override final;
+        void SetFocus(const IEntityPtr_t ENTITY_PTR) override final;
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
@@ -112,12 +108,11 @@ namespace sfml_util
         void HandleResolutionChange() override {}
 
         // throws if the entity to add was already there
-        void EntityAdd(
-            const gui::IEntityPtr_t,
-            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override final;
+        void EntityAdd(const IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
+            override final;
 
         // returns false if the entity to remove was not found
-        bool EntityRemove(const gui::IEntityPtr_t) override final;
+        bool EntityRemove(const IEntityPtr_t) override final;
 
         void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override final;
 
@@ -140,12 +135,12 @@ namespace sfml_util
         sf::FloatRect stageRegion_;
 
         // these are observer pointers whose lifetime is not controlled by this class
-        gui::IEntityPVec_t entityPVec_;
+        IEntityPVec_t entityPVec_;
 
         // a copy of a ptr in entityPVec_
-        gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
+        IEntityPtrOpt_t entityWithFocusPtrOpt_;
 
-        gui::BoxEntityUPtr_t hoverTextBoxUPtr_;
+        BoxEntityUPtr_t hoverTextBoxUPtr_;
         sfml_util::Text hoverText_;
 
     protected:

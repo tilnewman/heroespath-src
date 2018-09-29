@@ -86,7 +86,7 @@ namespace sfml_util
 
         void RemoveFocus();
 
-        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR);
+        void SetFocus(const IEntityPtr_t ENTITY_PTR);
 
         bool GetIgnoreMouse() const { return willIgnoreMouse_; }
         void SetIgnoreMouse(const bool B) { willIgnoreMouse_ = B; }
@@ -95,7 +95,7 @@ namespace sfml_util
         void SetIgnoreKeystrokes(const bool B) { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
-            const sfml_util::gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
@@ -159,7 +159,7 @@ namespace sfml_util
         float holdTimeCounter_;
         bool willExitOnKeypress_;
         bool willExitOnMouseclick_;
-        gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
+        IEntityPtrOpt_t entityWithFocusPtrOpt_;
         bool willIgnoreMouse_;
         bool willIgnoreKeystrokes_;
         popup::PopupInfoOpt_t popupInfoOpt_;
@@ -168,7 +168,7 @@ namespace sfml_util
         sf::Keyboard::Key prevKeyPressed_;
         bool isMouseHovering_;
         bool takeScreenshot_;
-        sfml_util::gui::PopupCallback_t::IHandlerPtrOpt_t popupCallbackPtrOpt_;
+        sfml_util::PopupCallback_t::IHandlerPtrOpt_t popupCallbackPtrOpt_;
         LoopState::Enum state_;
         std::vector<float> frameRateVec_;
         std::size_t frameRateSampleCount_;

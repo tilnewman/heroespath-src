@@ -14,22 +14,19 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
-    {
 
-        // responsible for being a type that indicates a ListElement contains no element, only
-        // either text or an image (or both)
-        struct NoElement_t
-        {};
+    // responsible for being a type that indicates a ListElement contains no element, only
+    // either text or an image (or both)
+    struct NoElement_t
+    {};
 
-        inline bool operator==(const NoElement_t &, const NoElement_t &) { return true; }
-        inline bool operator!=(const NoElement_t &, const NoElement_t &) { return false; }
-        inline bool operator<(const NoElement_t &, const NoElement_t &) { return false; }
-        inline bool operator>(const NoElement_t & L, const NoElement_t & R) { return (R < L); }
-        inline bool operator<=(const NoElement_t & L, const NoElement_t & R) { return !(L > R); }
-        inline bool operator>=(const NoElement_t & L, const NoElement_t & R) { return !(L < R); }
+    inline bool operator==(const NoElement_t &, const NoElement_t &) { return true; }
+    inline bool operator!=(const NoElement_t &, const NoElement_t &) { return false; }
+    inline bool operator<(const NoElement_t &, const NoElement_t &) { return false; }
+    inline bool operator>(const NoElement_t & L, const NoElement_t & R) { return (R < L); }
+    inline bool operator<=(const NoElement_t & L, const NoElement_t & R) { return !(L > R); }
+    inline bool operator>=(const NoElement_t & L, const NoElement_t & R) { return !(L < R); }
 
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

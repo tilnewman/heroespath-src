@@ -24,152 +24,140 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for the common state and operations of a "Gui Entity", which is anything
+    // drawn on screen that the player might interact with.  Examples include: images that
+    // change with mouse-clicks or keypresses, buttons, borders, radio-buttons, check-boxes,
+    // something with a mouse-over popup, and more.  All Entity's track their position and size
+    // on screen, track and respond to the mouse being over them or not,and have a name so that
+    // player gui interactions can be tracked in the log.  Stage's keep track of all Entity's
+    // and pass mouse and keyboard interactions to whichever is currently in focus.
+    class Entity : public IEntity
     {
+    public:
+        Entity(const Entity &) = delete;
+        Entity(Entity &&) = delete;
+        Entity & operator=(const Entity &) = delete;
+        Entity & operator=(Entity &&) = delete;
 
-        // Responsible for the common state and operations of a "Gui Entity", which is anything
-        // drawn on screen that the player might interact with.  Examples include: images that
-        // change with mouse-clicks or keypresses, buttons, borders, radio-buttons, check-boxes,
-        // something with a mouse-over popup, and more.  All Entity's track their position and size
-        // on screen, track and respond to the mouse being over them or not,and have a name so that
-        // player gui interactions can be tracked in the log.  Stage's keep track of all Entity's
-        // and pass mouse and keyboard interactions to whichever is currently in focus.
-        class Entity : public IEntity
+    public:
+        Entity(
+            const std::string & NAME,
+            const sf::FloatRect & SCREEN_REGION,
+            const FocusColors & COLORS = FocusColors());
+
+        Entity(
+            const std::string & NAME,
+            const sf::Vector2f & SCREEN_POS_V,
+            const FocusColors & COLORS = FocusColors());
+
+        Entity(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const FocusColors & COLORS = FocusColors());
+
+        virtual ~Entity();
+
+        void draw(sf::RenderTarget &, sf::RenderStates) const override = 0;
+
+        MouseState::Enum GetMouseState() const override final { return entityMouseState_; }
+
+        bool SetMouseState(const MouseState::Enum E) override;
+
+        bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+
+        // returns true only if the MouseState changed
+        bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+
+        // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
+        bool UpdateMouseWheel(const sf::Vector2f &, const float) override { return false; }
+
+        bool HasFocus() const override final { return entityHasFocus_; }
+        bool SetHasFocus(const bool) override;
+        bool WillAcceptFocus() const override final { return entityWillFocus_; }
+        void SetWillAcceptFocus(const bool WILL) override final { entityWillFocus_ = WILL; }
+        const std::string GetMouseHoverText() override final { return entityMouseHoverText_; }
+
+        void SetMouseHoverText(const std::string & S) override final { entityMouseHoverText_ = S; }
+
+    protected:
+        void OnClick(const sf::Vector2f &) override {}
+        void OnDoubleClick(const sf::Vector2f &) override {}
+        void OnColorChange() override {}
+        void ChangeColors();
+
+        // IEntity
+    public:
+        const sf::Vector2f GetEntityPos() const override final
         {
-        public:
-            Entity(const Entity &) = delete;
-            Entity(Entity &&) = delete;
-            Entity & operator=(const Entity &) = delete;
-            Entity & operator=(Entity &&) = delete;
+            return sf::Vector2f(entityRegion_.left, entityRegion_.top);
+        }
 
-        public:
-            Entity(
-                const std::string & NAME,
-                const sf::FloatRect & SCREEN_REGION,
-                const FocusColors & COLORS = FocusColors());
+        // only calls SetEntityPos(float, float), don't override
+        void SetEntityPos(const sf::Vector2f & V) override final { SetEntityPos(V.x, V.y); }
 
-            Entity(
-                const std::string & NAME,
-                const sf::Vector2f & SCREEN_POS_V,
-                const FocusColors & COLORS = FocusColors());
+        // sets entityRegion_.left and entityRegion_.top, override this one
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
-            Entity(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const FocusColors & COLORS = FocusColors());
+        // only calls MoveEntityPos(float, float), don't override
+        void MoveEntityPos(const sf::Vector2f & V) override final { MoveEntityPos(V.x, V.y); }
 
-            virtual ~Entity();
+        // entityRegion_.left/top += HORIZ/VERT, override this one
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            void draw(sf::RenderTarget &, sf::RenderStates) const override = 0;
+        void MoveEntityOffScreen();
+        void MoveEntityBackFromOffScreen();
 
-            MouseState::Enum GetMouseState() const override final { return entityMouseState_; }
+        void SetEntityColors(const FocusColors & COLOR_SET) override;
+        void SetEntityColorFg(const sf::Color & FG_COLOR) override;
+        void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
+        const FocusColors GetEntityColors() const override final { return entityFocusColors_; }
 
-            bool SetMouseState(const MouseState::Enum E) override;
+        const sf::Color GetEntityColorForeground() const override final { return entityFgColor_; }
 
-            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
-            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        const sf::Color GetEntityColorBackground() const override final { return entityBgColor_; }
 
-            // returns true only if the MouseState changed
-            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+        void FakeFocusColorsAsIfFocusIs(const bool) override final;
 
-            // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
-            bool UpdateMouseWheel(const sf::Vector2f &, const float) override { return false; }
+        const std::string GetEntityName() const override final { return entityName_; }
 
-            bool HasFocus() const override final { return entityHasFocus_; }
-            bool SetHasFocus(const bool) override;
-            bool WillAcceptFocus() const override final { return entityWillFocus_; }
-            void SetWillAcceptFocus(const bool WILL) override final { entityWillFocus_ = WILL; }
-            const std::string GetMouseHoverText() override final { return entityMouseHoverText_; }
+        const sf::FloatRect GetEntityRegion() const override final { return entityRegion_; }
 
-            void SetMouseHoverText(const std::string & S) override final
-            {
-                entityMouseHoverText_ = S;
-            }
+        void SetEntityRegion(const sf::FloatRect & REGION) override { entityRegion_ = REGION; }
 
-        protected:
-            void OnClick(const sf::Vector2f &) override {}
-            void OnDoubleClick(const sf::Vector2f &) override {}
-            void OnColorChange() override {}
-            void ChangeColors();
+        bool UpdateTime(const float) override { return false; }
 
-            // IEntity
-        public:
-            const sf::Vector2f GetEntityPos() const override final
-            {
-                return sf::Vector2f(entityRegion_.left, entityRegion_.top);
-            }
+        bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
+        bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
 
-            // only calls SetEntityPos(float, float), don't override
-            void SetEntityPos(const sf::Vector2f & V) override final { SetEntityPos(V.x, V.y); }
+        friend bool operator<(const Entity & L, const Entity & R);
+        friend bool operator==(const Entity & L, const Entity & R);
 
-            // sets entityRegion_.left and entityRegion_.top, override this one
-            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+    protected:
+        static const sf::Int32 DOUBLE_CLICK_TIME_MS_;
+        //
+        std::string entityName_;
+        sf::FloatRect entityRegion_;
+        MouseState::Enum entityMouseState_;
+        FocusColors entityFocusColors_;
+        sf::Color entityFgColor_;
+        sf::Color entityBgColor_;
+        bool entityHasFocus_;
+        bool entityWillFocus_;
+        std::string entityMouseHoverText_;
+        sf::Clock entityClock_;
+        sf::Vector2f entityPrevPos_;
+        bool hasClockStarted_;
+    };
 
-            // only calls MoveEntityPos(float, float), don't override
-            void MoveEntityPos(const sf::Vector2f & V) override final { MoveEntityPos(V.x, V.y); }
+    bool operator<(const Entity & L, const Entity & R);
 
-            // entityRegion_.left/top += HORIZ/VERT, override this one
-            void MoveEntityPos(const float HORIZ, const float VERT) override;
+    bool operator==(const Entity & L, const Entity & R);
 
-            void MoveEntityOffScreen();
-            void MoveEntityBackFromOffScreen();
+    inline bool operator!=(const Entity & L, const Entity & R) { return !(L == R); }
 
-            void SetEntityColors(const FocusColors & COLOR_SET) override;
-            void SetEntityColorFg(const sf::Color & FG_COLOR) override;
-            void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
-            const FocusColors GetEntityColors() const override final { return entityFocusColors_; }
-
-            const sf::Color GetEntityColorForeground() const override final
-            {
-                return entityFgColor_;
-            }
-
-            const sf::Color GetEntityColorBackground() const override final
-            {
-                return entityBgColor_;
-            }
-
-            void FakeFocusColorsAsIfFocusIs(const bool) override final;
-
-            const std::string GetEntityName() const override final { return entityName_; }
-
-            const sf::FloatRect GetEntityRegion() const override final { return entityRegion_; }
-
-            void SetEntityRegion(const sf::FloatRect & REGION) override { entityRegion_ = REGION; }
-
-            bool UpdateTime(const float) override { return false; }
-
-            bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
-            bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
-
-            friend bool operator<(const Entity & L, const Entity & R);
-            friend bool operator==(const Entity & L, const Entity & R);
-
-        protected:
-            static const sf::Int32 DOUBLE_CLICK_TIME_MS_;
-            //
-            std::string entityName_;
-            sf::FloatRect entityRegion_;
-            MouseState::Enum entityMouseState_;
-            FocusColors entityFocusColors_;
-            sf::Color entityFgColor_;
-            sf::Color entityBgColor_;
-            bool entityHasFocus_;
-            bool entityWillFocus_;
-            std::string entityMouseHoverText_;
-            sf::Clock entityClock_;
-            sf::Vector2f entityPrevPos_;
-            bool hasClockStarted_;
-        };
-
-        bool operator<(const Entity & L, const Entity & R);
-
-        bool operator==(const Entity & L, const Entity & R);
-
-        inline bool operator!=(const Entity & L, const Entity & R) { return !(L == R); }
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

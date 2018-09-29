@@ -37,7 +37,7 @@ namespace stage
             const float START_TOP,
             const float TARGET_LEFT,
             const float TARGET_TOP,
-            const sfml_util::gui::TextInfo & TEXT_INFO);
+            const sfml_util::TextInfo & TEXT_INFO);
 
         virtual ~AnimNum();
 
@@ -90,7 +90,7 @@ namespace stage
         bool willFade_;
         float fadeCounter_;
         bool isHeldDown_;
-        sfml_util::gui::TextInfo textInfo_;
+        sfml_util::TextInfo textInfo_;
         sfml_util::Text text_;
         sfml_util::sliders::ZeroSliderOnce<float> sliderX_;
         float timerSec_;

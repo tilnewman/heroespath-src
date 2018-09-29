@@ -17,25 +17,22 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace gui
+
+    // Responsible for loading Spell images.
+    class SpellImageLoader : public EnumImageLoader<spell::Spells>
     {
+    public:
+        SpellImageLoader(const SpellImageLoader &) = delete;
+        SpellImageLoader(SpellImageLoader &&) = delete;
+        SpellImageLoader & operator=(const SpellImageLoader &) = delete;
+        SpellImageLoader & operator=(SpellImageLoader &&) = delete;
 
-        // Responsible for loading Spell images.
-        class SpellImageLoader : public EnumImageLoader<spell::Spells>
-        {
-        public:
-            SpellImageLoader(const SpellImageLoader &) = delete;
-            SpellImageLoader(SpellImageLoader &&) = delete;
-            SpellImageLoader & operator=(const SpellImageLoader &) = delete;
-            SpellImageLoader & operator=(SpellImageLoader &&) = delete;
+        SpellImageLoader()
+            : EnumImageLoader<spell::Spells>(
+                  game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"))
+        {}
+    };
 
-            SpellImageLoader()
-                : EnumImageLoader<spell::Spells>(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"))
-            {}
-        };
-
-    } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
 

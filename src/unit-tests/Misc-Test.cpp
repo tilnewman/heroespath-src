@@ -29,7 +29,7 @@
 #include <limits>
 #include <type_traits>
 
-using namespace heroespath::sfml_util::gui;
+using namespace heroespath::sfml_util;
 using namespace heroespath::misc;
 
 // a simple class used to test working with non-POD
@@ -324,7 +324,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
     BOOST_CHECK(noElement1 == NoElement_t());
     BOOST_CHECK(noElement2 == NoElement_t());
 
-    // test that an optional of type sfml_util::gui::NoElement_t works in every way
+    // test that an optional of type sfml_util::NoElement_t works in every way
     boost::optional<NoElement_t> noOpt;
     BOOST_CHECK(!noOpt);
     BOOST_CHECK(!noOpt.is_initialized());

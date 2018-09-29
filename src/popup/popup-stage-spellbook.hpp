@@ -33,8 +33,7 @@ namespace popup
 
     class PopupStageSpellbook
         : public PopupStageBase
-        , public sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::
-              IHandler_t
+        , public sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::IHandler_t
     {
     public:
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
@@ -60,7 +59,7 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const sfml_util::gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::
+        bool HandleCallback(const sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::
                                 Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
@@ -99,22 +98,22 @@ namespace popup
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
-        sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t<PopupStageSpellbook, spell::SpellPtr_t> listBoxUPtr_;
+        sfml_util::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
+        sfml_util::ListBoxUPtr_t<PopupStageSpellbook, spell::SpellPtr_t> listBoxUPtr_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
         const sf::Color LISTBOX_COLOR_BG_;
-        const sfml_util::gui::FocusColors LISTBOX_COLORSET_;
-        sfml_util::gui::BoxEntityInfo listBoxBackgroundInfo_;
-        sfml_util::gui::TextInfo listElementTextInfo_;
+        const sfml_util::FocusColors LISTBOX_COLORSET_;
+        sfml_util::BoxEntityInfo listBoxBackgroundInfo_;
+        sfml_util::TextInfo listElementTextInfo_;
         sfml_util::CachedTextureOpt_t spellCachedTextureOpt_;
         sf::Sprite spellSprite_;
-        sfml_util::gui::TextRegionUPtr_t spellTitleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t spellDetailsTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t unableTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t spellDescTextUPtr_;
+        sfml_util::TextRegionUPtr_t spellTitleTextRegionUPtr_;
+        sfml_util::TextRegionUPtr_t spellDetailsTextUPtr_;
+        sfml_util::TextRegionUPtr_t unableTextUPtr_;
+        sfml_util::TextRegionUPtr_t spellDescTextUPtr_;
         sfml_util::ColorShaker warnColorShaker_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
