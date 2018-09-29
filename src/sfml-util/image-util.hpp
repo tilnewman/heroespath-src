@@ -19,4 +19,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_IMAGE_UTIL_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_IMAGE_UTIL_HPP_INCLUDED

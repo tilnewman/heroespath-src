@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_GUI_SONG_IMAGE_LOADER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_SONG_IMAGE_LOADER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_SONG_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_SONG_IMAGE_LOADER_HPP_INCLUDED
 //
 // song-image-loader.hpp
 //
@@ -36,4 +36,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SONGIMAGEMANAGER_HPP_INCLUDED

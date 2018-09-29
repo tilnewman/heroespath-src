@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_GUI_I_ENTITY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GUI_I_ENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
 //
 // i-entity.hpp
 //
@@ -97,4 +97,4 @@ namespace sfml_util
 } // namespace sfml_util
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GUI_I_ENTITY_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
