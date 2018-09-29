@@ -20,7 +20,8 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "stringutil/stringhelp.hpp"
+#include "misc/strings-split-by-char.hpp"
+#include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -155,7 +156,7 @@ namespace creature
             auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
             std::vector<std::string> strVec;
-            appbase::stringhelp::SplitByChar(VALUE_STR, strVec, ',', true, true);
+            misc::SplitByChar(VALUE_STR, strVec, ',', true, true);
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (strVec.size() == 2),
@@ -1705,15 +1706,14 @@ namespace creature
                 auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
                 std::vector<std::string> armorChancesVec;
-                appbase::stringhelp::SplitByChar(VALUE_STR, armorChancesVec, '|', true, true);
+                misc::SplitByChar(VALUE_STR, armorChancesVec, '|', true, true);
 
                 RoleArmorChanceVec_t roleArmorChanceVec;
 
                 for (auto const & NEXT_ARMOR_CHANCE_STR : armorChancesVec)
                 {
                     std::vector<std::string> piecesVec;
-                    appbase::stringhelp::SplitByChar(
-                        NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
+                    misc::SplitByChar(NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (piecesVec.size() >= 2),
@@ -1827,7 +1827,7 @@ namespace creature
                 game::GameDataFile::Instance()->GetCopyStr(KEY_STR)) };
 
             std::vector<std::string> weaponSetVec;
-            appbase::stringhelp::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
+            misc::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
 
             // Loop over each weapon set, denoted by curly brackets {} in the GameDataFile.
             for (auto const & NEXT_WEAPON_SET_STR : weaponSetVec)
@@ -1835,8 +1835,7 @@ namespace creature
                 WeaponSet nextWeaponSet;
 
                 std::vector<std::string> instructionsVec;
-                appbase::stringhelp::SplitByChar(
-                    NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
+                misc::SplitByChar(NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
 
                 // Loop over each instruction, denoted by the pipe character in the GameDataFile.
                 // A collection of instructions composes a WeaponSet
@@ -1892,8 +1891,7 @@ namespace creature
                         // <weapon name>,<chance float> or (<weapon name>),<chance float>
                         //-so it must have two comma separated strings.
                         std::vector<std::string> partsVec;
-                        appbase::stringhelp::SplitByChar(
-                            NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
+                        misc::SplitByChar(NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)

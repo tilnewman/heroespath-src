@@ -13,8 +13,9 @@
 #include "combat/strategy-enums.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "misc/strings-split-by-char.hpp"
+#include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
-#include "stringutil/stringhelp.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -70,7 +71,7 @@ namespace combat
                 misc::VectorMap<EnumType, float> & OutParam_EnumChanceMap) const
             {
                 std::vector<std::string> enumColonChanceStrVec;
-                appbase::stringhelp::SplitByChar(SUB_STR, enumColonChanceStrVec, ':', true, true);
+                misc::SplitByChar(SUB_STR, enumColonChanceStrVec, ':', true, true);
 
                 if (enumColonChanceStrVec.size() != 2)
                 {
@@ -101,7 +102,7 @@ namespace combat
                     throw std::runtime_error(exceptionSS.str());
                 }
 
-                auto const CHANCE{ ParseChanceString(enumColonChanceStrVec.at(1)) };
+                auto const CHANCE { ParseChanceString(enumColonChanceStrVec.at(1)) };
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
                     std::ostringstream ss;

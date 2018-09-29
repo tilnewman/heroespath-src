@@ -15,7 +15,8 @@
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "stringutil/stringhelp.hpp"
+#include "misc/strings-split-by-char.hpp"
+#include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -76,7 +77,7 @@ namespace item
 
             // break the line of text into comma separated field strings
             std::vector<std::string> fieldsVec;
-            appbase::stringhelp::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
+            misc::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
             // verify there are eight fields
             M_ASSERT_OR_LOGANDTHROW_SS(

@@ -12,8 +12,8 @@
 #include "stat-modifier-loader.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-
-#include "stringutil/stringhelp.hpp"
+#include "misc/strings-split-by-char.hpp"
+#include "misc/strings.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -29,7 +29,7 @@ namespace creature
     {
         std::vector<std::string> statValuesStrVec;
 
-        appbase::stringhelp::SplitByChar(DATA_FILE_VALUE_STR, statValuesStrVec, ',', true, true);
+        misc::SplitByChar(DATA_FILE_VALUE_STR, statValuesStrVec, ',', true, true);
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (statValuesStrVec.size() == 6),
@@ -37,12 +37,12 @@ namespace creature
                 << "six comma sep values from \"" << DATA_FILE_VALUE_STR
                 << "\".  (There must be a typo in the game data file.)");
 
-        const Trait_t ERROR_VALUE{ -123456789 };
+        const Trait_t ERROR_VALUE { -123456789 };
 
         StatSet statSet;
         for (std::size_t i(0); i < statValuesStrVec.size(); ++i)
         {
-            Trait_t nextValue{ ERROR_VALUE };
+            Trait_t nextValue { ERROR_VALUE };
             try
             {
                 nextValue = boost::lexical_cast<Trait_t>(statValuesStrVec.at(i));
@@ -57,7 +57,7 @@ namespace creature
                 "creature::StatModifierLoader::Load() was unable to convert \""
                     << statValuesStrVec.at(i) << "\" to an int value.");
 
-            auto const NEXT_STAT_ENUM{ static_cast<Traits::Enum>(i) };
+            auto const NEXT_STAT_ENUM { static_cast<Traits::Enum>(i) };
             statSet.Set(NEXT_STAT_ENUM, nextValue);
         }
 

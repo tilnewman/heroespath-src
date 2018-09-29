@@ -9,9 +9,9 @@
 //
 // nonplayer-inventory-types.cpp
 //
-#include "nonplayer-inventory-types.hpp"
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
+#include "nonplayer-inventory-types.hpp"
 
 namespace heroespath
 {
@@ -424,8 +424,7 @@ namespace creature
                 RACE_KEY) };
 
             std::vector<std::string> racePartsVec;
-            appbase::stringhelp::SplitByChar(
-                RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
+            misc::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (racePartsVec.size() == 4),
@@ -450,8 +449,7 @@ namespace creature
                 ROLE_KEY) };
 
             std::vector<std::string> rolePartsVec;
-            appbase::stringhelp::SplitByChar(
-                ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
+            misc::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (rolePartsVec.size() == 4),
@@ -579,8 +577,7 @@ namespace creature
                     RACE_KEY) };
 
                 std::vector<std::string> racePartsVec;
-                appbase::stringhelp::SplitByChar(
-                    RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
+                misc::SplitByChar(RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (racePartsVec.size() == 3),
@@ -623,8 +620,7 @@ namespace creature
                     ROLE_KEY) };
 
                 std::vector<std::string> rolePartsVec;
-                appbase::stringhelp::SplitByChar(
-                    ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
+                misc::SplitByChar(ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (rolePartsVec.size() == 3),

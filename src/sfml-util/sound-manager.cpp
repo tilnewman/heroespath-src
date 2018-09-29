@@ -16,9 +16,10 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
+#include "misc/strings-split-by-char.hpp"
+#include "misc/strings.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
-#include "stringutil/stringhelp.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -651,7 +652,7 @@ namespace sfml_util
             auto const FILENAME { PATH.filename().string() };
 
             std::vector<std::string> filenamePartsVec;
-            appbase::stringhelp::SplitByChar(FILENAME, filenamePartsVec, '_', true, true);
+            misc::SplitByChar(FILENAME, filenamePartsVec, '_', true, true);
             if (filenamePartsVec.size() != 4)
             {
                 continue;

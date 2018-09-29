@@ -12,9 +12,9 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/strings-split-by-char.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/wrap-enum.hpp"
-#include "stringutil/stringhelp.hpp"
 
 #include <boost/type_index.hpp>
 
@@ -426,7 +426,7 @@ namespace misc
             }
             else
             {
-                appbase::stringhelp::SplitByChars(TRIMMED, words, seperatorChars, true, true);
+                misc::SplitByChars(TRIMMED, words, seperatorChars, true, true);
             }
 
             EnumUnderlying_t result { 0 };

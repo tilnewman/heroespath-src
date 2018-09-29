@@ -11,8 +11,6 @@
 //
 #include "misc/to-string-prefix-enum.hpp"
 
-#include <boost/type_index.hpp>
-
 #include <sstream>
 #include <string>
 

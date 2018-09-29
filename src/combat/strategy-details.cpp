@@ -61,7 +61,7 @@ namespace combat
                         << "\"");
 
                 std::vector<std::string> partsVec;
-                appbase::stringhelp::SplitByChar(VALUE, partsVec, '|', true, true);
+                misc::SplitByChar(VALUE, partsVec, '|', true, true);
 
                 SelectChanceMap_t selectChanceMap;
                 RefineChanceMap_t refineChanceMap;
@@ -77,7 +77,7 @@ namespace combat
                 for (auto const & NEXT_PART_STR : partsVec)
                 {
                     std::vector<std::string> subPartsVec;
-                    appbase::stringhelp::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
+                    misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (subPartsVec.empty() == false),
@@ -85,7 +85,7 @@ namespace combat
                             << RACE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
                             << "\" into any sub strings sep by comma.");
 
-                    auto const SUBPART_TITLE_STR{ subPartsVec.at(0) };
+                    auto const SUBPART_TITLE_STR { subPartsVec.at(0) };
                     if (SUBPART_TITLE_STR == SUBPART_TITLE_SELECT_)
                     {
                         ParseSubPartsSelect(subPartsVec, selectChanceMap);
@@ -173,7 +173,7 @@ namespace combat
                         << "\"");
 
                 std::vector<std::string> partsVec;
-                appbase::stringhelp::SplitByChar(VALUE, partsVec, '|', true, true);
+                misc::SplitByChar(VALUE, partsVec, '|', true, true);
 
                 SelectChanceMap_t selectChanceMap;
                 RefineChanceMap_t refineChanceMap;
@@ -189,7 +189,7 @@ namespace combat
                 for (auto const & NEXT_PART_STR : partsVec)
                 {
                     std::vector<std::string> subPartsVec;
-                    appbase::stringhelp::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
+                    misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (subPartsVec.empty() == false),
                         "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
@@ -271,7 +271,7 @@ namespace combat
             {
                 for (auto const & NEXT_ROLECHANCES_PAIR : roleChancesMap)
                 {
-                    auto const CHANCES{ NEXT_RACECHANCES_PAIR.second.AdjustCopy(
+                    auto const CHANCES { NEXT_RACECHANCES_PAIR.second.AdjustCopy(
                         NEXT_ROLECHANCES_PAIR.second) };
 
                     raceRoleChancesMap_[std::make_pair(
@@ -500,8 +500,7 @@ namespace combat
                 {
                     std::vector<std::string> countCountColonChanceStrVec;
 
-                    appbase::stringhelp::SplitByChar(
-                        NEXT_SUBSTRING, countCountColonChanceStrVec, ':', true, true);
+                    misc::SplitByChar(NEXT_SUBSTRING, countCountColonChanceStrVec, ':', true, true);
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         ((countCountColonChanceStrVec.size() == 2)
@@ -511,7 +510,7 @@ namespace combat
                             << NEXT_SUBSTRING << "\".");
 
                     // parse the chance first, which should be the last
-                    auto const CHANCE{ ParseChanceString(
+                    auto const CHANCE { ParseChanceString(
                         countCountColonChanceStrVec.at(countCountColonChanceStrVec.size() - 1)) };
 
                     if (boost::algorithm::contains(countCountColonChanceStrVec.at(0), "-"))
@@ -521,7 +520,7 @@ namespace combat
                         // split the number range into two numbers
                         std::vector<std::string> rangeNumberStrVec;
 
-                        appbase::stringhelp::SplitByChar(
+                        misc::SplitByChar(
                             countCountColonChanceStrVec.at(0), rangeNumberStrVec, '-', true, true);
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -533,7 +532,7 @@ namespace combat
                                    "them separated by a dash.");
 
                         // parse the second number second, if any, a zero means there is no range
-                        auto rangeEnd = int{ 0 };
+                        auto rangeEnd = int { 0 };
                         if (rangeNumberStrVec.size() == 2)
                         {
                             try
@@ -555,7 +554,7 @@ namespace combat
                         }
 
                         // parse the first number third
-                        auto rangeStart = int{ 0 };
+                        auto rangeStart = int { 0 };
                         try
                         {
                             rangeStart = boost::lexical_cast<int>(rangeNumberStrVec.at(0));
@@ -606,7 +605,7 @@ namespace combat
                             "initial:count:chance string: \""
                                 << countCountColonChanceStrVec.at(0) << "\".");
 
-                        auto initialCount = int{ 0 };
+                        auto initialCount = int { 0 };
                         try
                         {
                             initialCount
@@ -623,7 +622,7 @@ namespace combat
                             "initial count string: \""
                                 << countCountColonChanceStrVec.at(1) << "\".");
 
-                        auto initialChance{ CHANCE };
+                        auto initialChance { CHANCE };
                         for (int i(initialCount); i < 99; ++i)
                         {
                             OutParam_OutnumberRetreatChanceMap[static_cast<std::size_t>(i)]

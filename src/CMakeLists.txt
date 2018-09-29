@@ -127,7 +127,6 @@ find_package(Boost COMPONENTS system date_time filesystem serialization unit_tes
 set(library_names
     misc
     log
-    stringutil
     sfml-util
     popup
     game
@@ -142,7 +141,7 @@ set(library_names
     interact)
 
 
-#sets compiler flags, linker flags, and depenencies common to all targets
+#sets compiler flags, linker flags, and dependencies common to all targets
 function(setup_target name)
     
     #why the fuck doesn't target_compile_options line work?! Using set_target_properties instead...
