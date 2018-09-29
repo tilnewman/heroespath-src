@@ -36,7 +36,7 @@ namespace popup
 
     PopupStageMusicSheet::PopupStageMusicSheet(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
-        , PLAYER_IMAGE_HEIGHT_(sfml_util::ScreenRatioToPixelsVert(0.1465f))
+        , PLAYER_IMAGE_HEIGHT_(sfutil::ScreenRatioToPixelsVert(0.1465f))
         , charDetailsTextRegionUPtr_()
         , listBoxLabelTextRegionUPtr_()
         , listBoxUPtr_()
@@ -54,16 +54,16 @@ namespace popup
         , songSprite_()
         , warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f)
         , LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190))
-        , LISTBOX_LINE_COLOR_(sfml_util::color::GrayDark)
+        , LISTBOX_LINE_COLOR_(sfutil::color::GrayDark)
         , LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_)
-        , LISTBOX_COLOR_BG_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLOR_BG_(sfutil::color::Orange - sf::Color(100, 100, 100, 220))
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
         , listBoxBackgroundInfo_()
         , listElementTextInfo_(
               " ",
               sfml_util::GuiFont::System,
               sfml_util::FontManager::Instance()->Size_Smallish(),
-              sfml_util::color::GrayDarker,
+              sfutil::color::GrayDarker,
               sfml_util::Justified::Left)
         , imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
@@ -227,9 +227,9 @@ namespace popup
         accent1CachedTextureOpt_ = PopupManager::Instance()->LoadRandomAccentImage();
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-        sfml_util::FitAndReCenter(
+        sfutil::FitAndReCenter(
             accentSprite1_,
-            sfml_util::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+            sfutil::ScaleAndReCenterCopy(pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
@@ -239,9 +239,9 @@ namespace popup
         accent2CachedTextureOpt_ = PopupManager::Instance()->LoadRandomAccentImage();
         accentSprite2_.setTexture(accent2CachedTextureOpt_->Get(), true);
 
-        sfml_util::FitAndReCenter(
+        sfutil::FitAndReCenter(
             accentSprite2_,
-            sfml_util::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+            sfutil::ScaleAndReCenterCopy(pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
 
         accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
@@ -288,16 +288,15 @@ namespace popup
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
-        const sf::FloatRect DETAILS_TEXT_RECT {
-            pageRectLeft_.left + playerSprite_.getGlobalBounds().width
-                + sfml_util::MapByRes(10.0f, 40.0f),
-            pageRectLeft_.top + sfml_util::MapByRes(20.0f, 80.0f),
-            0.0f,
-            0.0f
-        };
+        const sf::FloatRect DETAILS_TEXT_RECT { pageRectLeft_.left
+                                                    + playerSprite_.getGlobalBounds().width
+                                                    + sfutil::MapByRes(10.0f, 40.0f),
+                                                pageRectLeft_.top + sfutil::MapByRes(20.0f, 80.0f),
+                                                0.0f,
+                                                0.0f };
 
         charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "MusicSheetPopupWindowDetails", DETAILS_TEXTINFO, DETAILS_TEXT_RECT);
@@ -309,13 +308,13 @@ namespace popup
             "Songs",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         const sf::FloatRect LISTBOX_LABEL_TEXTRECT {
-            pageRectLeft_.left + sfml_util::MapByRes(10.0f, 40.0f),
+            pageRectLeft_.left + sfutil::MapByRes(10.0f, 40.0f),
             playerSprite_.getGlobalBounds().top + playerSprite_.getGlobalBounds().height
-                + sfml_util::MapByRes(20.0f, 80.0f),
+                + sfutil::MapByRes(20.0f, 80.0f),
             0.0f,
             0.0f
         };
@@ -326,7 +325,7 @@ namespace popup
 
     void PopupStageMusicSheet::SetupListbox()
     {
-        auto const LISTBOX_MARGIN { sfml_util::MapByRes(15.0f, 45.0f) };
+        auto const LISTBOX_MARGIN { sfutil::MapByRes(15.0f, 45.0f) };
         auto const LISTBOX_RECT_LEFT { pageRectLeft_.left + LISTBOX_MARGIN };
 
         auto const LISTBOX_RECT_TOP { listBoxLabelTextRegionUPtr_->GetEntityRegion().top
@@ -373,7 +372,7 @@ namespace popup
             SONG_PTR->Name(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
         if (!titleTextRegionUPtr_)
@@ -394,7 +393,7 @@ namespace popup
         songCachedTextureOpt_ = sfml_util::LoadAndCacheImage(SONG_PTR->Which());
         songSprite_.setTexture(songCachedTextureOpt_->Get(), true);
 
-        auto const SONG_IMAGE_SCALE { sfml_util::MapByRes(0.75f, 4.0f) };
+        auto const SONG_IMAGE_SCALE { sfutil::MapByRes(0.75f, 4.0f) };
         songSprite_.setScale(SONG_IMAGE_SCALE, SONG_IMAGE_SCALE);
         songSprite_.setColor(imageColorSlider_.Current());
 
@@ -402,10 +401,9 @@ namespace popup
             (pageRectRight_.left + (pageRectRight_.width * 0.5f))
                 - (songSprite_.getGlobalBounds().width * 0.5f),
             titleTextRegionUPtr_->GetEntityRegion().top
-                + titleTextRegionUPtr_->GetEntityRegion().height
-                + sfml_util::MapByRes(5.0f, 60.0f));
+                + titleTextRegionUPtr_->GetEntityRegion().height + sfutil::MapByRes(5.0f, 60.0f));
 
-        auto const SYM_SCALE { sfml_util::MapByRes(0.75f, 3.75f) };
+        auto const SYM_SCALE { sfutil::MapByRes(0.75f, 3.75f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
         auto const X_SYM_POS_LEFT { (songSprite_.getGlobalBounds().left
@@ -429,14 +427,14 @@ namespace popup
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
         auto const SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
         auto const SONGDETAILS_TEXTRECT_TOP { songSprite_.getGlobalBounds().top
                                               + songSprite_.getGlobalBounds().height
-                                              + sfml_util::MapByRes(10.0f, 90.0f) };
+                                              + sfutil::MapByRes(10.0f, 90.0f) };
 
         auto const SONGDETAILS_TEXTRECT_WIDTH { pageRectRight_.width };
         auto const SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
@@ -500,7 +498,7 @@ namespace popup
             sfml_util::Justified::Center,
             sf::Text::Bold);
 
-        auto const VERT_SPACER { sfml_util::MapByRes(15.0f, 60.0f) };
+        auto const VERT_SPACER { sfutil::MapByRes(15.0f, 60.0f) };
 
         auto const SONG_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
@@ -527,10 +525,10 @@ namespace popup
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
-        auto const SONG_DESC_HORIZ_MARGIN { sfml_util::MapByRes(15.0f, 30.0f) };
+        auto const SONG_DESC_HORIZ_MARGIN { sfutil::MapByRes(15.0f, 30.0f) };
         auto const SONG_DESC_TEXTRECT_LEFT { pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
         auto songDescTextRectTop { 0.0f };
         if (willShowXImage_)

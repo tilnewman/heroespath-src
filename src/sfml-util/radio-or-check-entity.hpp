@@ -11,7 +11,7 @@
 //
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/image-text-entity.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <memory>
 #include <string>

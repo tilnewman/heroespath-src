@@ -13,9 +13,9 @@
 
 #include "game/game-data-file.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -43,7 +43,7 @@ namespace popup
 
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
 
-        sfml_util::FitAndCenterTo(bgSprite_, textRegion_);
+        sfutil::FitAndCenterTo(bgSprite_, textRegion_);
 
         auto const TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
@@ -69,7 +69,7 @@ namespace popup
             TITLE_TEXT,
             sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center,
             sf::Text::Bold);
 
@@ -79,7 +79,7 @@ namespace popup
         auto const TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
                                     - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-        const auto VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.0222f) };
+        const auto VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.0222f) };
 
         auto const TITLE_POS_TOP { textRegion_.top + VERT_SPACER };
 
@@ -122,7 +122,7 @@ namespace popup
             DESC_TEXT,
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(

@@ -17,10 +17,10 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/entity.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-distance.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/texture-cache.hpp"
+#include "sfutil/distance.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -123,8 +123,7 @@ namespace sfml_util
 
         isMouseHeldDownAndMoving_
             = (isMouseHeldDown_
-               && (sfml_util::Distance(mouseDownPosV_, NEW_MOUSE_POS_F)
-                   > MOUSE_DRAG_MIN_DISTANCE_));
+               && (sfutil::Distance(mouseDownPosV_, NEW_MOUSE_POS_F) > MOUSE_DRAG_MIN_DISTANCE_));
 
         for (auto & entityPtr : entityPVec_)
         {
@@ -339,7 +338,7 @@ namespace sfml_util
             hoverText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
             BoxEntityInfo boxInfo;
-            boxInfo.SetupColor(sfml_util::color::Orange - sf::Color(20, 0, 0, 0));
+            boxInfo.SetupColor(sfutil::color::Orange - sf::Color(20, 0, 0, 0));
             boxInfo.SetupBorder(true, 1.0f);
 
             hoverTextBoxUPtr_

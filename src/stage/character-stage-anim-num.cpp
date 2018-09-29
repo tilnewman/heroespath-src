@@ -11,7 +11,7 @@
 //
 #include "character-stage-anim-num.hpp"
 
-#include "sfml-util/sfml-util-display.hpp"
+#include "sfutil/display.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -88,7 +88,7 @@ namespace stage
                 startTop_ + (SLIDERX_RATIO * distanceY_));
 
             // size
-            const float SCALE(sfml_util::Map(SLIDERX_RATIO, 0.0f, 1.0f, 0.6f, 1.0f));
+            const float SCALE(sfutil::Map(SLIDERX_RATIO, 0.0f, 1.0f, 0.6f, 1.0f));
             text_.setScale(SCALE, SCALE);
 
             // color

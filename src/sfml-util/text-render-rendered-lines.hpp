@@ -52,7 +52,7 @@ namespace sfml_util
             void CurrentLineAppend(const sfml_util::Text & TEXT);
             void AppendBlankLine(const float BLANK_LINE_HEIGHT);
             void Move(const sf::Vector2f & MOVE_V);
-            void SetPosition(const sf::Vector2f & POS_V) { Move(POS_V - Position(region)); }
+            void SetPosition(const sf::Vector2f & POS_V) { Move(POS_V - sfutil::Position(region)); }
             void FinalAlignmentAndSpacing(const Context & CONTEXT);
             const std::string ToString() const;
 

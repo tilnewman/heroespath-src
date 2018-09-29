@@ -14,7 +14,7 @@
 #include "game/game-data-file.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -60,7 +60,7 @@ namespace sfml_util
     void AnimationMultiTexture::SetEntityRegion(const sf::FloatRect & R)
     {
         Entity::SetEntityRegion(R);
-        sfml_util::SetSizeAndPos(sprite_, R);
+        sfutil::SetSizeAndPos(sprite_, R);
     }
 
     void AnimationMultiTexture::MoveEntityPos(const float HORIZ, const float VERT)
@@ -88,7 +88,7 @@ namespace sfml_util
                 auto const RATIO_COMPLETE { static_cast<float>(currentFrame_)
                                             / static_cast<float>(cachedTextures_.Size() - 1) };
 
-                sprite_.setColor(sfml_util::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));
+                sprite_.setColor(sfutil::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));
             }
 
             sprite_.setScale(

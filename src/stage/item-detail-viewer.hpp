@@ -13,8 +13,8 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/pos-slider.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

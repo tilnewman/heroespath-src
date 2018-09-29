@@ -112,33 +112,33 @@ namespace stage
               true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , INNER_PAD_(sfml_util::MapByRes(10.0f, 40.0f))
+        , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))
         , INNER_RECT_(
               INNER_PAD_,
               INNER_PAD_,
               SCREEN_WIDTH_ - (2.0f * INNER_PAD_),
               SCREEN_HEIGHT_ - (2.0f * INNER_PAD_))
-        , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfml_util::MapByRes(35.0f, 100.0f))
-        , CREATURE_IMAGE_SCALE_(sfml_util::MapByRes(0.75f, 3.25f))
+        , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfutil::MapByRes(35.0f, 100.0f))
+        , CREATURE_IMAGE_SCALE_(sfutil::MapByRes(0.75f, 3.25f))
         , CREATURE_IMAGE_HEIGHT_MAX_(sfml_util::StandardImageDimmension() * CREATURE_IMAGE_SCALE_)
-        , LISTBOX_HEIGHT_REDUCTION_(sfml_util::MapByRes(100.0f, 400.0f))
-        , LISTBOX_SCREEN_EDGE_MARGIN_(sfml_util::MapByRes(35.0f, 100.0f))
-        , LISTBOX_BETWEEN_SPACER_(sfml_util::MapByRes(65.0f, 200.0f))
+        , LISTBOX_HEIGHT_REDUCTION_(sfutil::MapByRes(100.0f, 400.0f))
+        , LISTBOX_SCREEN_EDGE_MARGIN_(sfutil::MapByRes(35.0f, 100.0f))
+        , LISTBOX_BETWEEN_SPACER_(sfutil::MapByRes(65.0f, 200.0f))
         , LISTBOX_WIDTH_(
               ((INNER_RECT_.width - (2.0f * LISTBOX_SCREEN_EDGE_MARGIN_)) - LISTBOX_BETWEEN_SPACER_)
               * 0.5f)
-        , OUT_OF_SIGHT_POS_((LISTBOX_WIDTH_ + sfml_util::MapByRes(100.0f, 300.0f)) * -1.0f)
+        , OUT_OF_SIGHT_POS_((LISTBOX_WIDTH_ + sfutil::MapByRes(100.0f, 300.0f)) * -1.0f)
         , FIRST_LISTBOX_POS_LEFT_(INNER_RECT_.left + LISTBOX_SCREEN_EDGE_MARGIN_)
         , SECOND_LISTBOX_POS_LEFT_(
               FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_ + LISTBOX_BETWEEN_SPACER_)
         , STATS_POS_LEFT_(
-              (INNER_RECT_.left + INNER_RECT_.width) - sfml_util::MapByRes(275.0f, 1200.0f))
+              (INNER_RECT_.left + INNER_RECT_.width) - sfutil::MapByRes(275.0f, 1200.0f))
         , CHARATER_IMAGE_COLOR_(sf::Color(255, 255, 255, 127))
         , LISTBOX_COLOR_IMAGE_(sf::Color(255, 255, 255, 190))
-        , LISTBOX_COLOR_LINE_(sfml_util::color::GrayDark)
+        , LISTBOX_COLOR_LINE_(sfutil::color::GrayDark)
         , LISTBOX_COLOR_FG_(LISTBOX_COLOR_LINE_)
-        , LISTBOX_COLOR_BG_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
-        , LISTBOX_COLOR_TITLE_(sfml_util::color::Orange - sf::Color(130, 130, 130, 0))
+        , LISTBOX_COLOR_BG_(sfutil::color::Orange - sf::Color(100, 100, 100, 220))
+        , LISTBOX_COLOR_TITLE_(sfutil::color::Orange - sf::Color(130, 130, 130, 0))
         , DESCBOX_TEXT_COLOR_(LISTBOX_COLOR_TITLE_ - sf::Color(50, 50, 50, 0))
         , DESCBOX_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
@@ -146,8 +146,8 @@ namespace stage
               "media-images-buttons-gui-inventory-normal",
               true,
               0.0f,
-              sfml_util::ScreenRatioToPixelsVert(0.12f))
-        , CREATURE_IMAGE_POS_TOP_(sfml_util::Bottom(stageTitle_.Region()))
+              sfutil::ScreenRatioToPixelsVert(0.12f))
+        , CREATURE_IMAGE_POS_TOP_(sfutil::Bottom(stageTitle_.Region()))
         , LISTBOX_POS_TOP_(
               (CREATURE_IMAGE_POS_TOP_ + CREATURE_IMAGE_HEIGHT_MAX_)
               + (LISTBOX_HEIGHT_REDUCTION_ * 0.5f))
@@ -161,17 +161,17 @@ namespace stage
         , DETAILVIEW_WIDTH_(SCREEN_WIDTH_ * 0.75f)
         , DETAILVIEW_HEIGHT_(SCREEN_HEIGHT_ * 0.85f)
         , DETAILVIEW_POS_LEFT_((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f))
-        , DETAILVIEW_POS_TOP_(sfml_util::MapByRes(35.0f, 100.0f))
-        , SORT_ICON_SCALE_(sfml_util::MapByRes(0.1f, 0.35f))
-        , SORT_ICON_SPACER_(sfml_util::MapByRes(22.0f, 75.0f))
+        , DETAILVIEW_POS_TOP_(sfutil::MapByRes(35.0f, 100.0f))
+        , SORT_ICON_SCALE_(sfutil::MapByRes(0.1f, 0.35f))
+        , SORT_ICON_SPACER_(sfutil::MapByRes(22.0f, 75.0f))
         , SORT_ICON_POS_TOP_(
-              (LISTBOX_POS_TOP_ - (127.0f * SORT_ICON_SCALE_)) - sfml_util::MapByRes(10.0f, 20.0f))
+              (LISTBOX_POS_TOP_ - (127.0f * SORT_ICON_SCALE_)) - sfutil::MapByRes(10.0f, 20.0f))
         , SORT_ICON_COLOR_(sf::Color(255, 255, 255, 127))
         , LIST_ELEMENT_TEXT_INFO_DEFAULT_(
               "",
               sfml_util::GuiFont::System,
               sfml_util::FontManager::Instance()->Size_Smallish(),
-              sfml_util::color::GrayDarker,
+              sfutil::color::GrayDarker,
               sfml_util::Justified::Left)
         , creaturePtr_(INVENTORY_CREATURE_PTR)
         , bottomSymbol_(0.75f, true, sf::Color::White)
@@ -964,14 +964,14 @@ namespace stage
             "(use arrows or numbers to change characters, press 'a' to see achievements)",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::GrayDark,
+            sfutil::color::GrayDark,
             sfml_util::Justified::Left,
             sf::Text::Italic);
 
         insTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
-            sf::FloatRect(0.0f, sfml_util::Bottom(stageTitle_.Region()) - 10.0f, 0.0f, 0.0f));
+            sf::FloatRect(0.0f, sfutil::Bottom(stageTitle_.Region()) - 10.0f, 0.0f, 0.0f));
 
         insTextRegionUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
@@ -1016,7 +1016,7 @@ namespace stage
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         sf::FloatRect detailsTextRect(
@@ -1079,13 +1079,13 @@ namespace stage
             ss.str(),
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         if (!statsTextRegionUPtr_)
         {
             const sf::FloatRect STATS_TEXT_RECT(
-                STATS_POS_LEFT_, sfml_util::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
+                STATS_POS_LEFT_, sfutil::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
 
             statsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
@@ -1114,7 +1114,7 @@ namespace stage
             ss.str(),
             sfml_util::GuiFont::SystemCondensed,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
@@ -1127,8 +1127,8 @@ namespace stage
         {
             const sf::FloatRect CENTER_TEXT_RECT(
                 0.0f,
-                sfml_util::Bottom(stageTitle_.Region()) + stageTitle_.DefaultBottomPad()
-                    + sfml_util::MapByRes(5.0f, 30.0f),
+                sfutil::Bottom(stageTitle_.Region()) + stageTitle_.DefaultBottomPad()
+                    + sfutil::MapByRes(5.0f, 30.0f),
                 0.0f,
                 0.0f);
 
@@ -1140,7 +1140,7 @@ namespace stage
 
         const float POS_LEFT { ((WAS_ALREADY_INSTANTIATED == false) && creaturePtr_->IsBeast())
                                    ? (SCREEN_WIDTH_ + 1.0f)
-                                   : (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f) };
+                                   : (SCREEN_WIDTH_ * 0.5f) - sfutil::MapByRes(100.0f, 300.0f) };
 
         centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
         centerPosLeft_ = POS_LEFT;
@@ -1415,7 +1415,7 @@ namespace stage
         const std::string & IMAGE_PATH_KEY,
         sfml_util::ImageTextEntityUPtr_t & sortButtonUPtr)
     {
-        const auto SORT_IMAGE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.02f) };
+        const auto SORT_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.02f) };
 
         const sf::FloatRect SORT_IMAGE_REGION(0.0f, 0.0f, SORT_IMAGE_WIDTH, 0.0f);
 
@@ -1533,7 +1533,7 @@ namespace stage
             sfml_util::Justified::Left);
 
         auto const COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
-        auto const COLOR_OVER { sfml_util::color::GrayDarker };
+        auto const COLOR_OVER { sfutil::color::GrayDarker };
         auto const COLOR_DOWN { COLOR_DISABLED };
 
         const sfml_util::MouseTextInfo MOUSE_TEXT_INFO(
@@ -1549,7 +1549,7 @@ namespace stage
         buttonUPtr->SetEntityPos(
             (INNER_RECT_.left + (HORIZ_OFFSET_MULT * INNER_RECT_.width))
                 - buttonUPtr->GetEntityRegion().width,
-            sfml_util::CenterOfVert(bottomSymbol_.Region())
+            sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (buttonUPtr->GetEntityRegion().height * 0.5f));
 
         EntityAdd(buttonUPtr.get());
@@ -3562,7 +3562,7 @@ namespace stage
         detailViewCachedTextureOpt_ = sfml_util::LoadAndCacheImage(ITEM_PTR);
         detailViewSprite_.setTexture(detailViewCachedTextureOpt_->Get(), true);
 
-        auto const DETAILVIEW_IMAGE_SCALE { sfml_util::MapByRes(0.75f, 1.25f) };
+        auto const DETAILVIEW_IMAGE_SCALE { sfutil::MapByRes(0.75f, 1.25f) };
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
 
         detailViewSprite_.setPosition(
@@ -3603,7 +3603,7 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Center);
 
-        auto const DETAILVIEW_SPRITE_BOTTOM { sfml_util::Bottom(detailViewSprite_) };
+        auto const DETAILVIEW_SPRITE_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
         auto const LEFT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
 
@@ -3637,7 +3637,7 @@ namespace stage
 
         detailViewSprite_.setPosition(
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
-            DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfml_util::SpacerOld(50.0f));
+            DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_ + sfutil::SpacerOld(50.0f));
 
         std::ostringstream ss;
         ss << "\n"
@@ -3668,7 +3668,7 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        auto const DETAILVIEW_BOTTOM { sfml_util::Bottom(detailViewSprite_) };
+        auto const DETAILVIEW_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
         const sf::FloatRect TEXT_RECT(
             DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
@@ -3891,7 +3891,7 @@ namespace stage
 
         sparkleAnimUPtr_ = std::make_unique<sfml_util::animation::SparkleAnimation>(
             creatureSprite_.getGlobalBounds(),
-            sfml_util::MapByRes(0.333f, 1.33f),
+            sfutil::MapByRes(0.333f, 1.33f),
             0.5f,
             10.0f,
             0.5f,
@@ -4090,9 +4090,9 @@ namespace stage
             songAnimUPtr_ = std::make_unique<sfml_util::animation::SongAnimation>(
                 creatureSprite_.getGlobalBounds(),
                 0.1f,
-                sfml_util::MapByRes(0.1f, 0.25f),
+                sfutil::MapByRes(0.1f, 0.25f),
                 0.25f,
-                sfml_util::MapByRes(0.35f, 0.9f),
+                sfutil::MapByRes(0.35f, 0.9f),
                 0.25f,
                 6.0f,
                 0.75f,

@@ -11,8 +11,8 @@
 //
 #include "stage-title.hpp"
 
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -50,7 +50,7 @@ namespace sfml_util
 
     void StageTitle::SetSizeAndReCenter(const float SIZE_HORIZ, const float SIZE_VERT)
     {
-        const auto SYMBOL_WIDTH_DEFAULT { sfml_util::ScreenRatioToPixelsHoriz(
+        const auto SYMBOL_WIDTH_DEFAULT { sfutil::ScreenRatioToPixelsHoriz(
             DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_) };
 
         auto const SYMBOL_SCALE_DEFAULT { SYMBOL_WIDTH_DEFAULT
@@ -77,14 +77,14 @@ namespace sfml_util
         symbolSprite_.setScale(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
 
         symbolSprite_.setPosition(
-            sfml_util::DisplayCenterHoriz(symbolSprite_.getGlobalBounds().width),
-            sfml_util::ScreenRatioToPixelsVert(0.011f));
+            sfutil::DisplayCenterHoriz(symbolSprite_.getGlobalBounds().width),
+            sfutil::ScreenRatioToPixelsVert(0.011f));
 
         if (titleCachedTextureOpt_)
         {
-            sfml_util::FitAndCenterTo(
+            sfutil::FitAndCenterTo(
                 titleSprite_,
-                sfml_util::ScaleAndReCenterCopy(
+                sfutil::ScaleAndReCenterCopy(
                     symbolSprite_.getGlobalBounds(), TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_));
         }
     }
@@ -99,10 +99,7 @@ namespace sfml_util
         }
     }
 
-    float StageTitle::DefaultBottomPad() const
-    {
-        return sfml_util::ScreenRatioToPixelsVert(0.039f);
-    }
+    float StageTitle::DefaultBottomPad() const { return sfutil::ScreenRatioToPixelsVert(0.039f); }
 
 } // namespace sfml_util
 } // namespace heroespath

@@ -11,9 +11,9 @@
 
 #include "misc/strings.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/position.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -245,7 +245,7 @@ namespace sfml_util
 
         ss << SEPARATOR << GuiFont::ToStringNoThrow(font_);
         ss << SEPARATOR << size();
-        ss << SEPARATOR << sfml_util::ToString(getFillColor(), misc::ToStringPrefix::SimpleName);
+        ss << SEPARATOR << sfutil::ToString(getFillColor(), misc::ToStringPrefix::SimpleName);
 
         ss << SEPARATOR;
         const auto STYLE { getStyle() };
@@ -316,7 +316,7 @@ namespace sfml_util
 
     void Text::CorrectForLocalOffset()
     {
-        sfText_.setOrigin(sfml_util::Position(sfText_.getLocalBounds()));
+        sfText_.setOrigin(sfutil::Position(sfText_.getLocalBounds()));
     }
 
 } // namespace sfml_util

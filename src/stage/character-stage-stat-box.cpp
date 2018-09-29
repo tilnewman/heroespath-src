@@ -14,11 +14,11 @@
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/margins.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/primitives.hpp"
 
 namespace heroespath
 {
@@ -48,14 +48,14 @@ namespace stage
         , textScale_(0.0f)
     {
         const sf::Vector2f SIZE_V(WIDTH, HEIGHT_RATIO * WIDTH);
-        const sf::FloatRect REGION_ORIG(sfml_util::CenterCopy(SIZE_V), SIZE_V);
+        const sf::FloatRect REGION_ORIG(sfutil::CenterCopy(SIZE_V), SIZE_V);
 
         sfml_util::BoxEntityInfo statsBoxInfo;
         statsBoxInfo.SetupImage(sfml_util::CachedTexture(
             "media-images-backgrounds-tile-wood",
             sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
-        statsBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
+        statsBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 
         boxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
             "CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
@@ -91,9 +91,9 @@ namespace stage
 
             // right end of the row with margins where the actual stat number goes
             const sf::FloatRect REGION_NUMBER(
-                sfml_util::Right(REGION_LABEL) + 1.0f,
+                sfutil::Right(REGION_LABEL) + 1.0f,
                 REGION_FULL.top + 1.0f,
-                (sfml_util::Right(REGION_FULL) - 1.0f) - (sfml_util::Right(REGION_LABEL) + 1.0f),
+                (sfutil::Right(REGION_FULL) - 1.0f) - (sfutil::Right(REGION_LABEL) + 1.0f),
                 REGION_LABEL.height);
 
             numberRegions_.emplace_back(REGION_NUMBER);
@@ -138,9 +138,9 @@ namespace stage
                 const sf::Color LINE_COLOR { 255, 255, 255, 100 };
 
                 const auto LINE_POS_LEFT { REGION_FULL.left };
-                const auto LINE_POS_CENTER { sfml_util::CenterOfHoriz(REGION_FULL) };
-                const auto LINE_POS_RIGHT { sfml_util::Right(REGION_FULL) };
-                const auto LINE_POS_TOP { sfml_util::Bottom(REGION_FULL) };
+                const auto LINE_POS_CENTER { sfutil::CenterOfHoriz(REGION_FULL) };
+                const auto LINE_POS_RIGHT { sfutil::Right(REGION_FULL) };
+                const auto LINE_POS_TOP { sfutil::Bottom(REGION_FULL) };
 
                 vertexArray_.append(
                     sf::Vertex(sf::Vector2f(LINE_POS_LEFT, LINE_POS_TOP), sf::Color::Transparent));
@@ -407,14 +407,14 @@ namespace stage
 
         for (const auto & TEXT_REGION_UPTR : modTextRegionVecs_.at(INDEX))
         {
-            const auto POS_RIGHT { sfml_util::Right(TEXT_REGION_UPTR->GetEntityRegion()) };
+            const auto POS_RIGHT { sfutil::Right(TEXT_REGION_UPTR->GetEntityRegion()) };
             if (POS_RIGHT > posLeft)
             {
                 posLeft = POS_RIGHT;
             }
         }
 
-        const auto BETWEEN_MOD_TEXT_SPACER { sfml_util::ScreenRatioToPixelsHoriz(0.005f) };
+        const auto BETWEEN_MOD_TEXT_SPACER { sfutil::ScreenRatioToPixelsHoriz(0.005f) };
 
         if (posLeft > 0.0f)
         {
@@ -423,7 +423,7 @@ namespace stage
         else
         {
             const auto BETWEEN_BOX_AND_MOD_TEXT_SPACER { BETWEEN_MOD_TEXT_SPACER * 2.0f };
-            return sfml_util::Right(RegionOuter()) + BETWEEN_BOX_AND_MOD_TEXT_SPACER;
+            return sfutil::Right(RegionOuter()) + BETWEEN_BOX_AND_MOD_TEXT_SPACER;
         }
     }
 
@@ -458,8 +458,8 @@ namespace stage
 
                 textValue.setString(ss.str());
 
-                textValue.setPosition(sfml_util::CenterToCopy(
-                    sfml_util::Size(textValue.getGlobalBounds()), numberRegions_.at(i)));
+                textValue.setPosition(sfutil::CenterToCopy(
+                    sfutil::Size(textValue.getGlobalBounds()), numberRegions_.at(i)));
             }
         }
     }

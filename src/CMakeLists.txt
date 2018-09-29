@@ -125,6 +125,7 @@ set(library_names
     misc
     log
     sfml-util
+    sfutil
     popup
     game
     combat

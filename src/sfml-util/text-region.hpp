@@ -16,9 +16,9 @@
 #include "sfml-util/callback.hpp"
 #include "sfml-util/entity.hpp"
 #include "sfml-util/margins.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/sliderbar.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

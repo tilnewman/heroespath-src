@@ -10,9 +10,9 @@
 // border.cpp
 //
 #include "border.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -69,7 +69,7 @@ namespace sfml_util
     {
         Reset();
 
-        if (IsSizeZeroOrLessEither(REGION))
+        if (sfutil::IsSizeZeroOrLessEither(REGION))
         {
             return;
         }
@@ -79,7 +79,7 @@ namespace sfml_util
 
         std::vector<sf::RectangleShape> rsVec;
 
-        rsVec.emplace_back(MakeRectangleHollow(
+        rsVec.emplace_back(sfutil::MakeRectangleHollow(
             REGION, LINE_COLOR, LINE_THICKNESS, WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
         if (PAD_LINE_COLOR_ADJ != sf::Color::Transparent)
@@ -88,15 +88,17 @@ namespace sfml_util
             const sf::Vector2f LINE_THICKNESS_V(LINE_THICKNESS, LINE_THICKNESS);
 
             regionOuter_ = sf::FloatRect(
-                Position(REGION) - LINE_THICKNESS_V, Size(REGION) + (LINE_THICKNESS_V * 2.0f));
+                sfutil::Position(REGION) - LINE_THICKNESS_V,
+                sfutil::Size(REGION) + (LINE_THICKNESS_V * 2.0f));
 
-            rsVec.emplace_back(MakeRectangleHollow(
+            rsVec.emplace_back(sfutil::MakeRectangleHollow(
                 regionOuter_, PAD_LINE_COLOR, LINE_THICKNESS, WILL_GROW_BORDER_TO_CONTAIN_REGION));
 
             regionInner_ = sf::FloatRect(
-                Position(REGION) + LINE_THICKNESS_V, Size(REGION) - (LINE_THICKNESS_V * 2.0f));
+                sfutil::Position(REGION) + LINE_THICKNESS_V,
+                sfutil::Size(REGION) - (LINE_THICKNESS_V * 2.0f));
 
-            rsVec.emplace_back(MakeRectangleHollow(
+            rsVec.emplace_back(sfutil::MakeRectangleHollow(
                 regionInner_, PAD_LINE_COLOR, LINE_THICKNESS, WILL_GROW_BORDER_TO_CONTAIN_REGION));
         }
 
@@ -108,7 +110,7 @@ namespace sfml_util
     {
         Reset();
 
-        if (IsSizeZeroOrLessEither(REGION))
+        if (sfutil::IsSizeZeroOrLessEither(REGION))
         {
             return;
         }
@@ -185,7 +187,7 @@ namespace sfml_util
 
     void Border::SetPos(const float POS_LEFT, const float POS_TOP)
     {
-        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - sfml_util::Position(OuterRegion()) };
+        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - sfutil::Position(OuterRegion()) };
 
         MovePos(DIFF_V.x, DIFF_V.y);
     }

@@ -16,10 +16,10 @@
 #include "misc/boost-string-includes.hpp"
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-renderer.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -192,11 +192,11 @@ namespace sfml_util
         {
             target.draw(sprite_, states);
 
-            // target.draw(sfml_util::MakeRectangleHollow(entityRegion_, sf::Color::Red),
+            // target.draw(sfutil::MakeRectangleHollow(entityRegion_, sf::Color::Red),
             // states);
             //
             // target.draw(
-            //    sfml_util::MakeRectangleHollow(sprite_.getGlobalBounds(), sf::Color::Yellow),
+            //    sfutil::MakeRectangleHollow(sprite_.getGlobalBounds(), sf::Color::Yellow),
             //    states);
         }
     }
@@ -237,7 +237,7 @@ namespace sfml_util
     {
         /*renderedText_.AppendLines(TEXT_REGION.renderedText_);
 
-        if (allowScrollbarOrig_ && !IsSizeZeroOrLessEither(GetEntityRegion())
+        if (allowScrollbarOrig_ && !sfUtil::IsSizeZeroOrLessEither(GetEntityRegion())
             && (renderedText_.region.height > GetEntityRegion().height))
         {
             HandleSliderBar(MakeSliderBar(GetEntityRegion()));
@@ -273,7 +273,7 @@ namespace sfml_util
     {
         return new SliderBar(
             GetEntityName() + "'s_",
-            Right(REGION) - SliderBar::POS_OFFSET_HORIZ_,
+            sfutil::Right(REGION) - SliderBar::POS_OFFSET_HORIZ_,
             REGION.top + SliderBar::POS_OFFSET_VERT_,
             REGION.height - (SliderBar::POS_OFFSET_VERT_ * 2.0f),
             SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
@@ -286,8 +286,9 @@ namespace sfml_util
         const sf::FloatRect ENTITY_REGION(
             REGION_PARAM.left,
             REGION_PARAM.top,
-            ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? Width(sprite_) : REGION_PARAM.width),
-            ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? Height(sprite_)
+            ((misc::IsRealZeroOrLess(REGION_PARAM.width)) ? sfutil::Width(sprite_)
+                                                          : REGION_PARAM.width),
+            ((misc::IsRealZeroOrLess(REGION_PARAM.height)) ? sfutil::Height(sprite_)
                                                            : REGION_PARAM.height));
 
         SetEntityRegion(ENTITY_REGION);
@@ -362,7 +363,7 @@ namespace sfml_util
     {
         /*startLine_ = stopLine_ = 0;
 
-        if (renderedText_.regions.empty() || IsSizeZeroOrLessEither(GetEntityRegion()))
+        if (renderedText_.regions.empty() || sfutil::IsSizeZeroOrLessEither(GetEntityRegion()))
         {
             return;
         }

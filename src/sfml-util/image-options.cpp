@@ -9,9 +9,9 @@
 //
 #include "image-options.hpp"
 
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-image-manip.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/image-manip.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -47,7 +47,7 @@ namespace sfml_util
             if ((option_enum & ImageOpt::Invert)
                 && ((option_enum & ImageOpt::InvertAfterMask) == 0))
             {
-                sfml_util::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
+                sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
             }
 
             if (HasMask())
@@ -57,7 +57,7 @@ namespace sfml_util
 
             if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
             {
-                sfml_util::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
+                sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
             }
 
             if (option_enum & ImageOpt::FlipHoriz)

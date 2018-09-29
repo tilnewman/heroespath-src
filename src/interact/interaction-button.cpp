@@ -11,8 +11,8 @@
 //
 #include "interaction-button.hpp"
 
-#include "sfml-util/sfml-util-keyboard.hpp"
 #include "sfml-util/text-button.hpp"
+#include "sfutil/keyboard.hpp"
 
 namespace heroespath
 {
@@ -36,7 +36,7 @@ namespace interact
             }
             else
             {
-                return Name() + "(" + sfml_util::ToString(KEY) + ")";
+                return Name() + "(" + sfutil::ToString(KEY) + ")";
             }
         }() };
 

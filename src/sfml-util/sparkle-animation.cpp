@@ -12,7 +12,7 @@
 #include "sparkle-animation.hpp"
 
 #include "misc/random.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -140,7 +140,7 @@ namespace sfml_util
                 emitTimerDurationSec_
                     = ValueWithRandomVariance(SEC_PER_EMIT_BASE_, SEC_PER_EMIT_VAR_RATIO_);
 
-                auto const ADJ_RECT { sfml_util::ShrinkToSquareAndReCenterCopy(REGION_) };
+                auto const ADJ_RECT { sfutil::ShrinkToSquareAndReCenterCopy(REGION_) };
 
                 auto const POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
                 auto const POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };

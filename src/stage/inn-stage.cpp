@@ -18,8 +18,8 @@
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -59,15 +59,15 @@ namespace stage
 
         // candle image
         const sf::Vector2f CANDLE_POS_V(
-            StageRegionWidth() - sfml_util::ScreenRatioToPixelsHoriz(0.16f),
-            StageRegionHeight() - sfml_util::ScreenRatioToPixelsVert(0.222f));
+            StageRegionWidth() - sfutil::ScreenRatioToPixelsHoriz(0.16f),
+            StageRegionHeight() - sfutil::ScreenRatioToPixelsVert(0.222f));
 
         const sf::Vector2f CANDLE_SIZE_CONSTRAINTS_V(
-            sfml_util::ScreenRatioToPixelsHoriz(0.065f), 0.0f);
+            sfutil::ScreenRatioToPixelsHoriz(0.065f), 0.0f);
 
         const sf::FloatRect CANDLE_REGION_CONSTRAINTS(CANDLE_POS_V, CANDLE_SIZE_CONSTRAINTS_V);
 
-        sfml_util::FitAndCenterTo(candleSprite_, CANDLE_REGION_CONSTRAINTS);
+        sfutil::FitAndCenterTo(candleSprite_, CANDLE_REGION_CONSTRAINTS);
 
         // candle anim
         candleAnimUPtr_

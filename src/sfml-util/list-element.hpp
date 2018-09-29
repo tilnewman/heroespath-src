@@ -16,10 +16,10 @@
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
 #include "sfml-util/list-no-element.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -285,7 +285,7 @@ namespace sfml_util
 
         void ImageFitCenterColor(const sf::FloatRect & RECT, const sf::Color & COLOR) const
         {
-            sfml_util::FitAndCenterTo(sprite_, RECT);
+            sfutil::FitAndCenterTo(sprite_, RECT);
             sprite_.setColor(COLOR);
         }
 

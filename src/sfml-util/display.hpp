@@ -130,7 +130,7 @@ namespace sfml_util
         // that are relative to min/max sizes.
         //
         // WARNING:  Changing these values will throw off all relative positions returned by
-        // sfml_util::MapByRes(), in other words, everything in all UIs will not be positioned
+        // sfutil::MapByRes(), in other words, everything in all UIs will not be positioned
         // correctly!
         static float GetWinWidthMax() { return 7680.0f; }
         static float GetWinHeightMax() { return 4800.0f; }

@@ -9,14 +9,14 @@
 //
 // model.cpp
 //
-#include "model.hpp"
 #include "avatar/lpc-view.hpp"
 #include "game/npc.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/sfml-util-direction.hpp"
+#include "model.hpp"
+#include "sfutil/direction.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -177,7 +177,7 @@ namespace avatar
 
     void Model::TurnToFacePos(const sf::Vector2f & POS_V)
     {
-        auto const DIRECTION { sfml_util::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
+        auto const DIRECTION { sfutil::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
 
         if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
         {

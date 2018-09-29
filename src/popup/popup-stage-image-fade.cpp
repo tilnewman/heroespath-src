@@ -12,10 +12,10 @@
 #include "popup-stage-image-fade.hpp"
 
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/position.hpp"
 
 #include <algorithm>
 
@@ -46,7 +46,7 @@ namespace popup
             popupInfo_.TitleText(),
             sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center,
             sf::Text::Bold);
 
@@ -60,7 +60,7 @@ namespace popup
             popupInfo_.DescText(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
         auto descRegion { textRegion_ };
@@ -75,16 +75,16 @@ namespace popup
             descTextRegionUPtr_->GetEntityPos().x,
             (textRegion_.top + textRegion_.height) - descRegion.height);
 
-        auto const IMAGE_PAD_VERT { sfml_util::ScreenRatioToPixelsVert(0.0167f) };
+        auto const IMAGE_PAD_VERT { sfutil::ScreenRatioToPixelsVert(0.0167f) };
 
         const sf::FloatRect IMAGE_REGION = [&]() {
-            auto const IMAGE_TOP { sfml_util::Bottom(textRegionUPtr_->GetEntityRegion())
+            auto const IMAGE_TOP { sfutil::Bottom(textRegionUPtr_->GetEntityRegion())
                                    + IMAGE_PAD_VERT };
 
             auto const MAX_HEIGHT { descTextRegionUPtr_->GetEntityPos().y
                                     - (IMAGE_TOP + IMAGE_PAD_VERT) };
 
-            auto const IMAGE_MAX_DIMM { sfml_util::ScreenRatioToPixelsHoriz(0.086f) };
+            auto const IMAGE_MAX_DIMM { sfutil::ScreenRatioToPixelsHoriz(0.086f) };
 
             auto const IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, textRegion_.width) };
             auto const IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
@@ -93,8 +93,7 @@ namespace popup
         }();
 
         descTextRegionUPtr_->SetEntityPos(
-            descTextRegionUPtr_->GetEntityPos().x,
-            sfml_util::Bottom(IMAGE_REGION) + IMAGE_PAD_VERT);
+            descTextRegionUPtr_->GetEntityPos().x, sfutil::Bottom(IMAGE_REGION) + IMAGE_PAD_VERT);
 
         if (popupInfo_.ImagesCount() == 1)
         {
@@ -108,8 +107,8 @@ namespace popup
 
         spritePrev_.setScale(1.0f, 1.0f);
         spriteCurr_.setScale(1.0f, 1.0f);
-        sfml_util::FitAndCenterTo(spritePrev_, IMAGE_REGION);
-        sfml_util::FitAndCenterTo(spriteCurr_, IMAGE_REGION);
+        sfutil::FitAndCenterTo(spritePrev_, IMAGE_REGION);
+        sfutil::FitAndCenterTo(spriteCurr_, IMAGE_REGION);
 
         spriteCurr_.setColor(sf::Color(255, 255, 255, 0));
     }

@@ -9,10 +9,10 @@
 //
 #include "text-render-rendered-line.hpp"
 
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text-render-parsing.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -46,7 +46,7 @@ namespace sfml_util
                 text.move(MOVE_V);
             }
 
-            sfml_util::Move(region, MOVE_V);
+            sfutil::Move(region, MOVE_V);
         }
 
         void RenderedLine::SetupAsBlankLine()
@@ -62,7 +62,7 @@ namespace sfml_util
                 return;
             }
 
-            auto posLeft { Right(region) };
+            auto posLeft { sfutil::Right(region) };
             auto posTop { region.top };
 
             if (texts.empty() == false)
@@ -73,7 +73,7 @@ namespace sfml_util
             texts.emplace_back(TEXT);
 
             // move to top right of this line
-            const auto MOVE_V { sf::Vector2f(posLeft, posTop) - Position(texts.back()) };
+            const auto MOVE_V { sf::Vector2f(posLeft, posTop) - sfutil::Position(texts.back()) };
             texts.back().move(MOVE_V);
 
             // shift down to a vert pos that is appropriate for the height of this text
@@ -81,8 +81,8 @@ namespace sfml_util
 
             // stretch the bounding region of this line to accomodate for the shift above
             const auto TOP_BEFORE { region.top };
-            region = MinimallyEnclosing(region, texts.back().getGlobalBounds(), true);
-            const auto BOTTOM_AFTER { Bottom(region) };
+            region = sfutil::MinimallyEnclosing(region, texts.back().getGlobalBounds(), true);
+            const auto BOTTOM_AFTER { sfutil::Bottom(region) };
             region.top = TOP_BEFORE;
             region.height = (BOTTOM_AFTER - TOP_BEFORE);
         }
@@ -141,7 +141,7 @@ namespace sfml_util
         // distance between the line top (region.top) and the tallest char top
         float RenderedLine::topGap() const
         {
-            float highestCharPosTop { Bottom(region) };
+            float highestCharPosTop { sfutil::Bottom(region) };
 
             for (const auto & TEXT : texts)
             {

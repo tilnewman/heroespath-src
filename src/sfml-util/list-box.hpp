@@ -20,11 +20,11 @@
 #include "sfml-util/list-box-event-packet.hpp"
 #include "sfml-util/list-box-packet.hpp"
 #include "sfml-util/list-element.hpp"
-#include "sfml-util/sfml-util-center-of.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sliderbar.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/center-of.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
@@ -122,7 +122,7 @@ namespace sfml_util
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override
         {
-            auto const LIST_BOTTOM { Bottom(entityRegion_) };
+            auto const LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
 
             auto lastDrawnLinePosVert { drawElements(target, states)
                                         + packet_.ElementSize(true).y };
@@ -910,7 +910,7 @@ namespace sfml_util
                 return lastDrawnLinePosVert;
             }
 
-            auto const LIST_BOTTOM { Bottom(entityRegion_) };
+            auto const LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
 
             auto const SELECTION_INDEX { SelectionIndex() };
 
@@ -971,7 +971,7 @@ namespace sfml_util
                 if (elementPtr->IsValid() == false)
                 {
                     target.draw(
-                        sfml_util::MakeRectangleSolid(
+                        sfutil::MakeRectangleSolid(
                             ELEMENT_RECT_WITH_PAD, packet_.HighlightColorInvalid()),
                         states);
                 }
@@ -979,14 +979,13 @@ namespace sfml_util
                 if (SELECTION_INDEX == i)
                 {
                     target.draw(
-                        sfml_util::MakeRectangleSolid(
-                            ELEMENT_RECT_WITH_PAD, packet_.HighlightColor()),
+                        sfutil::MakeRectangleSolid(ELEMENT_RECT_WITH_PAD, packet_.HighlightColor()),
                         states);
                 }
 
                 target.draw(*elementPtr, states);
 
-                auto const LINE_POS_TOP { Bottom(ELEMENT_RECT_WITH_PAD) };
+                auto const LINE_POS_TOP { sfutil::Bottom(ELEMENT_RECT_WITH_PAD) };
 
                 if (LINE_POS_TOP < LIST_BOTTOM)
                 {
@@ -1036,7 +1035,7 @@ namespace sfml_util
             // sliderbar
             sliderbarUPtr_ = std::make_unique<SliderBar>(
                 "SliderBar_for_{" + MakeTypeString() + "}",
-                Right(REGION) + 10.0f,
+                sfutil::Right(REGION) + 10.0f,
                 REGION.top + 10.0f,
                 REGION.height - 20.0f,
                 SliderStyle(),
@@ -1188,9 +1187,10 @@ namespace sfml_util
             va[0] = sf::Vertex(sf::Vector2f(entityRegion_.left, POS_TOP), sf::Color::Transparent);
 
             va[1] = sf::Vertex(
-                sf::Vector2f(CenterOfHoriz(entityRegion_), POS_TOP), packet_.LineColor());
+                sf::Vector2f(sfutil::CenterOfHoriz(entityRegion_), POS_TOP), packet_.LineColor());
 
-            va[2] = sf::Vertex(sf::Vector2f(Right(entityRegion_), POS_TOP), sf::Color::Transparent);
+            va[2] = sf::Vertex(
+                sf::Vector2f(sfutil::Right(entityRegion_), POS_TOP), sf::Color::Transparent);
 
             target.draw(va.data(), va.size(), sf::LinesStrip);
         }

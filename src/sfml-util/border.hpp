@@ -12,7 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gold-bar.hpp"
-#include "sfml-util/sfml-util-rectangle-shape.hpp"
+#include "sfutil/rectangle-shape.hpp"
 
 #include <SFML/Graphics/Vertex.hpp>
 

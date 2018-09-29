@@ -16,11 +16,11 @@
 #include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -267,21 +267,21 @@ namespace popup
         auto const BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
         innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
         backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
-        sfml_util::Center(backgroundSprite_);
+        sfutil::Center(backgroundSprite_);
         StageRegionSet(backgroundSprite_.getGlobalBounds());
     }
 
     void PopupStageBase::SetupForFullScreenWithBorderRatio(const float BORDER_RATIO)
     {
         const auto REGION { sfml_util::Margins(
-                                sfml_util::ScreenRatioToPixelsHoriz(BORDER_RATIO),
-                                sfml_util::ScreenRatioToPixelsVert(BORDER_RATIO))
+                                sfutil::ScreenRatioToPixelsHoriz(BORDER_RATIO),
+                                sfutil::ScreenRatioToPixelsVert(BORDER_RATIO))
                                 .ApplyShrinkCopy(
                                     sfml_util::Display::Instance()->FullScreenRect()) };
 
         StageRegionSet(REGION);
         innerRegion_ = REGION;
-        sfml_util::SetSizeAndPos(backgroundSprite_, REGION);
+        sfutil::SetSizeAndPos(backgroundSprite_, REGION);
     }
 
     void PopupStageBase::SetupVariousButtonPositionValues()
@@ -297,7 +297,7 @@ namespace popup
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
 
-        auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfml_util::MapByRes(30.0f, 90.0f) };
+        auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfutil::MapByRes(30.0f, 90.0f) };
         auto const BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
 
         buttonVertPos_
@@ -423,9 +423,9 @@ namespace popup
             accent1CachedTextureOpt_ = PopupManager::Instance()->LoadRandomAccentImage();
             accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-            sfml_util::FitAndReCenter(
+            sfutil::FitAndReCenter(
                 accentSprite1_,
-                sfml_util::ScaleAndReCenterCopy(textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
+                sfutil::ScaleAndReCenterCopy(textRegion_, ACCENT_IMAGE_SCALEDOWN_RATIO_));
 
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
@@ -450,31 +450,28 @@ namespace popup
         {
             case PopupImage::Banner:
             {
-                return sfml_util::ScaleRectLinearCopy(
-                    PopupManager::Instance()->Rect_Banner(), SCALE);
+                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Banner(), SCALE);
             }
 
             case PopupImage::Regular:
             {
-                return sfml_util::ScaleRectLinearCopy(
-                    PopupManager::Instance()->Rect_Regular(), SCALE);
+                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Regular(), SCALE);
             }
 
             case PopupImage::RegularSidebar:
             {
-                return sfml_util::ScaleRectLinearCopy(
+                return sfutil::ScaleRectLinearCopy(
                     PopupManager::Instance()->Rect_RegularSidebar(), SCALE);
             }
 
             case PopupImage::Large:
             {
-                return sfml_util::ScaleRectLinearCopy(
-                    PopupManager::Instance()->Rect_Large(), SCALE);
+                return sfutil::ScaleRectLinearCopy(PopupManager::Instance()->Rect_Large(), SCALE);
             }
 
             case PopupImage::LargeSidebar:
             {
-                return sfml_util::ScaleRectLinearCopy(
+                return sfutil::ScaleRectLinearCopy(
                     PopupManager::Instance()->Rect_LargeSidebar(), SCALE);
             }
 
@@ -506,13 +503,13 @@ namespace popup
         {
             case PopupImage::Banner:
             {
-                return sfml_util::MapByRes(0.7f, 2.0f);
+                return sfutil::MapByRes(0.7f, 2.0f);
             }
 
             case PopupImage::Regular:
             case PopupImage::RegularSidebar:
             {
-                return sfml_util::MapByRes(0.85f, 3.5f);
+                return sfutil::MapByRes(0.85f, 3.5f);
             }
 
             case PopupImage::Large:
@@ -520,7 +517,7 @@ namespace popup
             {
                 // If you change this, then make sure the character_selection
                 // and image_selection popups still look right.
-                return sfml_util::MapByRes(1.0f, 4.75f);
+                return sfutil::MapByRes(1.0f, 4.75f);
             }
 
             case PopupImage::Spellbook: // Spellbook and MusicSheet are scale themselves to fit the

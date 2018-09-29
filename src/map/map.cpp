@@ -24,10 +24,10 @@
 #include "map/map-display.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-overlap.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/overlap.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <exception>
 #include <sstream>
@@ -145,7 +145,7 @@ namespace map
     void Map::MoveNonPlayers()
     {
         auto const PLAYER_ADJ_POS_V { [&]() {
-            return sfml_util::Size(player_.GetView().SpriteRef(), 0.5f);
+            return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
         }() };
 
         auto const PLAYER_RECT_FOR_NPC_COLLISIONS { [&]() {
@@ -342,7 +342,7 @@ namespace map
         auto const PLAYER_POS_V { CalcAdjPlayerPos(DIR, ADJ) };
 
         auto const ADJ_FOR_COLLISIONS_V { [&]() {
-            return sfml_util::Size(player_.GetView().SpriteRef(), sf::Vector2f(0.3f, 0.5f));
+            return sfutil::Size(player_.GetView().SpriteRef(), sf::Vector2f(0.3f, 0.5f));
         }() };
 
         const sf::FloatRect PLAYER_RECT_FOR_MAP_COLLISIONS(
@@ -360,7 +360,7 @@ namespace map
         }
 
         auto const ADJ_FOR_NPC_COLLISIONS_V { [&]() {
-            return sfml_util::Size(player_.GetView().SpriteRef(), 0.5f);
+            return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
         }() };
 
         const sf::FloatRect PLAYER_RECT_FOR_NPC_COLLISIONS(
@@ -371,7 +371,7 @@ namespace map
 
         for (auto & npcPtrModelPair : nonPlayers_)
         {
-            if (sfml_util::intersects(
+            if (sfutil::intersects(
                     npcPtrModelPair.second.GetView().SpriteRef(), PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 player_.MovingIntoSet(npcPtrModelPair.first);

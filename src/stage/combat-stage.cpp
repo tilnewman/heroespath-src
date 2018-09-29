@@ -123,14 +123,14 @@ namespace stage
     const float CombatStage::ANIM_RUN_SLIDER_SPEED_ { SLIDER_SPEED_FAST_ };
     //
     const sf::Color CombatStage::LISTBOX_BACKGROUND_COLOR_ { (
-        sfml_util::color::Orange - sf::Color(100, 100, 100, 235)) };
+        sfutil::color::Orange - sf::Color(100, 100, 100, 235)) };
 
     const sf::Color CombatStage::LISTBOX_HIGHLIGHT_COLOR_ {
-        (sfml_util::color::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20)
+        (sfutil::color::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(20, 20, 20, 20)
     };
 
     const sf::Color CombatStage::LISTBOX_HIGHLIGHT_ALT_COLOR_ {
-        (sfml_util::color::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40)
+        (sfutil::color::Orange - sf::Color(100, 100, 100, 235)) + sf::Color(40, 40, 40, 40)
     };
 
     const sf::Color CombatStage::LISTBOX_SELECTED_COLOR_ { sf::Color::White };
@@ -160,7 +160,7 @@ namespace stage
               " ",
               sfml_util::GuiFont::SystemCondensed,
               sfml_util::FontManager::Instance()->Size_Small(),
-              sfml_util::color::Orange,
+              sfutil::color::Orange,
               sfml_util::Justified::Left)
         , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
@@ -205,7 +205,7 @@ namespace stage
         , turnCreaturePtrOpt_()
         ,
 
-        goldTextColorShaker_(sfml_util::color::Orange, sf::Color::White, TEXT_COLOR_SHAKER_SPEED_)
+        goldTextColorShaker_(sfutil::color::Orange, sf::Color::White, TEXT_COLOR_SHAKER_SPEED_)
         ,
 
         redTextColorShaker_(
@@ -470,7 +470,7 @@ namespace stage
         const float COMBAT_REGION_WIDTH(SCREEN_WIDTH_ - (COMBAT_REGION_MARGIN * 2.0f) + 10.0f);
 
         const float COMBAT_REGION_HEIGHT(
-            (SCREEN_HEIGHT_ - (COMBAT_REGION_MARGIN * 2.0f)) - sfml_util::MapByRes(200.0f, 800.0f));
+            (SCREEN_HEIGHT_ - (COMBAT_REGION_MARGIN * 2.0f)) - sfutil::MapByRes(200.0f, 800.0f));
 
         const sf::FloatRect COMBAT_REGION(
             COMBAT_REGION_LEFT, COMBAT_REGION_TOP, COMBAT_REGION_WIDTH, COMBAT_REGION_HEIGHT);
@@ -500,7 +500,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         statusBoxInfo.SetupColor(LISTBOX_BACKGROUND_COLOR_);
 
@@ -550,7 +550,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         commandBoxInfo.SetupBorder(true);
 
@@ -567,7 +567,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         turnBoxInfo.SetupBorder(true);
 
@@ -579,7 +579,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::DefaultBoldFlavor,
             sfml_util::FontManager::Instance()->Size_Largeish(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
@@ -592,7 +592,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sfml_util::Justified::Left);
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
@@ -604,7 +604,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
@@ -623,7 +623,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sfml_util::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
@@ -636,7 +636,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sfml_util::Justified::Center);
 
         weaponTBoxTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
@@ -651,7 +651,7 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sfml_util::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
@@ -681,8 +681,8 @@ namespace stage
         // settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
 
-        const sf::Vector2f GEAR_IMAGE_SIZE_V { sfml_util::ScreenRatioToPixelsHoriz(0.052f),
-                                               sfml_util::ScreenRatioToPixelsVert(0.0853f) };
+        const sf::Vector2f GEAR_IMAGE_SIZE_V { sfutil::ScreenRatioToPixelsHoriz(0.052f),
+                                               sfutil::ScreenRatioToPixelsVert(0.0853f) };
 
         const sf::Vector2f GEAR_IMAGE_POS_V { ((COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH)
                                                - GEAR_IMAGE_SIZE_V.x)
@@ -715,7 +715,7 @@ namespace stage
 
         auto const COLUMN_TOP { settingsButtonUPtr_->GetEntityPos().y
                                 + settingsButtonUPtr_->GetEntityRegion().height
-                                - sfml_util::MapByRes(10.0f, 75.0f) };
+                                - sfutil::MapByRes(10.0f, 75.0f) };
 
         auto const COLUMN_VERT_PAD { attackTBoxButtonUPtr_->GetEntityRegion().height / 1.5f };
 
@@ -804,7 +804,7 @@ namespace stage
             "Zoom",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Left);
 
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(
@@ -3225,7 +3225,7 @@ namespace stage
             preambleSS.str(EMPTY_STR);
         }
 
-        auto const VERT_POS_SHIFT(sfml_util::MapByRes(0.0f, 16.0f));
+        auto const VERT_POS_SHIFT(sfutil::MapByRes(0.0f, 16.0f));
         titleTBoxTextRegionUPtr_->SetText(titleSS.str());
         titleTBoxTextRegionUPtr_->SetEntityPos(
             turnBoxRegion_.left,
@@ -4273,12 +4273,12 @@ namespace stage
             " ",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::Orange,
+            sfutil::color::Orange,
             sfml_util::Justified::Left);
 
         const auto BUTTON_COLOR_OVER { sf::Color::White };
-        const auto BUTTON_COLOR_DOWN { sfml_util::color::Light };
-        const auto BUTTON_COLOR_DISABLED { sfml_util::color::Orange - sf::Color(0, 0, 0, 176) };
+        const auto BUTTON_COLOR_DOWN { sfutil::color::Light };
+        const auto BUTTON_COLOR_DISABLED { sfutil::color::Orange - sf::Color(0, 0, 0, 176) };
 
         buttonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
             "CombatStage's_" + TEXT,

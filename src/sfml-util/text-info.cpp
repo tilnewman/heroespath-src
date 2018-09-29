@@ -13,10 +13,10 @@
 
 #include "misc/strings.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-font.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/font.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -156,7 +156,7 @@ namespace sfml_util
             }
 
             ss << SEPARATOR << size;
-            ss << SEPARATOR << sfml_util::ToString(color, misc::ToStringPrefix::SimpleName);
+            ss << SEPARATOR << sfutil::ToString(color, misc::ToStringPrefix::SimpleName);
 
             ss << SEPARATOR;
             if (sfml_util::Justified::IsValid(justified))

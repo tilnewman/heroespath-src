@@ -13,9 +13,9 @@
 
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui-images.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -93,7 +93,7 @@ namespace sfml_util
                 1.0f);
         }
 
-        SetEntityRegion(sfml_util::MinimallyEnclosing(
+        SetEntityRegion(sfutil::MinimallyEnclosing(
             { botOrLeftSprite_, topOrRightSprite_, barSprite_, padSprite_ }));
 
         UpdatePadPosition();
@@ -575,7 +575,7 @@ namespace sfml_util
                 {
                     return -MOVE_AMOUNT_RATIO_;
                 }
-                else if (MOUSE_POS_V.x > sfml_util::Right(padSprite_))
+                else if (MOUSE_POS_V.x > sfutil::Right(padSprite_))
                 {
                     return MOVE_AMOUNT_RATIO_;
                 }
@@ -586,7 +586,7 @@ namespace sfml_util
                 {
                     return -MOVE_AMOUNT_RATIO_;
                 }
-                else if (MOUSE_POS_V.y > sfml_util::Bottom(padSprite_))
+                else if (MOUSE_POS_V.y > sfutil::Bottom(padSprite_))
                 {
                     return MOVE_AMOUNT_RATIO_;
                 }

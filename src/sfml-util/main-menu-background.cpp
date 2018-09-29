@@ -12,7 +12,7 @@
 #include "main-menu-background.hpp"
 
 #include "sfml-util/box-entity.hpp"
-#include "sfml-util/sfml-util-display.hpp"
+#include "sfutil/display.hpp"
 
 namespace heroespath
 {
@@ -28,7 +28,7 @@ namespace sfml_util
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.075f));
+            sfutil::ScreenRatioToPixelsHoriz(0.075f));
 
         backgroundBoxInfo.SetupColor(
             sf::Color::Transparent,
@@ -37,7 +37,7 @@ namespace sfml_util
             sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
         boxUPtr_ = std::make_unique<BoxEntity>(
-            "MainMenuBackground_", sfml_util::DisplayRect(), backgroundBoxInfo);
+            "MainMenuBackground_", sfutil::DisplayRect(), backgroundBoxInfo);
     }
 
     void MainMenuBackground::draw(sf::RenderTarget & target, sf::RenderStates states) const

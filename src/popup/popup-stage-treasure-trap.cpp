@@ -13,8 +13,8 @@
 
 #include "game/game-data-file.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -68,7 +68,7 @@ namespace popup
     {
         sf::FloatRect tempRect(textRegion_);
         tempRect.height = 0.0f;
-        tempRect.top += sfml_util::MapByRes(75.0f, 225.0f);
+        tempRect.top += sfutil::MapByRes(75.0f, 225.0f);
 
         const sfml_util::TextInfo DESC_TEXTINFO(
             popupInfo_.TextInfo().text,
@@ -88,8 +88,7 @@ namespace popup
         accent1CachedTextureOpt_ = sfml_util::CachedTexture("media-images-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
-        sfml_util::FitAndReCenter(
-            accentSprite1_, sfml_util::ScaleAndReCenterCopy(textRegion_, 0.65f));
+        sfutil::FitAndReCenter(accentSprite1_, sfutil::ScaleAndReCenterCopy(textRegion_, 0.65f));
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }

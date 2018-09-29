@@ -9,9 +9,9 @@
 //
 // text-render-rendered-line.hpp
 //
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/text-render-context.hpp"
 #include "sfml-util/text.hpp"
+#include "sfutil/position.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 
@@ -42,7 +42,7 @@ namespace sfml_util
             bool Empty() const { return texts.empty(); }
             const sf::FloatRect Region() const { return region; }
             void Move(const sf::Vector2f &);
-            void SetPosition(const sf::Vector2f & POS_V) { Move(POS_V - Position(region)); }
+            void SetPosition(const sf::Vector2f & POS_V) { Move(POS_V - sfutil::Position(region)); }
             void SetupAsBlankLine();
             void Append(const sfml_util::Text &);
             float VerticalStretchToLineSpacing();

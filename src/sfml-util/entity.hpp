@@ -12,7 +12,7 @@
 #include "sfml-util/color-set.hpp"
 #include "sfml-util/i-entity.hpp"
 #include "sfml-util/mouse-state-enum.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/System/Clock.hpp>
 

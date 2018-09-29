@@ -12,9 +12,9 @@
 #include "sliderbar-labeled.hpp"
 
 #include "log/log-macros.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -61,7 +61,7 @@ namespace sfml_util
         textRegionUPtr_->Setup(textInfo, R);
 
         SetEntityRegion(
-            sfml_util::MinimallyEnclosing(GetEntityRegion(), textRegionUPtr_->GetEntityRegion()));
+            sfutil::MinimallyEnclosing(GetEntityRegion(), textRegionUPtr_->GetEntityRegion()));
     }
 
     SliderBarLabeled::~SliderBarLabeled() = default;

@@ -11,9 +11,9 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/image-entity.hpp"
-#include "sfml-util/sfml-util-center-of.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-entity.hpp"
+#include "sfutil/center-of.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -47,14 +47,14 @@ namespace sfml_util
         const auto TEXTURE_RECT_DOWN { GuiElementsTextureRect(IS_RADIO_BUTTON, false, BRIGHTNESS) };
 
         // both texture rects above have the same size
-        const auto IMAGE_SIZE_V { sfml_util::Size(sf::FloatRect(TEXTURE_RECT_UP)) };
+        const auto IMAGE_SIZE_V { sfutil::Size(sf::FloatRect(TEXTURE_RECT_UP)) };
 
         const auto TEXT_POS_LEFT { IMAGE_POS_LEFT + IMAGE_SIZE_V.x + BETWEEN_SPACER };
 
         textEntityUPtr_ = std::make_unique<sfml_util::TextEntity>(
             "TextEntity_Of_" + GetEntityName(), TEXT_POS_LEFT, TEXT_POS_TOP, MOUSE_TEXT_INFO);
 
-        const auto IMAGE_POS_TOP { sfml_util::CenterOfVert(textEntityUPtr_->GetEntityRegion())
+        const auto IMAGE_POS_TOP { sfutil::CenterOfVert(textEntityUPtr_->GetEntityRegion())
                                    - (IMAGE_SIZE_V.y * 0.5f) };
 
         const sf::Vector2f IMAGE_POS_V(IMAGE_POS_LEFT, IMAGE_POS_TOP);

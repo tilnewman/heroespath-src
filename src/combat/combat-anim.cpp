@@ -21,14 +21,14 @@
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-angles.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/song-animation.hpp"
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/text-animation.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/angles.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "spell/spell.hpp"
 
 namespace heroespath
@@ -75,7 +75,7 @@ namespace combat
         ,
 
         // found by experiment to be good speeds
-        BATTLEFIELD_CENTERING_SPEED_(sfml_util::MapByRes(25.0f, 900.0f))
+        BATTLEFIELD_CENTERING_SPEED_(sfutil::MapByRes(25.0f, 900.0f))
         ,
 
         // any value greater than zero will work temporarily here
@@ -261,17 +261,17 @@ namespace combat
         projAnimSprite_.setOrigin(0.0f, 0.0f);
 
         // this is the scale for Sling projectiles (stones)
-        auto scale { sfml_util::MapByRes(0.05f, 0.55f) };
+        auto scale { sfutil::MapByRes(0.05f, 0.55f) };
 
         if (WEAPON_PTR->WeaponInfo().IsBow()
             || (WEAPON_PTR->WeaponInfo().ProjectileType()
                 == item::weapon::projectile_type::Crossbow))
         {
-            scale = sfml_util::MapByRes(0.3f, 2.0f);
+            scale = sfutil::MapByRes(0.3f, 2.0f);
         }
         else if (WEAPON_PTR->WeaponInfo().IsBlowpipe())
         {
-            scale = sfml_util::MapByRes(0.05f, 1.0f);
+            scale = sfutil::MapByRes(0.05f, 1.0f);
         }
         projAnimSprite_.setScale(scale, scale);
 
@@ -287,7 +287,7 @@ namespace combat
         }
         else
         {
-            projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(
+            projAnimEndPosV_ = sfutil::ProjectToScreenEdge(
                 CREATURE_ATTACKING_CENTER_POSV,
                 CREATURE_DEFENDING_CENTER_POSV,
                 sf::Vector2f(
@@ -300,7 +300,7 @@ namespace combat
             projAnimSprite_.getGlobalBounds().height * 0.5f);
 
         projAnimSprite_.setRotation(
-            sfml_util::GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_));
+            sfutil::GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_));
 
         projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
@@ -581,7 +581,7 @@ namespace combat
 
     float CombatAnimation::ShakeAnimDistance(const bool WILL_DOUBLE)
     {
-        auto distance { sfml_util::MapByRes(16.0f, 48.0f) };
+        auto distance { sfutil::MapByRes(16.0f, 48.0f) };
 
         if (WILL_DOUBLE)
         {
@@ -871,7 +871,7 @@ namespace combat
                         !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
                         NEXT_COMBATNODE_PTR->GetEntityRegion(),
                         0.33f,
-                        sfml_util::MapByRes(0.15f, 0.45f),
+                        sfutil::MapByRes(0.15f, 0.45f),
                         0.9f,
                         CASTING_CREATURE_PTR->RankRatio(),
                         1.25f));
@@ -907,9 +907,9 @@ namespace combat
                 cloudAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
                     0.35f,
-                    sfml_util::MapByRes(0.1f, 0.35f),
+                    sfutil::MapByRes(0.1f, 0.35f),
                     0.2f,
-                    sfml_util::MapByRes(0.4f, 1.2f),
+                    sfutil::MapByRes(0.4f, 1.2f),
                     0.2f,
                     4.0f,
                     0.75f,
@@ -955,13 +955,13 @@ namespace combat
                 continue;
             }
 
-            auto region { sfml_util::ShrinkToSquareAndReCenterCopy(
+            auto region { sfutil::ShrinkToSquareAndReCenterCopy(
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             // grow the shimmer animation to better cover the creature image
             if (ENUM == sfml_util::Animations::Shimmer)
             {
-                auto const ADJ { sfml_util::MapByRes(40.0f, 120.0f) };
+                auto const ADJ { sfutil::MapByRes(40.0f, 120.0f) };
                 region.left -= ADJ * 0.5f;
                 region.top -= ADJ * 1.25f;
                 region.width += ADJ * 2.0f;
@@ -987,9 +987,9 @@ namespace combat
             songAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SongAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 0.1f,
-                sfml_util::MapByRes(0.1f, 0.25f),
+                sfutil::MapByRes(0.1f, 0.25f),
                 0.25f,
-                sfml_util::MapByRes(0.35f, 0.9f),
+                sfutil::MapByRes(0.35f, 0.9f),
                 0.25f,
                 6.0f,
                 0.75f,
@@ -1031,7 +1031,7 @@ namespace combat
 
             sparkleAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SparkleAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                sfml_util::MapByRes(0.333f, 1.0f),
+                sfutil::MapByRes(0.333f, 1.0f),
                 0.5f,
                 10.0f,
                 0.5f,

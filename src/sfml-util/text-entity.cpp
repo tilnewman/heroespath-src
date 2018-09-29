@@ -14,10 +14,10 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/mouse-text-info.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-renderer.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -141,7 +141,7 @@ namespace sfml_util
         // TODO this is probably wrong, if the region size grows/shrinks then the cached text
         // image should have whitespace added or be clipped, I don't think scaling the text
         // image size is the right thing to do here...
-        SetSizeAndPos(sprite_, R);
+        sfutil::SetSizeAndPos(sprite_, R);
     }
 
     void TextEntity::SetText(const std::string & TEXT)
@@ -186,7 +186,7 @@ namespace sfml_util
                 continue;
             }
 
-            auto finalRegion { MakeRectWithPosition(Position(entityRegion_)) };
+            auto finalRegion { sfutil::MakeRectWithPosition(sfutil::Position(entityRegion_)) };
             auto & renderTextureUPtr { cacheMap_[TEXT_INFO] };
 
             if (!renderTextureUPtr)
@@ -205,7 +205,7 @@ namespace sfml_util
             {
                 sprite_.setTexture(renderTextureUPtr->getTexture());
 
-                const sf::Vector2u RENDERED_TEXT_SIZE_V_UINT { Size(finalRegion) };
+                const sf::Vector2u RENDERED_TEXT_SIZE_V_UINT { sfutil::Size(finalRegion) };
 
                 const auto WIDTH_LIMIT_UINT { (
                     (textWidthLimit_ < 1.0f) ? 0 : static_cast<unsigned>(textWidthLimit_)) };
@@ -223,7 +223,7 @@ namespace sfml_util
                 const sf::IntRect FINAL_TEXTURE_IRECT(sf::Vector2i(), FINAL_TEXTURE_SIZE_V_INT);
 
                 sprite_.setTextureRect(FINAL_TEXTURE_IRECT);
-                sprite_.setPosition(Position(finalRegion));
+                sprite_.setPosition(sfutil::Position(finalRegion));
                 sprite_.setColor(TEXT_INFO.color);
 
                 entityRegion_ = finalRegion;

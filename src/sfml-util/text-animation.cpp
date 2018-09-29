@@ -13,8 +13,8 @@
 
 #include "misc/random.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-font.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/font.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -95,7 +95,7 @@ namespace sfml_util
                 TEXT_,
                 sfml_util::GuiFont::Default,
                 FONT_SIZE,
-                sfml_util::Transition(START_COLOR_, END_COLOR_, SLIDER_POS),
+                sfutil::Transition(START_COLOR_, END_COLOR_, SLIDER_POS),
                 sfml_util::Justified::Center,
                 sf::Text::Bold);
 

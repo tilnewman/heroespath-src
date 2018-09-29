@@ -13,9 +13,9 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/color-set.hpp"
 #include "sfml-util/corner-enum.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/side-enum.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 

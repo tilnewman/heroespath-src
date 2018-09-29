@@ -25,29 +25,29 @@
 #include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util-angles.hpp"
-#include "sfml-util/sfml-util-blend-mode.hpp"
-#include "sfml-util/sfml-util-center-of.hpp"
-#include "sfml-util/sfml-util-center-to.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-direction.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-distance.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-font.hpp"
-#include "sfml-util/sfml-util-image-manip.hpp"
-#include "sfml-util/sfml-util-keyboard.hpp"
-#include "sfml-util/sfml-util-overlap.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-rectangle-shape.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-sprite-texture.hpp"
-#include "sfml-util/sfml-util-vector-math.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
-#include "sfml-util/sfml-util-video-mode.hpp"
+#include "sfutil/angles.hpp"
+#include "sfutil/blend-mode.hpp"
+#include "sfutil/center-of.hpp"
+#include "sfutil/center-to.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/direction.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/distance.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/font.hpp"
+#include "sfutil/image-manip.hpp"
+#include "sfutil/keyboard.hpp"
+#include "sfutil/overlap.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/rectangle-shape.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/sprite-texture.hpp"
+#include "sfutil/vector-and-rect.hpp"
+#include "sfutil/vector-math.hpp"
+#include "sfutil/vertex.hpp"
+#include "sfutil/video-mode.hpp"
 
 #include <iostream>
 #include <limits>
@@ -57,6 +57,7 @@
 
 using namespace test_stuff;
 using namespace heroespath::sfml_util;
+using namespace heroespath::sfutil;
 using namespace heroespath::misc;
 
 using heroespath::misc::IsRealClose;
@@ -631,13 +632,11 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
 
     va.clear();
 
-    AppendVertexesForQuadRepeatedOverLength(
-        va, POS_10_V, RECT_10, heroespath::sfml_util::Orientation::Count, 25.0f);
+    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, ::Orientation::Count, 25.0f);
 
     BOOST_CHECK(va.getVertexCount() == 0);
 
-    AppendVertexesForQuadRepeatedOverLength(
-        va, POS_10_V, RECT_10, heroespath::sfml_util::Orientation::Horiz, 0.0f);
+    AppendVertexesForQuadRepeatedOverLength(va, POS_10_V, RECT_10, ::Orientation::Horiz, 0.0f);
 
     BOOST_CHECK(va.getVertexCount() == 0);
 
@@ -646,13 +645,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     va.clear();
 
     AppendVertexesForQuadRepeatedOverLength(
-        va,
-        POS_10_V,
-        RECT_10,
-        heroespath::sfml_util::Orientation::Horiz,
-        5.0f,
-        sf::Color::Red,
-        5.0f);
+        va, POS_10_V, RECT_10, ::Orientation::Horiz, 5.0f, sf::Color::Red, 5.0f);
 
     BOOST_CHECK(va.getVertexCount() == 4);
 
@@ -679,7 +672,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
         va,
         POS_10_V,
         RECT_10,
-        heroespath::sfml_util::Orientation::Horiz,
+        ::Orientation::Horiz,
         5.0f,
         sf::Color::White,
         999.0f,
@@ -705,7 +698,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
         va,
         POS_10_V,
         RECT_10,
-        heroespath::sfml_util::Orientation::Horiz,
+        ::Orientation::Horiz,
         25.0f,
         sf::Color::White,
         5.0f,
@@ -1173,7 +1166,7 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
     // display tests
 
     heroespath::log::Logger::Acquire();
-    heroespath::sfml_util::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0);
+    ::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0);
 
     const sf::Vector2f SCREEN_SIZE_V(DisplaySize());
     const float HALF_SCALE(0.5f);
@@ -2209,7 +2202,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareCopy(GS_RECT_I) == GS_RECT_GROWN_I);
 
     auto gsRectITemp { GS_RECT_I };
-    heroespath::sfml_util::GrowToSquare(gsRectITemp);
+    ::GrowToSquare(gsRectITemp);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_I);
 
     //
@@ -2217,7 +2210,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareCopy(GS_RECT_I, 0.5f) == GS_RECT_GROWN_HALF_I);
 
     gsRectITemp = GS_RECT_I;
-    heroespath::sfml_util::GrowToSquare(gsRectITemp, 0.5f);
+    ::GrowToSquare(gsRectITemp, 0.5f);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_HALF_I);
 
     //
@@ -2243,7 +2236,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareAndReCenterCopy(GS_RECT_I) == GS_RECT_GROWN_RECENTERED_I);
 
     gsRectITemp = GS_RECT_I;
-    heroespath::sfml_util::GrowToSquareAndReCenter(gsRectITemp);
+    ::GrowToSquareAndReCenter(gsRectITemp);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_RECENTERED_I);
 
     //
@@ -2251,7 +2244,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(GrowToSquareAndReCenterCopy(GS_RECT_I, 0.5f) == GS_RECT_GROWN_RECENTERED_HALF_I);
 
     gsRectITemp = GS_RECT_I;
-    heroespath::sfml_util::GrowToSquareAndReCenter(gsRectITemp, 0.5f);
+    ::GrowToSquareAndReCenter(gsRectITemp, 0.5f);
     BOOST_CHECK(gsRectITemp == GS_RECT_GROWN_RECENTERED_HALF_I);
 
     //

@@ -11,9 +11,9 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-sprite-texture.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/sprite-texture.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

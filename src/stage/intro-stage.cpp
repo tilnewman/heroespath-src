@@ -14,10 +14,10 @@
 #include "game/game-data-file.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/music-operator.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -43,10 +43,10 @@ namespace stage
     void IntroStage::Setup()
     {
         const sf::Vector2f TITLE_IMAGE_INITIAL_SIZE_CONSTRAINTS_V(
-            sfml_util::ScreenRatioToPixelsHoriz(0.33f), 0.0f);
+            sfutil::ScreenRatioToPixelsHoriz(0.33f), 0.0f);
 
-        sfml_util::Fit(titleSprite_, TITLE_IMAGE_INITIAL_SIZE_CONSTRAINTS_V);
-        sfml_util::Center(titleSprite_);
+        sfutil::Fit(titleSprite_, TITLE_IMAGE_INITIAL_SIZE_CONSTRAINTS_V);
+        sfutil::Center(titleSprite_);
     }
 
     void IntroStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -70,7 +70,7 @@ namespace stage
                                * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
 
         titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
-        sfml_util::Center(titleSprite_);
+        sfutil::Center(titleSprite_);
     }
 
 } // namespace stage

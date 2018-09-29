@@ -22,8 +22,8 @@
 #include "popup/popup-stage-res-change.hpp"
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-video-mode.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/video-mode.hpp"
 #include "stage/loop-cmd-addstage.hpp"
 
 namespace heroespath

@@ -19,11 +19,11 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -251,8 +251,8 @@ namespace stage
     void SettingsStage::Setup_BackButton()
     {
         backButtonUPtr_->SetEntityPos(
-            sfml_util::ScreenRatioToPixelsHoriz(0.039f),
-            sfml_util::CenterOfVert(bottomSymbol_.Region())
+            sfutil::ScreenRatioToPixelsHoriz(0.039f),
+            sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
     }
 
@@ -263,12 +263,12 @@ namespace stage
 
         auto const BG_BOX_LEFT { (StageRegionWidth() * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
 
-        auto const BG_BOX_TOP { sfml_util::Bottom(stageTitle_.Region())
+        auto const BG_BOX_TOP { sfutil::Bottom(stageTitle_.Region())
                                 + stageTitle_.DefaultBottomPad() };
 
         const sf::FloatRect BG_BOX_RECT(BG_BOX_LEFT, BG_BOX_TOP, BG_BOX_WIDTH, BG_BOX_HEIGHT);
 
-        auto const BG_BOX_INNER_PAD { sfml_util::MapByRes(20.0f, 60.0f) };
+        auto const BG_BOX_INNER_PAD { sfutil::MapByRes(20.0f, 60.0f) };
 
         const sf::FloatRect BG_BOX_RECT_INNER(
             BG_BOX_LEFT + BG_BOX_INNER_PAD,
@@ -286,7 +286,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-wood",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.06f));
+            sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         settingsBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
             "SettingsStageBackground", BG_BOX_RECT, bgBoxbgInfo);
@@ -304,7 +304,7 @@ namespace stage
             EntityAdd(resLabelTextRegionUPtr_.get());
         }
 
-        auto const LEFT { BG_BOX_INNER_RECT.left + sfml_util::MapByRes(60.0f, 125.0f) };
+        auto const LEFT { BG_BOX_INNER_RECT.left + sfutil::MapByRes(60.0f, 125.0f) };
         auto const TOP { BG_BOX_INNER_RECT.top };
 
         resLabelTextRegionUPtr_->Setup(
@@ -317,7 +317,7 @@ namespace stage
         {
             resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
                 BG_BOX_INNER_RECT.left,
-                BG_BOX_INNER_RECT.top + sfml_util::MapByRes(20.0f, 50.0f),
+                BG_BOX_INNER_RECT.top + sfutil::MapByRes(20.0f, 50.0f),
                 sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
                 sfml_util::IStagePtr_t(this));
 
@@ -568,11 +568,11 @@ namespace stage
 
         // auto const PAD { 30.0f };
 
-        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+        auto const LEFT { sfutil::ScreenRatioToPixelsHoriz(0.5f) };
         // auto const LEFT { (aaRadioButtonSetUPtr_->GetEntityRegion().left - PAD)
-        //                  - sfml_util::MapByRes(10.0f, 30.0f) };
+        //                  - sfutil::MapByRes(10.0f, 30.0f) };
 
-        auto const TOP { sfml_util::ScreenRatioToPixelsVert(0.5f) };
+        auto const TOP { sfutil::ScreenRatioToPixelsVert(0.5f) };
         // auto const TOP { aaRadioButtonSetUPtr_->GetEntityRegion().top
         //                 + aaRadioButtonSetUPtr_->GetEntityRegion().height + PAD };
 
@@ -584,9 +584,9 @@ namespace stage
 
     void SettingsStage::Setup_MusicInfoBox(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        auto const PAD { sfml_util::MapByRes(20.0f, 60.0f) };
+        auto const PAD { sfutil::MapByRes(20.0f, 60.0f) };
 
-        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+        auto const LEFT { sfutil::ScreenRatioToPixelsHoriz(0.5f) };
         // auto const LEFT { aaRadioButtonSetUPtr_->GetEntityPos().x };
 
         auto const TOP { musicInfoLabelTextRegionUPtr_->GetEntityRegion().top
@@ -617,7 +617,7 @@ namespace stage
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Center);
 
         sfml_util::BoxEntityInfo musicBoxInfo;
@@ -658,7 +658,7 @@ namespace stage
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Left);
 
         if (false == hasStageAlreadyBeenSetup_)
@@ -701,7 +701,7 @@ namespace stage
     float SettingsStage::HorizPositionOfColumn(
         const std::size_t COLUMN_NUM, const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        auto const LEFT { sfml_util::ScreenRatioToPixelsHoriz(0.5f) };
+        auto const LEFT { sfutil::ScreenRatioToPixelsHoriz(0.5f) };
 
         // auto const LEFT { resRadioButtonSetUPtr_->GetEntityRegion().left
         //                  + resRadioButtonSetUPtr_->GetEntityRegion().width };
@@ -714,7 +714,7 @@ namespace stage
         return LEFT + (static_cast<float>(COLUMN_NUM) * COLUMN_WIDTH);
     }
 
-    float SettingsStage::SliderLabelVertPad() const { return sfml_util::MapByRes(5.0f, 15.0f); }
+    float SettingsStage::SliderLabelVertPad() const { return sfutil::MapByRes(5.0f, 15.0f); }
 
 } // namespace stage
 } // namespace heroespath

@@ -126,7 +126,7 @@ namespace popup
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
-            sfml_util::color::Light,
+            sfutil::color::Light,
             boxInfo);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());

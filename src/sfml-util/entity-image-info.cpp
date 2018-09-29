@@ -8,8 +8,8 @@
 // entity-image-info.cpp
 //
 #include "entity-image-info.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -162,11 +162,11 @@ namespace sfml_util
     {
         if (will_resize_instead_of_fit)
         {
-            SetSizeAndPos(sprite, NEW_GLOBAL_BOUNDS);
+            sfutil::SetSizeAndPos(sprite, NEW_GLOBAL_BOUNDS);
         }
         else
         {
-            FitAndCenterTo(sprite, NEW_GLOBAL_BOUNDS);
+            sfutil::FitAndCenterTo(sprite, NEW_GLOBAL_BOUNDS);
         }
     }
 

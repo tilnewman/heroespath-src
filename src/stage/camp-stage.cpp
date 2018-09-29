@@ -30,9 +30,9 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -115,24 +115,24 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         // campfire image
-        const auto CAMPFIRE_IMAGE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.286f) };
+        const auto CAMPFIRE_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.286f) };
 
         const auto CAMPFIRE_POS_LEFT { StageRegionWidth()
-                                       - sfml_util::ScreenRatioToPixelsHoriz(0.06f) };
+                                       - sfutil::ScreenRatioToPixelsHoriz(0.06f) };
         const auto CAMPFIRE_POS_TOP { StageRegionHeight()
-                                      - sfml_util::ScreenRatioToPixelsVert(0.0667f) };
+                                      - sfutil::ScreenRatioToPixelsVert(0.0667f) };
 
         const sf::FloatRect CAMPFIRE_CONSTRAINING_REGION(
             CAMPFIRE_POS_LEFT, CAMPFIRE_POS_TOP, CAMPFIRE_IMAGE_WIDTH, 0.0f);
 
-        sfml_util::FitAndCenterTo(campfireSprite_, CAMPFIRE_CONSTRAINING_REGION);
+        sfutil::FitAndCenterTo(campfireSprite_, CAMPFIRE_CONSTRAINING_REGION);
 
         // campfire animation
         fireAnimUPtr_
             = sfml_util::AnimationFactory::Make(sfml_util::Animations::Inferno, 1.2f, 0.05f);
 
-        const auto CAMPFIRE_ANIM_POS_V { sfml_util::CenterToCopy(
-            sfml_util::Size(fireAnimUPtr_->GetEntityRegion()), CAMPFIRE_CONSTRAINING_REGION) };
+        const auto CAMPFIRE_ANIM_POS_V { sfutil::CenterToCopy(
+            sfutil::Size(fireAnimUPtr_->GetEntityRegion()), CAMPFIRE_CONSTRAINING_REGION) };
 
         fireAnimUPtr_->SetEntityPos(CAMPFIRE_ANIM_POS_V);
 

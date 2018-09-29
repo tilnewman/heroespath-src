@@ -14,10 +14,10 @@
 #include "game/game-data-file.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -118,7 +118,7 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
-            sfml_util::ScreenRatioToPixelsHoriz(0.08f));
+            sfutil::ScreenRatioToPixelsHoriz(0.08f));
     }
 
     void Credit::Setup(
@@ -137,8 +137,7 @@ namespace stage
             auto const SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
             sprite_.setScale(SCALE, SCALE);
 
-            sprite_.setPosition(
-                sfml_util::DisplayCenterHoriz(sprite_.getGlobalBounds().width), 0.0f);
+            sprite_.setPosition(sfutil::DisplayCenterHoriz(sprite_.getGlobalBounds().width), 0.0f);
         }
         else if (MEDIA_TYPE == MediaType::Anim)
         {
@@ -151,7 +150,7 @@ namespace stage
             auto const HEIGHT { animUPtr_->OrigSize().y * SCALE };
 
             animUPtr_->SetEntityRegion(
-                sf::FloatRect(sfml_util::DisplayCenterHoriz(WIDTH), 0.0f, WIDTH, HEIGHT));
+                sf::FloatRect(sfutil::DisplayCenterHoriz(WIDTH), 0.0f, WIDTH, HEIGHT));
         }
 
         const auto TEXT_COLOR_BRIGHT { sf::Color::White };
@@ -169,13 +168,13 @@ namespace stage
         const sfml_util::TextInfo TEXT_INFO_TITLE(
             TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, sfml_util::Justified::Center);
 
-        const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
+        const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
         const auto TITLE_TEXT_POS_TOP { (
-            sfml_util::Bottom(CalcBounds()) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER) };
+            sfutil::Bottom(CalcBounds()) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER) };
 
         sf::FloatRect titleTextRegion(
-            sfml_util::DisplayCenterHoriz(MAX_WIDTH), TITLE_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+            sfutil::DisplayCenterHoriz(MAX_WIDTH), TITLE_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
 
         if (TITLE_TEXT.empty() == false)
         {
@@ -209,15 +208,14 @@ namespace stage
             textInfoContent.size -= static_cast<unsigned int>(FONT_SIZE_REDUCTION_F);
         }
 
-        const auto BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER {
-            sfml_util::ScreenRatioToPixelsVert(0.0065f)
-        };
+        const auto BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER { sfutil::ScreenRatioToPixelsVert(
+            0.0065f) };
 
         const auto CONTENT_TEXT_POS_TOP { (
-            sfml_util::Bottom(CalcBounds()) + BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER) };
+            sfutil::Bottom(CalcBounds()) + BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER) };
 
         sf::FloatRect contentTextRegion(
-            sfml_util::DisplayCenterHoriz(MAX_WIDTH), CONTENT_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+            sfutil::DisplayCenterHoriz(MAX_WIDTH), CONTENT_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
 
         if (CONTENT_TEXT.empty() == false)
         {
@@ -280,7 +278,7 @@ namespace stage
             animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
-        sfml_util::Move(region_, sf::Vector2f(ADJ_HORIZ, ADJ_VERT));
+        sfutil::Move(region_, sf::Vector2f(ADJ_HORIZ, ADJ_VERT));
     }
 
     const sf::FloatRect Credit::CalcBounds() const
@@ -307,7 +305,7 @@ namespace stage
             rects.emplace_back(sprite_.getGlobalBounds());
         }
 
-        return sfml_util::MinimallyEnclosing(rects, true);
+        return sfutil::MinimallyEnclosing(rects, true);
     }
 
 } // namespace stage

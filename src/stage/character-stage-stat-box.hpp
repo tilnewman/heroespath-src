@@ -13,10 +13,10 @@
 #include "creature/trait-enum.hpp"
 #include "creature/trait.hpp"
 #include "sfml-util/i-stage.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
 

@@ -16,7 +16,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
+#include "sfutil/display.hpp"
 
 namespace heroespath
 {
@@ -220,37 +220,37 @@ namespace sfml_util
 
     unsigned int FontManager::Size_Larger() const
     {
-        return sfml_util::MapByRes(SIZE_LARGER_MIN_, SIZE_LARGER_MAX_);
+        return sfutil::MapByRes(SIZE_LARGER_MIN_, SIZE_LARGER_MAX_);
     }
 
     unsigned int FontManager::Size_Large() const
     {
-        return sfml_util::MapByRes(SIZE_LARGE_MIN_, SIZE_LARGE_MAX_);
+        return sfutil::MapByRes(SIZE_LARGE_MIN_, SIZE_LARGE_MAX_);
     }
 
     unsigned int FontManager::Size_Largeish() const
     {
-        return sfml_util::MapByRes(SIZE_LARGEISH_MIN_, SIZE_LARGEISH_MAX_);
+        return sfutil::MapByRes(SIZE_LARGEISH_MIN_, SIZE_LARGEISH_MAX_);
     }
 
     unsigned int FontManager::Size_Normal() const
     {
-        return sfml_util::MapByRes(SIZE_NORMAL_MIN_, SIZE_NORMAL_MAX_);
+        return sfutil::MapByRes(SIZE_NORMAL_MIN_, SIZE_NORMAL_MAX_);
     }
 
     unsigned int FontManager::Size_Smallish() const
     {
-        return sfml_util::MapByRes(SIZE_SMALLISH_MIN_, SIZE_SMALLISH_MAX_);
+        return sfutil::MapByRes(SIZE_SMALLISH_MIN_, SIZE_SMALLISH_MAX_);
     }
 
     unsigned int FontManager::Size_Small() const
     {
-        return sfml_util::MapByRes(SIZE_SMALL_MIN_, SIZE_SMALL_MAX_);
+        return sfutil::MapByRes(SIZE_SMALL_MIN_, SIZE_SMALL_MAX_);
     }
 
     unsigned int FontManager::Size_Tiny() const
     {
-        return sfml_util::MapByRes(SIZE_TINY_MIN_, SIZE_TINY_MAX_);
+        return sfutil::MapByRes(SIZE_TINY_MIN_, SIZE_TINY_MAX_);
     }
 
     unsigned int FontManager::Size_CombatCreatureLabels() const { return Size_Smallish(); }

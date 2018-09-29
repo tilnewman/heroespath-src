@@ -89,7 +89,7 @@ namespace sfml_util
             sprite_.setPosition(POS_X, POS_Y);
 
             // set color
-            sprite_.setColor(sfml_util::Transition(startColor_, endColor_, SLIDER_POS));
+            sprite_.setColor(sfutil::Transition(startColor_, endColor_, SLIDER_POS));
 
             // set scale
             auto const SCALE { startScale_ + ((endScale_ - startScale_) * SLIDER_POS) };

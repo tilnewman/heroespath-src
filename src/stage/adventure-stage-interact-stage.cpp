@@ -14,9 +14,9 @@
 #include "interact/i-interaction.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/map.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 #include <numeric>
 
@@ -38,7 +38,7 @@ namespace stage
         interact::InteractionManager & interactionManager)
         : Stage("AdventureInteract", REGION, { sfml_util::GuiFont::DialogMedieval }, false)
         , map_(map)
-        , regionPad_(sfml_util::MapByRes(18.0f, 52.0f))
+        , regionPad_(sfutil::MapByRes(18.0f, 52.0f))
         , innerRect_(
               REGION.left + regionPad_,
               REGION.top + regionPad_,
@@ -169,7 +169,7 @@ namespace stage
                                                  innerRect_.width * SUBJECT_REGION_WIDTH_RATIO_,
                                                  innerRect_.height * SUBJECT_REGION_HEIGHT_RATIO_ };
 
-            auto const TEXT_REGION_TOP_MARGIN { sfml_util::MapByRes(33.0f, 99.0f) };
+            auto const TEXT_REGION_TOP_MARGIN { sfutil::MapByRes(33.0f, 99.0f) };
 
             const sf::FloatRect TEXT_REGION { innerRect_.left + SUBJECT_REGION.width,
                                               innerRect_.top + TEXT_REGION_TOP_MARGIN,
@@ -189,15 +189,15 @@ namespace stage
             contextSprite_.setTexture(INTERACTION_PTR->ContextTexture(), true);
             contextSprite_.setColor(sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_));
 
-            sfml_util::FitAndCenterTo(
+            sfutil::FitAndCenterTo(
                 contextSprite_,
-                sfml_util::ScaleAndReCenterCopy(CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_));
+                sfutil::ScaleAndReCenterCopy(CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_));
 
             subjectSprite_.setTexture(INTERACTION_PTR->SubjectTexture(), true);
 
-            sfml_util::FitAndCenterTo(
+            sfutil::FitAndCenterTo(
                 subjectSprite_,
-                sfml_util::ScaleAndReCenterCopy(SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_));
+                sfutil::ScaleAndReCenterCopy(SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_));
 
             textRegionUPtr_->Setup(
                 INTERACTION_PTR->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
@@ -243,7 +243,7 @@ namespace stage
             if (INTERACTION_PTR->Type() == interact::Interact::Conversation)
             {
                 npcSprite_ = INTERACTION_PTR->NpcSprite();
-                sfml_util::FitAndReCenter(npcSprite_, SUBJECT_REGION);
+                sfutil::FitAndReCenter(npcSprite_, SUBJECT_REGION);
             }
         }
         else

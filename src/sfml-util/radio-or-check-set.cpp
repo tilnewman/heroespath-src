@@ -11,8 +11,8 @@
 
 #include "sfml-util/image-entity.hpp"
 #include "sfml-util/radio-or-check-entity.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-entity.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -266,10 +266,9 @@ namespace sfml_util
         {
             const auto TEXT_POS_TOP { posY + (BETWEEN_ELEMENTS_VERT_SPACER * 0.5f) };
 
-            const auto TEXT_SIZE_V { sfml_util::Size(entityUPtr->TextEntity()->GetEntityRegion()) };
+            const auto TEXT_SIZE_V { sfutil::Size(entityUPtr->TextEntity()->GetEntityRegion()) };
 
-            const auto IMAGE_SIZE_V { sfml_util::Size(
-                entityUPtr->ImageEntity()->GetEntityRegion()) };
+            const auto IMAGE_SIZE_V { sfutil::Size(entityUPtr->ImageEntity()->GetEntityRegion()) };
 
             const auto IMAGE_POS_TOP { (TEXT_POS_TOP + (TEXT_SIZE_V.y * 0.5f))
                                        - (IMAGE_SIZE_V.y * 0.5f) };

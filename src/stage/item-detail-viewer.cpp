@@ -14,8 +14,8 @@
 #include "item/item.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/display.hpp"
 
 #include <sstream>
 
@@ -28,13 +28,13 @@ namespace stage
         : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , HALF_SCREEN_WIDTH_(SCREEN_WIDTH_ * 0.5f)
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
-        , IMAGE_TOP_SPACER_(sfml_util::MapByRes(35.0f, 100.0f))
+        , IMAGE_TOP_SPACER_(sfutil::MapByRes(35.0f, 100.0f))
         , INNER_SPACER_(20.0f)
         , DOUBLE_INNER_SPACER_(INNER_SPACER_ * 2.0f)
         , TARGET_WIDTH_(SCREEN_WIDTH_ * 0.75f)
         , TARGET_RECT_(
               HALF_SCREEN_WIDTH_ - (TARGET_WIDTH_ * 0.5f),
-              sfml_util::MapByRes(35.0f, 100.0f),
+              sfutil::MapByRes(35.0f, 100.0f),
               TARGET_WIDTH_,
               SCREEN_HEIGHT_ * 0.85f)
         , SLIDER_SPEED_(6.0f)
@@ -191,7 +191,7 @@ namespace stage
         sprite_.setTexture(cachedTextureOpt_->Get(), true);
 
         // found by experiment to look good at various resolutions
-        const float SCALE(sfml_util::MapByRes(0.75f, 1.25f));
+        const float SCALE(sfutil::MapByRes(0.75f, 1.25f));
         sprite_.setScale(SCALE, SCALE);
 
         sprite_.setPosition(

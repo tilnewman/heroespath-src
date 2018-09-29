@@ -11,8 +11,8 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/image-option-enum.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Config.hpp>
 

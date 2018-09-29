@@ -13,9 +13,9 @@
 
 #include "log/log-macros.hpp"
 #include "sfml-util/gui-images.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -79,8 +79,8 @@ namespace sfml_util
             }
         }
 
-        outerRegion_ = MinimallyEnclosing(outerRegions);
-        innerRegion_ = MinimallyEnclosing(innerRegions);
+        outerRegion_ = sfutil::MinimallyEnclosing(outerRegions);
+        innerRegion_ = sfutil::MinimallyEnclosing(innerRegions);
         SetupLengthToDefault(ORIENTATION);
     }
 
@@ -184,7 +184,7 @@ namespace sfml_util
 
     void GoldBar::SetPos(const float POS_LEFT, const float POS_TOP)
     {
-        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - sfml_util::Position(outerRegion_) };
+        const auto DIFF_V { sf::Vector2f(POS_LEFT, POS_TOP) - sfutil::Position(outerRegion_) };
 
         MovePos(DIFF_V.x, DIFF_V.y);
     }
@@ -193,8 +193,10 @@ namespace sfml_util
     {
         const auto DIFF_V { sf::Vector2f(HORIZ, VERT) };
 
-        outerRegion_ = sf::FloatRect(Position(outerRegion_) + DIFF_V, Size(outerRegion_));
-        innerRegion_ = sf::FloatRect(Position(innerRegion_) + DIFF_V, Size(innerRegion_));
+        outerRegion_
+            = sf::FloatRect(sfutil::Position(outerRegion_) + DIFF_V, sfutil::Size(outerRegion_));
+        innerRegion_
+            = sf::FloatRect(sfutil::Position(innerRegion_) + DIFF_V, sfutil::Size(innerRegion_));
 
         const auto VERTEX_COUNT { vertexArray_.getVertexCount() };
         for (std::size_t i(0); i < VERTEX_COUNT; ++i)
@@ -328,12 +330,12 @@ namespace sfml_util
 
         if ((END_CAP_LENGTH_TOP_OR_LEFT < 1.0f) == false)
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 POS_V,
                 TEXTURE_RECT_TOP_OR_LEFT,
                 sf::Color::White,
-                CreateVector(ORIENTATION, END_CAP_LENGTH_TOP_OR_LEFT, 0.0f));
+                sfutil::CreateVector(ORIENTATION, END_CAP_LENGTH_TOP_OR_LEFT, 0.0f));
         }
 
         const auto MIDDLE_LENGTH = [&,
@@ -375,7 +377,7 @@ namespace sfml_util
 
         if ((MIDDLE_LENGTH < 1.0f) == false)
         {
-            sfml_util::AppendVertexesForQuadRepeatedOverLength(
+            sfutil::AppendVertexesForQuadRepeatedOverLength(
                 vertexArray_, MIDDLE_POS_V, TEXTURE_RECT_MIDDLE, ORIENTATION, MIDDLE_LENGTH);
         }
 
@@ -396,12 +398,12 @@ namespace sfml_util
 
         if ((END_CAP_LENGTH_BOT_OR_RIGHT < 1.0f) == false)
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 BOT_OR_RIGHT_POS_V,
                 TEXTURE_RECT_BOT_OR_RIGHT,
                 sf::Color::White,
-                CreateVector(ORIENTATION, END_CAP_LENGTH_BOT_OR_RIGHT, 0.0f),
+                sfutil::CreateVector(ORIENTATION, END_CAP_LENGTH_BOT_OR_RIGHT, 0.0f),
                 Orientation::Both);
         }
 
@@ -425,7 +427,7 @@ namespace sfml_util
             return r;
         }();
 
-        const sf::Vector2f POS_V { Position(REGION) };
+        const sf::Vector2f POS_V { sfutil::Position(REGION) };
 
         outerRegion_ = sf::FloatRect(POS_V, sf::Vector2f(0.0f, 0.0f));
         innerRegion_ = outerRegion_;
@@ -681,7 +683,7 @@ namespace sfml_util
         if (((CORNER_SIZE_TOP_LEFT_V.x < 1.0f) == false)
             || ((CORNER_SIZE_TOP_LEFT_V.y < 1.0f) == false))
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 CORNER_POS_TOP_LEFT,
                 TEXTURE_RECT_CORNER_TOP_LEFT,
@@ -689,7 +691,7 @@ namespace sfml_util
                 CORNER_SIZE_TOP_LEFT_V);
         }
 
-        sfml_util::AppendVertexesForQuadRepeatedOverLength(
+        sfutil::AppendVertexesForQuadRepeatedOverLength(
             vertexArray_,
             SIDE_START_POS_TOP,
             TEXTURE_RECT_SIDE_TOP,
@@ -701,7 +703,7 @@ namespace sfml_util
         if (((CORNER_SIZE_TOP_RIGHT_V.x < 1.0f) == false)
             || ((CORNER_SIZE_TOP_RIGHT_V.y < 1.0f) == false))
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 CORNER_POS_TOP_RIGHT,
                 TEXTURE_RECT_CORNER_TOP_RIGHT,
@@ -710,7 +712,7 @@ namespace sfml_util
                 Orientation::Horiz);
         }
 
-        sfml_util::AppendVertexesForQuadRepeatedOverLength(
+        sfutil::AppendVertexesForQuadRepeatedOverLength(
             vertexArray_,
             SIDE_START_POS_RIGHT,
             TEXTURE_RECT_SIDE_RIGHT,
@@ -723,7 +725,7 @@ namespace sfml_util
         if (((CORNER_SIZE_BOT_RIGHT_V.x < 1.0f) == false)
             || ((CORNER_SIZE_BOT_RIGHT_V.y < 1.0f) == false))
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 CORNER_POS_BOT_RIGHT,
                 TEXTURE_RECT_CORNER_BOT_RIGHT,
@@ -732,7 +734,7 @@ namespace sfml_util
                 Orientation::Both);
         }
 
-        sfml_util::AppendVertexesForQuadRepeatedOverLength(
+        sfutil::AppendVertexesForQuadRepeatedOverLength(
             vertexArray_,
             SIDE_START_POS_BOT,
             TEXTURE_RECT_SIDE_BOT,
@@ -745,7 +747,7 @@ namespace sfml_util
         if (((CORNER_SIZE_BOT_LEFT_V.x < 1.0f) == false)
             || ((CORNER_SIZE_BOT_LEFT_V.y < 1.0f) == false))
         {
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 vertexArray_,
                 CORNER_POS_BOT_LEFT,
                 TEXTURE_RECT_CORNER_BOT_LEFT,
@@ -754,7 +756,7 @@ namespace sfml_util
                 Orientation::Vert);
         }
 
-        sfml_util::AppendVertexesForQuadRepeatedOverLength(
+        sfutil::AppendVertexesForQuadRepeatedOverLength(
             vertexArray_,
             SIDE_START_POS_LEFT,
             TEXTURE_RECT_SIDE_LEFT,
@@ -781,7 +783,7 @@ namespace sfml_util
         {
             outerRegion_ = sf::FloatRect(OUTER_TOP_LEFT_POS_V, OUTER_SIZE_V);
 
-            const auto OUTER_REGION_CENTER_POS_V { CenterOf(outerRegion_) };
+            const auto OUTER_REGION_CENTER_POS_V { sfutil::CenterOf(outerRegion_) };
 
             // assume that all corner texture rects are square and the same...cause they are.
 

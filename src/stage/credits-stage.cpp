@@ -17,13 +17,13 @@
 #include "misc/real.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
 
 namespace heroespath
 {
@@ -73,18 +73,18 @@ namespace stage
 
     void CreditsStage::Setup()
     {
-        auto const TITLE_VERT_PAD { sfml_util::ScreenRatioToPixelsVert(0.022f) };
+        auto const TITLE_VERT_PAD { sfutil::ScreenRatioToPixelsVert(0.022f) };
 
-        sfml_util::Fit(bpTitleSprite_, sfml_util::ScreenRatiosToPixels(0.5f, 0.0f));
+        sfutil::Fit(bpTitleSprite_, sfutil::ScreenRatiosToPixels(0.5f, 0.0f));
 
         bpTitleSprite_.setPosition(
-            sfml_util::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), TITLE_VERT_PAD);
+            sfutil::DisplayCenterHoriz(bpTitleSprite_.getGlobalBounds().width), TITLE_VERT_PAD);
 
         const auto CREDITS_BOX_REGION = [&]() {
             sf::FloatRect rect;
-            rect.width = sfml_util::ScreenRatioToPixelsHoriz(0.4f);
+            rect.width = sfutil::ScreenRatioToPixelsHoriz(0.4f);
             rect.left = (StageRegionWidth() * 0.5f) - (rect.width * 0.5f);
-            rect.top = sfml_util::Bottom(bpTitleSprite_) + TITLE_VERT_PAD;
+            rect.top = sfutil::Bottom(bpTitleSprite_) + TITLE_VERT_PAD;
             rect.height = (StageRegionHeight() - rect.top) - (TITLE_VERT_PAD * 2.0f);
             return rect;
         }();
@@ -96,7 +96,7 @@ namespace stage
             sfml_util::CachedTexture(
                 "media-images-backgrounds-tile-runes",
                 sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
-            sfml_util::ScreenRatioToPixelsHoriz(0.15f));
+            sfutil::ScreenRatioToPixelsHoriz(0.15f));
 
         boxInfo.SetupColor(
             sf::Color::Transparent,
@@ -105,9 +105,9 @@ namespace stage
             sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
         boxInfo.focus_colors = sfml_util::FocusColors(
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sf::Color::Transparent,
-            sfml_util::color::GrayLight,
+            sfutil::color::GrayLight,
             sf::Color::Transparent);
 
         boxUPtr_ = std::make_unique<sfml_util::BoxEntity>("Credits", CREDITS_BOX_REGION, boxInfo);
@@ -127,12 +127,12 @@ namespace stage
         blackRectLower_.Setup(
             sf::FloatRect(
                 0.0f,
-                sfml_util::Bottom(boxUPtr_->OuterRegion()),
+                sfutil::Bottom(boxUPtr_->OuterRegion()),
                 StageRegionWidth(),
                 StageRegionHeight()),
             sf::Color::Black);
 
-        const auto CREDIT_BOX_INNER_PAD { sfml_util::ScreenRatioToPixelsHoriz(0.0333f) };
+        const auto CREDIT_BOX_INNER_PAD { sfutil::ScreenRatioToPixelsHoriz(0.0333f) };
         const auto CREDIT_MAX_WIDTH { CREDITS_BOX_REGION.width - (CREDIT_BOX_INNER_PAD * 2.0f) };
 
         creditUVec_.emplace_back(
@@ -148,7 +148,7 @@ namespace stage
             "project came together quickly thanks to the power and simplicity of this library."
             "\n\nwww.sfml-dev.org\nwww.opensource.org/licenses/zlib\n\n",
             "media-images-logos-sfml",
-            sfml_util::ScreenRatioToPixelsHoriz(0.146f)));
+            sfutil::ScreenRatioToPixelsHoriz(0.146f)));
 
         creditUVec_.emplace_back(
             std::make_unique<Credit>(CREDIT_MAX_WIDTH, "Art", "Ziesche Til Newman"));
@@ -164,7 +164,7 @@ namespace stage
             "Daniel Cook\nA beautiful (and free!) (for any use) set of "
             "tiles.\nwww.lostgarden.com",
             "media-images-logos-terrain",
-            sfml_util::ScreenRatioToPixelsHoriz(0.117f)));
+            sfutil::ScreenRatioToPixelsHoriz(0.117f)));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
@@ -172,9 +172,9 @@ namespace stage
             "Thorbjorn Lindeijer for Tiled\nAn incredible free mapping "
             "utility.\nwww.mapeditor.org",
             "media-images-logos-tiled",
-            sfml_util::ScreenRatioToPixelsHoriz(0.15f)));
+            sfutil::ScreenRatioToPixelsHoriz(0.15f)));
 
-        const auto SOUND_IMAGE_WIDTH { sfml_util::ScreenRatioToPixelsHoriz(0.05f) };
+        const auto SOUND_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.05f) };
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
@@ -427,13 +427,13 @@ namespace stage
 
         const auto TOP_OF_FIRST_CREDIT { creditUVec_.front()->Region().top };
 
-        if (TOP_OF_FIRST_CREDIT > sfml_util::DisplaySize().y)
+        if (TOP_OF_FIRST_CREDIT > sfutil::DisplaySize().y)
         {
             MoveCreditsToReverseStartPos();
         }
         else
         {
-            const auto BOTTOM_OF_LAST_CREDIT { sfml_util::Bottom(creditUVec_.back()->Region()) };
+            const auto BOTTOM_OF_LAST_CREDIT { sfutil::Bottom(creditUVec_.back()->Region()) };
 
             if (BOTTOM_OF_LAST_CREDIT < 0.0f)
             {
@@ -452,16 +452,15 @@ namespace stage
         auto iter { std::begin(creditUVec_) };
 
         const auto FIRST_CREDIT_START_POS_TOP { (
-            sfml_util::Bottom(boxUPtr_->OuterRegion())
-            + sfml_util::ScreenRatioToPixelsVert(0.022f)) };
+            sfutil::Bottom(boxUPtr_->OuterRegion()) + sfutil::ScreenRatioToPixelsVert(0.022f)) };
 
         (*iter)->SetVerticalPosition(FIRST_CREDIT_START_POS_TOP);
 
-        const auto BETWEEN_CREDIT_SPACER { sfml_util::ScreenRatioToPixelsVert(0.08f) };
+        const auto BETWEEN_CREDIT_SPACER { sfutil::ScreenRatioToPixelsVert(0.08f) };
 
         while (iter != std::end(creditUVec_))
         {
-            const auto BOTTOM_OF_PREV_CREDIT { sfml_util::Bottom((*iter)->Region()) };
+            const auto BOTTOM_OF_PREV_CREDIT { sfutil::Bottom((*iter)->Region()) };
             ++iter;
 
             if (iter == std::end(creditUVec_))
@@ -478,7 +477,7 @@ namespace stage
     void CreditsStage::MoveCreditsToReverseStartPos()
     {
         const auto VERT_MOVE_OF_LAST_CREDIT_TO_SET_REVERSE_START { (
-            0.0f - sfml_util::Bottom(creditUVec_.back()->Region())) };
+            0.0f - sfutil::Bottom(creditUVec_.back()->Region())) };
 
         for (auto & creditUPtr : creditUVec_)
         {

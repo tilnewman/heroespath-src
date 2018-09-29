@@ -16,7 +16,7 @@ namespace heroespath
 namespace misc
 {
 
-    // Responsible for enumerating all possible sfml_util::ToString() options
+    // Responsible for enumerating all possible sfutil::ToString() options
     struct ToStringPrefix : public misc::EnumBaseBitField<ToStringPrefix>
     {
         enum Enum : misc::EnumUnderlying_t

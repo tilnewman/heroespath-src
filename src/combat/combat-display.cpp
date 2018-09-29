@@ -28,10 +28,10 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-util.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <algorithm>
 #include <numeric>
@@ -75,11 +75,11 @@ namespace combat
     CombatDisplay::CombatDisplay(
         const CombatAnimationPtr_t COMBAT_ANIM_PTR, const sf::FloatRect & REGION)
         : Stage("CombatDisplay", REGION, {}, false)
-        , POSITIONING_MARGIN_HORIZ_(sfml_util::MapByRes(50.0f, 300.0f))
-        , POSITIONING_MARGIN_VERT_(sfml_util::MapByRes(50.0f, 300.0f))
-        , POSITIONING_BETWEEN_SPACER_HORIZ_(sfml_util::MapByRes(5.0f, 200.0f))
-        , POSITIONING_BETWEEN_SPACER_VERT_(sfml_util::MapByRes(25.0f, 200.0f))
-        , CELL_HEIGHT_(sfml_util::MapByRes(
+        , POSITIONING_MARGIN_HORIZ_(sfutil::MapByRes(50.0f, 300.0f))
+        , POSITIONING_MARGIN_VERT_(sfutil::MapByRes(50.0f, 300.0f))
+        , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))
+        , POSITIONING_BETWEEN_SPACER_VERT_(sfutil::MapByRes(25.0f, 200.0f))
+        , CELL_HEIGHT_(sfutil::MapByRes(
               sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
               sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
         , NAME_CHAR_SIZE_ORIG_(sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
@@ -150,7 +150,7 @@ namespace combat
             = std::make_unique<sfml_util::BoxEntity>("CombatDisplay's'", battlefieldRect_, boxInfo);
 
         // setup offscreen texture
-        const auto OFFSCREEN_SIZE_V_U { sf::Vector2u(sfml_util::Size(boxUPtr_->InnerRegion())) };
+        const auto OFFSCREEN_SIZE_V_U { sf::Vector2u(sfutil::Size(boxUPtr_->InnerRegion())) };
         offScreenTexture_.create(OFFSCREEN_SIZE_V_U.x, OFFSCREEN_SIZE_V_U.y);
         offScreenTexture_.clear(sf::Color::Transparent);
         offScreenTexture_.setRepeated(true);
@@ -930,7 +930,7 @@ namespace combat
             }
         }
 
-        auto const TOLERANCE { sfml_util::MapByRes(300.0f, 600.0f) };
+        auto const TOLERANCE { sfutil::MapByRes(300.0f, 600.0f) };
 
         return (
             (horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth() - TOLERANCE))
@@ -1248,7 +1248,7 @@ namespace combat
             shoulderToShoulderMax += static_cast<std::size_t>(2 * BLOCKING_POS_MARGIN_);
         }
 
-        const float CELL_WIDTH_MIN(sfml_util::MapByRes(
+        const float CELL_WIDTH_MIN(sfutil::MapByRes(
             sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
             sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
 

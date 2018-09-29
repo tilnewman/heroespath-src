@@ -14,12 +14,12 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text-render-cleaning.hpp"
 #include "sfml-util/text-render-context.hpp"
 #include "sfml-util/text-render-rendered-lines.hpp"
 #include "sfml-util/text-render-rendering.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -81,7 +81,7 @@ namespace sfml_util
             }
 
             Draw(RENDERED_LINES, *renderTextureUPtr);
-            finalRegion = RENDERED_LINES.CalcScreenRegion(Position(BOUNDING_REGION));
+            finalRegion = RENDERED_LINES.CalcScreenRegion(sfutil::Position(BOUNDING_REGION));
             return true;
         }
         else
@@ -105,8 +105,11 @@ namespace sfml_util
         if (RENDER_RESULT && renderTextureUPtr)
         {
             sprite.setTexture(renderTextureUPtr->getTexture());
-            sprite.setTextureRect(sf::IntRect(sf::Vector2i(), sf::Vector2i(Size(finalRegion))));
-            sprite.setPosition(Position(finalRegion));
+
+            sprite.setTextureRect(
+                sf::IntRect(sf::Vector2i(), sf::Vector2i(sfutil::Size(finalRegion))));
+
+            sprite.setPosition(sfutil::Position(finalRegion));
             sprite.setColor(TEXT_INFO.color);
             return true;
         }
@@ -119,7 +122,7 @@ namespace sfml_util
     void TextRenderer::Draw(
         const text_rendering::RenderedLines & RENDERED_LINES, sf::RenderTexture & renderTexture)
     {
-        const sf::Vector2u TEXT_SIZE { Size(RENDERED_LINES.Region()) };
+        const sf::Vector2u TEXT_SIZE { sfutil::Size(RENDERED_LINES.Region()) };
 
         if ((renderTexture.getSize().x < TEXT_SIZE.x) && (renderTexture.getSize().y < TEXT_SIZE.y))
         {

@@ -9,7 +9,7 @@
 //
 #include "list-box-packet.hpp"
 
-#include "sfml-util/sfml-util-display.hpp"
+#include "sfutil/display.hpp"
 
 namespace heroespath
 {
@@ -49,13 +49,13 @@ namespace sfml_util
         , highlightColor_(BOX_INFO.color_from + HIGHLIGHT_COLOR_ADJ)
         , highlightColorInvalid_(HIGHLIGHT_COLOR_INVALID)
         , highlightImageColor_(IMAGE_COLOR + HIGHLIGHT_IMAGE_COLOR_ADJ)
-        , imageMaxSize_(sfml_util::ScreenRatioToPixelsHoriz(IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO))
+        , imageMaxSize_(sfutil::ScreenRatioToPixelsHoriz(IMAGE_MAX_SIZE_HORIZ_SCREEN_RATIO))
         , elementPadV_(
-              sfml_util::ScreenRatioToPixelsHoriz(ELEMENT_PAD_SCREEN_RATIO_V.x),
-              sfml_util::ScreenRatioToPixelsVert(ELEMENT_PAD_SCREEN_RATIO_V.y))
+              sfutil::ScreenRatioToPixelsHoriz(ELEMENT_PAD_SCREEN_RATIO_V.x),
+              sfutil::ScreenRatioToPixelsVert(ELEMENT_PAD_SCREEN_RATIO_V.y))
         , imagePadV_(
-              sfml_util::ScreenRatioToPixelsHoriz(IMAGE_PAD_SCREEN_RATIO_V.x),
-              sfml_util::ScreenRatioToPixelsVert(IMAGE_PAD_SCREEN_RATIO_V.y))
+              sfutil::ScreenRatioToPixelsHoriz(IMAGE_PAD_SCREEN_RATIO_V.x),
+              sfutil::ScreenRatioToPixelsVert(IMAGE_PAD_SCREEN_RATIO_V.y))
         , elementSizeWithoutPadV_(
               REGION.width - (elementPadV_.x * 2.0f), imageMaxSize_ + (imagePadV_.y * 2.0f))
     {}

@@ -12,8 +12,8 @@
 #include "horiz-symbol.hpp"
 
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Texture.hpp>
 
@@ -59,7 +59,7 @@ namespace sfml_util
         const auto FULL_SCREEN_RECT { sfml_util::Display::Instance()->FullScreenRect() };
 
         const sf::Vector2f IMAGE_SIZE_CONTRAINTS_V(
-            0.0f, (ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
+            0.0f, (sfutil::ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
 
         auto const POS_TOP { (FULL_SCREEN_RECT.height - IMAGE_SIZE_CONTRAINTS_V.y) };
 
@@ -74,8 +74,8 @@ namespace sfml_util
             sf::Sprite spriteLeft(cachedTexture_.Get());
             sf::Sprite spriteRight(cachedTexture_.Get());
 
-            Fit(spriteLeft, IMAGE_SIZE_CONTRAINTS_V);
-            Fit(spriteRight, IMAGE_SIZE_CONTRAINTS_V);
+            sfutil::Fit(spriteLeft, IMAGE_SIZE_CONTRAINTS_V);
+            sfutil::Fit(spriteRight, IMAGE_SIZE_CONTRAINTS_V);
 
             spriteLeft.setPosition(
                 HALF_SCREEN_WIDTH - (spriteLeft.getGlobalBounds().width * (counter + 1.0f)),
@@ -91,12 +91,12 @@ namespace sfml_util
             sprites_.emplace_back(spriteRight);
 
             posMostLeft = spriteLeft.getGlobalBounds().left;
-            posMostRight = Right(spriteRight);
+            posMostRight = sfutil::Right(spriteRight);
 
             counter += 1.0f;
         }
 
-        region_ = MinimallyEnclosing(sprites_);
+        region_ = sfutil::MinimallyEnclosing(sprites_);
     }
 
     const sf::Color BottomSymbol::Color() const

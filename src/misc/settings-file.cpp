@@ -14,8 +14,8 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util-video-mode.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/video-mode.hpp"
 
 namespace heroespath
 {

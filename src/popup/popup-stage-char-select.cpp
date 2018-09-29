@@ -17,9 +17,9 @@
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
 
 namespace heroespath
 {
@@ -40,16 +40,16 @@ namespace popup
 
         imagesRect_ = textRegion_;
 
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 120.0f);
+        imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfutil::MapByRes(70.0f, 120.0f);
 
-        imagesRect_.height = sfml_util::MapByRes(125.0f, 625.0f);
+        imagesRect_.height = sfutil::MapByRes(125.0f, 625.0f);
 
         imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
-        auto const SYM_SCALE { sfml_util::MapByRes(0.5f, 2.0f) };
+        auto const SYM_SCALE { sfutil::MapByRes(0.5f, 2.0f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        sfml_util::CenterTo(xSymbolSprite_, imagesRect_);
+        sfutil::CenterTo(xSymbolSprite_, imagesRect_);
 
         sf::FloatRect charDetailsTextRegion(textRegion_);
 
@@ -72,7 +72,7 @@ namespace popup
 
         sliderbarPosTop_ = charDetailsTextRegionUPtr_->GetEntityRegion().top
             + charDetailsTextRegionUPtr_->GetEntityRegion().height
-            + sfml_util::MapByRes(60.0f, 300.0f);
+            + sfutil::MapByRes(60.0f, 300.0f);
 
         if (sliderbarUPtr_)
         {

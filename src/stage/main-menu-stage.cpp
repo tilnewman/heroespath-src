@@ -20,11 +20,11 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 
 namespace heroespath
 {
@@ -45,23 +45,23 @@ namespace stage
         , resumeButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Load,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.305f)))
+              sfutil::ScreenRatioToPixelsHoriz(0.305f)))
         , createButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Character,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.43f)))
+              sfutil::ScreenRatioToPixelsHoriz(0.43f)))
         , settingsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Settings,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.201f)))
+              sfutil::ScreenRatioToPixelsHoriz(0.201f)))
         , creditsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Credits,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.177f)))
+              sfutil::ScreenRatioToPixelsHoriz(0.177f)))
         , exitButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
               sfml_util::LoopState::Exit,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.114f)))
+              sfutil::ScreenRatioToPixelsHoriz(0.114f)))
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
         , background_()
@@ -72,17 +72,17 @@ namespace stage
     void MainMenuStage::Setup()
     {
         // title image
-        const auto TITLE_SCALE { sfml_util::MapByRes(0.5f, 3.0f) };
+        const auto TITLE_SCALE { sfutil::MapByRes(0.5f, 3.0f) };
         titleSprite_.setScale(TITLE_SCALE, TITLE_SCALE);
 
         titleSprite_.setPosition(
-            sfml_util::DisplayCenterHoriz(titleSprite_.getGlobalBounds().width),
-            sfml_util::MapByRes(20.0f, 188.0f));
+            sfutil::DisplayCenterHoriz(titleSprite_.getGlobalBounds().width),
+            sfutil::MapByRes(20.0f, 188.0f));
 
         // Ouroboros
         EntityAdd(ouroborosUPtr_.get());
 
-        auto const BETWEEN_BUTTONS_SPACER { sfml_util::ScreenRatioToPixelsVert(0.01f) };
+        auto const BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
         const auto BUTTONS_HEIGHT { (BETWEEN_BUTTONS_SPACER * 4.0f)
                                     + resumeButtonUPtr_->GetEntityRegion().height
@@ -92,32 +92,31 @@ namespace stage
                                     + exitButtonUPtr_->GetEntityRegion().height };
 
         const auto BUTTONS_POS_VERT_CENTER {
-            sfml_util::Bottom(titleSprite_.getGlobalBounds())
-            + ((bottomSymbol_.Region().top - sfml_util::Bottom(titleSprite_.getGlobalBounds()))
-               * 0.5f)
+            sfutil::Bottom(titleSprite_.getGlobalBounds())
+            + ((bottomSymbol_.Region().top - sfutil::Bottom(titleSprite_.getGlobalBounds())) * 0.5f)
         };
 
         const auto FIRST_BUTTON_POS_TOP { BUTTONS_POS_VERT_CENTER - (BUTTONS_HEIGHT * 0.5f) };
 
         resumeButtonUPtr_->SetEntityPos(
-            sfml_util::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
+            sfutil::DisplayCenterHoriz(resumeButtonUPtr_->GetEntityRegion().width),
             FIRST_BUTTON_POS_TOP);
 
         createButtonUPtr_->SetEntityPos(
-            sfml_util::DisplayCenterHoriz(createButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(resumeButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+            sfutil::DisplayCenterHoriz(createButtonUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(resumeButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         settingsButtonUPtr_->SetEntityPos(
-            sfml_util::DisplayCenterHoriz(settingsButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(createButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+            sfutil::DisplayCenterHoriz(settingsButtonUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(createButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         creditsButtonUPtr_->SetEntityPos(
-            sfml_util::DisplayCenterHoriz(creditsButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(settingsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+            sfutil::DisplayCenterHoriz(creditsButtonUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(settingsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         exitButtonUPtr_->SetEntityPos(
-            sfml_util::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
-            sfml_util::Bottom(creditsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
+            sfutil::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
+            sfutil::Bottom(creditsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
         auto const ARE_THERE_GAMES_TO_LOAD { []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()

@@ -19,9 +19,9 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
 
 namespace heroespath
 {
@@ -35,7 +35,7 @@ namespace combat
 
     const sf::Color CombatNode::PLAYER_NAME_COLOR_(sf::Color(255, 255, 240) - HIGHLIGHT_ADJ_COLOR_);
 
-    const sf::Color CombatNode::CONDITION_COLOR_(sfml_util::color::Light - HIGHLIGHT_ADJ_COLOR_);
+    const sf::Color CombatNode::CONDITION_COLOR_(sfutil::color::Light - HIGHLIGHT_ADJ_COLOR_);
 
     const sf::Color CombatNode::NONPLAYER_NAME_COLOR_(
         sf::Color(
@@ -579,7 +579,7 @@ namespace combat
     void CombatNode::SelectAnimUpdate(const float SLIDER_RATIO)
     {
         // grow
-        auto const SCALE { 1.0f + (sfml_util::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
+        auto const SCALE { 1.0f + (sfutil::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
         selectAnimSprite_.setScale(SCALE, SCALE);
 
         // re-center

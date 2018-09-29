@@ -42,16 +42,16 @@
 #include "sfml-util/image-option-enum.hpp"
 #include "sfml-util/item-image-loader.hpp"
 #include "sfml-util/loop-state-enum.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/side-enum.hpp"
 #include "sfml-util/song-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/spell-image-loader.hpp"
 #include "sfml-util/title-image-loader.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/size-and-scale.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 
@@ -77,7 +77,7 @@ namespace stage
         {
             sprite.setTexture(cached_texture_opt.value().Get(), true);
 
-            sfml_util::Fit(
+            sfutil::Fit(
                 sprite,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_);
@@ -98,7 +98,7 @@ namespace stage
             target.draw(sprite, states);
 
             target.draw(
-                sfml_util::MakeRectangleSolid(text.getGlobalBounds(), sf::Color::Black), states);
+                sfutil::MakeRectangleSolid(text.getGlobalBounds(), sf::Color::Black), states);
 
             target.draw(text, states);
         }
@@ -1538,7 +1538,7 @@ namespace stage
                 const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfml_util::MakeRectangleHollow(REGION, sf::Color::Red, 1.0f, true));
+                    sfutil::MakeRectangleHollow(REGION, sf::Color::Red, 1.0f, true));
 
                 if (ORIENTATION == sfml_util::Orientation::Horiz)
                 {
@@ -1632,7 +1632,7 @@ namespace stage
             sfml_util::CachedTexture(sfml_util::GuiImages::PathKey()));
 
         sf::Sprite sprite(waitingForKeyOrClick_CachedTextures_.back().Get());
-        sfml_util::Center(sprite);
+        sfutil::Center(sprite);
 
         waitingForKeyOrClick_ToDraw_Sprites_.emplace_back(sprite);
     }
@@ -1672,14 +1672,14 @@ namespace stage
                 };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfml_util::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
+                    sfutil::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
 
                 const auto REGION_INNER {
                     waitingForKeyOrClick_ToDraw_GoldBars_.back().InnerRegion()
                 };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfml_util::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
+                    sfutil::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
 
                 posX += REGION_OUTER.width + BETWEEN_SPACER;
 
@@ -1771,14 +1771,14 @@ namespace stage
                 };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfml_util::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
+                    sfutil::MakeRectangleHollow(REGION_OUTER, sf::Color::Red, 1.0f, true));
 
                 const auto REGION_INNER {
                     waitingForKeyOrClick_ToDraw_Borders_.back().InnerRegion()
                 };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                    sfml_util::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
+                    sfutil::MakeRectangleHollow(REGION_INNER, sf::Color::Green, 1.0f, true));
 
                 posX += REGION_OUTER.width + BETWEEN_SPACER;
 
@@ -1866,17 +1866,17 @@ namespace stage
         auto setupTextTest
             = [&](const sf::FloatRect & REGION, const unsigned FONT_SIZE, const float SCALE) {
                   waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                      sfml_util::MakeRectangleHollow(REGION, sf::Color::Green));
+                      sfutil::MakeRectangleHollow(REGION, sf::Color::Green));
 
                   const sfml_util::TextInfo TEXT_INFO(
                       "This is text.", sfml_util::GuiFont::SystemCondensed, FONT_SIZE);
 
                   sfml_util::Text text(TEXT_INFO);
                   text.setScale(sf::Vector2f(SCALE, SCALE));
-                  text.setPosition(sfml_util::Position(REGION));
+                  text.setPosition(sfutil::Position(REGION));
 
                   waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
-                      sfml_util::MakeRectangleHollow(text.getGlobalBounds(), sf::Color::Yellow));
+                      sfutil::MakeRectangleHollow(text.getGlobalBounds(), sf::Color::Yellow));
 
                   waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
               };
@@ -1890,7 +1890,7 @@ namespace stage
         sf::FloatRect region(OFFSET_V, SIZE_V);
         setupTextTest(region, 100, 1.0f);
 
-        region.left = sfml_util::ScreenRatioToPixelsHoriz(0.5f);
+        region.left = sfutil::ScreenRatioToPixelsHoriz(0.5f);
         setupTextTest(region, 50, 5.0f);
 
         return true;

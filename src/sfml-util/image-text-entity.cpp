@@ -14,10 +14,10 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/image-entity.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-entity.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -437,7 +437,7 @@ namespace sfml_util
     {
         if (imageEntityUPtr_ && textEntityUPtr_)
         {
-            Entity::SetEntityRegion(sfml_util::MinimallyEnclosing(
+            Entity::SetEntityRegion(sfutil::MinimallyEnclosing(
                 imageEntityUPtr_->GetEntityRegion(), textEntityUPtr_->GetEntityRegion()));
         }
         else if (imageEntityUPtr_)
@@ -451,7 +451,7 @@ namespace sfml_util
         else
         {
             Entity::SetEntityRegion(
-                sf::FloatRect(Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f)));
+                sf::FloatRect(sfutil::Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f)));
         }
     }
 

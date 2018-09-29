@@ -40,10 +40,10 @@ namespace stage
 
         ListboxColors::ListboxColors()
             : image(sf::Color(255, 255, 255, 190))
-            , line(sfml_util::color::GrayDark)
+            , line(sfutil::color::GrayDark)
             , foreground(line)
-            , background(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
-            , title(sfml_util::color::Orange - sf::Color(130, 130, 130, 0))
+            , background(sfutil::color::Orange - sf::Color(100, 100, 100, 220))
+            , title(sfutil::color::Orange - sf::Color(130, 130, 130, 0))
             , colorSet(foreground, background)
             , icon(sf::Color(255, 255, 255, 127))
         {}
@@ -52,32 +52,31 @@ namespace stage
             const float COINS_IMAGE_BOTTOM, const float BOTTOM_SYMBOL_HEIGHT)
             : screenWidth(sfml_util::Display::Instance()->GetWinWidth())
             , screenHeight(sfml_util::Display::Instance()->GetWinHeight())
-            , innerPad(sfml_util::MapByRes(10.0f, 40.0f))
+            , innerPad(sfutil::MapByRes(10.0f, 40.0f))
             , innerRect(
                   innerPad,
                   innerPad,
                   screenWidth - (2.0f * innerPad),
                   screenWidth - (2.0f * innerPad))
-            , listboxScreenEdgeMargin(sfml_util::MapByRes(35.0f, 100.0f))
-            , listboxBetweenSpacer(sfml_util::MapByRes(65.0f, 200.0f))
+            , listboxScreenEdgeMargin(sfutil::MapByRes(35.0f, 100.0f))
+            , listboxBetweenSpacer(sfutil::MapByRes(65.0f, 200.0f))
             , listboxWidth(
                   ((innerRect.width - (2.0f * listboxScreenEdgeMargin)) - listboxBetweenSpacer)
                   * 0.5f)
             , treasureListboxLeft(innerRect.left + listboxScreenEdgeMargin)
             , inventoryListboxLeft(treasureListboxLeft + listboxWidth + listboxBetweenSpacer)
-            , listboxTop(COINS_IMAGE_BOTTOM + sfml_util::MapByRes(30.0f, 70.0f))
+            , listboxTop(COINS_IMAGE_BOTTOM + sfutil::MapByRes(30.0f, 70.0f))
             , listboxHeight((screenHeight - listboxTop) - BOTTOM_SYMBOL_HEIGHT)
             , treasureListboxRegion(treasureListboxLeft, listboxTop, listboxWidth, listboxHeight)
             , inventoryListboxRegion(inventoryListboxLeft, listboxTop, listboxWidth, listboxHeight)
             , listboxMargin(10.0f)
             , listboxItemSpacer(6.0f)
             , characterImageLeft(inventoryListboxRegion.left)
-            , characterImageScale(sfml_util::MapByRes(0.75f, 3.25f))
-            , listboxSortIconScale(sfml_util::MapByRes(0.1f, 0.35f))
-            , listboxSortIconSpacer(sfml_util::MapByRes(22.0f, 75.0f))
+            , characterImageScale(sfutil::MapByRes(0.75f, 3.25f))
+            , listboxSortIconScale(sfutil::MapByRes(0.1f, 0.35f))
+            , listboxSortIconSpacer(sfutil::MapByRes(22.0f, 75.0f))
             , listboxSortIconTop(
-                  (listboxTop - (127.0f * listboxSortIconScale))
-                  - sfml_util::MapByRes(10.0f, 20.0f))
+                  (listboxTop - (127.0f * listboxSortIconScale)) - sfutil::MapByRes(10.0f, 20.0f))
         {}
 
     } // end of namespace treasure
@@ -208,7 +207,7 @@ namespace stage
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()));
 
-        if ((sfml_util::Bottom(bottomImage_.Region()) > StageRegionHeight()) == false)
+        if ((sfutil::Bottom(bottomImage_.Region()) > StageRegionHeight()) == false)
         {
             bottomImage_.MovePos(0.0f, (bottomImage_.Region().height * 0.4f));
         }
@@ -527,7 +526,7 @@ namespace stage
         auto const SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() };
         auto const SCREEN_HEIGHT { sfml_util::Display::Instance()->GetWinHeight() };
 
-        sfml_util::Fit(corpseSprite_, (SCREEN_WIDTH * 0.75f), (SCREEN_HEIGHT * 0.5f));
+        sfutil::Fit(corpseSprite_, (SCREEN_WIDTH * 0.75f), (SCREEN_HEIGHT * 0.5f));
 
         auto const CORPSE_IMAGE_LEFT { (SCREEN_WIDTH * 0.5f)
                                        - (corpseSprite_.getGlobalBounds().width * 0.5f) };
@@ -563,11 +562,11 @@ namespace stage
         auto const TREASURE_IMAGE_MAX_HEIGHT { (
             CreateDisplayMeasurements().screenHeight * 0.250f * TREASURE_IMAGE_SCALE_ADJ) };
 
-        sfml_util::Fit(treasureSprite_, TREASURE_IMAGE_MAX_WIDTH, TREASURE_IMAGE_MAX_HEIGHT);
+        sfutil::Fit(treasureSprite_, TREASURE_IMAGE_MAX_WIDTH, TREASURE_IMAGE_MAX_HEIGHT);
 
         treasureSprite_.setPosition(
-            sfml_util::MapByRes(50.0f, 350.0f),
-            sfml_util::Bottom(titleImage_.Region()) - sfml_util::MapByRes(40.0f, 250.0f));
+            sfutil::MapByRes(50.0f, 350.0f),
+            sfutil::Bottom(titleImage_.Region()) - sfutil::MapByRes(40.0f, 250.0f));
 
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
@@ -796,7 +795,7 @@ namespace stage
             "(press spacebar to change treasure, use arrows or numbers to change characters)",
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::GrayDark,
+            sfutil::color::GrayDark,
             sfml_util::Justified::Left,
             sf::Text::Italic);
 
@@ -810,7 +809,7 @@ namespace stage
         instrTextUPtr_->SetEntityPos(
             (CreateDisplayMeasurements().screenWidth * 0.5f)
                 - (instrTextUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
-            sfml_util::Bottom(titleImage_.Region()) - 10.0f);
+            sfutil::Bottom(titleImage_.Region()) - 10.0f);
 
         EntityAdd(instrTextUPtr_.get());
     }
@@ -819,12 +818,12 @@ namespace stage
     {
         auto const TAKEALL_POS_TOP { instrTextUPtr_->GetEntityPos().y
                                      + instrTextUPtr_->GetEntityRegion().height
-                                     + sfml_util::MapByRes(15.0f, 100.0f) };
+                                     + sfutil::MapByRes(15.0f, 100.0f) };
 
         SetupLowerButton(takeAllButtonUPtr_, "(T)ake All", TAKEALL_POS_TOP);
 
         auto const EXIT_POS_TOP { (TAKEALL_POS_TOP + takeAllButtonUPtr_->GetEntityRegion().height)
-                                  - sfml_util::SpacerOld(50.0f) };
+                                  - sfutil::SpacerOld(50.0f) };
 
         SetupLowerButton(doneButtonUPtr_, "(E)xit", EXIT_POS_TOP);
     }
@@ -834,7 +833,7 @@ namespace stage
         const std::string & TEXT,
         const float VERT_POS)
     {
-        auto const COLOR_UP { sfml_util::color::GrayDarker };
+        auto const COLOR_UP { sfutil::color::GrayDarker };
         auto const COLOR_OVER { COLOR_UP - sf::Color(0, 0, 0, 127) };
         auto const COLOR_DOWN { sf::Color::Black };
 
@@ -899,7 +898,7 @@ namespace stage
             "",
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::color::GrayDarker);
+            sfutil::color::GrayDarker);
 
         for (auto const & ITEM_PTR : ITEMS_PVEC)
         {
@@ -927,7 +926,7 @@ namespace stage
             LABEL_TEXT,
             sfml_util::GuiFont::System,
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
@@ -1111,7 +1110,7 @@ namespace stage
             "ListboxLabel",
             ((IS_BEAST) ? "(beasts cannot carry items)" : CREATURE_PTR->Name()),
             CalculateInventoryTextPosLeft(),
-            characterImageUPtr_->GetEntityPos().y + sfml_util::MapByRes(25.0f, 50.0f),
+            characterImageUPtr_->GetEntityPos().y + sfutil::MapByRes(25.0f, 50.0f),
             sfml_util::FontManager::Instance()->Size_Large());
     }
 
@@ -1295,7 +1294,7 @@ namespace stage
             TEXT,
             sfml_util::GuiFont::System,
             FONT_SIZE,
-            sfml_util::color::GrayDarker,
+            sfutil::color::GrayDarker,
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(textRegionUPtr) };

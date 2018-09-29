@@ -39,14 +39,14 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <memory>
 #include <sstream>
@@ -56,9 +56,9 @@ namespace heroespath
 namespace stage
 {
 
-    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfml_util::color::Light };
+    const sf::Color CharacterStage::LIGHT_TEXT_COLOR_ { sfutil::color::Light };
 
-    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfml_util::color::Orange };
+    const sf::Color CharacterStage::DESC_TEXT_COLOR_ { sfutil::color::Orange };
 
     const std::string CharacterStage::POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_ {
         "BackButtonLeaveScreenComfirm"
@@ -95,7 +95,7 @@ namespace stage
         , RADIO_BUTTON_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , statBox_(
               sfml_util::IStagePtr_t(this),
-              sfml_util::ScreenRatioToPixelsHoriz(0.125f),
+              sfutil::ScreenRatioToPixelsHoriz(0.125f),
               (4.0f / 3.5f),
               LIGHT_TEXT_COLOR_)
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("CharacterStage's"))
@@ -249,8 +249,8 @@ namespace stage
         Setup_SpacebarInstructionText();
 
         // statBox_.SetVerticalPos(
-        //    sfml_util::Bottom(sbInsTextRegionUPtr_->GetEntityRegion())
-        //    + sfml_util::ScreenRatioToPixelsVert(0.01f));
+        //    sfutil::Bottom(sbInsTextRegionUPtr_->GetEntityRegion())
+        //    + sfutil::ScreenRatioToPixelsVert(0.01f));
 
         Setup_SmokeAnimation(ATTRIB_BOX_TOP);
 
@@ -453,7 +453,7 @@ namespace stage
             static std::size_t buttonCounter(0);
 
             buttonUPtr->SetEntityPos(
-                calcButtonPos(buttonCounter++, sfml_util::Size(buttonUPtr->GetEntityRegion())));
+                calcButtonPos(buttonCounter++, sfutil::Size(buttonUPtr->GetEntityRegion())));
 
             EntityAdd(buttonUPtr.get());
         };
@@ -481,7 +481,7 @@ namespace stage
         }
 
         const sf::FloatRect REGION(
-            sfml_util::MapByRes(40.0f, 1525.0f), sfml_util::Bottom(stageTitle_.Region()), 0.0f,
+            sfutil::MapByRes(40.0f, 1525.0f), sfutil::Bottom(stageTitle_.Region()), 0.0f,
         0.0f);
 
         sfml_util::BoxEntityInfo radioButtonBoxInfo;
@@ -528,9 +528,9 @@ namespace stage
 
         auto const POS_TOP { raceRadioButtonUPtr_->GetEntityRegion().top
                              + raceRadioButtonUPtr_->GetEntityRegion().height
-                             + sfml_util::MapByRes(35.0f, 75.0f) };
+                             + sfutil::MapByRes(35.0f, 75.0f) };
 
-        const sf::FloatRect REGION(sfml_util::MapByRes(15.0f, 1300.0f), POS_TOP, 0.0f, 0.0f);
+        const sf::FloatRect REGION(sfutil::MapByRes(15.0f, 1300.0f), POS_TOP, 0.0f, 0.0f);
 
         sfml_util::BoxEntityInfo radioButtonBoxInfo;
         radioButtonBoxInfo.SetupImage(woodCachedTexture_);
@@ -566,8 +566,8 @@ namespace stage
         const sf::FloatRect REGION(
             raceRadioButtonUPtr_->GetEntityRegion().left
                 + raceRadioButtonUPtr_->GetEntityRegion().width + 15.0f,
-            raceRadioButtonUPtr_->GetEntityPos().y + sfml_util::MapByRes(15.0f, 45.0f),
-            sfml_util::MapByRes(232.0f, 1500.0f),
+            raceRadioButtonUPtr_->GetEntityPos().y + sfutil::MapByRes(15.0f, 45.0f),
+            sfutil::MapByRes(232.0f, 1500.0f),
             raceRadioButtonUPtr_->GetEntityRegion().height - 30.0f);
 
         sfml_util::TextInfo raceDescTextInfo(
@@ -612,8 +612,8 @@ namespace stage
 
         const sf::FloatRect REGION(
             ROLE_RADIOBUTTON_REGION.left + ROLE_RADIOBUTTON_REGION.width + 15.0f,
-            ROLE_RADIOBUTTON_REGION.top + sfml_util::MapByRes(25.0f, 75.0f),
-            sfml_util::MapByRes(240.0f, 1750.0f),
+            ROLE_RADIOBUTTON_REGION.top + sfutil::MapByRes(25.0f, 75.0f),
+            sfutil::MapByRes(240.0f, 1750.0f),
             roleRadioButtonUPtr_->GetEntityRegion().height - 30.0f);
 
         sfml_util::TextInfo roleDescTextInfo(
@@ -646,7 +646,7 @@ namespace stage
     {
         const sf::FloatRect REGION(
             (StageRegionWidth() * 0.5f) - 150.0f,
-            sfml_util::Bottom(stageTitle_.Region()) - 20.0f,
+            sfutil::Bottom(stageTitle_.Region()) - 20.0f,
             0.0f,
             0.0f);
 
@@ -685,7 +685,7 @@ namespace stage
         sfml_util::BoxEntityInfo textEntryBoxInfo;
         textEntryBoxInfo.SetupImage(woodCachedTexture_);
         textEntryBoxInfo.SetupBorder(true);
-        textEntryBoxInfo.focus_colors = sfml_util::color::GuiFocusColors;
+        textEntryBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 
         sfml_util::TextInfo nameEntryTextInfo(creatureNameInfo.MakeTextInfo());
         nameEntryTextInfo.text = " ";
@@ -741,7 +741,7 @@ namespace stage
             (StageRegionWidth() * 0.5f) - (sexRadioButtonUPtr_->GetEntityRegion().width * 0.5f),
             nameTextEntryBoxUPtr_->GetEntityPos().y
                 + nameTextEntryBoxUPtr_->GetEntityRegion().height
-                + sfml_util::MapByRes(25.0f, 70.0f));
+                + sfutil::MapByRes(25.0f, 70.0f));
 
         EntityAdd(sexRadioButtonUPtr_.get());
         */
@@ -771,7 +771,7 @@ namespace stage
                 + 100.0f,
             sexRadioButtonUPtr_->GetEntityRegion().top
                 + sexRadioButtonUPtr_->GetEntityRegion().height
-                + sfml_util::MapByRes(30.0f, 90.0f));
+                + sfutil::MapByRes(30.0f, 90.0f));
 
         EntityAdd(sbInsTextRegionUPtr_.get());
         */
@@ -848,7 +848,7 @@ namespace stage
     {
         smokeAnimUPtr_ = sfml_util::AnimationFactory::Make(
             sfml_util::Animations::SmokeSwirl,
-            sfml_util::MapByRes(1.0f, 3.0f),
+            sfutil::MapByRes(1.0f, 3.0f),
             0.035f,
             sf::Color::White,
             sf::BlendAlpha);
@@ -867,9 +867,9 @@ namespace stage
             misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT),
             misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT));
 
-        auto const VERT_OVERLAP { sfml_util::ScreenRatioToPixelsVert(0.0333f) };
+        auto const VERT_OVERLAP { sfutil::ScreenRatioToPixelsVert(0.0333f) };
 
-        auto const DRIFT_LIMIT_TOP { sfml_util::Bottom(stageTitle_.Region()) - VERT_OVERLAP };
+        auto const DRIFT_LIMIT_TOP { sfutil::Bottom(stageTitle_.Region()) - VERT_OVERLAP };
 
         auto const DRIFT_LIMIT_BOTTOM { (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height)
                                         + (VERT_OVERLAP * 2.0f) };
@@ -885,15 +885,15 @@ namespace stage
 
     float CharacterStage::Setup_AttributeDescriptionBox()
     {
-        auto const ATTR_DESC_WIDTH { sfml_util::MapByRes(335.0f, 3000.0f) };
+        auto const ATTR_DESC_WIDTH { sfutil::MapByRes(335.0f, 3000.0f) };
 
-        auto const REGION_TOP { sfml_util::MapByRes(450.0f, 1600.0f) };
+        auto const REGION_TOP { sfutil::MapByRes(450.0f, 1600.0f) };
 
         const sf::FloatRect REGION(
-            (StageRegionWidth() - ATTR_DESC_WIDTH) - sfml_util::MapByRes(15.0f, 300.0f),
+            (StageRegionWidth() - ATTR_DESC_WIDTH) - sfutil::MapByRes(15.0f, 300.0f),
             REGION_TOP,
             ATTR_DESC_WIDTH,
-            sfml_util::MapByRes(310.0f, 2100.0f));
+            sfutil::MapByRes(310.0f, 2100.0f));
 
         sfml_util::TextInfo descTextInfo(
             "", // see below for where this is set to a valid value
@@ -1900,7 +1900,7 @@ namespace stage
 
         const auto RACE_STAT_MODIFIERS{ creature::RaceStatModifier::Get(RACE) };
 
-        auto const HORIZ_OFFSET { sfml_util::MapByRes(90.0f, 150.0f) };
+        auto const HORIZ_OFFSET { sfutil::MapByRes(90.0f, 150.0f) };
         auto const VERT_OFFSET { 5.0f };
         auto const RACE_NAME_ABBR { creature::race::Abbr(RACE) };
 
@@ -1956,7 +1956,7 @@ namespace stage
                 }
                 else
                 {
-                    extraHorizOffset = sfml_util::MapByRes(60.0f, 200.0f);
+                    extraHorizOffset = sfutil::MapByRes(60.0f, 200.0f);
                 }
 
                 statModifierTextVec_.emplace_back(StatModText(

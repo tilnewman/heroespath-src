@@ -13,9 +13,9 @@
 
 #include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util-center.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/center.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -27,8 +27,8 @@ namespace sfml_util
 
     Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK)
         : Entity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
-        , IMAGE_INITIAL_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.34f))
-        , IMAGE_DRIFT_WIDTH_(sfml_util::ScreenRatioToPixelsHoriz(0.12f))
+        , IMAGE_INITIAL_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.34f))
+        , IMAGE_DRIFT_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.12f))
         , IMAGE_MIN_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ - (IMAGE_DRIFT_WIDTH_ * 0.5f))
         , IMAGE_MAX_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ + (IMAGE_DRIFT_WIDTH_ * 0.5f))
         , rotation_(0.0f)
@@ -47,8 +47,8 @@ namespace sfml_util
         , rotSpeedDrifter_(1.0f, 10.0f, 0.25, 0.75)
     {
         const sf::Vector2f IMAGE_INITIAL_CONSTRAINING_SIZE_V(IMAGE_INITIAL_WIDTH_, 0.0f);
-        sfml_util::Fit(sprite_, IMAGE_INITIAL_CONSTRAINING_SIZE_V);
-        sfml_util::Center(sprite_);
+        sfutil::Fit(sprite_, IMAGE_INITIAL_CONSTRAINING_SIZE_V);
+        sfutil::Center(sprite_);
         sprite_.setColor(sf::Color(255, 255, 255, 20));
     }
 
@@ -73,8 +73,8 @@ namespace sfml_util
 
         sprite_.setRotation(rotation_);
 
-        sfml_util::Fit(sprite_, sf::Vector2f(sizeDrifter_.Update(ELAPSED_TIME_SEC), 0.0f));
-        sfml_util::Center(sprite_);
+        sfutil::Fit(sprite_, sf::Vector2f(sizeDrifter_.Update(ELAPSED_TIME_SEC), 0.0f));
+        sfutil::Center(sprite_);
 
         sprite_.setColor(sf::Color(
             255, 255, 255, static_cast<sf::Uint8>(shadeDrifter_.Update(ELAPSED_TIME_SEC))));

@@ -13,8 +13,8 @@
 
 #include "game/game-data-file.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/sfml-util-color.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/color.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 
 namespace heroespath
@@ -64,7 +64,7 @@ namespace interact
             ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::color::GrayDark,
+            sfutil::color::GrayDark,
             sfml_util::Justified::Left);
     }
 

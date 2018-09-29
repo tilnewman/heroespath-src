@@ -12,8 +12,8 @@
 #include "loop-cmd.hpp"
 
 #include "game/loop-manager.hpp"
-#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfutil/display.hpp"
 
 namespace heroespath
 {

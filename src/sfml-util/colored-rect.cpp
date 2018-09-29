@@ -11,8 +11,8 @@
 //
 #include "colored-rect.hpp"
 
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -145,9 +145,9 @@ namespace sfml_util
     void ColoredRect::Rect(const sf::FloatRect & RECT_PARAM)
     {
         const auto RECT_TO_USE = [&]() {
-            if (IsSizeZeroOrLessEither(RECT_PARAM))
+            if (sfutil::IsSizeZeroOrLessEither(RECT_PARAM))
             {
-                return sf::FloatRect(Position(RECT_PARAM), sf::Vector2f(0.0f, 0.0f));
+                return sf::FloatRect(sfutil::Position(RECT_PARAM), sf::Vector2f(0.0f, 0.0f));
             }
             else
             {

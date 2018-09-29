@@ -9,7 +9,7 @@
 //
 #include "mouse-image-info.hpp"
 
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -64,19 +64,19 @@ namespace sfml_util
 
             if ((mouseStateToUse != MouseState::Over) && over.HasTexture())
             {
-                region = sfml_util::MinimallyEnclosing(region, over.sprite.getGlobalBounds());
+                region = sfutil::MinimallyEnclosing(region, over.sprite.getGlobalBounds());
             }
             else if ((mouseStateToUse != MouseState::Down) && down.HasTexture())
             {
-                region = sfml_util::MinimallyEnclosing(region, down.sprite.getGlobalBounds());
+                region = sfutil::MinimallyEnclosing(region, down.sprite.getGlobalBounds());
             }
             else if ((mouseStateToUse != MouseState::Up) && up.HasTexture())
             {
-                region = sfml_util::MinimallyEnclosing(region, up.sprite.getGlobalBounds());
+                region = sfutil::MinimallyEnclosing(region, up.sprite.getGlobalBounds());
             }
             else if ((mouseStateToUse != MouseState::Disabled) && disabled.HasTexture())
             {
-                region = sfml_util::MinimallyEnclosing(region, up.sprite.getGlobalBounds());
+                region = sfutil::MinimallyEnclosing(region, up.sprite.getGlobalBounds());
             }
         }
         else

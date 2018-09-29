@@ -17,10 +17,10 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gold-bar.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sfml-util-rectangle-shape.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/text.hpp"
+#include "sfutil/rectangle-shape.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <boost/type_index.hpp>
 

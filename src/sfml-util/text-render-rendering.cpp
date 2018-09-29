@@ -12,7 +12,7 @@
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/strings.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 

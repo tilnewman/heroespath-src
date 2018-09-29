@@ -50,18 +50,18 @@ namespace stage
               sfml_util::LoopState::Previous,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               1.0f,
-              sf::Vector2f(200.0f, sfml_util::DisplaySize().y - 100.0f)))
-        , screenSizeV_(sfml_util::DisplaySize())
+              sf::Vector2f(200.0f, sfutil::DisplaySize().y - 100.0f)))
+        , screenSizeV_(sfutil::DisplaySize())
         , gsListBoxRect_(
-              ((screenSizeV_.x * 0.1f) - 85.0f) + sfml_util::SpacerOld(800.0f),
+              ((screenSizeV_.x * 0.1f) - 85.0f) + sfutil::SpacerOld(800.0f),
               610.0f,
               (screenSizeV_.y * 0.5f),
               ((screenSizeV_.y * 0.5f) - ((screenSizeV_.y * 0.5f) * 0.5f)) + 50.0f)
-        , gsListBoxBGColor_(sfml_util::color::Orange - sf::Color(100, 100, 100, 220))
+        , gsListBoxBGColor_(sfutil::color::Orange - sf::Color(100, 100, 100, 220))
         , gsListBoxFocusColors_(
-              sfml_util::color::Orange,
+              sfutil::color::Orange,
               gsListBoxBGColor_,
-              sfml_util::color::Orange - sfml_util::FocusColors::DEFAULT_OFFSET_COLOR_,
+              sfutil::color::Orange - sfml_util::FocusColors::DEFAULT_OFFSET_COLOR_,
               gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
         , gsListBoxUPtr_()
         , locTextRegionUPtr_()
@@ -132,7 +132,7 @@ namespace stage
             "LoadGameStage'sGame",
             this,
             this,
-            sfml_util::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfml_util::color::Orange));
+            sfml_util::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfutil::color::Orange));
 
         EntityAdd(gsListBoxUPtr_.get());
         SetupGameInfoDisplay();
@@ -161,7 +161,7 @@ namespace stage
             "", sfml_util::GuiFont::System, sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
-        auto const CHAR_LIST_POS_LEFT { sfml_util::Right(gsListBoxRect_) + 75.0f };
+        auto const CHAR_LIST_POS_LEFT { sfutil::Right(gsListBoxRect_) + 75.0f };
         auto const CHAR_LIST_POS_TOP { gsListBoxRect_.top + 100.0f };
 
         // setup location text

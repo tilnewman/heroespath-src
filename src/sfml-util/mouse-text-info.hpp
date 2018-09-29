@@ -13,8 +13,8 @@
 #include "popup/popup-enums.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/mouse-state-enum.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <memory>
 #include <string>

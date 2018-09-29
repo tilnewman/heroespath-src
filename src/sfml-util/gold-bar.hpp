@@ -12,9 +12,9 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/orientation-enum.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
 #include "sfml-util/side-enum.hpp"
+#include "sfutil/vector-and-rect.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 

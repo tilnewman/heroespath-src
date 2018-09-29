@@ -10,8 +10,8 @@
 // popup-stage-system-error.cpp
 //
 #include "popup-stage-system-error.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
 
 namespace heroespath
 {
@@ -32,7 +32,7 @@ namespace popup
     {
         PopupStageBase::Setup();
         bgSprite_.setColor(sf::Color(255, 255, 255, 32));
-        sfml_util::FitAndCenterTo(bgSprite_, textRegion_);
+        sfutil::FitAndCenterTo(bgSprite_, textRegion_);
     }
 
     void PopupStageSystemError::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)

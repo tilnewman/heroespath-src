@@ -11,8 +11,8 @@
 //
 #include "color-set.hpp"
 
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-display.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/display.hpp"
 
 #include <sstream>
 #include <tuple>

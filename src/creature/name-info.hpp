@@ -12,6 +12,7 @@
 #include "misc/vector-map.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <string>
 #include <utility>

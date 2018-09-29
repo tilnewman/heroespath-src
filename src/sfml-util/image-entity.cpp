@@ -11,9 +11,9 @@
 //
 #include "image-entity.hpp"
 #include "log/log-macros.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-position.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/position.hpp"
 
 namespace heroespath
 {
@@ -168,7 +168,7 @@ namespace sfml_util
             willDraw_ = false;
 
             entityRegion_
-                = sf::FloatRect(sfml_util::Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f));
+                = sf::FloatRect(sfutil::Position(GetEntityRegion()), sf::Vector2f(0.0f, 0.0f));
         }
         else
         {

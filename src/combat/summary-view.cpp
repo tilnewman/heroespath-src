@@ -18,10 +18,10 @@
 #include "misc/real.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -40,7 +40,7 @@ namespace combat
         , desc_text_region_uptr()
         , info_text_region_uptr()
     {
-        const float ITEM_IMAGE_SCALE_DEFAULT(sfml_util::MapByRes(ITEM_IMAGE_SCALE_MIN_, 1.0f));
+        const float ITEM_IMAGE_SCALE_DEFAULT(sfutil::MapByRes(ITEM_IMAGE_SCALE_MIN_, 1.0f));
         sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
         sprite.setColor(sf::Color(255, 255, 255, 64));
     }
@@ -71,10 +71,10 @@ namespace combat
     const float SummaryView::SLIDER_SPEED_(4.0f);
 
     SummaryView::SummaryView()
-        : BLOCK_POS_LEFT_(sfml_util::MapByRes(5.0f, 40.0f))
-        , BLOCK_POS_TOP_(sfml_util::MapByRes(5.0f, 40.0f))
-        , IMAGE_EDGE_PAD_(sfml_util::MapByRes(5.0f, 20.0f))
-        , IMAGE_BETWEEN_PAD_(sfml_util::MapByRes(10.0f, 35.0f))
+        : BLOCK_POS_LEFT_(sfutil::MapByRes(5.0f, 40.0f))
+        , BLOCK_POS_TOP_(sfutil::MapByRes(5.0f, 40.0f))
+        , IMAGE_EDGE_PAD_(sfutil::MapByRes(5.0f, 20.0f))
+        , IMAGE_BETWEEN_PAD_(sfutil::MapByRes(10.0f, 35.0f))
         , isTransToComplete_(false)
         , isTransBackComplete_(true)
         , movingDir_(sfml_util::Moving::Still)
@@ -280,7 +280,7 @@ namespace combat
             ss.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light);
+            sfutil::color::Light);
 
         nameTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect());
@@ -292,7 +292,7 @@ namespace combat
             rankSS.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light);
+            sfutil::color::Light);
 
         rankTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SummaryView'sRank", CREATURE_RANK_TEXT_INFO, sf::FloatRect());
@@ -312,7 +312,7 @@ namespace combat
             healthSS.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light);
+            sfutil::color::Light);
 
         healthTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect());
@@ -324,7 +324,7 @@ namespace combat
             armorRatingSS.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light);
+            sfutil::color::Light);
 
         armorTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect());
@@ -333,7 +333,7 @@ namespace combat
             creaturePtr->Body().ToString(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light,
+            sfutil::color::Light,
             sfml_util::Justified::Left,
             sf::Text::Italic);
 
@@ -347,7 +347,7 @@ namespace combat
             condSS.str(),
             sfml_util::GuiFont::Default,
             sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::color::Light);
+            sfutil::color::Light);
 
         condTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect());
@@ -356,10 +356,10 @@ namespace combat
         const float IMAGE_POS_TOP(COMBAT_REGION.top + BLOCK_POS_TOP_ + IMAGE_EDGE_PAD_);
         const float IMAGE_WIDTH(combatNodePtr->GetEntityRegion().width);
         const float IMAGE_HEIGHT(
-            combatNodePtr->GetEntityRegion().height + sfml_util::MapByRes(20.0f, 60.0f));
+            combatNodePtr->GetEntityRegion().height + sfutil::MapByRes(20.0f, 60.0f));
 
         const float BETWEEN_TEXT_SPACER(0.0f);
-        const float TOP_TEXT_SPACER(sfml_util::MapByRes(10.0f, 25.0f));
+        const float TOP_TEXT_SPACER(sfutil::MapByRes(10.0f, 25.0f));
         const float CREATURE_TEXT_POS_LEFT(IMAGE_POS_LEFT + IMAGE_WIDTH + IMAGE_EDGE_PAD_);
 
         if (creaturePtr->IsPlayerCharacter())
@@ -513,9 +513,9 @@ namespace combat
             }
         }
 
-        const float ITEM_IMAGE_HORIZ_MARGIN(sfml_util::MapByRes(45.0f, 150.0f));
+        const float ITEM_IMAGE_HORIZ_MARGIN(sfutil::MapByRes(45.0f, 150.0f));
         const float ITEM_IMAGE_POS_LEFT(IMAGE_POS_LEFT + ITEM_IMAGE_HORIZ_MARGIN);
-        const float ITEM_IMAGE_POS_TOP_START_MARGIN(sfml_util::MapByRes(25.0f, 50.0f));
+        const float ITEM_IMAGE_POS_TOP_START_MARGIN(sfutil::MapByRes(25.0f, 50.0f));
 
         const float ITEM_IMAGE_POS_TOP_START(
             IMAGE_POS_TOP + IMAGE_HEIGHT + ITEM_IMAGE_POS_TOP_START_MARGIN);
@@ -579,7 +579,7 @@ namespace combat
                 nextItemTextUPtr->item_ptr->Name(),
                 sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::color::Light,
+                sfutil::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_NAME_RECT(
@@ -599,7 +599,7 @@ namespace combat
                 nextItemTextUPtr->item_ptr->Desc(),
                 sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::color::Light,
+                sfutil::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect ITEM_DESC_RECT(
@@ -646,7 +646,7 @@ namespace combat
                 infoSS.str(),
                 sfml_util::GuiFont::Default,
                 sfml_util::FontManager::Instance()->Size_Small(),
-                sfml_util::color::Light,
+                sfutil::color::Light,
                 sfml_util::Justified::Left);
 
             const sf::FloatRect INFO_RECT(

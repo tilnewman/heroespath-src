@@ -10,8 +10,8 @@
 // list-box-packet.hpp
 //
 #include "sfml-util/box-entity-info.hpp"
-#include "sfml-util/sfml-util-color.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/color.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>

@@ -19,11 +19,11 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
-#include "sfml-util/sfml-util-vertex.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/fitting.hpp"
+#include "sfutil/primitives.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -41,11 +41,11 @@ namespace stage
         , ALPHA_FOR_CHAR_IMAGES_(150)
         , ALPHA_FOR_COLORED_BARS_(150)
         , CELL_LINE_THICKNESS_(1.0f)
-        , OUTER_SPACER_(sfml_util::MapByRes(75.0f, 300.0f))
-        , HEALTH_COLUMN_WIDTH_(sfml_util::MapByRes(180.0f, 500.0f))
+        , OUTER_SPACER_(sfutil::MapByRes(75.0f, 300.0f))
+        , HEALTH_COLUMN_WIDTH_(sfutil::MapByRes(180.0f, 500.0f))
         , MANA_COLUMN_WIDTH_(HEALTH_COLUMN_WIDTH_)
-        , CELL_TEXT_LEFT_SPACER_(sfml_util::MapByRes(12.0f, 25.0f))
-        , CHARLIST_SEP_SPACER_(sfml_util::MapByRes(15.0f, 150.0f))
+        , CELL_TEXT_LEFT_SPACER_(sfutil::MapByRes(12.0f, 25.0f))
+        , CHARLIST_SEP_SPACER_(sfutil::MapByRes(15.0f, 150.0f))
         , stagePtr_(ISTAGE_PTR)
         , namesButtonUVec_()
         , condsTextRegionsUVec_()
@@ -265,7 +265,7 @@ namespace stage
     {
         imageColumnRects_.clear();
 
-        auto const NAME_CELL_PAD_VERT { sfml_util::MapByRes(6.0f, 12.0f) };
+        auto const NAME_CELL_PAD_VERT { sfutil::MapByRes(6.0f, 12.0f) };
 
         auto const TALLEST_NAME_BUTTON_HEIGHT {
             (NAME_CELL_PAD_VERT * 2.0f)
@@ -298,7 +298,7 @@ namespace stage
     {
         nameColumnRects_.clear();
 
-        auto const NAME_CELL_PAD_HORIZ { sfml_util::MapByRes(12.0f, 24.0f) };
+        auto const NAME_CELL_PAD_HORIZ { sfutil::MapByRes(12.0f, 24.0f) };
 
         auto const LONGEST_NAME_BUTTON_WIDTH {
             (NAME_CELL_PAD_HORIZ * 2.0f)
@@ -418,7 +418,7 @@ namespace stage
             auto const TOP { (conditionColumnRects_[i].top
                               + (conditionColumnRects_[i].height * 0.5f))
                              - (condsTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f)
-                             + sfml_util::MapByRes(10.0f, 20.0f) };
+                             + sfutil::MapByRes(10.0f, 20.0f) };
 
             condsTextRegionsUVec_[i]->SetEntityPos(LEFT, TOP);
         }
@@ -509,13 +509,13 @@ namespace stage
 
             auto const TOP { (BOUNDS.top + (BOUNDS.height * 0.5f)) - (HEIGHT * 0.5f) };
 
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 lineVerts_,
                 sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT),
                 FadedDarkColor_Line() - sf::Color(0, 0, 0, 50));
 
             // establish the inner line (bounding box) coordinates
-            sfml_util::AppendVertexesForQuad(
+            sfutil::AppendVertexesForQuad(
                 lineVerts_,
                 sf::FloatRect(LEFT + 1.0f, TOP + 1.0f, WIDTH - 2.0f, HEIGHT - 2.0f),
                 FadedDarkColor_Line());
@@ -560,7 +560,7 @@ namespace stage
                 COLOR_BAR_RIGHT,
                 sfml_util::Side::Left));
 
-            auto const NUMBER_TEXT_TOP_SPACER { sfml_util::MapByRes(0.0f, 10.0f) };
+            auto const NUMBER_TEXT_TOP_SPACER { sfutil::MapByRes(0.0f, 10.0f) };
 
             if (WHICH_BAR == WhichBar::Health)
             {
@@ -671,21 +671,21 @@ namespace stage
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const
     {
-        auto darkColor { sfml_util::color::GrayDarker };
+        auto darkColor { sfutil::color::GrayDarker };
         darkColor.a = ALPHA_FOR_LINES_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Text() const
     {
-        auto darkColor { sfml_util::color::GrayDarker };
+        auto darkColor { sfutil::color::GrayDarker };
         darkColor.a = ALPHA_FOR_TEXT_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_CharacterImages() const
     {
-        auto darkColor { sfml_util::color::GrayDarker };
+        auto darkColor { sfutil::color::GrayDarker };
         darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
         return darkColor;
     }

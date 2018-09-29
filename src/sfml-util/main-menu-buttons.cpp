@@ -13,8 +13,8 @@
 
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
-#include "sfml-util/sfml-util-display.hpp"
 #include "sfml-util/text-info.hpp"
+#include "sfutil/display.hpp"
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace sfml_util
 
     float MainMenuButton::DefaultWidth()
     {
-        return sfml_util::ScreenRatioToPixelsHoriz(SCREEN_SIZE_RATIO_WIDTH_DEFAULT_);
+        return sfutil::ScreenRatioToPixelsHoriz(SCREEN_SIZE_RATIO_WIDTH_DEFAULT_);
     }
 
     void MainMenuButton::OnClick(const sf::Vector2f & MOUSE_POS_V)

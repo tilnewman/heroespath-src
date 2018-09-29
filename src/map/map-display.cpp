@@ -19,10 +19,10 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util-display.hpp"
-#include "sfml-util/sfml-util-distance.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfutil/display.hpp"
+#include "sfutil/distance.hpp"
+#include "sfutil/primitives.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -38,7 +38,7 @@ namespace map
 
     MapDisplay::MapDisplay(const Map & MAP, const sf::FloatRect & REGION)
         : MAP_(MAP)
-        , BORDER_PAD_(sfml_util::MapByRes(50.0f, 500.0f))
+        , BORDER_PAD_(sfutil::MapByRes(50.0f, 500.0f))
         , WIN_POS_V_(sf::Vector2f(REGION.left, REGION.top))
         , WIN_SIZE_V_(sf::Vector2f(REGION.width, REGION.height))
         , WIN_CENTER_V_(
@@ -132,7 +132,7 @@ namespace map
                     ANIM_INFO.rect.left + (ANIM_INFO.rect.width * 0.5f),
                     ANIM_INFO.rect.top + (ANIM_INFO.rect.height * 0.5f)) };
 
-                auto const DISTANCE_TO_PLAYER { sfml_util::Distance(ANIM_POS_V, PlayerPosMap()) };
+                auto const DISTANCE_TO_PLAYER { sfutil::Distance(ANIM_POS_V, PlayerPosMap()) };
 
                 sfml_util::SoundManager::Instance()->MusicVolume(
                     ANIM_INFO.music_vec, CalcAnimationVolume(DISTANCE_TO_PLAYER));
@@ -302,7 +302,7 @@ namespace map
             offScreenRect_.width,
             offScreenRect_.height);
 
-        target.draw(sfml_util::MakeRectangle(offScreenInnerWindowRect), states);*/
+        target.draw(sfutil::MakeRectangle(offScreenInnerWindowRect), states);*/
     }
 
     void MapDisplay::DrawCharacterImages()

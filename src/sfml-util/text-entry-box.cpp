@@ -13,9 +13,9 @@
 
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "sfml-util/sfml-util-primitives.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-region.hpp"
+#include "sfutil/primitives.hpp"
 
 namespace heroespath
 {

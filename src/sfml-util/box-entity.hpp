@@ -14,7 +14,7 @@
 #include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/image-entity.hpp"
-#include "sfml-util/sfml-util-sprite-texture.hpp"
+#include "sfutil/sprite-texture.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>

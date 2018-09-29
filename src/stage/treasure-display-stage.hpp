@@ -249,7 +249,7 @@ namespace stage
 
         float CalculateInventoryTextPosLeft() const;
 
-        float CalculateInventoryTextVertShift() const { return sfml_util::MapByRes(10.0f, 70.0f); }
+        float CalculateInventoryTextVertShift() const { return sfutil::MapByRes(10.0f, 70.0f); }
 
         void ItemViewerInterruption();
 

@@ -11,7 +11,7 @@
 //
 #include "sfml-util/entity-image-info.hpp"
 #include "sfml-util/mouse-state-enum.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <tuple>
 

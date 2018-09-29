@@ -12,7 +12,7 @@
 #include "box-entity.hpp"
 
 #include "log/log-macros.hpp"
-#include "sfml-util/sfml-util-fitting.hpp"
+#include "sfutil/fitting.hpp"
 
 #include <string>
 #include <tuple>
@@ -85,7 +85,7 @@ namespace sfml_util
 
     void BoxEntity::SetEntityRegion(const sf::FloatRect & REGION_ORIG)
     {
-        if (IsSizeZeroOrLessEither(REGION_ORIG))
+        if (sfutil::IsSizeZeroOrLessEither(REGION_ORIG))
         {
             border_.WillDraw(false);
             coloredRect_.WillDraw(false);
@@ -152,13 +152,13 @@ namespace sfml_util
 
             if (backgroundInfo_.cached_texture_opt->Options().option_enum & ImageOpt::Repeated)
             {
-                sprite_.setPosition(Position(innerRegion_));
+                sprite_.setPosition(sfutil::Position(innerRegion_));
 
-                const auto SPRITE_SIZE_BEFORE_V { Size(sprite_) };
-                SetSize(sprite_, backgroundInfo_.image_size);
-                const auto SPRITE_SIZE_AFTER_V { Size(sprite_) };
+                const auto SPRITE_SIZE_BEFORE_V { sfutil::Size(sprite_) };
+                sfutil::SetSize(sprite_, backgroundInfo_.image_size);
+                const auto SPRITE_SIZE_AFTER_V { sfutil::Size(sprite_) };
 
-                sf::Vector2f textureRectSizeV { Size(innerRegion_) };
+                sf::Vector2f textureRectSizeV { sfutil::Size(innerRegion_) };
 
                 if (misc::IsRealZeroOrLess(SPRITE_SIZE_AFTER_V.x) == false)
                 {
@@ -187,13 +187,13 @@ namespace sfml_util
 
                 if (backgroundInfo_.will_size_instead_of_fit)
                 {
-                    SetSizeAndPos(sprite_, innerRegion_);
-                    SetSize(sprite_, backgroundInfo_.image_size);
+                    sfutil::SetSizeAndPos(sprite_, innerRegion_);
+                    sfutil::SetSize(sprite_, backgroundInfo_.image_size);
                 }
                 else
                 {
-                    FitAndCenterTo(sprite_, innerRegion_);
-                    FitAndReCenter(sprite_, backgroundInfo_.image_size);
+                    sfutil::FitAndCenterTo(sprite_, innerRegion_);
+                    sfutil::FitAndReCenter(sprite_, backgroundInfo_.image_size);
                 }
             }
         }

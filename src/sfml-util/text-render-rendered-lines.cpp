@@ -9,9 +9,9 @@
 //
 #include "text-render-rendered-lines.hpp"
 
-#include "sfml-util/sfml-util-position.hpp"
-#include "sfml-util/sfml-util-size-and-scale.hpp"
-#include "sfml-util/sfml-util-vector-rect.hpp"
+#include "sfutil/position.hpp"
+#include "sfutil/size-and-scale.hpp"
+#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -38,7 +38,7 @@ namespace sfml_util
 
         bool RenderedLines::IsValid() const
         {
-            return ((Empty() == false) && (IsSizeZeroOrLessEither(region) == false));
+            return ((Empty() == false) && (sfutil::IsSizeZeroOrLessEither(region) == false));
         }
 
         bool RenderedLines::IsCurrentLineEmpty() const
@@ -55,8 +55,9 @@ namespace sfml_util
 
         const sf::FloatRect RenderedLines::CalcScreenRegion(const sf::Vector2f & SCREEN_POS_V) const
         {
-            const auto ACTUAL_POSITION { (SCREEN_POS_V + Position(region) + justifyOffsetV) };
-            const auto ACTUAL_SIZE { Size(region) };
+            const auto ACTUAL_POSITION { (
+                SCREEN_POS_V + sfutil::Position(region) + justifyOffsetV) };
+            const auto ACTUAL_SIZE { sfutil::Size(region) };
             return sf::FloatRect(ACTUAL_POSITION, ACTUAL_SIZE);
         }
 
@@ -68,14 +69,14 @@ namespace sfml_util
                 return WIDTH_LIMIT;
             }
 
-            const auto WIDTH_REMAINING { (WIDTH_LIMIT - Right(lines.back().Region())) };
+            const auto WIDTH_REMAINING { (WIDTH_LIMIT - sfutil::Right(lines.back().Region())) };
             return std::clamp(WIDTH_REMAINING, 0.0f, WIDTH_LIMIT);
         }
 
         void RenderedLines::AppendEmptyLine()
         {
             auto posLeft { region.left };
-            auto posTop { Bottom(region) };
+            auto posTop { sfutil::Bottom(region) };
 
             if (lines.empty() == false)
             {
@@ -88,7 +89,7 @@ namespace sfml_util
         void RenderedLines::CurrentLineAppend(const sfml_util::Text & TEXT)
         {
             CurrentLine().Append(TEXT);
-            region = MinimallyEnclosing(region, CurrentLine().Region(), true);
+            region = sfutil::MinimallyEnclosing(region, CurrentLine().Region(), true);
         }
 
         void RenderedLines::AppendBlankLine(const float BLANK_LINE_HEIGHT)
@@ -97,7 +98,7 @@ namespace sfml_util
             lines.back().SetupAsBlankLine();
             region.height += BLANK_LINE_HEIGHT;
 
-            // need to add a little harmless width so that MinimallyEnclosing() will not
+            // need to add a little harmless width so that sfutil::MinimallyEnclosing() will not
             // ignore region
             if ((region.width > 0.0f) == false)
             {
@@ -112,7 +113,7 @@ namespace sfml_util
                 line.Move(MOVE_V);
             }
 
-            sfml_util::Move(region, MOVE_V);
+            sfutil::Move(region, MOVE_V);
         }
 
         void RenderedLines::FinalAlignmentAndSpacing(const Context & CONTEXT)
@@ -178,7 +179,7 @@ namespace sfml_util
 
         void RenderedLines::Justify(const Justified::Enum JUSTIFICATION, const float WIDTH_LIMIT)
         {
-            const auto ORIG_POS_V { Position(region) };
+            const auto ORIG_POS_V { sfutil::Position(region) };
 
             if (Empty() || !Justified::IsValid(JUSTIFICATION) || (JUSTIFICATION == Justified::Left))
             {
@@ -195,10 +196,10 @@ namespace sfml_util
                     JUSTIFICATION, WIDTH_LIMIT, TOTAL_WIDTH, line.Region().width) };
 
                 line.Move(sf::Vector2f(HORIZ_OFFSET, 0.0f));
-                region = MinimallyEnclosing(region, line.Region(), true);
+                region = sfutil::MinimallyEnclosing(region, line.Region(), true);
             }
 
-            justifyOffsetV = (Position(region) - ORIG_POS_V);
+            justifyOffsetV = (sfutil::Position(region) - ORIG_POS_V);
             SetPosition(ORIG_POS_V);
         }
 

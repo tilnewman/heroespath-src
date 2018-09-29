@@ -20,7 +20,7 @@
 #include "misc/filesystem-helpers.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util-image-manip.hpp"
+#include "sfutil/image-manip.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -309,7 +309,7 @@ namespace sfml_util
 
         if (WILL_HORIZ_FLIP_TO_FACE_RIGHT)
         {
-            sfml_util::FlipHoriz(texture);
+            sfutil::FlipHoriz(texture);
         }
     }
 
