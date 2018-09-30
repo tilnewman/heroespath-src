@@ -42,6 +42,9 @@ namespace misc
         const std::string MakePathPretty(const std::string &);
         const boost::filesystem::path MakePathPretty(const boost::filesystem::path &);
 
+        const std::string CurrentDirectoryString();
+        const boost::filesystem::path CurrentDirectoryPath();
+
         bool DoesFileExist(const std::string &);
         bool DoesFileExist(const boost::filesystem::path &);
 
@@ -51,28 +54,29 @@ namespace misc
         const boost::filesystem::path
             MakeSubDirectoryPathFromCurrent(const std::string & SUB_DIR_NAME);
 
-        // non-recursive, does NOT throw if dir does not exist
+        // non-recursive, does NOT throw if dir does not exist, assumes FILE_EXT has the dot,
+        // returns the full paths of each file
         const std::vector<boost::filesystem::path> FindFilesInDirectory(
             const boost::filesystem::path & DIR_PATH,
             const std::string & FILENAME_PREFIX = "",
             const std::string & FILENAME_EXTENSION = "",
             const std::vector<std::string> & EXCLUDES = std::vector<std::string>());
 
-        // non-recursive, does NOT throw if dir does not exist
+        // non-recursive, does NOT throw if dir does not exist, returns the full paths of each file
         const std::vector<std::string> FindFilesInDirectory(
             const std::string & DIR_PATH,
             const std::string & FILENAME_PREFIX = "",
             const std::string & FILENAME_EXTENSION = "",
             const std::vector<std::string> & EXCLUDES = std::vector<std::string>());
 
-        // throws if dir does not exist
+        // throws if dir does not exist, assumes FILE_EXT has the dot
         const boost::filesystem::path FindFirstAvailableNumberedFilename(
             const boost::filesystem::path & DIR_PATH,
             const std::string & FILE_NAME,
             const std::string & FILE_EXT,
             const std::string & NUMBER_PREFIX = "-");
 
-        // throws if dir does not exist
+        // throws if dir does not exist, assumes FILE_EXT has the dot
         const std::string FindFirstAvailableNumberedFilename(
             const std::string & DIR_PATH_STR,
             const std::string & FILE_NAME,
@@ -106,6 +110,9 @@ namespace misc
 
         const boost::filesystem::path
             PathWithDepth(const boost::filesystem::path & PATH, const std::size_t DEPTH);
+
+        void CreateDirectory(const std::string & PATH);
+        void CreateDirectory(const boost::filesystem::path & PATH);
 
     } // namespace filesystem
 } // namespace misc

@@ -75,6 +75,13 @@ namespace misc
             return bfs::system_complete(PATH).normalize();
         }
 
+        const std::string CurrentDirectoryString() { return CurrentDirectoryPath().string(); }
+
+        const boost::filesystem::path CurrentDirectoryPath()
+        {
+            return MakePathPretty(bfs::current_path());
+        }
+
         bool DoesFileExist(const std::string & PATH_STR)
         {
             return DoesFileExist(bfs::path(PATH_STR));
@@ -164,7 +171,7 @@ namespace misc
             const std::string & FILE_EXT,
             const std::string & NUMBER_PREFIX)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (DoesDirectoryExist(DIR_PATH)),
                 "misc::filesystem::FindNextAvailableNumberedFilename(dir_path="
                     << DIR_PATH.string() << ", file_name=" << FILE_NAME << ", file_ext=" << FILE_EXT
@@ -174,10 +181,10 @@ namespace misc
 
             std::ostringstream filenameSS;
 
-            const std::size_t MAX_ATTEMPT_COUNT { 1000000 };
-            for (std::size_t i(1);; ++i)
+            const std::size_t MAX_ATTEMPT_COUNT { 1000000000 };
+            for (std::size_t i(1); i <= MAX_ATTEMPT_COUNT; ++i)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (i < MAX_ATTEMPT_COUNT),
                     "misc::filesystem::FindNextAvailableNumberedFilename(dir_path="
                         << DIR_PATH.string() << ", file_name=" << FILE_NAME << ", file_ext="
@@ -375,6 +382,34 @@ namespace misc
             }
 
             return boost::filesystem::path(ss.str());
+        }
+
+        void CreateDirectory(const std::string & PATH)
+        {
+            CreateDirectory(boost::filesystem::path(PATH));
+        }
+
+        void CreateDirectory(const boost::filesystem::path & PATH)
+        {
+            boost::system::error_code errorCode;
+
+            if (DoesDirectoryExist(PATH))
+            {
+                M_HP_LOG_WRN(
+                    "misc::filesystem::CreateDirectory(\""
+                    << PATH.string()
+                    << "\") was asked to create that directory but it already existed.");
+            }
+            else
+            {
+                const auto WAS_CREATED { boost::filesystem::create_directory(PATH, errorCode) };
+
+                M_HP_ASSERT_OR_LOG_AND_THROW(
+                    (WAS_CREATED),
+                    "misc::filesystem::CreateDirectory(\""
+                        << PATH.string() << "\") failed with error_code=" << errorCode.value()
+                        << ", error_message=\"" << errorCode.message() << "\"");
+            }
         }
 
     } // namespace filesystem

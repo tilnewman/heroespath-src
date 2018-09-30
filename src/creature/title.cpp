@@ -51,28 +51,28 @@ namespace creature
         , fileName_("")
         , healthBonus_(HEALTH_BONUS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TITLE != Titles::Count),
             "creature::Title::Title(title_enum=role::Count"
                 << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
                 << ") was given an invalid TITLE enum.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (Titles::ToString(TITLE).empty() == false),
             "creature::Title::Title(title_enum="
                 << TITLE << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
                 << ", rank_bonus=" << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
                 << ") was given an invalid TITLE.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ROLES_VEC.empty() == false),
             "creature::Title::Title(title="
                 << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE
                 << ", ach_count=" << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
                 << ", exp_bonus=" << EXPERIENCE_BONUS << ") was given an empty role vector.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ACHIEVEMENT_TYPE != AchievementType::Count),
             "creature::Title::Title(title=" << Titles::ToString(TITLE)
                                             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
@@ -80,7 +80,7 @@ namespace creature
                                             << ", exp_bonus=" << EXPERIENCE_BONUS
                                             << ") was given an AchievementType of 'Count'.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (((ACHIEVEMENT_TYPE != AchievementType::None) && ACHIEVEMENT_COUNT.IsZero()) == false),
             "creature::Title::Title(title="
                 << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE

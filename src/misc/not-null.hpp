@@ -36,7 +36,7 @@ namespace misc
         NotNull(U && u)
             : ptr_(std::forward<U>(u))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptr_ != nullptr),
                 "misc::NotNull<" << typeid(U).name() << ">::Constructor(&&) was given a nullptr.");
         }
@@ -52,7 +52,7 @@ namespace misc
 
         T Ptr() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptr_ != nullptr),
                 "misc::NotNull<" << typeid(decltype(ptr_)).name()
                                  << ">::Ptr() found ptr_==nullptr.");

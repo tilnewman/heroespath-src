@@ -15,7 +15,7 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"

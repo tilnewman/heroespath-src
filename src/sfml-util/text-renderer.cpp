@@ -11,9 +11,9 @@
 //
 #include "text-renderer.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/text-render-cleaning.hpp"
 #include "sfml-util/text-render-context.hpp"
 #include "sfml-util/text-render-rendered-lines.hpp"
@@ -129,7 +129,7 @@ namespace sfml_util
             const auto ORIG_SIZE { renderTexture.getSize() };
             const auto CREATE_TEXTURE_RESULT { renderTexture.create(TEXT_SIZE.x, TEXT_SIZE.y) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (CREATE_TEXTURE_RESULT),
                 "sfml_util::TextRenderer::Draw(rendered_text="
                     << RENDERED_LINES.ToString() << ", render_texture_size_orig=" << ORIG_SIZE

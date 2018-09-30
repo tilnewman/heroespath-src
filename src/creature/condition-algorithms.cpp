@@ -12,7 +12,7 @@
 #include "condition-algorithms.hpp"
 
 #include "creature/condition.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include <algorithm>
 #include <sstream>

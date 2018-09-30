@@ -670,7 +670,7 @@ namespace combat
         const creature::CreaturePtr_t CASTING_CREATURE_PTR,
         const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TARGETS_PVEC.empty() == false),
             "combat::CombatAnimation::SpellAnimStart(spell="
                 << SPELL_PTR->Name() << ", caster=" << CASTING_CREATURE_PTR->Name()
@@ -1081,7 +1081,7 @@ namespace combat
     void CombatAnimation::TextAnimStart(
         const std::vector<Health_t> & DAMAGE_VEC, const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (DAMAGE_VEC.size() == TARGETS_PVEC.size()),
             "combat::CombatAnimation::TextAnimStart(damage_vec_size="
                 << DAMAGE_VEC.size() << ", combat_node_vec_size=" << TARGETS_PVEC.size()

@@ -26,7 +26,7 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "item/inventory.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
@@ -2491,7 +2491,7 @@ namespace stage
 
     bool CharacterStage::CreateCharacter()
     {
-        /*M_ASSERT_OR_LOGANDTHROW_SS(
+        /*M_HP_ASSERT_OR_LOG_AND_THROW(
             (selectedImageIndex_ < characterImageFilenamesVec_.size()),
             "stage::CharacterStage::CreateCharacter() called when selectedImageIndex_="
                 << selectedImageIndex_ << " but characterImageFilenamesVec_.size()="

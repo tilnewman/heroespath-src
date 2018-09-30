@@ -235,7 +235,7 @@ namespace sfml_util
         auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (WAS_FOUND == false),
             "sfml_util::Stage::EntityAdd(\""
                 << ENTITY_PTR->GetEntityName()

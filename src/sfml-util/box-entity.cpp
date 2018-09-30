@@ -11,7 +11,7 @@
 //
 #include "box-entity.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfutil/fitting.hpp"
 
 #include <string>

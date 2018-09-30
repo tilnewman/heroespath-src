@@ -14,8 +14,8 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/traits-set.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 
 #include <algorithm>
@@ -72,7 +72,7 @@ namespace item
 
     void ItemProfileWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_),
             "creature::ItemProfileWarehouse::Release() found instanceUPtr that was null.");
 
@@ -259,7 +259,7 @@ namespace item
             elementTypes = THIN_PROFILE.WeaponInfo().ElementTypes();
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (elementTypes.empty() == false),
             "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
                 << THIN_PROFILE.ToString() << "}, named_type="
@@ -268,7 +268,7 @@ namespace item
                 << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
                 << ") resulted in an elementType vector that was empty.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (std::find(std::begin(elementTypes), std::end(elementTypes), element_type::None)
              != std::end(elementTypes)),
             "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
@@ -529,7 +529,7 @@ namespace item
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (profile.IsArmor()),
                 "ItemProfileWarehouse::MakeForEquipment(thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
@@ -690,7 +690,7 @@ namespace item
                     THIN_PROFILE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (profile.IsWeapon()),
                 "ItemProfileWarehouse::MakeForEquipment(thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="

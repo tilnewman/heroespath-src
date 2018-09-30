@@ -14,9 +14,9 @@
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/types.hpp"
 #include "misc/vectors.hpp"
@@ -80,7 +80,7 @@ namespace popup
 
     void PopupManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "popup::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
@@ -161,11 +161,7 @@ namespace popup
             }
         }
 
-        namespace bfs = boost::filesystem;
-        auto const PATH { bfs::system_complete(
-            bfs::path(windowTextureDirectoryPath_) / bfs::path(filename)) };
-
-        return PATH.string();
+        return misc::filesystem::CompletePath(windowTextureDirectoryPath_, filename);
     }
 
     const sfml_util::TextInfo PopupManager::TextInfoDefault(
@@ -518,7 +514,7 @@ namespace popup
         accentPaths_ = misc::filesystem::FindFilesInDirectory(
             accentTextureDirectoryPath_, "accent-", ".png");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (accentPaths_.empty() == false),
             "popup::PopupManager::LoadAccentImagePaths() failed to load any files from: "
                 << accentTextureDirectoryPath_);

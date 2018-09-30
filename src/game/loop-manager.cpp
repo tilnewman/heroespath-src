@@ -77,7 +77,7 @@ namespace game
 
     void LoopManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "LoopManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -85,7 +85,7 @@ namespace game
 
     void LoopManager::Initialize()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "LoopManager::Initialize() found instanceUPtr that was null.");
 
         auto const STARTUP_STAGE_ENUM { static_cast<sfml_util::LoopState::Enum>(

@@ -18,8 +18,8 @@
 #include "creature/creature.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
@@ -67,7 +67,7 @@ namespace combat
     const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_(
         "Click or press 'p' to attempt to pounce on an enemy.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_{
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_ {
         "Click or press 'u' to attempt to run away."
     };
 
@@ -75,7 +75,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_PTR,
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
-        auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
+        auto const CAN_TAKE_ACTION_STR { CREATURE_PTR->CanTakeActionStr() };
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
@@ -101,7 +101,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_PTR,
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
-        auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
+        auto const CAN_TAKE_ACTION_STR { CREATURE_PTR->CanTakeActionStr() };
 
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
@@ -342,7 +342,7 @@ namespace combat
 
             case combat::TurnAction::Cast:
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (!!TURN_ACTION_INFO.Spell()),
                     "combat::Text::ActionText(creature_attacking="
                         << CREATURE_ATTACKING_PTR->Name()
@@ -367,7 +367,7 @@ namespace combat
 
             case combat::TurnAction::PlaySong:
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (!!TURN_ACTION_INFO.Song()),
                     "combat::Text::ActionText(creature_attacking="
                         << CREATURE_ATTACKING_PTR->Name()
@@ -392,7 +392,7 @@ namespace combat
 
             case combat::TurnAction::ChangeWeapon:
             {
-                auto const HELD_WEAPONS_PVEC{ CREATURE_ATTACKING_PTR->HeldWeapons() };
+                auto const HELD_WEAPONS_PVEC { CREATURE_ATTACKING_PTR->HeldWeapons() };
 
                 if (HELD_WEAPONS_PVEC.empty())
                 {
@@ -416,7 +416,7 @@ namespace combat
 
             case combat::TurnAction::LandPounce:
             {
-                std::vector<std::string> strVec{
+                std::vector<std::string> strVec {
                     "surges", "charages", "leaps", "rushes", "springs"
                 };
 
@@ -480,7 +480,7 @@ namespace combat
     {
         wasCollapsed = false;
 
-        auto const TURN_ACTION{ TURN_ACTION_INFO.Action() };
+        auto const TURN_ACTION { TURN_ACTION_INFO.Action() };
 
         if (TURN_ACTION == combat::TurnAction::Attack)
         {
@@ -501,7 +501,7 @@ namespace combat
         }
         else if (TURN_ACTION == combat::TurnAction::Cast)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!TURN_ACTION_INFO.Spell()),
                 "comabt::Text::ActionTextIndexed(creature_attacking="
                     << CREATURE_ATTACKING_PTR->Name()
@@ -520,7 +520,7 @@ namespace combat
         }
         else if (TURN_ACTION == combat::TurnAction::PlaySong)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!TURN_ACTION_INFO.Song()),
                 "comabt::Text::ActionTextIndexed(creature_attacking="
                     << CREATURE_ATTACKING_PTR->Name()
@@ -778,13 +778,13 @@ namespace combat
         Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT) const
     {
         // assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIGHT_RESULT.Count() == 1),
             "combat::Text::AttackDescriptionStatusVersion() was given "
                 << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
                 << " CreatureEffects, when only 1 is supported.");
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[0] };
 
         std::ostringstream ss;
         ss << WeaponActionVerbList(CREATURE_EFFECT.GetHitInfoVec(), false) << " "
@@ -818,7 +818,7 @@ namespace combat
     const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT) const
     {
         // assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIGHT_RESULT.Count() == 1),
             "combat::Text::AttackDescriptionPreambleVersion() was given "
                 << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
@@ -826,7 +826,7 @@ namespace combat
 
         std::ostringstream ss;
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[0] };
         ss << WeaponActionVerbList(CREATURE_EFFECT.GetHitInfoVec(), false) << " "
            << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...";
 
@@ -839,34 +839,34 @@ namespace combat
         const std::size_t HIT_INDEX) const
     {
         // assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (EFFECT_INDEX == 0),
             "combat::Text::AttackDescriptionFullVersion() was given "
                 << "a EFFECT_INDEX=" << EFFECT_INDEX << " when only 0 is supported.");
         //
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIGHT_RESULT.Effects().size() == 1),
             "combat::Text::AttackDescriptionFullVersion() was given "
                 << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
                 << " CreatureEffects, when only 1 is supported.");
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
-        auto const & HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+        auto const & HIT_INFO_VEC { CREATURE_EFFECT.GetHitInfoVec() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (HIT_INFO_VEC.empty() == false),
             "combat::Text::AttackDescriptionFullVersion(effect_index="
                 << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
                 << ") was given an empty HIT_INFO_VEC.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (HIT_INDEX < HIT_INFO_VEC.size()),
             "combat::Text::AttackDescriptionFullVersion(effect_index="
                 << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
                 << ") hit_index was out of bounds with HIT_INFO_VEC.size()=" << HIT_INFO_VEC.size()
                 << ".");
 
-        auto const HIT_INFO{ HIT_INFO_VEC[HIT_INDEX] };
+        auto const HIT_INFO { HIT_INFO_VEC[HIT_INDEX] };
 
         std::ostringstream ss;
         ss << HIT_INFO.ActionVerb() << " " << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...\n";
@@ -903,7 +903,7 @@ namespace combat
                 {
                     ss << " but ";
 
-                    auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
+                    auto const CREATURE_PTR { CREATURE_EFFECT.GetCreature() };
 
                     if (CREATURE_PTR->IsPlayerCharacter())
                     {
@@ -945,7 +945,7 @@ namespace combat
         std::ostringstream ss;
         ss << "casts the " << SPELL_PTR->Name() << " spell ";
 
-        auto const SPELL_TARGET{ SPELL_PTR->Target() };
+        auto const SPELL_TARGET { SPELL_PTR->Target() };
 
         ss << TargetType::ActionPhrase(SPELL_TARGET);
 
@@ -967,8 +967,8 @@ namespace combat
 
         if (FIGHT_RESULT.Count() == 1)
         {
-            auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
-            auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
+            auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[0] };
+            auto const CREATURE_PTR { CREATURE_EFFECT.GetCreature() };
             ss << "on ";
             if (CREATURE_PTR->IsPlayerCharacter())
             {
@@ -983,7 +983,7 @@ namespace combat
         {
             ss << "at " << FIGHT_RESULT.Count();
 
-            auto const FIRST_CREATURE_PTR{ FIGHT_RESULT.Effects()[0].GetCreature() };
+            auto const FIRST_CREATURE_PTR { FIGHT_RESULT.Effects()[0].GetCreature() };
             if (FIRST_CREATURE_PTR->IsPlayerCharacter())
             {
                 ss << " characters";
@@ -1012,7 +1012,8 @@ namespace combat
     {
         wasCollapsed = false;
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_CASTING_PTR, FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY { SummarizeFightResult(
+            CREATURE_CASTING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
@@ -1026,21 +1027,21 @@ namespace combat
             return "(error: cast EFFECT_INDEX out of range)";
         }
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
             return "(error: cast HIT_INDEX out of range)";
         }
 
-        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+        auto const HIT_INFO { CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
 
         std::ostringstream ss;
 
         ss << HIT_INFO.ActionPhrase().Compose(
             CREATURE_CASTING_PTR->Name(), CREATURE_EFFECT.GetCreature()->Name());
 
-        auto const DAMAGE{ HIT_INFO.Damage() };
+        auto const DAMAGE { HIT_INFO.Damage() };
 
         if (DAMAGE > 0_health)
         {
@@ -1080,8 +1081,8 @@ namespace combat
 
         if (FIGHT_RESULT.Count() == 1)
         {
-            auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
-            auto const CREATURE_PTR{ CREATURE_EFFECT.GetCreature() };
+            auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[0] };
+            auto const CREATURE_PTR { CREATURE_EFFECT.GetCreature() };
             ss << "on ";
             if (CREATURE_PTR->IsPlayerCharacter())
             {
@@ -1096,7 +1097,7 @@ namespace combat
         {
             ss << "at " << FIGHT_RESULT.Count();
 
-            auto const FIRST_CREATURE_PTR{ FIGHT_RESULT.Effects()[0].GetCreature() };
+            auto const FIRST_CREATURE_PTR { FIGHT_RESULT.Effects()[0].GetCreature() };
             if (FIRST_CREATURE_PTR->IsPlayerCharacter())
             {
                 ss << " characters";
@@ -1125,7 +1126,7 @@ namespace combat
     {
         wasCollapsed = false;
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(
+        auto const FIGHT_RESULT_SUMMARY { SummarizeFightResult(
             CREATURE_PLAYINGING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
@@ -1140,21 +1141,21 @@ namespace combat
             return "(error: song EFFECT_INDEX out of range)";
         }
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
             return "(error: song HIT_INDEX out of range)";
         }
 
-        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+        auto const HIT_INFO { CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
 
         std::ostringstream ss;
 
         ss << HIT_INFO.ActionPhrase().Compose(
             CREATURE_PLAYINGING_PTR->Name(), CREATURE_EFFECT.GetCreature()->Name());
 
-        auto const DAMAGE{ HIT_INFO.Damage() };
+        auto const DAMAGE { HIT_INFO.Damage() };
 
         if (DAMAGE > 0_health)
         {
@@ -1178,7 +1179,8 @@ namespace combat
     {
         wasCollapsed = false;
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY { SummarizeFightResult(
+            CREATURE_ROARING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
@@ -1191,14 +1193,14 @@ namespace combat
             return "(error: roar EFFECT_INDEX out of range)";
         }
 
-        auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
+        auto const CREATURE_EFFECT { FIGHT_RESULT.Effects()[EFFECT_INDEX] };
 
         if (HIT_INDEX >= CREATURE_EFFECT.GetHitInfoVec().size())
         {
             return "(error: roar HIT_INDEX out of range)";
         }
 
-        auto const HIT_INFO{ CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
+        auto const HIT_INFO { CREATURE_EFFECT.GetHitInfoVec()[HIT_INDEX] };
 
         std::ostringstream ss;
 
@@ -1214,27 +1216,27 @@ namespace combat
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX) const
     {
-        auto const & CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
+        auto const & CREATURE_EFFECTS { FIGHT_RESULT.Effects() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (EFFECT_INDEX < CREATURE_EFFECTS.size()),
             "combat::Text::TrapDescriptionFullVersion(creature="
                 << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole() << ", effect_index=" << EFFECT_INDEX
                 << ", hit_index=" << HIT_INDEX << ") but there were only "
                 << CREATURE_EFFECTS.size() << " creature effects.");
 
-        auto const CREATURE_EFFECT{ CREATURE_EFFECTS.at(EFFECT_INDEX) };
+        auto const CREATURE_EFFECT { CREATURE_EFFECTS.at(EFFECT_INDEX) };
 
-        auto const & HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const & HIT_INFOS { CREATURE_EFFECT.GetHitInfoVec() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (HIT_INDEX < HIT_INFOS.size()),
             "combat::Text::TrapDescriptionFullVersion(creature="
                 << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole() << ", effect_index=" << EFFECT_INDEX
                 << ", hit_index=" << HIT_INDEX << ") but there were only " << HIT_INFOS.size()
                 << " hit infos.");
 
-        auto const HIT_INFO{ HIT_INFOS.at(HIT_INDEX) };
+        auto const HIT_INFO { HIT_INFOS.at(HIT_INDEX) };
 
         std::ostringstream ss;
         ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb() << " for "
@@ -1303,7 +1305,7 @@ namespace combat
 
     const std::string Text::CountPhrase(const HitInfoVec_t & HIT_INFO_VEC) const
     {
-        std::size_t count{ 0 };
+        std::size_t count { 0 };
         for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
         {
             if (NEXT_HIT_INFO.WasHit())
@@ -1354,12 +1356,12 @@ namespace combat
     {
         std::ostringstream ss;
 
-        const std::size_t NUM_CONDS_TO_LIST{ 3 };
+        const std::size_t NUM_CONDS_TO_LIST { 3 };
 
-        auto const ADDED_CONDS_EXCLUDING_DEAD_VEC{ misc::Vector::Exclude(
+        auto const ADDED_CONDS_EXCLUDING_DEAD_VEC { misc::Vector::Exclude(
             CREATURE_EFFECT.GetAllCondsAdded(), creature::Conditions::Dead) };
 
-        auto const NUM_ADDED_CONDS{ ADDED_CONDS_EXCLUDING_DEAD_VEC.size() };
+        auto const NUM_ADDED_CONDS { ADDED_CONDS_EXCLUDING_DEAD_VEC.size() };
         if (NUM_ADDED_CONDS > 0)
         {
             ss << ", causing "
@@ -1374,8 +1376,8 @@ namespace combat
             }
         }
 
-        auto const REMOVED_CONDS_SVEC{ CREATURE_EFFECT.GetAllCondsRemoved() };
-        auto const NUM_REMOVED_CONDS{ REMOVED_CONDS_SVEC.size() };
+        auto const REMOVED_CONDS_SVEC { CREATURE_EFFECT.GetAllCondsRemoved() };
+        auto const NUM_REMOVED_CONDS { REMOVED_CONDS_SVEC.size() };
 
         if (NUM_REMOVED_CONDS > 0)
         {
@@ -1396,15 +1398,15 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
         const FightResult & FIGHT_RESULT) const
     {
-        auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
-        auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
+        auto const & CREATURE_EFFECT_VEC { FIGHT_RESULT.Effects() };
+        auto const CREATURE_EFFECTS_COUNT { CREATURE_EFFECT_VEC.size() };
 
         if (CREATURE_EFFECTS_COUNT <= 1)
         {
             return FightResultSummary();
         }
 
-        auto const FIRST_HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
+        auto const FIRST_HIT_INFO { FIGHT_RESULT.GetHitInfo(0, 0) };
         if (FIRST_HIT_INFO.IsValid() == false)
         {
             return FightResultSummary();
@@ -1455,14 +1457,14 @@ namespace combat
     bool Text::SummarizeCreatureEffect(
         FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT) const
     {
-        auto const & NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const & NEXT_HIT_INFO_VEC { CREATURE_EFFECT.GetHitInfoVec() };
         if (NEXT_HIT_INFO_VEC.size() != 1)
         {
             return false;
         }
 
-        auto const NEXT_HIT_INFO{ NEXT_HIT_INFO_VEC[0] };
-        auto const NEXT_ACTION_STR{ NEXT_HIT_INFO.ActionPhrase().Compose("", "") };
+        auto const NEXT_HIT_INFO { NEXT_HIT_INFO_VEC[0] };
+        auto const NEXT_ACTION_STR { NEXT_HIT_INFO.ActionPhrase().Compose("", "") };
 
         if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_))
             || (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_))

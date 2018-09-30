@@ -13,8 +13,8 @@
 
 #include "creature/creature.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "song/song.hpp"
@@ -27,7 +27,7 @@ namespace combat
 
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
-        auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
+        auto const WEAPON_TYPE { WEAPON_PTR->WeaponType() };
 
         if ((WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
             || (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling))
@@ -59,15 +59,15 @@ namespace combat
     void CombatSoundEffects::PlayHitOrMiss(
         const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO) const
     {
-        auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+        auto const WEAPON_PTR_OPT { HIT_INFO.Weapon() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!WEAPON_PTR_OPT),
             "combat::CombatSoundEffects::PlayHitOrMiss() "
                 << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
 
-        auto const WEAPON_PTR{ WEAPON_PTR_OPT.value() };
-        auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
+        auto const WEAPON_PTR { WEAPON_PTR_OPT.value() };
+        auto const WEAPON_TYPE { WEAPON_PTR->WeaponType() };
 
         if (HIT_INFO.WasHit())
         {
@@ -441,7 +441,7 @@ namespace combat
 
     void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE{ CREATURE_PTR->Role() };
+        auto const ROLE { CREATURE_PTR->Role() };
         if (ROLE == creature::role::Wolfen)
         {
             switch (CREATURE_PTR->WolfenClass())

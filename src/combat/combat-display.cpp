@@ -21,7 +21,7 @@
 #include "game/game-data-file.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/box-entity.hpp"
@@ -491,7 +491,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::CreaturePVec_t & AMONG_PVEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (AMONG_PVEC.empty() == false),
             "combat::CombatDisplay::FindClosestLiving(creature={"
                 << CREATURE_PTR->ToString() << "}, among_size=" << AMONG_PVEC.size()
@@ -529,7 +529,7 @@ namespace combat
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (closestCreaturesPVec.empty() == false),
                 "combat::CombatDisplay::FindClosestLiving("
                     << CREATURE_PTR->Name() << ", among_size=" << AMONG_PVEC.size()
@@ -640,7 +640,7 @@ namespace combat
         const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
         const bool WILL_FIND_PLAYERS) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_TO_FIND_AMONG_PVEC.empty() == false),
             "combat::FindClosestAmongOfType(creature_of_origin_name=\""
                 << CREATURE_OF_ORIGIN_PTR->Name()
@@ -675,7 +675,7 @@ namespace combat
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (closestCreaturesPVec.empty() == false),
             "combat::FindClosestAmongOfType(creature_of_origin_name=\""
                 << CREATURE_OF_ORIGIN_PTR->Name()
@@ -711,7 +711,7 @@ namespace combat
     const CombatNodePVec_t CombatDisplay::GetCombatNodesForCreatures(
         const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_PVEC.empty() == false),
             "combat::GetCombatNodesForCreatures() was given a CREATURES_PVEC "
                 << "that was empty.");
@@ -724,7 +724,7 @@ namespace combat
             creatureCombatNodesPVec.emplace_back(GetCombatNodeForCreature(NEXT_CREATURE_PTR));
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (creatureCombatNodesPVec.size() == CREATURES_PVEC.size()),
             "combat::CombatDisplay::GetCombatNodesForCreatures(CREATURES_PVEC.size()="
                 << CREATURES_PVEC.size()
@@ -874,7 +874,7 @@ namespace combat
     bool CombatDisplay::AreAllCreaturesVisible(
         const creature::CreaturePVec_t & CREATURES_TO_CHECK_PVEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_TO_CHECK_PVEC.empty() == false),
             "combat::CombatDisplay::AreAllCreaturesVisible() was given a "
                 << "CREATURES_TO_CHECK_PVEC that was empty.");
@@ -894,7 +894,7 @@ namespace combat
 
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_PVEC.empty() == false),
             "combat::CombatDisplay::IsZoomOutRequired() was given a "
                 << "CREATURES_PVEC that was empty.");
@@ -940,7 +940,7 @@ namespace combat
     const sf::Vector2f CombatDisplay::FindCenterOfCreatures(
         const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_TO_CENTER_ON_PVEC.empty() == false),
             "combat::CombatDisplay::FindCenterOfCreatures() was given a "
                 << "CREATURES_TO_CENTER_ON_PVEC that was empty.");

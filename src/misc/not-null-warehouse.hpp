@@ -9,8 +9,8 @@
 //
 // not-null-warehouse.hpp
 //
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
 #include <boost/type_index.hpp>
 
@@ -45,7 +45,7 @@ namespace misc
 
         ~NotNullWarehouse()
         {
-            auto const SIZE{ Size() };
+            auto const SIZE { Size() };
 
             std::ostringstream ss;
             ss << "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
@@ -82,7 +82,7 @@ namespace misc
 
         std::size_t Size() const
         {
-            std::size_t count{ 0 };
+            std::size_t count { 0 };
             for (auto const & UPTR : uPtrVec_)
             {
                 if (UPTR)
@@ -101,26 +101,26 @@ namespace misc
 
         const misc::NotNull<T *> Store(std::unique_ptr<T> uPtrToStore)
         {
-            auto const NOTNULL_PTR_TO_RETURN{ Store(uPtrToStore.get()) };
+            auto const NOTNULL_PTR_TO_RETURN { Store(uPtrToStore.get()) };
             uPtrToStore.release();
             return NOTNULL_PTR_TO_RETURN;
         }
 
         const misc::NotNull<T *> Store(T * ptrToStore)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToStore != nullptr),
                 "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
                                           << ">::Store() given a nullptr.");
 
-            std::size_t indexToSaveAt{ uPtrVec_.size() };
+            std::size_t indexToSaveAt { uPtrVec_.size() };
 
             // Ensure this object is not already stored, and along the way,
             // look for an abandoned slot to use as indexToSaveAt.
-            auto const NUM_SLOTS{ indexToSaveAt };
+            auto const NUM_SLOTS { indexToSaveAt };
             for (std::size_t i(0); i < NUM_SLOTS; ++i)
             {
-                auto const STORED_PTR{ uPtrVec_[i].get() };
+                auto const STORED_PTR { uPtrVec_[i].get() };
                 if (STORED_PTR == ptrToStore)
                 {
                     std::ostringstream ss;
@@ -172,7 +172,7 @@ namespace misc
 
         void Free(T * const ptrToFree)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToFree != nullptr),
                 "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
                                           << ">::Free() given a nullptr.");

@@ -45,7 +45,7 @@ namespace sfml_util
         const sf::Vector2i TEXTURE_SIZE_V(cachedTexture_.Get().getSize());
         const sf::Vector2i FRAME_SIZE_V(origSizeV_);
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((TEXTURE_SIZE_V.x >= FRAME_SIZE_V.x) && (TEXTURE_SIZE_V.y >= FRAME_SIZE_V.y)),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
                 << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="
@@ -69,7 +69,7 @@ namespace sfml_util
         auto const CALCULATED_FRAME_COUNT_EXPECTED { static_cast<std::size_t>(
             (TEXTURE_SIZE_V.x / FRAME_SIZE_V.x) * (TEXTURE_SIZE_V.y / FRAME_SIZE_V.y)) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CALCULATED_FRAME_COUNT_EXPECTED == rects_.size()),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
                 << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="
@@ -79,7 +79,7 @@ namespace sfml_util
                 << TEXTURE_SIZE_V << ", frame_size=" << FRAME_SIZE_V << ")  (actual="
                 << rects_.size() << ", expected=" << CALCULATED_FRAME_COUNT_EXPECTED << ")");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (rects_.empty() == false),
             "sfml_util::AnimationSingleTexture::Constructor(enum="
                 << Animations::ToString(ENUM) << ", region=" << REGION << ", time_per_frames_sec="

@@ -34,7 +34,7 @@ namespace item
             ArmorDetails details;
             auto const WAS_FOUND { armorDetailsMap_.Find(NAME, details) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 WAS_FOUND,
                 "item::armor::ArmorDetailLoader::LookupArmorDetails(\""
                     << NAME << "\")  failed to find that name in armorDetailsMap_.");
@@ -66,7 +66,7 @@ namespace item
             misc::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
             // verify there are eight fields
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (fieldsVec.size() == 6),
                 "item::armor::ArmorDetailsLoader::LoadDetailsForKey(armor_name=\""
                     << ARMOR_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
@@ -101,7 +101,7 @@ namespace item
                 result = ERROR_VAL;
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (result != ERROR_VAL),
                 "item::armor::ArmorDetailsLoader::StringFieldToInt(field_name=\""
                     << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the "

@@ -11,8 +11,8 @@
 //
 #include "materials-factory.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 
 #include <algorithm>
 
@@ -113,11 +113,11 @@ namespace item
             LimitForNamedType(THIN_PROFILE, NAMED_TYPE, materialPairs);
         }
 
-        auto const MATERIAL_PAIRS_COPY{ materialPairs };
+        auto const MATERIAL_PAIRS_COPY { materialPairs };
 
         try
         {
-            auto const ALLOW_INVALID_MATERIALS_FOR_ITEMS_WITH_INVERTED_MATERIALS{ (
+            auto const ALLOW_INVALID_MATERIALS_FOR_ITEMS_WITH_INVERTED_MATERIALS { (
                 THIN_PROFILE.NameMaterialType() == name_material_type::Handle) };
 
             // even though set_types and named_types are magical, they are very specific about
@@ -150,13 +150,13 @@ namespace item
     const MaterialPairVec_t MaterialFactory::MakeForMiscType(
         const misc_type::Enum MISC_TYPE, const bool IS_MAGICAL) const
     {
-        MaterialPairVec_t materialPairs{ MakeForMiscInner(MISC_TYPE) };
+        MaterialPairVec_t materialPairs { MakeForMiscInner(MISC_TYPE) };
 
-        auto const MATERIAL_PAIRS_COPY{ materialPairs };
+        auto const MATERIAL_PAIRS_COPY { materialPairs };
 
         try
         {
-            auto const ALLOW_INVALID_MATERIALS_FOR_SPECIAL_ITEM{
+            auto const ALLOW_INVALID_MATERIALS_FOR_SPECIAL_ITEM {
                 (MISC_TYPE == misc_type::ExoticGoldenGong) || (MISC_TYPE == misc_type::MadRatJuju)
                 || (MISC_TYPE == misc_type::MagnifyingGlass)
                 || (MISC_TYPE == misc_type::RoyalScoutSpyglass)
@@ -971,7 +971,7 @@ namespace item
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (materialPairs.empty() == false),
             "item::MaterialFactory::MakeForWeapon(thin_profile={"
                 << THIN_PROFILE.ToString() << ") failed to recognize that weapon type.");
@@ -1037,7 +1037,7 @@ namespace item
             && (THIN_PROFILE.ArmorInfo().Type() != armor_type::Shield)
             && (THIN_PROFILE.ArmorInfo().Type() != armor_type::Helm))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (THIN_PROFILE.ArmorInfo().BaseType() != armor::base_type::Count),
                 "item::ItemProfileWarehouse::MakeForArmor("
                 "thin_profile={"
@@ -1238,7 +1238,7 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         MaterialPairVec_t & materialPairs) const
     {
-        auto const MATERIAL_PAIRS_COPY{ materialPairs };
+        auto const MATERIAL_PAIRS_COPY { materialPairs };
 
         enum class WhichMaterial
         {
@@ -1252,9 +1252,9 @@ namespace item
             ExcludeAnyOf
         };
 
-        auto processByMaterials{ [&](const MaterialOp OPERATION,
-                                     const WhichMaterial WHICH,
-                                     const MaterialVec_t & MATERIALS_TO_KEEP) {
+        auto processByMaterials { [&](const MaterialOp OPERATION,
+                                      const WhichMaterial WHICH,
+                                      const MaterialVec_t & MATERIALS_TO_KEEP) {
             materialPairs.erase(
                 std::remove_if(
                     std::begin(materialPairs),
@@ -1272,38 +1272,38 @@ namespace item
                 std::end(materialPairs));
         } };
 
-        auto keepOnlyPrimary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+        auto keepOnlyPrimary { [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
             processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Pri, MATERIALS_TO_KEEP);
         } };
 
-        auto keepOnlySecondary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+        auto keepOnlySecondary { [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
             processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Sec, MATERIALS_TO_KEEP);
         } };
 
-        auto keepOnlyPrimaryAndSecondary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+        auto keepOnlyPrimaryAndSecondary { [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
             processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Pri, MATERIALS_TO_KEEP);
             processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Sec, MATERIALS_TO_KEEP);
         } };
 
-        auto keepOnlySecondaryIncludingNothing{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+        auto keepOnlySecondaryIncludingNothing { [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
             processByMaterials(
                 MaterialOp::KeepOnly, WhichMaterial::Sec, AppendNothingCopy(MATERIALS_TO_KEEP));
         } };
 
-        auto excludeAnyOfPrimary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+        auto excludeAnyOfPrimary { [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
             processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Pri, MATERIALS_TO_EXCLUDE);
         } };
 
-        auto excludeAnyOfSecondary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+        auto excludeAnyOfSecondary { [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
             processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Sec, MATERIALS_TO_EXCLUDE);
         } };
 
-        auto excludeAnyOfPrimaryAndSecondary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+        auto excludeAnyOfPrimaryAndSecondary { [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
             processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Pri, MATERIALS_TO_EXCLUDE);
             processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Sec, MATERIALS_TO_EXCLUDE);
         } };
 
-        auto appendWoodIfHasHandleCopy{ [&](const MaterialVec_t MATERIALS) {
+        auto appendWoodIfHasHandleCopy { [&](const MaterialVec_t MATERIALS) {
             if (THIN_PROFILE.NameMaterialType() == name_material_type::Handle)
             {
                 return AppendCopy(MATERIALS, material::Wood);
@@ -1810,8 +1810,8 @@ namespace item
     const MaterialPairVec_t MaterialFactory::MakeForSetType(
         const ItemProfileThin & THIN_PROFILE, const set_type::Enum SET_TYPE) const
     {
-        material::Enum primary{ material::Nothing };
-        material::Enum secondary{ material::Nothing };
+        material::Enum primary { material::Nothing };
+        material::Enum secondary { material::Nothing };
 
         switch (SET_TYPE)
         {
@@ -2442,8 +2442,8 @@ namespace item
 
     bool MaterialFactory::IsCombinationValid(const MaterialPair_t & MATERIAL_PAIR) const
     {
-        auto const PRIMARY{ MATERIAL_PAIR.first };
-        auto const SECONDARY{ MATERIAL_PAIR.second };
+        auto const PRIMARY { MATERIAL_PAIR.first };
+        auto const SECONDARY { MATERIAL_PAIR.second };
 
         if (material::IsSolid(PRIMARY) == false)
         {
@@ -2510,7 +2510,7 @@ namespace item
         const MaterialVec_t & VECTOR4,
         const MaterialVec_t & VECTOR5) const
     {
-        MaterialVec_t materials{ VECTOR1 };
+        MaterialVec_t materials { VECTOR1 };
         materials.insert(std::end(materials), std::begin(VECTOR2), std::end(VECTOR2));
         materials.insert(std::end(materials), std::begin(VECTOR3), std::end(VECTOR3));
         materials.insert(std::end(materials), std::begin(VECTOR4), std::end(VECTOR4));
@@ -2528,8 +2528,8 @@ namespace item
     {
         MaterialPairVec_t materialPairs;
 
-        auto const FINAL_SECONDARIES{ (
-            (ORIG_SECONDARIES.empty()) ? MaterialVec_t{ material::Nothing } : ORIG_SECONDARIES) };
+        auto const FINAL_SECONDARIES { (
+            (ORIG_SECONDARIES.empty()) ? MaterialVec_t { material::Nothing } : ORIG_SECONDARIES) };
 
         for (auto const MATERIAL_PRIMARY : Combine(PRIMARIES))
         {
@@ -2562,15 +2562,15 @@ namespace item
         MaterialPairVec_t reducedMaterialPairs;
         reducedMaterialPairs.reserve(MATERIAL_PAIRS.size());
 
-        bool hasPrimaryLeather{ false };
-        bool hasPrimarySilk{ false };
-        bool hasPrimaryRigidNonWood{ false };
-        bool hasPrimarySteel{ false };
-        bool hasPrimarySilverOrGold{ false };
-        material::Enum onlyPrimary{ MATERIAL_PAIRS.front().first };
+        bool hasPrimaryLeather { false };
+        bool hasPrimarySilk { false };
+        bool hasPrimaryRigidNonWood { false };
+        bool hasPrimarySteel { false };
+        bool hasPrimarySilverOrGold { false };
+        material::Enum onlyPrimary { MATERIAL_PAIRS.front().first };
         for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS)
         {
-            auto const PRIMARY{ MATERIAL_PAIR.first };
+            auto const PRIMARY { MATERIAL_PAIR.first };
             if (PRIMARY == material::Leather)
             {
                 hasPrimaryLeather = true;
@@ -2639,16 +2639,16 @@ namespace item
             reducedMaterialPairs.emplace_back(MATERIAL_PAIR);
         }
 
-        auto const HAS_SECONDARY_RIGID_NONWOOD{ std::find_if(
-                                                    std::begin(reducedMaterialPairs),
-                                                    std::end(reducedMaterialPairs),
-                                                    [](auto const & MATERIAL_PAIR) {
-                                                        return (
-                                                            material::IsRigid(MATERIAL_PAIR.second)
-                                                            && (MATERIAL_PAIR.second
-                                                                != material::Wood));
-                                                    })
-                                                != std::end(reducedMaterialPairs) };
+        auto const HAS_SECONDARY_RIGID_NONWOOD { std::find_if(
+                                                     std::begin(reducedMaterialPairs),
+                                                     std::end(reducedMaterialPairs),
+                                                     [](auto const & MATERIAL_PAIR) {
+                                                         return (
+                                                             material::IsRigid(MATERIAL_PAIR.second)
+                                                             && (MATERIAL_PAIR.second
+                                                                 != material::Wood));
+                                                     })
+                                                 != std::end(reducedMaterialPairs) };
 
         if (HAS_SECONDARY_RIGID_NONWOOD)
         {
@@ -2662,7 +2662,7 @@ namespace item
                 std::end(reducedMaterialPairs));
         }
 
-        auto const HAS_SECONDARY_RIGID_NOT_BRONZE_TIN_IRON{
+        auto const HAS_SECONDARY_RIGID_NOT_BRONZE_TIN_IRON {
             std::find_if(
                 std::begin(reducedMaterialPairs),
                 std::end(reducedMaterialPairs),
@@ -2698,7 +2698,7 @@ namespace item
     const MaterialVec_t MaterialFactory::RemoveCopy(
         const MaterialVec_t & ORIG_MATERIALS, const material::Enum MATERIAL_TO_REMOVE) const
     {
-        MaterialVec_t materials{ ORIG_MATERIALS };
+        MaterialVec_t materials { ORIG_MATERIALS };
 
         materials.erase(
             std::remove(std::begin(materials), std::end(materials), MATERIAL_TO_REMOVE),
@@ -2735,7 +2735,7 @@ namespace item
             std::unique(std::begin(materialPairs), std::end(materialPairs)),
             std::end(materialPairs));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (materialPairs.empty() == false),
             "item::MaterialFactory::CleanupMaterialPairVectorAndEnsureNotEmpty(will_remove_lame="
                 << std::boolalpha << WILL_REMOVE_LAME_MATERIALS << ", allow_invalid="

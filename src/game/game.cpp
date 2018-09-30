@@ -14,8 +14,8 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/world-factory.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 
 #include <exception>
 #include <memory>
@@ -61,7 +61,7 @@ namespace game
 
     void Game::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "Game::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -69,7 +69,7 @@ namespace game
 
     GameState & Game::State() const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "Game::State() was called when there was no state.");
 
         return *stateUPtr_;

@@ -12,7 +12,7 @@
 #include "creature-warehouse.hpp"
 
 #include "creature/creature.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -58,7 +58,7 @@ namespace creature
 
     void CreatureWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_),
             "creature::CreatureWarehouse::Release() found instanceUPtr that was null.");
 

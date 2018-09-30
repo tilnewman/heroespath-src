@@ -11,8 +11,8 @@
 //
 #include "settings-file.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfutil/video-mode.hpp"
@@ -65,7 +65,7 @@ namespace misc
 
     void SettingsFile::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "SettingsFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -107,7 +107,8 @@ namespace misc
 
             SetInt(KEY_RESOLUTION_BITDEPTH_, static_cast<int>(bitDepth));
 
-            M_ASSERT_OR_LOGANDTHROW_SS(Save(), "SettingsFile::AcquireAndSave() failed to Save().");
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                Save(), "SettingsFile::AcquireAndSave() failed to Save().");
         }
         catch (const std::exception & E)
         {

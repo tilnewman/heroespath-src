@@ -177,7 +177,7 @@ namespace interact
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!characterPtrOpt_),
             "interact::LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup() "
             "was called when LockPicking::characterPtrOpt_ was uninitialized.");

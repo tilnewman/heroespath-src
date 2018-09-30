@@ -9,8 +9,8 @@
 //
 // game-state.cpp
 //
-#include "game-state.hpp"
 #include "creature/creature.hpp"
+#include "game-state.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
@@ -32,7 +32,7 @@ namespace game
 
     World & GameState::GetWorld()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (worldUPtr_), "GameState::GetWorld() called when the worldUptr_ was null.");
 
         return *worldUPtr_;
@@ -40,7 +40,7 @@ namespace game
 
     creature::PlayerParty & GameState::Party()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (partyUPtr_), "GameState::GetParty() called when the partyUptr_ was null.");
 
         return *partyUPtr_;

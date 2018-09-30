@@ -30,7 +30,7 @@
 #include "game/phase-enum.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
@@ -400,7 +400,7 @@ namespace stage
 
                 auto const SELECTED_INDEX { PACKET_PTR->SelectionOpt().value() };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (SELECTED_INDEX < SONGS_PVEC.size()),
                     "stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
                         << SELECTED_INDEX
@@ -425,7 +425,7 @@ namespace stage
 
                 auto const SELECTED_INDEX { PACKET_PTR->SelectionOpt().value() };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (SELECTED_INDEX < SPELLS_PVEC.size()),
                     "stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
                         << SELECTED_INDEX
@@ -1015,7 +1015,7 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::Spell == animPhase_))
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!spellBeingCastPtrOpt_),
                 "stage::CombatStage::UpdateTime() turnPhase_=PerformAnim and animPhase_=Spell but "
                 "spellBeingCastPtrOpt_ was uninitialized.");
@@ -1949,7 +1949,7 @@ namespace stage
             {
                 auto const TARGETS_PVEC { turnActionInfo_.Targets() };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TARGETS_PVEC.empty() == false),
                     "stage::CombatStage::HandleEnemyTurnStep2_Perform(turn_action_info="
                         << turnActionInfo_.ToString()
@@ -2032,7 +2032,7 @@ namespace stage
             {
                 auto const TARGETS_PVEC { turnActionInfo_.Targets() };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TARGETS_PVEC.empty() == false),
                     "stage::CombatStage::HandleEnemyTurnStep2_Perform(turn_action_info="
                         << turnActionInfo_.ToString()
@@ -2104,7 +2104,7 @@ namespace stage
         zoomSliderOrigPos_ = zoomSliderBarUPtr_->PositionRatio();
         turnCreaturePtrOpt_ = combat::Encounter::Instance()->CurrentTurnCreaturePtrOpt();
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!turnCreaturePtrOpt_),
             "stage::CombatStage::StartTurn_Step1() Encounter::CurrentTurnCreaturePtrOpt() returned "
             "something uninitialized.");
@@ -3333,7 +3333,7 @@ namespace stage
 
                 auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CREATURE_EFFECTS_VEC.size() == 1),
                     "stage::CombatStage::StartPerformAnim(turnActionPhase_=MeleeWeapon) "
                         << "found the fightResult.Effects().size=" << CREATURE_EFFECTS_VEC.size()

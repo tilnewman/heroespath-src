@@ -14,7 +14,7 @@
 #include "combat/combat-node.hpp"
 #include "creature/creature.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"

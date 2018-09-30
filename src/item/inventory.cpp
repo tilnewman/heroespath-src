@@ -91,7 +91,7 @@ namespace item
 
     Weight_t Inventory::Weight() const
     {
-        Weight_t totalWeight{ 0_weight };
+        Weight_t totalWeight { 0_weight };
 
         for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
@@ -309,7 +309,7 @@ namespace item
         auto const FOUND_CITER(
             std::find(equippedItemsPVec_.begin(), equippedItemsPVec_.end(), ITEM_PTR));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FOUND_CITER != equippedItemsPVec_.end()),
             "Inventory::ItemUnEquip(\"" << ITEM_PTR->Name()
                                         << "\") did not find the item in the equipped inventory.");
@@ -340,7 +340,7 @@ namespace item
 
     Armor_t Inventory::ArmorRating() const
     {
-        Armor_t armorRating{ 0_armor };
+        Armor_t armorRating { 0_armor };
 
         for (auto const & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {

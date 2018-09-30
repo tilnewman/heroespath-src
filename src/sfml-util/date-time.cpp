@@ -11,19 +11,7 @@
 //
 #include "date-time.hpp"
 
-// suppress warnings that are safe to ignore in boost
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic ignored "-Wundef"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif
-
 #include <boost/date_time/posix_time/posix_time.hpp>
-
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
-#pragma GCC diagnostic warning "-Wundef"
-#pragma GCC diagnostic warning "-Wswitch-enum"
-#endif
 
 #include <iomanip>
 #include <iostream>
@@ -51,56 +39,58 @@ namespace sfml_util
 
     const Date Date::CurrentDate()
     {
-        auto const DATE{ boost::posix_time::microsec_clock::local_time().date() };
+        auto const DATE { boost::posix_time::second_clock::local_time().date() };
         return Date(DATE.year(), DATE.month(), DATE.day());
     }
 
-    bool operator==(const Date & L, const Date & R)
-    {
-        return ((L.year == R.year) && (L.month == R.month) && (L.day == R.day));
-    }
-
-    Time::Time(const int HOURS, const int MINUTES, const int SECONDS)
+    Time::Time(const int HOURS, const int MINUTES, const int SECONDS, const int SUBSECONDS)
         : hours(HOURS)
         , minutes(MINUTES)
         , seconds(SECONDS)
+        , milliseconds(SUBSECONDS)
     {}
 
     Time::Time(const sf::Time & TIME_OBJ)
         : hours(0)
         , minutes(0)
         , seconds(0)
+        , milliseconds(0)
     {
-        auto const SECONDS_INT{ static_cast<int>(TIME_OBJ.asSeconds()) };
+        auto const SECONDS_FLOAT { TIME_OBJ.asSeconds() };
+        auto const SECONDS_INT { static_cast<int>(SECONDS_FLOAT) };
         hours = SECONDS_INT / SECONDS_IN_HOUR_;
         minutes = (SECONDS_INT % SECONDS_IN_HOUR_) / SECONDS_IN_MINUTE_;
         seconds = (SECONDS_INT - (hours * SECONDS_IN_HOUR_)) - (minutes * SECONDS_IN_MINUTE_);
-
-        if (seconds < 0)
-        {
-            seconds = 0;
-        }
+        milliseconds = static_cast<int>((SECONDS_FLOAT - std::floor(SECONDS_FLOAT)) * 1000.0f);
     }
 
     const std::string Time::ToString() const
     {
         std::ostringstream ss;
+
         ss << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << ":"
-           << std::setw(2) << seconds;
+           << std::setw(2) << seconds << "." << std::setw(2) << milliseconds;
 
         return ss.str();
     }
 
-    bool Time::IsValid() const { return ((hours >= 0) && (minutes >= 0) && (seconds >= 0)); }
+    bool Time::IsValid() const
+    {
+        return ((hours >= 0) && (minutes >= 0) && (seconds >= 0) && (milliseconds >= 0));
+    }
 
     const Time Time::CurrentTime()
     {
-        auto const TOD{ boost::posix_time::microsec_clock::local_time().time_of_day() };
+        auto const TOD { boost::posix_time::microsec_clock::local_time().time_of_day() };
 
         return Time(
             static_cast<int>(TOD.hours()),
             static_cast<int>(TOD.minutes()),
-            static_cast<int>(TOD.seconds()));
+            static_cast<int>(TOD.seconds()),
+            static_cast<int>(
+                TOD.total_milliseconds()
+                - (static_cast<std::int64_t>(TOD.total_seconds())
+                   * static_cast<std::int64_t>(1000))));
     }
 
     // simple wrapper for date and time
@@ -115,5 +105,6 @@ namespace sfml_util
         ss << date.ToString() << " " << time.ToString();
         return ss.str();
     }
+
 } // namespace sfml_util
 } // namespace heroespath

@@ -9,7 +9,6 @@
 //
 // statement-factory.hpp
 //
-#include "statement-factory.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
@@ -23,6 +22,7 @@
 #include "interact/statement-town.hpp"
 #include "map/level-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "statement-factory.hpp"
 
 namespace heroespath
 {
@@ -33,15 +33,15 @@ namespace interact
 
         const std::string Factory::Make(const CategoryVec_t & CATEGORIES, const Mood MOOD)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (CATEGORIES.empty() == false),
                 "interact::talk::Factory::Make() was given an empty category vector.");
 
-            auto const CATEGORY{ misc::Vector::SelectRandom(CATEGORIES) };
+            auto const CATEGORY { misc::Vector::SelectRandom(CATEGORIES) };
 
-            auto const & PARTY{ game::Game::Instance()->State().Party() };
+            auto const & PARTY { game::Game::Instance()->State().Party() };
 
-            auto const LEVEL{
+            auto const LEVEL {
                 game::Game::Instance()->State().GetWorld().GetMaps().Current().Which()
             };
 

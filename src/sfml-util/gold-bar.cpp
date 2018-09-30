@@ -11,7 +11,7 @@
 //
 #include "gold-bar.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/position.hpp"

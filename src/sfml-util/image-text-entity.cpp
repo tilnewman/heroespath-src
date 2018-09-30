@@ -11,8 +11,8 @@
 //
 #include "image-text-entity.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/image-entity.hpp"
 #include "sfml-util/text-entity.hpp"
 #include "sfutil/display.hpp"

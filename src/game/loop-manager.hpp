@@ -11,7 +11,7 @@
 //  A class that controls the running game loop with a queue of commands
 //
 #include "game/phase-enum.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-response-enum.hpp"

@@ -15,8 +15,8 @@
 #include "creature/race-enum.hpp"
 #include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
-#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 
 #include <sstream>
 
@@ -88,12 +88,12 @@ namespace item
         // Use a creature's rank min/max to establish a kind of combined power/worth/value
         // summon score, then append that to the summoning item's score.
 
-        auto const CREATURE_RANK_RANGE{ creature::race::RaceRoleRanks(
+        auto const CREATURE_RANK_RANGE { creature::race::RaceRoleRanks(
             SUMMON_INFO.Race(), SUMMON_INFO.Role()) };
 
-        auto const SUMMON_COUNT_D{ static_cast<double>(SUMMON_INFO.Count()) };
+        auto const SUMMON_COUNT_D { static_cast<double>(SUMMON_INFO.Count()) };
 
-        auto const CREATURE_RANK_AVG{
+        auto const CREATURE_RANK_AVG {
             (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5
         };
 
@@ -121,7 +121,7 @@ namespace item
             ss << ", is_pixie=" << std::boolalpha << isPixie_;
         }
 
-        auto const ROLE_RESTRICTION{ RoleRestriction() };
+        auto const ROLE_RESTRICTION { RoleRestriction() };
 
         if (ROLE_RESTRICTION != creature::role::Count)
         {
@@ -193,7 +193,7 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        auto const MISC_TYPE{ THIN_PROFILE.MiscType() };
+        auto const MISC_TYPE { THIN_PROFILE.MiscType() };
 
         element_ = ELEMENT_TYPE;
 
@@ -233,7 +233,7 @@ namespace item
 
         if (ELEMENT_TYPE != element_type::None)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc_type::EquipCategory(MISC_TYPE) & category::Equippable) > 0),
                 "item::ItemProfile::SetMisc(misc_type="
                     << misc_type::ToString(MISC_TYPE) << ", is_pixie=" << std::boolalpha << IS_PIXIE
@@ -741,7 +741,7 @@ namespace item
         const bool IS_PIXIE,
         const misc_type::Enum MISC_TYPE)
     {
-        auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+        auto const DETAILS { weapon::WeaponDetailLoader::LookupWeaponDetails(
             THIN_PROFILE.WeaponInfo().DetailsKeyName()) };
 
         category_

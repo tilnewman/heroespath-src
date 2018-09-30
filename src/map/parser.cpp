@@ -12,12 +12,12 @@
 #include "parser.hpp"
 
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 #include "map/shadow-masker.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -363,7 +363,7 @@ namespace map
                 auto const ANIM_ENUM { static_cast<sfml_util::Animations::Enum>(
                     sfml_util::Animations::FromString(ANIM_NAME)) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (ANIM_ENUM != sfml_util::Animations::Count),
                     "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
                         << ANIM_NAME << "\"");
@@ -520,11 +520,11 @@ namespace map
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (wasEntrySet),
             "map::Parser::Parse_Transition_Properties() was unable to parse an entry type.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (level != Level::Count),
             "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
     }
@@ -607,7 +607,7 @@ namespace map
         auto const TILE_WIDTH { static_cast<unsigned>(layout.tile_size_v.x) };
         auto const TILE_HEIGHT { static_cast<unsigned>(layout.tile_size_v.y) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
             "map::Parser::SetupEmptyTexture() sf::RenderTexture::create("
                 << layout.tile_size_v.x << "x" << layout.tile_size_v.y << ") failed.");

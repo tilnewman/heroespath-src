@@ -602,7 +602,7 @@ namespace stage
 
             auto const RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SPELL, selection="
                     << PACKET_PTR->SelectionOpt().value()
@@ -621,7 +621,7 @@ namespace stage
             auto const SONGS_PVEC { creaturePtr_->SongsPVec() };
             auto const RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SONG, selection="
                     << PACKET_PTR->SelectionOpt().value()

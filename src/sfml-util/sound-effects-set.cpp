@@ -30,7 +30,7 @@ namespace sfml_util
     SfxSet::SfxSet(const sound_effect::Enum ENUM)
         : sfxEnums_(1, ENUM)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((ENUM != sound_effect::None) && (ENUM != sound_effect::Count)),
             "SfxSet::Constructor(enum=" << ENUM << ") enum was invalid.");
     }
@@ -38,24 +38,24 @@ namespace sfml_util
     SfxSet::SfxSet(const sound_effect::Enum FIRST_ENUM, const sound_effect::Enum LAST_ENUM)
         : sfxEnums_()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((FIRST_ENUM != sound_effect::None) && (FIRST_ENUM != sound_effect::Count)),
             "SfxSet::Constructor(first=" << FIRST_ENUM << ", last=" << LAST_ENUM
                                          << ") first was invalid.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((LAST_ENUM != sound_effect::None) && (LAST_ENUM != sound_effect::Count)),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
                                          << ", last=" << LAST_ENUM << ") last was invalid.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FIRST_ENUM != LAST_ENUM),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
                                          << ", last=" << sound_effect::ToString(LAST_ENUM)
                                          << ") first and last were the same.");
 
-        auto const FIRST{ static_cast<int>(FIRST_ENUM) };
-        auto const LAST{ static_cast<int>(LAST_ENUM) };
+        auto const FIRST { static_cast<int>(FIRST_ENUM) };
+        auto const LAST { static_cast<int>(LAST_ENUM) };
         sfxEnums_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
 
         for (int i(FIRST); i <= LAST; ++i)
@@ -63,7 +63,7 @@ namespace sfml_util
             sfxEnums_.emplace_back(static_cast<sound_effect::Enum>(i));
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (sfxEnums_.empty() == false),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
                                          << ", last=" << sound_effect::ToString(LAST_ENUM)
@@ -102,7 +102,7 @@ namespace sfml_util
 
     void SfxSet::PlayAt(const std::size_t INDEX) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxEnums_.size()),
             "sfml_util::SfxSet::PlayAt(" << INDEX << ") was given an index out of range.");
 

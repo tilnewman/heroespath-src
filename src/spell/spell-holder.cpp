@@ -26,7 +26,7 @@ namespace spell
 
     void Holder::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (spellsUVec_.empty()), "spell::Holder::Setup() was called twice.");
 
         // Note::Keep order in sync with spell::Spells::Enum
@@ -160,7 +160,7 @@ namespace spell
 
     bool Holder::Test()
     {
-        static auto hasInitialPrompt{ false };
+        static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
@@ -168,38 +168,38 @@ namespace spell
                 "spell::Holder::Test() Starting Tests...");
         }
 
-        static misc::EnumUnderlying_t spellIndex{ 0 };
+        static misc::EnumUnderlying_t spellIndex { 0 };
         if (spellIndex < Spells::Count)
         {
-            auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
-            auto const SPELL_PTR{ Get(NEXT_ENUM) };
+            auto const NEXT_ENUM { static_cast<Spells::Enum>(spellIndex) };
+            auto const SPELL_PTR { Get(NEXT_ENUM) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Name().empty() == false),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in an empty Name().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Desc().empty() == false),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in an empty Desc().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->DescExtra().empty() == false),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->ManaCost().IsNonZero()),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Rank().IsNonZero()),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") resulted in a zero Rank.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Name() == Spells::Name(NEXT_ENUM)),
                 "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
                                          << "\") Spell is out of order.");
@@ -219,14 +219,14 @@ namespace spell
 
     const SpellPtr_t Holder::Get(const Spells::Enum SPELL_ENUM)
     {
-        auto const SPELL_INDEX{ static_cast<std::size_t>(SPELL_ENUM) };
+        auto const SPELL_INDEX { static_cast<std::size_t>(SPELL_ENUM) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (spellsUVec_.empty() == false),
             "spell::Holder::Get(spell_enum=" << SPELL_ENUM
                                              << ") was called when the holder was empty.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (SPELL_INDEX < spellsUVec_.size()),
             "spell::Holder::Get(spell_enum="
                 << SPELL_ENUM << ", spell_index=" << SPELL_INDEX

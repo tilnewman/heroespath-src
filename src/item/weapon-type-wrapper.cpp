@@ -11,7 +11,7 @@
 //
 #include "weapon-type-wrapper.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 
 #include <exception>
@@ -103,7 +103,7 @@ namespace item
             errorSS << "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\"" << SYSTEM_NAME
                     << "\") ";
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsValidCompleteCheck()),
                 errorSS.str() << " after this 'name' constructor the object was invalid: "
                               << ToString());
@@ -145,7 +145,7 @@ namespace item
             , variant_(BODY_PART)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((BODY_PART != body_part::Count) && (BODY_PART != body_part::Skin)),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(body_part="
                     << ((body_part::Count == BODY_PART) ? "Count" : body_part::ToString(BODY_PART))
@@ -164,7 +164,7 @@ namespace item
             , variant_(SWORD_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SWORD_TYPE != sword_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(sword_type=Count) -Count is "
                 "invalid.");
@@ -182,7 +182,7 @@ namespace item
             , variant_(AXE_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (AXE_TYPE != axe_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(axe_type=Count) -Count is "
                 "invalid.");
@@ -200,7 +200,7 @@ namespace item
             , variant_(CLUB_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (CLUB_TYPE != club_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(club_type=Count) -Count is "
                 "invalid.");
@@ -218,7 +218,7 @@ namespace item
             , variant_(WHIP_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (WHIP_TYPE != whip_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(whip_type=Count) -Count is "
                 "invalid.");
@@ -236,7 +236,7 @@ namespace item
             , variant_(PROJ_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (PROJ_TYPE != projectile_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(projectile_type=Count) -Count "
                 "is invalid.");
@@ -254,7 +254,7 @@ namespace item
             , variant_(BSTAFF_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (BSTAFF_TYPE != bladedstaff_type::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(bladedstaff_type=Count) -Count "
                 "is invalid.");
@@ -878,7 +878,7 @@ namespace item
 
             elementTypes_.emplace_back(element_type::None);
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsValidCompleteCheck()),
                 "item::weapon::WeaponTypeWrapper::SetNamesAndVerify("
                     << CALLER_CONTEXT_DESCRIPTION

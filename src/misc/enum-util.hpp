@@ -9,9 +9,9 @@
 //
 // enum-util.hpp
 //
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/wrap-enum.hpp"
@@ -54,7 +54,7 @@ namespace misc
                 TestLog(msgSS.str() + "Starting...");
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (LAST_VALID_VALUE > 0),
                 msgSS.str() << "was given a last_valid_value that was not > zero.");
 
@@ -89,14 +89,14 @@ namespace misc
 
                     if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
                     {
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (STRING.empty()),
                             msgSS.str() << "ToString() returned non-empty string (\"" << STRING
                                         << "\") on first value.");
                     }
                     else
                     {
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (STRING.empty() == false),
                             msgSS.str() << "ToString() returned an empty string on value "
                                         << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
@@ -108,19 +108,19 @@ namespace misc
                                                   STRING)
                                               != std::end(alreadyGeneratedStrings) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (IS_DUPLICATE == false),
                         msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
                                     << "\" is a duplicate of a previous generated string.");
 
                     auto const FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
                         msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
                                     << "!=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (EnumWrapper_t::IsValid(
                             static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
                         msgSS.str()
@@ -243,7 +243,7 @@ namespace misc
             using UnderlyingTypeActual_t =
                 typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
                 TypeName() << "Underlying type was: "
                            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
@@ -251,38 +251,38 @@ namespace misc
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNot>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Not == 0),
                     TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNothing>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Nothing == 0),
                     TypeName() << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNever>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Never == 0),
                     TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNone>::value)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::None == 0),
                     TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Count > 0),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not > zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Count == LargestValidValue() + 1),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not one less than the largest valid value="
@@ -498,16 +498,16 @@ namespace misc
             using UnderlyingTypeActual_t =
                 typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
                 TypeName() << "Underlying type was: "
                            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
                            << " instead of what it should be: " << UnderlyingTypeName() << ".");
 
-            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::None == 0), TypeName() << "::None was not zero.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(
+            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Last > 0),
                 TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
                            << " is not > zero.");

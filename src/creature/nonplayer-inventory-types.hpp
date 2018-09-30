@@ -15,8 +15,8 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
@@ -47,27 +47,27 @@ namespace creature
         template <typename T>
         T MappedRandomFloatChance(const misc::VectorMap<T, float> & MAP)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (MAP.Empty() == false),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
                     << boost::typeindex::type_id<T>().pretty_name()
                     << "\") called when the map was empty.");
 
-            auto chanceSubTotal{ 0.0f };
+            auto chanceSubTotal { 0.0f };
             for (auto const & NEXT_MAP_PAIR : MAP)
             {
                 chanceSubTotal += NEXT_MAP_PAIR.second;
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((misc::IsRealZero(chanceSubTotal) == false) && (chanceSubTotal > 0.0f)),
                 "creature::nonplayer::MappedRandomFloatChance(T=\""
                     << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
-            auto const RAND{ misc::random::Float(0.0f, chanceSubTotal) };
+            auto const RAND { misc::random::Float(0.0f, chanceSubTotal) };
 
-            auto cumulativeChance{ 0.0f };
+            auto cumulativeChance { 0.0f };
             for (auto const & NEXT_MAP_PAIR : MAP)
             {
                 cumulativeChance += NEXT_MAP_PAIR.second;
@@ -105,7 +105,7 @@ namespace creature
 
             ss << "}  ";
 
-            std::size_t i{ 0 };
+            std::size_t i { 0 };
             for (auto const & NEXT_MAP_PAIR : MAP)
             {
                 if (NEXT_MAP_PAIR.second > 0.0f)

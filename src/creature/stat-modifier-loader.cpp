@@ -31,7 +31,7 @@ namespace creature
 
         misc::SplitByChar(DATA_FILE_VALUE_STR, statValuesStrVec, ',', true, true);
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (statValuesStrVec.size() == 6),
             "creature::StatModifierLoader::Load() was unable to extract exactly "
                 << "six comma sep values from \"" << DATA_FILE_VALUE_STR
@@ -52,7 +52,7 @@ namespace creature
                 nextValue = ERROR_VALUE;
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (nextValue != ERROR_VALUE),
                 "creature::StatModifierLoader::Load() was unable to convert \""
                     << statValuesStrVec.at(i) << "\" to an int value.");

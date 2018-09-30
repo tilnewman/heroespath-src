@@ -11,8 +11,8 @@
 //
 #include "armor-type-wrapper.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 
 #include <exception>
@@ -98,7 +98,7 @@ namespace item
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsValidCompleteCheck()),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(name="
                     << SYSTEM_NAME << ", orig_base_type="
@@ -132,7 +132,7 @@ namespace item
             , variant_()
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (BODY_PART == body_part::Skin),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(body_part="
                     << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
@@ -151,7 +151,7 @@ namespace item
             , variant_(COVER_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (COVER_TYPE != cover_type::Count),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(cover_type=Count) -Count is "
                 "invalid.");
@@ -169,7 +169,7 @@ namespace item
             , variant_(HELM_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (HELM_TYPE != helm_type::Count),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(helm_type=Count) -Count is "
                 "invalid.");
@@ -187,7 +187,7 @@ namespace item
             , variant_(SHIELD_TYPE)
             , elementTypes_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SHIELD_TYPE != shield_type::Count),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(shield_type=Count) -Count is "
                 "invalid.");
@@ -454,7 +454,7 @@ namespace item
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsValidCompleteCheck()),
                 "item::armor::ArmorTypeWrapper::SetNamesAndVerify("
                     << CALLER_CONTEXT_DESCRIPTION

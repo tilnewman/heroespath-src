@@ -12,7 +12,7 @@
 #include "strategy-details.hpp"
 
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include <algorithm>
 
@@ -54,7 +54,7 @@ namespace combat
                 const std::string KEY(keySS.str());
 
                 const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
                         << RACE_STR << "\")  failed to find gamedatafile value with key=\"" << KEY
@@ -79,7 +79,7 @@ namespace combat
                     std::vector<std::string> subPartsVec;
                     misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (subPartsVec.empty() == false),
                         "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
                             << RACE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
@@ -166,7 +166,7 @@ namespace combat
                 const std::string KEY(keySS.str());
 
                 const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
                         << ROLE_STR << "\")  failed to find gamedatafile value with key=\"" << KEY
@@ -190,7 +190,7 @@ namespace combat
                 {
                     std::vector<std::string> subPartsVec;
                     misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (subPartsVec.empty() == false),
                         "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""
                             << ROLE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
@@ -502,7 +502,7 @@ namespace combat
 
                     misc::SplitByChar(NEXT_SUBSTRING, countCountColonChanceStrVec, ':', true, true);
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         ((countCountColonChanceStrVec.size() == 2)
                          || (countCountColonChanceStrVec.size() == 3)),
                         "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
@@ -523,7 +523,7 @@ namespace combat
                         misc::SplitByChar(
                             countCountColonChanceStrVec.at(0), rangeNumberStrVec, '-', true, true);
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             ((rangeNumberStrVec.size() == 1) || (rangeNumberStrVec.size() == 2)),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid range "
                             "string: \""
@@ -544,7 +544,7 @@ namespace combat
                                 rangeEnd = -1;
                             }
 
-                            M_ASSERT_OR_LOGANDTHROW_SS(
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (rangeEnd >= 0),
                                 "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
                                 "range end string: \""
@@ -564,7 +564,7 @@ namespace combat
                             rangeStart = -1;
                         }
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (rangeStart >= 0),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid range "
                             "start string: \""
@@ -573,7 +573,7 @@ namespace combat
                                    "equal to zero.");
 
                         if (rangeEnd > 0)
-                            M_ASSERT_OR_LOGANDTHROW_SS(
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (rangeStart < rangeEnd),
                                 "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
                                 "range string: \""
@@ -599,7 +599,7 @@ namespace combat
                     else
                     {
                         // handle case "dist:(initial_count):(initial_chance)
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (countCountColonChanceStrVec.at(0) == "dist"),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
                             "initial:count:chance string: \""
@@ -616,7 +616,7 @@ namespace combat
                             initialCount = -1;
                         }
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (initialCount >= 0),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
                             "initial count string: \""

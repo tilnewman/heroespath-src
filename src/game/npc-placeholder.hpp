@@ -36,13 +36,13 @@ namespace game
             , walkBoundsIndex_(WALK_BOUNDS_INDEX)
             , isDrunk_(IS_DRUNK)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (AVATAR_TYPE_VEC.empty() == false),
                 "NpcPlaceholder::NpcPlaceholder(countMin="
                     << COUNT_MIN << ", countMax=" << COUNT_MAX << ", walkBoundsIndex="
                     << WALK_BOUNDS_INDEX << ") was given an empty AVATAR_TYPE_VEC.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (COUNT_MIN <= COUNT_MAX),
                 "NpcPlaceholder::NpcPlaceholder(countMin="
                     << COUNT_MIN << ", countMax=" << COUNT_MAX

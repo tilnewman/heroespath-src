@@ -11,8 +11,8 @@
 //
 #include "trap-holder.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
@@ -25,7 +25,7 @@ namespace combat
     namespace trap
     {
 
-        TrapVec_t combat::trap::Holder::traps_{};
+        TrapVec_t combat::trap::Holder::traps_ {};
 
         void Holder::Fill()
         {
@@ -250,7 +250,7 @@ namespace combat
 
         int Holder::GetMinSeverity()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (traps_.empty() == false),
                 "combat::trap::Holder::GetWithMinSeverity() called when the holder was "
                 "empty.");
@@ -260,7 +260,7 @@ namespace combat
 
         int Holder::GetMaxSeverity()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (traps_.empty() == false),
                 "combat::trap::Holder::GetWithMinSeverity() called when the holder was "
                 "empty.");
@@ -271,18 +271,18 @@ namespace combat
         const TrapVec_t
             Holder::GetWithSeverityRatioBetween(const float THE_MIN, const float THE_MAX)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (traps_.empty() == false),
                 "combat::trap::Holder::GetWithSeverityRatio() called when the holder was "
                 "empty.");
 
-            auto const SEVERITY_MAX_F{ static_cast<float>(GetMaxSeverity()) };
+            auto const SEVERITY_MAX_F { static_cast<float>(GetMaxSeverity()) };
 
             TrapVec_t trapsWithSeverityWithinRange;
 
             for (auto const & TRAP : traps_)
             {
-                auto const SEVERITY_RATIO{ static_cast<float>(TRAP.Severity()) / SEVERITY_MAX_F };
+                auto const SEVERITY_RATIO { static_cast<float>(TRAP.Severity()) / SEVERITY_MAX_F };
 
                 if (((SEVERITY_RATIO > THE_MIN) && (SEVERITY_RATIO < THE_MAX))
                     || misc::IsRealClose(SEVERITY_RATIO, THE_MIN)
@@ -307,13 +307,13 @@ namespace combat
 
         const Trap Holder::SelectRandomWithSeverityRatioNear(const float SEVERITY_RATIO)
         {
-            auto severityRatioMin{ SEVERITY_RATIO - 0.333f };
+            auto severityRatioMin { SEVERITY_RATIO - 0.333f };
             if (severityRatioMin < 0.0f)
             {
                 severityRatioMin = 0.0f;
             }
 
-            auto severityRatioMax{ SEVERITY_RATIO + 0.1f };
+            auto severityRatioMax { SEVERITY_RATIO + 0.1f };
             if (severityRatioMax > 1.0f)
             {
                 severityRatioMax = 1.0f;

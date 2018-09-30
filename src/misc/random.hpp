@@ -87,7 +87,7 @@ namespace misc
             // as expected, except when min>max when it seemed to return random out-of-range values.
             // So to ensure results within range check that min<=max.
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (THE_MIN <= THE_MAX),
                 "misc::random::NonReal<" << typeid(T).name() << ">(min=" << THE_MIN << ", max="
                                          << THE_MAX << ")  The min was not <= the max.");

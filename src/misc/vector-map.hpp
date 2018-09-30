@@ -205,7 +205,7 @@ namespace misc
 
         value_type & Front()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), "misc::VectorMap::Front() non-const, called when empty.");
 
             return pairs_.front();
@@ -213,7 +213,7 @@ namespace misc
 
         value_type & Back()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), "misc::VectorMap::Back() non-const, called when empty.");
 
             return pairs_.back();
@@ -221,7 +221,7 @@ namespace misc
 
         const value_type & Front() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), "misc::VectorMap::Front() const, called when empty.");
 
             return pairs_.front();
@@ -229,7 +229,7 @@ namespace misc
 
         const value_type & Back() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), "misc::VectorMap::Back() const, called when empty.");
 
             return pairs_.back();

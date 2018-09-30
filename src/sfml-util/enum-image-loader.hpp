@@ -78,7 +78,7 @@ namespace sfml_util
 
                 auto const MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     ((texture.getSize().x == MAX_DIMMENSION_U)
                      || (texture.getSize().y == MAX_DIMMENSION_U)),
                     makeLogPrefix()

@@ -73,7 +73,7 @@ namespace creature
     {
         auto const VALID_ROLES { race::Roles(RACE) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
              != std::end(VALID_ROLES)),
             "creature::CreatureFactory::MakeAndEquipEnemy(sex="

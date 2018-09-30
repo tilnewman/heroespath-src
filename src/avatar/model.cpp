@@ -11,8 +11,8 @@
 //
 #include "avatar/lpc-view.hpp"
 #include "game/npc.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 #include "model.hpp"
@@ -328,7 +328,7 @@ namespace avatar
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (walkRectIndex_ < walkRects_.size()),
                 "avatar::Model::RandomWalkTarget() was called when walkRectIndex_ ("
                     << walkRectIndex_ << ") was out of bounds with walkRects vector of size="

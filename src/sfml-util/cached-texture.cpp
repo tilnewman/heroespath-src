@@ -10,9 +10,9 @@
 #include "cached-texture.hpp"
 
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <SFML/Graphics/Image.hpp>
@@ -225,7 +225,7 @@ namespace sfml_util
 
     const sf::Texture & CachedTextures::At(const std::size_t INDEX) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < indexes_.size()),
             "sfml_util::CachedTextures::At("
                 << INDEX << ") but that index was out of bounds.  (indexes_.size()="

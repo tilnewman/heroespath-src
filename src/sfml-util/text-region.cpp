@@ -11,9 +11,9 @@
 //
 #include "text-region.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/text-renderer.hpp"

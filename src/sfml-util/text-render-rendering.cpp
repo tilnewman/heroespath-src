@@ -9,8 +9,8 @@
 //
 #include "text-render-rendering.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/size-and-scale.hpp"
 

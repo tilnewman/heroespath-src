@@ -22,8 +22,8 @@
 #include "game/world.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -139,7 +139,7 @@ namespace combat
 
     void Encounter::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "combat::Encounter::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -163,7 +163,7 @@ namespace combat
 
     void Encounter::Runaway(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (IsRunaway(CREATURE_PTR) == false),
             "combat::Encounter::IsRunaway() given a creature that already ran away.");
 
@@ -186,7 +186,7 @@ namespace combat
     {
         auto const FOUND_ITER { turnInfoMap_.Find(CREATURE_PTR) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FOUND_ITER != turnInfoMap_.end()),
             "combat::Encounter::GetTurnInfoCopy(creature={"
                 << CREATURE_PTR->ToString() << "}) was not found in the turnInfoMap_.");
@@ -253,7 +253,7 @@ namespace combat
             sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (nonPlayerPartyPVec_.empty() == false),
             "combat::Encounter::BeginCombatTasks() was called when nonPlayerPartyPvec_ was empty.");
 
@@ -424,7 +424,7 @@ namespace combat
         creature::CreaturePVec_t creaturesThatHaveNotTakenTurnYetPVec(
             misc::Vector::Exclude(allLivingCreaturesPVec, turnOverPVec_));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (creaturesThatHaveNotTakenTurnYetPVec.empty() == false),
             "combat::Encounter::SortAndSetTurnCreature("
                 << ((turnCreaturePtrOpt_) ? turnCreaturePtrOpt_.value()->Name() : "nullptr")

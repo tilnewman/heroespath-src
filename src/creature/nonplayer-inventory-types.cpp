@@ -78,7 +78,7 @@ namespace creature
 
         item::material::Enum ItemChances::RandomMaterialPri() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (mat_map_pri.Empty() == false),
                 "creature::nonplayer::ItemChances::RandomMaterialPri() "
                     << "called when mat_map_pri is empty.");
@@ -124,7 +124,7 @@ namespace creature
                 }
             };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (i < MAX_ITERATIONS),
                 "creature::nonplayer::ItemChances::SetCountChanceIncrement("
                     << CHANCE << ") reached the sentinel of " << MAX_ITERATIONS
@@ -426,7 +426,7 @@ namespace creature
             std::vector<std::string> racePartsVec;
             misc::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (racePartsVec.size() == 4),
                 "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
@@ -451,7 +451,7 @@ namespace creature
             std::vector<std::string> rolePartsVec;
             misc::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (rolePartsVec.size() == 4),
                 "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
@@ -579,7 +579,7 @@ namespace creature
                 std::vector<std::string> racePartsVec;
                 misc::SplitByChar(RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (racePartsVec.size() == 3),
                     "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()
@@ -592,7 +592,7 @@ namespace creature
                 // Why do these values have to add up to one?
                 // After the role adjustments below the values most definitely don't sum to 1.0...?
                 // zTn -2017-7-14
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealOne(RARELY_RACE_ADJ + RELIGIOUS_RACE_ADJ + MAGICAL_RACE_ADJ)),
                     "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole() << ") found key " << RACE_KEY << "="
@@ -622,7 +622,7 @@ namespace creature
                 std::vector<std::string> rolePartsVec;
                 misc::SplitByChar(ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (rolePartsVec.size() == 3),
                     "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()

@@ -26,7 +26,8 @@ namespace song
 
     void Holder::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((songsUVec_.empty()), "song::Holder::Setup() was called twice.");
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (songsUVec_.empty()), "song::Holder::Setup() was called twice.");
 
         // Note::Keep order in sync with song::Songs::Enum
         songsUVec_.emplace_back(std::make_unique<Song>(
@@ -114,32 +115,32 @@ namespace song
             auto const NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };
             auto const SONG_PTR { Get(NEXT_ENUM) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Name().empty() == false),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in an empty Name().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Desc().empty() == false),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in an empty Desc().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->DescExtra().empty() == false),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->ManaCost().IsNonZero()),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Rank().IsNonZero()),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") resulted in a zero Rank.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Name() == Songs::Name(NEXT_ENUM)),
                 "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
                                         << "\") Song is out of order.");
@@ -158,17 +159,17 @@ namespace song
 
     const SongPtr_t Holder::Get(const Songs::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (songsUVec_.empty() == false),
             "song::Holder::Get(" << Songs::ToString(E)
                                  << ") was called when the holder was empty.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (Songs::IsValid(E)), "song::Holder::Get(" << E << ") but that value is invalid.");
 
         auto const INDEX { static_cast<std::size_t>(E) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
             "song::Holder::Get("
                 << Songs::ToString(E)

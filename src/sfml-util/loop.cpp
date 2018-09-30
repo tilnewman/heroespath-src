@@ -12,7 +12,7 @@
 #include "loop.hpp"
 
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "sfml-util/callback.hpp"
 #include "sfml-util/date-time.hpp"

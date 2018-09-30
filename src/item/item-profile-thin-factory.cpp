@@ -56,14 +56,14 @@ namespace item
         using namespace armor;
         using namespace weapon;
 
-        auto removeIf{ [](std::vector<ItemProfileThin> & thinProfiles, auto ifLambda) {
+        auto removeIf { [](std::vector<ItemProfileThin> & thinProfiles, auto ifLambda) {
             thinProfiles.erase(
                 std::remove_if(std::begin(thinProfiles), std::end(thinProfiles), ifLambda),
                 std::end(thinProfiles));
         } };
 
-        auto removeIfArmorType{ [&](std::vector<ItemProfileThin> & thinProfiles,
-                                    const armor_type::Enum ARMOR_TYPE) {
+        auto removeIfArmorType { [&](std::vector<ItemProfileThin> & thinProfiles,
+                                     const armor_type::Enum ARMOR_TYPE) {
             removeIf(thinProfiles, [&](auto const & PROFILE) {
                 return (PROFILE.ArmorInfo().Type() == ARMOR_TYPE);
             });
@@ -82,10 +82,10 @@ namespace item
 
             case named_type::Infernal:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponSpecific(projectile_type::Longbow),
-                                                   MakeWeaponSpecific(
-                                                       projectile_type::CompositeBow),
-                                                   MakeWeaponSpecific(projectile_type::Sling) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponSpecific(projectile_type::Longbow),
+                                                    MakeWeaponSpecific(
+                                                        projectile_type::CompositeBow),
+                                                    MakeWeaponSpecific(projectile_type::Sling) };
 
                 misc::Vector::AppendMove(MakeWeaponOfTypeAll(weapon_type::Sword), thinProfiles);
 
@@ -112,7 +112,7 @@ namespace item
 
             case named_type::Marauder:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponOfTypeAll(weapon_type::Sword) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponOfTypeAll(weapon_type::Sword) };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return (
@@ -126,7 +126,7 @@ namespace item
 
             case named_type::Wardens:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponSpecific(sword_type::Shortsword) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponSpecific(sword_type::Shortsword) };
 
                 misc::Vector::AppendMove(
                     MakeArmorNonSpecificAll(armor::base_type::Plain), thinProfiles);
@@ -142,7 +142,7 @@ namespace item
 
             case named_type::Princes:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll(
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll(
                     armor::base_type::Mail) };
 
                 removeIfArmorType(thinProfiles, armor_type::Shield);
@@ -159,7 +159,7 @@ namespace item
 
             case named_type::Ranger:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll(
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll(
                     armor::base_type::Plain) };
 
                 removeIfArmorType(thinProfiles, armor_type::Shield);
@@ -181,7 +181,7 @@ namespace item
 
             case named_type::Samurai:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll(
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll(
                     armor::base_type::Scale) };
 
                 removeIfArmorType(thinProfiles, armor_type::Shield);
@@ -197,7 +197,7 @@ namespace item
 
             case named_type::Thors:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll(
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll(
                     armor::base_type::Plate) };
 
                 removeIfArmorType(thinProfiles, armor_type::Shield);
@@ -248,11 +248,11 @@ namespace item
 
             case named_type::Fiery:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponSpecific(
-                                                       projectile_type::CompositeBow),
-                                                   MakeWeaponSpecific(projectile_type::Longbow),
-                                                   MakeWeaponSpecific(projectile_type::Shortbow),
-                                                   MakeWeaponSpecific(projectile_type::Crossbow) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponSpecific(
+                                                        projectile_type::CompositeBow),
+                                                    MakeWeaponSpecific(projectile_type::Longbow),
+                                                    MakeWeaponSpecific(projectile_type::Shortbow),
+                                                    MakeWeaponSpecific(projectile_type::Crossbow) };
 
                 misc::Vector::AppendMove(MakeWeaponOfTypeAll(weapon_type::Whip), thinProfiles);
 
@@ -266,14 +266,14 @@ namespace item
 
             case named_type::Soldiers:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponSpecific(projectile_type::Shortbow),
-                                                   MakeWeaponSpecific(projectile_type::Longbow),
-                                                   MakeWeaponSpecific(sword_type::Broadsword),
-                                                   MakeWeaponSpecific(sword_type::Longsword),
-                                                   MakeWeaponSpecific(sword_type::Knightlysword),
-                                                   MakeWeaponSpecific(sword_type::Claymore),
-                                                   MakeWeaponSpecific(axe_type::Battleaxe),
-                                                   MakeWeaponSpecific(axe_type::Waraxe) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponSpecific(projectile_type::Shortbow),
+                                                    MakeWeaponSpecific(projectile_type::Longbow),
+                                                    MakeWeaponSpecific(sword_type::Broadsword),
+                                                    MakeWeaponSpecific(sword_type::Longsword),
+                                                    MakeWeaponSpecific(sword_type::Knightlysword),
+                                                    MakeWeaponSpecific(sword_type::Claymore),
+                                                    MakeWeaponSpecific(axe_type::Battleaxe),
+                                                    MakeWeaponSpecific(axe_type::Waraxe) };
 
                 misc::Vector::AppendMove(
                     MakeWeaponOfTypeAll(weapon_type::BladedStaff), thinProfiles);
@@ -295,7 +295,7 @@ namespace item
 
             case named_type::Dark:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeWeaponSpecific(projectile_type::Sling),
                     MakeWeaponSpecific(projectile_type::Shortbow),
                     MakeWeaponSpecific(projectile_type::Longbow),
@@ -323,7 +323,7 @@ namespace item
 
             case named_type::Betrayer:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeWeaponSpecific(projectile_type::Longbow),
                     MakeWeaponSpecific(projectile_type::CompositeBow),
                     MakeWeaponSpecific(sword_type::Falcata),
@@ -355,7 +355,7 @@ namespace item
 
             case named_type::Focus:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponOfTypeAll(weapon_type::Projectile) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponOfTypeAll(weapon_type::Projectile) };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return PROFILE.WeaponInfo().ProjectileType() == projectile_type::Blowpipe;
@@ -368,18 +368,18 @@ namespace item
             case named_type::Glory:
             case named_type::Pure:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponSpecific(projectile_type::Longbow),
-                                                   MakeWeaponSpecific(projectile_type::Crossbow),
-                                                   MakeWeaponSpecific(
-                                                       projectile_type::CompositeBow),
-                                                   MakeWeaponSpecific(sword_type::Broadsword),
-                                                   MakeWeaponSpecific(sword_type::Longsword),
-                                                   MakeWeaponSpecific(sword_type::Knightlysword),
-                                                   MakeWeaponSpecific(sword_type::Claymore),
-                                                   MakeWeaponSpecific(axe_type::Battleaxe),
-                                                   MakeWeaponSpecific(axe_type::Waraxe),
-                                                   MakeWeaponSpecific(whip_type::MaceAndChain),
-                                                   MakeWeaponSpecific(club_type::Warhammer) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponSpecific(projectile_type::Longbow),
+                                                    MakeWeaponSpecific(projectile_type::Crossbow),
+                                                    MakeWeaponSpecific(
+                                                        projectile_type::CompositeBow),
+                                                    MakeWeaponSpecific(sword_type::Broadsword),
+                                                    MakeWeaponSpecific(sword_type::Longsword),
+                                                    MakeWeaponSpecific(sword_type::Knightlysword),
+                                                    MakeWeaponSpecific(sword_type::Claymore),
+                                                    MakeWeaponSpecific(axe_type::Battleaxe),
+                                                    MakeWeaponSpecific(axe_type::Waraxe),
+                                                    MakeWeaponSpecific(whip_type::MaceAndChain),
+                                                    MakeWeaponSpecific(club_type::Warhammer) };
 
                 misc::Vector::AppendMove(MakeWeaponOfTypeAll(weapon_type::Staff), thinProfiles);
 
@@ -397,23 +397,24 @@ namespace item
             case named_type::Twilight:
             case named_type::Dusk:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeWeaponKnifeOrDagger(true),
-                                                   MakeWeaponKnifeOrDagger(false),
-                                                   MakeWeaponSpecific(sword_type::Cutlass),
-                                                   MakeWeaponSpecific(sword_type::Falcata),
-                                                   MakeWeaponSpecific(sword_type::Rapier),
-                                                   MakeWeaponSpecific(sword_type::Saber),
-                                                   MakeWeaponSpecific(sword_type::Flamberg),
-                                                   MakeWeaponSpecific(axe_type::Handaxe),
-                                                   MakeWeaponSpecific(axe_type::Sickle),
-                                                   MakeWeaponSpecific(axe_type::Battleaxe),
-                                                   MakeWeaponSpecific(axe_type::Waraxe),
-                                                   MakeWeaponSpecific(club_type::Spiked),
-                                                   MakeWeaponSpecific(club_type::Maul),
-                                                   MakeWeaponSpecific(bladedstaff_type::ShortSpear),
-                                                   MakeWeaponSpecific(bladedstaff_type::Spear),
-                                                   MakeWeaponSpecific(bladedstaff_type::Pike),
-                                                   MakeWeaponSpecific(bladedstaff_type::Scythe) };
+                ItemProfileThinVec_t thinProfiles { MakeWeaponKnifeOrDagger(true),
+                                                    MakeWeaponKnifeOrDagger(false),
+                                                    MakeWeaponSpecific(sword_type::Cutlass),
+                                                    MakeWeaponSpecific(sword_type::Falcata),
+                                                    MakeWeaponSpecific(sword_type::Rapier),
+                                                    MakeWeaponSpecific(sword_type::Saber),
+                                                    MakeWeaponSpecific(sword_type::Flamberg),
+                                                    MakeWeaponSpecific(axe_type::Handaxe),
+                                                    MakeWeaponSpecific(axe_type::Sickle),
+                                                    MakeWeaponSpecific(axe_type::Battleaxe),
+                                                    MakeWeaponSpecific(axe_type::Waraxe),
+                                                    MakeWeaponSpecific(club_type::Spiked),
+                                                    MakeWeaponSpecific(club_type::Maul),
+                                                    MakeWeaponSpecific(
+                                                        bladedstaff_type::ShortSpear),
+                                                    MakeWeaponSpecific(bladedstaff_type::Spear),
+                                                    MakeWeaponSpecific(bladedstaff_type::Pike),
+                                                    MakeWeaponSpecific(bladedstaff_type::Scythe) };
 
                 misc::Vector::AppendMove(
                     MakeWeaponOfTypeAll(weapon_type::Projectile), thinProfiles);
@@ -425,7 +426,7 @@ namespace item
 
             case named_type::Honest:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll() };
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll() };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
@@ -437,7 +438,7 @@ namespace item
 
             case named_type::Noble:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll() };
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll() };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
@@ -450,7 +451,7 @@ namespace item
 
             case named_type::Daring:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll() };
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll() };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
@@ -465,7 +466,7 @@ namespace item
 
             case named_type::Elite:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll() };
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll() };
 
                 removeIf(thinProfiles, [](auto const & PROFILE) {
                     return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
@@ -483,7 +484,7 @@ namespace item
 
             case named_type::Valiant:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeArmorSpecific(shield_type::Heater), MakeArmorSpecific(shield_type::Pavis),
                     MakeArmorSpecific(helm_type::Bascinet), MakeArmorSpecific(helm_type::Great),
                     MakeArmorSpecific(cover_type::Cape),    MakeArmorSpecific(cover_type::Vest)
@@ -498,10 +499,10 @@ namespace item
 
             case named_type::Heros:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorSpecific(shield_type::Pavis),
-                                                   MakeArmorSpecific(helm_type::Great),
-                                                   MakeArmorSpecific(cover_type::Cape),
-                                                   MakeArmorSpecific(cover_type::Vest) };
+                ItemProfileThinVec_t thinProfiles { MakeArmorSpecific(shield_type::Pavis),
+                                                    MakeArmorSpecific(helm_type::Great),
+                                                    MakeArmorSpecific(cover_type::Cape),
+                                                    MakeArmorSpecific(cover_type::Vest) };
 
                 misc::Vector::AppendMove(MakeArmorNonSpecificAll(base_type::Plate), thinProfiles);
 
@@ -516,7 +517,7 @@ namespace item
 
             case named_type::Army:
             {
-                ItemProfileThinVec_t thinProfiles{};
+                ItemProfileThinVec_t thinProfiles {};
 
                 misc::Vector::AppendMove(MakeArmorSpecificAll<shield_type>(), thinProfiles);
                 misc::Vector::AppendMove(MakeArmorSpecificAll<helm_type>(), thinProfiles);
@@ -552,7 +553,7 @@ namespace item
 
             case named_type::Charred:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeArmorSpecific(cover_type::Vest),
                 };
 
@@ -576,9 +577,9 @@ namespace item
 
             case named_type::Moon:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorSpecific(cover_type::Robe),
-                                                   MakeArmorSpecific(cover_type::Cloak),
-                                                   MakeArmorSpecific(cover_type::Vest) };
+                ItemProfileThinVec_t thinProfiles { MakeArmorSpecific(cover_type::Robe),
+                                                    MakeArmorSpecific(cover_type::Cloak),
+                                                    MakeArmorSpecific(cover_type::Vest) };
 
                 misc::Vector::AppendMove(MakeArmorSpecificAll<shield_type>(), thinProfiles);
                 misc::Vector::AppendMove(MakeArmorSpecificAll<helm_type>(), thinProfiles);
@@ -606,7 +607,7 @@ namespace item
             case named_type::Frozen:
             case named_type::Arctic:
             {
-                ItemProfileThinVec_t thinProfiles{ MakeArmorNonSpecificAll() };
+                ItemProfileThinVec_t thinProfiles { MakeArmorNonSpecificAll() };
 
                 misc::Vector::AppendMove(MakeArmorSpecificAll<cover_type>(), thinProfiles);
 
@@ -629,7 +630,7 @@ namespace item
             case named_type::Dawn:
             case named_type::Sun:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeArmorSpecific(cover_type::Robe),    MakeArmorSpecific(cover_type::Cape),
                     MakeArmorSpecific(cover_type::Vest),    MakeArmorSpecific(shield_type::Kite),
                     MakeArmorSpecific(shield_type::Heater), MakeArmorSpecific(shield_type::Pavis),
@@ -657,7 +658,7 @@ namespace item
             case named_type::Woe:
             case named_type::Misery:
             {
-                ItemProfileThinVec_t thinProfiles{
+                ItemProfileThinVec_t thinProfiles {
                     MakeArmorSpecific(cover_type::Cloak),    MakeArmorSpecific(cover_type::Vest),
                     MakeArmorSpecific(shield_type::Buckler), MakeArmorSpecific(shield_type::Kite),
                     MakeArmorSpecific(shield_type::Heater),  MakeArmorSpecific(helm_type::Leather),
@@ -1112,7 +1113,7 @@ namespace item
         const armor::base_type::Enum BASE_TYPE,
         const misc_type::Enum MISC_TYPE) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
              && (ARMOR_TYPE != armor_type::Helm)),
             "item::ItemProfileThinFactory::MakeArmorNonSpecific(armor_type="
@@ -1133,7 +1134,7 @@ namespace item
 
         for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
-            auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
+            auto const BASE_TYPE { static_cast<armor::base_type::Enum>(i) };
             thinProfiles.emplace_back(MakeArmorNonSpecific(ARMOR_TYPE, BASE_TYPE));
         }
 
@@ -1159,7 +1160,7 @@ namespace item
 
         for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
-            auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
+            auto const BASE_TYPE { static_cast<armor::base_type::Enum>(i) };
 
             for (auto const & THIN_PROFILE : MakeArmorNonSpecificAll(BASE_TYPE))
             {

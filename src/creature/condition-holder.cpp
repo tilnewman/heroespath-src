@@ -26,7 +26,7 @@ namespace creature
 
         void Holder::Fill()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (conditionsUVec_.empty()),
                 "creature::condition::Holder::Setup() was called twice.");
 
@@ -161,29 +161,29 @@ namespace creature
                 auto const NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
                 auto const CONDITION_PTR { Get(NEXT_ENUM) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Desc().empty() == false),
                     "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
                                                            << "\") resulted in an empty Desc().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->LongDesc().empty() == false),
                     "creature::condition::Holder::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty LongDesc().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->ToString().empty() == false),
                     "creature::condition::Holder::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty ImageFilename().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Name().empty() == false),
                     "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
                                                            << "\") resulted in an empty Name().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
                     "creature::condition::Holder::Test(ptr=\""
                         << CONDITION_PTR->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
@@ -205,14 +205,14 @@ namespace creature
 
         const ConditionPtr_t Holder::Get(const Conditions::Enum E)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (conditionsUVec_.empty() == false),
                 "creature::condition::Holder::Get(" << Conditions::ToString(E)
                                                     << ") was called when Holder was empty.");
 
             auto const INDEX { static_cast<std::size_t>(E) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),
                 "creature::condition::Holder::Get("
                     << Conditions::ToString(E)

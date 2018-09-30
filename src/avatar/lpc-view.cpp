@@ -10,8 +10,8 @@
 // lpc-view.cpp
 //
 #include "lpc-view.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 
@@ -43,7 +43,7 @@ namespace avatar
 
         auto const ACTUAL_SIZE_V { cachedTexture_.Get().getSize() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ACTUAL_SIZE_V == REQUIRED_SIZE_V),
             "avatar::LPCView::LPCView(avatar_enum="
                 << WHICH_AVATAR << ", centered_map_pos=" << CENTERED_MAP_POS_V

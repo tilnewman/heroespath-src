@@ -8,7 +8,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #list of library names (also the directory name)
 set(library_names
     misc
-    log
     sfml-util
     sfutil
     popup

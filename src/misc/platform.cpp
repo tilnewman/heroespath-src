@@ -11,8 +11,8 @@
 //
 #include "platform.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 
 #include <exception>
 #include <sstream>
@@ -62,7 +62,7 @@ namespace misc
 
     platform_type::Enum Platform::Detect() const
     {
-        platform_type::Enum platform{ platform_type::Unknown };
+        platform_type::Enum platform { platform_type::Unknown };
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
         platform = platform_type::Windows;

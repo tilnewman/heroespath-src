@@ -12,7 +12,7 @@
 #include "item-warehouse.hpp"
 
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -54,7 +54,7 @@ namespace item
 
     void ItemWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "item::ItemWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();

@@ -23,10 +23,10 @@
 #include "game/game.hpp"
 #include "game/world-factory.hpp"
 #include "game/world.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 
 #include <limits>
 #include <vector>
@@ -81,7 +81,7 @@ namespace game
 
     void GameStateFactory::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "GameStateFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -275,7 +275,7 @@ namespace game
             return ss.str();
         } };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (GAMESTATE_PTR_OPT || CHARACTER_PTR_OPT),
             makeFunctionDescStr() << " neither a game or character was given to save.");
 
@@ -283,7 +283,7 @@ namespace game
         {
             boost::system::error_code errorCode;
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (boost::filesystem::create_directory(DIR_PATH, errorCode)),
                 makeFunctionDescStr()
                     << " was unable to create that directory.  errorCode=" << errorCode);

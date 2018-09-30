@@ -204,7 +204,7 @@ namespace sfml_util
         // throws if Empty()
         const ListElementPtr_t<Element_t> Selection() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), MakeTypeString() << "::Selection() but the listbox was empty.");
 
             return ListElementPtr_t<Element_t>(elements_.at(SelectionIndex()).get());
@@ -315,11 +315,11 @@ namespace sfml_util
 
         ListElementPtr_t<Element_t> At(const std::size_t INDEX) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::At(index=" << INDEX << ") but this listbox is empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < elements_.size()),
                 MakeTypeString() << "::At(" << INDEX
                                  << ") but that index is out of bounds with actual size="
@@ -699,7 +699,7 @@ namespace sfml_util
             const ListElementPtr_t<Element_t> & ELEMENT_PTR,
             const bool WILL_INCLUDE_ELEMENT_PAD = false) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::ElementRegion(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_element_pad=" << std::boolalpha
@@ -707,7 +707,7 @@ namespace sfml_util
 
             const auto POS_TOP_OPT { ElementPosTopOpt(ELEMENT_PTR, WILL_INCLUDE_ELEMENT_PAD) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!POS_TOP_OPT),
                 MakeTypeString() << "::ElementRegion(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_element_pad=" << std::boolalpha
@@ -727,13 +727,13 @@ namespace sfml_util
             const ListElementPtr_t<Element_t> & ELEMENT_PTR,
             const bool WILL_INCLUDE_IMAGE_PAD) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::ElementImageRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_image_pad=" << std::boolalpha
                                  << WILL_INCLUDE_IMAGE_PAD << ") but this listbox is empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsElementVisible(ELEMENT_PTR)),
                 MakeTypeString() << "::ElementImageRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_image_pad=" << std::boolalpha
@@ -750,18 +750,18 @@ namespace sfml_util
         const sf::FloatRect
             ElementImageRegionActual(const ListElementPtr_t<Element_t> & ELEMENT_PTR) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::ElementImageRegionActual(element={"
                                  << ELEMENT_PTR->ToString() << "}) but this listbox is empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsElementVisible(ELEMENT_PTR)),
                 MakeTypeString() << "::ElementImageRegionActual(element={"
                                  << ELEMENT_PTR->ToString()
                                  << "}) but that ListElement was not visible.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ELEMENT_PTR->HasImage()),
                 MakeTypeString() << "::ElementImageRegionActual(element={"
                                  << ELEMENT_PTR->ToString()
@@ -776,20 +776,20 @@ namespace sfml_util
             const ListElementPtr_t<Element_t> & ELEMENT_PTR,
             const bool WILL_INCLUDE_ELEMENT_PAD = false) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::ElementTextRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_element_pad=" << std::boolalpha
                                  << WILL_INCLUDE_ELEMENT_PAD << ") but this listbox is empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsElementVisible(ELEMENT_PTR)),
                 MakeTypeString() << "::ElementTextRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_element_pad=" << std::boolalpha
                                  << WILL_INCLUDE_ELEMENT_PAD
                                  << ") but that ListElement was not visible.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ELEMENT_PTR->HasText()),
                 MakeTypeString() << "::ElementTextRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}, will_include_element_pad=" << std::boolalpha
@@ -809,17 +809,17 @@ namespace sfml_util
         const sf::FloatRect
             ElementTextRegionActual(const ListElementPtr_t<Element_t> & ELEMENT_PTR) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::ElementTextRegionActual(element={" << ELEMENT_PTR->ToString()
                                  << "}) but this listbox is empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IsElementVisible(ELEMENT_PTR)),
                 MakeTypeString() << "::ElementTextRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}) but that ListElement was not visible.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ELEMENT_PTR->HasText()),
                 MakeTypeString() << "::ElementTextRegionMax(element={" << ELEMENT_PTR->ToString()
                                  << "}) but that ListElement has no text.");
@@ -830,7 +830,7 @@ namespace sfml_util
         // throws if ELEMENT_PTR is not in the listbox
         std::size_t IndexOf(const ListElementPtr_t<Element_t> & ELEMENT_PTR) const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false),
                 MakeTypeString() << "::IndexOf(element={" << ELEMENT_PTR->ToString()
                                  << "}) but this listbox is empty.");
@@ -847,7 +847,7 @@ namespace sfml_util
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (index < elements_.size()),
                 MakeTypeString() << "::IndexOf(element={" << ELEMENT_PTR->ToString()
                                  << "}) but that ListElement was not found.");
@@ -869,7 +869,7 @@ namespace sfml_util
 
         const value_type & Front() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), MakeTypeString() << "::Front() const, called when empty.");
 
             return elements_.front();
@@ -877,7 +877,7 @@ namespace sfml_util
 
         const value_type & Back() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Empty() == false), MakeTypeString() << "::Back() const, called when empty.");
 
             return elements_.back();

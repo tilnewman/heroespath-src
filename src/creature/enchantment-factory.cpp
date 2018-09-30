@@ -14,8 +14,8 @@
 #include "creature/enchantment-warehouse.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 
 #include <exception>
 #include <numeric>
@@ -75,7 +75,7 @@ namespace creature
     {
         using namespace item;
 
-        Score_t score{ 0_score };
+        Score_t score { 0_score };
 
         if ((MISC_TYPE == misc_type::Not) || (MISC_TYPE == misc_type::Count))
         {
@@ -219,7 +219,7 @@ namespace creature
     {
         using namespace item;
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((MATERIAL_PRIMARY != material::Count) && (MATERIAL_PRIMARY != material::Nothing)),
             "creature::EnchantmentFactory::MakeFromMiscType(misc_type="
                 << misc_type::ToString(MISC_TYPE) << ") given an invalid primary material="
@@ -228,7 +228,7 @@ namespace creature
         if ((MATERIAL_SECONDARY != material::Count) && (MATERIAL_SECONDARY != material::Nothing))
         {
             // intentionally use only the secondary material to get the USE_COUNT
-            auto const USE_COUNT{ material::EnchantmentBonus(
+            auto const USE_COUNT { material::EnchantmentBonus(
                 MATERIAL_SECONDARY, MATERIAL_SECONDARY) };
 
             if (misc_type::IsBlessed(MISC_TYPE))
@@ -263,7 +263,7 @@ namespace creature
             }
         }
 
-        auto const MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
+        auto const MAT_BONUS { material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
         switch (MISC_TYPE)
         {
@@ -2501,7 +2501,7 @@ namespace creature
         {
             if (IS_WEAPON)
             {
-                auto const DAMAGE{ 50 };
+                auto const DAMAGE { 50 };
 
                 if (E & element_type::Fire)
                 {
@@ -2527,7 +2527,7 @@ namespace creature
             {
                 // if not IS_WEAPON then the item is assumed to be armor or wearable misc
 
-                auto const RESISTANCE{ 13 };
+                auto const RESISTANCE { 13 };
 
                 if (E & element_type::Fire)
                 {
@@ -2552,14 +2552,14 @@ namespace creature
         }
         else
         {
-            auto const MAT_BONUS{ material::EnchantmentBonus(
+            auto const MAT_BONUS { material::EnchantmentBonus(
                 MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
             if (IS_WEAPON)
             {
-                auto const DAMAGE_BASE{ 10 };
-                auto const DAMAGE_MULT{ 5 };
-                auto const DAMAGE{ DAMAGE_BASE + (MAT_BONUS * DAMAGE_MULT) };
+                auto const DAMAGE_BASE { 10 };
+                auto const DAMAGE_MULT { 5 };
+                auto const DAMAGE { DAMAGE_BASE + (MAT_BONUS * DAMAGE_MULT) };
 
                 if (E & element_type::Fire)
                 {
@@ -2583,10 +2583,10 @@ namespace creature
             }
             else
             {
-                auto const RES_BASE{ 4.0f };
-                auto const RES_MULT{ 1.0f / 1.5f };
+                auto const RES_BASE { 4.0f };
+                auto const RES_MULT { 1.0f / 1.5f };
 
-                auto const RESISTANCE{ static_cast<int>(
+                auto const RESISTANCE { static_cast<int>(
                     RES_BASE + (static_cast<float>(MAT_BONUS) * RES_MULT)) };
 
                 if (E & element_type::Fire)
@@ -3195,7 +3195,7 @@ namespace creature
             }
             case named_type::Robbers:
             {
-                auto const MAT_BONUS{ material::EnchantmentBonus(
+                auto const MAT_BONUS { material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3205,7 +3205,7 @@ namespace creature
             }
             case named_type::Thugs:
             {
-                auto const MAT_BONUS{ material::EnchantmentBonus(
+                auto const MAT_BONUS { material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3215,7 +3215,7 @@ namespace creature
             }
             case named_type::Knaves:
             {
-                auto const MAT_BONUS{ material::EnchantmentBonus(
+                auto const MAT_BONUS { material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3225,7 +3225,7 @@ namespace creature
             }
             case named_type::Muggers:
             {
-                auto const MAT_BONUS{ material::EnchantmentBonus(
+                auto const MAT_BONUS { material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3235,7 +3235,7 @@ namespace creature
             }
             case named_type::Thief:
             {
-                auto const MATERIAL_BASED_BONUS{
+                auto const MATERIAL_BASED_BONUS {
                     5 + (material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) / 2)
                 };
 
@@ -3247,7 +3247,7 @@ namespace creature
             }
             case named_type::Pirate:
             {
-                auto const MAT_BONUS{ material::EnchantmentBonus(
+                auto const MAT_BONUS { material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(

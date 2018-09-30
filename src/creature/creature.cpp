@@ -19,9 +19,9 @@
 #include "item/algorithms.hpp"
 #include "item/armor-types.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
@@ -95,7 +95,7 @@ namespace creature
 
         auto const VALID_ROLES { race::Roles(RACE) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
              != std::end(VALID_ROLES)),
             "creature::Creature::Creature(creature={"

@@ -49,7 +49,7 @@ namespace song
         , verbPastTense_(VERB_PAST_TENSE)
     {
         // only some TargetTypes are valid for songs
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((TARGET_TYPE == combat::TargetType::AllCompanions)
              || (TARGET_TYPE == combat::TargetType::AllOpponents)
              || (TARGET_TYPE == combat::TargetType::QuestSpecific)),

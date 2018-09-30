@@ -117,7 +117,7 @@ namespace sfml_util
                 textRegionUPtr_ = std::make_unique<TextRegion>(ss.str(), TEXT_INFO_OPT.value());
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (HasText() || HasImage()),
                 ToString() + "'s constructor completed both without text and without an image.");
         }
@@ -179,7 +179,7 @@ namespace sfml_util
 
         const Element_t & Element() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (elementOpt_), ToString() << "::Element() but the elementOpt_ is not initialized.");
 
             return elementOpt_.value();
@@ -193,7 +193,7 @@ namespace sfml_util
 
         const CachedTexture & CachedTexture() const
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (cachedTextureOpt_),
                 ToString() << "::CachedTexture() but the cachedTextureOpt_ is not initialized.");
 

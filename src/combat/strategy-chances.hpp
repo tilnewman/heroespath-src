@@ -11,8 +11,8 @@
 //
 #include "combat/strategy-enums.hpp"
 #include "combat/strategy-info.hpp"
-#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
 
@@ -85,7 +85,7 @@ namespace combat
                     return T::None;
                 }
 
-                T e{ T::None }; // None is always zero
+                T e { T::None }; // None is always zero
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                 {
                     if (misc::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
@@ -118,7 +118,7 @@ namespace combat
                 }
                 else
                 {
-                    auto const TOTAL{ std::accumulate(
+                    auto const TOTAL { std::accumulate(
                         std::begin(ENUM_CHANCE_MAP),
                         std::end(ENUM_CHANCE_MAP),
                         0.0f,
@@ -126,9 +126,9 @@ namespace combat
                             return SUBTOTAL + PAIR.second;
                         }) };
 
-                    auto const RAND{ misc::random::Float(0.0f, TOTAL) };
+                    auto const RAND { misc::random::Float(0.0f, TOTAL) };
 
-                    auto subtotal{ 0.0f };
+                    auto subtotal { 0.0f };
                     for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                     {
                         subtotal += NEXT_ENUMCHANCE_PAIR.second;

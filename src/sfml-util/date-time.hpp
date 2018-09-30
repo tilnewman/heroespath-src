@@ -25,18 +25,18 @@ namespace sfml_util
     // simple wrapper for dates
     struct Date
     {
-        explicit Date(
-            const int YEAR = INVALID_VALUE_,
-            const int MONTH = INVALID_VALUE_,
-            const int DAY = INVALID_VALUE_);
+        explicit Date(const int YEAR = 0, const int MONTH = 0, const int DAY = 0);
+
+        Date(const Date &) = default;
+        Date(Date &&) = default;
+        Date & operator=(const Date &) = default;
+        Date & operator=(Date &&) = default;
 
         const std::string ToString() const;
 
         bool IsValid() const;
 
         static const Date CurrentDate();
-
-        static const int INVALID_VALUE_ = -1;
 
         int year;
         int month;
@@ -53,7 +53,10 @@ namespace sfml_util
         }
     };
 
-    bool operator==(const Date & L, const Date & R);
+    inline bool operator==(const Date & L, const Date & R)
+    {
+        return ((L.year == R.year) && (L.month == R.month) && (L.day == R.day));
+    }
 
     inline bool operator!=(const Date & L, const Date & R) { return !(L == R); }
 
@@ -66,9 +69,15 @@ namespace sfml_util
     struct Time
     {
         explicit Time(
-            const int HOUR = INVALID_VALUE_,
-            const int MINUTE = INVALID_VALUE_,
-            const int SECOND = INVALID_VALUE_);
+            const int HOUR = 0,
+            const int MINUTE = 0,
+            const int SECOND = 0,
+            const int MILLISECONDS = 0);
+
+        Time(const Time &) = default;
+        Time(Time &&) = default;
+        Time & operator=(const Time &) = default;
+        Time & operator=(Time &&) = default;
 
         explicit Time(const sf::Time & TIME_OBJ);
 
@@ -81,8 +90,8 @@ namespace sfml_util
         int hours;
         int minutes;
         int seconds;
+        int milliseconds;
 
-        static const int INVALID_VALUE_ = -1;
         static const int SECONDS_IN_MINUTE_ = 60;
         static const int SECONDS_IN_HOUR_ = (60 * 60);
         static const int SECONDS_IN_DAY_ = (60 * 60 * 24);
@@ -98,19 +107,22 @@ namespace sfml_util
             ar & hours;
             ar & minutes;
             ar & seconds;
+            ar & milliseconds;
         }
     };
 
     inline bool operator==(const Time & L, const Time & R)
     {
-        return std::tie(L.hours, L.minutes, L.seconds) == std::tie(R.hours, R.minutes, R.seconds);
+        return std::tie(L.hours, L.minutes, L.seconds, L.milliseconds)
+            == std::tie(R.hours, R.minutes, R.seconds, R.milliseconds);
     }
 
     inline bool operator!=(const Time & L, const Time & R) { return !(L == R); }
 
     inline bool operator<(const Time & L, const Time & R)
     {
-        return std::tie(L.hours, L.minutes, L.seconds) < std::tie(R.hours, R.minutes, R.seconds);
+        return std::tie(L.hours, L.minutes, L.seconds, L.milliseconds)
+            < std::tie(R.hours, R.minutes, R.seconds, R.milliseconds);
     }
 
     // simple wrapper for date and time
@@ -119,8 +131,15 @@ namespace sfml_util
     public:
         explicit DateTime(const Date & DATE = Date(), const Time & TIME = Time());
 
+        DateTime(const DateTime &) = default;
+        DateTime(DateTime &&) = default;
+        DateTime & operator=(const DateTime &) = default;
+        DateTime & operator=(DateTime &&) = default;
+
         const std::string ToString() const;
+
         bool IsValid() const { return (date.IsValid() && time.IsValid()); }
+
         static const DateTime CurrentDateTime()
         {
             return DateTime(Date::CurrentDate(), Time::CurrentTime());
@@ -150,6 +169,7 @@ namespace sfml_util
     {
         return std::tie(L.date, L.time) < std::tie(R.date, R.time);
     }
+
 } // namespace sfml_util
 } // namespace heroespath
 

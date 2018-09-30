@@ -16,7 +16,7 @@
 #include "game/game-data-file.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
@@ -331,7 +331,7 @@ namespace creature
     {
         auto const ITEM_ADD_STR { CREATURE_PTR->ItemAdd(ITEM_PTR) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_ADD_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
             "player::PlayerInitialSetup::EnsureItemAddedAndEquipped() was unable to ADD item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
@@ -339,7 +339,7 @@ namespace creature
 
         auto const ITEM_EQUIP_STR { CREATURE_PTR->ItemEquip(ITEM_PTR) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_EQUIP_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
             "player::PlayerInitialSetup::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()

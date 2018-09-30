@@ -451,7 +451,7 @@ namespace sfutil
             {
                 if (!WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS || !IsSizeZeroOrLessEither(V[i]))
                 {
-                    r = sfutil::MinimallyEnclosing(r, V[i]);
+                    r = MinimallyEnclosing(r, V[i]);
                 }
             }
         }

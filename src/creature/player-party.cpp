@@ -13,8 +13,8 @@
 
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/serialize-helpers.hpp"
 
 #include <exception>
@@ -25,7 +25,7 @@ namespace heroespath
 namespace creature
 {
 
-    const std::size_t PlayerParty::MAX_CHARACTER_COUNT_{ 6 };
+    const std::size_t PlayerParty::MAX_CHARACTER_COUNT_ { 6 };
 
     PlayerParty::PlayerParty(
         const avatar::Avatar::Enum PARTY_AVATAR, const creature::CreaturePVec_t & CHARACTERS_PVEC)
@@ -77,7 +77,7 @@ namespace creature
 
     const creature::CreaturePtr_t PlayerParty::GetAtOrderPos(const std::size_t INDEX_NUM)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX_NUM < charactersPVec_.size()),
             "player::party::GetAtOrderPos(INDEX_NUM="
                 << INDEX_NUM << ") was given an out of range INDEX_NUM.  (it was too big, max is "

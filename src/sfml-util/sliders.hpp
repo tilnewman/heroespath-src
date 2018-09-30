@@ -43,11 +43,11 @@ namespace sfml_util
                 , val_(0)
                 , willContinue_(true)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(SPEED) == false),
                     "sfml_util::sliders::ZeroSliderOnce::Constructor() given speed of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(INITIAL) || misc::IsRealOne(INITIAL)
                      || ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1)))),
                     "sfml_util::sliders::ZeroSliderOnce::Constructor() given initial value of "
@@ -62,11 +62,11 @@ namespace sfml_util
 
             void Reset(const T SPEED = 1.0, const T INITIAL = 0.0)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(SPEED) == false),
                     "sfml_util::sliders::ZeroSliderOnce::Reset() given speed of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(INITIAL) || misc::IsRealOne(INITIAL)
                      || ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1)))),
                     "sfml_util::sliders::ZeroSliderOnce::Reset() given initial value of "
@@ -136,11 +136,11 @@ namespace sfml_util
                 diff_(0.0)
                 , slider_()
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(SPEED) == false),
                     "sfml_util::sliders::SliderOnce::Constructor() given speed of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (THE_MIN < THE_MAX),
                     "sfml_util::sliders::SliderOnce::Constructor() was given THE_MIN="
                         << THE_MIN << " that is not less than the THE_MAX=" << THE_MAX << ".");
@@ -160,11 +160,11 @@ namespace sfml_util
 
             void Reset(const Value_t THE_MIN = 0, const Value_t THE_MAX = 1, const Math_t SPEED = 1)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(SPEED) == false),
                     "sfml_util::sliders::SliderOnce::Reset() given speed of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (THE_MIN < THE_MAX),
                     "sfml_util::sliders::SliderOnce::Reset() was given THE_MIN="
                         << THE_MIN << " that is not less than the THE_MAX=" << THE_MAX << ".");
@@ -212,7 +212,7 @@ namespace sfml_util
                 , isIncreasing_(true)
                 , slider_()
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (misc::IsRealZero(speed_) == false),
                     "sfml_util::sliders::Slider::Constructor given SPEED of zero.");
 
@@ -231,7 +231,7 @@ namespace sfml_util
                 const Speed_t SPEED = 0,
                 const Value_t INITIAL = 0)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (THE_MIN < THE_MAX),
                     "sfml_util::sliders::Slider::Reset() was given a min="
                         << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
@@ -329,17 +329,17 @@ namespace sfml_util
                 , isIncreasing_(true)
                 , slider_()
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
                     "sfml_util::sliders::Drifter::Constructor() given speed_max of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     ((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
                     "sfml_util::sliders::Drifter::Constructor() given initial value of "
                         << INITIAL << ", which is not within the min and max given: [" << THE_MIN
                         << "," << THE_MAX << "].");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (THE_MIN < THE_MAX),
                     "sfml_util::sliders::Drifter::Constructor() was given a min="
                         << THE_MIN << " that is not less than the max=" << THE_MAX << ".");
@@ -359,17 +359,17 @@ namespace sfml_util
                 const Value_t INITIAL,
                 const Value_t TARGET)
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
                     "sfml_util::sliders::Drifter::Reset() given speed_max of zero.");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     ((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
                     "sfml_util::sliders::Drifter::Reset() given initial value of "
                         << INITIAL << ", which is not within the min and max given: [" << THE_MIN
                         << "," << THE_MAX << "].");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (THE_MIN < THE_MAX),
                     "sfml_util::sliders::Drifter::Reset() was given a min="
                         << THE_MIN << " that is not less than the max=" << THE_MAX << ".");

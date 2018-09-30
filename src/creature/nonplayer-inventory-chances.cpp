@@ -17,9 +17,9 @@
 #include "item/armor-details.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
@@ -112,7 +112,7 @@ namespace creature
 
         void ChanceFactory::Release()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (instanceUPtr_),
                 "nonplayerChanceFactory::Release() "
                     << "found instanceUPtr that was null.");
@@ -158,7 +158,7 @@ namespace creature
             std::vector<std::string> strVec;
             misc::SplitByChar(VALUE_STR, strVec, ',', true, true);
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (strVec.size() == 2),
                 "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
@@ -173,7 +173,7 @@ namespace creature
                 coinsMin_OutParam = Coin_t(-1);
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (coinsMin_OutParam >= 0_coin),
                 "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
@@ -190,7 +190,7 @@ namespace creature
                 coinsMax_OutParam = Coin_t(-1);
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (coinsMax_OutParam >= coinsMin_OutParam),
                 "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
@@ -929,7 +929,7 @@ namespace creature
         {
             auto const WAS_FOUND { roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (WAS_FOUND),
                 "nonplayerChanceFactory::LookupPossibleWeaponsByRole(role="
                     << role::ToString(ROLE) << ") was unable to find that role in the map.");
@@ -971,7 +971,7 @@ namespace creature
                             exceptionWhatStr = EX.what();
                         }
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (exceptionWhatStr.empty()),
                             "creature::nonplayer::ChanceFactory::GetFloatFromGameDataFile(key=\""
                                 << KEY << "\"), found value \"" << VALUE_STR
@@ -1235,7 +1235,7 @@ namespace creature
                 }
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (materialsMap_OutParam.Empty() == false),
                 "nonplayerChanceFactory::Make_MaterialChancesPrimary(creature={"
                     << CHARACTER_PTR->ToString() << "}) final materials map was empty.");
@@ -1715,7 +1715,7 @@ namespace creature
                     std::vector<std::string> piecesVec;
                     misc::SplitByChar(NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (piecesVec.size() >= 2),
                         "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
@@ -1740,7 +1740,7 @@ namespace creature
                         armorChanceVal = INVALID_CHANCE;
                     }
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (misc::IsRealClose(INVALID_CHANCE, armorChanceVal) == false),
                         "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
@@ -1765,7 +1765,7 @@ namespace creature
                     {
                         baseType = base_type::FromString(piecesVec[1]);
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (baseType != base_type::Count),
                             "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
@@ -1774,7 +1774,7 @@ namespace creature
                                    "failed "
                                 << "to be parsed as a valid item::armor::base_type::Enum.");
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (baseType != base_type::Plain),
                             "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
@@ -1788,7 +1788,7 @@ namespace creature
                     const item::armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER(
                         ARMOR_NAME_STR, baseType, true);
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ARMOR_TYPE_WRAPPER.IsTypeValid()),
                         "nonplayerChanceFactor::CacheRoleArmorChances() role = \""
                             << ROLE_STR << "\", NEXT_ARMOR_CHANCE_STR=\"" << NEXT_ARMOR_CHANCE_STR
@@ -1860,7 +1860,7 @@ namespace creature
                                 nextWeaponSet.count = 0;
                             }
 
-                            M_ASSERT_OR_LOGANDTHROW_SS(
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (nextWeaponSet.count > 0),
                                 "nonplayerLookupPossibleWeaponsByRole(role="
                                     << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
@@ -1893,7 +1893,7 @@ namespace creature
                         std::vector<std::string> partsVec;
                         misc::SplitByChar(NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)
                              && (partsVec.at(1).size() > 2)),
                             "nonplayerLookupPossibleWeaponsByRole(role="
@@ -1920,7 +1920,7 @@ namespace creature
                             chance = -1.0f;
                         }
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (chance > 0.0f),
                             "nonplayerLookupPossibleWeaponsByRole(role="
                                 << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""

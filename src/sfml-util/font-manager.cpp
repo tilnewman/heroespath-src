@@ -12,9 +12,9 @@
 #include "font-manager.hpp"
 
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfutil/display.hpp"
 
@@ -84,7 +84,7 @@ namespace sfml_util
 
     void FontManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "sfml_util::FontManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -92,7 +92,7 @@ namespace sfml_util
 
     const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::GetFont(font_enum="
                 << static_cast<misc::EnumUnderlying_t>(FONT) << ") given an invalid font enum.");
@@ -112,7 +112,7 @@ namespace sfml_util
 
     void FontManager::Load(const GuiFont::Enum FONT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
                                                       << ") given an invalid font enum.");
@@ -136,7 +136,7 @@ namespace sfml_util
 
     void FontManager::Unload(const GuiFont::Enum FONT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
             "sfml_util::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
                                                         << ") given an invalid font enum.");

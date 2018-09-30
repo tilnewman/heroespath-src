@@ -11,9 +11,9 @@
 //
 #include "game-data-file.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
 
 namespace heroespath
@@ -59,7 +59,7 @@ namespace game
 
     void GameDataFile::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "GameDataFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -67,12 +67,12 @@ namespace game
 
     void GameDataFile::Initialize()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
         auto const LOAD_SUCCESS { Instance()->Load() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (LOAD_SUCCESS),
             "game::GameDataFile::Initialize() misc::ConfigBase::Load(\""
                 << Instance()->GetFileNameFullPathStr()
@@ -81,7 +81,7 @@ namespace game
 
         mediaBasePathStr_ = GetCopyStr(mediaBasePathKeyStr_);
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (mediaBasePathStr_.empty() == false),
             "game::GameDataFile::Initialize() mediaBasePathKeyStr_=" << mediaBasePathKeyStr_
                                                                      << " was not found.");
@@ -91,7 +91,7 @@ namespace game
     {
         auto const PATH_STR { GetCopyStr(KEY) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (PATH_STR.empty() == false),
             "GameDataFile::GetMediaPath(\"" << KEY
                                             << "\") failed to find that key in the config file.");

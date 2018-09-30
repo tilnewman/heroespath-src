@@ -17,7 +17,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/types.hpp"
 
 #include <string>

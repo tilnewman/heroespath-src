@@ -14,7 +14,7 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include "misc/real.hpp"
 

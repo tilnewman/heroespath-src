@@ -11,7 +11,7 @@
 //
 #include "ouroboros.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"

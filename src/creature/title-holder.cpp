@@ -1869,18 +1869,18 @@ namespace creature
 
         TitlePtr_t Holder::Get(const Titles::Enum E)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (titleUVec_.empty() == false),
                 "creature::Titles::Holder::Get(\"" << Titles::ToString(E)
                                                    << "\") called when the Holder was empty.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (Titles::IsValid(E)),
                 "creature::Titles::Holder::Get(enum=" << E << ")_InvalidValueError.");
 
             auto const INDEX { static_cast<std::size_t>(E) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < titleUVec_.size()),
                 "creature::Titles::Holder::Get(\""
                     << Titles::ToString(E) << "\") enum given was " << E
@@ -1906,35 +1906,35 @@ namespace creature
                 auto const NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
                 auto TITLE_PTR { Get(NEXT_ENUM) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Desc().empty() == false),
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") resulted in an empty Desc().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->LongDesc().empty() == false),
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") resulted in an empty LongDesc().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->ImageFilename().empty() == false),
                     "creature::Titles::Holder::Test(\""
                         << Titles::ToString(NEXT_ENUM)
                         << "\") resulted in an empty ImageFilename().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->RolesCopy().empty() == false),
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") resulted in an empty RolesVec().");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Which() == NEXT_ENUM),
                     "creature::Titles::Holder::Test(\""
                         << Titles::ToString(NEXT_ENUM)
                         << "\") resulted in a Title with a different tile::Enum (\""
                         << Titles::ToString(TITLE_PTR->Which()) << "\")");
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") Title is out of order.");

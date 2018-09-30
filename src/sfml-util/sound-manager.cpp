@@ -12,9 +12,9 @@
 #include "sound-manager.hpp"
 
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
@@ -76,7 +76,7 @@ namespace sfml_util
 
     void SoundManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_),
             "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
 
@@ -85,7 +85,7 @@ namespace sfml_util
 
     void SoundManager::Initialize()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_),
             "sfml_util::SoundManager::Initialize() found instanceUPtr that was null.");
 
@@ -297,7 +297,7 @@ namespace sfml_util
         const float VOLUME,
         const bool WILL_LOOP)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (WHICH_VEC.empty() == false),
             "SoundManager::MusicStart(vector version) given an empty vector.");
 
@@ -475,7 +475,7 @@ namespace sfml_util
     {
         auto const INDEX { static_cast<std::size_t>(E) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxSetVec_.size()),
             "SoundManager::GetSoundEffectSet(enum="
                 << E << ", index=" << INDEX
@@ -610,7 +610,7 @@ namespace sfml_util
     {
         auto const INDEX { static_cast<std::size_t>(SFX_ENUM) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxWrapperVec_.size()),
             "SoundManager::GetSfxWrapper(" << SFX_ENUM << ") but that index was out of range.");
 
@@ -637,7 +637,7 @@ namespace sfml_util
 
         auto const DIR_PATH { fs::MakePathPretty(MUSIC_ROOT_DIR_PATH / MUSIC_SUB_DIR_PATH) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fs::DoesDirectoryExist(DIR_PATH)),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() but the directory does not "
             "exist: "
@@ -674,7 +674,7 @@ namespace sfml_util
                 DIR_PATH.string()));
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (combatIntroMusicInfoVec_.empty() == false),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() failed to load any music info "
             "from the directory: "
@@ -774,7 +774,7 @@ namespace sfml_util
             {
                 static std::size_t sfxSetInnerIndex { 0 };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (sfxSetVec_.at(sfxSetIndex).IsValid()),
                     "sfml_util::SoundManager::Test() While testing SoudEffectsSets #"
                         << sfxSetIndex << ", enum="
@@ -954,13 +954,13 @@ namespace sfml_util
             bfs::path(soundsDirectoryPath_) / bfs::path(sound_effect::Directory(ENUM))
             / bfs::path(sound_effect::Filename(ENUM))));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             bfs::exists(PATH_OBJ),
             "sfml_util::SoundManager::LoadSound("
                 << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
                 << "\", failed because that file does not exist.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             bfs::is_regular_file(PATH_OBJ),
             "sfml_util::SoundManager::LoadSound("
                 << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
@@ -968,7 +968,7 @@ namespace sfml_util
 
         auto bufferUPtr { std::make_unique<sf::SoundBuffer>() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             bufferUPtr->loadFromFile(PATH_OBJ.string().c_str()),
             "sfml_util::SoundManager::LoadSound("
                 << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()

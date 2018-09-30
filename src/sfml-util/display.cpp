@@ -11,8 +11,9 @@
 //
 #include "display.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/date-time.hpp"
 #include "sfml-util/fade.hpp"
 #include "sfml-util/i-stage.hpp"
@@ -72,7 +73,7 @@ namespace sfml_util
     {
         M_HP_LOG_DBG("Subsystem Construction: Display");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             winUPtr_->isOpen(),
             "Unable to open render window.  Check console for explanation.  Bail.");
 
@@ -102,7 +103,7 @@ namespace sfml_util
 
     misc::NotNull<Display *> Display::Instance()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "sfml_util::Display::Instance() found instanceUPtr that was null.");
 
         return instanceUPtr_.get();
@@ -123,7 +124,7 @@ namespace sfml_util
 
     void Display::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "sfml_util::Display::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -179,8 +180,9 @@ namespace sfml_util
         if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
         {
             M_HP_LOG_ERR(
-                "texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
-                                  << "returned false. Unable to take screenshot.");
+                "Display::TakeScreenshot()'s texture.create("
+                << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
+                << "returned false.  Unable to take screenshot.");
 
             return;
         }
@@ -189,69 +191,34 @@ namespace sfml_util
 
         auto const SCREENSHOT_IMAGE { texture.copyToImage() };
 
-        namespace bfs = boost::filesystem;
-
         // establish the path
-        const bfs::path DIR_OBJ(
-            bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
+        const auto DIR_PATH_STR { misc::filesystem::CompletePath(
+            misc::filesystem::CurrentDirectoryString(), "screenshots") };
 
         // create directory if missing
-        if (bfs::exists(DIR_OBJ) == false)
+        if (misc::filesystem::DoesDirectoryExist(DIR_PATH_STR) == false)
         {
-            boost::system::error_code ec;
-            if (bfs::create_directory(DIR_OBJ, ec) == false)
-            {
-                M_HP_LOG_ERR(
-                    "sfml_util::Loop::ProcessScreenshot() was unable to create the "
-                    << "screenshot directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec
-                    << ".  Unable to take screenshot.");
-
-                return;
-            }
+            misc::filesystem::CreateDirectory(DIR_PATH_STR);
         }
 
-        // find the next available filename
+        // compose the filename
         auto const DATE_TIME { sfml_util::DateTime::CurrentDateTime() };
-        std::ostringstream ss;
-        bfs::path filePathObj;
-        for (std::size_t i(0);; ++i)
-        {
-            ss.str("");
-            ss << "screenshot"
-               << "_" << DATE_TIME.date.year << "_" << DATE_TIME.date.month << "_"
-               << DATE_TIME.date.day << "__" << DATE_TIME.time.hours << "_"
-               << DATE_TIME.time.minutes << "_" << DATE_TIME.time.seconds;
+        std::ostringstream ssFileName;
+        ssFileName << "heroespath_screenshot_" << DATE_TIME.date.year << "-" << DATE_TIME.date.month
+                   << "-" << DATE_TIME.date.day << "_" << DATE_TIME.time.hours << ":"
+                   << DATE_TIME.time.minutes << ":" << DATE_TIME.time.seconds;
 
-            if (i > 0)
-            {
-                ss << "__" << i;
-            }
+        const auto FILE_NAME_BASE { ssFileName.str() };
+        const auto FILE_NAME_EXT { ".png" };
 
-            ss << ".png";
+        const auto FILE_PATH { misc::filesystem::FindFirstAvailableNumberedFilename(
+            DIR_PATH_STR, FILE_NAME_BASE, FILE_NAME_EXT, "_") };
 
-            filePathObj = (DIR_OBJ / bfs::path(ss.str()));
-
-            if (bfs::exists(filePathObj) == false)
-            {
-                break;
-            }
-
-            if (i >= 10000)
-            {
-                M_HP_LOG_ERR(
-                    "Loop::ProcessScreenshot() failed to find an available filename"
-                    << "after 10,000 tries.  Either 10,000 screenshots have been saved or "
-                    << "there is something wrong with this code.  Unable to take screenshot");
-
-                return;
-            }
-        }
-
-        if (SCREENSHOT_IMAGE.saveToFile(filePathObj.string()) == false)
+        if (SCREENSHOT_IMAGE.saveToFile(FILE_PATH) == false)
         {
             M_HP_LOG_ERR(
-                "Loop::ProcessScreenshot() failed screenshot saveToFile() \""
-                << filePathObj.string() << "\"");
+                "Display::TakeScreenshot() failed screenshot sf::Image::saveToFile(\""
+                << FILE_PATH << "\") returned false.  Check the console for a reason...maybe.");
         }
     }
 

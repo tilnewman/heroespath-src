@@ -293,7 +293,7 @@ namespace item
         const RandomSelectionVec_t & POSSIBLE_SELECTIONS,
         const std::size_t INDEX_LIMIT) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (POSSIBLE_SELECTIONS.empty() == false),
             "combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
 
@@ -453,7 +453,7 @@ namespace item
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fallbackItemProfiles_.empty() == false),
             "item::TreasureFactory::PopulateFallbackItemProfiles() failed to create any fallback "
             "profiles.");

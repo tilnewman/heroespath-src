@@ -11,8 +11,8 @@
 //
 #include "text-entity.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/mouse-text-info.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-renderer.hpp"

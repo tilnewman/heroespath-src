@@ -11,7 +11,7 @@
 //
 #include "sliderbar-sfx.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 

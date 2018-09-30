@@ -38,7 +38,7 @@ namespace item
             WeaponDetails details;
             auto const WAS_FOUND { weaponDetailsMap_.Find(NAME, details) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 WAS_FOUND,
                 "item::weapon::WeaponDetailLoader::LookupWeaponDetails(\""
                     << NAME << "\")  failed to find that name in weaponDetailsMap_.");
@@ -80,7 +80,7 @@ namespace item
             misc::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
 
             // verify there are eight fields
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (fieldsVec.size() == 8),
                 "item::weapon::WeaponDetailsLoader::LoadDetailsForKey(weapon_name=\""
                     << WEAPON_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
@@ -123,7 +123,7 @@ namespace item
                 result = ERROR_VAL;
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (result != ERROR_VAL),
                 "item::weapon::WeaponDetailsLoader::StringFieldToInt(field_name=\""
                     << FIELD_NAME << "\", num_str=\"" << NUM_STR << "\") failed to convert the "

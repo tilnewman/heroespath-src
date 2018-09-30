@@ -13,8 +13,8 @@
 
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 
 #include <algorithm>
@@ -40,17 +40,17 @@ namespace creature
         const Trait_t TRAIT_BONUS,
         const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Ratio() called with TRAIT_ENUM_VEC empty.");
 
-        Trait_t randSum{ 0 };
-        Trait_t normalSum{ 0 };
+        Trait_t randSum { 0 };
+        Trait_t normalSum { 0 };
         for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
         {
             normalSum += CREATURE_PTR->TraitNormal(NEXT_TRAIT_ENUM);
 
-            auto const NEXT_TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
+            auto const NEXT_TRAIT_WORKING { CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             randSum += NEXT_TRAIT_WORKING;
 
             if (OPTIONS & With::Luck)
@@ -73,7 +73,7 @@ namespace creature
             randSum = normalSum;
         }
 
-        auto const TRAIT_BONUS_RATIO{ static_cast<float>(TRAIT_BONUS) / 100.0f };
+        auto const TRAIT_BONUS_RATIO { static_cast<float>(TRAIT_BONUS) / 100.0f };
 
         return (static_cast<float>(randSum) / static_cast<float>(normalSum)) + TRAIT_BONUS_RATIO;
     }
@@ -87,17 +87,17 @@ namespace creature
     Trait_t Stats::Roll(
         const CreaturePtr_t CREATURE_PTR, const TraitsVec_t & TRAIT_ENUM_VEC, const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Roll() called with TRAIT_ENUM_VEC empty.");
 
-        auto const RAND_SUM{ std::accumulate(
+        auto const RAND_SUM { std::accumulate(
             std::begin(TRAIT_ENUM_VEC),
             std::end(TRAIT_ENUM_VEC),
             0.0f,
             [&](auto const SUBTOTAL, auto const TRAIT) {
-                auto const CURRENT_VAL{ static_cast<float>(CREATURE_PTR->TraitWorking(TRAIT)) };
-                auto const RATIO{ Ratio(CREATURE_PTR, TRAIT_ENUM_VEC, OPTIONS) };
+                auto const CURRENT_VAL { static_cast<float>(CREATURE_PTR->TraitWorking(TRAIT)) };
+                auto const RATIO { Ratio(CREATURE_PTR, TRAIT_ENUM_VEC, OPTIONS) };
                 return SUBTOTAL + (CURRENT_VAL * RATIO);
             }) };
 
@@ -113,15 +113,15 @@ namespace creature
     bool Stats::Test(
         const CreaturePtr_t CREATURE_PTR, const TraitsVec_t & TRAIT_ENUM_VEC, const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Test() called with TRAIT_ENUM_VEC empty.");
 
-        Trait_t rollChance{ 0 };
+        Trait_t rollChance { 0 };
 
         for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
         {
-            auto const TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
+            auto const TRAIT_WORKING { CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             rollChance += TRAIT_WORKING;
 
             if (OPTIONS & With::RaceRoleBonus)
@@ -133,7 +133,7 @@ namespace creature
 
             if (OPTIONS & With::StandardBonus)
             {
-                auto const STD_BONUS{ static_cast<Trait_t>(
+                auto const STD_BONUS { static_cast<Trait_t>(
                     static_cast<float>(Trait::STAT_MAX_ESTIMATED_)
                     * (static_cast<float>(CREATURE_PTR->TraitBonusCurrent(NEXT_TRAIT_ENUM))
                        / 100.0f)) };
@@ -156,7 +156,7 @@ namespace creature
 
         if (OPTIONS & With::RankBonus)
         {
-            auto const RANK_BONUS{ static_cast<int>(
+            auto const RANK_BONUS { static_cast<int>(
                 CREATURE_PTR->Rank().As<float>()
                 * game::GameDataFile::Instance()->GetCopyFloat(
                       "heroespath-fight-stats-rank-bonus-ratio")) };
@@ -176,7 +176,7 @@ namespace creature
         const Trait_t DEFENDER_BONUS_PER,
         const With OPTIONS)
     {
-        auto const DEFENDER_TRAIT{ (
+        auto const DEFENDER_TRAIT { (
             (DEFENDER_TRAIT_PARAM == Traits::Count) ? CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
 
         return Versus(
@@ -198,15 +198,15 @@ namespace creature
         const Trait_t DEFENDER_BONUS_PER,
         const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CHALLENGER_TRAIT_VEC.empty() == false),
             "creature::Stats::Versus() called with CHALLENGER_TRAIT_VEC empty.");
 
-        Trait_t chaRandSum{ 0 };
-        Trait_t chaNormalSum{ 0 };
+        Trait_t chaRandSum { 0 };
+        Trait_t chaNormalSum { 0 };
 
-        auto const CHALLENGER_ROLL_OPTIONS{ [CHALLENGER_PTR, OPTIONS]() {
-            With rollOptions{ With::None };
+        auto const CHALLENGER_ROLL_OPTIONS { [CHALLENGER_PTR, OPTIONS]() {
+            With rollOptions { With::None };
 
             if (OPTIONS & With::RaceRoleBonus)
             {
@@ -236,18 +236,18 @@ namespace creature
             return true;
         }
 
-        auto const CHALLENGER_ROLL{
+        auto const CHALLENGER_ROLL {
             chaRandSum + ((OPTIONS & With::RankBonus) ? CHALLENGER_PTR->Rank().As<int>() : 0)
         };
 
-        auto const DEFENDER_TRAIT_VEC{ (
+        auto const DEFENDER_TRAIT_VEC { (
             (DEFENDER_TRAIT_VEC_PARAM.empty()) ? CHALLENGER_TRAIT_VEC : DEFENDER_TRAIT_VEC_PARAM) };
 
-        Trait_t defRandSum{ 0 };
-        Trait_t defNormalSum{ 0 };
+        Trait_t defRandSum { 0 };
+        Trait_t defNormalSum { 0 };
 
-        auto const DEFENDER_ROLL_OPTIONS{ [DEFENDER_PTR, OPTIONS]() {
-            With rollOptions{ With::None };
+        auto const DEFENDER_ROLL_OPTIONS { [DEFENDER_PTR, OPTIONS]() {
+            With rollOptions { With::None };
 
             if (OPTIONS & With::RaceRoleBonus)
             {
@@ -277,15 +277,15 @@ namespace creature
             return true;
         }
 
-        auto const DEFENDER_ROLL{
+        auto const DEFENDER_ROLL {
             defRandSum + ((OPTIONS & With::RankBonus) ? DEFENDER_PTR->Rank().As<int>() : 0)
         };
 
         // handle roll tie
         if (CHALLENGER_ROLL == DEFENDER_ROLL)
         {
-            auto const CHA_NORMAL_PLUS_RANK{ chaNormalSum + CHALLENGER_PTR->Rank().As<int>() };
-            auto const DEF_NORMAL_PLUS_RANK{ defNormalSum + DEFENDER_PTR->Rank().As<int>() };
+            auto const CHA_NORMAL_PLUS_RANK { chaNormalSum + CHALLENGER_PTR->Rank().As<int>() };
+            auto const DEF_NORMAL_PLUS_RANK { defNormalSum + DEFENDER_PTR->Rank().As<int>() };
 
             // handle normal+rank tie
             if (CHA_NORMAL_PLUS_RANK == DEF_NORMAL_PLUS_RANK)
@@ -335,12 +335,12 @@ namespace creature
     Trait_t Stats::RollBonusByRace(
         const Trait_t TRAIT_VALUE, const Traits::Enum TRAIT_ENUM, const race::Enum RACE_ENUM)
     {
-        auto const BASE{ static_cast<Trait_t>(
+        auto const BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * game::GameDataFile::Instance()->GetCopyFloat(
                   "heroespath-stats-race-bonus-base-adj-ratio")) };
 
-        auto const MINOR{ static_cast<Trait_t>(
+        auto const MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * game::GameDataFile::Instance()->GetCopyFloat(
                   "heroespath-stats-race-bonus-minor-adj-ratio")) };
@@ -402,7 +402,7 @@ namespace creature
         }
         else if (TRAIT_ENUM == Traits::Speed)
         {
-            const Trait_t FLY_BONUS{ ((creature::race::CanFly(RACE_ENUM)) ? BASE : 0) };
+            const Trait_t FLY_BONUS { ((creature::race::CanFly(RACE_ENUM)) ? BASE : 0) };
 
             if (RACE_ENUM == creature::race::Cobra)
                 return BASE + FLY_BONUS;
@@ -447,12 +447,12 @@ namespace creature
     Trait_t Stats::RollBonusByRole(
         const Trait_t TRAIT_VALUE, const Traits::Enum TRAIT_ENUM, const role::Enum ROLE_ENUM)
     {
-        auto const BASE{ static_cast<Trait_t>(
+        auto const BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * game::GameDataFile::Instance()->GetCopyFloat(
                   "heroespath-stats-role-bonus-base-adj-ratio")) };
 
-        auto const MINOR{ static_cast<Trait_t>(
+        auto const MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * game::GameDataFile::Instance()->GetCopyFloat(
                   "heroespath-stats-role-bonus-minor-adj-ratio")) };
@@ -527,11 +527,11 @@ namespace creature
         const Trait_t TRAIT_BONUS,
         const With OPTIONS)
     {
-        auto const RAND_RATIO{ Ratio(CREATURE_PTR, TRAIT_ENUM, TRAIT_BONUS, OPTIONS) };
+        auto const RAND_RATIO { Ratio(CREATURE_PTR, TRAIT_ENUM, TRAIT_BONUS, OPTIONS) };
 
-        auto const TRAIT_BONUS_RATIO{ static_cast<float>(TRAIT_BONUS) / 100.0f };
+        auto const TRAIT_BONUS_RATIO { static_cast<float>(TRAIT_BONUS) / 100.0f };
 
-        auto x{ static_cast<int>(
+        auto x { static_cast<int>(
             static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
         x += static_cast<int>(CREATURE_PTR->Rank().As<float>() * RANK_BONUS_MULT);

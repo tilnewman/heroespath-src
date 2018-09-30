@@ -15,9 +15,9 @@
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfutil/image-manip.hpp"
@@ -97,7 +97,7 @@ namespace sfml_util
                                 CLASS_ENUM,
                                 creature::dragon_class::Count) };
 
-                            M_ASSERT_OR_LOGANDTHROW_SS(
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
                                 "sfml_util::CreatureImageLoader() (wolfen_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
@@ -158,7 +158,7 @@ namespace sfml_util
                                 creature::wolfen_class::Count,
                                 CLASS_ENUM) };
 
-                            M_ASSERT_OR_LOGANDTHROW_SS(
+                            M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
                                 "sfml_util::CreatureImageLoader() (dragon_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
@@ -212,7 +212,7 @@ namespace sfml_util
                             creature::wolfen_class::Count,
                             creature::dragon_class::Count) };
 
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (FILENAMES.empty() == false),
                             "sfml_util::CreatureImageLoader() race="
                                 << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
@@ -323,7 +323,7 @@ namespace sfml_util
             CREATURE_PTR->WolfenClass(),
             CREATURE_PTR->DragonClass()) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
             "sfml_util::CreatureImageLoader::GetRandomFilename(creature={"
                 << CREATURE_PTR->ToString()
@@ -336,7 +336,7 @@ namespace sfml_util
     {
         auto const FULL_PATH_STR { Path(FILENAME) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::DoesFileExist(FULL_PATH_STR)),
             "sfml_util::CreatureImageLoader::EnsureFileExists(\""
                 << FULL_PATH_STR

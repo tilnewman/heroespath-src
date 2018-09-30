@@ -10,7 +10,7 @@
 // image-entity.cpp
 //
 #include "image-entity.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/position.hpp"

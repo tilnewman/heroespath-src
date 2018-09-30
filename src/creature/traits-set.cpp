@@ -34,7 +34,7 @@ namespace creature
 
     Trait & TraitSet::Get(const Traits::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (Traits::IsValid(E)), "TraitSet::Get(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
@@ -42,7 +42,7 @@ namespace creature
 
     const Trait & TraitSet::GetCopy(const Traits::Enum E) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (Traits::IsValid(E)), "TraitSet::GetCopy(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];

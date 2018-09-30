@@ -11,8 +11,8 @@
 //
 #include "text-entry-box.hpp"
 
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-region.hpp"
 #include "sfutil/primitives.hpp"

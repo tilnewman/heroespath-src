@@ -11,7 +11,7 @@
 //
 #include "treasure-stage-mover.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include "sfml-util/entity.hpp"
 

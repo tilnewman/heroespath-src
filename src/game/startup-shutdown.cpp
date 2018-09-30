@@ -30,9 +30,9 @@
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/weapon-details.hpp"
-#include "log/logger.hpp"
-#include "log/macros.hpp"
 #include "misc/configbase.hpp"
+#include "misc/log-macros.hpp"
+#include "misc/log.hpp"
 #include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "misc/settings-file.hpp"
@@ -73,7 +73,7 @@ namespace game
         // this order is critical
 
         // initialize the log first so that all Setup() actions can be logged
-        log::Logger::Acquire();
+        misc::Log::Acquire();
 
         platform_.Log();
         if (platform_.IsSupported() == false)
@@ -124,15 +124,13 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_SettingsFile() threw std::exception \"" << E.what()
                                                                                    << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_SettingsFile() threw an unknown (non-std) exception.");
         }
     }
@@ -148,15 +146,13 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_CloseDisplay() threw std::exception \"" << E.what()
                                                                                    << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_CloseDisplay() threw an unknown (non-std) exception.");
         }
     }
@@ -173,17 +169,15 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_EmptyHolders() threw std::exception \"" << E.what()
                                                                                    << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_EmptyHolders() "
-                    << "threw an unknown (non-std) exception.");
+                << "threw an unknown (non-std) exception.");
         }
     }
 
@@ -238,17 +232,15 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_ReleaseSubsystems() threw std::exception \"" << E.what()
                                                                                         << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_ReleaseSubsystems() "
-                    << "threw an unknown (non-std) exception.");
+                << "threw an unknown (non-std) exception.");
         }
     }
 
@@ -256,18 +248,16 @@ namespace game
     {
         try
         {
-            log::Logger::Release();
+            misc::Log::Release();
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_Logger() threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT(
-                *log::Logger::Instance(),
+            M_HP_LOG_FAT(
                 "StartupShutdown::Teardown_Logger() threw an unknown (non-std) exception.");
         }
     }

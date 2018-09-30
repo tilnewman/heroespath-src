@@ -623,7 +623,7 @@ namespace stage
             combat::Encounter::Instance()->LockPickCreaturePtrOpt()
         };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!LOCK_PICKING_CREATURE_PTR_OPT),
             "stage::TreasureStage::LockPickFailure() called when "
             "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
@@ -650,7 +650,7 @@ namespace stage
                 combat::Encounter::Instance()->LockPickCreaturePtrOpt()
             };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!LOCK_PICKING_CREATURE_PTR_OPT),
                 "stage::TreasureStage::PromptPlayerWithDamagePopups() called when "
                 "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");

@@ -14,7 +14,7 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"

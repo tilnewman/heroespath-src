@@ -13,7 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/music-enum.hpp"

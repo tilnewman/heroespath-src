@@ -15,7 +15,7 @@
 #include "creature/race-enum.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"

@@ -404,7 +404,7 @@ namespace map
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((startPos.x > 0.0f) && (startPos.y > 0.0f)),
             "map::Map::FindStartPos(level_to_load="
                 << Level::ToString(LEVEL_TO_LOAD) << ", level_from=" << Level::ToString(LEVEL_FROM)
@@ -597,7 +597,7 @@ namespace map
             throw std::runtime_error(ss.str());
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (walkRects.empty() == false),
             "map::Map::AddNonPlayerAvatar(avatar="
                 << avatar::Avatar::ToString(AVATAR_IMAGE_ENUM)

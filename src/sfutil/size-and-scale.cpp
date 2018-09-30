@@ -133,7 +133,7 @@ namespace sfutil
         return IsSizeLessThanOneBoth(T.getGlobalBounds());
     }
 
-    const sf::FloatRect sfutil::MinimallyEnclosing(
+    const sf::FloatRect MinimallyEnclosing(
         const sf::Sprite & A,
         const sf::Sprite & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
@@ -173,7 +173,7 @@ namespace sfutil
             frv.emplace_back(T.getGlobalBounds());
         }
 
-        return sfutil::MinimallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
+        return MinimallyEnclosing(frv, WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS);
     }
 
 } // namespace sfutil

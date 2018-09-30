@@ -15,8 +15,8 @@
 #include "creature/nonplayer-inventory-chances.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 
 #include <algorithm>
@@ -34,11 +34,11 @@ namespace creature
 
         void InventoryFactory::SetupCreatureInventory(const CreaturePtr_t CREATURE_PTR) const
         {
-            auto const INVENTORY_CHANCES{ ChanceFactory::Instance()->Make(CREATURE_PTR) };
+            auto const INVENTORY_CHANCES { ChanceFactory::Instance()->Make(CREATURE_PTR) };
             CREATURE_PTR->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
 
             //.first is for equipped items and .second is for unequipped items
-            auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, CREATURE_PTR) };
+            auto const ITEM_PVEC_PAIR { MakeItemSet(INVENTORY_CHANCES, CREATURE_PTR) };
             for (auto const & NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
             {
                 auto const ITEM_ADD_RESULT(CREATURE_PTR->ItemAdd(NEXT_ITEM_PTR));
@@ -105,7 +105,7 @@ namespace creature
             }
 
             {
-                auto const CLOTHING_ITEMS_PVEC_PAIR{ MakeItemSet_Clothing(
+                auto const CLOTHING_ITEMS_PVEC_PAIR { MakeItemSet_Clothing(
                     CHANCES.clothes, CHARACTER_PTR->IsPixie()) };
 
                 std::copy(
@@ -119,15 +119,15 @@ namespace creature
                     back_inserter(itemsPtrVecPair.second));
             }
 
-            bool hasTwoHandedWeapons{ false };
+            bool hasTwoHandedWeapons { false };
 
             {
-                auto weaponItemsPVecPair{ MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR) };
+                auto weaponItemsPVecPair { MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR) };
 
                 // if pixie then only pixie valid weapons
                 if (CHARACTER_PTR->IsPixie())
                 {
-                    auto hasNoPixieVersion{ [](auto const ITEM_PTR) {
+                    auto hasNoPixieVersion { [](auto const ITEM_PTR) {
                         return (
                             ((ITEM_PTR->WeaponInfo().Type() & item::weapon_type::Knife) == 0)
                             && (ITEM_PTR->WeaponInfo().IsStaff() == false));
@@ -150,7 +150,7 @@ namespace creature
             }
 
             {
-                auto const BODY_WEAPON_ITEMS_PVEC{ MakeItemSet_BodyWeapons(
+                auto const BODY_WEAPON_ITEMS_PVEC { MakeItemSet_BodyWeapons(
                     CHANCES.weapon, CHARACTER_PTR, hasTwoHandedWeapons) };
 
                 std::copy(
@@ -159,7 +159,7 @@ namespace creature
                     back_inserter(itemsPtrVecPair.first));
             }
 
-            auto armorItemsPVecPair{ MakeItemSet_Armor(
+            auto armorItemsPVecPair { MakeItemSet_Armor(
                 CHANCES.armor, CHARACTER_PTR, hasTwoHandedWeapons) };
 
             // remove clothing items that might conflict with armor equipping
@@ -188,7 +188,7 @@ namespace creature
             if (CHARACTER_PTR->IsPixie())
             {
                 // helm/shield/aventail/plate
-                auto hasNoPixieVersion{ [](auto const ITEM_PTR) {
+                auto hasNoPixieVersion { [](auto const ITEM_PTR) {
                     return (
                         ITEM_PTR->ArmorInfo().IsShield() || ITEM_PTR->ArmorInfo().IsHelm()
                         || ITEM_PTR->ArmorInfo().IsAventail()
@@ -199,7 +199,7 @@ namespace creature
             }
 
             // no vests on beasts
-            auto isVestOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isVestOnBeast { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
                     && ((CHARACTER_PTR->Race() == race::Dragon)
@@ -209,7 +209,7 @@ namespace creature
             RemoveItemsAndFree(armorItemsPVecPair.first, isVestOnBeast);
 
             // no gauntlets without fingers
-            auto isGauntletWithoutFingers{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isGauntletWithoutFingers { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorType() == item::armor_type::Gauntlets)
                     && (CHARACTER_PTR->Body().HasFingers() == false));
@@ -218,7 +218,7 @@ namespace creature
             RemoveItemsAndFree(armorItemsPVecPair.first, isGauntletWithoutFingers);
 
             // no shields without fingers
-            auto isShieldWithoutFingers{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isShieldWithoutFingers { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorType() == item::armor_type::Shield)
                     && (CHARACTER_PTR->Body().HasFingers() == false));
@@ -227,7 +227,7 @@ namespace creature
             RemoveItemsAndFree(armorItemsPVecPair.first, isShieldWithoutFingers);
 
             // no helms with horns
-            auto isHeldWithHorns{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isHeldWithHorns { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorType() == item::armor_type::Helm)
                     && CHARACTER_PTR->Body().HasHorns());
@@ -236,7 +236,7 @@ namespace creature
             RemoveItemsAndFree(armorItemsPVecPair.first, isHeldWithHorns);
 
             // no pants without legs
-            auto isPantsWithoutLegs{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isPantsWithoutLegs { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorType() == item::armor_type::Pants)
                     && (CHARACTER_PTR->Body().HasLegs() == false));
@@ -245,7 +245,7 @@ namespace creature
             RemoveItemsAndFree(armorItemsPVecPair.first, isPantsWithoutLegs);
 
             // no boots without feet
-            auto isBootsWithoutFeet{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isBootsWithoutFeet { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
                     (ITEM_PTR->ArmorType() == item::armor_type::Boots)
                     && (CHARACTER_PTR->Body().HasLegs() == false));
@@ -265,7 +265,7 @@ namespace creature
                 back_inserter(itemsPtrVecPair.second));
 
             // one last check to remove armor from beast inventories
-            auto isArmorOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
+            auto isArmorOnBeast { [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (ITEM_PTR->IsArmor() && CHARACTER_PTR->IsBeast());
             } };
 
@@ -273,17 +273,17 @@ namespace creature
             RemoveItemsAndFree(itemsPtrVecPair.second, isArmorOnBeast);
 
             // prevent adding an aventail if there is no helm
-            auto const CONTAINS_HELM{ std::find_if(
-                                          itemsPtrVecPair.first.begin(),
-                                          itemsPtrVecPair.first.end(),
-                                          [](const item::ItemPtr_t PTR) {
-                                              return (PTR->ArmorType() == item::armor_type::Helm);
-                                          })
-                                      != itemsPtrVecPair.first.end() };
+            auto const CONTAINS_HELM { std::find_if(
+                                           itemsPtrVecPair.first.begin(),
+                                           itemsPtrVecPair.first.end(),
+                                           [](const item::ItemPtr_t PTR) {
+                                               return (PTR->ArmorType() == item::armor_type::Helm);
+                                           })
+                                       != itemsPtrVecPair.first.end() };
 
             if (CONTAINS_HELM == false)
             {
-                auto const WILL_ADD_AVENTAIL{
+                auto const WILL_ADD_AVENTAIL {
                     std::find_if(
                         itemsPtrVecPair.first.begin(),
                         itemsPtrVecPair.first.end(),
@@ -402,13 +402,13 @@ namespace creature
                 itemsPtrVecPair.first.emplace_back(itemFactory_.Make(profile));
             }
 
-            auto const COVER_TYPE{ CHANCES.RandomCoverType() };
+            auto const COVER_TYPE { CHANCES.RandomCoverType() };
             if (COVER_TYPE != item::armor::cover_type::Count)
             {
                 nonplayer::ItemChances itemChances;
-                auto const WAS_FOUND{ CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
+                auto const WAS_FOUND { CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     WAS_FOUND,
                     "creature::nonplayer::InventoryFactory::MakeItemSet_Clothing() failed to"
                         << " find \"" << COVER_TYPE << "\".");
@@ -507,7 +507,7 @@ namespace creature
 
             // knife/dagger
             {
-                auto countChance{ 0.0f };
+                auto countChance { 0.0f };
                 if (WEAPON_CHANCES.knife.num_owned_map.Find(1, countChance))
                 {
                     typeKindChanceMap[weapon_type::Knife] = std::make_pair(0, countChance);
@@ -516,7 +516,7 @@ namespace creature
 
             // staff/quarterstaff
             {
-                auto countChance{ 0.0f };
+                auto countChance { 0.0f };
                 if (WEAPON_CHANCES.staff.num_owned_map.Find(1, countChance))
                 {
                     typeKindChanceMap[weapon_type::Staff] = std::make_pair(0, countChance);
@@ -530,9 +530,9 @@ namespace creature
             }
 
             // random select weapon
-            auto randomSelectedWeaponType{ typeKindChanceMap.begin()->first };
-            auto chanceCumulative{ 0.0f };
-            auto const RAND_WEAPON_TYPE_CHANCE{ misc::random::Float() };
+            auto randomSelectedWeaponType { typeKindChanceMap.begin()->first };
+            auto chanceCumulative { 0.0f };
+            auto const RAND_WEAPON_TYPE_CHANCE { misc::random::Float() };
             for (auto const & NEXT_TYPEKIND_PAIR : typeKindChanceMap)
             {
                 chanceCumulative += NEXT_TYPEKIND_PAIR.second.second;
@@ -548,7 +548,7 @@ namespace creature
             {
                 case weapon_type::Knife:
                 {
-                    auto const IS_DAGGER{ misc::random::Float() < WEAPON_CHANCES.knife.is_dagger };
+                    auto const IS_DAGGER { misc::random::Float() < WEAPON_CHANCES.knife.is_dagger };
 
                     ItemProfile profile;
 
@@ -612,13 +612,13 @@ namespace creature
                 }
                 case weapon_type::Axe:
                 {
-                    auto const AXE_TYPE{ static_cast<weapon::axe_type::Enum>(
+                    auto const AXE_TYPE { static_cast<weapon::axe_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances axeChances;
-                    auto const WAS_AXE_FOUND{ WEAPON_CHANCES.axe_map.Find(AXE_TYPE, axeChances) };
+                    auto const WAS_AXE_FOUND { WEAPON_CHANCES.axe_map.Find(AXE_TYPE, axeChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_AXE_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
@@ -631,8 +631,8 @@ namespace creature
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    auto const MATERIAL_PRI{ axeChances.RandomMaterialPri() };
-                    auto materialSec{ axeChances.RandomMaterialSec() };
+                    auto const MATERIAL_PRI { axeChances.RandomMaterialPri() };
+                    auto materialSec { axeChances.RandomMaterialSec() };
                     if ((MATERIAL_PRI == material::Wood) && (material::Nothing == materialSec))
                     {
                         materialSec = material::Steel;
@@ -647,15 +647,15 @@ namespace creature
                 }
                 case weapon_type::BladedStaff:
                 {
-                    auto const BLADEDSTAFF_TYPE{ static_cast<weapon::bladedstaff_type::Enum>(
+                    auto const BLADEDSTAFF_TYPE { static_cast<weapon::bladedstaff_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances bstaffChances;
 
-                    auto const WAS_BSTAFF_FOUND{ WEAPON_CHANCES.bladedstaff_map.Find(
+                    auto const WAS_BSTAFF_FOUND { WEAPON_CHANCES.bladedstaff_map.Find(
                         BLADEDSTAFF_TYPE, bstaffChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_BSTAFF_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature=\"" << CHARACTER_PTR->ToString()
@@ -668,8 +668,8 @@ namespace creature
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    auto const MATERIAL_PRI{ bstaffChances.RandomMaterialPri() };
-                    auto materialSec{ bstaffChances.RandomMaterialSec() };
+                    auto const MATERIAL_PRI { bstaffChances.RandomMaterialPri() };
+                    auto materialSec { bstaffChances.RandomMaterialSec() };
 
                     if ((MATERIAL_PRI == material::Wood) && (material::Nothing == materialSec))
                     {
@@ -683,15 +683,15 @@ namespace creature
                 }
                 case weapon_type::Club:
                 {
-                    auto const CLUB_TYPE{ static_cast<weapon::club_type::Enum>(
+                    auto const CLUB_TYPE { static_cast<weapon::club_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances clubChances;
 
-                    auto const WAS_CLUB_FOUND{ WEAPON_CHANCES.club_map.Find(
+                    auto const WAS_CLUB_FOUND { WEAPON_CHANCES.club_map.Find(
                         CLUB_TYPE, clubChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_CLUB_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
@@ -704,8 +704,8 @@ namespace creature
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    auto const MATERIAL_PRI{ clubChances.RandomMaterialPri() };
-                    auto materialSec{ clubChances.RandomMaterialSec() };
+                    auto const MATERIAL_PRI { clubChances.RandomMaterialPri() };
+                    auto materialSec { clubChances.RandomMaterialSec() };
 
                     if ((MATERIAL_PRI == material::Wood) && (material::Nothing == materialSec))
                     {
@@ -719,15 +719,15 @@ namespace creature
                 }
                 case weapon_type::Projectile:
                 {
-                    auto const PROJECTILE_TYPE{ static_cast<weapon::projectile_type::Enum>(
+                    auto const PROJECTILE_TYPE { static_cast<weapon::projectile_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances projChances;
 
-                    auto const WAS_PROJ_FOUND{ WEAPON_CHANCES.projectile_map.Find(
+                    auto const WAS_PROJ_FOUND { WEAPON_CHANCES.projectile_map.Find(
                         PROJECTILE_TYPE, projChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_PROJ_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
@@ -750,15 +750,15 @@ namespace creature
                 }
                 case weapon_type::Sword:
                 {
-                    auto const SWORD_TYPE{ static_cast<weapon::sword_type::Enum>(
+                    auto const SWORD_TYPE { static_cast<weapon::sword_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances swordChances;
 
-                    auto const WAS_SWORD_FOUND{ WEAPON_CHANCES.sword_map.Find(
+                    auto const WAS_SWORD_FOUND { WEAPON_CHANCES.sword_map.Find(
                         SWORD_TYPE, swordChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_SWORD_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
@@ -781,15 +781,15 @@ namespace creature
                 }
                 case weapon_type::Whip:
                 {
-                    auto const WHIP_TYPE{ static_cast<weapon::whip_type::Enum>(
+                    auto const WHIP_TYPE { static_cast<weapon::whip_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     nonplayer::ItemChances whipChances;
 
-                    auto const WAS_WHIP_FOUND{ WEAPON_CHANCES.whip_map.Find(
+                    auto const WAS_WHIP_FOUND { WEAPON_CHANCES.whip_map.Find(
                         WHIP_TYPE, whipChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_WHIP_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Weapons("
                             << "creature=\"" << CHARACTER_PTR->ToString()
@@ -1013,15 +1013,15 @@ namespace creature
             // covers (vest/robe/cloak/cape)
             try
             {
-                auto const COVER_PAIR{ CHANCES.RandomCover() };
+                auto const COVER_PAIR { CHANCES.RandomCover() };
                 if (COVER_PAIR.second > 0)
                 {
                     nonplayer::ItemChances coverChances;
 
-                    auto const WAS_COVER_FOUND{ CHANCES.cover_map.Find(
+                    auto const WAS_COVER_FOUND { CHANCES.cover_map.Find(
                         COVER_PAIR.first, coverChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_COVER_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
@@ -1057,15 +1057,15 @@ namespace creature
             // helms
             try
             {
-                auto const HELM_PAIR{ CHANCES.RandomHelm() };
+                auto const HELM_PAIR { CHANCES.RandomHelm() };
                 if (HELM_PAIR.second > 0)
                 {
                     nonplayer::ItemChances helmChances;
 
-                    auto const WAS_HELM_FOUND{ CHANCES.helm_map.Find(
+                    auto const WAS_HELM_FOUND { CHANCES.helm_map.Find(
                         HELM_PAIR.first, helmChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_HELM_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
@@ -1097,15 +1097,15 @@ namespace creature
             // shields
             try
             {
-                auto const SHIELD_PAIR{ CHANCES.RandomShield() };
+                auto const SHIELD_PAIR { CHANCES.RandomShield() };
                 if (SHIELD_PAIR.second > 0)
                 {
                     ItemChances shieldChances;
 
-                    auto const WAS_SHIELD_FOUND{ CHANCES.shield_map.Find(
+                    auto const WAS_SHIELD_FOUND { CHANCES.shield_map.Find(
                         SHIELD_PAIR.first, shieldChances) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         WAS_SHIELD_FOUND,
                         "creature::nonplayer::InventoryFactory::MakeItemSet_Armor(creature=\""
                             << CHARACTER_PTR->ToString()
@@ -1210,7 +1210,7 @@ namespace creature
         {
             item::ItemPVec_t itemsToRemovePVec;
 
-            auto ArmorTypeMatchLambda{ [ENUM](auto const ITEM_PTR) {
+            auto ArmorTypeMatchLambda { [ENUM](auto const ITEM_PTR) {
                 return (ITEM_PTR->ArmorType() == ENUM);
             } };
 

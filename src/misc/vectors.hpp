@@ -124,7 +124,7 @@ namespace misc
         template <typename T>
         static T & SelectRandom(std::vector<T> & vector)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (vector.empty() == false),
                 "misc::Vector::SelectRandom(non-const) was given an empty vector.");
 
@@ -134,7 +134,7 @@ namespace misc
         template <typename T>
         static const T & SelectRandom(const std::vector<T> & VECTOR)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (VECTOR.empty() == false),
                 "misc::Vector::SelectRandom(const) was given an empty vector.");
 

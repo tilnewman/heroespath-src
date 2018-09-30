@@ -31,7 +31,7 @@ namespace sfml_util
         , entityUVec_(std::move(ENTITY_UVEC))
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (entityUVec_.empty() == false),
             "RadioOrCheckSet::RadioOrCheckSet() was given an ENTITY_UVEC that was empty.");
 
@@ -62,7 +62,7 @@ namespace sfml_util
         , entityUVec_()
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TITLE_VALID_PAIR_VEC.empty() == false),
             "RadioOrCheckSet::RadioOrCheckSet() was given an TITLE_VALID_PAIR_VEC that was "
             "empty.");

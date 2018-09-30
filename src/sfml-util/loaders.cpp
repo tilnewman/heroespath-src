@@ -29,13 +29,13 @@ namespace sfml_util
 
         auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Texture(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             texture.loadFromFile(PATH_STR_COMPLETE),
             "sfml_util::Loaders::Texture(), sf::(Image or Texture).loadFromFile(\""
                 << PATH_STR_COMPLETE << "\") failed.  Check console output for information.");
@@ -55,7 +55,7 @@ namespace sfml_util
 
         auto const DIR_PATH_STR_COMPLETE { fs::MakePathPretty(DIR_PATH_STR_ORIG) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fs::DoesDirectoryExist(DIR_PATH_STR_COMPLETE)),
             "sfml_util::Loaders::AllTexturesInDir(\""
                 << DIR_PATH_STR_COMPLETE
@@ -81,13 +81,13 @@ namespace sfml_util
 
         auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Font(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (font.loadFromFile(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Font(), sf::Font::loadFromFile(\""
                 << PATH_STR_COMPLETE << "\") failed.  "
@@ -100,7 +100,7 @@ namespace sfml_util
 
         auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (fs::DoesFileExist(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Music(\""
                 << PATH_STR_COMPLETE
@@ -108,7 +108,7 @@ namespace sfml_util
 
         auto musicUPtr { std::make_unique<sf::Music>() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (musicUPtr->openFromFile(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Music(\"" << PATH_STR_COMPLETE
                                            << "\"), sf::Music::OpenFromFile() returned false.  "

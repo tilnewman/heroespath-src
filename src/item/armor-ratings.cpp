@@ -14,7 +14,7 @@
 #include "item/item-factory.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include <numeric>
 
@@ -97,7 +97,7 @@ namespace item
 
         itemPVec.emplace_back(itemFactory_.Make(helmProfile));
 
-        auto const BASE_TYPE{ (
+        auto const BASE_TYPE { (
             (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Mail) };
 
         ItemProfile glovesProfile;
@@ -151,7 +151,7 @@ namespace item
 
         itemPVec.emplace_back(itemFactory_.Make(helmProfile));
 
-        auto const BASE_TYPE{ (
+        auto const BASE_TYPE { (
             (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Plate) };
 
         ItemProfile glovesProfile;
@@ -187,7 +187,7 @@ namespace item
 
     Armor_t ArmorRatings::GetTotalArmorRatingAndFree(ItemPVec_t & itemPVec) const
     {
-        auto const TOTAL_ARMOR_RATING{ std::accumulate(
+        auto const TOTAL_ARMOR_RATING { std::accumulate(
             std::begin(itemPVec),
             std::end(itemPVec),
             0_armor,

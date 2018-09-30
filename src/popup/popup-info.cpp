@@ -64,14 +64,14 @@ namespace popup
         , willIncludeItems_(false)
         , keepAliveSeconds_(KEEP_ALIVE_SECONDS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (TEXT_INFO.text.empty() == false),
             "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
                                        << ", image=" << PopupImage::ToString(IMAGE)
                                        << ", textInfo=\"" << TEXT_INFO.text
                                        << "\") was given TEXT_INFO.text that was empty.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (PopupImage::IsValid(IMAGE)),
             "popup::PopupInfo(name=\""
                 << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
@@ -127,7 +127,7 @@ namespace popup
         , willIncludeItems_(false)
         , keepAliveSeconds_(-1.0f) // any negative will work here
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((INITIAL_SELECTION < textures_.size()) || textures_.empty()),
             "popup::PopupInfo::Constructor(image selection) INITIAL_SELECTION="
                 << INITIAL_SELECTION << " is NOT less than the textures_vec.size()"

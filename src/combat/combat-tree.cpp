@@ -13,7 +13,7 @@
 
 #include "combat/combat-node.hpp"
 #include "creature/creature.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -54,7 +54,7 @@ namespace combat
 
     ID_t CombatTree::NextAvailableId() const
     {
-        auto const NUM_VERTEXES{ vertexes_.size() };
+        auto const NUM_VERTEXES { vertexes_.size() };
         for (std::size_t i(0); i < NUM_VERTEXES; ++i)
         {
             if (false == DoesVertexExist(ID_t(i)))
@@ -182,7 +182,7 @@ namespace combat
 
     CombatNodePtr_t CombatTree::AddVertex(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const COMBAT_NODE_SPTR{ std::make_shared<combat::CombatNode>(CREATURE_PTR) };
+        auto const COMBAT_NODE_SPTR { std::make_shared<combat::CombatNode>(CREATURE_PTR) };
         vertexes_.emplace_back(Vertex(NextAvailableId(), COMBAT_NODE_SPTR));
         return COMBAT_NODE_SPTR.get();
     }
@@ -228,7 +228,7 @@ namespace combat
         std::set<int> orphanedBlockingIdSet;
         for (auto const & EDGE_TO_BE_REMOVED : edgesToBeRemoved)
         {
-            auto const ORPHANED_VERT_ID_VEC{ RemoveEdge(
+            auto const ORPHANED_VERT_ID_VEC { RemoveEdge(
                 EDGE_TO_BE_REMOVED.a, EDGE_TO_BE_REMOVED.b, !WILL_REMOVE_DANGLING_EDGES) };
 
             for (auto const & ORPHANED_VERT_ID : ORPHANED_VERT_ID_VEC)
@@ -255,7 +255,7 @@ namespace combat
         }
         else
         {
-            ID_t::type count{ 0 };
+            ID_t::type count { 0 };
             for (auto const & EDGE : edges_)
             {
                 if (EDGE.type == TYPE)
@@ -378,7 +378,7 @@ namespace combat
             throw std::invalid_argument(ss.str());
         }
 
-        const EdgeType::Enum TYPE{ GetEdgeType(ID1, ID2) };
+        const EdgeType::Enum TYPE { GetEdgeType(ID1, ID2) };
 
         edges_.erase(std::remove(edges_.begin(), edges_.end(), Edge(ID1, ID2, TYPE)), edges_.end());
 
@@ -480,7 +480,7 @@ namespace combat
     bool CombatTree::FindAdjacentByEdgeType(
         const ID_t & ID, IDVec_t & idVec_OutParam, const EdgeType::Enum TYPE) const
     {
-        const ID_t ORIG_SIZE{ idVec_OutParam.size() };
+        const ID_t ORIG_SIZE { idVec_OutParam.size() };
 
         for (auto const & EDGE : edges_)
         {
@@ -514,13 +514,13 @@ namespace combat
             }
         }
 
-        const ID_t FINAL_SIZE{ idVec_OutParam.size() };
+        const ID_t FINAL_SIZE { idVec_OutParam.size() };
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
     bool CombatTree::FindAdjacent(const ID_t & ID, IDVec_t & idVec_OutParam) const
     {
-        auto const ORIG_SIZE{ idVec_OutParam.size() };
+        auto const ORIG_SIZE { idVec_OutParam.size() };
 
         for (auto const & EDGE : edges_)
         {
@@ -600,7 +600,7 @@ namespace combat
         }
 
         // attach all verts at position with an edge of type CONNECTION_TYPE
-        auto const NUM_VERTS_AT_POS{ vertIDsAtPosVec.size() };
+        auto const NUM_VERTS_AT_POS { vertIDsAtPosVec.size() };
         if (NUM_VERTS_AT_POS > 0)
         {
             for (ID_t::type i(0); i < NUM_VERTS_AT_POS - 1; ++i)
@@ -624,7 +624,7 @@ namespace combat
         int min(vertexes_.begin()->node_sptr->GetBlockingPos());
         for (auto const & VERTEX : vertexes_)
         {
-            const int NEXT_BLOCKING_POS{ VERTEX.node_sptr->GetBlockingPos() };
+            const int NEXT_BLOCKING_POS { VERTEX.node_sptr->GetBlockingPos() };
             if (min > NEXT_BLOCKING_POS)
             {
                 min = NEXT_BLOCKING_POS;
@@ -644,7 +644,7 @@ namespace combat
         int max(vertexes_.begin()->node_sptr->GetBlockingPos());
         for (auto const & VERTEX : vertexes_)
         {
-            const int NEXT_BLOCKING_POS{ VERTEX.node_sptr->GetBlockingPos() };
+            const int NEXT_BLOCKING_POS { VERTEX.node_sptr->GetBlockingPos() };
             if (max < NEXT_BLOCKING_POS)
             {
                 max = NEXT_BLOCKING_POS;
@@ -681,14 +681,14 @@ namespace combat
         finalIds.reserve(vertexes_.size());
 
         {
-            auto const IDS_AT_POS_VEC{ GetNodeIDsAtBlockingPos(BLOCKING_POS) };
+            auto const IDS_AT_POS_VEC { GetNodeIDsAtBlockingPos(BLOCKING_POS) };
 
             std::copy(
                 std::begin(IDS_AT_POS_VEC), std::end(IDS_AT_POS_VEC), back_inserter(finalIds));
         }
 
         {
-            auto const IDS_AFTER_POS_VEC{ GetNodeIDsAtBlockingPos(BLOCKING_POS + 1) };
+            auto const IDS_AFTER_POS_VEC { GetNodeIDsAtBlockingPos(BLOCKING_POS + 1) };
 
             std::copy(
                 std::begin(IDS_AFTER_POS_VEC),
@@ -697,7 +697,7 @@ namespace combat
         }
 
         {
-            auto const IDS_BEFORE_POS_VEC{ GetNodeIDsAtBlockingPos(BLOCKING_POS - 1) };
+            auto const IDS_BEFORE_POS_VEC { GetNodeIDsAtBlockingPos(BLOCKING_POS - 1) };
 
             std::copy(
                 std::begin(IDS_BEFORE_POS_VEC),
@@ -799,15 +799,15 @@ namespace combat
     int CombatTree::GetClosestBlockingDistanceByType(
         creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
     {
-        CombatNodePtrOpt_t closestNodePtrOpt{ boost::none };
-        auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
+        CombatNodePtrOpt_t closestNodePtrOpt { boost::none };
+        auto closestBlockingDistanceABS { GetBlockingDistanceMax() + 1 };
 
         for (auto const & VERTEX : vertexes_)
         {
             if ((VERTEX.node_sptr->Creature() != CREATURE_PTR)
                 && (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
-                auto const ABS_DISTANCE{ std::abs(
+                auto const ABS_DISTANCE { std::abs(
                     GetBlockingDistanceBetween(CREATURE_PTR, VERTEX.node_sptr->Creature())) };
 
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
@@ -831,12 +831,12 @@ namespace combat
     const CombatNodePVec_t CombatTree::FindNodesClosestOfType(
         const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const
     {
-        auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
+        auto closestBlockingDistanceABS { GetBlockingDistanceMax() + 1 };
 
         // find closest distance
         for (auto const & VERTEX : vertexes_)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(
+            auto const NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -852,7 +852,7 @@ namespace combat
         // find all nodes with that closest distance
         for (auto const & VERTEX : vertexes_)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(
+            auto const NEXT_BLOCKING_DISTANCE_ABS { std::abs(
                 VERTEX.node_sptr->GetBlockingPos() - ORIGIN_BLOCKING_POS) };
 
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
@@ -862,7 +862,7 @@ namespace combat
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (closestCombatNodesPVec.empty() == false),
             "combat::CombatTree::FindNodesClosestOfType(orig_blocking_pos="
                 << ORIGIN_BLOCKING_POS << ", will_find_players=" << std::boolalpha
@@ -890,7 +890,7 @@ namespace combat
         {
             if (VERTEX.id == ID_OF_VERTEX_TO_CHANGE)
             {
-                const Vertex VERTEX_COPY{ VERTEX };
+                const Vertex VERTEX_COPY { VERTEX };
                 VERTEX_COPY.node_sptr->SetBlockingPos(NEW_BLOCKING_POS);
                 RemoveVertex(ID_OF_VERTEX_TO_CHANGE, true);
                 vertexes_.emplace_back(VERTEX_COPY);

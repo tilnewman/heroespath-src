@@ -24,9 +24,9 @@
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
-#include "log/log-macros.hpp"
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/types.hpp"
@@ -59,6 +59,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -836,7 +837,7 @@ namespace stage
                                                CURRENT_LEVEL)
                                            != std::end(ENTRY_TRANSITIONS.exit_levels) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (WAS_FOUND),
                         "TestingStage::TestMaps() found a map \""
                             << map::Level::ToString(CURRENT_LEVEL)
@@ -855,7 +856,7 @@ namespace stage
                                                CURRENT_LEVEL)
                                            != std::end(EXIT_TRANSITIONS.entry_levels) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (WAS_FOUND),
                         "TestingStage::TestMaps() found a map \""
                             << map::Level::ToString(CURRENT_LEVEL)
@@ -1234,12 +1235,12 @@ namespace stage
 
         auto const DIR_PATH_STR{ DIR_PATH.string() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             bfs::exists(DIR_PATH),
             "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
                 << "\") failed because that path does not exist.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             bfs::is_directory(DIR_PATH),
             "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
                 << "\") failed because that is not a directory.");

@@ -49,14 +49,14 @@ namespace sfml_util
         , volume_(VOLUME)
         , willLoop_(WILL_LOOP)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (whichVec_.empty() == false),
             "sfml_util::MusicSet::Constructor(vector version) was given an empty vector.");
 
-        auto const ORIG_RANDOM_SETTING{ willRandomize_ };
+        auto const ORIG_RANDOM_SETTING { willRandomize_ };
         willRandomize_ = WILL_START_AT_RANDOM;
 
-        auto const ORIG_LOOP_SETTING{ willLoop_ };
+        auto const ORIG_LOOP_SETTING { willLoop_ };
         willLoop_ = true;
 
         currentlyPlaying_ = PickNextSong();
@@ -74,7 +74,7 @@ namespace sfml_util
 
     music::Enum MusicSet::Advance()
     {
-        auto const PREV_PLAYING{ currentlyPlaying_ };
+        auto const PREV_PLAYING { currentlyPlaying_ };
         currentlyPlaying_ = PickNextSong();
         previouslyPlaying_ = PREV_PLAYING;
         return currentlyPlaying_;
@@ -96,7 +96,7 @@ namespace sfml_util
 
         if (willRandomize_)
         {
-            MusicEnumVec_t possibleSongs{ whichVec_ };
+            MusicEnumVec_t possibleSongs { whichVec_ };
 
             whichVec_.erase(
                 std::remove(whichVec_.begin(), whichVec_.end(), currentlyPlaying_),
@@ -106,7 +106,7 @@ namespace sfml_util
         }
         else
         {
-            auto currentlyPlayingIter{ std::find(
+            auto currentlyPlayingIter { std::find(
                 whichVec_.begin(), whichVec_.end(), currentlyPlaying_) };
 
             if (++currentlyPlayingIter == whichVec_.end())

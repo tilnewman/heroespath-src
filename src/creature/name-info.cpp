@@ -11,7 +11,7 @@
 //
 #include "name-info.hpp"
 
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/text-region.hpp"

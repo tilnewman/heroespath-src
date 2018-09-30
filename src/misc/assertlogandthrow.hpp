@@ -9,67 +9,51 @@
 //
 // assertlogandthrow.hpp
 //
-#include "log/logger.hpp"
-#include "log/macros.hpp"
+#include "misc/log-macros.hpp"
 
+#include <cassert>
 #include <exception>
-#include <iostream>
 #include <sstream>
 
 // these defines will disable these macros
 #if defined(HEROESPATH_MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_ASSERTORTHROW)
 
 // if disabled by ASSERT_OR_THROW_DISABLED, then produce no code
-#define M_ASSERT_OR_LOGANDTHROW(exp, str) ;
-#define M_ASSERT_OR_LOGANDTHROW_SS(exp, str) ;
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff) ;
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff) ;
 
 #elif defined(NDEBUG)
 
 // in release builds use throw
-#define M_ASSERT_OR_LOGANDTHROW(exp, str_static)                                                   \
+
+#define M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                             \
+    {                                                                                              \
+        M_HP_LOG_FAT(str_stuff);                                                                   \
+                                                                                                   \
+        std::ostringstream _m_oss_assertorlogandthrow_temp;                                        \
+                                                                                                   \
+        _m_oss_assertorlogandthrow_temp << "M_HP_ASSERT_OR_LOG_AND_THROW  FAILED: " << str_stuff   \
+                                        << " (" << __FILE__ << ":" << __LINE__ << ")";             \
+                                                                                                   \
+        throw std::runtime_error(_m_oss_assertorlogandthrow_temp.str());                           \
+    }
+
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff)                                               \
     {                                                                                              \
         {                                                                                          \
             if (!(exp))                                                                            \
             {                                                                                      \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
-                throw std::runtime_error((str_static));                                            \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                     \
             }                                                                                      \
         }                                                                                          \
     }
 
-#define M_ASSERT_OR_LOGANDTHROW_SS(exp, str_stream)                                                \
-    {                                                                                              \
-        {                                                                                          \
-            if (!(exp))                                                                            \
-            {                                                                                      \
-                std::ostringstream _m_oss_logandthrow_temp;                                        \
-                _m_oss_logandthrow_temp << str_stream;                                             \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), _m_oss_logandthrow_temp.str());    \
-                throw std::runtime_error(_m_oss_logandthrow_temp.str());                           \
-            }                                                                                      \
-        }                                                                                          \
-    }
-
-#define M_ASSERT_OR_LOGANDTHROW_CONSTEXPR(exp, str_static)                                         \
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff)                                     \
     {                                                                                              \
         {                                                                                          \
             if constexpr (!(exp))                                                                  \
             {                                                                                      \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
-                throw std::runtime_error((str_static));                                            \
-            }                                                                                      \
-        }                                                                                          \
-    }
-
-#define M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(exp, str_stream)                                      \
-    {                                                                                              \
-        {                                                                                          \
-            if constexpr (!(exp))                                                                  \
-            {                                                                                      \
-                std::ostringstream _m_oss_logandthrow_temp;                                        \
-                _m_oss_logandthrow_temp << str_stream;                                             \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), _m_oss_logandthrow_temp.str());    \
-                throw std::runtime_error(_m_oss_logandthrow_temp.str());                           \
+                M_HP_ASSERT_OR_LOG_AND_THROW_HELPER(str_stuff)                                     \
             }                                                                                      \
         }                                                                                          \
     }
@@ -77,58 +61,24 @@
 #else
 
 // in debug (and all other builds) use assert
-#include <cassert>
-#define M_ASSERT_OR_LOGANDTHROW(exp, str_static)                                                   \
+
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff)                                               \
     {                                                                                              \
         {                                                                                          \
             if (!(exp))                                                                            \
             {                                                                                      \
-                std::cerr << (str_static) << std::endl;                                            \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
+                M_HP_LOG_FAT(str_stuff);                                                           \
                 assert((exp));                                                                     \
             }                                                                                      \
         }                                                                                          \
     }
 
-#define M_ASSERT_OR_LOGANDTHROW_SS(exp, str_stream)                                                \
-    {                                                                                              \
-        {                                                                                          \
-            if (!(exp))                                                                            \
-            {                                                                                      \
-                std::ostringstream _m_oss_logandthrow_temp;                                        \
-                _m_oss_logandthrow_temp << "Assert failed " << __FILE__ << "::" << __LINE__        \
-                                        << " - " << str_stream;                                    \
-                                                                                                   \
-                std::cerr << _m_oss_logandthrow_temp.str() << std::endl;                           \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), _m_oss_logandthrow_temp.str());    \
-                assert((exp));                                                                     \
-            }                                                                                      \
-        }                                                                                          \
-    }
-
-#define M_ASSERT_OR_LOGANDTHROW_CONSTEXPR(exp, str_static)                                         \
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff)                                     \
     {                                                                                              \
         {                                                                                          \
             if constexpr (!(exp))                                                                  \
             {                                                                                      \
-                std::cerr << (str_static) << std::endl;                                            \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
-                assert((exp));                                                                     \
-            }                                                                                      \
-        }                                                                                          \
-    }
-
-#define M_ASSERT_OR_LOGANDTHROW_SS_CONSTEXPR(exp, str_stream)                                      \
-    {                                                                                              \
-        {                                                                                          \
-            if constexpr (!(exp))                                                                  \
-            {                                                                                      \
-                std::ostringstream _m_oss_logandthrow_temp;                                        \
-                _m_oss_logandthrow_temp << "Assert failed " << __FILE__ << "::" << __LINE__        \
-                                        << " - " << str_stream;                                    \
-                                                                                                   \
-                std::cerr << _m_oss_logandthrow_temp.str() << std::endl;                           \
-                M_LOG_FAT(*heroespath::log::Logger::Instance(), _m_oss_logandthrow_temp.str());    \
+                M_HP_LOG_FAT(str_stuff);                                                           \
                 assert((exp));                                                                     \
             }                                                                                      \
         }                                                                                          \

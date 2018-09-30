@@ -13,11 +13,11 @@
 
 #include "avatar/lpc-view.hpp"
 #include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfutil/display.hpp"
@@ -431,12 +431,12 @@ namespace map
         auto const HEIGHT { static_cast<unsigned>(WIN_SIZE_V_.y)
                             + static_cast<unsigned>(EXTRA_HEIGHT) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             offScreenTextureBelow_.create(WIDTH, HEIGHT),
             "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'below' texture.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             offScreenTextureAbove_.create(WIDTH, HEIGHT),
             "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'above' texture.");

@@ -22,9 +22,9 @@
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-type-wrapper.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/item-image-loader.hpp"
 
@@ -64,7 +64,7 @@ namespace item
         static auto hasCreatedAllProfilesVector { false };
         if (false == hasCreatedAllProfilesVector)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ItemProfileWarehouse::Instance()->GetNormalProfiles().empty() == false),
                 "item::ItemFactory::Test() found ItemProfieWarehouse's normal profiles empty.");
 
@@ -73,7 +73,7 @@ namespace item
                 profiles.emplace_back(PROFILE);
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ItemProfileWarehouse::Instance()->GetReligiousProfiles().empty() == false),
                 "item::ItemFactory::Test() found ItemProfieWarehouse's religious profiles empty.");
 
@@ -82,7 +82,7 @@ namespace item
                 profiles.emplace_back(PROFILE);
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ItemProfileWarehouse::Instance()->GetQuestProfiles().Empty() == false),
                 "item::ItemFactory::Test() found ItemProfieWarehouse's quest profiles empty.");
 
@@ -181,7 +181,7 @@ namespace item
                 auto const DOES_FILE_EXIST { itemImageLoader.DoesFileExist(
                     FILENAME_PROFILE_PAIR.first) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (DOES_FILE_EXIST),
                     "item::ItemFactory::Test() Images Test found an image that did not exist:  "
                     "filename=\""
@@ -396,86 +396,86 @@ namespace item
             return ss.str();
         } };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MaterialPrimary() != ITEM_PTR->MaterialSecondary()),
             makeErrorReportPrefix() << "made an item with duplicate materials.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->Category() == ITEM_PROFILE.Category()),
             makeErrorReportPrefix() << "categories did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MiscType() == ITEM_PROFILE.MiscType()),
             makeErrorReportPrefix() << "misc_types did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MiscType() != misc_type::Count),
             makeErrorReportPrefix() << "misc_type was Count.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->SetType() == ITEM_PROFILE.SetType()),
             makeErrorReportPrefix() << "set_types did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->SetType() != set_type::Count),
             makeErrorReportPrefix() << "set_type was Count.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->ElementType() == ITEM_PROFILE.ElementType()),
             makeErrorReportPrefix() << "element_types did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (element_type::IsValid(ITEM_PTR->ElementType())),
             makeErrorReportPrefix() << "invalid element_type.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->NamedType() == ITEM_PROFILE.NamedType()),
             makeErrorReportPrefix() << "named_types did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->NamedType() != named_type::Count),
             makeErrorReportPrefix() << "named_type was Count.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MaterialPrimary() == ITEM_PROFILE.MaterialPrimary()),
             makeErrorReportPrefix() << "primary materials did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((ITEM_PTR->MaterialPrimary() != material::Count)
              && (ITEM_PTR->MaterialPrimary() != material::Nothing)),
             makeErrorReportPrefix() << "primary material was either Count or Nothing.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MaterialSecondary() == ITEM_PROFILE.MaterialSecondary()),
             makeErrorReportPrefix() << "secondary materials did not match.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->MaterialSecondary() != material::Count),
             makeErrorReportPrefix() << "secondary material was Count instead of Nothing.");
 
         if (ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->IsWeapon()) != (ITEM_PTR->IsArmor())),
                 makeErrorReportPrefix() << "both weapon and armor at the same time.");
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->IsBodypart() == false),
             makeErrorReportPrefix()
                 << "bodypart, but the ItemProfileWarehouse should not create any bodypart "
                    "items since they cannot be found in treasure chests.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->IsBroken() == false), makeErrorReportPrefix() << "broken.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->ImageFilename().empty() == false),
             makeErrorReportPrefix() << "no/empty image filename.");
 
         if (ITEM_PTR->ArmorInfo().HelmType() == armor::helm_type::Leather)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->MaterialPrimary() == material::Leather),
                 makeErrorReportPrefix()
                     << "Leather Helm had a primary material that was not hard leather.");
@@ -484,7 +484,7 @@ namespace item
         // set_types cannot be elemental
         if (ITEM_PTR->IsSet())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->IsElemental() == false),
                 makeErrorReportPrefix() << "set_type but also element_type.");
         }
@@ -492,7 +492,7 @@ namespace item
         // named_types must be weapons or armor, and cannot be misc
         if (ITEM_PTR->IsNamed())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor()) && (ITEM_PTR->IsMisc() == false)),
                 makeErrorReportPrefix()
                     << "named_type but either not weapon(" << ITEM_PTR->IsWeapon() << ")/armor("
@@ -504,13 +504,13 @@ namespace item
         // all summoning items are also misc items
         if (SUMMON_INFO.CanSummon())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->IsMisc()),
                 makeErrorReportPrefix()
                     << "CanSummon() but not misc_type, which should never "
                        "happen.  All summoning items are also misc_type items.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (misc_type::IsSummoning(ITEM_PTR->MiscType())),
                 makeErrorReportPrefix() << "CanSummon() but not misc_type::IsSummoning().");
         }
@@ -518,36 +518,36 @@ namespace item
         // invalid summoning info
         if (SUMMON_INFO.IsDefaultAndCompletelyInvalid() == false)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SUMMON_INFO.CanSummon()),
                 makeErrorReportPrefix() << "summoning but summoning_info was invalid.");
         }
 
         // if summoning type then must be able to summon, and vice versa
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (item::misc_type::IsSummoning(ITEM_PTR->MiscType()) == SUMMON_INFO.CanSummon()),
             makeErrorReportPrefix() << "misc_type=summoning_type but it is not able to summon.");
 
         // all items must be weapon, armor, or misc
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor()
              || (ITEM_PTR->MiscType() != misc_type::Not)),
             makeErrorReportPrefix()
                 << "the item was not a weapon, armor, or misc_type.  All items must be one of "
                    "these three.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->BaseName().empty() == false),
             makeErrorReportPrefix()
                 << "BaseName (\"" << ITEM_PTR->BaseName() << "\") was empty or invalid.");
 
         if (ITEM_PTR->IsArmor())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->ArmorInfo().IsTypeValid()),
                 makeErrorReportPrefix() << "IsArmor() but ArmorInfo().IsValid()==false.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Count)
                  && (ITEM_PTR->ArmorInfo().NameMaterialType() != name_material_type::Misc)),
                 makeErrorReportPrefix()
@@ -562,7 +562,7 @@ namespace item
             {
                 if (material::IsGarmentType(ITEM_PTR->MaterialPrimary()))
                 {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ITEM_PTR->ArmorInfo().SpecificName()
                          == armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix()
@@ -575,7 +575,7 @@ namespace item
                 }
                 else
                 {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ITEM_PTR->ArmorInfo().SpecificName()
                          != armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix() << "gauntles with primary material "
@@ -595,7 +595,7 @@ namespace item
 
                 if (IS_SPECIFIC_ARMOR_TYPE)
                 {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Count),
                         makeErrorReportPrefix()
                             << "armor is specific armor_type="
@@ -605,7 +605,7 @@ namespace item
                 }
                 else
                 {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ITEM_PTR->ArmorInfo().BaseType() != armor::base_type::Count),
                         makeErrorReportPrefix()
                             << "armor is non-specific armor_type="
@@ -615,7 +615,7 @@ namespace item
 
                     if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plain)
                     {
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             ((ITEM_PTR->MaterialPrimary() == material::Cloth)
                              || (ITEM_PTR->MaterialPrimary() == material::Leather)
                              || (ITEM_PTR->MaterialPrimary() == material::Silk)
@@ -633,7 +633,7 @@ namespace item
                         (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Mail)
                         || (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Plate))
                     {
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (material::IsMetal(ITEM_PTR->MaterialPrimary())),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
@@ -644,7 +644,7 @@ namespace item
                     }
                     else if (ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Scale)
                     {
-                        M_ASSERT_OR_LOGANDTHROW_SS(
+                        M_HP_ASSERT_OR_LOG_AND_THROW(
                             (ITEM_PTR->MaterialPrimary() == material::Scales),
                             makeErrorReportPrefix()
                                 << "armor is non-specific armor_type="
@@ -658,18 +658,18 @@ namespace item
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->Weight() >= 1_weight),
             makeErrorReportPrefix() << "weight (" << ITEM_PTR->Weight() << ") was less than one.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.WeaponType() == ITEM_PTR->WeaponType()),
             makeErrorReportPrefix()
                 << " weapon_types did not match.  profile="
                 << weapon_type::ToString(ITEM_PROFILE.WeaponType(), misc::Wrap::Yes) << " but item="
                 << weapon_type::ToString(ITEM_PTR->WeaponType(), misc::Wrap::Yes) << ".");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),
             makeErrorReportPrefix()
                 << " armor_types did not match.  profile="
@@ -687,7 +687,7 @@ namespace item
             auto const EQUIP_TYPE_COUNT { ((IS_WEARABLE) ? 1 : 0) + ((IS_ONE_HANDED) ? 1 : 0)
                                           + ((IS_TWO_HANDED) ? 1 : 0) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (EQUIP_TYPE_COUNT == 1),
                 makeErrorReportPrefix()
                     << "equippable but not one and only one of the three equippable types:"
@@ -697,15 +697,15 @@ namespace item
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::Wearable) == false),
                 makeErrorReportPrefix() << "not equippable but is wearable.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::OneHanded) == false),
                 makeErrorReportPrefix() << "not equippable but is one-handed.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::TwoHanded) == false),
                 makeErrorReportPrefix() << "not equippable but is two-handed.");
         }
@@ -716,7 +716,7 @@ namespace item
                 (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equippable) > 0
             };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IS_MISCTYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
                 makeErrorReportPrefix()
                     << "equippable, but the misc_type=" << misc_type::ToString(ITEM_PTR->MiscType())
@@ -726,18 +726,18 @@ namespace item
             // unique_types cannot be set
             if (misc_type::IsUnique(ITEM_PTR->MiscType()))
             {
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (ITEM_PTR->IsSet() == false),
                     makeErrorReportPrefix() << "misc_type unique but also set_type.");
             }
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (misc_type::IsWeapon(ITEM_PTR->MiscType()) == ITEM_PTR->IsWeapon()),
                 makeErrorReportPrefix()
                     << "misc_type::IsWeapon()=" << misc_type::IsWeapon(ITEM_PTR->MiscType())
                     << " but ITEM_PTR->IsWeapon()=" << ITEM_PTR->IsWeapon() << ".");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (misc_type::IsArmor(ITEM_PTR->MiscType()) == ITEM_PTR->IsArmor()),
                 makeErrorReportPrefix()
                     << "misc_type::IsArmor()=" << misc_type::IsArmor(ITEM_PTR->MiscType())
@@ -751,7 +751,7 @@ namespace item
             auto const MISC_CATEGORY_COUNT { ((IS_QUEST) ? 1 : 0) + ((IS_UNIQUE) ? 1 : 0)
                                              + ((IS_STANDALONE) ? 1 : 0) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (MISC_CATEGORY_COUNT == 1),
                 makeErrorReportPrefix()
                     << "misc_type was not one and only one of the three "
@@ -762,7 +762,7 @@ namespace item
 
         if (ITEM_PTR->IsWeapon())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ITEM_PTR->WeaponInfo().IsTypeValid()),
                 makeErrorReportPrefix() << "IsWeapon() but WeaponInfo().IsValid()==false.");
 
@@ -779,7 +779,7 @@ namespace item
             incrementIf(ITEM_PTR->WeaponInfo().HasHandle());
             incrementIf(ITEM_PTR->WeaponInfo().IsPole());
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 (1 == typeCounter),
                 makeErrorReportPrefix()
                     << "weapon was not one of four states thought to be complete and mutually "
@@ -789,7 +789,7 @@ namespace item
                     << ", HasSmallHandle()=" << ITEM_PTR->WeaponInfo().HasHandle()
                     << ", HasLargeHandle()=" << ITEM_PTR->WeaponInfo().IsPole() << ".");
 
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->WeaponInfo().NameMaterialType() != name_material_type::Count)
                  && (ITEM_PTR->WeaponInfo().NameMaterialType() != name_material_type::Misc)),
                 makeErrorReportPrefix()
@@ -807,7 +807,7 @@ namespace item
 
         if (IS_MISC)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((IS_NONMISC_WEAPON == false) && (IS_NONMISC_ARMOR == false)),
                 makeErrorReportPrefix()
                     << "(misc=" << IS_MISC << ", nonmisc_weapon=" << IS_NONMISC_WEAPON
@@ -815,7 +815,7 @@ namespace item
         }
         else if (IS_NONMISC_WEAPON)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((IS_MISC == false) && (IS_NONMISC_ARMOR == false)),
                 makeErrorReportPrefix()
                     << "(misc=" << IS_MISC << ", nonmisc_weapon=" << IS_NONMISC_WEAPON
@@ -823,7 +823,7 @@ namespace item
         }
         else if (IS_NONMISC_ARMOR)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((IS_MISC == false) && (IS_NONMISC_WEAPON == false)),
                 makeErrorReportPrefix()
                     << "(misc=" << IS_MISC << ", nonmisc_weapon=" << IS_NONMISC_WEAPON
@@ -913,7 +913,7 @@ namespace item
         // TODO move to MaterialFactory
         auto const MATERIALS_PAIR { material::SkinMaterial(CREATURE_PTR->Race()) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((MATERIALS_PAIR.first != material::Count)
              && (MATERIALS_PAIR.first != material::Nothing)),
             "item::armor::ArmorFactory::Make(body_part="
@@ -988,7 +988,7 @@ namespace item
 
         if (BODY_PART == body_part::Breath)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
+            M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((CREATURE_PTR->Role() == creature::role::Sylavin)
                  || (CREATURE_PTR->Role() == creature::role::Firebrand)),
                 "WeaponFactory::Make(body_part=Breath, creature=\n{"

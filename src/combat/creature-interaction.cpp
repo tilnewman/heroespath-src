@@ -25,7 +25,7 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 #include "song/song.hpp"
@@ -49,12 +49,12 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
         const bool WILL_FORCE_HIT) const
     {
-        auto const HIT_INFO_VEC{ AttackWithAllWeapons(
+        auto const HIT_INFO_VEC { AttackWithAllWeapons(
             CREATURE_ATTACKING_PTR, CREATURE_DEFENDING_PTR, WILL_FORCE_HIT) };
 
-        auto const CREATURE_EFFECT{ CreatureEffect(CREATURE_DEFENDING_PTR, HIT_INFO_VEC) };
+        auto const CREATURE_EFFECT { CreatureEffect(CREATURE_DEFENDING_PTR, HIT_INFO_VEC) };
 
-        auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
+        auto turnInfo { Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
 
         if (!turnInfo.GetFirstAttackedByCreaturePtrOpt())
         {
@@ -136,21 +136,21 @@ namespace combat
             return;
         }
 
-        auto const IS_ALREADY_UNCONSCIOUS{ AreAnyOfCondsContained(
+        auto const IS_ALREADY_UNCONSCIOUS { AreAnyOfCondsContained(
             { Conditions::Unconscious }, CREATURE_DEFENDING_PTR, hitInfoVec) };
 
         // at this point HEALTH_ADJ is negative
-        auto const DAMAGE_ABS{ HEALTH_ADJ.Abs() };
+        auto const DAMAGE_ABS { HEALTH_ADJ.Abs() };
 
         // logic needed to determine if damage will kill
-        auto const IS_NONPLAYER_CHARACTER{ CREATURE_DEFENDING_PTR->IsPlayerCharacter() == false };
+        auto const IS_NONPLAYER_CHARACTER { CREATURE_DEFENDING_PTR->IsPlayerCharacter() == false };
 
-        auto const IS_DAMAGE_DOUBLE{ (
+        auto const IS_DAMAGE_DOUBLE { (
             DAMAGE_ABS > Health_t::Make(CREATURE_DEFENDING_PTR->HealthNormal() * 2_health)) };
 
-        auto const WILL_DAMAGE_KILL{ (DAMAGE_ABS >= CREATURE_DEFENDING_PTR->HealthCurrent()) };
+        auto const WILL_DAMAGE_KILL { (DAMAGE_ABS >= CREATURE_DEFENDING_PTR->HealthCurrent()) };
 
-        auto const NOT_PIXIE{ (CREATURE_DEFENDING_PTR->IsPixie() == false) };
+        auto const NOT_PIXIE { (CREATURE_DEFENDING_PTR->IsPixie() == false) };
 
         // check if the damage will kill
         if (IS_ALREADY_UNCONSCIOUS
@@ -160,7 +160,8 @@ namespace combat
             CREATURE_DEFENDING_PTR->ConditionAdd(Conditions::Dead);
             condsAddedVec.emplace_back(Conditions::Dead);
 
-            auto turnInfo{ combat::Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
+            auto turnInfo { combat::Encounter::Instance()->GetTurnInfoCopy(
+                CREATURE_DEFENDING_PTR) };
             turnInfo.SetIsFlying(false);
             turnInfo.SetWasHitLastTurn(true);
             turnInfo.SetTurnActionInfo(TurnActionInfo());
@@ -234,13 +235,13 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_PTR,
         HitInfoVec_t & hitInfoVec_OuParam) const
     {
-        auto condsPVec{ CREATURE_PTR->ConditionsPVec() };
+        auto condsPVec { CREATURE_PTR->ConditionsPVec() };
 
         std::sort(condsPVec.begin(), condsPVec.end(), [](auto const A, auto const B) {
             return (A->Severity() > B->Severity());
         });
 
-        auto hasTurnBeenConsumed{ false };
+        auto hasTurnBeenConsumed { false };
         for (auto const & NEXT_COND_PTR : condsPVec)
         {
             NEXT_COND_PTR->PerTurnEffect(
@@ -259,9 +260,9 @@ namespace combat
     {
         using namespace creature;
 
-        creature::CondEnumVec_t condsVecToAdd{
-            Conditions::Daunted, Conditions::Dazed, Conditions::Tripped
-        };
+        creature::CondEnumVec_t condsVecToAdd { Conditions::Daunted,
+                                                Conditions::Dazed,
+                                                Conditions::Tripped };
 
         misc::Vector::ShuffleVec(condsVecToAdd);
 
@@ -287,7 +288,7 @@ namespace combat
             return;
         }
 
-        auto const CHANCE_CONDS_ADDED_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+        auto const CHANCE_CONDS_ADDED_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-chance-conditions-added-from-damage-ratio") };
 
         for (auto const NEXT_COND_ENUM : condsVecToAdd)
@@ -355,7 +356,7 @@ namespace combat
         HitInfoVec_t & hitInfoVec,
         creature::CondEnumVec_t & condsRemovedVec) const
     {
-        auto wasAnyRemoved{ false };
+        auto wasAnyRemoved { false };
 
         for (auto const NEXT_COND_ENUM : CONDS_VEC)
         {
@@ -396,7 +397,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_CASTING_PTR,
         const creature::CreaturePVec_t & creaturesCastUponPVec) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (creaturesCastUponPVec.empty() == false),
             "combat::CreatureInteraction::Cast(spell="
                 << SPELL_PTR->Name()
@@ -426,7 +427,7 @@ namespace combat
         }
 
         // update caster's TurnInfo
-        auto casterTurnInfo{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_CASTING_PTR) };
+        auto casterTurnInfo { Encounter::Instance()->GetTurnInfoCopy(CREATURE_CASTING_PTR) };
         casterTurnInfo.CastCountIncrement();
         Encounter::Instance()->SetTurnInfo(CREATURE_CASTING_PTR, casterTurnInfo);
 
@@ -450,11 +451,11 @@ namespace combat
             else
             {
                 ContentAndNamePos actionPhraseCNP;
-                Health_t healthAdj{ 0_health };
+                Health_t healthAdj { 0_health };
                 creature::CondEnumVec_t condsAddedVec;
                 creature::CondEnumVec_t condsRemovedVec;
 
-                auto const DID_SPELL_SUCCEED{ SPELL_PTR->EffectCreature(
+                auto const DID_SPELL_SUCCEED { SPELL_PTR->EffectCreature(
                     CREATURE_CASTING_PTR,
                     nextCreatureCastUponPtr,
                     healthAdj,
@@ -485,7 +486,7 @@ namespace combat
                 creatureEffectVec.emplace_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
 
                 // update target's TurnInfo
-                auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
+                auto turnInfo { Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
 
                 turnInfo.SetWasHitLastTurn(false);
 
@@ -531,7 +532,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_PLAYING_PTR,
         const creature::CreaturePVec_t & CREATURES_LISTENING_PVEC) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (CREATURES_LISTENING_PVEC.empty() == false),
             "combat::CreatureInteraction::PlaySong(song="
                 << SONG_PTR->Name()
@@ -561,7 +562,7 @@ namespace combat
         }
 
         // update player's TurnInfo
-        auto playerTurnInfo{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_PLAYING_PTR) };
+        auto playerTurnInfo { Encounter::Instance()->GetTurnInfoCopy(CREATURE_PLAYING_PTR) };
         playerTurnInfo.SongCountIncrement();
         Encounter::Instance()->SetTurnInfo(CREATURE_PLAYING_PTR, playerTurnInfo);
 
@@ -585,11 +586,11 @@ namespace combat
             else
             {
                 ContentAndNamePos actionPhraseCNP;
-                Health_t healthAdj{ 0_health };
+                Health_t healthAdj { 0_health };
                 creature::CondEnumVec_t condsAddedVec;
                 creature::CondEnumVec_t condsRemovedVec;
 
-                auto const DID_SONG_SUCCEED{ SONG_PTR->EffectCreature(
+                auto const DID_SONG_SUCCEED { SONG_PTR->EffectCreature(
                     CREATURE_PLAYING_PTR,
                     nextCreatureCastUponPtr,
                     healthAdj,
@@ -620,7 +621,7 @@ namespace combat
                 creatureEffectVec.emplace_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
 
                 // handle TurnInfo
-                auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
+                auto turnInfo { Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
 
                 if (!turnInfo.GetFirstToMakeMusicCreaturePtrOpt())
                 {
@@ -673,7 +674,7 @@ namespace combat
 
         HitInfo hitInfo;
 
-        auto const DID_ROLL_SUCCEED{ creature::Stats::Versus(
+        auto const DID_ROLL_SUCCEED { creature::Stats::Versus(
             CREATURE_POUNCING_PTR,
             { creature::Traits::Speed, creature::Traits::Accuracy },
             CREATURE_DEFENDING_PTR,
@@ -684,13 +685,13 @@ namespace combat
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus | creature::Stats::With::PlayerNaturalWins)) };
 
-        auto const DID_SUCCEED{ (
+        auto const DID_SUCCEED { (
             DID_ROLL_SUCCEED || CREATURE_DEFENDING_PTR->HasCondition(Conditions::Tripped)
             || CREATURE_DEFENDING_PTR->HasCondition(Conditions::AsleepNatural)
             || CREATURE_DEFENDING_PTR->HasCondition(Conditions::AsleepMagical)
             || CREATURE_DEFENDING_PTR->HasCondition(Conditions::Unconscious)) };
 
-        Health_t healthAdj{ 0_health };
+        Health_t healthAdj { 0_health };
 
         if (DID_SUCCEED)
         {
@@ -731,7 +732,7 @@ namespace combat
         }
 
         // update defender's TurnInfo
-        auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
+        auto turnInfo { Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
 
         if (!turnInfo.GetFirstAttackedByCreaturePtrOpt())
         {
@@ -765,7 +766,7 @@ namespace combat
     {
         using namespace creature;
 
-        auto const LISTENING_CREATURES_PVEC{ COMBAT_DISPLAY_PTR->GetCreaturesInRoaringDistance(
+        auto const LISTENING_CREATURES_PVEC { COMBAT_DISPLAY_PTR->GetCreaturesInRoaringDistance(
             CREATURE_ROARING_PTR) };
 
         // update player's TurnActionInfo
@@ -774,7 +775,7 @@ namespace combat
 
         CreatureEffectVec_t creatureEffectsVec;
 
-        auto const IS_ROARING_CREATURE_FLYING{
+        auto const IS_ROARING_CREATURE_FLYING {
             combat::Encounter::Instance()->GetTurnInfoCopy(CREATURE_ROARING_PTR).GetIsFlying()
         };
 
@@ -795,7 +796,7 @@ namespace combat
                 continue;
             }
 
-            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
+            auto nextBlockingDisatnce { std::abs(COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
                 CREATURE_ROARING_PTR, NEXT_DEFEND_CREATURE_PTR)) };
 
             // if flying, then consider it farther away and less likely to be panicked
@@ -805,7 +806,7 @@ namespace combat
                 ++nextBlockingDisatnce;
             }
 
-            const creature::Trait_t DISATANCE_BONUS{ nextBlockingDisatnce * 2 };
+            const creature::Trait_t DISATANCE_BONUS { nextBlockingDisatnce * 2 };
 
             if (creature::Stats::Versus(
                     CREATURE_ROARING_PTR,
@@ -858,27 +859,27 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
-        auto const ATTACKABLE_NONPLAYER_CREATURES_PVEC{
+        auto const ATTACKABLE_NONPLAYER_CREATURES_PVEC {
             COMBAT_DISPLAY_PTR->FindCreaturesThatCanBeAttackedOfType(CREATURE_ATTACKING_PTR, false)
         };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (ATTACKABLE_NONPLAYER_CREATURES_PVEC.empty() == false),
             "combat::CreatureInteraction::HandleAttack() FindNonPlayerCreatureToAttack() "
                 << "returned no attackable creatures.");
 
         // attack those with the lowest relative health first, which will correspond
         // to the health bar seen on screen
-        auto const LIVE_ATTBLE_LOWH_NP_CRTS_PVEC{ creature::Algorithms::FindLowestHealthRatio(
+        auto const LIVE_ATTBLE_LOWH_NP_CRTS_PVEC { creature::Algorithms::FindLowestHealthRatio(
             ATTACKABLE_NONPLAYER_CREATURES_PVEC) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (LIVE_ATTBLE_LOWH_NP_CRTS_PVEC.empty() == false),
             "combat::CreatureInteraction::HandleAttack() FindNonPlayerCreatureToAttack() returned "
                 << "no LIVING LOWEST HEALTH RATIO attackable creatures.");
 
         // skip creatures who are not a threat
-        auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC{
+        auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC {
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
                 LIVE_ATTBLE_LOWH_NP_CRTS_PVEC,
                 creature::Algorithms::CondSingleOpt::DoesNotHave,
@@ -886,7 +887,7 @@ namespace combat
         };
 
         // attack those that are temporarily disabled first
-        auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC{
+        auto const LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC {
             creature::Algorithms::FindByConditionMeaningNotAThreatTemporarily(
                 LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC)
         };
@@ -920,7 +921,7 @@ namespace combat
         CreatureEffectVec_t creatureEffectVec;
         for (auto & nextCreatureHurtPtr : HURT_CREATURE_PTRS)
         {
-            auto const HEALTH_ADJ{ TRAP.RandomDamage() * Health_t(-1) };
+            auto const HEALTH_ADJ { TRAP.RandomDamage() * Health_t(-1) };
 
             creature::CondEnumVec_t condsAddedVec;
             creature::CondEnumVec_t condsRemovedVec;
@@ -942,19 +943,19 @@ namespace combat
     const creature::CreaturePVec_t CreatureInteraction::RandomSelectWhoIsHurtByTrap(
         const Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR) const
     {
-        creature::CreaturePVec_t creaturesHurtPtrs{ CREATURE_PICKING_THE_LOCK_PTR };
+        creature::CreaturePVec_t creaturesHurtPtrs { CREATURE_PICKING_THE_LOCK_PTR };
 
-        auto allCharacterPtrs{ game::Game::Instance()->State().Party().Characters() };
+        auto allCharacterPtrs { game::Game::Instance()->State().Party().Characters() };
         misc::Vector::ShuffleVec(allCharacterPtrs);
 
-        auto const NUM_CHARACTERS_TO_ADD{ TRAP.RandomEffectedPlayersCount() - 1 };
-        std::size_t numCharactersAdded{ 0 };
+        auto const NUM_CHARACTERS_TO_ADD { TRAP.RandomEffectedPlayersCount() - 1 };
+        std::size_t numCharactersAdded { 0 };
 
         for (std::size_t i(0);
              (i < allCharacterPtrs.size()) && (numCharactersAdded < NUM_CHARACTERS_TO_ADD);
              ++i)
         {
-            auto const NEXT_CHARACTER_PTR{ allCharacterPtrs[i] };
+            auto const NEXT_CHARACTER_PTR { allCharacterPtrs[i] };
 
             // only living characters will be hurt by traps
             if (NEXT_CHARACTER_PTR->IsAlive()
@@ -979,7 +980,7 @@ namespace combat
         {
             if (NEXT_ITEM_PTR->IsWeapon())
             {
-                auto const NEXT_HIT_INFO{ AttackWithSingleWeapon(
+                auto const NEXT_HIT_INFO { AttackWithSingleWeapon(
                     hitInfoVec,
                     NEXT_ITEM_PTR,
                     CREATURE_ATTACKING_PTR,
@@ -1008,49 +1009,49 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
         const bool WILL_FORCE_HIT) const
     {
-        auto hasHitBeenDetermined{ false };
-        auto wasHit{ false };
+        auto hasHitBeenDetermined { false };
+        auto wasHit { false };
 
-        auto const ATTACK_ACC_RAW{ CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
-        auto attackAccToUse{ ATTACK_ACC_RAW };
+        auto const ATTACK_ACC_RAW { CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
+        auto attackAccToUse { ATTACK_ACC_RAW };
 
         // If the attacking creature is an archer who is using a projectile weapon,
         // then add an accuracy bonus.
         if ((CREATURE_ATTACKING_PTR->Role() == creature::role::Archer)
             && (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
-            auto const ARCHER_ACC_BONUS_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+            auto const ARCHER_ACC_BONUS_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-archer-projectile-accuracy-bonus-ratio") };
 
             attackAccToUse += static_cast<creature::Trait_t>(
                 static_cast<float>(ATTACK_ACC_RAW) * ARCHER_ACC_BONUS_RATIO);
 
-            auto const ARCHER_RANK_BONUS_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+            auto const ARCHER_RANK_BONUS_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-archer-projectile-rank-bonus-ratio") };
 
             attackAccToUse += static_cast<int>(
                 CREATURE_ATTACKING_PTR->Rank().As<float>() * ARCHER_RANK_BONUS_RATIO);
         }
 
-        auto const ATTACK_ACC_RAND_MIN{ static_cast<creature::Trait_t>(
+        auto const ATTACK_ACC_RAND_MIN { static_cast<creature::Trait_t>(
             static_cast<float>(attackAccToUse) * 0.4f) };
 
-        auto const ATTACK_ACC_RAND_MAX{ std::max(ATTACK_ACC_RAW, attackAccToUse) };
-        auto const ATTACK_ACC_RAND{ misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
+        auto const ATTACK_ACC_RAND_MAX { std::max(ATTACK_ACC_RAW, attackAccToUse) };
+        auto const ATTACK_ACC_RAND { misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
 
-        auto const STAT_RATIO_AMAZING{ game::GameDataFile::Instance()->GetCopyFloat(
+        auto const STAT_RATIO_AMAZING { game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-stats-amazing-ratio") };
 
-        auto const STAT_HIGHER_THAN_AVERAGE{ game::GameDataFile::Instance()->GetCopyInt(
+        auto const STAT_HIGHER_THAN_AVERAGE { game::GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-base-high-val") };
 
-        auto const IS_ATTACK_AMAZING_ACC{
+        auto const IS_ATTACK_AMAZING_ACC {
             (attackAccToUse >= STAT_HIGHER_THAN_AVERAGE)
             && IsValuetHigherThanRatioOfStat(ATTACK_ACC_RAND, attackAccToUse, STAT_RATIO_AMAZING)
         };
 
-        auto const DEFEND_SPD_RAW{ CREATURE_DEFENDING_PTR->Speed().As<int>() };
-        auto defendSpdToUse{ DEFEND_SPD_RAW };
+        auto const DEFEND_SPD_RAW { CREATURE_DEFENDING_PTR->Speed().As<int>() };
+        auto defendSpdToUse { DEFEND_SPD_RAW };
 
         // If the defending creature is a Pixie then add a speed bonus based on rank.
         if (CREATURE_DEFENDING_PTR->IsPixie())
@@ -1074,13 +1075,13 @@ namespace combat
                       "heroespath-fight-block-defend-speed-bonus-ratio"));
         }
 
-        auto const DEFEND_SPD_RAND_MIN{ static_cast<creature::Trait_t>(
+        auto const DEFEND_SPD_RAND_MIN { static_cast<creature::Trait_t>(
             static_cast<float>(defendSpdToUse) * 0.4f) };
 
-        auto const DEFEND_SPD_RAND_MAX{ std::max(DEFEND_SPD_RAW, defendSpdToUse) };
-        auto const DEFEND_SPD_RAND{ misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
+        auto const DEFEND_SPD_RAND_MAX { std::max(DEFEND_SPD_RAW, defendSpdToUse) };
+        auto const DEFEND_SPD_RAND { misc::random::Int(DEFEND_SPD_RAND_MIN, DEFEND_SPD_RAND_MAX) };
 
-        auto const IS_DEFENSE_AMAZING_DODGE{
+        auto const IS_DEFENSE_AMAZING_DODGE {
             (defendSpdToUse >= STAT_HIGHER_THAN_AVERAGE)
             && IsValuetHigherThanRatioOfStat(DEFEND_SPD_RAND, defendSpdToUse, STAT_RATIO_AMAZING)
         };
@@ -1108,11 +1109,11 @@ namespace combat
         // This is the case most likely to decide if hit or miss.
         if (false == hasHitBeenDetermined)
         {
-            auto const ATTACK_ACC_RANK_ADJ{ ATTACK_ACC_RAND
-                                            + CREATURE_ATTACKING_PTR->Rank().As<int>() };
+            auto const ATTACK_ACC_RANK_ADJ { ATTACK_ACC_RAND
+                                             + CREATURE_ATTACKING_PTR->Rank().As<int>() };
 
-            auto const DEFEND_SPD_RANK_ADJ{ DEFEND_SPD_RAND
-                                            + CREATURE_DEFENDING_PTR->Rank().As<int>() };
+            auto const DEFEND_SPD_RANK_ADJ { DEFEND_SPD_RAND
+                                             + CREATURE_DEFENDING_PTR->Rank().As<int>() };
 
             if (ATTACK_ACC_RANK_ADJ > DEFEND_SPD_RANK_ADJ)
             {
@@ -1130,21 +1131,21 @@ namespace combat
         // so determine if the attack hit or miss based on luck.
         if (false == hasHitBeenDetermined)
         {
-            auto const ATTACKER_LUCK_RAND{ creature::Stats::Roll(
+            auto const ATTACKER_LUCK_RAND { creature::Stats::Roll(
                 CREATURE_ATTACKING_PTR, creature::Traits::Luck, creature::Stats::RaceRoleBonus) };
 
-            auto const DEFENDER_LUCK_RAND{ creature::Stats::Roll(
+            auto const DEFENDER_LUCK_RAND { creature::Stats::Roll(
                 CREATURE_DEFENDING_PTR, creature::Traits::Luck, creature::Stats::RaceRoleBonus) };
 
             if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
                 // In this case, attaker and defender tied on luck rolls,
                 // so the hit is determined by who has the greater luck roll + rank.
-                auto const ATTACK_LCK_RANK_ADJ{ ATTACKER_LUCK_RAND
-                                                + CREATURE_ATTACKING_PTR->Rank().As<int>() };
+                auto const ATTACK_LCK_RANK_ADJ { ATTACKER_LUCK_RAND
+                                                 + CREATURE_ATTACKING_PTR->Rank().As<int>() };
 
-                auto const DEFEND_LCK_RANK_ADJ{ DEFENDER_LUCK_RAND
-                                                + CREATURE_DEFENDING_PTR->Rank().As<int>() };
+                auto const DEFEND_LCK_RANK_ADJ { DEFENDER_LUCK_RAND
+                                                 + CREATURE_DEFENDING_PTR->Rank().As<int>() };
 
                 if (ATTACK_LCK_RANK_ADJ > DEFEND_LCK_RANK_ADJ)
                 {
@@ -1189,10 +1190,10 @@ namespace combat
             // hasHitBeenDetermined = true;
         }
 
-        Health_t damage{ 0_health };
-        auto isPowerHit{ false };
-        auto isCriticalHit{ false };
-        auto didArmorAbsorb{ false };
+        Health_t damage { 0_health };
+        auto isPowerHit { false };
+        auto isCriticalHit { false };
+        auto didArmorAbsorb { false };
         creature::CondEnumVec_t condsAddedVec;
         creature::CondEnumVec_t condsRemovedVec;
         if (wasHit)
@@ -1231,11 +1232,11 @@ namespace combat
         bool & isCriticalHit_OutParam,
         bool & didArmorAbsorb_OutParam) const
     {
-        const Health_t DAMAGE_FROM_WEAPON_RAW{ misc::random::Int(
+        const Health_t DAMAGE_FROM_WEAPON_RAW { misc::random::Int(
             WEAPON_PTR->DamageMin().As<int>(), WEAPON_PTR->DamageMax().As<int>()) };
 
         // If weapon is fist and creature attacking is wearing gauntlets, then triple the damage.
-        Health_t extraDamage{ 0_health };
+        Health_t extraDamage { 0_health };
         if (WEAPON_PTR->WeaponInfo().IsFists())
         {
             for (auto const & NEXT_ITEM_PTR : CREATURE_ATTACKING_PTR->Inventory().ItemsEquipped())
@@ -1255,28 +1256,28 @@ namespace combat
             extraDamage = DAMAGE_FROM_WEAPON_RAW;
         }
 
-        auto const DAMAGE_FROM_WEAPON{ DAMAGE_FROM_WEAPON_RAW + extraDamage };
+        auto const DAMAGE_FROM_WEAPON { DAMAGE_FROM_WEAPON_RAW + extraDamage };
 
         // add extra damage based on rank
-        auto const RANK_DAMAGE_BONUS_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+        auto const RANK_DAMAGE_BONUS_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-rank-damage-bonus-ratio") };
 
-        auto const DAMAGE_FROM_RANK{ Health_t::Make(
+        auto const DAMAGE_FROM_RANK { Health_t::Make(
             CREATURE_ATTACKING_PTR->Rank().As<float>() * RANK_DAMAGE_BONUS_ADJ_RATIO) };
 
         // If strength stat is at or over the min of STAT_FLOOR,
         // then add a damage bonus based on half a strength ratio "roll".
-        const creature::Trait_t STAT_FLOOR{ game::GameDataFile::Instance()->GetCopyInt(
+        const creature::Trait_t STAT_FLOOR { game::GameDataFile::Instance()->GetCopyInt(
             "heroespath-fight-stats-value-floor") };
 
-        Health_t damageFromStrength{ 0_health };
-        auto const STRENGTH_CURRENT{ CREATURE_ATTACKING_PTR->Strength().As<int>() };
+        Health_t damageFromStrength { 0_health };
+        auto const STRENGTH_CURRENT { CREATURE_ATTACKING_PTR->Strength().As<int>() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
         {
-            auto const RAND_STR_STAT{ creature::Stats::Roll(
+            auto const RAND_STR_STAT { creature::Stats::Roll(
                 CREATURE_ATTACKING_PTR, creature::Traits::Strength) };
 
-            auto const STR_BONUS_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+            auto const STR_BONUS_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-fight-damage-strength-bonus-ratio") };
 
             damageFromStrength
@@ -1290,17 +1291,17 @@ namespace combat
             }
         }
 
-        const Health_t DAMAGE_BASE{ DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
+        const Health_t DAMAGE_BASE { DAMAGE_FROM_WEAPON + DAMAGE_FROM_RANK + damageFromStrength };
 
         // there is a rare chance of a power hit for players
-        auto const STRENGTH_TEST{ creature::Stats::Test(
+        auto const STRENGTH_TEST { creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
             creature::Traits::Strength,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
-        auto const POWER_HIT_CHANCE_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+        auto const POWER_HIT_CHANCE_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-power-chance-ratio") };
 
         isPowerHit_OutParam
@@ -1309,35 +1310,35 @@ namespace combat
                && (misc::random::Float(1.0f) < POWER_HIT_CHANCE_RATIO));
 
         // there is a rare chance of a critical hit for players and non-players
-        auto const ACCURACY_TEST{ creature::Stats::Test(
+        auto const ACCURACY_TEST { creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
             creature::Traits::Accuracy,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
-        auto const LUCK_TEST{ creature::Stats::Test(
+        auto const LUCK_TEST { creature::Stats::Test(
             CREATURE_ATTACKING_PTR,
             creature::Traits::Luck,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
-        auto const CRITICAL_HIT_CHANCE_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+        auto const CRITICAL_HIT_CHANCE_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };
 
-        auto const ACCURACY_CURRENT{ CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
+        auto const ACCURACY_CURRENT { CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
 
         isCriticalHit_OutParam
             = ((CREATURE_ATTACKING_PTR->IsPlayerCharacter() || LUCK_TEST) && ACCURACY_TEST
                && ((ACCURACY_CURRENT >= STAT_FLOOR) || LUCK_TEST)
                && (misc::random::Float(1.0f) < CRITICAL_HIT_CHANCE_RATIO));
 
-        Health_t damageFinal{ DAMAGE_BASE };
+        Health_t damageFinal { DAMAGE_BASE };
 
-        const Health_t SPECIAL_HIT_DAMAGE_MIN{ CREATURE_ATTACKING_PTR->Rank().As<int>()
-                                               + game::GameDataFile::Instance()->GetCopyInt(
-                                                     "heroespath-fight-hit-special-damage-min") };
+        const Health_t SPECIAL_HIT_DAMAGE_MIN { CREATURE_ATTACKING_PTR->Rank().As<int>()
+                                                + game::GameDataFile::Instance()->GetCopyInt(
+                                                      "heroespath-fight-hit-special-damage-min") };
 
         if (isPowerHit_OutParam)
         {
@@ -1351,10 +1352,10 @@ namespace combat
             damageFinal += std::max(DAMAGE_FROM_WEAPON, SPECIAL_HIT_DAMAGE_MIN);
         }
 
-        auto const DAMAGE_AFTER_SPECIALS{ damageFinal };
+        auto const DAMAGE_AFTER_SPECIALS { damageFinal };
 
         // reduce damage based on the defending creature's armor
-        auto armorRatingToUse{ CREATURE_DEFENDING_PTR->ArmorRating() };
+        auto armorRatingToUse { CREATURE_DEFENDING_PTR->ArmorRating() };
         if (CREATURE_DEFENDING_PTR->HasCondition(creature::Conditions::Tripped))
         {
             armorRatingToUse
@@ -1380,7 +1381,7 @@ namespace combat
         // their small size and speed
         if ((damageFinal > 0_health) && (CREATURE_DEFENDING_PTR->Race() == creature::race::Pixie))
         {
-            const Health_t PIXIE_DAMAGE_FLOOR{ game::GameDataFile::Instance()->GetCopyInt(
+            const Health_t PIXIE_DAMAGE_FLOOR { game::GameDataFile::Instance()->GetCopyInt(
                 "heroespath-fight-pixie-damage-floor") };
 
             if (damageFinal < PIXIE_DAMAGE_FLOOR)
@@ -1389,7 +1390,7 @@ namespace combat
             }
             else
             {
-                auto const PIXIE_DAMAGE_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
+                auto const PIXIE_DAMAGE_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
                     "heroespath-fight-pixie-damage-adj-ratio") };
 
                 damageFinal = Health_t::Make(damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO);
@@ -1420,7 +1421,7 @@ namespace combat
         }
 
         // update TurnInfo
-        auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
+        auto turnInfo { Encounter::Instance()->GetTurnInfoCopy(CREATURE_DEFENDING_PTR) };
 
         if (!turnInfo.GetFirstAttackedByCreaturePtrOpt())
         {

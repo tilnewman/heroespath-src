@@ -17,11 +17,11 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/filesystem-helpers.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 
@@ -196,7 +196,7 @@ namespace sfml_util
                 auto const ENUM_STR { misc_type::ToString(ENUM) };
                 auto const FILENAMES_VEC { Filenames(ENUM, IS_JEWELED, IS_BONE) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
+                M_HP_ASSERT_OR_LOG_AND_THROW(
                     (FILENAMES_VEC.empty() == false),
                     "sfml_util::ItemImageLoader::Test() While testing misc item #"
                         << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
@@ -208,7 +208,7 @@ namespace sfml_util
                     auto const FILENAME { boost::algorithm::to_lower_copy(
                         FILENAMES_VEC[fileIndex]) };
 
-                    M_ASSERT_OR_LOGANDTHROW_SS(
+                    M_HP_ASSERT_OR_LOG_AND_THROW(
                         (FILENAME.empty() == false),
                         "sfml_util::ItemImageLoader::Test() (rand)  "
                             << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
@@ -643,7 +643,7 @@ namespace sfml_util
     {
         auto const FILENAMES(Filenames(MISC_TYPE, IS_JEWELED, IS_BONE));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
             "sfml_util::ItemImageLoader::Filename(misc_type="
                 << ((MISC_TYPE == item::misc_type::Count) ? "Count"
@@ -728,7 +728,7 @@ namespace sfml_util
 
         auto const DIMMENSION { static_cast<unsigned>(MaxDimmension()) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
+        M_HP_ASSERT_OR_LOG_AND_THROW(
             ((SIZE.x == DIMMENSION) || (SIZE.y == DIMMENSION)),
             "sfml_util::ItemImageLoader::EnsureValidDimmensions() was given an image of "
             "size="
