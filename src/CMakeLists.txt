@@ -134,6 +134,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
 
     file(COPY game-data.txt DESTINATION heroespath)
+    file(COPY game-data.txt DESTINATION unit-tests)
 
 endif()
 
