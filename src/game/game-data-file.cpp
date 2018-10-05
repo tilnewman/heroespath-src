@@ -12,7 +12,7 @@
 #include "game-data-file.hpp"
 
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
 
@@ -75,7 +75,7 @@ namespace game
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (LOAD_SUCCESS),
             "game::GameDataFile::Initialize() misc::ConfigBase::Load(\""
-                << Instance()->GetFileNameFullPathStr()
+                << Instance()->GetFilePathStr()
                 << "\") returned false.  Is the "
                    "\"game-data.txt\" file in the right place?");
 
@@ -96,7 +96,7 @@ namespace game
             "GameDataFile::GetMediaPath(\"" << KEY
                                             << "\") failed to find that key in the config file.");
 
-        return misc::filesystem::CompletePath(mediaBasePathStr_, PATH_STR);
+        return misc::filesystem::CombinePathsThenClean(mediaBasePathStr_, PATH_STR);
     }
 
 } // namespace game

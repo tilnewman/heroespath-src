@@ -6,6 +6,7 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Game_Combat"
 
 #include "misc/platform.hpp"
@@ -20,7 +21,7 @@
 #pragma warning(pop)
 #endif
 
-#include "Test-stuff.hpp"
+#include "unit-test-test-stuff.hpp"
 
 #include "combat/combat-node.hpp"
 #include "combat/combat-tree.hpp"

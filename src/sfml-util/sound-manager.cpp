@@ -13,15 +13,13 @@
 
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
-
-#include <boost/filesystem.hpp>
 
 #include <chrono>
 #include <thread>
@@ -620,39 +618,34 @@ namespace sfml_util
     MusicUPtr_t SoundManager::OpenMusic(
         const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const
     {
-        namespace bfs = boost::filesystem;
+        auto const PATH_STR { misc::filesystem::CombinePathsThenClean(
+            musicDirectoryPath_, MUSIC_DIR_NAME, MUSIC_FILE_NAME) };
 
-        auto const PATH { bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME)
-                          / bfs::path(MUSIC_FILE_NAME) };
-
-        return sfml_util::Loaders::Music(PATH.string());
+        return sfml_util::Loaders::Music(PATH_STR);
     }
 
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        namespace fs = misc::filesystem;
-
-        const boost::filesystem::path MUSIC_ROOT_DIR_PATH(musicDirectoryPath_);
-        const boost::filesystem::path MUSIC_SUB_DIR_PATH(music::Directory(music::CombatIntro));
-
-        auto const DIR_PATH { fs::MakePathPretty(MUSIC_ROOT_DIR_PATH / MUSIC_SUB_DIR_PATH) };
+        auto const DIR_PATH_STR { misc::filesystem::CombinePathsThenClean(
+            musicDirectoryPath_, music::Directory(music::CombatIntro)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (fs::DoesDirectoryExist(DIR_PATH)),
+            (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR)),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() but the directory does not "
             "exist: "
-                << DIR_PATH.string());
+                << DIR_PATH_STR);
 
-        auto const MUSIC_FILE_PATHS { fs::FindFilesInDirectory(DIR_PATH, "", music::FileExt()) };
+        auto const MUSIC_FILE_PATHS { misc::filesystem::FindFiles(
+            false, DIR_PATH_STR, "", music::FileExt()) };
 
         combatIntroMusicInfoVec_.clear();
 
-        for (auto const & PATH : MUSIC_FILE_PATHS)
+        for (auto const & MUSIC_FILE_PATH_STR : MUSIC_FILE_PATHS)
         {
-            auto const FILENAME { PATH.filename().string() };
+            auto const FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
 
             std::vector<std::string> filenamePartsVec;
-            misc::SplitByChar(FILENAME, filenamePartsVec, '_', true, true);
+            misc::SplitByChar(FILE_NAME_STR, filenamePartsVec, '_', true, true);
             if (filenamePartsVec.size() != 4)
             {
                 continue;
@@ -670,15 +663,15 @@ namespace sfml_util
                 NEXT_ARTIST_NAME,
                 NEXT_TRACK_NAME,
                 NEXT_LICENSE_NAME,
-                FILENAME,
-                DIR_PATH.string()));
+                FILE_NAME_STR,
+                DIR_PATH_STR));
         }
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (combatIntroMusicInfoVec_.empty() == false),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() failed to load any music info "
             "from the directory: "
-                << DIR_PATH.string());
+                << DIR_PATH_STR);
     }
 
     MusicOperator SoundManager::MakeAndStartMusicOperator(
@@ -948,30 +941,21 @@ namespace sfml_util
 
     SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
-        namespace bfs = boost::filesystem;
-
-        const bfs::path PATH_OBJ(bfs::system_complete(
-            bfs::path(soundsDirectoryPath_) / bfs::path(sound_effect::Directory(ENUM))
-            / bfs::path(sound_effect::Filename(ENUM))));
+        const auto SOUND_FILE_PATH_STR { misc::filesystem::CombinePathsThenClean(
+            soundsDirectoryPath_, sound_effect::Directory(ENUM), sound_effect::Filename(ENUM)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            bfs::exists(PATH_OBJ),
+            (misc::filesystem::ExistsAndIsFile(SOUND_FILE_PATH_STR)),
             "sfml_util::SoundManager::LoadSound("
-                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
                 << "\", failed because that file does not exist.");
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            bfs::is_regular_file(PATH_OBJ),
-            "sfml_util::SoundManager::LoadSound("
-                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
-                << "\", failed because that is not a regular file.");
 
         auto bufferUPtr { std::make_unique<sf::SoundBuffer>() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            bufferUPtr->loadFromFile(PATH_OBJ.string().c_str()),
+            bufferUPtr->loadFromFile(SOUND_FILE_PATH_STR),
             "sfml_util::SoundManager::LoadSound("
-                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
                 << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
                 << " for more information.");
 

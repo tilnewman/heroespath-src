@@ -1177,7 +1177,7 @@ namespace stage
         for (auto const & FILENAME : characterImageFilenamesVec_)
         {
             characterTextureVec.emplace_back(sfml_util::CachedTexture(
-                boost::filesystem::path(creatureImageLoader.Path(FILENAME)),
+                PathWrapper(creatureImageLoader.Path(FILENAME)),
                 sfml_util::ImageOptions(
                     sfml_util::ImageOpt::Default | sfml_util::ImageOpt::FlipHoriz)));
         }

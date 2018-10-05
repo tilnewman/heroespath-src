@@ -16,13 +16,11 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfutil/image-manip.hpp"
-
-#include <boost/filesystem.hpp>
 
 #include <exception>
 #include <sstream>
@@ -35,7 +33,7 @@ namespace sfml_util
     CreatureImageLoader::CreatureImageLoader()
         : imageDirectoryPath_("")
     {
-        imageDirectoryPath_ = misc::filesystem::MakePathPretty(
+        imageDirectoryPath_ = misc::filesystem::CleanPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
     }
 
@@ -49,8 +47,8 @@ namespace sfml_util
                 "sfml_util::CreatureImageLoader::Test() Starting Tests...");
         }
 
-        static auto allPaths { misc::filesystem::FindFilesInDirectory(
-            imageDirectoryPath_, "", ".png") };
+        static auto allPaths { misc::filesystem::FindFiles(
+            false, imageDirectoryPath_, "", ".png") };
 
         for (auto & pathStr : allPaths)
         {
@@ -291,7 +289,7 @@ namespace sfml_util
 
     const std::string CreatureImageLoader::Path(const std::string & FILENAME) const
     {
-        return misc::filesystem::CompletePath(imageDirectoryPath_, FILENAME);
+        return misc::filesystem::CombinePathsThenClean(imageDirectoryPath_, FILENAME);
     }
 
     void CreatureImageLoader::Load(
@@ -337,7 +335,7 @@ namespace sfml_util
         auto const FULL_PATH_STR { Path(FILENAME) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (misc::filesystem::DoesFileExist(FULL_PATH_STR)),
+            (misc::filesystem::ExistsAndIsFile(FULL_PATH_STR)),
             "sfml_util::CreatureImageLoader::EnsureFileExists(\""
                 << FULL_PATH_STR
                 << "\") but that file either does not exist or is not a regular file.");

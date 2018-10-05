@@ -32,5 +32,43 @@ namespace misc
         return newString;
     }
 
+    bool ContainsAnyOf(
+        const std::string & STRING_TO_SEARCH,
+        const std::vector<std::string> & STRINGS_TO_FIND,
+        const bool IS_CASE_SENSITIVE)
+    {
+        if (STRING_TO_SEARCH.empty() || STRINGS_TO_FIND.empty())
+        {
+            return false;
+        }
+
+        namespace ba = boost::algorithm;
+
+        for (auto const & STRING_TO_FIND : STRINGS_TO_FIND)
+        {
+            if (STRING_TO_FIND.empty() || (STRING_TO_FIND.size() > STRING_TO_SEARCH.size()))
+            {
+                continue;
+            }
+
+            if (IS_CASE_SENSITIVE)
+            {
+                if (ba::contains(STRING_TO_SEARCH, STRING_TO_FIND))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (ba::icontains(STRING_TO_SEARCH, STRING_TO_FIND))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 } // namespace misc
 } // namespace heroespath

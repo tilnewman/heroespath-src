@@ -40,7 +40,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     file (READ ../build-flags/msvc.txt custom_compile_flags)
 
     #On Windows, Boost has some trouble linking dynamically, these defines help
-    set(custom_compile_flags "${custom_compile_flags} -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK")
+    #set(custom_compile_flags "${custom_compile_flags} -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_TEST_DYN_LINK")
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
@@ -86,9 +86,9 @@ find_package(SFML 2.5 COMPONENTS window graphics audio REQUIRED)
 
 
 #BOOST
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+set(Boost_USE_STATIC_RUNTIME ON)
 
 find_package(Boost COMPONENTS system date_time filesystem serialization unit_test_framework REQUIRED)
 

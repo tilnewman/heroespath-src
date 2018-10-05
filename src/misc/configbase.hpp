@@ -11,7 +11,6 @@
 //
 #include "misc/vector-map.hpp"
 
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/type_index.hpp>
 
@@ -51,8 +50,7 @@ namespace misc
     public:
         bool Load();
 
-        // Pass a string to override the default which uses the member fileNameStr.
-        bool Save(const std::string & FILENAME = "") const;
+        bool Save() const;
 
         // Returns the value stored at KEY.
         // Retuns DEFAULT if key does not exist, or cannot be cast to the desired type.
@@ -195,7 +193,7 @@ namespace misc
         }
 
         const std::string GetFileNameStr() const;
-        const std::string GetFileNameFullPathStr() const;
+        const std::string GetFilePathStr() const;
         const std::string GetSeparatorStr() const;
         const std::string GetCommentStr() const;
 
@@ -205,9 +203,6 @@ namespace misc
     private:
         void HandleLoadSaveError(const std::string & ERR_MSG) const;
         void HandleLoadInvalidLineError(const std::string & ERR_MSG) const;
-
-        // when saving and loading, this function is used to establish a full path to the file
-        const boost::filesystem::path GetFullPath(const std::string & USER_SPEC_PATH_STR) const;
 
         // when loading, this function process each line, determines if comment/etc, and modifies
         // data_ returns true if any changes were made to data_

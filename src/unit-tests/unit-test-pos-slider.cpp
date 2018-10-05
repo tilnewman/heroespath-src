@@ -6,6 +6,7 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
+
 #define BOOST_TEST_MODULE "HeroesPathTestModule_sfml-util_texture_cache_test"
 
 #include "misc/platform.hpp"
@@ -23,7 +24,7 @@
 #include "misc/real.hpp"
 #include "sfml-util/pos-slider.hpp"
 
-#include "Test-stuff.hpp"
+#include "unit-test-test-stuff.hpp"
 
 using namespace test_stuff;
 using namespace heroespath::sfml_util;

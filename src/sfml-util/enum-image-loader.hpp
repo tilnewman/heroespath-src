@@ -11,7 +11,7 @@
 //
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "sfml-util/image-options.hpp"
 #include "sfml-util/image-util.hpp"
 #include "sfml-util/loaders.hpp"
@@ -36,7 +36,7 @@ namespace sfml_util
         EnumImageLoader & operator=(EnumImageLoader &&) = delete;
 
         explicit EnumImageLoader(const std::string & IMAGE_DIRECTORY_PATH)
-            : imageDirectoryPath_(misc::filesystem::MakePathPretty(IMAGE_DIRECTORY_PATH))
+            : imageDirectoryPath_(misc::filesystem::CleanPath(IMAGE_DIRECTORY_PATH))
         {}
 
         float MaxDimmension() const { return StandardImageDimmension(); }
@@ -48,7 +48,7 @@ namespace sfml_util
 
         const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
         {
-            return misc::filesystem::CompletePath(
+            return misc::filesystem::CombinePathsThenClean(
                 imageDirectoryPath_, EnumWrapper_t::ImageFilename(ENUM_VALUE));
         }
 

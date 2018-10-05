@@ -20,7 +20,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/enum-util.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
@@ -41,7 +41,7 @@ namespace sfml_util
     ItemImageLoader::ItemImageLoader()
         : imageDirectoryPath_("")
     {
-        imageDirectoryPath_ = misc::filesystem::MakePathPretty(
+        imageDirectoryPath_ = misc::filesystem::CleanPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-items-dir"));
     }
 
@@ -59,8 +59,8 @@ namespace sfml_util
 
         const std::string TEST_PRE_STR { "ItemImageLoader Test " };
 
-        static auto allPaths { misc::filesystem::FindFilesInDirectory(
-            imageDirectoryPath_, "", FILE_EXT_STR_) };
+        static auto allPaths { misc::filesystem::FindFiles(
+            false, imageDirectoryPath_, "", FILE_EXT_STR_) };
 
         for (auto & pathStr : allPaths)
         {
@@ -322,14 +322,14 @@ namespace sfml_util
         throw std::runtime_error(ss.str());
     }
 
-    bool ItemImageLoader::DoesFileExist(const item::ItemPtr_t ITEM_PTR) const
+    bool ItemImageLoader::ExistsAndFile(const item::ItemPtr_t ITEM_PTR) const
     {
-        return DoesFileExist(ITEM_PTR->ImageFilename());
+        return ExistsAndFile(ITEM_PTR->ImageFilename());
     }
 
-    bool ItemImageLoader::DoesFileExist(const std::string & IMAGE_FILE_NAME) const
+    bool ItemImageLoader::ExistsAndFile(const std::string & IMAGE_FILE_NAME) const
     {
-        return misc::filesystem::DoesFileExist(MakeFullPathFromFilename(IMAGE_FILE_NAME));
+        return misc::filesystem::ExistsAndIsFile(MakeFullPathFromFilename(IMAGE_FILE_NAME));
     }
 
     const std::vector<std::string> ItemImageLoader::Filenames(
@@ -718,7 +718,7 @@ namespace sfml_util
 
     const std::string ItemImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
     {
-        return misc::filesystem::CompletePath(imageDirectoryPath_, FILENAME);
+        return misc::filesystem::CombinePathsThenClean(imageDirectoryPath_, FILENAME);
     }
 
     void ItemImageLoader::EnsureValidDimmensions(

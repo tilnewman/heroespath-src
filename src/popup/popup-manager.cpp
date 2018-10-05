@@ -15,7 +15,7 @@
 #include "creature/title.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/types.hpp"
@@ -27,8 +27,6 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
-
-#include <boost/filesystem/path.hpp>
 
 #include <exception>
 #include <sstream>
@@ -161,7 +159,7 @@ namespace popup
             }
         }
 
-        return misc::filesystem::CompletePath(windowTextureDirectoryPath_, filename);
+        return misc::filesystem::CombinePathsThenClean(windowTextureDirectoryPath_, filename);
     }
 
     const sfml_util::TextInfo PopupManager::TextInfoDefault(
@@ -503,7 +501,7 @@ namespace popup
     sfml_util::CachedTexture PopupManager::LoadRandomAccentImage() const
     {
         return sfml_util::CachedTexture(
-            boost::filesystem::path(misc::Vector::SelectRandom(accentPaths_)),
+            PathWrapper(misc::Vector::SelectRandom(accentPaths_)),
             sfml_util::ImageOptions(
                 ((misc::random::Bool()) ? sfml_util::ImageOpt::Default
                                         : sfml_util::ImageOpt::FlipHoriz)));
@@ -511,8 +509,8 @@ namespace popup
 
     void PopupManager::LoadAccentImagePaths()
     {
-        accentPaths_ = misc::filesystem::FindFilesInDirectory(
-            accentTextureDirectoryPath_, "accent-", ".png");
+        accentPaths_
+            = misc::filesystem::FindFiles(false, accentTextureDirectoryPath_, "accent-", ".png");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (accentPaths_.empty() == false),

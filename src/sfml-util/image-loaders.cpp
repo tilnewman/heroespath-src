@@ -27,8 +27,6 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 
-#include <boost/filesystem/path.hpp>
-
 namespace heroespath
 {
 namespace sfml_util
@@ -46,8 +44,7 @@ namespace sfml_util
             imageOptions.option_enum |= ImageOpt::FlipHoriz;
         }
 
-        return CachedTexture(
-            boost::filesystem::path(creatureImageLoader.Path(CREATURE_PTR)), imageOptions);
+        return CachedTexture(PathWrapper(creatureImageLoader.Path(CREATURE_PTR)), imageOptions);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -76,8 +73,7 @@ namespace sfml_util
     {
         sfml_util::ConditionImageLoader conditionImageLoader;
 
-        return CachedTexture(
-            boost::filesystem::path(conditionImageLoader.Path(WHICH_CONDITION)), OPTIONS);
+        return CachedTexture(PathWrapper(conditionImageLoader.Path(WHICH_CONDITION)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -91,7 +87,7 @@ namespace sfml_util
     {
         sfml_util::ItemImageLoader itemImageLoader;
 
-        return CachedTexture(boost::filesystem::path(itemImageLoader.Path(ITEM_PTR)), OPTIONS);
+        return CachedTexture(PathWrapper(itemImageLoader.Path(ITEM_PTR)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -99,7 +95,7 @@ namespace sfml_util
     {
         sfml_util::TitleImageLoader titleImageLoader;
 
-        return CachedTexture(boost::filesystem::path(titleImageLoader.Path(WHICH_TITLE)), OPTIONS);
+        return CachedTexture(PathWrapper(titleImageLoader.Path(WHICH_TITLE)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -113,7 +109,7 @@ namespace sfml_util
     {
         sfml_util::SpellImageLoader spellImageLoader;
 
-        return CachedTexture(boost::filesystem::path(spellImageLoader.Path(WHICH_SPELL)), OPTIONS);
+        return CachedTexture(PathWrapper(spellImageLoader.Path(WHICH_SPELL)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -127,7 +123,7 @@ namespace sfml_util
     {
         sfml_util::SongImageLoader songImageLoader;
 
-        return CachedTexture(boost::filesystem::path(songImageLoader.Path(WHICH_SONG)), OPTIONS);
+        return CachedTexture(PathWrapper(songImageLoader.Path(WHICH_SONG)), OPTIONS);
     }
 
     CachedTexture
@@ -142,8 +138,7 @@ namespace sfml_util
     {
         sfml_util::CombatImageLoader combatImageLoader;
 
-        return CachedTexture(
-            boost::filesystem::path(combatImageLoader.Path(WHICH_COMBAT_IMAGE)), OPTIONS);
+        return CachedTexture(PathWrapper(combatImageLoader.Path(WHICH_COMBAT_IMAGE)), OPTIONS);
     }
 
 } // namespace sfml_util

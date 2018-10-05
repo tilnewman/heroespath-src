@@ -13,12 +13,11 @@
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 #include "texture-cache.hpp"
 
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
@@ -109,7 +108,7 @@ namespace sfml_util
                                                          << OPTIONS
                                                          << ") failed because path was empty.");
 
-        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::MakePathPretty(
+        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
             PATH_TO_TEXTURE_STR_ORIG) };
 
         auto const PATH_OPTIONS_PAIR { std::make_pair(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
@@ -250,7 +249,7 @@ namespace sfml_util
                 << DIR_PATH_PARAM_STR_ORIG << "\", " << OPTIONS
                 << ") failed because path was empty.");
 
-        auto const DIR_PATH_PARAM_STR_FINAL { misc::filesystem::MakePathPretty(
+        auto const DIR_PATH_PARAM_STR_FINAL { misc::filesystem::CleanPath(
             DIR_PATH_PARAM_STR_ORIG) };
 
         auto const PATH_OPTIONS_PAIR { std::make_pair(DIR_PATH_PARAM_STR_FINAL, OPTIONS) };
@@ -278,21 +277,21 @@ namespace sfml_util
         }
         else
         {
-            namespace fs = misc::filesystem;
-
-            auto filePaths { fs::FindFilesInDirectory(
-                boost::filesystem::path(DIR_PATH_PARAM_STR_FINAL),
+            const auto IMAGE_FILE_PATHS_ORIG { misc::filesystem::FindFiles(
+                false,
+                DIR_PATH_PARAM_STR_FINAL,
                 "",
                 "",
-                fs::FilenameText::TO_EXCLUDE_VEC_) };
+                misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_) };
 
-            fs::SortByNumberInFilename(filePaths);
+            const auto IMAGE_FILE_PATHS_SORTED { misc::filesystem::SortByLastNumberInFilename(
+                IMAGE_FILE_PATHS_ORIG) };
 
             TextureIndexes textureIndexes;
 
-            for (auto const & PATH : filePaths)
+            for (auto const & PATH_STR : IMAGE_FILE_PATHS_SORTED)
             {
-                textureIndexes.indexes.emplace_back(AddByPathInternal(PATH.string(), OPTIONS));
+                textureIndexes.indexes.emplace_back(AddByPathInternal(PATH_STR, OPTIONS));
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -330,7 +329,7 @@ namespace sfml_util
                                                             << OPTIONS
                                                             << ") failed because path was empty.");
 
-        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::MakePathPretty(
+        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
             PATH_TO_TEXTURE_STR_ORIG) };
 
         auto pathOptionsPair { std::make_pair(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
@@ -641,8 +640,8 @@ namespace sfml_util
             for (auto const & PATHOPTION_TO_INDEXES_PAIR : pathOptToIndexesMap_)
             {
                 std::ostringstream lineSS;
-                lineSS << "\n\t"
-                       << misc::filesystem::PathWithDepth(PATHOPTION_TO_INDEXES_PAIR.first.first, 4)
+                lineSS << "\n\t..."
+                       << misc::filesystem::LimitPathDept(PATHOPTION_TO_INDEXES_PAIR.first.first, 4)
                        << "\t" << PATHOPTION_TO_INDEXES_PAIR.first.second << "\t"
                        << PATHOPTION_TO_INDEXES_PAIR.second.ref_count << "\t[";
 

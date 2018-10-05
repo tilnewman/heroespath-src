@@ -23,7 +23,7 @@
 #include "item/weapon-details.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/item-image-loader.hpp"
@@ -178,7 +178,7 @@ namespace item
 
             for (auto const & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
-                auto const DOES_FILE_EXIST { itemImageLoader.DoesFileExist(
+                auto const DOES_FILE_EXIST { itemImageLoader.ExistsAndFile(
                     FILENAME_PROFILE_PAIR.first) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(

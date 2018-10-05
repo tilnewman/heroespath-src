@@ -55,8 +55,6 @@
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
 
-#include <boost/filesystem/path.hpp>
-
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -350,7 +348,7 @@ namespace stage
     void TestingStage::TestingImageSet(
         const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
-        sfml_util::CachedTexture cachedTexture { boost::filesystem::path(PATH_STR) };
+        sfml_util::CachedTexture cachedTexture { PathWrapper(PATH_STR) };
 
         imageInspectPackets_.emplace_back(cachedTexture);
         textures_.emplace_back(cachedTexture);
@@ -665,8 +663,12 @@ namespace stage
                 ss << "PerformTest_DirectoryImages path: \"" << IMAGE_DIR_PATH << "\"";
                 TestingStrAppend(ss.str());
 
-                imagePathsVec = misc::filesystem::FindFilesInDirectory(
-                    IMAGE_DIR_PATH, "", ".png", misc::filesystem::FilenameText::TO_EXCLUDE_VEC_);
+                imagePathsVec = misc::filesystem::FindFiles(
+                    false,
+                    IMAGE_DIR_PATH,
+                    "",
+                    ".png",
+                    misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_);
             }
 
             if (imageIndex < imagePathsVec.size())
@@ -1226,8 +1228,6 @@ namespace stage
      *
     void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
     {
-        namespace bfs = boost::filesystem;
-
         auto const IMAGES_PATH_STR{
             game::GameDataFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
 

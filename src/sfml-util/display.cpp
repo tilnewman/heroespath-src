@@ -12,7 +12,7 @@
 #include "display.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/date-time.hpp"
 #include "sfml-util/fade.hpp"
@@ -192,11 +192,10 @@ namespace sfml_util
         auto const SCREENSHOT_IMAGE { texture.copyToImage() };
 
         // establish the path
-        const auto DIR_PATH_STR { misc::filesystem::CompletePath(
-            misc::filesystem::CurrentDirectoryString(), "screenshots") };
+        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean("screenshots") };
 
         // create directory if missing
-        if (misc::filesystem::DoesDirectoryExist(DIR_PATH_STR) == false)
+        if (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR) == false)
         {
             misc::filesystem::CreateDirectory(DIR_PATH_STR);
         }
@@ -211,14 +210,14 @@ namespace sfml_util
         const auto FILE_NAME_BASE { ssFileName.str() };
         const auto FILE_NAME_EXT { ".png" };
 
-        const auto FILE_PATH { misc::filesystem::FindFirstAvailableNumberedFilename(
+        const auto FILE_PATH_STR { misc::filesystem::FindFirstAvailableNumberedFilenamePath(
             DIR_PATH_STR, FILE_NAME_BASE, FILE_NAME_EXT, "_") };
 
-        if (SCREENSHOT_IMAGE.saveToFile(FILE_PATH) == false)
+        if (SCREENSHOT_IMAGE.saveToFile(FILE_PATH_STR) == false)
         {
             M_HP_LOG_ERR(
                 "Display::TakeScreenshot() failed screenshot sf::Image::saveToFile(\""
-                << FILE_PATH << "\") returned false.  Check the console for a reason...maybe.");
+                << FILE_PATH_STR << "\") returned false.  Check the console for a reason...maybe.");
         }
     }
 

@@ -15,8 +15,6 @@
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include <boost/filesystem/path.hpp>
-
 namespace heroespath
 {
 namespace avatar
@@ -32,7 +30,7 @@ namespace avatar
 
     LPCView::LPCView(const Avatar::Enum WHICH_AVATAR, const sf::Vector2f & CENTERED_MAP_POS_V)
         : whichAvatar_(WHICH_AVATAR)
-        , cachedTexture_(boost::filesystem::path(Avatar::ImagePath(whichAvatar_)))
+        , cachedTexture_(PathWrapper(Avatar::ImagePath(whichAvatar_)))
         , sprite_(cachedTexture_.Get())
         , animation_(CreateAnimation(Pose::Standing, sfml_util::Direction::Right))
         , frameTimerSec_(0.0f)

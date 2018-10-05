@@ -12,6 +12,7 @@
 #include "configbase.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/filesystem.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -43,35 +44,24 @@ namespace misc
 
     bool ConfigBase::Load()
     {
-        namespace bfs = boost::filesystem;
-
-        const bfs::path PATH(GetFullPath(filePathStr_));
+        const auto PATH_STR { GetFilePathStr() };
 
         try
         {
             // verify the file exists
-            if (false == bfs::exists(PATH))
+            if (misc::filesystem::ExistsAndIsFile(PATH_STR) == false)
             {
-                return false;
-            }
-
-            // verify the file is actually a file
-            if (false == bfs::is_regular_file(PATH))
-            {
-                std::ostringstream ss;
-                ss << "Config file was found but not a regular file: \"" << PATH.string() << "\"";
-                HandleLoadSaveError(ss.str());
                 return false;
             }
 
             // open
             std::ifstream fileStream;
-            fileStream.open(PATH.string().c_str(), std::ios::in);
+            fileStream.open(PATH_STR, std::ios::in);
             if ((false == fileStream.good()) || (false == fileStream.is_open()))
             {
                 std::ostringstream ss;
-                ss << "Config file could not be opened during load atempt: \"" << PATH.string()
-                   << "\"";
+                ss << "Config file could not be opened during load atempt: \"" << PATH_STR << "\"";
+
                 HandleLoadSaveError(ss.str());
                 return false;
             }
@@ -98,36 +88,35 @@ namespace misc
         {
             std::ostringstream ss;
             ss << "Exception Error \"" << EX.what() << "\" during load of config file \""
-               << PATH.string() << "\"";
+               << PATH_STR << "\"";
+
             HandleLoadSaveError(ss.str());
         }
         catch (...)
         {
             std::ostringstream ss;
-            ss << R"(Exception Error "UNKNOWN" during load of config file )" << PATH.string()
-               << "\"";
+            ss << R"(Exception Error "UNKNOWN" during load of config file )" << PATH_STR << "\"";
+
             HandleLoadSaveError(ss.str());
         }
 
         return false;
     }
 
-    bool ConfigBase::Save(const std::string & FILENAME) const
+    bool ConfigBase::Save() const
     {
-        namespace bfs = boost::filesystem;
-
         // use the given FILENAME unless it is empty
-        const bfs::path PATH(GetFullPath((FILENAME.empty()) ? filePathStr_ : FILENAME));
+        const auto PATH_STR { GetFilePathStr() };
 
         try
         {
             // open the file (closes with scope)
             std::ofstream fileStream;
-            fileStream.open(PATH.string().c_str(), std::ios::out);
+            fileStream.open(PATH_STR, std::ios::out);
             if ((false == fileStream.good()) || (false == fileStream.is_open()))
             {
                 std::ostringstream ss;
-                ss << "Config file could not be opened for saving: \"" << PATH.string() << "\"";
+                ss << "Config file could not be opened for saving: \"" << PATH_STR << "\"";
                 HandleLoadSaveError(ss.str());
                 return false;
             }
@@ -143,14 +132,14 @@ namespace misc
         catch (const std::exception & EX)
         {
             std::ostringstream ss;
-            ss << "Exception Error \"" << EX.what() << "\" during save of file \"" << PATH.string()
+            ss << "Exception Error \"" << EX.what() << "\" during save of file \"" << PATH_STR
                << "\"";
             HandleLoadSaveError(ss.str());
         }
         catch (...)
         {
             std::ostringstream ss;
-            ss << R"(Exception Error "UNKNOWN" during save of file )" << PATH.string() << "\"";
+            ss << R"(Exception Error "UNKNOWN" during save of file )" << PATH_STR << "\"";
             HandleLoadSaveError(ss.str());
         }
 
@@ -219,17 +208,6 @@ namespace misc
     void ConfigBase::HandleLoadInvalidLineError(const std::string & ERR_MSG) const
     {
         HandleLoadSaveError(ERR_MSG);
-    }
-
-    const boost::filesystem::path
-        ConfigBase::GetFullPath(const std::string & USER_SPEC_PATH_STR) const
-    {
-        namespace bfs = boost::filesystem;
-
-        // if no path is given, then use the one set in the constructor
-        const std::string FILE_PATH_STR_TO_USE(
-            (USER_SPEC_PATH_STR.empty()) ? filePathStr_ : USER_SPEC_PATH_STR);
-        return bfs::path(bfs::current_path() / bfs::path(FILE_PATH_STR_TO_USE));
     }
 
     bool ConfigBase::LoadNextLine(const std::size_t LINE_NUM, const std::string & NEXT_LINE)
@@ -349,9 +327,9 @@ namespace misc
 
     const std::string ConfigBase::GetFileNameStr() const { return filePathStr_; }
 
-    const std::string ConfigBase::GetFileNameFullPathStr() const
+    const std::string ConfigBase::GetFilePathStr() const
     {
-        return (GetFullPath(filePathStr_)).string();
+        return misc::filesystem::AppendPathsToCurrentThenClean(filePathStr_);
     }
 
     const std::string ConfigBase::GetSeparatorStr() const { return sepStr_; }

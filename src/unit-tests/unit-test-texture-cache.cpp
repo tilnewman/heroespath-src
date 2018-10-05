@@ -22,16 +22,17 @@
 
 #include "game/game-data-file.hpp"
 #include "game/startup-shutdown.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/image-options.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <cstdlib>
 #include <exception>
 
+using namespace heroespath;
 using namespace heroespath::sfml_util;
+using namespace heroespath::misc;
 
 inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
 {
@@ -130,18 +131,14 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
     const std::string IMAGE3_PATH_KEY("media-images-logos-terrain");
 
-    const std::string IMAGE1_PATH(heroespath::misc::filesystem::MakePathPretty(
-        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)));
+    const std::string IMAGE1_PATH { heroespath::misc::filesystem::CleanPath(
+        game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)) };
 
-    const std::string IMAGE2_PATH(heroespath::misc::filesystem::MakePathPretty(
+    const std::string IMAGE2_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
 
-    const std::string IMAGE3_PATH(heroespath::misc::filesystem::MakePathPretty(
+    const std::string IMAGE3_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
-
-    const boost::filesystem::path IMAGE1_PATH_BFS(IMAGE1_PATH);
-    const boost::filesystem::path IMAGE2_PATH_BFS(IMAGE2_PATH);
-    const boost::filesystem::path IMAGE3_PATH_BFS(IMAGE3_PATH);
 
     const std::size_t IMAGES1_COUNT(33);
     const std::size_t IMAGES2_COUNT(22);
@@ -149,14 +146,11 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGES1_DIR_KEY("media-anim-images-dir-orbcharge");
     const std::string IMAGES2_DIR_KEY("media-anim-images-dir-orbshimmer");
 
-    const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::MakePathPretty(
+    const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
 
-    const std::string IMAGES2_DIR_PATH(heroespath::misc::filesystem::MakePathPretty(
+    const std::string IMAGES2_DIR_PATH(heroespath::misc::filesystem::CleanPath(
         heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
-
-    const boost::filesystem::path IMAGES1_DIR_PATH_BFS(IMAGES1_DIR_PATH);
-    const boost::filesystem::path IMAGES2_DIR_PATH_BFS(IMAGES2_DIR_PATH);
 
     const ImageOptions ALL_OPTIONS { (
         ImageOpt::Smooth | ImageOpt::FlipHoriz | ImageOpt::FlipVert | ImageOpt::Invert) };
@@ -568,7 +562,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            CachedTexture ct2(IMAGE2_PATH_BFS);
+            CachedTexture ct2 { PathWrapper(IMAGE2_PATH) };
 
             BOOST_CHECK(ct2.Index() == 1);
             BOOST_CHECK(ct2.Options() == ImageOptions());
@@ -624,7 +618,8 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            CachedTexture ct2(IMAGE2_PATH_BFS);
+            CachedTexture ct2 { PathWrapper(IMAGE2_PATH) };
+
             BOOST_CHECK(ct2.Index() == 1);
             BOOST_CHECK(ct2.RefCount() == 1);
 
@@ -770,7 +765,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            const CachedTexture ct1B(IMAGE1_PATH_BFS);
+            const CachedTexture ct1B { PathWrapper(IMAGE1_PATH) };
 
             BOOST_CHECK(ct1B.Index() == 0);
             BOOST_CHECK(ct1B.Options() == ImageOptions());
@@ -787,7 +782,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            const CachedTexture ct1B(IMAGE1_PATH_BFS, ALL_OPTIONS);
+            const CachedTexture ct1B(PathWrapper(IMAGE1_PATH), ALL_OPTIONS);
 
             BOOST_CHECK(ct1B.Index() == 1);
             BOOST_CHECK(ct1B.Options() == ALL_OPTIONS);
@@ -825,7 +820,8 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            CachedTexture ct1B(IMAGE1_PATH_BFS);
+            CachedTexture ct1B { PathWrapper(IMAGE1_PATH) };
+
             BOOST_CHECK(ct1A == ct1B);
             BOOST_CHECK(ct1A.RefCount() == 2);
             BOOST_CHECK(ct1B.RefCount() == 2);
@@ -836,7 +832,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(ct1A.Index()), ct1A.Get()));
 
         {
-            const CachedTexture ct1B(IMAGE1_PATH_BFS, ALL_OPTIONS);
+            const CachedTexture ct1B(PathWrapper(IMAGE1_PATH), ALL_OPTIONS);
             BOOST_CHECK(ct1A != ct1B);
 
             BOOST_CHECK(ct1A.Index() != ct1B.Index());
@@ -867,7 +863,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         {
             CachedTexture ct1B(IMAGE1_PATH_KEY.c_str(), ImageOptions(ImageOpt::FlipHoriz));
             CachedTexture ct1C(IMAGE1_PATH_KEY, ImageOptions(ImageOpt::FlipVert));
-            CachedTexture ct1D(IMAGE1_PATH_BFS, ImageOptions(ImageOpt::Invert));
+            CachedTexture ct1D { PathWrapper(IMAGE1_PATH), ImageOptions(ImageOpt::Invert) };
             sf::Texture texture;
             texture.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
             CachedTexture ct1E("FAKE PATH", texture, ALL_OPTIONS);
@@ -955,7 +951,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(areImagesEqual(cs1A.Front(), cs1A[0]));
         BOOST_CHECK(areImagesEqual(cs1A.Back(), cs1A[cs1A.Size() - 1]));
 
-        CachedTextures cs1B(IMAGES1_DIR_PATH_BFS);
+        CachedTextures cs1B { PathWrapper(IMAGES1_DIR_PATH) };
         BOOST_CHECK((cs1B.Path() == IMAGES1_DIR_PATH));
         BOOST_CHECK((cs1B.Options() == ImageOptions()));
         BOOST_CHECK((cs1B.RefCount() == 2));
@@ -989,7 +985,8 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK((cs1B.RefCount() == 3));
         BOOST_CHECK((cs1D.RefCount() == 3));
 
-        CachedTextures cs2(IMAGES2_DIR_PATH_BFS);
+        CachedTextures cs2 { PathWrapper(IMAGES2_DIR_PATH) };
+
         BOOST_CHECK(cs2.Size() == IMAGES2_COUNT);
         BOOST_CHECK(cs1D != cs2);
 
@@ -1000,7 +997,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK((cs1B.RefCount() == 4));
         BOOST_CHECK((cs2.RefCount() == 4));
 
-        CachedTextures cs3(IMAGES2_DIR_PATH_BFS, ALL_OPTIONS);
+        CachedTextures cs3(PathWrapper(IMAGES2_DIR_PATH), ALL_OPTIONS);
         cs3 = std::move(cs1B);
         BOOST_CHECK(cs1A == cs3);
         BOOST_CHECK(cs2 == cs3);

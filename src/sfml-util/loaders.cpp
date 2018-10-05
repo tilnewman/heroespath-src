@@ -13,9 +13,7 @@
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
-
-#include <boost/filesystem.hpp>
+#include "misc/filesystem.hpp"
 
 namespace heroespath
 {
@@ -25,12 +23,10 @@ namespace sfml_util
     void Loaders::Texture(
         sf::Texture & texture, const std::string & PATH_STR_ORIG, const bool WILL_SMOOTH)
     {
-        namespace fs = misc::filesystem;
-
-        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (fs::DoesFileExist(PATH_STR_COMPLETE)),
+            (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Texture(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
@@ -51,18 +47,20 @@ namespace sfml_util
         const std::string & DIR_PATH_STR_ORIG,
         const bool WILL_SMOOTH)
     {
-        namespace fs = misc::filesystem;
-
-        auto const DIR_PATH_STR_COMPLETE { fs::MakePathPretty(DIR_PATH_STR_ORIG) };
+        auto const DIR_PATH_STR_COMPLETE { misc::filesystem::CleanPath(DIR_PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (fs::DoesDirectoryExist(DIR_PATH_STR_COMPLETE)),
+            (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR_COMPLETE)),
             "sfml_util::Loaders::AllTexturesInDir(\""
                 << DIR_PATH_STR_COMPLETE
                 << "\") failed because either that path is not a directory or it does not exist.");
 
-        auto const FILE_PATH_STRINGS { fs::FindFilesInDirectory(
-            DIR_PATH_STR_COMPLETE, "", "", fs::FilenameText::TO_EXCLUDE_VEC_) };
+        auto const FILE_PATH_STRINGS { misc::filesystem::FindFiles(
+            false,
+            DIR_PATH_STR_COMPLETE,
+            "",
+            "",
+            misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_) };
 
         auto const ORIG_SIZE { textureVec.size() };
 
@@ -77,12 +75,10 @@ namespace sfml_util
 
     void Loaders::Font(sf::Font & font, const std::string & PATH_STR_ORIG)
     {
-        namespace fs = misc::filesystem;
-
-        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (fs::DoesFileExist(PATH_STR_COMPLETE)),
+            (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Font(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
@@ -96,12 +92,10 @@ namespace sfml_util
 
     MusicUPtr_t Loaders::Music(const std::string & PATH_STR_ORIG)
     {
-        namespace fs = misc::filesystem;
-
-        auto const PATH_STR_COMPLETE { fs::MakePathPretty(PATH_STR_ORIG) };
+        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (fs::DoesFileExist(PATH_STR_COMPLETE)),
+            (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
             "sfml_util::Loaders::Music(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");

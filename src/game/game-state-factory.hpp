@@ -14,8 +14,6 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 
-#include <boost/filesystem.hpp>
-
 #include <memory>
 #include <sstream>
 #include <string>

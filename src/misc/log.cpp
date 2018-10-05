@@ -10,7 +10,7 @@
 #include "log.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "sfml-util/date-time.hpp"
 
 #include <boost/algorithm/string/join.hpp>
@@ -123,19 +123,19 @@ namespace misc
 
     void Log::OpenFile()
     {
-        const auto CURRENT_DIR_PATH_STR { misc::filesystem::CurrentDirectoryString() };
+        const auto CURRENT_DIR_PATH_STR { misc::filesystem::CurrentDirectory() };
 
-        const auto FILE_PATH_STR { misc::filesystem::FindFirstAvailableNumberedFilename(
+        const auto FILE_PATH_STR { misc::filesystem::FindFirstAvailableNumberedFilenamePath(
             CURRENT_DIR_PATH_STR, fileName_, fileNameExtension_) };
 
-        const auto DID_EXIST_PRIOR { misc::filesystem::DoesFileExist(FILE_PATH_STR) };
+        const auto DID_EXIST_PRIOR { misc::filesystem::ExistsAndIsFile(FILE_PATH_STR) };
 
         fileStream_.open(FILE_PATH_STR, std::ios::out);
 
         if (IsFileReadyForWriting() == false)
         {
-            const auto ALL_FILE_PATHS_IN_DIR_VEC { misc::filesystem::FindFilesInDirectory(
-                CURRENT_DIR_PATH_STR, "", "") };
+            const auto ALL_FILE_PATHS_IN_DIR_VEC { misc::filesystem::FindFiles(
+                false, CURRENT_DIR_PATH_STR) };
 
             const auto ALL_FILE_NAMES_IN_DIR_VEC = [&]() {
                 std::vector<std::string> fileNames;
@@ -156,7 +156,7 @@ namespace misc
                     << fileName_ << ", file_ext=" << fileNameExtension_
                     << ", did_exist_prior=" << std::boolalpha << DID_EXIST_PRIOR
                     << ", "
-                       "misc::filesystem::FindFirstAvailableNumberedFilename()=full_path_attempted="
+                       "misc::filesystem::FindFirstAvailableNumberedFilePath()=full_path_attempted="
                     << FILE_PATH_STR << ""
                     << ", current_path=" << CURRENT_DIR_PATH_STR
                     << ", all_files_in_that_current_dir=" << ALL_FILE_NAMES_IN_DIR_STR << ")");

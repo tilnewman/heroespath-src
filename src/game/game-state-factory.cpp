@@ -25,7 +25,7 @@
 #include "game/world.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
 #include <limits>
@@ -94,12 +94,11 @@ namespace game
 
     const GameStatePVec_t GameStateFactory::LoadAllGames() const
     {
-        namespace fs = misc::filesystem;
-
         GameStatePVec_t gameStatePVec;
 
-        for (auto const & FILE_PATH : fs::FindFilesInDirectory(
-                 fs::MakeSubDirectoryPathFromCurrent(SAVED_HEROESPATH_DIR_NAME_),
+        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+                 false,
+                 misc::filesystem::AppendPathsToCurrentThenClean(SAVED_HEROESPATH_DIR_NAME_),
                  SAVED_HEROESPATH_FILE_NAME_,
                  SAVED_HEROESPATH_FILE_EXT_))
         {
@@ -107,7 +106,7 @@ namespace game
 
             try
             {
-                std::ifstream inputFileStream(FILE_PATH.string());
+                std::ifstream inputFileStream(FILE_PATH_STR);
                 boost::archive::text_iarchive inputTextArchive(inputFileStream);
                 inputTextArchive >> *gameStatePtr;
             }
@@ -115,7 +114,7 @@ namespace game
             {
                 M_HP_LOG_ERR(
                     "GameStateFactory::LoadAllGames() while trying to "
-                    << "de-serialize saved game file \"" << FILE_PATH.string()
+                    << "de-serialize saved game file \"" << FILE_PATH_STR
                     << "\", threw exception \"" << E.what()
                     << "\".  That saved game file is somehow invalid and cannot be loaded.");
 
@@ -142,14 +141,13 @@ namespace game
 
     const creature::CreaturePVec_t GameStateFactory::LoadAllUnplayedCharacters() const
     {
-        namespace fs = misc::filesystem;
-
         creature::CreaturePVec_t characterPVec;
 
         creature::CreatureFactory creatureFactory;
 
-        for (auto const & FILE_PATH : fs::FindFilesInDirectory(
-                 fs::MakeSubDirectoryPathFromCurrent(UNPLAYED_CHAR_DIR_NAME_),
+        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+                 false,
+                 misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
@@ -157,7 +155,7 @@ namespace game
 
             try
             {
-                std::ifstream inputFileStream(FILE_PATH.string());
+                std::ifstream inputFileStream(FILE_PATH_STR);
                 boost::archive::text_iarchive inputTextArchive(inputFileStream);
                 inputTextArchive >> *CREATURE_PTR;
             }
@@ -165,7 +163,7 @@ namespace game
             {
                 M_HP_LOG_ERR(
                     "GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
-                    << "de-serialize/load saved unplayed character file \"" << FILE_PATH.string()
+                    << "de-serialize/load saved unplayed character file \"" << FILE_PATH_STR
                     << "\" threw exception \"" << E.what()
                     << "\".  That character file is somehow invalid and cannot be loaded.");
 
@@ -193,10 +191,9 @@ namespace game
     void GameStateFactory::DeleteUnplayedCharacterFile(
         const creature::CreaturePtr_t CHAR_TO_DELETE_PTR) const
     {
-        namespace fs = misc::filesystem;
-
-        for (auto const & FILE_PATH : fs::FindFilesInDirectory(
-                 fs::MakeSubDirectoryPathFromCurrent(UNPLAYED_CHAR_DIR_NAME_),
+        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+                 false,
+                 misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
@@ -206,7 +203,7 @@ namespace game
 
             try
             {
-                std::ifstream inputFileStream(FILE_PATH.string());
+                std::ifstream inputFileStream(FILE_PATH_STR);
                 boost::archive::text_iarchive inputTextArchive(inputFileStream);
                 inputTextArchive >> loadedCharacter;
             }
@@ -215,7 +212,7 @@ namespace game
                 M_HP_LOG_ERR(
                     "GameStateFactory::DeleteUnplayedCharacterFile(character={"
                     << CHAR_TO_DELETE_PTR->ToString() << "}) threw exception \"" << EX.what()
-                    << "\" when trying to deserialize file \"" << FILE_PATH.string()
+                    << "\" when trying to deserialize file \"" << FILE_PATH_STR
                     << "\".  This file is somehow invalid and cannot be loaded.  The partially "
                     << "deserialized character={" << loadedCharacter.ToString() << "}");
 
@@ -226,17 +223,8 @@ namespace game
 
             if (loadedCharacter == (*CHAR_TO_DELETE_PTR))
             {
-                boost::system::error_code errorCode;
-                if (boost::filesystem::remove(FILE_PATH, errorCode) == false)
-                {
-                    M_HP_LOG_ERR(
-                        "GameStateFactory::DeleteUnplayedCharacterFile(character={"
-                        << CHAR_TO_DELETE_PTR->ToString() << "}) failed to delete file \""
-                        << FILE_PATH.string() << "\" with error_code=" << errorCode
-                        << ".  This file can safely be deleted manually.");
-                }
-
-                return;
+                misc::filesystem::Delete(FILE_PATH_STR);
+                break;
             }
         }
     }
@@ -248,14 +236,12 @@ namespace game
         const std::string & FILE_STR,
         const std::string & EXT_STR) const
     {
-        namespace fs = misc::filesystem;
-
-        auto const DIR_PATH { fs::MakeSubDirectoryPathFromCurrent(DIR_STR) };
+        auto const DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean(DIR_STR) };
 
         auto makeFunctionDescStr { [&]() {
             std::ostringstream ss;
 
-            ss << "GameStateFactory::Save(dir=" << DIR_PATH.string() << ", file_name=\"" << FILE_STR
+            ss << "GameStateFactory::Save(dir=" << DIR_PATH_STR << ", file_name=\"" << FILE_STR
                << "\", file_ext=\"" << EXT_STR << "\", ";
 
             if (GAMESTATE_PTR_OPT)
@@ -279,23 +265,20 @@ namespace game
             (GAMESTATE_PTR_OPT || CHARACTER_PTR_OPT),
             makeFunctionDescStr() << " neither a game or character was given to save.");
 
-        if (fs::DoesDirectoryExist(DIR_PATH) == false)
+        if (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR) == false)
         {
-            boost::system::error_code errorCode;
-
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (boost::filesystem::create_directory(DIR_PATH, errorCode)),
-                makeFunctionDescStr()
-                    << " was unable to create that directory.  errorCode=" << errorCode);
+            misc::filesystem::CreateDirectory(DIR_PATH_STR);
         }
 
         // find the next available filename to create and save to
-        auto const NEXT_AVAILABLE_FILE_PATH { fs::FindFirstAvailableNumberedFilename(
-            DIR_PATH, FILE_STR, EXT_STR) };
+        auto const NEXT_AVAILABLE_FILE_PATH_STR {
+            misc::filesystem::FindFirstAvailableNumberedFilenamePath(
+                DIR_PATH_STR, FILE_STR, EXT_STR)
+        };
 
         try
         {
-            std::ofstream outputFileStream(NEXT_AVAILABLE_FILE_PATH.string());
+            std::ofstream outputFileStream(NEXT_AVAILABLE_FILE_PATH_STR);
             boost::archive::text_oarchive outputTextArchive(outputFileStream);
 
             if (GAMESTATE_PTR_OPT)
@@ -319,7 +302,7 @@ namespace game
             std::ostringstream ss;
 
             ss << makeFunctionDescStr() << " while trying to serialize file \""
-               << NEXT_AVAILABLE_FILE_PATH.string() << "\", threw exception \"" << E.what()
+               << NEXT_AVAILABLE_FILE_PATH_STR << "\", threw exception \"" << E.what()
                << "\".  Save failed.";
 
             throw std::runtime_error(ss.str());

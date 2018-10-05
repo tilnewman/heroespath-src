@@ -22,16 +22,25 @@ namespace sf
 class Texture;
 }
 
-namespace boost
-{
-namespace filesystem
-{
-    class path;
-}
-} // namespace boost
-
 namespace heroespath
 {
+
+// i just made this because I needed two constructors of CachedTexture to differ on the first
+// type but they were both std::strings, so this is just a hack wrapper to change the type
+struct PathWrapper
+{
+    explicit PathWrapper(const std::string & PATH_STR)
+        : path_str(PATH_STR)
+    {}
+
+    PathWrapper(const PathWrapper &) = default;
+    PathWrapper(PathWrapper &&) = default;
+    PathWrapper & operator=(const PathWrapper &) = default;
+    PathWrapper & operator=(PathWrapper &&) = default;
+
+    std::string path_str;
+};
+
 namespace sfml_util
 {
 
@@ -52,7 +61,7 @@ namespace sfml_util
             const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         explicit CachedTexture(
-            const boost::filesystem::path & PATH, const ImageOptions & OPTIONS = ImageOptions());
+            const PathWrapper & PATH_WRAPPER, const ImageOptions & OPTIONS = ImageOptions());
 
         CachedTexture(
             const std::string & FAKE_PATH,
@@ -127,8 +136,7 @@ namespace sfml_util
             const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
         CachedTextures(
-            const boost::filesystem::path & DIR_PATH,
-            const ImageOptions & OPTIONS = ImageOptions());
+            const PathWrapper & DIR_PATH_WRAPPER, const ImageOptions & OPTIONS = ImageOptions());
 
         ~CachedTextures();
 

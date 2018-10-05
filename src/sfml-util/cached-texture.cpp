@@ -11,14 +11,12 @@
 
 #include "game/game-data-file.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/texture-cache.hpp"
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
-
-#include <boost/filesystem/path.hpp>
 
 namespace heroespath
 {
@@ -86,7 +84,7 @@ namespace sfml_util
     }
 
     CachedTexture::CachedTexture(const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::MakePathPretty(
+        : path_(misc::filesystem::CleanPath(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
@@ -94,14 +92,14 @@ namespace sfml_util
 
     CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::MakePathPretty(
+        : path_(misc::filesystem::CleanPath(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
 
-    CachedTexture::CachedTexture(const boost::filesystem::path & PATH, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::MakePathPretty(PATH).string())
+    CachedTexture::CachedTexture(const PathWrapper & PATH_WRAPPER, const ImageOptions & OPTIONS)
+        : path_(misc::filesystem::CleanPath(PATH_WRAPPER.path_str))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -198,15 +196,15 @@ namespace sfml_util
 
     CachedTextures::CachedTextures(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::MakePathPretty(
+        : path_(misc::filesystem::CleanPath(
               game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
 
     CachedTextures::CachedTextures(
-        const boost::filesystem::path & DIR_PATH, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::MakePathPretty(DIR_PATH).string())
+        const PathWrapper & DIR_PATH_WRAPER, const ImageOptions & OPTIONS)
+        : path_(misc::filesystem::CleanPath(DIR_PATH_WRAPER.path_str))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}

@@ -13,7 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 
 #include <exception>
 #include <sstream>
@@ -2464,7 +2464,7 @@ namespace avatar
                 : game::GameDataFile::Instance()->GetMediaPath(
                       "media-images-avatar-nonplayer-dir")) };
 
-        return misc::filesystem::CompletePath(
+        return misc::filesystem::CombinePathsThenClean(
             dirPathStr, boost::algorithm::to_lower_copy(Avatar::ToString(E)) + ".png");
     }
 

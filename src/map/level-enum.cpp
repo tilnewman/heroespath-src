@@ -12,7 +12,7 @@
 #include "level-enum.hpp"
 
 #include "game/game-data-file.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 
 namespace heroespath
 {
@@ -83,7 +83,7 @@ namespace map
 
     const std::string Level::Path(const Level::Enum LEVEL)
     {
-        return misc::filesystem::CompletePath(
+        return misc::filesystem::CombinePathsThenClean(
             game::GameDataFile::Instance()->GetMediaPath("media-maps-dir"),
             ToString(LEVEL) + FILENAME_EXTENSION);
     }

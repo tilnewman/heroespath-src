@@ -6,12 +6,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
-#include "misc/boost-optional-that-throws.hpp"
-#include "misc/not-null.hpp"
-#include "misc/real.hpp"
-#include "sfml-util/list-no-element.hpp"
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
 #include "misc/platform.hpp"
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
@@ -24,6 +20,11 @@
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #pragma warning(pop)
 #endif
+
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
+#include "misc/real.hpp"
+#include "sfml-util/list-no-element.hpp"
 
 #include <iostream>
 #include <limits>

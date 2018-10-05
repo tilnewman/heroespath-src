@@ -21,8 +21,6 @@
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
 
-#include <boost/filesystem.hpp>
-
 #include <iomanip>
 
 namespace heroespath

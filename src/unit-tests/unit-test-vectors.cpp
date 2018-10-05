@@ -20,7 +20,7 @@
 #pragma warning(pop)
 #endif
 
-#include "Test-stuff.hpp"
+#include "unit-test-test-stuff.hpp"
 
 #include "misc/vectors.hpp"
 

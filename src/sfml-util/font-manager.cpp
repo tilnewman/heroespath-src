@@ -13,7 +13,7 @@
 
 #include "game/game-data-file.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfutil/display.hpp"
@@ -122,7 +122,8 @@ namespace sfml_util
             auto & fontUPtr { GetFontRef(FONT) };
             fontUPtr = std::make_unique<sf::Font>();
             sfml_util::Loaders::Font(
-                *fontUPtr, misc::filesystem::CompletePath(fontsDirPathStr_, GuiFont::Path(FONT)));
+                *fontUPtr,
+                misc::filesystem::CombinePathsThenClean(fontsDirPathStr_, GuiFont::Path(FONT)));
         }
     }
 

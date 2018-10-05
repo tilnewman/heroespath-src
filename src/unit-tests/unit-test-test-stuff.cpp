@@ -10,7 +10,7 @@
 // Test-stuff.cpp
 //  Tests of the test_stuff helper functions functions()
 //
-#include "Test-stuff.hpp"
+#include "unit-test-test-stuff.hpp"
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 

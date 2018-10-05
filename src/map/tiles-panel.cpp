@@ -10,7 +10,7 @@
 #include "tiles-panel.hpp"
 
 #include "game/game-data-file.hpp"
-#include "misc/filesystem-helpers.hpp"
+#include "misc/filesystem.hpp"
 
 namespace heroespath
 {
@@ -38,7 +38,7 @@ namespace map
         , tile_count(TILE_COUNT)
         , column(COLUMN)
         , texture_index(TEXTURE_INDEX)
-        , path_str(misc::filesystem::CompletePath(
+        , path_str(misc::filesystem::CombinePathsThenClean(
               game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir"), RELATIVE_PATH))
     {}
 
