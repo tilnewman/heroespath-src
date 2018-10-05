@@ -39,9 +39,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
     file (READ ../build-flags/msvc.txt custom_compile_flags)
 
-    #On Windows, Boost has some trouble linking dynamically, these defines help
-    #set(custom_compile_flags "${custom_compile_flags} -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_TEST_DYN_LINK")
-
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
     set(custom_link_flags "${custom_link_flags} -pthread")
