@@ -10,7 +10,7 @@
 // settings-file.hpp
 //  A Subsystem config file class that saves game settings. (i.e. volume, resolution, etc.)
 //
-#include "misc/configbase.hpp"
+#include "misc/key-value-file.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -22,31 +22,34 @@ namespace misc
 {
 
     // Subsystem class that manages a simple configuration file
-    class SettingsFile : public ConfigBase
+    class SettingsFile : public KeyValueFile
     {
     public:
+        SettingsFile();
+
+        virtual ~SettingsFile();
+
         SettingsFile(const SettingsFile &) = delete;
         SettingsFile(SettingsFile &&) = delete;
         SettingsFile & operator=(const SettingsFile &) = delete;
         SettingsFile & operator=(SettingsFile &&) = delete;
 
-        SettingsFile();
-        virtual ~SettingsFile();
         static misc::NotNull<SettingsFile *> Instance();
         static void Acquire();
         static void Release();
 
         void AcquireAndSave();
         void LoadAndRestore();
+        void SetDefaults();
 
-        static const std::string KEY_THEMEMUSIC_VOL_;
-        static const std::string KEY_SOUNDEFFECTS_VOL_;
-        static const std::string KEY_RESOLUTION_WIDTH_;
-        static const std::string KEY_RESOLUTION_HEIGHT_;
-        static const std::string KEY_RESOLUTION_BITDEPTH_;
-        static const std::string KEY_VERTICAL_SYNC_;
-        static const std::string KEY_FRAMERATE_LIMIT_;
-        static const std::string KEY_ANTIALIAS_LEVEL_;
+        static const std::string KEY_MUSIC_VOLUME_;
+        static const std::string KEY_SOUND_FX_VOLUME_;
+        static const std::string KEY_DISPLAY_WIDTH_;
+        static const std::string KEY_DISPLAY_HEIGHT_;
+        static const std::string KEY_DISPLAY_BIT_DEPTH_;
+        static const std::string KEY_DISPLAY_WILL_VERTICAL_SYNC_;
+        static const std::string KEY_DISPLAY_FRAMERATE_LIMIT_;
+        static const std::string KEY_DISPLAY_ANTIALIAS_LEVEL_;
 
     private:
         static std::unique_ptr<SettingsFile> instanceUPtr_;

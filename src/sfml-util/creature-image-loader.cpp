@@ -13,9 +13,9 @@
 
 #include "creature/body-type.hpp"
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
@@ -34,7 +34,7 @@ namespace sfml_util
         : imageDirectoryPath_("")
     {
         imageDirectoryPath_ = misc::filesystem::CleanPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir"));
     }
 
     bool CreatureImageLoader::Test() const

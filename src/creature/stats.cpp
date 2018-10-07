@@ -12,8 +12,8 @@
 #include "stats.hpp"
 
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 
@@ -158,7 +158,7 @@ namespace creature
         {
             auto const RANK_BONUS { static_cast<int>(
                 CREATURE_PTR->Rank().As<float>()
-                * game::GameDataFile::Instance()->GetCopyFloat(
+                * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                       "heroespath-fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
@@ -328,7 +328,7 @@ namespace creature
     {
         return misc::random::Int(static_cast<int>(
             static_cast<float>(CREATURE_PTR->TraitWorking(Traits::Luck))
-            / game::GameDataFile::Instance()->GetCopyFloat(
+            / misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-fight-stats-luck-adj-ratio")));
     }
 
@@ -337,12 +337,12 @@ namespace creature
     {
         auto const BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
-            * game::GameDataFile::Instance()->GetCopyFloat(
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-stats-race-bonus-base-adj-ratio")) };
 
         auto const MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
-            * game::GameDataFile::Instance()->GetCopyFloat(
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-stats-race-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
@@ -449,12 +449,12 @@ namespace creature
     {
         auto const BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
-            * game::GameDataFile::Instance()->GetCopyFloat(
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-stats-role-bonus-base-adj-ratio")) };
 
         auto const MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
-            * game::GameDataFile::Instance()->GetCopyFloat(
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-stats-role-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)

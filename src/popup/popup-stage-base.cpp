@@ -12,8 +12,8 @@
 #include "popup-stage-base.hpp"
 
 #include "creature/name-info.hpp"
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/config-file.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/sound-manager.hpp"

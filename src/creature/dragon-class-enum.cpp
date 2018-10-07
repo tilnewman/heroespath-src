@@ -11,7 +11,7 @@
 //
 #include "dragon-class-enum.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 namespace heroespath
 {
@@ -66,42 +66,42 @@ namespace creature
     {
         std::ostringstream ss;
         ss << "heroespath-creature-race-desc-dragon-" << ToString(DRAGON_CLASS_TYPE);
-        return game::GameDataFile::Instance()->GetCopyStr(ss.str());
+        return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
-        if (RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+        if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
         else if (
-            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
         else if (
-            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
         else if (
-            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
         else if (
-            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
         else if (
-            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                         "heroespath-creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;

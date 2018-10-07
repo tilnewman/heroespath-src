@@ -11,8 +11,8 @@
 //
 #include "condition-enum.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 
 #include <exception>
 #include <sstream>
@@ -110,7 +110,7 @@ namespace creature
     {
         std::ostringstream keySS;
         keySS << "heroespath-creature-condition-" << ToString(E) << "-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Conditions::ImageFilename(const Conditions::Enum E)
@@ -121,12 +121,12 @@ namespace creature
     namespace condition
     {
         // see comments in header
-        const std::size_t Severity::ALL{ 0 };
-        const std::size_t Severity::GOOD{ 1 };
-        const std::size_t Severity::LEAST_BENEFITIAL{ 2 };
-        const std::size_t Severity::MOST_BENEFITIAL{ 1000 };
-        const std::size_t Severity::LEAST_HARMFUL{ 1001 };
-        const std::size_t Severity::MOST_HARMFUL{ 2000 };
+        const std::size_t Severity::ALL { 0 };
+        const std::size_t Severity::GOOD { 1 };
+        const std::size_t Severity::LEAST_BENEFITIAL { 2 };
+        const std::size_t Severity::MOST_BENEFITIAL { 1000 };
+        const std::size_t Severity::LEAST_HARMFUL { 1001 };
+        const std::size_t Severity::MOST_HARMFUL { 2000 };
 
         // see comments in header
         std::size_t Severity::Get(const Conditions::Enum E)

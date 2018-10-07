@@ -9,10 +9,11 @@
 //
 // statement.cpp
 //
-#include "statement.hpp"
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/strings.hpp"
+#include "statement.hpp"
 
 namespace heroespath
 {
@@ -107,18 +108,16 @@ namespace interact
                 return false;
             }
 
-            const std::string CapFirstLetter(const std::string & S)
+            const std::string CapFirstLetter(const std::string & STRING)
             {
-                if (S.empty())
+                if (STRING.empty())
                 {
                     return "";
                 }
-                else
-                {
-                    std::string s { S };
-                    s[0] = boost::algorithm::to_upper_copy(std::string(1, S[0]))[0];
-                    return s;
-                }
+
+                std::string result { STRING };
+                misc::ToUpper(result.front());
+                return result;
             }
 
         } // namespace compose

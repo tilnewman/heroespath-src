@@ -11,7 +11,7 @@
 //
 #include "intro-stage.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/sound-manager.hpp"

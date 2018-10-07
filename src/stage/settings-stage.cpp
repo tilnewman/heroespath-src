@@ -11,8 +11,8 @@
 //
 #include "settings-stage.hpp"
 
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/box-entity.hpp"
@@ -652,7 +652,7 @@ namespace stage
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
         std::ostringstream ss;
-        ss << "Revision: " << game::GameDataFile::Instance()->GetCopyStr("system-revision");
+        ss << "Revision: " << misc::ConfigFile::Instance()->Value("system-revision");
 
         const sfml_util::TextInfo TEXT_INFO(
             ss.str(),

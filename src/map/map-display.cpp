@@ -12,11 +12,11 @@
 #include "map-display.hpp"
 
 #include "avatar/lpc-view.hpp"
-#include "game/game-data-file.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -43,11 +43,11 @@ namespace map
         , WIN_SIZE_V_(sf::Vector2f(REGION.width, REGION.height))
         , WIN_CENTER_V_(
               WIN_POS_V_.x + (WIN_SIZE_V_.x * 0.5f), WIN_POS_V_.y + (WIN_SIZE_V_.y * 0.5f))
-        , ANIM_SFX_DISTANCE_MIN_(game::GameDataFile::Instance()->GetCopyFloat(
+        , ANIM_SFX_DISTANCE_MIN_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-distance-min"))
-        , ANIM_SFX_DISTANCE_MAX_(game::GameDataFile::Instance()->GetCopyFloat(
+        , ANIM_SFX_DISTANCE_MAX_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-distance-max"))
-        , ANIM_SFX_VOLUME_MIN_RATIO_(game::GameDataFile::Instance()->GetCopyFloat(
+        , ANIM_SFX_VOLUME_MIN_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-min-volume-ratio"))
         , layout_()
         , tileOffsets_()
@@ -749,7 +749,7 @@ namespace map
     {
         sfml_util::Loaders::Texture(
             npcShadowTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
 
         shadowMasker_.ChangeColors(npcShadowTexture_, true);
         npcShadowSprite_.setTexture(npcShadowTexture_, true);

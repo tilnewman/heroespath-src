@@ -13,7 +13,7 @@
 
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/display.hpp"

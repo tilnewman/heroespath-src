@@ -11,11 +11,11 @@
 //
 #include "adventure-display-stage.hpp"
 
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "map/level-enum.hpp"
 #include "map/map-display.hpp"
 #include "map/map.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfutil/display.hpp"

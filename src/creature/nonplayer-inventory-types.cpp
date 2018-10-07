@@ -10,7 +10,7 @@
 // nonplayer-inventory-types.cpp
 //
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "nonplayer-inventory-types.hpp"
 
 namespace heroespath
@@ -346,7 +346,7 @@ namespace creature
                 ss << "heroespath-wealthtype-chance-" << RANK_CLASS_STR << "-"
                    << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
-                auto const NEXT_VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(ss.str()) };
+                auto const NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -409,7 +409,7 @@ namespace creature
 
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
-            auto const CHANCE_BASE(game::GameDataFile::Instance()->GetCopyFloat(
+            auto const CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
@@ -420,8 +420,7 @@ namespace creature
                 + RACE_STR
             };
 
-            auto const RACE_COLLECTOR_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
-                RACE_KEY) };
+            auto const RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
 
             std::vector<std::string> racePartsVec;
             misc::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
@@ -445,8 +444,7 @@ namespace creature
                 + ROLE_STR
             };
 
-            auto const ROLE_COLLECTOR_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
-                ROLE_KEY) };
+            auto const ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
 
             std::vector<std::string> rolePartsVec;
             misc::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
@@ -464,7 +462,7 @@ namespace creature
 
             // enforce min
             {
-                const float CHANCE_MIN(game::GameDataFile::Instance()->GetCopyFloat(
+                const float CHANCE_MIN(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "heroespath-nonplayer-ownershipprofile-collectortype-chance-minimum"));
 
                 if (chanceMinimalist < CHANCE_MIN)
@@ -490,7 +488,7 @@ namespace creature
 
             // enforce max
             {
-                const float CHANCE_MAX(game::GameDataFile::Instance()->GetCopyFloat(
+                const float CHANCE_MAX(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "heroespath-nonplayer-ownershipprofile-collectortype-chance-maximum"));
 
                 if (chanceMinimalist > CHANCE_MAX)
@@ -573,7 +571,7 @@ namespace creature
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
                 };
 
-                auto const RACE_OWNSMAGIC_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
+                auto const RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
 
                 std::vector<std::string> racePartsVec;
@@ -616,7 +614,7 @@ namespace creature
                     + ROLE_STR
                 };
 
-                auto const ROLE_OWNSMAGIC_PARTS_STR { game::GameDataFile::Instance()->GetCopyStr(
+                auto const ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     ROLE_KEY) };
 
                 std::vector<std::string> rolePartsVec;
@@ -635,7 +633,7 @@ namespace creature
 
             // enforce min
             {
-                const float MIN(game::GameDataFile::Instance()->GetCopyFloat(
+                const float MIN(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-min"));
 
                 if (chanceRarely < MIN)
@@ -656,7 +654,7 @@ namespace creature
 
             // enforce max
             {
-                const float MAX(game::GameDataFile::Instance()->GetCopyFloat(
+                const float MAX(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-max"));
 
                 if (chanceRarely > MAX)
@@ -726,14 +724,14 @@ namespace creature
 
         complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
-            auto const RACE_COMPLEXITY_STR { game::GameDataFile::Instance()->GetCopyStr(
+            auto const RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
                 + race::ToString(CHARACTER_PTR->Race())) };
 
             if (RACE_COMPLEXITY_STR == "based-on-role")
             {
                 return static_cast<complexity_type::Enum>(
-                    FromString(game::GameDataFile::Instance()->GetCopyStr(
+                    FromString(misc::ConfigFile::Instance()->Value(
                         "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
                         + role::ToString(CHARACTER_PTR->Role()))));
             }

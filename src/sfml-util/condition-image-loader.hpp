@@ -10,7 +10,7 @@
 // condition-image-loader.hpp
 //
 #include "creature/condition-enum.hpp"
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/enum-image-loader.hpp"
 
 namespace heroespath
@@ -29,7 +29,7 @@ namespace sfml_util
 
         ConditionImageLoader()
             : EnumImageLoader<creature::Conditions>(
-                  game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"))
+                  misc::ConfigFile::Instance()->GetMediaPath("media-images-conditions-dir"))
         {}
     };
 

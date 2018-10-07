@@ -11,7 +11,7 @@
 //
 #include "rank.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -24,15 +24,15 @@ namespace creature
 
     rank_class::Enum rank_class::FromRank(const Rank_t & RANK_PARAM)
     {
-        Rank_t rankCumulative{ 0_rank };
+        Rank_t rankCumulative { 0_rank };
         for (int i(0); i < (rank_class::Count - 1); ++i)
         {
-            const rank_class::Enum RANK_ENUM{ static_cast<rank_class::Enum>(i) };
+            const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
             std::ostringstream ss;
             ss << "heroespath-rankclass-" << ToString(RANK_ENUM) << "-rankmax";
 
-            rankCumulative += Rank_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
+            rankCumulative += Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));
 
             if (RANK_PARAM <= rankCumulative)
             {
@@ -45,13 +45,13 @@ namespace creature
 
     const RankRange_t rank_class::RankRangeByClass(const rank_class::Enum E)
     {
-        Rank_t min{ 0_rank };
-        Rank_t max{ 0_rank };
+        Rank_t min { 0_rank };
+        Rank_t max { 0_rank };
 
         if (E == GrandMaster)
         {
             min = Rank_t(
-                game::GameDataFile::Instance()->GetCopyInt(
+                misc::ConfigFile::Instance()->ValueOrDefault<int>(
                     "heroespath-rankclass-" + ToString(Master) + "-rankmax")
                 + 1);
         }
@@ -59,18 +59,18 @@ namespace creature
         {
             min = 1_rank;
 
-            max = Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                 "heroespath-rankclass-" + ToString(Novice) + "-rankmax"));
         }
         else
         {
             min = Rank_t(
-                game::GameDataFile::Instance()->GetCopyInt(
+                misc::ConfigFile::Instance()->ValueOrDefault<int>(
                     "heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(E - 1))
                     + "-rankmax")
                 + 1);
 
-            max = Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+            max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
                 "heroespath-rankclass-" + ToString(E) + "-rankmax"));
         }
 

@@ -12,7 +12,7 @@
 #include "role-stats.hpp"
 
 #include "creature/stat-modifier-loader.hpp"
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 namespace heroespath
 {
@@ -27,17 +27,15 @@ namespace creature
         {
             for (misc::EnumUnderlying_t i(0); i < role::PlayerRoleCount; ++i)
             {
-                auto const NEXT_ENUM{ static_cast<role::Enum>(i) };
-                auto const NEXT_ENUM_STR{ role::ToString(NEXT_ENUM) };
+                auto const NEXT_ENUM { static_cast<role::Enum>(i) };
+                auto const NEXT_ENUM_STR { role::ToString(NEXT_ENUM) };
 
-                auto const NEXT_KEY_STR{ "heroespath-creature-role-stat-modifiers-"
-                                         + NEXT_ENUM_STR };
+                auto const NEXT_KEY_STR { "heroespath-creature-role-stat-modifiers-"
+                                          + NEXT_ENUM_STR };
 
-                std::string nextStatSetStr{ "" };
-                game::GameDataFile::Instance()->GetStr(nextStatSetStr, NEXT_KEY_STR);
+                const auto STAT_STR { misc::ConfigFile::Instance()->Value(NEXT_KEY_STR) };
 
-                roleStatSetMap_[NEXT_ENUM]
-                    = StatModifierLoader::ConvertStringToStatSet(nextStatSetStr);
+                roleStatSetMap_[NEXT_ENUM] = StatModifierLoader::ConvertStringToStatSet(STAT_STR);
             }
         }
 

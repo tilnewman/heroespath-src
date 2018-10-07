@@ -9,7 +9,7 @@
 //
 // spell-image-loader.hpp
 //
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/enum-image-loader.hpp"
 #include "spell/spell-enum.hpp"
 
@@ -29,7 +29,7 @@ namespace sfml_util
 
         SpellImageLoader()
             : EnumImageLoader<spell::Spells>(
-                  game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"))
+                  misc::ConfigFile::Instance()->GetMediaPath("media-images-spells-dir"))
         {}
     };
 

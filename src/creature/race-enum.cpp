@@ -11,7 +11,7 @@
 //
 #include "race-enum.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 #include <algorithm>
 
@@ -277,7 +277,7 @@ namespace creature
     {
         std::ostringstream ss;
         ss << "heroespath-creature-race-desc-" << ToString(E);
-        return game::GameDataFile::Instance()->GetCopyStr(ss.str());
+        return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
     const std::string race::Abbr(const race::Enum E)

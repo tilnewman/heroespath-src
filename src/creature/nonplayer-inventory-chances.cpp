@@ -13,12 +13,12 @@
 
 #include "creature/creature.hpp"
 #include "creature/trait.hpp"
-#include "game/game-data-file.hpp"
 #include "item/armor-details.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
@@ -45,35 +45,39 @@ namespace creature
         std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_;
 
         ChanceFactory::ChanceFactory()
-            : masterRankMax_(game::GameDataFile::Instance()->GetCopyFloat(
+            : masterRankMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-rankclass-Master-rankmax"))
-            , clothingChanceMin_(game::GameDataFile::Instance()->GetCopyFloat(
+            , clothingChanceMin_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-inventory-clothing-chance-min"))
-            , clothingChanceMax_(game::GameDataFile::Instance()->GetCopyFloat(
+            , clothingChanceMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-inventory-clothing-chance-max"))
-            , materialPrimaryChanceCool_(game::GameDataFile::Instance()->GetCopyFloat(
+            , materialPrimaryChanceCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-primary-chance-base-Cool-onein"))
-            , materialPrimaryChanceMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+            , materialPrimaryChanceMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-primary-chance-base-Metal-onein"))
-            , materialPrimaryChancePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+            , materialPrimaryChancePrecious_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-primary-chance-base-Precious-onein"))
-            , collectorMaterialChanceIncreaseCool_(game::GameDataFile::Instance()->GetCopyFloat(
-                  "heroespath-material-collector-chance-base-increase-Cool"))
-            , collectorMaterialChanceIncreaseMetal_(game::GameDataFile::Instance()->GetCopyFloat(
-                  "heroespath-material-collector-chance-base-increase-Metal"))
-            , collectorMaterialChanceIncreasePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
-                  "heroespath-material-collector-chance-base-increase-Precious"))
-            , collectorMaterialChancePerCool_(game::GameDataFile::Instance()->GetCopyFloat(
+            , collectorMaterialChanceIncreaseCool_(
+                  misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                      "heroespath-material-collector-chance-base-increase-Cool"))
+            , collectorMaterialChanceIncreaseMetal_(
+                  misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                      "heroespath-material-collector-chance-base-increase-Metal"))
+            , collectorMaterialChanceIncreasePrecious_(
+                  misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                      "heroespath-material-collector-chance-base-increase-Precious"))
+            , collectorMaterialChancePerCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-collector-chance-per-divisor-Cool"))
-            , collectorMaterialChancePerMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+            , collectorMaterialChancePerMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-collector-chance-per-divisor-Metal"))
-            , collectorMaterialChancePerPrecious_(game::GameDataFile::Instance()->GetCopyFloat(
-                  "heroespath-material-collector-chance-per-divisor-Precious"))
-            , materialSecondaryChanceCool_(game::GameDataFile::Instance()->GetCopyFloat(
+            , collectorMaterialChancePerPrecious_(
+                  misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                      "heroespath-material-collector-chance-per-divisor-Precious"))
+            , materialSecondaryChanceCool_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-secondary-chance-base-Cool-onein"))
-            , materialSecondaryChanceMetal_(game::GameDataFile::Instance()->GetCopyFloat(
+            , materialSecondaryChanceMetal_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-secondary-chance-base-Metal-onein"))
-            , materialSecondaryChancePrecious_(game::GameDataFile::Instance()->GetCopyFloat(
+            , materialSecondaryChancePrecious_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-material-secondary-chance-base-Precious-onein"))
             , materialChanceMapCool_(Make_MaterialChanceMapCool())
             , materialChanceMapMetal_(Make_MaterialChanceMapMetal())
@@ -153,7 +157,7 @@ namespace creature
             auto const KEY_STR { "heroespath-nonplayer-coins-bounds-"
                                  + wealth_type::ToString(PROFILE.wealthType) };
 
-            auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
+            auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             std::vector<std::string> strVec;
             misc::SplitByChar(VALUE_STR, strVec, ',', true, true);
@@ -941,7 +945,7 @@ namespace creature
             const std::string MIN_STR { "min" };
             const std::string MAX_STR { "max" };
             const std::string REMAINING_STR { "remaining" };
-            const std::string VALUE_STR(game::GameDataFile::Instance()->GetCopyStr(KEY));
+            const std::string VALUE_STR(misc::ConfigFile::Instance()->Value(KEY));
 
             if (VALUE_STR == MIN_STR)
             {
@@ -1138,9 +1142,11 @@ namespace creature
             }
 
             // adjustments that make more wealth equal better chances for special materials
-            auto const WEALTH_CHANCE_ADJUSTMENT { game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-wealth-chance-base-adjustment-"
-                + wealth_type::ToString(PROFILE.wealthType)) };
+            auto const WEALTH_CHANCE_ADJUSTMENT {
+                misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                    "heroespath-material-wealth-chance-base-adjustment-"
+                    + wealth_type::ToString(PROFILE.wealthType))
+            };
 
             chanceCool += WEALTH_CHANCE_ADJUSTMENT;
             chanceMetal += WEALTH_CHANCE_ADJUSTMENT;
@@ -1287,7 +1293,7 @@ namespace creature
             }
 
             // adjustments that make more wealth equal better chances for special materials
-            auto const WEALTH_CHANCE_ADJUSTMENT(game::GameDataFile::Instance()->GetCopyFloat(
+            auto const WEALTH_CHANCE_ADJUSTMENT(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-material-wealth-chance-base-adjustment-"
                 + wealth_type::ToString(PROFILE.wealthType)));
 
@@ -1393,7 +1399,7 @@ namespace creature
 
             for (auto const NEXT_MATERIAL : MATERIALS_VEC)
             {
-                auto const NEXT_VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(
+                auto const NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
                     (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
 
                 if (NEXT_VALUE_STR == "remaining")
@@ -1402,8 +1408,10 @@ namespace creature
                 }
                 else
                 {
-                    auto const NEXT_VALUE_FLOAT { game::GameDataFile::Instance()->GetCopyFloat(
-                        (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
+                    auto const NEXT_VALUE_FLOAT {
+                        misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                            (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX))
+                    };
 
                     if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                     {
@@ -1469,10 +1477,10 @@ namespace creature
             ss << KEY_BASE << wealth_type::ToString(PROFILE.wealthType) << "-chances-";
             auto const WEARABLE_STR_BASE { ss.str() };
 
-            auto const MIN_VAL { game::GameDataFile::Instance()->GetCopyFloat(
+            auto const MIN_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-min") };
 
-            auto const MAX_VAL { game::GameDataFile::Instance()->GetCopyFloat(
+            auto const MAX_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-max") };
 
             // the final resulting object that will hold the chances for all clothing articles
@@ -1703,7 +1711,7 @@ namespace creature
 
                 auto const ROLE_STR { role::ToString(ROLE) };
                 auto const KEY_STR { "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
-                auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
+                auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
                 std::vector<std::string> armorChancesVec;
                 misc::SplitByChar(VALUE_STR, armorChancesVec, '|', true, true);
@@ -1824,7 +1832,7 @@ namespace creature
             const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
             auto const VALUE_STR_LOWER { to_lower_copy(
-                game::GameDataFile::Instance()->GetCopyStr(KEY_STR)) };
+                misc::ConfigFile::Instance()->Value(KEY_STR)) };
 
             std::vector<std::string> weaponSetVec;
             misc::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);

@@ -15,11 +15,11 @@
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
 #include "creature/nonplayer-inventory-types.hpp"
-#include "game/game-data-file.hpp"
 #include "item/item-cache.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item.hpp"
+#include "misc/config-file.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
@@ -91,7 +91,7 @@ namespace item
         else
         {
             auto const LOCKBOX_COIN_SUM_MAX { Score_t::Make(
-                game::GameDataFile::Instance()->GetCopyInt(
+                misc::ConfigFile::Instance()->ValueOrDefault<int>(
                     "heroespath-treasure-lockbox-coin-max")) };
 
             return (
@@ -144,41 +144,49 @@ namespace item
 
         auto const COIN_BASE { static_cast<int>(
             scores.Coin().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-coin-base")) };
 
         auto const COIN_RAND_BASE { static_cast<int>(
             scores.Coin().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-coin-mult")) };
 
         auto const COIN { Score_t::Make(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
         auto const GEM_BASE { static_cast<int>(
             scores.Gem().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-base")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-gem-base")) };
 
         auto const GEM_RAND_BASE { static_cast<int>(
             scores.Gem().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-gem-mult")) };
 
         auto const GEM { Score_t::Make(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
         auto const MAGIC_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-magic-base")) };
 
         auto const MAGIC_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Magic().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-magic-mult")) };
 
         auto const MAGIC { Score_t::Make(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
         auto const RELIGIOUS_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-religious-base")) };
 
         auto const RELIGIOUS_RAND_BASE { static_cast<creature::Trait_t>(
             scores.Religious().As<float>()
-            * game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
+            * misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                  "heroespath-treasure-religious-mult")) };
 
         auto const RELIGIOUS { Score_t::Make(
             RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };

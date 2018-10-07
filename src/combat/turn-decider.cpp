@@ -16,8 +16,8 @@
 #include "combat/turn-info.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -792,7 +792,7 @@ namespace combat
         {
             // separate chance to retreat if daunted
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Daunted)
-                 && (misc::random::Float() < game::GameDataFile::Instance()->GetCopyFloat(
+                 && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
                                                  "heroespath-fight-chance-daunted-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
@@ -800,7 +800,7 @@ namespace combat
 
             // separate chance to retreat if panicked
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Panic)
-                 && (misc::random::Float() < game::GameDataFile::Instance()->GetCopyFloat(
+                 && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
                                                  "heroespath-fight-chance-panicked-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
@@ -1334,7 +1334,7 @@ namespace combat
         else if (
             ARE_ANY_TARGETS_UNCONSCIOUS
             && (misc::random::Float(1.0f)
-                < game::GameDataFile::Instance()->GetCopyFloat(
+                < misc::ConfigFile::Instance()->ValueOrDefault<float>(
                       "heroespath-fight-chance-enemies-ignore-unconscious")))
         {
             // most of the time, don't consider unconscious targets

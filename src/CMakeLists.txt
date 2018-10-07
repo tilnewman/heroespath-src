@@ -125,16 +125,16 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   
     foreach(executable_directory_name ${executable_directory_names})
         
-        file(COPY game-data.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Release)
+        file(COPY config.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Release)
         
-        file(COPY game-data.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Debug)
+        file(COPY config.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${executable_directory_name}/Debug)
         
     endforeach()
     
 else()
 
-    file(COPY game-data.txt DESTINATION heroespath)
-    file(COPY game-data.txt DESTINATION unit-tests)
+    file(COPY config.txt DESTINATION heroespath)
+    file(COPY config.txt DESTINATION unit-tests)
 
 endif()
 

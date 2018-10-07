@@ -13,9 +13,9 @@
 
 #include "creature/creature.hpp"
 #include "creature/trait.hpp"
-#include "game/game-data-file.hpp"
 #include "item/item-factory.hpp"
 #include "item/item.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "song/song-enum.hpp"
@@ -289,13 +289,14 @@ namespace creature
         ss << "heroespath-player-race-health-initial-"
            << creature::race::ToString(CHARACTER_PTR->Race());
 
-        auto const HEALTH_BASE { Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str())) };
+        auto const HEALTH_BASE { Health_t(
+            misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str())) };
 
         ss.str("");
         ss << "heroespath-player-role-health-adjustment-initial-"
            << creature::role::ToString(CHARACTER_PTR->Role());
 
-        return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
+        return HEALTH_BASE + Health_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str()));
     }
 
     void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const

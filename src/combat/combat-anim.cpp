@@ -15,8 +15,8 @@
 #include "combat/combat-node.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
 #include "item/item.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
@@ -247,7 +247,7 @@ namespace combat
             pathKey = PATH_KEY_BASE_STR + "arrow4";
         }
 
-        const auto IMAGE_PATH { game::GameDataFile::Instance()->GetMediaPath(pathKey) };
+        const auto IMAGE_PATH { misc::ConfigFile::Instance()->GetMediaPath(pathKey) };
 
         if ((!projAnimCachedTextureOpt_) || (projAnimCachedTextureOpt_->Path() != IMAGE_PATH))
         {

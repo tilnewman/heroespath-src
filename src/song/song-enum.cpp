@@ -11,8 +11,8 @@
 //
 #include "song-enum.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 
 #include <exception>
 #include <sstream>
@@ -98,14 +98,14 @@ namespace song
     {
         std::ostringstream keySS;
         keySS << "heroespath-song-" << ToString(E) << "-short-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Songs::ExtraDesc(const Songs::Enum E)
     {
         std::ostringstream keySS;
         keySS << "heroespath-song-" << ToString(E) << "-extra-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Songs::ImageFilename(const Songs::Enum E)

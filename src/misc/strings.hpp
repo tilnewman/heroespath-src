@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <exception>
 #include <functional>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -47,6 +48,87 @@ namespace misc
                    && !std::is_floating_point<T>::value)>
         {};
     } // namespace type_helpers
+
+    inline bool IsUpper(const char CHAR) { return ((CHAR >= 'A') && (CHAR <= 'Z')); }
+    inline bool IsLower(const char CHAR) { return ((CHAR >= 'a') && (CHAR <= 'z')); }
+
+    // if !IsLower() then ch is not changed
+    inline void ToUpper(char & ch)
+    {
+        if (IsLower(ch))
+        {
+            ch -= 32;
+        }
+    }
+
+    // if !IsLower() then returns the given CHAR unchanged
+    inline char ToUpperCopy(const char CHAR)
+    {
+        auto copy { CHAR };
+        ToUpper(copy);
+        return copy;
+    }
+
+    inline void ToUpper(std::string & str)
+    {
+        for (char & ch : str)
+        {
+            ToUpper(ch);
+        }
+    }
+
+    inline const std::string ToUpperCopy(const std::string & STRING)
+    {
+        auto copy { STRING };
+        ToUpper(copy);
+        return copy;
+    }
+
+    // if !IsUpper() then ch is not changed
+    inline void ToLower(char & ch)
+    {
+        if (IsUpper(ch))
+        {
+            ch += 32;
+        }
+    }
+
+    // if !IsUpper() then returns the given CHAR unchanged
+    inline char ToLowerCopy(const char CHAR)
+    {
+        auto copy { CHAR };
+        ToLower(copy);
+        return copy;
+    }
+
+    inline void ToLower(std::string & str)
+    {
+        for (char & ch : str)
+        {
+            ToLower(ch);
+        }
+    }
+
+    inline const std::string ToLowerCopy(const std::string & STRING)
+    {
+        auto copy { STRING };
+        ToLower(copy);
+        return copy;
+    }
+
+    inline bool IsAlpha(const char CHAR) { return (IsUpper(CHAR) || IsLower(CHAR)); }
+
+    inline bool IsDigit(const char CHAR) { return ((CHAR >= '0') && (CHAR <= '9')); }
+
+    inline bool IsAlphaOrDigit(const char CHAR) { return (IsAlpha(CHAR) || IsDigit(CHAR)); }
+
+    // result is all lowercase, SEPARATOR can be empty
+    const std::string CamelTo(const std::string & STRING, const std::string & SEPARATOR);
+
+    inline const std::string CamelTo(const std::string & STRING, const char SEPARATOR)
+    {
+        return CamelTo(STRING, std::string(1, SEPARATOR));
+    }
 
     template <typename T>
     const std::string ToString(const T & THING)
@@ -93,6 +175,11 @@ namespace misc
         {
             return RETURN_ON_ERROR;
         }
+    }
+
+    inline const std::string Quoted(const std::string & STRING)
+    {
+        return ToString(std::quoted(STRING));
     }
 
     template <typename T = void>
@@ -283,7 +370,61 @@ namespace misc
         return FindNumberLast(STRING, RETURN_ON_ERROR);
     }
 
+    template <typename T>
+    const std::string NameEqualsValueStr(
+        const std::string & NAME,
+        const T VALUE,
+        const bool WILL_WRAP = false,
+        const std::string & PREFIX = "")
+    {
+        if (NAME.empty())
+        {
+            return "";
+        }
+
+        std::string finalStr { PREFIX };
+
+        if (WILL_WRAP)
+        {
+            finalStr += "(";
+        }
+
+        finalStr += (NAME + '=');
+
+        const bool IS_STRING_TYPE { (
+            std::is_same<std::remove_const_t<T>, char *>::value
+            || std::is_same<std::remove_const_t<T>, std::string>::value) };
+
+        const auto VALUE_STR { ToString(VALUE) };
+
+        const bool ALREADY_STARTS_WITH_QUOTE { (
+            (VALUE_STR.empty() == false) && (VALUE_STR.front() == '\"')) };
+
+        const bool WILL_ADD_QUOTES { (IS_STRING_TYPE && (ALREADY_STARTS_WITH_QUOTE == false)) };
+
+        if (WILL_ADD_QUOTES)
+        {
+            finalStr += '\"';
+        }
+
+        finalStr += VALUE_STR;
+
+        if (WILL_ADD_QUOTES)
+        {
+            finalStr += '\"';
+        }
+
+        if (WILL_WRAP)
+        {
+            finalStr += ")";
+        }
+
+        return finalStr;
+    }
+
 } // namespace misc
 } // namespace heroespath
+
+#define M_HP_VAR_STR(var) heroespath::misc::NameEqualsValueStr(#var, var, true, "  ")
 
 #endif // HEROESPATH_MISC_STRINGS_HPP_INCLUDED

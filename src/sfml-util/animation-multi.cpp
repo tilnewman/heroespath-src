@@ -11,7 +11,7 @@
 //
 #include "animation-multi.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfutil/size-and-scale.hpp"

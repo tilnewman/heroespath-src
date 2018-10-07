@@ -19,13 +19,13 @@
 #include "creature/name-info.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
-#include "game/game-data-file.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
@@ -601,7 +601,7 @@ namespace stage
         }
 
         static std::vector<std::string> imagePathKeyVec {
-            game::GameDataFile::Instance()->GetAllKeysPrefixedWith("media-images-")
+            misc::ConfigFile::Instance()->FindAllKeysWithPrefix("media-images-")
         };
 
         imagePathKeyVec.erase(
@@ -618,7 +618,7 @@ namespace stage
             ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
-            auto const IMAGE_PATH_STR { game::GameDataFile::Instance()->GetMediaPath(
+            auto const IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
             TestingImageSet(IMAGE_PATH_STR);
@@ -644,7 +644,7 @@ namespace stage
         }
 
         static std::vector<std::string> imageDirPathKeyVec {
-            game::GameDataFile::Instance()->GetAllKeysWith("-dir")
+            misc::ConfigFile::Instance()->FindAllKeysWithPostfix("-dir")
         };
 
         static std::vector<std::string> imagePathsVec;
@@ -656,7 +656,7 @@ namespace stage
             {
                 const auto IMAGE_DIR_PATH_KEY { imageDirPathKeyVec[imageDirIndex] };
 
-                const auto IMAGE_DIR_PATH { game::GameDataFile::Instance()->GetMediaPath(
+                const auto IMAGE_DIR_PATH { misc::ConfigFile::Instance()->GetMediaPath(
                     IMAGE_DIR_PATH_KEY) };
 
                 std::ostringstream ss;
@@ -920,7 +920,7 @@ namespace stage
         {
             std::ostringstream ss;
             ss << "Testing GameDataFile Key() \"" << keyVec[keyIndex]
-               << "\"=" << game::GameDataFile::Instance()->GetCopyFloat(keyVec[keyIndex]);
+               << "\"=" << misc::ConfigFile::Instance()->ValueOrDefault<float>(keyVec[keyIndex]);
 
             TestingStrAppend(ss.str());
             ++keyIndex;
@@ -1013,19 +1013,19 @@ namespace stage
                     if (RACE_ENUM == creature::race::Dragon)
                     {
                         return RANK_BASE
-                            + game::GameDataFile::Instance()->GetCopyInt(
+                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
                                   "heroespath-creature-dragon-class-rank-min-Elder");
                     }
                     else if (RACE_ENUM == creature::race::Wolfen)
                     {
                         return RANK_BASE
-                            + game::GameDataFile::Instance()->GetCopyInt(
+                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
                                   "heroespath-creature-wolfen-class-rank-min-Elder");
                     }
                     else
                     {
                         return RANK_BASE
-                            + game::GameDataFile::Instance()->GetCopyInt(
+                            + misc::ConfigFile::Instance()->ValueOrDefault<int>(
                                   "heroespath-rankclass-Master-rankmax");
                     }
                 }() };
@@ -1229,7 +1229,7 @@ namespace stage
     void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
     {
         auto const IMAGES_PATH_STR{
-            game::GameDataFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
+            misc::ConfigFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
 
         auto const DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
 

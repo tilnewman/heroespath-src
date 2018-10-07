@@ -11,7 +11,7 @@
 //
 #include "credit.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/text-region.hpp"

@@ -9,10 +9,10 @@
 //
 // texture-cache.cpp
 //
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
@@ -21,7 +21,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
-#include <cctype>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -95,8 +94,7 @@ namespace sfml_util
             "sfml_util::TextureCache::AddByKey(key=\"" << GAMEDATAFILE_KEY_STR << "\", " << OPTIONS
                                                        << ") failed because key was empty.");
 
-        return AddByPath(
-            game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
+        return AddByPath(misc::ConfigFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
     }
 
     std::size_t TextureCache::AddByPath(
@@ -237,7 +235,7 @@ namespace sfml_util
                 << DIR_PATH_KEY << "\", " << OPTIONS << ") failed because path was empty.");
 
         return AddDirectoryByPath(
-            game::GameDataFile::Instance()->GetMediaPath(DIR_PATH_KEY), OPTIONS);
+            misc::ConfigFile::Instance()->GetMediaPath(DIR_PATH_KEY), OPTIONS);
     }
 
     const std::vector<std::size_t> TextureCache::AddDirectoryByPath(
@@ -317,7 +315,7 @@ namespace sfml_util
             "sfml_util::TextureCache::RemoveByKey(key=\""
                 << GAMEDATAFILE_KEY_STR << "\", " << OPTIONS << ") failed because path was empty.");
 
-        RemoveByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
+        RemoveByPath(misc::ConfigFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), OPTIONS);
     }
 
     void TextureCache::RemoveByPath(

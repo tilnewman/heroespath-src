@@ -20,8 +20,8 @@
 #pragma warning(pop)
 #endif
 
-#include "game/game-data-file.hpp"
 #include "game/startup-shutdown.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/loaders.hpp"
@@ -70,13 +70,13 @@ inline const sf::Image
 inline const sf::Image
     quickLoadByKey(const std::string & KEY, const ImageOptions OPTIONS = ImageOptions())
 {
-    return quickLoadByPath(heroespath::game::GameDataFile::Instance()->GetMediaPath(KEY), OPTIONS);
+    return quickLoadByPath(heroespath::misc::ConfigFile::Instance()->GetMediaPath(KEY), OPTIONS);
 }
 
 BOOST_AUTO_TEST_CASE(HelperFunctionTests)
 {
-    heroespath::game::GameDataFile::Acquire();
-    heroespath::game::GameDataFile::Instance()->Initialize();
+    heroespath::misc::ConfigFile::Acquire();
+    heroespath::misc::ConfigFile::Instance()->Initialize();
 
     const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
     const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
 
     sf::Texture texture1;
     heroespath::sfml_util::Loaders::Texture(
-        texture1, heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
+        texture1, heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
 
     BOOST_CHECK(areImagesEqual(texture1, quickLoadByKey(IMAGE1_PATH_KEY)));
 
@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
     texture2.loadFromImage(quickLoadByKey(IMAGE1_PATH_KEY));
     BOOST_CHECK(areImagesEqual(texture1, texture2));
 
-    heroespath::game::GameDataFile::Release();
+    heroespath::misc::ConfigFile::Release();
 }
 
 BOOST_AUTO_TEST_CASE(TextureCacheTests)
@@ -132,13 +132,13 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGE3_PATH_KEY("media-images-logos-terrain");
 
     const std::string IMAGE1_PATH { heroespath::misc::filesystem::CleanPath(
-        game::GameDataFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)) };
+        misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY)) };
 
     const std::string IMAGE2_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
+        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE2_PATH_KEY)));
 
     const std::string IMAGE3_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
+        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE3_PATH_KEY)));
 
     const std::size_t IMAGES1_COUNT(33);
     const std::size_t IMAGES2_COUNT(22);
@@ -147,10 +147,10 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     const std::string IMAGES2_DIR_KEY("media-anim-images-dir-orbshimmer");
 
     const std::string IMAGES1_DIR_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
+        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGES1_DIR_KEY)));
 
     const std::string IMAGES2_DIR_PATH(heroespath::misc::filesystem::CleanPath(
-        heroespath::game::GameDataFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
+        heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGES2_DIR_KEY)));
 
     const ImageOptions ALL_OPTIONS { (
         ImageOpt::Smooth | ImageOpt::FlipHoriz | ImageOpt::FlipVert | ImageOpt::Invert) };

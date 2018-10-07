@@ -11,10 +11,10 @@
 //
 #include "weapon-details.hpp"
 
-#include "game/game-data-file.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
@@ -73,7 +73,7 @@ namespace item
 
             // lookup detail value string in the GameDataFile
             auto const KEY_STR { "heroespath-item-weapon-details-" + WEAPON_NAME };
-            auto const VALUE_STR { game::GameDataFile::Instance()->GetCopyStr(KEY_STR) };
+            auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             // break the line of text into comma separated field strings
             std::vector<std::string> fieldsVec;

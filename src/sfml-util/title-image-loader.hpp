@@ -10,7 +10,7 @@
 // title-image-loader.hpp
 //
 #include "creature/title-enum.hpp"
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/enum-image-loader.hpp"
 
 namespace heroespath
@@ -29,7 +29,7 @@ namespace sfml_util
 
         TitleImageLoader()
             : EnumImageLoader<creature::Titles>(
-                  game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"))
+                  misc::ConfigFile::Instance()->GetMediaPath("media-images-titles-dir"))
         {}
     };
 

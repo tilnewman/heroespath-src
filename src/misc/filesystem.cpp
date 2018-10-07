@@ -19,7 +19,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
-#include <cctype>
 #include <sstream>
 
 namespace heroespath
@@ -521,15 +520,14 @@ namespace misc
             }
         }
 
-        std::ostringstream ss;
+        std::string finalPathStr;
         for (const auto & PATH_PART_STRING : pathPartStrings)
         {
-            ss << PATH_PART_STRING << PreferredSeparatorChar();
+            finalPathStr += PATH_PART_STRING;
+            finalPathStr += PreferredSeparatorChar();
         }
 
-        std::string finalPathStr { ss.str() };
         finalPathStr.pop_back();
-
         return finalPathStr;
     }
 
@@ -540,7 +538,7 @@ namespace misc
         if (PATH_STR_CLEANED.empty())
         {
             M_HP_LOG_ERR(MakeErrorString(
-                PATH_STR_ORIG, PATH_STR_CLEANED, "(The given path was empty after cleaning.)"));
+                PATH_STR_ORIG, PATH_STR_CLEANED, "The given path was empty after cleaning."));
 
             return false;
         }
@@ -554,7 +552,7 @@ namespace misc
                 M_HP_LOG_WRN(MakeErrorString(
                     PATH_STR_ORIG,
                     PATH_STR_CLEANED,
-                    "(Asked to create a directory that was already there.)"));
+                    "Asked to create a directory that was already there."));
 
                 return true;
             }
@@ -589,7 +587,7 @@ namespace misc
                 M_HP_LOG_ERR(MakeErrorString(
                     PATH_STR_ORIG,
                     PATH_STR_CLEANED,
-                    "(create_directory() returned " + misc::ToString(WAS_CREATED) + ")",
+                    "create_directory() returned " + misc::ToString(WAS_CREATED),
                     errorCode));
             }
         }
@@ -598,7 +596,7 @@ namespace misc
             M_HP_LOG_ERR(MakeErrorString(
                 PATH_STR_ORIG,
                 PATH_STR_CLEANED,
-                "(boost::filesystem::create_directory() is what threw)",
+                "boost::filesystem::create_directory() is what threw.",
                 errorCode,
                 EXCEPTION.what()));
         }
@@ -623,7 +621,7 @@ namespace misc
         if (bfs::exists(BOOST_PATH) == false)
         {
             M_HP_LOG_WRN(MakeErrorString(
-                PATH_STR_ORIG, PATH_STR_CLEANED, "(Failed because nothing exists at that path.)"));
+                PATH_STR_ORIG, PATH_STR_CLEANED, "Failed because nothing exists at that path."));
 
             return true;
         }
@@ -654,8 +652,8 @@ namespace misc
                 M_HP_LOG_ERR(MakeErrorString(
                     PATH_STR_ORIG,
                     PATH_STR_CLEANED,
-                    "(remove_all() returned " + misc::ToString(DELETE_COUNT)
-                        + ", meaning that many things were deleted.)" + makeExtraErrorInfoString(),
+                    "remove_all() returned " + misc::ToString(DELETE_COUNT)
+                        + ", meaning that many things were deleted." + makeExtraErrorInfoString(),
                     errorCode));
             }
         }
@@ -664,7 +662,7 @@ namespace misc
             M_HP_LOG_ERR(MakeErrorString(
                 PATH_STR_ORIG,
                 PATH_STR_CLEANED,
-                "(boost::filesystem::remove_all() is what threw)" + makeExtraErrorInfoString(),
+                "boost::filesystem::remove_all() is what threw" + makeExtraErrorInfoString(),
                 errorCode,
                 EXCEPTION.what()));
         }
@@ -677,37 +675,48 @@ namespace misc
         const std::string & PATH_CLEANED,
         const std::string & MESSAGE,
         const boost::system::error_code & ERROR_CODE,
-        const std::string & EXCEPTION_MESSAGE)
+        const std::string & EXCEPTION)
     {
-        std::ostringstream ss;
+        const std::string BOOST_SYSTEM_ERROR = [&]() -> std::string {
+            if (ERROR_CODE)
+            {
+                return "[boost_error_code=" + misc::ToString(ERROR_CODE.value())
+                    + ", boost_error_message=" + misc::Quoted(ERROR_CODE.message()) + "]";
+            }
+            else
+            {
+                return "";
+            }
+        }();
+
+        std::string finalStr;
+
+        if (MESSAGE.empty() == false)
+        {
+            finalStr += M_HP_VAR_STR(MESSAGE);
+        }
 
         if (PATH_ORIG.empty() == false)
         {
-            ss << "(path_orig=\"" << PATH_ORIG << "\")";
+            finalStr += M_HP_VAR_STR(PATH_ORIG);
         }
 
         if (PATH_CLEANED.empty() == false)
         {
-            ss << "(path_clean=\"" << PATH_CLEANED << "\")";
+            finalStr += M_HP_VAR_STR(PATH_CLEANED);
         }
 
-        if (MESSAGE.empty() == false)
+        if (BOOST_SYSTEM_ERROR.empty() == false)
         {
-            ss << "(" << MESSAGE << ")";
+            finalStr += M_HP_VAR_STR(BOOST_SYSTEM_ERROR);
         }
 
-        if (ERROR_CODE)
+        if (EXCEPTION.empty() == false)
         {
-            ss << "(error_code=" << ERROR_CODE.value() << ", error_message=\""
-               << ERROR_CODE.message() << "\")";
+            finalStr += M_HP_VAR_STR(EXCEPTION);
         }
 
-        if (EXCEPTION_MESSAGE.empty() == false)
-        {
-            ss << "(threw std::exception.what()=\"" << EXCEPTION_MESSAGE << "\")";
-        }
-
-        return ss.str();
+        return finalStr;
     }
 
     const std::string filesystem::MakeNumberedFilename(
@@ -716,9 +725,7 @@ namespace misc
         const std::size_t NUMBER,
         const std::string & FILE_EXTENSION)
     {
-        std::ostringstream ss;
-        ss << FILE_NAME << NUMBER_PREFIX << NUMBER << FILE_EXTENSION;
-        return ss.str();
+        return FILE_NAME + NUMBER_PREFIX + misc::ToString(NUMBER) + FILE_EXTENSION;
     }
 
     bool filesystem::IsWindowsDriveNameWithoutTrailingSlash(const std::string & PATH_STR_ORIG)

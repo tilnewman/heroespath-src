@@ -11,8 +11,8 @@
 //
 #include "font-manager.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"
@@ -48,7 +48,7 @@ namespace sfml_util
     FontManager::FontManager()
         : fontUVec_(GuiFont::Count)
         , numberFontFamilyName_("")
-        , fontsDirPathStr_(game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"))
+        , fontsDirPathStr_(misc::ConfigFile::Instance()->GetMediaPath("media-fonts-dir"))
     {
         M_HP_LOG_DBG("Subsystem Construction: FontManager");
 

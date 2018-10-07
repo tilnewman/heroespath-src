@@ -231,11 +231,9 @@ namespace misc
                 }
             }
 
-            std::ostringstream ss;
-            ss << "misc::EnumBaseCounting::FromString(\"" << S
-               << "\")_InvalidValueError.  (typename=" << TypeName() << ")";
-
-            throw std::runtime_error(ss.str());
+            throw std::runtime_error(
+                "misc::EnumBaseCounting::FromString(\"" + S
+                + "\")_InvalidValueError.  (typename=" + TypeName() + ")");
         }
 
         static void Test(const bool WILL_DISPLAY_MSG_ON_SCREEN = true)

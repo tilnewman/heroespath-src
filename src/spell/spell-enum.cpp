@@ -11,8 +11,8 @@
 //
 #include "spell-enum.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 
 namespace heroespath
 {
@@ -143,14 +143,14 @@ namespace spell
     {
         std::ostringstream keySS;
         keySS << "heroespath-spell-" << ToString(E) << "-short-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Spells::ExtraDesc(const Spells::Enum E)
     {
         std::ostringstream keySS;
         keySS << "heroespath-spell-" << ToString(E) << "-extra-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
+        return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
     const std::string Spells::ImageFilename(const Spells::Enum E)

@@ -15,12 +15,12 @@
 #include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/title-holder.hpp"
-#include "game/game-data-file.hpp"
 #include "item/algorithms.hpp"
 #include "item/armor-types.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
@@ -165,7 +165,7 @@ namespace creature
 
     float Creature::RankRatio() const
     {
-        const float GRANDMASTER_RANK_F { game::GameDataFile::Instance()->GetCopyFloat(
+        const float GRANDMASTER_RANK_F { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                                              "heroespath-rankclass-Master-rankmax")
                                          + 1.0f };
 

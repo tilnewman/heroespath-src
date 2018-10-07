@@ -14,7 +14,6 @@
 #include "avatar/avatar-enum.hpp"
 #include "avatar/lpc-view.hpp"
 #include "creature/player-party.hpp"
-#include "game/game-data-file.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/world.hpp"
@@ -22,6 +21,7 @@
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
 #include "map/map-display.hpp"
+#include "misc/config-file.hpp"
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -42,7 +42,7 @@ namespace map
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
-        : WALK_SFX_VOLUME_RATIO_(game::GameDataFile::Instance()->GetCopyFloat(
+        : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(*this, REGION))
         , interactionManager_(interactionManager)
@@ -55,7 +55,7 @@ namespace map
         , walkSfxLayers_()
         , walkSfx_(sfml_util::sound_effect::Count)
         , walkSfxIsWalking_(false)
-        , sfxTimer_(game::GameDataFile::Instance()->GetCopyFloat(
+        , sfxTimer_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-sfx-time-between-updates"))
     {}
 

@@ -11,7 +11,7 @@
 //
 #include "strategy-details.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
@@ -53,7 +53,7 @@ namespace combat
                 keySS << "heroespath-nonplayer-combat-strategy-race-" << RACE_STR;
                 const std::string KEY(keySS.str());
 
-                const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
+                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing race=\""
@@ -165,7 +165,7 @@ namespace combat
                 keySS << "heroespath-nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
                 const std::string KEY(keySS.str());
 
-                const std::string VALUE(game::GameDataFile::Instance()->GetCopyStr(KEY));
+                const std::string VALUE(misc::ConfigFile::Instance()->Value(KEY));
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (VALUE.empty() == false),
                     "combat::strategy::CreatureStrategies::Initialize()  (while parsing role=\""

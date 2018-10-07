@@ -11,11 +11,11 @@
 //
 #include "parser.hpp"
 
-#include "game/game-data-file.hpp"
 #include "map/shadow-masker.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/loaders.hpp"

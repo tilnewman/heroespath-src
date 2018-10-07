@@ -21,10 +21,10 @@
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "creature/stats.hpp"
-#include "game/game-data-file.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "item/item.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
@@ -288,7 +288,7 @@ namespace combat
             return;
         }
 
-        auto const CHANCE_CONDS_ADDED_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
+        auto const CHANCE_CONDS_ADDED_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "heroespath-fight-chance-conditions-added-from-damage-ratio") };
 
         for (auto const NEXT_COND_ENUM : condsVecToAdd)
@@ -1020,14 +1020,16 @@ namespace combat
         if ((CREATURE_ATTACKING_PTR->Role() == creature::role::Archer)
             && (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
-            auto const ARCHER_ACC_BONUS_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
+            auto const ARCHER_ACC_BONUS_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-fight-archer-projectile-accuracy-bonus-ratio") };
 
             attackAccToUse += static_cast<creature::Trait_t>(
                 static_cast<float>(ATTACK_ACC_RAW) * ARCHER_ACC_BONUS_RATIO);
 
-            auto const ARCHER_RANK_BONUS_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-fight-archer-projectile-rank-bonus-ratio") };
+            auto const ARCHER_RANK_BONUS_RATIO {
+                misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                    "heroespath-fight-archer-projectile-rank-bonus-ratio")
+            };
 
             attackAccToUse += static_cast<int>(
                 CREATURE_ATTACKING_PTR->Rank().As<float>() * ARCHER_RANK_BONUS_RATIO);
@@ -1039,10 +1041,10 @@ namespace combat
         auto const ATTACK_ACC_RAND_MAX { std::max(ATTACK_ACC_RAW, attackAccToUse) };
         auto const ATTACK_ACC_RAND { misc::random::Int(ATTACK_ACC_RAND_MIN, ATTACK_ACC_RAND_MAX) };
 
-        auto const STAT_RATIO_AMAZING { game::GameDataFile::Instance()->GetCopyFloat(
+        auto const STAT_RATIO_AMAZING { misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "heroespath-fight-stats-amazing-ratio") };
 
-        auto const STAT_HIGHER_THAN_AVERAGE { game::GameDataFile::Instance()->GetCopyInt(
+        auto const STAT_HIGHER_THAN_AVERAGE { misc::ConfigFile::Instance()->ValueOrDefault<int>(
             "heroespath-fight-stats-base-high-val") };
 
         auto const IS_ATTACK_AMAZING_ACC {
@@ -1058,7 +1060,7 @@ namespace combat
         {
             defendSpdToUse += static_cast<int>(
                 CREATURE_DEFENDING_PTR->Rank().As<float>()
-                * game::GameDataFile::Instance()->GetCopyFloat(
+                * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                       "heroespath-fight-pixie-defend-speed-rank-bonus-ratio"));
         }
 
@@ -1071,7 +1073,7 @@ namespace combat
         {
             defendSpdToUse += static_cast<int>(
                 static_cast<float>(DEFEND_SPD_RAW)
-                * game::GameDataFile::Instance()->GetCopyFloat(
+                * misc::ConfigFile::Instance()->ValueOrDefault<float>(
                       "heroespath-fight-block-defend-speed-bonus-ratio"));
         }
 
@@ -1259,15 +1261,17 @@ namespace combat
         auto const DAMAGE_FROM_WEAPON { DAMAGE_FROM_WEAPON_RAW + extraDamage };
 
         // add extra damage based on rank
-        auto const RANK_DAMAGE_BONUS_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-fight-rank-damage-bonus-ratio") };
+        auto const RANK_DAMAGE_BONUS_ADJ_RATIO {
+            misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                "heroespath-fight-rank-damage-bonus-ratio")
+        };
 
         auto const DAMAGE_FROM_RANK { Health_t::Make(
             CREATURE_ATTACKING_PTR->Rank().As<float>() * RANK_DAMAGE_BONUS_ADJ_RATIO) };
 
         // If strength stat is at or over the min of STAT_FLOOR,
         // then add a damage bonus based on half a strength ratio "roll".
-        const creature::Trait_t STAT_FLOOR { game::GameDataFile::Instance()->GetCopyInt(
+        const creature::Trait_t STAT_FLOOR { misc::ConfigFile::Instance()->ValueOrDefault<int>(
             "heroespath-fight-stats-value-floor") };
 
         Health_t damageFromStrength { 0_health };
@@ -1277,7 +1281,7 @@ namespace combat
             auto const RAND_STR_STAT { creature::Stats::Roll(
                 CREATURE_ATTACKING_PTR, creature::Traits::Strength) };
 
-            auto const STR_BONUS_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
+            auto const STR_BONUS_ADJ_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-fight-damage-strength-bonus-ratio") };
 
             damageFromStrength
@@ -1301,7 +1305,7 @@ namespace combat
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
-        auto const POWER_HIT_CHANCE_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
+        auto const POWER_HIT_CHANCE_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "heroespath-fight-hit-power-chance-ratio") };
 
         isPowerHit_OutParam
@@ -1324,7 +1328,7 @@ namespace combat
                 creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
                 | creature::Stats::With::RankBonus)) };
 
-        auto const CRITICAL_HIT_CHANCE_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
+        auto const CRITICAL_HIT_CHANCE_RATIO { misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "heroespath-fight-hit-critical-chance-ratio") };
 
         auto const ACCURACY_CURRENT { CREATURE_ATTACKING_PTR->Accuracy().As<int>() };
@@ -1337,7 +1341,7 @@ namespace combat
         Health_t damageFinal { DAMAGE_BASE };
 
         const Health_t SPECIAL_HIT_DAMAGE_MIN { CREATURE_ATTACKING_PTR->Rank().As<int>()
-                                                + game::GameDataFile::Instance()->GetCopyInt(
+                                                + misc::ConfigFile::Instance()->ValueOrDefault<int>(
                                                       "heroespath-fight-hit-special-damage-min") };
 
         if (isPowerHit_OutParam)
@@ -1381,7 +1385,7 @@ namespace combat
         // their small size and speed
         if ((damageFinal > 0_health) && (CREATURE_DEFENDING_PTR->Race() == creature::race::Pixie))
         {
-            const Health_t PIXIE_DAMAGE_FLOOR { game::GameDataFile::Instance()->GetCopyInt(
+            const Health_t PIXIE_DAMAGE_FLOOR { misc::ConfigFile::Instance()->ValueOrDefault<int>(
                 "heroespath-fight-pixie-damage-floor") };
 
             if (damageFinal < PIXIE_DAMAGE_FLOOR)
@@ -1390,8 +1394,10 @@ namespace combat
             }
             else
             {
-                auto const PIXIE_DAMAGE_ADJ_RATIO { game::GameDataFile::Instance()->GetCopyFloat(
-                    "heroespath-fight-pixie-damage-adj-ratio") };
+                auto const PIXIE_DAMAGE_ADJ_RATIO {
+                    misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                        "heroespath-fight-pixie-damage-adj-ratio")
+                };
 
                 damageFinal = Health_t::Make(damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO);
             }

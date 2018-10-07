@@ -19,7 +19,6 @@
 #include "creature/nonplayer-inventory-chances.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
-#include "game/game-data-file.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
@@ -30,7 +29,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/weapon-details.hpp"
-#include "misc/configbase.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/log.hpp"
 #include "misc/platform.hpp"
@@ -87,8 +86,8 @@ namespace game
 
         Setup_ParseCommandLineArguments(ARGC, argv);
 
-        game::GameDataFile::Acquire();
-        game::GameDataFile::Instance()->Initialize();
+        misc::ConfigFile::Acquire();
+        misc::ConfigFile::Instance()->Initialize();
 
         item::armor::ArmorDetailLoader::LoadFromGameDataFile();
         item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
@@ -228,7 +227,7 @@ namespace game
             sfml_util::Display::Release();
 
             // these two are needed almost everywhere so release them last
-            GameDataFile::Release();
+            misc::ConfigFile::Release();
         }
         catch (const std::exception & E)
         {
@@ -287,21 +286,21 @@ namespace game
         sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
 
         sfml_util::Display::Instance()->SetFrameRateLimit(static_cast<unsigned>(
-            game::GameDataFile::Instance()->GetCopyInt("system-window-frame-rate-limit")));
+            misc::ConfigFile::Instance()->ValueOrDefault<int>("system-window-frame-rate-limit")));
 
         sfml_util::Display::Instance()->SetVerticalSync(
-            game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
+            misc::ConfigFile::Instance()->ValueOrDefault<bool>("system-window-sync"));
     }
 
     void StartupShutdown::Setup_ManagerClassResourcePaths() const
     {
         popup::PopupManager::SetTexturesDirectoryPaths(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
-            game::GameDataFile::Instance()->GetMediaPath("media-images-accents-dir"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-accents-dir"));
 
         sfml_util::SoundManager::SetSoundsDirectory(
-            game::GameDataFile::Instance()->GetMediaPath("media-sounds-dir"),
-            game::GameDataFile::Instance()->GetMediaPath("media-music-dir"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-sounds-dir"),
+            misc::ConfigFile::Instance()->GetMediaPath("media-music-dir"));
     }
 
     void StartupShutdown::Setup_HoldersFill() const

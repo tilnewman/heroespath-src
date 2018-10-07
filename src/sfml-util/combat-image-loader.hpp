@@ -9,7 +9,7 @@
 //
 // combat-image-loader.hpp
 //
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 #include "sfml-util/combat-image-enum.hpp"
 #include "sfml-util/enum-image-loader.hpp"
 
@@ -29,7 +29,7 @@ namespace sfml_util
 
         CombatImageLoader()
             : EnumImageLoader<CombatImageType>(
-                  game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"))
+                  misc::ConfigFile::Instance()->GetMediaPath("media-images-combat-dir"))
         {}
     };
 

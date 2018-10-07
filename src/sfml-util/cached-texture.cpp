@@ -9,8 +9,8 @@
 //
 #include "cached-texture.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/texture-cache.hpp"
@@ -85,7 +85,7 @@ namespace sfml_util
 
     CachedTexture::CachedTexture(const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -93,7 +93,7 @@ namespace sfml_util
     CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -197,7 +197,7 @@ namespace sfml_util
     CachedTextures::CachedTextures(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              game::GameDataFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}

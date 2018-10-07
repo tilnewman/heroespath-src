@@ -16,6 +16,26 @@ namespace heroespath
 namespace misc
 {
 
+    const std::string CamelTo(const std::string & STRING_ORIG, const std::string & SEPARATOR)
+    {
+        char prevChar { 0 };
+        std::string result;
+
+        for (const char CHAR : STRING_ORIG)
+        {
+            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CHAR)
+                && (IsLower(prevChar) != IsLower(CHAR)))
+            {
+                result += SEPARATOR;
+            }
+
+            result += ToLowerCopy(CHAR);
+            prevChar = CHAR;
+        }
+
+        return result;
+    }
+
     const std::string MakeLoggableString(const std::string & ORIG_STR)
     {
         std::string newString(ORIG_STR);

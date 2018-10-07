@@ -22,18 +22,19 @@ namespace heroespath
 namespace misc
 {
 
+    const std::string SettingsFile::KEY_MUSIC_VOLUME_("volume-music");
+    const std::string SettingsFile::KEY_SOUND_FX_VOLUME_("volume-sound_fx");
+    const std::string SettingsFile::KEY_DISPLAY_WIDTH_("display-width");
+    const std::string SettingsFile::KEY_DISPLAY_HEIGHT_("display-height");
+    const std::string SettingsFile::KEY_DISPLAY_BIT_DEPTH_("display-bit_depth");
+    const std::string SettingsFile::KEY_DISPLAY_WILL_VERTICAL_SYNC_("display-will_vertical_sync");
+    const std::string SettingsFile::KEY_DISPLAY_FRAMERATE_LIMIT_("display-frame_rate_limit");
+    const std::string SettingsFile::KEY_DISPLAY_ANTIALIAS_LEVEL_("display-antialias_level");
+
     std::unique_ptr<SettingsFile> SettingsFile::instanceUPtr_;
-    const std::string SettingsFile::KEY_THEMEMUSIC_VOL_("volume_music");
-    const std::string SettingsFile::KEY_SOUNDEFFECTS_VOL_("volume_sound_effects");
-    const std::string SettingsFile::KEY_RESOLUTION_WIDTH_("display_width");
-    const std::string SettingsFile::KEY_RESOLUTION_HEIGHT_("display_height");
-    const std::string SettingsFile::KEY_RESOLUTION_BITDEPTH_("display_bit_depth");
-    const std::string SettingsFile::KEY_VERTICAL_SYNC_("display_vertical_sync");
-    const std::string SettingsFile::KEY_FRAMERATE_LIMIT_("display_frame_rate_limit");
-    const std::string SettingsFile::KEY_ANTIALIAS_LEVEL_("display_antialias_level");
 
     SettingsFile::SettingsFile()
-        : ConfigBase("settings.dat", "=", "#")
+        : KeyValueFile("settings.txt")
     {
         M_HP_LOG_DBG("Subsystem Construction: SettingsFile");
     }
@@ -73,143 +74,178 @@ namespace misc
 
     void SettingsFile::AcquireAndSave()
     {
-        try
+        SetOrAppendAs(KEY_MUSIC_VOLUME_, sfml_util::SoundManager::Instance()->MusicVolume());
+
+        SetOrAppendAs(
+            KEY_SOUND_FX_VOLUME_, sfml_util::SoundManager::Instance()->SoundEffectVolume());
+
+        SetOrAppendAs(
+            KEY_DISPLAY_WIDTH_, static_cast<int>(sfml_util::Display::Instance()->GetWinWidthu()));
+
+        SetOrAppendAs(
+            KEY_DISPLAY_HEIGHT_, static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()));
+
+        const auto BIT_DEPTH { sfml_util::Display::Instance()->WinColorDepth() };
+
+        // for some reason SFML reports 32 bit depth as 0 sometimes...
+        if (BIT_DEPTH == 0)
         {
-            SetFloat(KEY_THEMEMUSIC_VOL_, sfml_util::SoundManager::Instance()->MusicVolume());
-
-            SetFloat(
-                KEY_SOUNDEFFECTS_VOL_, sfml_util::SoundManager::Instance()->SoundEffectVolume());
-
-            SetInt(
-                KEY_RESOLUTION_WIDTH_,
-                static_cast<int>(sfml_util::Display::Instance()->GetWinWidthu()));
-
-            SetInt(
-                KEY_RESOLUTION_HEIGHT_,
-                static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()));
-
-            SetBool(KEY_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
-
-            SetInt(
-                KEY_FRAMERATE_LIMIT_,
-                static_cast<int>(sfml_util::Display::Instance()->GetFrameRateLimit()));
-
-            SetInt(
-                KEY_ANTIALIAS_LEVEL_,
-                static_cast<int>(sfml_util::Display::Instance()->AntialiasLevel()));
-
-            unsigned bitDepth(sfml_util::Display::Instance()->WinColorDepth());
-
-            if (0 == bitDepth)
-            {
-                bitDepth = 32;
-            }
-
-            SetInt(KEY_RESOLUTION_BITDEPTH_, static_cast<int>(bitDepth));
-
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                Save(), "SettingsFile::AcquireAndSave() failed to Save().");
+            SetOrAppendAs(KEY_DISPLAY_BIT_DEPTH_, 32);
         }
-        catch (const std::exception & E)
+        else
         {
-            M_HP_LOG("SettingsFile::AcquireAndSave() threw std::exception(" << E.what() << ")");
+            SetOrAppendAs(KEY_DISPLAY_BIT_DEPTH_, BIT_DEPTH);
         }
-        catch (...)
+
+        SetOrAppendAs(
+            KEY_DISPLAY_WILL_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
+
+        SetOrAppendAs(
+            KEY_DISPLAY_FRAMERATE_LIMIT_,
+            static_cast<int>(sfml_util::Display::Instance()->GetFrameRateLimit()));
+
+        SetOrAppendAs(
+            KEY_DISPLAY_ANTIALIAS_LEVEL_,
+            static_cast<int>(sfml_util::Display::Instance()->AntialiasLevel()));
+
+        if (DeleteReCreateSave() == false)
         {
-            M_HP_LOG("SettingsFile::AcquireAndSave() threw UNKNOWN exception.");
+            M_HP_LOG_ERR(
+                "KeyValueFile::DeleteReCreateSave() returned false.  So...something went wrong "
+                "with the open or write?"
+                + M_HP_VAR_STR(Path()));
         }
     }
 
     void SettingsFile::LoadAndRestore()
     {
-        // skip restoring settings if the load failed
-        if (Load())
+        if (Exists() == false)
         {
-            const float SAVED_THEMEMUSIC_VOL(GetWithDefaultFloat(KEY_THEMEMUSIC_VOL_, -1.0f));
-            if (SAVED_THEMEMUSIC_VOL > -0.1f)
+            M_HP_LOG(
+                "Settings file does not exist.  No settings will be restored from previous run.  "
+                "Defaults will be set."
+                + M_HP_VAR_STR(Path()));
+
+            SetDefaults();
+            return;
+        }
+
+        if (ClearAndLoad() == false)
+        {
+            M_HP_LOG_ERR(
+                "Settings file exists but KeyValueFile::ClearAndLoad() returned false, so "
+                "something went wrong reading the file...  Defaults will be set."
+                + M_HP_VAR_STR(Path()));
+
+            SetDefaults();
+            return;
+        }
+
+        const auto MUSIC_VOLUME { ValueAs(KEY_MUSIC_VOLUME_, -1.0f) };
+        if ((MUSIC_VOLUME < 0.0f) == false)
+        {
+            M_HP_LOG("Settings file restoring previous music volume." + M_HP_VAR_STR(MUSIC_VOLUME));
+            sfml_util::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME);
+        }
+
+        const float SOUND_FX_VOLUME { ValueAs(KEY_SOUND_FX_VOLUME_, -1.0f) };
+        if ((SOUND_FX_VOLUME < 0.0f) == false)
+        {
+            M_HP_LOG(
+                "Settings file restoring previous sound fx volume."
+                + M_HP_VAR_STR(SOUND_FX_VOLUME));
+
+            sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME);
+        }
+
+        const unsigned DISPLAY_DIMMENSION_TOO_BIG { 10000 };
+        const unsigned DISPLAY_OTHER_TOO_BIG { 33 };
+
+        const auto DISPLAY_WIDTH { ValueAs<unsigned>(
+            KEY_DISPLAY_WIDTH_, DISPLAY_DIMMENSION_TOO_BIG) };
+
+        const auto DISPLAY_HEIGHT { ValueAs<unsigned>(
+            KEY_DISPLAY_HEIGHT_, DISPLAY_DIMMENSION_TOO_BIG) };
+
+        const auto DISPLAY_BIT_DEPTH { ValueAs<unsigned>(
+            KEY_DISPLAY_BIT_DEPTH_, DISPLAY_OTHER_TOO_BIG) };
+
+        const auto DISPLAY_ANTIALIAS_LEVEL { ValueAs<unsigned>(
+            KEY_DISPLAY_ANTIALIAS_LEVEL_, DISPLAY_OTHER_TOO_BIG) };
+
+        const auto ARE_DISPLAY_VALUES_SANE { (DISPLAY_WIDTH >= DISPLAY_DIMMENSION_TOO_BIG)
+                                             && (DISPLAY_HEIGHT >= DISPLAY_DIMMENSION_TOO_BIG)
+                                             && (DISPLAY_BIT_DEPTH >= DISPLAY_OTHER_TOO_BIG)
+                                             && (DISPLAY_ANTIALIAS_LEVEL
+                                                 >= DISPLAY_OTHER_TOO_BIG) };
+
+        if (ARE_DISPLAY_VALUES_SANE)
+        {
+            const auto DISPLAY_WIDTH_U { static_cast<unsigned>(DISPLAY_WIDTH) };
+            const auto DISPLAY_HEIGHT_U { static_cast<unsigned>(DISPLAY_HEIGHT) };
+            const auto DISPLAY_BIT_DEPTH_U { static_cast<unsigned>(DISPLAY_BIT_DEPTH) };
+            const auto DISPLAY_ANTIALIAS_LEVEL_U { static_cast<unsigned>(DISPLAY_ANTIALIAS_LEVEL) };
+
+            const auto ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT {
+                (sfml_util::Display::Instance()->GetWinWidthu() != DISPLAY_WIDTH_U)
+                || (sfml_util::Display::Instance()->GetWinHeightu() != DISPLAY_HEIGHT_U)
+                || (sfml_util::Display::Instance()->GetCurrentVideoMode().bitsPerPixel
+                    != DISPLAY_BIT_DEPTH_U)
+                || (sfml_util::Display::Instance()->AntialiasLevel() != DISPLAY_ANTIALIAS_LEVEL_U)
+            };
+
+            if (ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT)
             {
-                M_HP_LOG(
-                    "SettingsFile::LoadAndRestore() setting MusicVolume to "
-                    << SAVED_THEMEMUSIC_VOL);
-
-                sfml_util::SoundManager::Instance()->MusicVolumeSet(SAVED_THEMEMUSIC_VOL);
-            }
-
-            const float SAVED_SOUNDEFFECTS_VOL(GetWithDefaultFloat(KEY_SOUNDEFFECTS_VOL_, -1.0f));
-            if (SAVED_SOUNDEFFECTS_VOL > -0.1f)
-            {
-                M_HP_LOG(
-                    "SettingsFile::LoadAndRestore() setting SoundEffectVolume to "
-                    << SAVED_SOUNDEFFECTS_VOL);
-
-                sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(SAVED_SOUNDEFFECTS_VOL);
-            }
-
-            const unsigned ERROR_VALUE(1024);
-
-            auto const SAVED_ANTIALIAS_LEVEL { static_cast<unsigned>(
-                GetWithDefaultInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)) };
-
-            if (SAVED_ANTIALIAS_LEVEL != ERROR_VALUE)
-            {
-                M_HP_LOG(
-                    "SettingsFile::LoadAndRestore() setting display antialias level to "
-                    << SAVED_ANTIALIAS_LEVEL);
-            }
-
-            const int WIDTH(GetWithDefaultInt(KEY_RESOLUTION_WIDTH_, -1));
-            const int HEIGHT(GetWithDefaultInt(KEY_RESOLUTION_HEIGHT_, -1));
-            const int BITDEPTH(GetWithDefaultInt(KEY_RESOLUTION_BITDEPTH_, -1));
-            if ((WIDTH > 0) && (HEIGHT > 0) && (BITDEPTH > 0)
-                && ((static_cast<int>(sfml_util::Display::Instance()->GetWinWidthu()) != WIDTH)
-                    || (static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()) != HEIGHT)
-                    || (sfml_util::Display::Instance()->AntialiasLevel() != SAVED_ANTIALIAS_LEVEL)))
-            {
-                const sf::VideoMode NEW_VIDEO_MODE(
-                    static_cast<unsigned>(WIDTH),
-                    static_cast<unsigned>(HEIGHT),
-                    static_cast<unsigned>(BITDEPTH));
+                const sf::VideoMode VIDEO_MODE(
+                    DISPLAY_WIDTH_U, DISPLAY_HEIGHT_U, DISPLAY_BIT_DEPTH_U);
 
                 M_HP_LOG(
-                    "SettingsFile::LoadAndRestore() setting display resolution to "
-                    << NEW_VIDEO_MODE << " AA=" << SAVED_ANTIALIAS_LEVEL);
+                    "Settings file restoring previous video mode." + M_HP_VAR_STR(VIDEO_MODE)
+                    + M_HP_VAR_STR(DISPLAY_ANTIALIAS_LEVEL_U));
 
                 sfml_util::Display::Instance()->ChangeVideoMode(
-                    NEW_VIDEO_MODE, SAVED_ANTIALIAS_LEVEL);
+                    VIDEO_MODE, DISPLAY_ANTIALIAS_LEVEL_U);
             }
-
-            const int SAVED_FRAME_RATE_LIMIT(GetWithDefaultInt(KEY_FRAMERATE_LIMIT_, -1));
-            if (SAVED_FRAME_RATE_LIMIT > -1)
-            {
-                M_HP_LOG(
-                    "SettingsFile::LoadAndRestore() setting display frame rate limit to "
-                    << SAVED_FRAME_RATE_LIMIT);
-
-                sfml_util::Display::Instance()->SetFrameRateLimit(
-                    static_cast<unsigned>(SAVED_FRAME_RATE_LIMIT));
-            }
-
-            const bool SAVED_VERTICAL_SYNC(GetWithDefaultBool(KEY_VERTICAL_SYNC_, true));
-
-            M_HP_LOG(
-                "SettingsFile::LoadAndRestore() setting the display vertical sync to "
-                << std::boolalpha << SAVED_VERTICAL_SYNC);
-
-            sfml_util::Display::Instance()->SetVerticalSync(SAVED_VERTICAL_SYNC);
         }
-        else
+
+        const unsigned DISPLAY_FRAME_RATE_LIMIT_TOO_BIG { 1000 };
+
+        const auto DISPLAY_FRAME_RATE_LIMIT(
+            ValueAs(KEY_DISPLAY_FRAMERATE_LIMIT_, DISPLAY_FRAME_RATE_LIMIT_TOO_BIG));
+
+        if (DISPLAY_FRAME_RATE_LIMIT < DISPLAY_FRAME_RATE_LIMIT_TOO_BIG)
         {
-            M_HP_LOG("SettingsFile::LoadAndRestore() was unable to load the settings file.");
+            M_HP_LOG(
+                "Settings file restoring previous frame rate limit."
+                + M_HP_VAR_STR(DISPLAY_FRAME_RATE_LIMIT));
 
-            M_HP_LOG("SettingsFile::LoadAndRestore() setting MusicVolume to 50% by default.");
-            sfml_util::SoundManager::Instance()->MusicVolumeSet(50.0f);
+            sfml_util::Display::Instance()->SetFrameRateLimit(DISPLAY_FRAME_RATE_LIMIT);
+        }
+
+        if (ContainsKey(KEY_DISPLAY_WILL_VERTICAL_SYNC_))
+        {
+            const bool WILL_VERTICAL_SYNC { ValueOrDefault<bool>(KEY_DISPLAY_WILL_VERTICAL_SYNC_) };
 
             M_HP_LOG(
-                "SettingsFile::LoadAndRestore() setting SoundEffectVolume to "
-                << "50% by default.");
+                "Settings file restoring previous rule about display vertical sync."
+                + M_HP_VAR_STR(WILL_VERTICAL_SYNC));
 
-            sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(50.0f);
+            sfml_util::Display::Instance()->SetVerticalSync(WILL_VERTICAL_SYNC);
         }
+    }
+
+    void SettingsFile::SetDefaults()
+    {
+        const auto MUSIC_VOLUME_PERCENT { 33.3f };
+        const auto SOUND_FX_VOLUME_PERCENT { 50.0f };
+
+        M_HP_LOG(
+            "Settings file ended up skipping the file's contents and setting the following "
+            "defaults:"
+            + M_HP_VAR_STR(MUSIC_VOLUME_PERCENT) + M_HP_VAR_STR(SOUND_FX_VOLUME_PERCENT));
+
+        sfml_util::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME_PERCENT);
+        sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME_PERCENT);
     }
 
 } // namespace misc

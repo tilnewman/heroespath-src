@@ -13,11 +13,11 @@
 
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
-#include "game/game-data-file.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/loop-manager.hpp"
 #include "game/world.hpp"
+#include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"

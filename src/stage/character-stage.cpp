@@ -23,9 +23,9 @@
 #include "creature/role-stats.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/title.hpp"
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "item/inventory.hpp"
+#include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
@@ -908,8 +908,7 @@ namespace stage
         // See below where it is added by hand.
         std::ostringstream ss;
         ss << creature::Traits::Name(creature::Traits::Strength) << " - "
-           << game::GameDataFile::Instance()->GetCopyStr("heroespath-stats-stat-desc_Strength")
-           << "\n\n";
+           << misc::ConfigFile::Instance()->Value("heroespath-stats-stat-desc_Strength") << "\n\n";
 
         auto const STRENGTH_BASE_TEXT { ss.str() };
 
@@ -985,7 +984,7 @@ namespace stage
         std::ostringstream ss;
 
         ss << creature::Traits::Name(TRAIT_ENUM) << " - "
-           << game::GameDataFile::Instance()->GetCopyStr(DESC_KEY) << "\n\n";
+           << misc::ConfigFile::Instance()->Value(DESC_KEY) << "\n\n";
 
         descTextInfo.text = ss.str();
         textRegionUVec.emplace_back(std::make_unique<sfml_util::TextRegion>(

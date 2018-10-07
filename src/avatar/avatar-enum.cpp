@@ -11,8 +11,8 @@
 //
 #include "avatar-enum.hpp"
 
-#include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 
 #include <exception>
@@ -2460,8 +2460,8 @@ namespace avatar
     {
         std::string dirPathStr { (
             (Avatar::IsPlayer(E))
-                ? game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-player-dir")
-                : game::GameDataFile::Instance()->GetMediaPath(
+                ? misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-player-dir")
+                : misc::ConfigFile::Instance()->GetMediaPath(
                       "media-images-avatar-nonplayer-dir")) };
 
         return misc::filesystem::CombinePathsThenClean(

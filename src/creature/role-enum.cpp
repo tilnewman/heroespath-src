@@ -11,7 +11,7 @@
 //
 #include "role-enum.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 namespace heroespath
 {
@@ -227,7 +227,7 @@ namespace creature
     {
         std::ostringstream ss;
         ss << "heroespath-creature-role-" << ToString(E) << "-desc";
-        return game::GameDataFile::Instance()->GetCopyStr(ss.str());
+        return misc::ConfigFile::Instance()->Value(ss.str());
     }
 
     const std::string role::Abbr(const role::Enum E)
@@ -352,7 +352,7 @@ namespace creature
         std::vector<role::Enum> rolesVec;
         for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
         {
-            auto const ROLE{ static_cast<role::Enum>(i) };
+            auto const ROLE { static_cast<role::Enum>(i) };
             if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)
             {
                 rolesVec.emplace_back(ROLE);

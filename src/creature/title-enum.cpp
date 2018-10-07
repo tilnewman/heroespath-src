@@ -13,8 +13,8 @@
 
 #include "creature/title-holder.hpp"
 #include "creature/title.hpp"
-#include "game/game-data-file.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 
 namespace heroespath
 {
@@ -1329,7 +1329,7 @@ namespace creature
     {
         std::ostringstream keySS;
         keySS << "heroespath-creature-title-" << ToString(E) << "-desc";
-        return boost::algorithm::trim_copy(game::GameDataFile::Instance()->GetCopyStr(keySS.str()));
+        return boost::algorithm::trim_copy(misc::ConfigFile::Instance()->Value(keySS.str()));
     }
 
     const std::string Titles::ImageFilename(const Titles::Enum E)

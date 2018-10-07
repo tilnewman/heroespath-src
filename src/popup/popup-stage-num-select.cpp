@@ -11,9 +11,9 @@
 //
 #include "popup-stage-num-select.hpp"
 
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"

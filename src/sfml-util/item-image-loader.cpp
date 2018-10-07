@@ -14,18 +14,17 @@
 #include "creature/dragon-class-enum.hpp"
 #include "creature/nonplayer-inventory-types.hpp"
 #include "creature/wolfen-class-enum.hpp"
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/config-file.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include <cctype>
 #include <exception>
 #include <sstream>
 #include <vector>
@@ -42,7 +41,7 @@ namespace sfml_util
         : imageDirectoryPath_("")
     {
         imageDirectoryPath_ = misc::filesystem::CleanPath(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-items-dir"));
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir"));
     }
 
     bool ItemImageLoader::Test() const
@@ -583,27 +582,8 @@ namespace sfml_util
             case misc_type::PuppetBlessed:
             case misc_type::PuppetCursed:
             {
-                std::string filename { "" };
-
-                auto const MISC_TYPE_STR { misc_type::ToString(MISC_TYPE) };
-                auto const MISC_TYPE_STR_SIZE { MISC_TYPE_STR.size() };
-
-                for (std::size_t i(0); i < MISC_TYPE_STR_SIZE; ++i)
-                {
-                    auto const CURRENT_CHAR { MISC_TYPE_STR[i] };
-                    filename.push_back(static_cast<char>(std::tolower(CURRENT_CHAR)));
-
-                    if ((MISC_TYPE_STR_SIZE - 1) > i)
-                    {
-                        auto const NEXT_CHAR { MISC_TYPE_STR[i + 1] };
-                        if (std::islower(CURRENT_CHAR) && std::isupper(NEXT_CHAR))
-                        {
-                            filename.push_back(SEPARATOR_[0]);
-                        }
-                    }
-                }
-
-                return { filename + FILE_EXT_STR_ };
+                return { misc::CamelTo(misc_type::ToString(MISC_TYPE), SEPARATOR_)
+                         + FILE_EXT_STR_ };
             }
 
             // these misc_types have single word names that are simply converted to lower-case

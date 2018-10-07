@@ -9,8 +9,8 @@
 //
 // enum-image-loader.hpp
 //
-#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "sfml-util/image-options.hpp"
 #include "sfml-util/image-util.hpp"

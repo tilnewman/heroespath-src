@@ -17,11 +17,11 @@
 #include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "creature/sex-enum.hpp"
-#include "game/game-data-file.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-info.hpp"
@@ -211,14 +211,14 @@ namespace stage
     const std::string CampStage::ComposeNewGamePopupText1()
     {
         std::ostringstream ss;
-        ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text1");
+        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text1");
         return ss.str();
     }
 
     const std::string CampStage::ComposeNewGamePopupText2()
     {
         std::ostringstream ss;
-        ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text2");
+        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text2");
 
         auto const PLAYERS_PVEC(creature::Algorithms::Players());
 
@@ -235,7 +235,7 @@ namespace stage
             ss << " where " << creature::Algorithms::Names(humansAndGnomesPVec) << " call home";
         }
 
-        ss << ".\n\n" << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text3");
+        ss << ".\n\n" << misc::ConfigFile::Instance()->Value("heroespath-intro-text3");
 
         auto pixiesAndBeastmastersPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie));
@@ -251,7 +251,7 @@ namespace stage
             ss << " such as " << creature::Algorithms::Names(pixiesAndBeastmastersPVec) << ",";
         }
 
-        ss << " " << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text4");
+        ss << " " << misc::ConfigFile::Instance()->Value("heroespath-intro-text4");
         return ss.str();
     }
 
@@ -348,11 +348,11 @@ namespace stage
         }
 
         std::ostringstream ss;
-        ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text5")
+        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text5")
            << charToUsePtrOpt.value()->Name() << " "
-           << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text6") << "  "
+           << misc::ConfigFile::Instance()->Value("heroespath-intro-text6") << "  "
            << creature::sex::HeSheIt(charToUsePtrOpt.value()->Sex(), false) << " "
-           << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text7") << " "
+           << misc::ConfigFile::Instance()->Value("heroespath-intro-text7") << " "
            << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
         auto const BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
@@ -431,8 +431,7 @@ namespace stage
             }
         }
 
-        ss << " arrived.\n\n"
-           << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text8");
+        ss << " arrived.\n\n" << misc::ConfigFile::Instance()->Value("heroespath-intro-text8");
 
         return ss.str();
     }
@@ -440,7 +439,7 @@ namespace stage
     const std::string CampStage::ComposeNewGamePopupText4()
     {
         std::ostringstream ss;
-        ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text9");
+        ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text9");
         return ss.str();
     }
 

@@ -11,7 +11,7 @@
 //
 #include "item-type-enum.hpp"
 
-#include "game/game-data-file.hpp"
+#include "misc/config-file.hpp"
 
 #include <utility>
 
@@ -47,7 +47,7 @@ namespace item
     {
         std::ostringstream ss;
 
-        auto appendIfBitIsSet{ [&](const element_type::Enum BIT) {
+        auto appendIfBitIsSet { [&](const element_type::Enum BIT) {
             if (ELEMENT_TYPE & BIT)
             {
                 if (ss.str().empty())
@@ -3013,8 +3013,10 @@ namespace item
 
     Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
-        auto const SEC_MATERIAL_ARMOR_ADJ_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-item-secondary-material-armor-adj-ratio") };
+        auto const SEC_MATERIAL_ARMOR_ADJ_RATIO {
+            misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                "heroespath-item-secondary-material-armor-adj-ratio")
+        };
 
         return Armor_t::Make(
             ArmorRatingBonusPri(MATERIAL_SEC).As<float>() * SEC_MATERIAL_ARMOR_ADJ_RATIO);
@@ -3404,11 +3406,11 @@ namespace item
         const material::Enum MATERIAL_PRIMARY, const material::Enum MATERIAL_SECONDARY)
     {
         // the enchantment factory has been setup to work with values that range from [0,20]
-        auto const RANGE{ 20.0f };
+        auto const RANGE { 20.0f };
 
         // these two ratios should add up to 1.0f
-        auto const PRIMARY_RATIO{ 0.75f };
-        auto const SECONDARY_RATIO{ 0.25f };
+        auto const PRIMARY_RATIO { 0.75f };
+        auto const SECONDARY_RATIO { 0.25f };
 
         if (MATERIAL_SECONDARY == material::Nothing)
         {

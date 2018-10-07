@@ -9,10 +9,9 @@
 //
 // text-render-char-info.hpp
 //
+#include "misc/strings.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "sfml-util/text-info.hpp"
-
-#include <cctype> //for std::isdigit()
 
 namespace heroespath
 {
@@ -43,7 +42,7 @@ namespace sfml_util
                 , is_word_break(is_newline || is_whitespace || is_dash)
                 , is_renderable(is_word_break || ((CHAR >= 32) && (CHAR <= 126)))
                 , requires_neither_font(is_word_break || (CHAR == '.') || (CHAR == '+'))
-                , requires_number_font(std::isdigit(static_cast<int>(CHAR)) != 0)
+                , requires_number_font(misc::IsDigit(CHAR))
                 , requires_letter_font(!requires_number_font && !requires_neither_font)
                 , font(GuiFont::Count)
             {
