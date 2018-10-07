@@ -84,8 +84,8 @@ find_package(SFML 2.5 COMPONENTS window graphics audio REQUIRED)
 
 #BOOST
 set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
+set(Boost_USE_MULTITHREADED ON)
 
 find_package(Boost COMPONENTS system date_time filesystem serialization unit_test_framework REQUIRED)
 

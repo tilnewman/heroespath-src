@@ -14,11 +14,9 @@ foreach(test_source_file ${test_source_files})
 
     set_target_properties(${test_name} PROPERTIES COMPILE_FLAGS ${custom_compile_flags})
 
-    if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        #target_link_libraries(${test_name} PUBLIC -lboost_test_exec_monitor)
-    endif()
-
-    target_link_libraries(${test_name} PUBLIC Boost::unit_test_framework)
+    target_link_libraries(${test_name} PUBLIC ${custom_link_flags})
+    
+    target_link_libraries(${test_name} PUBLIC Boost::system Boost::date_time Boost::filesystem Boost::serialization Boost::unit_test_framework)
     
     add_test(NAME ${test_name} COMMAND ${test_name})
 
