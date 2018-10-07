@@ -91,18 +91,14 @@ namespace misc
 
     bool filesystem::EndsWithFileGuess(const std::string & PATH_STR_ORIG)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
-
-        if (PATH_STR_TRIMMED.empty())
+        if (ExistsAndIsFile(PATH_STR_ORIG))
         {
-            return false;
+            return true;
         }
 
-        const bfs::path BOOST_PATH_CLEANED { CleanPath(PATH_STR_TRIMMED) };
-
-        if (bfs::exists(BOOST_PATH_CLEANED))
+        if (ExistsAndIsDirectory(PATH_STR_ORIG))
         {
-            return bfs::is_regular_file(BOOST_PATH_CLEANED);
+            return false;
         }
 
         return (WhatDoesBoostFilenameIndicatePathEndsWith(PATH_STR_ORIG) == LooksLike::File);
@@ -110,18 +106,14 @@ namespace misc
 
     bool filesystem::EndsWithDirectoryGuess(const std::string & PATH_STR_ORIG)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
-
-        if (PATH_STR_TRIMMED.empty())
+        if (ExistsAndIsFile(PATH_STR_ORIG))
         {
             return false;
         }
 
-        const bfs::path BOOST_PATH_CLEANED { CleanPath(PATH_STR_TRIMMED) };
-
-        if (bfs::exists(BOOST_PATH_CLEANED))
+        if (ExistsAndIsDirectory(PATH_STR_ORIG))
         {
-            return bfs::is_directory(BOOST_PATH_CLEANED);
+            return true;
         }
 
         return (WhatDoesBoostFilenameIndicatePathEndsWith(PATH_STR_ORIG) == LooksLike::Directory);
@@ -201,9 +193,14 @@ namespace misc
         }
     }
 
-    bool filesystem::Exists(const std::string & PATH_STR)
+    bool filesystem::Exists(const std::string & PATH_STR_ORIG)
     {
-        return bfs::exists(bfs::path(CleanPath(PATH_STR)));
+        const auto EXISTS_WHEN_ORIG { bfs::exists(bfs::path(PATH_STR_ORIG)) };
+
+        const auto PATH_STR_CLEANED { bfs::path(CleanPath(PATH_STR_ORIG)) };
+        const auto EXISTS_WHEN_CLEANED { bfs::exists(bfs::path(PATH_STR_CLEANED)) };
+
+        return (EXISTS_WHEN_ORIG || EXISTS_WHEN_CLEANED);
     }
 
     bool filesystem::ExistsAndIsFile(const std::string & FILE_PATH_STR)

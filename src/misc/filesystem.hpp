@@ -133,7 +133,6 @@ namespace misc
 
         static const std::vector<std::string> COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_;
 
-    private:
         static const std::string MakeErrorString(
             const std::string & PATH_ORIG,
             const std::string & PATH_CLEAN,

@@ -116,7 +116,8 @@ struct Help
     {
         const std::string BLACK_SLASH_STR { "\\" };
         const std::string FORWARD_SLASH_STR { "/" };
-        const auto PREFERRED_SEPARATOR_STR { ToString(bfs::path::preferred_separator) };
+        const auto PREFERRED_SEPARATOR_STR { std::string(
+            1, static_cast<char>(bfs::path::preferred_separator)) };
 
         std::string newPath { PATH_STR_ORIG };
 
@@ -239,16 +240,9 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
 
     BOOST_CHECK(filesystem::CleanPath(".a ..b ...c d. e.. f...") == ".a ..b ...c d. e.. f...");
 
-    BOOST_CHECK(filesystem::CleanPath(".a/..a/...a/a./a../a...") == ".a/..a/...a/a./a../a...");
-
-    // boost::filesystem functions threw exceptions with this kind of garbage, but we don't need to
-    // support it...so whatever.
-    BOOST_CHECK(filesystem::CleanPath(". .") == ". .");
-    BOOST_CHECK(filesystem::CleanPath(". . .") == ". . .");
-    BOOST_CHECK(filesystem::CleanPath(".. ..") == ".. ..");
-    BOOST_CHECK(filesystem::CleanPath(".. .. ..") == ".. .. ..");
-    BOOST_CHECK(filesystem::CleanPath("... ...") == "... ...");
-    BOOST_CHECK(filesystem::CleanPath("... ... ...") == "... ... ...");
+    BOOST_CHECK(
+        filesystem::CleanPath(".a/..a/...a/a./a../a...")
+        == help.PreferredSlashes(".a/..a/...a/a./a../a..."));
 
     BOOST_CHECK(
         filesystem::CleanPath(
@@ -257,6 +251,10 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
 
     // the valid dot directories should become relative to the current source dir
     BOOST_CHECK(filesystem::CleanPath(".") == help.PreferredSlashes(CURRENT_PATH_STR));
+    // std::cout << "orig  =."
+    //             "\nactual="
+    //          << filesystem::CleanPath(".")
+    //          << "\nexpect=" << help.PreferredSlashes(CURRENT_PATH_STR) << std::endl;
 
     BOOST_CHECK(
         filesystem::CleanPath("..")
@@ -265,8 +263,15 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
     // paths that do not exist will still have slashes changed to what the os prefers and should
     // have redundant dot names resolved
     BOOST_CHECK(filesystem::CleanPath("a/b") == help.PreferredSlashes("a/b"));
+    // std::cout << "orig=a/b"
+    //             "\nactu="
+    //          << filesystem::CleanPath("a/b") << "\nexpt=" << help.PreferredSlashes("a/b")
+    //          << std::endl;
     BOOST_CHECK(filesystem::CleanPath("a\\b") == help.PreferredSlashes("a/b"));
-
+    // std::cout << "orig=a\\b"
+    //             "\nactu="
+    //          << filesystem::CleanPath("a\\b") << "\nexpt=" << help.PreferredSlashes("a/b")
+    //          << std::endl;
     BOOST_CHECK(filesystem::CleanPath("a/b/c") == help.PreferredSlashes("a/b/c"));
     BOOST_CHECK(filesystem::CleanPath("a/b\\c") == help.PreferredSlashes("a/b/c"));
 
@@ -297,12 +302,8 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
     BOOST_CHECK(filesystem::CleanPath("c:/") == Help::PreferredSlashes("c:/"));
     BOOST_CHECK(filesystem::CleanPath("C:/") == Help::PreferredSlashes("C:/"));
 
-    // test what you get from the root
-#if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
-    BOOST_CHECK(filesystem::CleanPath("/") == "c:\\");
-#else
-    BOOST_CHECK(filesystem::CleanPath("/") == "/");
-#endif
+    BOOST_CHECK(
+        filesystem::CleanPath("/") == filesystem::CleanPath(bfs::path("/").root_path().string()));
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__CurrentDirectory)
@@ -600,20 +601,33 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithFileGuess)
     BOOST_CHECK(filesystem::EndsWithFileGuess("foo/bar.\\..") == false);
     BOOST_CHECK(filesystem::EndsWithFileGuess("foo/bar.txt\\..") == false);
 
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
+    for (const auto & STANGE_FILE_STR : help.STRANGE_FILE_STRINGS)
     {
         BOOST_CHECK(
             filesystem::EndsWithFileGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
+                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_FILE_STR))
             == true);
     }
 
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
+    for (const auto & STANGE_DIR_STR : help.STRANGE_DIRECTORY_STRINGS)
     {
         BOOST_CHECK(
             filesystem::EndsWithFileGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
+                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR))
             == false);
+
+        const auto PATH { filesystem::CombinePathsThenClean(
+            help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR) };
+        std::cout << "strange dir:\nname=" << help.STRANGE_DIR_PATH_STR << "\\" << STANGE_DIR_STR
+                  << "\ncomb="
+                  << filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR)
+                  << "\ngues=" << std::boolalpha << filesystem::EndsWithFileGuess(PATH)
+                  << "\nexists=" << filesystem::Exists(PATH)
+                  << "\nexists_and_file=" << filesystem::ExistsAndIsFile(PATH)
+                  << "\nexists_and_dir=" << filesystem::ExistsAndIsDirectory(PATH)
+                  << "\nboost_filename=" << filesystem::GetBoostFilename(PATH)
+                  << "\nboost_looks_like="
+                  << int(filesystem::WhatDoesBoostFilenameIndicatePathEndsWith(PATH)) << std::endl;
     }
 }
 
