@@ -1,20 +1,36 @@
-BasedOnStyle: WebKit
-IndentWidth: 4
-ColumnLimit: 100
-Language: Cpp
-DerivePointerAlignment: false
-PointerAlignment: Middle
-NamespaceIndentation: Inner
-BreakBeforeInheritanceComma: true
-AlwaysBreakTemplateDeclarations: true
-PenaltyBreakBeforeFirstCallParameter: 0
-IndentCaseLabels: true
-SortIncludes: true
-IndentWrappedFunctionNames: true
-AllowAllParametersOfDeclarationOnNextLine: true
 AlignAfterOpenBracket: AlwaysBreak
-FixNamespaceComments: trueBinPackArguments: falseBinPackParameters: false
-BraceWrapping:  AfterClass:      true  AfterControlStatement: true  AfterEnum:       true  AfterFunction:   true  AfterNamespace:  true  AfterObjCDeclaration: true  AfterStruct:     true  AfterUnion:      true  BeforeCatch:     true  BeforeElse:      true  IndentBraces:    false
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: true
+BasedOnStyle: WebKit
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     true
+  AfterUnion:      true
+  AfterExternBlock: true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
-  SplitEmptyNamespace: falseBreakBeforeBraces: Custom
+  SplitEmptyNamespace: false
+BreakBeforeBraces: Custom
+BreakBeforeInheritanceComma: true
+ColumnLimit: 100
+DerivePointerAlignment: false
+FixNamespaceComments: true
+IndentCaseLabels: true
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+Language: Cpp
+NamespaceIndentation: Inner
+PenaltyBreakBeforeFirstCallParameter: 0
+PointerAlignment: Middle
+SortIncludes: true
