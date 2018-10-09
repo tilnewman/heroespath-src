@@ -666,31 +666,31 @@ BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
     {
         VectorMap_t vmCount3Copy(VM_COUNT3);
 
-        auto origIter = std::begin(VM_COUNT3);
-        const auto origIterEnd = std::end(VM_COUNT3);
+        auto origIter = std::cbegin(VM_COUNT3);
+        auto origIterEnd = std::cend(VM_COUNT3);
 
         auto origConstIter = std::cbegin(VM_COUNT3);
-        const auto origConstIterEnd = std::cend(VM_COUNT3);
+        auto origConstIterEnd = std::cend(VM_COUNT3);
 
-        auto origRevIter = std::rbegin(VM_COUNT3);
-        const auto origRevIterEnd = std::rend(VM_COUNT3);
+        auto origRevIter = std::crbegin(VM_COUNT3);
+        auto origRevIterEnd = std::crend(VM_COUNT3);
 
         auto origConstRevIter = std::crbegin(VM_COUNT3);
-        const auto origConstRevIterEnd = std::crend(VM_COUNT3);
+        auto origConstRevIterEnd = std::crend(VM_COUNT3);
 
         //
 
-        auto copyIter = std::begin(vmCount3Copy);
-        const auto copyIterEnd = std::end(vmCount3Copy);
+        auto copyIter = std::cbegin(vmCount3Copy);
+        auto copyIterEnd = std::cend(vmCount3Copy);
 
         auto copyConstIter = std::cbegin(vmCount3Copy);
-        const auto copyConstIterEnd = std::cend(vmCount3Copy);
+        auto copyConstIterEnd = std::cend(vmCount3Copy);
 
-        auto copyRevIter = std::rbegin(vmCount3Copy);
-        const auto copyRevIterEnd = std::rend(vmCount3Copy);
+        auto copyRevIter = std::crbegin(vmCount3Copy);
+        auto copyRevIterEnd = std::crend(vmCount3Copy);
 
         auto copyConstRevIter = std::crbegin(vmCount3Copy);
-        const auto copyConstRevIterEnd = std::crend(vmCount3Copy);
+        auto copyConstRevIterEnd = std::crend(vmCount3Copy);
 
         // this will compile but not actually work even for something like std::vector<int>
         // BOOST_CHECK(origIterEnd == copyIterEnd);

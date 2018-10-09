@@ -35,15 +35,6 @@ struct Help
         : JUNK_WHITESPACE_STR { "   \t  " }
         , TEST_DIR_NAME_STR { "filesystem-test-stuff" }
         , TEST_DIR_PATH_STR { CombinePaths(bfs::current_path().string(), TEST_DIR_NAME_STR) }
-        , STRANGE_DIR_NAME_STR { "strange-things" }
-        , STRANGE_DIR_PATH_STR { CombinePaths(TEST_DIR_PATH_STR, STRANGE_DIR_NAME_STR) }
-        , STRANGE_FILE_STRINGS { ".file-that-starts-with-dot",
-                                 "file-that-ends-with-dot.",
-                                 "file-with-multiple-extensions.txt.png.pdf" }
-        , STRANGE_DIRECTORY_STRINGS { ".dir-that-starts-with-dot",
-                                      "dir-that-ends-with-dot.",
-                                      "dir-with-extension.txt" }
-        , ALL_STRANGE_STRINGS { CombineVectors(STRANGE_FILE_STRINGS, STRANGE_DIRECTORY_STRINGS) }
         , LOG_FILES_IN_FIRST_DIR_ONLY { "log-1.txt", "log-2.txt", "log-3.txt", "log-5.txt" }
         , IMAGE_FILES_IN_FIRST_DIR_ONLY { "image1.png" }
         , JUNK_FILES_IN_FIRST_DIR_ONLY { ".DS_Store", "junk.htm", "junk.html", "sample.gif" }
@@ -181,11 +172,6 @@ struct Help
     const std::string JUNK_WHITESPACE_STR;
     const std::string TEST_DIR_NAME_STR;
     const std::string TEST_DIR_PATH_STR;
-    const std::string STRANGE_DIR_NAME_STR;
-    const std::string STRANGE_DIR_PATH_STR;
-    const std::vector<std::string> STRANGE_FILE_STRINGS;
-    const std::vector<std::string> STRANGE_DIRECTORY_STRINGS;
-    const std::vector<std::string> ALL_STRANGE_STRINGS;
     const std::vector<std::string> LOG_FILES_IN_FIRST_DIR_ONLY;
     const std::vector<std::string> IMAGE_FILES_IN_FIRST_DIR_ONLY;
     const std::vector<std::string> JUNK_FILES_IN_FIRST_DIR_ONLY;
@@ -251,10 +237,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
 
     // the valid dot directories should become relative to the current source dir
     BOOST_CHECK(filesystem::CleanPath(".") == help.PreferredSlashes(CURRENT_PATH_STR));
-    // std::cout << "orig  =."
-    //             "\nactual="
-    //          << filesystem::CleanPath(".")
-    //          << "\nexpect=" << help.PreferredSlashes(CURRENT_PATH_STR) << std::endl;
 
     BOOST_CHECK(
         filesystem::CleanPath("..")
@@ -263,15 +245,9 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__CleanPath_A)
     // paths that do not exist will still have slashes changed to what the os prefers and should
     // have redundant dot names resolved
     BOOST_CHECK(filesystem::CleanPath("a/b") == help.PreferredSlashes("a/b"));
-    // std::cout << "orig=a/b"
-    //             "\nactu="
-    //          << filesystem::CleanPath("a/b") << "\nexpt=" << help.PreferredSlashes("a/b")
-    //          << std::endl;
+
     BOOST_CHECK(filesystem::CleanPath("a\\b") == help.PreferredSlashes("a/b"));
-    // std::cout << "orig=a\\b"
-    //             "\nactu="
-    //          << filesystem::CleanPath("a\\b") << "\nexpt=" << help.PreferredSlashes("a/b")
-    //          << std::endl;
+
     BOOST_CHECK(filesystem::CleanPath("a/b/c") == help.PreferredSlashes("a/b/c"));
     BOOST_CHECK(filesystem::CleanPath("a/b\\c") == help.PreferredSlashes("a/b/c"));
 
@@ -497,22 +473,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__AppendPathsToCurrentThenClean)
                + "/" + help.TEST_DIR_NAME_STR));
 }
 
-BOOST_AUTO_TEST_CASE(misc_filesystem__StrangeThings)
-{
-    Help help;
-
-    // test paths that do exist are made absolute
-    BOOST_CHECK(filesystem::CleanPath(help.TEST_DIR_NAME_STR) == help.TEST_DIR_PATH_STR);
-    BOOST_CHECK(filesystem::CleanPath(help.STRANGE_DIR_PATH_STR) == help.STRANGE_DIR_PATH_STR);
-
-    for (const auto & STANGE_STR : help.ALL_STRANGE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR)
-            == help.CombinePaths(help.STRANGE_DIR_PATH_STR, STANGE_STR));
-    }
-}
-
 BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithFileGuess)
 {
     Help help;
@@ -600,35 +560,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithFileGuess)
     BOOST_CHECK(filesystem::EndsWithFileGuess("foo/.bar\\..") == false);
     BOOST_CHECK(filesystem::EndsWithFileGuess("foo/bar.\\..") == false);
     BOOST_CHECK(filesystem::EndsWithFileGuess("foo/bar.txt\\..") == false);
-
-    for (const auto & STANGE_FILE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::EndsWithFileGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_FILE_STR))
-            == true);
-    }
-
-    for (const auto & STANGE_DIR_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::EndsWithFileGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR))
-            == false);
-
-        const auto PATH { filesystem::CombinePathsThenClean(
-            help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR) };
-        std::cout << "strange dir:\nname=" << help.STRANGE_DIR_PATH_STR << "\\" << STANGE_DIR_STR
-                  << "\ncomb="
-                  << filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_DIR_STR)
-                  << "\ngues=" << std::boolalpha << filesystem::EndsWithFileGuess(PATH)
-                  << "\nexists=" << filesystem::Exists(PATH)
-                  << "\nexists_and_file=" << filesystem::ExistsAndIsFile(PATH)
-                  << "\nexists_and_dir=" << filesystem::ExistsAndIsDirectory(PATH)
-                  << "\nboost_filename=" << filesystem::GetBoostFilename(PATH)
-                  << "\nboost_looks_like="
-                  << int(filesystem::WhatDoesBoostFilenameIndicatePathEndsWith(PATH)) << std::endl;
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithDirectoryGuess)
@@ -718,22 +649,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__EndsWithDirectoryGuess)
     BOOST_CHECK(filesystem::EndsWithDirectoryGuess("foo/.bar\\..") == true);
     BOOST_CHECK(filesystem::EndsWithDirectoryGuess("foo/bar.\\..") == true);
     BOOST_CHECK(filesystem::EndsWithDirectoryGuess("foo/bar.txt\\..") == true);
-
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::EndsWithDirectoryGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == false);
-    }
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::EndsWithDirectoryGuess(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == true);
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_INCLUDING_EXTENSION)
@@ -823,22 +738,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_INCLUDING_EXTENSION)
     BOOST_CHECK(filesystem::Filename("foo/.bar\\..") == "");
     BOOST_CHECK(filesystem::Filename("foo/bar.\\..") == "");
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..") == "");
-
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Filename(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == STANGE_STR);
-    }
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Filename(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == "");
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_EXLUDING_EXTENSION)
@@ -928,35 +827,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Filename_EXLUDING_EXTENSION)
     BOOST_CHECK(filesystem::Filename("foo/.bar\\..", true) == "");
     BOOST_CHECK(filesystem::Filename("foo/bar.\\..", true) == "");
     BOOST_CHECK(filesystem::Filename("foo/bar.txt\\..", true) == "");
-
-    BOOST_CHECK(
-        filesystem::Filename(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, ".file-that-starts-with-dot"),
-            true)
-        == "");
-
-    BOOST_CHECK(
-        filesystem::Filename(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, "file-that-ends-with-dot."),
-            true)
-        == "file-that-ends-with-dot");
-
-    BOOST_CHECK(
-        filesystem::Filename(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, "file-with-multiple-extensions.txt.png.pdf"),
-            true)
-        == "file-with-multiple-extensions");
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Filename(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR), true)
-            == "");
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_INCLUDING_DOT)
@@ -1046,29 +916,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_INCLUDING_DOT)
     BOOST_CHECK(filesystem::Extension("foo/.bar\\..") == "");
     BOOST_CHECK(filesystem::Extension("foo/bar.\\..") == "");
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..") == "");
-
-    BOOST_CHECK(
-        filesystem::Extension(filesystem::CombinePathsThenClean(
-            help.STRANGE_DIR_PATH_STR, ".file-that-starts-with-dot"))
-        == ".file-that-starts-with-dot");
-
-    BOOST_CHECK(
-        filesystem::Extension(filesystem::CombinePathsThenClean(
-            help.STRANGE_DIR_PATH_STR, "file-that-ends-with-dot."))
-        == ".");
-
-    BOOST_CHECK(
-        filesystem::Extension(filesystem::CombinePathsThenClean(
-            help.STRANGE_DIR_PATH_STR, "file-with-multiple-extensions.txt.png.pdf"))
-        == ".txt.png.pdf");
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Extension(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == "");
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_EXCLUDING_DOT)
@@ -1158,35 +1005,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Extension_EXCLUDING_DOT)
     BOOST_CHECK(filesystem::Extension("foo/.bar\\..", true) == "");
     BOOST_CHECK(filesystem::Extension("foo/bar.\\..", true) == "");
     BOOST_CHECK(filesystem::Extension("foo/bar.txt\\..", true) == "");
-
-    BOOST_CHECK(
-        filesystem::Extension(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, ".file-that-starts-with-dot"),
-            true)
-        == "file-that-starts-with-dot");
-
-    BOOST_CHECK(
-        filesystem::Extension(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, "file-that-ends-with-dot."),
-            true)
-        == "");
-
-    BOOST_CHECK(
-        filesystem::Extension(
-            filesystem::CombinePathsThenClean(
-                help.STRANGE_DIR_PATH_STR, "file-with-multiple-extensions.txt.png.pdf"),
-            true)
-        == "txt.png.pdf");
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Extension(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR), true)
-            == "");
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__Exists)
@@ -1202,22 +1020,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__Exists)
     BOOST_CHECK(filesystem::Exists("..") == true);
     BOOST_CHECK(filesystem::Exists(help.TEST_DIR_NAME_STR) == true);
     BOOST_CHECK(filesystem::Exists(help.TEST_DIR_PATH_STR) == true);
-
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Exists(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == true);
-    }
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::Exists(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == true);
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsFile)
@@ -1233,22 +1035,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsFile)
     BOOST_CHECK(filesystem::ExistsAndIsFile("..") == false);
     BOOST_CHECK(filesystem::ExistsAndIsFile(help.TEST_DIR_NAME_STR) == false);
     BOOST_CHECK(filesystem::ExistsAndIsFile(help.TEST_DIR_PATH_STR) == false);
-
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::ExistsAndIsFile(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == true);
-    }
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::ExistsAndIsFile(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == false);
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsDirectory)
@@ -1265,22 +1051,6 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__ExistsAndIsDirectory)
     BOOST_CHECK(filesystem::ExistsAndIsDirectory("../../././../..") == true);
     BOOST_CHECK(filesystem::ExistsAndIsDirectory(help.TEST_DIR_NAME_STR) == true);
     BOOST_CHECK(filesystem::ExistsAndIsDirectory(help.TEST_DIR_PATH_STR) == true);
-
-    for (const auto & STANGE_STR : help.STRANGE_FILE_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::ExistsAndIsDirectory(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == false);
-    }
-
-    for (const auto & STANGE_STR : help.STRANGE_DIRECTORY_STRINGS)
-    {
-        BOOST_CHECK(
-            filesystem::ExistsAndIsDirectory(
-                filesystem::CombinePathsThenClean(help.STRANGE_DIR_PATH_STR, STANGE_STR))
-            == true);
-    }
 }
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__FindFiles)
@@ -1403,41 +1173,55 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__SortByLastNumberInFilename)
         == help.EMPTY_VEC);
 
     const std::vector<std::string> NUMBERED_FILE_PATHS_NOT_SORTED
-        = { "file-9-999-5.ext", "foo/file-1.ext",   "foo/bar/file-2.ext",
-            "file-000.ext",     "file-09.ext",      "/foo99/bar99/file-4.ext",
-            "file-666-.ext6",   "foo99/file-3.ext", "file-with-no-number.ext",
-            "7file-.ext",       "8f8ile-8-8-8.ext8" };
+        = { Help::PreferredSlashes("file-9-999-5.ext"),
+            Help::PreferredSlashes("foo/file-1.ext"),
+            Help::PreferredSlashes("foo/bar/file-2.ext"),
+            Help::PreferredSlashes("file-000.ext"),
+            Help::PreferredSlashes("file-09.ext"),
+            Help::PreferredSlashes("foo99/bar99/file-4.ext"),
+            Help::PreferredSlashes("file-666-.ext6"),
+            Help::PreferredSlashes("foo99/file-3.ext"),
+            Help::PreferredSlashes("file-with-no-number.ext"),
+            Help::PreferredSlashes("7file-.ext"),
+            Help::PreferredSlashes("8f8ile-8-8-8.ext8") };
 
     const std::vector<std::string> NUMBERED_FILE_PATHS_SORTED_MISSING_LAST
-        = { "file-000.ext",
-            "foo/file-1.ext",
-            "foo/bar/file-2.ext",
-            "foo99/file-3.ext",
-            "/foo99/bar99/file-4.ext",
-            "file-9-999-5.ext",
-            "file-666-.ext6",
-            "7file-.ext",
-            "8f8ile-8-8-8.ext8",
-            "file-09.ext",
-            "file-with-no-number.ext" };
+        = { Help::PreferredSlashes("file-000.ext"),
+            Help::PreferredSlashes("foo/file-1.ext"),
+            Help::PreferredSlashes("foo/bar/file-2.ext"),
+            Help::PreferredSlashes("foo99/file-3.ext"),
+            Help::PreferredSlashes("foo99/bar99/file-4.ext"),
+            Help::PreferredSlashes("file-9-999-5.ext"),
+            Help::PreferredSlashes("file-666-.ext6"),
+            Help::PreferredSlashes("7file-.ext"),
+            Help::PreferredSlashes("8f8ile-8-8-8.ext8"),
+            Help::PreferredSlashes("file-09.ext"),
+            Help::PreferredSlashes("file-with-no-number.ext") };
 
     const std::vector<std::string> NUMBERED_FILE_PATHS_SORTED_MISSING_FIRST
-        = { "file-with-no-number.ext", "file-000.ext",     "foo/file-1.ext",
-            "foo/bar/file-2.ext",      "foo99/file-3.ext", "/foo99/bar99/file-4.ext",
-            "file-9-999-5.ext",        "file-666-.ext6",   "7file-.ext",
-            "8f8ile-8-8-8.ext8",       "file-09.ext" };
+        = { Help::PreferredSlashes("file-with-no-number.ext"),
+            Help::PreferredSlashes("file-000.ext"),
+            Help::PreferredSlashes("foo/file-1.ext"),
+            Help::PreferredSlashes("foo/bar/file-2.ext"),
+            Help::PreferredSlashes("foo99/file-3.ext"),
+            Help::PreferredSlashes("foo99/bar99/file-4.ext"),
+            Help::PreferredSlashes("file-9-999-5.ext"),
+            Help::PreferredSlashes("file-666-.ext6"),
+            Help::PreferredSlashes("7file-.ext"),
+            Help::PreferredSlashes("8f8ile-8-8-8.ext8"),
+            Help::PreferredSlashes("file-09.ext") };
 
     const std::vector<std::string> NUMBERED_FILE_PATHS_SORTED_MISSING_EXCLUDED
-        = { "file-000.ext",
-            "foo/file-1.ext",
-            "foo/bar/file-2.ext",
-            "foo99/file-3.ext",
-            "/foo99/bar99/file-4.ext",
-            "file-9-999-5.ext",
-            "file-666-.ext6",
-            "7file-.ext",
-            "8f8ile-8-8-8.ext8",
-            "file-09.ext" };
+        = { Help::PreferredSlashes("file-000.ext"),
+            Help::PreferredSlashes("foo/file-1.ext"),
+            Help::PreferredSlashes("foo/bar/file-2.ext"),
+            Help::PreferredSlashes("foo99/file-3.ext"),
+            Help::PreferredSlashes("foo99/bar99/file-4.ext"),
+            Help::PreferredSlashes("file-9-999-5.ext"),
+            Help::PreferredSlashes("file-666-.ext6"),
+            Help::PreferredSlashes("7file-.ext"),
+            Help::PreferredSlashes("8f8ile-8-8-8.ext8"),
+            Help::PreferredSlashes("file-09.ext") };
 
     BOOST_CHECK(
         filesystem::SortByLastNumberInFilename(NUMBERED_FILE_PATHS_NOT_SORTED, false, false)
@@ -1476,7 +1260,7 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__SortByLastNumberInFilename)
 
 BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
 {
-    const std::string PATH_STR { "one/two/three/file.ext" };
+    const std::string PATH_STR { Help::PreferredSlashes("one/two/three/file.ext") };
 
     // empty cases
     BOOST_CHECK(filesystem::LimitPathDept("", 0) == "");
@@ -1486,8 +1270,11 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
     // removing from the beginning
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 0) == "");
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 1) == "file.ext");
-    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 2) == "three/file.ext");
-    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 3) == "two/three/file.ext");
+    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 2) == Help::PreferredSlashes("three/file.ext"));
+
+    BOOST_CHECK(
+        filesystem::LimitPathDept(PATH_STR, 3) == Help::PreferredSlashes("two/three/file.ext"));
+
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 4) == PATH_STR);
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 5) == PATH_STR);
 
@@ -1497,8 +1284,11 @@ BOOST_AUTO_TEST_CASE(misc_filesystem__LimitPathDept)
     // removing from the end
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 0, true) == "");
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 1, true) == "one");
-    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 2, true) == "one/two");
-    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 3, true) == "one/two/three");
+    BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 2, true) == Help::PreferredSlashes("one/two"));
+
+    BOOST_CHECK(
+        filesystem::LimitPathDept(PATH_STR, 3, true) == Help::PreferredSlashes("one/two/three"));
+
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 4, true) == PATH_STR);
     BOOST_CHECK(filesystem::LimitPathDept(PATH_STR, 5, true) == PATH_STR);
 
