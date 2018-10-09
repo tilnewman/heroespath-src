@@ -147,12 +147,12 @@ namespace combat
 
     bool Encounter::IsRunaway(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const IS_RUNAWAY_PLAYER {
+        const auto IS_RUNAWAY_PLAYER {
             std::find(runawayPlayersVec_.begin(), runawayPlayersVec_.end(), CREATURE_PTR)
             != runawayPlayersVec_.end()
         };
 
-        auto const IS_RUNAWAY_NONPLAYER { std::find(
+        const auto IS_RUNAWAY_NONPLAYER { std::find(
                                               std::begin(runawayNonPlayerPartyPVec_),
                                               std::end(runawayNonPlayerPartyPVec_),
                                               CREATURE_PTR)
@@ -184,7 +184,7 @@ namespace combat
 
     const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const FOUND_ITER { turnInfoMap_.Find(CREATURE_PTR) };
+        const auto FOUND_ITER { turnInfoMap_.Find(CREATURE_PTR) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FOUND_ITER != turnInfoMap_.end()),
@@ -314,10 +314,10 @@ namespace combat
         //
 
         // move non-bodypart item pointers into deadNonPlayerItemsHeld_
-        for (auto const & CREATURE_PTR : deadNonPlayerPartyPVec_)
+        for (const auto & CREATURE_PTR : deadNonPlayerPartyPVec_)
         {
             // unequip non-bodypart items
-            for (auto const & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
+            for (const auto & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
             {
                 if (EQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
@@ -326,7 +326,7 @@ namespace combat
             }
 
             // move non-bodypart item pointers into deadNonPlayerItemsHeld_
-            for (auto const & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
+            for (const auto & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {
                 if (UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
@@ -389,7 +389,7 @@ namespace combat
     {
         turnInfoMap_.Clear();
 
-        for (auto const & CREATURE_PTR : nonPlayerPartyPVec_)
+        for (const auto & CREATURE_PTR : nonPlayerPartyPVec_)
         {
             // enemy creatures need a real populated strategy info object
             TurnInfo turnInfo;
@@ -400,7 +400,7 @@ namespace combat
             turnInfoMap_[CREATURE_PTR] = turnInfo;
         }
 
-        for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
+        for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
             turnInfoMap_[CHARACTER_PTR] = TurnInfo();
         }
@@ -435,7 +435,7 @@ namespace combat
             std::sort(
                 creaturesThatHaveNotTakenTurnYetPVec.begin(),
                 creaturesThatHaveNotTakenTurnYetPVec.end(),
-                [](auto const & A, auto const & B) { return A->Speed() > B->Speed(); });
+                [](const auto & A, const auto & B) { return A->Speed() > B->Speed(); });
         }
 
         turnCreaturePtrOpt_ = creaturesThatHaveNotTakenTurnYetPVec.at(0);
@@ -448,7 +448,7 @@ namespace combat
         misc::VectorMap<RaceRolePair_t, std::size_t> raceRoleMap;
 
         // count all race/role combinations
-        for (auto const & CREATURE_PTR : CREATURES_PVEC)
+        for (const auto & CREATURE_PTR : CREATURES_PVEC)
         {
             raceRoleMap[std::make_pair(CREATURE_PTR->RaceName(), CREATURE_PTR->RoleName())]++;
         }
@@ -457,7 +457,7 @@ namespace combat
         std::ostringstream ss;
         for (auto itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
         {
-            auto const NEXT_RACEROLECOUNT_PAIR { *itr };
+            const auto NEXT_RACEROLECOUNT_PAIR { *itr };
 
             if (itr != raceRoleMap.begin())
             {

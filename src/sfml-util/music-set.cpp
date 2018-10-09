@@ -53,10 +53,10 @@ namespace sfml_util
             (whichVec_.empty() == false),
             "sfml_util::MusicSet::Constructor(vector version) was given an empty vector.");
 
-        auto const ORIG_RANDOM_SETTING { willRandomize_ };
+        const auto ORIG_RANDOM_SETTING { willRandomize_ };
         willRandomize_ = WILL_START_AT_RANDOM;
 
-        auto const ORIG_LOOP_SETTING { willLoop_ };
+        const auto ORIG_LOOP_SETTING { willLoop_ };
         willLoop_ = true;
 
         currentlyPlaying_ = PickNextSong();
@@ -74,7 +74,7 @@ namespace sfml_util
 
     music::Enum MusicSet::Advance()
     {
-        auto const PREV_PLAYING { currentlyPlaying_ };
+        const auto PREV_PLAYING { currentlyPlaying_ };
         currentlyPlaying_ = PickNextSong();
         previouslyPlaying_ = PREV_PLAYING;
         return currentlyPlaying_;

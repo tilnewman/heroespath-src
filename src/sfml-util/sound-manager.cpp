@@ -349,8 +349,8 @@ namespace sfml_util
         {
             if (songSet.IsValid())
             {
-                auto const CONTAINS_ALL { [&]() {
-                    for (auto const MUSIC : MUSIC_ENUMS)
+                const auto CONTAINS_ALL { [&]() {
+                    for (const auto MUSIC : MUSIC_ENUMS)
                     {
                         if (songSet.set.Contains(MUSIC) == false)
                         {
@@ -373,7 +373,7 @@ namespace sfml_util
     {
         MusicInfoVec_t musicInfos;
 
-        for (auto const & SONG_SET : songSetVec_)
+        for (const auto & SONG_SET : songSetVec_)
         {
             if (SONG_SET.IsValid())
             {
@@ -391,8 +391,8 @@ namespace sfml_util
         {
             if (songSet.IsValid())
             {
-                auto const CONTAINS_ALL { [&]() {
-                    for (auto const MUSIC : MUSIC_ENUMS)
+                const auto CONTAINS_ALL { [&]() {
+                    for (const auto MUSIC : MUSIC_ENUMS)
                     {
                         if (songSet.set.Contains(MUSIC) == false)
                         {
@@ -471,7 +471,7 @@ namespace sfml_util
 
     const SfxSet & SoundManager::GetSoundEffectSet(const sound_effect_set::Enum E) const
     {
-        auto const INDEX { static_cast<std::size_t>(E) };
+        const auto INDEX { static_cast<std::size_t>(E) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxSetVec_.size()),
@@ -598,7 +598,7 @@ namespace sfml_util
 
     void SoundManager::PreLoadSfx(const SfxEnumVec_t & SFX_VEC)
     {
-        for (auto const SFX_ENUM : SFX_VEC)
+        for (const auto SFX_ENUM : SFX_VEC)
         {
             PreLoadSfx(SFX_ENUM);
         }
@@ -606,7 +606,7 @@ namespace sfml_util
 
     SfxWrapper & SoundManager::GetSfxWrapper(const sound_effect::Enum SFX_ENUM)
     {
-        auto const INDEX { static_cast<std::size_t>(SFX_ENUM) };
+        const auto INDEX { static_cast<std::size_t>(SFX_ENUM) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxWrapperVec_.size()),
@@ -618,7 +618,7 @@ namespace sfml_util
     MusicUPtr_t SoundManager::OpenMusic(
         const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const
     {
-        auto const PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto PATH_STR { misc::filesystem::CombinePathsThenClean(
             musicDirectoryPath_, MUSIC_DIR_NAME, MUSIC_FILE_NAME) };
 
         return sfml_util::Loaders::Music(PATH_STR);
@@ -626,7 +626,7 @@ namespace sfml_util
 
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        auto const DIR_PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto DIR_PATH_STR { misc::filesystem::CombinePathsThenClean(
             musicDirectoryPath_, music::Directory(music::CombatIntro)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -635,14 +635,14 @@ namespace sfml_util
             "exist: "
                 << DIR_PATH_STR);
 
-        auto const MUSIC_FILE_PATHS { misc::filesystem::FindFiles(
+        const auto MUSIC_FILE_PATHS { misc::filesystem::FindFiles(
             false, DIR_PATH_STR, "", music::FileExt()) };
 
         combatIntroMusicInfoVec_.clear();
 
-        for (auto const & MUSIC_FILE_PATH_STR : MUSIC_FILE_PATHS)
+        for (const auto & MUSIC_FILE_PATH_STR : MUSIC_FILE_PATHS)
         {
-            auto const FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
+            const auto FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
 
             std::vector<std::string> filenamePartsVec;
             misc::SplitByChar(FILE_NAME_STR, filenamePartsVec, '_', true, true);
@@ -651,10 +651,10 @@ namespace sfml_util
                 continue;
             }
 
-            auto const NEXT_ARTIST_NAME { filenamePartsVec.at(1) };
-            auto const NEXT_TRACK_NAME { filenamePartsVec.at(2) };
+            const auto NEXT_ARTIST_NAME { filenamePartsVec.at(1) };
+            const auto NEXT_TRACK_NAME { filenamePartsVec.at(2) };
 
-            auto const NEXT_LICENSE_NAME { boost::algorithm::erase_all_copy(
+            const auto NEXT_LICENSE_NAME { boost::algorithm::erase_all_copy(
                 filenamePartsVec.at(3), music::FileExt()) };
 
             combatIntroMusicInfoVec_.emplace_back(MusicInfo(
@@ -712,7 +712,7 @@ namespace sfml_util
 
         static auto counter { 0 };
         static auto playOrStop { false };
-        static auto const MUSIC_COUNT_MAX { 200 };
+        static const auto MUSIC_COUNT_MAX { 200 };
 
         // test sound effects individually
         {
@@ -728,8 +728,8 @@ namespace sfml_util
             static misc::EnumUnderlying_t sfxIndex { 0 };
             if (sfxIndex < sound_effect::Count)
             {
-                auto const ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
-                auto const ENUM_STR { sound_effect::ToString(ENUM) };
+                const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
+                const auto ENUM_STR { sound_effect::ToString(ENUM) };
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "SoundManager SFX Test \"" + ENUM_STR + "\"");
@@ -873,7 +873,7 @@ namespace sfml_util
         {
             if (songSet.IsValid())
             {
-                auto const UPDATE_STATUS { songSet.op.UpdateTime(ELAPSED_TIME_SECONDS) };
+                const auto UPDATE_STATUS { songSet.op.UpdateTime(ELAPSED_TIME_SECONDS) };
 
                 if (UPDATE_STATUS == music_update_status::FadedOutKill)
                 {

@@ -53,7 +53,7 @@ namespace sfml_util
         const auto SYMBOL_WIDTH_DEFAULT { sfutil::ScreenRatioToPixelsHoriz(
             DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_) };
 
-        auto const SYMBOL_SCALE_DEFAULT { SYMBOL_WIDTH_DEFAULT
+        const auto SYMBOL_SCALE_DEFAULT { SYMBOL_WIDTH_DEFAULT
                                           / symbolSprite_.getLocalBounds().width };
 
         auto symbolWidth { SYMBOL_WIDTH_DEFAULT };
@@ -63,7 +63,7 @@ namespace sfml_util
             symbolWidth = SIZE_HORIZ;
         }
 
-        auto const SYMBOL_SCALE_HORIZ { symbolWidth / symbolSprite_.getLocalBounds().width };
+        const auto SYMBOL_SCALE_HORIZ { symbolWidth / symbolSprite_.getLocalBounds().width };
 
         auto symbolHeight { symbolSprite_.getLocalBounds().height * SYMBOL_SCALE_DEFAULT };
 
@@ -72,7 +72,7 @@ namespace sfml_util
             symbolHeight = SIZE_VERT;
         }
 
-        auto const SYMBOL_SCALE_VERT { symbolHeight / symbolSprite_.getLocalBounds().height };
+        const auto SYMBOL_SCALE_VERT { symbolHeight / symbolSprite_.getLocalBounds().height };
 
         symbolSprite_.setScale(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
 

@@ -224,7 +224,7 @@ namespace item
         {
             ss << ", enchantments={";
 
-            for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
+            for (const auto & ENCHANTMENT_PTR : enchantmentsPVec_)
             {
                 ss << ENCHANTMENT_PTR->ToString() << " | ";
             }

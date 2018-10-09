@@ -47,9 +47,7 @@ namespace interact
                         + " talk " + Random({ "with", "to" })
                         + Random({ " strangers", " " + Random(PartyNames()) }) + PeriodOrBang();
                 }
-                case 1:
-                {
-                    return "You're not my " + Random(Parents()) + PeriodOrBang();
+                case 1: { return "You're not my " + Random(Parents()) + PeriodOrBang();
                 }
                 case 2:
                 {
@@ -61,13 +59,9 @@ namespace interact
                     return CapFirstLetter(Random(Parents()))
                         + Random({ "", "!  Strangers", "!  " + Random(PartyNames()) }) + "!";
                 }
-                case 4:
-                {
-                    return "I'm just a kid" + PeriodOrBang();
+                case 4: { return "I'm just a kid" + PeriodOrBang();
                 }
-                default:
-                {
-                    return "Strangers!";
+                default: { return "Strangers!";
                 }
             }
         }
@@ -85,7 +79,7 @@ namespace interact
             {
                 case 0:
                 {
-                    const std::string COUNT{ Random({ "a ", "two ", "three " }) };
+                    const std::string COUNT { Random({ "a ", "two ", "three " }) };
                     return "I have " + COUNT + Random({ "", Random(JokeAdjectives()) + " " })
                         + Random(Relations()) + ((COUNT == "a") ? "" : "s") + ".";
                 }
@@ -105,18 +99,14 @@ namespace interact
                         + Random({ "a " + Random(Relations()), "any " + Random(Relations()) + "s" })
                         + "?";
                 }
-                case 4:
-                {
-                    return "Are you the one " + Random(JokeDescriptions()) + "?";
+                case 4: { return "Are you the one " + Random(JokeDescriptions()) + "?";
                 }
                 case 5:
                 {
                     return "My " + Random(ParentsAndRelations()) + " says you're the one "
                         + Random(JokeDescriptions()) + PeriodOrBang();
                 }
-                case 6:
-                {
-                    return "You're " + Random(WeatherAdjectives()) + PeriodOrBang();
+                case 6: { return "You're " + Random(WeatherAdjectives()) + PeriodOrBang();
                 }
                 case 7:
                 {
@@ -131,13 +121,13 @@ namespace interact
                 }
                 case 8:
                 {
-                    const std::string DAREME{ "Dare me to" };
-                    const std::string WANNA{ "Wanna" };
+                    const std::string DAREME { "Dare me to" };
+                    const std::string WANNA { "Wanna" };
 
-                    const std::string PROP{ Random(
+                    const std::string PROP { Random(
                         { "Dare you to", DAREME, WANNA, "Let's", "Bet you can't", "I'm gonna " }) };
 
-                    auto const WAS_QUESTION{ (PROP == WANNA) || (PROP == DAREME) };
+                    const auto WAS_QUESTION { (PROP == WANNA) || (PROP == DAREME) };
 
                     return PROP + " "
                         + Random({ "throw rocks at a town guard",
@@ -155,9 +145,7 @@ namespace interact
                                    "put boogers in the baker's dough" })
                         + ((WAS_QUESTION) ? std::string("?") : std::string("."));
                 }
-                default:
-                {
-                    return "Tell me a story about " + Random(RaceNames()) + "s.";
+                default: { return "Tell me a story about " + Random(RaceNames()) + "s.";
                 }
             }
         }

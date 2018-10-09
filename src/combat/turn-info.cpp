@@ -9,8 +9,8 @@
 //
 // turn-info.cpp
 //
-#include "turn-info.hpp"
 #include "creature/creature.hpp"
+#include "turn-info.hpp"
 
 #include <tuple>
 
@@ -53,7 +53,7 @@ namespace combat
 
     void TurnInfo::RemoveDeadCreatureTasks(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const CREATURE_PTR_OPT { creature::CreaturePtrOpt_t(CREATURE_PTR) };
+        const auto CREATURE_PTR_OPT { creature::CreaturePtrOpt_t(CREATURE_PTR) };
 
         if (firstAttackedByCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {

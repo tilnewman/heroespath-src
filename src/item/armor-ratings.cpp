@@ -97,7 +97,7 @@ namespace item
 
         itemPVec.emplace_back(itemFactory_.Make(helmProfile));
 
-        auto const BASE_TYPE { (
+        const auto BASE_TYPE { (
             (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Mail) };
 
         ItemProfile glovesProfile;
@@ -151,7 +151,7 @@ namespace item
 
         itemPVec.emplace_back(itemFactory_.Make(helmProfile));
 
-        auto const BASE_TYPE { (
+        const auto BASE_TYPE { (
             (PRIMARY_MATERIAL == material::Leather) ? base_type::Plain : base_type::Plate) };
 
         ItemProfile glovesProfile;
@@ -187,11 +187,11 @@ namespace item
 
     Armor_t ArmorRatings::GetTotalArmorRatingAndFree(ItemPVec_t & itemPVec) const
     {
-        auto const TOTAL_ARMOR_RATING { std::accumulate(
+        const auto TOTAL_ARMOR_RATING { std::accumulate(
             std::begin(itemPVec),
             std::end(itemPVec),
             0_armor,
-            [](auto const SUBTOTAL, auto const ITEM_PTR) {
+            [](const auto SUBTOTAL, const auto ITEM_PTR) {
                 return SUBTOTAL + ITEM_PTR->ArmorRating();
             }) };
 

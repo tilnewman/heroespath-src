@@ -60,7 +60,7 @@ namespace stage
 
         bool StageMover::AreTreasureObjectsMoving() const
         {
-            for (auto const & SLIDER : treasureSliders_)
+            for (const auto & SLIDER : treasureSliders_)
             {
                 if (SLIDER.IsMoving())
                 {
@@ -73,7 +73,7 @@ namespace stage
 
         bool StageMover::AreInventoryObjectsMoving() const
         {
-            for (auto const & SLIDER : inventorySliders_)
+            for (const auto & SLIDER : inventorySliders_)
             {
                 if (SLIDER.IsMoving())
                 {
@@ -212,7 +212,7 @@ namespace stage
         bool StageMover::UpdateTime(
             sfml_util::EntitySlider & slider, const float ELAPSED_TIME_SECONDS)
         {
-            auto const IS_STILL_MOVING { slider.UpdateTime(ELAPSED_TIME_SECONDS) };
+            const auto IS_STILL_MOVING { slider.UpdateTime(ELAPSED_TIME_SECONDS) };
             return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
         }
 

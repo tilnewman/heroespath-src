@@ -27,7 +27,7 @@ namespace combat
 
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
-        auto const WEAPON_TYPE { WEAPON_PTR->WeaponType() };
+        const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
 
         if ((WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Blowpipe)
             || (WEAPON_PTR->WeaponInfo().ProjectileType() == item::weapon::projectile_type::Sling))
@@ -59,15 +59,15 @@ namespace combat
     void CombatSoundEffects::PlayHitOrMiss(
         const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO) const
     {
-        auto const WEAPON_PTR_OPT { HIT_INFO.Weapon() };
+        const auto WEAPON_PTR_OPT { HIT_INFO.Weapon() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!WEAPON_PTR_OPT),
             "combat::CombatSoundEffects::PlayHitOrMiss() "
                 << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
 
-        auto const WEAPON_PTR { WEAPON_PTR_OPT.value() };
-        auto const WEAPON_TYPE { WEAPON_PTR->WeaponType() };
+        const auto WEAPON_PTR { WEAPON_PTR_OPT.value() };
+        const auto WEAPON_TYPE { WEAPON_PTR->WeaponType() };
 
         if (HIT_INFO.WasHit())
         {
@@ -441,7 +441,7 @@ namespace combat
 
     void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE { CREATURE_PTR->Role() };
+        const auto ROLE { CREATURE_PTR->Role() };
         if (ROLE == creature::role::Wolfen)
         {
             switch (CREATURE_PTR->WolfenClass())
@@ -483,8 +483,8 @@ namespace combat
                     return;
                 }
                 case creature::wolfen_class::Count:
-                default:
-                {}
+                default: {
+                }
             }
         }
         else if (ROLE == creature::role::Firebrand)
@@ -540,8 +540,8 @@ namespace combat
                     return;
                 }
                 case creature::dragon_class::Count:
-                default:
-                {}
+                default: {
+                }
             }
         }
         else if (ROLE == creature::role::Sylavin)
@@ -597,8 +597,8 @@ namespace combat
                     return;
                 }
                 case creature::dragon_class::Count:
-                default:
-                {}
+                default: {
+                }
             }
 
             M_HP_LOG_ERR(
@@ -879,8 +879,8 @@ namespace combat
                 return;
             }
             case creature::race::Count:
-            default:
-            {}
+            default: {
+            }
         }
     }
 

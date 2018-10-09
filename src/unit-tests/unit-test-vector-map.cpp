@@ -52,7 +52,7 @@ inline const T copyAndReverse(const T & C)
 inline const VectorMap_t makeVectorMap(const PairVec_t & PV)
 {
     VectorMap_t vm;
-    for (auto const & PAIR : PV)
+    for (const auto & PAIR : PV)
     {
         vm.Append(PAIR.first, PAIR.second);
     }
@@ -62,7 +62,7 @@ inline const VectorMap_t makeVectorMap(const PairVec_t & PV)
 inline const VectorMap_t makeVectorMap(const Vector_t & V)
 {
     VectorMap_t vm;
-    for (auto const VALUE : V)
+    for (const auto VALUE : V)
     {
         vm.Append(VALUE, VALUE);
     }
@@ -72,7 +72,7 @@ inline const VectorMap_t makeVectorMap(const Vector_t & V)
 inline const PairVec_t makePairVec(const VectorMap_t & VM)
 {
     PairVec_t pv;
-    for (auto const & PAIR : VM)
+    for (const auto & PAIR : VM)
     {
         pv.emplace_back(PAIR);
     }

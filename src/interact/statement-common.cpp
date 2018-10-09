@@ -57,9 +57,7 @@ namespace interact
                                    "Come on then, out with it" })
                         + PeriodOrBang();
                 }
-                case 1:
-                {
-                    return Random({ "Well?  What now?", "So what now?", "What now?" });
+                case 1: { return Random({ "Well?  What now?", "So what now?", "What now?" });
                 }
 
                 case 2:
@@ -82,9 +80,7 @@ namespace interact
                     return Random({ "No no.  Not ", "Not " }) + Random({ "right", "just" })
                         + " now.";
                 }
-                case 5:
-                {
-                    return "Not now.  Not ever" + PeriodOrBang();
+                case 5: { return "Not now.  Not ever" + PeriodOrBang();
                 }
                 case 6:
                 {
@@ -112,7 +108,7 @@ namespace interact
 
             if ((misc::random::Int(5) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                auto const RAND_NUM{ misc::random::Int(3) };
+                const auto RAND_NUM { misc::random::Int(3) };
                 if (RAND_NUM == 0)
                 {
                     return AppendIf(Random({ "Wow" + PeriodOrBang(),
@@ -152,9 +148,7 @@ namespace interact
 
             switch (misc::random::Int(15))
             {
-                case 0:
-                {
-                    return CapFirstLetter(Random(PartyNames())) + Random({ "?", "!" });
+                case 0: { return CapFirstLetter(Random(PartyNames())) + Random({ "?", "!" });
                 }
                 case 1:
                 {
@@ -182,9 +176,7 @@ namespace interact
                         + AppendIf(RandomOrEmpty(WeatherAdjectives()), " ") + Random(TimesOfDay())
                         + PeriodOrBang();
                 }
-                case 5:
-                {
-                    return Random({ "Um, ", "" }) + Random({ "Huh?", "What?", "Eh?" });
+                case 5: { return Random({ "Um, ", "" }) + Random({ "Huh?", "What?", "Eh?" });
                 }
                 case 6:
                 {
@@ -204,9 +196,7 @@ namespace interact
                                     "Hello there " })
                         + Random(PartyNames()) + PeriodOrBang();
                 }
-                case 8:
-                {
-                    return "Yes?" + Random({ "  What?", "  Eh?", "  Me?", "" });
+                case 8: { return "Yes?" + Random({ "  What?", "  Eh?", "  Me?", "" });
                 }
                 case 9:
                 {

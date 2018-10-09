@@ -158,8 +158,8 @@ namespace creature
             static misc::EnumUnderlying_t condIndex { 0 };
             if (condIndex < creature::Conditions::Count)
             {
-                auto const NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
-                auto const CONDITION_PTR { Get(NEXT_ENUM) };
+                const auto NEXT_ENUM { static_cast<creature::Conditions::Enum>(condIndex) };
+                const auto CONDITION_PTR { Get(NEXT_ENUM) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Desc().empty() == false),
@@ -210,7 +210,7 @@ namespace creature
                 "creature::condition::Holder::Get(" << Conditions::ToString(E)
                                                     << ") was called when Holder was empty.");
 
-            auto const INDEX { static_cast<std::size_t>(E) };
+            const auto INDEX { static_cast<std::size_t>(E) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),

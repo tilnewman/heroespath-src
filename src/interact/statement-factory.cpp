@@ -37,29 +37,23 @@ namespace interact
                 (CATEGORIES.empty() == false),
                 "interact::talk::Factory::Make() was given an empty category vector.");
 
-            auto const CATEGORY { misc::Vector::SelectRandom(CATEGORIES) };
+            const auto CATEGORY { misc::Vector::SelectRandom(CATEGORIES) };
 
-            auto const & PARTY { game::Game::Instance()->State().Party() };
+            const auto & PARTY { game::Game::Instance()->State().Party() };
 
-            auto const LEVEL {
+            const auto LEVEL {
                 game::Game::Instance()->State().GetWorld().GetMaps().Current().Which()
             };
 
             switch (CATEGORY)
             {
-                case Category::Town:
-                    return TownTalk::Compose(MOOD, PARTY, LEVEL);
-                case Category::Child:
-                    return ChildTalk::Compose(MOOD, PARTY);
-                case Category::Monk:
-                    return MonkTalk::Compose(MOOD);
-                case Category::Drunk:
-                    return TavernTalk::Compose(MOOD, PARTY);
-                case Category::Guard:
-                    return GuardTalk::Compose(MOOD, PARTY);
+                case Category::Town: return TownTalk::Compose(MOOD, PARTY, LEVEL);
+                case Category::Child: return ChildTalk::Compose(MOOD, PARTY);
+                case Category::Monk: return MonkTalk::Compose(MOOD);
+                case Category::Drunk: return TavernTalk::Compose(MOOD, PARTY);
+                case Category::Guard: return GuardTalk::Compose(MOOD, PARTY);
                 case Category::Common:
-                default:
-                    return CommonTalk::Compose(MOOD, PARTY);
+                default: return CommonTalk::Compose(MOOD, PARTY);
             }
         }
 

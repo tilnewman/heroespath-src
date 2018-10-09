@@ -134,7 +134,7 @@ namespace stage
     {
         if (MEDIA_TYPE == MediaType::Image)
         {
-            auto const SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
+            const auto SCALE { MEDIA_SIZE_HORIZ / sprite_.getLocalBounds().width };
             sprite_.setScale(SCALE, SCALE);
 
             sprite_.setPosition(sfutil::DisplayCenterHoriz(sprite_.getGlobalBounds().width), 0.0f);
@@ -145,9 +145,9 @@ namespace stage
             animUPtr_ = sfml_util::AnimationFactory::Make(
                 ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 
-            auto const SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
-            auto const WIDTH { animUPtr_->OrigSize().x * SCALE };
-            auto const HEIGHT { animUPtr_->OrigSize().y * SCALE };
+            const auto SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
+            const auto WIDTH { animUPtr_->OrigSize().x * SCALE };
+            const auto HEIGHT { animUPtr_->OrigSize().y * SCALE };
 
             animUPtr_->SetEntityRegion(
                 sf::FloatRect(sfutil::DisplayCenterHoriz(WIDTH), 0.0f, WIDTH, HEIGHT));
@@ -190,7 +190,7 @@ namespace stage
             sfml_util::Justified::Center);
 
         // if there is a lot of content text, reduce the font size to look better
-        auto const NUM_NEWLINES { static_cast<int>(
+        const auto NUM_NEWLINES { static_cast<int>(
             std::count(CONTENT_TEXT.begin(), CONTENT_TEXT.end(), '\n')) };
 
         if (NUM_NEWLINES > 3)
@@ -203,7 +203,7 @@ namespace stage
 
             const auto FONT_SIZE_CURRENT_F { static_cast<float>(textInfoContent.size) };
 
-            auto const FONT_SIZE_REDUCTION_F { ((FONT_SIZE_CURRENT_F * 0.333f) * NEWLINE_RATIO) };
+            const auto FONT_SIZE_REDUCTION_F { ((FONT_SIZE_CURRENT_F * 0.333f) * NEWLINE_RATIO) };
 
             textInfoContent.size -= static_cast<unsigned int>(FONT_SIZE_REDUCTION_F);
         }

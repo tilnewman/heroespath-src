@@ -52,7 +52,7 @@ namespace stage
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR)
     {
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME, CREATURE_PTR, FROM_TITLE_PTR_OPT, TO_TITLE_PTR) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(

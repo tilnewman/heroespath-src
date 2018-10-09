@@ -178,7 +178,7 @@ namespace combat
     {
         if (EFFECT_INDEX < creatureEffectVec_.size())
         {
-            auto const HIT_INFO_VEC { creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
+            const auto HIT_INFO_VEC { creatureEffectVec_[EFFECT_INDEX].GetHitInfoVec() };
             if (HIT_INDEX < HIT_INFO_VEC.size())
             {
                 return HIT_INFO_VEC[HIT_INDEX];
@@ -192,7 +192,7 @@ namespace combat
     std::size_t
         FightResult::EffectedCreatures(creature::CreaturePVec_t & CreaturePVec_OutParam) const
     {
-        for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
+        for (const auto & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
             CreaturePVec_OutParam.emplace_back(NEXT_CREATURE_EFFECT.GetCreature());
         }

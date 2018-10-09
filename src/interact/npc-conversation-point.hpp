@@ -49,7 +49,7 @@ namespace interact
 
         std::size_t Transition(const Buttons::Enum BUTTON) const
         {
-            std::size_t index{ 0 };
+            std::size_t index { 0 };
             transitionMap_.Find(BUTTON, index);
             return index;
         }
@@ -62,14 +62,14 @@ namespace interact
 
             ss << "NpcConversationPoint: \"" << text_ << "\", buttons=(";
 
-            for (auto const BUTTON : buttons_)
+            for (const auto BUTTON : buttons_)
             {
                 ss << Buttons::ToString(BUTTON) << ",";
             }
 
             ss << "), transition_map=(";
 
-            for (auto const & BUTTON_INDEX_PAIR : transitionMap_)
+            for (const auto & BUTTON_INDEX_PAIR : transitionMap_)
             {
                 ss << Buttons::ToString(BUTTON_INDEX_PAIR.first) << "=" << BUTTON_INDEX_PAIR.second
                    << ",";

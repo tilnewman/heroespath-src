@@ -85,8 +85,8 @@ namespace item
             std::string description_;
             std::vector<std::size_t> scores_;
             std::vector<std::size_t> religiousScores_;
-            std::size_t miscCount_{ 0 };
-            std::size_t elementalCount{ 0 };
+            std::size_t miscCount_ { 0 };
+            std::size_t elementalCount { 0 };
             mutable std::vector<std::size_t> scoresSet_;
             mutable std::vector<std::size_t> scoresNamed_;
             mutable std::vector<std::size_t> scoresUnique_;
@@ -208,7 +208,7 @@ namespace item
         static const std::string SumPhrase(
             const std::string & NAME, const std::vector<T> & VALUES, const U SUM_COMPARED_WITH = 0)
         {
-            auto const MIN_MAX_AVG_SUM{ misc::Vector::MinMaxAvgSum<T>(VALUES) };
+            const auto MIN_MAX_AVG_SUM { misc::Vector::MinMaxAvgSum<T>(VALUES) };
 
             std::ostringstream ss;
 

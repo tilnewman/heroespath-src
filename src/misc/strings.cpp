@@ -64,7 +64,7 @@ namespace misc
 
         namespace ba = boost::algorithm;
 
-        for (auto const & STRING_TO_FIND : STRINGS_TO_FIND)
+        for (const auto & STRING_TO_FIND : STRINGS_TO_FIND)
         {
             if (STRING_TO_FIND.empty() || (STRING_TO_FIND.size() > STRING_TO_SEARCH.size()))
             {

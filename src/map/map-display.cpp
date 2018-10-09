@@ -91,26 +91,16 @@ namespace map
     {
         switch (DIR)
         {
-            case sfml_util::Direction::Up:
-            {
-                return MoveUp(ADJUSTMENT);
+            case sfml_util::Direction::Up: { return MoveUp(ADJUSTMENT);
             }
-            case sfml_util::Direction::Down:
-            {
-                return MoveDown(ADJUSTMENT);
+            case sfml_util::Direction::Down: { return MoveDown(ADJUSTMENT);
             }
-            case sfml_util::Direction::Left:
-            {
-                return MoveLeft(ADJUSTMENT);
+            case sfml_util::Direction::Left: { return MoveLeft(ADJUSTMENT);
             }
-            case sfml_util::Direction::Right:
-            {
-                return MoveRight(ADJUSTMENT);
+            case sfml_util::Direction::Right: { return MoveRight(ADJUSTMENT);
             }
             case sfml_util::Direction::Count:
-            default:
-            {
-                return false;
+            default: { return false;
             }
         }
     }
@@ -124,15 +114,15 @@ namespace map
 
     void MapDisplay::UpdateAnimMusicVolume()
     {
-        for (auto const & ANIM_INFO : animInfoVec_)
+        for (const auto & ANIM_INFO : animInfoVec_)
         {
             if (ANIM_INFO.music_vec.empty() == false)
             {
-                auto const ANIM_POS_V { sf::Vector2f(
+                const auto ANIM_POS_V { sf::Vector2f(
                     ANIM_INFO.rect.left + (ANIM_INFO.rect.width * 0.5f),
                     ANIM_INFO.rect.top + (ANIM_INFO.rect.height * 0.5f)) };
 
-                auto const DISTANCE_TO_PLAYER { sfutil::Distance(ANIM_POS_V, PlayerPosMap()) };
+                const auto DISTANCE_TO_PLAYER { sfutil::Distance(ANIM_POS_V, PlayerPosMap()) };
 
                 sfml_util::SoundManager::Instance()->MusicVolume(
                     ANIM_INFO.music_vec, CalcAnimationVolume(DISTANCE_TO_PLAYER));
@@ -151,10 +141,10 @@ namespace map
         {
             if (offScreenRect_.top > 0.0f)
             {
-                auto const OFFSCREEN_TOP_BEFORE { offScreenRect_.top };
+                const auto OFFSCREEN_TOP_BEFORE { offScreenRect_.top };
                 offScreenRect_.top = std::max(0.0f, offScreenRect_.top - ADJUSTMENT);
 
-                auto const ACTUAL_ADJUSTMENT { OFFSCREEN_TOP_BEFORE - offScreenRect_.top };
+                const auto ACTUAL_ADJUSTMENT { OFFSCREEN_TOP_BEFORE - offScreenRect_.top };
 
                 PositionMapSpriteTextureRect();
                 playerPosV_.y = std::max(0.0f, playerPosV_.y - ACTUAL_ADJUSTMENT);
@@ -182,11 +172,11 @@ namespace map
         }
         else
         {
-            auto const VERT_POS { offScreenRect_.top
+            const auto VERT_POS { offScreenRect_.top
                                   + static_cast<float>(
                                         tileOffsets_.begin_v.y * layout_.tile_size_v.y) };
 
-            auto const VERT_LIMIT { static_cast<float>(
+            const auto VERT_LIMIT { static_cast<float>(
                                         layout_.tile_count_v.y * layout_.tile_size_v.y)
                                     - static_cast<float>(WIN_SIZE_V_.y) };
 
@@ -221,10 +211,10 @@ namespace map
         {
             if (offScreenRect_.left > 0.0f)
             {
-                auto const OFFSCREEN_LEFT_BEFORE { offScreenRect_.left };
+                const auto OFFSCREEN_LEFT_BEFORE { offScreenRect_.left };
                 offScreenRect_.left = std::max(0.0f, offScreenRect_.left - ADJUSTMENT);
 
-                auto const ACTUAL_ADJUSTMENT { OFFSCREEN_LEFT_BEFORE - offScreenRect_.left };
+                const auto ACTUAL_ADJUSTMENT { OFFSCREEN_LEFT_BEFORE - offScreenRect_.left };
 
                 PositionMapSpriteTextureRect();
                 playerPosV_.x = std::max(0.0f, playerPosV_.x - ACTUAL_ADJUSTMENT);
@@ -252,11 +242,11 @@ namespace map
         }
         else
         {
-            auto const HORIZ_POS { (
+            const auto HORIZ_POS { (
                 offScreenRect_.left
                 + static_cast<float>(tileOffsets_.begin_v.x * layout_.tile_size_v.x)) };
 
-            auto const HORIZ_LIMIT { static_cast<float>(
+            const auto HORIZ_LIMIT { static_cast<float>(
                 (layout_.tile_count_v.x * layout_.tile_size_v.x)
                 - static_cast<int>(WIN_SIZE_V_.x)) };
 
@@ -310,7 +300,7 @@ namespace map
         // note that PlayerPosMap() returns the centered map position of the player, not the
         // top-left corner position of the sprite, to get that top-left sprite corner pos you have
         // to subtract half the sprite size with -HALF_SIZE.
-        auto const PLAYER_OFFSCREEN_POS_V { OffScreenPosFromMapPos(PlayerPosMap()) };
+        const auto PLAYER_OFFSCREEN_POS_V { OffScreenPosFromMapPos(PlayerPosMap()) };
 
         sf::Sprite playerSprite { MAP_.Player().GetView().SpriteRef() };
 
@@ -322,14 +312,14 @@ namespace map
         characterShadowSprite.setPosition(PLAYER_OFFSCREEN_POS_V - SIZE_HALF);
         offScreenTextureBelow_.draw(characterShadowSprite);
 
-        for (auto const & NPC_MODEL_PAIR : MAP_.NonPlayers())
+        for (const auto & NPC_MODEL_PAIR : MAP_.NonPlayers())
         {
             sf::Sprite npcSprite { NPC_MODEL_PAIR.second.GetView().SpriteRef() };
 
             // note that like the player position in the comment above, npcSprite.getPosition()
             // returns the centered map coordinates position that must be translated into top-left
             // offscreen coordinates
-            auto const NPC_OFFSCREEN_POS_V { OffScreenPosFromMapPos(npcSprite.getPosition())
+            const auto NPC_OFFSCREEN_POS_V { OffScreenPosFromMapPos(npcSprite.getPosition())
                                              - SIZE_HALF };
 
             characterShadowSprite.setPosition(NPC_OFFSCREEN_POS_V);
@@ -384,13 +374,13 @@ namespace map
 
         sf::RenderStates renderStates { sf::RenderStates::Default };
 
-        for (auto const & LAYER : layout_.layer_vec)
+        for (const auto & LAYER : layout_.layer_vec)
         {
-            auto const NUM_VERTS { LAYER.vert_array.getVertexCount() };
+            const auto NUM_VERTS { LAYER.vert_array.getVertexCount() };
             for (std::size_t vertIndex(0), tilesPanelIndex { 0 }; vertIndex < NUM_VERTS;
                  vertIndex += VERTS_PER_QUAD_, ++tilesPanelIndex)
             {
-                auto const & TILES_PANEL { LAYER.tiles_panel_vec[tilesPanelIndex] };
+                const auto & TILES_PANEL { LAYER.tiles_panel_vec[tilesPanelIndex] };
 
                 if (TILES_PANEL.is_empty == false)
                 {
@@ -423,12 +413,12 @@ namespace map
 
     void MapDisplay::SetupOffScreenTexture()
     {
-        auto const EXTRA_WIDTH { layout_.tile_size_v.x * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
-        auto const WIDTH { static_cast<unsigned>(WIN_SIZE_V_.x)
+        const auto EXTRA_WIDTH { layout_.tile_size_v.x * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
+        const auto WIDTH { static_cast<unsigned>(WIN_SIZE_V_.x)
                            + static_cast<unsigned>(EXTRA_WIDTH) };
 
-        auto const EXTRA_HEIGHT { layout_.tile_size_v.y * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
-        auto const HEIGHT { static_cast<unsigned>(WIN_SIZE_V_.y)
+        const auto EXTRA_HEIGHT { layout_.tile_size_v.y * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
+        const auto HEIGHT { static_cast<unsigned>(WIN_SIZE_V_.y)
                             + static_cast<unsigned>(EXTRA_HEIGHT) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -464,8 +454,8 @@ namespace map
         map::Layer & mapLayer, const map::TileOffsets & TILE_OFFSETS)
     {
         // resize the vertex array to fit the level size
-        auto const TILE_WIDTH { TILE_OFFSETS.end_v.x - TILE_OFFSETS.begin_v.x };
-        auto const TILE_HEIGHT { TILE_OFFSETS.end_v.y - TILE_OFFSETS.begin_v.y };
+        const auto TILE_WIDTH { TILE_OFFSETS.end_v.x - TILE_OFFSETS.begin_v.x };
+        const auto TILE_HEIGHT { TILE_OFFSETS.end_v.y - TILE_OFFSETS.begin_v.y };
         mapLayer.vert_array.setPrimitiveType(sf::Quads);
 
         mapLayer.vert_array.resize(
@@ -480,9 +470,9 @@ namespace map
             for (int y(TILE_OFFSETS.begin_v.y); y < TILE_OFFSETS.end_v.y; ++y)
             {
                 // get the current tile number
-                auto const TILE_INDEX { x + (y * layout_.tile_count_v.x) };
+                const auto TILE_INDEX { x + (y * layout_.tile_count_v.x) };
 
-                auto const TILE_NUM_ORIG {
+                const auto TILE_NUM_ORIG {
                     mapLayer.mapid_vec[static_cast<std::size_t>(TILE_INDEX)]
                 };
 
@@ -494,23 +484,23 @@ namespace map
                     TILES_PANEL.texture_index));
 
                 // get the actual tile number (id)
-                auto const TILE_NUM_FINAL { (TILE_NUM_ORIG - TILES_PANEL.first_id) };
+                const auto TILE_NUM_FINAL { (TILE_NUM_ORIG - TILES_PANEL.first_id) };
 
                 // get a pointer to the current tile's quad
-                auto const VERT_ARRAY_INDEX { vertIndex++ * VERTS_PER_QUAD_ };
+                const auto VERT_ARRAY_INDEX { vertIndex++ * VERTS_PER_QUAD_ };
                 sf::Vertex * quadPtr { &mapLayer.vert_array[VERT_ARRAY_INDEX] };
 
                 // define its four corners on screen
-                auto const POS_WIDTH { static_cast<float>(
+                const auto POS_WIDTH { static_cast<float>(
                     (x - TILE_OFFSETS.begin_v.x) * layout_.tile_size_v.x) };
 
-                auto const POS_WIDTH_PLUS_ONE_TILE { POS_WIDTH
+                const auto POS_WIDTH_PLUS_ONE_TILE { POS_WIDTH
                                                      + static_cast<float>(layout_.tile_size_v.x) };
 
-                auto const POS_HEIGHT { static_cast<float>(
+                const auto POS_HEIGHT { static_cast<float>(
                     (y - TILE_OFFSETS.begin_v.y) * layout_.tile_size_v.y) };
 
-                auto const POS_HEIGHT_PLUS_ONE_TILE { POS_HEIGHT
+                const auto POS_HEIGHT_PLUS_ONE_TILE { POS_HEIGHT
                                                       + static_cast<float>(layout_.tile_size_v.y) };
 
                 quadPtr[0].position = sf::Vector2f(POS_WIDTH, POS_HEIGHT);
@@ -523,28 +513,28 @@ namespace map
                 quadPtr[3].position = sf::Vector2f(POS_WIDTH, POS_HEIGHT_PLUS_ONE_TILE);
 
                 // find its position in the tileset texture
-                auto const TEXTURE_TILE_COUNT_HORIZ {
+                const auto TEXTURE_TILE_COUNT_HORIZ {
                     static_cast<int>(layout_.texture_vec[TILES_PANEL.texture_index].getSize().x)
                     / layout_.tile_size_v.x
                 };
 
-                auto const TILE_COUNT_U { static_cast<float>(
+                const auto TILE_COUNT_U { static_cast<float>(
                     TILE_NUM_FINAL % TEXTURE_TILE_COUNT_HORIZ) };
 
-                auto const TILE_COUNT_V { static_cast<float>(
+                const auto TILE_COUNT_V { static_cast<float>(
                     TILE_NUM_FINAL / TEXTURE_TILE_COUNT_HORIZ) };
 
-                auto const TEXTCOORD_WIDTH { TILE_COUNT_U
+                const auto TEXTCOORD_WIDTH { TILE_COUNT_U
                                              * static_cast<float>(layout_.tile_size_v.x) };
 
-                auto const TEXTCOORD_WIDTH_PLUS_ONE_TILE {
+                const auto TEXTCOORD_WIDTH_PLUS_ONE_TILE {
                     TEXTCOORD_WIDTH + static_cast<float>(layout_.tile_size_v.x)
                 };
 
-                auto const TEXTCOORD_HEIGHT { TILE_COUNT_V
+                const auto TEXTCOORD_HEIGHT { TILE_COUNT_V
                                               * static_cast<float>(layout_.tile_size_v.y) };
 
-                auto const TEXTCOORD_HEIGHT_PLUS_ONE_TILE {
+                const auto TEXTCOORD_HEIGHT_PLUS_ONE_TILE {
                     TEXTCOORD_HEIGHT + static_cast<float>(layout_.tile_size_v.y)
                 };
 
@@ -568,11 +558,11 @@ namespace map
         map::TileOffsets offsets;
 
         {
-            auto const PLAYER_POS_IN_TILES_X { static_cast<int>(MAP_POS_V.x)
+            const auto PLAYER_POS_IN_TILES_X { static_cast<int>(MAP_POS_V.x)
                                                / layout_.tile_size_v.x };
-            auto const WINDOW_TILE_SIZE_X { (
+            const auto WINDOW_TILE_SIZE_X { (
                 static_cast<int>(WIN_SIZE_V_.x) / layout_.tile_size_v.x) };
-            auto const OFFSCREEN_TILE_SIZE_X { WINDOW_TILE_SIZE_X
+            const auto OFFSCREEN_TILE_SIZE_X { WINDOW_TILE_SIZE_X
                                                + (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
 
             offsets.begin_v.x = std::max(0, (PLAYER_POS_IN_TILES_X - (OFFSCREEN_TILE_SIZE_X / 2)));
@@ -586,11 +576,11 @@ namespace map
         }
 
         {
-            auto const PLAYER_POS_IN_TILES_Y { static_cast<int>(MAP_POS_V.y)
+            const auto PLAYER_POS_IN_TILES_Y { static_cast<int>(MAP_POS_V.y)
                                                / layout_.tile_size_v.y };
-            auto const WINDOW_TILE_SIZE_Y { (
+            const auto WINDOW_TILE_SIZE_Y { (
                 static_cast<int>(WIN_SIZE_V_.y) / layout_.tile_size_v.y) };
-            auto const OFFSCREEN_TILE_SIZE_Y { WINDOW_TILE_SIZE_Y
+            const auto OFFSCREEN_TILE_SIZE_Y { WINDOW_TILE_SIZE_Y
                                                + (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
 
             offsets.begin_v.y = std::max(0, (PLAYER_POS_IN_TILES_Y - (OFFSCREEN_TILE_SIZE_Y / 2)));
@@ -613,15 +603,15 @@ namespace map
 
     const sf::Vector2f MapDisplay::ScreenPosFromMapPos(const sf::Vector2f & MAP_POS_V) const
     {
-        auto const SCREEN_LEFT { (WIN_POS_V_.x - offScreenRect_.left) };
-        auto const SCREEN_TOP { (WIN_POS_V_.y - offScreenRect_.top) };
+        const auto SCREEN_LEFT { (WIN_POS_V_.x - offScreenRect_.left) };
+        const auto SCREEN_TOP { (WIN_POS_V_.y - offScreenRect_.top) };
         const sf::Vector2f SCREEN_POS_V(SCREEN_LEFT, SCREEN_TOP);
 
-        auto const MAP_OFFSET_LEFT {
+        const auto MAP_OFFSET_LEFT {
             MAP_POS_V.x - static_cast<float>(layout_.tile_size_v.x * tileOffsets_.begin_v.x)
         };
 
-        auto const MAP_OFFSET_TOP {
+        const auto MAP_OFFSET_TOP {
             MAP_POS_V.y - static_cast<float>(layout_.tile_size_v.y * tileOffsets_.begin_v.y)
         };
 
@@ -647,7 +637,7 @@ namespace map
 
     const map::TilesPanel & MapDisplay::TilesPanelFromId(const int ID) const
     {
-        for (auto const & TILES_PANEL : layout_.tiles_panel_vec)
+        for (const auto & TILES_PANEL : layout_.tiles_panel_vec)
         {
             if (TILES_PANEL.OwnsId(ID))
             {
@@ -666,8 +656,8 @@ namespace map
     {
         auto wereChangesMade { false };
 
-        auto const TILE_SIZE_X { static_cast<float>(layout_.tile_size_v.x) };
-        auto const TILE_SIZE_Y { static_cast<float>(layout_.tile_size_v.y) };
+        const auto TILE_SIZE_X { static_cast<float>(layout_.tile_size_v.x) };
+        const auto TILE_SIZE_Y { static_cast<float>(layout_.tile_size_v.y) };
 
         switch (DIR)
         {
@@ -720,9 +710,7 @@ namespace map
             }
 
             case sfml_util::Direction::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -736,10 +724,10 @@ namespace map
 
     const sf::Vector2f MapDisplay::CalcOffScreenMapSize() const
     {
-        auto const WIDTH { (tileOffsets_.end_v.x - tileOffsets_.begin_v.x)
+        const auto WIDTH { (tileOffsets_.end_v.x - tileOffsets_.begin_v.x)
                            * layout_.tile_size_v.x };
 
-        auto const HEIGHT { (tileOffsets_.end_v.y - tileOffsets_.begin_v.y)
+        const auto HEIGHT { (tileOffsets_.end_v.y - tileOffsets_.begin_v.y)
                             * layout_.tile_size_v.y };
 
         return sf::Vector2f(static_cast<float>(WIDTH), static_cast<float>(HEIGHT));
@@ -759,7 +747,7 @@ namespace map
     {
         animUPtrVec_.clear();
 
-        for (auto const & ANIM_INFO : animInfoVec_)
+        for (const auto & ANIM_INFO : animInfoVec_)
         {
             animUPtrVec_.emplace_back(sfml_util::AnimationFactory::Make(
                 ANIM_INFO.which_anim,
@@ -772,7 +760,7 @@ namespace map
 
     void MapDisplay::StartAnimMusic()
     {
-        for (auto const & ANIM_INFO : animInfoVec_)
+        for (const auto & ANIM_INFO : animInfoVec_)
         {
             if (ANIM_INFO.music_vec.empty() == false)
             {
@@ -783,7 +771,7 @@ namespace map
 
     void MapDisplay::StopAnimMusic()
     {
-        for (auto const & ANIM_INFO : animInfoVec_)
+        for (const auto & ANIM_INFO : animInfoVec_)
         {
             if (ANIM_INFO.music_vec.empty() == false)
             {
@@ -794,13 +782,13 @@ namespace map
 
     float MapDisplay::CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const
     {
-        auto const DIFF_DISTANCE { ANIM_SFX_DISTANCE_MAX_ - ANIM_SFX_DISTANCE_MIN_ };
+        const auto DIFF_DISTANCE { ANIM_SFX_DISTANCE_MAX_ - ANIM_SFX_DISTANCE_MIN_ };
 
         // Sounds coming from animations are sfml_util::music and not sfml_util::sound_effects,
         // but they are goverened by the SoundEffectsVolume and not the MusicVolume.
-        auto const MAX_VOLUME { sfml_util::SoundManager::Instance()->SoundEffectVolume() };
-        auto const MIN_VOLUME { MAX_VOLUME * ANIM_SFX_VOLUME_MIN_RATIO_ };
-        auto const DIFF_VOLUME { MAX_VOLUME - MIN_VOLUME };
+        const auto MAX_VOLUME { sfml_util::SoundManager::Instance()->SoundEffectVolume() };
+        const auto MIN_VOLUME { MAX_VOLUME * ANIM_SFX_VOLUME_MIN_RATIO_ };
+        const auto DIFF_VOLUME { MAX_VOLUME - MIN_VOLUME };
 
         if (DISTANCE_TO_PLAYER > ANIM_SFX_DISTANCE_MAX_)
         {

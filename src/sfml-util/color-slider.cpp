@@ -83,17 +83,17 @@ namespace sfml_util
 
     const sf::Color ColorSlider::Current() const
     {
-        auto const RATIO{ slider_.Current() };
+        const auto RATIO { slider_.Current() };
 
-        auto const RED_DIFF{ static_cast<float>(toColor_.r - fromColor_.r) };
-        auto const GREEN_DIFF{ static_cast<float>(toColor_.g - fromColor_.g) };
-        auto const BLUE_DIFF{ static_cast<float>(toColor_.b - fromColor_.b) };
-        auto const ALPHA_DIFF{ static_cast<float>(toColor_.a - fromColor_.a) };
+        const auto RED_DIFF { static_cast<float>(toColor_.r - fromColor_.r) };
+        const auto GREEN_DIFF { static_cast<float>(toColor_.g - fromColor_.g) };
+        const auto BLUE_DIFF { static_cast<float>(toColor_.b - fromColor_.b) };
+        const auto ALPHA_DIFF { static_cast<float>(toColor_.a - fromColor_.a) };
 
-        auto const RED{ static_cast<float>(fromColor_.r) + (RED_DIFF * RATIO) };
-        auto const GREEN{ static_cast<float>(fromColor_.g) + (GREEN_DIFF * RATIO) };
-        auto const BLUE{ static_cast<float>(fromColor_.b) + (BLUE_DIFF * RATIO) };
-        auto const ALPHA{ static_cast<float>(fromColor_.a) + (ALPHA_DIFF * RATIO) };
+        const auto RED { static_cast<float>(fromColor_.r) + (RED_DIFF * RATIO) };
+        const auto GREEN { static_cast<float>(fromColor_.g) + (GREEN_DIFF * RATIO) };
+        const auto BLUE { static_cast<float>(fromColor_.b) + (BLUE_DIFF * RATIO) };
+        const auto ALPHA { static_cast<float>(fromColor_.a) + (ALPHA_DIFF * RATIO) };
 
         return sf::Color(
             static_cast<sf::Uint8>(RED),

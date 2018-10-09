@@ -52,7 +52,7 @@ namespace interact
 
     bool NpcConversation::ApplyResponse(const Buttons::Enum BUTTON)
     {
-        auto const & CURRENT_COVERSATION_POINT{ Current() };
+        const auto & CURRENT_COVERSATION_POINT { Current() };
 
         if (CURRENT_COVERSATION_POINT.IsValid())
         {
@@ -74,8 +74,8 @@ namespace interact
         ss << "NpcConversation: index=" << convPointsIndex_ << ", is_random=" << std::boolalpha
            << isRandom_;
 
-        std::size_t index{ 0 };
-        for (auto const & NPC_CONVERSATION_POINT : convPoints_)
+        std::size_t index { 0 };
+        for (const auto & NPC_CONVERSATION_POINT : convPoints_)
         {
             ss << "\n[" << index++ << "]\t" << NPC_CONVERSATION_POINT.ToString();
         }

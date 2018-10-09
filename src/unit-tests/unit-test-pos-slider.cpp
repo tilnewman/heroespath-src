@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(PosSlider_ConstructionAndSetup_SpecificValues)
 {
     const sf::Vector2f FROM { 123.123f, 456.456f };
     const sf::Vector2f TO { 1234.56789f, -1234.56789f };
-    auto const SPEED { 12.34f };
+    const auto SPEED { 12.34f };
 
     sliders::PosSlider pSlider(FROM, TO, SPEED);
 
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(PosSlider_ConstructionAndSetup_SpecificValues)
 
     const sf::Vector2f FROM_ALT { 321.321f, 654.654f };
     const sf::Vector2f TO_ALT { -1234.56789f, 1234.56789f };
-    auto const SPEED_ALT { 43.21f };
+    const auto SPEED_ALT { 43.21f };
 
     pSlider.Setup(FROM_ALT, TO_ALT, SPEED_ALT);
 
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(PosSlider_Moving)
 {
     const sf::Vector2f FROM { 50.0f, 50.0f };
     const sf::Vector2f TO { 100.0f, 100.0f };
-    auto const SPEED { 1.0f };
+    const auto SPEED { 1.0f };
 
     // setup and test valid initial state
     sliders::PosSlider pSlider(FROM, TO, SPEED);
@@ -144,8 +144,8 @@ BOOST_AUTO_TEST_CASE(PosSlider_Moving)
     BOOST_CHECK(IsRealClose(pSlider.Speed(), SPEED));
 
     // move toward target
-    auto const DIFF_X_ORIG { pSlider.To().x - pSlider.Position().x };
-    auto const DIFF_Y_ORIG { pSlider.To().y - pSlider.Position().y };
+    const auto DIFF_X_ORIG { pSlider.To().x - pSlider.Position().x };
+    const auto DIFF_Y_ORIG { pSlider.To().y - pSlider.Position().y };
     pSlider.Start();
     BOOST_CHECK(pSlider.UpdateTime(0.1f));
     BOOST_CHECK(AreVectorsClose(pSlider.Position(), FROM) == false);
@@ -156,14 +156,14 @@ BOOST_AUTO_TEST_CASE(PosSlider_Moving)
     BOOST_CHECK(pSlider.Direction() == Moving::Toward);
     BOOST_CHECK(IsRealClose(pSlider.Speed(), SPEED));
 
-    auto const DIFF_X_AFTER_MOVING_TOWARD { pSlider.To().x - pSlider.Position().x };
-    auto const DIFF_Y_AFTER_MOVING_TOWARD { pSlider.To().y - pSlider.Position().y };
+    const auto DIFF_X_AFTER_MOVING_TOWARD { pSlider.To().x - pSlider.Position().x };
+    const auto DIFF_Y_AFTER_MOVING_TOWARD { pSlider.To().y - pSlider.Position().y };
 
     BOOST_CHECK(DIFF_X_AFTER_MOVING_TOWARD < DIFF_X_ORIG);
     BOOST_CHECK(DIFF_Y_AFTER_MOVING_TOWARD < DIFF_Y_ORIG);
 
     // change direction
-    auto const POSITION_BEFORE_CHANGING_DIRECTION { pSlider.Position() };
+    const auto POSITION_BEFORE_CHANGING_DIRECTION { pSlider.Position() };
     pSlider.ChangeDirection();
     BOOST_CHECK(AreVectorsClose(pSlider.Position(), POSITION_BEFORE_CHANGING_DIRECTION));
     BOOST_CHECK(AreVectorsClose(pSlider.From(), POSITION_BEFORE_CHANGING_DIRECTION));
@@ -182,8 +182,8 @@ BOOST_AUTO_TEST_CASE(PosSlider_Moving)
     BOOST_CHECK(pSlider.Direction() == Moving::Away);
     BOOST_CHECK(IsRealClose(pSlider.Speed(), SPEED));
 
-    auto const DIFF_X_AFTER_MOVING_AWAY { pSlider.To().x - pSlider.Position().x };
-    auto const DIFF_Y_AFTER_MOVING_AWAY { pSlider.To().y - pSlider.Position().y };
+    const auto DIFF_X_AFTER_MOVING_AWAY { pSlider.To().x - pSlider.Position().x };
+    const auto DIFF_Y_AFTER_MOVING_AWAY { pSlider.To().y - pSlider.Position().y };
 
     BOOST_CHECK(DIFF_X_AFTER_MOVING_AWAY < DIFF_X_ORIG);
     BOOST_CHECK(DIFF_Y_AFTER_MOVING_AWAY < DIFF_Y_ORIG);

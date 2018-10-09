@@ -106,7 +106,7 @@ namespace sfml_util
            << "Over=" << over.ToString(false, misc::Wrap::Yes) << SEPARATOR
            << "Disabled=" << disabled.ToString(false, misc::Wrap::Yes);
 
-        auto const PARTS_STR { (
+        const auto PARTS_STR { (
             (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)

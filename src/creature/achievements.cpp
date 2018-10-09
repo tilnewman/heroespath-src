@@ -91,7 +91,7 @@ namespace creature
 
     const Achievement Achievements::Get(const AchievementType::Enum E) const
     {
-        auto const FOUND_ITER{ map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
@@ -106,7 +106,7 @@ namespace creature
 
     TitlePtrOpt_t Achievements::Increment(const AchievementType::Enum E)
     {
-        auto const FOUND_ITER{ map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
@@ -124,7 +124,7 @@ namespace creature
 
     TitlePtrOpt_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
     {
-        auto const FOUND_ITER{ map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
             return boost::none;
@@ -137,7 +137,7 @@ namespace creature
 
     TitlePtrOpt_t Achievements::GetNextTitle(const AchievementType::Enum E) const
     {
-        auto const FOUND_ITER{ map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
             return boost::none;
@@ -157,8 +157,8 @@ namespace creature
 
         for (misc::EnumUnderlying_t t(TITLE_FIRST); t <= TITLE_LAST; ++t)
         {
-            auto const NEXT_ENUM{ static_cast<Titles::Enum>(t) };
-            auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_ENUM) };
+            const auto NEXT_ENUM { static_cast<Titles::Enum>(t) };
+            const auto NEXT_TITLE_PTR { title::Holder::Get(NEXT_ENUM) };
             titleCountMap[NEXT_TITLE_PTR->AchievementCount()] = NEXT_ENUM;
         }
 

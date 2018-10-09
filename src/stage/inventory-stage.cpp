@@ -476,7 +476,7 @@ namespace stage
             creatureToGiveToPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(
                 PACKET_PTR->SelectionOpt().value());
 
-            auto const CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
+            const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
             if (spellBeingCastPtrOpt_)
             {
@@ -491,26 +491,18 @@ namespace stage
 
             switch (contentType_)
             {
-                case ContentType::Item:
-                {
-                    return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Item: { return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
                 }
-                case ContentType::Coins:
-                {
-                    return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Coins: { return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
                 }
-                case ContentType::Gems:
-                {
-                    return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Gems: { return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::MeteorShards:
                 {
                     return HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::Count:
-                default:
-                {
-                    return true;
+                default: { return true;
                 }
             }
         }
@@ -519,7 +511,7 @@ namespace stage
             && (PACKET_PTR->Response() == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
             && PACKET_PTR->SelectionOpt())
         {
-            auto const CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
+            const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
             switch (contentType_)
             {
@@ -541,9 +533,7 @@ namespace stage
                 }
                 case ContentType::Item:
                 case ContentType::Count:
-                default:
-                {
-                    return true;
+                default: { return true;
                 }
             }
         }
@@ -600,7 +590,7 @@ namespace stage
         {
             const spell::SpellPVec_t SPELLS_PVEC { creaturePtr_->SpellsPVec() };
 
-            auto const RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
@@ -608,7 +598,7 @@ namespace stage
                     << PACKET_PTR->SelectionOpt().value()
                     << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
-            auto const SPELL_PTR { SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
+            const auto SPELL_PTR { SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
 
             creaturePtr_->LastSpellCastNum(RESPONSE_SELECTION_INDEX);
             return HandleCast_Step1_TargetSelection(SPELL_PTR);
@@ -618,8 +608,8 @@ namespace stage
             && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
             && PACKET_PTR->SelectionOpt())
         {
-            auto const SONGS_PVEC { creaturePtr_->SongsPVec() };
-            auto const RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
+            const auto SONGS_PVEC { creaturePtr_->SongsPVec() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
@@ -820,7 +810,7 @@ namespace stage
         {
             sliderAnimTimerSec_ += ELAPSED_TIME_SECONDS;
 
-            auto const CUT_OFF_TIME_SEC { 100.0f };
+            const auto CUT_OFF_TIME_SEC { 100.0f };
 
             if ((sliderAnimTimerSec_ > VIEW_CHANGE_BETWEEN_TIME_SEC_)
                 && (sliderAnimTimerSec_ < CUT_OFF_TIME_SEC))
@@ -1051,19 +1041,19 @@ namespace stage
 
     void InventoryStage::Setup_CreatureStats()
     {
-        auto const STR_MOD_STR { creaturePtr_->TraitModifiedString(
+        const auto STR_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Strength, true) };
 
-        auto const ACC_MOD_STR { creaturePtr_->TraitModifiedString(
+        const auto ACC_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Accuracy, true) };
 
-        auto const CHA_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Charm, true) };
+        const auto CHA_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Charm, true) };
 
-        auto const LCK_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Luck, true) };
+        const auto LCK_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Luck, true) };
 
-        auto const SPD_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Speed, true) };
+        const auto SPD_MOD_STR { creaturePtr_->TraitModifiedString(creature::Traits::Speed, true) };
 
-        auto const INT_MOD_STR { creaturePtr_->TraitModifiedString(
+        const auto INT_MOD_STR { creaturePtr_->TraitModifiedString(
             creature::Traits::Intelligence, true) };
 
         std::ostringstream ss;
@@ -1100,7 +1090,7 @@ namespace stage
 
     void InventoryStage::Setup_CenterText()
     {
-        auto const & INVENTORY { creaturePtr_->Inventory() };
+        const auto & INVENTORY { creaturePtr_->Inventory() };
 
         std::ostringstream ss;
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
@@ -1178,7 +1168,7 @@ namespace stage
                 condLeftListBoxUPtr_ = std::make_unique<CondListBox_t>(
                     "InventoryStage'sLeftCondition", this, this, listBoxPacketLeft);
 
-                for (auto const & CONDITION_PTR : creaturePtr_->ConditionsPVec())
+                for (const auto & CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
                     condLeftListBoxUPtr_->Append(
                         std::make_unique<sfml_util::ListElement<creature::ConditionPtr_t>>(
@@ -1195,7 +1185,7 @@ namespace stage
                 itemLeftListBoxUPtr_ = std::make_unique<ItemListBox_t>(
                     "InventoryStage'sEquippedItem", this, this, listBoxPacketLeft);
 
-                for (auto const & ITEM_PTR : creaturePtr_->Inventory().ItemsEquipped())
+                for (const auto & ITEM_PTR : creaturePtr_->Inventory().ItemsEquipped())
                 {
                     itemLeftListBoxUPtr_->Append(
                         std::make_unique<sfml_util::ListElement<item::ItemPtr_t>>(
@@ -1212,7 +1202,7 @@ namespace stage
                 spellLeftListBoxUPtr_ = std::make_unique<SpellListBox_t>(
                     "InventoryStage'sSpell", this, this, listBoxPacketLeft);
 
-                for (auto const & SPELL_PTR : creaturePtr_->SpellsPVec())
+                for (const auto & SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     spellLeftListBoxUPtr_->Append(
                         std::make_unique<sfml_util::ListElement<spell::SpellPtr_t>>(
@@ -1231,7 +1221,7 @@ namespace stage
                 titleLeftListBoxUPtr_ = std::make_unique<TitleListBox_t>(
                     "InventoryStage'sTitle", this, this, listBoxPacketLeft);
 
-                for (auto const & TITLE_PTR : creaturePtr_->TitlesPVec())
+                for (const auto & TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     titleLeftListBoxUPtr_->Append(
                         std::make_unique<sfml_util::ListElement<creature::TitlePtr_t>>(
@@ -1268,7 +1258,7 @@ namespace stage
         itemRightListBoxUPtr_ = std::make_unique<ItemListBox_t>(
             "InventoryStage'sUnEquippedItem", this, this, listBoxPacketRight);
 
-        for (auto const & ITEM_PTR : creaturePtr_->Inventory().Items())
+        for (const auto & ITEM_PTR : creaturePtr_->Inventory().Items())
         {
             itemRightListBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<item::ItemPtr_t>>(
                 ITEM_PTR, sfml_util::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
@@ -1365,41 +1355,41 @@ namespace stage
             "media-images-misc-weight",
             unEqSortButtonWeightUPtr_);
 
-        auto const THREE_ICONS_WIDTH { eqSortButtonNameUPtr_->GetEntityRegion().width
+        const auto THREE_ICONS_WIDTH { eqSortButtonNameUPtr_->GetEntityRegion().width
                                        + eqSortButtonPriceUPtr_->GetEntityRegion().width
                                        + eqSortButtonWeightUPtr_->GetEntityRegion().width };
 
-        auto const POS_HORIZ_NAME_EQ { ((FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
+        const auto POS_HORIZ_NAME_EQ { ((FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
                                         - THREE_ICONS_WIDTH)
                                        - (SORT_ICON_SPACER_ * 2.25f) };
 
-        auto const POS_HORIZ_NAME_UNEQ { ((SECOND_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
+        const auto POS_HORIZ_NAME_UNEQ { ((SECOND_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_)
                                           - THREE_ICONS_WIDTH)
                                          - (SORT_ICON_SPACER_ * 2.25f) };
 
-        auto const POS_VERT_NAME { SORT_ICON_POS_TOP_
+        const auto POS_VERT_NAME { SORT_ICON_POS_TOP_
                                    - (eqSortButtonNameUPtr_->GetEntityRegion().height * 0.5f) };
 
-        auto const POS_HORIZ_PRICE_EQ {
+        const auto POS_HORIZ_PRICE_EQ {
             POS_HORIZ_NAME_EQ + eqSortButtonNameUPtr_->GetEntityRegion().width + SORT_ICON_SPACER_
         };
 
-        auto const POS_HORIZ_PRICE_UNEQ { POS_HORIZ_NAME_UNEQ
+        const auto POS_HORIZ_PRICE_UNEQ { POS_HORIZ_NAME_UNEQ
                                           + unEqSortButtonNameUPtr_->GetEntityRegion().width
                                           + SORT_ICON_SPACER_ };
 
-        auto const POS_VERT_PRICE { SORT_ICON_POS_TOP_
+        const auto POS_VERT_PRICE { SORT_ICON_POS_TOP_
                                     - (eqSortButtonPriceUPtr_->GetEntityRegion().height * 0.5f) };
 
-        auto const POS_HORIZ_WEIGHT_EQ {
+        const auto POS_HORIZ_WEIGHT_EQ {
             POS_HORIZ_PRICE_EQ + eqSortButtonPriceUPtr_->GetEntityRegion().width + SORT_ICON_SPACER_
         };
 
-        auto const POS_HORIZ_WEIGHT_UNEQ { POS_HORIZ_PRICE_UNEQ
+        const auto POS_HORIZ_WEIGHT_UNEQ { POS_HORIZ_PRICE_UNEQ
                                            + unEqSortButtonPriceUPtr_->GetEntityRegion().width
                                            + SORT_ICON_SPACER_ };
 
-        auto const POS_VERT_WEIGHT { SORT_ICON_POS_TOP_
+        const auto POS_VERT_WEIGHT { SORT_ICON_POS_TOP_
                                      - (eqSortButtonWeightUPtr_->GetEntityRegion().height * 0.5f) };
 
         eqSortButtonNameUPtr_->SetEntityPos(POS_HORIZ_NAME_EQ, POS_VERT_NAME);
@@ -1492,7 +1482,7 @@ namespace stage
 
     void InventoryStage::Setup_DescBoxTitle()
     {
-        auto const TITLETEXT { (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
+        const auto TITLETEXT { (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
 
         const sfml_util::TextInfo DESC_TEXT_INFO(
             TITLETEXT,
@@ -1532,9 +1522,9 @@ namespace stage
             sf::Color::Black,
             sfml_util::Justified::Left);
 
-        auto const COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
-        auto const COLOR_OVER { sfutil::color::GrayDarker };
-        auto const COLOR_DOWN { COLOR_DISABLED };
+        const auto COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
+        const auto COLOR_OVER { sfutil::color::GrayDarker };
+        const auto COLOR_DOWN { COLOR_DISABLED };
 
         const sfml_util::MouseTextInfo MOUSE_TEXT_INFO(
             textInfo, COLOR_DOWN, COLOR_OVER, COLOR_DISABLED);
@@ -1574,7 +1564,7 @@ namespace stage
 
         if (ViewType::Spells == view_)
         {
-            auto const ROLE_ENUM { creaturePtr_->Role() };
+            const auto ROLE_ENUM { creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->TextEntity()->SetText("(S)ongs");
@@ -1595,7 +1585,7 @@ namespace stage
         }
         else
         {
-            auto const ROLE_ENUM { creaturePtr_->Role() };
+            const auto ROLE_ENUM { creaturePtr_->Role() };
             if (ROLE_ENUM == creature::role::Bard)
             {
                 spellsButtonUPtr_->TextEntity()->SetText("(S)ongs");
@@ -1943,7 +1933,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO { (1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            const auto RATIO { (1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -1953,7 +1943,7 @@ namespace stage
             }
             else
             {
-                auto const NEW_POS_LEFT { CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO) };
+                const auto NEW_POS_LEFT { CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO) };
 
                 creatureSprite_.setPosition(NEW_POS_LEFT, creatureSprite_.getPosition().y);
 
@@ -1961,7 +1951,7 @@ namespace stage
                 // so the details text needs to move with the new image to avoid overlap
                 UpdateImageDetailsPosition();
 
-                auto const NEW_DETAILSTEXT_POS_LEFT_EDGE { (
+                const auto NEW_DETAILSTEXT_POS_LEFT_EDGE { (
                     NEW_POS_LEFT + creatureImageWidthScaled_ + CREATURE_IMAGE_RIGHT_PAD_) };
 
                 if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionUPtr_->GetEntityPos().x)
@@ -1986,7 +1976,7 @@ namespace stage
     {
         if (false == hasDetailsChanged_)
         {
-            auto const RATIO { detailsSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { detailsSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (isSlidingLeft_)
             {
@@ -2015,7 +2005,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO { (1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            const auto RATIO { (1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2043,7 +2033,7 @@ namespace stage
     {
         if (false == hasCenterChanged_)
         {
-            auto const RATIO { centerSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { centerSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (centerTextRegionUPtr_->GetEntityPos().x < SCREEN_WIDTH_)
             {
@@ -2076,7 +2066,7 @@ namespace stage
         {
             if (creaturePtr_->IsBeast() == false)
             {
-                auto const RATIO { (1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)) };
+                const auto RATIO { (1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
                 if (isSlidingLeft_)
                 {
@@ -2105,7 +2095,7 @@ namespace stage
     {
         if (false == hasStatsChanged_)
         {
-            auto const RATIO { statsSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { statsSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             if (isSlidingLeft_)
             {
@@ -2133,7 +2123,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO { (1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            const auto RATIO { (1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             if (isSlidingLeft_)
             {
@@ -2161,7 +2151,7 @@ namespace stage
     {
         if (false == hasListBoxChanged_)
         {
-            auto const RATIO { listBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { listBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
 
             float newPosHoriz { 0.0f };
 
@@ -2187,7 +2177,7 @@ namespace stage
         }
         else
         {
-            auto const RATIO { (1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            const auto RATIO { (1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             float newPosHoriz { 0.0f };
 
@@ -2215,13 +2205,13 @@ namespace stage
     {
         if (false == hasDescBoxChanged_)
         {
-            auto const RATIO { descBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { descBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
 
-            auto const POS_LEFT_SLIDING_LEFT {
+            const auto POS_LEFT_SLIDING_LEFT {
                 SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO)
             };
 
-            auto const POS_LEFT_SLIDING_RIGHT { SECOND_LISTBOX_POS_LEFT_
+            const auto POS_LEFT_SLIDING_RIGHT { SECOND_LISTBOX_POS_LEFT_
                                                 + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
 
             if (ViewType::Items == view_)
@@ -2275,12 +2265,12 @@ namespace stage
         }
         else
         {
-            auto const RATIO { (1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+            const auto RATIO { (1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
-            auto const POS_LEFT_SLIDING_LEFT { SECOND_LISTBOX_POS_LEFT_
+            const auto POS_LEFT_SLIDING_LEFT { SECOND_LISTBOX_POS_LEFT_
                                                + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
 
-            auto const POS_LEFT_SLIDING_RIGHT {
+            const auto POS_LEFT_SLIDING_RIGHT {
                 SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO)
             };
 
@@ -2364,7 +2354,7 @@ namespace stage
                 }
                 else
                 {
-                    auto const ITEM_PTR_OPT { GetItemMouseIsOver(mousePosV_) };
+                    const auto ITEM_PTR_OPT { GetItemMouseIsOver(mousePosV_) };
                     if (ITEM_PTR_OPT)
                     {
                         isDetailViewFadingIn_ = false;
@@ -2478,9 +2468,9 @@ namespace stage
             && itemLeftListBoxUPtr_ && itemRightListBoxUPtr_
             && (itemRightListBoxUPtr_->Empty() == false))
         {
-            auto const ITEM_PTR { itemRightListBoxUPtr_->Selection()->Element() };
+            const auto ITEM_PTR { itemRightListBoxUPtr_->Selection()->Element() };
 
-            auto const EQUIP_RESULT { creaturePtr_->ItemEquip(ITEM_PTR) };
+            const auto EQUIP_RESULT { creaturePtr_->ItemEquip(ITEM_PTR) };
             if (EQUIP_RESULT.empty())
             {
                 sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
@@ -2493,7 +2483,7 @@ namespace stage
                 std::ostringstream ss;
                 ss << "Cannot equip the " << ITEM_PTR->Name() << " because: " << EQUIP_RESULT;
 
-                auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+                const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                     "InventoryStage'sEquipItemFailedPopup",
                     ss.str(),
                     popup::PopupButtons::Okay,
@@ -2531,7 +2521,7 @@ namespace stage
             && itemLeftListBoxUPtr_ && (itemLeftListBoxUPtr_->Empty() == false)
             && itemRightListBoxUPtr_)
         {
-            auto const ITEM_PTR { itemLeftListBoxUPtr_->Selection()->Element() };
+            const auto ITEM_PTR { itemLeftListBoxUPtr_->Selection()->Element() };
 
             if (ITEM_PTR->IsBodypart())
             {
@@ -2554,7 +2544,7 @@ namespace stage
     {
         actionType_ = ActionType::Give;
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_GIVE_,
             std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor")
                 .append("Shards\n\n...or (Escape) to Cancel"),
@@ -2692,9 +2682,9 @@ namespace stage
             return false;
         }
 
-        auto const ITEM_PTR { listElementToGivePtrOpt_.value()->Element() };
+        const auto ITEM_PTR { listElementToGivePtrOpt_.value()->Element() };
 
-        auto const CAN_GIVE_ITEM_STR { creatureToGiveToPtrOpt_.value()->ItemIsAddAllowed(
+        const auto CAN_GIVE_ITEM_STR { creatureToGiveToPtrOpt_.value()->ItemIsAddAllowed(
             ITEM_PTR) };
 
         if (CAN_GIVE_ITEM_STR.empty())
@@ -2813,7 +2803,7 @@ namespace stage
 
             actionType_ = ActionType::Drop;
 
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_DROPCONFIRM_,
                 "\nAre you sure you want to drop the "
                     + listElementToDropPtrOpt_.value()->Element()->Name() + "?",
@@ -2851,7 +2841,7 @@ namespace stage
             ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
             .PlayRandom();
 
-        auto const ITEM_PTR { listElementToDropPtrOpt_.value()->Element() };
+        const auto ITEM_PTR { listElementToDropPtrOpt_.value()->Element() };
         itemRightListBoxUPtr_->RemoveFree(listElementToDropPtrOpt_);
         creaturePtr_->ItemRemove(ITEM_PTR);
 
@@ -2879,7 +2869,7 @@ namespace stage
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        auto const CURR_INDEX { game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
+        const auto CURR_INDEX { game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
 
         if (CURR_INDEX == CHARACTER_NUM)
         {
@@ -2983,7 +2973,7 @@ namespace stage
         const std::size_t CURRENT_CREATURE_ORDER_NUM(
             game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
-        auto const NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
+        const auto NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
 
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
@@ -3006,7 +2996,7 @@ namespace stage
             }
         }
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_, PROMPT_TEXT, invalidTextVec) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
@@ -3020,7 +3010,7 @@ namespace stage
         std::ostringstream ss;
         ss << "\n" << REJECTION_PROMPT_TEXT;
 
-        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
             ss.str(),
             popup::PopupButtons::Cancel,
@@ -3037,7 +3027,7 @@ namespace stage
     void InventoryStage::PopupNumberSelectWindow(
         const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX)
     {
-        auto const POPUP_INFO_NUMBER_SELECT {
+        const auto POPUP_INFO_NUMBER_SELECT {
             popup::PopupManager::Instance()->CreateNumberSelectionPopupInfo(
                 POPUP_NAME_NUMBER_SELECT_,
                 PROMPT_TEXT,
@@ -3055,7 +3045,7 @@ namespace stage
     void InventoryStage::PopupDoneWindow(
         const std::string & PROMPT_TEXT, const bool WILL_PLAY_SOUNDEFFECT)
     {
-        auto const POPUP_INFO_DONE { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUP_INFO_DONE { popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupDone",
             PROMPT_TEXT,
             popup::PopupButtons::Okay,
@@ -3075,7 +3065,7 @@ namespace stage
         std::ostringstream ss;
         ss << PROMPT_TEXT << "\n\n(C)oins\n(G)ems\n(M)eteor Shards";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_CONTENTSELECTION_,
             ss.str(),
             popup::PopupButtons::Cancel,
@@ -3149,7 +3139,7 @@ namespace stage
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_COINS_OWNED { nextCreaturePtr->Inventory().Coins() };
+                const auto NEXT_CREATURE_COINS_OWNED { nextCreaturePtr->Inventory().Coins() };
                 if (NEXT_CREATURE_COINS_OWNED > 0_coin)
                 {
                     coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
@@ -3189,7 +3179,7 @@ namespace stage
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_GEMS_OWNED { nextCreaturePtr->Inventory().Gems() };
+                const auto NEXT_CREATURE_GEMS_OWNED { nextCreaturePtr->Inventory().Gems() };
                 if (NEXT_CREATURE_GEMS_OWNED > 0_gem)
                 {
                     gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
@@ -3229,7 +3219,7 @@ namespace stage
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                auto const NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().MeteorShards() };
+                const auto NEXT_CREATURE_SHARDS { nextCreaturePtr->Inventory().MeteorShards() };
                 if (NEXT_CREATURE_SHARDS > 0_mshard)
                 {
                     shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS;
@@ -3267,7 +3257,7 @@ namespace stage
         // ensure there are any coins to share
         {
             Coin_t totalCoins { 0 };
-            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
             }
@@ -3285,13 +3275,13 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        auto const COINS_TOTAL { creaturePtr_->Inventory().Coins().As<int>() };
+        const auto COINS_TOTAL { creaturePtr_->Inventory().Coins().As<int>() };
 
-        auto const HUMANOID_COUNT { static_cast<int>(
+        const auto HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT };
-        auto const COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT };
+        const auto COINS_TO_SHARE { COINS_TOTAL / HUMANOID_COUNT };
+        const auto COINS_LEFT_OVER { COINS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3336,7 +3326,7 @@ namespace stage
         // ensure there are any gems to share
         {
             Gem_t totalGems { 0 };
-            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
             }
@@ -3354,13 +3344,13 @@ namespace stage
 
         HandleGemsGather(false);
 
-        auto const GEMS_TOTAL { creaturePtr_->Inventory().Gems().As<int>() };
+        const auto GEMS_TOTAL { creaturePtr_->Inventory().Gems().As<int>() };
 
-        auto const HUMANOID_COUNT { static_cast<int>(
+        const auto HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT };
-        auto const GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT };
+        const auto GEMS_TO_SHARE { GEMS_TOTAL / HUMANOID_COUNT };
+        const auto GEMS_LEFT_OVER { GEMS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3404,7 +3394,7 @@ namespace stage
         // ensure there are any shards to share
         {
             MeteorShard_t totalShards { 0 };
-            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (const auto & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalShards += CREATURE_PTR->Inventory().MeteorShards();
             }
@@ -3427,8 +3417,8 @@ namespace stage
         const int HUMANOID_COUNT { static_cast<int>(
             game::Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        auto const METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT };
-        auto const METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT };
+        const auto METEORSHARDS_TO_SHARE { METEORSHARDS_TOTAL / HUMANOID_COUNT };
+        const auto METEORSHARDS_LEFT_OVER { METEORSHARDS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3494,7 +3484,7 @@ namespace stage
         if ((view_ == ViewType::Items) && itemLeftListBoxUPtr_ && itemRightListBoxUPtr_)
         {
             {
-                auto const UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
+                const auto UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
                     MOUSE_POS_V) };
 
                 if (UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT)
@@ -3504,7 +3494,7 @@ namespace stage
             }
 
             {
-                auto const EQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
+                const auto EQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
                     MOUSE_POS_V) };
 
                 if (EQUIP_MOUSEOVER_ELEMENT_PTR_OPT)
@@ -3523,7 +3513,7 @@ namespace stage
         {
             if (itemRightListBoxUPtr_)
             {
-                auto const UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
+                const auto UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemRightListBoxUPtr_->AtPos(
                     MOUSE_POS_V) };
 
                 if (UNEQUIP_MOUSEOVER_ELEMENT_PTR_OPT)
@@ -3535,7 +3525,7 @@ namespace stage
 
             if (itemLeftListBoxUPtr_)
             {
-                auto const EQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemLeftListBoxUPtr_->AtPos(
+                const auto EQUIP_MOUSEOVER_ELEMENT_PTR_OPT { itemLeftListBoxUPtr_->AtPos(
                     MOUSE_POS_V) };
 
                 if (EQUIP_MOUSEOVER_ELEMENT_PTR_OPT)
@@ -3557,12 +3547,12 @@ namespace stage
             return;
         }
 
-        auto const ITEM_PTR { ITEM_PTR_OPT.value() };
+        const auto ITEM_PTR { ITEM_PTR_OPT.value() };
 
         detailViewCachedTextureOpt_ = sfml_util::LoadAndCacheImage(ITEM_PTR);
         detailViewSprite_.setTexture(detailViewCachedTextureOpt_->Get(), true);
 
-        auto const DETAILVIEW_IMAGE_SCALE { sfutil::MapByRes(0.75f, 1.25f) };
+        const auto DETAILVIEW_IMAGE_SCALE { sfutil::MapByRes(0.75f, 1.25f) };
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
 
         detailViewSprite_.setPosition(
@@ -3603,17 +3593,17 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Center);
 
-        auto const DETAILVIEW_SPRITE_BOTTOM { sfutil::Bottom(detailViewSprite_) };
+        const auto DETAILVIEW_SPRITE_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
-        auto const LEFT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
+        const auto LEFT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
 
-        auto const TOP { DETAILVIEW_SPRITE_BOTTOM + DETAILVIEW_INNER_PAD_ };
+        const auto TOP { DETAILVIEW_SPRITE_BOTTOM + DETAILVIEW_INNER_PAD_ };
 
-        auto const DOUBLE_INNER_PAD { 2.0f * DETAILVIEW_INNER_PAD_ };
+        const auto DOUBLE_INNER_PAD { 2.0f * DETAILVIEW_INNER_PAD_ };
 
-        auto const WIDTH { DETAILVIEW_WIDTH_ - DOUBLE_INNER_PAD };
+        const auto WIDTH { DETAILVIEW_WIDTH_ - DOUBLE_INNER_PAD };
 
-        auto const HEIGHT { (DETAILVIEW_HEIGHT_ - DETAILVIEW_SPRITE_BOTTOM) - DOUBLE_INNER_PAD };
+        const auto HEIGHT { (DETAILVIEW_HEIGHT_ - DETAILVIEW_SPRITE_BOTTOM) - DOUBLE_INNER_PAD };
 
         const sf::FloatRect TEXT_RECT(LEFT, TOP, WIDTH, HEIGHT);
 
@@ -3629,7 +3619,7 @@ namespace stage
             return;
         }
 
-        auto const CREATURE_PTR { CREATURE_PTR_OPT.value() };
+        const auto CREATURE_PTR { CREATURE_PTR_OPT.value() };
 
         detailViewCachedTextureOpt_ = sfml_util::LoadAndCacheImage(CREATURE_PTR);
         detailViewSprite_.setTexture(detailViewCachedTextureOpt_->Get(), true);
@@ -3668,7 +3658,7 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        auto const DETAILVIEW_BOTTOM { sfutil::Bottom(detailViewSprite_) };
+        const auto DETAILVIEW_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
         const sf::FloatRect TEXT_RECT(
             DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
@@ -3684,7 +3674,7 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
-        auto const & ACHIEVEMENT { CREATURE_PTR->GetAchievements().Get(WHICH_ACHV) };
+        const auto & ACHIEVEMENT { CREATURE_PTR->GetAchievements().Get(WHICH_ACHV) };
 
         if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
@@ -3705,14 +3695,14 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
-        auto const & ACHIEVEMENTS { CREATURE_PTR->GetAchievements() };
-        auto const TITLE_PTR_OPT { ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
+        const auto & ACHIEVEMENTS { CREATURE_PTR->GetAchievements() };
+        const auto TITLE_PTR_OPT { ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
 
         if (TITLE_PTR_OPT)
         {
-            auto const ACHV_COUNT_REQUIRED { TITLE_PTR_OPT.value()->AchievementCount() };
-            auto const ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
-            auto const NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
+            const auto ACHV_COUNT_REQUIRED { TITLE_PTR_OPT.value()->AchievementCount() };
+            const auto ACHV_COUNT_CURRENT { ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
+            const auto NEEDED_COUNT { ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
             std::ostringstream ss;
             ss << ", need  " << NEEDED_COUNT << " more to achieve \""
@@ -3731,87 +3721,47 @@ namespace stage
     {
         switch (WHICH_ACHV)
         {
-            case creature::AchievementType::EnemiesFaced:
-            {
-                return ":               ";
+            case creature::AchievementType::EnemiesFaced: { return ":               ";
             }
-            case creature::AchievementType::MeleeHits:
-            {
-                return ":                    ";
+            case creature::AchievementType::MeleeHits: { return ":                    ";
             }
-            case creature::AchievementType::BattlesSurvived:
-            {
-                return ":             ";
+            case creature::AchievementType::BattlesSurvived: { return ":             ";
             }
-            case creature::AchievementType::ProjectileHits:
-            {
-                return ":               ";
+            case creature::AchievementType::ProjectileHits: { return ":               ";
             }
-            case creature::AchievementType::BeastMindLinks:
-            {
-                return ":          ";
+            case creature::AchievementType::BeastMindLinks: { return ":          ";
             }
-            case creature::AchievementType::DodgedStanding:
-            {
-                return ":  ";
+            case creature::AchievementType::DodgedStanding: { return ":  ";
             }
-            case creature::AchievementType::DodgedFlying:
-            {
-                return ":      ";
+            case creature::AchievementType::DodgedFlying: { return ":      ";
             }
-            case creature::AchievementType::LocksPicked:
-            {
-                return ":                  ";
+            case creature::AchievementType::LocksPicked: { return ":                  ";
             }
-            case creature::AchievementType::BackstabsHits:
-            {
-                return ":                ";
+            case creature::AchievementType::BackstabsHits: { return ":                ";
             }
-            case creature::AchievementType::SongsPlayed:
-            {
-                return ":                 ";
+            case creature::AchievementType::SongsPlayed: { return ":                 ";
             }
-            case creature::AchievementType::SpiritsLifted:
-            {
-                return ":                 ";
+            case creature::AchievementType::SpiritsLifted: { return ":                 ";
             }
-            case creature::AchievementType::BeastRoars:
-            {
-                return ":                   ";
+            case creature::AchievementType::BeastRoars: { return ":                   ";
             }
-            case creature::AchievementType::MoonHowls:
-            {
-                return ":                  ";
+            case creature::AchievementType::MoonHowls: { return ":                  ";
             }
-            case creature::AchievementType::PackActions:
-            {
-                return ":                  ";
+            case creature::AchievementType::PackActions: { return ":                  ";
             }
-            case creature::AchievementType::FlyingAttackHits:
-            {
-                return ":         ";
+            case creature::AchievementType::FlyingAttackHits: { return ":         ";
             }
-            case creature::AchievementType::TurnsInFlight:
-            {
-                return ":              ";
+            case creature::AchievementType::TurnsInFlight: { return ":              ";
             }
-            case creature::AchievementType::SpellsCast:
-            {
-                return ":                    ";
+            case creature::AchievementType::SpellsCast: { return ":                    ";
             }
-            case creature::AchievementType::HealthGiven:
-            {
-                return ":                 ";
+            case creature::AchievementType::HealthGiven: { return ":                 ";
             }
-            case creature::AchievementType::HealthTraded:
-            {
-                return ":                ";
+            case creature::AchievementType::HealthTraded: { return ":                ";
             }
             case creature::AchievementType::None:
             case creature::AchievementType::Count:
-            default:
-            {
-                return "";
+            default: { return "";
             }
         }
     }
@@ -3845,8 +3795,8 @@ namespace stage
     {
         spellBeingCastPtrOpt_ = SPELL_PTR;
 
-        auto const SPELL_NAME { SPELL_PTR->Name() };
-        auto const SPELL_TARGET { SPELL_PTR->Target() };
+        const auto SPELL_NAME { SPELL_PTR->Name() };
+        const auto SPELL_TARGET { SPELL_PTR->Target() };
 
         if (SPELL_TARGET == combat::TargetType::SingleCompanion)
         {
@@ -3910,7 +3860,7 @@ namespace stage
         combat::Text combatText;
         bool isFightResultCollapsed { false };
 
-        auto const ACTION_TEXT { combatText.ActionTextIndexed(
+        const auto ACTION_TEXT { combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,
@@ -3919,7 +3869,7 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SPELL_RESULT_,
             ACTION_TEXT,
             popup::PopupButtons::Okay,
@@ -3928,9 +3878,9 @@ namespace stage
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
+        const auto CREATURE_EFFECTS_VEC { fightResult_.Effects() };
 
-        auto const HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
+        const auto HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
 
         if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
         {
@@ -3968,7 +3918,7 @@ namespace stage
 
     bool InventoryStage::HandleSpellsOrSongs()
     {
-        auto const IS_SPELLS { (creaturePtr_->Role() != creature::role::Bard) };
+        const auto IS_SPELLS { (creaturePtr_->Role() != creature::role::Bard) };
 
         if (game::Phase::Combat == currentPhase_)
         {
@@ -4014,10 +3964,10 @@ namespace stage
 
         if (IS_SPELLS)
         {
-            auto const CAN_CAST_STR { creaturePtr_->CanCastSpellsStr(true) };
+            const auto CAN_CAST_STR { creaturePtr_->CanCastSpellsStr(true) };
             if (CAN_CAST_STR.empty())
             {
-                auto const POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                const auto POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_, creaturePtr_, creaturePtr_->LastSpellCastNum()) };
 
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSpellbook>(
@@ -4030,10 +3980,10 @@ namespace stage
         }
         else
         {
-            auto const CAN_PLAY_STR { creaturePtr_->CanPlaySongsStr(true) };
+            const auto CAN_PLAY_STR { creaturePtr_->CanPlaySongsStr(true) };
             if (CAN_PLAY_STR.empty())
             {
-                auto const POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
+                const auto POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_, creaturePtr_, creaturePtr_->LastSongPlayedNum()) };
 
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(
@@ -4070,7 +4020,7 @@ namespace stage
             songBeingPlayedPtrOpt_ = SONG_PTR;
             combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
-            auto const TARGETS_PVEC { (
+            const auto TARGETS_PVEC { (
                 (SONG_PTR->Target() == combat::TargetType::AllCompanions)
                     ? creature::Algorithms::Players()
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
@@ -4118,7 +4068,7 @@ namespace stage
         combat::Text combatText;
 
         bool isFightResultCollapsed { false };
-        auto const ACTION_TEXT { combatText.ActionTextIndexed(
+        const auto ACTION_TEXT { combatText.ActionTextIndexed(
             creaturePtr_,
             turnActionInfo_,
             fightResult_,
@@ -4127,7 +4077,7 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUPINFO_NOITEM { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SONG_RESULT_,
             ACTION_TEXT,
             popup::PopupButtons::Okay,
@@ -4136,8 +4086,8 @@ namespace stage
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        auto const CREATURE_EFFECTS_VEC { fightResult_.Effects() };
-        auto const HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
+        const auto CREATURE_EFFECTS_VEC { fightResult_.Effects() };
+        const auto HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
 
         if (isFightResultCollapsed || (++hitInfoIndex_ >= HIT_INFO_VEC.size()))
         {
@@ -4169,31 +4119,31 @@ namespace stage
 
     void InventoryStage::SetDetailViewQuads()
     {
-        auto const SOURCE_LEFT { detailViewSourceRect_.left };
-        auto const SOURCE_RGT { detailViewSourceRect_.left + detailViewSourceRect_.width };
-        auto const SOURCE_TOP { detailViewSourceRect_.top };
-        auto const SOURCE_BOTTOM { detailViewSourceRect_.top + detailViewSourceRect_.height };
+        const auto SOURCE_LEFT { detailViewSourceRect_.left };
+        const auto SOURCE_RGT { detailViewSourceRect_.left + detailViewSourceRect_.width };
+        const auto SOURCE_TOP { detailViewSourceRect_.top };
+        const auto SOURCE_BOTTOM { detailViewSourceRect_.top + detailViewSourceRect_.height };
 
-        auto const TARGET_LEFT { DETAILVIEW_POS_LEFT_ };
-        auto const TARGET_RGT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_ };
-        auto const TARGET_TOP { DETAILVIEW_POS_TOP_ };
-        auto const TARGET_BOTTOM { DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_ };
+        const auto TARGET_LEFT { DETAILVIEW_POS_LEFT_ };
+        const auto TARGET_RGT { DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_ };
+        const auto TARGET_TOP { DETAILVIEW_POS_TOP_ };
+        const auto TARGET_BOTTOM { DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_ };
 
-        auto const RATIO { detailViewSliderRatio_ };
+        const auto RATIO { detailViewSliderRatio_ };
 
-        auto const LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
-        auto const LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
-        auto const LEFT { (SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS };
+        const auto LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        const auto LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
+        const auto LEFT { (SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS };
 
-        auto const RGT_MORE { SOURCE_RGT - ((SOURCE_RGT - TARGET_RGT) * RATIO) };
-        auto const RGT_LESS { SOURCE_RGT + ((TARGET_RGT - SOURCE_RGT) * RATIO) };
-        auto const RGT { (SOURCE_RGT > TARGET_RGT) ? RGT_MORE : RGT_LESS };
+        const auto RGT_MORE { SOURCE_RGT - ((SOURCE_RGT - TARGET_RGT) * RATIO) };
+        const auto RGT_LESS { SOURCE_RGT + ((TARGET_RGT - SOURCE_RGT) * RATIO) };
+        const auto RGT { (SOURCE_RGT > TARGET_RGT) ? RGT_MORE : RGT_LESS };
 
-        auto const TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+        const auto TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
 
-        auto const BOTTOM_MORE { SOURCE_BOTTOM - ((SOURCE_BOTTOM - TARGET_BOTTOM) * RATIO) };
-        auto const BOTTOM_LESS { SOURCE_BOTTOM + ((TARGET_BOTTOM - SOURCE_BOTTOM) * RATIO) };
-        auto const BOTTOM { (SOURCE_BOTTOM > TARGET_BOTTOM) ? BOTTOM_MORE : BOTTOM_LESS };
+        const auto BOTTOM_MORE { SOURCE_BOTTOM - ((SOURCE_BOTTOM - TARGET_BOTTOM) * RATIO) };
+        const auto BOTTOM_LESS { SOURCE_BOTTOM + ((TARGET_BOTTOM - SOURCE_BOTTOM) * RATIO) };
+        const auto BOTTOM { (SOURCE_BOTTOM > TARGET_BOTTOM) ? BOTTOM_MORE : BOTTOM_LESS };
 
         detailViewQuads_[0].position = sf::Vector2f(LEFT, TOP);
         detailViewQuads_[1].position = sf::Vector2f(RGT, TOP);

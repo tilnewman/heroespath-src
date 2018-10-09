@@ -46,7 +46,7 @@ namespace popup
 
         imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
-        auto const SYM_SCALE { sfutil::MapByRes(0.5f, 2.0f) };
+        const auto SYM_SCALE { sfutil::MapByRes(0.5f, 2.0f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
         sfutil::CenterTo(xSymbolSprite_, imagesRect_);
@@ -157,7 +157,7 @@ namespace popup
             return;
         }
 
-        auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
+        const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
             imageIndex_) };
 
         std::ostringstream ss;
@@ -187,7 +187,7 @@ namespace popup
     {
         if (imageIndex_ < popupInfo_.TextVec().size())
         {
-            auto const TEXT { popupInfo_.TextVec()[imageIndex_] };
+            const auto TEXT { popupInfo_.TextVec()[imageIndex_] };
 
             if (TEXT.empty())
             {
@@ -216,7 +216,7 @@ namespace popup
     const sfml_util::CachedTexture &
         PopupStageCharacterSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
     {
-        auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
+        const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
             IMAGE_INDEX) };
 
         auto foundIter { creatureToTextureMap_.Find(CREATURE_PTR) };

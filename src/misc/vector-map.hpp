@@ -152,7 +152,7 @@ namespace misc
                 std::remove_if(
                     std::begin(pairs_),
                     std::end(pairs_),
-                    [&KEY](auto const & PAIR) { return (PAIR.first == KEY); }),
+                    [&KEY](const auto & PAIR) { return (PAIR.first == KEY); }),
                 std::end(pairs_));
 
             return ORIG_SIZE - Size();

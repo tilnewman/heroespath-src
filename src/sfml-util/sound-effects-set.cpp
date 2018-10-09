@@ -54,8 +54,8 @@ namespace sfml_util
                                          << ", last=" << sound_effect::ToString(LAST_ENUM)
                                          << ") first and last were the same.");
 
-        auto const FIRST { static_cast<int>(FIRST_ENUM) };
-        auto const LAST { static_cast<int>(LAST_ENUM) };
+        const auto FIRST { static_cast<int>(FIRST_ENUM) };
+        const auto LAST { static_cast<int>(LAST_ENUM) };
         sfxEnums_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
 
         for (int i(FIRST); i <= LAST; ++i)

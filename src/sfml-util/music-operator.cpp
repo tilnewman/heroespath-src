@@ -31,33 +31,19 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Stopped:
-            {
-                return "Stopped";
+            case Stopped: { return "Stopped";
             }
-            case Playing:
-            {
-                return "Playing";
+            case Playing: { return "Playing";
             }
-            case FadingOut:
-            {
-                return "FadingOut";
+            case FadingOut: { return "FadingOut";
             }
-            case FadedOut:
-            {
-                return "FadedOut";
+            case FadedOut: { return "FadedOut";
             }
-            case FadedOutKill:
-            {
-                return "FadedOutKill";
+            case FadedOutKill: { return "FadedOutKill";
             }
-            case FadingIn:
-            {
-                return "FadingIn";
+            case FadingIn: { return "FadingIn";
             }
-            case FadedIn:
-            {
-                return "FadedIn";
+            case FadedIn: { return "FadedIn";
             }
             case Count:
             default:
@@ -183,7 +169,7 @@ namespace sfml_util
             {
                 fadeOutMult_ = 0.0f;
 
-                auto const DID_FADE_TO_ZERO { (NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_) };
+                const auto DID_FADE_TO_ZERO { (NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_) };
 
                 if (killAfterFadeOut_ && DID_FADE_TO_ZERO)
                 {

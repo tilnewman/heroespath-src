@@ -25,35 +25,35 @@ namespace item
         std::ostringstream ss;
         ss << "\n\n*** Item Profile Report ***\n";
 
-        auto const & NORMAL_PROFILES { ItemProfileWarehouse::Instance()->GetNormalProfiles() };
+        const auto & NORMAL_PROFILES { ItemProfileWarehouse::Instance()->GetNormalProfiles() };
 
-        auto const NORMAL_PROFILES_COUNT { NORMAL_PROFILES.size() };
+        const auto NORMAL_PROFILES_COUNT { NORMAL_PROFILES.size() };
 
-        auto const NORMAL_PROFILES_SCORE_SUM { std::accumulate(
+        const auto NORMAL_PROFILES_SCORE_SUM { std::accumulate(
             std::begin(NORMAL_PROFILES),
             std::end(NORMAL_PROFILES),
             0_score,
-            [](auto const SUBTOTAL, auto const & PROFILE) {
+            [](const auto SUBTOTAL, const auto & PROFILE) {
                 return SUBTOTAL + PROFILE.TreasureScore();
             }) };
 
-        auto const & RELIGIOUS_PROFILES {
+        const auto & RELIGIOUS_PROFILES {
             ItemProfileWarehouse::Instance()->GetReligiousProfiles()
         };
 
-        auto const RELIGIOUS_PROFILES_COUNT { RELIGIOUS_PROFILES.size() };
+        const auto RELIGIOUS_PROFILES_COUNT { RELIGIOUS_PROFILES.size() };
 
-        auto const RELIGIOUS_PROFILES_SCORE_SUM { std::accumulate(
+        const auto RELIGIOUS_PROFILES_SCORE_SUM { std::accumulate(
             std::begin(RELIGIOUS_PROFILES),
             std::end(RELIGIOUS_PROFILES),
             0_score,
-            [](auto const SUBTOTAL, auto const & PROFILE) {
+            [](const auto SUBTOTAL, const auto & PROFILE) {
                 return SUBTOTAL + PROFILE.ReligiousScore();
             }) };
 
-        auto const ALL_PROFILES_COUNT { NORMAL_PROFILES_COUNT + RELIGIOUS_PROFILES_COUNT };
+        const auto ALL_PROFILES_COUNT { NORMAL_PROFILES_COUNT + RELIGIOUS_PROFILES_COUNT };
 
-        auto const ALL_PROFILES_SCORE_SUM { NORMAL_PROFILES_SCORE_SUM
+        const auto ALL_PROFILES_SCORE_SUM { NORMAL_PROFILES_SCORE_SUM
                                             + RELIGIOUS_PROFILES_SCORE_SUM };
 
         ss << "total_count=" << ALL_PROFILES_COUNT << ", total_score_sum=" << ALL_PROFILES_SCORE_SUM
@@ -66,7 +66,7 @@ namespace item
                   RELIGIOUS_PROFILES_SCORE_SUM.As<std::size_t>(), RELIGIOUS_PROFILES_COUNT)
            << "\n";
 
-        auto const SOURCE_PROFILES { SourceProfiles(
+        const auto SOURCE_PROFILES { SourceProfiles(
             ALL_PROFILES_COUNT,
             RELIGIOUS_PROFILES_COUNT,
             ALL_PROFILES_SCORE_SUM.As<std::size_t>(),
@@ -131,12 +131,12 @@ namespace item
             pixieReport.Add(PROFILE, PROFILE.IsPixie());
         } };
 
-        for (auto const & PROFILE : NORMAL_PROFILES)
+        for (const auto & PROFILE : NORMAL_PROFILES)
         {
             appendProfileToAllRequiredReports(PROFILE);
         }
 
-        for (auto const & PROFILE : RELIGIOUS_PROFILES)
+        for (const auto & PROFILE : RELIGIOUS_PROFILES)
         {
             appendProfileToAllRequiredReports(PROFILE);
         }
@@ -148,7 +148,7 @@ namespace item
            << ", misc_maybe_weapon_or_armor=" << miscReport.Count()
            << PercentToString(miscReport.Count(), ALL_PROFILES_COUNT) << '\n';
 
-        auto const SPLIT_COUNT { (
+        const auto SPLIT_COUNT { (
             weaponReport.Count() + armorReport.Count() + miscReport.Count()) };
         if (SPLIT_COUNT > ALL_PROFILES_COUNT)
         {
@@ -243,8 +243,8 @@ namespace item
     {
         if (WILL_ADD)
         {
-            auto const NORMAL_SCORE { PROFILE.TreasureScore().As<std::size_t>() };
-            auto const RELIGIOIUS_SCORE { PROFILE.ReligiousScore().As<std::size_t>() };
+            const auto NORMAL_SCORE { PROFILE.TreasureScore().As<std::size_t>() };
+            const auto RELIGIOIUS_SCORE { PROFILE.ReligiousScore().As<std::size_t>() };
 
             scores_.emplace_back(NORMAL_SCORE);
 
@@ -327,7 +327,7 @@ namespace item
         {
             const std::size_t CHUNK_COUNT { 24 };
 
-            auto const CHUNK_SIZE { (
+            const auto CHUNK_SIZE { (
                 (scores_.size() < CHUNK_COUNT) ? 1 : (scores_.size() / CHUNK_COUNT)) };
 
             ss << "\n---(" << CHUNK_SIZE << ")---";
@@ -340,10 +340,10 @@ namespace item
 
                 for (std::size_t index(0); index < CHUNK_SIZE; ++index)
                 {
-                    auto const ACTUAL_INDEX { (chunkIndex * CHUNK_SIZE) + index };
+                    const auto ACTUAL_INDEX { (chunkIndex * CHUNK_SIZE) + index };
                     if (ACTUAL_INDEX < scores_.size())
                     {
-                        auto const VALUE { scores_.at(ACTUAL_INDEX) };
+                        const auto VALUE { scores_.at(ACTUAL_INDEX) };
 
                         if (VALUE < min)
                         {
@@ -363,7 +363,7 @@ namespace item
                     }
                 }
 
-                auto const AVERAGE { static_cast<std::size_t>(DivideAsDouble(sum, CHUNK_SIZE)) };
+                const auto AVERAGE { static_cast<std::size_t>(DivideAsDouble(sum, CHUNK_SIZE)) };
 
                 ss << "\n-\t[" << std::setw(4) << ((MIN_DEFAULT == min) ? 0 : min) << ", "
                    << std::setw(4) << AVERAGE << ", " << std::setw(4) << max
@@ -410,7 +410,7 @@ namespace item
 
             if (elementalCount > 0)
             {
-                auto const SCORES_SUM { misc::Vector::SumVec(scores_) };
+                const auto SCORES_SUM { misc::Vector::SumVec(scores_) };
 
                 ss << "\nElemental Items  count=" << elementalCount
                    << PercentToString(elementalCount, scores_.size());
@@ -487,7 +487,7 @@ namespace item
         std::ostringstream ss;
         ss << Report::Make(SOURCE_PROFILES);
 
-        auto const SUB_REPORT_SOURCES { SourceProfiles(
+        const auto SUB_REPORT_SOURCES { SourceProfiles(
             scores_.size(),
             religiousScores_.size(),
             misc::Vector::SumVec(scores_),
@@ -503,7 +503,7 @@ namespace item
 
         for (auto & specificNameScoresPair : specificMap_)
         {
-            auto const NAME { specificNameScoresPair.first };
+            const auto NAME { specificNameScoresPair.first };
 
             auto & scores { specificNameScoresPair.second.scores };
             std::sort(std::begin(scores), std::end(scores));
@@ -516,7 +516,7 @@ namespace item
 
             misc::VectorMap<material::Enum, MaterialVec_t> primaryToSecondariesMap;
 
-            for (auto const & MATERIAL_PAIR : materialPairs)
+            for (const auto & MATERIAL_PAIR : materialPairs)
             {
                 primaryToSecondariesMap[MATERIAL_PAIR.first].emplace_back(MATERIAL_PAIR.second);
             }
@@ -553,7 +553,7 @@ namespace item
             auto materialVecToString { [](const MaterialVec_t & MATERIALS) {
                 std::ostringstream matVecSS;
                 matVecSS << "(";
-                for (auto const MATERIAL : MATERIALS)
+                for (const auto MATERIAL : MATERIALS)
                 {
                     matVecSS << material::ToString(MATERIAL) << ",";
                 }
@@ -561,7 +561,7 @@ namespace item
                 return matVecSS.str();
             } };
 
-            for (auto const & SECONDARIES_PRIMARIES_PAIR : secondariesToPrimariesMap)
+            for (const auto & SECONDARIES_PRIMARIES_PAIR : secondariesToPrimariesMap)
             {
                 ss << "\n\t\t" << std::setw(30)
                    << materialVecToString(SECONDARIES_PRIMARIES_PAIR.second) << std::setw(10)
@@ -604,7 +604,7 @@ namespace item
         std::ostringstream ss;
         ss << Report::Make(SOURCE_PROFILES);
 
-        auto const SUB_REPORT_SOURCES { SourceProfiles(
+        const auto SUB_REPORT_SOURCES { SourceProfiles(
             scores_.size(),
             religiousScores_.size(),
             misc::Vector::SumVec(scores_),

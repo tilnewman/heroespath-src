@@ -264,7 +264,7 @@ namespace popup
 
     void PopupStageBase::SetupOuterAndInnerRegion()
     {
-        auto const BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
+        const auto BG_IMAGE_SCALE { calcBackgroundImageScale(popupInfo_.Image()) };
         innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
         backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
         sfutil::Center(backgroundSprite_);
@@ -288,7 +288,7 @@ namespace popup
     {
         creature::NameInfo creatureNameInfo;
 
-        auto const TEMP_MOUSE_TEXT_INFO { sfml_util::MouseTextInfo::Make_PopupButtonSet(
+        const auto TEMP_MOUSE_TEXT_INFO { sfml_util::MouseTextInfo::Make_PopupButtonSet(
             creatureNameInfo.LargestLetterString(), popupInfo_.ButtonColor()) };
 
         const sfml_util::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
@@ -297,8 +297,8 @@ namespace popup
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
 
-        auto const POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfutil::MapByRes(30.0f, 90.0f) };
-        auto const BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
+        const auto POPUPBUTTON_TEXT_BOTTOM_MARGIN { sfutil::MapByRes(30.0f, 90.0f) };
+        const auto BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
 
         buttonVertPos_
             = (StageRegionTop() + innerRegion_.top + innerRegion_.height) - BUTTON_HEIGHT;
@@ -346,7 +346,7 @@ namespace popup
 
         if (popupInfo_.Buttons() & ResponseTypes::Continue)
         {
-            auto const MIDDLE { StageRegionLeft() + innerRegion_.left
+            const auto MIDDLE { StageRegionLeft() + innerRegion_.left
                                 + (innerRegion_.width * 0.5f) };
 
             buttonContinueUPtr_ = std::make_unique<sfml_util::TextButton>(
@@ -394,7 +394,7 @@ namespace popup
         textRegion_.top = StageRegionTop() + innerRegion_.top;
         textRegion_.width = innerRegion_.width;
 
-        auto const TEXT_TO_BUTTON_SPACER { 12.0f }; // found by experiment
+        const auto TEXT_TO_BUTTON_SPACER { 12.0f }; // found by experiment
         textRegion_.height = (innerRegion_.height - ButtonTextHeight()) - TEXT_TO_BUTTON_SPACER;
     }
 
@@ -501,15 +501,11 @@ namespace popup
         // These values found by experiment to look good at various resolutions.
         switch (E)
         {
-            case PopupImage::Banner:
-            {
-                return sfutil::MapByRes(0.7f, 2.0f);
+            case PopupImage::Banner: { return sfutil::MapByRes(0.7f, 2.0f);
             }
 
             case PopupImage::Regular:
-            case PopupImage::RegularSidebar:
-            {
-                return sfutil::MapByRes(0.85f, 3.5f);
+            case PopupImage::RegularSidebar: { return sfutil::MapByRes(0.85f, 3.5f);
             }
 
             case PopupImage::Large:
@@ -525,9 +521,7 @@ namespace popup
 
             case PopupImage::MusicSheet:
             case PopupImage::Count:
-            default:
-            {
-                return 1.0f;
+            default: { return 1.0f;
             }
         }
     }

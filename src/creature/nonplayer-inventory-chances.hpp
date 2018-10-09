@@ -40,15 +40,15 @@ namespace creature
         {
             if (map.Empty() == false)
             {
-                auto const TOTAL{ std::accumulate(
+                const auto TOTAL { std::accumulate(
                     std::begin(map),
                     std::end(map),
                     0.0f,
-                    [](auto const SUB_TOTAL, auto const & PAIR) {
+                    [](const auto SUB_TOTAL, const auto & PAIR) {
                         return SUB_TOTAL + PAIR.second;
                     }) };
 
-                auto const NORMALIZE_ADJ{ (1.0f - TOTAL) / static_cast<float>(map.Size()) };
+                const auto NORMALIZE_ADJ { (1.0f - TOTAL) / static_cast<float>(map.Size()) };
 
                 for (auto & nextChancePair : map)
                 {
@@ -211,25 +211,25 @@ namespace creature
                 }
                 */
 
-                auto const WEAPON_NUM_FLOAT{ static_cast<float>(WEAPON_ENUM) };
-                auto const WEAPON_COUNT_FLOAT{ static_cast<float>(T::Count) };
-                auto const ENUM_RATIO{ WEAPON_NUM_FLOAT / WEAPON_COUNT_FLOAT };
+                const auto WEAPON_NUM_FLOAT { static_cast<float>(WEAPON_ENUM) };
+                const auto WEAPON_COUNT_FLOAT { static_cast<float>(T::Count) };
+                const auto ENUM_RATIO { WEAPON_NUM_FLOAT / WEAPON_COUNT_FLOAT };
 
                 //...minus a small amount depending on how valuable/rare the
                 // weapon is that is defined by its position in the enum
-                auto chance{ (ENUM_RATIO * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_) };
+                auto chance { (ENUM_RATIO * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_) };
 
                 //...adjust based on creature rank, where higher rank means higher
                 // chance of the more rare/valuable items
                 // add ones to prevent division by zero
-                auto const ENUM_RATIO_INVERSE{ (WEAPON_COUNT_FLOAT + 1.0f)
-                                               / (WEAPON_NUM_FLOAT + 1.0f) };
+                const auto ENUM_RATIO_INVERSE { (WEAPON_COUNT_FLOAT + 1.0f)
+                                                / (WEAPON_NUM_FLOAT + 1.0f) };
 
-                auto const RANK_F{ CHARACTER_PTR->Rank().As<float>() };
+                const auto RANK_F { CHARACTER_PTR->Rank().As<float>() };
 
-                auto const RANK_GRANDMASTER_F{ masterRankMax_ + 1.0f };
+                const auto RANK_GRANDMASTER_F { masterRankMax_ + 1.0f };
 
-                auto const RANK_RATIO{ RANK_F / RANK_GRANDMASTER_F };
+                const auto RANK_RATIO { RANK_F / RANK_GRANDMASTER_F };
 
                 chance
                     += ((ENUM_RATIO_INVERSE * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_) * RANK_RATIO);

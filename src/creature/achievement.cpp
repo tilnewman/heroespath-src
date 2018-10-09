@@ -34,15 +34,15 @@ namespace creature
     // GetNextTitle() refactored out... 2018-3-23
     TitlePtrOpt_t Achievement::GetCurrentTitle() const
     {
-        TitlePtrOpt_t titlePtrOpt{ boost::none };
+        TitlePtrOpt_t titlePtrOpt { boost::none };
 
         if (titleCountMap_.Empty() == false)
         {
             titlePtrOpt = title::Holder::Get(titleCountMap_.begin()->second);
 
-            for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
+            for (const auto & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
-                auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
+                const auto NEXT_TITLE_PTR { title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() < count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
@@ -65,15 +65,15 @@ namespace creature
 
     TitlePtrOpt_t Achievement::GetNextTitle() const
     {
-        TitlePtrOpt_t titlePtrOpt{ boost::none };
+        TitlePtrOpt_t titlePtrOpt { boost::none };
 
         if (titleCountMap_.Empty() == false)
         {
             titlePtrOpt = title::Holder::Get(titleCountMap_.begin()->second);
 
-            for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
+            for (const auto & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
-                auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
+                const auto NEXT_TITLE_PTR { title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() > count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
@@ -93,8 +93,8 @@ namespace creature
         ss << Name() << "s current count=" << count_
            << ", and has the following achievable titles: ";
 
-        auto const SEP_STR{ ", " };
-        for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
+        const auto SEP_STR { ", " };
+        for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
             ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
                << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
@@ -120,9 +120,9 @@ namespace creature
 
         ++count_;
 
-        for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
+        for (const auto & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
-            auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_TITLE_COUNT_PAIR.second) };
+            const auto NEXT_TITLE_PTR { title::Holder::Get(NEXT_TITLE_COUNT_PAIR.second) };
 
             if ((NEXT_TITLE_PTR->AchievementCount() == count_)
                 && (NEXT_TITLE_PTR->IsRoleInList(ROLE_ENUM)))

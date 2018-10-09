@@ -22,203 +22,105 @@ namespace creature
     {
         switch (ROLE)
         {
-            case Beastmaster:
-            {
-                return "Beastmaster";
+            case Beastmaster: { return "Beastmaster";
             }
-            case Sorcerer:
-            {
-                return "Sorcerer";
+            case Sorcerer: { return "Sorcerer";
             }
-            case Cleric:
-            {
-                return "Cleric";
+            case Cleric: { return "Cleric";
             }
-            case Knight:
-            {
-                return "Knight";
+            case Knight: { return "Knight";
             }
-            case Archer:
-            {
-                return "Archer";
+            case Archer: { return "Archer";
             }
-            case Bard:
-            {
-                return "Bard";
+            case Bard: { return "Bard";
             }
-            case Thief:
-            {
-                return "Thief";
+            case Thief: { return "Thief";
             }
-            case Wolfen:
-            {
-                return "Wolfen";
+            case Wolfen: { return "Wolfen";
             }
-            case Firebrand:
-            {
-                return "Firebrand";
+            case Firebrand: { return "Firebrand";
             }
-            case Sylavin:
-            {
-                return "Sylavin";
+            case Sylavin: { return "Sylavin";
             }
             //
-            case Thug:
-            {
-                return "Thug";
+            case Thug: { return "Thug";
             }
-            case Mugger:
-            {
-                return "Mugger";
+            case Mugger: { return "Mugger";
             }
-            case Drunk:
-            {
-                return "Drunk";
+            case Drunk: { return "Drunk";
             }
-            case Brute:
-            {
-                return "Brute";
+            case Brute: { return "Brute";
             }
-            case Berserker:
-            {
-                return "Berserker";
+            case Berserker: { return "Berserker";
             }
-            case Mountain:
-            {
-                return "Mountain";
+            case Mountain: { return "Mountain";
             }
-            case Grunt:
-            {
-                return "Grunt";
+            case Grunt: { return "Grunt";
             }
-            case Captain:
-            {
-                return "Captain";
+            case Captain: { return "Captain";
             }
-            case Chieftain:
-            {
-                return "Chieftain";
+            case Chieftain: { return "Chieftain";
             }
-            case Trader:
-            {
-                return "Trader";
+            case Trader: { return "Trader";
             }
-            case Warlord:
-            {
-                return "Warlord";
+            case Warlord: { return "Warlord";
             }
-            case Shaman:
-            {
-                return "Shaman";
+            case Shaman: { return "Shaman";
             }
-            case Smasher:
-            {
-                return "Smasher";
+            case Smasher: { return "Smasher";
             }
-            case Strangler:
-            {
-                return "Strangler";
+            case Strangler: { return "Strangler";
             }
-            case Soldier:
-            {
-                return "Soldier";
+            case Soldier: { return "Soldier";
             }
-            case TwoHeaded:
-            {
-                return "TwoHeaded";
+            case TwoHeaded: { return "TwoHeaded";
             }
-            case Giant:
-            {
-                return "Giant";
+            case Giant: { return "Giant";
             }
-            case Elder:
-            {
-                return "Elder";
+            case Elder: { return "Elder";
             }
-            case FourArmed:
-            {
-                return "FourArmed";
+            case FourArmed: { return "FourArmed";
             }
-            case Tendrilus:
-            {
-                return "Tendrilus";
+            case Tendrilus: { return "Tendrilus";
             }
-            case Wing:
-            {
-                return "Wing";
+            case Wing: { return "Wing";
             }
-            case Whelp:
-            {
-                return "Whelp";
+            case Whelp: { return "Whelp";
             }
-            case Pod:
-            {
-                return "Pod";
+            case Pod: { return "Pod";
             }
-            case Spike:
-            {
-                return "Spike";
+            case Spike: { return "Spike";
             }
-            case Skeleton:
-            {
-                return "Skeleton";
+            case Skeleton: { return "Skeleton";
             }
-            case Ranger:
-            {
-                return "Ranger";
+            case Ranger: { return "Ranger";
             }
-            case Water:
-            {
-                return "Water";
+            case Water: { return "Water";
             }
-            case Blacksmith:
-            {
-                return "Blacksmith";
+            case Blacksmith: { return "Blacksmith";
             }
-            case Spider:
-            {
-                return "Spider";
+            case Spider: { return "Spider";
             }
-            case Beetle:
-            {
-                return "Beetle";
+            case Beetle: { return "Beetle";
             }
-            case Boar:
-            {
-                return "Boar";
+            case Boar: { return "Boar";
             }
-            case Lion:
-            {
-                return "Lion";
+            case Lion: { return "Lion";
             }
-            case Ramonaut:
-            {
-                return "Ramonaut";
+            case Ramonaut: { return "Ramonaut";
             }
-            case Serpent:
-            {
-                return "Serpent";
+            case Serpent: { return "Serpent";
             }
-            case Bat:
-            {
-                return "Bat";
+            case Bat: { return "Bat";
             }
-            case Ghost:
-            {
-                return "Ghost";
+            case Ghost: { return "Ghost";
             }
-            case Cat:
-            {
-                return "Cat";
+            case Cat: { return "Cat";
             }
-            case Wolf:
-            {
-                return "Wolf";
+            case Wolf: { return "Wolf";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(ROLE, "ToString");
+            default: { ThrowInvalidValueForFunction(ROLE, "ToString");
             }
         }
     }
@@ -298,9 +200,7 @@ namespace creature
             case role::Blacksmith:
             case role::Cat:
             case role::Wolf:
-            case role::Sylavin:
-            {
-                return combat::BlockingPosType::Front;
+            case role::Sylavin: { return combat::BlockingPosType::Front;
             }
 
             case role::Ghost:
@@ -308,40 +208,28 @@ namespace creature
             case role::Beastmaster:
             case role::Bard:
             case role::Archer:
-            case role::Wing:
-            {
-                return combat::BlockingPosType::Support;
+            case role::Wing: { return combat::BlockingPosType::Support;
             }
 
             case role::Captain:
             case role::Warlord:
-            case role::Chieftain:
-            {
-                return combat::BlockingPosType::Commanders;
+            case role::Chieftain: { return combat::BlockingPosType::Commanders;
             }
 
-            case role::Thief:
-            {
-                return combat::BlockingPosType::Reluctant;
+            case role::Thief: { return combat::BlockingPosType::Reluctant;
             }
 
             case role::Elder:
             case role::Shaman:
             case role::Sorcerer:
-            case role::Cleric:
-            {
-                return combat::BlockingPosType::Casters;
+            case role::Cleric: { return combat::BlockingPosType::Casters;
             }
 
-            case role::Trader:
-            {
-                return combat::BlockingPosType::Last;
+            case role::Trader: { return combat::BlockingPosType::Last;
             }
 
             case role::Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(E, "BlockingPosType");
+            default: { ThrowInvalidValueForFunction(E, "BlockingPosType");
             }
         }
     }
@@ -352,7 +240,7 @@ namespace creature
         std::vector<role::Enum> rolesVec;
         for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
         {
-            auto const ROLE { static_cast<role::Enum>(i) };
+            const auto ROLE { static_cast<role::Enum>(i) };
             if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)
             {
                 rolesVec.emplace_back(ROLE);

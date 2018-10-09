@@ -26,30 +26,18 @@ namespace interact
         {
             switch (CATEGORY)
             {
-                case Category::Common:
-                {
-                    return "Common";
+                case Category::Common: { return "Common";
                 }
-                case Category::Town:
-                {
-                    return "Town";
+                case Category::Town: { return "Town";
                 }
-                case Category::Child:
-                {
-                    return "Child";
+                case Category::Child: { return "Child";
                 }
-                case Category::Monk:
-                {
-                    return "Monk";
+                case Category::Monk: { return "Monk";
                 }
-                case Category::Drunk:
-                {
-                    return "Drunk";
+                case Category::Drunk: { return "Drunk";
                 }
                 case Category::Guard:
-                default:
-                {
-                    return "Guard";
+                default: { return "Guard";
                 }
             }
         }
@@ -71,9 +59,9 @@ namespace interact
             {
                 std::vector<std::string> v;
 
-                for (auto const & S1 : V1)
+                for (const auto & S1 : V1)
                 {
-                    for (auto const & S2 : V2)
+                    for (const auto & S2 : V2)
                     {
                         v.emplace_back((S1 + SEPARATOR).append(S2));
                     }
@@ -84,7 +72,7 @@ namespace interact
 
             bool DoesPartyHaveBeasts(const creature::PlayerParty & party)
             {
-                for (auto const & CHARACTER_PTR : party.Characters())
+                for (const auto & CHARACTER_PTR : party.Characters())
                 {
                     if (CHARACTER_PTR->IsBeast())
                     {
@@ -97,7 +85,7 @@ namespace interact
 
             bool DoesPartyHaveWolfens(const creature::PlayerParty & party)
             {
-                for (auto const & CHARACTER_PTR : party.Characters())
+                for (const auto & CHARACTER_PTR : party.Characters())
                 {
                     if (CHARACTER_PTR->Race() == creature::race::Wolfen)
                     {

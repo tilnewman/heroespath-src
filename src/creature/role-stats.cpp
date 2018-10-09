@@ -27,10 +27,10 @@ namespace creature
         {
             for (misc::EnumUnderlying_t i(0); i < role::PlayerRoleCount; ++i)
             {
-                auto const NEXT_ENUM { static_cast<role::Enum>(i) };
-                auto const NEXT_ENUM_STR { role::ToString(NEXT_ENUM) };
+                const auto NEXT_ENUM { static_cast<role::Enum>(i) };
+                const auto NEXT_ENUM_STR { role::ToString(NEXT_ENUM) };
 
-                auto const NEXT_KEY_STR { "heroespath-creature-role-stat-modifiers-"
+                const auto NEXT_KEY_STR { "heroespath-creature-role-stat-modifiers-"
                                           + NEXT_ENUM_STR };
 
                 const auto STAT_STR { misc::ConfigFile::Instance()->Value(NEXT_KEY_STR) };

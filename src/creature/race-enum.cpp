@@ -24,26 +24,16 @@ namespace creature
     {
         switch (ORIGIN_TYPE)
         {
-            case Statue:
-            {
-                return "Statue";
+            case Statue: { return "Statue";
             }
-            case Egg:
-            {
-                return "Egg";
+            case Egg: { return "Egg";
             }
-            case Embryo:
-            {
-                return "Embryo";
+            case Embryo: { return "Embryo";
             }
-            case Seeds:
-            {
-                return "Seeds";
+            case Seeds: { return "Seeds";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(ORIGIN_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(ORIGIN_TYPE, "ToString");
             }
         }
     }
@@ -52,23 +42,15 @@ namespace creature
     {
         switch (ORIGIN_TYPE)
         {
-            case Statue:
-            {
-                return 20;
+            case Statue: { return 20;
             }
-            case Seeds:
-            {
-                return 10;
+            case Seeds: { return 10;
             }
             case Egg:
-            case Embryo:
-            {
-                return 1;
+            case Embryo: { return 1;
             }
             case Count:
-            default:
-            {
-                return 0;
+            default: { return 0;
             }
         }
     }
@@ -77,186 +59,96 @@ namespace creature
     {
         switch (RACE)
         {
-            case Human:
-            {
-                return "Human";
+            case Human: { return "Human";
             }
-            case Gnome:
-            {
-                return "Gnome";
+            case Gnome: { return "Gnome";
             }
-            case Pixie:
-            {
-                return "Pixie";
+            case Pixie: { return "Pixie";
             }
-            case Wolfen:
-            {
-                return "Wolfen";
+            case Wolfen: { return "Wolfen";
             }
-            case Dragon:
-            {
-                return "Dragon";
+            case Dragon: { return "Dragon";
             }
-            case Goblin:
-            {
-                return "Goblin";
+            case Goblin: { return "Goblin";
             }
-            case Troll:
-            {
-                return "Troll";
+            case Troll: { return "Troll";
             }
-            case Orc:
-            {
-                return "Orc";
+            case Orc: { return "Orc";
             }
-            case Newt:
-            {
-                return "Newt";
+            case Newt: { return "Newt";
             }
-            case Spider:
-            {
-                return "Spider";
+            case Spider: { return "Spider";
             }
-            case Bog:
-            {
-                return "Bog";
+            case Bog: { return "Bog";
             }
-            case CaveCrawler:
-            {
-                return "CaveCrawler";
+            case CaveCrawler: { return "CaveCrawler";
             }
-            case Hydra:
-            {
-                return "Hydra";
+            case Hydra: { return "Hydra";
             }
-            case LizardWalker:
-            {
-                return "LizardWalker";
+            case LizardWalker: { return "LizardWalker";
             }
-            case Minotaur:
-            {
-                return "Minotaur";
+            case Minotaur: { return "Minotaur";
             }
-            case Ogre:
-            {
-                return "Ogre";
+            case Ogre: { return "Ogre";
             }
-            case Plant:
-            {
-                return "Plant";
+            case Plant: { return "Plant";
             }
-            case Shade:
-            {
-                return "Shade";
+            case Shade: { return "Shade";
             }
-            case Skeleton:
-            {
-                return "Skeleton";
+            case Skeleton: { return "Skeleton";
             }
-            case Demon:
-            {
-                return "Demon";
+            case Demon: { return "Demon";
             }
-            case Griffin:
-            {
-                return "Griffin";
+            case Griffin: { return "Griffin";
             }
-            case Halfling:
-            {
-                return "Halfling";
+            case Halfling: { return "Halfling";
             }
-            case Lion:
-            {
-                return "Lion";
+            case Lion: { return "Lion";
             }
-            case LionBoar:
-            {
-                return "LionBoar";
+            case LionBoar: { return "LionBoar";
             }
-            case Naga:
-            {
-                return "Naga";
+            case Naga: { return "Naga";
             }
-            case Ramonaut:
-            {
-                return "Ramonaut";
+            case Ramonaut: { return "Ramonaut";
             }
-            case Serpent:
-            {
-                return "Serpent";
+            case Serpent: { return "Serpent";
             }
-            case Cobra:
-            {
-                return "Cobra";
+            case Cobra: { return "Cobra";
             }
-            case Werebear:
-            {
-                return "Werebear";
+            case Werebear: { return "Werebear";
             }
-            case Wereboar:
-            {
-                return "Wereboar";
+            case Wereboar: { return "Wereboar";
             }
-            case Werecat:
-            {
-                return "Werecat";
+            case Werecat: { return "Werecat";
             }
-            case Werewolf:
-            {
-                return "Werewolf";
+            case Werewolf: { return "Werewolf";
             }
-            case Werebat:
-            {
-                return "Werebat";
+            case Werebat: { return "Werebat";
             }
-            case Pug:
-            {
-                return "Pug";
+            case Pug: { return "Pug";
             }
-            case Wyvern:
-            {
-                return "Wyvern";
+            case Wyvern: { return "Wyvern";
             }
-            case Giant:
-            {
-                return "Giant";
+            case Giant: { return "Giant";
             }
-            case Ghoul:
-            {
-                return "Ghoul";
+            case Ghoul: { return "Ghoul";
             }
-            case Beetle:
-            {
-                return "Beetle";
+            case Beetle: { return "Beetle";
             }
-            case Boar:
-            {
-                return "Boar";
+            case Boar: { return "Boar";
             }
-            case Bat:
-            {
-                return "Bat";
+            case Bat: { return "Bat";
             }
-            case Witch:
-            {
-                return "Witch";
+            case Witch: { return "Witch";
             }
-            case Golem:
-            {
-                return "Golem";
+            case Golem: { return "Golem";
             }
-            case Harpy:
-            {
-                return "Harpy";
+            case Harpy: { return "Harpy";
             }
-            case ThreeHeadedHound:
-            {
-                return "ThreeHeadedHound";
+            case ThreeHeadedHound: { return "ThreeHeadedHound";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(RACE, "ToString");
+            default: { ThrowInvalidValueForFunction(RACE, "ToString");
             }
         }
     }
@@ -339,9 +231,7 @@ namespace creature
             case Witch:
             case Golem:
             case Harpy:
-            case Ghoul:
-            {
-                return true;
+            case Ghoul: { return true;
             }
             case Wolfen:
             case Dragon:
@@ -364,9 +254,7 @@ namespace creature
             case Beetle:
             case Bat:
             case ThreeHeadedHound:
-            case Boar:
-            {
-                return false;
+            case Boar: { return false;
             }
             case Count:
             default:
@@ -417,9 +305,7 @@ namespace creature
             case Witch:
             case Golem:
             case ThreeHeadedHound:
-            case Skeleton:
-            {
-                return false;
+            case Skeleton: { return false;
             }
             case Demon:
             case Shade:
@@ -428,14 +314,10 @@ namespace creature
             case Wyvern:
             case Bat:
             case Harpy:
-            case Dragon:
-            {
-                return true;
+            case Dragon: { return true;
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(E, "HasTorso");
+            default: { ThrowInvalidValueForFunction(E, "HasTorso");
             }
         }
     }
@@ -464,9 +346,7 @@ namespace creature
                 return { role::Bard,        role::Cleric, role::Sorcerer, role::Knight,
                          role::Beastmaster, role::Archer, role::Thief,    role::Grunt };
             }
-            case Pixie:
-            {
-                return { role::Beastmaster, role::Sorcerer, role::Cleric, role::Bard };
+            case Pixie: { return { role::Beastmaster, role::Sorcerer, role::Cleric, role::Bard };
             }
             case Goblin:
             {
@@ -511,87 +391,49 @@ namespace creature
                          role::Giant,     role::Mountain, role::Warlord, role::Captain,
                          role::Chieftain, role::Shaman,   role::Spike,   role::Grunt };
             }
-            case Halfling:
-            {
-                return { role::Shaman, role::Chieftain, role::Captain, role::Grunt };
+            case Halfling: { return { role::Shaman, role::Chieftain, role::Captain, role::Grunt };
             }
-            case Naga:
-            {
-                return { role::Grunt };
+            case Naga: { return { role::Grunt };
             }
-            case Pug:
-            {
-                return { role::Archer, role::Cleric, role::Grunt };
+            case Pug: { return { role::Archer, role::Cleric, role::Grunt };
             }
             case Giant:
             {
                 return { role::Smasher,  role::Strangler, role::Warlord,
                          role::Mountain, role::Grunt,     role::Brute };
             }
-            case Ghoul:
-            {
-                return { role::Strangler, role::Spike, role::Mountain, role::Grunt };
+            case Ghoul: { return { role::Strangler, role::Spike, role::Mountain, role::Grunt };
             }
-            case Wolfen:
-            {
-                return { role::Wolfen, role::TwoHeaded };
+            case Wolfen: { return { role::Wolfen, role::TwoHeaded };
             }
-            case Spider:
-            {
-                return { role::Spider };
+            case Spider: { return { role::Spider };
             }
-            case CaveCrawler:
-            {
-                return { role::Mountain };
+            case CaveCrawler: { return { role::Mountain };
             }
-            case Hydra:
-            {
-                return { role::Wing };
+            case Hydra: { return { role::Wing };
             }
-            case Plant:
-            {
-                return { role::Smasher, role::Tendrilus, role::Pod, role::Strangler };
+            case Plant: { return { role::Smasher, role::Tendrilus, role::Pod, role::Strangler };
             }
             case Lion:
-            case LionBoar:
-            {
-                return { role::Lion };
+            case LionBoar: { return { role::Lion };
             }
-            case Ramonaut:
-            {
-                return { role::Ramonaut };
+            case Ramonaut: { return { role::Ramonaut };
             }
-            case Serpent:
-            {
-                return { role::Serpent, role::Water };
+            case Serpent: { return { role::Serpent, role::Water };
             }
-            case Cobra:
-            {
-                return { role::Serpent };
+            case Cobra: { return { role::Serpent };
             }
-            case Werebear:
-            {
-                return { role::Elder, role::Grunt, role::Mountain };
+            case Werebear: { return { role::Elder, role::Grunt, role::Mountain };
             }
-            case Wereboar:
-            {
-                return { role::Boar };
+            case Wereboar: { return { role::Boar };
             }
-            case Werecat:
-            {
-                return { role::Cat };
+            case Werecat: { return { role::Cat };
             }
-            case Werewolf:
-            {
-                return { role::Wolf };
+            case Werewolf: { return { role::Wolf };
             }
-            case Beetle:
-            {
-                return { role::Beetle };
+            case Beetle: { return { role::Beetle };
             }
-            case Boar:
-            {
-                return { role::Boar };
+            case Boar: { return { role::Boar };
             }
             case Witch:
             {
@@ -599,13 +441,9 @@ namespace creature
                     role::Elder, role::Ghost, role::Strangler, role::Mountain, role::Sorcerer
                 };
             }
-            case Golem:
-            {
-                return { role::Brute };
+            case Golem: { return { role::Brute };
             }
-            case ThreeHeadedHound:
-            {
-                return { role::Mountain };
+            case ThreeHeadedHound: { return { role::Mountain };
             }
             case Skeleton:
             {
@@ -616,38 +454,22 @@ namespace creature
                 return { role::Skeleton, role::Spike, role::Strangler,
                          role::Whelp,    role::Wing,  role::Grunt };
             }
-            case Shade:
-            {
-                return { role::Ghost };
+            case Shade: { return { role::Ghost };
             }
-            case Griffin:
-            {
-                return { role::Whelp, role::Wing };
+            case Griffin: { return { role::Whelp, role::Wing };
             }
-            case Werebat:
-            {
-                return { role::Bat };
+            case Werebat: { return { role::Bat };
             }
-            case Wyvern:
-            {
-                return { role::Whelp, role::Wing };
+            case Wyvern: { return { role::Whelp, role::Wing };
             }
-            case Bat:
-            {
-                return { role::Bat };
+            case Bat: { return { role::Bat };
             }
-            case Harpy:
-            {
-                return { role::Wing };
+            case Harpy: { return { role::Wing };
             }
-            case Dragon:
-            {
-                return { role::Firebrand, role::Sylavin };
+            case Dragon: { return { role::Firebrand, role::Sylavin };
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(E, "Roles");
+            default: { ThrowInvalidValueForFunction(E, "Roles");
             }
         }
     }
@@ -736,9 +558,7 @@ namespace creature
             case race::Bat:
             case race::ThreeHeadedHound:
             case race::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -1120,9 +940,7 @@ namespace creature
                 break;
             }
             case race::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -1523,9 +1341,7 @@ namespace creature
                 rel += 0_score;
                 break;
             }
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -1545,7 +1361,7 @@ namespace creature
             return race::Name(RACE_ENUM);
         }
 
-        auto const IS_ROLE_FIRST { (
+        const auto IS_ROLE_FIRST { (
             (ROLE_ENUM == role::Firebrand) || (ROLE_ENUM == role::FourArmed)
             || (ROLE_ENUM == role::Giant) || (ROLE_ENUM == role::Mountain)
             || (ROLE_ENUM == role::Spike) || (ROLE_ENUM == role::Sylavin)
@@ -1625,9 +1441,7 @@ namespace creature
                 case Bat:
                 case Harpy:
                 case Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
         }
@@ -1907,9 +1721,7 @@ namespace creature
                 break;
             }
             case race::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -2209,9 +2021,7 @@ namespace creature
                 max += 0_rank;
                 break;
             }
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -2268,15 +2078,11 @@ namespace creature
             }
 
             case race::Orc:
-            case race::Goblin:
-            {
-                return { "media-images-bones-skull-goblin" };
+            case race::Goblin: { return { "media-images-bones-skull-goblin" };
             }
 
             case race::Pug:
-            case race::Newt:
-            {
-                return { "media-images-bones-skull-animal-2" };
+            case race::Newt: { return { "media-images-bones-skull-animal-2" };
             }
 
             case race::Naga:
@@ -2286,97 +2092,65 @@ namespace creature
                 return { "media-images-bones-skull-orc" };
             }
 
-            case race::Bog:
-            {
-                return { "media-images-bones-skull-bog" };
+            case race::Bog: { return { "media-images-bones-skull-bog" };
             }
 
             case race::Spider:
-            case race::CaveCrawler:
-            {
-                return { "media-images-bones-cave-crawler" };
+            case race::CaveCrawler: { return { "media-images-bones-cave-crawler" };
             }
 
-            case race::Minotaur:
-            {
-                return { "media-images-bones-skull-minotaur" };
+            case race::Minotaur: { return { "media-images-bones-skull-minotaur" };
             }
 
-            case race::Plant:
-            {
-                return { "media-images-bones-skull-animal-1" };
+            case race::Plant: { return { "media-images-bones-skull-animal-1" };
             }
 
-            case race::Beetle:
-            {
-                return { "media-images-bones-beetle" };
+            case race::Beetle: { return { "media-images-bones-beetle" };
             }
 
-            case race::Demon:
-            {
-                return { "media-images-bones-skull-demon" };
+            case race::Demon: { return { "media-images-bones-skull-demon" };
             }
 
-            case race::Griffin:
-            {
-                return { "media-images-bones-griffin" };
+            case race::Griffin: { return { "media-images-bones-griffin" };
             }
 
             case race::Boar:
             case race::LionBoar:
             case race::Ramonaut:
-            case race::Wereboar:
-            {
-                return { "media-images-bones-skull-animal-3" };
+            case race::Wereboar: { return { "media-images-bones-skull-animal-3" };
             }
 
             case race::Wolfen:
             case race::Lion:
             case race::Werebear:
-            case race::Werewolf:
-            {
-                return { "media-images-bones-wolfen" };
+            case race::Werewolf: { return { "media-images-bones-wolfen" };
             }
 
             case race::Serpent:
-            case race::Cobra:
-            {
-                return { "media-images-bones-skull-snake" };
+            case race::Cobra: { return { "media-images-bones-skull-snake" };
             }
 
-            case race::Werecat:
-            {
-                return { "media-images-bones-cat" };
+            case race::Werecat: { return { "media-images-bones-cat" };
             }
 
             case race::Ogre:
             case race::Golem:
             case race::Troll:
-            case race::Giant:
-            {
-                return { "media-images-bones-skull-giant" };
+            case race::Giant: { return { "media-images-bones-skull-giant" };
             }
 
             case race::Bat:
-            case race::Werebat:
-            {
-                return { "media-images-bones-bat" };
+            case race::Werebat: { return { "media-images-bones-bat" };
             }
 
-            case race::Harpy:
-            {
-                return { "media-images-bones-harpy" };
+            case race::Harpy: { return { "media-images-bones-harpy" };
             }
 
-            case race::ThreeHeadedHound:
-            {
-                return { "media-images-bones-three-headed-hound" };
+            case race::ThreeHeadedHound: { return { "media-images-bones-three-headed-hound" };
             }
 
             case race::Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(E, "CorpseImageKeys");
+            default: { ThrowInvalidValueForFunction(E, "CorpseImageKeys");
             }
         }
     }

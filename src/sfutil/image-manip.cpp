@@ -89,8 +89,8 @@ namespace sfutil
         const sf::RenderStates & RENDER_STATES,
         const bool WILL_DISPLAY)
     {
-        auto const WIDTH { static_cast<unsigned int>(sprite.getGlobalBounds().width) };
-        auto const HEIGHT { static_cast<unsigned int>(sprite.getGlobalBounds().height) };
+        const auto WIDTH { static_cast<unsigned int>(sprite.getGlobalBounds().width) };
+        const auto HEIGHT { static_cast<unsigned int>(sprite.getGlobalBounds().height) };
         renderTexture.create(WIDTH, HEIGHT);
 
         const sf::Vector2f ORIG_POS(sprite.getPosition());

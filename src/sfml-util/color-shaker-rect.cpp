@@ -41,9 +41,9 @@ namespace sfml_util
     {
         if (colorShaker_.IsShaking())
         {
-            auto const WAS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
-            auto const NEW_COLOR { colorShaker_.Update(ELAPSED_TIME_SECONDS) };
-            auto const IS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
+            const auto WAS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
+            const auto NEW_COLOR { colorShaker_.Update(ELAPSED_TIME_SECONDS) };
+            const auto IS_MOVING_TOWARD { colorShaker_.IsMovingToward() };
 
             coloredRect_.Color(NEW_COLOR);
 

@@ -54,7 +54,7 @@ namespace creature
                     << "\") called when the map was empty.");
 
             auto chanceSubTotal { 0.0f };
-            for (auto const & NEXT_MAP_PAIR : MAP)
+            for (const auto & NEXT_MAP_PAIR : MAP)
             {
                 chanceSubTotal += NEXT_MAP_PAIR.second;
             }
@@ -65,10 +65,10 @@ namespace creature
                     << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
                     << ") called when the map's chance total is zero or less.");
 
-            auto const RAND { misc::random::Float(0.0f, chanceSubTotal) };
+            const auto RAND { misc::random::Float(0.0f, chanceSubTotal) };
 
             auto cumulativeChance { 0.0f };
-            for (auto const & NEXT_MAP_PAIR : MAP)
+            for (const auto & NEXT_MAP_PAIR : MAP)
             {
                 cumulativeChance += NEXT_MAP_PAIR.second;
                 if (RAND < cumulativeChance)
@@ -81,7 +81,7 @@ namespace creature
             if (misc::IsRealClose(RAND, chanceSubTotal))
             {
                 // in these rare cases just pick the first non-zero chance
-                for (auto const & NEXT_MAP_PAIR : MAP)
+                for (const auto & NEXT_MAP_PAIR : MAP)
                 {
                     if (NEXT_MAP_PAIR.second > 0.0f)
                     {
@@ -98,7 +98,7 @@ namespace creature
                << "\") failed to random select.  chanceSubTotal=" << chanceSubTotal
                << ", RAND=" << RAND << ", MAP={";
 
-            for (auto const & NEXT_MAP_PAIR : MAP)
+            for (const auto & NEXT_MAP_PAIR : MAP)
             {
                 ss << NEXT_MAP_PAIR.second << ", ";
             }
@@ -106,7 +106,7 @@ namespace creature
             ss << "}  ";
 
             std::size_t i { 0 };
-            for (auto const & NEXT_MAP_PAIR : MAP)
+            for (const auto & NEXT_MAP_PAIR : MAP)
             {
                 if (NEXT_MAP_PAIR.second > 0.0f)
                 {
@@ -244,9 +244,9 @@ namespace creature
             }
 
             float chanceSubTotal(0.0f);
-            for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
+            for (const auto & NEXT_MAP_PAIR_OUTER : MAP)
             {
-                for (auto const & NEXT_MAP_PAIR_INNER : NEXT_MAP_PAIR_OUTER.second.num_owned_map)
+                for (const auto & NEXT_MAP_PAIR_INNER : NEXT_MAP_PAIR_OUTER.second.num_owned_map)
                 {
                     if (NEXT_MAP_PAIR_INNER.first > 0)
                     {
@@ -263,9 +263,9 @@ namespace creature
             const float RAND(misc::random::Float(0.0f, chanceSubTotal));
 
             float cumulativeChance(0.0f);
-            for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
+            for (const auto & NEXT_MAP_PAIR_OUTER : MAP)
             {
-                for (auto const & NEXT_MAP_PAIR_INNER : NEXT_MAP_PAIR_OUTER.second.num_owned_map)
+                for (const auto & NEXT_MAP_PAIR_INNER : NEXT_MAP_PAIR_OUTER.second.num_owned_map)
                 {
                     cumulativeChance += NEXT_MAP_PAIR_INNER.second;
                     if (RAND < cumulativeChance)

@@ -72,7 +72,7 @@ namespace interact
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
         const sfml_util::TextButtonPtr_t TEXT_BUTTON_PTR)
     {
-        for (auto const & BUTTON : buttons_)
+        for (const auto & BUTTON : buttons_)
         {
             if (BUTTON.DoPointersMatch(TEXT_BUTTON_PTR))
             {
@@ -86,7 +86,7 @@ namespace interact
     bool InteractionBase::OnKeyRelease(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const sf::Keyboard::Key KEY)
     {
-        for (auto const & BUTTON : buttons_)
+        for (const auto & BUTTON : buttons_)
         {
             if (BUTTON.Key() == KEY)
             {
@@ -107,7 +107,7 @@ namespace interact
     {
         ButtonVec_t buttons;
 
-        for (auto const BUTTON_ENUM : BUTTON_ENUM_VEC)
+        for (const auto BUTTON_ENUM : BUTTON_ENUM_VEC)
         {
             buttons.emplace_back(Button(BUTTON_ENUM));
         }

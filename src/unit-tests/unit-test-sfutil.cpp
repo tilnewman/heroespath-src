@@ -1432,13 +1432,13 @@ BOOST_AUTO_TEST_CASE(FitTests)
         sf::Sprite spriteWide(textureWide);
 
         spriteTall.setScale(1.0f, 1.0f);
-        auto const ORIG_POS_1_V(spriteTall.getPosition());
+        const auto ORIG_POS_1_V(spriteTall.getPosition());
         Fit(spriteTall, WIDE_V_F);
         BOOST_CHECK(spriteTall.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 1.0f, 10.0f));
         BOOST_CHECK(spriteTall.getPosition() == ORIG_POS_1_V);
 
         spriteWide.setScale(1.0f, 1.0f);
-        auto const ORIG_POS_2_V(spriteWide.getPosition());
+        const auto ORIG_POS_2_V(spriteWide.getPosition());
         Fit(spriteWide, TALL_V_F);
         BOOST_CHECK(spriteWide.getGlobalBounds() == sf::FloatRect(0.0f, 0.0f, 10.0f, 1.0f));
         BOOST_CHECK(spriteWide.getPosition() == ORIG_POS_2_V);
@@ -1860,7 +1860,7 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(ScaleCopy(VRI, 0.0) == V0I);
     BOOST_CHECK(ScaleCopy(VRI, 1.0) == VRI);
     ////
-    auto const XF { 123.789f };
+    const auto XF { 123.789f };
     const int XI { static_cast<int>(XF) };
     const sf::Vector2f VXF(XF, XF);
     const sf::Vector2f VXXF(XF * XF, XF * XF);
@@ -1897,8 +1897,8 @@ BOOST_AUTO_TEST_CASE(SizeAndScaleTests)
     BOOST_CHECK(ScaleCopy(VRI, VHF) == VRHI);
     BOOST_CHECK(ScaleCopy(VRI, VDF) == VRDI);
 
-    auto const RIRFIx { int(double(VRI.x) * double(VRF.x)) };
-    auto const RIRFIy { int(double(VRI.y) * double(VRF.y)) };
+    const auto RIRFIx { int(double(VRI.x) * double(VRF.x)) };
+    const auto RIRFIy { int(double(VRI.y) * double(VRF.y)) };
     const sf::Vector2i V_RIRFI(RIRFIx, RIRFIy);
     BOOST_CHECK(ScaleCopy(VRI, VRF) == V_RIRFI);
 

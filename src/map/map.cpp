@@ -134,7 +134,7 @@ namespace map
                     interactionManager_.RemoveCurrent();
                 }
 
-                auto const DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(
+                const auto DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(
                     DIRECTION, PLAYER_MOVE_DISTANCE_) };
                 player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
                 return DID_ACTUALLY_MOVE;
@@ -144,12 +144,12 @@ namespace map
 
     void Map::MoveNonPlayers()
     {
-        auto const PLAYER_ADJ_POS_V { [&]() {
+        const auto PLAYER_ADJ_POS_V { [&]() {
             return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
         }() };
 
-        auto const PLAYER_RECT_FOR_NPC_COLLISIONS { [&]() {
-            auto const PLAYER_POS_V { mapDisplayUPtr_->PlayerPosMap() };
+        const auto PLAYER_RECT_FOR_NPC_COLLISIONS { [&]() {
+            const auto PLAYER_POS_V { mapDisplayUPtr_->PlayerPosMap() };
 
             return sf::FloatRect(
                 PLAYER_POS_V.x + (PLAYER_ADJ_POS_V.x * 1.2f),
@@ -166,9 +166,9 @@ namespace map
             }
 
             // check if NPC move will collide with the player
-            auto const & NPC_VIEW { npcPtrModelPair.second.GetView() };
+            const auto & NPC_VIEW { npcPtrModelPair.second.GetView() };
 
-            auto const NPC_RECT_ADJ { [&]() {
+            const auto NPC_RECT_ADJ { [&]() {
                 auto rect { NPC_VIEW.SpriteRef().getGlobalBounds() };
 
                 switch (NPC_VIEW.Direction())
@@ -200,7 +200,7 @@ namespace map
                 return rect;
             }() };
 
-            auto const NPC_RECT_FOR_PLAYER_COLLISIONS { [&]() {
+            const auto NPC_RECT_FOR_PLAYER_COLLISIONS { [&]() {
                 auto rect { NPC_RECT_ADJ };
                 rect.left -= PLAYER_ADJ_POS_V.x * 0.25f;
                 rect.width *= 1.75f;
@@ -216,9 +216,9 @@ namespace map
             }
 
             // check if NPC move will collide with other NPCs
-            auto const NPC_POS_V { NPC_VIEW.SpriteRef().getPosition() };
+            const auto NPC_POS_V { NPC_VIEW.SpriteRef().getPosition() };
             auto didNPCsCollide { false };
-            for (auto const & SUB_NPC_PTR_MODEL_PAIR : nonPlayers_)
+            for (const auto & SUB_NPC_PTR_MODEL_PAIR : nonPlayers_)
             {
                 if (npcPtrModelPair.first == SUB_NPC_PTR_MODEL_PAIR.first)
                 {
@@ -228,30 +228,22 @@ namespace map
                 if (NPC_RECT_ADJ.intersects(
                         SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getGlobalBounds()))
                 {
-                    auto const SUB_POS_V {
+                    const auto SUB_POS_V {
                         SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getPosition()
                     };
 
-                    auto const IS_IN_THE_WAY { [&]() {
+                    const auto IS_IN_THE_WAY { [&]() {
                         switch (NPC_VIEW.Direction())
                         {
-                            case sfml_util::Direction::Left:
-                            {
-                                return (SUB_POS_V.x < NPC_POS_V.x);
+                            case sfml_util::Direction::Left: { return (SUB_POS_V.x < NPC_POS_V.x);
                             }
-                            case sfml_util::Direction::Right:
-                            {
-                                return (SUB_POS_V.x > NPC_POS_V.x);
+                            case sfml_util::Direction::Right: { return (SUB_POS_V.x > NPC_POS_V.x);
                             }
-                            case sfml_util::Direction::Up:
-                            {
-                                return (SUB_POS_V.y < NPC_POS_V.y);
+                            case sfml_util::Direction::Up: { return (SUB_POS_V.y < NPC_POS_V.y);
                             }
                             case sfml_util::Direction::Down:
                             case sfml_util::Direction::Count:
-                            default:
-                            {
-                                return (SUB_POS_V.y > NPC_POS_V.y);
+                            default: { return (SUB_POS_V.y > NPC_POS_V.y);
                             }
                         }
                     }() };
@@ -324,7 +316,7 @@ namespace map
     void Map::EntryAndExitLevels(
         std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels)
     {
-        for (auto const & TRANSITION : transitionVec_)
+        for (const auto & TRANSITION : transitionVec_)
         {
             if (TRANSITION.IsEntry())
             {
@@ -339,9 +331,9 @@ namespace map
 
     bool Map::DoesAdjPlayerPosCollide(const sfml_util::Direction::Enum DIR, const float ADJ)
     {
-        auto const PLAYER_POS_V { CalcAdjPlayerPos(DIR, ADJ) };
+        const auto PLAYER_POS_V { CalcAdjPlayerPos(DIR, ADJ) };
 
-        auto const ADJ_FOR_COLLISIONS_V { [&]() {
+        const auto ADJ_FOR_COLLISIONS_V { [&]() {
             return sfutil::Size(player_.GetView().SpriteRef(), sf::Vector2f(0.3f, 0.5f));
         }() };
 
@@ -351,7 +343,7 @@ namespace map
             ADJ_FOR_COLLISIONS_V.x * 2.0f,
             ADJ_FOR_COLLISIONS_V.y * 1.4f);
 
-        for (auto const & COLLISION_RECT : collisionVec_)
+        for (const auto & COLLISION_RECT : collisionVec_)
         {
             if (COLLISION_RECT.intersects(PLAYER_RECT_FOR_MAP_COLLISIONS))
             {
@@ -359,7 +351,7 @@ namespace map
             }
         }
 
-        auto const ADJ_FOR_NPC_COLLISIONS_V { [&]() {
+        const auto ADJ_FOR_NPC_COLLISIONS_V { [&]() {
             return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
         }() };
 
@@ -395,7 +387,7 @@ namespace map
     {
         sf::Vector2f startPos(-1.0f, -1.0f);
 
-        for (auto const & TRANSITION : TRANS_VEC)
+        for (const auto & TRANSITION : TRANS_VEC)
         {
             if (TRANSITION.IsEntry() && (TRANSITION.WhichLevel() == LEVEL_FROM))
             {
@@ -418,9 +410,9 @@ namespace map
         const float ADJUSTMENT,
         Transition & transition) const
     {
-        auto const ADJ_PLAYER_POS_V { CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
+        const auto ADJ_PLAYER_POS_V { CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
 
-        for (auto const & TRANSITION : transitionVec_)
+        for (const auto & TRANSITION : transitionVec_)
         {
             if ((TRANSITION.IsEntry() == false) && (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
             {
@@ -436,7 +428,7 @@ namespace map
     {
         player_.StopWalking();
 
-        auto const IS_LOCKED_DOOR {
+        const auto IS_LOCKED_DOOR {
             game::Game::Instance()->State().GetWorld().GetMaps().Current().IsDoorLocked(
                 TRANSITION.WhichLevel())
         };
@@ -444,7 +436,7 @@ namespace map
         if (IS_LOCKED_DOOR)
         {
             // prevent making duplicate locked door interactions
-            auto const CURRENT_INTERACTION_PTR_OPT { interactionManager_.Current() };
+            const auto CURRENT_INTERACTION_PTR_OPT { interactionManager_.Current() };
             if (CURRENT_INTERACTION_PTR_OPT)
             {
                 if (CURRENT_INTERACTION_PTR_OPT.value()->Type() == interact::Interact::Lock)
@@ -489,9 +481,7 @@ namespace map
                 break;
             }
             case sfml_util::Direction::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -503,11 +493,11 @@ namespace map
     {
         if (TRANS_TYPE != sfml_util::sound_effect::MapTransition::Count)
         {
-            auto const DOOR_ACTION { (
+            const auto DOOR_ACTION { (
                 (IS_DOOR_OPENING) ? sfml_util::sound_effect::DoorAction::Open
                                   : sfml_util::sound_effect::DoorAction::Close) };
 
-            auto const TRANS_SFX { sfml_util::sound_effect::RandomMapTransitionSfx(
+            const auto TRANS_SFX { sfml_util::sound_effect::RandomMapTransitionSfx(
                 TRANS_TYPE, DOOR_ACTION) };
 
             if ((TRANS_SFX == sfml_util::sound_effect::Stairs) && (IS_DOOR_OPENING))
@@ -531,8 +521,8 @@ namespace map
 
     void Map::UpdateWalkSfx()
     {
-        auto const NEW_IS_WALKING { (Player().GetView().WhichPose() == avatar::Pose::Walking) };
-        auto const NEW_WALK_SFX { walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
+        const auto NEW_IS_WALKING { (Player().GetView().WhichPose() == avatar::Pose::Walking) };
+        const auto NEW_WALK_SFX { walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
 
         if (NEW_IS_WALKING && ((NEW_WALK_SFX != walkSfx_) || (NEW_IS_WALKING != walkSfxIsWalking_)))
         {
@@ -557,13 +547,13 @@ namespace map
     {
         nonPlayers_.Clear();
 
-        for (auto const & NPC_PTR :
+        for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
         {
             AddNonPlayerAvatar(NPC_PTR);
         }
 
-        for (auto const & NPC_PTR :
+        for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().RandomNPCs())
         {
             AddNonPlayerAvatar(NPC_PTR);
@@ -572,11 +562,11 @@ namespace map
 
     void Map::AddNonPlayerAvatar(const game::NpcPtr_t NPC_PTR)
     {
-        auto const WALK_BOUNDS_INDEX { NPC_PTR->WalkBoundsIndex() };
-        auto const AVATAR_IMAGE_ENUM { NPC_PTR->AvatarImage() };
+        const auto WALK_BOUNDS_INDEX { NPC_PTR->WalkBoundsIndex() };
+        const auto AVATAR_IMAGE_ENUM { NPC_PTR->AvatarImage() };
 
         std::vector<sf::FloatRect> walkRects;
-        auto const WAS_FOUND { walkRectVecMap_.Find(WALK_BOUNDS_INDEX, walkRects) };
+        const auto WAS_FOUND { walkRectVecMap_.Find(WALK_BOUNDS_INDEX, walkRects) };
 
         if (WAS_FOUND == false)
         {
@@ -587,7 +577,7 @@ namespace map
                << ") but that walkBoundsIndex was not found in all the walk bounds loaded from the "
                   "map file.  Valid indexes are: [";
 
-            for (auto const & WALK_BOUNDS_PAIR : walkRectVecMap_)
+            for (const auto & WALK_BOUNDS_PAIR : walkRectVecMap_)
             {
                 ss << WALK_BOUNDS_PAIR.first << ", ";
             }
@@ -625,7 +615,7 @@ namespace map
 
     const sf::Sprite Map::GetNpcDefaultPoseSprite(const game::NpcPtr_t NPC_PTR) const
     {
-        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayers_)
         {
             if (NPC_PTR_MODEL_PAIR.first == NPC_PTR)
             {
@@ -641,16 +631,16 @@ namespace map
         const avatar::Model & AVATAR,
         const float DISTANCE_TOO_CLOSE) const
     {
-        auto const DISTANCE_HORIZ { std::abs(AVATAR.GetCenteredMapPos().x - POS_V.x) };
-        auto const DISTANCE_VERT { std::abs(AVATAR.GetCenteredMapPos().y - POS_V.y) };
+        const auto DISTANCE_HORIZ { std::abs(AVATAR.GetCenteredMapPos().x - POS_V.x) };
+        const auto DISTANCE_VERT { std::abs(AVATAR.GetCenteredMapPos().y - POS_V.y) };
         return ((DISTANCE_HORIZ < DISTANCE_TOO_CLOSE) && (DISTANCE_VERT < DISTANCE_TOO_CLOSE));
     }
 
     bool Map::IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const
     {
-        auto const PLAYER_GLOBAL_BOUNDS_RECT { player_.GetView().SpriteRef().getGlobalBounds() };
+        const auto PLAYER_GLOBAL_BOUNDS_RECT { player_.GetView().SpriteRef().getGlobalBounds() };
 
-        auto const DISTANCE_TOO_CLOSE {
+        const auto DISTANCE_TOO_CLOSE {
             std::max(PLAYER_GLOBAL_BOUNDS_RECT.width, PLAYER_GLOBAL_BOUNDS_RECT.height) * 1.25f
         };
 
@@ -659,7 +649,7 @@ namespace map
             return true;
         }
 
-        for (auto const & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayers_)
         {
             if (IsPosTooCloseToAvatar(POS_V, NPC_PTR_MODEL_PAIR.second, DISTANCE_TOO_CLOSE))
             {
@@ -675,16 +665,16 @@ namespace map
         std::size_t & walkRectsIndex,
         sf::Vector2f & startingPosV)
     {
-        auto const ATTEMPT_COUNT_MAX { 10000 };
+        const auto ATTEMPT_COUNT_MAX { 10000 };
 
         auto attemptCounter { 0 };
 
         do
         {
             walkRectsIndex = misc::random::SizeT(WALK_RECTS.size() - 1);
-            auto const RECT { WALK_RECTS.at(walkRectsIndex) };
-            auto const X { misc::random::Float(RECT.left, RECT.left + RECT.width) };
-            auto const Y { misc::random::Float(RECT.top, RECT.top + RECT.height) };
+            const auto RECT { WALK_RECTS.at(walkRectsIndex) };
+            const auto X { misc::random::Float(RECT.left, RECT.left + RECT.width) };
+            const auto Y { misc::random::Float(RECT.top, RECT.top + RECT.height) };
             startingPosV = sf::Vector2f(X, Y);
 
             if (IsPosTooCloseToAnyAvatars(startingPosV) == false)

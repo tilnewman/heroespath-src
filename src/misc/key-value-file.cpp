@@ -52,7 +52,7 @@ namespace misc
 
     bool KeyValueFile::ContainsKey(const std::string & KEY)
     {
-        for (auto const & LINE : lines_)
+        for (const auto & LINE : lines_)
         {
             if (LINE.key == KEY)
             {
@@ -281,7 +281,7 @@ namespace misc
             return keys;
         }
 
-        for (auto const & LINE : lines_)
+        for (const auto & LINE : lines_)
         {
             if (LINE.IsKeyValue() == false)
             {
@@ -317,7 +317,7 @@ namespace misc
             return keys;
         }
 
-        for (auto const & LINE : lines_)
+        for (const auto & LINE : lines_)
         {
             if (LINE.IsKeyValue() == false)
             {
@@ -353,7 +353,7 @@ namespace misc
             return keys;
         }
 
-        for (auto const & LINE : lines_)
+        for (const auto & LINE : lines_)
         {
             if (LINE.IsKeyValue() == false)
             {

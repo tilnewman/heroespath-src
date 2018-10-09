@@ -64,7 +64,7 @@ namespace combat
 
     void RestoreInfo::FlyingCreaturesRestore(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        for (auto const & FLYING_CREATURE_PTR : creaturesFlyingPVec_)
+        for (const auto & FLYING_CREATURE_PTR : creaturesFlyingPVec_)
         {
             COMBAT_DISPLAY_PTR->HandleFlyingChange(FLYING_CREATURE_PTR, true);
         }

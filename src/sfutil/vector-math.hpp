@@ -31,7 +31,7 @@ namespace sfutil
     template <typename T>
     constexpr void Normalize(sf::Vector2<T> & v)
     {
-        auto const MAGNITUDE { Magnitude(sf::Vector2<double>(v)) };
+        const auto MAGNITUDE { Magnitude(sf::Vector2<double>(v)) };
 
         if (misc::IsRealZero(MAGNITUDE) == false)
         {

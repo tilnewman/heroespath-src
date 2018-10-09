@@ -102,7 +102,7 @@ namespace combat
                     throw std::runtime_error(exceptionSS.str());
                 }
 
-                auto const CHANCE { ParseChanceString(enumColonChanceStrVec.at(1)) };
+                const auto CHANCE { ParseChanceString(enumColonChanceStrVec.at(1)) };
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
                     std::ostringstream ss;

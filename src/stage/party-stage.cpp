@@ -210,10 +210,10 @@ namespace stage
             && (PACKET_PTR->Response() != popup::ResponseTypes::Cancel)
             && PACKET_PTR->SelectionOpt())
         {
-            auto const SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
+            const auto SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
                 PACKET_PTR->SelectionOpt().value()) };
-            auto const ANIM_NUM { avatar::Avatar::Player_First + SELECTED_NUM };
-            auto const ANIM_ENUM { static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
+            const auto ANIM_NUM { avatar::Avatar::Player_First + SELECTED_NUM };
+            const auto ANIM_ENUM { static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
 
             if (avatar::Avatar::IsPlayer(ANIM_ENUM))
             {
@@ -249,7 +249,7 @@ namespace stage
     {
         ResetMouseOverPopupState();
 
-        auto const SELECTED_CHARACTER_PTR_OPT { GetSelectedCharacterPtrOpt() };
+        const auto SELECTED_CHARACTER_PTR_OPT { GetSelectedCharacterPtrOpt() };
 
         if (!SELECTED_CHARACTER_PTR_OPT)
         {
@@ -260,7 +260,7 @@ namespace stage
         ss << "\n\nDelete " << SELECTED_CHARACTER_PTR_OPT.value()->Name()
            << "?  This cannot be undone.  Are you sure?";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_DELETE_CONFIRM_,
             ss.str(),
             popup::PopupButtons::YesNo,
@@ -328,7 +328,7 @@ namespace stage
         insTextRegionUPtr_
             = std::make_unique<sfml_util::TextRegion>("Instructions", insTextInfo, sf::FloatRect());
 
-        auto const HALF_INSTR_TEXT_WIDTH { insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
+        const auto HALF_INSTR_TEXT_WIDTH { insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
 
         insTextRegionUPtr_->SetEntityPos(
             ((Stage::StageRegionWidth() * 0.5f) - HALF_INSTR_TEXT_WIDTH) + 125.0f,
@@ -354,11 +354,11 @@ namespace stage
         warningTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "WarningsText", warningTextInfo_, sf::FloatRect());
 
-        auto const WARNING_TEXT_LEFT { (Stage::StageRegionWidth() * 0.5f)
+        const auto WARNING_TEXT_LEFT { (Stage::StageRegionWidth() * 0.5f)
                                        - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f)
                                        + 110.0f };
 
-        auto const WARNING_TEXT_TOP { (insTextRegionUPtr_->GetEntityRegion().top
+        const auto WARNING_TEXT_TOP { (insTextRegionUPtr_->GetEntityRegion().top
                                        + insTextRegionUPtr_->GetEntityRegion().height)
                                       - sfutil::ScreenRatioToPixelsVert(0.0025f) };
 
@@ -407,18 +407,18 @@ namespace stage
 
     void PartyStage::Setup_CharactersListBox()
     {
-        auto const CHAR_LIST_POS_LEFT { CHAR_LISTBOX_POS_LEFT_ };
-        auto const CHAR_LIST_WIDTH { LISTBOX_WIDTH_ };
-        auto const CHAR_LIST_HEIGHT { LISTBOX_HEIGHT_ };
+        const auto CHAR_LIST_POS_LEFT { CHAR_LISTBOX_POS_LEFT_ };
+        const auto CHAR_LIST_WIDTH { LISTBOX_WIDTH_ };
+        const auto CHAR_LIST_HEIGHT { LISTBOX_HEIGHT_ };
 
-        auto const CHAR_LIST_POS_TOP {
+        const auto CHAR_LIST_POS_TOP {
             (upTextRegionUPtr_->GetEntityRegion().top + upTextRegionUPtr_->GetEntityRegion().height)
         };
 
         const sf::FloatRect CHAR_LIST_RECT(
             CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP, CHAR_LIST_WIDTH, CHAR_LIST_HEIGHT);
 
-        auto const BG_COLOR { sfutil::color::Orange - sf::Color(100, 100, 100, 220) };
+        const auto BG_COLOR { sfutil::color::Orange - sf::Color(100, 100, 100, 220) };
 
         listBoxInfo_.SetupBorder(true, 1.0f);
         listBoxInfo_.SetupColor(BG_COLOR);
@@ -441,7 +441,7 @@ namespace stage
 
         sfml_util::TextInfo textInfo("", LISTBOX_FONT_ENUM_, LISTBOX_FONT_SIZE_);
 
-        for (auto const & CHARACTER_PTR : unplayedCharactersPVec_)
+        for (const auto & CHARACTER_PTR : unplayedCharactersPVec_)
         {
             std::ostringstream ssTitle;
             ssTitle << CHARACTER_PTR->Name() << ", " << CHARACTER_PTR->RaceName();
@@ -456,7 +456,7 @@ namespace stage
                     CHARACTER_PTR, sfml_util::TextInfo(textInfo, ssTitle.str())));
         }
 
-        characterListBoxUPtr_->Sort([](auto const & A, auto const & B) {
+        characterListBoxUPtr_->Sort([](const auto & A, const auto & B) {
             return (A->Element()->Name() < B->Element()->Name());
         });
 
@@ -465,14 +465,14 @@ namespace stage
 
     void PartyStage::Setup_PartyListBox()
     {
-        auto const PARTY_LIST_POS_LEFT { PARTY_LISTBOX_POS_LEFT_ };
+        const auto PARTY_LIST_POS_LEFT { PARTY_LISTBOX_POS_LEFT_ };
 
-        auto const PARTY_LIST_POS_TOP {
+        const auto PARTY_LIST_POS_TOP {
             (upTextRegionUPtr_->GetEntityRegion().top + upTextRegionUPtr_->GetEntityRegion().height)
         };
 
-        auto const PARTY_LIST_WIDTH { LISTBOX_WIDTH_ };
-        auto const PARTY_LIST_HEIGHT { LISTBOX_HEIGHT_ };
+        const auto PARTY_LIST_WIDTH { LISTBOX_WIDTH_ };
+        const auto PARTY_LIST_HEIGHT { LISTBOX_HEIGHT_ };
 
         const sf::FloatRect PARTY_LIST_RECT(
             PARTY_LIST_POS_LEFT, PARTY_LIST_POS_TOP, PARTY_LIST_WIDTH, PARTY_LIST_HEIGHT);
@@ -538,7 +538,7 @@ namespace stage
     {
         if (willDisplayCharacterCountWarningText_)
         {
-            auto const NEW_COLOR_VAL { static_cast<sf::Uint8>(
+            const auto NEW_COLOR_VAL { static_cast<sf::Uint8>(
                 warningTextSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             auto color(warningTextRegionUPtr_->GetEntityColorForeground());
@@ -584,7 +584,7 @@ namespace stage
 
             if (MOUSEOVER_ELEMENT_PTR_OPT)
             {
-                auto const CHARACTER_PTR { MOUSEOVER_ELEMENT_PTR_OPT.value()->Element() };
+                const auto CHARACTER_PTR { MOUSEOVER_ELEMENT_PTR_OPT.value()->Element() };
 
                 willShowMouseOverPopup_ = true;
                 mouseOverSlider_.Reset(MOUSEOVER_SLIDER_SPEED_);
@@ -593,7 +593,7 @@ namespace stage
                 mouseOverCreatureSprite_.setTexture(mouseOverCreatureTextureOpt_->Get(), true);
                 SetupMouseOverPositionsAndDimmensions(CHARACTER_PTR);
 
-                auto const ELEMENT_RECT { (
+                const auto ELEMENT_RECT { (
                     (isMouseOverCharacterListBox) ? characterListBoxUPtr_->ElementRegion(
                                                         MOUSEOVER_ELEMENT_PTR_OPT.value(), true)
                                                   : partyListBoxUPtr_->ElementRegion(
@@ -630,32 +630,32 @@ namespace stage
                 return;
             }
 
-            auto const RATIO { mouseOverSlider_.Update(ELAPSED_TIME_SECONDS) };
+            const auto RATIO { mouseOverSlider_.Update(ELAPSED_TIME_SECONDS) };
 
-            auto const BG_WIDTH { mouseOverBackgroundRectFinal_.width * RATIO };
-            auto const BG_HEIGHT { mouseOverBackgroundRectFinal_.height * RATIO };
+            const auto BG_WIDTH { mouseOverBackgroundRectFinal_.width * RATIO };
+            const auto BG_HEIGHT { mouseOverBackgroundRectFinal_.height * RATIO };
 
-            auto const BG_LEFT { mousePosV_.x
+            const auto BG_LEFT { mousePosV_.x
                                  - ((mousePosV_.x - mouseOverBackgroundRectFinal_.left) * RATIO) };
 
-            auto const BG_TOP { mousePosV_.y
+            const auto BG_TOP { mousePosV_.y
                                 - ((mousePosV_.y - mouseOverBackgroundRectFinal_.top) * RATIO) };
 
             mouseOverBackground_.Rect(sf::FloatRect(BG_LEFT, BG_TOP, BG_WIDTH, BG_HEIGHT));
 
-            auto const NEW_ALPHA { static_cast<sf::Uint8>(
+            const auto NEW_ALPHA { static_cast<sf::Uint8>(
                 MOUSEOVER_BACKGROUND_FINAL_ALPHA_ * RATIO) };
 
             mouseOverBackground_.Color(sf::Color(0, 0, 0, NEW_ALPHA));
 
-            auto const IMAGE_LEFT {
+            const auto IMAGE_LEFT {
                 mousePosV_.x
                 - ((mousePosV_.x
                     - (mouseOverBackgroundRectFinal_.left + MOUSEOVER_FINAL_INNER_EDGE_PAD_))
                    * RATIO)
             };
 
-            auto const IMAGE_TOP {
+            const auto IMAGE_TOP {
                 mousePosV_.y
                 - ((mousePosV_.y
                     - (mouseOverBackgroundRectFinal_.top + MOUSEOVER_FINAL_INNER_EDGE_PAD_))
@@ -664,8 +664,8 @@ namespace stage
 
             mouseOverCreatureSprite_.setPosition(IMAGE_LEFT, IMAGE_TOP);
 
-            auto const IMAGE_WIDTH_AVAIL { BG_WIDTH - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 3.0f) };
-            auto const IMAGE_HEIGHT_AVAIL { BG_HEIGHT - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 2.0f) };
+            const auto IMAGE_WIDTH_AVAIL { BG_WIDTH - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 3.0f) };
+            const auto IMAGE_HEIGHT_AVAIL { BG_HEIGHT - (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 2.0f) };
             if ((IMAGE_WIDTH_AVAIL > 1.0f) && (IMAGE_HEIGHT_AVAIL > 1.0f))
             {
                 sfutil::Fit(
@@ -723,9 +723,9 @@ namespace stage
     void PartyStage::StartNewGame(const avatar::Avatar::Enum PARTY_AVATAR)
     {
         creature::CreaturePVec_t characters;
-        for (auto const & ELEMENT_UPTR : *partyListBoxUPtr_)
+        for (const auto & ELEMENT_UPTR : *partyListBoxUPtr_)
         {
-            auto const CHARACTER_PTR { ELEMENT_UPTR->Element() };
+            const auto CHARACTER_PTR { ELEMENT_UPTR->Element() };
 
             characters.emplace_back(CHARACTER_PTR);
 
@@ -783,7 +783,7 @@ namespace stage
            << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
            << " have a Beastmaster.";
 
-        auto const POP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
             ss.str(),
             popup::PopupButtons::Okay,
@@ -801,7 +801,7 @@ namespace stage
            << " characters in your party.  You need exactly "
            << creature::PlayerParty::MAX_CHARACTER_COUNT_ << " characters to start the game.";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
             ss.str(),
             popup::PopupButtons::Okay,
@@ -820,7 +820,7 @@ namespace stage
              i <= avatar::Avatar::Player_Last;
              ++i)
         {
-            auto const WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(i) };
+            const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(i) };
 
             partyCachedTextures.emplace_back(avatar::PortraitFactory::Make(
                 "PartyStageAvatar_" + avatar::Avatar::ToString(WHICH_AVATAR), WHICH_AVATAR));
@@ -829,7 +829,7 @@ namespace stage
         std::ostringstream ss;
         ss << "Choose an avatar for your party...";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_STR_PARTY_IMAGE_SELECT_, ss.str(), partyCachedTextures, false) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
@@ -869,8 +869,8 @@ namespace stage
         mouseOverTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "PartyStage'sMouseOverPopup", TEXT_INFO, sf::FloatRect());
 
-        auto const TEXT_WIDTH { mouseOverTextRegionUPtr_->GetEntityRegion().width };
-        auto const TEXT_HEIGHT { mouseOverTextRegionUPtr_->GetEntityRegion().height };
+        const auto TEXT_WIDTH { mouseOverTextRegionUPtr_->GetEntityRegion().width };
+        const auto TEXT_HEIGHT { mouseOverTextRegionUPtr_->GetEntityRegion().height };
 
         mouseOverBackgroundRectFinal_.width
             = (MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_ + TEXT_WIDTH
@@ -905,7 +905,7 @@ namespace stage
             return false;
         }
 
-        auto const CHARACTER_PTR { listbox.Selection()->Element() };
+        const auto CHARACTER_PTR { listbox.Selection()->Element() };
 
         game::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
 

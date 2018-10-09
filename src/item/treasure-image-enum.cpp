@@ -25,25 +25,15 @@ namespace item
     {
         switch (E)
         {
-            case BonePile:
-            {
-                return "BonePile";
+            case BonePile: { return "BonePile";
             }
-            case ChestClosed:
-            {
-                return "ChestClosed";
+            case ChestClosed: { return "ChestClosed";
             }
-            case ChestOpen:
-            {
-                return "ChestOpen";
+            case ChestOpen: { return "ChestOpen";
             }
-            case LockboxClosed:
-            {
-                return "LockboxClosed";
+            case LockboxClosed: { return "LockboxClosed";
             }
-            case LockboxOpen:
-            {
-                return "LockboxOpen";
+            case LockboxOpen: { return "LockboxOpen";
             }
             case Count:
             default:
@@ -61,7 +51,7 @@ namespace item
         {
             case BonePile:
             {
-                auto const RAND{ misc::random::Int(2) };
+                const auto RAND { misc::random::Int(2) };
                 if (RAND == 0)
                 {
                     return "media-images-bones-bone-pile-1";
@@ -75,21 +65,13 @@ namespace item
                     return "media-images-bones-bone-pile-3";
                 }
             }
-            case ChestClosed:
-            {
-                return "media-images-chest-closed";
+            case ChestClosed: { return "media-images-chest-closed";
             }
-            case ChestOpen:
-            {
-                return "media-images-chest-open";
+            case ChestOpen: { return "media-images-chest-open";
             }
-            case LockboxClosed:
-            {
-                return "media-images-lockbox-closed";
+            case LockboxClosed: { return "media-images-lockbox-closed";
             }
-            case LockboxOpen:
-            {
-                return "media-images-lockbox-open";
+            case LockboxOpen: { return "media-images-lockbox-open";
             }
             case Count:
             default:

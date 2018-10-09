@@ -45,7 +45,7 @@ namespace misc
 
         ~NotNullWarehouse()
         {
-            auto const SIZE { Size() };
+            const auto SIZE { Size() };
 
             std::ostringstream ss;
             ss << "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
@@ -83,7 +83,7 @@ namespace misc
         std::size_t Size() const
         {
             std::size_t count { 0 };
-            for (auto const & UPTR : uPtrVec_)
+            for (const auto & UPTR : uPtrVec_)
             {
                 if (UPTR)
                 {
@@ -101,7 +101,7 @@ namespace misc
 
         const misc::NotNull<T *> Store(std::unique_ptr<T> uPtrToStore)
         {
-            auto const NOTNULL_PTR_TO_RETURN { Store(uPtrToStore.get()) };
+            const auto NOTNULL_PTR_TO_RETURN { Store(uPtrToStore.get()) };
             uPtrToStore.release();
             return NOTNULL_PTR_TO_RETURN;
         }
@@ -117,10 +117,10 @@ namespace misc
 
             // Ensure this object is not already stored, and along the way,
             // look for an abandoned slot to use as indexToSaveAt.
-            auto const NUM_SLOTS { indexToSaveAt };
+            const auto NUM_SLOTS { indexToSaveAt };
             for (std::size_t i(0); i < NUM_SLOTS; ++i)
             {
-                auto const STORED_PTR { uPtrVec_[i].get() };
+                const auto STORED_PTR { uPtrVec_[i].get() };
                 if (STORED_PTR == ptrToStore)
                 {
                     std::ostringstream ss;
@@ -150,7 +150,7 @@ namespace misc
 
         void Free(std::vector<NotNull<T *>> & notNullVec)
         {
-            for (auto const & NOT_NULL : notNullVec)
+            for (const auto & NOT_NULL : notNullVec)
             {
                 Free(NOT_NULL.Ptr());
             }

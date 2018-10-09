@@ -31,7 +31,7 @@ namespace sfutil
 
     void FitAndReCenter(sf::Sprite & s, const sf::Vector2f & LIMIT)
     {
-        auto const ORIG_CENTER { CenterOf(s) };
+        const auto ORIG_CENTER { CenterOf(s) };
         Fit(s, LIMIT);
         s.setPosition(ORIG_CENTER - (Size(s, 0.5f)) + s.getOrigin());
     }

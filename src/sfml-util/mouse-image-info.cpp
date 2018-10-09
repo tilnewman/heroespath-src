@@ -139,7 +139,7 @@ namespace sfml_util
            << "Disabled=" << disabled.ToString(false, misc::Wrap::Yes) << SEPARATOR
            << "will_draw_up_if_missing=" << std::boolalpha << will_draw_up_if_missing;
 
-        auto const PARTS_STR { (
+        const auto PARTS_STR { (
             (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)

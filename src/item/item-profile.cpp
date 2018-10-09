@@ -88,12 +88,12 @@ namespace item
         // Use a creature's rank min/max to establish a kind of combined power/worth/value
         // summon score, then append that to the summoning item's score.
 
-        auto const CREATURE_RANK_RANGE { creature::race::RaceRoleRanks(
+        const auto CREATURE_RANK_RANGE { creature::race::RaceRoleRanks(
             SUMMON_INFO.Race(), SUMMON_INFO.Role()) };
 
-        auto const SUMMON_COUNT_D { static_cast<double>(SUMMON_INFO.Count()) };
+        const auto SUMMON_COUNT_D { static_cast<double>(SUMMON_INFO.Count()) };
 
-        auto const CREATURE_RANK_AVG {
+        const auto CREATURE_RANK_AVG {
             (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5
         };
 
@@ -121,7 +121,7 @@ namespace item
             ss << ", is_pixie=" << std::boolalpha << isPixie_;
         }
 
-        auto const ROLE_RESTRICTION { RoleRestriction() };
+        const auto ROLE_RESTRICTION { RoleRestriction() };
 
         if (ROLE_RESTRICTION != creature::role::Count)
         {
@@ -193,7 +193,7 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        auto const MISC_TYPE { THIN_PROFILE.MiscType() };
+        const auto MISC_TYPE { THIN_PROFILE.MiscType() };
 
         element_ = ELEMENT_TYPE;
 
@@ -741,7 +741,7 @@ namespace item
         const bool IS_PIXIE,
         const misc_type::Enum MISC_TYPE)
     {
-        auto const DETAILS { weapon::WeaponDetailLoader::LookupWeaponDetails(
+        const auto DETAILS { weapon::WeaponDetailLoader::LookupWeaponDetails(
             THIN_PROFILE.WeaponInfo().DetailsKeyName()) };
 
         category_

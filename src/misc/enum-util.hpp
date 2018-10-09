@@ -71,7 +71,7 @@ namespace misc
             {
                 while (flagValue <= LAST_VALID_VALUE)
                 {
-                    auto const FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
+                    const auto FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
 
                     if (EnumWrapper_t::IsValid(static_cast<typename EnumWrapper_t::Enum>(
                             FLAG_VALUE_TO_TEST_AND_REPORT))
@@ -84,7 +84,7 @@ namespace misc
                         continue;
                     }
 
-                    auto const STRING { EnumWrapper_t::ToString(
+                    const auto STRING { EnumWrapper_t::ToString(
                         static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
 
                     if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
@@ -102,7 +102,7 @@ namespace misc
                                         << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
                     }
 
-                    auto const IS_DUPLICATE { std::find(
+                    const auto IS_DUPLICATE { std::find(
                                                   std::begin(alreadyGeneratedStrings),
                                                   std::end(alreadyGeneratedStrings),
                                                   STRING)
@@ -113,7 +113,7 @@ namespace misc
                         msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
                                     << "\" is a duplicate of a previous generated string.");
 
-                    auto const FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
+                    const auto FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
@@ -397,7 +397,7 @@ namespace misc
 
         static EnumUnderlying_t FromString(const std::string & S)
         {
-            auto const TRIMMED { boost::algorithm::trim_copy(S) };
+            const auto TRIMMED { boost::algorithm::trim_copy(S) };
 
             if (TRIMMED.empty())
             {
@@ -406,7 +406,7 @@ namespace misc
 
             std::string seperatorChars { "" };
 
-            for (auto const CHAR : TRIMMED)
+            for (const auto CHAR : TRIMMED)
             {
                 // spaces are not valid separators because some names will have spaces
                 if ((std::isalpha(CHAR) == false) && (std::isspace(CHAR) == false) && (CHAR != '-')
@@ -428,7 +428,7 @@ namespace misc
             }
 
             EnumUnderlying_t result { 0 };
-            for (auto const & WORD : words)
+            for (const auto & WORD : words)
             {
                 EnumUnderlying_t flag { 1 };
 

@@ -39,7 +39,7 @@ namespace sfml_util
 
     const Date Date::CurrentDate()
     {
-        auto const DATE { boost::posix_time::second_clock::local_time().date() };
+        const auto DATE { boost::posix_time::second_clock::local_time().date() };
         return Date(DATE.year(), DATE.month(), DATE.day());
     }
 
@@ -56,8 +56,8 @@ namespace sfml_util
         , seconds(0)
         , milliseconds(0)
     {
-        auto const SECONDS_FLOAT { TIME_OBJ.asSeconds() };
-        auto const SECONDS_INT { static_cast<int>(SECONDS_FLOAT) };
+        const auto SECONDS_FLOAT { TIME_OBJ.asSeconds() };
+        const auto SECONDS_INT { static_cast<int>(SECONDS_FLOAT) };
         hours = SECONDS_INT / SECONDS_IN_HOUR_;
         minutes = (SECONDS_INT % SECONDS_IN_HOUR_) / SECONDS_IN_MINUTE_;
         seconds = (SECONDS_INT - (hours * SECONDS_IN_HOUR_)) - (minutes * SECONDS_IN_MINUTE_);
@@ -81,7 +81,7 @@ namespace sfml_util
 
     const Time Time::CurrentTime()
     {
-        auto const TOD { boost::posix_time::microsec_clock::local_time().time_of_day() };
+        const auto TOD { boost::posix_time::microsec_clock::local_time().time_of_day() };
 
         return Time(
             static_cast<int>(TOD.hours()),

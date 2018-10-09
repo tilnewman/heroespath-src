@@ -61,9 +61,9 @@ namespace sfml_util
         const sf::Vector2f IMAGE_SIZE_CONTRAINTS_V(
             0.0f, (sfutil::ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
 
-        auto const POS_TOP { (FULL_SCREEN_RECT.height - IMAGE_SIZE_CONTRAINTS_V.y) };
+        const auto POS_TOP { (FULL_SCREEN_RECT.height - IMAGE_SIZE_CONTRAINTS_V.y) };
 
-        auto const HALF_SCREEN_WIDTH { FULL_SCREEN_RECT.width * 0.5f };
+        const auto HALF_SCREEN_WIDTH { FULL_SCREEN_RECT.width * 0.5f };
 
         float counter { 0.0f };
         float posMostLeft { HALF_SCREEN_WIDTH };

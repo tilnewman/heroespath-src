@@ -33,13 +33,13 @@ namespace sfutil
         const sf::Vector2<T2> & B,
         const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count)
     {
-        auto const A_X { static_cast<double>(A.x) };
-        auto const A_Y { static_cast<double>(A.y) };
-        auto const B_X { static_cast<double>(B.x) };
-        auto const B_Y { static_cast<double>(B.y) };
+        const auto A_X { static_cast<double>(A.x) };
+        const auto A_Y { static_cast<double>(A.y) };
+        const auto B_X { static_cast<double>(B.x) };
+        const auto B_Y { static_cast<double>(B.y) };
 
-        auto const DIFF_X_ABS { misc::ABS(B_X - A_X) };
-        auto const DIFF_Y_ABS { misc::ABS(B_Y - A_Y) };
+        const auto DIFF_X_ABS { misc::ABS(B_X - A_X) };
+        const auto DIFF_Y_ABS { misc::ABS(B_Y - A_Y) };
 
         if (DIFF_X_ABS > DIFF_Y_ABS)
         {

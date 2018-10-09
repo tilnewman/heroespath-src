@@ -115,12 +115,12 @@ namespace item
 
     void ItemProfileWarehouse::Setup_StandardEquipment()
     {
-        for (auto const & WEAPON_THIN_PROFILE : thinProfileFactory_.MakeAllWeapons())
+        for (const auto & WEAPON_THIN_PROFILE : thinProfileFactory_.MakeAllWeapons())
         {
             MakeLoopOverMaterialsAndElementsForEquipment(WEAPON_THIN_PROFILE);
         }
 
-        for (auto const & ARMOR_THIN_PROFILE : thinProfileFactory_.MakeAllArmor())
+        for (const auto & ARMOR_THIN_PROFILE : thinProfileFactory_.MakeAllArmor())
         {
             MakeLoopOverMaterialsAndElementsForEquipment(ARMOR_THIN_PROFILE);
         }
@@ -130,11 +130,11 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < misc_type::Count; ++i)
         {
-            auto const MISC_TYPE { static_cast<misc_type::Enum>(i) };
+            const auto MISC_TYPE { static_cast<misc_type::Enum>(i) };
 
             if (misc_type::IsSummoning(MISC_TYPE) == false)
             {
-                for (auto const ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
+                for (const auto ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
                 {
                     MakeLoopOverMaterialsForMisc(MISC_TYPE, ELEMENT_TYPE);
                 }
@@ -146,9 +146,9 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < named_type::Count; ++i)
         {
-            auto const NAMED_TYPE { static_cast<named_type::Enum>(i) };
+            const auto NAMED_TYPE { static_cast<named_type::Enum>(i) };
 
-            for (auto const & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
+            for (const auto & NAMED_THINPROFILE : thinProfileFactory_.MakeAllNamedTypes(NAMED_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
                     NAMED_THINPROFILE, NAMED_TYPE, set_type::Not);
@@ -160,9 +160,9 @@ namespace item
     {
         for (misc::EnumUnderlying_t i(1); i < set_type::Count; ++i)
         {
-            auto const SET_TYPE { static_cast<set_type::Enum>(i) };
+            const auto SET_TYPE { static_cast<set_type::Enum>(i) };
 
-            for (auto const & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
+            for (const auto & SET_THINPROFILE : thinProfileFactory_.MakeAllSetTypes(SET_TYPE))
             {
                 MakeLoopOverMaterialsAndElementsForEquipment(
                     SET_THINPROFILE, named_type::Not, SET_TYPE);
@@ -176,20 +176,20 @@ namespace item
 
         for (misc::EnumUnderlying_t raceIndex(0); raceIndex < race::Count; ++raceIndex)
         {
-            auto const RACE_TYPE { static_cast<race::Enum>(raceIndex) };
+            const auto RACE_TYPE { static_cast<race::Enum>(raceIndex) };
 
-            auto const ROLES_VEC { race::Roles(RACE_TYPE) };
+            const auto ROLES_VEC { race::Roles(RACE_TYPE) };
 
-            for (auto const ROLE_TYPE : ROLES_VEC)
+            for (const auto ROLE_TYPE : ROLES_VEC)
             {
-                auto const ORIGINS_VEC { race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
-                for (auto const ORIGIN_TYPE : ORIGINS_VEC)
+                const auto ORIGINS_VEC { race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
+                for (const auto ORIGIN_TYPE : ORIGINS_VEC)
                 {
-                    auto const SUMMON_INFO { SummonInfo(ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
+                    const auto SUMMON_INFO { SummonInfo(ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
 
                     if (ORIGIN_TYPE == origin_type::Statue)
                     {
-                        for (auto const ELEMENT_TYPE :
+                        for (const auto ELEMENT_TYPE :
                              misc_type::ElementTypes(misc_type::SummoningStatue, true))
                         {
                             MakeLoopOverMaterialsForMisc(
@@ -198,7 +198,7 @@ namespace item
                     }
                     else
                     {
-                        auto const MISC_TYPE { [&]() {
+                        const auto MISC_TYPE { [&]() {
                             if (RACE_TYPE == creature::race::Spider)
                             {
                                 return misc_type::SpiderEggs;
@@ -217,7 +217,7 @@ namespace item
                             }
                         }() };
 
-                        for (auto const ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
+                        for (const auto ELEMENT_TYPE : misc_type::ElementTypes(MISC_TYPE, true))
                         {
                             MakeLoopOverMaterialsForMisc(MISC_TYPE, ELEMENT_TYPE, SUMMON_INFO);
                         }
@@ -287,10 +287,10 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE)
     {
-        for (auto const & MATERIAL_PAIR :
+        for (const auto & MATERIAL_PAIR :
              materialFactory_.MakeForEquipment(THIN_PROFILE, NAMED_TYPE, SET_TYPE))
         {
-            for (auto const ELEMENT_TYPE :
+            for (const auto ELEMENT_TYPE :
                  ElementTypesIncludingNone(THIN_PROFILE, NAMED_TYPE, SET_TYPE))
             {
                 MakeForEquipment(
@@ -523,9 +523,7 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 
@@ -732,11 +730,11 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const creature::SummonInfo & SUMMON_INFO)
     {
-        auto const IS_MAGICAL { (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
+        const auto IS_MAGICAL { (ELEMENT_TYPE != element_type::None) || SUMMON_INFO.CanSummon()
                                 || misc_type::IsUnique(MISC_TYPE)
                                 || misc_type::IsQuestItem(MISC_TYPE) };
 
-        for (auto const & MATERIAL_PAIR : materialFactory_.MakeForMiscType(MISC_TYPE, IS_MAGICAL))
+        for (const auto & MATERIAL_PAIR : materialFactory_.MakeForMiscType(MISC_TYPE, IS_MAGICAL))
         {
             if (misc_type::HasOnlyPixieVersion(MISC_TYPE) == false)
             {

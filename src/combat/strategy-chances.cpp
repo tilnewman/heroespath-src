@@ -9,9 +9,9 @@
 //
 // strategy-chances.cpp
 //
-#include "strategy-chances.hpp"
 #include "misc/real.hpp"
 #include "misc/vector-map.hpp"
+#include "strategy-chances.hpp"
 
 #include <tuple>
 #include <utility>
@@ -215,7 +215,7 @@ namespace combat
                       standPounceFreqChanceMap_, false)
                << "  |  RetreatCounts=(";
 
-            auto count{ outnumberRetreatChanceMap_.Size() };
+            auto count { outnumberRetreatChanceMap_.Size() };
 
             if (count > 10)
             {
@@ -228,12 +228,12 @@ namespace combat
             }
             else
             {
-                const std::string SEP{ ", " };
+                const std::string SEP { ", " };
                 for (std::size_t i(0); i < count; ++i)
                 {
                     ss << i << ":";
 
-                    auto const COUNTCHANCE_ITER{ outnumberRetreatChanceMap_.Find(i) };
+                    const auto COUNTCHANCE_ITER { outnumberRetreatChanceMap_.Find(i) };
 
                     if (COUNTCHANCE_ITER == outnumberRetreatChanceMap_.end())
                     {
@@ -266,10 +266,10 @@ namespace combat
 
             // Find chance total of all FrequencyTypes, and make a vec of all that have a certain
             // (one) or higher than certain chance.
-            auto totalOfAllFreqTypes{ 0.0f };
-            auto cretainOrHigherChanceTotal{ 0.0f };
+            auto totalOfAllFreqTypes { 0.0f };
+            auto cretainOrHigherChanceTotal { 0.0f };
             std::vector<std::pair<FrequencyType::Enum, float>> cretainOrHigherFreqTypeVec;
-            for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
+            for (const auto & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
             {
                 totalOfAllFreqTypes += NEXT_FREQCHANCE_PAIR.second;
 
@@ -291,9 +291,9 @@ namespace combat
             {
                 // if there are multipe FrequencyTypes that are certain or higher then choose
                 // randomly amoung them
-                auto const RAND(misc::random::Float(0.0f, cretainOrHigherChanceTotal));
-                auto subtotal{ 0.0f };
-                for (auto const & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)
+                const auto RAND(misc::random::Float(0.0f, cretainOrHigherChanceTotal));
+                auto subtotal { 0.0f };
+                for (const auto & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)
                 {
                     subtotal += NEXT_FREQCHANCE_PAIR.second;
                     if (RAND < subtotal)
@@ -306,17 +306,17 @@ namespace combat
             }
             else
             {
-                auto const DO_CHANCES_TOTAL_ONE_OR_LESS{ (
+                const auto DO_CHANCES_TOTAL_ONE_OR_LESS { (
                     (totalOfAllFreqTypes < 1.0f) || misc::IsRealOne(totalOfAllFreqTypes)) };
 
                 // if there are no FrequencyTypes with certain or higher chance,
                 // then random select from any with a non-zero chance...
-                auto subtotal{ 0.0f };
+                auto subtotal { 0.0f };
 
-                auto const RAND{ misc::random::Float(
+                const auto RAND { misc::random::Float(
                     0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
 
-                for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
+                for (const auto & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
                 {
                     subtotal += NEXT_FREQCHANCE_PAIR.second;
                     if (RAND < subtotal)
@@ -353,10 +353,10 @@ namespace combat
             {
                 // Since the "dist" option can set up to a hundred chances equal to one,
                 // restrict the one chance to only occurring only once, the first time.
-                auto alreadyFoundChanceOfOne{ false };
+                auto alreadyFoundChanceOfOne { false };
 
-                auto total{ 0.0f };
-                for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
+                auto total { 0.0f };
+                for (const auto & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
                 {
                     if (misc::IsRealOne(NEXT_COUNTCHANCE_PAIR.second))
                     {
@@ -373,10 +373,10 @@ namespace combat
                     total += NEXT_COUNTCHANCE_PAIR.second;
                 }
 
-                auto const RAND{ misc::random::Float(0.0f, total) };
+                const auto RAND { misc::random::Float(0.0f, total) };
 
-                auto subtotal{ 0.0f };
-                for (auto const & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
+                auto subtotal { 0.0f };
+                for (const auto & NEXT_COUNTCHANCE_PAIR : OUTNUMBER_RETREAT_CHANCE_MAP)
                 {
                     subtotal += NEXT_COUNTCHANCE_PAIR.second;
                     if (RAND < subtotal)

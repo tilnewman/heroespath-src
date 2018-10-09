@@ -71,12 +71,12 @@ namespace sfml_util
             static misc::EnumUnderlying_t imageIndex { 0 };
             if (imageIndex < EnumWrapper_t::Count)
             {
-                auto const ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(imageIndex++) };
+                const auto ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(imageIndex++) };
 
                 sf::Texture texture;
                 Load(texture, ENUM_VALUE);
 
-                auto const MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
+                const auto MAX_DIMMENSION_U { static_cast<unsigned>(MaxDimmension()) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     ((texture.getSize().x == MAX_DIMMENSION_U)

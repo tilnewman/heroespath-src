@@ -122,13 +122,13 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
+                    const auto DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
+                    const auto DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -162,22 +162,22 @@ namespace song
             case Songs::SpiritResonance:
 
             {
-                auto const RATIO_FROM_STATS { creature::Stats::Ratio(
+                const auto RATIO_FROM_STATS { creature::Stats::Ratio(
                     CREATURE_PLAYING_PTR,
                     { creature::Traits::Intelligence, creature::Traits::Charm },
                     (creature::Stats::Luck | creature::Stats::RaceRoleBonus)) };
 
-                auto const RATIO_FROM_TRAIT_BONUS { static_cast<float>(
+                const auto RATIO_FROM_TRAIT_BONUS { static_cast<float>(
                                                         CREATURE_PLAYING_PTR->TraitBonusCurrent(
                                                             creature::Traits::MagicEffect))
                                                     / 100.0f };
 
-                auto const MANA_GAIN_ORIG { Mana_t::Make(
+                const auto MANA_GAIN_ORIG { Mana_t::Make(
                     10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS)) };
 
-                auto const MANA_GAIN_MAX { CREATURE_LISTENING_PTR->ManaMissing() };
+                const auto MANA_GAIN_MAX { CREATURE_LISTENING_PTR->ManaMissing() };
 
-                auto const MANA_GAIN_FINAL { (
+                const auto MANA_GAIN_FINAL { (
                     (MANA_GAIN_ORIG > MANA_GAIN_MAX) ? MANA_GAIN_MAX : MANA_GAIN_ORIG) };
 
                 if (MANA_GAIN_FINAL > 0_mana)
@@ -217,7 +217,7 @@ namespace song
                 };
 
                 creature::CondEnumVec_t condsToRemoveVec;
-                for (auto const NEXT_COND_TO_REMOVE_ENUM : CONDS_TO_REMOVE_VEC)
+                for (const auto NEXT_COND_TO_REMOVE_ENUM : CONDS_TO_REMOVE_VEC)
                 {
                     if (CREATURE_LISTENING_PTR->HasCondition(NEXT_COND_TO_REMOVE_ENUM))
                     {
@@ -279,7 +279,7 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
+                    const auto DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         CREATURE_LISTENING_PTR,
@@ -291,7 +291,7 @@ namespace song
                             | creature::Stats::With::RankBonus
                             | creature::Stats::With::PlayerNaturalWins)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
+                    const auto DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -337,7 +337,7 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
+                    const auto DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         CREATURE_LISTENING_PTR,
@@ -349,7 +349,7 @@ namespace song
                             | creature::Stats::With::RankBonus
                             | creature::Stats::With::PlayerNaturalWins)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
+                    const auto DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -396,13 +396,13 @@ namespace song
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
+                    const auto DID_STAT_ROLL_SUCCEED { creature::Stats::Test(
                         CREATURE_PLAYING_PTR,
                         { creature::Traits::Intelligence, creature::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
+                    const auto DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_PLAYING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 
@@ -530,21 +530,13 @@ namespace song
         {
             switch (misc::random::Int(3))
             {
-                case 1:
-                {
-                    return "melody";
+                case 1: { return "melody";
                 }
-                case 2:
-                {
-                    return "tune";
+                case 2: { return "tune";
                 }
-                case 3:
-                {
-                    return "song";
+                case 3: { return "song";
                 }
-                default:
-                {
-                    return "strumming";
+                default: { return "strumming";
                 }
             }
         }
@@ -552,21 +544,13 @@ namespace song
         {
             switch (misc::random::Int(3))
             {
-                case 1:
-                {
-                    return "drumming";
+                case 1: { return "drumming";
                 }
-                case 2:
-                {
-                    return "pounding";
+                case 2: { return "pounding";
                 }
-                case 3:
-                {
-                    return "rapping";
+                case 3: { return "rapping";
                 }
-                default:
-                {
-                    return "tapping";
+                default: { return "tapping";
                 }
             }
         }
@@ -578,17 +562,11 @@ namespace song
         {
             switch (misc::random::Int(2))
             {
-                case 1:
-                {
-                    return "melody";
+                case 1: { return "melody";
                 }
-                case 2:
-                {
-                    return "tune";
+                case 2: { return "tune";
                 }
-                default:
-                {
-                    return "song";
+                default: { return "song";
                 }
             }
         }

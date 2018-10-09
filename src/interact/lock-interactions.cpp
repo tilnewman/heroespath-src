@@ -57,7 +57,7 @@ namespace interact
     {
         if (characterPtrOpt_)
         {
-            auto const DID_UNLOCK { creature::Stats::Test(
+            const auto DID_UNLOCK { creature::Stats::Test(
                 characterPtrOpt_.value(),
                 creature::Traits::Luck,
                 static_cast<creature::Stats::With>(
@@ -83,16 +83,16 @@ namespace interact
     void LockPicking::PopupCharacterSelection(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR) const
     {
-        auto const INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
+        const auto INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
 
-        auto const ARE_ANY_INVALID_MSGS_EMPTY { std::any_of(
-            std::begin(INVALID_MSGS), std::end(INVALID_MSGS), [](auto const & MSG) {
+        const auto ARE_ANY_INVALID_MSGS_EMPTY { std::any_of(
+            std::begin(INVALID_MSGS), std::end(INVALID_MSGS), [](const auto & MSG) {
                 return MSG.empty();
             }) };
 
         if (ARE_ANY_INVALID_MSGS_EMPTY)
         {
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
                 POPUP_NAME_CHARACTER_SELECTION_,
                 "Who will attempt to pick the lock?",
                 INVALID_MSGS,
@@ -103,11 +103,11 @@ namespace interact
         }
         else
         {
-            auto const MSG { std::string(
+            const auto MSG { std::string(
                                  "There are no characters who can attempt to pick the lock!  ")
                              + "They are all incapable or incapacitated" };
 
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NO_CHARACTER_CAN_PICK_,
                 MSG,
                 popup::PopupButtons::Continue,
@@ -123,7 +123,7 @@ namespace interact
     {
         if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
         {
-            auto const SELECTION_OPT { PACKET_PTR->SelectionOpt() };
+            const auto SELECTION_OPT { PACKET_PTR->SelectionOpt() };
 
             if (SELECTION_OPT < game::Game::Instance()->State().Party().Characters().size())
             {
@@ -144,7 +144,7 @@ namespace interact
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & CHARACTER_NAME) const
     {
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_ATTEMPTING_,
             CHARACTER_NAME + " is attempting to pick the lock...",
             4.0f, // the duration of the longest lockpick sfx
@@ -161,7 +161,7 @@ namespace interact
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & NAME_OF_WHAT_OPENED) const
     {
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_SUCCESS_,
             "\nThe " + NAME_OF_WHAT_OPENED + " Opens!",
             4.0f, // number of seconds before the popup disapears
@@ -191,14 +191,14 @@ namespace interact
 
     const std::vector<std::string> LockPicking::MakeInvalidLockPickCharacterMessages() const
     {
-        auto const NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
+        const auto NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
 
         std::vector<std::string> invalidMsgsVec;
         invalidMsgsVec.resize(NUM_CHARACTERS);
 
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(i) };
+            const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(i) };
             if (CREATURE_PTR->IsBeast())
             {
                 invalidMsgsVec[i] = "Beasts cannot pick locks";
@@ -223,9 +223,9 @@ namespace interact
 
     std::size_t LockPicking::CharacterIndexWhoPrevAttempted() const
     {
-        auto const NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
+        const auto NUM_CHARACTERS { game::Game::Instance()->State().Party().Characters().size() };
 
-        auto const PREV_LOCKPICK_CREATURE_PTR_OPT {
+        const auto PREV_LOCKPICK_CREATURE_PTR_OPT {
             combat::Encounter::Instance()->LockPickCreaturePtrOpt()
         };
 
@@ -233,7 +233,7 @@ namespace interact
         {
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
-                auto const CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
+                const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
                     i) };
                 if (CREATURE_PTR == PREV_LOCKPICK_CREATURE_PTR_OPT.value())
                 {

@@ -34,11 +34,11 @@ namespace sfutil
             const T OUT_MIN_ORIG,
             const T OUT_MAX_ORIG)
     {
-        auto const VAL { static_cast<double>(VAL_ORIG) };
-        auto const IN_MIN { static_cast<double>(IN_MIN_ORIG) };
-        auto const IN_MAX { static_cast<double>(IN_MAX_ORIG) };
-        auto const OUT_MIN { static_cast<double>(OUT_MIN_ORIG) };
-        auto const OUT_MAX { static_cast<double>(OUT_MAX_ORIG) };
+        const auto VAL { static_cast<double>(VAL_ORIG) };
+        const auto IN_MIN { static_cast<double>(IN_MIN_ORIG) };
+        const auto IN_MAX { static_cast<double>(IN_MAX_ORIG) };
+        const auto OUT_MIN { static_cast<double>(OUT_MIN_ORIG) };
+        const auto OUT_MAX { static_cast<double>(OUT_MAX_ORIG) };
 
         return static_cast<T>(
             OUT_MIN + (((VAL - IN_MIN) * (OUT_MAX - OUT_MIN)) / (IN_MAX - IN_MIN)));
@@ -74,12 +74,12 @@ namespace sfutil
     template <typename T>
     T MapByRes(const T THE_MIN_ORIG, const T THE_MAX_ORIG)
     {
-        auto const THE_MIN { static_cast<double>(THE_MIN_ORIG) };
-        auto const THE_MAX { static_cast<double>(THE_MAX_ORIG) };
-        auto const RES_AREA_MIN { 1280.0 * 900.0 };
-        auto const RES_AREA_MAX { (7680.0 * 4800.0) * 0.5 };
+        const auto THE_MIN { static_cast<double>(THE_MIN_ORIG) };
+        const auto THE_MAX { static_cast<double>(THE_MAX_ORIG) };
+        const auto RES_AREA_MIN { 1280.0 * 900.0 };
+        const auto RES_AREA_MAX { (7680.0 * 4800.0) * 0.5 };
         const sf::Vector2<double> SCREEN_SIZE_V { DisplaySize() };
-        auto const RES_AREA_CURR { SCREEN_SIZE_V.x * SCREEN_SIZE_V.y };
+        const auto RES_AREA_CURR { SCREEN_SIZE_V.x * SCREEN_SIZE_V.y };
 
         return static_cast<T>(Map(RES_AREA_CURR, RES_AREA_MIN, RES_AREA_MAX, THE_MIN, THE_MAX));
     }

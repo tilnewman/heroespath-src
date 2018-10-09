@@ -50,7 +50,7 @@ namespace sfml_util
 
     void SliderBarMusic::OnChange(const float CURRENT_POS_RATIO)
     {
-        auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
+        const auto CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
         sfml_util::SoundManager::Instance()->MusicVolumeSet(CURRENT_POS_PERCENT);
         SliderBarLabeled::OnChange(CURRENT_POS_RATIO);
     }

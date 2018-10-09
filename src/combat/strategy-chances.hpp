@@ -86,7 +86,7 @@ namespace combat
                 }
 
                 T e { T::None }; // None is always zero
-                for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
+                for (const auto & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                 {
                     if (misc::random::Float(0.0f, 1.0f) < NEXT_ENUMCHANCE_PAIR.second)
                     {
@@ -118,18 +118,18 @@ namespace combat
                 }
                 else
                 {
-                    auto const TOTAL { std::accumulate(
+                    const auto TOTAL { std::accumulate(
                         std::begin(ENUM_CHANCE_MAP),
                         std::end(ENUM_CHANCE_MAP),
                         0.0f,
-                        [](auto const SUBTOTAL, auto const & PAIR) {
+                        [](const auto SUBTOTAL, const auto & PAIR) {
                             return SUBTOTAL + PAIR.second;
                         }) };
 
-                    auto const RAND { misc::random::Float(0.0f, TOTAL) };
+                    const auto RAND { misc::random::Float(0.0f, TOTAL) };
 
                     auto subtotal { 0.0f };
-                    for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
+                    for (const auto & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
                     {
                         subtotal += NEXT_ENUMCHANCE_PAIR.second;
                         if (RAND < subtotal)
@@ -160,7 +160,7 @@ namespace combat
                     ss << "(";
                 }
 
-                for (auto const & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
+                for (const auto & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
                 {
                     ss << StructType::ToString(NEXT_TYPECHANCE_PAIR.first) << ":"
                        << NEXT_TYPECHANCE_PAIR.second << SEP;

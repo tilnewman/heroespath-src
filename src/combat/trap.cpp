@@ -84,13 +84,13 @@ namespace combat
 
     Health_t Trap::RandomDamage() const
     {
-        auto const RANDOM_DAMAGE{ static_cast<double>(
+        const auto RANDOM_DAMAGE { static_cast<double>(
             misc::random::Int(damageRange_.Min().Get(), damageRange_.Max().Get())) };
 
-        auto const SQRT_RANDOM_DAMAGE{ std::sqrt(static_cast<double>(RANDOM_DAMAGE)) };
+        const auto SQRT_RANDOM_DAMAGE { std::sqrt(static_cast<double>(RANDOM_DAMAGE)) };
 
-        auto const AVG_PLAYER_RANK_MINUS_ONE{ [&]() {
-            auto const AVG_PLAYER_RANK{ FindAveragePlayerRank().As<double>() };
+        const auto AVG_PLAYER_RANK_MINUS_ONE { [&]() {
+            const auto AVG_PLAYER_RANK { FindAveragePlayerRank().As<double>() };
             if (AVG_PLAYER_RANK < 2.0)
             {
                 return 1.0;
@@ -101,20 +101,20 @@ namespace combat
             }
         }() };
 
-        auto const SQRT_AVG_PLAYER_RANK_MINUS_ONE{ std::sqrt(AVG_PLAYER_RANK_MINUS_ONE) };
+        const auto SQRT_AVG_PLAYER_RANK_MINUS_ONE { std::sqrt(AVG_PLAYER_RANK_MINUS_ONE) };
 
-        auto const TOTAL_DAMAGE{ RANDOM_DAMAGE
-                                 + (SQRT_RANDOM_DAMAGE * SQRT_AVG_PLAYER_RANK_MINUS_ONE) };
+        const auto TOTAL_DAMAGE { RANDOM_DAMAGE
+                                  + (SQRT_RANDOM_DAMAGE * SQRT_AVG_PLAYER_RANK_MINUS_ONE) };
 
         return Health_t::Make(TOTAL_DAMAGE);
     }
 
     int Trap::Severity() const
     {
-        auto const SQRT_AVG_PLAYER_COUNT{ std::sqrt(
+        const auto SQRT_AVG_PLAYER_COUNT { std::sqrt(
             static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().As<double>() * 10.0) };
+        const auto SQRT_AVG_DAMAGE { std::sqrt(damageRange_.Mid().As<double>() * 10.0) };
 
         return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }
@@ -126,9 +126,9 @@ namespace combat
 
     Rank_t Trap::FindAveragePlayerRank() const
     {
-        Rank_t rankSum{ 0_rank };
-        auto const CHARACTER_PTRS{ game::Game::Instance()->State().Party().Characters() };
-        for (auto const & CHARACTER_PTR : CHARACTER_PTRS)
+        Rank_t rankSum { 0_rank };
+        const auto CHARACTER_PTRS { game::Game::Instance()->State().Party().Characters() };
+        for (const auto & CHARACTER_PTR : CHARACTER_PTRS)
         {
             rankSum += CHARACTER_PTR->Rank();
         }

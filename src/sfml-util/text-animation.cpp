@@ -49,12 +49,12 @@ namespace sfml_util
             , textRegionUPtr_()
             , slider_(std::max(1.0f, SPEED), 0.5f)
         {
-            auto const START_POS_LEFT { REGION.left + (REGION.width * 0.5f) };
-            auto const START_POS_TOP { REGION.top + (REGION.height * 0.85f) };
+            const auto START_POS_LEFT { REGION.left + (REGION.width * 0.5f) };
+            const auto START_POS_TOP { REGION.top + (REGION.height * 0.85f) };
             startPosV_ = sf::Vector2f(START_POS_LEFT, START_POS_TOP);
 
-            auto const END_POS_LEFT { START_POS_LEFT };
-            auto const END_POS_TOP { REGION.top };
+            const auto END_POS_LEFT { START_POS_LEFT };
+            const auto END_POS_TOP { REGION.top };
             endPosV_ = sf::Vector2f(END_POS_LEFT, END_POS_TOP);
 
             const TextInfo TEXT_INFO(
@@ -68,10 +68,10 @@ namespace sfml_util
 
             textRegionUPtr_ = std::make_unique<TextRegion>("TextAnimation's", TEXT_INFO, r);
 
-            auto const TEXT_POS_LEFT { START_POS_LEFT
+            const auto TEXT_POS_LEFT { START_POS_LEFT
                                        - (textRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-            auto const TEXT_POS_TOP { START_POS_TOP };
+            const auto TEXT_POS_TOP { START_POS_TOP };
 
             textRegionUPtr_->SetEntityPos(TEXT_POS_LEFT, TEXT_POS_TOP);
             textRegionUPtr_->SetEntityColorFgBoth(START_COLOR_);
@@ -84,9 +84,9 @@ namespace sfml_util
                 return;
             }
 
-            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
+            const auto SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
-            auto const FONT_SIZE { START_FONT_SIZE_
+            const auto FONT_SIZE { START_FONT_SIZE_
                                    + static_cast<unsigned int>(
                                          static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
                                          * SLIDER_POS) };
@@ -103,10 +103,10 @@ namespace sfml_util
 
             textRegionUPtr_->Setup(TEXT_INFO, r);
 
-            auto const POS_LEFT { (startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS))
+            const auto POS_LEFT { (startPosV_.x + ((endPosV_.x - startPosV_.x) * SLIDER_POS))
                                   - (textRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
-            auto const POS_TOP { startPosV_.y + ((endPosV_.y - startPosV_.y) * 2.0f * SLIDER_POS) };
+            const auto POS_TOP { startPosV_.y + ((endPosV_.y - startPosV_.y) * 2.0f * SLIDER_POS) };
 
             textRegionUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
 

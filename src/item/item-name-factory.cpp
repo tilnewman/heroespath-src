@@ -76,7 +76,7 @@ namespace item
             AppendPixiePhraseIfNeeded(PROFILE, PhraseType::Name, ss);
         }
 
-        auto const ELEMENT_TYPE_STR { [&]() -> std::string {
+        const auto ELEMENT_TYPE_STR { [&]() -> std::string {
             if (PROFILE.IsElemental())
             {
                 return " " + element_type::Name(PROFILE.ElementType());
@@ -104,7 +104,7 @@ namespace item
         }
         else
         {
-            auto const NAME_TO_USE { [&]() {
+            const auto NAME_TO_USE { [&]() {
                 if (PROFILE.IsNamed())
                 {
                     return named_type::Name(PROFILE.NamedType()) + " "
@@ -116,7 +116,7 @@ namespace item
                 }
             }() };
 
-            auto const IS_COVER_ARMOR_MADE_OF_CLOTH {
+            const auto IS_COVER_ARMOR_MADE_OF_CLOTH {
                 (PROFILE.ArmorInfo().IsCover() && (PROFILE.MaterialSecondary() == material::Cloth))
             };
 
@@ -126,7 +126,7 @@ namespace item
                    << ArmorBaseTypeNamePrefix(PROFILE) << HandledNamePrefix(PROFILE);
             }
 
-            auto const SECONDARY_MATERIAL_PHRASE { SeccondaryMaterialPhrase(
+            const auto SECONDARY_MATERIAL_PHRASE { SeccondaryMaterialPhrase(
                 PhraseType::Name, PROFILE) };
 
             if (SECONDARY_MATERIAL_PHRASE.empty() && material::IsSolid(PROFILE.MaterialSecondary())
@@ -178,7 +178,7 @@ namespace item
         ss << ", made of " << FirstLetterLowercaseCopy(material::Name(PROFILE.MaterialPrimary()))
            << ArmorBaseTypeNamePrefix(PROFILE);
 
-        auto const SECONDARY_MATERIAL_PHRASE { SeccondaryMaterialPhrase(
+        const auto SECONDARY_MATERIAL_PHRASE { SeccondaryMaterialPhrase(
             PhraseType::Desc, PROFILE) };
 
         if (SECONDARY_MATERIAL_PHRASE.empty() == false)
@@ -259,22 +259,14 @@ namespace item
     {
         switch (misc::random::Int(3))
         {
-            case 0:
-            {
-                return "covered";
+            case 0: { return "covered";
             }
-            case 1:
-            {
-                return "soaked";
+            case 1: { return "soaked";
             }
-            case 2:
-            {
-                return "coated";
+            case 2: { return "coated";
             }
             case 3:
-            default:
-            {
-                return "drenched";
+            default: { return "drenched";
             }
         }
     }
@@ -287,25 +279,19 @@ namespace item
     {
         switch (misc::random::Int(2))
         {
-            case 1:
-            {
-                return "clasp";
+            case 1: { return "clasp";
             }
-            case 2:
-            {
-                return "tether";
+            case 2: { return "tether";
             }
             case 0:
-            default:
-            {
-                return "fastener";
+            default: { return "fastener";
             }
         }
     }
 
     bool ItemNameFactory::IsNonEmptyWithoutTrailingSpace(std::ostringstream & ss) const
     {
-        auto const CURRENT_STR { ss.str() };
+        const auto CURRENT_STR { ss.str() };
         return ((CURRENT_STR.empty() == false) && (CURRENT_STR.at(CURRENT_STR.size() - 1) != ' '));
     }
 
@@ -341,7 +327,7 @@ namespace item
 
     const std::string ItemNameFactory::ArmorBaseTypeNamePrefix(const ItemProfile & PROFILE) const
     {
-        auto const BASE_TYPE { PROFILE.ArmorInfo().BaseType() };
+        const auto BASE_TYPE { PROFILE.ArmorInfo().BaseType() };
         if (PROFILE.IsArmor()
             && ((BASE_TYPE == armor::base_type::Mail) || (BASE_TYPE == armor::base_type::Plate)))
         {
@@ -358,7 +344,7 @@ namespace item
     {
         if (PROFILE.IsUnique() == false)
         {
-            auto const BLESSED_OR_CURSED { [&]() -> std::string {
+            const auto BLESSED_OR_CURSED { [&]() -> std::string {
                 if (misc_type::IsBlessed(PROFILE.MiscType()))
                 {
                     return "Blessed";
@@ -383,9 +369,9 @@ namespace item
     const std::string ItemNameFactory::SeccondaryMaterialPhrase(
         const PhraseType PHRASE_TYPE, const ItemProfile & PROFILE) const
     {
-        auto const SECONDARY_MATERIAL { PROFILE.MaterialSecondary() };
+        const auto SECONDARY_MATERIAL { PROFILE.MaterialSecondary() };
 
-        auto const SECONDARY_MATERIAL_NAME { [&]() {
+        const auto SECONDARY_MATERIAL_NAME { [&]() {
             // make lowercase if a Description and not a Name
             if (PHRASE_TYPE == PhraseType::Desc)
             {
@@ -456,9 +442,7 @@ namespace item
 
                 case name_material_type::BodyPart:
                 case name_material_type::Count:
-                default:
-                {
-                    return "";
+                default: { return "";
                 }
             }
         }

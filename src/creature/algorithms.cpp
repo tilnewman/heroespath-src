@@ -34,10 +34,10 @@ namespace creature
 
     std::size_t Algorithms::Players(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS)
     {
-        auto const PLAYERS_PVEC { game::Game::Instance()->State().Party().Characters() };
+        const auto PLAYERS_PVEC { game::Game::Instance()->State().Party().Characters() };
 
         std::size_t count { 0 };
-        for (auto const & NEXT_PLAYER_PTR : PLAYERS_PVEC)
+        for (const auto & NEXT_PLAYER_PTR : PLAYERS_PVEC)
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_PLAYER_PTR->IsAlive())
             {
@@ -48,7 +48,7 @@ namespace creature
 
         if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
-            for (auto const & NEXT_RUNAWAY_PLAYER_PTR :
+            for (const auto & NEXT_RUNAWAY_PLAYER_PTR :
                  combat::Encounter::Instance()->RunawayPlayers())
             {
                 pVec_OutParam.erase(
@@ -71,7 +71,7 @@ namespace creature
     std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS)
     {
         std::size_t count { 0 };
-        for (auto const & NEXT_NONPLAYER_PTR : combat::Encounter::Instance()->LivingNonPlayers())
+        for (const auto & NEXT_NONPLAYER_PTR : combat::Encounter::Instance()->LivingNonPlayers())
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_NONPLAYER_PTR->IsAlive())
             {
@@ -82,7 +82,7 @@ namespace creature
 
         if ((OPTIONS & PlayerOpt::Living) == false)
         {
-            for (auto const & NEXT_DEAD_NONPLAYER_PTR :
+            for (const auto & NEXT_DEAD_NONPLAYER_PTR :
                  combat::Encounter::Instance()->DeadNonPlayers())
             {
                 pVec_OutParam.emplace_back(NEXT_DEAD_NONPLAYER_PTR);
@@ -92,7 +92,7 @@ namespace creature
 
         if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
-            for (auto const & NEXT_RUNAWAY_NONPLAYER_PTR :
+            for (const auto & NEXT_RUNAWAY_NONPLAYER_PTR :
                  combat::Encounter::Instance()->RunawayNonPlayers())
             {
                 pVec_OutParam.erase(
@@ -178,7 +178,7 @@ namespace creature
             CREATURE_PVEC.begin(),
             CREATURE_PVEC.end(),
             back_inserter(tempPVec),
-            [CRITERIA_OPTION](auto const & PTR) {
+            [CRITERIA_OPTION](const auto & PTR) {
                 return (PTR->IsAlive() == (CRITERIA_OPTION == CriteriaOpt::Meets));
             });
 
@@ -192,7 +192,7 @@ namespace creature
             std::sort(
                 pVec_OutParam.begin(),
                 pVec_OutParam.end(),
-                [](auto const & A_PTR, auto const & B_PTR) {
+                [](const auto & A_PTR, const auto & B_PTR) {
                     return A_PTR->HealthNormal() < B_PTR->HealthNormal();
                 });
         }
@@ -207,14 +207,14 @@ namespace creature
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealthNormal(tempPVec);
-        auto const LOWEST_HEALTH_NORMAL(tempPVec[0]->HealthNormal());
+        const auto LOWEST_HEALTH_NORMAL(tempPVec[0]->HealthNormal());
 
         CreaturePVec_t lowestHealthNormalVec;
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
             back_inserter(lowestHealthNormalVec),
-            [LOWEST_HEALTH_NORMAL](auto const & PTR) {
+            [LOWEST_HEALTH_NORMAL](const auto & PTR) {
                 return PTR->HealthNormal() == LOWEST_HEALTH_NORMAL;
             });
 
@@ -228,7 +228,7 @@ namespace creature
             std::sort(
                 pVec_OutParam.begin(),
                 pVec_OutParam.end(),
-                [](auto const & A_PTR, auto const & B_PTR) {
+                [](const auto & A_PTR, const auto & B_PTR) {
                     return A_PTR->HealthCurrent() < B_PTR->HealthCurrent();
                 });
         }
@@ -241,14 +241,14 @@ namespace creature
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealth(tempPVec);
-        auto const LOWEST_HEALTH_CURR(tempPVec[0]->HealthCurrent());
+        const auto LOWEST_HEALTH_CURR(tempPVec[0]->HealthCurrent());
 
         CreaturePVec_t lowestHealthCurrVec;
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
             back_inserter(lowestHealthCurrVec),
-            [LOWEST_HEALTH_CURR](auto const & PTR) {
+            [LOWEST_HEALTH_CURR](const auto & PTR) {
                 return PTR->HealthCurrent() == LOWEST_HEALTH_CURR;
             });
 
@@ -262,7 +262,7 @@ namespace creature
             std::sort(
                 pVec_OutParam.begin(),
                 pVec_OutParam.end(),
-                [](auto const & A_PTR, auto const & B_PTR) {
+                [](const auto & A_PTR, const auto & B_PTR) {
                     return A_PTR->HealthRatio() < B_PTR->HealthRatio();
                 });
         }
@@ -277,14 +277,14 @@ namespace creature
 
         CreaturePVec_t tempPVec(CREATURE_PVEC);
         SortByLowestHealthRatio(tempPVec);
-        auto const LOWEST_HEALTH_RATIO(tempPVec[0]->HealthRatio());
+        const auto LOWEST_HEALTH_RATIO(tempPVec[0]->HealthRatio());
 
         CreaturePVec_t lowestHealthRatioVec;
         std::copy_if(
             tempPVec.begin(),
             tempPVec.end(),
             back_inserter(lowestHealthRatioVec),
-            [LOWEST_HEALTH_RATIO](auto const & PTR) {
+            [LOWEST_HEALTH_RATIO](const auto & PTR) {
                 return misc::IsRealClose(PTR->HealthRatio(), LOWEST_HEALTH_RATIO);
             });
 
@@ -307,7 +307,7 @@ namespace creature
             CREATURE_PVEC.begin(),
             CREATURE_PVEC.end(),
             back_inserter(creaturesThatAreStillAThreatVec),
-            [&](auto const & PTR) {
+            [&](const auto & PTR) {
                 return PTR->HasConditionNotAThreatPerm(UNCONSCIOUS_OPTION)
                     == (CONDITION_OPTION == CondSingleOpt::Has);
             });
@@ -326,7 +326,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(creaturesWithCondsButAreStillAThreatVec),
-                [CONDITION_OPTION](auto const & PTR) {
+                [CONDITION_OPTION](const auto & PTR) {
                     return PTR->HasConditionNotAThreatTemp()
                         == (CONDITION_OPTION == CondSingleOpt::Has);
                 });
@@ -348,7 +348,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(byRacePVec),
-                [RACE_ENUM, CRITERIA_OPTION](auto const & PTR) {
+                [RACE_ENUM, CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->Race() == RACE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
                 });
         }
@@ -369,7 +369,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(byRolePVec),
-                [ROLE_ENUM, CRITERIA_OPTION](auto const & PTR) {
+                [ROLE_ENUM, CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->Role() == ROLE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
                 });
         }
@@ -388,7 +388,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(canCastPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->CanCastSpells() == (CRITERIA_OPTION == CriteriaOpt::Meets));
                 });
         }
@@ -407,7 +407,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(byBeastPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->IsBeast() == (CRITERIA_OPTION == CriteriaOpt::Meets));
                 });
         }
@@ -426,7 +426,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(byProjectileWeaponPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (
                         PTR->IsHoldingProjectileWeapon()
                         == (CRITERIA_OPTION == CriteriaOpt::Meets));
@@ -447,7 +447,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(canFlyPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->CanFly() == (CRITERIA_OPTION == CriteriaOpt::Meets));
                 });
         }
@@ -466,7 +466,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(isFlyinfPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (
                         combat::Encounter::Instance()->GetTurnInfoCopy(PTR).GetIsFlying()
                         == (CRITERIA_OPTION == CriteriaOpt::Meets));
@@ -487,7 +487,7 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(canTakeActionPVec),
-                [CRITERIA_OPTION](auto const & PTR) {
+                [CRITERIA_OPTION](const auto & PTR) {
                     return (PTR->CanTakeAction() == (CRITERIA_OPTION == CriteriaOpt::Meets));
                 });
         }
@@ -519,11 +519,11 @@ namespace creature
                 CREATURE_PVEC.begin(),
                 CREATURE_PVEC.end(),
                 back_inserter(havingConditionPVec),
-                [&](auto const & PTR) {
+                [&](const auto & PTR) {
                     if (COND_ALL_OPTION == CondAllOpt::HasAll)
                     {
                         auto hasAll { true };
-                        for (auto const NEXT_COND_ENUM : CONDS_VEC)
+                        for (const auto NEXT_COND_ENUM : CONDS_VEC)
                         {
                             if (PTR->HasCondition(NEXT_COND_ENUM)
                                 != (COND_SINGLE_OPTION == CondSingleOpt::Has))
@@ -536,7 +536,7 @@ namespace creature
                     }
                     else
                     {
-                        for (auto const NEXT_COND_ENUM : CONDS_VEC)
+                        for (const auto NEXT_COND_ENUM : CONDS_VEC)
                         {
                             if (PTR->HasCondition(NEXT_COND_ENUM)
                                 == (COND_SINGLE_OPTION == CondSingleOpt::Has))

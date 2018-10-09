@@ -242,7 +242,7 @@ namespace stage
         Setup_RoleRadioButtons();
         Setup_RaceDescriptionBox();
         Setup_RoleDescriptionBox();
-        auto const ATTRIB_BOX_TOP { Setup_AttributeDescriptionBox() };
+        const auto ATTRIB_BOX_TOP { Setup_AttributeDescriptionBox() };
         Setup_NameLabel();
         Setup_NameTextEntryBox();
         Setup_SexRadioButtons();
@@ -267,7 +267,7 @@ namespace stage
         // oscillate the spacebar instruction text's color to help players know what to do initially
         if (AreAnyStatsIgnored() && (false == AreAnyAnimNumStillMoving()))
         {
-            auto const NEW_COLOR_VAL { static_cast<sf::Uint8>(
+            const auto NEW_COLOR_VAL { static_cast<sf::Uint8>(
                 sbInsTextSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             auto color { sbInsTextRegionUPtr_->GetEntityColorForeground() };
@@ -282,10 +282,10 @@ namespace stage
         }
 
         // oscillate the spacebar instruction text's color to help players know what to do initially
-        auto const CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
         if (CHARACTER_NAME.empty())
         {
-            auto const NEW_COLOR_VAL { static_cast<sf::Uint8>(
+            const auto NEW_COLOR_VAL { static_cast<sf::Uint8>(
                 nInsTextSlider_.Update(ELAPSED_TIME_SECONDS)) };
 
             auto color { nInsTextRegionUPtr_->GetEntityColorForeground() };
@@ -354,7 +354,7 @@ namespace stage
 
     bool CharacterStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        auto const RESULT { Stage::KeyPress(KEY_EVENT) };
+        const auto RESULT { Stage::KeyPress(KEY_EVENT) };
         return RESULT;
         /*if ((KEY_EVENT.code == sf::Keyboard::Space) && (false == isAnimStats_)
             && (false == nameTextEntryBoxUPtr_->HasFocus()))
@@ -519,14 +519,14 @@ namespace stage
         std::vector<std::string> roleNameVec;
         for (std::size_t i(0); i < creature::role::PlayerRoleCount; ++i)
         {
-            auto const ROLE { static_cast<creature::role::Enum>(i) };
+            const auto ROLE { static_cast<creature::role::Enum>(i) };
             if (ROLE != creature::role::Wolfen)
             {
                 roleNameVec.emplace_back(creature::role::Name(ROLE));
             }
         }
 
-        auto const POS_TOP { raceRadioButtonUPtr_->GetEntityRegion().top
+        const auto POS_TOP { raceRadioButtonUPtr_->GetEntityRegion().top
                              + raceRadioButtonUPtr_->GetEntityRegion().height
                              + sfutil::MapByRes(35.0f, 75.0f) };
 
@@ -558,7 +558,7 @@ namespace stage
     void CharacterStage::Setup_RaceDescriptionBox()
     {
         /*
-        auto const RACE_ENUM { static_cast<creature::race::Enum>(
+        const auto RACE_ENUM { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
         const std::string RACE_DESC(creature::race::Desc(RACE_ENUM));
@@ -599,16 +599,16 @@ namespace stage
     void CharacterStage::Setup_RoleDescriptionBox()
     {
         /*
-        auto const RACE_ENUM { static_cast<creature::race::Enum>(
+        const auto RACE_ENUM { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_SELECTED { static_cast<creature::role::Enum>(
+        const auto ROLE_SELECTED { static_cast<creature::role::Enum>(
             roleRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_ENUM { (
+        const auto ROLE_ENUM { (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_SELECTED) };
 
-        auto const ROLE_RADIOBUTTON_REGION { roleRadioButtonUPtr_->GetEntityRegion() };
+        const auto ROLE_RADIOBUTTON_REGION { roleRadioButtonUPtr_->GetEntityRegion() };
 
         const sf::FloatRect REGION(
             ROLE_RADIOBUTTON_REGION.left + ROLE_RADIOBUTTON_REGION.width + 15.0f,
@@ -673,7 +673,7 @@ namespace stage
     {
         creature::NameInfo creatureNameInfo;
 
-        auto const WIDTH { creatureNameInfo.DefaultTextEntryBoxWidth() };
+        const auto WIDTH { creatureNameInfo.DefaultTextEntryBoxWidth() };
 
         const sf::FloatRect REGION(
             (StageRegionWidth() * 0.5f) - (WIDTH * 0.5f),
@@ -855,8 +855,8 @@ namespace stage
 
         EntityAdd(smokeAnimUPtr_.get());
 
-        auto const DRIFT_LIMIT_LEFT { StageRegionWidth() * 0.65f };
-        auto const DRIFT_LIMIT_RIGHT { StageRegionWidth()
+        const auto DRIFT_LIMIT_LEFT { StageRegionWidth() * 0.65f };
+        const auto DRIFT_LIMIT_RIGHT { StageRegionWidth()
                                        - smokeAnimUPtr_->GetEntityRegion().width };
 
         smokeAnimDrifterX_.Reset(
@@ -867,11 +867,11 @@ namespace stage
             misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT),
             misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT));
 
-        auto const VERT_OVERLAP { sfutil::ScreenRatioToPixelsVert(0.0333f) };
+        const auto VERT_OVERLAP { sfutil::ScreenRatioToPixelsVert(0.0333f) };
 
-        auto const DRIFT_LIMIT_TOP { sfutil::Bottom(stageTitle_.Region()) - VERT_OVERLAP };
+        const auto DRIFT_LIMIT_TOP { sfutil::Bottom(stageTitle_.Region()) - VERT_OVERLAP };
 
-        auto const DRIFT_LIMIT_BOTTOM { (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height)
+        const auto DRIFT_LIMIT_BOTTOM { (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height)
                                         + (VERT_OVERLAP * 2.0f) };
 
         smokeAnimDrifterY_.Reset(
@@ -885,9 +885,9 @@ namespace stage
 
     float CharacterStage::Setup_AttributeDescriptionBox()
     {
-        auto const ATTR_DESC_WIDTH { sfutil::MapByRes(335.0f, 3000.0f) };
+        const auto ATTR_DESC_WIDTH { sfutil::MapByRes(335.0f, 3000.0f) };
 
-        auto const REGION_TOP { sfutil::MapByRes(450.0f, 1600.0f) };
+        const auto REGION_TOP { sfutil::MapByRes(450.0f, 1600.0f) };
 
         const sf::FloatRect REGION(
             (StageRegionWidth() - ATTR_DESC_WIDTH) - sfutil::MapByRes(15.0f, 300.0f),
@@ -910,7 +910,7 @@ namespace stage
         ss << creature::Traits::Name(creature::Traits::Strength) << " - "
            << misc::ConfigFile::Instance()->Value("heroespath-stats-stat-desc_Strength") << "\n\n";
 
-        auto const STRENGTH_BASE_TEXT { ss.str() };
+        const auto STRENGTH_BASE_TEXT { ss.str() };
 
         sfml_util::TextInfo strHelpTextInfo(descTextInfo);
 
@@ -966,7 +966,7 @@ namespace stage
             attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, sfml_util::IStagePtr_t(this));
         }
 
-        for (auto const & NEXT_TR_UPTR : textRegionUVec)
+        for (const auto & NEXT_TR_UPTR : textRegionUVec)
         {
             attrDescTextRegionUPtr_->Append(*NEXT_TR_UPTR);
         }
@@ -1034,7 +1034,7 @@ namespace stage
         }
 
         // verify name is not blank/empty
-        auto const CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
         if (CHARACTER_NAME.empty())
         {
             CharacterNameMissingPopup();
@@ -1073,7 +1073,7 @@ namespace stage
             return false;
         }
 
-        auto const NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
         // if it seems the user has been working on a character, prompt before losing the data
         if ((false == AreAnyStatsIgnored()) || (false == NAME.empty()))
@@ -1132,7 +1132,7 @@ namespace stage
         ss << ".  All attributes must have a value before your character can be created.  "
            << "Hold down the spacebar until all attributes have values.";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_MISSINGATTRIBS_,
             ss.str(),
             popup::PopupButtons::Okay,
@@ -1159,12 +1159,12 @@ namespace stage
     void CharacterStage::CharacterImageSelectionPopup(const std::string &)
     {
         /*
-        auto const SEX { GetCurrentSelectedSex() };
+        const auto SEX { GetCurrentSelectedSex() };
 
-        auto const RACE { static_cast<creature::race::Enum>(
+        const auto RACE { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE { (
+        const auto ROLE { (
             (RACE == creature::race::Wolfen)
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
@@ -1173,7 +1173,7 @@ namespace stage
         characterImageFilenamesVec_ = creatureImageLoader.Filenames(RACE, ROLE, SEX);
 
         sfml_util::CachedTextureVec_t characterTextureVec;
-        for (auto const & FILENAME : characterImageFilenamesVec_)
+        for (const auto & FILENAME : characterImageFilenamesVec_)
         {
             characterTextureVec.emplace_back(sfml_util::CachedTexture(
                 PathWrapper(creatureImageLoader.Path(FILENAME)),
@@ -1184,7 +1184,7 @@ namespace stage
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
 
-        auto const POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
+        const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_IMAGE_SELECTION_, ss.str(), characterTextureVec, true) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
@@ -1291,14 +1291,14 @@ namespace stage
     {
         /*selectedImageIndex_ = IMAGE_INDEX;
 
-        auto const CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
         const bool IS_MALE { GetCurrentSelectedSex() == creature::sex::Male };
 
-        auto const RACE { static_cast<creature::race::Enum>(
+        const auto RACE { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE { (
+        const auto ROLE { (
             (RACE == creature::race::Wolfen)
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
@@ -1307,7 +1307,7 @@ namespace stage
         creature::StatSet statSetFinal;
         for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_ENUM { static_cast<creature::Traits::Enum>(i) };
+            const auto NEXT_ENUM { static_cast<creature::Traits::Enum>(i) };
             statSetFinal.Set(NEXT_ENUM, fixedStatsSVec_[NEXT_ENUM]->Value());
         }
 
@@ -1350,17 +1350,17 @@ namespace stage
 
     void CharacterStage::AdjustRoleRadioButtonsForRace(const creature::race::Enum)
     {
-        /*auto const VALID_ROLES { creature::race::Roles(WHICH_RACE) };
+        /*const auto VALID_ROLES { creature::race::Roles(WHICH_RACE) };
 
         std::vector<std::size_t> invalidRoleIndexes;
         invalidRoleIndexes.reserve(creature::role::PlayerRoleCount);
 
-        auto const NUM_PLAYER_ROLES { static_cast<std::size_t>(creature::role::PlayerRoleCount) };
+        const auto NUM_PLAYER_ROLES { static_cast<std::size_t>(creature::role::PlayerRoleCount) };
         for (std::size_t i(0); i < NUM_PLAYER_ROLES; ++i)
         {
-            auto const ROLE { static_cast<creature::role::Enum>(i) };
+            const auto ROLE { static_cast<creature::role::Enum>(i) };
 
-            auto const FOUND_ITER { std::find(
+            const auto FOUND_ITER { std::find(
                 std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE) };
 
             if (FOUND_ITER == std::end(VALID_ROLES))
@@ -1384,11 +1384,11 @@ namespace stage
             return false;
         }
 
-        auto const RECC_NORMAL_STR {
+        const auto RECC_NORMAL_STR {
             "It would be a good idea to increase this attribute if you can."
         };
 
-        auto const RECC_STRONG_STR {
+        const auto RECC_STRONG_STR {
             "It is strongly reccomended that you increase this attribute."
         };
 
@@ -1398,22 +1398,22 @@ namespace stage
 
         sf::Color reccStrongColor(255, 200, 181);
 
-        auto const RACE_ENUM { static_cast<creature::race::Enum>(
+        const auto RACE_ENUM { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_ENUM { static_cast<creature::role::Enum>(
+        const auto ROLE_ENUM { static_cast<creature::role::Enum>(
             roleRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const WHICH_ROLE { (
+        const auto WHICH_ROLE { (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_ENUM) };
 
-        auto const STAT_VALUE { fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value() };
+        const auto STAT_VALUE { fixedStatsSVec_[static_cast<std::size_t>(WHICH_STAT)]->Value() };
 
         std::ostringstream sss;
         sss << "Your current " << creature::Traits::ToString(WHICH_STAT) << " is only "
             << STAT_VALUE << ".";
 
-        auto const IS_ONLY_STR { sss.str() };
+        const auto IS_ONLY_STR { sss.str() };
 
         const creature::Trait_t STAT_VALUE_LOW { 10 };
         const creature::Trait_t STAT_VALUE_MED { 15 };
@@ -1485,7 +1485,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Charm)
             {
-                auto const REASON_STR { "Charm is important to Bards for magical song." };
+                const auto REASON_STR { "Charm is important to Bards for magical song." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1501,7 +1501,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                auto const REASON_STR { "Inteflligence is important to Bards for magical song." };
+                const auto REASON_STR { "Inteflligence is important to Bards for magical song." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1517,7 +1517,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Strength)
             {
-                auto const REASON_STR { std::string("Strength is sometimes important to Bards")
+                const auto REASON_STR { std::string("Strength is sometimes important to Bards")
                                         + " if you want them to also be good fighters." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
@@ -1531,7 +1531,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("A Beastmaster's primary attribute is ")
                     + "Intelligence, for the magical bond they have to their animals."
                 };
@@ -1550,7 +1550,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Strength)
             {
-                auto const REASON_STR { std::string("Strength is often important to Beastmasters")
+                const auto REASON_STR { std::string("Strength is often important to Beastmasters")
                                         + " because they can be good fighters." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
@@ -1564,7 +1564,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Charm)
             {
-                auto const REASON_STR { std::string("A Cleric's primary attribute is Charm ")
+                const auto REASON_STR { std::string("A Cleric's primary attribute is Charm ")
                                         + "so they can heal and be good diplomats." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
@@ -1581,7 +1581,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     "A Cleric is a kind of spell caster, so Intelligence is very important."
                 };
 
@@ -1602,7 +1602,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Strength)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("Dragons may be magical creatures, but make")
                     + " no mistake, they are fighters.  Strength is important to all "
                     + "types of Dragons."
@@ -1622,7 +1622,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     "Dragons are magical creatures so Intelligence is important."
                 };
 
@@ -1640,7 +1640,7 @@ namespace stage
         }
         else if (WHICH_ROLE == creature::role::Knight)
         {
-            auto const REASON_STR { std::string("Knights are fighters, so they need Strength,")
+            const auto REASON_STR { std::string("Knights are fighters, so they need Strength,")
                                     + " Accuracy, and Speed -in that order." };
 
             if (WHICH_STAT == creature::Traits::Strength)
@@ -1689,7 +1689,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                auto const REASON_STR { std::string("A Sorcerer is first and foremost a spell ")
+                const auto REASON_STR { std::string("A Sorcerer is first and foremost a spell ")
                                         + "caster, so Intelligence is very important." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
@@ -1706,7 +1706,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Speed)
             {
-                auto const REASON_STR { std::string("Sorcerers are typically physically weaker")
+                const auto REASON_STR { std::string("Sorcerers are typically physically weaker")
                                         + " than the other adventurers.  Speed will be important "
                                           "for dodging attacks." };
 
@@ -1726,7 +1726,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Speed)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("Thieves are typically physically weaker ")
                     + "than the other adventurers.  Speed will be important for dodging attacks"
                     + " and for having fast fingers."
@@ -1746,7 +1746,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Luck)
             {
-                auto const REASON_STR { "Thieves need Luck more than any other attribute." };
+                const auto REASON_STR { "Thieves need Luck more than any other attribute." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -1764,7 +1764,7 @@ namespace stage
         {
             if (WHICH_STAT == creature::Traits::Strength)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("Wolfens are not in your party of ")
                     + "adventurers for their looks, they are there to defense.  Strength for"
                     + " fighting is most important."
@@ -1784,7 +1784,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Accuracy)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("A Wolfen's strong jaws are useless if ")
                     + "they can't bite anything with them.  Accuracy is important."
                 };
@@ -1803,7 +1803,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Speed)
             {
-                auto const REASON_STR {
+                const auto REASON_STR {
                     std::string("Wolfen's are fast for a reason, they need ")
                     + "to avoid being hit with attacks.  Speed will be of primary importance for "
                     + "those on the front line of a fight."
@@ -1841,8 +1841,8 @@ namespace stage
         /*// undo modifier changes to statSetBase
         for (std::size_t s(0); s < creature::Traits::StatCount; ++s)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(s) };
-            auto const NUM_MODIFIERS { statModifierTextVec_.size() };
+            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(s) };
+            const auto NUM_MODIFIERS { statModifierTextVec_.size() };
             for (std::size_t m(0); m < NUM_MODIFIERS; ++m)
             {
                 if (NEXT_TRAIT_ENUM == statModifierTextVec_[m].stat)
@@ -1862,8 +1862,8 @@ namespace stage
     {
         /*for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
-            auto const NEW_VAL { statSetBase_.Get(NEXT_TRAIT_ENUM) };
+            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
+            const auto NEW_VAL { statSetBase_.Get(NEXT_TRAIT_ENUM) };
 
             // prevent visible stats from showing negative numbers, but keep them in statSetBase_
             if (NEW_VAL < 0)
@@ -1894,21 +1894,21 @@ namespace stage
     {
         /*statModifierTextVec_.clear();
 
-        auto const RACE { static_cast<creature::race::Enum>(
+        const auto RACE { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
         const auto RACE_STAT_MODIFIERS{ creature::RaceStatModifier::Get(RACE) };
 
-        auto const HORIZ_OFFSET { sfutil::MapByRes(90.0f, 150.0f) };
-        auto const VERT_OFFSET { 5.0f };
-        auto const RACE_NAME_ABBR { creature::race::Abbr(RACE) };
+        const auto HORIZ_OFFSET { sfutil::MapByRes(90.0f, 150.0f) };
+        const auto VERT_OFFSET { 5.0f };
+        const auto RACE_NAME_ABBR { creature::race::Abbr(RACE) };
 
         std::vector<creature::Traits::Enum> preExistingStatVec;
 
         for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
-            auto const NEXT_STAT_VAL { RACE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
+            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
+            const auto NEXT_STAT_VAL { RACE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
 
             if ((NEXT_STAT_VAL != 0) && (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IgnoreMe())
                 && (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IsHeldDown())
@@ -1924,23 +1924,23 @@ namespace stage
             }
         }
 
-        auto const RACE_ENUM { static_cast<creature::race::Enum>(
+        const auto RACE_ENUM { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_SELECTED { static_cast<creature::role::Enum>(
+        const auto ROLE_SELECTED { static_cast<creature::role::Enum>(
             roleRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_ENUM { (
+        const auto ROLE_ENUM { (
             (RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_SELECTED) };
 
-        auto const ROLE_NAME_ABBR { creature::role::Abbr(ROLE_ENUM) };
+        const auto ROLE_NAME_ABBR { creature::role::Abbr(ROLE_ENUM) };
 
         const auto ROLE_STAT_MODIFIERS{ creature::RoleStatModifier::Get(ROLE_ENUM) };
 
         for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
-            auto const NEXT_STAT_VAL { ROLE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
+            const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
+            const auto NEXT_STAT_VAL { ROLE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
 
             if ((NEXT_STAT_VAL != 0) && (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IgnoreMe())
                 && (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IsHeldDown())
@@ -1970,7 +1970,7 @@ namespace stage
 
     void CharacterStage::ApplyStatModifiersToStatSetBase()
     {
-        /*auto const NUM_MODIFIERS { statModifierTextVec_.size() };
+        /*const auto NUM_MODIFIERS { statModifierTextVec_.size() };
         for (std::size_t i(0); i < NUM_MODIFIERS; ++i)
         {
             statSetBase_.Set(
@@ -1993,7 +1993,7 @@ namespace stage
         /*animStatsSVec_.clear();
 
         // snap to closest position when drag stops
-        auto const HELD_DOWN_STAT { GetHeldDownStat() };
+        const auto HELD_DOWN_STAT { GetHeldDownStat() };
         if (HELD_DOWN_STAT != statBox_.StatInvalid())
         {
             sfml_util::SoundManager::Instance()->PlaySfx_AckMinor();
@@ -2035,7 +2035,7 @@ namespace stage
 
     bool CharacterStage::AreAnyAnimNumStillMoving() const
     {
-        /*for (auto const & ANIM_NUM_SPTR : animStatsSVec_)
+        /*for (const auto & ANIM_NUM_SPTR : animStatsSVec_)
         {
             if ((ANIM_NUM_SPTR->IgnoreMe() == false) && (ANIM_NUM_SPTR->IsDoneMoving() == false))
             {
@@ -2043,7 +2043,7 @@ namespace stage
             }
         }
 
-        for (auto const & FIXED_NUM_SPTR : fixedStatsSVec_)
+        for (const auto & FIXED_NUM_SPTR : fixedStatsSVec_)
         {
             if ((FIXED_NUM_SPTR->IgnoreMe() == false) && (FIXED_NUM_SPTR->IsDoneMoving() == false))
             {
@@ -2070,7 +2070,7 @@ namespace stage
     void CharacterStage::HandleAttributeDragging(const sf::Vector2f &)
     {
         // check there is a number being held down at all
-        /*auto const STAT_HELD { GetHeldDownStat() };
+        /*const auto STAT_HELD { GetHeldDownStat() };
         if (STAT_HELD == statBox_.StatInvalid())
         {
             return;
@@ -2106,15 +2106,15 @@ namespace stage
         }
 
         const auto STAT_BOX_ROW_HEIGHT { statBox_.RowHeight(); };
-        auto const DIFF { dragStartY_ - NEW_POS_Y };
-        auto const DIFF_MAX { STAT_BOX_ROW_HEIGHT - (STAT_BOX_ROW_HEIGHT / 3.0f) };
-        auto const IS_MOVING_UP { DIFF > 0.0f };
+        const auto DIFF { dragStartY_ - NEW_POS_Y };
+        const auto DIFF_MAX { STAT_BOX_ROW_HEIGHT - (STAT_BOX_ROW_HEIGHT / 3.0f) };
+        const auto IS_MOVING_UP { DIFF > 0.0f };
 
         fixedStatsSVec_[STAT_HELD]->SetPosY(NEW_POS_Y);
 
         if (IS_MOVING_UP)
         {
-            auto const STAT_ABOVE { GetStatAbove(STAT_HELD) };
+            const auto STAT_ABOVE { GetStatAbove(STAT_HELD) };
             if ((STAT_ABOVE != statBox_.StatInvalid()) && (DIFF > DIFF_MAX))
             {
                 dragStartY_ -= STAT_BOX_ROW_HEIGHT;
@@ -2127,7 +2127,7 @@ namespace stage
         }
         else
         {
-            auto const STAT_BELOW { GetStatBelow(STAT_HELD) };
+            const auto STAT_BELOW { GetStatBelow(STAT_HELD) };
             if ((STAT_BELOW != statBox_.StatInvalid()) && (fabs(DIFF) > DIFF_MAX))
             {
                 dragStartY_ += STAT_BOX_ROW_HEIGHT;
@@ -2165,7 +2165,7 @@ namespace stage
                 sf::Color::White,
                 sfml_util::Justified::Left);
 
-            auto const NEXT_VAL { misc::random::Int(1, STAT_INITIAL_MAX_) };
+            const auto NEXT_VAL { misc::random::Int(1, STAT_INITIAL_MAX_) };
 
             auto numToUse { misc::random::Int(1, 6) };
             if (initialRollCounter_ <= 6)
@@ -2173,15 +2173,15 @@ namespace stage
                 numToUse = initialRollCounter_++;
             }
 
-            auto const SMOKE_ANIM_MID_X { smokeAnimUPtr_->GetEntityPos().x
+            const auto SMOKE_ANIM_MID_X { smokeAnimUPtr_->GetEntityPos().x
                                           + (smokeAnimUPtr_->GetEntityRegion().width * 0.5f)
                                           - 10.0f };
 
-            auto const SMOKE_ANIM_MID_Y { smokeAnimUPtr_->GetEntityPos().y
+            const auto SMOKE_ANIM_MID_Y { smokeAnimUPtr_->GetEntityPos().y
                                           + (smokeAnimUPtr_->GetEntityRegion().height * 0.5f)
                                           - 10.0f };
 
-            auto const ANIM_NUM_TARGET_X { TARGET_POS_LEFT + ((NEXT_VAL < 10) ? 10.0f : 0.0f)
+            const auto ANIM_NUM_TARGET_X { TARGET_POS_LEFT + ((NEXT_VAL < 10) ? 10.0f : 0.0f)
                                            - 10.0f };
 
             switch (numToUse)
@@ -2358,7 +2358,7 @@ namespace stage
         }
 
         // update each active animating number
-        auto const NUM_DIGITS { animStatsSVec_.size() };
+        const auto NUM_DIGITS { animStatsSVec_.size() };
         for (std::size_t i(0); i < NUM_DIGITS; ++i)
         {
             if (false == animStatsSVec_[i]->IsDoneFading())
@@ -2388,7 +2388,7 @@ namespace stage
         fixedStatsSVec_[static_cast<std::size_t>(A)] = tempSPtr;
 
         // swap the underlying stat values
-        auto const TEMP_TRAIT { statSetBase_.Get(B) };
+        const auto TEMP_TRAIT { statSetBase_.Get(B) };
         statSetBase_.Set(B, statSetBase_.Get(A));
         statSetBase_.Set(A, TEMP_TRAIT);
 
@@ -2398,7 +2398,7 @@ namespace stage
     void CharacterStage::HandleStuckAnims(const float)
     {
         /*std::vector<std::size_t> stuckAnimIndexVec;
-        auto const NUM_ANIMS { animStatsSVec_.size() };
+        const auto NUM_ANIMS { animStatsSVec_.size() };
         for (std::size_t i(0); i < NUM_ANIMS; ++i)
         {
             if (animStatsSVec_[i]->UpdateTimer(ELAPSED_TIME_SEC))
@@ -2407,7 +2407,7 @@ namespace stage
             }
         }
 
-        auto const NUM_STUCK_ANIMS { stuckAnimIndexVec.size() };
+        const auto NUM_STUCK_ANIMS { stuckAnimIndexVec.size() };
         for (std::size_t i(0); i < NUM_STUCK_ANIMS; ++i)
         {
             const typename AnimNumSVec_t::iterator ITR_TO_ERASE {
@@ -2496,15 +2496,15 @@ namespace stage
                 << selectedImageIndex_ << " but characterImageFilenamesVec_.size()="
                 << characterImageFilenamesVec_.size() << ".");
 
-        auto const NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
-        auto const SEX_ENUM { static_cast<creature::sex::Enum>(
+        const auto SEX_ENUM { static_cast<creature::sex::Enum>(
             sexRadioButtonUPtr_->GetSelectedNumber() + 1) };
 
-        auto const RACE_ENUM { static_cast<creature::race::Enum>(
+        const auto RACE_ENUM { static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
 
-        auto const ROLE_ENUM { (
+        const auto ROLE_ENUM { (
             (RACE_ENUM == creature::race::Wolfen)
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };

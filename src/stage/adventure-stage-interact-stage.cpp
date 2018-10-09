@@ -60,7 +60,7 @@ namespace stage
     bool InteractStage::HandleCallback(
         const sfml_util::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        auto const INTERACTION_PTR_OPT { interactionManager_.Current() };
+        const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
@@ -142,7 +142,7 @@ namespace stage
     {
         if (interactionManager_.IsLocked() == false)
         {
-            auto const INTERACTION_PTR_OPT { interactionManager_.Current() };
+            const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
             if (INTERACTION_PTR_OPT)
             {
                 return INTERACTION_PTR_OPT.value()->OnKeyRelease(this, KEY_EVENT.code);
@@ -162,14 +162,14 @@ namespace stage
     {
         if (INTERACTION_PTR_OPT)
         {
-            auto const INTERACTION_PTR { INTERACTION_PTR_OPT.value() };
+            const auto INTERACTION_PTR { INTERACTION_PTR_OPT.value() };
 
             const sf::FloatRect SUBJECT_REGION { innerRect_.left,
                                                  innerRect_.top,
                                                  innerRect_.width * SUBJECT_REGION_WIDTH_RATIO_,
                                                  innerRect_.height * SUBJECT_REGION_HEIGHT_RATIO_ };
 
-            auto const TEXT_REGION_TOP_MARGIN { sfutil::MapByRes(33.0f, 99.0f) };
+            const auto TEXT_REGION_TOP_MARGIN { sfutil::MapByRes(33.0f, 99.0f) };
 
             const sf::FloatRect TEXT_REGION { innerRect_.left + SUBJECT_REGION.width,
                                               innerRect_.top + TEXT_REGION_TOP_MARGIN,
@@ -215,18 +215,18 @@ namespace stage
                     button.Make(sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
             }
 
-            auto const ALL_BUTTONS_HEIGHT { std::accumulate(
+            const auto ALL_BUTTONS_HEIGHT { std::accumulate(
                 std::begin(buttons_),
                 std::end(buttons_),
                 0.0f,
-                [](auto const SUBTOTAL, auto const & UPTR) {
+                [](const auto SUBTOTAL, const auto & UPTR) {
                     return SUBTOTAL + UPTR->GetEntityRegion().height;
                 }) };
 
-            auto const BUTTON_REGION_HORIZ_MID { BUTTON_REGION.left
+            const auto BUTTON_REGION_HORIZ_MID { BUTTON_REGION.left
                                                  + (BUTTON_REGION.width * 0.5f) };
-            auto const BUTTON_REGION_VERT_MID { BUTTON_REGION.top + (BUTTON_REGION.height * 0.5f) };
-            auto const BUTTON_VERT_START { BUTTON_REGION_VERT_MID - (ALL_BUTTONS_HEIGHT * 0.5f) };
+            const auto BUTTON_REGION_VERT_MID { BUTTON_REGION.top + (BUTTON_REGION.height * 0.5f) };
+            const auto BUTTON_VERT_START { BUTTON_REGION_VERT_MID - (ALL_BUTTONS_HEIGHT * 0.5f) };
 
             auto vertPos { BUTTON_VERT_START };
             for (auto & buttonUPtr : buttons_)

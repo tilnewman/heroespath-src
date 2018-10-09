@@ -85,7 +85,7 @@ namespace sfml_util
 
             if (colorFrom_ != colorTo_)
             {
-                auto const RATIO_COMPLETE { static_cast<float>(currentFrame_)
+                const auto RATIO_COMPLETE { static_cast<float>(currentFrame_)
                                             / static_cast<float>(cachedTextures_.Size() - 1) };
 
                 sprite_.setColor(sfutil::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));

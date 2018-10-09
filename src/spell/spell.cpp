@@ -81,7 +81,7 @@ namespace spell
         {
             case Spells::Sparks:
             {
-                auto const RANDOM_VALUE { misc::random::Int(3) };
+                const auto RANDOM_VALUE { misc::random::Int(3) };
 
                 if (RANDOM_VALUE == 0)
                 {
@@ -106,7 +106,7 @@ namespace spell
             }
             case Spells::Bandage:
             {
-                auto const RANDOM_VALUE { misc::random::Int(3) };
+                const auto RANDOM_VALUE { misc::random::Int(3) };
 
                 if (RANDOM_VALUE == 0)
                 {
@@ -215,7 +215,7 @@ namespace spell
         {
             case Spells::Sparks:
             {
-                auto const DAMAGE_ABS_ORIG { Health_t(creature::Stats::RandomRatio(
+                const auto DAMAGE_ABS_ORIG { Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Intelligence,
                     8,
@@ -224,9 +224,9 @@ namespace spell
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
-                auto const DAMAGE_ABS_MAX { CREATURE_CAST_UPON_PTR->HealthCurrent() };
+                const auto DAMAGE_ABS_MAX { CREATURE_CAST_UPON_PTR->HealthCurrent() };
 
-                auto const DAMAGE_ABS_FINAL { (
+                const auto DAMAGE_ABS_FINAL { (
                     (DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ? DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
 
                 healthAdj = Health_t(-1) * DAMAGE_ABS_FINAL;
@@ -236,7 +236,7 @@ namespace spell
             }
             case Spells::Bandage:
             {
-                auto const HEALTH_GAIN_ORIG { Health_t(creature::Stats::RandomRatio(
+                const auto HEALTH_GAIN_ORIG { Health_t(creature::Stats::RandomRatio(
                     CREATURE_CASTING_PTR,
                     creature::Traits::Charm,
                     8,
@@ -245,7 +245,7 @@ namespace spell
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
-                auto const HEALTH_GAIN_MAX { CREATURE_CAST_UPON_PTR->HealthMissing() };
+                const auto HEALTH_GAIN_MAX { CREATURE_CAST_UPON_PTR->HealthMissing() };
 
                 healthAdj
                     = ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ? HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
@@ -297,7 +297,7 @@ namespace spell
                 };
 
                 auto wereAnyCondsRemoved { false };
-                for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
+                for (const auto NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
                 {
                     if (CREATURE_CAST_UPON_PTR->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
                     {
@@ -428,7 +428,7 @@ namespace spell
                                                                     creature::Conditions::Dazed };
 
                 auto wereAnyCondsRemoved { false };
-                for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
+                for (const auto NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
                 {
                     if (CREATURE_CAST_UPON_PTR->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
                     {
@@ -508,7 +508,7 @@ namespace spell
                 }
                 else
                 {
-                    auto const DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
+                    const auto DID_STAT_ROLL_SUCCEED { creature::Stats::Versus(
                         CREATURE_CASTING_PTR,
                         creature::Traits::Intelligence,
                         CREATURE_CAST_UPON_PTR,
@@ -520,7 +520,7 @@ namespace spell
                             | creature::Stats::With::RankBonus
                             | creature::Stats::With::PlayerNaturalWins)) };
 
-                    auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
+                    const auto DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED {
                         CREATURE_CASTING_PTR->TraitBonusTest(creature::Traits::MagicCast)
                     };
 

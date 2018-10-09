@@ -84,7 +84,7 @@ namespace creature
                 << charactersPVec_.size() - 1 << ")");
 
         std::size_t indexCounter(0);
-        for (auto const & CREATURE_PTR : charactersPVec_)
+        for (const auto & CREATURE_PTR : charactersPVec_)
         {
             if (indexCounter++ == INDEX_NUM)
             {
@@ -121,7 +121,7 @@ namespace creature
     std::size_t PlayerParty::GetNumHumanoid() const
     {
         std::size_t count(0);
-        for (auto const & NEXT_CHARACTER_PTR : charactersPVec_)
+        for (const auto & NEXT_CHARACTER_PTR : charactersPVec_)
         {
             if (NEXT_CHARACTER_PTR->Body().IsHumanoid())
             {

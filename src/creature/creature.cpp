@@ -93,7 +93,7 @@ namespace creature
 
         ReCalculateTraitBonuses();
 
-        auto const VALID_ROLES { race::Roles(RACE) };
+        const auto VALID_ROLES { race::Roles(RACE) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
@@ -126,8 +126,8 @@ namespace creature
 
     const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
-        auto const NAME_STR { Name() };
-        auto const RACE_STR { RaceName() };
+        const auto NAME_STR { Name() };
+        const auto RACE_STR { RaceName() };
 
         std::ostringstream ss;
         ss << NAME_STR;
@@ -226,7 +226,7 @@ namespace creature
     {
         TitlePVec_t titlePVec;
 
-        for (auto const NEXT_TITLE_ENUM : titlesVec_)
+        for (const auto NEXT_TITLE_ENUM : titlesVec_)
             titlePVec.emplace_back(title::Holder::Get(NEXT_TITLE_ENUM));
 
         return titlePVec;
@@ -243,7 +243,7 @@ namespace creature
         }
         else
         {
-            auto const HEALTH_INT { static_cast<int>(HEALTH_RATIO * 100.0f) };
+            const auto HEALTH_INT { static_cast<int>(HEALTH_RATIO * 100.0f) };
 
             if (HEALTH_INT < 1)
             {
@@ -307,7 +307,7 @@ namespace creature
     bool Creature::ConditionRemove(const Conditions::Enum E)
     {
         CondEnumVec_t conditionsToRemoveVec;
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
             if (NEXT_CONDITION_ENUM == E)
             {
@@ -316,12 +316,12 @@ namespace creature
         }
 
         auto wasAnyConditionRemoved { false };
-        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
+        for (const auto NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
         {
             wasAnyConditionRemoved = true;
             condition::Holder::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
 
-            auto const FOUND_ITER { std::find(
+            const auto FOUND_ITER { std::find(
                 conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM) };
 
             if (FOUND_ITER != std::end(conditionsVec_))
@@ -348,7 +348,7 @@ namespace creature
         const std::size_t ORIG_COND_COUNT(conditionsVec_.size());
 
         // undo the changes made by the conditions that will be removed
-        for (auto const NEXT_COND_ENUM : conditionsVec_)
+        for (const auto NEXT_COND_ENUM : conditionsVec_)
         {
             condition::Holder::Get(NEXT_COND_ENUM)->FinalChange(this);
         }
@@ -363,7 +363,7 @@ namespace creature
     {
         ConditionPVec_t conditionPVec;
 
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
             conditionPVec.emplace_back(condition::Holder::Get(NEXT_CONDITION_ENUM));
         }
@@ -373,7 +373,7 @@ namespace creature
 
     bool Creature::HasCondition(const Conditions::Enum E) const
     {
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
             if (NEXT_CONDITION_ENUM == E)
             {
@@ -425,7 +425,7 @@ namespace creature
 
     bool Creature::HasMagicalCondition() const
     {
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
             if (condition::Holder::Get(NEXT_CONDITION_ENUM)->IsMagical())
             {
@@ -492,7 +492,7 @@ namespace creature
 
     const std::string Creature::ItemAdd(const item::ItemPtr_t ITEM_PTR)
     {
-        auto const IS_ALLOWED_STR { ItemIsAddAllowed(ITEM_PTR) };
+        const auto IS_ALLOWED_STR { ItemIsAddAllowed(ITEM_PTR) };
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
@@ -546,7 +546,7 @@ namespace creature
 
     const std::string Creature::ItemEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        auto const IS_ALLOWED_STR { ItemIsEquipAllowed(ITEM_PTR) };
+        const auto IS_ALLOWED_STR { ItemIsEquipAllowed(ITEM_PTR) };
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             EnchantmentsApplyOrRemoveByType(
@@ -620,7 +620,7 @@ namespace creature
         }
         else if (ITEM_PTR->IsSet())
         {
-            auto const REQUIRED_ROLE { item::set_type::Role(ITEM_PTR->SetType()) };
+            const auto REQUIRED_ROLE { item::set_type::Role(ITEM_PTR->SetType()) };
             if (REQUIRED_ROLE != Role())
             {
                 return "Can't equip because it is part of a magical set intended for "
@@ -662,7 +662,7 @@ namespace creature
 
         if (ITEM_PTR->HasCategoryType(item::category::TwoHanded))
         {
-            auto const NONBODYPART_TWOHANDED_WEAPONS_SVEC { item::Algorithms::FindByCategory(
+            const auto NONBODYPART_TWOHANDED_WEAPONS_SVEC { item::Algorithms::FindByCategory(
                 item::Algorithms::FindByCategory(
                     inventory_.ItemsEquipped(), item::category::TwoHanded),
                 item::category::BodyPart,
@@ -679,7 +679,7 @@ namespace creature
 
         if (ITEM_PTR->IsMisc())
         {
-            auto const MISC_TYPE { ITEM_PTR->MiscType() };
+            const auto MISC_TYPE { ITEM_PTR->MiscType() };
 
             if ((MISC_TYPE == item::misc_type::Wand)
                 && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Wand) > 0))
@@ -728,7 +728,7 @@ namespace creature
 
         if (ITEM_PTR->IsArmor())
         {
-            auto const ARMOR_TYPE { ITEM_PTR->ArmorType() };
+            const auto ARMOR_TYPE { ITEM_PTR->ArmorType() };
 
             if ((ARMOR_TYPE == item::armor_type::Bracers) && (Body().HasArms() == false))
             {
@@ -821,16 +821,16 @@ namespace creature
             {
                 // can't equip Robe+Cloak, but can equip Vest with either Robe or Cloak, and
                 // can also equip Cape with Vest
-                auto const HAS_EQUIPPED_VEST { inventory_.HasCoverTypeEquipped(
+                const auto HAS_EQUIPPED_VEST { inventory_.HasCoverTypeEquipped(
                     item::armor::cover_type::Vest) };
 
-                auto const HAS_EQUIPPED_CAPE { inventory_.HasCoverTypeEquipped(
+                const auto HAS_EQUIPPED_CAPE { inventory_.HasCoverTypeEquipped(
                     item::armor::cover_type::Cape) };
 
-                auto const HAS_EQUIPPED_ROBE { inventory_.HasCoverTypeEquipped(
+                const auto HAS_EQUIPPED_ROBE { inventory_.HasCoverTypeEquipped(
                     item::armor::cover_type::Robe) };
 
-                auto const HAS_EQUIPPED_CLOAK { inventory_.HasCoverTypeEquipped(
+                const auto HAS_EQUIPPED_CLOAK { inventory_.HasCoverTypeEquipped(
                     item::armor::cover_type::Cloak) };
 
                 if ((ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
@@ -904,12 +904,12 @@ namespace creature
             }
             else
             {
-                auto const ALREADY_EQUIPPED_COUNT { inventory_.CountItemOfArmorTypeEquipped(
+                const auto ALREADY_EQUIPPED_COUNT { inventory_.CountItemOfArmorTypeEquipped(
                     ARMOR_TYPE) };
 
                 if (ALREADY_EQUIPPED_COUNT > armorEquipLimit)
                 {
-                    auto const ARMOR_TYPE_STR { item::armor_type::ToString(ARMOR_TYPE) };
+                    const auto ARMOR_TYPE_STR { item::armor_type::ToString(ARMOR_TYPE) };
 
                     if (0 == armorEquipLimit)
                     {
@@ -942,9 +942,9 @@ namespace creature
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
         // this const stack variable is just to protect the member
-        auto const ROLE { role_ };
+        const auto ROLE { role_ };
 
-        auto const EXCLUSIVE_ROLE { ITEM_PTR->ExclusiveRole() };
+        const auto EXCLUSIVE_ROLE { ITEM_PTR->ExclusiveRole() };
         if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != ROLE))
         {
             std::ostringstream ss;
@@ -1011,7 +1011,7 @@ namespace creature
 
             if (ITEM_PTR->IsArmor())
             {
-                auto const MAT_PRI { ITEM_PTR->MaterialPrimary() };
+                const auto MAT_PRI { ITEM_PTR->MaterialPrimary() };
 
                 if ((MAT_PRI != item::material::Cloth) && (MAT_PRI != item::material::Leather)
                     && (MAT_PRI != item::material::Silk) && (MAT_PRI != item::material::Fur))
@@ -1064,7 +1064,7 @@ namespace creature
 
     const std::string Creature::ItemUnEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        auto const IS_ITEM_UNEQUIP_ALLOWED_STR { IsItemUnqeuipAllowed(ITEM_PTR) };
+        const auto IS_ITEM_UNEQUIP_ALLOWED_STR { IsItemUnqeuipAllowed(ITEM_PTR) };
         if (IS_ITEM_UNEQUIP_ALLOWED_STR != ITEM_ACTION_SUCCESS_STR_)
         {
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
@@ -1093,7 +1093,7 @@ namespace creature
     void Creature::IncrementHeldWeapons()
     {
         // compose a vec of weapon vecs that can be considered equipped current weapon sets
-        auto const WEAPONS_PVEC_VEC { ComposeWeaponsList() };
+        const auto WEAPONS_PVEC_VEC { ComposeWeaponsList() };
 
         if (heldWeaponsPVec_.empty())
         {
@@ -1109,7 +1109,7 @@ namespace creature
         else
         {
             // find where in the weaponsPVecVec the currWeapons_ is
-            auto const NUM_WEAPONS_SVECS(WEAPONS_PVEC_VEC.size());
+            const auto NUM_WEAPONS_SVECS(WEAPONS_PVEC_VEC.size());
             for (std::size_t i(0); i < NUM_WEAPONS_SVECS; ++i)
             {
                 if (heldWeaponsPVec_ == WEAPONS_PVEC_VEC[i])
@@ -1135,7 +1135,7 @@ namespace creature
     void Creature::SetHeldWeaponsToBest()
     {
         // compose a vec of weapon vecs that can be considered equipped current weapon sets
-        auto const WEAPONS_PVEC_VEC { ComposeWeaponsList() };
+        const auto WEAPONS_PVEC_VEC { ComposeWeaponsList() };
 
         if (WEAPONS_PVEC_VEC.empty())
         {
@@ -1152,12 +1152,12 @@ namespace creature
         auto EQUIPPED_ITEMS_PVEC { Inventory().ItemsEquipped() };
 
         // determine if the currrent weapon set is valid (equipped)
-        for (auto const & HELD_ITEM_PTR : heldWeaponsPVec_)
+        for (const auto & HELD_ITEM_PTR : heldWeaponsPVec_)
         {
-            auto const IS_HELD_ITEM_EQUIPPED { std::find_if(
+            const auto IS_HELD_ITEM_EQUIPPED { std::find_if(
                                                    EQUIPPED_ITEMS_PVEC.begin(),
                                                    EQUIPPED_ITEMS_PVEC.end(),
-                                                   [HELD_ITEM_PTR](auto const EQUIPPED_ITEM_PTR) {
+                                                   [HELD_ITEM_PTR](const auto EQUIPPED_ITEM_PTR) {
                                                        return HELD_ITEM_PTR == EQUIPPED_ITEM_PTR;
                                                    })
                                                != EQUIPPED_ITEMS_PVEC.end() };
@@ -1175,7 +1175,7 @@ namespace creature
         std::size_t count { 0 };
 
         // wands do not count as weapons
-        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
+        for (const auto & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Wand)
             {
@@ -1188,7 +1188,7 @@ namespace creature
 
     bool Creature::IsHoldingProjectileWeapon() const
     {
-        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
+        for (const auto & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
             if (NEXT_ITEM_PTR->IsWeapon()
                 && NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Projectile))
@@ -1210,13 +1210,13 @@ namespace creature
         // sort by 'most damage'
         if (tempPVec.size() > 1)
         {
-            std::sort(tempPVec.begin(), tempPVec.end(), [](auto const & A, auto const & B) {
+            std::sort(tempPVec.begin(), tempPVec.end(), [](const auto & A, const auto & B) {
                 return (A->DamageMin() + A->DamageMax()) > (B->DamageMin() + B->DamageMax());
             });
         }
 
         std::ostringstream ss;
-        for (auto const & NEXT_ITEM_PTR : tempPVec)
+        for (const auto & NEXT_ITEM_PTR : tempPVec)
         {
             ss << NEXT_ITEM_PTR->Name() << SEPARATOR;
         }
@@ -1227,7 +1227,7 @@ namespace creature
     const std::string Creature::ArmorString() const
     {
         item::ItemPVec_t armorItemsPVec;
-        for (auto const & NEXT_ITEM_PTR : Inventory().ItemsEquipped())
+        for (const auto & NEXT_ITEM_PTR : Inventory().ItemsEquipped())
         {
             if (NEXT_ITEM_PTR->IsArmor())
             {
@@ -1241,14 +1241,14 @@ namespace creature
             std::sort(
                 armorItemsPVec.begin(),
                 armorItemsPVec.end(),
-                [](auto const ITEM_PTR_A, auto const ITEM_PTR_B) {
+                [](const auto ITEM_PTR_A, const auto ITEM_PTR_B) {
                     return ITEM_PTR_A->ArmorRating() > ITEM_PTR_B->ArmorRating();
                 });
         }
 
         std::ostringstream ss;
         const std::string SEPARATOR(", ");
-        for (auto const & NEXT_ITEM_PTR : armorItemsPVec)
+        for (const auto & NEXT_ITEM_PTR : armorItemsPVec)
         {
             ss << NEXT_ITEM_PTR->Name() << SEPARATOR;
         }
@@ -1303,11 +1303,11 @@ namespace creature
 
     bool Creature::CanCastSpellByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
     {
-        for (auto const NEXT_SPELL_ENUM : spellsVec_)
+        for (const auto NEXT_SPELL_ENUM : spellsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE { spell::Holder::Get(NEXT_SPELL_ENUM)->Effect() };
+            const auto NEXT_EFFECT_TYPE_SOURCE { spell::Holder::Get(NEXT_SPELL_ENUM)->Effect() };
 
-            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
+            for (const auto NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
                 if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
                 {
@@ -1323,7 +1323,7 @@ namespace creature
     {
         spell::SpellPVec_t spellsPVec;
 
-        for (auto const NEXT_SPELL_TYPE : spellsVec_)
+        for (const auto NEXT_SPELL_TYPE : spellsVec_)
         {
             spellsPVec.emplace_back(spell::Holder::Get(NEXT_SPELL_TYPE));
         }
@@ -1346,7 +1346,7 @@ namespace creature
 
     bool Creature::SpellRemove(const spell::Spells::Enum E)
     {
-        auto const FOUND_ITER { std::find(spellsVec_.begin(), spellsVec_.end(), E) };
+        const auto FOUND_ITER { std::find(spellsVec_.begin(), spellsVec_.end(), E) };
 
         if (FOUND_ITER == spellsVec_.end())
         {
@@ -1406,11 +1406,11 @@ namespace creature
 
     bool Creature::CanPlaySongsByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
     {
-        for (auto const NEXT_SONG_ENUM : songsVec_)
+        for (const auto NEXT_SONG_ENUM : songsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE { song::Holder::Get(NEXT_SONG_ENUM)->Effect() };
+            const auto NEXT_EFFECT_TYPE_SOURCE { song::Holder::Get(NEXT_SONG_ENUM)->Effect() };
 
-            for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
+            for (const auto NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
                 if (NEXT_EFFECT_TYPE_SOURCE == NEXT_EFFECT_TYPE_TEST)
                 {
@@ -1426,7 +1426,7 @@ namespace creature
     {
         song::SongPVec_t songsPVec;
 
-        for (auto const NEXT_SONG_ENUM : songsVec_)
+        for (const auto NEXT_SONG_ENUM : songsVec_)
         {
             songsPVec.emplace_back(song::Holder::Get(NEXT_SONG_ENUM));
         }
@@ -1449,7 +1449,7 @@ namespace creature
 
     bool Creature::SongRemove(const song::Songs::Enum E)
     {
-        auto const FOUND_ITER { std::find(songsVec_.begin(), songsVec_.end(), E) };
+        const auto FOUND_ITER { std::find(songsVec_.begin(), songsVec_.end(), E) };
 
         if (FOUND_ITER == songsVec_.end())
         {
@@ -1474,13 +1474,13 @@ namespace creature
            << bodyType_.ToString() << "]";
 
         ss << ", conds=";
-        for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
             ss << condition::Holder::Get(NEXT_CONDITION_ENUM)->Name() << ",";
         }
 
         ss << ", titles=";
-        for (auto const NEXT_TITLE_ENUM : titlesVec_)
+        for (const auto NEXT_TITLE_ENUM : titlesVec_)
         {
             ss << title::Holder::Get(NEXT_TITLE_ENUM)->Name() << ",";
         }
@@ -1559,11 +1559,11 @@ namespace creature
     {
         for (misc::EnumUnderlying_t i(0); i < Traits::StatCount; ++i)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
+            const auto NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
 
             int traitPercent { 0 };
 
-            for (auto const NEXT_COND_ENUM : conditionsVec_)
+            for (const auto NEXT_COND_ENUM : conditionsVec_)
             {
                 traitPercent += condition::Holder::Get(NEXT_COND_ENUM)
                                     ->Traits()
@@ -1571,7 +1571,7 @@ namespace creature
                                     .Current();
             }
 
-            for (auto const & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+            for (const auto & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
             {
                 traitPercent += NEXT_ENCHANTMENT_PTR->Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
             }
@@ -1584,7 +1584,7 @@ namespace creature
 
     Trait_t Creature::TraitWorking(const Traits::Enum E) const
     {
-        auto const ACTUAL { static_cast<float>(TraitCurrent(E))
+        const auto ACTUAL { static_cast<float>(TraitCurrent(E))
                             + (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
 
         return (ACTUAL < 0.0f) ? 0 : static_cast<Trait_t>(ACTUAL);
@@ -1592,7 +1592,7 @@ namespace creature
 
     Trait_t Creature::TraitBonusNormalAdj(const Traits::Enum E, const Trait_t ADJ)
     {
-        auto const NEW_NORMAL { bonusSet_.Get(E).NormalAdj(ADJ) };
+        const auto NEW_NORMAL { bonusSet_.Get(E).NormalAdj(ADJ) };
         ReCalculateTraitBonuses();
         return NEW_NORMAL;
     }
@@ -1607,7 +1607,7 @@ namespace creature
         TraitSet set;
         for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
-            auto const NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
+            const auto NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
             set.Get(NEXT_TRAIT_ENUM).NormalSet(TraitNormal(NEXT_TRAIT_ENUM));
             set.Get(NEXT_TRAIT_ENUM).CurrentSet(TraitWorking(NEXT_TRAIT_ENUM));
         }
@@ -1618,8 +1618,8 @@ namespace creature
     const std::string
         Creature::TraitModifiedString(const Traits::Enum E, const bool WILL_WRAP) const
     {
-        auto const WORKING { TraitWorking(E) };
-        auto const NORMAL { TraitNormal(E) };
+        const auto WORKING { TraitWorking(E) };
+        const auto NORMAL { TraitNormal(E) };
 
         if (WORKING == NORMAL)
         {
@@ -1673,11 +1673,11 @@ namespace creature
     const item::ItemPVecVec_t Creature::ComposeWeaponsList() const
     {
         item::ItemPVecVec_t weaponsPVecVec;
-        auto const EQUIPPED_ITEMS_PVEC { Inventory().ItemsEquipped() };
+        const auto EQUIPPED_ITEMS_PVEC { Inventory().ItemsEquipped() };
 
         // the vec of non-bodypart equipped weapons is always first
         item::ItemPVec_t ssNonBPWeaponsPVec;
-        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (const auto & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
@@ -1708,7 +1708,7 @@ namespace creature
 
         // the equipped body part weapons that are not bite/claws are always second
         item::ItemPVec_t ssBPNonBCWeaponsPVec;
-        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (const auto & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
                 && (NEXT_ITEM_PTR->WeaponInfo().IsBite() == false)
@@ -1725,7 +1725,7 @@ namespace creature
 
         // the equipped body part weapons that ARE bite/claws always come after
         item::ItemPVec_t ssBPBCWeaponsPVec;
-        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (const auto & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
                 && (NEXT_ITEM_PTR->WeaponInfo().IsBite() || NEXT_ITEM_PTR->WeaponInfo().IsClaws()))
@@ -1882,7 +1882,7 @@ namespace creature
     void Creature::EnchantmentsApplyOrRemoveByType(
         const EnchantmentPVec_t & PVEC, const EnchantmentType::Enum TYPE, const bool WILL_APPLY)
     {
-        for (auto const & NEXT_ENCHANTMENT_PTR : PVEC)
+        for (const auto & NEXT_ENCHANTMENT_PTR : PVEC)
         {
             if (NEXT_ENCHANTMENT_PTR->Type() & TYPE)
             {
@@ -1893,7 +1893,7 @@ namespace creature
 
     bool Creature::HasEnchantmentType(const EnchantmentType::Enum TYPE_ENUM) const
     {
-        for (auto const & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+        for (const auto & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
         {
             if (NEXT_ENCHANTMENT_PTR->Type() & TYPE_ENUM)
             {

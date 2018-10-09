@@ -75,7 +75,7 @@ namespace stage
     {
         Stage::ClearAllEntities();
 
-        for (auto const & GAME_STATE_PTR : gamestatePVec_)
+        for (const auto & GAME_STATE_PTR : gamestatePVec_)
         {
             delete GAME_STATE_PTR.Ptr();
         }
@@ -104,7 +104,7 @@ namespace stage
         // function that doesn't actually load every game but a vector of profiles to use instead.
         gamestatePVec_ = game::GameStateFactory::Instance()->LoadAllGames();
 
-        for (auto const & GAMESTATE_PTR : gamestatePVec_)
+        for (const auto & GAMESTATE_PTR : gamestatePVec_)
         {
             std::ostringstream ss;
             ss << "Last Saved " << GAMESTATE_PTR->DateTimeOfLastSave().date.year << "-"
@@ -143,7 +143,7 @@ namespace stage
     void LoadGameStage::SetupGameInfoDisplay()
     {
         // free any existing TextRegion objects
-        for (auto const & NEXT_TEXTREGION_UPTR : charTextRegionUVec_)
+        for (const auto & NEXT_TEXTREGION_UPTR : charTextRegionUVec_)
         {
             EntityRemove(NEXT_TEXTREGION_UPTR.get());
         }
@@ -155,14 +155,14 @@ namespace stage
             return;
         }
 
-        auto const GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
+        const auto GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
 
         sfml_util::TextInfo descTextInfo(
             "", sfml_util::GuiFont::System, sfml_util::FontManager::Instance()->Size_Smallish());
 
         // establish positions
-        auto const CHAR_LIST_POS_LEFT { sfutil::Right(gsListBoxRect_) + 75.0f };
-        auto const CHAR_LIST_POS_TOP { gsListBoxRect_.top + 100.0f };
+        const auto CHAR_LIST_POS_LEFT { sfutil::Right(gsListBoxRect_) + 75.0f };
+        const auto CHAR_LIST_POS_TOP { gsListBoxRect_.top + 100.0f };
 
         // setup location text
         if (!locTextRegionUPtr_)
@@ -196,15 +196,15 @@ namespace stage
         charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
         // setup characters list
-        auto const CHAR_PVEC { GAMESTATE_PTR->Party().Characters() };
+        const auto CHAR_PVEC { GAMESTATE_PTR->Party().Characters() };
         auto posY { CHAR_LIST_POS_TOP + 30.0f };
 
-        auto const NUM_CHARS { CHAR_PVEC.size() };
+        const auto NUM_CHARS { CHAR_PVEC.size() };
         for (std::size_t i(0); i < NUM_CHARS; ++i)
         {
             std::ostringstream ss;
             ss << "CharList_" << i << "_" << CHAR_PVEC[i]->Name();
-            auto const TEXT_REGION_ENTITY_NAME { ss.str() };
+            const auto TEXT_REGION_ENTITY_NAME { ss.str() };
 
             ss.str("");
             ss << CHAR_PVEC[i]->Name() << ", " << CHAR_PVEC[i]->RoleName()

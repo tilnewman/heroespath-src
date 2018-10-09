@@ -503,13 +503,13 @@ namespace sfml_util
 
         if (style_.orientation == Orientation::Horiz)
         {
-            auto const SLIDER_RANGE { length_
+            const auto SLIDER_RANGE { length_
                                       - (botOrLeftSprite_.getLocalBounds().width
                                          + topOrRightSprite_.getLocalBounds().width
                                          + padSprite_.getLocalBounds().width - 8.0f) };
 
             // magic number 3 moves passed the shadow
-            auto const PAD_POS_LEFT { POS_V.x + botOrLeftSprite_.getLocalBounds().width
+            const auto PAD_POS_LEFT { POS_V.x + botOrLeftSprite_.getLocalBounds().width
                                       + (SLIDER_RANGE * currentPosRatioToUse) - 3.0f };
 
             const auto PAD_POS_TOP { POS_V.y + (botOrLeftSprite_.getLocalBounds().height * 0.5f)
@@ -519,13 +519,13 @@ namespace sfml_util
         }
         else
         {
-            auto const SLIDER_RANGE { length_
+            const auto SLIDER_RANGE { length_
                                       - (topOrRightSprite_.getLocalBounds().height
                                          + botOrLeftSprite_.getLocalBounds().height
                                          + padSprite_.getLocalBounds().height - 5.0f) };
 
             // magic number 1 moves passed the shadow
-            auto const PAD_POS_TOP { POS_V.y + topOrRightSprite_.getLocalBounds().height
+            const auto PAD_POS_TOP { POS_V.y + topOrRightSprite_.getLocalBounds().height
                                      + (SLIDER_RANGE * currentPosRatioToUse) - 1.0f };
 
             const auto PAD_POS_LEFT { POS_V.x + (topOrRightSprite_.getLocalBounds().width * 0.5f)
@@ -603,9 +603,9 @@ namespace sfml_util
         // change from screen to slider coords
         if (style_.orientation == Orientation::Horiz)
         {
-            auto const MIN_SCREENX { POS_V.x + botOrLeftSprite_.getLocalBounds().width };
+            const auto MIN_SCREENX { POS_V.x + botOrLeftSprite_.getLocalBounds().width };
 
-            auto const MAX_SCREENX { (
+            const auto MAX_SCREENX { (
                 POS_V.x + (length_ - topOrRightSprite_.getLocalBounds().width)
                 - barSprite_.getLocalBounds().height) };
 
@@ -627,9 +627,9 @@ namespace sfml_util
         }
         else
         {
-            auto const MIN_SCREENY { POS_V.y + topOrRightSprite_.getLocalBounds().height };
+            const auto MIN_SCREENY { POS_V.y + topOrRightSprite_.getLocalBounds().height };
 
-            auto const MAX_SCREENY { (
+            const auto MAX_SCREENY { (
                 POS_V.y + (length_ - botOrLeftSprite_.getLocalBounds().height)
                 - barSprite_.getLocalBounds().height) };
 

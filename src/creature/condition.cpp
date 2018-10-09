@@ -45,7 +45,7 @@ namespace creature
 
         ss << ".  " << Conditions::Desc(type_);
 
-        auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
+        const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
             ss << "  Traits: " << TRAIT_STR;
@@ -64,7 +64,7 @@ namespace creature
             ss << " (a magical condition)";
         }
 
-        auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
+        const auto TRAIT_STR { traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
         {
             ss << "  Traits: " << TRAIT_STR;
@@ -102,7 +102,7 @@ namespace creature
             case Conditions::Dazed:
             {
                 // if previous condition Dazed the creature, then don't clear
-                for (auto const & NEXT_HIT_INFO : hitInfoVec)
+                for (const auto & NEXT_HIT_INFO : hitInfoVec)
                 {
                     if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::Dazed))
                     {
@@ -133,7 +133,7 @@ namespace creature
                 }
 
                 // if previous condition tripped the creature, then don't get up
-                for (auto const & NEXT_HIT_INFO : hitInfoVec)
+                for (const auto & NEXT_HIT_INFO : hitInfoVec)
                 {
                     if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::Tripped))
                     {
@@ -162,7 +162,7 @@ namespace creature
             case Conditions::AsleepNatural:
             {
                 // if previous condition slept the creature, then don't wake
-                for (auto const & NEXT_HIT_INFO : hitInfoVec)
+                for (const auto & NEXT_HIT_INFO : hitInfoVec)
                 {
                     if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::AsleepNatural)
                         || NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::AsleepMagical))
@@ -206,7 +206,7 @@ namespace creature
                         ss << "the ";
                     }
 
-                    auto const CONTENT_NAME_POS{ combat::ContentAndNamePos(
+                    const auto CONTENT_NAME_POS { combat::ContentAndNamePos(
                         ss.str(), "'s body.", "", combat::NamePosition::TargetBefore) };
 
                     hitInfoVec.emplace_back(combat::HitInfo(
@@ -214,15 +214,15 @@ namespace creature
                 }
                 else
                 {
-                    auto const DAMAGE_BASE{ (
+                    const auto DAMAGE_BASE { (
                         (CREATURE_PTR->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
 
-                    auto const DAMAGE_RAND_MAX{ std::max(
+                    const auto DAMAGE_RAND_MAX { std::max(
                         1, static_cast<int>(CREATURE_PTR->HealthNormal().As<float>() * 0.1f)) };
 
-                    auto const DAMAGE_FROM_HEALTH_NORMAL{ misc::random::Int(1, DAMAGE_RAND_MAX) };
+                    const auto DAMAGE_FROM_HEALTH_NORMAL { misc::random::Int(1, DAMAGE_RAND_MAX) };
 
-                    const Health_t DAMAGE_FINAL{ Health_t(
+                    const Health_t DAMAGE_FINAL { Health_t(
                         -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL)) };
 
                     CondEnumVec_t condsAddedVec;
@@ -258,7 +258,7 @@ namespace creature
                 }
 
                 // if previous condition tripped the creature, then don't get up
-                for (auto const & NEXT_HIT_INFO : hitInfoVec)
+                for (const auto & NEXT_HIT_INFO : hitInfoVec)
                 {
                     if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::Tripped))
                     {
@@ -293,7 +293,7 @@ namespace creature
             case Conditions::AsleepMagical:
             {
                 // if previous condition slept the creature, then don't wake
-                for (auto const & NEXT_HIT_INFO : hitInfoVec)
+                for (const auto & NEXT_HIT_INFO : hitInfoVec)
                 {
                     if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::AsleepNatural)
                         || NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::AsleepMagical))
@@ -324,9 +324,7 @@ namespace creature
             case Conditions::Stone:
             case Conditions::Dead:
             case Conditions::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
     }

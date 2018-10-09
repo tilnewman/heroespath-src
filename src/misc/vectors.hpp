@@ -169,7 +169,7 @@ namespace misc
 
             std::size_t toJoinCount { 0 };
             std::vector<T> toJoinVec;
-            for (auto const & NEXT_ELEMENT : VEC)
+            for (const auto & NEXT_ELEMENT : VEC)
             {
                 if (ONLY_IF_FUNC(NEXT_ELEMENT))
                 {
@@ -227,7 +227,7 @@ namespace misc
                 std::begin(VALUES),
                 std::end(VALUES),
                 T(0),
-                [](auto const SUBTOTAL, auto const VALUE) { return SUBTOTAL + VALUE; });
+                [](const auto SUBTOTAL, const auto VALUE) { return SUBTOTAL + VALUE; });
         }
 
         template <typename T>
@@ -260,14 +260,14 @@ namespace misc
                 return 0;
             }
 
-            auto const AVERAGE_DOUBLE { static_cast<double>(AVERAGE_ORIG) };
+            const auto AVERAGE_DOUBLE { static_cast<double>(AVERAGE_ORIG) };
 
             double deviationSum { 0.0 };
 
             std::size_t i { ((WILL_IGNORE_FIRST_VALUE) ? 1U : 0U) };
             for (; i < (COUNT - 1); ++i)
             {
-                auto const NEXT_VALUE { static_cast<double>(VALUES[i]) };
+                const auto NEXT_VALUE { static_cast<double>(VALUES[i]) };
                 deviationSum += std::pow((NEXT_VALUE - AVERAGE_DOUBLE), 2);
             }
 
@@ -324,7 +324,7 @@ namespace misc
                     min = VALUES.front();
                     max = min;
 
-                    for (auto const VALUE : VALUES)
+                    for (const auto VALUE : VALUES)
                     {
                         if (VALUE < min)
                         {

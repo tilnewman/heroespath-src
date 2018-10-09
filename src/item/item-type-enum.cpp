@@ -91,614 +91,310 @@ namespace item
     {
         switch (MISC_TYPE)
         {
-            case Not:
-            {
-                return "Not";
-            }
-            case AngelBraid:
-            {
-                return "AngelBraid";
-            }
-            case Crumhorn:
-            {
-                return "Crumhorn";
-            }
-            case DevilHorn:
-            {
-                return "DevilHorn";
-            }
-            case GolemFinger:
-            {
-                return "GolemFinger";
-            }
-            case HurdyGurdy:
-            {
-                return "HurdyGurdy";
-            }
-            case Icicle:
-            {
-                return "Icicle";
-            }
-            case LitchHand:
-            {
-                return "LitchHand";
-            }
-            case Lyre:
-            {
-                return "Lyre";
-            }
-            case MummyHand:
-            {
-                return "MummyHand";
-            }
-            case PetrifiedSnake:
-            {
-                return "PetrifiedSnake";
-            }
-            case PipeAndTabor:
-            {
-                return "PipeAndTabor";
-            }
-            case Recorder:
-            {
-                return "Recorder";
-            }
-            case UnicornHorn:
-            {
-                return "UnicornHorn";
-            }
-            case Viol:
-            {
-                return "Viol";
-            }
-            case BasiliskTonge:
-            {
-                return "BasiliskTonge";
-            }
-            case BerserkersBeard:
-            {
-                return "BerserkersBeard";
-            }
-            case BishopsHanky:
-            {
-                return "BishopsHanky";
-            }
-            case BleedingTrophy:
-            {
-                return "BleedingTrophy";
-            }
-            case BloodyDragonScale:
-            {
-                return "BloodyDragonScale";
-            }
-            case BottleOfBansheeScreams:
-            {
-                return "BottleOfBansheeScreams";
-            }
-            case BronzeTroll:
-            {
-                return "BronzeTroll";
-            }
-            case Brooch_Crown:
-            {
-                return "Brooch_Crown";
-            }
-            case Brooch_Feather:
-            {
-                return "Brooch_Feather";
-            }
-            case Brooch_Fist:
-            {
-                return "Brooch_Fist";
-            }
-            case Brooch_Hourglass:
-            {
-                return "Brooch_Hourglass";
-            }
-            case Brooch_Key:
-            {
-                return "Brooch_Key";
-            }
-            case Brooch_Mask:
-            {
-                return "Brooch_Mask";
-            }
-            case BurialShroud:
-            {
-                return "BurialShroud";
-            }
-            case CapeCommanders:
-            {
-                return "CapeCommanders";
-            }
-            case CapeGenerals:
-            {
-                return "CapeGenerals";
-            }
-            case CapeKings:
-            {
-                return "CapeKings";
-            }
-            case Charm_Crown:
-            {
-                return "Charm_Crown";
-            }
-            case Charm_Feather:
-            {
-                return "Charm_Feather";
-            }
-            case Charm_Fist:
-            {
-                return "Charm_Fist";
-            }
-            case Charm_Hourglass:
-            {
-                return "Charm_Hourglass";
-            }
-            case Charm_Key:
-            {
-                return "Charm_Key";
-            }
-            case Charm_Mask:
-            {
-                return "Charm_Mask";
-            }
-            case ChimeraBone:
-            {
-                return "ChimeraBone";
-            }
-            case CobraTooth:
-            {
-                return "CobraTooth";
-            }
-            case CrystalChimes:
-            {
-                return "CrystalChimes";
-            }
-            case DemonDiary:
-            {
-                return "DemonDiary";
-            }
-            case DoveBloodVial:
-            {
-                return "DoveBloodVial";
-            }
-            case DragonToothWhistle:
-            {
-                return "DragonToothWhistle";
-            }
-            case DriedFrog:
-            {
-                return "DriedFrog";
-            }
-            case DriedGecko:
-            {
-                return "DriedGecko";
-            }
-            case DriedIguana:
-            {
-                return "DriedIguana";
-            }
-            case DriedLizard:
-            {
-                return "DriedLizard";
-            }
-            case DriedSalamander:
-            {
-                return "DriedSalamander";
-            }
-            case DriedSkink:
-            {
-                return "DriedSkink";
-            }
-            case DriedToad:
-            {
-                return "DriedToad";
-            }
-            case DruidLeaf:
-            {
-                return "DruidLeaf";
-            }
-            case EvilRabbitsFoot:
-            {
-                return "EvilRabbitsFoot";
-            }
-            case ExoticGoldenGong:
-            {
-                return "ExoticGoldenGong";
-            }
-            case EyeCyclops:
-            {
-                return "EyeCyclops";
-            }
-            case EyeGiantOwl:
-            {
-                return "EyeGiantOwl";
-            }
-            case EyeHawk:
-            {
-                return "EyeHawk";
-            }
-            case FlagFanatics:
-            {
-                return "FlagFanatics";
-            }
-            case FlagRegalCaptains:
-            {
-                return "FlagRegalCaptains";
-            }
-            case FlagTribal:
-            {
-                return "FlagTribal";
-            }
-            case FriarsChronicle:
-            {
-                return "FriarsChronicle";
-            }
-            case FuneralRecord:
-            {
-                return "FuneralRecord";
-            }
-            case GhostSheet:
-            {
-                return "GhostSheet";
-            }
-            case GlassCat:
-            {
-                return "GlassCat";
-            }
-            case GriffinFeather:
-            {
-                return "GriffinFeather";
-            }
-            case HangmansNoose:
-            {
-                return "HangmansNoose";
-            }
-            case HobgoblinNose:
-            {
-                return "HobgoblinNose";
-            }
-            case HolyEpic:
-            {
-                return "HolyEpic";
-            }
-            case HornOfTheHorde:
-            {
-                return "HornOfTheHorde";
-            }
-            case ImpTail:
-            {
-                return "ImpTail";
-            }
-            case IslanderHeaddress:
-            {
-                return "IslanderHeaddress";
-            }
-            case JeweledArmband:
-            {
-                return "JeweledArmband";
-            }
-            case JeweledHandbag:
-            {
-                return "JeweledHandbag";
-            }
-            case JeweledPrincessVeil:
-            {
-                return "JeweledPrincessVeil";
-            }
-            case LastRitesScroll:
-            {
-                return "LastRitesScroll";
-            }
-            case MacabreManuscript:
-            {
-                return "MacabreManuscript";
-            }
-            case MadRatJuju:
-            {
-                return "MadRatJuju";
-            }
-            case MagicHorseshoe:
-            {
-                return "MagicHorseshoe";
-            }
-            case MagnifyingGlass:
-            {
-                return "MagnifyingGlass";
-            }
-            case ManaAmulet:
-            {
-                return "ManaAmulet";
-            }
-            case MaskMourners:
-            {
-                return "MaskMourners";
-            }
-            case MaskRascal:
-            {
-                return "MaskRascal";
-            }
-            case MinotaurHide:
-            {
-                return "MinotaurHide";
-            }
-            case MortuaryOrnament:
-            {
-                return "MortuaryOrnament";
-            }
-            case NecklaceJeweledAnkh:
-            {
-                return "NecklaceJeweledAnkh";
-            }
-            case NecklaceSharkTooth:
-            {
-                return "NecklaceSharkTooth";
-            }
-            case NecklaceVampiresTooth:
-            {
-                return "NecklaceVampiresTooth";
-            }
-            case PantherPaw:
-            {
-                return "PantherPaw";
-            }
-            case Pin_Crown:
-            {
-                return "Pin_Crown";
-            }
-            case Pin_Feather:
-            {
-                return "Pin_Feather";
-            }
-            case Pin_Fist:
-            {
-                return "Pin_Fist";
-            }
-            case Pin_Hourglass:
-            {
-                return "Pin_Hourglass";
-            }
-            case Pin_Key:
-            {
-                return "Pin_Key";
-            }
-            case Pin_Mask:
-            {
-                return "Pin_Mask";
-            }
-            case PixieBell:
-            {
-                return "PixieBell";
-            }
-            case RattlesnakeTail:
-            {
-                return "RattlesnakeTail";
-            }
-            case RavenClaw:
-            {
-                return "RavenClaw";
-            }
-            case ReaperScythe:
-            {
-                return "ReaperScythe";
-            }
-            case RequiemRegister:
-            {
-                return "RequiemRegister";
-            }
-            case RingHobo:
-            {
-                return "RingHobo";
-            }
-            case RingMendicant:
-            {
-                return "RingMendicant";
-            }
-            case RingMonk:
-            {
-                return "RingMonk";
-            }
-            case RingPriest:
-            {
-                return "RingPriest";
-            }
-            case RoyalScoutSpyglass:
-            {
-                return "RoyalScoutSpyglass";
-            }
-            case SaintCameoPin:
-            {
-                return "SaintCameoPin";
-            }
-            case SaintsJournal:
-            {
-                return "SaintsJournal";
-            }
-            case SanguineRelic:
-            {
-                return "SanguineRelic";
-            }
-            case ScoundrelSack:
-            {
-                return "ScoundrelSack";
-            }
-            case SepultureDecoration:
-            {
-                return "SepultureDecoration";
-            }
-            case ShadeCloak:
-            {
-                return "ShadeCloak";
-            }
-            case ShamanRainmaker:
-            {
-                return "ShamanRainmaker";
-            }
-            case SirenConch:
-            {
-                return "SirenConch";
-            }
-            case SpecterChains:
-            {
-                return "SpecterChains";
-            }
-            case SpecterRobe:
-            {
-                return "SpecterRobe";
-            }
-            case SpiderEggs:
-            {
-                return "SpiderEggs";
-            }
-            case SprintersLegtie:
-            {
-                return "SprintersLegtie";
-            }
-            case SwindlersBag:
-            {
-                return "SwindlersBag";
-            }
-            case TricksterPouch:
-            {
-                return "TricksterPouch";
-            }
-            case TuningFork:
-            {
-                return "TuningFork";
-            }
-            case TurtleShell:
-            {
-                return "TurtleShell";
-            }
-            case VultureGizzard:
-            {
-                return "VultureGizzard";
-            }
-            case WarhorseMarionette:
-            {
-                return "WarhorseMarionette";
-            }
-            case WarTrumpet:
-            {
-                return "WarTrumpet";
-            }
-            case WeaselTotem:
-            {
-                return "WeaselTotem";
-            }
-            case WolfenFur:
-            {
-                return "WolfenFur";
-            }
-            case WraithTalisman:
-            {
-                return "WraithTalisman";
-            }
-            case Bust:
-            {
-                return "Bust";
-            }
-            case Doll:
-            {
-                return "Doll";
-            }
-            case DollBlessed:
-            {
-                return "DollBlessed";
-            }
-            case DollCursed:
-            {
-                return "DollCursed";
-            }
-            case DriedHead:
-            {
-                return "DriedHead";
-            }
-            case DrumLute:
-            {
-                return "DrumLute";
-            }
-            case Egg:
-            {
-                return "Egg";
-            }
-            case Embryo:
-            {
-                return "Embryo";
-            }
-            case FigurineBlessed:
-            {
-                return "FigurineBlessed";
-            }
-            case FigurineCursed:
-            {
-                return "FigurineCursed";
-            }
-            case Goblet:
-            {
-                return "Goblet";
-            }
-            case Key:
-            {
-                return "Key";
-            }
-            case LockPicks:
-            {
-                return "LockPicks";
-            }
-            case Mirror:
-            {
-                return "Mirror";
-            }
-            case Orb:
-            {
-                return "Orb";
-            }
-            case Pendant:
-            {
-                return "Pendant";
-            }
-            case PuppetBlessed:
-            {
-                return "PuppetBlessed";
-            }
-            case PuppetCursed:
-            {
-                return "PuppetCursed";
-            }
-            case Ring:
-            {
-                return "Ring";
-            }
-            case Scepter:
-            {
-                return "Scepter";
-            }
-            case Seeds:
-            {
-                return "Seeds";
-            }
-            case Shard:
-            {
-                return "Shard";
-            }
-            case Staff:
-            {
-                return "Staff";
-            }
-            case SummoningStatue:
-            {
-                return "SummoningStatue";
-            }
-            case Wand:
-            {
-                return "Wand";
+            case Not: { return "Not";
+            }
+            case AngelBraid: { return "AngelBraid";
+            }
+            case Crumhorn: { return "Crumhorn";
+            }
+            case DevilHorn: { return "DevilHorn";
+            }
+            case GolemFinger: { return "GolemFinger";
+            }
+            case HurdyGurdy: { return "HurdyGurdy";
+            }
+            case Icicle: { return "Icicle";
+            }
+            case LitchHand: { return "LitchHand";
+            }
+            case Lyre: { return "Lyre";
+            }
+            case MummyHand: { return "MummyHand";
+            }
+            case PetrifiedSnake: { return "PetrifiedSnake";
+            }
+            case PipeAndTabor: { return "PipeAndTabor";
+            }
+            case Recorder: { return "Recorder";
+            }
+            case UnicornHorn: { return "UnicornHorn";
+            }
+            case Viol: { return "Viol";
+            }
+            case BasiliskTonge: { return "BasiliskTonge";
+            }
+            case BerserkersBeard: { return "BerserkersBeard";
+            }
+            case BishopsHanky: { return "BishopsHanky";
+            }
+            case BleedingTrophy: { return "BleedingTrophy";
+            }
+            case BloodyDragonScale: { return "BloodyDragonScale";
+            }
+            case BottleOfBansheeScreams: { return "BottleOfBansheeScreams";
+            }
+            case BronzeTroll: { return "BronzeTroll";
+            }
+            case Brooch_Crown: { return "Brooch_Crown";
+            }
+            case Brooch_Feather: { return "Brooch_Feather";
+            }
+            case Brooch_Fist: { return "Brooch_Fist";
+            }
+            case Brooch_Hourglass: { return "Brooch_Hourglass";
+            }
+            case Brooch_Key: { return "Brooch_Key";
+            }
+            case Brooch_Mask: { return "Brooch_Mask";
+            }
+            case BurialShroud: { return "BurialShroud";
+            }
+            case CapeCommanders: { return "CapeCommanders";
+            }
+            case CapeGenerals: { return "CapeGenerals";
+            }
+            case CapeKings: { return "CapeKings";
+            }
+            case Charm_Crown: { return "Charm_Crown";
+            }
+            case Charm_Feather: { return "Charm_Feather";
+            }
+            case Charm_Fist: { return "Charm_Fist";
+            }
+            case Charm_Hourglass: { return "Charm_Hourglass";
+            }
+            case Charm_Key: { return "Charm_Key";
+            }
+            case Charm_Mask: { return "Charm_Mask";
+            }
+            case ChimeraBone: { return "ChimeraBone";
+            }
+            case CobraTooth: { return "CobraTooth";
+            }
+            case CrystalChimes: { return "CrystalChimes";
+            }
+            case DemonDiary: { return "DemonDiary";
+            }
+            case DoveBloodVial: { return "DoveBloodVial";
+            }
+            case DragonToothWhistle: { return "DragonToothWhistle";
+            }
+            case DriedFrog: { return "DriedFrog";
+            }
+            case DriedGecko: { return "DriedGecko";
+            }
+            case DriedIguana: { return "DriedIguana";
+            }
+            case DriedLizard: { return "DriedLizard";
+            }
+            case DriedSalamander: { return "DriedSalamander";
+            }
+            case DriedSkink: { return "DriedSkink";
+            }
+            case DriedToad: { return "DriedToad";
+            }
+            case DruidLeaf: { return "DruidLeaf";
+            }
+            case EvilRabbitsFoot: { return "EvilRabbitsFoot";
+            }
+            case ExoticGoldenGong: { return "ExoticGoldenGong";
+            }
+            case EyeCyclops: { return "EyeCyclops";
+            }
+            case EyeGiantOwl: { return "EyeGiantOwl";
+            }
+            case EyeHawk: { return "EyeHawk";
+            }
+            case FlagFanatics: { return "FlagFanatics";
+            }
+            case FlagRegalCaptains: { return "FlagRegalCaptains";
+            }
+            case FlagTribal: { return "FlagTribal";
+            }
+            case FriarsChronicle: { return "FriarsChronicle";
+            }
+            case FuneralRecord: { return "FuneralRecord";
+            }
+            case GhostSheet: { return "GhostSheet";
+            }
+            case GlassCat: { return "GlassCat";
+            }
+            case GriffinFeather: { return "GriffinFeather";
+            }
+            case HangmansNoose: { return "HangmansNoose";
+            }
+            case HobgoblinNose: { return "HobgoblinNose";
+            }
+            case HolyEpic: { return "HolyEpic";
+            }
+            case HornOfTheHorde: { return "HornOfTheHorde";
+            }
+            case ImpTail: { return "ImpTail";
+            }
+            case IslanderHeaddress: { return "IslanderHeaddress";
+            }
+            case JeweledArmband: { return "JeweledArmband";
+            }
+            case JeweledHandbag: { return "JeweledHandbag";
+            }
+            case JeweledPrincessVeil: { return "JeweledPrincessVeil";
+            }
+            case LastRitesScroll: { return "LastRitesScroll";
+            }
+            case MacabreManuscript: { return "MacabreManuscript";
+            }
+            case MadRatJuju: { return "MadRatJuju";
+            }
+            case MagicHorseshoe: { return "MagicHorseshoe";
+            }
+            case MagnifyingGlass: { return "MagnifyingGlass";
+            }
+            case ManaAmulet: { return "ManaAmulet";
+            }
+            case MaskMourners: { return "MaskMourners";
+            }
+            case MaskRascal: { return "MaskRascal";
+            }
+            case MinotaurHide: { return "MinotaurHide";
+            }
+            case MortuaryOrnament: { return "MortuaryOrnament";
+            }
+            case NecklaceJeweledAnkh: { return "NecklaceJeweledAnkh";
+            }
+            case NecklaceSharkTooth: { return "NecklaceSharkTooth";
+            }
+            case NecklaceVampiresTooth: { return "NecklaceVampiresTooth";
+            }
+            case PantherPaw: { return "PantherPaw";
+            }
+            case Pin_Crown: { return "Pin_Crown";
+            }
+            case Pin_Feather: { return "Pin_Feather";
+            }
+            case Pin_Fist: { return "Pin_Fist";
+            }
+            case Pin_Hourglass: { return "Pin_Hourglass";
+            }
+            case Pin_Key: { return "Pin_Key";
+            }
+            case Pin_Mask: { return "Pin_Mask";
+            }
+            case PixieBell: { return "PixieBell";
+            }
+            case RattlesnakeTail: { return "RattlesnakeTail";
+            }
+            case RavenClaw: { return "RavenClaw";
+            }
+            case ReaperScythe: { return "ReaperScythe";
+            }
+            case RequiemRegister: { return "RequiemRegister";
+            }
+            case RingHobo: { return "RingHobo";
+            }
+            case RingMendicant: { return "RingMendicant";
+            }
+            case RingMonk: { return "RingMonk";
+            }
+            case RingPriest: { return "RingPriest";
+            }
+            case RoyalScoutSpyglass: { return "RoyalScoutSpyglass";
+            }
+            case SaintCameoPin: { return "SaintCameoPin";
+            }
+            case SaintsJournal: { return "SaintsJournal";
+            }
+            case SanguineRelic: { return "SanguineRelic";
+            }
+            case ScoundrelSack: { return "ScoundrelSack";
+            }
+            case SepultureDecoration: { return "SepultureDecoration";
+            }
+            case ShadeCloak: { return "ShadeCloak";
+            }
+            case ShamanRainmaker: { return "ShamanRainmaker";
+            }
+            case SirenConch: { return "SirenConch";
+            }
+            case SpecterChains: { return "SpecterChains";
+            }
+            case SpecterRobe: { return "SpecterRobe";
+            }
+            case SpiderEggs: { return "SpiderEggs";
+            }
+            case SprintersLegtie: { return "SprintersLegtie";
+            }
+            case SwindlersBag: { return "SwindlersBag";
+            }
+            case TricksterPouch: { return "TricksterPouch";
+            }
+            case TuningFork: { return "TuningFork";
+            }
+            case TurtleShell: { return "TurtleShell";
+            }
+            case VultureGizzard: { return "VultureGizzard";
+            }
+            case WarhorseMarionette: { return "WarhorseMarionette";
+            }
+            case WarTrumpet: { return "WarTrumpet";
+            }
+            case WeaselTotem: { return "WeaselTotem";
+            }
+            case WolfenFur: { return "WolfenFur";
+            }
+            case WraithTalisman: { return "WraithTalisman";
+            }
+            case Bust: { return "Bust";
+            }
+            case Doll: { return "Doll";
+            }
+            case DollBlessed: { return "DollBlessed";
+            }
+            case DollCursed: { return "DollCursed";
+            }
+            case DriedHead: { return "DriedHead";
+            }
+            case DrumLute: { return "DrumLute";
+            }
+            case Egg: { return "Egg";
+            }
+            case Embryo: { return "Embryo";
+            }
+            case FigurineBlessed: { return "FigurineBlessed";
+            }
+            case FigurineCursed: { return "FigurineCursed";
+            }
+            case Goblet: { return "Goblet";
+            }
+            case Key: { return "Key";
+            }
+            case LockPicks: { return "LockPicks";
+            }
+            case Mirror: { return "Mirror";
+            }
+            case Orb: { return "Orb";
+            }
+            case Pendant: { return "Pendant";
+            }
+            case PuppetBlessed: { return "PuppetBlessed";
+            }
+            case PuppetCursed: { return "PuppetCursed";
+            }
+            case Ring: { return "Ring";
+            }
+            case Scepter: { return "Scepter";
+            }
+            case Seeds: { return "Seeds";
+            }
+            case Shard: { return "Shard";
+            }
+            case Staff: { return "Staff";
+            }
+            case SummoningStatue: { return "SummoningStatue";
+            }
+            case Wand: { return "Wand";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MISC_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(MISC_TYPE, "ToString");
             }
         }
     }
@@ -707,614 +403,310 @@ namespace item
     {
         switch (MISC_TYPE)
         {
-            case Not:
-            {
-                return "Not";
-            }
-            case AngelBraid:
-            {
-                return "Angel Braid";
-            }
-            case Crumhorn:
-            {
-                return "Crumhorn";
-            }
-            case DevilHorn:
-            {
-                return "Devil Horn";
-            }
-            case GolemFinger:
-            {
-                return "Golem Finger";
-            }
-            case HurdyGurdy:
-            {
-                return "Hannibal's Hurdy Gurdy";
-            }
-            case Icicle:
-            {
-                return "Icicle";
-            }
-            case LitchHand:
-            {
-                return "Litch Hand";
-            }
-            case Lyre:
-            {
-                return "Satyr's Lyre";
-            }
-            case MummyHand:
-            {
-                return "Mummy Hand";
-            }
-            case PetrifiedSnake:
-            {
-                return "Petrified Snake";
-            }
-            case PipeAndTabor:
-            {
-                return "Puritan's Pipe And Tabor";
-            }
-            case Recorder:
-            {
-                return "Reverend's Recorder";
-            }
-            case UnicornHorn:
-            {
-                return "Unicorn Horn";
-            }
-            case Viol:
-            {
-                return "Villain's Viol";
-            }
-            case BasiliskTonge:
-            {
-                return "Basilisk Tonge";
-            }
-            case BerserkersBeard:
-            {
-                return "Berserker's Beard";
-            }
-            case BishopsHanky:
-            {
-                return "Bishop's Hanky";
-            }
-            case BleedingTrophy:
-            {
-                return "Bleeding Trophy";
-            }
-            case BloodyDragonScale:
-            {
-                return "Bloody Dragon Scale";
-            }
-            case BottleOfBansheeScreams:
-            {
-                return "Bottle Of Banshee Screams";
-            }
-            case BronzeTroll:
-            {
-                return "Bronze Troll";
-            }
-            case Brooch_Crown:
-            {
-                return "Crown Brooch";
-            }
-            case Brooch_Feather:
-            {
-                return "Feather Brooch";
-            }
-            case Brooch_Fist:
-            {
-                return "Fist Brooch";
-            }
-            case Brooch_Hourglass:
-            {
-                return "Hourglass Brooch";
-            }
-            case Brooch_Key:
-            {
-                return "Key Brooch";
-            }
-            case Brooch_Mask:
-            {
-                return "Mask Brooch";
-            }
-            case BurialShroud:
-            {
-                return "Burial Shroud";
-            }
-            case CapeCommanders:
-            {
-                return "Commander's Cape";
-            }
-            case CapeGenerals:
-            {
-                return "General's Cape";
-            }
-            case CapeKings:
-            {
-                return "King's Cape";
-            }
-            case Charm_Crown:
-            {
-                return "Crown Charm";
-            }
-            case Charm_Feather:
-            {
-                return "Feather Charm";
-            }
-            case Charm_Fist:
-            {
-                return "Fist Charm";
-            }
-            case Charm_Hourglass:
-            {
-                return "Hourglass Charm";
-            }
-            case Charm_Key:
-            {
-                return "Key Charm";
-            }
-            case Charm_Mask:
-            {
-                return "Mask Charm";
-            }
-            case ChimeraBone:
-            {
-                return "Chimera Bone";
-            }
-            case CobraTooth:
-            {
-                return "Cobra Tooth";
-            }
-            case CrystalChimes:
-            {
-                return "Crystal CrystalChimes";
-            }
-            case DemonDiary:
-            {
-                return "Demon's Diary";
-            }
-            case DoveBloodVial:
-            {
-                return "Dove Blood Vial";
-            }
-            case DragonToothWhistle:
-            {
-                return "Dragon Tooth Whistle";
-            }
-            case DriedFrog:
-            {
-                return "Dried Frog";
-            }
-            case DriedGecko:
-            {
-                return "Dried Gecko";
-            }
-            case DriedIguana:
-            {
-                return "Dried Iguana";
-            }
-            case DriedLizard:
-            {
-                return "Dried Lizard";
-            }
-            case DriedSalamander:
-            {
-                return "Dried Salamander";
-            }
-            case DriedSkink:
-            {
-                return "Dried Skink";
-            }
-            case DriedToad:
-            {
-                return "Dried Toad";
-            }
-            case DruidLeaf:
-            {
-                return "Druid Leaf";
-            }
-            case EvilRabbitsFoot:
-            {
-                return "Evil Rabbits Foot";
-            }
-            case ExoticGoldenGong:
-            {
-                return "Exotic Golden Gong";
-            }
-            case EyeCyclops:
-            {
-                return "Cyclop's Eye";
-            }
-            case EyeGiantOwl:
-            {
-                return "Giant Owl Eye";
-            }
-            case EyeHawk:
-            {
-                return "Hawk Eye";
-            }
-            case FlagFanatics:
-            {
-                return "Fanatic's Flag";
-            }
-            case FlagRegalCaptains:
-            {
-                return "Regal Captain's Flag";
-            }
-            case FlagTribal:
-            {
-                return "Tribal Flag";
-            }
-            case FriarsChronicle:
-            {
-                return "Friar's Chronicle";
-            }
-            case FuneralRecord:
-            {
-                return "Funeral Record";
-            }
-            case GhostSheet:
-            {
-                return "Ghost Sheet";
-            }
-            case GlassCat:
-            {
-                return "Glass Cat";
-            }
-            case GriffinFeather:
-            {
-                return "Griffin Feather";
-            }
-            case HangmansNoose:
-            {
-                return "Hangman's Noose";
-            }
-            case HobgoblinNose:
-            {
-                return "Hobgoblin Nose";
-            }
-            case HolyEpic:
-            {
-                return "Holy Epic";
-            }
-            case HornOfTheHorde:
-            {
-                return "Horn of The Horde";
-            }
-            case ImpTail:
-            {
-                return "Imp Tail";
-            }
-            case IslanderHeaddress:
-            {
-                return "Islander Headdress";
-            }
-            case JeweledArmband:
-            {
-                return "Armband";
-            }
-            case JeweledHandbag:
-            {
-                return "Handbag";
-            }
-            case JeweledPrincessVeil:
-            {
-                return "Princess Veil";
-            }
-            case LastRitesScroll:
-            {
-                return "Last Rites Scroll";
-            }
-            case MacabreManuscript:
-            {
-                return "Macabre Manuscript";
-            }
-            case MadRatJuju:
-            {
-                return "Mad Rat Juju";
-            }
-            case MagicHorseshoe:
-            {
-                return "Magic Horseshoe";
-            }
-            case MagnifyingGlass:
-            {
-                return "Magnifying Glass";
-            }
-            case ManaAmulet:
-            {
-                return "Mana Amulet";
-            }
-            case MaskMourners:
-            {
-                return "Mourner's Mask";
-            }
-            case MaskRascal:
-            {
-                return "Rascal Mask";
-            }
-            case MinotaurHide:
-            {
-                return "Minotaur Hide";
-            }
-            case MortuaryOrnament:
-            {
-                return "Mortuary Ornament";
-            }
-            case NecklaceJeweledAnkh:
-            {
-                return "Ankh Necklace";
-            }
-            case NecklaceSharkTooth:
-            {
-                return "Shark Tooth Necklace";
-            }
-            case NecklaceVampiresTooth:
-            {
-                return "Vampire's Tooth Necklace";
-            }
-            case PantherPaw:
-            {
-                return "Panther Paw";
-            }
-            case Pin_Crown:
-            {
-                return "Crown Pin";
-            }
-            case Pin_Feather:
-            {
-                return "Feather Pin";
-            }
-            case Pin_Fist:
-            {
-                return "Fist Pin";
-            }
-            case Pin_Hourglass:
-            {
-                return "Hourglass Pin";
-            }
-            case Pin_Key:
-            {
-                return "Key Pin";
-            }
-            case Pin_Mask:
-            {
-                return "Mask Pin";
-            }
-            case PixieBell:
-            {
-                return "Pixie Bell";
-            }
-            case RattlesnakeTail:
-            {
-                return "Rattlesnake Tail";
-            }
-            case RavenClaw:
-            {
-                return "Raven Claw";
-            }
-            case ReaperScythe:
-            {
-                return "Reaper Scythe";
-            }
-            case RequiemRegister:
-            {
-                return "Requiem Register";
-            }
-            case RingHobo:
-            {
-                return "Hobo Ring";
-            }
-            case RingMendicant:
-            {
-                return "Mendicant Ring";
-            }
-            case RingMonk:
-            {
-                return "Monk Ring";
-            }
-            case RingPriest:
-            {
-                return "PriestRing";
-            }
-            case RoyalScoutSpyglass:
-            {
-                return "Royal Scout Spyglass";
-            }
-            case SaintCameoPin:
-            {
-                return "Saint Cameo Pin";
-            }
-            case SaintsJournal:
-            {
-                return "Saint's Journal";
-            }
-            case SanguineRelic:
-            {
-                return "Sanguine Relic";
-            }
-            case ScoundrelSack:
-            {
-                return "Scoundrel Sack";
-            }
-            case SepultureDecoration:
-            {
-                return "Sepulture Decoration";
-            }
-            case ShadeCloak:
-            {
-                return "Shade Cloak";
-            }
-            case ShamanRainmaker:
-            {
-                return "Shaman Rainmaker";
-            }
-            case SirenConch:
-            {
-                return "Siren Conch";
-            }
-            case SpecterChains:
-            {
-                return "Specter Chains";
-            }
-            case SpecterRobe:
-            {
-                return "Specter Robe";
-            }
-            case SpiderEggs:
-            {
-                return "Spider Eggs";
-            }
-            case SprintersLegtie:
-            {
-                return "Sprinter's Legtie";
-            }
-            case SwindlersBag:
-            {
-                return "Swindler's Bag";
-            }
-            case TricksterPouch:
-            {
-                return "Trickster Pouch";
-            }
-            case TuningFork:
-            {
-                return "Tuning Fork";
-            }
-            case TurtleShell:
-            {
-                return "Turtle Shell";
-            }
-            case VultureGizzard:
-            {
-                return "Vulture Gizzard";
-            }
-            case WarhorseMarionette:
-            {
-                return "Warhorse Marionette";
-            }
-            case WarTrumpet:
-            {
-                return "War Trumpet";
-            }
-            case WeaselTotem:
-            {
-                return "Weasel Totem";
-            }
-            case WolfenFur:
-            {
-                return "Wolfen Fur";
-            }
-            case WraithTalisman:
-            {
-                return "Wraith Talisman";
-            }
-            case Bust:
-            {
-                return "Bust";
-            }
-            case Doll:
-            {
-                return "Doll";
-            }
-            case DollBlessed:
-            {
-                return "Doll";
-            }
-            case DollCursed:
-            {
-                return "Doll";
-            }
-            case DriedHead:
-            {
-                return "Dried Head";
-            }
-            case DrumLute:
-            {
-                return "Drumlute";
-            }
-            case Egg:
-            {
-                return "Egg";
-            }
-            case Embryo:
-            {
-                return "Embryo";
-            }
-            case FigurineBlessed:
-            {
-                return "Figurine";
-            }
-            case FigurineCursed:
-            {
-                return "Figurine";
-            }
-            case Goblet:
-            {
-                return "Goblet";
-            }
-            case Key:
-            {
-                return "Key";
-            }
-            case LockPicks:
-            {
-                return "Lockpicks";
-            }
-            case Mirror:
-            {
-                return "Mirror";
-            }
-            case Orb:
-            {
-                return "Orb";
-            }
-            case Pendant:
-            {
-                return "Pendant";
-            }
-            case PuppetBlessed:
-            {
-                return "Puppet";
-            }
-            case PuppetCursed:
-            {
-                return "Puppet";
-            }
-            case Ring:
-            {
-                return "Ring";
-            }
-            case Scepter:
-            {
-                return "Scepter";
-            }
-            case Seeds:
-            {
-                return "Seeds";
-            }
-            case Shard:
-            {
-                return "Shard";
-            }
-            case Staff:
-            {
-                return "Staff";
-            }
-            case SummoningStatue:
-            {
-                return "Summoning Statue";
-            }
-            case Wand:
-            {
-                return "Wand";
+            case Not: { return "Not";
+            }
+            case AngelBraid: { return "Angel Braid";
+            }
+            case Crumhorn: { return "Crumhorn";
+            }
+            case DevilHorn: { return "Devil Horn";
+            }
+            case GolemFinger: { return "Golem Finger";
+            }
+            case HurdyGurdy: { return "Hannibal's Hurdy Gurdy";
+            }
+            case Icicle: { return "Icicle";
+            }
+            case LitchHand: { return "Litch Hand";
+            }
+            case Lyre: { return "Satyr's Lyre";
+            }
+            case MummyHand: { return "Mummy Hand";
+            }
+            case PetrifiedSnake: { return "Petrified Snake";
+            }
+            case PipeAndTabor: { return "Puritan's Pipe And Tabor";
+            }
+            case Recorder: { return "Reverend's Recorder";
+            }
+            case UnicornHorn: { return "Unicorn Horn";
+            }
+            case Viol: { return "Villain's Viol";
+            }
+            case BasiliskTonge: { return "Basilisk Tonge";
+            }
+            case BerserkersBeard: { return "Berserker's Beard";
+            }
+            case BishopsHanky: { return "Bishop's Hanky";
+            }
+            case BleedingTrophy: { return "Bleeding Trophy";
+            }
+            case BloodyDragonScale: { return "Bloody Dragon Scale";
+            }
+            case BottleOfBansheeScreams: { return "Bottle Of Banshee Screams";
+            }
+            case BronzeTroll: { return "Bronze Troll";
+            }
+            case Brooch_Crown: { return "Crown Brooch";
+            }
+            case Brooch_Feather: { return "Feather Brooch";
+            }
+            case Brooch_Fist: { return "Fist Brooch";
+            }
+            case Brooch_Hourglass: { return "Hourglass Brooch";
+            }
+            case Brooch_Key: { return "Key Brooch";
+            }
+            case Brooch_Mask: { return "Mask Brooch";
+            }
+            case BurialShroud: { return "Burial Shroud";
+            }
+            case CapeCommanders: { return "Commander's Cape";
+            }
+            case CapeGenerals: { return "General's Cape";
+            }
+            case CapeKings: { return "King's Cape";
+            }
+            case Charm_Crown: { return "Crown Charm";
+            }
+            case Charm_Feather: { return "Feather Charm";
+            }
+            case Charm_Fist: { return "Fist Charm";
+            }
+            case Charm_Hourglass: { return "Hourglass Charm";
+            }
+            case Charm_Key: { return "Key Charm";
+            }
+            case Charm_Mask: { return "Mask Charm";
+            }
+            case ChimeraBone: { return "Chimera Bone";
+            }
+            case CobraTooth: { return "Cobra Tooth";
+            }
+            case CrystalChimes: { return "Crystal CrystalChimes";
+            }
+            case DemonDiary: { return "Demon's Diary";
+            }
+            case DoveBloodVial: { return "Dove Blood Vial";
+            }
+            case DragonToothWhistle: { return "Dragon Tooth Whistle";
+            }
+            case DriedFrog: { return "Dried Frog";
+            }
+            case DriedGecko: { return "Dried Gecko";
+            }
+            case DriedIguana: { return "Dried Iguana";
+            }
+            case DriedLizard: { return "Dried Lizard";
+            }
+            case DriedSalamander: { return "Dried Salamander";
+            }
+            case DriedSkink: { return "Dried Skink";
+            }
+            case DriedToad: { return "Dried Toad";
+            }
+            case DruidLeaf: { return "Druid Leaf";
+            }
+            case EvilRabbitsFoot: { return "Evil Rabbits Foot";
+            }
+            case ExoticGoldenGong: { return "Exotic Golden Gong";
+            }
+            case EyeCyclops: { return "Cyclop's Eye";
+            }
+            case EyeGiantOwl: { return "Giant Owl Eye";
+            }
+            case EyeHawk: { return "Hawk Eye";
+            }
+            case FlagFanatics: { return "Fanatic's Flag";
+            }
+            case FlagRegalCaptains: { return "Regal Captain's Flag";
+            }
+            case FlagTribal: { return "Tribal Flag";
+            }
+            case FriarsChronicle: { return "Friar's Chronicle";
+            }
+            case FuneralRecord: { return "Funeral Record";
+            }
+            case GhostSheet: { return "Ghost Sheet";
+            }
+            case GlassCat: { return "Glass Cat";
+            }
+            case GriffinFeather: { return "Griffin Feather";
+            }
+            case HangmansNoose: { return "Hangman's Noose";
+            }
+            case HobgoblinNose: { return "Hobgoblin Nose";
+            }
+            case HolyEpic: { return "Holy Epic";
+            }
+            case HornOfTheHorde: { return "Horn of The Horde";
+            }
+            case ImpTail: { return "Imp Tail";
+            }
+            case IslanderHeaddress: { return "Islander Headdress";
+            }
+            case JeweledArmband: { return "Armband";
+            }
+            case JeweledHandbag: { return "Handbag";
+            }
+            case JeweledPrincessVeil: { return "Princess Veil";
+            }
+            case LastRitesScroll: { return "Last Rites Scroll";
+            }
+            case MacabreManuscript: { return "Macabre Manuscript";
+            }
+            case MadRatJuju: { return "Mad Rat Juju";
+            }
+            case MagicHorseshoe: { return "Magic Horseshoe";
+            }
+            case MagnifyingGlass: { return "Magnifying Glass";
+            }
+            case ManaAmulet: { return "Mana Amulet";
+            }
+            case MaskMourners: { return "Mourner's Mask";
+            }
+            case MaskRascal: { return "Rascal Mask";
+            }
+            case MinotaurHide: { return "Minotaur Hide";
+            }
+            case MortuaryOrnament: { return "Mortuary Ornament";
+            }
+            case NecklaceJeweledAnkh: { return "Ankh Necklace";
+            }
+            case NecklaceSharkTooth: { return "Shark Tooth Necklace";
+            }
+            case NecklaceVampiresTooth: { return "Vampire's Tooth Necklace";
+            }
+            case PantherPaw: { return "Panther Paw";
+            }
+            case Pin_Crown: { return "Crown Pin";
+            }
+            case Pin_Feather: { return "Feather Pin";
+            }
+            case Pin_Fist: { return "Fist Pin";
+            }
+            case Pin_Hourglass: { return "Hourglass Pin";
+            }
+            case Pin_Key: { return "Key Pin";
+            }
+            case Pin_Mask: { return "Mask Pin";
+            }
+            case PixieBell: { return "Pixie Bell";
+            }
+            case RattlesnakeTail: { return "Rattlesnake Tail";
+            }
+            case RavenClaw: { return "Raven Claw";
+            }
+            case ReaperScythe: { return "Reaper Scythe";
+            }
+            case RequiemRegister: { return "Requiem Register";
+            }
+            case RingHobo: { return "Hobo Ring";
+            }
+            case RingMendicant: { return "Mendicant Ring";
+            }
+            case RingMonk: { return "Monk Ring";
+            }
+            case RingPriest: { return "PriestRing";
+            }
+            case RoyalScoutSpyglass: { return "Royal Scout Spyglass";
+            }
+            case SaintCameoPin: { return "Saint Cameo Pin";
+            }
+            case SaintsJournal: { return "Saint's Journal";
+            }
+            case SanguineRelic: { return "Sanguine Relic";
+            }
+            case ScoundrelSack: { return "Scoundrel Sack";
+            }
+            case SepultureDecoration: { return "Sepulture Decoration";
+            }
+            case ShadeCloak: { return "Shade Cloak";
+            }
+            case ShamanRainmaker: { return "Shaman Rainmaker";
+            }
+            case SirenConch: { return "Siren Conch";
+            }
+            case SpecterChains: { return "Specter Chains";
+            }
+            case SpecterRobe: { return "Specter Robe";
+            }
+            case SpiderEggs: { return "Spider Eggs";
+            }
+            case SprintersLegtie: { return "Sprinter's Legtie";
+            }
+            case SwindlersBag: { return "Swindler's Bag";
+            }
+            case TricksterPouch: { return "Trickster Pouch";
+            }
+            case TuningFork: { return "Tuning Fork";
+            }
+            case TurtleShell: { return "Turtle Shell";
+            }
+            case VultureGizzard: { return "Vulture Gizzard";
+            }
+            case WarhorseMarionette: { return "Warhorse Marionette";
+            }
+            case WarTrumpet: { return "War Trumpet";
+            }
+            case WeaselTotem: { return "Weasel Totem";
+            }
+            case WolfenFur: { return "Wolfen Fur";
+            }
+            case WraithTalisman: { return "Wraith Talisman";
+            }
+            case Bust: { return "Bust";
+            }
+            case Doll: { return "Doll";
+            }
+            case DollBlessed: { return "Doll";
+            }
+            case DollCursed: { return "Doll";
+            }
+            case DriedHead: { return "Dried Head";
+            }
+            case DrumLute: { return "Drumlute";
+            }
+            case Egg: { return "Egg";
+            }
+            case Embryo: { return "Embryo";
+            }
+            case FigurineBlessed: { return "Figurine";
+            }
+            case FigurineCursed: { return "Figurine";
+            }
+            case Goblet: { return "Goblet";
+            }
+            case Key: { return "Key";
+            }
+            case LockPicks: { return "Lockpicks";
+            }
+            case Mirror: { return "Mirror";
+            }
+            case Orb: { return "Orb";
+            }
+            case Pendant: { return "Pendant";
+            }
+            case PuppetBlessed: { return "Puppet";
+            }
+            case PuppetCursed: { return "Puppet";
+            }
+            case Ring: { return "Ring";
+            }
+            case Scepter: { return "Scepter";
+            }
+            case Seeds: { return "Seeds";
+            }
+            case Shard: { return "Shard";
+            }
+            case Staff: { return "Staff";
+            }
+            case SummoningStatue: { return "Summoning Statue";
+            }
+            case Wand: { return "Wand";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MISC_TYPE, "Name");
+            default: { ThrowInvalidValueForFunction(MISC_TYPE, "Name");
             }
         }
     }
@@ -1823,9 +1215,7 @@ namespace item
             case SummoningStatue:
             case Not:
             case Count:
-            default:
-            {
-                return category::None;
+            default: { return category::None;
             }
         }
     }
@@ -1886,142 +1276,74 @@ namespace item
     {
         switch (SET_TYPE)
         {
-            case Not:
-            {
-                return "Not";
+            case Not: { return "Not";
             }
-            case TheAssassins:
-            {
-                return "TheAssassins";
+            case TheAssassins: { return "TheAssassins";
             }
-            case TheNeverwinter:
-            {
-                return "TheNeverwinter";
+            case TheNeverwinter: { return "TheNeverwinter";
             }
-            case TheTickler:
-            {
-                return "TheTickler";
+            case TheTickler: { return "TheTickler";
             }
-            case TheMagus:
-            {
-                return "TheMagus";
+            case TheMagus: { return "TheMagus";
             }
-            case TheNecromancers:
-            {
-                return "TheNecromancers";
+            case TheNecromancers: { return "TheNecromancers";
             }
-            case TheWarlocks:
-            {
-                return "TheWarlocks";
+            case TheWarlocks: { return "TheWarlocks";
             }
-            case TheLichKings:
-            {
-                return "TheLichKings";
+            case TheLichKings: { return "TheLichKings";
             }
-            case TheSages:
-            {
-                return "TheSages";
+            case TheSages: { return "TheSages";
             }
-            case TheShamans:
-            {
-                return "TheShamans";
+            case TheShamans: { return "TheShamans";
             }
-            case TheOracles:
-            {
-                return "TheOracles";
+            case TheOracles: { return "TheOracles";
             }
-            case TheAngelic:
-            {
-                return "TheAngelic";
+            case TheAngelic: { return "TheAngelic";
             }
-            case TheBalladeers:
-            {
-                return "TheBalladeers";
+            case TheBalladeers: { return "TheBalladeers";
             }
-            case TheTroubadours:
-            {
-                return "TheTroubadours";
+            case TheTroubadours: { return "TheTroubadours";
             }
-            case TheMuses:
-            {
-                return "TheMuses";
+            case TheMuses: { return "TheMuses";
             }
-            case TheCavaliers:
-            {
-                return "TheCavaliers";
+            case TheCavaliers: { return "TheCavaliers";
             }
-            case TheChampions:
-            {
-                return "TheChampions";
+            case TheChampions: { return "TheChampions";
             }
-            case ThePaladins:
-            {
-                return "ThePaladins";
+            case ThePaladins: { return "ThePaladins";
             }
-            case TheBerserkers:
-            {
-                return "TheBerserkers";
+            case TheBerserkers: { return "TheBerserkers";
             }
-            case TheRosewood:
-            {
-                return "TheRosewood";
+            case TheRosewood: { return "TheRosewood";
             }
-            case TheDragonslayers:
-            {
-                return "TheDragonslayers";
+            case TheDragonslayers: { return "TheDragonslayers";
             }
-            case TheEventideRider:
-            {
-                return "TheEventideRider";
+            case TheEventideRider: { return "TheEventideRider";
             }
-            case TheHunters:
-            {
-                return "TheHunters";
+            case TheHunters: { return "TheHunters";
             }
-            case TheSureShot:
-            {
-                return "TheSureShot";
+            case TheSureShot: { return "TheSureShot";
             }
-            case TheMarksmans:
-            {
-                return "TheMarksmans";
+            case TheMarksmans: { return "TheMarksmans";
             }
-            case TheDeadeye:
-            {
-                return "TheDeadeye";
+            case TheDeadeye: { return "TheDeadeye";
             }
-            case TheDuskRanger:
-            {
-                return "TheDuskRanger";
+            case TheDuskRanger: { return "TheDuskRanger";
             }
-            case TheVenomBow:
-            {
-                return "TheVenomBow";
+            case TheVenomBow: { return "TheVenomBow";
             }
-            case TheCritterChannelers:
-            {
-                return "TheCritterChannelers";
+            case TheCritterChannelers: { return "TheCritterChannelers";
             }
-            case TheMammalianHead:
-            {
-                return "TheMammalianHead";
+            case TheMammalianHead: { return "TheMammalianHead";
             }
-            case TheSavageTaskmasters:
-            {
-                return "TheSavageTaskmasters";
+            case TheSavageTaskmasters: { return "TheSavageTaskmasters";
             }
-            case TheMonsterOverseers:
-            {
-                return "TheMonsterOverseers";
+            case TheMonsterOverseers: { return "TheMonsterOverseers";
             }
-            case TheBeastRulers:
-            {
-                return "TheBeastRulers";
+            case TheBeastRulers: { return "TheBeastRulers";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(SET_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(SET_TYPE, "ToString");
             }
         }
     }
@@ -2030,142 +1352,74 @@ namespace item
     {
         switch (SET_TYPE)
         {
-            case Not:
-            {
-                return "Not";
+            case Not: { return "Not";
             }
-            case TheAssassins:
-            {
-                return "The Assassin's";
+            case TheAssassins: { return "The Assassin's";
             }
-            case TheNeverwinter:
-            {
-                return "The Neverwinter";
+            case TheNeverwinter: { return "The Neverwinter";
             }
-            case TheTickler:
-            {
-                return "The Tickler's";
+            case TheTickler: { return "The Tickler's";
             }
-            case TheMagus:
-            {
-                return "The Magus'";
+            case TheMagus: { return "The Magus'";
             }
-            case TheNecromancers:
-            {
-                return "The Necromancer's";
+            case TheNecromancers: { return "The Necromancer's";
             }
-            case TheWarlocks:
-            {
-                return "The Warlock's";
+            case TheWarlocks: { return "The Warlock's";
             }
-            case TheLichKings:
-            {
-                return "The Lich King's";
+            case TheLichKings: { return "The Lich King's";
             }
-            case TheSages:
-            {
-                return "The Sage's";
+            case TheSages: { return "The Sage's";
             }
-            case TheShamans:
-            {
-                return "The Shaman's";
+            case TheShamans: { return "The Shaman's";
             }
-            case TheOracles:
-            {
-                return "The Oracle's";
+            case TheOracles: { return "The Oracle's";
             }
-            case TheAngelic:
-            {
-                return "The Angelic";
+            case TheAngelic: { return "The Angelic";
             }
-            case TheBalladeers:
-            {
-                return "The Balladeer's";
+            case TheBalladeers: { return "The Balladeer's";
             }
-            case TheTroubadours:
-            {
-                return "The Troubadour's";
+            case TheTroubadours: { return "The Troubadour's";
             }
-            case TheMuses:
-            {
-                return "The Muses'";
+            case TheMuses: { return "The Muses'";
             }
-            case TheCavaliers:
-            {
-                return "The Cavalier's";
+            case TheCavaliers: { return "The Cavalier's";
             }
-            case TheChampions:
-            {
-                return "The Champion's";
+            case TheChampions: { return "The Champion's";
             }
-            case ThePaladins:
-            {
-                return "The Paladin's";
+            case ThePaladins: { return "The Paladin's";
             }
-            case TheBerserkers:
-            {
-                return "The Berserker's";
+            case TheBerserkers: { return "The Berserker's";
             }
-            case TheRosewood:
-            {
-                return "The Rosewood";
+            case TheRosewood: { return "The Rosewood";
             }
-            case TheDragonslayers:
-            {
-                return "The Dragonslayer's";
+            case TheDragonslayers: { return "The Dragonslayer's";
             }
-            case TheEventideRider:
-            {
-                return "The Eventide Rider's";
+            case TheEventideRider: { return "The Eventide Rider's";
             }
-            case TheHunters:
-            {
-                return "The Hunter's";
+            case TheHunters: { return "The Hunter's";
             }
-            case TheSureShot:
-            {
-                return "The Sure Shot's";
+            case TheSureShot: { return "The Sure Shot's";
             }
-            case TheMarksmans:
-            {
-                return "The Marksman's";
+            case TheMarksmans: { return "The Marksman's";
             }
-            case TheDeadeye:
-            {
-                return "The Deadeye's";
+            case TheDeadeye: { return "The Deadeye's";
             }
-            case TheDuskRanger:
-            {
-                return "The Dusk Ranger's";
+            case TheDuskRanger: { return "The Dusk Ranger's";
             }
-            case TheVenomBow:
-            {
-                return "The Venom Bow";
+            case TheVenomBow: { return "The Venom Bow";
             }
-            case TheCritterChannelers:
-            {
-                return "The Critter Channeler's";
+            case TheCritterChannelers: { return "The Critter Channeler's";
             }
-            case TheMammalianHead:
-            {
-                return "The Mammalian Head's";
+            case TheMammalianHead: { return "The Mammalian Head's";
             }
-            case TheSavageTaskmasters:
-            {
-                return "The Savage Taskmaster's";
+            case TheSavageTaskmasters: { return "The Savage Taskmaster's";
             }
-            case TheMonsterOverseers:
-            {
-                return "The Monster Overseer's";
+            case TheMonsterOverseers: { return "The Monster Overseer's";
             }
-            case TheBeastRulers:
-            {
-                return "The Beast Ruler's";
+            case TheBeastRulers: { return "The Beast Ruler's";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(SET_TYPE, "Name");
+            default: { ThrowInvalidValueForFunction(SET_TYPE, "Name");
             }
         }
     }
@@ -2174,35 +1428,25 @@ namespace item
     {
         switch (SET_TYPE)
         {
-            case Not:
-            {
-                return creature::role::Count;
+            case Not: { return creature::role::Count;
             }
             case TheAssassins:
             case TheTickler:
-            case TheNeverwinter:
-            {
-                return creature::role::Thief;
+            case TheNeverwinter: { return creature::role::Thief;
             }
             case TheMagus:
             case TheNecromancers:
             case TheWarlocks:
-            case TheLichKings:
-            {
-                return creature::role::Sorcerer;
+            case TheLichKings: { return creature::role::Sorcerer;
             }
             case TheSages:
             case TheShamans:
             case TheOracles:
-            case TheAngelic:
-            {
-                return creature::role::Cleric;
+            case TheAngelic: { return creature::role::Cleric;
             }
             case TheBalladeers:
             case TheTroubadours:
-            case TheMuses:
-            {
-                return creature::role::Bard;
+            case TheMuses: { return creature::role::Bard;
             }
             case TheCavaliers:
             case TheChampions:
@@ -2210,31 +1454,23 @@ namespace item
             case TheBerserkers:
             case TheRosewood:
             case TheDragonslayers:
-            case TheEventideRider:
-            {
-                return creature::role::Knight;
+            case TheEventideRider: { return creature::role::Knight;
             }
             case TheHunters:
             case TheSureShot:
             case TheMarksmans:
             case TheDeadeye:
             case TheDuskRanger:
-            case TheVenomBow:
-            {
-                return creature::role::Archer;
+            case TheVenomBow: { return creature::role::Archer;
             }
             case TheCritterChannelers:
             case TheMammalianHead:
             case TheSavageTaskmasters:
             case TheMonsterOverseers:
-            case TheBeastRulers:
-            {
-                return creature::role::Beastmaster;
+            case TheBeastRulers: { return creature::role::Beastmaster;
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(SET_TYPE, "Role");
+            default: { ThrowInvalidValueForFunction(SET_TYPE, "Role");
             }
         }
     }
@@ -2243,250 +1479,128 @@ namespace item
     {
         switch (NAMED_TYPE)
         {
-            case Not:
-            {
-                return "Not";
+            case Not: { return "Not";
             }
-            case Arctic:
-            {
-                return "Arctic";
+            case Arctic: { return "Arctic";
             }
-            case Army:
-            {
-                return "Army";
+            case Army: { return "Army";
             }
-            case Betrayer:
-            {
-                return "Betrayer";
+            case Betrayer: { return "Betrayer";
             }
-            case Burglar:
-            {
-                return "Burglar";
+            case Burglar: { return "Burglar";
             }
-            case Burning:
-            {
-                return "Burning";
+            case Burning: { return "Burning";
             }
-            case Charlatans:
-            {
-                return "Charlatans";
+            case Charlatans: { return "Charlatans";
             }
-            case Charred:
-            {
-                return "Charred";
+            case Charred: { return "Charred";
             }
-            case Chill:
-            {
-                return "Chill";
+            case Chill: { return "Chill";
             }
-            case Dancing:
-            {
-                return "Dancing";
+            case Dancing: { return "Dancing";
             }
-            case Daring:
-            {
-                return "Daring";
+            case Daring: { return "Daring";
             }
-            case Dark:
-            {
-                return "Dark";
+            case Dark: { return "Dark";
             }
-            case Dawn:
-            {
-                return "Dawn";
+            case Dawn: { return "Dawn";
             }
-            case Diabolic:
-            {
-                return "Diabolic";
+            case Diabolic: { return "Diabolic";
             }
-            case Dusk:
-            {
-                return "Dusk";
+            case Dusk: { return "Dusk";
             }
-            case Elite:
-            {
-                return "Elite";
+            case Elite: { return "Elite";
             }
-            case Fiendish:
-            {
-                return "Fiendish";
+            case Fiendish: { return "Fiendish";
             }
-            case Fiery:
-            {
-                return "Fiery";
+            case Fiery: { return "Fiery";
             }
-            case Focus:
-            {
-                return "Focus";
+            case Focus: { return "Focus";
             }
-            case Frigid:
-            {
-                return "Frigid";
+            case Frigid: { return "Frigid";
             }
-            case Frozen:
-            {
-                return "Frozen";
+            case Frozen: { return "Frozen";
             }
-            case Gladiator:
-            {
-                return "Gladiator";
+            case Gladiator: { return "Gladiator";
             }
-            case Gloom:
-            {
-                return "Gloom";
+            case Gloom: { return "Gloom";
             }
-            case Glory:
-            {
-                return "Glory";
+            case Glory: { return "Glory";
             }
-            case Heros:
-            {
-                return "Heros";
+            case Heros: { return "Heros";
             }
-            case Honest:
-            {
-                return "Honest";
+            case Honest: { return "Honest";
             }
-            case Icy:
-            {
-                return "Icy";
+            case Icy: { return "Icy";
             }
-            case Imposters:
-            {
-                return "Imposters";
+            case Imposters: { return "Imposters";
             }
-            case Infernal:
-            {
-                return "Infernal";
+            case Infernal: { return "Infernal";
             }
-            case Knaves:
-            {
-                return "Knaves";
+            case Knaves: { return "Knaves";
             }
-            case Light:
-            {
-                return "Light";
+            case Light: { return "Light";
             }
-            case Marauder:
-            {
-                return "Marauder";
+            case Marauder: { return "Marauder";
             }
-            case Misery:
-            {
-                return "Misery";
+            case Misery: { return "Misery";
             }
-            case Moon:
-            {
-                return "Moon";
+            case Moon: { return "Moon";
             }
-            case Mountebank:
-            {
-                return "Mountebank";
+            case Mountebank: { return "Mountebank";
             }
-            case Muggers:
-            {
-                return "Muggers";
+            case Muggers: { return "Muggers";
             }
-            case Nile:
-            {
-                return "Nile";
+            case Nile: { return "Nile";
             }
-            case Noble:
-            {
-                return "Noble";
+            case Noble: { return "Noble";
             }
-            case Pickpocket:
-            {
-                return "Pickpocket";
+            case Pickpocket: { return "Pickpocket";
             }
-            case Pirate:
-            {
-                return "Pirate";
+            case Pirate: { return "Pirate";
             }
-            case Princes:
-            {
-                return "Princes";
+            case Princes: { return "Princes";
             }
-            case Proud:
-            {
-                return "Proud";
+            case Proud: { return "Proud";
             }
-            case Pure:
-            {
-                return "Pure";
+            case Pure: { return "Pure";
             }
-            case Raging:
-            {
-                return "Raging";
+            case Raging: { return "Raging";
             }
-            case Ranger:
-            {
-                return "Ranger";
+            case Ranger: { return "Ranger";
             }
-            case Robbers:
-            {
-                return "Robbers";
+            case Robbers: { return "Robbers";
             }
-            case Samurai:
-            {
-                return "Samurai";
+            case Samurai: { return "Samurai";
             }
-            case Searing:
-            {
-                return "Searing";
+            case Searing: { return "Searing";
             }
-            case Soldiers:
-            {
-                return "Soldiers";
+            case Soldiers: { return "Soldiers";
             }
-            case Sorrow:
-            {
-                return "Sorrow";
+            case Sorrow: { return "Sorrow";
             }
-            case Sun:
-            {
-                return "Sun";
+            case Sun: { return "Sun";
             }
-            case Thief:
-            {
-                return "Theif";
+            case Thief: { return "Theif";
             }
-            case Thors:
-            {
-                return "Thors";
+            case Thors: { return "Thors";
             }
-            case Thugs:
-            {
-                return "Thugs";
+            case Thugs: { return "Thugs";
             }
-            case Twilight:
-            {
-                return "Twilight";
+            case Twilight: { return "Twilight";
             }
-            case Valiant:
-            {
-                return "Valiant";
+            case Valiant: { return "Valiant";
             }
-            case Wardens:
-            {
-                return "Wardens";
+            case Wardens: { return "Wardens";
             }
-            case Wicked:
-            {
-                return "Wicked";
+            case Wicked: { return "Wicked";
             }
-            case Winter:
-            {
-                return "Winter";
+            case Winter: { return "Winter";
             }
-            case Woe:
-            {
-                return "Woe";
+            case Woe: { return "Woe";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(NAMED_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(NAMED_TYPE, "ToString");
             }
         }
     }
@@ -2495,49 +1609,27 @@ namespace item
     {
         switch (NAMED_TYPE)
         {
-            case Charlatans:
-            {
-                return "Charlatan's";
+            case Charlatans: { return "Charlatan's";
             }
-            case Heros:
-            {
-                return "Hero's";
+            case Heros: { return "Hero's";
             }
-            case Imposters:
-            {
-                return "Imposter's";
+            case Imposters: { return "Imposter's";
             }
-            case Knaves:
-            {
-                return "Knave's";
+            case Knaves: { return "Knave's";
             }
-            case Muggers:
-            {
-                return "Mugger's";
+            case Muggers: { return "Mugger's";
             }
-            case Princes:
-            {
-                return "Prince's";
+            case Princes: { return "Prince's";
             }
-            case Robbers:
-            {
-                return "Robber's";
+            case Robbers: { return "Robber's";
             }
-            case Soldiers:
-            {
-                return "Soldier's";
+            case Soldiers: { return "Soldier's";
             }
-            case Thors:
-            {
-                return "Thor's";
+            case Thors: { return "Thor's";
             }
-            case Thugs:
-            {
-                return "Thug's";
+            case Thugs: { return "Thug's";
             }
-            case Wardens:
-            {
-                return "Warden's";
+            case Wardens: { return "Warden's";
             }
             case Not:
             case Arctic:
@@ -2587,14 +1679,10 @@ namespace item
             case Valiant:
             case Wicked:
             case Winter:
-            case Woe:
-            {
-                return named_type::ToString(NAMED_TYPE);
+            case Woe: { return named_type::ToString(NAMED_TYPE);
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(NAMED_TYPE, "Name");
+            default: { ThrowInvalidValueForFunction(NAMED_TYPE, "Name");
             }
         }
     }
@@ -2676,178 +1764,92 @@ namespace item
     {
         switch (MATERIAL)
         {
-            case Nothing:
-            {
-                return "Nothing";
+            case Nothing: { return "Nothing";
             }
-            case Wood:
-            {
-                return "Wood";
+            case Wood: { return "Wood";
             }
-            case Leather:
-            {
-                return "Leather";
+            case Leather: { return "Leather";
             }
-            case Silk:
-            {
-                return "Silk";
+            case Silk: { return "Silk";
             }
-            case Bone:
-            {
-                return "Bone";
+            case Bone: { return "Bone";
             }
-            case Water:
-            {
-                return "Water";
+            case Water: { return "Water";
             }
-            case Dirt:
-            {
-                return "Dirt";
+            case Dirt: { return "Dirt";
             }
-            case Acid:
-            {
-                return "Acid";
+            case Acid: { return "Acid";
             }
-            case Stone:
-            {
-                return "Stone";
+            case Stone: { return "Stone";
             }
-            case Plant:
-            {
-                return "Plant";
+            case Plant: { return "Plant";
             }
-            case DriedFlesh:
-            {
-                return "DriedFlesh";
+            case DriedFlesh: { return "DriedFlesh";
             }
-            case Hide:
-            {
-                return "Hide";
+            case Hide: { return "Hide";
             }
-            case Feather:
-            {
-                return "Feather";
+            case Feather: { return "Feather";
             }
-            case Fur:
-            {
-                return "Fur";
+            case Fur: { return "Fur";
             }
-            case Hair:
-            {
-                return "Hair";
+            case Hair: { return "Hair";
             }
-            case Scales:
-            {
-                return "Scales";
+            case Scales: { return "Scales";
             }
-            case Obsidian:
-            {
-                return "Obsidian";
+            case Obsidian: { return "Obsidian";
             }
-            case Jade:
-            {
-                return "Jade";
+            case Jade: { return "Jade";
             }
-            case Amethyst:
-            {
-                return "Amethyst";
+            case Amethyst: { return "Amethyst";
             }
-            case Emerald:
-            {
-                return "Emerald";
+            case Emerald: { return "Emerald";
             }
-            case Pearl:
-            {
-                return "Pearl";
+            case Pearl: { return "Pearl";
             }
-            case Ruby:
-            {
-                return "Ruby";
+            case Ruby: { return "Ruby";
             }
-            case Lazuli:
-            {
-                return "Lazuli";
+            case Lazuli: { return "Lazuli";
             }
-            case Sapphire:
-            {
-                return "Sapphire";
+            case Sapphire: { return "Sapphire";
             }
-            case Diamond:
-            {
-                return "Diamond";
+            case Diamond: { return "Diamond";
             }
-            case Glass:
-            {
-                return "Glass";
+            case Glass: { return "Glass";
             }
-            case Gas:
-            {
-                return "Gas";
+            case Gas: { return "Gas";
             }
-            case Blood:
-            {
-                return "Blood";
+            case Blood: { return "Blood";
             }
-            case Paper:
-            {
-                return "Paper";
+            case Paper: { return "Paper";
             }
-            case Rope:
-            {
-                return "Rope";
+            case Rope: { return "Rope";
             }
-            case Cloth:
-            {
-                return "Cloth";
+            case Cloth: { return "Cloth";
             }
-            case Claw:
-            {
-                return "Claw";
+            case Claw: { return "Claw";
             }
-            case Horn:
-            {
-                return "Horn";
+            case Horn: { return "Horn";
             }
-            case Tooth:
-            {
-                return "Tooth";
+            case Tooth: { return "Tooth";
             }
-            case Spirit:
-            {
-                return "Spirit";
+            case Spirit: { return "Spirit";
             }
-            case Tin:
-            {
-                return "Tin";
+            case Tin: { return "Tin";
             }
-            case Gold:
-            {
-                return "Gold";
+            case Gold: { return "Gold";
             }
-            case Iron:
-            {
-                return "Iron";
+            case Iron: { return "Iron";
             }
-            case Bronze:
-            {
-                return "Bronze";
+            case Bronze: { return "Bronze";
             }
-            case Silver:
-            {
-                return "Silver";
+            case Silver: { return "Silver";
             }
-            case Steel:
-            {
-                return "Steel";
+            case Steel: { return "Steel";
             }
-            case Platinum:
-            {
-                return "Platinum";
+            case Platinum: { return "Platinum";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MATERIAL, "ToString");
+            default: { ThrowInvalidValueForFunction(MATERIAL, "ToString");
             }
         }
     }
@@ -2885,135 +1887,75 @@ namespace item
             case Glass:
             case Feather:
             case Hair:
-            case Rope:
-            {
-                return 0_armor;
+            case Rope: { return 0_armor;
             }
-            case Cloth:
-            {
-                return 1_armor;
+            case Cloth: { return 1_armor;
             }
-            case Silk:
-            {
-                return 2_armor;
+            case Silk: { return 2_armor;
             }
-            case Hide:
-            {
-                return 4_armor;
+            case Hide: { return 4_armor;
             }
-            case DriedFlesh:
-            {
-                return 5_armor;
+            case DriedFlesh: { return 5_armor;
             }
-            case Leather:
-            {
-                return 7_armor;
+            case Leather: { return 7_armor;
             }
-            case Fur:
-            {
-                return 9_armor;
+            case Fur: { return 9_armor;
             }
-            case Plant:
-            {
-                return 11_armor;
+            case Plant: { return 11_armor;
             }
             case Claw:
-            case Horn:
-            {
-                return 12_armor;
+            case Horn: { return 12_armor;
             }
             case Bone:
-            case Tooth:
-            {
-                return 13_armor;
+            case Tooth: { return 13_armor;
             }
-            case Wood:
-            {
-                return 15_armor;
+            case Wood: { return 15_armor;
             }
-            case Scales:
-            {
-                return 18_armor;
+            case Scales: { return 18_armor;
             }
-            case Stone:
-            {
-                return 20_armor;
+            case Stone: { return 20_armor;
             }
-            case Obsidian:
-            {
-                return 21_armor;
+            case Obsidian: { return 21_armor;
             }
-            case Tin:
-            {
-                return 25_armor;
+            case Tin: { return 25_armor;
             }
-            case Bronze:
-            {
-                return 26_armor;
+            case Bronze: { return 26_armor;
             }
-            case Iron:
-            {
-                return 27_armor;
+            case Iron: { return 27_armor;
             }
-            case Steel:
-            {
-                return 28_armor;
+            case Steel: { return 28_armor;
             }
-            case Jade:
-            {
-                return 29_armor;
+            case Jade: { return 29_armor;
             }
-            case Amethyst:
-            {
-                return 30_armor;
+            case Amethyst: { return 30_armor;
             }
-            case Emerald:
-            {
-                return 31_armor;
+            case Emerald: { return 31_armor;
             }
-            case Pearl:
-            {
-                return 32_armor;
+            case Pearl: { return 32_armor;
             }
-            case Ruby:
-            {
-                return 33_armor;
+            case Ruby: { return 33_armor;
             }
-            case Lazuli:
-            {
-                return 34_armor;
+            case Lazuli: { return 34_armor;
             }
-            case Silver:
-            {
-                return 35_armor;
+            case Silver: { return 35_armor;
             }
-            case Sapphire:
-            {
-                return 36_armor;
+            case Sapphire: { return 36_armor;
             }
-            case Gold:
-            {
-                return 40_armor;
+            case Gold: { return 40_armor;
             }
-            case Platinum:
-            {
-                return 45_armor;
+            case Platinum: { return 45_armor;
             }
-            case Diamond:
-            {
-                return 50_armor;
+            case Diamond: { return 50_armor;
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MATERIAL_PRI, "ArmorRatingBonusPri");
+            default: { ThrowInvalidValueForFunction(MATERIAL_PRI, "ArmorRatingBonusPri");
             }
         }
     }
 
     Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
-        auto const SEC_MATERIAL_ARMOR_ADJ_RATIO {
+        const auto SEC_MATERIAL_ARMOR_ADJ_RATIO {
             misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-item-secondary-material-armor-adj-ratio")
         };
@@ -3031,178 +1973,92 @@ namespace item
     {
         switch (MATERIAL_PRI)
         {
-            case Nothing:
-            {
-                return 0_coin;
+            case Nothing: { return 0_coin;
             }
-            case Spirit:
-            {
-                return 0_coin;
+            case Spirit: { return 0_coin;
             }
-            case Gas:
-            {
-                return 0_coin;
+            case Gas: { return 0_coin;
             }
-            case Water:
-            {
-                return 0_coin;
+            case Water: { return 0_coin;
             }
-            case Blood:
-            {
-                return 0_coin;
+            case Blood: { return 0_coin;
             }
-            case Acid:
-            {
-                return 100_coin;
+            case Acid: { return 100_coin;
             }
-            case Dirt:
-            {
-                return 0_coin;
+            case Dirt: { return 0_coin;
             }
-            case Paper:
-            {
-                return 0_coin;
+            case Paper: { return 0_coin;
             }
-            case Glass:
-            {
-                return 10_coin;
+            case Glass: { return 10_coin;
             }
-            case Feather:
-            {
-                return 0_coin;
+            case Feather: { return 0_coin;
             }
-            case Fur:
-            {
-                return 8_coin;
+            case Fur: { return 8_coin;
             }
-            case Hair:
-            {
-                return 0_coin;
+            case Hair: { return 0_coin;
             }
-            case DriedFlesh:
-            {
-                return 4_coin;
+            case DriedFlesh: { return 4_coin;
             }
-            case Rope:
-            {
-                return 0_coin;
+            case Rope: { return 0_coin;
             }
-            case Cloth:
-            {
-                return 0_coin;
+            case Cloth: { return 0_coin;
             }
-            case Silk:
-            {
-                return 16_coin;
+            case Silk: { return 16_coin;
             }
-            case Hide:
-            {
-                return 7_coin;
+            case Hide: { return 7_coin;
             }
-            case Leather:
-            {
-                return 10_coin;
+            case Leather: { return 10_coin;
             }
-            case Plant:
-            {
-                return 0_coin;
+            case Plant: { return 0_coin;
             }
-            case Claw:
-            {
-                return 4_coin;
+            case Claw: { return 4_coin;
             }
-            case Scales:
-            {
-                return 1000_coin;
+            case Scales: { return 1000_coin;
             }
-            case Horn:
-            {
-                return 6_coin;
+            case Horn: { return 6_coin;
             }
-            case Bone:
-            {
-                return 12_coin;
+            case Bone: { return 12_coin;
             }
-            case Tooth:
-            {
-                return 5_coin;
+            case Tooth: { return 5_coin;
             }
-            case Wood:
-            {
-                return 0_coin;
+            case Wood: { return 0_coin;
             }
-            case Stone:
-            {
-                return 0_coin;
+            case Stone: { return 0_coin;
             }
-            case Obsidian:
-            {
-                return 20_coin;
+            case Obsidian: { return 20_coin;
             }
-            case Tin:
-            {
-                return 30_coin;
+            case Tin: { return 30_coin;
             }
-            case Bronze:
-            {
-                return 32_coin;
+            case Bronze: { return 32_coin;
             }
-            case Iron:
-            {
-                return 36_coin;
+            case Iron: { return 36_coin;
             }
-            case Steel:
-            {
-                return 40_coin;
+            case Steel: { return 40_coin;
             }
-            case Jade:
-            {
-                return 100_coin;
+            case Jade: { return 100_coin;
             }
-            case Amethyst:
-            {
-                return 200_coin;
+            case Amethyst: { return 200_coin;
             }
-            case Emerald:
-            {
-                return 300_coin;
+            case Emerald: { return 300_coin;
             }
-            case Pearl:
-            {
-                return 500_coin;
+            case Pearl: { return 500_coin;
             }
-            case Ruby:
-            {
-                return 600_coin;
+            case Ruby: { return 600_coin;
             }
-            case Lazuli:
-            {
-                return 700_coin;
+            case Lazuli: { return 700_coin;
             }
-            case Silver:
-            {
-                return 1000_coin;
+            case Silver: { return 1000_coin;
             }
-            case Sapphire:
-            {
-                return 2000_coin;
+            case Sapphire: { return 2000_coin;
             }
-            case Gold:
-            {
-                return 5000_coin;
+            case Gold: { return 5000_coin;
             }
-            case Platinum:
-            {
-                return 7500_coin;
+            case Platinum: { return 7500_coin;
             }
-            case Diamond:
-            {
-                return 10000_coin;
+            case Diamond: { return 10000_coin;
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MATERIAL_PRI, "PriceAdjPri");
+            default: { ThrowInvalidValueForFunction(MATERIAL_PRI, "PriceAdjPri");
             }
         }
     }
@@ -3221,178 +2077,92 @@ namespace item
     {
         switch (MATERIAL_PRI)
         {
-            case Nothing:
-            {
-                return 0.0f;
+            case Nothing: { return 0.0f;
             }
-            case Spirit:
-            {
-                return 0.0f;
+            case Spirit: { return 0.0f;
             }
-            case Gas:
-            {
-                return 0.001f;
+            case Gas: { return 0.001f;
             }
-            case Plant:
-            {
-                return 0.9f;
+            case Plant: { return 0.9f;
             }
-            case Cloth:
-            {
-                return 0.9f;
+            case Cloth: { return 0.9f;
             }
-            case Silk:
-            {
-                return 0.8f;
+            case Silk: { return 0.8f;
             }
-            case Leather:
-            {
-                return 1.05f;
+            case Leather: { return 1.05f;
             }
-            case Rope:
-            {
-                return 1.1f;
+            case Rope: { return 1.1f;
             }
-            case Bone:
-            {
-                return 1.15f;
+            case Bone: { return 1.15f;
             }
-            case Paper:
-            {
-                return 1.2f;
+            case Paper: { return 1.2f;
             }
-            case Claw:
-            {
-                return 1.2f;
+            case Claw: { return 1.2f;
             }
-            case Horn:
-            {
-                return 1.2f;
+            case Horn: { return 1.2f;
             }
-            case Tooth:
-            {
-                return 1.2f;
+            case Tooth: { return 1.2f;
             }
-            case Water:
-            {
-                return 1.5f;
+            case Water: { return 1.5f;
             }
-            case Acid:
-            {
-                return 1.5f;
+            case Acid: { return 1.5f;
             }
-            case Blood:
-            {
-                return 1.55f;
+            case Blood: { return 1.55f;
             }
-            case DriedFlesh:
-            {
-                return 1.6f;
+            case DriedFlesh: { return 1.6f;
             }
-            case Hide:
-            {
-                return 1.35f;
+            case Hide: { return 1.35f;
             }
-            case Feather:
-            {
-                return 0.5f;
+            case Feather: { return 0.5f;
             }
-            case Fur:
-            {
-                return 0.75f;
+            case Fur: { return 0.75f;
             }
-            case Hair:
-            {
-                return 0.5f;
+            case Hair: { return 0.5f;
             }
-            case Scales:
-            {
-                return 0.9f;
+            case Scales: { return 0.9f;
             }
-            case Glass:
-            {
-                return 1.6f;
+            case Glass: { return 1.6f;
             }
-            case Wood:
-            {
-                return 1.85f;
+            case Wood: { return 1.85f;
             }
-            case Dirt:
-            {
-                return 1.9f;
+            case Dirt: { return 1.9f;
             }
-            case Obsidian:
-            {
-                return 2.2f;
+            case Obsidian: { return 2.2f;
             }
-            case Jade:
-            {
-                return 2.1f;
+            case Jade: { return 2.1f;
             }
-            case Amethyst:
-            {
-                return 2.1f;
+            case Amethyst: { return 2.1f;
             }
-            case Emerald:
-            {
-                return 2.15f;
+            case Emerald: { return 2.15f;
             }
-            case Pearl:
-            {
-                return 1.2f;
+            case Pearl: { return 1.2f;
             }
-            case Ruby:
-            {
-                return 2.2f;
+            case Ruby: { return 2.2f;
             }
-            case Lazuli:
-            {
-                return 2.5f;
+            case Lazuli: { return 2.5f;
             }
-            case Sapphire:
-            {
-                return 2.1f;
+            case Sapphire: { return 2.1f;
             }
-            case Diamond:
-            {
-                return 2.6f;
+            case Diamond: { return 2.6f;
             }
-            case Stone:
-            {
-                return 3.0f;
+            case Stone: { return 3.0f;
             }
-            case Tin:
-            {
-                return 4.0f;
+            case Tin: { return 4.0f;
             } // 7.3 - density
-            case Bronze:
-            {
-                return 4.2f;
+            case Bronze: { return 4.2f;
             } // 7.5
-            case Iron:
-            {
-                return 4.6f;
+            case Iron: { return 4.6f;
             } // 7.8
-            case Steel:
-            {
-                return 4.8f;
+            case Steel: { return 4.8f;
             } // 8.0
-            case Silver:
-            {
-                return 7.3f;
+            case Silver: { return 7.3f;
             } // 10.5
-            case Gold:
-            {
-                return 16.6f;
+            case Gold: { return 16.6f;
             } // 19.3
-            case Platinum:
-            {
-                return 18.8f;
+            case Platinum: { return 18.8f;
             } // 21.5
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(MATERIAL_PRI, "WeightMultPri");
+            default: { ThrowInvalidValueForFunction(MATERIAL_PRI, "WeightMultPri");
             }
         }
     }
@@ -3406,11 +2176,11 @@ namespace item
         const material::Enum MATERIAL_PRIMARY, const material::Enum MATERIAL_SECONDARY)
     {
         // the enchantment factory has been setup to work with values that range from [0,20]
-        auto const RANGE { 20.0f };
+        const auto RANGE { 20.0f };
 
         // these two ratios should add up to 1.0f
-        auto const PRIMARY_RATIO { 0.75f };
-        auto const SECONDARY_RATIO { 0.25f };
+        const auto PRIMARY_RATIO { 0.75f };
+        const auto SECONDARY_RATIO { 0.25f };
 
         if (MATERIAL_SECONDARY == material::Nothing)
         {
@@ -3573,9 +2343,7 @@ namespace item
         float fireDamageRatio(0.0f);
         switch (PRI)
         {
-            case material::Nothing:
-            {
-                break;
+            case material::Nothing: { break;
             }
             case material::Wood:
             {
@@ -3783,16 +2551,12 @@ namespace item
                 break;
             }
             case material::Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(PRI, "FireDamageRatio(PRI)");
+            default: { ThrowInvalidValueForFunction(PRI, "FireDamageRatio(PRI)");
             }
         }
         switch (SEC)
         {
-            case material::Nothing:
-            {
-                break;
+            case material::Nothing: { break;
             }
             case material::Wood:
             {
@@ -3914,13 +2678,9 @@ namespace item
                 fireDamageRatio -= 0.5f;
                 break;
             }
-            case material::Glass:
-            {
-                break;
+            case material::Glass: { break;
             }
-            case material::Gas:
-            {
-                break;
+            case material::Gas: { break;
             }
             case material::Blood:
             {
@@ -3957,9 +2717,7 @@ namespace item
                 fireDamageRatio -= 0.1f;
                 break;
             }
-            case material::Spirit:
-            {
-                break;
+            case material::Spirit: { break;
             }
             case material::Gold:
             {
@@ -3997,9 +2755,7 @@ namespace item
                 break;
             }
             case material::Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(SEC, "FireDamageRatio(SEC)");
+            default: { ThrowInvalidValueForFunction(SEC, "FireDamageRatio(SEC)");
             }
         }
 
@@ -4101,54 +2857,30 @@ namespace item
     {
         switch (ARMOR_TYPE)
         {
-            case Not:
-            {
-                return "Not";
+            case Not: { return "Not";
             }
-            case Shield:
-            {
-                return "Shield";
+            case Shield: { return "Shield";
             }
-            case Helm:
-            {
-                return "Helm";
+            case Helm: { return "Helm";
             }
-            case Gauntlets:
-            {
-                return "Gauntlets";
+            case Gauntlets: { return "Gauntlets";
             }
-            case Pants:
-            {
-                return "Pants";
+            case Pants: { return "Pants";
             }
-            case Boots:
-            {
-                return "Boots";
+            case Boots: { return "Boots";
             }
-            case Shirt:
-            {
-                return "Shirt";
+            case Shirt: { return "Shirt";
             }
-            case Bracers:
-            {
-                return "Bracers";
+            case Bracers: { return "Bracers";
             }
-            case Aventail:
-            {
-                return "Aventail";
+            case Aventail: { return "Aventail";
             }
-            case Covering:
-            {
-                return "Covering";
+            case Covering: { return "Covering";
             }
-            case Skin:
-            {
-                return "Skin";
+            case Skin: { return "Skin";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(ARMOR_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(ARMOR_TYPE, "ToString");
             }
         }
     }
@@ -4162,9 +2894,7 @@ namespace item
             case Boots:
             case Shirt:
             case Bracers:
-            case Aventail:
-            {
-                return true;
+            case Aventail: { return true;
             }
             case Not:
             case Shield:
@@ -4172,9 +2902,7 @@ namespace item
             case Covering:
             case Skin:
             case Count:
-            default:
-            {
-                return false;
+            default: { return false;
             }
         }
     }
@@ -4183,34 +2911,20 @@ namespace item
     {
         switch (BODY_PART)
         {
-            case Fists:
-            {
-                return "Fists";
+            case Fists: { return "Fists";
             }
-            case Claws:
-            {
-                return "Claws";
+            case Claws: { return "Claws";
             }
-            case Tentacles:
-            {
-                return "Tentacles";
+            case Tentacles: { return "Tentacles";
             }
-            case Bite:
-            {
-                return "Bite";
+            case Bite: { return "Bite";
             }
-            case Breath:
-            {
-                return "Breath";
+            case Breath: { return "Breath";
             }
-            case Skin:
-            {
-                return "Skin";
+            case Skin: { return "Skin";
             }
             case Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(BODY_PART, "ToString");
+            default: { ThrowInvalidValueForFunction(BODY_PART, "ToString");
             }
         }
     }
@@ -4220,46 +2934,26 @@ namespace item
     {
         switch (NAME_MATERIAL_TYPE)
         {
-            case name_material_type::Misc:
-            {
-                return "Misc";
+            case name_material_type::Misc: { return "Misc";
             }
-            case name_material_type::BodyPart:
-            {
-                return "BodyPart";
+            case name_material_type::BodyPart: { return "BodyPart";
             }
-            case name_material_type::Decoration:
-            {
-                return "Decoration";
+            case name_material_type::Decoration: { return "Decoration";
             }
-            case name_material_type::Handle:
-            {
-                return "Handle";
+            case name_material_type::Handle: { return "Handle";
             }
-            case name_material_type::Reinforced:
-            {
-                return "Reinforced";
+            case name_material_type::Reinforced: { return "Reinforced";
             }
-            case name_material_type::ReinforcedWithBase:
-            {
-                return "ReinforcedWithBase:";
+            case name_material_type::ReinforcedWithBase: { return "ReinforcedWithBase:";
             }
-            case name_material_type::Tipped:
-            {
-                return "Tipped";
+            case name_material_type::Tipped: { return "Tipped";
             }
-            case name_material_type::Claspped:
-            {
-                return "Claspped";
+            case name_material_type::Claspped: { return "Claspped";
             }
-            case name_material_type::ClasppedWithBase:
-            {
-                return "ClasppedWithBase";
+            case name_material_type::ClasppedWithBase: { return "ClasppedWithBase";
             }
             case name_material_type::Count:
-            default:
-            {
-                ThrowInvalidValueForFunction(NAME_MATERIAL_TYPE, "ToString");
+            default: { ThrowInvalidValueForFunction(NAME_MATERIAL_TYPE, "ToString");
             }
         }
     }

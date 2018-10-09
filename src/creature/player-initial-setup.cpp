@@ -45,7 +45,7 @@ namespace creature
 
         using namespace item;
 
-        auto const ROLE_ENUM { CREATURE_PTR->Role() };
+        const auto ROLE_ENUM { CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Knight)
         {
@@ -217,7 +217,7 @@ namespace creature
 
     void PlayerInitialSetup::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE_ENUM { CREATURE_PTR->Role() };
+        const auto ROLE_ENUM { CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Cleric)
         {
@@ -253,7 +253,7 @@ namespace creature
     {
         using namespace item;
 
-        auto const BODY { CREATURE_PTR->Body() };
+        const auto BODY { CREATURE_PTR->Body() };
 
         if (BODY.HasBreath()
             && ((CREATURE_PTR->Role() == creature::role::Sylavin)
@@ -289,7 +289,7 @@ namespace creature
         ss << "heroespath-player-race-health-initial-"
            << creature::race::ToString(CHARACTER_PTR->Race());
 
-        auto const HEALTH_BASE { Health_t(
+        const auto HEALTH_BASE { Health_t(
             misc::ConfigFile::Instance()->ValueOrDefault<int>(ss.str())) };
 
         ss.str("");
@@ -301,24 +301,24 @@ namespace creature
 
     void PlayerInitialSetup::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const STARTING_HEALTH { GetStartingHealth(CREATURE_PTR) };
+        const auto STARTING_HEALTH { GetStartingHealth(CREATURE_PTR) };
         CREATURE_PTR->HealthNormalSet(STARTING_HEALTH);
         CREATURE_PTR->HealthCurrentSet(STARTING_HEALTH);
     }
 
     void PlayerInitialSetup::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const ROLE_ENUM { CREATURE_PTR->Role() };
+        const auto ROLE_ENUM { CREATURE_PTR->Role() };
 
         if ((ROLE_ENUM == creature::role::Sorcerer) || (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const INITIAL_MANA { CREATURE_PTR->TraitNormal(Traits::Intelligence) / 2 };
+            const auto INITIAL_MANA { CREATURE_PTR->TraitNormal(Traits::Intelligence) / 2 };
             CREATURE_PTR->TraitNormalSet(Traits::Mana, INITIAL_MANA);
             CREATURE_PTR->TraitCurrentSet(Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA { (CREATURE_PTR->TraitNormal(Traits::Intelligence)
+            const auto INITIAL_MANA { (CREATURE_PTR->TraitNormal(Traits::Intelligence)
                                        + CREATURE_PTR->TraitNormal(Traits::Charm))
                                       / 4 };
 
@@ -330,7 +330,7 @@ namespace creature
     void PlayerInitialSetup::EnsureItemAddedAndEquipped(
         const creature::CreaturePtr_t CREATURE_PTR, const item::ItemPtr_t ITEM_PTR) const
     {
-        auto const ITEM_ADD_STR { CREATURE_PTR->ItemAdd(ITEM_PTR) };
+        const auto ITEM_ADD_STR { CREATURE_PTR->ItemAdd(ITEM_PTR) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_ADD_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),
@@ -338,7 +338,7 @@ namespace creature
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_ADD_STR << ".");
 
-        auto const ITEM_EQUIP_STR { CREATURE_PTR->ItemEquip(ITEM_PTR) };
+        const auto ITEM_EQUIP_STR { CREATURE_PTR->ItemEquip(ITEM_PTR) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_EQUIP_STR == creature::Creature::ITEM_ACTION_SUCCESS_STR_),

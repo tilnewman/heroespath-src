@@ -88,7 +88,7 @@ namespace stage
 
     bool CampStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        auto const CALLBACK_NAME { PACKET_PTR->Name() };
+        const auto CALLBACK_NAME { PACKET_PTR->Name() };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
         {
             showNewGamePopup2_ = true;
@@ -156,7 +156,7 @@ namespace stage
 
         if (showNewGamePopup1_)
         {
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME1_,
                 std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
                 popup::PopupButtons::Continue,
@@ -169,7 +169,7 @@ namespace stage
         }
         else if (showNewGamePopup2_)
         {
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME2_,
                 ComposeNewGamePopupText2(),
                 popup::PopupButtons::Continue,
@@ -182,7 +182,7 @@ namespace stage
         }
         else if (showNewGamePopup3_)
         {
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME3_,
                 ComposeNewGamePopupText3(),
                 popup::PopupButtons::Continue,
@@ -195,7 +195,7 @@ namespace stage
         }
         else if (showNewGamePopup4_)
         {
-            auto const POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
+            const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME4_,
                 ComposeNewGamePopupText4(),
                 popup::PopupButtons::Continue,
@@ -220,12 +220,12 @@ namespace stage
         std::ostringstream ss;
         ss << misc::ConfigFile::Instance()->Value("heroespath-intro-text2");
 
-        auto const PLAYERS_PVEC(creature::Algorithms::Players());
+        const auto PLAYERS_PVEC(creature::Algorithms::Players());
 
         auto humansAndGnomesPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Human));
 
-        auto const GNOMES_PVEC(
+        const auto GNOMES_PVEC(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Gnome));
 
         misc::Vector::Append(GNOMES_PVEC, humansAndGnomesPVec);
@@ -240,7 +240,7 @@ namespace stage
         auto pixiesAndBeastmastersPVec(
             creature::Algorithms::FindByRace(PLAYERS_PVEC, creature::race::Pixie));
 
-        auto const BEASTMASTERS_PVEC(
+        const auto BEASTMASTERS_PVEC(
             creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Beastmaster));
 
         misc::Vector::Append(
@@ -259,12 +259,12 @@ namespace stage
     {
         auto charToUsePtrOpt = creature::CreaturePtrOpt_t { boost::none };
 
-        auto const PLAYERS_PVEC(creature::Algorithms::Players());
+        const auto PLAYERS_PVEC(creature::Algorithms::Players());
 
-        auto const NOTBEASTS_PVEC(creature::Algorithms::FindByIsBeast(
+        const auto NOTBEASTS_PVEC(creature::Algorithms::FindByIsBeast(
             PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet));
 
-        auto const KNIGHT_PVEC(
+        const auto KNIGHT_PVEC(
             creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Knight));
 
         if (KNIGHT_PVEC.empty() == false)
@@ -273,7 +273,7 @@ namespace stage
         }
         else
         {
-            auto const CLERIC_PVEC(
+            const auto CLERIC_PVEC(
                 creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Cleric));
 
             if (CLERIC_PVEC.empty() == false)
@@ -282,7 +282,7 @@ namespace stage
             }
             else
             {
-                auto const BARD_PVEC(
+                const auto BARD_PVEC(
                     creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Bard));
 
                 if (BARD_PVEC.empty() == false)
@@ -291,7 +291,7 @@ namespace stage
                 }
                 else
                 {
-                    auto const SORCERER_PVEC(
+                    const auto SORCERER_PVEC(
                         creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Sorcerer));
 
                     if (SORCERER_PVEC.empty() == false)
@@ -300,7 +300,7 @@ namespace stage
                     }
                     else
                     {
-                        auto const BEASTMASTER_PVEC(creature::Algorithms::FindByRole(
+                        const auto BEASTMASTER_PVEC(creature::Algorithms::FindByRole(
                             PLAYERS_PVEC, creature::role::Beastmaster));
 
                         if (BEASTMASTER_PVEC.empty() == false)
@@ -309,7 +309,7 @@ namespace stage
                         }
                         else
                         {
-                            auto const ARCHER_PVEC(creature::Algorithms::FindByRole(
+                            const auto ARCHER_PVEC(creature::Algorithms::FindByRole(
                                 PLAYERS_PVEC, creature::role::Archer));
 
                             if (ARCHER_PVEC.empty() == false)
@@ -318,7 +318,7 @@ namespace stage
                             }
                             else
                             {
-                                auto const HUMAN_PVEC(creature::Algorithms::FindByRace(
+                                const auto HUMAN_PVEC(creature::Algorithms::FindByRace(
                                     PLAYERS_PVEC, creature::race::Human));
 
                                 if (HUMAN_PVEC.empty() == false)
@@ -327,7 +327,7 @@ namespace stage
                                 }
                                 else
                                 {
-                                    auto const GNOME_PVEC(creature::Algorithms::FindByRace(
+                                    const auto GNOME_PVEC(creature::Algorithms::FindByRace(
                                         PLAYERS_PVEC, creature::race::Gnome));
 
                                     if (GNOME_PVEC.empty() == false)
@@ -355,8 +355,8 @@ namespace stage
            << misc::ConfigFile::Instance()->Value("heroespath-intro-text7") << " "
            << creature::sex::HimHerIt(charToUsePtrOpt.value()->Sex(), false) << ", but ";
 
-        auto const BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
-        auto const NONLOAD_NONBEAST_PVEC { misc::Vector::Exclude(
+        const auto BEAST_PVEC { creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
+        const auto NONLOAD_NONBEAST_PVEC { misc::Vector::Exclude(
             NOTBEASTS_PVEC, charToUsePtrOpt.value()) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
@@ -365,7 +365,7 @@ namespace stage
 
             std::size_t i(0);
             bool appendedFirstName(false);
-            for (auto const & NEXT_BEAST_PTR : BEAST_PVEC)
+            for (const auto & NEXT_BEAST_PTR : BEAST_PVEC)
             {
                 ss << ((appendedFirstName) ? ", " : " ")
                    << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and " : "")
@@ -389,7 +389,7 @@ namespace stage
 
             std::size_t i(0);
             bool appendedFirstName(false);
-            for (auto const & NEXT_CHAR_PTR : NONLOAD_NONBEAST_PVEC)
+            for (const auto & NEXT_CHAR_PTR : NONLOAD_NONBEAST_PVEC)
             {
                 ss << ((appendedFirstName) ? ", " : "")
                    << (((NONLOAD_NONBEAST_PVEC.size() > 1)
@@ -409,7 +409,7 @@ namespace stage
 
                 i = 0;
                 appendedFirstName = false;
-                for (auto const & NEXT_BEAST_PTR : BEAST_PVEC)
+                for (const auto & NEXT_BEAST_PTR : BEAST_PVEC)
                 {
                     ss << ((appendedFirstName) ? ", " : "")
                        << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and "

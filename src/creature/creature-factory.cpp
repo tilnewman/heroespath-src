@@ -39,7 +39,7 @@ namespace creature
         const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
-        auto const CHARACTER_PTR { MakeAndEquipPlayer(
+        const auto CHARACTER_PTR { MakeAndEquipPlayer(
             NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME) };
 
         game::GameStateFactory::Instance()->SaveCharacter(CHARACTER_PTR);
@@ -71,7 +71,7 @@ namespace creature
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        auto const VALID_ROLES { race::Roles(RACE) };
+        const auto VALID_ROLES { race::Roles(RACE) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
@@ -82,7 +82,7 @@ namespace creature
                 << ", health=" << HEALTH << ", rank=" << RANK << ", experience=" << EXPERIENCE
                 << ") but that race/role combination is invalid.");
 
-        auto const CREATURE_PTR { CreatureWarehouse::Access().Store(std::make_unique<Creature>(
+        const auto CREATURE_PTR { CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
         creature::nonplayer::InventoryFactory inventoryFactory;
@@ -110,7 +110,7 @@ namespace creature
         const StatSet & STATS,
         const std::string & IMAGE_FILENAME) const
     {
-        auto const CHARACTER_PTR { CreatureWarehouse::Access().Store(
+        const auto CHARACTER_PTR { CreatureWarehouse::Access().Store(
             std::make_unique<Creature>(true, NAME, SEX, RACE, ROLE, STATS, IMAGE_FILENAME)) };
 
         PlayerInitialSetup playerSetup;

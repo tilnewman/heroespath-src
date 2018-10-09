@@ -66,7 +66,7 @@ namespace sfml_util
             posV.y += FRAME_SIZE_V.y;
         };
 
-        auto const CALCULATED_FRAME_COUNT_EXPECTED { static_cast<std::size_t>(
+        const auto CALCULATED_FRAME_COUNT_EXPECTED { static_cast<std::size_t>(
             (TEXTURE_SIZE_V.x / FRAME_SIZE_V.x) * (TEXTURE_SIZE_V.y / FRAME_SIZE_V.y)) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -132,7 +132,7 @@ namespace sfml_util
 
             if (colorFrom_ != colorTo_)
             {
-                auto const RATIO_COMPLETE { static_cast<float>(currentFrame_)
+                const auto RATIO_COMPLETE { static_cast<float>(currentFrame_)
                                             / static_cast<float>(rects_.size() - 1) };
 
                 sprite_.setColor(sfutil::Transition(colorFrom_, colorTo_, RATIO_COMPLETE));

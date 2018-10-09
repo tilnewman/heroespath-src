@@ -71,9 +71,9 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
 {
     ts::Constants constants;
 
-    auto const THE_MIN { 123.123 };
-    auto const THE_MAX { 456.456 };
-    auto const SPEED { 1.0 };
+    const auto THE_MIN { 123.123 };
+    const auto THE_MAX { 456.456 };
+    const auto SPEED { 1.0 };
 
     sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
 
@@ -93,9 +93,9 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
 
 BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
 {
-    auto const THE_MIN { 123.123 };
-    auto const THE_MAX { 456.456 };
-    auto const SPEED { 1.0 };
+    const auto THE_MIN { 123.123 };
+    const auto THE_MAX { 456.456 };
+    const auto SPEED { 1.0 };
 
     sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
 
@@ -113,9 +113,9 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
 {
     ts::Constants constants;
 
-    auto const THE_MIN { 123.123 };
-    auto const THE_MAX { 456.456 };
-    auto const SPEED { 1.0 };
+    const auto THE_MIN { 123.123 };
+    const auto THE_MAX { 456.456 };
+    const auto SPEED { 1.0 };
 
     sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
 
@@ -133,16 +133,16 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
 {
     ts::Constants constants;
 
-    auto const THE_MIN { 123.123 };
-    auto const THE_MAX { 456.456 };
-    auto const SPEED { 1.0 };
+    const auto THE_MIN { 123.123 };
+    const auto THE_MAX { 456.456 };
+    const auto SPEED { 1.0 };
 
     sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
 
-    auto const ITERATIONS { 1000 };
+    const auto ITERATIONS { 1000 };
     for (int i(0); i < ITERATIONS; ++i)
     {
-        auto const CURRENT { slider.Update(0.1) };
+        const auto CURRENT { slider.Update(0.1) };
 
         BOOST_CHECK(
             IsRealClose(CURRENT, THE_MIN) || IsRealClose(CURRENT, THE_MAX)

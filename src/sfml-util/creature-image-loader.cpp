@@ -58,21 +58,21 @@ namespace sfml_util
         static misc::EnumUnderlying_t raceIndex { 0 };
         if (raceIndex < creature::race::Count)
         {
-            auto const RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            auto const RACE_STR { creature::race::ToString(RACE_ENUM) };
-            auto const ROLE_VEC { creature::race::Roles(RACE_ENUM) };
+            const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
+            const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
+            const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
             static misc::EnumUnderlying_t roleIndex { 0 };
             if (roleIndex < ROLE_VEC.size())
             {
-                auto const ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                auto const ROLE_STR { creature::role::ToString(ROLE_ENUM) };
+                const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
                 static misc::EnumUnderlying_t sexIndex { 0 };
                 if (sexIndex < creature::sex::Count)
                 {
-                    auto const SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
-                    auto const SEX_STR { creature::sex::ToString(SEX_ENUM) };
+                    const auto SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
+                    const auto SEX_STR { creature::sex::ToString(SEX_ENUM) };
 
                     // test to ensure that BodyType maker will not throw
                     creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
@@ -83,12 +83,12 @@ namespace sfml_util
                     {
                         if (classIndex < creature::wolfen_class::Count)
                         {
-                            auto const CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
+                            const auto CLASS_ENUM { static_cast<creature::wolfen_class::Enum>(
                                 classIndex) };
 
-                            auto const CLASS_STR { creature::wolfen_class::ToString(CLASS_ENUM) };
+                            const auto CLASS_STR { creature::wolfen_class::ToString(CLASS_ENUM) };
 
-                            auto const FILENAMES { Filenames(
+                            const auto FILENAMES { Filenames(
                                 RACE_ENUM,
                                 ROLE_ENUM,
                                 SEX_ENUM,
@@ -104,9 +104,9 @@ namespace sfml_util
 
                             if (fileIndex < FILENAMES.size())
                             {
-                                auto const FILENAME { FILENAMES.at(fileIndex) };
+                                const auto FILENAME { FILENAMES.at(fileIndex) };
 
-                                auto const PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
+                                const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
 
                                 sf::Texture texture;
                                 Load(texture, FILENAME, false);
@@ -144,12 +144,12 @@ namespace sfml_util
                     {
                         if (classIndex < creature::dragon_class::Count)
                         {
-                            auto const CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
+                            const auto CLASS_ENUM { static_cast<creature::dragon_class::Enum>(
                                 classIndex) };
 
-                            auto const CLASS_STR { creature::dragon_class::ToString(CLASS_ENUM) };
+                            const auto CLASS_STR { creature::dragon_class::ToString(CLASS_ENUM) };
 
-                            auto const FILENAMES { Filenames(
+                            const auto FILENAMES { Filenames(
                                 RACE_ENUM,
                                 ROLE_ENUM,
                                 SEX_ENUM,
@@ -165,9 +165,9 @@ namespace sfml_util
 
                             if (fileIndex < FILENAMES.size())
                             {
-                                auto const FILENAME { FILENAMES.at(fileIndex) };
+                                const auto FILENAME { FILENAMES.at(fileIndex) };
 
-                                auto const PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
+                                const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
 
                                 sf::Texture texture;
                                 Load(texture, FILENAME, false);
@@ -203,7 +203,7 @@ namespace sfml_util
                     }
                     else
                     {
-                        auto const FILENAMES { Filenames(
+                        const auto FILENAMES { Filenames(
                             RACE_ENUM,
                             ROLE_ENUM,
                             SEX_ENUM,
@@ -218,9 +218,9 @@ namespace sfml_util
 
                         if (fileIndex < FILENAMES.size())
                         {
-                            auto const FILENAME { FILENAMES.at(fileIndex) };
+                            const auto FILENAME { FILENAMES.at(fileIndex) };
 
-                            auto const PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
+                            const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
 
                             sf::Texture texture;
                             Load(texture, FILENAME, false);
@@ -268,7 +268,7 @@ namespace sfml_util
 
         std::sort(std::begin(allPaths), std::end(allPaths));
 
-        for (auto const & PATH : allPaths)
+        for (const auto & PATH : allPaths)
         {
             M_HP_LOG_WRN(
                 "sfml_util::CreatureImageLoader::Test() found the following item image "
@@ -314,7 +314,7 @@ namespace sfml_util
     const std::string
         CreatureImageLoader::FilenameRandom(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        auto const FILENAMES { Filenames(
+        const auto FILENAMES { Filenames(
             CREATURE_PTR->Race(),
             CREATURE_PTR->Role(),
             CREATURE_PTR->Sex(),
@@ -332,7 +332,7 @@ namespace sfml_util
 
     void CreatureImageLoader::EnsureFileExists(const std::string & FILENAME) const
     {
-        auto const FULL_PATH_STR { Path(FILENAME) };
+        const auto FULL_PATH_STR { Path(FILENAME) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(FULL_PATH_STR)),
@@ -1026,42 +1026,24 @@ namespace sfml_util
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling:
-                    {
-                        return { "dragon-fb-hatchling.png" };
+                    case creature::dragon_class::Hatchling: { return { "dragon-fb-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp:
-                    {
-                        return { "dragon-fb-whelp.png" };
+                    case creature::dragon_class::Whelp: { return { "dragon-fb-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling:
-                    {
-                        return { "dragon-fb-fledgling.png" };
+                    case creature::dragon_class::Fledgling: { return { "dragon-fb-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile:
-                    {
-                        return { "dragon-fb-juvenile.png" };
+                    case creature::dragon_class::Juvenile: { return { "dragon-fb-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult:
-                    {
-                        return { "dragon-fb-adult.png" };
+                    case creature::dragon_class::Adult: { return { "dragon-fb-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm:
-                    {
-                        return { "dragon-fb-wyrm.png" };
+                    case creature::dragon_class::Wyrm: { return { "dragon-fb-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster:
-                    {
-                        return { "dragon-fb-skycaster.png" };
+                    case creature::dragon_class::Skycaster: { return { "dragon-fb-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder:
-                    {
-                        return { "dragon-fb-elder.png" };
+                    case creature::dragon_class::Elder: { return { "dragon-fb-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -1070,42 +1052,24 @@ namespace sfml_util
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling:
-                    {
-                        return { "dragon-syl-hatchling.png" };
+                    case creature::dragon_class::Hatchling: { return { "dragon-syl-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp:
-                    {
-                        return { "dragon-syl-whelp.png" };
+                    case creature::dragon_class::Whelp: { return { "dragon-syl-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling:
-                    {
-                        return { "dragon-syl-fledgling.png" };
+                    case creature::dragon_class::Fledgling: { return { "dragon-syl-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile:
-                    {
-                        return { "dragon-syl-juvenile.png" };
+                    case creature::dragon_class::Juvenile: { return { "dragon-syl-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult:
-                    {
-                        return { "dragon-syl-adult.png" };
+                    case creature::dragon_class::Adult: { return { "dragon-syl-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm:
-                    {
-                        return { "dragon-syl-wyrm.png" };
+                    case creature::dragon_class::Wyrm: { return { "dragon-syl-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster:
-                    {
-                        return { "dragon-syl-skycaster.png" };
+                    case creature::dragon_class::Skycaster: { return { "dragon-syl-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder:
-                    {
-                        return { "dragon-syl-elder.png" };
+                    case creature::dragon_class::Elder: { return { "dragon-syl-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -1524,34 +1488,20 @@ namespace sfml_util
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::wolfen_class::Pup:
-                    {
-                        return { "wolfen-pup.png" };
+                    case creature::wolfen_class::Pup: { return { "wolfen-pup.png" };
                     }
-                    case creature::wolfen_class::Juvenile:
-                    {
-                        return { "wolfen-juvenile.png" };
+                    case creature::wolfen_class::Juvenile: { return { "wolfen-juvenile.png" };
                     }
-                    case creature::wolfen_class::Adult:
-                    {
-                        return { "wolfen-adult.png" };
+                    case creature::wolfen_class::Adult: { return { "wolfen-adult.png" };
                     }
-                    case creature::wolfen_class::Noble:
-                    {
-                        return { "wolfen-noble.png" };
+                    case creature::wolfen_class::Noble: { return { "wolfen-noble.png" };
                     }
-                    case creature::wolfen_class::Highborn:
-                    {
-                        return { "wolfen-highborn.png" };
+                    case creature::wolfen_class::Highborn: { return { "wolfen-highborn.png" };
                     }
-                    case creature::wolfen_class::Elder:
-                    {
-                        return { "wolfen-elder.png" };
+                    case creature::wolfen_class::Elder: { return { "wolfen-elder.png" };
                     }
                     case creature::wolfen_class::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }

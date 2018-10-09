@@ -32,33 +32,19 @@ namespace combat
     {
         switch (E)
         {
-            case Weapon:
-            {
-                return "Weapon";
+            case Weapon: { return "Weapon";
             }
-            case Spell:
-            {
-                return "Spell";
+            case Spell: { return "Spell";
             }
-            case Song:
-            {
-                return "Song";
+            case Song: { return "Song";
             }
-            case Pounce:
-            {
-                return "Pounce";
+            case Pounce: { return "Pounce";
             }
-            case Roar:
-            {
-                return "Roar";
+            case Roar: { return "Roar";
             }
-            case Condition:
-            {
-                return "Condition";
+            case Condition: { return "Condition";
             }
-            case Trap:
-            {
-                return "Trap";
+            case Trap: { return "Trap";
             }
             case Count:
             default:
@@ -252,7 +238,7 @@ namespace combat
     {
         creature::CondEnumVec_t condsToRemoveVec;
 
-        for (auto const NEXT_CONDITION_ENUM : condsAddedVec_)
+        for (const auto NEXT_CONDITION_ENUM : condsAddedVec_)
         {
             if (NEXT_CONDITION_ENUM == E)
             {
@@ -265,7 +251,7 @@ namespace combat
             return false;
         }
 
-        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
+        for (const auto NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
             condsAddedVec_.erase(
                 std::remove(
@@ -287,7 +273,7 @@ namespace combat
     {
         creature::CondEnumVec_t condsToRemoveVec;
 
-        for (auto const NEXT_CONDITION_ENUM : condsRemovedVec_)
+        for (const auto NEXT_CONDITION_ENUM : condsRemovedVec_)
         {
             if (NEXT_CONDITION_ENUM == E)
             {
@@ -300,7 +286,7 @@ namespace combat
             return false;
         }
 
-        for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
+        for (const auto NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
             condsRemovedVec_.erase(
                 std::remove(
@@ -317,9 +303,7 @@ namespace combat
     {
         switch (hitType_)
         {
-            case HitType::Weapon:
-            {
-                return !!weaponPtrOpt_;
+            case HitType::Weapon: { return !!weaponPtrOpt_;
             }
             case HitType::Spell:
             {
@@ -330,22 +314,16 @@ namespace combat
                 return (songPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Pounce:
-            case HitType::Roar:
-            {
-                return (actionPhraseCNP_.NamePos() != NamePosition::Count);
+            case HitType::Roar: { return (actionPhraseCNP_.NamePos() != NamePosition::Count);
             }
             case HitType::Condition:
             {
                 return (conditionPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
-            case HitType::Trap:
-            {
-                return ((actionVerb_.empty() == false) && damage_.IsNonZero());
+            case HitType::Trap: { return ((actionVerb_.empty() == false) && damage_.IsNonZero());
             }
             case HitType::Count:
-            default:
-            {
-                return false;
+            default: { return false;
             }
         }
     }
@@ -428,9 +406,7 @@ namespace combat
             case HitType::Roar:
             case HitType::Trap:
             case HitType::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -439,14 +415,14 @@ namespace combat
            << ", is_power=" << isPower_ << ", did_armor_absorb=" << didArmorAbsorb_
            << ", conds_added=[";
 
-        for (auto const NEXT_COND_ENUM : condsAddedVec_)
+        for (const auto NEXT_COND_ENUM : condsAddedVec_)
         {
             ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
         }
 
         ss << "], conds_removed=[";
 
-        for (auto const NEXT_COND_ENUM : condsRemovedVec_)
+        for (const auto NEXT_COND_ENUM : condsRemovedVec_)
         {
             ss << creature::Conditions::ToString(NEXT_COND_ENUM) << ",";
         }

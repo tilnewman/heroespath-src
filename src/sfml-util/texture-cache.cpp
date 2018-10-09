@@ -106,10 +106,10 @@ namespace sfml_util
                                                          << OPTIONS
                                                          << ") failed because path was empty.");
 
-        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
+        const auto PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
             PATH_TO_TEXTURE_STR_ORIG) };
 
-        auto const PATH_OPTIONS_PAIR { std::make_pair(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
+        const auto PATH_OPTIONS_PAIR { std::make_pair(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
 
         auto foundIter { pathOptToIndexesMap_.Find(PATH_OPTIONS_PAIR) };
 
@@ -137,7 +137,7 @@ namespace sfml_util
                        "contains "
                     << foundIter->second.indexes.size() << " images.");
 
-            auto const INDEX { foundIter->second.indexes[0] };
+            const auto INDEX { foundIter->second.indexes[0] };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < textureUPtrs_.size()),
@@ -158,7 +158,7 @@ namespace sfml_util
             return INDEX;
         }
 
-        auto const INDEX { AddByPathInternal(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
+        const auto INDEX { AddByPathInternal(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
         pathOptToIndexesMap_.Append(PATH_OPTIONS_PAIR, TextureIndexes(1, { INDEX }));
         return INDEX;
     }
@@ -174,7 +174,7 @@ namespace sfml_util
                 << FAKE_PATH_TO_TEXTURE_STR << "\", " << OPTIONS
                 << ") failed because path was empty.");
 
-        auto const PATH_OPTIONS_PAIR { std::make_pair(FAKE_PATH_TO_TEXTURE_STR, OPTIONS) };
+        const auto PATH_OPTIONS_PAIR { std::make_pair(FAKE_PATH_TO_TEXTURE_STR, OPTIONS) };
 
         auto foundIter { pathOptToIndexesMap_.Find(PATH_OPTIONS_PAIR) };
 
@@ -201,7 +201,7 @@ namespace sfml_util
                        "contains "
                     << foundIter->second.indexes.size() << " images.");
 
-            auto const INDEX { foundIter->second.indexes[0] };
+            const auto INDEX { foundIter->second.indexes[0] };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < textureUPtrs_.size()),
@@ -221,7 +221,7 @@ namespace sfml_util
             return INDEX;
         }
 
-        auto const INDEX { AddByPathInternalFake(TEXTURE, OPTIONS) };
+        const auto INDEX { AddByPathInternalFake(TEXTURE, OPTIONS) };
         pathOptToIndexesMap_.Append(PATH_OPTIONS_PAIR, TextureIndexes(1, { INDEX }));
         return INDEX;
     }
@@ -247,10 +247,10 @@ namespace sfml_util
                 << DIR_PATH_PARAM_STR_ORIG << "\", " << OPTIONS
                 << ") failed because path was empty.");
 
-        auto const DIR_PATH_PARAM_STR_FINAL { misc::filesystem::CleanPath(
+        const auto DIR_PATH_PARAM_STR_FINAL { misc::filesystem::CleanPath(
             DIR_PATH_PARAM_STR_ORIG) };
 
-        auto const PATH_OPTIONS_PAIR { std::make_pair(DIR_PATH_PARAM_STR_FINAL, OPTIONS) };
+        const auto PATH_OPTIONS_PAIR { std::make_pair(DIR_PATH_PARAM_STR_FINAL, OPTIONS) };
 
         auto foundIter { pathOptToIndexesMap_.Find(PATH_OPTIONS_PAIR) };
 
@@ -287,7 +287,7 @@ namespace sfml_util
 
             TextureIndexes textureIndexes;
 
-            for (auto const & PATH_STR : IMAGE_FILE_PATHS_SORTED)
+            for (const auto & PATH_STR : IMAGE_FILE_PATHS_SORTED)
             {
                 textureIndexes.indexes.emplace_back(AddByPathInternal(PATH_STR, OPTIONS));
             }
@@ -327,7 +327,7 @@ namespace sfml_util
                                                             << OPTIONS
                                                             << ") failed because path was empty.");
 
-        auto const PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
+        const auto PATH_TO_TEXTURE_STR_FINAL { misc::filesystem::CleanPath(
             PATH_TO_TEXTURE_STR_ORIG) };
 
         auto pathOptionsPair { std::make_pair(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
@@ -361,7 +361,7 @@ namespace sfml_util
 
         if (--foundIter->second.ref_count == 0)
         {
-            for (auto const INDEX : foundIter->second.indexes)
+            for (const auto INDEX : foundIter->second.indexes)
             {
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (INDEX < textureUPtrs_.size()),
@@ -513,7 +513,7 @@ namespace sfml_util
 
     std::size_t TextureCache::FindNextAvailableIndex()
     {
-        auto const NUM_TEXTURES { textureUPtrs_.size() };
+        const auto NUM_TEXTURES { textureUPtrs_.size() };
 
         for (std::size_t i(0); i < NUM_TEXTURES; ++i)
         {
@@ -530,7 +530,7 @@ namespace sfml_util
     std::size_t TextureCache::AddByPathInternal(
         const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS)
     {
-        auto const INDEX { FindNextAvailableIndex() };
+        const auto INDEX { FindNextAvailableIndex() };
 
         auto & textureUPtr { textureUPtrs_[INDEX] };
 
@@ -557,7 +557,7 @@ namespace sfml_util
     std::size_t TextureCache::AddByPathInternalFake(
         const sf::Texture & TEXTURE, const ImageOptions & OPTIONS)
     {
-        auto const INDEX { FindNextAvailableIndex() };
+        const auto INDEX { FindNextAvailableIndex() };
         auto & textureUPtr { textureUPtrs_[INDEX] };
 
         if (!textureUPtr)
@@ -600,7 +600,7 @@ namespace sfml_util
 
     void TextureCache::UpdateCountAndSizeTracker(const sf::Texture & TEXTURE)
     {
-        auto const TEXTURE_SIZE_BYTES { TextureSizeInBytes(TEXTURE) };
+        const auto TEXTURE_SIZE_BYTES { TextureSizeInBytes(TEXTURE) };
         cachedDataBytes_ += TEXTURE_SIZE_BYTES;
         totalLoadedDataBytes_ += TEXTURE_SIZE_BYTES;
 
@@ -635,7 +635,7 @@ namespace sfml_util
                << stageName_ << "\" stage, found:  count=" << cachedCount_
                << ", data=" << BytesToString(cachedDataBytes_) << ", and the following paths:";
 
-            for (auto const & PATHOPTION_TO_INDEXES_PAIR : pathOptToIndexesMap_)
+            for (const auto & PATHOPTION_TO_INDEXES_PAIR : pathOptToIndexesMap_)
             {
                 std::ostringstream lineSS;
                 lineSS << "\n\t..."
@@ -643,7 +643,7 @@ namespace sfml_util
                        << "\t" << PATHOPTION_TO_INDEXES_PAIR.first.second << "\t"
                        << PATHOPTION_TO_INDEXES_PAIR.second.ref_count << "\t[";
 
-                for (auto const INDEX : PATHOPTION_TO_INDEXES_PAIR.second.indexes)
+                for (const auto INDEX : PATHOPTION_TO_INDEXES_PAIR.second.indexes)
                 {
                     lineSS << INDEX << ",";
                 }
@@ -661,7 +661,7 @@ namespace sfml_util
             std::ostringstream ss;
             ss << "TextureCache collected the following info about stage texture usage:";
 
-            for (auto const & STAGENAME_MAX_PAIR : stageToCountDataMap_)
+            for (const auto & STAGENAME_MAX_PAIR : stageToCountDataMap_)
             {
                 ss << "\n\tThe " << STAGENAME_MAX_PAIR.first << " stage had at most "
                    << STAGENAME_MAX_PAIR.second.first

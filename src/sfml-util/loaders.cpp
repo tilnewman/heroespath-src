@@ -23,7 +23,7 @@ namespace sfml_util
     void Loaders::Texture(
         sf::Texture & texture, const std::string & PATH_STR_ORIG, const bool WILL_SMOOTH)
     {
-        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
+        const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
@@ -47,7 +47,7 @@ namespace sfml_util
         const std::string & DIR_PATH_STR_ORIG,
         const bool WILL_SMOOTH)
     {
-        auto const DIR_PATH_STR_COMPLETE { misc::filesystem::CleanPath(DIR_PATH_STR_ORIG) };
+        const auto DIR_PATH_STR_COMPLETE { misc::filesystem::CleanPath(DIR_PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR_COMPLETE)),
@@ -55,16 +55,16 @@ namespace sfml_util
                 << DIR_PATH_STR_COMPLETE
                 << "\") failed because either that path is not a directory or it does not exist.");
 
-        auto const FILE_PATH_STRINGS { misc::filesystem::FindFiles(
+        const auto FILE_PATH_STRINGS { misc::filesystem::FindFiles(
             false,
             DIR_PATH_STR_COMPLETE,
             "",
             "",
             misc::filesystem::COMMON_FILE_NAME_PARTS_TO_EXCLUDE_VEC_) };
 
-        auto const ORIG_SIZE { textureVec.size() };
+        const auto ORIG_SIZE { textureVec.size() };
 
-        for (auto const & PATH_STR : FILE_PATH_STRINGS)
+        for (const auto & PATH_STR : FILE_PATH_STRINGS)
         {
             textureVec.emplace_back(sf::Texture());
             Texture(textureVec.back(), PATH_STR, WILL_SMOOTH);
@@ -75,7 +75,7 @@ namespace sfml_util
 
     void Loaders::Font(sf::Font & font, const std::string & PATH_STR_ORIG)
     {
-        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
+        const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
@@ -92,7 +92,7 @@ namespace sfml_util
 
     MusicUPtr_t Loaders::Music(const std::string & PATH_STR_ORIG)
     {
-        auto const PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
+        const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),

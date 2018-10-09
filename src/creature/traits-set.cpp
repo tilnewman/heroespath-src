@@ -26,7 +26,7 @@ namespace creature
     {
         traitVec_.resize(static_cast<std::size_t>(Traits::Count));
 
-        for (auto const & NEXT_TRAIT_PAIR : TRAITS_VEC)
+        for (const auto & NEXT_TRAIT_PAIR : TRAITS_VEC)
         {
             traitVec_[NEXT_TRAIT_PAIR.first].CurrAndNormSet(NEXT_TRAIT_PAIR.second);
         }
@@ -58,8 +58,8 @@ namespace creature
 
         for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
-            auto const NEXT_ENUM { static_cast<Traits::Enum>(i) };
-            auto const NEXT_CURR { traitVec_[static_cast<std::size_t>(i)].Current() };
+            const auto NEXT_ENUM { static_cast<Traits::Enum>(i) };
+            const auto NEXT_CURR { traitVec_[static_cast<std::size_t>(i)].Current() };
 
             if (NEXT_CURR != 0)
             {
@@ -91,7 +91,7 @@ namespace creature
             }
         }
 
-        auto const RESULT_STR { ss.str() };
+        const auto RESULT_STR { ss.str() };
         if ((RESULT_STR.empty() == false) && WILL_WRAP)
         {
             return "(" + RESULT_STR + ")";
@@ -129,7 +129,7 @@ namespace creature
             ss << ", ";
         }
 
-        auto const TRAIT { traitVec_[static_cast<std::size_t>(E)] };
+        const auto TRAIT { traitVec_[static_cast<std::size_t>(E)] };
 
         ss << Traits::Abbr(E) << "=";
 

@@ -171,8 +171,8 @@ namespace spell
         static misc::EnumUnderlying_t spellIndex { 0 };
         if (spellIndex < Spells::Count)
         {
-            auto const NEXT_ENUM { static_cast<Spells::Enum>(spellIndex) };
-            auto const SPELL_PTR { Get(NEXT_ENUM) };
+            const auto NEXT_ENUM { static_cast<Spells::Enum>(spellIndex) };
+            const auto SPELL_PTR { Get(NEXT_ENUM) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SPELL_PTR->Name().empty() == false),
@@ -219,7 +219,7 @@ namespace spell
 
     const SpellPtr_t Holder::Get(const Spells::Enum SPELL_ENUM)
     {
-        auto const SPELL_INDEX { static_cast<std::size_t>(SPELL_ENUM) };
+        const auto SPELL_INDEX { static_cast<std::size_t>(SPELL_ENUM) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (spellsUVec_.empty() == false),

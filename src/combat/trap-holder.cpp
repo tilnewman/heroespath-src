@@ -241,7 +241,7 @@ namespace combat
                 sfml_util::sound_effect::TrapGhost2,
                 "Evil spirits emerge and tear through the party!"));
 
-            std::sort(std::begin(traps_), std::end(traps_), [](auto const & A, auto const & B) {
+            std::sort(std::begin(traps_), std::end(traps_), [](const auto & A, const auto & B) {
                 return A.Severity() < B.Severity();
             });
         }
@@ -276,13 +276,13 @@ namespace combat
                 "combat::trap::Holder::GetWithSeverityRatio() called when the holder was "
                 "empty.");
 
-            auto const SEVERITY_MAX_F { static_cast<float>(GetMaxSeverity()) };
+            const auto SEVERITY_MAX_F { static_cast<float>(GetMaxSeverity()) };
 
             TrapVec_t trapsWithSeverityWithinRange;
 
-            for (auto const & TRAP : traps_)
+            for (const auto & TRAP : traps_)
             {
-                auto const SEVERITY_RATIO { static_cast<float>(TRAP.Severity()) / SEVERITY_MAX_F };
+                const auto SEVERITY_RATIO { static_cast<float>(TRAP.Severity()) / SEVERITY_MAX_F };
 
                 if (((SEVERITY_RATIO > THE_MIN) && (SEVERITY_RATIO < THE_MAX))
                     || misc::IsRealClose(SEVERITY_RATIO, THE_MIN)

@@ -46,8 +46,8 @@ namespace combat
 
             for (misc::EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {
-                auto const RACE_ENUM(static_cast<creature::race::Enum>(i));
-                auto const RACE_STR(creature::race::ToString(RACE_ENUM));
+                const auto RACE_ENUM(static_cast<creature::race::Enum>(i));
+                const auto RACE_STR(creature::race::ToString(RACE_ENUM));
 
                 std::ostringstream keySS;
                 keySS << "heroespath-nonplayer-combat-strategy-race-" << RACE_STR;
@@ -74,7 +74,7 @@ namespace combat
                 FrequencyChanceMap_t flyPounceFreqChanceMap;
                 FrequencyChanceMap_t standPounceFreqChanceMap;
 
-                for (auto const & NEXT_PART_STR : partsVec)
+                for (const auto & NEXT_PART_STR : partsVec)
                 {
                     std::vector<std::string> subPartsVec;
                     misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
@@ -85,7 +85,7 @@ namespace combat
                             << RACE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
                             << "\" into any sub strings sep by comma.");
 
-                    auto const SUBPART_TITLE_STR { subPartsVec.at(0) };
+                    const auto SUBPART_TITLE_STR { subPartsVec.at(0) };
                     if (SUBPART_TITLE_STR == SUBPART_TITLE_SELECT_)
                     {
                         ParseSubPartsSelect(subPartsVec, selectChanceMap);
@@ -158,8 +158,8 @@ namespace combat
             misc::VectorMap<creature::role::Enum, Chances> roleChancesMap;
             for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
-                auto const ROLE_ENUM(static_cast<creature::role::Enum>(i));
-                auto const ROLE_STR(creature::role::ToString(ROLE_ENUM));
+                const auto ROLE_ENUM(static_cast<creature::role::Enum>(i));
+                const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));
 
                 std::ostringstream keySS;
                 keySS << "heroespath-nonplayer-combat-strategy-adjustment-role-" << ROLE_STR;
@@ -186,7 +186,7 @@ namespace combat
                 FrequencyChanceMap_t flyPounceFreqChanceMap;
                 FrequencyChanceMap_t standPounceFreqChanceMap;
 
-                for (auto const & NEXT_PART_STR : partsVec)
+                for (const auto & NEXT_PART_STR : partsVec)
                 {
                     std::vector<std::string> subPartsVec;
                     misc::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
@@ -267,11 +267,11 @@ namespace combat
                     standPounceFreqChanceMap);
             }
 
-            for (auto const & NEXT_RACECHANCES_PAIR : raceChancesMap)
+            for (const auto & NEXT_RACECHANCES_PAIR : raceChancesMap)
             {
-                for (auto const & NEXT_ROLECHANCES_PAIR : roleChancesMap)
+                for (const auto & NEXT_ROLECHANCES_PAIR : roleChancesMap)
                 {
-                    auto const CHANCES { NEXT_RACECHANCES_PAIR.second.AdjustCopy(
+                    const auto CHANCES { NEXT_RACECHANCES_PAIR.second.AdjustCopy(
                         NEXT_ROLECHANCES_PAIR.second) };
 
                     raceRoleChancesMap_[std::make_pair(
@@ -296,7 +296,7 @@ namespace combat
             const std::vector<std::string> & PARTS_VEC,
             SelectChanceMap_t & OutParam_SelectChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : PARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : PARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_SELECT_)
                 {
@@ -304,7 +304,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist")
                 {
-                    auto const EVEN_DIST_RATIO(1.0f / 18.0f);
+                    const auto EVEN_DIST_RATIO(1.0f / 18.0f);
                     OutParam_SelectChanceMap[SelectType::Pixie] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Dragon] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Human] = EVEN_DIST_RATIO;
@@ -326,7 +326,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist_role")
                 {
-                    auto const EVEN_DIST_RATIO(1.0f / 10.0f);
+                    const auto EVEN_DIST_RATIO(1.0f / 10.0f);
                     OutParam_SelectChanceMap[SelectType::Wolfen] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Archer] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Sorcerer] = EVEN_DIST_RATIO;
@@ -340,7 +340,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist_race")
                 {
-                    auto const EVEN_DIST_RATIO(1.0f / 5.0f);
+                    const auto EVEN_DIST_RATIO(1.0f / 5.0f);
                     OutParam_SelectChanceMap[SelectType::Pixie] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Dragon] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Human] = EVEN_DIST_RATIO;
@@ -359,7 +359,7 @@ namespace combat
             const std::vector<std::string> & PARTS_VEC,
             RefineChanceMap_t & OutParam_refineChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : PARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : PARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_REFINE_)
                 {
@@ -367,7 +367,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist")
                 {
-                    auto const CHANCE(1.0f / 12.0f);
+                    const auto CHANCE(1.0f / 12.0f);
                     OutParam_refineChanceMap[RefineType::Murderer] = CHANCE;
                     OutParam_refineChanceMap[RefineType::Bloodthirsty] = CHANCE;
                     OutParam_refineChanceMap[RefineType::Coward] = CHANCE;
@@ -393,7 +393,7 @@ namespace combat
             const std::vector<std::string> & PARTS_VEC,
             AdvanceChanceMap_t & OutParam_AdvanceChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : PARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : PARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_ADVANCE_)
                 {
@@ -401,7 +401,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist")
                 {
-                    auto const CHANCE(1.0f / 4.0f);
+                    const auto CHANCE(1.0f / 4.0f);
                     OutParam_AdvanceChanceMap[AdvanceType::None] = CHANCE;
                     OutParam_AdvanceChanceMap[AdvanceType::Cowardly] = CHANCE;
                     OutParam_AdvanceChanceMap[AdvanceType::Hesitant] = CHANCE;
@@ -419,7 +419,7 @@ namespace combat
             const std::vector<std::string> & PARTS_VEC,
             RetreatChanceMap_t & OutParam_RetreatChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : PARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : PARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_RETREAT_)
                 {
@@ -427,7 +427,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist")
                 {
-                    auto const CHANCE(1.0f / 3.0f);
+                    const auto CHANCE(1.0f / 3.0f);
                     OutParam_RetreatChanceMap[RetreatType::None] = CHANCE;
                     OutParam_RetreatChanceMap[RetreatType::Wary] = CHANCE;
                     OutParam_RetreatChanceMap[RetreatType::Coward] = CHANCE;
@@ -445,7 +445,7 @@ namespace combat
             const std::vector<std::string> & SUBPARTS_VEC,
             FrequencyChanceMap_t & OutParam_FreqChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : SUBPARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : SUBPARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_STR)
                 {
@@ -453,7 +453,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist")
                 {
-                    auto const CHANCE(1.0f / 7.0f);
+                    const auto CHANCE(1.0f / 7.0f);
                     OutParam_FreqChanceMap[FrequencyType::Never] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Rarely] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Seldom] = CHANCE;
@@ -464,7 +464,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist_no_abs")
                 {
-                    auto const CHANCE(1.0f / 5.0f);
+                    const auto CHANCE(1.0f / 5.0f);
                     OutParam_FreqChanceMap[FrequencyType::Rarely] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Seldom] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Neutral] = CHANCE;
@@ -473,7 +473,7 @@ namespace combat
                 }
                 else if (NEXT_SUBSTRING == "even_dist_coun")
                 {
-                    auto const CHANCE(1.0f / 3.0f);
+                    const auto CHANCE(1.0f / 3.0f);
                     OutParam_FreqChanceMap[FrequencyType::Once] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Twice] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Thrice] = CHANCE;
@@ -490,7 +490,7 @@ namespace combat
             const std::vector<std::string> & SUBPARTS_VEC,
             OutnumberRetreatChanceMap_t & OutParam_OutnumberRetreatChanceMap) const
         {
-            for (auto const & NEXT_SUBSTRING : SUBPARTS_VEC)
+            for (const auto & NEXT_SUBSTRING : SUBPARTS_VEC)
             {
                 if (NEXT_SUBSTRING == SUBPART_TITLE_OUTNUMBER_RETREAT_)
                 {
@@ -510,7 +510,7 @@ namespace combat
                             << NEXT_SUBSTRING << "\".");
 
                     // parse the chance first, which should be the last
-                    auto const CHANCE { ParseChanceString(
+                    const auto CHANCE { ParseChanceString(
                         countCountColonChanceStrVec.at(countCountColonChanceStrVec.size() - 1)) };
 
                     if (boost::algorithm::contains(countCountColonChanceStrVec.at(0), "-"))

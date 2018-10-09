@@ -285,7 +285,7 @@ namespace misc
 
         for (const char CHAR : STRING)
         {
-            auto const IS_DIGIT { isNumber(CHAR) };
+            const auto IS_DIGIT { isNumber(CHAR) };
 
             if ((numberStrings.back().empty() == false) && (IS_DIGIT == false))
             {
@@ -333,7 +333,7 @@ namespace misc
 
         for (const char CHAR : STRING)
         {
-            auto const IS_DIGIT { isNumber(CHAR) };
+            const auto IS_DIGIT { isNumber(CHAR) };
 
             if ((numberStrings.back().empty() == false) && (IS_DIGIT == false))
             {

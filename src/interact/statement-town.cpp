@@ -36,7 +36,7 @@ namespace interact
         {
             using namespace compose;
 
-            auto const TownName{ [LEVEL]() { return map::Level::ToString(LEVEL); } };
+            const auto TownName { [LEVEL]() { return map::Level::ToString(LEVEL); } };
 
             if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
@@ -78,7 +78,7 @@ namespace interact
         {
             using namespace compose;
 
-            auto const TownName{ [LEVEL]() { return map::Level::ToString(LEVEL); } };
+            const auto TownName { [LEVEL]() { return map::Level::ToString(LEVEL); } };
 
             switch (misc::random::Int(5))
             {

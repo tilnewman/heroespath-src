@@ -30,12 +30,12 @@ namespace game
     {
         NpcPVec_t npcPtrs;
 
-        auto const COUNT{ misc::random::SizeT(PLACEHOLDER.CountMin(), PLACEHOLDER.CountMax()) };
+        const auto COUNT { misc::random::SizeT(PLACEHOLDER.CountMin(), PLACEHOLDER.CountMax()) };
 
         for (std::size_t i(0); i < COUNT; ++i)
         {
-            auto AVATAR_TYPE{ misc::Vector::SelectRandom(PLACEHOLDER.AvatarTypeVec()) };
-            auto AVATAR{ misc::Vector::SelectRandom(avatar::Avatar::Avatars(AVATAR_TYPE)) };
+            auto AVATAR_TYPE { misc::Vector::SelectRandom(PLACEHOLDER.AvatarTypeVec()) };
+            auto AVATAR { misc::Vector::SelectRandom(avatar::Avatar::Avatars(AVATAR_TYPE)) };
 
             interact::talk::CategoryVec_t talkCategories;
 
@@ -55,7 +55,7 @@ namespace game
                 talkCategories.emplace_back(interact::talk::Category::Town);
             }
 
-            auto const MOOD{ (
+            const auto MOOD { (
                 (misc::random::Bool()) ? interact::talk::Mood::Kind : interact::talk::Mood::Mean) };
 
             npcPtrs.emplace_back(NpcWarehouse::Access().Store(std::make_unique<Npc>(

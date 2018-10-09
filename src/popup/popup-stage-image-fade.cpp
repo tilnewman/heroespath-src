@@ -75,19 +75,19 @@ namespace popup
             descTextRegionUPtr_->GetEntityPos().x,
             (textRegion_.top + textRegion_.height) - descRegion.height);
 
-        auto const IMAGE_PAD_VERT { sfutil::ScreenRatioToPixelsVert(0.0167f) };
+        const auto IMAGE_PAD_VERT { sfutil::ScreenRatioToPixelsVert(0.0167f) };
 
         const sf::FloatRect IMAGE_REGION = [&]() {
-            auto const IMAGE_TOP { sfutil::Bottom(textRegionUPtr_->GetEntityRegion())
+            const auto IMAGE_TOP { sfutil::Bottom(textRegionUPtr_->GetEntityRegion())
                                    + IMAGE_PAD_VERT };
 
-            auto const MAX_HEIGHT { descTextRegionUPtr_->GetEntityPos().y
+            const auto MAX_HEIGHT { descTextRegionUPtr_->GetEntityPos().y
                                     - (IMAGE_TOP + IMAGE_PAD_VERT) };
 
-            auto const IMAGE_MAX_DIMM { sfutil::ScreenRatioToPixelsHoriz(0.086f) };
+            const auto IMAGE_MAX_DIMM { sfutil::ScreenRatioToPixelsHoriz(0.086f) };
 
-            auto const IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, textRegion_.width) };
-            auto const IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
+            const auto IMAGE_WIDTH { std::min(IMAGE_MAX_DIMM, textRegion_.width) };
+            const auto IMAGE_HEIGHT { std::min(IMAGE_MAX_DIMM, MAX_HEIGHT) };
 
             return sf::FloatRect(textRegion_.left, IMAGE_TOP, IMAGE_WIDTH, IMAGE_HEIGHT);
         }();

@@ -66,20 +66,20 @@ namespace sfml_util
             boost::algorithm::to_lower(pathStr);
         }
 
-        static auto const WEAPON_TYPE_WRAPPERS { weapon::WeaponTypeWrapper::MakeCompleteSet() };
+        static const auto WEAPON_TYPE_WRAPPERS { weapon::WeaponTypeWrapper::MakeCompleteSet() };
 
         static std::size_t weaponIndex { 0 };
         if (weaponIndex < WEAPON_TYPE_WRAPPERS.size())
         {
-            auto const & WEAPON_TYPE_WRAPPER { WEAPON_TYPE_WRAPPERS.at(weaponIndex) };
+            const auto & WEAPON_TYPE_WRAPPER { WEAPON_TYPE_WRAPPERS.at(weaponIndex) };
 
-            auto const FILENAME { boost::algorithm::to_lower_copy(
+            const auto FILENAME { boost::algorithm::to_lower_copy(
                 Filename(WEAPON_TYPE_WRAPPER, false)) };
 
             sf::Texture texture;
             Load(texture, FILENAME);
 
-            auto const IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
+            const auto IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
                 MakeFullPathFromFilename(FILENAME)) };
 
             auto imagePathFoundIter { std::find(
@@ -100,14 +100,14 @@ namespace sfml_util
             return false;
         }
 
-        static auto const ARMOR_TYPE_WRAPPERS { armor::ArmorTypeWrapper::MakeCompleteSet() };
+        static const auto ARMOR_TYPE_WRAPPERS { armor::ArmorTypeWrapper::MakeCompleteSet() };
 
         static std::size_t armorIndex { 0 };
         if (armorIndex < ARMOR_TYPE_WRAPPERS.size())
         {
-            auto const & ARMOR_TYPE_WRAPPER { ARMOR_TYPE_WRAPPERS.at(armorIndex) };
+            const auto & ARMOR_TYPE_WRAPPER { ARMOR_TYPE_WRAPPERS.at(armorIndex) };
 
-            auto const FILENAME { boost::algorithm::to_lower_copy(Filename(ARMOR_TYPE_WRAPPER)) };
+            const auto FILENAME { boost::algorithm::to_lower_copy(Filename(ARMOR_TYPE_WRAPPER)) };
 
             // skip testing skin images until below
             if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
@@ -115,7 +115,7 @@ namespace sfml_util
                 sf::Texture texture;
                 Load(texture, FILENAME);
 
-                auto const IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
+                const auto IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
                     MakeFullPathFromFilename(FILENAME)) };
 
                 auto imagePathFoundIter { std::find(
@@ -140,7 +140,7 @@ namespace sfml_util
         static std::size_t skinIndex { 0 };
         if (skinIndex <= 2)
         {
-            auto const MATERIAL_ENUM { [&]() {
+            const auto MATERIAL_ENUM { [&]() {
                 // keep in sync with material::SkinMaterial()
                 if (0 == skinIndex)
                 {
@@ -156,13 +156,13 @@ namespace sfml_util
                 }
             }() };
 
-            auto const FILENAME { boost::algorithm::to_lower_copy(
+            const auto FILENAME { boost::algorithm::to_lower_copy(
                 GetSkinImageFilename(MATERIAL_ENUM)) };
 
             sf::Texture texture;
             Load(texture, FILENAME);
 
-            auto const IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
+            const auto IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
                 MakeFullPathFromFilename(FILENAME)) };
 
             auto imagePathFoundIter { std::find(
@@ -189,11 +189,11 @@ namespace sfml_util
 
             if (extrasIndex < 4)
             {
-                auto const IS_JEWELED { ((1 == extrasIndex) || (3 == extrasIndex)) };
-                auto const IS_BONE { (extrasIndex >= 2) };
-                auto const ENUM { static_cast<misc_type::Enum>(miscIndex) };
-                auto const ENUM_STR { misc_type::ToString(ENUM) };
-                auto const FILENAMES_VEC { Filenames(ENUM, IS_JEWELED, IS_BONE) };
+                const auto IS_JEWELED { ((1 == extrasIndex) || (3 == extrasIndex)) };
+                const auto IS_BONE { (extrasIndex >= 2) };
+                const auto ENUM { static_cast<misc_type::Enum>(miscIndex) };
+                const auto ENUM_STR { misc_type::ToString(ENUM) };
+                const auto FILENAMES_VEC { Filenames(ENUM, IS_JEWELED, IS_BONE) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (FILENAMES_VEC.empty() == false),
@@ -204,7 +204,7 @@ namespace sfml_util
                 static std::size_t fileIndex { 0 };
                 if (fileIndex < FILENAMES_VEC.size())
                 {
-                    auto const FILENAME { boost::algorithm::to_lower_copy(
+                    const auto FILENAME { boost::algorithm::to_lower_copy(
                         FILENAMES_VEC[fileIndex]) };
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -223,7 +223,7 @@ namespace sfml_util
                     sf::Texture texture;
                     Load(texture, FILENAME);
 
-                    auto const IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
+                    const auto IMAGE_PATH_STR { boost::algorithm::to_lower_copy(
                         MakeFullPathFromFilename(FILENAME)) };
 
                     auto imagePathFoundIter { std::find(
@@ -253,7 +253,7 @@ namespace sfml_util
 
         std::sort(std::begin(allPaths), std::end(allPaths));
 
-        for (auto const & FILENAME : allPaths)
+        for (const auto & FILENAME : allPaths)
         {
             M_HP_LOG_WRN(
                 "sfml_util::ItemImageLoader::Test() found the following item image "
@@ -360,7 +360,7 @@ namespace sfml_util
             case misc_type::Pin_Key:
             case misc_type::Pin_Mask:
             {
-                auto const TYPE_STR { ba::replace_all_copy(
+                const auto TYPE_STR { ba::replace_all_copy(
                     ba::to_lower_copy(misc_type::ToString(MISC_TYPE)), "_", SEPARATOR_) };
 
                 return { (TYPE_STR + FILE_EXT_STR_) };
@@ -368,47 +368,27 @@ namespace sfml_util
 
                 // these misc_types have specific filenames
             case misc_type::ManaAmulet:
-            case misc_type::Pendant:
-            {
-                return MakeFilenames("amulet", 23);
+            case misc_type::Pendant: { return MakeFilenames("amulet", 23);
             }
             case misc_type::CapeCommanders:
             case misc_type::CapeGenerals:
-            case misc_type::CapeKings:
-            {
-                return { ("cape" + FILE_EXT_STR_) };
+            case misc_type::CapeKings: { return { ("cape" + FILE_EXT_STR_) };
             }
-            case misc_type::ShadeCloak:
-            {
-                return { ("cloak" + FILE_EXT_STR_) };
+            case misc_type::ShadeCloak: { return { ("cloak" + FILE_EXT_STR_) };
             }
-            case misc_type::SpecterRobe:
-            {
-                return { ("robe" + FILE_EXT_STR_) };
+            case misc_type::SpecterRobe: { return { ("robe" + FILE_EXT_STR_) };
             }
-            case misc_type::Goblet:
-            {
-                return MakeFilenames("goblet", 8);
+            case misc_type::Goblet: { return MakeFilenames("goblet", 8);
             }
-            case misc_type::Key:
-            {
-                return MakeFilenames("key", 11);
+            case misc_type::Key: { return MakeFilenames("key", 11);
             }
-            case misc_type::LockPicks:
-            {
-                return MakeFilenames("lockpicks", 6);
+            case misc_type::LockPicks: { return MakeFilenames("lockpicks", 6);
             }
-            case misc_type::Mirror:
-            {
-                return MakeFilenames("mirror", 10);
+            case misc_type::Mirror: { return MakeFilenames("mirror", 10);
             }
-            case misc_type::DrumLute:
-            {
-                return MakeFilenames("drumlute", 13);
+            case misc_type::DrumLute: { return MakeFilenames("drumlute", 13);
             }
-            case misc_type::Orb:
-            {
-                return MakeFilenames("orb", 9);
+            case misc_type::Orb: { return MakeFilenames("orb", 9);
             }
             case misc_type::Ring:
             {
@@ -425,67 +405,37 @@ namespace sfml_util
                     return { "ring" + FILE_EXT_STR_ };
                 }
             }
-            case misc_type::RingHobo:
-            {
-                return { "ring" + FILE_EXT_STR_ };
+            case misc_type::RingHobo: { return { "ring" + FILE_EXT_STR_ };
             }
-            case misc_type::Shard:
-            {
-                return MakeFilenames("shard", 7);
+            case misc_type::Shard: { return MakeFilenames("shard", 7);
             }
-            case misc_type::Wand:
-            {
-                return MakeFilenames("wand", 11);
+            case misc_type::Wand: { return MakeFilenames("wand", 11);
             }
-            case misc_type::Scepter:
-            {
-                return MakeFilenames("scepter", 26);
+            case misc_type::Scepter: { return MakeFilenames("scepter", 26);
             }
-            case misc_type::DollBlessed:
-            {
-                return MakeFilenames("doll", 4, 2);
+            case misc_type::DollBlessed: { return MakeFilenames("doll", 4, 2);
             }
-            case misc_type::DollCursed:
-            {
-                return MakeFilenames("doll", 10, 5);
+            case misc_type::DollCursed: { return MakeFilenames("doll", 10, 5);
             }
-            case misc_type::Doll:
-            {
-                return { "doll-1" + FILE_EXT_STR_ };
+            case misc_type::Doll: { return { "doll-1" + FILE_EXT_STR_ };
             }
-            case misc_type::FigurineBlessed:
-            {
-                return MakeFilenames("figurine", 6);
+            case misc_type::FigurineBlessed: { return MakeFilenames("figurine", 6);
             }
-            case misc_type::FigurineCursed:
-            {
-                return MakeFilenames("figurine-evil", 6);
+            case misc_type::FigurineCursed: { return MakeFilenames("figurine-evil", 6);
             }
-            case misc_type::Staff:
-            {
-                return MakeFilenames("staff", 21);
+            case misc_type::Staff: { return MakeFilenames("staff", 21);
             }
-            case misc_type::SummoningStatue:
-            {
-                return MakeFilenames("summoning-statue", 3);
+            case misc_type::SummoningStatue: { return MakeFilenames("summoning-statue", 3);
             }
-            case misc_type::BloodyDragonScale:
-            {
-                return { "scales" + FILE_EXT_STR_ };
+            case misc_type::BloodyDragonScale: { return { "scales" + FILE_EXT_STR_ };
             }
             case misc_type::FlagFanatics:
             case misc_type::FlagRegalCaptains:
-            case misc_type::FlagTribal:
-            {
-                return { "flag" + FILE_EXT_STR_ };
+            case misc_type::FlagTribal: { return { "flag" + FILE_EXT_STR_ };
             }
-            case misc_type::MinotaurHide:
-            {
-                return { "hide" + FILE_EXT_STR_ };
+            case misc_type::MinotaurHide: { return { "hide" + FILE_EXT_STR_ };
             }
-            case misc_type::ReaperScythe:
-            {
-                return { "bladedstaff-scythe" + FILE_EXT_STR_ };
+            case misc_type::ReaperScythe: { return { "bladedstaff-scythe" + FILE_EXT_STR_ };
             }
 
             // these misc_types are compound words whose filenames have dashes between each word
@@ -621,7 +571,7 @@ namespace sfml_util
         const bool IS_BONE,
         const bool WILL_RANDOMIZE) const
     {
-        auto const FILENAMES(Filenames(MISC_TYPE, IS_JEWELED, IS_BONE));
+        const auto FILENAMES(Filenames(MISC_TYPE, IS_JEWELED, IS_BONE));
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
@@ -704,9 +654,9 @@ namespace sfml_util
     void ItemImageLoader::EnsureValidDimmensions(
         const sf::Texture & TEXTURE, const std::string & ERROR_MSG) const
     {
-        auto const SIZE { TEXTURE.getSize() };
+        const auto SIZE { TEXTURE.getSize() };
 
-        auto const DIMMENSION { static_cast<unsigned>(MaxDimmension()) };
+        const auto DIMMENSION { static_cast<unsigned>(MaxDimmension()) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             ((SIZE.x == DIMMENSION) || (SIZE.y == DIMMENSION)),

@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     combat::Encounter::Instance()->BeginCombatTasks();
     std::cout << "2" << std::endl;
     //make a CombatNode for the creature at position zero
-    auto const CREATURE_PTR0{
+    const auto CREATURE_PTR0{
         static_cast<creature::CreaturePtr_t>(partyPtr->Characters().at(0)) };
     std::cout << "3" << std::endl;
     auto combatNodeSPtr0{ std::make_shared<combat::CombatNode>(CREATURE_PTR0) };
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     std::cout << "4" << std::endl;
     //add that CombatNodeSPtr_t as a Vertex to the CombatTree
     combat::CombatTree combatTree;
-    auto const VERT_ID0{ combatTree.AddVertex(combatNodeSPtr0) };
+    const auto VERT_ID0{ combatTree.AddVertex(combatNodeSPtr0) };
     std::cout << "5" << std::endl;
     //tests after the single vertex insert
     BOOST_CHECK(combatTree.NextAvailableId() == 1_id);
@@ -227,7 +227,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     }
 
     //make a CombatNode for the creature at position zero
-    auto const CREATURE_PTR1{
+    const auto CREATURE_PTR1{
         static_cast<creature::CreaturePtr_t>(partyPtr->Characters().at(1)) };
 
     auto combatNodeSPtr1{ std::make_shared<combat::CombatNode>(CREATURE_PTR1) };
@@ -235,7 +235,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     combatNodeSPtr1->SetBlockingPos(BLOCKING_POS1);
 
     //add that CombatNodeSPtr_t as a Vertex to the CombatTree
-    auto const VERT_ID1{ combatTree.AddVertex(combatNodeSPtr1) };
+    const auto VERT_ID1{ combatTree.AddVertex(combatNodeSPtr1) };
 
     //tests after the second vertex insert
     BOOST_CHECK(combatTree.NextAvailableId() == 2_id);
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::Blocking).empty());
 
     {
-        auto const EDGES_ALL{ combatTree.Edges(combat::EdgeType::All) };
+        const auto EDGES_ALL{ combatTree.Edges(combat::EdgeType::All) };
         BOOST_CHECK(EDGES_ALL.size() == 1);
 
         BOOST_CHECK(
@@ -315,7 +315,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     }
 
     {
-        auto const EDGES_STS{ combatTree.Edges(combat::EdgeType::ShoulderToShoulder) };
+        const auto EDGES_STS{ combatTree.Edges(combat::EdgeType::ShoulderToShoulder) };
         BOOST_CHECK(EDGES_STS.size() == 1);
 
         BOOST_CHECK(

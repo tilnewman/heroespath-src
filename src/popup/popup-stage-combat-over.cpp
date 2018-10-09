@@ -45,22 +45,16 @@ namespace popup
 
         sfutil::FitAndCenterTo(bgSprite_, textRegion_);
 
-        auto const TITLE_TEXT { [&]() {
+        const auto TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
             {
-                case combat::CombatEnd::Win:
-                {
-                    return "Victory!";
+                case combat::CombatEnd::Win: { return "Victory!";
                 }
-                case combat::CombatEnd::Lose:
-                {
-                    return "Death Strikes!";
+                case combat::CombatEnd::Lose: { return "Death Strikes!";
                 }
                 case combat::CombatEnd::Ran:
                 case combat::CombatEnd::Count:
-                default:
-                {
-                    return "Defeat!";
+                default: { return "Defeat!";
                 }
             }
         }() };
@@ -76,16 +70,16 @@ namespace popup
         titleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
 
-        auto const TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
+        const auto TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
                                     - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
 
         const auto VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.0222f) };
 
-        auto const TITLE_POS_TOP { textRegion_.top + VERT_SPACER };
+        const auto TITLE_POS_TOP { textRegion_.top + VERT_SPACER };
 
         titleTextRegionUPtr_->SetEntityPos(TITLE_POS_LEFT, TITLE_POS_TOP);
 
-        auto const DESC_TEXT { [&]() {
+        const auto DESC_TEXT { [&]() {
             std::ostringstream descSS;
             switch (popupInfo_.HowCombatEnded())
             {
@@ -153,21 +147,15 @@ namespace popup
     {
         switch (HOW_COMBAT_ENDED)
         {
-            case combat::CombatEnd::Win:
-            {
-                return "media-images-combat-crossswords";
+            case combat::CombatEnd::Win: { return "media-images-combat-crossswords";
             }
 
-            case combat::CombatEnd::Lose:
-            {
-                return "media-images-combat-crossbones";
+            case combat::CombatEnd::Lose: { return "media-images-combat-crossbones";
             }
 
             case combat::CombatEnd::Ran:
             case combat::CombatEnd::Count:
-            default:
-            {
-                return "media-images-combat-run";
+            default: { return "media-images-combat-run";
             }
         }
     }

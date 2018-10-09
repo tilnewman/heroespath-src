@@ -27,9 +27,9 @@ namespace interact
     sfml_util::TextButtonUPtr_t Button::Make(
         const sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT)
     {
-        auto const KEY { Key() };
+        const auto KEY { Key() };
 
-        auto const DISPLAYED_NAME { [&]() {
+        const auto DISPLAYED_NAME { [&]() {
             if ((sf::Keyboard::KeyCount == KEY) || (sf::Keyboard::Unknown == KEY))
             {
                 return Name();

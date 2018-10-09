@@ -9,8 +9,8 @@
 //
 // npc.hpp
 //
-#include "npc.hpp"
 #include "interact/npc-conversation-factory.hpp"
+#include "npc.hpp"
 
 #include <sstream>
 
@@ -78,7 +78,7 @@ namespace game
            << ((conversationMood_ == interact::talk::Mood::Kind) ? "kind" : "mean")
            << ", walk_bounds_index=" << walkBoundsIndex_ << ", conv_categories=";
 
-        for (auto const CONV_CAT : conversationCategories_)
+        for (const auto CONV_CAT : conversationCategories_)
         {
             ss << interact::talk::CategoryToString(CONV_CAT) << ", ";
         }

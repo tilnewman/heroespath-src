@@ -66,7 +66,7 @@ namespace stage
 
     void IntroStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const NEW_SCALE { titleSprite_.getScale().x
+        const auto NEW_SCALE { titleSprite_.getScale().x
                                * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
 
         titleSprite_.setScale(NEW_SCALE, NEW_SCALE);

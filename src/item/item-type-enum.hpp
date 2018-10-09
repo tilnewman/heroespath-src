@@ -211,7 +211,7 @@ namespace item
         static const std::vector<element_type::Enum>
             ValidCombinations(const T VALUE, const bool WILL_INCLUDE_NOTHING = false)
         {
-            auto const ELEMENT_TYPE{ static_cast<element_type::Enum>(VALUE) };
+            const auto ELEMENT_TYPE { static_cast<element_type::Enum>(VALUE) };
 
             std::vector<Enum> enums;
 

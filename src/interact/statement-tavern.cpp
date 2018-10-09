@@ -9,8 +9,8 @@
 //
 // statement-tavern.hpp
 //
-#include "statement-tavern.hpp"
 #include "creature/creature.hpp"
+#include "statement-tavern.hpp"
 #include <vector>
 
 namespace heroespath
@@ -38,7 +38,7 @@ namespace interact
 
             if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                auto const BEAST_RACE_NAME { (
+                const auto BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
                                                   : std::string("dragon ")) };
 
@@ -81,11 +81,11 @@ namespace interact
 
             if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                auto const BEAST_RACE_NAME { (
+                const auto BEAST_RACE_NAME { (
                     (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
                                                   : std::string("dragon ")) };
 
-                auto const FIRST_PART { Random(
+                const auto FIRST_PART { Random(
                     { "Does your " + std::string(BEAST_RACE_NAME),
                       "Nice " + std::string(BEAST_RACE_NAME) + ".  Does he" }) };
 
@@ -136,9 +136,7 @@ namespace interact
 
             switch (misc::random::Int(20))
             {
-                case 0:
-                {
-                    return AppendIf(RandomOrEmpty(TavernNoises())) + "Who said that?";
+                case 0: { return AppendIf(RandomOrEmpty(TavernNoises())) + "Who said that?";
                 }
                 case 1:
                 {
@@ -195,9 +193,7 @@ namespace interact
                                 + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })
                         + ".";
                 }
-                case 9:
-                {
-                    return "Ninety-nine bottles of beer on the wall...";
+                case 9: { return "Ninety-nine bottles of beer on the wall...";
                 }
                 case 10:
                 {

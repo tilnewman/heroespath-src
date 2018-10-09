@@ -54,15 +54,15 @@ namespace sfml_util
 
     void SliderBarSfx::OnChange(const float CURRENT_POS_RATIO)
     {
-        auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
+        const auto CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
         SoundManager::Instance()->SoundEffectVolumeSet(CURRENT_POS_PERCENT);
         SliderBarLabeled::OnChange(CURRENT_POS_RATIO);
     }
 
     const TextInfo SliderBarSfx::CreateTextToDisplay(const float CURRENT_POS_RATIO)
     {
-        auto const CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
-        auto const CURRENT_POS_PERCENT_INT { static_cast<int>(CURRENT_POS_PERCENT) };
+        const auto CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
+        const auto CURRENT_POS_PERCENT_INT { static_cast<int>(CURRENT_POS_PERCENT) };
         TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT_INT) };
 
         std::ostringstream ss;

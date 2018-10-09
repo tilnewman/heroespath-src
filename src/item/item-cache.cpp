@@ -26,9 +26,9 @@ namespace item
 
     Weight_t ItemCache::Weight() const
     {
-        Weight_t sum{ 0_weight };
+        Weight_t sum { 0_weight };
 
-        for (auto const & NEXT_ITEM_PTR : items_pvec)
+        for (const auto & NEXT_ITEM_PTR : items_pvec)
         {
             sum += NEXT_ITEM_PTR->Weight();
         }

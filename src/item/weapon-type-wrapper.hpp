@@ -72,7 +72,7 @@ namespace item
 
             bool IsBodyPart() const
             {
-                auto const BODY_PART_TYPE{ BodyPartType() };
+                const auto BODY_PART_TYPE { BodyPartType() };
                 return (BODY_PART_TYPE != body_part::Count) && (BODY_PART_TYPE != body_part::Skin);
             }
 
@@ -228,7 +228,7 @@ namespace item
 
                 for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
-                    auto const SPECIFIC_WEAPON_ENUM{ static_cast<typename T::Enum>(i) };
+                    const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
                     wrappers.emplace_back(WeaponTypeWrapper(SPECIFIC_WEAPON_ENUM));
                 }
 
@@ -238,7 +238,7 @@ namespace item
             template <typename T>
             static void AppendSpecificSet(std::vector<WeaponTypeWrapper> & wrappers)
             {
-                for (auto const & WEAPON_TYPE_WRAPPER : MakeSpecificSet<T>())
+                for (const auto & WEAPON_TYPE_WRAPPER : MakeSpecificSet<T>())
                 {
                     wrappers.emplace_back(WEAPON_TYPE_WRAPPER);
                 }
@@ -272,9 +272,9 @@ namespace item
             {
                 for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
-                    auto const SPECIFIC_WEAPON_ENUM{ static_cast<typename T::Enum>(i) };
+                    const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
 
-                    auto const SPECIFIC_WEAPON_STR_LOWERCASE{ boost::algorithm::to_lower_copy(
+                    const auto SPECIFIC_WEAPON_STR_LOWERCASE { boost::algorithm::to_lower_copy(
                         T::ToString(SPECIFIC_WEAPON_ENUM)) };
 
                     if (SPECIFIC_WEAPON_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)

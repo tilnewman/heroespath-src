@@ -223,13 +223,13 @@ namespace stage
     {
         if (isInspectingImages_)
         {
-            auto const INSPECT_IMAGE_COUNT_HORIZ { static_cast<std::size_t>(
+            const auto INSPECT_IMAGE_COUNT_HORIZ { static_cast<std::size_t>(
                 StageRegionWidth() / IMAGE_INSPECT_DIMMENSION_) };
 
-            auto const INSPECT_IMAGE_COUNT_VERT { static_cast<std::size_t>(
+            const auto INSPECT_IMAGE_COUNT_VERT { static_cast<std::size_t>(
                 StageRegionHeight() / IMAGE_INSPECT_DIMMENSION_) };
 
-            auto const INSPECT_IMAGE_COUNT { INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
+            const auto INSPECT_IMAGE_COUNT { INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
 
             if ((KEY_EVENT.code == sf::Keyboard::Right) || (KEY_EVENT.code == sf::Keyboard::Down))
             {
@@ -280,13 +280,13 @@ namespace stage
     {
         if (isInspectingImages_)
         {
-            auto const IMAGE_COUNT { imageInspectPackets_.size() };
+            const auto IMAGE_COUNT { imageInspectPackets_.size() };
             for (std::size_t i(imageInspectIndex_); i < IMAGE_COUNT; ++i)
             {
-                auto const & PACKET { imageInspectPackets_[i] };
+                const auto & PACKET { imageInspectPackets_[i] };
                 if (PACKET.sprite.getGlobalBounds().contains(MOUSE_POS_V))
                 {
-                    auto const FILE_NAME { std::string(PACKET.text.getString()) };
+                    const auto FILE_NAME { std::string(PACKET.text.getString()) };
 
                     M_HP_LOG_WRN("Image failed inspection: " << FILE_NAME);
 
@@ -319,7 +319,7 @@ namespace stage
         //        // okay, wow, if we pass "this" to Display::DrawStage(this) then the windows build
         //        seems to
         //        // slice the this pointer itself and crash hard, no real understanding here...
-        //        auto const THIS_STAGE_PTR { this };
+        //        const auto THIS_STAGE_PTR { this };
         //
         //        sfml_util::Display::Instance()->DrawStage(THIS_STAGE_PTR);
         //        sfml_util::Display::Instance()->DisplayFrameBuffer();
@@ -481,7 +481,7 @@ namespace stage
 
         for (int sizeIndex(0); sizeIndex <= 2; ++sizeIndex)
         {
-            auto const FONT_SIZE { [sizeIndex]() {
+            const auto FONT_SIZE { [sizeIndex]() {
                 switch (sizeIndex)
                 {
                     // clang-format off
@@ -509,9 +509,9 @@ namespace stage
 
             for (int fontIndex(0); fontIndex <= 3; ++fontIndex)
             {
-                auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
+                const auto FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
 
-                auto const LENGTH { nameInfo.Length(sfml_util::TextInfo(
+                const auto LENGTH { nameInfo.Length(sfml_util::TextInfo(
                     nameInfo.LargestName(),
                     FONT_ENUM,
                     FONT_SIZE)) };
@@ -545,7 +545,7 @@ namespace stage
         auto isMismatchNormal{ false };
         for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
-            auto const NEXT_ENUM{ static_cast<creature::Traits::Enum>(i) };
+            const auto NEXT_ENUM{ static_cast<creature::Traits::Enum>(i) };
 
             if (ACTUAL.GetCopy(NEXT_ENUM).Current() != EXPECTED.GetCopy(NEXT_ENUM).Current())
             {
@@ -618,7 +618,7 @@ namespace stage
             ss << "PerformTest_IndividualImage: \"" << imagePathKeyVec[imageIndex] << "\"";
             TestingStrAppend(ss.str());
 
-            auto const IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
+            const auto IMAGE_PATH_STR { misc::ConfigFile::Instance()->GetMediaPath(
                 imagePathKeyVec[imageIndex]) };
 
             TestingImageSet(IMAGE_PATH_STR);
@@ -713,14 +713,14 @@ namespace stage
         static misc::EnumUnderlying_t imageIndex { 0 };
         if (imageIndex < avatar::Avatar::Count)
         {
-            auto const WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
+            const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
 
             std::ostringstream ss;
             ss << "PerformTest_CharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR)
                << "\"";
             TestingStrAppend(ss.str());
 
-            auto const IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
+            const auto IMAGE_PATH_STR { avatar::Avatar::ImagePath(WHICH_AVATAR) };
             TestingImageSet(IMAGE_PATH_STR);
 
             ++imageIndex;
@@ -763,7 +763,7 @@ namespace stage
 
         static misc::VectorMap<map::Level::Enum, MapAndTransitions> transitions;
 
-        auto const ParseMap { [](const map::Level::Enum LEVEL_ENUM, const std::string & ERROR_MSG) {
+        const auto ParseMap { [](const map::Level::Enum LEVEL_ENUM, const std::string & ERROR_MSG) {
             map::MapUPtr_t mapUPtr { std::make_unique<map::Map>(
                 sf::FloatRect(0.0f, 0.0f, 128.0f, 256.0f), interactionManager) };
 
@@ -792,7 +792,7 @@ namespace stage
             static misc::EnumUnderlying_t mapIndex { 0 };
             if (mapIndex < map::Level::Count)
             {
-                auto const WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
+                const auto WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
 
                 std::ostringstream ss;
                 ss << "TestMaps() Testing \"" << map::Level::ToString(WHICH_LEVEL)
@@ -821,7 +821,7 @@ namespace stage
             }
             else
             {
-                auto const CURRENT_LEVEL { transitionIter->first };
+                const auto CURRENT_LEVEL { transitionIter->first };
 
                 std::ostringstream ss;
                 ss << "TestMaps() Testing \"" << map::Level::ToString(CURRENT_LEVEL)
@@ -829,11 +829,11 @@ namespace stage
 
                 TestingStrAppend(ss.str());
 
-                for (auto const ENTRY_LEVEL : transitionIter->second.entry_levels)
+                for (const auto ENTRY_LEVEL : transitionIter->second.entry_levels)
                 {
-                    auto const ENTRY_TRANSITIONS { transitions[ENTRY_LEVEL] };
+                    const auto ENTRY_TRANSITIONS { transitions[ENTRY_LEVEL] };
 
-                    auto const WAS_FOUND { std::find(
+                    const auto WAS_FOUND { std::find(
                                                std::begin(ENTRY_TRANSITIONS.exit_levels),
                                                std::end(ENTRY_TRANSITIONS.exit_levels),
                                                CURRENT_LEVEL)
@@ -848,11 +848,11 @@ namespace stage
                             << "\", but that map did not have an exit level to match.");
                 }
 
-                for (auto const EXIT_LEVEL : transitionIter->second.exit_levels)
+                for (const auto EXIT_LEVEL : transitionIter->second.exit_levels)
                 {
-                    auto const EXIT_TRANSITIONS { transitions[EXIT_LEVEL] };
+                    const auto EXIT_TRANSITIONS { transitions[EXIT_LEVEL] };
 
-                    auto const WAS_FOUND { std::find(
+                    const auto WAS_FOUND { std::find(
                                                std::begin(EXIT_TRANSITIONS.entry_levels),
                                                std::end(EXIT_TRANSITIONS.entry_levels),
                                                CURRENT_LEVEL)
@@ -950,7 +950,7 @@ namespace stage
         {
             if (!animUPtr_)
             {
-                auto const ENUM { static_cast<sfml_util::Animations::Enum>(animIndex) };
+                const auto ENUM { static_cast<sfml_util::Animations::Enum>(animIndex) };
 
                 std::ostringstream ss;
                 ss << "PerformTest_Animations() \"" << sfml_util::Animations::ToString(ENUM)
@@ -999,14 +999,14 @@ namespace stage
 
         if (raceIndex < static_cast<int>(creature::race::Count))
         {
-            auto const RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
-            auto const RACE_STR { creature::race::ToString(RACE_ENUM) };
-            auto const ROLE_VEC { creature::race::Roles(RACE_ENUM) };
+            const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
+            const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
+            const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
             if (roleIndex < static_cast<misc::EnumUnderlying_t>(ROLE_VEC.size()))
             {
-                auto const ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                auto const ROLE_STR { creature::role::ToString(ROLE_ENUM) };
+                const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
+                const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
                 const int RANK_BASE { 50 };
                 const int RANK_MAX { [&]() {
@@ -1088,8 +1088,8 @@ namespace stage
             return false;
         }
 
-        auto const WIDTH { TEXTURE.getSize().x };
-        auto const HEIGHT { TEXTURE.getSize().y };
+        const auto WIDTH { TEXTURE.getSize().x };
+        const auto HEIGHT { TEXTURE.getSize().y };
 
         sf::Image image { TEXTURE.copyToImage() };
 
@@ -1110,32 +1110,24 @@ namespace stage
 
         for (int cs(0); cs < CornerSide::Count; ++cs)
         {
-            auto const ENUM { static_cast<CornerSide>(cs) };
+            const auto ENUM { static_cast<CornerSide>(cs) };
 
             auto wereAllColorsEqual { true };
 
-            auto const FIRST_COLOR { [&]() {
+            const auto FIRST_COLOR { [&]() {
                 switch (ENUM)
                 {
-                    case TopLeftTop:
-                    {
-                        return image.getPixel(OFFSET, 0);
+                    case TopLeftTop: { return image.getPixel(OFFSET, 0);
                     }
-                    case TopLeftLeft:
-                    {
-                        return image.getPixel(0, OFFSET);
+                    case TopLeftLeft: { return image.getPixel(0, OFFSET);
                     }
                     case TopRightTop:
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, 0);
                     }
-                    case TopRightRight:
-                    {
-                        return image.getPixel((WIDTH - 1), 0);
+                    case TopRightRight: { return image.getPixel((WIDTH - 1), 0);
                     }
-                    case BotLeftBot:
-                    {
-                        return image.getPixel(OFFSET, (HEIGHT - 1));
+                    case BotLeftBot: { return image.getPixel(OFFSET, (HEIGHT - 1));
                     }
                     case BotLeftLeft:
                     {
@@ -1145,42 +1137,30 @@ namespace stage
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, (HEIGHT - 1));
                     }
-                    case BotRightRight:
-                    {
-                        return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
+                    case BotRightRight: { return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
                     }
                     case Count:
-                    default:
-                    {
-                        return image.getPixel(0, 0);
+                    default: { return image.getPixel(0, 0);
                     }
                 }
             }() };
 
             for (unsigned rl(0); rl < RUN_LENGTH; ++rl)
             {
-                auto const NEXT_COLOR { [&]() {
+                const auto NEXT_COLOR { [&]() {
                     switch (ENUM)
                     {
-                        case TopLeftTop:
-                        {
-                            return image.getPixel(OFFSET + rl, 0);
+                        case TopLeftTop: { return image.getPixel(OFFSET + rl, 0);
                         }
-                        case TopLeftLeft:
-                        {
-                            return image.getPixel(0, OFFSET + rl);
+                        case TopLeftLeft: { return image.getPixel(0, OFFSET + rl);
                         }
                         case TopRightTop:
                         {
                             return image.getPixel((((WIDTH - 1) - OFFSET) - RUN_LENGTH) + rl, 0);
                         }
-                        case TopRightRight:
-                        {
-                            return image.getPixel((WIDTH - 1), 0 + rl);
+                        case TopRightRight: { return image.getPixel((WIDTH - 1), 0 + rl);
                         }
-                        case BotLeftBot:
-                        {
-                            return image.getPixel(OFFSET + rl, (HEIGHT - 1));
+                        case BotLeftBot: { return image.getPixel(OFFSET + rl, (HEIGHT - 1));
                         }
                         case BotLeftLeft:
                         {
@@ -1197,9 +1177,7 @@ namespace stage
                                 (WIDTH - 1), (((HEIGHT - 1) - OFFSET) - RUN_LENGTH) + rl);
                         }
                         case Count:
-                        default:
-                        {
-                            return image.getPixel(0, 0);
+                        default: { return image.getPixel(0, 0);
                         }
                     }
                 }() };
@@ -1228,12 +1206,12 @@ namespace stage
      *
     void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
     {
-        auto const IMAGES_PATH_STR{
+        const auto IMAGES_PATH_STR{
             misc::ConfigFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
 
-        auto const DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
+        const auto DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
 
-        auto const DIR_PATH_STR{ DIR_PATH.string() };
+        const auto DIR_PATH_STR{ DIR_PATH.string() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             bfs::exists(DIR_PATH),
@@ -1248,7 +1226,7 @@ namespace stage
         bfs::directory_iterator endIter;
         for (bfs::directory_iterator dirIter(DIR_PATH); endIter != dirIter; ++dirIter)
         {
-            auto const FILE_PATH_STR{ dirIter->path().string() };
+            const auto FILE_PATH_STR{ dirIter->path().string() };
 
             if (bfs::is_regular_file(dirIter->status()) == false)
             {
@@ -1264,8 +1242,8 @@ namespace stage
             sfml_util::Loaders::Texture(texture, FILE_PATH_STR, false);
             sf::Image image{ texture.copyToImage() };
 
-            auto const WIDTH{ texture.getSize().x };
-            auto const HEIGHT{ texture.getSize().y };
+            const auto WIDTH{ texture.getSize().x };
+            const auto HEIGHT{ texture.getSize().y };
 
             for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, 0, sf::Color::Black);
             for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, HEIGHT-1, sf::Color::Black);
@@ -1362,7 +1340,7 @@ namespace stage
 
         if (fontIndex < sfml_util::GuiFont::Count)
         {
-            auto const FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
+            const auto FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
             sfml_util::Text text("asdf", FONT_ENUM, 30);
             ++fontIndex;
             return false;
@@ -1382,7 +1360,7 @@ namespace stage
             animUPtr_->draw(target, STATES);
         }
 
-        auto const IMAGE_POS_TOP { 1.0f };
+        const auto IMAGE_POS_TOP { 1.0f };
         {
             std::size_t imageDrawCount { 0 };
             auto posLeft { StageRegionWidth() };
@@ -1394,7 +1372,7 @@ namespace stage
                 sprite.setTexture(rItr->Get());
 
                 // reduce size if any dimmension is greater than 256
-                auto const MAX_DIMMENSION { 256.0f };
+                const auto MAX_DIMMENSION { 256.0f };
                 auto newHorizScale { 1.0f };
                 if (sprite.getGlobalBounds().width > MAX_DIMMENSION)
                 {
@@ -1403,7 +1381,7 @@ namespace stage
                 }
                 if (sprite.getGlobalBounds().height > MAX_DIMMENSION)
                 {
-                    auto const NEW_VERT_SCALE { MAX_DIMMENSION / sprite.getGlobalBounds().height };
+                    const auto NEW_VERT_SCALE { MAX_DIMMENSION / sprite.getGlobalBounds().height };
                     if (NEW_VERT_SCALE < newHorizScale)
                     {
                         sprite.setScale(NEW_VERT_SCALE, NEW_VERT_SCALE);
@@ -1435,7 +1413,7 @@ namespace stage
                 sfml_util::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
-            auto const TEXT_HEIGHT { testText.getGlobalBounds().height + 10.0f };
+            const auto TEXT_HEIGHT { testText.getGlobalBounds().height + 10.0f };
 
             // The + 256 is to make room for the images, so text is not drawn over them.
             auto DO_NOT_PASS_TOP { IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };

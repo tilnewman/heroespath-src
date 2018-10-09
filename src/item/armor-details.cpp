@@ -32,7 +32,7 @@ namespace item
         const ArmorDetails ArmorDetailLoader::LookupArmorDetails(const std::string & NAME)
         {
             ArmorDetails details;
-            auto const WAS_FOUND { armorDetailsMap_.Find(NAME, details) };
+            const auto WAS_FOUND { armorDetailsMap_.Find(NAME, details) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 WAS_FOUND,
@@ -44,7 +44,7 @@ namespace item
 
         void ArmorDetailLoader::LoadFromGameDataFile()
         {
-            for (auto const & ARMOR_TYPE_WRAPPER : ArmorTypeWrapper::MakeCompleteSet())
+            for (const auto & ARMOR_TYPE_WRAPPER : ArmorTypeWrapper::MakeCompleteSet())
             {
                 if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
                 {

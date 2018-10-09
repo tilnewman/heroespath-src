@@ -54,14 +54,14 @@ namespace combat
             return TurnActionInfo(TurnAction::Nothing);
         }
 
-        auto const TURN_INFO { Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_PTR) };
+        const auto TURN_INFO { Encounter::Instance()->GetTurnInfoCopy(CREATURE_DECIDING_PTR) };
 
         // find out if any possible targets (players) are holding projectile weapons
-        auto const ARE_ANY_HOLDING_PROJECTILE_WEAPONS { []() {
-            auto const ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
+        const auto ARE_ANY_HOLDING_PROJECTILE_WEAPONS { []() {
+            const auto ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
                 creature::Algorithms::Living) };
 
-            for (auto const & NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+            for (const auto & NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
             {
                 if (NEXT_LIVING_PLAYER_PTR->IsHoldingProjectileWeapon())
                 {
@@ -72,11 +72,11 @@ namespace combat
         }() };
 
         // find out if any possible targets (players) are flying
-        auto const ARE_ANY_FLYING { []() {
-            auto const ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
+        const auto ARE_ANY_FLYING { []() {
+            const auto ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
                 creature::Algorithms::Living) };
 
-            for (auto const & NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
+            for (const auto & NEXT_LIVING_PLAYER_PTR : ALL_LIVING_PLAYERS_PVEC)
             {
                 if (Encounter::Instance()->GetTurnInfoCopy(NEXT_LIVING_PLAYER_PTR).GetIsFlying())
                 {
@@ -96,24 +96,24 @@ namespace combat
         else
         {
             // decide if flying
-            auto const FLY_TURN_ACTION_INFO { DecideIfFlying(TURN_INFO, CREATURE_DECIDING_PTR) };
+            const auto FLY_TURN_ACTION_INFO { DecideIfFlying(TURN_INFO, CREATURE_DECIDING_PTR) };
             if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
             {
                 return FLY_TURN_ACTION_INFO;
             }
         }
 
-        auto const LIVING_PLAYERS_IN_ATTACK_RANGE {
+        const auto LIVING_PLAYERS_IN_ATTACK_RANGE {
             COMBAT_DISPLAY_PTR->FindCreaturesThatCanBeAttackedOfType(CREATURE_DECIDING_PTR, true)
         };
 
-        auto const FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT {
+        const auto FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT {
             COMBAT_DISPLAY_PTR->FindCreaturesAllRoundOfType(CREATURE_DECIDING_PTR, false, true)
                 .size()
         };
 
         // decide if running away (retreating), if cowardly or wary and outnumbered
-        auto const RETREAT_TURN_ACTION_INFO { DecideIfRetreating(
+        const auto RETREAT_TURN_ACTION_INFO { DecideIfRetreating(
             TURN_INFO,
             CREATURE_DECIDING_PTR,
             COMBAT_DISPLAY_PTR,
@@ -129,7 +129,7 @@ namespace combat
             TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_PTR) };
 
         // decide if casting a spell
-        auto const CASTING_TURN_ACTION_INFO { DecideIfCasting(
+        const auto CASTING_TURN_ACTION_INFO { DecideIfCasting(
             TURN_INFO, CREATURE_DECIDING_PTR, MOST_DESIRED_TARGET_PTR) };
 
         if ((CASTING_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
@@ -138,30 +138,30 @@ namespace combat
             return CASTING_TURN_ACTION_INFO;
         }
 
-        auto const MOST_DESIRED_TARGET_DISTANCE { COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
+        const auto MOST_DESIRED_TARGET_DISTANCE { COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
             CREATURE_DECIDING_PTR, MOST_DESIRED_TARGET_PTR) };
 
-        auto const IS_FLYING { TURN_INFO.GetIsFlying() };
+        const auto IS_FLYING { TURN_INFO.GetIsFlying() };
 
-        auto const DOES_FLYING_SEPARATE_MOST_DESIRED_TARGET { !(
+        const auto DOES_FLYING_SEPARATE_MOST_DESIRED_TARGET { !(
             IS_FLYING
             == Encounter::Instance()->GetTurnInfoCopy(MOST_DESIRED_TARGET_PTR).GetIsFlying()) };
 
-        auto const CAN_ATTACK_ON_RANGE { (
+        const auto CAN_ATTACK_ON_RANGE { (
             (std::abs(MOST_DESIRED_TARGET_DISTANCE) <= 1)
             || CREATURE_DECIDING_PTR->IsHoldingProjectileWeapon() || IS_FLYING) };
 
-        auto const CAN_ATTACK_ON_FLIGHT { (
+        const auto CAN_ATTACK_ON_FLIGHT { (
             (DOES_FLYING_SEPARATE_MOST_DESIRED_TARGET == false)
             || CREATURE_DECIDING_PTR->IsHoldingProjectileWeapon() || IS_FLYING) };
 
-        auto const CAN_ATTACK_MOST_DESIRED_TARGET_WITH { CREATURE_DECIDING_PTR->HasWeaponsHeld()
+        const auto CAN_ATTACK_MOST_DESIRED_TARGET_WITH { CREATURE_DECIDING_PTR->HasWeaponsHeld()
                                                          && CAN_ATTACK_ON_RANGE
                                                          && CAN_ATTACK_ON_FLIGHT };
 
         // decide if moving toward most desired target, which technically could mean Advancing or
         // Retreating...
-        auto const MOVE_TOWARD_TURN_ACTION_INFO { DecideIfMovingTowardsMostDesiredTarget(
+        const auto MOVE_TOWARD_TURN_ACTION_INFO { DecideIfMovingTowardsMostDesiredTarget(
             TURN_INFO,
             CREATURE_DECIDING_PTR,
             COMBAT_DISPLAY_PTR,
@@ -177,7 +177,7 @@ namespace combat
         // decide if taking beast specific actions (roar, fly, pounce, etc.)
         if (CREATURE_DECIDING_PTR->IsBeast())
         {
-            auto const BEAST_TURN_ACTION_INFO { DecideIfDoingBeastAction(
+            const auto BEAST_TURN_ACTION_INFO { DecideIfDoingBeastAction(
                 TURN_INFO,
                 CREATURE_DECIDING_PTR,
                 MOST_DESIRED_TARGET_PTR,
@@ -202,12 +202,12 @@ namespace combat
             && (TURN_INFO.GetStrategyInfo().Advance() != strategy::AdvanceType::Cowardly)
             && (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty()))
         {
-            auto const CREATURES_AHEAD_PVEC { COMBAT_DISPLAY_PTR->FindCreaturesAtBlockingPosOfType(
+            const auto CREATURES_AHEAD_PVEC { COMBAT_DISPLAY_PTR->FindCreaturesAtBlockingPosOfType(
                 COMBAT_DISPLAY_PTR->FindBlockingPos(CREATURE_DECIDING_PTR) - 1, true) };
 
             if (CREATURES_AHEAD_PVEC.empty() == false)
             {
-                auto const DISTANCE_TO_CLOSEST_PLAYER {
+                const auto DISTANCE_TO_CLOSEST_PLAYER {
                     COMBAT_DISPLAY_PTR->GetClosestBlockingDistanceByType(
                         CREATURE_DECIDING_PTR, true)
                 };
@@ -233,7 +233,7 @@ namespace combat
         // cast any misc spell if able
         if (CREATURE_DECIDING_PTR->CanCastSpells())
         {
-            auto const SPELL_CAST_TURN_ACTION_INFO { ForcePickSpellToCast(
+            const auto SPELL_CAST_TURN_ACTION_INFO { ForcePickSpellToCast(
                 CREATURE_DECIDING_PTR, MOST_DESIRED_TARGET_PTR) };
 
             if ((SPELL_CAST_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
@@ -252,7 +252,7 @@ namespace combat
         }
 
         // see if there is a player to advance towards who is not the most desired target
-        auto const IF_ADVANCING_TURNACTIONINFO { DecideIfAdvancingTowardNonMostDesiredTarget(
+        const auto IF_ADVANCING_TURNACTIONINFO { DecideIfAdvancingTowardNonMostDesiredTarget(
             TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_PTR) };
         //
         if (IF_ADVANCING_TURNACTIONINFO.Action() != TurnAction::Nothing)
@@ -299,13 +299,13 @@ namespace combat
         const creature::CreaturePVec_t REFINED_TARGETS_PVEC { RefineTargets(
             SELECT_TARGETS_PVEC, CREATURE_DECIDING_TURN_INFO) };
 
-        auto const IS_FLYING { CREATURE_DECIDING_TURN_INFO.GetIsFlying() };
+        const auto IS_FLYING { CREATURE_DECIDING_TURN_INFO.GetIsFlying() };
 
         if (REFINED_TARGETS_PVEC.empty() == false)
         {
             if (IS_FLYING == false)
             {
-                auto const REFINED_NOTFLYING_TARGETS_PVEC { creature::Algorithms::FindByIsFlying(
+                const auto REFINED_NOTFLYING_TARGETS_PVEC { creature::Algorithms::FindByIsFlying(
                     REFINED_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
                 if (REFINED_NOTFLYING_TARGETS_PVEC.empty() == false)
@@ -322,7 +322,7 @@ namespace combat
         {
             if (IS_FLYING == false)
             {
-                auto const SELECT_NOTFLYING_TARGETS_PVEC { creature::Algorithms::FindByIsFlying(
+                const auto SELECT_NOTFLYING_TARGETS_PVEC { creature::Algorithms::FindByIsFlying(
                     SELECT_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet) };
 
                 if (SELECT_NOTFLYING_TARGETS_PVEC.empty() == false)
@@ -336,7 +336,7 @@ namespace combat
                 COMBAT_DISPLAY_PTR->FindClosestLiving(CREATURE_DECIDING_PTR, SELECT_TARGETS_PVEC));
         }
 
-        auto const ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
+        const auto ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
             creature::Algorithms::Living) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -346,13 +346,13 @@ namespace combat
                 << ") found no living player characters.");
 
         // prefer players still a threat...
-        auto const ALL_LIVING_THREAT_PLAYERS_PVEC {
+        const auto ALL_LIVING_THREAT_PLAYERS_PVEC {
             creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
                 ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CondSingleOpt::DoesNotHave)
         };
 
         //...but accept those 'not a threat' if no other choice
-        auto const AVAILABLE_TARGETS_PRE_PVEC { (
+        const auto AVAILABLE_TARGETS_PRE_PVEC { (
             (ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ? ALL_LIVING_PLAYERS_PVEC
                                                      : ALL_LIVING_THREAT_PLAYERS_PVEC) };
 
@@ -361,19 +361,19 @@ namespace combat
         AdjustCreatueVecForMurderousIntent(CREATURE_DECIDING_TURN_INFO, availableTargetsPVec);
 
         // prefer those reachable considering flying...
-        auto const REACHABLE_AVAILABLE_TARGETS_PVEC { (
+        const auto REACHABLE_AVAILABLE_TARGETS_PVEC { (
             (IS_FLYING)
                 ? availableTargetsPVec
                 : creature::Algorithms::FindByIsFlying(
                       availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         //...but accept those 'not reachable' if no other choice
-        auto const POSSIBLE_TARGETS_PVEC { (
+        const auto POSSIBLE_TARGETS_PVEC { (
             (REACHABLE_AVAILABLE_TARGETS_PVEC.empty()) ? availableTargetsPVec
                                                        : REACHABLE_AVAILABLE_TARGETS_PVEC) };
 
         // prefer those closest
-        auto const CLOSEST_POSSIBLE_TARGETS_PVEC { COMBAT_DISPLAY_PTR->FindClosestLiving(
+        const auto CLOSEST_POSSIBLE_TARGETS_PVEC { COMBAT_DISPLAY_PTR->FindClosestLiving(
             CREATURE_DECIDING_PTR, POSSIBLE_TARGETS_PVEC) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -387,17 +387,17 @@ namespace combat
 
     creature::CreaturePVec_t TurnDecider::FindSelectedTargets(const TurnInfo & TURN_INFO) const
     {
-        auto const SELECT_TYPE_ENUM { TURN_INFO.GetStrategyInfo().Select() };
+        const auto SELECT_TYPE_ENUM { TURN_INFO.GetStrategyInfo().Select() };
 
         if (SELECT_TYPE_ENUM == strategy::SelectType::None)
         {
             return {};
         }
 
-        auto const ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
+        const auto ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
             creature::Algorithms::Living) };
 
-        auto const SELECTABLE_PLAYERS_PVEC { (
+        const auto SELECTABLE_PLAYERS_PVEC { (
             (TURN_INFO.GetIsFlying())
                 ? ALL_LIVING_PLAYERS_PVEC
                 : creature::Algorithms::FindByIsFlying(
@@ -569,7 +569,7 @@ namespace combat
     creature::CreaturePVec_t TurnDecider::RefineTargets(
         const creature::CreaturePVec_t & SELECTED_TARGETS_PVEC, const TurnInfo & TURN_INFO) const
     {
-        auto const REFINE_TYPE_ENUM { TURN_INFO.GetStrategyInfo().Refine() };
+        const auto REFINE_TYPE_ENUM { TURN_INFO.GetStrategyInfo().Refine() };
 
         if (SELECTED_TARGETS_PVEC.empty() || (REFINE_TYPE_ENUM == strategy::RefineType::None))
         {
@@ -591,7 +591,7 @@ namespace combat
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::Bloodthirsty)
         {
-            auto const LOWEST_HEALTH_PVEC { creature::Algorithms::FindLowestHealth(
+            const auto LOWEST_HEALTH_PVEC { creature::Algorithms::FindLowestHealth(
                 SELECTED_TARGETS_PVEC) };
 
             std::copy(
@@ -614,7 +614,7 @@ namespace combat
 
             if (cantTakeActionPVec.empty() == false)
             {
-                auto const CANT_ACT_BUT_NOT_PERM_PVEC {
+                const auto CANT_ACT_BUT_NOT_PERM_PVEC {
                     creature::Algorithms::FindByConditionMeaningNotAThreatPermenantly(
                         cantTakeActionPVec, creature::Algorithms::CondSingleOpt::DoesNotHave)
                 };
@@ -730,7 +730,7 @@ namespace combat
 
         if (REFINE_TYPE_ENUM & strategy::RefineType::MostDamage)
         {
-            auto const CREATURE_PTR_OPT { TURN_INFO.MostDamagedCreaturePtrOpt() };
+            const auto CREATURE_PTR_OPT { TURN_INFO.MostDamagedCreaturePtrOpt() };
             if (CREATURE_PTR_OPT)
             {
                 refinedTargetsPVec.emplace_back(CREATURE_PTR_OPT.value());
@@ -814,7 +814,7 @@ namespace combat
                     >= TURN_INFO.GetStrategyInfo().OutnumberedRetreatCount()))
             {
                 // fly to evade sometimes
-                auto const FLY_TURN_ACTION_INFO { DecideIfFlying(
+                const auto FLY_TURN_ACTION_INFO { DecideIfFlying(
                     TURN_INFO, CREATURE_DECIDING_PTR) };
                 if (FLY_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
                 {
@@ -835,10 +835,10 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR) const
     {
-        auto const CAN_CAST_HEALING_SPELLS { CREATURE_DECIDING_PTR->CanCastSpellByEffectType(
+        const auto CAN_CAST_HEALING_SPELLS { CREATURE_DECIDING_PTR->CanCastSpellByEffectType(
             EffectType::CreatureHelpHeal) };
 
-        auto const CAN_CAST_ATTACK_SPELLS { CREATURE_DECIDING_PTR->CanCastSpellByEffectType(
+        const auto CAN_CAST_ATTACK_SPELLS { CREATURE_DECIDING_PTR->CanCastSpellByEffectType(
             EffectType::CreatureHarmDamage) };
 
         // determine if casting a spell
@@ -872,14 +872,14 @@ namespace combat
             // prevent casting spell if already cast too many times
             if ((maxCastCount == 0) || (TURN_INFO.CastCount() < maxCastCount))
             {
-                auto const CAST_CHANCE { ChanceFromFrequency(
+                const auto CAST_CHANCE { ChanceFromFrequency(
                     TURN_INFO.GetStrategyInfo().CastFreq()) };
 
                 // determine if will cast spell at random
                 if ((TURN_INFO.GetStrategyInfo().CastFreq() == strategy::FrequencyType::Always)
                     || (misc::random::Float(1.0f) < CAST_CHANCE))
                 {
-                    auto const FELLOWS_WITH_LOWEST_HEALTH_PVEC {
+                    const auto FELLOWS_WITH_LOWEST_HEALTH_PVEC {
                         creature::Algorithms::FindLowestHealthRatio(
                             creature::Algorithms::NonPlayers(creature::Algorithms::Living))
                     };
@@ -913,7 +913,7 @@ namespace combat
         const bool NUM_PLAYERS_IN_ATTACK_RANGE,
         const bool CAN_ATTACK_MOST_DESIRED_TARGET_WITH) const
     {
-        auto const ADV_TYPE { TURN_INFO.GetStrategyInfo().Advance() };
+        const auto ADV_TYPE { TURN_INFO.GetStrategyInfo().Advance() };
 
         if ((ADV_TYPE != strategy::AdvanceType::Cowardly) && (MOST_DESIRED_TARGET_DISTANCE != 0))
         {
@@ -960,14 +960,14 @@ namespace combat
             using ActionChances_t = std::tuple<TurnAction::Enum, float, float>;
             std::vector<ActionChances_t> actionChancesVec;
 
-            auto const ROAR_CHANCE { (
+            const auto ROAR_CHANCE { (
                 (PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0)
                     ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().RoarFreq())
                     : 0.0f) };
 
             if (ROAR_CHANCE > 0.0f)
             {
-                auto const RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::random::Float(1.0f) };
                 if (RAND < ROAR_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -975,14 +975,14 @@ namespace combat
                 }
             }
 
-            auto const FLY_CHANCE { (
+            const auto FLY_CHANCE { (
                 (CREATURE_DECIDING_PTR->CanFly() && (TURN_INFO.GetIsFlying() == false))
                     ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyFreq())
                     : 0.0f) };
 
             if (FLY_CHANCE > 0.0f)
             {
-                auto const RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -990,14 +990,14 @@ namespace combat
                 }
             }
 
-            auto const SKYPOUNCE_CHANCE { (
+            const auto SKYPOUNCE_CHANCE { (
                 (TURN_INFO.GetIsFlying())
                     ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().FlyPounceFreq())
                     : 0.0f) };
 
             if (SKYPOUNCE_CHANCE > 0.0f)
             {
-                auto const RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -1005,14 +1005,14 @@ namespace combat
                 }
             }
 
-            auto const LANDPOUNCE_CHANCE { (
+            const auto LANDPOUNCE_CHANCE { (
                 ((TURN_INFO.GetIsFlying() == false) && (PLAYERS_IN_MELEE_RANGE_PVEC.size() > 0))
                     ? ChanceFromFrequency(TURN_INFO.GetStrategyInfo().StandPounceFreq())
                     : 0.0f) };
 
             if (LANDPOUNCE_CHANCE > 0.0f)
             {
-                auto const RAND { misc::random::Float(1.0f) };
+                const auto RAND { misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
                     actionChancesVec.emplace_back(
@@ -1032,7 +1032,7 @@ namespace combat
                         });
                 }
 
-                auto const DECIDED_ACTION { std::get<0>(actionChancesVec[0]) };
+                const auto DECIDED_ACTION { std::get<0>(actionChancesVec[0]) };
 
                 if (DECIDED_ACTION == TurnAction::LandPounce)
                 {
@@ -1057,7 +1057,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR) const
     {
-        auto const ALL_SPELLS_PVEC { CREATURE_DECIDING_PTR->SpellsPVec() };
+        const auto ALL_SPELLS_PVEC { CREATURE_DECIDING_PTR->SpellsPVec() };
 
         spell::SpellPVec_t combatSpellsPVec;
 
@@ -1067,7 +1067,7 @@ namespace combat
             ALL_SPELLS_PVEC.begin(),
             ALL_SPELLS_PVEC.end(),
             back_inserter(combatSpellsPVec),
-            [](auto const SPELL_PTR) {
+            [](const auto SPELL_PTR) {
                 return (
                     (SPELL_PTR->Effect() != combat::EffectType::ItemHarmBreak)
                     && (SPELL_PTR->Effect() != combat::EffectType::ItemHarmMisc)
@@ -1081,11 +1081,11 @@ namespace combat
             return TurnActionInfo();
         }
 
-        auto const RAND_FELLOW_WITH_LOWEST_HEALTH_PTR { misc::Vector::SelectRandom(
+        const auto RAND_FELLOW_WITH_LOWEST_HEALTH_PTR { misc::Vector::SelectRandom(
             creature::Algorithms::FindLowestHealthRatio(
                 creature::Algorithms::NonPlayers(creature::Algorithms::Living))) };
 
-        auto const CAN_CAST_HEAL_SPELLS { (
+        const auto CAN_CAST_HEAL_SPELLS { (
             RAND_FELLOW_WITH_LOWEST_HEALTH_PTR->HealthRatio() < 1.0f) };
 
         spell::SpellPVec_t finalSpellPVec;
@@ -1100,7 +1100,7 @@ namespace combat
                 combatSpellsPVec.begin(),
                 combatSpellsPVec.end(),
                 back_inserter(finalSpellPVec),
-                [](auto const SPELL_PTR) {
+                [](const auto SPELL_PTR) {
                     return (SPELL_PTR->Effect() != combat::EffectType::CreatureHelpHeal);
                 });
         }
@@ -1123,7 +1123,7 @@ namespace combat
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR,
         const EffectTypeVec_t & SPELL_EFFECTTYPES_VEC) const
     {
-        auto const SPELL_PTR { PickSpell(CREATURE_DECIDING_PTR, SPELL_EFFECTTYPES_VEC) };
+        const auto SPELL_PTR { PickSpell(CREATURE_DECIDING_PTR, SPELL_EFFECTTYPES_VEC) };
 
         creature::CreaturePVec_t targetedCreaturesPVec;
         if (SPELL_PTR->Target() == TargetType::AllCompanions)
@@ -1182,7 +1182,7 @@ namespace combat
             "combat::TurnDecider::PickSpell(creature_deciding="
                 << CREATURE_DECIDING_PTR->Name() << ") but SPELL_EFFECTTYPE_VEC was empty.");
 
-        auto const ALL_SPELLS_PVEC { CREATURE_DECIDING_PTR->SpellsPVec() };
+        const auto ALL_SPELLS_PVEC { CREATURE_DECIDING_PTR->SpellsPVec() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ALL_SPELLS_PVEC.empty() == false),
@@ -1198,8 +1198,8 @@ namespace combat
             ALL_SPELLS_PVEC.begin(),
             ALL_SPELLS_PVEC.end(),
             back_inserter(spellsOfTypePVec),
-            [&SPELL_EFFECTTYPE_VEC](auto const SPELL_PTR) {
-                for (auto const NEXT_SPELL_EFFECTTYPE : SPELL_EFFECTTYPE_VEC)
+            [&SPELL_EFFECTTYPE_VEC](const auto SPELL_PTR) {
+                for (const auto NEXT_SPELL_EFFECTTYPE : SPELL_EFFECTTYPE_VEC)
                 {
                     if ((SPELL_PTR->ValidPhases() & game::Phase::Combat)
                         && (NEXT_SPELL_EFFECTTYPE == SPELL_PTR->Effect()))
@@ -1210,7 +1210,7 @@ namespace combat
                 return false;
             });
 
-        auto const SPELL_COUNT { spellsOfTypePVec.size() };
+        const auto SPELL_COUNT { spellsOfTypePVec.size() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (SPELL_COUNT > 0),
@@ -1243,7 +1243,7 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
         const CombatDisplayPtr_t COMBAT_DISPLAY_PTR) const
     {
-        auto const ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
+        const auto ALL_LIVING_PLAYERS_PVEC { creature::Algorithms::Players(
             creature::Algorithms::Living) };
 
         if (ALL_LIVING_PLAYERS_PVEC.empty())
@@ -1260,12 +1260,12 @@ namespace combat
         };
 
         //...but accept those 'not a threat' if no other choice
-        auto const AVAILABLE_TARGETS_PVEC { (
+        const auto AVAILABLE_TARGETS_PVEC { (
             (ALL_LIVING_THREAT_PLAYERS_PVEC.empty()) ? ALL_LIVING_PLAYERS_PVEC
                                                      : ALL_LIVING_THREAT_PLAYERS_PVEC) };
 
         // must be reachable given flying or not
-        auto const REACHABLE_AVAILABLE_TARGETS_PVEC { (
+        const auto REACHABLE_AVAILABLE_TARGETS_PVEC { (
             (CREATURE_DECIDING_TURN_INFO.GetIsFlying())
                 ? AVAILABLE_TARGETS_PVEC
                 : creature::Algorithms::FindByIsFlying(
@@ -1277,7 +1277,7 @@ namespace combat
         }
 
         // prefer those closest
-        auto const CLOSEST_REACH_AVAIL_TARGETS_PVEC { COMBAT_DISPLAY_PTR->FindClosestLiving(
+        const auto CLOSEST_REACH_AVAIL_TARGETS_PVEC { COMBAT_DISPLAY_PTR->FindClosestLiving(
             CREATURE_DECIDING_PTR, REACHABLE_AVAILABLE_TARGETS_PVEC) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -1286,10 +1286,10 @@ namespace combat
                 << CREATURE_DECIDING_PTR->NameAndRaceAndRole()
                 << ") FindClosestLiving() returned an empty vec.");
 
-        auto const TARGET_CREATURE_PTR { misc::Vector::SelectRandom(
+        const auto TARGET_CREATURE_PTR { misc::Vector::SelectRandom(
             CLOSEST_REACH_AVAIL_TARGETS_PVEC) };
 
-        auto const BLOCKING_DISTANCE_TO_TARGET { COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
+        const auto BLOCKING_DISTANCE_TO_TARGET { COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
             CREATURE_DECIDING_PTR, TARGET_CREATURE_PTR) };
 
         if ((BLOCKING_DISTANCE_TO_TARGET < 0)
@@ -1312,8 +1312,8 @@ namespace combat
         creature::CreaturePVec_t & pVec_OutParam) const
     {
         // determine if any available targets are unconscious
-        auto const ARE_ANY_TARGETS_UNCONSCIOUS { [&]() {
-            for (auto const & NEXT_TARGET_CREATURE_PTR : pVec_OutParam)
+        const auto ARE_ANY_TARGETS_UNCONSCIOUS { [&]() {
+            for (const auto & NEXT_TARGET_CREATURE_PTR : pVec_OutParam)
             {
                 if (NEXT_TARGET_CREATURE_PTR->HasCondition(creature::Conditions::Unconscious))
                 {

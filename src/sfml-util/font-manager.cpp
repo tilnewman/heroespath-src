@@ -129,7 +129,7 @@ namespace sfml_util
 
     void FontManager::Load(const FontEnumVec_t & FONT_ENUM_VEC)
     {
-        for (auto const FONT_ENUM : FONT_ENUM_VEC)
+        for (const auto FONT_ENUM : FONT_ENUM_VEC)
         {
             Load(FONT_ENUM);
         }
@@ -147,7 +147,7 @@ namespace sfml_util
 
     void FontManager::Unload(const FontEnumVec_t & FONT_ENUM_VEC)
     {
-        for (auto const FONT_ENUM : FONT_ENUM_VEC)
+        for (const auto FONT_ENUM : FONT_ENUM_VEC)
         {
             Unload(FONT_ENUM);
         }

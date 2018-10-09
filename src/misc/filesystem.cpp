@@ -237,9 +237,9 @@ namespace misc
         std::vector<std::string> filePathStrings;
         filePathStrings.reserve(VECTOR_RESERVE_SIZE);
 
-        for (auto const & DIR_ENTRY : bfs::directory_iterator(BOOST_PATH))
+        for (const auto & DIR_ENTRY : bfs::directory_iterator(BOOST_PATH))
         {
-            auto const ENTRY_PATH { DIR_ENTRY.path() };
+            const auto ENTRY_PATH { DIR_ENTRY.path() };
 
             if (IS_RECURSIVE && bfs::is_directory(ENTRY_PATH))
             {
@@ -365,7 +365,7 @@ namespace misc
         std::vector<std::string> pathsWithoutNumbers;
         pathsWithoutNumbers.reserve(VECTOR_RESERVE_SIZE);
 
-        for (auto const & PATH_STR_ORIG : PATH_STR_VEC)
+        for (const auto & PATH_STR_ORIG : PATH_STR_VEC)
         {
             const auto PATH_STR_CLEANED { CleanPath(PATH_STR_ORIG) };
 
@@ -405,7 +405,7 @@ namespace misc
                 std::back_inserter(finalVec));
         }
 
-        for (auto const & NUM_STR_PAIR : lastNumberToPathStrMap)
+        for (const auto & NUM_STR_PAIR : lastNumberToPathStrMap)
         {
             finalVec.emplace_back(NUM_STR_PAIR.second);
         }

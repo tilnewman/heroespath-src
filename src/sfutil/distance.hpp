@@ -27,8 +27,8 @@ namespace sfutil
     template <typename T1, typename T2>
     constexpr T1 Distance(const sf::Vector2<T1> & A, const sf::Vector2<T2> & B)
     {
-        auto const DIST_HORIZ { static_cast<double>(B.x) - static_cast<double>(A.x) };
-        auto const DIST_VERT { static_cast<double>(B.y) - static_cast<double>(A.y) };
+        const auto DIST_HORIZ { static_cast<double>(B.x) - static_cast<double>(A.x) };
+        const auto DIST_VERT { static_cast<double>(B.y) - static_cast<double>(A.y) };
 
         return static_cast<T1>(std::sqrt((DIST_HORIZ * DIST_HORIZ) + (DIST_VERT * DIST_VERT)));
     }

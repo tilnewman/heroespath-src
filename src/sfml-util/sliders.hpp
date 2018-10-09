@@ -84,7 +84,7 @@ namespace sfml_util
                 if (willContinue_)
                 {
                     age_ += ADJUSTMENT * spd_;
-                    auto const NEW_VAL { static_cast<T>(0.5)
+                    const auto NEW_VAL { static_cast<T>(0.5)
                                          + (sin(std::fmod(age_, TWO_PI_)) * static_cast<T>(0.5)) };
 
                     if ((val_ < NEW_VAL) || (misc::IsRealClose(val_, NEW_VAL)))

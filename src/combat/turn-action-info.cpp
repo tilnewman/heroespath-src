@@ -66,7 +66,7 @@ namespace combat
 
         ss << ", targets=";
 
-        for (auto const & CREATURE_PTR : targetsPVec_)
+        for (const auto & CREATURE_PTR : targetsPVec_)
         {
             ss << CREATURE_PTR->Name() << ", ";
         }

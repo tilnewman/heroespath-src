@@ -112,7 +112,7 @@ namespace sfml_util
             }
             else
             {
-                auto const NEW_INDEX_F { static_cast<float>(elements_.size() - 1)
+                const auto NEW_INDEX_F { static_cast<float>(elements_.size() - 1)
                                          * PACKET_PTR->PositionRatio() };
 
                 DisplayIndex(static_cast<std::size_t>(NEW_INDEX_F));
@@ -122,7 +122,7 @@ namespace sfml_util
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override
         {
-            auto const LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
+            const auto LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
 
             auto lastDrawnLinePosVert { drawElements(target, states)
                                         + packet_.ElementSize(true).y };
@@ -142,7 +142,7 @@ namespace sfml_util
         {
             if (Empty() == false)
             {
-                auto const LAST_INDEX_TO_DRAW { LastVisibleIndex_Display() };
+                const auto LAST_INDEX_TO_DRAW { LastVisibleIndex_Display() };
 
                 for (std::size_t i(displayIndex_); i <= LAST_INDEX_TO_DRAW; ++i)
                 {
@@ -226,7 +226,7 @@ namespace sfml_util
                 }
                 else
                 {
-                    auto const MAX_FIRST_DISPLAYABLE_INDEX { MaxFirstDisplayableIndex() };
+                    const auto MAX_FIRST_DISPLAYABLE_INDEX { MaxFirstDisplayableIndex() };
                     if (NEW_INDEX >= MAX_FIRST_DISPLAYABLE_INDEX)
                     {
                         displayIndex_ = MAX_FIRST_DISPLAYABLE_INDEX;
@@ -283,7 +283,7 @@ namespace sfml_util
                         }
                         else
                         {
-                            auto const MAX_FIRST_DISPLAYABLE_INDEX { MaxFirstDisplayableIndex() };
+                            const auto MAX_FIRST_DISPLAYABLE_INDEX { MaxFirstDisplayableIndex() };
                             if (NEW_INDEX >= MAX_FIRST_DISPLAYABLE_INDEX)
                             {
                                 selectionDisplayIndex_ = MAX_FIRST_DISPLAYABLE_INDEX;
@@ -338,7 +338,7 @@ namespace sfml_util
             }
 
             const auto FOUND_ITER { std::find_if(
-                std::begin(elements_), std::end(elements_), [&](auto const & ELEMENT_UPTR) {
+                std::begin(elements_), std::end(elements_), [&](const auto & ELEMENT_UPTR) {
                     return (ELEMENT_UPTR->Element() == RESOURCE);
                 }) };
 
@@ -384,8 +384,8 @@ namespace sfml_util
                 return false;
             }
 
-            auto const FOUND_ITR { std::find_if(
-                std::begin(elements_), std::end(elements_), [&](auto const & UPTR) {
+            const auto FOUND_ITR { std::find_if(
+                std::begin(elements_), std::end(elements_), [&](const auto & UPTR) {
                     return (UPTR.get() == ELEMENT_PTR);
                 }) };
 
@@ -448,8 +448,8 @@ namespace sfml_util
                 return false;
             }
 
-            auto const FOUND_ITR { std::find_if(
-                std::begin(elements_), std::end(elements_), [&](auto const & UPTR) {
+            const auto FOUND_ITR { std::find_if(
+                std::begin(elements_), std::end(elements_), [&](const auto & UPTR) {
                     return (UPTR.get() == ELEMENT_PTR);
                 }) };
 
@@ -595,7 +595,7 @@ namespace sfml_util
             }
             else if (KEY_EVENT.code == sf::Keyboard::Up)
             {
-                auto const DID_SELECTION_CHANGE { SelectPrev() };
+                const auto DID_SELECTION_CHANGE { SelectPrev() };
                 wasHandled = DID_SELECTION_CHANGE;
 
                 if (false == willMuteAllSfx_)
@@ -605,7 +605,7 @@ namespace sfml_util
             }
             else if (KEY_EVENT.code == sf::Keyboard::Down)
             {
-                auto const DID_SELECTION_CHANGE { SelectNext() };
+                const auto DID_SELECTION_CHANGE { SelectNext() };
                 wasHandled = DID_SELECTION_CHANGE;
 
                 if (false == willMuteAllSfx_)
@@ -910,24 +910,24 @@ namespace sfml_util
                 return lastDrawnLinePosVert;
             }
 
-            auto const LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
+            const auto LIST_BOTTOM { sfutil::Bottom(entityRegion_) };
 
-            auto const SELECTION_INDEX { SelectionIndex() };
+            const auto SELECTION_INDEX { SelectionIndex() };
 
-            auto const LAST_INDEX_TO_DRAW { LastVisibleIndex_Display() };
+            const auto LAST_INDEX_TO_DRAW { LastVisibleIndex_Display() };
 
             for (std::size_t i(displayIndex_); i <= LAST_INDEX_TO_DRAW; ++i)
             {
                 ListElementPtr_t<Element_t> elementPtr { elements_.at(i).get() };
 
-                auto const ELEMENT_POS_LEFT_WITHOUT_PAD { entityRegion_.left
+                const auto ELEMENT_POS_LEFT_WITHOUT_PAD { entityRegion_.left
                                                           + packet_.ElementPad().x };
 
-                auto const ELEMENT_POS_TOP_WITH_PAD {
+                const auto ELEMENT_POS_TOP_WITH_PAD {
                     entityRegion_.top + (static_cast<float>(i) * packet_.ElementSize(true).y)
                 };
 
-                auto const ELEMENT_POS_TOP_WITHOUT_PAD { ELEMENT_POS_TOP_WITH_PAD
+                const auto ELEMENT_POS_TOP_WITHOUT_PAD { ELEMENT_POS_TOP_WITH_PAD
                                                          + packet_.ElementPad().y };
 
                 const sf::Vector2f ELEMENT_POS_WITHOUT_PAD_V { ELEMENT_POS_LEFT_WITHOUT_PAD,
@@ -985,7 +985,7 @@ namespace sfml_util
 
                 target.draw(*elementPtr, states);
 
-                auto const LINE_POS_TOP { sfutil::Bottom(ELEMENT_RECT_WITH_PAD) };
+                const auto LINE_POS_TOP { sfutil::Bottom(ELEMENT_RECT_WITH_PAD) };
 
                 if (LINE_POS_TOP < LIST_BOTTOM)
                 {

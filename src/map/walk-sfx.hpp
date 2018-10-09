@@ -54,7 +54,7 @@ namespace map
 
         sfml_util::sound_effect::Enum FindSfx(const sf::Vector2f & POSITION) const
         {
-            for (auto const & SFX_REGION : top_layers)
+            for (const auto & SFX_REGION : top_layers)
             {
                 if (SFX_REGION.region.contains(POSITION))
                 {
@@ -62,7 +62,7 @@ namespace map
                 }
             }
 
-            for (auto const & SFX_REGION : bottom_layers)
+            for (const auto & SFX_REGION : bottom_layers)
             {
                 if (SFX_REGION.region.contains(POSITION))
                 {

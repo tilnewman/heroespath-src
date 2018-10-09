@@ -26,13 +26,13 @@ namespace sfml_util
         {
             if (isSortReversed)
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return B->Element()->Name() < A->Element()->Name();
                 });
             }
             else
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return A->Element()->Name() < B->Element()->Name();
                 });
             }
@@ -45,13 +45,13 @@ namespace sfml_util
         {
             if (isSortReversed)
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return B->Element()->Price() < A->Element()->Price();
                 });
             }
             else
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return A->Element()->Price() < B->Element()->Price();
                 });
             }
@@ -64,13 +64,13 @@ namespace sfml_util
         {
             if (isSortReversed)
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return B->Element()->Weight() < A->Element()->Weight();
                 });
             }
             else
             {
-                listBox.Sort([](auto const & A, auto const & B) {
+                listBox.Sort([](const auto & A, const auto & B) {
                     return A->Element()->Weight() < B->Element()->Weight();
                 });
             }

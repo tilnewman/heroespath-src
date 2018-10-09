@@ -119,10 +119,10 @@ namespace stage
     {
         characterListUPtr_->Setup();
 
-        auto const CHARACTER_LIST_LEFT { (StageRegionWidth() * 0.5f)
+        const auto CHARACTER_LIST_LEFT { (StageRegionWidth() * 0.5f)
                                          - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const CHARACTER_LIST_TOP { StageRegionHeight()
+        const auto CHARACTER_LIST_TOP { StageRegionHeight()
                                         - characterListUPtr_->GetEntityRegion().height
                                         - bottomImage_.Region().height
                                         - sfutil::ScreenRatioToPixelsVert(0.0333f) };
@@ -215,20 +215,20 @@ namespace stage
 
         const auto VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.0333f) };
 
-        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { VERT_SPACER };
+        const auto BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { VERT_SPACER };
 
         interactRegion.left
             = MAP_REGION.left + MAP_REGION.width + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
-        auto const RIGHT_MARGIN { sfutil::ScreenRatioToPixelsHoriz(0.04f) };
+        const auto RIGHT_MARGIN { sfutil::ScreenRatioToPixelsHoriz(0.04f) };
 
         interactRegion.width = (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
 
-        auto const TOP_MARGIN { VERT_SPACER };
+        const auto TOP_MARGIN { VERT_SPACER };
 
         interactRegion.top = MAP_REGION.top + TOP_MARGIN;
 
-        auto const BOTTOM_MARGIN { TOP_MARGIN / 2.0f };
+        const auto BOTTOM_MARGIN { TOP_MARGIN / 2.0f };
 
         interactRegion.height = MAP_REGION.height - (TOP_MARGIN + BOTTOM_MARGIN);
 

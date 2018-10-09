@@ -124,7 +124,7 @@ namespace creature
             ss << ", for role" << ((rolesVec_.size() == 1) ? "" : "s") << ": ";
 
             std::ostringstream rolesSS;
-            for (auto const & NEXT_ROLE : rolesVec_)
+            for (const auto & NEXT_ROLE : rolesVec_)
             {
                 rolesSS << role::Name(NEXT_ROLE) << SEP_STR;
             }
@@ -188,7 +188,7 @@ namespace creature
             ss << "the following role" << ((rolesVec_.size() == 1) ? "" : "s") << ": ";
 
             std::ostringstream rolesSS;
-            for (auto const & NEXT_ROLE : rolesVec_)
+            for (const auto & NEXT_ROLE : rolesVec_)
             {
                 rolesSS << role::Name(NEXT_ROLE) << ", ";
             }

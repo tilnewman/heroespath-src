@@ -1878,7 +1878,7 @@ namespace creature
                 (Titles::IsValid(E)),
                 "creature::Titles::Holder::Get(enum=" << E << ")_InvalidValueError.");
 
-            auto const INDEX { static_cast<std::size_t>(E) };
+            const auto INDEX { static_cast<std::size_t>(E) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < titleUVec_.size()),
@@ -1903,7 +1903,7 @@ namespace creature
             static misc::EnumUnderlying_t titleIndex { 0 };
             if (titleIndex < Titles::Count)
             {
-                auto const NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
+                const auto NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
                 auto TITLE_PTR { Get(NEXT_ENUM) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(

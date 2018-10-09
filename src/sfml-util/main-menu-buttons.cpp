@@ -66,7 +66,7 @@ namespace sfml_util
 
         const std::string IMAGE_PATH_KEY_PREFIX("media-images-buttons-mainmenu-");
 
-        auto const LOOPSTATE_NAME { boost::algorithm::to_lower_copy(
+        const auto LOOPSTATE_NAME { boost::algorithm::to_lower_copy(
             LoopState::ToString(TRANSITION_TO)) };
 
         MouseImageInfo mouseImageInfo(

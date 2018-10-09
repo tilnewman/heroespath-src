@@ -163,7 +163,7 @@ namespace combat
 
     void CombatNode::SetRegion(const float NEW_RATIO)
     {
-        auto const ORIG_RECT { GetEntityRegion() };
+        const auto ORIG_RECT { GetEntityRegion() };
         auto newRect { ORIG_RECT };
         newRect.width *= NEW_RATIO;
         newRect.left += (ORIG_RECT.width - newRect.width) * 0.5f;
@@ -253,11 +253,11 @@ namespace combat
         UpdateImagePosition();
         SetWingImagePosition();
 
-        auto const CROSSBONES_IMAGE_POS_LEFT { (entityRegion_.left + (entityRegion_.width * 0.5f))
+        const auto CROSSBONES_IMAGE_POS_LEFT { (entityRegion_.left + (entityRegion_.width * 0.5f))
                                                - (crossBonesSprite_.getGlobalBounds().width
                                                   * 0.5f) };
 
-        auto const CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top + (entityRegion_.height * 0.5f))
+        const auto CROSSBONES_IMAGE_POS_TOP { (entityRegion_.top + (entityRegion_.height * 0.5f))
                                               - (crossBonesSprite_.getGlobalBounds().height
                                                  * 0.5f) };
 
@@ -353,7 +353,7 @@ namespace combat
 
     void CombatNode::HealthChangeTasks()
     {
-        auto const WILL_SETUP_SKULL_IMAGE { (
+        const auto WILL_SETUP_SKULL_IMAGE { (
             isPlayer_ && creaturePtr_->IsDead() && (false == willShowCrossBones_)) };
 
         if (WILL_SETUP_SKULL_IMAGE)
@@ -445,7 +445,7 @@ namespace combat
 
     void CombatNode::SetWingImagePosition()
     {
-        auto const ORIG_ORIGIN { wingSprite_.getOrigin() };
+        const auto ORIG_ORIGIN { wingSprite_.getOrigin() };
         wingSprite_.setOrigin(0.0f, 0.0f);
 
         wingSprite_.setPosition(
@@ -460,7 +460,7 @@ namespace combat
 
     void CombatNode::SetWingImageScaleAndOrigin()
     {
-        auto const WING_SCALE { (entityRegion_.height / wingSprite_.getLocalBounds().height)
+        const auto WING_SCALE { (entityRegion_.height / wingSprite_.getLocalBounds().height)
                                 * WING_IMAGE_SCALE_ };
 
         wingSprite_.setScale(WING_SCALE, WING_SCALE);
@@ -579,15 +579,15 @@ namespace combat
     void CombatNode::SelectAnimUpdate(const float SLIDER_RATIO)
     {
         // grow
-        auto const SCALE { 1.0f + (sfutil::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
+        const auto SCALE { 1.0f + (sfutil::MapByRes(0.5f, 2.5f) * SLIDER_RATIO) };
         selectAnimSprite_.setScale(SCALE, SCALE);
 
         // re-center
-        auto const HORIZ_ADJ {
+        const auto HORIZ_ADJ {
             (selectAnimSprite_.getGlobalBounds().width - sprite_.getGlobalBounds().width) * 0.5f
         };
 
-        auto const VERT_ADJ {
+        const auto VERT_ADJ {
             (selectAnimSprite_.getGlobalBounds().height - sprite_.getGlobalBounds().height) * 0.5f
         };
 
@@ -604,20 +604,20 @@ namespace combat
 
     void CombatNode::SetupHealthLines()
     {
-        auto const POS_TOP { nameText_.getPosition().y
+        const auto POS_TOP { nameText_.getPosition().y
                              + (nameText_.getGlobalBounds().height * 2.0f) };
 
-        auto const LINE_LEN_MARGIN { 0.25f * entityRegion_.width };
+        const auto LINE_LEN_MARGIN { 0.25f * entityRegion_.width };
 
-        auto const LINE_POS_LEFT { entityRegion_.left + LINE_LEN_MARGIN };
+        const auto LINE_POS_LEFT { entityRegion_.left + LINE_LEN_MARGIN };
 
-        auto const LINE_LEN { entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
+        const auto LINE_LEN { entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
 
-        auto const LINE_TICK_HEIGHT { 4.0f };
+        const auto LINE_TICK_HEIGHT { 4.0f };
 
-        auto const LINE_RATIO_RIGHT { LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
+        const auto LINE_RATIO_RIGHT { LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
 
-        auto const LINE_TOTAL_RIGHT { LINE_POS_LEFT + LINE_LEN };
+        const auto LINE_TOTAL_RIGHT { LINE_POS_LEFT + LINE_LEN };
 
         healthLines_[0].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP);
         healthLines_[1].position = sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP);

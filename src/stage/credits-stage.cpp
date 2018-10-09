@@ -73,7 +73,7 @@ namespace stage
 
     void CreditsStage::Setup()
     {
-        auto const TITLE_VERT_PAD { sfutil::ScreenRatioToPixelsVert(0.022f) };
+        const auto TITLE_VERT_PAD { sfutil::ScreenRatioToPixelsVert(0.022f) };
 
         sfutil::Fit(bpTitleSprite_, sfutil::ScreenRatiosToPixels(0.5f, 0.0f));
 

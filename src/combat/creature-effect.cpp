@@ -32,7 +32,7 @@ namespace combat
 
     bool CreatureEffect::GetWasHit() const
     {
-        for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        for (const auto & NEXT_HIT_INFO : hitInfoVec_)
         {
             if (NEXT_HIT_INFO.WasHit())
             {
@@ -45,9 +45,9 @@ namespace combat
 
     Health_t CreatureEffect::GetDamageTotal() const
     {
-        Health_t damageTotal{ 0_health };
+        Health_t damageTotal { 0_health };
 
-        for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        for (const auto & NEXT_HIT_INFO : hitInfoVec_)
         {
             damageTotal += NEXT_HIT_INFO.Damage();
         }
@@ -59,9 +59,9 @@ namespace combat
     {
         creature::CondEnumVec_t conditionsVec;
 
-        for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        for (const auto & NEXT_HIT_INFO : hitInfoVec_)
         {
-            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.CondsAdded() };
+            const auto NEXT_CONDITION_VEC { NEXT_HIT_INFO.CondsAdded() };
 
             if (NEXT_CONDITION_VEC.empty() == false)
             {
@@ -77,9 +77,9 @@ namespace combat
     {
         creature::CondEnumVec_t conditionsVec;
 
-        for (auto const & NEXT_HIT_INFO : hitInfoVec_)
+        for (const auto & NEXT_HIT_INFO : hitInfoVec_)
         {
-            const auto NEXT_CONDITION_VEC{ NEXT_HIT_INFO.CondsRemoved() };
+            const auto NEXT_CONDITION_VEC { NEXT_HIT_INFO.CondsRemoved() };
 
             if (NEXT_CONDITION_VEC.empty() == false)
             {
@@ -93,19 +93,19 @@ namespace combat
 
     bool CreatureEffect::GetAllCondsAddedContains(const creature::Conditions::Enum E) const
     {
-        const auto VEC{ GetAllCondsAdded() };
+        const auto VEC { GetAllCondsAdded() };
         return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
     }
 
     bool CreatureEffect::GetAllCondsRemovedContains(const creature::Conditions::Enum E) const
     {
-        const auto VEC{ GetAllCondsRemoved() };
+        const auto VEC { GetAllCondsRemoved() };
         return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
     }
 
     bool CreatureEffect::AllCondsAddedRemove(const creature::Conditions::Enum E)
     {
-        auto wasCondRemoved{ false };
+        auto wasCondRemoved { false };
 
         for (auto & nextHitInfo : hitInfoVec_)
         {
@@ -120,7 +120,7 @@ namespace combat
 
     bool CreatureEffect::AllCondsRemovedRemove(const creature::Conditions::Enum E)
     {
-        auto wasCondRemoved{ false };
+        auto wasCondRemoved { false };
 
         for (auto & nextHitInfo : hitInfoVec_)
         {

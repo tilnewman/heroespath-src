@@ -95,11 +95,11 @@ namespace creature
 
                 // find sum of all chances of this type, and the item with the highest chance
                 T highestChanceItem(T::Count);
-                auto highestChance{ 0.0f };
-                auto chanceTotal{ 0.0f };
-                for (auto const & NEXT_CHANCE_PAIR : MAP)
+                auto highestChance { 0.0f };
+                auto chanceTotal { 0.0f };
+                for (const auto & NEXT_CHANCE_PAIR : MAP)
                 {
-                    auto nextChanceVal{ 0.0f };
+                    auto nextChanceVal { 0.0f };
                     NEXT_CHANCE_PAIR.second.num_owned_map.Find(1, nextChanceVal);
 
                     chanceTotal += nextChanceVal;
@@ -116,13 +116,13 @@ namespace creature
                     return std::make_pair(T::Count, 0.0f);
                 }
 
-                auto const RAND{ misc::random::Float(0.0f, chanceTotal) };
+                const auto RAND { misc::random::Float(0.0f, chanceTotal) };
 
                 // random selection of one of the items
-                auto chanceCumulative{ 0.0f };
-                for (auto const & NEXT_CHANCE_PAIR : MAP)
+                auto chanceCumulative { 0.0f };
+                for (const auto & NEXT_CHANCE_PAIR : MAP)
                 {
-                    auto nextChanceVal{ 0.0f };
+                    auto nextChanceVal { 0.0f };
                     NEXT_CHANCE_PAIR.second.num_owned_map.Find(1, nextChanceVal);
 
                     chanceCumulative += nextChanceVal;

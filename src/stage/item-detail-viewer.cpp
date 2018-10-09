@@ -72,11 +72,11 @@ namespace stage
 
     void ItemDetailViewer::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const PRE_IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
-        auto const IS_FINISHED_MOVING { slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
-        auto const IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
+        const auto PRE_IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
+        const auto IS_FINISHED_MOVING { slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
+        const auto IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
 
-        auto const PROGRESS_RATIO { (
+        const auto PROGRESS_RATIO { (
             (IS_MOVING_TOWARD) ? slider_.ProgressRatio() : (1.0f - slider_.ProgressRatio())) };
 
         if (slider_.ProgressRatio() > 0.1f)
@@ -135,7 +135,7 @@ namespace stage
 
     void ItemDetailViewer::SetupBackgroundQuadColors(const float PROGRESS_RATIO)
     {
-        auto const BACKGROUND_COLOR { sf::Color(
+        const auto BACKGROUND_COLOR { sf::Color(
             0, 0, 0, static_cast<sf::Uint8>(PROGRESS_RATIO * 255.0f)) };
 
         backgroundQuads_[0].color = BACKGROUND_COLOR;
@@ -146,29 +146,29 @@ namespace stage
 
     void ItemDetailViewer::SetupBackgroundQuadPositions(const float RATIO)
     {
-        auto const SOURCE_LEFT { sourceRect.left };
-        auto const SOURCE_RIGHT { sourceRect.left + sourceRect.width };
-        auto const SOURCE_TOP { sourceRect.top };
-        auto const SOURCE_BOT { sourceRect.top + sourceRect.height };
+        const auto SOURCE_LEFT { sourceRect.left };
+        const auto SOURCE_RIGHT { sourceRect.left + sourceRect.width };
+        const auto SOURCE_TOP { sourceRect.top };
+        const auto SOURCE_BOT { sourceRect.top + sourceRect.height };
 
-        auto const TARGET_LEFT { TARGET_RECT_.left };
-        auto const TARGET_RIGHT { TARGET_RECT_.left + TARGET_RECT_.width };
-        auto const TARGET_TOP { TARGET_RECT_.top };
-        auto const TARGET_BOT { TARGET_RECT_.top + TARGET_RECT_.height };
+        const auto TARGET_LEFT { TARGET_RECT_.left };
+        const auto TARGET_RIGHT { TARGET_RECT_.left + TARGET_RECT_.width };
+        const auto TARGET_TOP { TARGET_RECT_.top };
+        const auto TARGET_BOT { TARGET_RECT_.top + TARGET_RECT_.height };
 
-        auto const LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
-        auto const LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
-        auto const LEFT { ((SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS) };
+        const auto LEFT_MORE { SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        const auto LEFT_LESS { SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
+        const auto LEFT { ((SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS) };
 
-        auto const RIGHT_MORE { SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * RATIO) };
-        auto const RIGHT_LESS { SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * RATIO) };
-        auto const RIGHT { (SOURCE_RIGHT > TARGET_RIGHT) ? RIGHT_MORE : RIGHT_LESS };
+        const auto RIGHT_MORE { SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * RATIO) };
+        const auto RIGHT_LESS { SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * RATIO) };
+        const auto RIGHT { (SOURCE_RIGHT > TARGET_RIGHT) ? RIGHT_MORE : RIGHT_LESS };
 
-        auto const TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+        const auto TOP { SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
 
-        auto const BOT_MORE { SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * RATIO) };
-        auto const BOT_LESS { SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * RATIO) };
-        auto const BOT { (SOURCE_BOT > TARGET_BOT) ? BOT_MORE : BOT_LESS };
+        const auto BOT_MORE { SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * RATIO) };
+        const auto BOT_LESS { SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * RATIO) };
+        const auto BOT { (SOURCE_BOT > TARGET_BOT) ? BOT_MORE : BOT_LESS };
 
         backgroundQuads_[0].position = sf::Vector2f(LEFT, TOP);
         backgroundQuads_[1].position = sf::Vector2f(RIGHT, TOP);
@@ -207,7 +207,7 @@ namespace stage
             return;
         }
 
-        auto const ITEM_PTR { ITEM_PTR_OPT.value() };
+        const auto ITEM_PTR { ITEM_PTR_OPT.value() };
 
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n" << ITEM_PTR->Desc() << "\n\n";
@@ -246,16 +246,16 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Center);
 
-        auto const TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
+        const auto TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
 
-        auto const TEXT_TOP { sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
+        const auto TEXT_TOP { sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
                               + INNER_SPACER_ };
 
-        auto const TEXT_WIDTH { TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
+        const auto TEXT_WIDTH { TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
 
-        auto const SPRITE_BOTTOM { sprite_.getPosition().y + sprite_.getGlobalBounds().height };
+        const auto SPRITE_BOTTOM { sprite_.getPosition().y + sprite_.getGlobalBounds().height };
 
-        auto const TEXT_HEIGHT { (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
+        const auto TEXT_HEIGHT { (TARGET_RECT_.height - SPRITE_BOTTOM) - DOUBLE_INNER_SPACER_ };
 
         const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };
 

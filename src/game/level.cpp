@@ -40,7 +40,7 @@ namespace game
 
     bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
     {
-        auto isLocked{ false };
+        auto isLocked { false };
         doorLockMap_.Find(LEVEL, isLocked);
         return isLocked;
     }
@@ -82,9 +82,9 @@ namespace game
     void Level::CreateRandomNPCs()
     {
         NpcFactory npcFactory;
-        for (auto const & NPC_PLACEHOLDER : randomNPCPlaceholders_)
+        for (const auto & NPC_PLACEHOLDER : randomNPCPlaceholders_)
         {
-            for (auto const & NPC_PTR : npcFactory.Make(NPC_PLACEHOLDER))
+            for (const auto & NPC_PTR : npcFactory.Make(NPC_PLACEHOLDER))
             {
                 AddRandomNpc(NPC_PTR);
             }

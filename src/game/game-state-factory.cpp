@@ -96,7 +96,7 @@ namespace game
     {
         GameStatePVec_t gameStatePVec;
 
-        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+        for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
                  misc::filesystem::AppendPathsToCurrentThenClean(SAVED_HEROESPATH_DIR_NAME_),
                  SAVED_HEROESPATH_FILE_NAME_,
@@ -145,13 +145,13 @@ namespace game
 
         creature::CreatureFactory creatureFactory;
 
-        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+        for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
                  misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
                  "",
                  UNPLAYED_CHAR_FILE_EXT_))
         {
-            auto const CREATURE_PTR { creatureFactory.MakeDefaultForDeserialization() };
+            const auto CREATURE_PTR { creatureFactory.MakeDefaultForDeserialization() };
 
             try
             {
@@ -191,7 +191,7 @@ namespace game
     void GameStateFactory::DeleteUnplayedCharacterFile(
         const creature::CreaturePtr_t CHAR_TO_DELETE_PTR) const
     {
-        for (auto const & FILE_PATH_STR : misc::filesystem::FindFiles(
+        for (const auto & FILE_PATH_STR : misc::filesystem::FindFiles(
                  false,
                  misc::filesystem::AppendPathsToCurrentThenClean(UNPLAYED_CHAR_DIR_NAME_),
                  "",
@@ -236,7 +236,7 @@ namespace game
         const std::string & FILE_STR,
         const std::string & EXT_STR) const
     {
-        auto const DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean(DIR_STR) };
+        const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean(DIR_STR) };
 
         auto makeFunctionDescStr { [&]() {
             std::ostringstream ss;
@@ -271,7 +271,7 @@ namespace game
         }
 
         // find the next available filename to create and save to
-        auto const NEXT_AVAILABLE_FILE_PATH_STR {
+        const auto NEXT_AVAILABLE_FILE_PATH_STR {
             misc::filesystem::FindFirstAvailableNumberedFilenamePath(
                 DIR_PATH_STR, FILE_STR, EXT_STR)
         };

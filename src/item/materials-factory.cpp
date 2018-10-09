@@ -113,11 +113,11 @@ namespace item
             LimitForNamedType(THIN_PROFILE, NAMED_TYPE, materialPairs);
         }
 
-        auto const MATERIAL_PAIRS_COPY { materialPairs };
+        const auto MATERIAL_PAIRS_COPY { materialPairs };
 
         try
         {
-            auto const ALLOW_INVALID_MATERIALS_FOR_ITEMS_WITH_INVERTED_MATERIALS { (
+            const auto ALLOW_INVALID_MATERIALS_FOR_ITEMS_WITH_INVERTED_MATERIALS { (
                 THIN_PROFILE.NameMaterialType() == name_material_type::Handle) };
 
             // even though set_types and named_types are magical, they are very specific about
@@ -134,7 +134,7 @@ namespace item
                << THIN_PROFILE.ToString() << "}, named_type=" << named_type::ToString(NAMED_TYPE)
                << ", set_type=" << set_type::ToString(SET_TYPE) << ")";
 
-            for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
+            for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
                 ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
                    << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
@@ -152,11 +152,11 @@ namespace item
     {
         MaterialPairVec_t materialPairs { MakeForMiscInner(MISC_TYPE) };
 
-        auto const MATERIAL_PAIRS_COPY { materialPairs };
+        const auto MATERIAL_PAIRS_COPY { materialPairs };
 
         try
         {
-            auto const ALLOW_INVALID_MATERIALS_FOR_SPECIAL_ITEM {
+            const auto ALLOW_INVALID_MATERIALS_FOR_SPECIAL_ITEM {
                 (MISC_TYPE == misc_type::ExoticGoldenGong) || (MISC_TYPE == misc_type::MadRatJuju)
                 || (MISC_TYPE == misc_type::MagnifyingGlass)
                 || (MISC_TYPE == misc_type::RoyalScoutSpyglass)
@@ -173,7 +173,7 @@ namespace item
                << misc_type::ToString(MISC_TYPE) << ", is_magical=" << std::boolalpha << IS_MAGICAL
                << ")";
 
-            for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
+            for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
                 ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
                    << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
@@ -195,71 +195,43 @@ namespace item
             {
                 return MakePairs({ material::Hair }, { material::Spirit });
             }
-            case misc_type::Crumhorn:
-            {
-                return MakePairs(material::Bone);
+            case misc_type::Crumhorn: { return MakePairs(material::Bone);
             }
-            case misc_type::DevilHorn:
-            {
-                return MakePairs({ material::Horn }, { material::Spirit });
+            case misc_type::DevilHorn: { return MakePairs({ material::Horn }, { material::Spirit });
             }
-            case misc_type::GolemFinger:
-            {
-                return MakePairs(material::Stone);
+            case misc_type::GolemFinger: { return MakePairs(material::Stone);
             }
-            case misc_type::HurdyGurdy:
-            {
-                return MakePairs({ material::Wood }, { material::Ruby });
+            case misc_type::HurdyGurdy: { return MakePairs({ material::Wood }, { material::Ruby });
             }
-            case misc_type::Icicle:
-            {
-                return MakePairs(material::Glass);
+            case misc_type::Icicle: { return MakePairs(material::Glass);
             }
-            case misc_type::LitchHand:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::LitchHand: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::Lyre:
-            {
-                return MakePairs({ material::Gold }, { material::Diamond });
+            case misc_type::Lyre: { return MakePairs({ material::Gold }, { material::Diamond });
             }
-            case misc_type::MummyHand:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::MummyHand: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::PetrifiedSnake:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::PetrifiedSnake: { return MakePairs(material::DriedFlesh);
             }
             case misc_type::PipeAndTabor:
             {
                 return MakePairs({ material::Wood }, { material::Diamond });
             }
-            case misc_type::Recorder:
-            {
-                return MakePairs({ material::Wood }, { material::Pearl });
+            case misc_type::Recorder: { return MakePairs({ material::Wood }, { material::Pearl });
             }
             case misc_type::UnicornHorn:
             {
                 return MakePairs({ material::Horn }, { material::Spirit });
             }
-            case misc_type::Viol:
-            {
-                return MakePairs({ material::Wood }, { material::Obsidian });
+            case misc_type::Viol: { return MakePairs({ material::Wood }, { material::Obsidian });
             }
 
             // unique items, so again, be specific
-            case misc_type::BasiliskTonge:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::BasiliskTonge: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::BerserkersBeard:
-            {
-                return MakePairs(material::Hair);
+            case misc_type::BerserkersBeard: { return MakePairs(material::Hair);
             }
-            case misc_type::BishopsHanky:
-            {
-                return MakePairs(material::Cloth);
+            case misc_type::BishopsHanky: { return MakePairs(material::Cloth);
             }
             case misc_type::BleedingTrophy:
             {
@@ -273,9 +245,7 @@ namespace item
             {
                 return MakePairs({ material::Glass }, { material::Spirit });
             }
-            case misc_type::BronzeTroll:
-            {
-                return MakePairs(material::Bronze);
+            case misc_type::BronzeTroll: { return MakePairs(material::Bronze);
             }
             case misc_type::Brooch_Crown:
             case misc_type::Brooch_Feather:
@@ -287,9 +257,7 @@ namespace item
                 return MakePairs(
                     { material::Bronze, material::Silver, material::Gold, material::Platinum });
             }
-            case misc_type::BurialShroud:
-            {
-                return MakePairs(material::Cloth);
+            case misc_type::BurialShroud: { return MakePairs(material::Cloth);
             }
             case misc_type::CapeCommanders:
             {
@@ -316,29 +284,17 @@ namespace item
                                    material::Platinum,
                                    material::Jade });
             }
-            case misc_type::ChimeraBone:
-            {
-                return MakePairs(material::Bone);
+            case misc_type::ChimeraBone: { return MakePairs(material::Bone);
             }
-            case misc_type::CobraTooth:
-            {
-                return MakePairs(material::Tooth);
+            case misc_type::CobraTooth: { return MakePairs(material::Tooth);
             }
-            case misc_type::CrystalChimes:
-            {
-                return MakePairs(fancyJewel_);
+            case misc_type::CrystalChimes: { return MakePairs(fancyJewel_);
             }
-            case misc_type::DemonDiary:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::DemonDiary: { return MakePairs(material::Paper);
             }
-            case misc_type::DoveBloodVial:
-            {
-                return MakePairs(material::Glass);
+            case misc_type::DoveBloodVial: { return MakePairs(material::Glass);
             }
-            case misc_type::DragonToothWhistle:
-            {
-                return MakePairs(material::Tooth);
+            case misc_type::DragonToothWhistle: { return MakePairs(material::Tooth);
             }
             case misc_type::DriedFrog:
             case misc_type::DriedGecko:
@@ -346,13 +302,9 @@ namespace item
             case misc_type::DriedLizard:
             case misc_type::DriedSalamander:
             case misc_type::DriedSkink:
-            case misc_type::DriedToad:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::DriedToad: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::DruidLeaf:
-            {
-                return MakePairs(material::Plant);
+            case misc_type::DruidLeaf: { return MakePairs(material::Plant);
             }
             case misc_type::EvilRabbitsFoot:
             {
@@ -362,69 +314,39 @@ namespace item
             {
                 return MakePairs({ material::Gold }, { material::Wood });
             }
-            case misc_type::EyeCyclops:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::EyeCyclops: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::EyeGiantOwl:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::EyeGiantOwl: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::EyeHawk:
-            {
-                return MakePairs(material::Silver);
+            case misc_type::EyeHawk: { return MakePairs(material::Silver);
             }
-            case misc_type::FlagFanatics:
-            {
-                return MakePairs(material::Hide);
+            case misc_type::FlagFanatics: { return MakePairs(material::Hide);
             }
-            case misc_type::FlagRegalCaptains:
-            {
-                return MakePairs(material::Silk);
+            case misc_type::FlagRegalCaptains: { return MakePairs(material::Silk);
             }
-            case misc_type::FlagTribal:
-            {
-                return MakePairs(material::Hide);
+            case misc_type::FlagTribal: { return MakePairs(material::Hide);
             }
-            case misc_type::FriarsChronicle:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::FriarsChronicle: { return MakePairs(material::Paper);
             }
-            case misc_type::FuneralRecord:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::FuneralRecord: { return MakePairs(material::Paper);
             }
             case misc_type::GhostSheet:
             {
                 return MakePairs({ material::Cloth }, { material::Blood });
             }
-            case misc_type::GlassCat:
-            {
-                return MakePairs(material::Glass);
+            case misc_type::GlassCat: { return MakePairs(material::Glass);
             }
-            case misc_type::GriffinFeather:
-            {
-                return MakePairs(material::Feather);
+            case misc_type::GriffinFeather: { return MakePairs(material::Feather);
             }
-            case misc_type::HangmansNoose:
-            {
-                return MakePairs(material::Rope);
+            case misc_type::HangmansNoose: { return MakePairs(material::Rope);
             }
-            case misc_type::HobgoblinNose:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::HobgoblinNose: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::HolyEpic:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::HolyEpic: { return MakePairs(material::Paper);
             }
-            case misc_type::HornOfTheHorde:
-            {
-                return MakePairs(material::Bronze);
+            case misc_type::HornOfTheHorde: { return MakePairs(material::Bronze);
             }
-            case misc_type::ImpTail:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::ImpTail: { return MakePairs(material::DriedFlesh);
             }
             case misc_type::IslanderHeaddress:
             {
@@ -435,17 +357,13 @@ namespace item
                 return MakePairs(
                     { material::Bronze, material::Silver, material::Gold }, fancyJewel_);
             }
-            case misc_type::JeweledHandbag:
-            {
-                return MakePairs({ material::Silk }, fancyJewel_);
+            case misc_type::JeweledHandbag: { return MakePairs({ material::Silk }, fancyJewel_);
             }
             case misc_type::JeweledPrincessVeil:
             {
                 return MakePairs({ material::Silver }, fancyJewel_);
             }
-            case misc_type::LastRitesScroll:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::LastRitesScroll: { return MakePairs(material::Paper);
             }
             case misc_type::MacabreManuscript:
             {
@@ -455,9 +373,7 @@ namespace item
             {
                 return MakePairs({ material::Bronze }, { material::Pearl });
             }
-            case misc_type::MagicHorseshoe:
-            {
-                return MakePairs(material::Iron);
+            case misc_type::MagicHorseshoe: { return MakePairs(material::Iron);
             }
             case misc_type::MagnifyingGlass:
             {
@@ -481,30 +397,20 @@ namespace item
             {
                 return MakePairs({ material::Wood }, { material::Obsidian });
             }
-            case misc_type::MaskRascal:
-            {
-                return MakePairs(material::Wood);
+            case misc_type::MaskRascal: { return MakePairs(material::Wood);
             }
-            case misc_type::MinotaurHide:
-            {
-                return MakePairs({ material::Hide }, { material::Fur });
+            case misc_type::MinotaurHide: { return MakePairs({ material::Hide }, { material::Fur });
             }
-            case misc_type::MortuaryOrnament:
-            {
-                return MakePairs(material::Bronze);
+            case misc_type::MortuaryOrnament: { return MakePairs(material::Bronze);
             }
             case misc_type::NecklaceJeweledAnkh:
             {
                 return MakePairs(
                     { material::Stone, material::Bone, material::Obsidian }, fancyJewel_);
             }
-            case misc_type::NecklaceSharkTooth:
-            {
-                return MakePairs(material::Tooth);
+            case misc_type::NecklaceSharkTooth: { return MakePairs(material::Tooth);
             }
-            case misc_type::NecklaceVampiresTooth:
-            {
-                return MakePairs(material::Tooth);
+            case misc_type::NecklaceVampiresTooth: { return MakePairs(material::Tooth);
             }
             case misc_type::PantherPaw:
             {
@@ -523,41 +429,25 @@ namespace item
                                    material::Gold,
                                    material::Platinum });
             }
-            case misc_type::PixieBell:
-            {
-                return MakePairs(material::Silver);
+            case misc_type::PixieBell: { return MakePairs(material::Silver);
             }
-            case misc_type::RattlesnakeTail:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::RattlesnakeTail: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::RavenClaw:
-            {
-                return MakePairs(material::Claw);
+            case misc_type::RavenClaw: { return MakePairs(material::Claw);
             }
             case misc_type::ReaperScythe:
             {
                 return MakePairs({ material::Wood }, { material::Steel });
             }
-            case misc_type::RequiemRegister:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::RequiemRegister: { return MakePairs(material::Paper);
             }
-            case misc_type::RingHobo:
-            {
-                return MakePairs(material::Tin);
+            case misc_type::RingHobo: { return MakePairs(material::Tin);
             }
-            case misc_type::RingMendicant:
-            {
-                return MakePairs(material::Iron);
+            case misc_type::RingMendicant: { return MakePairs(material::Iron);
             }
-            case misc_type::RingMonk:
-            {
-                return MakePairs(material::Silver);
+            case misc_type::RingMonk: { return MakePairs(material::Silver);
             }
-            case misc_type::RingPriest:
-            {
-                return MakePairs({ material::Gold }, { material::Pearl });
+            case misc_type::RingPriest: { return MakePairs({ material::Gold }, { material::Pearl });
             }
             case misc_type::RoyalScoutSpyglass:
             {
@@ -567,85 +457,49 @@ namespace item
             {
                 return MakePairs({ material::Silver }, { material::Pearl });
             }
-            case misc_type::SaintsJournal:
-            {
-                return MakePairs(material::Paper);
+            case misc_type::SaintsJournal: { return MakePairs(material::Paper);
             }
             case misc_type::SanguineRelic:
             {
                 return MakePairs({ material::Bronze }, { material::Blood });
             }
-            case misc_type::ScoundrelSack:
-            {
-                return MakePairs(material::Leather);
+            case misc_type::ScoundrelSack: { return MakePairs(material::Leather);
             }
             case misc_type::SepultureDecoration:
             {
                 return MakePairs({ material::Wood }, { material::Bronze });
             }
-            case misc_type::ShadeCloak:
-            {
-                return MakePairs(material::Cloth);
+            case misc_type::ShadeCloak: { return MakePairs(material::Cloth);
             }
-            case misc_type::ShamanRainmaker:
-            {
-                return MakePairs(material::Wood);
+            case misc_type::ShamanRainmaker: { return MakePairs(material::Wood);
             }
-            case misc_type::SirenConch:
-            {
-                return MakePairs(material::Jade);
+            case misc_type::SirenConch: { return MakePairs(material::Jade);
             }
-            case misc_type::SpecterChains:
-            {
-                return MakePairs(material::Iron);
+            case misc_type::SpecterChains: { return MakePairs(material::Iron);
             }
-            case misc_type::SpecterRobe:
-            {
-                return MakePairs(material::Cloth);
+            case misc_type::SpecterRobe: { return MakePairs(material::Cloth);
             }
-            case misc_type::SpiderEggs:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::SpiderEggs: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::SprintersLegtie:
-            {
-                return MakePairs(material::Leather);
+            case misc_type::SprintersLegtie: { return MakePairs(material::Leather);
             }
-            case misc_type::SwindlersBag:
-            {
-                return MakePairs(material::Leather);
+            case misc_type::SwindlersBag: { return MakePairs(material::Leather);
             }
-            case misc_type::TricksterPouch:
-            {
-                return MakePairs(material::Leather);
+            case misc_type::TricksterPouch: { return MakePairs(material::Leather);
             }
-            case misc_type::TuningFork:
-            {
-                return MakePairs(material::Silver);
+            case misc_type::TuningFork: { return MakePairs(material::Silver);
             }
-            case misc_type::TurtleShell:
-            {
-                return MakePairs(material::Bone);
+            case misc_type::TurtleShell: { return MakePairs(material::Bone);
             }
-            case misc_type::VultureGizzard:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::VultureGizzard: { return MakePairs(material::DriedFlesh);
             }
-            case misc_type::WarhorseMarionette:
-            {
-                return MakePairs(material::Wood);
+            case misc_type::WarhorseMarionette: { return MakePairs(material::Wood);
             }
-            case misc_type::WarTrumpet:
-            {
-                return MakePairs(material::Silver);
+            case misc_type::WarTrumpet: { return MakePairs(material::Silver);
             }
-            case misc_type::WeaselTotem:
-            {
-                return MakePairs(material::Wood);
+            case misc_type::WeaselTotem: { return MakePairs(material::Wood);
             }
-            case misc_type::WolfenFur:
-            {
-                return MakePairs(material::Fur);
+            case misc_type::WolfenFur: { return MakePairs(material::Fur);
             }
             case misc_type::WraithTalisman:
             {
@@ -653,9 +507,7 @@ namespace item
             }
 
             // standalone items
-            case misc_type::Bust:
-            {
-                return MakePairs({ material::Stone }, nonFleshEyesWithNothing_);
+            case misc_type::Bust: { return MakePairs({ material::Stone }, nonFleshEyesWithNothing_);
             }
             case misc_type::Doll:
             {
@@ -690,9 +542,7 @@ namespace item
                               material::Nothing }));
             }
             case misc_type::Egg:
-            case misc_type::Embryo:
-            {
-                return MakePairs(material::DriedFlesh);
+            case misc_type::Embryo: { return MakePairs(material::DriedFlesh);
             }
             case misc_type::FigurineBlessed:
             {
@@ -772,13 +622,9 @@ namespace item
                       material::Glass },
                     Combine(fancyJewel_, fancyTribal_, { material::Nothing }));
             }
-            case misc_type::Seeds:
-            {
-                return MakePairs(material::Plant);
+            case misc_type::Seeds: { return MakePairs(material::Plant);
             }
-            case misc_type::Shard:
-            {
-                return MakePairs(fancyJewel_);
+            case misc_type::Shard: { return MakePairs(fancyJewel_);
             }
             case misc_type::Staff:
             {
@@ -821,9 +667,7 @@ namespace item
             }
             case misc_type::Not:
             case misc_type::Count:
-            default:
-            {
-                return {};
+            default: { return {};
             }
         }
     }
@@ -982,7 +826,7 @@ namespace item
         {
             if (THIN_PROFILE.WeaponInfo().IsKnife() || THIN_PROFILE.WeaponInfo().IsDagger())
             {
-                for (auto const & MATERIAL_PAIR : MakePairs(Combine(
+                for (const auto & MATERIAL_PAIR : MakePairs(Combine(
                          metal_,
                          fancyJewel_,
                          { material::Obsidian,
@@ -998,7 +842,7 @@ namespace item
                 THIN_PROFILE.WeaponInfo().IsSpear() || THIN_PROFILE.WeaponInfo().IsStaff()
                 || THIN_PROFILE.WeaponInfo().IsQuarterstaff())
             {
-                for (auto const & MATERIAL_PAIR : MakePairs({ material::Wood,
+                for (const auto & MATERIAL_PAIR : MakePairs({ material::Wood,
                                                               material::Bronze,
                                                               material::Iron,
                                                               material::Jade,
@@ -1011,7 +855,7 @@ namespace item
                 (THIN_PROFILE.WeaponInfo().SwordType() == weapon::sword_type::Falcata)
                 || (THIN_PROFILE.WeaponInfo().ClubType() == weapon::club_type::Mace))
             {
-                for (auto const & MATERIAL_PAIR : MakePairs(
+                for (const auto & MATERIAL_PAIR : MakePairs(
                          { material::Bronze, material::Jade, material::Iron, material::Platinum }))
                 {
                     materialPairs.emplace_back(MATERIAL_PAIR);
@@ -1019,7 +863,7 @@ namespace item
             }
             else if (THIN_PROFILE.WeaponInfo().IsBlowpipe())
             {
-                for (auto const & MATERIAL_PAIR :
+                for (const auto & MATERIAL_PAIR :
                      MakePairs({ material::Bronze, material::Jade, material::Iron }))
                 {
                     materialPairs.emplace_back(MATERIAL_PAIR);
@@ -1238,7 +1082,7 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         MaterialPairVec_t & materialPairs) const
     {
-        auto const MATERIAL_PAIRS_COPY { materialPairs };
+        const auto MATERIAL_PAIRS_COPY { materialPairs };
 
         enum class WhichMaterial
         {
@@ -1259,7 +1103,7 @@ namespace item
                 std::remove_if(
                     std::begin(materialPairs),
                     std::end(materialPairs),
-                    [&](auto const MATERIAL_PAIR) {
+                    [&](const auto MATERIAL_PAIR) {
                         return (
                             (std::find(
                                  std::begin(MATERIALS_TO_KEEP),
@@ -1783,9 +1627,7 @@ namespace item
             }
             case named_type::Not:
             case named_type::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -1796,7 +1638,7 @@ namespace item
                << named_type::ToString(NAMED_TYPE) << ", thin_profile={" << THIN_PROFILE.ToString()
                << "}) resulted in no materials.  Original materials:";
 
-            for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
+            for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS_COPY)
             {
                 ss << "\n(" << material::ToString(MATERIAL_PAIR.first) << ", "
                    << material::ToString(MATERIAL_PAIR.second) << ")\t" << std::boolalpha
@@ -2431,9 +2273,7 @@ namespace item
 
             case set_type::Not:
             case set_type::Count:
-            default:
-            {
-                break;
+            default: { break;
             }
         }
 
@@ -2442,8 +2282,8 @@ namespace item
 
     bool MaterialFactory::IsCombinationValid(const MaterialPair_t & MATERIAL_PAIR) const
     {
-        auto const PRIMARY { MATERIAL_PAIR.first };
-        auto const SECONDARY { MATERIAL_PAIR.second };
+        const auto PRIMARY { MATERIAL_PAIR.first };
+        const auto SECONDARY { MATERIAL_PAIR.second };
 
         if (material::IsSolid(PRIMARY) == false)
         {
@@ -2528,12 +2368,12 @@ namespace item
     {
         MaterialPairVec_t materialPairs;
 
-        auto const FINAL_SECONDARIES { (
+        const auto FINAL_SECONDARIES { (
             (ORIG_SECONDARIES.empty()) ? MaterialVec_t { material::Nothing } : ORIG_SECONDARIES) };
 
-        for (auto const MATERIAL_PRIMARY : Combine(PRIMARIES))
+        for (const auto MATERIAL_PRIMARY : Combine(PRIMARIES))
         {
-            for (auto const MATERIAL_SECONDARY : Combine(FINAL_SECONDARIES))
+            for (const auto MATERIAL_SECONDARY : Combine(FINAL_SECONDARIES))
             {
                 if (MATERIAL_PRIMARY != MATERIAL_SECONDARY)
                 {
@@ -2568,9 +2408,9 @@ namespace item
         bool hasPrimarySteel { false };
         bool hasPrimarySilverOrGold { false };
         material::Enum onlyPrimary { MATERIAL_PAIRS.front().first };
-        for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS)
+        for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS)
         {
-            auto const PRIMARY { MATERIAL_PAIR.first };
+            const auto PRIMARY { MATERIAL_PAIR.first };
             if (PRIMARY == material::Leather)
             {
                 hasPrimaryLeather = true;
@@ -2599,7 +2439,7 @@ namespace item
             }
         }
 
-        for (auto const & MATERIAL_PAIR : MATERIAL_PAIRS)
+        for (const auto & MATERIAL_PAIR : MATERIAL_PAIRS)
         {
             if (onlyPrimary != material::Nothing)
             {
@@ -2639,10 +2479,10 @@ namespace item
             reducedMaterialPairs.emplace_back(MATERIAL_PAIR);
         }
 
-        auto const HAS_SECONDARY_RIGID_NONWOOD { std::find_if(
+        const auto HAS_SECONDARY_RIGID_NONWOOD { std::find_if(
                                                      std::begin(reducedMaterialPairs),
                                                      std::end(reducedMaterialPairs),
-                                                     [](auto const & MATERIAL_PAIR) {
+                                                     [](const auto & MATERIAL_PAIR) {
                                                          return (
                                                              material::IsRigid(MATERIAL_PAIR.second)
                                                              && (MATERIAL_PAIR.second
@@ -2656,17 +2496,17 @@ namespace item
                 std::remove_if(
                     std::begin(reducedMaterialPairs),
                     std::end(reducedMaterialPairs),
-                    [](auto const & MATERIAL_PAIR) {
+                    [](const auto & MATERIAL_PAIR) {
                         return (MATERIAL_PAIR.second == material::Wood);
                     }),
                 std::end(reducedMaterialPairs));
         }
 
-        auto const HAS_SECONDARY_RIGID_NOT_BRONZE_TIN_IRON {
+        const auto HAS_SECONDARY_RIGID_NOT_BRONZE_TIN_IRON {
             std::find_if(
                 std::begin(reducedMaterialPairs),
                 std::end(reducedMaterialPairs),
-                [](auto const & MATERIAL_PAIR) {
+                [](const auto & MATERIAL_PAIR) {
                     return (
                         material::IsRigid(MATERIAL_PAIR.second)
                         && ((MATERIAL_PAIR.second != material::Tin)
@@ -2682,7 +2522,7 @@ namespace item
                 std::remove_if(
                     std::begin(reducedMaterialPairs),
                     std::end(reducedMaterialPairs),
-                    [](auto const & MATERIAL_PAIR) {
+                    [](const auto & MATERIAL_PAIR) {
                         return (
                             material::IsRigid(MATERIAL_PAIR.second)
                             && ((MATERIAL_PAIR.second == material::Tin)
@@ -2718,7 +2558,7 @@ namespace item
                 std::remove_if(
                     std::begin(materialPairs),
                     std::end(materialPairs),
-                    [&](auto const & MATERIAL_PAIR) {
+                    [&](const auto & MATERIAL_PAIR) {
                         return (IsCombinationValid(MATERIAL_PAIR) == false);
                     }),
                 std::end(materialPairs));

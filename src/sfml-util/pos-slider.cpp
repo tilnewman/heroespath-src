@@ -95,9 +95,9 @@ namespace sfml_util
 
         const sf::Vector2f PosSlider::Position() const
         {
-            auto const PROGRESS_RATIO { ProgressRatio() };
-            auto const POS_LEFT { fromPosV_.x + ((toPosV_.x - fromPosV_.x) * PROGRESS_RATIO) };
-            auto const POS_TOP { fromPosV_.y + ((toPosV_.y - fromPosV_.y) * PROGRESS_RATIO) };
+            const auto PROGRESS_RATIO { ProgressRatio() };
+            const auto POS_LEFT { fromPosV_.x + ((toPosV_.x - fromPosV_.x) * PROGRESS_RATIO) };
+            const auto POS_TOP { fromPosV_.y + ((toPosV_.y - fromPosV_.y) * PROGRESS_RATIO) };
             return sf::Vector2f(POS_LEFT, POS_TOP);
         }
     } // namespace sliders

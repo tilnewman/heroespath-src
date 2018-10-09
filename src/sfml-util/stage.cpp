@@ -147,7 +147,7 @@ namespace sfml_util
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
 
-        for (auto const & ENTITY_PTR : entityPVec_)
+        for (const auto & ENTITY_PTR : entityPVec_)
         {
             if ((ENTITY_PTR->MouseUp(MOUSE_POS_V)) && ENTITY_PTR->WillAcceptFocus())
             {
@@ -197,7 +197,7 @@ namespace sfml_util
         // TODO Should we eliminate the current focus before we know if we are setting a new focus?
         entityWithFocusPtrOpt_ = boost::none;
 
-        auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
+        const auto WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
 
         if (WAS_FOUND)
@@ -232,7 +232,7 @@ namespace sfml_util
     void Stage::EntityAdd(
         const IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK)
     {
-        auto const WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
+        const auto WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -253,7 +253,7 @@ namespace sfml_util
 
     bool Stage::EntityRemove(const IEntityPtr_t ENTITY_PTR)
     {
-        auto const ORIG_NUM_ENTITYS { entityPVec_.size() };
+        const auto ORIG_NUM_ENTITYS { entityPVec_.size() };
 
         entityPVec_.erase(
             std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR), entityPVec_.end());
@@ -285,7 +285,7 @@ namespace sfml_util
             // if focused entity is not hovered, then look for any entity the mouse is hoving over
             if (text.empty())
             {
-                for (auto const & NEXT_ENTITY_PTR : entityPVec_)
+                for (const auto & NEXT_ENTITY_PTR : entityPVec_)
                 {
                     if (NEXT_ENTITY_PTR->GetEntityRegion().contains(MOUSE_POS_V))
                     {
@@ -324,7 +324,7 @@ namespace sfml_util
                 hoverText_.getGlobalBounds().width + 20.0f,
                 hoverText_.getGlobalBounds().height + 8.0f);
 
-            auto const SCREEN_WIDTH { Display::Instance()->GetWinWidth() };
+            const auto SCREEN_WIDTH { Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
             {
                 region.left = SCREEN_WIDTH - region.width;

@@ -17,7 +17,7 @@ namespace sfml_util
 {
 
     // This size was found by experiment to work well the the typical map found in the game.
-    const float QuadTree::MIN_QUAD_SIZE_{ 800.0f };
+    const float QuadTree::MIN_QUAD_SIZE_ { 800.0f };
 
     void QuadTree::Setup(
         const float MAP_WIDTH, const float MAP_HEIGHT, const FloatRectVec_t & COLL_RECTS_VEC)
@@ -29,7 +29,7 @@ namespace sfml_util
     void QuadTree::PopulateQuadAndRecurse(
         Quad & quad, const sf::FloatRect & RECT, const FloatRectVec_t & COLL_RECTS_VEC)
     {
-        for (auto const & NEXT_COLL_RECT : COLL_RECTS_VEC)
+        for (const auto & NEXT_COLL_RECT : COLL_RECTS_VEC)
         {
             if ((RECT.left < (NEXT_COLL_RECT.left + NEXT_COLL_RECT.width))
                 && ((RECT.left + RECT.width) > NEXT_COLL_RECT.left)
@@ -43,8 +43,8 @@ namespace sfml_util
         if ((quad.coll_rects_vec.empty() == false) && (RECT.width > MIN_QUAD_SIZE_)
             && (RECT.height > MIN_QUAD_SIZE_))
         {
-            auto const HALF_WIDTH{ RECT.width * 0.5f };
-            auto const HALF_HEIGHT{ RECT.height * 0.5f };
+            const auto HALF_WIDTH { RECT.width * 0.5f };
+            const auto HALF_HEIGHT { RECT.height * 0.5f };
 
             quad.quad_rects_vec.emplace_back(
                 sf::FloatRect(RECT.left, RECT.top, HALF_WIDTH, HALF_HEIGHT));
@@ -81,7 +81,7 @@ namespace sfml_util
     {
         if (QUAD.quad_rects_vec.empty())
         {
-            for (auto const & NEXT_COLL_RECT : QUAD.coll_rects_vec)
+            for (const auto & NEXT_COLL_RECT : QUAD.coll_rects_vec)
             {
                 if (NEXT_COLL_RECT.contains(POINT))
                 {

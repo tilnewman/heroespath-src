@@ -34,21 +34,13 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Success:
-            {
-                return "Success";
+            case Success: { return "Success";
             }
-            case FailThenRevert:
-            {
-                return "FailThenRevert";
+            case FailThenRevert: { return "FailThenRevert";
             }
-            case FailNoChange:
-            {
-                return "FailNoChange";
+            case FailNoChange: { return "FailNoChange";
             }
-            case FailChange:
-            {
-                return "FailChange";
+            case FailChange: { return "FailChange";
             }
             case Count:
             default:
@@ -175,7 +167,7 @@ namespace sfml_util
     void Display::TakeScreenshot()
     {
         // acquire screenshot
-        auto const WINDOW_SIZE { winUPtr_->getSize() };
+        const auto WINDOW_SIZE { winUPtr_->getSize() };
         sf::Texture texture;
         if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
         {
@@ -189,7 +181,7 @@ namespace sfml_util
 
         texture.update(*winUPtr_);
 
-        auto const SCREENSHOT_IMAGE { texture.copyToImage() };
+        const auto SCREENSHOT_IMAGE { texture.copyToImage() };
 
         // establish the path
         const auto DIR_PATH_STR { misc::filesystem::AppendPathsToCurrentThenClean("screenshots") };
@@ -201,7 +193,7 @@ namespace sfml_util
         }
 
         // compose the filename
-        auto const DATE_TIME { sfml_util::DateTime::CurrentDateTime() };
+        const auto DATE_TIME { sfml_util::DateTime::CurrentDateTime() };
         std::ostringstream ssFileName;
         ssFileName << "heroespath_screenshot_" << DATE_TIME.date.year << "-" << DATE_TIME.date.month
                    << "-" << DATE_TIME.date.day << "_" << DATE_TIME.time.hours << ":"
@@ -668,7 +660,7 @@ namespace sfml_util
 
         std::vector<sf::VideoMode> fullScreenVideoModes(sf::VideoMode::getFullscreenModes());
 
-        for (auto const & NEXT_VIDEO_MODE : fullScreenVideoModes)
+        for (const auto & NEXT_VIDEO_MODE : fullScreenVideoModes)
             M_HP_LOG("\t" << ConvertVideoModeToReslution(NEXT_VIDEO_MODE).ToString());
     }
 
@@ -679,7 +671,7 @@ namespace sfml_util
 
         std::vector<sf::VideoMode> fullScreenSupportedModesVec(sf::VideoMode::getFullscreenModes());
 
-        for (auto const & NEXT_VIDEO_MODE : fullScreenSupportedModesVec)
+        for (const auto & NEXT_VIDEO_MODE : fullScreenSupportedModesVec)
         {
             const Resolution R(ConvertVideoModeToReslution(NEXT_VIDEO_MODE));
             if (IsResolutionSupported(R))
@@ -826,11 +818,11 @@ namespace sfml_util
             VM_PARAM.height,
             ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
 
-        auto const INTENDED_ANTIALIAS_LEVEL { ANTIALIAS_LEVEL_PARAM };
+        const auto INTENDED_ANTIALIAS_LEVEL { ANTIALIAS_LEVEL_PARAM };
 
         // save original video mode for later comparrison
-        auto const ORIG_VIDEO_MODE { GetCurrentVideoMode() };
-        auto const ORIG_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
+        const auto ORIG_VIDEO_MODE { GetCurrentVideoMode() };
+        const auto ORIG_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
 
         if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE)
             && (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
@@ -859,8 +851,8 @@ namespace sfml_util
         const bool WAS_SUCCESS(winUPtr_->isOpen());
         if (WAS_SUCCESS)
         {
-            auto const NEW_VIDEO_MODE { GetCurrentVideoMode() };
-            auto const NEW_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
+            const auto NEW_VIDEO_MODE { GetCurrentVideoMode() };
+            const auto NEW_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
 
             // for some reason sfml is finiky on some hardware and has a habit of switching
             // back to the original video mode without warning or error

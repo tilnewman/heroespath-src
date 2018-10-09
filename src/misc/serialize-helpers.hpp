@@ -25,7 +25,7 @@ namespace misc
             std::vector<T *> & rawPtrToSerializeVec)
         {
             rawPtrToSerializeVec.clear();
-            for (auto const & NOT_NULL_PTR : notNullPtrVec)
+            for (const auto & NOT_NULL_PTR : notNullPtrVec)
             {
                 rawPtrToSerializeVec.emplace_back(NOT_NULL_PTR.Ptr());
             }
@@ -45,7 +45,7 @@ namespace misc
             W & warehouse)
         {
             notNullPtrVec.clear();
-            for (auto const RAW_PTR : rawPtrToSerializeVec)
+            for (const auto RAW_PTR : rawPtrToSerializeVec)
             {
                 notNullPtrVec.emplace_back(warehouse.Store(RAW_PTR));
             }

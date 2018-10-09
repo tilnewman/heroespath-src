@@ -36,10 +36,10 @@ namespace avatar
         , frameTimerSec_(0.0f)
         , frameIndex_(0)
     {
-        auto const REQUIRED_DIMMENSION { static_cast<unsigned>(CELL_SIZE_ * CELL_COUNT_) };
+        const auto REQUIRED_DIMMENSION { static_cast<unsigned>(CELL_SIZE_ * CELL_COUNT_) };
         const sf::Vector2u REQUIRED_SIZE_V(REQUIRED_DIMMENSION, REQUIRED_DIMMENSION);
 
-        auto const ACTUAL_SIZE_V { cachedTexture_.Get().getSize() };
+        const auto ACTUAL_SIZE_V { cachedTexture_.Get().getSize() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ACTUAL_SIZE_V == REQUIRED_SIZE_V),
@@ -141,23 +141,15 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 9 };
+                    case su::Direction::Left: { return { 9 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 25 };
+                    case su::Direction::Right: { return { 25 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 1 };
+                    case su::Direction::Up: { return { 1 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 17 };
+                    default: { return { 17 };
                     }
                 }
             }
@@ -165,23 +157,15 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 10, 11, 12, 13, 14, 15, 16, 41 };
+                    case su::Direction::Left: { return { 10, 11, 12, 13, 14, 15, 16, 41 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 26, 27, 28, 29, 30, 31, 32, 57 };
+                    case su::Direction::Right: { return { 26, 27, 28, 29, 30, 31, 32, 57 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 2, 3, 4, 1, 6, 7, 8 };
+                    case su::Direction::Up: { return { 2, 3, 4, 1, 6, 7, 8 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 18, 19, 20, 17, 22, 23, 24 };
+                    default: { return { 18, 19, 20, 17, 22, 23, 24 };
                     }
                 }
             }
@@ -189,23 +173,15 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 42, 43, 44, 45, 46 };
+                    case su::Direction::Left: { return { 42, 43, 44, 45, 46 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 58, 59, 60, 61, 62 };
+                    case su::Direction::Right: { return { 58, 59, 60, 61, 62 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 34, 35, 36, 37, 38 };
+                    case su::Direction::Up: { return { 34, 35, 36, 37, 38 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 50, 51, 52, 53, 54 };
+                    default: { return { 50, 51, 52, 53, 54 };
                     }
                 }
             }
@@ -213,23 +189,15 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 47 };
+                    case su::Direction::Left: { return { 47 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 63 };
+                    case su::Direction::Right: { return { 63 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 39 };
+                    case su::Direction::Up: { return { 39 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 55 };
+                    default: { return { 55 };
                     }
                 }
             }
@@ -237,23 +205,15 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 48 };
+                    case su::Direction::Left: { return { 48 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 64 };
+                    case su::Direction::Right: { return { 64 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 40 };
+                    case su::Direction::Up: { return { 40 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 56 };
+                    default: { return { 56 };
                     }
                 }
             }
@@ -261,39 +221,29 @@ namespace avatar
             {
                 switch (DIRECTION)
                 {
-                    case su::Direction::Left:
-                    {
-                        return { 5 };
+                    case su::Direction::Left: { return { 5 };
                     }
-                    case su::Direction::Right:
-                    {
-                        return { 21 };
+                    case su::Direction::Right: { return { 21 };
                     }
-                    case su::Direction::Up:
-                    {
-                        return { 1 };
+                    case su::Direction::Up: { return { 1 };
                     }
                     case su::Direction::Down:
                     case su::Direction::Count:
-                    default:
-                    {
-                        return { 33 };
+                    default: { return { 33 };
                     }
                 }
             }
             case Pose::Dead:
             case Pose::Count:
-            default:
-            {
-                return { 49 };
+            default: { return { 49 };
             }
         }
     }
 
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM)
     {
-        auto const FRAME_INDEX_X { [&]() {
-            auto const INDEX { (FRAME_NUM % CELL_COUNT_) - 1 };
+        const auto FRAME_INDEX_X { [&]() {
+            const auto INDEX { (FRAME_NUM % CELL_COUNT_) - 1 };
             if (INDEX == -1)
             {
                 return CELL_COUNT_ - 1;
@@ -304,8 +254,8 @@ namespace avatar
             }
         }() };
 
-        auto const FRAME_INDEX_Y { [&]() {
-            auto const INDEX { FRAME_NUM / CELL_COUNT_ };
+        const auto FRAME_INDEX_Y { [&]() {
+            const auto INDEX { FRAME_NUM / CELL_COUNT_ };
             if ((FRAME_NUM % CELL_COUNT_) == 0)
             {
                 return INDEX - 1;
@@ -335,17 +285,11 @@ namespace avatar
     {
         switch (POSE)
         {
-            case Pose::Walking:
-            {
-                return FRAME_DURATION_SEC_WALK_;
+            case Pose::Walking: { return FRAME_DURATION_SEC_WALK_;
             }
-            case Pose::GiveTake:
-            {
-                return FRAME_DURATION_SEC_GIVETAKE_;
+            case Pose::GiveTake: { return FRAME_DURATION_SEC_GIVETAKE_;
             }
-            case Pose::Cast:
-            {
-                return FRAME_DURATION_SEC_SINGLEFRAME_;
+            case Pose::Cast: { return FRAME_DURATION_SEC_SINGLEFRAME_;
             }
             case Pose::Blink:
             {
@@ -356,9 +300,7 @@ namespace avatar
             case Pose::Standing:
             case Pose::Dead:
             case Pose::Count:
-            default:
-            {
-                return 0.0f;
+            default: { return 0.0f;
             }
         }
     }
@@ -367,7 +309,7 @@ namespace avatar
     {
         sprite_.setTextureRect(FrameRect(animation_.frame_num_vec[frameIndex_]));
 
-        auto const SCALE { Avatar::Scale(Avatar::Name(whichAvatar_)) };
+        const auto SCALE { Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
     }
 

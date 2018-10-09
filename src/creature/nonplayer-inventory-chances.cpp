@@ -154,10 +154,10 @@ namespace creature
         void ChanceFactory::Make_Coins(
             const Profile & PROFILE, Coin_t & coinsMin_OutParam, Coin_t & coinsMax_OutParam) const
         {
-            auto const KEY_STR { "heroespath-nonplayer-coins-bounds-"
+            const auto KEY_STR { "heroespath-nonplayer-coins-bounds-"
                                  + wealth_type::ToString(PROFILE.wealthType) };
 
-            auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
+            const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             std::vector<std::string> strVec;
             misc::SplitByChar(VALUE_STR, strVec, ',', true, true);
@@ -214,7 +214,7 @@ namespace creature
             // capes, cloaks, and robes are mutually exclusive, so pre-select which (if any) are
             // worn
 
-            auto const IS_CLOAK_OWNED { [&]() {
+            const auto IS_CLOAK_OWNED { [&]() {
                 try
                 {
                     return clothingChances.cover_map[armor::cover_type::Cloak].IsOwned();
@@ -239,7 +239,7 @@ namespace creature
             }
             else
             {
-                auto const IS_ROBE_OWNED { [&]() {
+                const auto IS_ROBE_OWNED { [&]() {
                     try
                     {
                         return clothingChances.cover_map[armor::cover_type::Robe].IsOwned();
@@ -269,7 +269,7 @@ namespace creature
                 }
                 else
                 {
-                    auto const IS_CAPE_OWNED { [&]() {
+                    const auto IS_CAPE_OWNED { [&]() {
                         try
                         {
                             return clothingChances.cover_map[armor::cover_type::Cape].IsOwned();
@@ -361,13 +361,13 @@ namespace creature
             WeaponSetVec_t weaponSetVec;
             LookupPossibleWeaponsByRole(CHARACTER_PTR->Role(), weaponSetVec);
 
-            for (auto const & NEXT_WEAPON_SET : weaponSetVec)
+            for (const auto & NEXT_WEAPON_SET : weaponSetVec)
             {
                 PopulateWeaponChances(weaponChances, NEXT_WEAPON_SET, PROFILE, CHARACTER_PTR);
             }
 
             // Add weapons based on body type
-            auto const BODY { CHARACTER_PTR->Body() };
+            const auto BODY { CHARACTER_PTR->Body() };
             weaponChances.has_bite = BODY.HasFangs();
             weaponChances.has_claws = BODY.HasClaws();
             weaponChances.has_fists = (BODY.HasArms() && BODY.HasFingers());
@@ -431,7 +431,7 @@ namespace creature
         {
             // find the total chance of all weapon possibilities combined
             float chanceCombined(0.0f);
-            for (auto const & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
+            for (const auto & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
             {
                 chanceCombined += NEXT_WEAPONINFO_CHANCE_PAIR.second;
             }
@@ -451,11 +451,11 @@ namespace creature
             // weapon selection loop
             // add chances for each weapon in the WEAPON_SET, if randomly selected]
             float chanceCumulative(0.0f);
-            for (auto const & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
+            for (const auto & NEXT_WEAPONINFO_CHANCE_PAIR : WEAPON_SET.chanceMap)
             {
                 // if all weapons have already been chosen then break from the selection loop
                 bool willBreak(true);
-                for (auto const NEXT_BOOL : numberSelectedVec)
+                for (const auto NEXT_BOOL : numberSelectedVec)
                 {
                     if (NEXT_BOOL == false)
                     {
@@ -601,11 +601,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Axe)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::axe_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::axe_type>())
                         {
                             SetWeaponChances<weapon::axe_type::Enum>(
@@ -637,11 +637,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::BladedStaff)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::bladedstaff_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::bladedstaff_type>())
                         {
                             SetWeaponChances<weapon::bladedstaff_type::Enum>(
@@ -673,11 +673,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Club)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::club_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::club_type>())
                         {
                             SetWeaponChances<weapon::club_type::Enum>(
@@ -709,11 +709,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Projectile)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::projectile_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::projectile_type>())
                         {
                             SetWeaponChances<weapon::projectile_type::Enum>(
@@ -745,11 +745,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Sword)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::sword_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::sword_type>())
                         {
                             SetWeaponChances<weapon::sword_type::Enum>(
@@ -794,11 +794,11 @@ namespace creature
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Whip)
                     {
-                        auto const CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
+                        const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
                                                              weapon::whip_type::Count) };
 
-                        for (auto const & WEAPON_TYPE_WRAPPER :
+                        for (const auto & WEAPON_TYPE_WRAPPER :
                              weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::whip_type>())
                         {
                             SetWeaponChances<weapon::whip_type::Enum>(
@@ -829,7 +829,7 @@ namespace creature
             auto & roleArmorChances { ignored };
             roleArmorChanceMap_.Find(CHARACTER_PTR->Role(), roleArmorChances);
 
-            for (auto const & ROLE_ARMOR_CHANCE : roleArmorChances)
+            for (const auto & ROLE_ARMOR_CHANCE : roleArmorChances)
             {
                 switch (ROLE_ARMOR_CHANCE.type_wrapper.Type())
                 {
@@ -920,9 +920,7 @@ namespace creature
                     case item::armor_type::Skin:
                     case item::armor_type::Not:
                     case item::armor_type::Count:
-                    default:
-                    {
-                        break;
+                    default: { break;
                     }
                 }
             }
@@ -931,7 +929,7 @@ namespace creature
         void ChanceFactory::LookupPossibleWeaponsByRole(
             const role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam) const
         {
-            auto const WAS_FOUND { roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
+            const auto WAS_FOUND { roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (WAS_FOUND),
@@ -999,14 +997,14 @@ namespace creature
             ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
                << "-chances";
 
-            auto const WEARABLE_STR_BASE { ss.str() };
+            const auto WEARABLE_STR_BASE { ss.str() };
 
             // find the chance-subtotal and the material that will have the remaining chance
             auto chanceSubTotal(0.0f);
             item::material::Enum materialWithChanceRemaining(item::material::Nothing);
-            auto const CHANCE_MIN { clothingChanceMin_ };
+            const auto CHANCE_MIN { clothingChanceMin_ };
 
-            auto const CHANCE_MAX { clothingChanceMax_ };
+            const auto CHANCE_MAX { clothingChanceMax_ };
 
             clothChance = GetFloatFromGameDataFile(
                 WEARABLE_STR_BASE + "-wearable-cloth", CHANCE_MIN, CHANCE_MAX);
@@ -1063,7 +1061,7 @@ namespace creature
 
             // adjust chances by rank, where higher rank means a higher
             // chance of more valuable materials
-            auto const RANK_RATIO { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_RATIO { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
 
             silkChance += RANK_RATIO;
             leatherChance += RANK_RATIO * 0.5f;
@@ -1119,7 +1117,7 @@ namespace creature
             auto chanceMapPrecious { Make_MaterialChanceMapPrecious() };
 
             // adjustments that make higher ranks more likely to have special materials
-            auto const RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
 
             chanceCool += RANK_CHANCE_INCREASE;
             chanceMetal += RANK_CHANCE_INCREASE;
@@ -1142,7 +1140,7 @@ namespace creature
             }
 
             // adjustments that make more wealth equal better chances for special materials
-            auto const WEALTH_CHANCE_ADJUSTMENT {
+            const auto WEALTH_CHANCE_ADJUSTMENT {
                 misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "heroespath-material-wealth-chance-base-adjustment-"
                     + wealth_type::ToString(PROFILE.wealthType))
@@ -1194,7 +1192,7 @@ namespace creature
             }
 
             // adjust for item weight that can make special materials less likely
-            auto const WEIGHT_CHANCE_ADJUSTMENT { ITEM_WEIGHT.As<float>() / 2500.0f };
+            const auto WEIGHT_CHANCE_ADJUSTMENT { ITEM_WEIGHT.As<float>() / 2500.0f };
             chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
             chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
             chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;
@@ -1215,8 +1213,8 @@ namespace creature
                 chanceMapPrecious);
 
             // final determination of which material will be primary
-            auto const SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            auto const RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
+            const auto RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
@@ -1270,7 +1268,7 @@ namespace creature
             auto chanceMapPrecious { Make_MaterialChanceMapPrecious() };
 
             // adjustments that make higher ranks more likely to have special materials
-            auto const RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
+            const auto RANK_CHANCE_INCREASE { CHARACTER_PTR->Rank().As<float>() / masterRankMax_ };
 
             chanceCool += RANK_CHANCE_INCREASE;
             chanceMetal += RANK_CHANCE_INCREASE;
@@ -1293,7 +1291,7 @@ namespace creature
             }
 
             // adjustments that make more wealth equal better chances for special materials
-            auto const WEALTH_CHANCE_ADJUSTMENT(misc::ConfigFile::Instance()->ValueOrDefault<float>(
+            const auto WEALTH_CHANCE_ADJUSTMENT(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-material-wealth-chance-base-adjustment-"
                 + wealth_type::ToString(PROFILE.wealthType)));
 
@@ -1352,8 +1350,8 @@ namespace creature
                 chanceMapPrecious);
 
             // final determination of which material will be secondary
-            auto const SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
-            auto const RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
+            const auto SUBTOTAL { chanceCool + chanceMetal + chancePrecious };
+            const auto RAND { misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
@@ -1397,9 +1395,9 @@ namespace creature
             MaterialChanceMap_t materialChanceMap;
             auto materialWithRemainingChance(item::material::Nothing);
 
-            for (auto const NEXT_MATERIAL : MATERIALS_VEC)
+            for (const auto NEXT_MATERIAL : MATERIALS_VEC)
             {
-                auto const NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
+                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(
                     (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
 
                 if (NEXT_VALUE_STR == "remaining")
@@ -1408,14 +1406,14 @@ namespace creature
                 }
                 else
                 {
-                    auto const NEXT_VALUE_FLOAT {
+                    const auto NEXT_VALUE_FLOAT {
                         misc::ConfigFile::Instance()->ValueOrDefault<float>(
                             (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX))
                     };
 
                     if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                     {
-                        auto const NEXT_CHANCE { 1.0f / NEXT_VALUE_FLOAT };
+                        const auto NEXT_CHANCE { 1.0f / NEXT_VALUE_FLOAT };
                         materialChanceMap[NEXT_MATERIAL] = NEXT_CHANCE;
                         cumulativeChance += NEXT_CHANCE;
                     }
@@ -1475,12 +1473,12 @@ namespace creature
             std::ostringstream ss;
             const std::string KEY_BASE { "heroespath-inventory-clothing-" };
             ss << KEY_BASE << wealth_type::ToString(PROFILE.wealthType) << "-chances-";
-            auto const WEARABLE_STR_BASE { ss.str() };
+            const auto WEARABLE_STR_BASE { ss.str() };
 
-            auto const MIN_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
+            const auto MIN_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-min") };
 
-            auto const MAX_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
+            const auto MAX_VAL { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 KEY_BASE + "chance-max") };
 
             // the final resulting object that will hold the chances for all clothing articles
@@ -1529,7 +1527,7 @@ namespace creature
             MaterialChanceMap_t & materialsMapPri,
             MaterialChanceMap_t & materialsMapSec) const
         {
-            auto const WEAPON_DETAILS { item::weapon::WeaponDetailLoader::LookupWeaponDetails(
+            const auto WEAPON_DETAILS { item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
 
             PopulatMaterials(
@@ -1606,7 +1604,7 @@ namespace creature
         bool ChanceFactory::IsWeaponPossibleConsideringComplexity(
             const std::string & WEAPON_NAME, const complexity_type::Enum CREATURE_COMPLEXITY)
         {
-            auto const WEAPON_DETAILS { item::weapon::WeaponDetailLoader::LookupWeaponDetails(
+            const auto WEAPON_DETAILS { item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
 
             return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
@@ -1647,7 +1645,7 @@ namespace creature
             const CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD) const
         {
-            auto const DETAILS { item::armor::ArmorDetailLoader::LookupArmorDetails(
+            const auto DETAILS { item::armor::ArmorDetailLoader::LookupArmorDetails(
                 ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
@@ -1679,7 +1677,7 @@ namespace creature
             const bool WILL_MATERIALS_INCLUDED_WOOD,
             const item::material::Enum FORCED_PRIMARY_MATERIAL) const
         {
-            auto const DETAILS { item::armor::ArmorDetailLoader::LookupArmorDetails(
+            const auto DETAILS { item::armor::ArmorDetailLoader::LookupArmorDetails(
                 ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
@@ -1707,18 +1705,18 @@ namespace creature
 
             for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
             {
-                auto const ROLE { static_cast<role::Enum>(i) };
+                const auto ROLE { static_cast<role::Enum>(i) };
 
-                auto const ROLE_STR { role::ToString(ROLE) };
-                auto const KEY_STR { "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
-                auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
+                const auto ROLE_STR { role::ToString(ROLE) };
+                const auto KEY_STR { "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
+                const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
                 std::vector<std::string> armorChancesVec;
                 misc::SplitByChar(VALUE_STR, armorChancesVec, '|', true, true);
 
                 RoleArmorChanceVec_t roleArmorChanceVec;
 
-                for (auto const & NEXT_ARMOR_CHANCE_STR : armorChancesVec)
+                for (const auto & NEXT_ARMOR_CHANCE_STR : armorChancesVec)
                 {
                     std::vector<std::string> piecesVec;
                     misc::SplitByChar(NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
@@ -1733,11 +1731,11 @@ namespace creature
 
                     // note that since we skipped empties in SplitByChar() call above, this string
                     // will not be empty
-                    auto const ARMOR_NAME_STR { piecesVec[0] };
+                    const auto ARMOR_NAME_STR { piecesVec[0] };
 
-                    auto const ARMOR_CHANCE_STR { piecesVec[piecesVec.size() - 1] };
+                    const auto ARMOR_CHANCE_STR { piecesVec[piecesVec.size() - 1] };
 
-                    auto const INVALID_CHANCE { -1.0f };
+                    const auto INVALID_CHANCE { -1.0f };
                     auto armorChanceVal { INVALID_CHANCE };
                     try
                     {
@@ -1767,7 +1765,7 @@ namespace creature
                     using namespace item::armor;
 
                     base_type::Enum baseType { base_type::Count };
-                    auto const HAS_BASE_TYPE_STR { piecesVec.size() > 2 };
+                    const auto HAS_BASE_TYPE_STR { piecesVec.size() > 2 };
 
                     if (HAS_BASE_TYPE_STR)
                     {
@@ -1816,7 +1814,7 @@ namespace creature
 
             for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
             {
-                auto const ROLE { static_cast<role::Enum>(i) };
+                const auto ROLE { static_cast<role::Enum>(i) };
                 roleWeaponChanceMap_[ROLE] = GetRoleWeaponChances(ROLE);
             }
         }
@@ -1828,17 +1826,17 @@ namespace creature
 
             using namespace boost::algorithm;
 
-            auto const ROLE_STR { role::ToString(ROLE) };
+            const auto ROLE_STR { role::ToString(ROLE) };
             const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
-            auto const VALUE_STR_LOWER { to_lower_copy(
+            const auto VALUE_STR_LOWER { to_lower_copy(
                 misc::ConfigFile::Instance()->Value(KEY_STR)) };
 
             std::vector<std::string> weaponSetVec;
             misc::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
 
             // Loop over each weapon set, denoted by curly brackets {} in the GameDataFile.
-            for (auto const & NEXT_WEAPON_SET_STR : weaponSetVec)
+            for (const auto & NEXT_WEAPON_SET_STR : weaponSetVec)
             {
                 WeaponSet nextWeaponSet;
 
@@ -1847,16 +1845,16 @@ namespace creature
 
                 // Loop over each instruction, denoted by the pipe character in the GameDataFile.
                 // A collection of instructions composes a WeaponSet
-                for (auto const & NEXT_INSTRUCTION_STR : instructionsVec)
+                for (const auto & NEXT_INSTRUCTION_STR : instructionsVec)
                 {
                     if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
                     {
-                        auto const PICK_CSTR { "[pick-" };
+                        const auto PICK_CSTR { "[pick-" };
                         if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
                         {
                             // assume the instruction takes the form: [pick-<number>],
                             // where <number> must be a positive integer greater than zero
-                            auto const COUNT_STR { erase_first_copy(
+                            const auto COUNT_STR { erase_first_copy(
                                 erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
 
                             try
@@ -1912,8 +1910,8 @@ namespace creature
                                    "by "
                                 << "a comma.");
 
-                        auto const WEAPON_NAME { partsVec[0] };
-                        auto const CHANCE_STR { partsVec[1] };
+                        const auto WEAPON_NAME { partsVec[0] };
+                        const auto CHANCE_STR { partsVec[1] };
 
                         const item::weapon::WeaponTypeWrapper WEAPON_INFO(WEAPON_NAME);
 

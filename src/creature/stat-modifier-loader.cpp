@@ -57,7 +57,7 @@ namespace creature
                 "creature::StatModifierLoader::Load() was unable to convert \""
                     << statValuesStrVec.at(i) << "\" to an int value.");
 
-            auto const NEXT_STAT_ENUM { static_cast<Traits::Enum>(i) };
+            const auto NEXT_STAT_ENUM { static_cast<Traits::Enum>(i) };
             statSet.Set(NEXT_STAT_ENUM, nextValue);
         }
 

@@ -47,7 +47,7 @@ namespace item
                 return;
             }
 
-            auto const SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
+            const auto SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
 
             if (SYSTEM_NAME_LOWERCASE == boost::algorithm::to_lower_copy(QUARTERSTAFF_NAME_))
             {
@@ -281,7 +281,7 @@ namespace item
             namesMap[boost::algorithm::erase_all_copy(readableName_, " ")] += "readable\\";
 
             std::ostringstream ss;
-            for (auto const & VALUE_NAME_PAIR : namesMap)
+            for (const auto & VALUE_NAME_PAIR : namesMap)
             {
                 ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
             }
@@ -316,7 +316,7 @@ namespace item
                             ss << ",";
                         }
 
-                        auto const ELEMENT_TYPE { elementTypes_.at(i) };
+                        const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
                             ELEMENT_TYPE, misc::Wrap::Yes, "&", misc::NoneEmpty::No);
@@ -335,7 +335,7 @@ namespace item
             std::ostringstream ss;
 
             // remove any spaces from the generalName_
-            auto const GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
+            const auto GENERAL_NAME_FILENAME_VERSION { boost::algorithm::replace_all_copy(
                 generalName_, " ", "") };
 
             ss << GENERAL_NAME_FILENAME_VERSION;
@@ -418,12 +418,12 @@ namespace item
         bool
             WeaponTypeWrapper::SetupWithKnifeOrDaggerName(const std::string & SYSTEM_NAME_LOWERCASE)
         {
-            auto const KNIFE_NAME { weapon_type::ToString(weapon_type::Knife) };
+            const auto KNIFE_NAME { weapon_type::ToString(weapon_type::Knife) };
 
-            auto const IS_KNIFE { SYSTEM_NAME_LOWERCASE
+            const auto IS_KNIFE { SYSTEM_NAME_LOWERCASE
                                   == boost::algorithm::to_lower_copy(KNIFE_NAME) };
 
-            auto const IS_DAGGER { SYSTEM_NAME_LOWERCASE
+            const auto IS_DAGGER { SYSTEM_NAME_LOWERCASE
                                    == boost::algorithm::to_lower_copy(DAGGER_NAME_) };
 
             if (IS_KNIFE || IS_DAGGER)
@@ -447,7 +447,7 @@ namespace item
             {
                 case weapon_type::BodyPart:
                 {
-                    auto const BODY_PART_TYPE { BodyPartType() };
+                    const auto BODY_PART_TYPE { BodyPartType() };
                     generalName_ = body_part::ToString(BODY_PART_TYPE);
                     specificName_ = generalName_;
                     systemName_ = generalName_;
@@ -483,7 +483,7 @@ namespace item
 
                 case weapon_type::Sword:
                 {
-                    auto const SWORD_TYPE { SwordType() };
+                    const auto SWORD_TYPE { SwordType() };
 
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = sword_type::Name(SWORD_TYPE);
@@ -564,9 +564,7 @@ namespace item
                         }
                         case sword_type::Shortsword:
                         case sword_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -579,7 +577,7 @@ namespace item
 
                 case weapon_type::Axe:
                 {
-                    auto const AXE_TYPE { AxeType() };
+                    const auto AXE_TYPE { AxeType() };
 
                     generalName_ = weapon_type::Name(type_);
 
@@ -616,9 +614,7 @@ namespace item
                         }
                         case axe_type::Handaxe:
                         case axe_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -630,7 +626,7 @@ namespace item
 
                 case weapon_type::Whip:
                 {
-                    auto const WHIP_TYPE { WhipType() };
+                    const auto WHIP_TYPE { WhipType() };
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = whip_type::Name(WHIP_TYPE);
                     systemName_ = whip_type::ToString(WHIP_TYPE);
@@ -650,9 +646,7 @@ namespace item
                         }
                         case whip_type::Bullwhip:
                         case whip_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -664,7 +658,7 @@ namespace item
 
                 case weapon_type::Club:
                 {
-                    auto const CLUB_TYPE { ClubType() };
+                    const auto CLUB_TYPE { ClubType() };
 
                     generalName_ = weapon_type::Name(type_);
                     specificName_ = club_type::ToString(ClubType());
@@ -702,9 +696,7 @@ namespace item
                         }
                         case club_type::Maul:
                         case club_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -716,7 +708,7 @@ namespace item
 
                 case weapon_type::Projectile:
                 {
-                    auto const PROJECTILE_TYPE { ProjectileType() };
+                    const auto PROJECTILE_TYPE { ProjectileType() };
 
                     switch (PROJECTILE_TYPE)
                     {
@@ -754,9 +746,7 @@ namespace item
                             break;
                         }
                         case projectile_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
@@ -801,7 +791,7 @@ namespace item
 
                 case weapon_type::BladedStaff:
                 {
-                    auto const BLADEDSTAFF_TYPE { BladedStaffType() };
+                    const auto BLADEDSTAFF_TYPE { BladedStaffType() };
                     generalName_ = weapon_type::Name(weapon_type::BladedStaff);
                     specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
                     systemName_ = bladedstaff_type::ToString(BLADEDSTAFF_TYPE);
@@ -843,17 +833,15 @@ namespace item
                         case bladedstaff_type::Spear:
                         case bladedstaff_type::ShortSpear:
                         case bladedstaff_type::Count:
-                        default:
-                        {
-                            break;
+                        default: { break;
                         }
                     }
 
-                    auto const POINTED_TYPE { (
+                    const auto POINTED_TYPE { (
                         (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::None
                                                                        : weapon_type::Pointed) };
 
-                    auto const BLADED_TYPE { (
+                    const auto BLADED_TYPE { (
                         ((BLADEDSTAFF_TYPE == bladedstaff_type::Spear)
                          || (BLADEDSTAFF_TYPE == bladedstaff_type::ShortSpear))
                             ? weapon_type::None
@@ -870,9 +858,7 @@ namespace item
                 case weapon_type::Melee:
                 case weapon_type::Bladed:
                 case weapon_type::Pointed:
-                default:
-                {
-                    break;
+                default: { break;
                 }
             }
 

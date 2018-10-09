@@ -206,7 +206,7 @@ namespace popup
     {
         const sf::FloatRect LEFT_SIDE_RECT_RAW { PopupManager::Rect_MusicSheet_LeftSide() };
 
-        auto const SCALE(
+        const auto SCALE(
             innerRegion_.width / static_cast<float>(backgroundTexture_.Get().getSize().x));
 
         pageRectLeft_.left = innerRegion_.left + (LEFT_SIDE_RECT_RAW.left * SCALE);
@@ -256,7 +256,7 @@ namespace popup
 
     void PopupStageMusicSheet::SetupPlayerDetailsText()
     {
-        auto const CREATURE_PTR { popupInfo_.CreaturePtrOpt().value() };
+        const auto CREATURE_PTR { popupInfo_.CreaturePtrOpt().value() };
 
         std::ostringstream ss;
         ss << CREATURE_PTR->Name() << "\n";
@@ -325,16 +325,16 @@ namespace popup
 
     void PopupStageMusicSheet::SetupListbox()
     {
-        auto const LISTBOX_MARGIN { sfutil::MapByRes(15.0f, 45.0f) };
-        auto const LISTBOX_RECT_LEFT { pageRectLeft_.left + LISTBOX_MARGIN };
+        const auto LISTBOX_MARGIN { sfutil::MapByRes(15.0f, 45.0f) };
+        const auto LISTBOX_RECT_LEFT { pageRectLeft_.left + LISTBOX_MARGIN };
 
-        auto const LISTBOX_RECT_TOP { listBoxLabelTextRegionUPtr_->GetEntityRegion().top
+        const auto LISTBOX_RECT_TOP { listBoxLabelTextRegionUPtr_->GetEntityRegion().top
                                       + listBoxLabelTextRegionUPtr_->GetEntityRegion().height
                                       + LISTBOX_MARGIN };
 
-        auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
+        const auto LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
 
-        auto const LISTBOX_RECT_HEIGHT { ((pageRectLeft_.top + pageRectLeft_.height)
+        const auto LISTBOX_RECT_HEIGHT { ((pageRectLeft_.top + pageRectLeft_.height)
                                           - LISTBOX_RECT_TOP)
                                          - (LISTBOX_MARGIN * 2.0f) };
 
@@ -353,7 +353,7 @@ namespace popup
             sfml_util::ListBoxPacket(
                 LISTBOX_RECT, listBoxBackgroundInfo_, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
 
-        for (auto const & SONG_PTR : popupInfo_.CreaturePtrOpt().value()->SongsPVec())
+        for (const auto & SONG_PTR : popupInfo_.CreaturePtrOpt().value()->SongsPVec())
         {
             listBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<song::SongPtr_t>>(
                 SONG_PTR,
@@ -393,7 +393,7 @@ namespace popup
         songCachedTextureOpt_ = sfml_util::LoadAndCacheImage(SONG_PTR->Which());
         songSprite_.setTexture(songCachedTextureOpt_->Get(), true);
 
-        auto const SONG_IMAGE_SCALE { sfutil::MapByRes(0.75f, 4.0f) };
+        const auto SONG_IMAGE_SCALE { sfutil::MapByRes(0.75f, 4.0f) };
         songSprite_.setScale(SONG_IMAGE_SCALE, SONG_IMAGE_SCALE);
         songSprite_.setColor(imageColorSlider_.Current());
 
@@ -403,14 +403,14 @@ namespace popup
             titleTextRegionUPtr_->GetEntityRegion().top
                 + titleTextRegionUPtr_->GetEntityRegion().height + sfutil::MapByRes(5.0f, 60.0f));
 
-        auto const SYM_SCALE { sfutil::MapByRes(0.75f, 3.75f) };
+        const auto SYM_SCALE { sfutil::MapByRes(0.75f, 3.75f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        auto const X_SYM_POS_LEFT { (songSprite_.getGlobalBounds().left
+        const auto X_SYM_POS_LEFT { (songSprite_.getGlobalBounds().left
                                      + (songSprite_.getGlobalBounds().width * 0.5f))
                                     - (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
 
-        auto const X_SYM_POS_TOP { (songSprite_.getGlobalBounds().top
+        const auto X_SYM_POS_TOP { (songSprite_.getGlobalBounds().top
                                     + (songSprite_.getGlobalBounds().height * 0.5f))
                                    - (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
 
@@ -430,14 +430,14 @@ namespace popup
             sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
-        auto const SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
+        const auto SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
-        auto const SONGDETAILS_TEXTRECT_TOP { songSprite_.getGlobalBounds().top
+        const auto SONGDETAILS_TEXTRECT_TOP { songSprite_.getGlobalBounds().top
                                               + songSprite_.getGlobalBounds().height
                                               + sfutil::MapByRes(10.0f, 90.0f) };
 
-        auto const SONGDETAILS_TEXTRECT_WIDTH { pageRectRight_.width };
-        auto const SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
+        const auto SONGDETAILS_TEXTRECT_WIDTH { pageRectRight_.width };
+        const auto SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
 
         const sf::FloatRect SONG_DETAILS_TEXTRECT { SONGDETAILS_TEXTRECT_LEFT,
                                                     SONGDETAILS_TEXTRECT_TOP,
@@ -466,7 +466,7 @@ namespace popup
         {
             willShowXImage_ = true;
 
-            auto const CURRENT_PHASE { game::LoopManager::Instance()->GetPhase() };
+            const auto CURRENT_PHASE { game::LoopManager::Instance()->GetPhase() };
 
             if (CURRENT_PHASE & game::Phase::Combat)
             {
@@ -498,16 +498,16 @@ namespace popup
             sfml_util::Justified::Center,
             sf::Text::Bold);
 
-        auto const VERT_SPACER { sfutil::MapByRes(15.0f, 60.0f) };
+        const auto VERT_SPACER { sfutil::MapByRes(15.0f, 60.0f) };
 
-        auto const SONG_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
+        const auto SONG_UNABLE_TEXTRECT_LEFT { pageRectRight_.left };
 
-        auto const SONG_UNABLE_TEXTRECT_TOP { detailsTextUPtr_->GetEntityRegion().top
+        const auto SONG_UNABLE_TEXTRECT_TOP { detailsTextUPtr_->GetEntityRegion().top
                                               + detailsTextUPtr_->GetEntityRegion().height
                                               + VERT_SPACER };
 
-        auto const SONG_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };
-        auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
+        const auto SONG_UNABLE_TEXTRECT_WIDTH { pageRectRight_.width };
+        const auto SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
 
         const sf::FloatRect SONG_UNABLE_TEXTRECT { SONG_UNABLE_TEXTRECT_LEFT,
                                                    SONG_UNABLE_TEXTRECT_TOP,
@@ -528,8 +528,8 @@ namespace popup
             sfutil::color::GrayDarker,
             sfml_util::Justified::Center);
 
-        auto const SONG_DESC_HORIZ_MARGIN { sfutil::MapByRes(15.0f, 30.0f) };
-        auto const SONG_DESC_TEXTRECT_LEFT { pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
+        const auto SONG_DESC_HORIZ_MARGIN { sfutil::MapByRes(15.0f, 30.0f) };
+        const auto SONG_DESC_TEXTRECT_LEFT { pageRectRight_.left + SONG_DESC_HORIZ_MARGIN };
         auto songDescTextRectTop { 0.0f };
         if (willShowXImage_)
         {
@@ -541,10 +541,10 @@ namespace popup
             songDescTextRectTop = detailsTextUPtr_->GetEntityRegion().top
                 + detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
-        auto const SONG_DESC_TEXTRECT_WIDTH { pageRectRight_.width
+        const auto SONG_DESC_TEXTRECT_WIDTH { pageRectRight_.width
                                               - (SONG_DESC_HORIZ_MARGIN * 2.0f) };
 
-        auto const SONG_DESC_TEXTRECT_HEIGHT {
+        const auto SONG_DESC_TEXTRECT_HEIGHT {
             ((pageRectRight_.top + pageRectRight_.height) - songDescTextRectTop) - VERT_SPACER
         };
 
@@ -607,7 +607,7 @@ namespace popup
 
     bool PopupStageMusicSheet::HandleSongPlay()
     {
-        auto const SONG_PTR { CurrentSelectedSong() };
+        const auto SONG_PTR { CurrentSelectedSong() };
 
         if (CanPlaySong(SONG_PTR))
         {

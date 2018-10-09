@@ -35,7 +35,7 @@ namespace interact
             inline const std::vector<std::string> RankAll()
             {
                 std::vector<std::string> rankAll { RankLow() };
-                auto const RANK_HIGH { RankHigh() };
+                const auto RANK_HIGH { RankHigh() };
                 std::copy(std::begin(RANK_HIGH), std::end(RANK_HIGH), std::back_inserter(rankAll));
                 return rankAll;
             }

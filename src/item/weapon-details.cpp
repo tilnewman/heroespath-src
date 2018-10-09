@@ -36,7 +36,7 @@ namespace item
         const WeaponDetails WeaponDetailLoader::LookupWeaponDetails(const std::string & NAME)
         {
             WeaponDetails details;
-            auto const WAS_FOUND { weaponDetailsMap_.Find(NAME, details) };
+            const auto WAS_FOUND { weaponDetailsMap_.Find(NAME, details) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 WAS_FOUND,
@@ -48,7 +48,7 @@ namespace item
 
         void WeaponDetailLoader::LoadFromGameDataFile()
         {
-            for (auto const & WEAPON_TYPE_WRAPPER : WeaponTypeWrapper::MakeCompleteSet())
+            for (const auto & WEAPON_TYPE_WRAPPER : WeaponTypeWrapper::MakeCompleteSet())
             {
                 if (WEAPON_TYPE_WRAPPER.IsBreath())
                 {
@@ -72,8 +72,8 @@ namespace item
             WeaponDetails weaponDetails;
 
             // lookup detail value string in the GameDataFile
-            auto const KEY_STR { "heroespath-item-weapon-details-" + WEAPON_NAME };
-            auto const VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
+            const auto KEY_STR { "heroespath-item-weapon-details-" + WEAPON_NAME };
+            const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             // break the line of text into comma separated field strings
             std::vector<std::string> fieldsVec;

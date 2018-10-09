@@ -58,7 +58,7 @@ namespace popup
     {
         if (isChangingImageAllowed_)
         {
-            auto const COUNT_MAX { CountMax() };
+            const auto COUNT_MAX { CountMax() };
             auto index { static_cast<std::size_t>(
                 sliderbarUPtr_->PositionRatio() * static_cast<float>(COUNT_MAX)) };
 
@@ -187,16 +187,16 @@ namespace popup
                 SetupContent(true);
             }
 
-            auto const CURR_SCALE { targetScaleCurr_ * currRatio };
+            const auto CURR_SCALE { targetScaleCurr_ * currRatio };
             spriteCurr_.setScale(CURR_SCALE, CURR_SCALE);
 
-            auto const PREV_SCALE { startScalePrev_ * (1.0f - currRatio) };
+            const auto PREV_SCALE { startScalePrev_ * (1.0f - currRatio) };
             spritePrev_.setScale(PREV_SCALE, PREV_SCALE);
 
-            auto const CURR_POS_TOP { imagePosTop_
+            const auto CURR_POS_TOP { imagePosTop_
                                       - (spriteCurr_.getGlobalBounds().height * 0.5f) };
 
-            auto const PREV_POS_TOP { imagePosTop_
+            const auto PREV_POS_TOP { imagePosTop_
                                       - (spritePrev_.getGlobalBounds().height * 0.5f) };
 
             if (willShowImageCount_)
@@ -208,20 +208,20 @@ namespace popup
 
             if (areImagesMovingLeft_)
             {
-                auto const CURR_POS_LEFT { (imagesRect_.left + imagesRect_.width)
+                const auto CURR_POS_LEFT { (imagesRect_.left + imagesRect_.width)
                                            - (currRatio * travelDistCurr_) };
 
                 spriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
 
-                auto const PREV_POS_LEFT { startPosXPrev_ - (currRatio * travelDistPrev_) };
+                const auto PREV_POS_LEFT { startPosXPrev_ - (currRatio * travelDistPrev_) };
                 spritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
             }
             else
             {
-                auto const CURR_POS_LEFT { imagesRect_.left + (currRatio * travelDistCurr_) };
+                const auto CURR_POS_LEFT { imagesRect_.left + (currRatio * travelDistCurr_) };
                 spriteCurr_.setPosition(CURR_POS_LEFT, CURR_POS_TOP);
 
-                auto const PREV_POS_LEFT { startPosXPrev_ + (currRatio * travelDistPrev_) };
+                const auto PREV_POS_LEFT { startPosXPrev_ + (currRatio * travelDistPrev_) };
                 spritePrev_.setPosition(PREV_POS_LEFT, PREV_POS_TOP);
             }
         }
@@ -256,8 +256,8 @@ namespace popup
             return;
         }
 
-        auto const NEW_IMAGE_INDEX_TO_USE { [&]() {
-            auto const COUNT_MAX { CountMax() };
+        const auto NEW_IMAGE_INDEX_TO_USE { [&]() {
+            const auto COUNT_MAX { CountMax() };
 
             if (NEW_IMAGE_INDEX_PARAM >= COUNT_MAX)
             {
@@ -302,20 +302,20 @@ namespace popup
         spriteCurr_.setTexture(GetCurrentCachedTexture(imageIndex_).Get(), true);
         spriteCurr_.setScale(1.0f, 1.0f);
 
-        auto const POS_LEFT { textRegion_.left
+        const auto POS_LEFT { textRegion_.left
                               + ((areImagesMovingLeft_) ? textRegion_.width : 0.0f) };
 
-        auto const POS_TOP { imagePosTop_ };
+        const auto POS_TOP { imagePosTop_ };
 
         spriteCurr_.setPosition(POS_LEFT, POS_TOP);
 
-        auto const RESIZE_RATIO { 0.8f };
-        auto const SPRITE_TARGET_WIDTH { imagesRect_.width * RESIZE_RATIO };
-        auto const SPRITE_TARGET_HEIGHT { imagesRect_.height * RESIZE_RATIO };
+        const auto RESIZE_RATIO { 0.8f };
+        const auto SPRITE_TARGET_WIDTH { imagesRect_.width * RESIZE_RATIO };
+        const auto SPRITE_TARGET_HEIGHT { imagesRect_.height * RESIZE_RATIO };
 
-        auto const SCALE_HORIZ { SPRITE_TARGET_WIDTH / spriteCurr_.getGlobalBounds().width };
+        const auto SCALE_HORIZ { SPRITE_TARGET_WIDTH / spriteCurr_.getGlobalBounds().width };
 
-        auto const SCALE_VERT { SPRITE_TARGET_HEIGHT / spriteCurr_.getGlobalBounds().height };
+        const auto SCALE_VERT { SPRITE_TARGET_HEIGHT / spriteCurr_.getGlobalBounds().height };
 
         targetScaleCurr_ = std::min(SCALE_HORIZ, SCALE_VERT);
         spriteCurr_.setScale(0.0f, 0.0f);
@@ -345,7 +345,7 @@ namespace popup
         sf::Sprite tempSprite(spriteCurr_);
         tempSprite.setScale(targetScaleCurr_, targetScaleCurr_);
 
-        auto const POS_LEFT_CENTERED { (textRegion_.left + (textRegion_.width * 0.5f))
+        const auto POS_LEFT_CENTERED { (textRegion_.left + (textRegion_.width * 0.5f))
                                        - (tempSprite.getGlobalBounds().width * 0.5f) };
 
         if (areImagesMovingLeft_)
@@ -399,8 +399,8 @@ namespace popup
         else if (KEY_EVENT.code == sf::Keyboard::Num9)
             targetIndex = 8;
 
-        auto const COUNT_MAX { CountMax() };
-        auto const ONE_OVER_COUNT { 1.0f / static_cast<float>(COUNT_MAX) };
+        const auto COUNT_MAX { CountMax() };
+        const auto ONE_OVER_COUNT { 1.0f / static_cast<float>(COUNT_MAX) };
 
         if ((imageIndex_ == targetIndex) || (targetIndex > (COUNT_MAX - 1)))
         {
@@ -419,7 +419,7 @@ namespace popup
     {
         if (imageIndex_ > 0)
         {
-            auto const NEW_INDEX { imageIndex_ - 1 };
+            const auto NEW_INDEX { imageIndex_ - 1 };
             isChangingImageAllowed_ = false;
 
             sliderbarUPtr_->PositionRatio(
@@ -437,11 +437,11 @@ namespace popup
 
     bool PopupStageImageSelect::KeyReleaseHandeRight()
     {
-        auto const COUNT_MAX { CountMax() };
+        const auto COUNT_MAX { CountMax() };
 
         if (imageIndex_ < (COUNT_MAX - 1))
         {
-            auto const NEW_INDEX { imageIndex_ + 1 };
+            const auto NEW_INDEX { imageIndex_ + 1 };
 
             isChangingImageAllowed_ = false;
 
@@ -474,9 +474,9 @@ namespace popup
     {
         PopupStageBase::SetupSliderbar();
 
-        auto const SLIDERBAR_LENGTH { textRegion_.width * 0.75f }; // found by experiment
+        const auto SLIDERBAR_LENGTH { textRegion_.width * 0.75f }; // found by experiment
 
-        auto const SLIDERBAR_POS_LEFT { textRegion_.left
+        const auto SLIDERBAR_POS_LEFT { textRegion_.left
                                         + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
 
         sliderbarUPtr_ = std::make_unique<sfml_util::SliderBar>(

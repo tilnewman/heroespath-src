@@ -213,7 +213,7 @@ namespace combat
                 descTextRegionUPtr_->draw(target, states);
             }
 
-            for (auto const & ITEM_WITH_TEXT_UPTR : itemWithTextUVec_)
+            for (const auto & ITEM_WITH_TEXT_UPTR : itemWithTextUVec_)
             {
                 target.draw(*ITEM_WITH_TEXT_UPTR, states);
             }
@@ -432,8 +432,8 @@ namespace combat
         item::ItemPVec_t weaponItemsToDisplay;
         item::ItemPVec_t weaponItemsToIgnore;
 
-        auto const ITEMS_EQUIPPED_VEC { creaturePtr->Inventory().ItemsEquipped() };
-        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        const auto ITEMS_EQUIPPED_VEC { creaturePtr->Inventory().ItemsEquipped() };
+        for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
@@ -444,7 +444,7 @@ namespace combat
         // only list bodypart weapons if there are not any others equipped
         if (weaponItemsToDisplay.empty())
         {
-            for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+            for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -454,7 +454,7 @@ namespace combat
         }
         else
         {
-            for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+            for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -467,13 +467,13 @@ namespace combat
             itemWithTextUVec_.emplace_back(std::make_unique<ItemWithText>(ITEM_PTR));
         };
 
-        for (auto const & NEXT_ITEM_PTR : weaponItemsToDisplay)
+        for (const auto & NEXT_ITEM_PTR : weaponItemsToDisplay)
         {
             makeAndppendItemWithText(NEXT_ITEM_PTR);
         }
 
         // then armor
-        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->IsArmor())
             {
@@ -482,7 +482,7 @@ namespace combat
         }
 
         // then misc
-        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Not)
             {
@@ -491,7 +491,7 @@ namespace combat
         }
 
         // then everything else (clothes, etc) if not already added or ignored
-        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (const auto & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             const auto ALREADY_ADDED { std::any_of(
                 std::cbegin(itemWithTextUVec_),
@@ -500,7 +500,7 @@ namespace combat
 
             if (ALREADY_ADDED == false)
             {
-                auto const WILL_IGNORE { std::find(
+                const auto WILL_IGNORE { std::find(
                                              std::cbegin(weaponItemsToIgnore),
                                              std::cend(weaponItemsToIgnore),
                                              NEXT_ITEM_PTR)

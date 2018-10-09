@@ -73,10 +73,10 @@ namespace sfml_util
 
             sprite_.rotate(misc::random::Float(0.5f, 3.0f));
 
-            auto const SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
+            const auto SLIDER_POS { slider_.Update(ELAPSED_TIME_SEC) };
 
             // set scale
-            auto const SCALE { (
+            const auto SCALE { (
                 (SLIDER_POS < 0.5f) ? targetScale_ * (SLIDER_POS * 2.0f)
                                     : targetScale_ * (1.0f - ((SLIDER_POS - 0.5f) * 2.0f))) };
 
@@ -140,13 +140,13 @@ namespace sfml_util
                 emitTimerDurationSec_
                     = ValueWithRandomVariance(SEC_PER_EMIT_BASE_, SEC_PER_EMIT_VAR_RATIO_);
 
-                auto const ADJ_RECT { sfutil::ShrinkToSquareAndReCenterCopy(REGION_) };
+                const auto ADJ_RECT { sfutil::ShrinkToSquareAndReCenterCopy(REGION_) };
 
-                auto const POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
-                auto const POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
+                const auto POS_LEFT { ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
+                const auto POS_TOP { ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
 
                 const sf::Texture & RANDOM_TEXTURE_REF { [&]() {
-                    auto const RAND { misc::random::Int(2) };
+                    const auto RAND { misc::random::Int(2) };
                     if (RAND == 0)
                     {
                         return sparkCachedTexture1_.Get();
@@ -201,7 +201,7 @@ namespace sfml_util
             }
             else
             {
-                auto const VARIATION_SPAN { BASE * VARIANCE_RATIO };
+                const auto VARIATION_SPAN { BASE * VARIANCE_RATIO };
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }

@@ -394,7 +394,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
     }
 
     {
-        auto const IMAGE1(quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS));
+        const auto IMAGE1(quickLoadByKey(IMAGE1_PATH_KEY, ALL_OPTIONS));
 
         sf::Texture texture;
         texture.loadFromImage(IMAGE1);

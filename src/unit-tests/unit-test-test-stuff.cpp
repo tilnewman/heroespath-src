@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CornerCases)
 
 BOOST_AUTO_TEST_CASE(isUnique_SingleValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         const ts::IntVec_t SINGLE_VALUE(1, VALUE);
 
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(isUnique_SingleValues)
 
 BOOST_AUTO_TEST_CASE(isUnique_RepeatedValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         const ts::IntVec_t REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
 
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(isUnique_RepeatedValues)
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
         for (int i { 0 }; i <= VALUE; ++i)
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
 
 BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CornerCases)
 
 BOOST_AUTO_TEST_CASE(isSorted_SingleValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         const ts::IntVec_t SINGLE_VALUE(1, VALUE);
 
@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE(isSorted_SingleValues)
 
 BOOST_AUTO_TEST_CASE(isSorted_RepeatedValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         const ts::IntVec_t REPEATED_VALUES(static_cast<std::size_t>(VALUE), VALUE);
 
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(isSorted_RepeatedValues)
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValues;
         for (int i { 0 }; i <= VALUE; ++i)
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
 
 BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
 {
-    for (auto const VALUE : ts::TEST_COUNTS)
+    for (const auto VALUE : ts::TEST_COUNTS)
     {
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i { 0 }; i <= VALUE; ++i)

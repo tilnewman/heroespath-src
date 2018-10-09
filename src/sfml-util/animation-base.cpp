@@ -39,7 +39,7 @@ namespace sfml_util
 
     void Animation::RandomVaryTimePerFrame()
     {
-        auto const VARY_SEC_MAX { 0.02f };
+        const auto VARY_SEC_MAX { 0.02f };
         timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }

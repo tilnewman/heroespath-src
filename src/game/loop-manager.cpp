@@ -88,7 +88,7 @@ namespace game
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "LoopManager::Initialize() found instanceUPtr that was null.");
 
-        auto const STARTUP_STAGE_ENUM { static_cast<sfml_util::LoopState::Enum>(
+        const auto STARTUP_STAGE_ENUM { static_cast<sfml_util::LoopState::Enum>(
             sfml_util::LoopState::FromString(startupStageName_)) };
 
         if (STARTUP_STAGE_ENUM != sfml_util::LoopState::Intro)
@@ -155,7 +155,7 @@ namespace game
 
         // set the theme music volume to 25% even if the config file has it set lower so it can
         // always be heard during the intro
-        auto const VOLUME_IF_INTRO_OR_CAMP_STAGE { 25.0f };
+        const auto VOLUME_IF_INTRO_OR_CAMP_STAGE { 25.0f };
         float targetVolumeToUse(sfml_util::MusicOperator::VOLUME_USE_GLOBAL_);
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
         {
@@ -490,7 +490,7 @@ namespace game
 
             currentCommandUPtr->Execute();
 
-            auto const CURRENT_STATE { loop_.GetState() };
+            const auto CURRENT_STATE { loop_.GetState() };
             if (CURRENT_STATE != state_)
             {
                 prevState_ = state_;
@@ -652,7 +652,7 @@ namespace game
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
-        auto const CHANGE_RESULT { sfml_util::Display::Instance()->ChangeVideoMode(
+        const auto CHANGE_RESULT { sfml_util::Display::Instance()->ChangeVideoMode(
             NEW_RES, ANTIALIAS_LEVEL) };
 
         CURRENT_ISTAGE_PTR->HandleResolutionChange();
@@ -668,9 +668,7 @@ namespace game
 
         switch (CHANGE_RESULT)
         {
-            case sfml_util::DisplayChangeResult::Success:
-            {
-                break;
+            case sfml_util::DisplayChangeResult::Success: { break;
             }
 
             case sfml_util::DisplayChangeResult::FailChange:

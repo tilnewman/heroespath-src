@@ -82,7 +82,7 @@ namespace stage
         // Ouroboros
         EntityAdd(ouroborosUPtr_.get());
 
-        auto const BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
+        const auto BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
         const auto BUTTONS_HEIGHT { (BETWEEN_BUTTONS_SPACER * 4.0f)
                                     + resumeButtonUPtr_->GetEntityRegion().height
@@ -118,11 +118,11 @@ namespace stage
             sfutil::DisplayCenterHoriz(exitButtonUPtr_->GetEntityRegion().width),
             sfutil::Bottom(creditsButtonUPtr_->GetEntityRegion()) + BETWEEN_BUTTONS_SPACER);
 
-        auto const ARE_THERE_GAMES_TO_LOAD { []() {
+        const auto ARE_THERE_GAMES_TO_LOAD { []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
             // that does not create all games in order to find just one
-            auto const GAMESTATE_PVEC { game::GameStateFactory::Instance()->LoadAllGames() };
-            for (auto const & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
+            const auto GAMESTATE_PVEC { game::GameStateFactory::Instance()->LoadAllGames() };
+            for (const auto & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
             {
                 delete NEXT_GAMESTATE_PTR.Ptr();
             }

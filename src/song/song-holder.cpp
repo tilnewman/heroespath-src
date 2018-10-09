@@ -112,8 +112,8 @@ namespace song
         static std::size_t songIndex { 0 };
         if (songIndex < Songs::Count)
         {
-            auto const NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };
-            auto const SONG_PTR { Get(NEXT_ENUM) };
+            const auto NEXT_ENUM { static_cast<Songs::Enum>(songIndex) };
+            const auto SONG_PTR { Get(NEXT_ENUM) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (SONG_PTR->Name().empty() == false),
@@ -167,7 +167,7 @@ namespace song
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (Songs::IsValid(E)), "song::Holder::Get(" << E << ") but that value is invalid.");
 
-        auto const INDEX { static_cast<std::size_t>(E) };
+        const auto INDEX { static_cast<std::size_t>(E) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),

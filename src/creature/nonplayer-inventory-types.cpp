@@ -152,7 +152,7 @@ namespace creature
         {
             misc::VectorMap<item::armor::cover_type::Enum, float> coverChanceMap;
 
-            for (auto const & NEXT_CHANCE_PAIR : cover_map)
+            for (const auto & NEXT_CHANCE_PAIR : cover_map)
             {
                 if (NEXT_CHANCE_PAIR.second.IsOwned())
                 {
@@ -168,7 +168,7 @@ namespace creature
             {
                 auto highestChance { 0.0f };
                 auto highestEnum { coverChanceMap.begin()->first };
-                for (auto const & NEXT_CHANCE_PAIR : coverChanceMap)
+                for (const auto & NEXT_CHANCE_PAIR : coverChanceMap)
                 {
                     if (NEXT_CHANCE_PAIR.second > highestChance)
                     {
@@ -293,45 +293,29 @@ namespace creature
         {
             switch (WEALTH_TYPE)
             {
-                case Destitute:
-                {
-                    return "Destitute";
+                case Destitute: { return "Destitute";
                 }
-                case Poor:
-                {
-                    return "Poor";
+                case Poor: { return "Poor";
                 }
-                case LowerMiddle:
-                {
-                    return "LowerMiddle";
+                case LowerMiddle: { return "LowerMiddle";
                 }
-                case UpperMiddle:
-                {
-                    return "UpperMiddle";
+                case UpperMiddle: { return "UpperMiddle";
                 }
-                case Rich:
-                {
-                    return "Rich";
+                case Rich: { return "Rich";
                 }
-                case Lavish:
-                {
-                    return "Lavish";
+                case Lavish: { return "Lavish";
                 }
-                case Royal:
-                {
-                    return "Royal";
+                case Royal: { return "Royal";
                 }
                 case Count:
-                default:
-                {
-                    ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
+                default: { ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
                 }
             }
         }
 
         wealth_type::Enum wealth_type::FromRankType(const rank_class::Enum RANK_CLASS)
         {
-            auto const RANK_CLASS_STR { rank_class::ToString(RANK_CLASS) };
+            const auto RANK_CLASS_STR { rank_class::ToString(RANK_CLASS) };
 
             misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
@@ -339,14 +323,14 @@ namespace creature
 
             for (std::size_t i(0); i < wealth_type::Count; ++i)
             {
-                auto const NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
-                auto const NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
+                const auto NEXT_WEALTH_TYPE { static_cast<wealth_type::Enum>(i) };
+                const auto NEXT_WEALTH_TYPE_NAME { wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
                 std::ostringstream ss;
                 ss << "heroespath-wealthtype-chance-" << RANK_CLASS_STR << "-"
                    << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
-                auto const NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
+                const auto NEXT_VALUE_STR { misc::ConfigFile::Instance()->Value(ss.str()) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -368,8 +352,8 @@ namespace creature
             }
 
             auto cumulative { 0.0f };
-            auto const RAND { misc::random::Float() };
-            for (auto const & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
+            const auto RAND { misc::random::Float() };
+            for (const auto & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
             {
                 if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
                 {
@@ -409,18 +393,18 @@ namespace creature
 
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
-            auto const CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(
+            const auto CHANCE_BASE(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
 
             // adjust for race
-            auto const RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
+            const auto RACE_STR { race::ToString(CHARACTER_PTR->Race()) };
 
-            auto const RACE_KEY {
+            const auto RACE_KEY {
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-race-"
                 + RACE_STR
             };
 
-            auto const RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
+            const auto RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
 
             std::vector<std::string> racePartsVec;
             misc::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
@@ -437,14 +421,14 @@ namespace creature
             float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
 
             // adjust for roles
-            auto const ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
+            const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
-            auto const ROLE_KEY {
+            const auto ROLE_KEY {
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-"
                 + ROLE_STR
             };
 
-            auto const ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
+            const auto ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
 
             std::vector<std::string> rolePartsVec;
             misc::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
@@ -565,13 +549,13 @@ namespace creature
 
             // adjust for race
             {
-                auto const RACE_STR(race::ToString(CHARACTER_PTR->Race()));
+                const auto RACE_STR(race::ToString(CHARACTER_PTR->Race()));
 
-                auto const RACE_KEY {
+                const auto RACE_KEY {
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-" + RACE_STR
                 };
 
-                auto const RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
+                const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
 
                 std::vector<std::string> racePartsVec;
@@ -583,9 +567,9 @@ namespace creature
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << RACE_KEY);
 
-                auto const RARELY_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
-                auto const RELIGIOUS_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
-                auto const MAGICAL_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
+                const auto RARELY_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
+                const auto RELIGIOUS_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
+                const auto MAGICAL_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
 
                 // Why do these values have to add up to one?
                 // After the role adjustments below the values most definitely don't sum to 1.0...?
@@ -603,18 +587,18 @@ namespace creature
 
             // adjust for role
             {
-                auto const ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
+                const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
 
                 std::ostringstream ss;
                 ss << "heroespath-nonplayer-ownershipprofile-"
                    << "ownsmagictype-chance-adjustment-Rarely-role-" << ROLE_STR;
 
-                auto const ROLE_KEY {
+                const auto ROLE_KEY {
                     "heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-"
                     + ROLE_STR
                 };
 
-                auto const ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
+                const auto ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     ROLE_KEY) };
 
                 std::vector<std::string> rolePartsVec;
@@ -674,7 +658,7 @@ namespace creature
             }
 
             // determine
-            auto const RAND(
+            const auto RAND(
                 misc::random::Float(0.0f, (chanceRarely + chanceReligious + chanceRarely)));
 
             if (RAND < chanceMagical)
@@ -698,33 +682,23 @@ namespace creature
         {
             switch (COMPLEXITY_TYPE)
             {
-                case Animal:
-                {
-                    return "Animal";
+                case Animal: { return "Animal";
                 }
-                case Simple:
-                {
-                    return "Simple";
+                case Simple: { return "Simple";
                 }
-                case Moderate:
-                {
-                    return "Moderate";
+                case Moderate: { return "Moderate";
                 }
-                case Complex:
-                {
-                    return "Complex";
+                case Complex: { return "Complex";
                 }
                 case Count:
-                default:
-                {
-                    ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
+                default: { ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
                 }
             }
         }
 
         complexity_type::Enum complexity_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
         {
-            auto const RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
+            const auto RACE_COMPLEXITY_STR { misc::ConfigFile::Instance()->Value(
                 "heroespath-nonplayer-ownershipprofile-complexitytype-race-"
                 + race::ToString(CHARACTER_PTR->Race())) };
 

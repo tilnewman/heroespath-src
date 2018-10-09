@@ -127,7 +127,7 @@ namespace sfml_util
             ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipVert";
         }
 
-        auto const PARTS_STR { (
+        const auto PARTS_STR { (
             (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)

@@ -107,7 +107,7 @@ namespace sfml_util
 
     const TextInfo SliderBarLabeled::CreateTextToDisplay(const float CURRENT_POS_RATIO)
     {
-        auto const CURRENT_POS_PERCENT { static_cast<int>(CURRENT_POS_RATIO * 100.0f) };
+        const auto CURRENT_POS_PERCENT { static_cast<int>(CURRENT_POS_RATIO * 100.0f) };
 
         TextInfo textInfo { TextInfoFromCurrentPositionPercent(CURRENT_POS_PERCENT) };
 

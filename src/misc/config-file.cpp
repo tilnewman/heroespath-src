@@ -77,7 +77,7 @@ namespace misc
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (instanceUPtr_), "ConfigFile::Initialize() found instanceUPtr that was null.");
 
-        auto const LOAD_RESULT { instanceUPtr_->ClearAndLoad() };
+        const auto LOAD_RESULT { instanceUPtr_->ClearAndLoad() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (LOAD_RESULT && (instanceUPtr_->Empty() == false)),
@@ -104,7 +104,7 @@ namespace misc
 
     const std::string ConfigFile::GetMediaPath(const std::string & KEY) const
     {
-        auto const RELATIVE_MEDIA_PATH_STR { Value(KEY) };
+        const auto RELATIVE_MEDIA_PATH_STR { Value(KEY) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (RELATIVE_MEDIA_PATH_STR.empty() == false),

@@ -25,7 +25,7 @@ namespace item
         const misc::Vector::JoinOpt OPTIONS)
     {
         return misc::Vector::Join<ItemPtr_t>(
-            ITEM_PVEC, MAX_COUNT, OPTIONS, [](auto const & ITEM_PTR) -> const std::string {
+            ITEM_PVEC, MAX_COUNT, OPTIONS, [](const auto & ITEM_PTR) -> const std::string {
                 return ITEM_PTR->Name();
             });
     }
@@ -43,7 +43,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [CATEGORY_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
+                [CATEGORY_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
                     return ((ITEM_PTR->Category() & CATEGORY_TYPE) != 0)
                         == (MATCH_OPTION == MatchOpt::Equal);
                 });
@@ -65,7 +65,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [WEAPON_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
+                [WEAPON_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
                     return (
                         ((ITEM_PTR->WeaponType() & WEAPON_TYPE) != 0)
                         == (MATCH_OPTION == MatchOpt::Equal));
@@ -88,7 +88,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [ARMOR_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
+                [ARMOR_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
                     return (
                         (ITEM_PTR->ArmorType() == ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
                 });
@@ -108,7 +108,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [MISC_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
+                [MISC_TYPE, MATCH_OPTION](const auto & ITEM_PTR) {
                     return (
                         (ITEM_PTR->MiscType() == MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
                 });
@@ -128,7 +128,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [MATCH_OPTION](auto const & ITEM_PTR) {
+                [MATCH_OPTION](const auto & ITEM_PTR) {
                     return (ITEM_PTR->IsPixie() == (MATCH_OPTION == MatchOpt::Equal));
                 });
         }
@@ -147,7 +147,7 @@ namespace item
                 ITEM_PVEC.begin(),
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
-                [BROKEN_OPTION](auto const & ITEM_PTR) {
+                [BROKEN_OPTION](const auto & ITEM_PTR) {
                     return (ITEM_PTR->IsBroken() == (BROKEN_OPTION == BrokenOpt::Keep));
                 });
         }
