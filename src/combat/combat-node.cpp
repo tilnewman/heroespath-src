@@ -321,7 +321,9 @@ namespace combat
             wingSprite_.setRotation(0.0f);
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
-            wingFlapSlider_.Reset(0.0f, WING_IMAGE_ROTATION_MAX_);
+
+            wingFlapSlider_
+                = sfml_util::SliderOscillator<float>(0.0f, WING_IMAGE_ROTATION_MAX_, 1.0f);
         }
 
         isFlying_ = IS_FLYING;

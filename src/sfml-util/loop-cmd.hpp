@@ -109,20 +109,19 @@ namespace sfml_util
     public:
         explicit LoopCmd_StartMusic(
             const music::Enum MUSIC_TO_START,
-            const float SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
+            const float SPEED = MusicOperator::FADE_MULT_DEFAULT_IN_,
             const float TARGET_VOLUME = MusicOperator::VOLUME_USE_GLOBAL_)
             : LoopCmd("StartMusic")
             , musicToStart_(MUSIC_TO_START)
             , targetVolume_(TARGET_VOLUME)
-            , speedMult_(SPEED_MULT)
+            , speed_(SPEED)
         {}
 
         virtual ~LoopCmd_StartMusic() = default;
 
         void Execute() override
         {
-            sfml_util::SoundManager::Instance()->MusicStart(
-                musicToStart_, speedMult_, targetVolume_);
+            sfml_util::SoundManager::Instance()->MusicStart(musicToStart_, speed_, targetVolume_);
         }
 
         const std::string Name() const override
@@ -130,7 +129,7 @@ namespace sfml_util
             std::ostringstream ss;
 
             ss << LoopCmd::Name() << "_" << music::ToString(musicToStart_)
-               << "_AtVol=" << targetVolume_ << "_WithSpeedMult=" << speedMult_;
+               << "_AtVol=" << targetVolume_ << "_WithSpeedMult=" << speed_;
 
             return ss.str();
         }
@@ -138,7 +137,7 @@ namespace sfml_util
     private:
         music::Enum musicToStart_;
         float targetVolume_;
-        float speedMult_;
+        float speed_;
     };
 
     // Responsible for fading out music
@@ -147,17 +146,17 @@ namespace sfml_util
     public:
         explicit LoopCmd_StopMusic(
             const music::Enum MUSIC_TO_STOP,
-            const float SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_)
+            const float SPEED = MusicOperator::FADE_MULT_DEFAULT_OUT_)
             : LoopCmd("MusicFadeOut")
             , musicToStop_(MUSIC_TO_STOP)
-            , speedMult_(SPEED_MULT)
+            , speed_(SPEED)
         {}
 
         virtual ~LoopCmd_StopMusic() = default;
 
         void Execute() override
         {
-            sfml_util::SoundManager::Instance()->MusicStop(musicToStop_, speedMult_);
+            sfml_util::SoundManager::Instance()->MusicStop(musicToStop_, speed_);
         }
 
         const std::string Name() const override
@@ -165,26 +164,14 @@ namespace sfml_util
             std::ostringstream ss;
 
             ss << LoopCmd::Name() << "_" << music::ToString(musicToStop_)
-               << "_WithSpeedMult=" << speedMult_;
+               << "_WithSpeedMult=" << speed_;
 
             return ss.str();
         }
 
     private:
         music::Enum musicToStop_;
-        float speedMult_;
-    };
-
-    // Responsible for adding the default stage
-    class LoopCmd_AddStage_Default : public LoopCmd
-    {
-    public:
-        LoopCmd_AddStage_Default()
-            : LoopCmd("AddStageDefault")
-        {}
-
-        virtual ~LoopCmd_AddStage_Default() = default;
-        void Execute() override;
+        float speed_;
     };
 
     // Responsible for setting the hold time
@@ -223,42 +210,28 @@ namespace sfml_util
         void Execute() override;
     };
 
-    // Responsible for setting the current game loop to exit after a fade-out
-    class LoopCmd_ExitAfterFade : public LoopCmd
-    {
-    public:
-        LoopCmd_ExitAfterFade()
-            : LoopCmd("ExitAfterFade")
-        {}
-
-        virtual ~LoopCmd_ExitAfterFade() = default;
-        void Execute() override;
-    };
-
     // Responsible starting a fade-in
     class LoopCmd_FadeIn : public LoopCmd
     {
     public:
         explicit LoopCmd_FadeIn(
-            const sf::Color & FADE_FROM_COLOR = sf::Color::Black,
-            const float SPEED_MULT = 200.0f,
-            const bool WILL_HOLD_FADE = false)
+            const float SPEED,
+            const bool WILL_EXIT_AFTER,
+            const sf::Color & FADE_FROM_COLOR = sf::Color::Black)
             : LoopCmd(std::string("FadeIn"))
-            , speedMult_(SPEED_MULT)
+            , willExitAfter_(WILL_EXIT_AFTER)
+            , speed_(SPEED)
             , fadeFromColor_(FADE_FROM_COLOR)
-            , willHoldAfter_(WILL_HOLD_FADE)
         {}
 
         virtual ~LoopCmd_FadeIn() = default;
-
         void Execute() override;
-
         const std::string Name() const override;
 
     private:
-        float speedMult_;
+        bool willExitAfter_;
+        float speed_;
         sf::Color fadeFromColor_;
-        bool willHoldAfter_;
     };
 
     // Responsible for starting a fade-out
@@ -266,25 +239,19 @@ namespace sfml_util
     {
     public:
         explicit LoopCmd_FadeOut(
-            const sf::Color & FADE_TO_COLOR = sf::Color::Black,
-            const float SPEED_MULT = 300.0f,
-            const bool WILL_HOLD_FADE = false)
+            const float SPEED, const sf::Color & FADE_TO_COLOR = sf::Color::Black)
             : LoopCmd(std::string("FadeOut"))
-            , speedMult_(SPEED_MULT)
+            , speed_(SPEED)
             , fadeToColor_(FADE_TO_COLOR)
-            , willHoldAfter_(WILL_HOLD_FADE)
         {}
 
         virtual ~LoopCmd_FadeOut() = default;
-
         void Execute() override;
-
         const std::string Name() const override;
 
     private:
-        float speedMult_;
+        float speed_;
         sf::Color fadeToColor_;
-        bool willHoldAfter_;
     };
 
     // Responsible for setting the game loop to exit after a keypress

@@ -41,16 +41,14 @@ namespace stage
         , backgroundQuads_(sf::Quads, 4)
         , cachedTextureOpt_()
         , sprite_()
-        , slider_()
+        , slider_(SLIDER_SPEED_, sfml_util::WillOscillate::No, sfml_util::WillAutoStart::No)
         , textRegionUPtr_()
         , sourceRect()
         , itemPtrOpt_()
         , willShowImage_(false)
-        , isBeforeAnyChange_(true)
         , isShowing_(false)
     {
-        slider_.Setup(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 1.0f), SLIDER_SPEED_);
-        slider_.ChangeDirection();
+        slider_.SetTo();
     }
 
     void ItemDetailViewer::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -72,30 +70,21 @@ namespace stage
 
     void ItemDetailViewer::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        const auto PRE_IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
-        const auto IS_FINISHED_MOVING { slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
-        const auto IS_MOVING_TOWARD { slider_.Direction() == sfml_util::Moving::Toward };
+        const auto SLIDER_POSITION_RATIO { slider_.UpdateAndReturnPositionRatio(
+            ELAPSED_TIME_SECONDS) };
 
-        const auto PROGRESS_RATIO { (
-            (IS_MOVING_TOWARD) ? slider_.ProgressRatio() : (1.0f - slider_.ProgressRatio())) };
-
-        if (slider_.ProgressRatio() > 0.1f)
-        {
-            isBeforeAnyChange_ = false;
-        }
-
-        if (isBeforeAnyChange_)
+        if (SLIDER_POSITION_RATIO > 0.1f)
         {
             SetupBackgroundQuadColors(0.0f);
         }
         else
         {
-            SetupBackgroundQuadColors(PROGRESS_RATIO);
+            SetupBackgroundQuadColors(SLIDER_POSITION_RATIO);
         }
 
-        SetupBackgroundQuadPositions(PROGRESS_RATIO);
+        SetupBackgroundQuadPositions(SLIDER_POSITION_RATIO);
 
-        if (IS_FINISHED_MOVING && PRE_IS_MOVING_TOWARD && (slider_.IsMoving() == false))
+        if (slider_.IsAtTo() && slider_.IsStopped())
         {
             SetupImage(itemPtrOpt_);
             SetupText(itemPtrOpt_);
@@ -105,12 +94,12 @@ namespace stage
 
     void ItemDetailViewer::FadeIn(const item::ItemPtr_t ITEM_PTR, const sf::FloatRect & RECT)
     {
-        if (slider_.Direction() == sfml_util::Moving::Away)
+        if (slider_.IsMovingToward() == false)
         {
             sourceRect = RECT;
             itemPtrOpt_ = ITEM_PTR;
 
-            slider_.ChangeDirection();
+            slider_.ReverseDirection();
             slider_.Start();
 
             sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
@@ -119,14 +108,14 @@ namespace stage
 
     void ItemDetailViewer::FadeOut()
     {
-        if (slider_.Direction() == sfml_util::Moving::Toward)
+        if (slider_.IsMovingToward())
         {
             SetupImage(boost::none);
             SetupText(boost::none);
 
             isShowing_ = false;
 
-            slider_.ChangeDirection();
+            slider_.ReverseDirection();
             slider_.Start();
 
             sfml_util::SoundManager::Instance()->PlaySfx_TickOff();

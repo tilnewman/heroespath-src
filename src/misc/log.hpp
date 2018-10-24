@@ -45,15 +45,17 @@ namespace misc
         void Append(
             const std::string & MSG,
             const std::string & FILE_PATH = "",
+            const std::string & FUNCTION_NAME = "",
             const int LINE = LINE_NUMBER_INVALID_)
         {
-            Append(LogPriority::Default, MSG, FILE_PATH, LINE);
+            Append(LogPriority::Default, MSG, FILE_PATH, FUNCTION_NAME, LINE);
         }
 
         void Append(
             const LogPriority::Enum PRIORITY,
             const std::string & MSG,
             const std::string & FILE_PATH = "",
+            const std::string & FUNCTION_NAME = "",
             const int LINE = LINE_NUMBER_INVALID_);
 
     private:
@@ -63,14 +65,18 @@ namespace misc
             const LogPriority::Enum PRIORITY,
             const std::string & MSG,
             const std::string & FILE_PATH,
+            const std::string & FUNCTION_NAME,
             const int LINE) const;
 
         void AppendDateString(std::ostream &) const;
 
         void AppendTimeString(std::ostream &) const;
 
-        void AppendFileAndLineString(
-            const std::string & FILE_PATH, const int LINE, std::ostream &) const;
+        void AppendFileFunctionLineString(
+            const std::string & FILE_PATH,
+            const std::string & FUNCTION_NAME,
+            const int LINE,
+            std::ostream &) const;
 
         void EchoToConsole(const LogPriority::Enum PRIORITY, const std::string & COMPLETE_MSG);
 

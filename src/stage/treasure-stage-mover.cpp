@@ -106,7 +106,7 @@ namespace stage
         {
             for (auto & slider : treasureSliders_)
             {
-                slider.ChangeDirection();
+                slider.ReverseDirection();
                 slider.Start();
             }
 
@@ -132,7 +132,7 @@ namespace stage
                 {
                     if (slider.Direction() == sfml_util::Moving::Toward)
                     {
-                        slider.ChangeDirection();
+                        slider.ReverseDirection();
                     }
 
                     slider.Start();
@@ -155,7 +155,7 @@ namespace stage
             {
                 for (auto & slider : treasureSliders_)
                 {
-                    slider.ChangeDirection();
+                    slider.ReverseDirection();
                     slider.Start();
                 }
             }
@@ -178,7 +178,7 @@ namespace stage
             {
                 for (auto & slider : inventorySliders_)
                 {
-                    slider.ChangeDirection();
+                    slider.ReverseDirection();
                     slider.Start();
                 }
             }
@@ -195,7 +195,7 @@ namespace stage
                 if (slider.GetEntity() == FROM_ENTITY_PTR)
                 {
                     slider.SetEntity(TO_ENTITY_PTR);
-                    TO_ENTITY_PTR->SetEntityPos(slider.Position());
+                    TO_ENTITY_PTR->SetEntityPos(slider.Value());
                 }
             }
 
@@ -204,7 +204,7 @@ namespace stage
                 if (slider.GetEntity() == FROM_ENTITY_PTR)
                 {
                     slider.SetEntity(TO_ENTITY_PTR);
-                    TO_ENTITY_PTR->SetEntityPos(slider.Position());
+                    TO_ENTITY_PTR->SetEntityPos(slider.Value());
                 }
             }
         }
@@ -212,8 +212,8 @@ namespace stage
         bool StageMover::UpdateTime(
             sfml_util::EntitySlider & slider, const float ELAPSED_TIME_SECONDS)
         {
-            const auto IS_STILL_MOVING { slider.UpdateTime(ELAPSED_TIME_SECONDS) };
-            return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
+            const auto IS_STOPPED { slider.UpdateAndReturnIsStopped(ELAPSED_TIME_SECONDS) };
+            return (IS_STOPPED && (slider.IsMovingToward() == false));
         }
 
     } // namespace treasure

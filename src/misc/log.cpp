@@ -88,9 +88,11 @@ namespace misc
         const LogPriority::Enum PRIORITY,
         const std::string & MSG,
         const std::string & FILE_PATH,
+        const std::string & FUNCTION_NAME,
         const int LINE)
     {
-        const auto COMPLETE_MESSAGE { MakeCompleteMessage(PRIORITY, MSG, FILE_PATH, LINE) };
+        const auto COMPLETE_MESSAGE { MakeCompleteMessage(
+            PRIORITY, MSG, FILE_PATH, FUNCTION_NAME, LINE) };
 
         if (IsFileReadyForWriting())
         {
@@ -167,6 +169,7 @@ namespace misc
         const LogPriority::Enum PRIORITY,
         const std::string & MSG,
         const std::string & FILE_PATH,
+        const std::string & FUNCTION_NAME,
         const int LINE) const
     {
         std::ostringstream ss;
@@ -175,7 +178,7 @@ namespace misc
         ss << SEPARATOR_STR_;
         AppendTimeString(ss);
         ss << SEPARATOR_STR_;
-        AppendFileAndLineString(FILE_PATH, LINE, ss);
+        AppendFileFunctionLineString(FILE_PATH, FUNCTION_NAME, LINE, ss);
         ss << SEPARATOR_STR_ << SEPARATOR_STR_ << MSG;
         return ss.str();
     }
@@ -203,10 +206,14 @@ namespace misc
         ostream << "." << std::setfill('0') << std::setw(2) << MILLISECONDS_STR_ORIG.substr(0, 2);
     }
 
-    void Log::AppendFileAndLineString(
-        const std::string & FILE_PATH, const int LINE, std::ostream & ostream) const
+    void Log::AppendFileFunctionLineString(
+        const std::string & FILE_PATH,
+        const std::string & FUNCTION_NAME,
+        const int LINE,
+        std::ostream & ostream) const
     {
         const std::size_t FILE_NAME_LEN_MAX { 40 };
+        const std::size_t FUNCTION_NAME_LEN_MAX { 40 };
         const std::size_t LINE_NUMBER_LEN_MAX { 4 };
 
         const auto FILE_NAME { misc::filesystem::Filename(FILE_PATH) };
@@ -218,6 +225,16 @@ namespace misc
         else
         {
             ostream << std::setfill(' ') << std::setw(FILE_NAME_LEN_MAX) << FILE_NAME << ":";
+        }
+
+        if (FUNCTION_NAME.empty())
+        {
+            ostream << std::string((FUNCTION_NAME_LEN_MAX - 1), ' ') << "?:";
+        }
+        else
+        {
+            ostream << std::setfill(' ') << std::setw(FUNCTION_NAME_LEN_MAX) << FUNCTION_NAME
+                    << ":";
         }
 
         if (LINE < 0)

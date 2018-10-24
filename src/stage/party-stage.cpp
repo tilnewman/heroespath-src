@@ -53,7 +53,7 @@ namespace stage
     PartyStage::PartyStage()
         : Stage(
               "Party",
-              sfml_util::Display::Instance()->FullscreenRect(),
+              sfml_util::Display::Instance()->FullScreenRect(),
               { sfml_util::GuiFont::Default,
                 sfml_util::GuiFont::System,
                 sfml_util::GuiFont::SystemCondensed,
@@ -116,10 +116,9 @@ namespace stage
         , warningTextRegionUPtr_()
         , warningTextSlider_(150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255)))
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("PartyStage's"))
-
         , willDisplayCharacterCountWarningText_(false)
         , unplayedCharactersPVec_()
-        , colorShakerRect_()
+        , listboxSelectedItemColoredRectSlider_()
         , willShowMouseOverPopup_(false)
         , mouseOverPopupTimerSec_(0.0f)
         , mouseOverBackground_()
@@ -501,11 +500,11 @@ namespace stage
 
         if (willShowMouseOverPopup_)
         {
-            target.draw(colorShakerRect_, STATES);
+            target.draw(listboxSelectedItemColoredRectSlider_, STATES);
             target.draw(mouseOverBackground_, STATES);
             target.draw(mouseOverCreatureSprite_, STATES);
 
-            if (mouseOverTextRegionUPtr_ && mouseOverSlider_.IsDone())
+            if (mouseOverTextRegionUPtr_ && mouseOverSlider_.IsStopped())
             {
                 mouseOverTextRegionUPtr_->draw(target, STATES);
             }
@@ -587,7 +586,7 @@ namespace stage
                 const auto CHARACTER_PTR { MOUSEOVER_ELEMENT_PTR_OPT.value()->Element() };
 
                 willShowMouseOverPopup_ = true;
-                mouseOverSlider_.Reset(MOUSEOVER_SLIDER_SPEED_);
+                mouseOverSlider_ = sfml_util::SliderZeroToOne(MOUSEOVER_SLIDER_SPEED_);
 
                 mouseOverCreatureTextureOpt_ = sfml_util::LoadAndCacheImage(CHARACTER_PTR);
                 mouseOverCreatureSprite_.setTexture(mouseOverCreatureTextureOpt_->Get(), true);
@@ -599,14 +598,15 @@ namespace stage
                                                   : partyListBoxUPtr_->ElementRegion(
                                                         MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
 
-                colorShakerRect_.Reset(
+                listboxSelectedItemColoredRectSlider_ = sfml_util::ColoredRectSlider(
                     ELEMENT_RECT,
                     MOUSEOVER_COLORCYCLE_START_,
                     MOUSEOVER_COLORCYCLE_ALT_,
                     MOUSEOVER_COLORCYCLE_SPEED_,
+                    sfml_util::WillOscillate::Yes,
+                    sfml_util::WillAutoStart::Yes,
                     MOUSEOVER_COLORCYCLE_COUNT_);
 
-                colorShakerRect_.Start();
                 mouseOverBackground_.Color(sf::Color::Transparent);
             }
         }
@@ -619,13 +619,13 @@ namespace stage
             return;
         }
 
-        if (colorShakerRect_.IsShaking())
+        if (listboxSelectedItemColoredRectSlider_.IsMoving())
         {
-            colorShakerRect_.Update(ELAPSED_TIME_SECONDS);
+            listboxSelectedItemColoredRectSlider_.Update(ELAPSED_TIME_SECONDS);
         }
         else
         {
-            if (mouseOverSlider_.IsDone())
+            if (mouseOverSlider_.IsStopped())
             {
                 return;
             }

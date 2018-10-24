@@ -14,10 +14,9 @@
 #include "popup/popup-stage-base.hpp"
 #include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/color-shaker.hpp"
-#include "sfml-util/color-slider.hpp"
 #include "sfml-util/list-box.hpp"
 #include "sfml-util/list-element.hpp"
+#include "sfml-util/slider-color.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <string>
@@ -100,7 +99,6 @@ namespace popup
         sfml_util::TextRegionUPtr_t descTextUPtr_;
         sfml_util::CachedTextureOpt_t songCachedTextureOpt_;
         sf::Sprite songSprite_;
-        sfml_util::ColorShaker warnColorShaker_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
@@ -108,9 +106,10 @@ namespace popup
         const sfml_util::FocusColors LISTBOX_COLORSET_;
         sfml_util::BoxEntityInfo listBoxBackgroundInfo_;
         sfml_util::TextInfo listElementTextInfo_;
+        std::size_t currentSongIndex_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
-        std::size_t currentSongIndex_;
+        sfml_util::ColorSlider warnTextColorSlider_;
     };
 
 } // namespace popup

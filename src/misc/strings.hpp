@@ -11,6 +11,7 @@
 //
 #include "misc/log-macros.hpp"
 #include "misc/to-string-prefix-enum.hpp"
+#include "misc/type-helpers.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/type_index.hpp>
@@ -28,26 +29,6 @@ namespace heroespath
 {
 namespace misc
 {
-
-    namespace type_helpers
-    {
-        template <typename T>
-        struct is_number_type
-            : std::integral_constant<
-                  bool,
-                  (std::is_arithmetic<T>::value
-                   && !std::is_same<std::remove_const_t<T>, bool>::value)>
-        {};
-
-        template <typename T>
-        struct is_non_floating_point_number_type
-            : std::integral_constant<
-                  bool,
-                  (std::is_arithmetic<T>::value
-                   && !std::is_same<std::remove_const_t<T>, bool>::value
-                   && !std::is_floating_point<T>::value)>
-        {};
-    } // namespace type_helpers
 
     inline bool IsUpper(const char CHAR) { return ((CHAR >= 'A') && (CHAR <= 'Z')); }
     inline bool IsLower(const char CHAR) { return ((CHAR >= 'a') && (CHAR <= 'z')); }
@@ -159,7 +140,7 @@ namespace misc
     }
 
     // empty strings always return RETURN_ON_ERROR
-    template <typename T, typename = std::enable_if_t<type_helpers::is_number_type<T>::value>>
+    template <typename T, typename = std::enable_if_t<is_number_v<T>>>
     T ToNumber(const std::string & STRING, const T RETURN_ON_ERROR)
     {
         if (STRING.empty())
@@ -220,9 +201,7 @@ namespace misc
         return ss.str();
     }
 
-    template <
-        typename T = int,
-        typename = std::enable_if_t<type_helpers::is_non_floating_point_number_type<T>::value>>
+    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
     const std::string NumberToStringWithOrdinalSuffix(const T NUMBER)
     {
         std::ostringstream ss;
@@ -268,9 +247,7 @@ namespace misc
     //      Find(1, "...", -1)   returns 1
     //      Find(2, "...", -1)   returns 234
     //      Find(3, "...", -1)   returns -1
-    template <
-        typename T = int,
-        typename = std::enable_if_t<type_helpers::is_non_floating_point_number_type<T>::value>>
+    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
     T FindNumber(const std::size_t NTH_NUMBER, const std::string & STRING, const T RETURN_ON_ERROR)
     {
         if (STRING.empty())
@@ -316,9 +293,7 @@ namespace misc
     }
 
     // handy version of the FindNumber() function above, see comments for FindNumber()
-    template <
-        typename T = int,
-        typename = std::enable_if_t<type_helpers::is_non_floating_point_number_type<T>::value>>
+    template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
     T FindNumberLast(const std::string & STRING, const T RETURN_ON_ERROR)
     {
         if (STRING.empty())
@@ -425,6 +400,6 @@ namespace misc
 } // namespace misc
 } // namespace heroespath
 
-#define M_HP_VAR_STR(var) heroespath::misc::NameEqualsValueStr(#var, var, true, "  ")
+#define M_HP_VAR_STR(var) heroespath::misc::NameEqualsValueStr(#var, var, true)
 
 #endif // HEROESPATH_MISC_STRINGS_HPP_INCLUDED

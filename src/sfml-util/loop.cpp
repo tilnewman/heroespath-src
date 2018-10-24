@@ -28,42 +28,33 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const float Loop::NO_HOLD_TIME_(-1.0f);
-    const float Loop::INVALID_MUSIC_FADE_VALUE_(-1.0f);
+    const float Loop::NO_HOLD_TIME_ { -1.0f }; // any negative will work here
+    const float Loop::INVALID_MUSIC_FADE_VALUE_ { -1.0f };
+    const float Loop::FRAME_TIME_SEC_MIN_ { 0.0001f };
 
     Loop::Loop(const std::string & NAME)
         : NAME_(std::string(NAME).append("_Loop"))
         , stagePVec_()
-        , clock_()
         , oneSecondTimerSec_(0.0f)
-        , fader_(
-              0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight())
-        , willHoldFade_(false)
-        , continueFading_(false)
+        , screenFadeColoredRectSlider_()
+        , willHoldAfterFade_(false)
         , willExitAfterFade_(false)
         , willExit_(false)
         , popupStagePtrOpt_()
-        , elapsedTimeSec_(0.0f)
-        , fatalExitEvent_(false)
-        , holdTime_(NO_HOLD_TIME_)
-        , holdTimeCounter_(0.0f)
+        , holdTimeDurationSec_(NO_HOLD_TIME_)
+        , holdTimeElapsedSec_(0.0f)
         , willExitOnKeypress_(false)
         , willExitOnMouseclick_(false)
         , entityWithFocusPtrOpt_()
         , willIgnoreMouse_(false)
         , willIgnoreKeystrokes_(false)
         , popupInfoOpt_()
-        , // okay to be initially without meaningful values
-        hasFadeStarted_(false)
-        , prevEventType_(sf::Event::EventType::Count)
-        , prevKeyPressed_(sf::Keyboard::Key::Unknown)
+        , prevKeyStrokeEventType_(sf::Event::EventType::Count)
+        , prevKeyStrokeEventKey_(sf::Keyboard::Key::Unknown)
         , isMouseHovering_(false)
-        , takeScreenshot_(false)
         , popupCallbackPtrOpt_()
-        , state_(LoopState::Intro)
-        , frameRateVec_()
+        , frameRateVec_(4096, 0.0f)
         , frameRateSampleCount_(0)
-        , willLogFrameRate_(false)
     {}
 
     Loop::~Loop() { FreeAllStages(); }
@@ -96,10 +87,10 @@ namespace sfml_util
         popupCallbackPtrOpt_ = POPUP_HANDLER_PTR;
     }
 
-    void Loop::FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
+    void Loop::FakeMouseClick(const sf::Vector2f & NEW_MOUSE_POS_VF)
     {
-        ProcessMouseButtonLeftPressed(MOUSE_POS_V);
-        ProcessMouseButtonLeftReleased(MOUSE_POS_V);
+        ProcessEventMouseButtonPressedLeft(NEW_MOUSE_POS_VF);
+        ProcessEventMouseButtonReleasedLeft(NEW_MOUSE_POS_VF);
     }
 
     void Loop::TestingStrAppend(const std::string & S)
@@ -146,9 +137,17 @@ namespace sfml_util
         }
     }
 
+    const MouseThisFrame Loop::GatherMouseChanges(sf::Vector2i & prevMousePosVI) const
+    {
+        const auto NEW_MOUSE_POS_VI { Display::Instance()->GetMousePosition() };
+        const auto HAS_MOUSE_MOVED { (NEW_MOUSE_POS_VI != prevMousePosVI) };
+        prevMousePosVI = NEW_MOUSE_POS_VI;
+        return MouseThisFrame(HAS_MOUSE_MOVED, NEW_MOUSE_POS_VI);
+    }
+
     void Loop::LogFrameRate()
     {
-        if (willLogFrameRate_ && (frameRateSampleCount_ > 0))
+        if (frameRateSampleCount_ > 1)
         {
             // find min, max, and average framerate
             auto min { frameRateVec_[0] };
@@ -180,203 +179,172 @@ namespace sfml_util
                 frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE, true) };
 
             M_HP_LOG(
-                "Frame rate min=" << min << ", max=" << max << ", count="
-                                  << frameRateSampleCount_ - 1 << ", avg=" << AVERAGE_FRAMERATE
-                                  << ", std_dev=" << STANDARD_DEVIATION);
-        }
-        else
-        {
-            willLogFrameRate_ = true;
-        }
+                "Framerate after " << (frameRateSampleCount_ - 1) << " frames [" << min << ", "
+                                   << AVERAGE_FRAMERATE << ", " << max
+                                   << "], std_dev=" << STANDARD_DEVIATION);
 
-        frameRateSampleCount_ = 0;
+            frameRateSampleCount_ = 0;
+        }
     }
 
-    bool Loop::ProcessOneSecondTasks(const sf::Vector2i & NEW_MOUSE_POS, const bool HAS_MOUSE_MOVED)
+    bool Loop::HasOneSecondTimerElapsed(const float ELAPSED_TIME_SEC)
     {
-        auto willProcessOneSecondTasks { false };
-
-        if (false == continueFading_)
+        // "one-second-tasts" are paused while fading
+        // if (false == IsFading())
         {
-            oneSecondTimerSec_ += elapsedTimeSec_;
+            oneSecondTimerSec_ += ELAPSED_TIME_SEC;
         }
 
         if (oneSecondTimerSec_ > 1.0f)
         {
-            willProcessOneSecondTasks = true;
-
             oneSecondTimerSec_ = 0.0f;
-
-            LogFrameRate();
-
-            if ((false == continueFading_) && (HAS_MOUSE_MOVED == false)
-                && (isMouseHovering_ == false))
-            {
-                isMouseHovering_ = true;
-
-                const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
-
-                // popup stages process exclusively when present
-                if (popupStagePtrOpt_)
-                {
-                    popupStagePtrOpt_.value()->SetMouseHover(NEW_MOUSE_POS_F, true);
-                }
-                else
-                {
-                    for (auto & nextStagePtr : stagePVec_)
-                    {
-                        nextStagePtr->SetMouseHover(NEW_MOUSE_POS_F, true);
-                    }
-                }
-            }
+            return true;
         }
-
-        return willProcessOneSecondTasks;
+        else
+        {
+            return false;
+        }
     }
 
-    void Loop::ProcessMouseHover(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED)
+    void Loop::StartMouseHover(const MouseThisFrame & MOUSE_THIS_FRAME)
     {
-        if (isMouseHovering_ && HAS_MOUSE_MOVED)
+        // don't show mouseovers while fading, if the mouse is moving, or if already showing
+        if ((IsFading() == false) && (MOUSE_THIS_FRAME.has_moved == false)
+            && (false == isMouseHovering_))
         {
-            isMouseHovering_ = false;
+            isMouseHovering_ = true;
 
-            const sf::Vector2f MOUSE_POS_NEW_F(NEW_MOUSE_POS);
-
-            // popup stages process exclusively when present
+            // popup stages handle mouseovers exclusively when present
             if (popupStagePtrOpt_)
             {
-                popupStagePtrOpt_.value()->SetMouseHover(MOUSE_POS_NEW_F, false);
+                popupStagePtrOpt_.value()->SetMouseHover(MOUSE_THIS_FRAME.pos_vf, true);
             }
             else
             {
                 for (auto & nextStagePtr : stagePVec_)
                 {
-                    nextStagePtr->SetMouseHover(MOUSE_POS_NEW_F, false);
+                    nextStagePtr->SetMouseHover(MOUSE_THIS_FRAME.pos_vf, true);
                 }
             }
         }
     }
 
-    void Loop::ProcessHoldTime()
+    void Loop::StopMouseHover(const MouseThisFrame & MOUSE_THIS_FRAME)
     {
-        if (holdTime_ > 0.0f)
+        if (isMouseHovering_ && MOUSE_THIS_FRAME.has_moved)
         {
-            holdTimeCounter_ += elapsedTimeSec_;
-            if (holdTimeCounter_ > holdTime_)
+            isMouseHovering_ = false;
+
+            // popup stages process exclusively when present
+            if (popupStagePtrOpt_)
             {
-                holdTime_ = NO_HOLD_TIME_;
+                popupStagePtrOpt_.value()->SetMouseHover(MOUSE_THIS_FRAME.pos_vf, false);
+            }
+            else
+            {
+                for (auto & nextStagePtr : stagePVec_)
+                {
+                    nextStagePtr->SetMouseHover(MOUSE_THIS_FRAME.pos_vf, false);
+                }
+            }
+        }
+    }
+
+    void Loop::ProcessHoldTime(const float ELAPSED_TIME_SEC)
+    {
+        if (holdTimeDurationSec_ > 0.0f)
+        {
+            holdTimeElapsedSec_ += ELAPSED_TIME_SEC;
+
+            if (holdTimeElapsedSec_ > holdTimeDurationSec_)
+            {
+                holdTimeDurationSec_ = NO_HOLD_TIME_;
                 willExit_ = true;
             }
         }
     }
 
-    void Loop::ProcessFader()
+    void Loop::ProcessFade(const float ELAPSED_TIME_SEC)
     {
-        if ((hasFadeStarted_) && ((continueFading_ || willHoldFade_)))
-        {
-            Display::Instance()->DrawFader(fader_);
-        }
-
-        if (continueFading_)
+        if (IsFading())
         {
             game::LoopManager::Instance()->HandleTransitionBeforeFade();
 
-            continueFading_ = !fader_.Update(elapsedTimeSec_);
+            const auto DID_FADE_FINISH { screenFadeColoredRectSlider_.UpdateAndReturnIsStopped(
+                ELAPSED_TIME_SEC) };
 
-            hasFadeStarted_ = true;
-
-            if ((false == continueFading_) && willExitAfterFade_)
+            if (DID_FADE_FINISH && willExitAfterFade_)
             {
                 willExit_ = true;
             }
         }
-    }
 
-    void Loop::ProcessPopup()
-    {
-        if (popupStagePtrOpt_)
+        if (IsFading() || willHoldAfterFade_)
         {
-            popupStagePtrOpt_.value()->UpdateTime(elapsedTimeSec_);
-            Display::Instance()->DrawStage(popupStagePtrOpt_.value());
+            Display::Instance()->DrawFullScreenFader(screenFadeColoredRectSlider_);
         }
     }
 
-    void Loop::ProcessEvents(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED)
+    void Loop::ProcessEvents(const sf::Vector2f & MOUSE_POS_VF)
     {
-        if ((false == willIgnoreMouse_) && HAS_MOUSE_MOVED)
+        sf::Event event;
+        if (Display::Instance()->PollEvent(event))
         {
-            ProcessMouseMove(NEW_MOUSE_POS);
-        }
-
-        sf::Event e;
-        if (Display::Instance()->PollEvent(e))
-        {
-            // unexpected window close exit condition
-            if (e.type == sf::Event::Closed)
-            {
-                M_HP_LOG_WRN(NAME_ << " UNEXPECTED WINDOW CLOSE");
-                Display::Instance()->Close();
-                fatalExitEvent_ = true;
-            }
-
-            if ((e.type == sf::Event::KeyPressed) || (e.type == sf::Event::KeyReleased))
-            {
-                ProcessKeyStrokes(e);
-            }
-
-            if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseButtonPressed))
-            {
-                if (e.mouseButton.button == sf::Mouse::Left)
-                {
-                    const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
-
-                    ProcessMouseButtonLeftPressed(NEW_MOUSE_POS_F);
-                }
-                else
-                {
-                    M_HP_LOG("Unsupported mouse button pressed: " << e.mouseButton.button);
-                }
-            }
-
-            if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseButtonReleased))
-            {
-                if (e.mouseButton.button == sf::Mouse::Left)
-                {
-                    const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
-
-                    ProcessMouseButtonLeftReleased(NEW_MOUSE_POS_F);
-                }
-                else
-                {
-                    M_HP_LOG("Unsupported mouse button released: " << e.mouseButton.button);
-                }
-            }
-
-            if ((false == willIgnoreMouse_) && (e.type == sf::Event::MouseWheelMoved))
-            {
-                ProcessMouseWheelRoll(e, NEW_MOUSE_POS);
-            }
+            ProcessEvent(event, MOUSE_POS_VF);
         }
     }
 
-    void Loop::ProcessKeyStrokes(const sf::Event & EVENT)
+    void Loop::ProcessEvent(const sf::Event & EVENT, const sf::Vector2f & MOUSE_POS_VF)
     {
-        if ((EVENT.type != prevEventType_) || (EVENT.key.code != prevKeyPressed_))
+        if (EVENT.type == sf::Event::Closed)
         {
-            prevEventType_ = EVENT.type;
-            prevKeyPressed_ = EVENT.key.code;
-
-            std::ostringstream ss;
-            ss << "Key " << ((EVENT.type == sf::Event::KeyReleased) ? "released" : "pressed")
-               << ": " << EVENT.key.code << ((willIgnoreKeystrokes_) ? " IGNORED" : "");
-
-            M_HP_LOG(ss.str());
+            M_HP_LOG_ERR(NAME_ << " UNEXPECTED WINDOW CLOSE");
+            Display::Instance()->Close();
+            willExit_ = true;
         }
-
-        // allow screenshots even if keystrokes are ignored
-        if (EVENT.key.code == sf::Keyboard::F12)
+        else if ((EVENT.type == sf::Event::KeyPressed) || (EVENT.type == sf::Event::KeyReleased))
         {
-            takeScreenshot_ = true;
+            ProcessEventKeyStroke(EVENT);
+            return;
+        }
+        else if ((false == willIgnoreMouse_) && (EVENT.mouseButton.button == sf::Mouse::Left))
+        {
+            if (EVENT.type == sf::Event::MouseButtonPressed)
+            {
+                ProcessEventMouseButtonPressedLeft(MOUSE_POS_VF);
+            }
+            else if (EVENT.type == sf::Event::MouseButtonReleased)
+            {
+                ProcessEventMouseButtonReleasedLeft(MOUSE_POS_VF);
+            }
+
+            // else if (EVENT.type == sf::Event::MouseWheelMoved)
+            //{
+            //    ProcessMouseWheelRoll(EVENT, NEW_MOUSE_POS_VF);
+            //}
+        }
+    }
+
+    void Loop::ProcessEventKeyStroke(const sf::Event & EVENT)
+    {
+        const auto IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV {
+            (EVENT.type != prevKeyStrokeEventType_) || (EVENT.key.code != prevKeyStrokeEventKey_)
+        };
+
+        if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV)
+        {
+            prevKeyStrokeEventType_ = EVENT.type;
+            prevKeyStrokeEventKey_ = EVENT.key.code;
+
+            M_HP_LOG(
+                "Key " << ((EVENT.type == sf::Event::KeyReleased) ? "released" : "pressed") << ": "
+                       << EVENT.key.code << ((willIgnoreKeystrokes_) ? " IGNORED" : ""));
+
+            // allow screenshots even if keystrokes are ignored
+            if (EVENT.key.code == sf::Keyboard::F12)
+            {
+                Display::Instance()->TakeScreenshot();
+            }
         }
 
         if (willIgnoreKeystrokes_)
@@ -384,10 +352,12 @@ namespace sfml_util
             return;
         }
 
+        const auto IS_KEYPRESS { EVENT.type == sf::Event::KeyPressed };
+
         // popup stages process exclusively when present
         if (popupStagePtrOpt_)
         {
-            if (EVENT.type == sf::Event::KeyPressed)
+            if (IS_KEYPRESS)
             {
                 popupStagePtrOpt_.value()->KeyPress(EVENT.key);
             }
@@ -401,7 +371,7 @@ namespace sfml_util
             // give event to stages for processing
             for (auto & nextStagePtr : stagePVec_)
             {
-                if (EVENT.type == sf::Event::KeyPressed)
+                if (IS_KEYPRESS)
                 {
                     nextStagePtr->KeyPress(EVENT.key);
                 }
@@ -417,50 +387,48 @@ namespace sfml_util
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             game::LoopManager::Instance()->TransitionTo_Exit();
+            willExit_ = true;
         }
-        if ((EVENT.key.code == sf::Keyboard::Escape)
-            && (game::LoopManager::Instance()->GetState() == LoopState::Test))
+
+        if (willExitOnKeypress_)
         {
-            M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED WHILE TESTING.  Bail.");
-            game::LoopManager::Instance()->TransitionTo_Exit();
-        }
-        else
-        {
-            if (willExitOnKeypress_)
-            {
-                M_HP_LOG(NAME_ << " key event while willExitOnKeypress.  Exiting the loop.");
-                sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-                willExit_ = true;
-            }
+            M_HP_LOG(NAME_ << " key event while willExitOnKeypress.  Exiting the loop.");
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            willExit_ = true;
         }
     }
 
-    void Loop::ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS)
+    void Loop::ProcessEventMouseMove(const MouseThisFrame & MOUSE_THIS_FRAME)
     {
+        if (willIgnoreMouse_ || (MOUSE_THIS_FRAME.has_moved == false))
+        {
+            return;
+        }
+
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_.value()->UpdateMousePos(NEW_MOUSE_POS);
+            popupStagePtrOpt_.value()->UpdateMousePos(MOUSE_THIS_FRAME.pos_vi);
         }
         else
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                nextStagePtr->UpdateMousePos(NEW_MOUSE_POS);
+                nextStagePtr->UpdateMousePos(MOUSE_THIS_FRAME.pos_vi);
             }
         }
     }
 
-    void Loop::ProcessMouseButtonLeftPressed(const sf::Vector2f & MOUSE_POS_V)
+    void Loop::ProcessEventMouseButtonPressedLeft(const sf::Vector2f & MOUSE_POS_VF)
     {
         if (popupStagePtrOpt_)
         {
-            popupStagePtrOpt_.value()->UpdateMouseDown(MOUSE_POS_V);
+            popupStagePtrOpt_.value()->UpdateMouseDown(MOUSE_POS_VF);
         }
         else
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                nextStagePtr->UpdateMouseDown(MOUSE_POS_V);
+                nextStagePtr->UpdateMouseDown(MOUSE_POS_VF);
             }
         }
 
@@ -472,63 +440,43 @@ namespace sfml_util
         }
     }
 
-    void Loop::ProcessMouseButtonLeftReleased(const sf::Vector2f & MOUSE_POS_V)
+    void Loop::ProcessEventMouseButtonReleasedLeft(const sf::Vector2f & MOUSE_POS_VF)
     {
         if (popupStagePtrOpt_)
         {
-            auto newEntityWithFocusPtrOpt { popupStagePtrOpt_.value()->UpdateMouseUp(MOUSE_POS_V) };
-
-            if (newEntityWithFocusPtrOpt)
-            {
-                const auto NEW_ENTITY_WITH_FOCUS_PTR { newEntityWithFocusPtrOpt.value() };
-
-                RemoveFocus();
-                NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
-                SetFocus(NEW_ENTITY_WITH_FOCUS_PTR);
-            }
+            SetNewFocusEntity(popupStagePtrOpt_.value()->UpdateMouseUp(MOUSE_POS_VF));
         }
         else
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                auto newEntityWithFocusPtrOpt { nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
-
-                if (newEntityWithFocusPtrOpt)
+                if (SetNewFocusEntity(nextStagePtr->UpdateMouseUp(MOUSE_POS_VF)))
                 {
-                    const auto NEW_ENTITY_WITH_FOCUS_PTR { newEntityWithFocusPtrOpt.value() };
-
-                    M_HP_LOG(
-                        "MouseButtonLeftReleased caused focus in stage \""
-                        << nextStagePtr->GetStageName() << "\" on entity \""
-                        << NEW_ENTITY_WITH_FOCUS_PTR->GetEntityName() << "\"");
-
-                    RemoveFocus();
-                    NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
-                    SetFocus(NEW_ENTITY_WITH_FOCUS_PTR);
-
-                    // TODO um...shoudln't we break here?
+                    break;
                 }
             }
         }
     }
 
-    void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i & NEW_MOUSE_POS)
-    {
-        const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
-
-        if (popupStagePtrOpt_)
-        {
-            popupStagePtrOpt_.value()->UpdateMouseWheel(
-                NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
-        }
-        else
-        {
-            for (auto & nextStagePtr : stagePVec_)
-            {
-                nextStagePtr->UpdateMouseWheel(NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
-            }
-        }
-    }
+    // I had problems getting smooth mousewheel motion so I'm pausing this code
+    // void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i &
+    // NEW_MOUSE_POS)
+    //{
+    //    const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
+    //
+    //    if (popupStagePtrOpt_)
+    //    {
+    //        popupStagePtrOpt_.value()->UpdateMouseWheel(
+    //            NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
+    //    }
+    //    else
+    //    {
+    //        for (auto & nextStagePtr : stagePVec_)
+    //        {
+    //            nextStagePtr->UpdateMouseWheel(NEW_MOUSE_POS_F, EVENT.mouseWheelScroll.delta);
+    //        }
+    //    }
+    //}
 
     void Loop::ProcessPopupCallback()
     {
@@ -564,32 +512,30 @@ namespace sfml_util
         }
     }
 
-    void Loop::ProcessScreenshot()
+    void Loop::ProcessFramerate(const float ELAPSED_TIME_SEC_ORIG)
     {
-        if (takeScreenshot_)
-        {
-            takeScreenshot_ = false;
-            Display::Instance()->TakeScreenshot();
-        }
-    }
+        const auto ELAPSED_TIME_SEC_FINAL { (
+            (ELAPSED_TIME_SEC_ORIG > FRAME_TIME_SEC_MIN_) ? ELAPSED_TIME_SEC_ORIG
+                                                          : FRAME_TIME_SEC_MIN_) };
 
-    void Loop::ProcessFramerate()
-    {
-        elapsedTimeSec_ = clock_.getElapsedTime().asSeconds();
-        clock_.restart();
+        frameRateVec_[frameRateSampleCount_++] = (1.0f / ELAPSED_TIME_SEC_FINAL);
 
-        frameRateVec_[frameRateSampleCount_++] = (1.0f / elapsedTimeSec_);
         if (frameRateSampleCount_ >= frameRateVec_.size())
         {
             frameRateVec_.resize(frameRateSampleCount_ * 2);
         }
     }
 
-    void Loop::ProcessTimeUpdate()
+    void Loop::ProcessTimeUpdate(const float ELAPSED_TIME_SEC)
     {
         for (auto & nextStagePtr : stagePVec_)
         {
-            nextStagePtr->UpdateTime(elapsedTimeSec_);
+            nextStagePtr->UpdateTime(ELAPSED_TIME_SEC);
+        }
+
+        if (popupStagePtrOpt_)
+        {
+            popupStagePtrOpt_.value()->UpdateTime(ELAPSED_TIME_SEC);
         }
     }
 
@@ -598,6 +544,11 @@ namespace sfml_util
         for (const auto & ISTAGE_PTR : stagePVec_)
         {
             Display::Instance()->DrawStage(ISTAGE_PTR);
+        }
+
+        if (popupStagePtrOpt_)
+        {
+            Display::Instance()->DrawStage(popupStagePtrOpt_.value());
         }
     }
 
@@ -609,80 +560,103 @@ namespace sfml_util
         }
     }
 
-    bool Loop::Execute()
+    bool Loop::SetNewFocusEntity(const sfml_util::IEntityPtrOpt_t & IENTITY_PTR_OPT)
+    {
+        if (IENTITY_PTR_OPT)
+        {
+            const auto NEW_ENTITY_WITH_FOCUS_PTR { IENTITY_PTR_OPT.value() };
+            RemoveFocus();
+            NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
+            SetFocus(NEW_ENTITY_WITH_FOCUS_PTR);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void Loop::Execute()
     {
         // reset loop variables
+        sf::Clock frameClock;
+        frameRateSampleCount_ = 0;
         willExit_ = false;
-        fatalExitEvent_ = false;
-        auto soundManagerPtr { sfml_util::SoundManager::Instance() };
-        frameRateVec_.resize(4096);
         auto prevMousePos { Display::Instance()->GetMousePosition() };
 
         // consume pre-events
         Display::Instance()->ConsumeEvents();
 
-        clock_.restart();
         while (Display::Instance()->IsOpen() && (false == willExit_))
         {
-            const auto NEW_MOUSE_POS { Display::Instance()->GetMousePosition() };
-            const auto HAS_MOUSE_MOVED { NEW_MOUSE_POS != prevMousePos };
+            // eventually we should move all testing to unit tests and remove this line
+            PerformNextTest();
 
             Display::Instance()->ClearToBlack();
-            ProcessFramerate();
-            soundManagerPtr->UpdateTime(elapsedTimeSec_);
-            PerformNextTest();
-            ProcessMouseHover(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
-            ProcessOneSecondTasks(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
-            ProcessHoldTime();
-            ProcessEvents(NEW_MOUSE_POS, HAS_MOUSE_MOVED);
-            ProcessTimeUpdate();
-            ProcessDrawing();
-            ProcessFader();
-            ProcessPopup();
-            ProcessPopupCallback();
-            Display::Instance()->DisplayFrameBuffer();
-            ProcessScreenshot();
 
-            if (HAS_MOUSE_MOVED)
+            const auto ELAPSED_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
+            frameClock.restart();
+
+            ProcessFramerate(ELAPSED_TIME_SEC);
+
+            const MouseThisFrame MOUSE_THIS_FRAME { GatherMouseChanges(prevMousePos) };
+
+            if (HasOneSecondTimerElapsed(ELAPSED_TIME_SEC))
             {
-                prevMousePos = NEW_MOUSE_POS;
+                LogFrameRate();
+                StartMouseHover(MOUSE_THIS_FRAME);
             }
+
+            ProcessHoldTime(ELAPSED_TIME_SEC);
+            ProcessEventMouseMove(MOUSE_THIS_FRAME);
+            ProcessEvents(MOUSE_THIS_FRAME.pos_vf);
+            ProcessTimeUpdate(ELAPSED_TIME_SEC);
+            sfml_util::SoundManager::Instance()->UpdateTime(ELAPSED_TIME_SEC);
+            ProcessDrawing();
+            ProcessFade(ELAPSED_TIME_SEC);
+            ProcessPopupCallback();
+
+            Display::Instance()->DisplayFrameBuffer();
         }
 
         Display::Instance()->ConsumeEvents();
 
         // reset hold time
-        holdTime_ = NO_HOLD_TIME_;
-        holdTimeCounter_ = 0.0f;
+        holdTimeDurationSec_ = NO_HOLD_TIME_;
+        holdTimeElapsedSec_ = 0.0f;
 
-        // reset fader
+        // reset fade states
         willExitAfterFade_ = false;
-
-        return fatalExitEvent_;
+        willHoldAfterFade_ = false;
     }
 
-    void Loop::FadeOut(
-        const sf::Color & FADE_TO_COLOR, const float SPEED_MULT, const bool WILL_HOLD_FADE)
+    void Loop::FadeOut(const float SPEED, const sf::Color & FADE_TO_COLOR)
     {
-        fader_.UpdateRegion(
-            Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+        screenFadeColoredRectSlider_ = ColoredRectSlider(
+            Display::Instance()->FullScreenRect(),
+            sf::Color::Transparent,
+            FADE_TO_COLOR,
+            SPEED,
+            WillOscillate::No,
+            WillAutoStart::Yes);
 
-        fader_.FadeTo(FADE_TO_COLOR, SPEED_MULT);
-        continueFading_ = true;
+        willHoldAfterFade_ = true;
         willExitAfterFade_ = true;
-        willHoldFade_ = WILL_HOLD_FADE;
     }
 
     void Loop::FadeIn(
-        const sf::Color & FADE_FROM_COLOR, const float SPEED_MULT, const bool WILL_HOLD_FADE)
+        const float SPEED, const bool WILL_EXIT_AFTER, const sf::Color & FADE_FROM_COLOR)
     {
-        fader_.UpdateRegion(
-            Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+        screenFadeColoredRectSlider_ = ColoredRectSlider(
+            Display::Instance()->FullScreenRect(),
+            FADE_FROM_COLOR,
+            sf::Color::Transparent,
+            SPEED,
+            WillOscillate::No,
+            WillAutoStart::Yes);
 
-        fader_.Reset(FADE_FROM_COLOR);
-        fader_.FadeTo(sf::Color::Transparent, SPEED_MULT);
-        continueFading_ = true;
-        willHoldFade_ = WILL_HOLD_FADE;
+        willHoldAfterFade_ = false;
+        willExitAfterFade_ = WILL_EXIT_AFTER;
     }
 
     void Loop::SetMouseVisibility(const bool IS_VISIBLE)

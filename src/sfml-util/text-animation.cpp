@@ -110,7 +110,7 @@ namespace sfml_util
 
             textRegionUPtr_->SetEntityPos(POS_LEFT, POS_TOP);
 
-            isFinished_ = slider_.IsDone();
+            isFinished_ = slider_.IsStopped();
         }
 
         void TextAnimation::draw(sf::RenderTarget & target, sf::RenderStates states) const

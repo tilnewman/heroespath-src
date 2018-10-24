@@ -15,12 +15,15 @@
 
 namespace heroespath
 {
+
 void LogMacroHelper::Append(
     const misc::LogPriority::Enum PRIORITY,
     const std::string & MSG,
     const std::string & FILE,
+    const std::string & FUNCTION,
     const int LINE)
 {
-    misc::Log::Instance()->Append(PRIORITY, MSG, FILE, LINE);
+    misc::Log::Instance()->Append(PRIORITY, MSG, FILE, FUNCTION, LINE);
 }
+
 } // namespace heroespath

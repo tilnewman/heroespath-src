@@ -13,7 +13,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/entity-slider.hpp"
+#include "sfml-util/slider-entity.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
@@ -97,7 +97,7 @@ namespace combat
         void SetupAndStartTransition(
             const CombatNodePtr_t COMBAT_NODE_PTR, const sf::FloatRect & COMABT_REGION);
 
-        float GetTransitionStatus() const { return geSlider_.ProgressRatio(); }
+        float GetTransitionStatus() const { return geSlider_.PositionRatio(); }
 
         bool IsTransitionToComplete() const { return isTransToComplete_; }
         bool IsTransitionBackComplete() const { return isTransBackComplete_; }

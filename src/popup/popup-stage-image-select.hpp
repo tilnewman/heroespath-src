@@ -90,7 +90,7 @@ namespace popup
         float travelDistCurr_;
         float travelDistPrev_;
         std::queue<std::size_t> imageMoveQueue_;
-        sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
+        sfml_util::SliderZeroToOne imageSlider_;
         float imagePosTop_;
     };
 } // namespace popup

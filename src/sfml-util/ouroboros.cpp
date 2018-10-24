@@ -36,15 +36,15 @@ namespace sfml_util
               "media-images-gui-accents-ouroboros",
               ImageOpt::Default | ((WILL_MAKE_BLACK) ? ImageOpt::None : ImageOpt::Invert))
         , sprite_(cachedTexture_.Get())
-        , sizeDrifter_(
+        , sizeSliderDrift_(
               IMAGE_MIN_DRIFT_WIDTH_,
               IMAGE_MAX_DRIFT_WIDTH_,
-              0.1,
-              0.35,
+              0.1f,
+              0.35f,
               IMAGE_INITIAL_WIDTH_,
               IMAGE_MAX_DRIFT_WIDTH_)
-        , shadeDrifter_(5.0f, 25.0f, 0.1, 0.75)
-        , rotSpeedDrifter_(1.0f, 10.0f, 0.25, 0.75)
+        , shadeSliderDrift_(5.0f, 25.0f, 0.1f, 0.75f)
+        , rotSpeedSliderDrift_(1.0f, 10.0f, 0.25f, 0.75f)
     {
         const sf::Vector2f IMAGE_INITIAL_CONSTRAINING_SIZE_V(IMAGE_INITIAL_WIDTH_, 0.0f);
         sfutil::Fit(sprite_, IMAGE_INITIAL_CONSTRAINING_SIZE_V);
@@ -69,15 +69,15 @@ namespace sfml_util
         sprite_.setOrigin(
             sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
 
-        rotation_ += -1.0f * ELAPSED_TIME_SEC * rotSpeedDrifter_.Update(ELAPSED_TIME_SEC);
+        rotation_ += -1.0f * ELAPSED_TIME_SEC * rotSpeedSliderDrift_.Update(ELAPSED_TIME_SEC);
 
         sprite_.setRotation(rotation_);
 
-        sfutil::Fit(sprite_, sf::Vector2f(sizeDrifter_.Update(ELAPSED_TIME_SEC), 0.0f));
+        sfutil::Fit(sprite_, sf::Vector2f(sizeSliderDrift_.Update(ELAPSED_TIME_SEC), 0.0f));
         sfutil::Center(sprite_);
 
         sprite_.setColor(sf::Color(
-            255, 255, 255, static_cast<sf::Uint8>(shadeDrifter_.Update(ELAPSED_TIME_SEC))));
+            255, 255, 255, static_cast<sf::Uint8>(shadeSliderDrift_.Update(ELAPSED_TIME_SEC))));
 
         return true;
     }

@@ -57,7 +57,7 @@ namespace sfml_util
             float rotationSpeed_;
             sf::Color startColor_;
             sf::Color endColor_;
-            sliders::ZeroSliderOnce<float> slider_;
+            SliderZeroToOne slider_;
         };
 
         using CloudVec_t = std::vector<Cloud>;

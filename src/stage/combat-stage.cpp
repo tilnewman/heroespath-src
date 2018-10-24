@@ -185,31 +185,28 @@ namespace stage
         , conditionEffectsTookTurn_(false)
         , conditionEffectsCenterPosV_(0.0f, 0.0f)
         , conditionEffectsWillSkip_(false)
-        ,
-
-        // initiall speed ignored because speed is set before each use,
-        // any value greater than zero will work here
-        slider_(1.0f)
-
+        , slider_()
         , combatAnimationUPtr_(std::make_unique<combat::CombatAnimation>())
         , combatDisplayStagePtr_(new combat::CombatDisplay(combatAnimationUPtr_.get()))
         , settingsButtonUPtr_()
         , pauseDurationSec_(0.0f)
-        ,
-
-        // anything greater than pauseTimeDurationSecs_ will work here
-        pauseElapsedSec_(pauseDurationSec_ + 1.0f)
-        ,
-
-        isPauseCanceled_(false)
+        , pauseElapsedSec_(
+              pauseDurationSec_
+              + 1.0f) // anything greater than pauseTimeDurationSecs_ will work here
+        , isPauseCanceled_(false)
         , turnCreaturePtrOpt_()
-        ,
-
-        goldTextColorShaker_(sfutil::color::Orange, sf::Color::White, TEXT_COLOR_SHAKER_SPEED_)
-        ,
-
-        redTextColorShaker_(
-            sf::Color(255, 127, 127), sf::Color::White, TEXT_COLOR_SHAKER_SPEED_ * 0.65f)
+        , goldTextColorSlider_(
+              sfutil::color::Orange,
+              sf::Color::White,
+              TEXT_COLOR_SHAKER_SPEED_,
+              sfml_util::WillOscillate::Yes,
+              sfml_util::WillAutoStart::Yes)
+        , redTextColorSlider_(
+              sf::Color(255, 127, 127),
+              sf::Color::White,
+              TEXT_COLOR_SHAKER_SPEED_ * 0.65f,
+              sfml_util::WillOscillate::Yes,
+              sfml_util::WillAutoStart::Yes)
         , turnActionInfo_()
         , fightResult_()
         , willRedColorShakeWeaponText_(false)
@@ -233,21 +230,19 @@ namespace stage
         , roarTBoxButtonUPtr_()
         , pounceTBoxButtonUPtr_()
         , runTBoxButtonUPtr_()
-        ,
-
-        // anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
-        statusMsgAnimTimerSec_(STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f)
-        ,
-
-        statusMsgAnimColorShaker_(
-            LISTBOX_HIGHLIGHT_COLOR_, LISTBOX_HIGHLIGHT_ALT_COLOR_, 35.0f, false)
-        ,
-
-        testingTextRegionUPtr_()
+        , statusMsgAnimTimerSec_(
+              STATUSMSG_ANIM_PAUSE_SEC_
+              + 1.0f) // anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
+        , statusMsgAnimColorSlider_(
+              LISTBOX_HIGHLIGHT_COLOR_,
+              LISTBOX_HIGHLIGHT_ALT_COLOR_,
+              35.0f,
+              sfml_util::WillOscillate::Yes,
+              sfml_util::WillAutoStart::Yes)
+        , testingTextRegionUPtr_()
         , pauseTitle_("")
         , clickTimerSec_(-1.0f)
-        , // any negative value will work here
-        clickPosV_(0.0f, 0.0f)
+        , clickPosV_(0.0f, 0.0f) // any negative value will work here
         , isSongAnim1Done_(false)
         , isSongAnim2Done_(false)
         , creatureTitlesVec_()
@@ -905,20 +900,20 @@ namespace stage
             if (enemyActionTBoxRegionUPtr_)
             {
                 enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(
-                    goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+                    goldTextColorSlider_.UpdateAndReturnValue(ELAPSED_TIME_SEC));
             }
         }
 
         if (willRedColorShakeWeaponText_)
         {
             weaponTBoxTextRegionUPtr_->SetEntityColorFgBoth(
-                redTextColorShaker_.Update(ELAPSED_TIME_SEC));
+                redTextColorSlider_.UpdateAndReturnValue(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() && (TurnPhase::PostCenterAndZoomInPause == turnPhase_))
         {
             titleTBoxTextRegionUPtr_->SetEntityColorFgBoth(
-                goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+                goldTextColorSlider_.UpdateAndReturnValue(ELAPSED_TIME_SEC));
         }
 
         if (IsNonPlayerCharacterTurnValid() && enemyActionTBoxRegionUPtr_
@@ -926,7 +921,7 @@ namespace stage
                 || (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
         {
             enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(
-                goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
+                goldTextColorSlider_.UpdateAndReturnValue(ELAPSED_TIME_SEC));
         }
 
         // single-click triggers summary view;
@@ -955,7 +950,7 @@ namespace stage
         if (TurnPhase::DeathAnim == turnPhase_)
         {
             combatAnimationUPtr_->DeathAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 SetTurnPhase(TurnPhase::RepositionAnim);
                 combatAnimationUPtr_->DeathAnimStop(combatDisplayStagePtr_);
@@ -967,7 +962,7 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::Run == animPhase_))
         {
             combatAnimationUPtr_->RunAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 const auto CREATURE_PTR { combatAnimationUPtr_->RunAnimStop() };
 
@@ -987,7 +982,7 @@ namespace stage
             combatAnimationUPtr_->ProjectileShootAnimUpdate(
                 slider_.Update(ELAPSED_TIME_SEC), combatDisplayStagePtr_->BattlefieldRect());
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 HandleApplyDamageTasks();
                 combatAnimationUPtr_->ProjectileShootAnimStop();
@@ -1002,7 +997,7 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::Impact == animPhase_))
         {
             combatAnimationUPtr_->ImpactAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->ImpactAnimStop();
                 HandleApplyDamageTasks();
@@ -1071,7 +1066,7 @@ namespace stage
             && (TurnActionPhase::Roar == turnActionPhase_))
         {
             slider_.Update(ELAPSED_TIME_SEC);
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->ShakeAnimStop(boost::none);
                 PerformRoarEffects();
@@ -1086,7 +1081,7 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::MoveToward == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveTowardAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->MeleeMoveTowardAnimStop();
                 SetAnimPhase(AnimPhase::PostMoveTowardPause);
@@ -1099,7 +1094,7 @@ namespace stage
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::MoveBack == animPhase_))
         {
             combatAnimationUPtr_->MeleeMoveBackAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->MeleeMoveBackAnimStop();
                 SetAnimPhase(AnimPhase::FinalPause);
@@ -1118,7 +1113,7 @@ namespace stage
 
             combatAnimationUPtr_->CenteringUpdate(SLIDER_POS, combatDisplayStagePtr_);
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 StartTurn_Step2(turnCreaturePtrOpt_.value());
             }
@@ -1134,7 +1129,7 @@ namespace stage
             combatAnimationUPtr_->RepositionAnimUpdate(
                 slider_.Update(ELAPSED_TIME_SEC), combatDisplayStagePtr_);
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->RepositionAnimStop();
                 SetTurnPhase(TurnPhase::PostTurnPause);
@@ -1146,7 +1141,7 @@ namespace stage
         if (willClrShkInitStatusMsg_ || (TurnPhase::StatusAnim == turnPhase_))
         {
             statusMsgAnimTimerSec_ += ELAPSED_TIME_SEC;
-            // statusBoxUPtr_->SetHighlightColor(statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC));
+            // statusBoxUPtr_->SetHighlightColor(statusMsgAnimColorSlider_.Update(ELAPSED_TIME_SEC));
 
             if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_PAUSE_SEC_)
             {
@@ -1176,7 +1171,7 @@ namespace stage
                 zoomSliderBarUPtr_->PositionRatio(ZOOM_CURR_VAL);
             }
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->CenteringStop();
                 SetTurnPhase(TurnPhase::PostCenterAndZoomOutPause);
@@ -1207,7 +1202,7 @@ namespace stage
 
             combatAnimationUPtr_->CenteringUpdate(sliderPosAdj, combatDisplayStagePtr_);
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 combatAnimationUPtr_->CenteringStop();
                 SetPreTurnPhase(PreTurnPhase::PostPanPause);
@@ -1222,7 +1217,7 @@ namespace stage
             const auto ZOOM_CURR_VAL(1.0f - SLIDER_POS);
             zoomSliderBarUPtr_->PositionRatio(ZOOM_CURR_VAL);
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 SetPreTurnPhase(PreTurnPhase::PostZoomOutPause);
                 StartPause(POST_ZOOMOUT_PAUSE_SEC_, "PostZOut");
@@ -1249,7 +1244,7 @@ namespace stage
             && (TurnPhase::NotATurn == turnPhase_) && (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
-            slider_.Reset(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
 
             combatAnimationUPtr_->CenteringStart(
                 combatDisplayStagePtr_->GetCenterOfAllNodes(), combatDisplayStagePtr_);
@@ -1556,8 +1551,7 @@ namespace stage
 
         statusBoxUPtr_->SelectNext();
         MoveTurnBoxObjectsOffScreen();
-        statusMsgAnimColorShaker_.Reset();
-        statusMsgAnimColorShaker_.Start();
+        statusMsgAnimColorSlider_.Reset();
         statusMsgAnimTimerSec_ = 0.0f;
         combatDisplayStagePtr_->SetIsStatusMessageAnimating(true);
         willClrShkInitStatusMsg_ = true;
@@ -1576,8 +1570,7 @@ namespace stage
         {
             SetTurnPhase(TurnPhase::StatusAnim);
             MoveTurnBoxObjectsOffScreen();
-            statusMsgAnimColorShaker_.Reset();
-            statusMsgAnimColorShaker_.Start();
+            statusMsgAnimColorSlider_.Reset();
             statusMsgAnimTimerSec_ = 0.0f;
             combatDisplayStagePtr_->SetIsStatusMessageAnimating(true);
         }
@@ -1612,7 +1605,7 @@ namespace stage
             SetAnimPhase(AnimPhase::MoveBack);
             SetupTurnBox();
             combatAnimationUPtr_->MeleeMoveBackAnimStart();
-            slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
             return;
         }
 
@@ -1634,14 +1627,14 @@ namespace stage
             SetAnimPhase(AnimPhase::Impact);
             SetupTurnBox();
             combatAnimationUPtr_->ImpactAnimStart(ANIM_IMPACT_SHAKE_SLIDER_SPEED_);
-            slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
             return;
         }
 
         if (PreTurnPhase::PostPanPause == preTurnPhase_)
         {
             SetPreTurnPhase(PreTurnPhase::ZoomOut);
-            slider_.Reset(ZOOM_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ZOOM_SLIDER_SPEED_);
             return;
         }
 
@@ -1677,7 +1670,7 @@ namespace stage
                 conditionEffectsCenterPosV_ = COMBAT_NODE_PTR->GetEntityPos();
                 combatAnimationUPtr_->ShakeAnimStop(COMBAT_NODE_PTR);
                 combatAnimationUPtr_->DeathAnimStart({ COMBAT_NODE_PTR });
-                slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
+                slider_ = sfml_util::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This the first of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
@@ -1786,7 +1779,7 @@ namespace stage
                 {
                     SetTurnPhase(TurnPhase::CenterAndZoomOut);
                     AnimationCenteringStart(allEffectedCreaturesPVec);
-                    slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+                    slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
                 }
             }
             return;
@@ -1863,7 +1856,7 @@ namespace stage
                     combatDisplayStagePtr_->GetCombatNodesForCreatures(
                         killedNonPlayerCreaturesPVec));
 
-                slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
+                slider_ = sfml_util::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This is the second of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
@@ -2114,7 +2107,7 @@ namespace stage
         combatAnimationUPtr_->CenteringStart(
             combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtrOpt_.value()));
 
-        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
     }
 
     // start pre-pause
@@ -2130,7 +2123,7 @@ namespace stage
             ANIM_CREATURE_SHAKE_SLIDER_SPEED_,
             false);
 
-        goldTextColorShaker_.Reset();
+        goldTextColorSlider_.Reset();
 
         if (conditionEffectsWillSkip_)
         {
@@ -2213,8 +2206,8 @@ namespace stage
 
         MoveTurnBoxObjectsOffScreen();
 
-        goldTextColorShaker_.Reset();
-        redTextColorShaker_.Reset();
+        goldTextColorSlider_.Reset();
+        redTextColorSlider_.Reset();
 
         conditionEffectsCenterPosV_ = sf::Vector2f(0.0f, 0.0f);
 
@@ -2252,7 +2245,7 @@ namespace stage
 
         combatAnimationUPtr_->ShakeAnimStop(
             combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
-        slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
+        slider_ = sfml_util::SliderZeroToOne(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
     bool CombatStage::HandleAttack()
@@ -2368,7 +2361,7 @@ namespace stage
             isShortPostZoomOutPause_ = true;
             creaturesListeningPVec.emplace_back(TURN_CREATURE_PTR);
             AnimationCenteringStart(creaturesListeningPVec);
-            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
             SetupTurnBox();
         }
     }
@@ -2460,7 +2453,7 @@ namespace stage
         isShortPostZoomOutPause_ = true;
         creaturesToCastUponCopyPVec.emplace_back(TURN_CREATURE_PTR);
         AnimationCenteringStart(creaturesToCastUponCopyPVec);
-        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
         SetupTurnBox();
     }
 
@@ -2686,7 +2679,7 @@ namespace stage
 
             creaturesToCenterOnPVec.emplace_back(TURN_CREATURE_PTR);
             AnimationCenteringStart(creaturesToCenterOnPVec);
-            slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+            slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
             SetTurnActionPhase(TurnActionPhase::Roar);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
@@ -3306,7 +3299,7 @@ namespace stage
                 combatAnimationUPtr_->RunAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
 
-                slider_.Reset(ANIM_RUN_SLIDER_SPEED_);
+                slider_ = sfml_util::SliderZeroToOne(ANIM_RUN_SLIDER_SPEED_);
                 SetAnimPhase(AnimPhase::Run);
                 break;
             }
@@ -3344,7 +3337,7 @@ namespace stage
                     combatDisplayStagePtr_->GetCombatNodeForCreature(
                         CREATURE_EFFECTS_VEC[0].GetCreature()));
 
-                slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+                slider_ = sfml_util::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
             }
 
@@ -3379,7 +3372,7 @@ namespace stage
                             WEAPON_PTR_OPT.value(),
                             HIT_INFO.WasHit());
 
-                        slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
+                        slider_ = sfml_util::SliderZeroToOne(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetAnimPhase(AnimPhase::ProjectileShoot);
                         break;
                     }
@@ -3439,7 +3432,7 @@ namespace stage
                     ANIM_IMPACT_SHAKE_SLIDER_SPEED_,
                     true);
 
-                slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
+                slider_ = sfml_util::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
 
                 SetAnimPhase(AnimPhase::Roar);
                 break;
@@ -3775,7 +3768,7 @@ namespace stage
         AnimationCenteringStart(
             creature::CreaturePVec_t { TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR });
 
-        slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
 
         SetupTurnBox();
     }

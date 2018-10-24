@@ -186,8 +186,8 @@ namespace stage
         static const std::string POPUP_NAME_HELP_3_;
         static const std::string POPUP_NAME_IMAGE_SELECTION_;
         //
-        static const double SMOKE_ANIM_SPEED_MIN_;
-        static const double SMOKE_ANIM_SPEED_MAX_;
+        static const float SMOKE_ANIM_SPEED_MIN_;
+        static const float SMOKE_ANIM_SPEED_MAX_;
         //
         const unsigned int DESC_TEXT_FONT_SIZE_;
         const unsigned int RADIO_BUTTON_TEXT_SIZE_;
@@ -196,8 +196,8 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::StageTitle stageTitle_;
         //
-        sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
-        sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
+        sfml_util::SliderDrift<float> smokeAnimSliderDriftX_;
+        sfml_util::SliderDrift<float> smokeAnimSliderDriftY_;
         sfml_util::MainMenuBackground background_;
         sfml_util::AnimationUPtr_t smokeAnimUPtr_;
         //
@@ -218,9 +218,9 @@ namespace stage
         sfml_util::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //
         sfml_util::TextRegionUPtr_t sbInsTextRegionUPtr_;
-        sfml_util::sliders::Slider<sf::Uint8, float> sbInsTextSlider_;
+        sfml_util::SliderOscillator<sf::Uint8, float> sbInsTextSlider_;
         sfml_util::TextRegionUPtr_t nInsTextRegionUPtr_;
-        sfml_util::sliders::Slider<sf::Uint8, float> nInsTextSlider_;
+        sfml_util::SliderOscillator<sf::Uint8, float> nInsTextSlider_;
         //
         sfml_util::BottomSymbol bottomSymbol_;
         std::vector<std::string> characterImageFilenamesVec_;

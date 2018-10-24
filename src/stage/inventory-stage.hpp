@@ -470,12 +470,12 @@ namespace stage
         bool hasStatsChanged_;
         bool hasListBoxChanged_;
         bool hasDescBoxChanged_;
-        sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
-        sfml_util::sliders::ZeroSliderOnce<float> detailsSlider_;
-        sfml_util::sliders::ZeroSliderOnce<float> centerSlider_;
-        sfml_util::sliders::ZeroSliderOnce<float> statsSlider_;
-        sfml_util::sliders::ZeroSliderOnce<float> listBoxSlider_;
-        sfml_util::sliders::ZeroSliderOnce<float> descBoxSlider_;
+        sfml_util::SliderZeroToOne imageSlider_;
+        sfml_util::SliderZeroToOne detailsSlider_;
+        sfml_util::SliderZeroToOne centerSlider_;
+        sfml_util::SliderZeroToOne statsSlider_;
+        sfml_util::SliderZeroToOne listBoxSlider_;
+        sfml_util::SliderZeroToOne descBoxSlider_;
 
         sfml_util::TextRegionUPtr_t detailsTextRegionUPtr_;
         sfml_util::TextRegionUPtr_t statsTextRegionUPtr_;
@@ -542,7 +542,7 @@ namespace stage
         sf::Sprite detailViewSprite_;
         sfml_util::CachedTextureOpt_t detailViewCachedTextureOpt_;
         sfml_util::TextRegionUPtr_t detailViewTextUPtr_;
-        sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
+        sfml_util::SliderZeroToOne detailViewSlider_;
 
         // members that support spell casting (and song playing)
         spell::SpellPtrOpt_t spellBeingCastPtrOpt_;

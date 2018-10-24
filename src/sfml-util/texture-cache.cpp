@@ -608,7 +608,7 @@ namespace sfml_util
 
         if (stageName_.empty())
         {
-            stageName_ = sfml_util::LoopState::ToString(game::LoopManager::Instance()->GetState());
+            stageName_ = game::LoopManager::Instance()->GetStateName();
         }
 
         auto & countSizePair { stageToCountDataMap_[stageName_] };

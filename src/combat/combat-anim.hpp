@@ -92,7 +92,7 @@ namespace combat
         static const float PAUSE_DURATION_SEC;
         static const float SHAKE_DURATION_SEC;
 
-        sfml_util::sliders::Slider<float> slider;
+        sfml_util::SliderOscillator<float> slider;
         float pause_duration_timer_sec;
         float shake_duration_timer_sec;
 
@@ -266,7 +266,7 @@ namespace combat
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
 
-        sfml_util::sliders::ZeroSliderOnce<float> slider_;
+        sfml_util::SliderZeroToOne slider_;
 
         // members supporting the Projectile Shoot Animation
         sfml_util::CachedTextureOpt_t projAnimCachedTextureOpt_;

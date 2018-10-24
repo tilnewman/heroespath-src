@@ -23,10 +23,10 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/callback.hpp"
-#include "sfml-util/color-shaker.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/image-text-entity.hpp"
 #include "sfml-util/list-box.hpp"
+#include "sfml-util/slider-color.hpp"
 #include "sfml-util/sliderbar.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -454,7 +454,7 @@ namespace stage
         bool conditionEffectsWillSkip_;
 
         // A slider member that is used for various slider tasks
-        sfml_util::sliders::ZeroSliderOnce<float> slider_;
+        sfml_util::SliderZeroToOne slider_;
 
         // this member controls combat related animations
         combat::CombatAnimationUPtr_t combatAnimationUPtr_;
@@ -473,8 +473,8 @@ namespace stage
         // members that deal with which creature's turn it is and
         // the timing of taking turns
         creature::CreaturePtrOpt_t turnCreaturePtrOpt_;
-        sfml_util::ColorShaker goldTextColorShaker_;
-        sfml_util::ColorShaker redTextColorShaker_;
+        sfml_util::ColorSlider goldTextColorSlider_;
+        sfml_util::ColorSlider redTextColorSlider_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;
         bool willRedColorShakeWeaponText_;
@@ -503,7 +503,7 @@ namespace stage
 
         // members that manage the status message animations
         float statusMsgAnimTimerSec_;
-        sfml_util::ColorShaker statusMsgAnimColorShaker_;
+        sfml_util::ColorSlider statusMsgAnimColorSlider_;
 
         // testing display members
         sfml_util::TextRegionUPtr_t testingTextRegionUPtr_;

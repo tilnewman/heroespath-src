@@ -22,9 +22,16 @@ struct LogMacroHelper
         const misc::LogPriority::Enum PRIORITY,
         const std::string & MSG,
         const std::string & FILE,
+        const std::string & FUNCTION,
         const int LINE);
 };
 } // namespace heroespath
+
+#define M_HP_FILE_FUNC_LINE_STR                                                                    \
+    (std::string(__FILE__) + ":" + std::string(__func__) + "():" + std::to_string(__LINE__))
+
+#define M_HP_FILE_FUNC_LINE_STR_VAR                                                                \
+    const std::string FILE_FUNC_LINE_STR { M_HP_FILE_FUNC_LINE_STR };
 
 // these defines will disable these macros
 #if defined(MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_LOG)
@@ -47,7 +54,7 @@ struct LogMacroHelper
             _m_oss_hp_log_temp << str_stuff;                                                       \
                                                                                                    \
             heroespath::LogMacroHelper::Append(                                                    \
-                priority, _m_oss_hp_log_temp.str(), __FILE__, __LINE__);                           \
+                priority, _m_oss_hp_log_temp.str(), __FILE__, __func__, __LINE__);                 \
         }                                                                                          \
     }
 

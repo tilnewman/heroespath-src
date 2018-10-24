@@ -61,8 +61,9 @@ namespace popup
         // throws range error on invalid PopupImage::Enum
         const std::string BackgroundImagePath(const PopupImage::Enum IMAGE) const;
 
-        // colors
+        // The Fade color is not black so that the stage can still be seen in the background
         static sf::Color Color_Fade() { return { 0, 0, 0, 12 }; }
+
         static sf::Color Color_Font() { return fontColor_; }
 
         // speed multipliers

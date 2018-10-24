@@ -40,15 +40,13 @@ namespace combat
     const float ShakeAnimInfo::SHAKE_DURATION_SEC { 0.65f };
 
     ShakeAnimInfo::ShakeAnimInfo()
-        : slider(0.0f, 1.0f, 50.0)
-        ,
+        : slider(0.0f, 1.0f, 50.0f)
 
         // anything larger than PAUSE_DURATION_SEC will work here
-        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f)
-        ,
+        , pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f)
 
         // anything larger than SHAKE_DURATION_SEC will work here
-        shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f)
+        , shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f)
     {}
 
     void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
@@ -56,8 +54,8 @@ namespace combat
         const auto SHAKE_DISTANCE { CombatAnimation::ShakeAnimDistance(
             WILL_DOUBLE_SHAKE_DISTANCE) };
 
-        slider.Reset(
-            0.0f, SHAKE_DISTANCE, static_cast<double>(SLIDER_SPEED), (SHAKE_DISTANCE * 0.5f));
+        slider = sfml_util::SliderOscillator<float>(
+            0.0f, SHAKE_DISTANCE, SLIDER_SPEED, (SHAKE_DISTANCE * 0.5f));
 
         // anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;
@@ -202,7 +200,7 @@ namespace combat
             selectAnimCombatNodePtrOpt_.value()->SelectAnimUpdate(
                 slider_.Update(ELAPSED_TIME_SECONDS));
 
-            if (slider_.IsDone())
+            if (slider_.IsStopped())
             {
                 SelectAnimStop();
             }
@@ -653,7 +651,7 @@ namespace combat
     {
         selectAnimCombatNodePtrOpt_ = COMBAT_NODE_PTR;
         selectAnimCombatNodePtrOpt_.value()->SelectAnimStart();
-        slider_.Reset(SELECT_ANIM_SLIDER_SPEED_);
+        slider_ = sfml_util::SliderZeroToOne(SELECT_ANIM_SLIDER_SPEED_);
     }
 
     void CombatAnimation::SelectAnimStop()

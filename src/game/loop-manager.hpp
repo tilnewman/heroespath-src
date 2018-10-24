@@ -61,7 +61,13 @@ namespace game
             startupStageName_ = STARTUP_STAGE_NAME;
         }
 
-        sfml_util::LoopState::Enum GetState() const { return state_; }
+        // nobody ever calls this because they shouldn't.  The Stages should handle everything in
+        // their own way.  No code in the game should check this and change it's behavior based on
+        // it. sfml_util::LoopState::Enum GetState() const { return state_; }
+
+        const std::string GetStateName() const { return sfml_util::LoopState::ToString(state_); }
+        void SetState(const sfml_util::LoopState::Enum NEW_STATE);
+
         sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
 
         popup::ResponseTypes::Enum GetPopupResponse() const { return popupResponse_; }
@@ -78,7 +84,7 @@ namespace game
 
         bool IsKeyPressed(const sf::Keyboard::Key KEY) const { return loop_.IsKeyPressed(KEY); }
 
-        bool Execute();
+        void Execute();
 
         template <typename PopupType_t>
         void PopupWaitBeginSpecific(
@@ -132,8 +138,6 @@ namespace game
             loop_.TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
         }
 
-        void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
-
         void TransitionTo_Exit();
         void TransitionTo_Credits();
         void TransitionTo_MainMenu();
@@ -183,7 +187,7 @@ namespace game
                 std::make_unique<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
 
             cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_FadeOut>(
-                popup::PopupManager::Color_Fade(), popup::PopupManager::SpeedMult_Fade(), true));
+                popup::PopupManager::SpeedMult_Fade(), popup::PopupManager::Color_Fade()));
 
             cmdQueueVec_.emplace_back(std::make_unique<sfml_util::LoopCmd_Execute>());
 
@@ -218,7 +222,9 @@ namespace game
     private:
         static std::unique_ptr<LoopManager> instanceUPtr_;
         static std::string startupStageName_;
-        //
+        static const float FADE_OUT_SPEED_;
+        static const float FADE_IN_SPEED_;
+
         sfml_util::LoopState::Enum state_;
         sfml_util::LoopCmdUVec_t cmdQueueVec_;
         sfml_util::Loop loop_;

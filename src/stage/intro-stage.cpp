@@ -53,13 +53,12 @@ namespace stage
     {
         // This counter eliminates the flicker caused by the Loop's Fade in feature
         // that does not clear the screen for the first few draw loops.
-        if (initialDrawHoldCounter_ < 5)
+        // if (initialDrawHoldCounter_ < 5)
+        //{
+        //    ++initialDrawHoldCounter_;
+        //}
+        // else
         {
-            ++initialDrawHoldCounter_;
-        }
-        else
-        {
-            Stage::Draw(target, STATES);
             target.draw(titleSprite_, STATES);
         }
     }

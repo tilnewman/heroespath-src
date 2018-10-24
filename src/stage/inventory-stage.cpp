@@ -1857,7 +1857,7 @@ namespace stage
 
         isDetailViewFadingIn_ = true;
         detailViewTimerSec_ = 0.0f;
-        detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+        detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
         return true;
     }
 
@@ -1921,14 +1921,14 @@ namespace stage
                     creatureSprite_.getPosition().y);
             }
 
-            if (imageSlider_.IsDone())
+            if (imageSlider_.IsStopped())
             {
                 Setup_CreatureImage();
 
                 creatureSprite_.setPosition(OUT_OF_SIGHT_POS_, creatureSprite_.getPosition().y);
 
                 hasImageChanged_ = true;
-                imageSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                imageSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -1963,7 +1963,7 @@ namespace stage
                 }
             }
 
-            if (imageSlider_.IsDone())
+            if (imageSlider_.IsStopped())
             {
                 isImageSliding_ = false;
                 isImageSlidingDone_ = true;
@@ -1991,7 +1991,7 @@ namespace stage
                     detailsTextRegionUPtr_->GetEntityPos().y);
             }
 
-            if (detailsSlider_.IsDone())
+            if (detailsSlider_.IsStopped())
             {
                 UpdateImageDetailsPosition();
                 Setup_CreatureDetails(true);
@@ -2000,7 +2000,7 @@ namespace stage
                     SCREEN_WIDTH_ + 1.0f, detailsTextRegionUPtr_->GetEntityPos().y);
 
                 hasDetailsChanged_ = true;
-                detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                detailsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2020,7 +2020,7 @@ namespace stage
                     detailsTextRegionUPtr_->GetEntityPos().y);
             }
 
-            if (detailsSlider_.IsDone())
+            if (detailsSlider_.IsStopped())
             {
                 isDetailsSliding_ = false;
                 isDetailsSlidingDone_ = true;
@@ -2051,7 +2051,7 @@ namespace stage
                 }
             }
 
-            if (centerSlider_.IsDone())
+            if (centerSlider_.IsStopped())
             {
                 Setup_CenterText();
 
@@ -2059,7 +2059,7 @@ namespace stage
                     SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
 
                 hasCenterChanged_ = true;
-                centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                centerSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2082,7 +2082,7 @@ namespace stage
                 }
             }
 
-            if (centerSlider_.IsDone() || creaturePtr_->IsBeast())
+            if (centerSlider_.IsStopped() || creaturePtr_->IsBeast())
             {
                 isCenterSliding_ = false;
                 isCenterSlidingDone_ = true;
@@ -2110,7 +2110,7 @@ namespace stage
                     statsTextRegionUPtr_->GetEntityPos().y);
             }
 
-            if (statsSlider_.IsDone())
+            if (statsSlider_.IsStopped())
             {
                 Setup_CreatureStats();
 
@@ -2118,7 +2118,7 @@ namespace stage
                     OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
 
                 hasStatsChanged_ = true;
-                statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                statsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2138,7 +2138,7 @@ namespace stage
                     statsTextRegionUPtr_->GetEntityPos().y);
             }
 
-            if (statsSlider_.IsDone())
+            if (statsSlider_.IsStopped())
             {
                 isStatsSliding_ = false;
                 isStatsSlidingDone_ = true;
@@ -2166,13 +2166,13 @@ namespace stage
 
             LeftListBoxSetHorizPosition(newPosHoriz);
 
-            if (listBoxSlider_.IsDone())
+            if (listBoxSlider_.IsStopped())
             {
                 Setup_ListBox();
                 LeftListBoxSetHorizPosition(SCREEN_WIDTH_ + 1.0f);
 
                 hasListBoxChanged_ = true;
-                listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                listBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2192,7 +2192,7 @@ namespace stage
 
             LeftListBoxSetHorizPosition(newPosHoriz);
 
-            if (listBoxSlider_.IsDone())
+            if (listBoxSlider_.IsStopped())
             {
                 isListBoxSliding_ = false;
                 isListBoxSlidingDone_ = true;
@@ -2247,7 +2247,7 @@ namespace stage
                 }
             }
 
-            if (descBoxSlider_.IsDone())
+            if (descBoxSlider_.IsStopped())
             {
                 Setup_DescBox(true);
 
@@ -2260,7 +2260,7 @@ namespace stage
                 descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
 
                 hasDescBoxChanged_ = true;
-                descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+                descBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2308,7 +2308,7 @@ namespace stage
                 }
             }
 
-            if (descBoxSlider_.IsDone())
+            if (descBoxSlider_.IsStopped())
             {
                 isDescBoxSliding_ = false;
                 isDescBoxSlidingDone_ = true;
@@ -2333,7 +2333,7 @@ namespace stage
                 isAchievementDisplaying_ = false;
                 isDetailViewFadingIn_ = true;
                 detailViewTimerSec_ = 0.0f;
-                detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+                detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
             }
         }
     }
@@ -2343,7 +2343,7 @@ namespace stage
         if (isDetailViewFadingIn_)
         {
             detailViewSliderRatio_ = detailViewSlider_.Update(ELAPSED_TIME_SECONDS);
-            if (detailViewSlider_.IsDone())
+            if (detailViewSlider_.IsStopped())
             {
                 if (isAchievementDisplaying_)
                 {
@@ -2375,7 +2375,7 @@ namespace stage
         {
             detailViewSliderRatio_ = (1.0f - detailViewSlider_.Update(ELAPSED_TIME_SECONDS));
 
-            if (detailViewSlider_.IsDone())
+            if (detailViewSlider_.IsStopped())
             {
                 isDetailViewFadingIn_ = false;
                 isDetailViewDoneFading_ = false;
@@ -2398,7 +2398,7 @@ namespace stage
         detailViewQuads_[2].color = NEW_COLOR;
         detailViewQuads_[3].color = NEW_COLOR;
 
-        if ((detailViewSlider_.IsDone()) && (false == isDetailViewFadingIn_)
+        if ((detailViewSlider_.IsStopped()) && (false == isDetailViewFadingIn_)
             && (false == isDetailViewDoneFading_) && (false == isDetailViewFadingOut_))
         {
             detailViewQuads_[0].color = sf::Color::Transparent;
@@ -2939,12 +2939,12 @@ namespace stage
         isListBoxSlidingDone_ = false;
         isDescBoxSlidingDone_ = false;
 
-        imageSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-        detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-        centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-        statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-        listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-        descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+        imageSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        detailsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        centerSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        statsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        listBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        descBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
     }
 
     void InventoryStage::SetDescBoxText(const std::string & TEXT)
@@ -3773,7 +3773,7 @@ namespace stage
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;
-        detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+        detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
         SetupDetailViewItem(boost::none);
         SetupDetailViewCreature(boost::none);
     }

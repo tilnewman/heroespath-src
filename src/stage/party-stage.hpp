@@ -15,13 +15,13 @@
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/callback.hpp"
-#include "sfml-util/color-shaker-rect.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/image-text-entity.hpp"
 #include "sfml-util/list-box.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/ouroboros.hpp"
+#include "sfml-util/slider-colored-rect.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
 #include "sfml-util/stage.hpp"
@@ -150,11 +150,11 @@ namespace stage
         sfml_util::TextRegionUPtr_t partyTextRegionUPtr_;
         sfml_util::TextInfo warningTextInfo_;
         sfml_util::TextRegionUPtr_t warningTextRegionUPtr_;
-        sfml_util::sliders::Slider<sf::Uint8, float> warningTextSlider_;
+        sfml_util::SliderOscillator<sf::Uint8, float> warningTextSlider_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         bool willDisplayCharacterCountWarningText_;
         creature::CreaturePVec_t unplayedCharactersPVec_;
-        sfml_util::ColorShakerRect colorShakerRect_;
+        sfml_util::ColoredRectSlider listboxSelectedItemColoredRectSlider_;
 
         // mouseover popup animation members
         bool willShowMouseOverPopup_;
@@ -165,7 +165,7 @@ namespace stage
         sf::Sprite mouseOverCreatureSprite_;
         sfml_util::CachedTextureOpt_t mouseOverCreatureTextureOpt_;
         sfml_util::TextRegionUPtr_t mouseOverTextRegionUPtr_;
-        sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
+        sfml_util::SliderZeroToOne mouseOverSlider_;
     };
 
 } // namespace stage

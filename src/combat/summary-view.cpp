@@ -105,9 +105,18 @@ namespace combat
 
         if (combatNodePtrOpt_)
         {
-            geSlider_.Speed(SLIDER_SPEED_ * 2.0f);
-            geSlider_.ChangeDirection();
-            geSlider_.Start();
+            const auto ENTITY_PTR_OPT { geSlider_.GetEntity() };
+            const auto FROM { geSlider_.From() };
+            const auto TO { geSlider_.To() };
+
+            geSlider_ = sfml_util::EntitySlider(
+                ENTITY_PTR_OPT,
+                TO,
+                FROM,
+                (SLIDER_SPEED_ * 2.0f),
+                sfml_util::WillOscillate::No,
+                sfml_util::WillAutoStart::Yes);
+
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
@@ -129,13 +138,14 @@ namespace combat
 
         combatNodePtrOpt_ = COMBAT_NODE_PTR;
 
-        geSlider_.Setup(
+        geSlider_ = sfml_util::EntitySlider(
             sfml_util::IEntityPtrOpt_t(COMBAT_NODE_PTR.Ptr()),
             COMBAT_NODE_PTR->GetEntityPos(),
             DEST_POS_V,
-            SLIDER_SPEED_);
+            SLIDER_SPEED_,
+            sfml_util::WillOscillate::No,
+            sfml_util::WillAutoStart::Yes);
 
-        geSlider_.Start();
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
         movingDir_ = sfml_util::Moving::Toward;
@@ -224,35 +234,20 @@ namespace combat
 
     void SummaryView::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (sfml_util::Moving::Away == movingDir_)
+        const auto DID_SLIDER_STOP { geSlider_.UpdateAndReturnIsStopped(ELAPSED_TIME_SECONDS) };
+
+        BackgroundColor(sf::Color(
+            0, 0, 0, static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * geSlider_.PositionRatio())));
+
+        if (DID_SLIDER_STOP)
         {
-            if (geSlider_.UpdateTime(ELAPSED_TIME_SECONDS))
-            {
-                BackgroundColor(sf::Color(
-                    0,
-                    0,
-                    0,
-                    static_cast<sf::Uint8>(
-                        BACKGROUND_COLOR_ALPHA_ * (1.0f - geSlider_.ProgressRatio()))));
-            }
-            else
-            {
-                SetTransitionBackComplete();
-            }
-        }
-        else if (sfml_util::Moving::Toward == movingDir_)
-        {
-            if (geSlider_.UpdateTime(ELAPSED_TIME_SECONDS))
-            {
-                BackgroundColor(sf::Color(
-                    0,
-                    0,
-                    0,
-                    static_cast<sf::Uint8>(BACKGROUND_COLOR_ALPHA_ * geSlider_.ProgressRatio())));
-            }
-            else
+            if (sfml_util::Moving::Toward == movingDir_)
             {
                 SetTransitionToComplete();
+            }
+            else if (sfml_util::Moving::Away == movingDir_)
+            {
+                SetTransitionBackComplete();
             }
         }
     }

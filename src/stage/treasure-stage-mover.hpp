@@ -11,8 +11,8 @@
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/entity-slider.hpp"
 #include "sfml-util/entity.hpp"
+#include "sfml-util/slider-entity.hpp"
 
 #include <memory>
 #include <vector>
@@ -24,7 +24,6 @@ namespace sfml_util
     class IEntity;
     using IEntityPtr_t = misc::NotNull<IEntity *>;
     using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
-
 } // namespace sfml_util
 
 namespace stage

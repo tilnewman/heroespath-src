@@ -16,6 +16,7 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
+#include <boost/type_index.hpp>
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #pragma warning(pop)
@@ -25,131 +26,413 @@
 #include "sfml-util/sliders.hpp"
 
 #include <exception>
+#include <iostream>
+#include <numeric>
 
 #include "unit-test-test-stuff.hpp"
 
+using namespace heroespath;
 using namespace heroespath::misc;
 using namespace heroespath::sfml_util;
 
 namespace ts = test_stuff;
 
-BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_DefaultConstruction)
+template <typename Value_t, typename Slider_t>
+void testSlider(
+    Slider_t slider,
+    const Value_t FROM,
+    const Value_t TO,
+    const Value_t START_AT,
+    const float ADJUSTMENT,
+    const std::size_t ITERATION_COUNT_MIN)
 {
-    ts::Constants constants;
+    std::cout << "testSlider<Value_t=" << boost::typeindex::type_id<Value_t>().pretty_name()
+              << ", Slider_t=" << boost::typeindex::type_id<Slider_t>().pretty_name()
+              << ">(from=" << FROM << ", to=" << TO << ", start_at=" << START_AT
+              << ", adjustment=" << ADJUSTMENT << ", iteration_count_min=" << ITERATION_COUNT_MIN
+              << ")" << std::endl;
 
-    sliders::ZeroSliderOnce<double> slider;
-    BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0));
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
+    BOOST_CHECK(IsRealClose(slider.From(), FROM));
+    BOOST_CHECK(IsRealClose(slider.To(), TO));
+    BOOST_CHECK(IsRealOne(slider.Speed()));
+    BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+    BOOST_CHECK(slider.IsStopped() == false);
+    BOOST_CHECK(IsRealClose(slider.Value(), START_AT));
 
-    slider.Update(0.0);
-    BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0));
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
-}
-
-BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_Updates)
-{
-    ts::Constants constants;
-
-    sliders::ZeroSliderOnce<double> slider;
-    BOOST_CHECK(slider.IsDone() == false);
-
-    slider.Update(0.1);
-    BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0) == false);
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
-
-    while (slider.IsDone() == false)
+    Value_t prevValue { START_AT };
+    std::size_t iterationCounter { 0 };
+    while (slider.IsMoving())
     {
-        slider.Update(0.1);
+        const auto CURRENT_VALUE { slider.Update(ADJUSTMENT) };
+        ++iterationCounter;
+
+        BOOST_CHECK(IsRealClose(slider.From(), FROM));
+        BOOST_CHECK(IsRealClose(slider.To(), TO));
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+
+        BOOST_CHECK(CURRENT_VALUE >= prevValue);
+        prevValue = CURRENT_VALUE;
+
+        // update of zero double check
+
+        BOOST_CHECK(misc::IsRealClose(slider.Update(0.0f), CURRENT_VALUE));
     }
-    BOOST_CHECK(IsRealOne(slider.Current()));
-}
 
-BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
-{
-    ts::Constants constants;
-
-    const auto THE_MIN { 123.123 };
-    const auto THE_MAX { 456.456 };
-    const auto SPEED { 1.0 };
-
-    sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
-
-    BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
-
-    slider.Update(0.0);
-    BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
-}
-
-BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
-{
-    const auto THE_MIN { 123.123 };
-    const auto THE_MAX { 456.456 };
-    const auto SPEED { 1.0 };
-
-    sliders::SliderOnce<double> slider(THE_MIN, THE_MAX, SPEED);
-
-    while (slider.IsDone() == false)
+    if (ITERATION_COUNT_MIN > 0)
     {
-        slider.Update(0.1);
+        BOOST_CHECK(iterationCounter > ITERATION_COUNT_MIN);
     }
-    BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Current(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
-}
 
-BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
-{
-    ts::Constants constants;
+    BOOST_CHECK(slider.IsStopped());
+    BOOST_CHECK(IsRealClose(slider.Value(), TO));
 
-    const auto THE_MIN { 123.123 };
-    const auto THE_MAX { 456.456 };
-    const auto SPEED { 1.0 };
+    // updates after stop (positive)
 
-    sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
-
-    BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
-
-    BOOST_CHECK(IsRealClose(slider.Update(0.0), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-    BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
-}
-
-BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
-{
-    ts::Constants constants;
-
-    const auto THE_MIN { 123.123 };
-    const auto THE_MAX { 456.456 };
-    const auto SPEED { 1.0 };
-
-    sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
-
-    const auto ITERATIONS { 1000 };
-    for (int i(0); i < ITERATIONS; ++i)
+    for (int i(0); i < 100; ++i)
     {
-        const auto CURRENT { slider.Update(0.1) };
+        slider.Update(9999.9999f);
 
-        BOOST_CHECK(
-            IsRealClose(CURRENT, THE_MIN) || IsRealClose(CURRENT, THE_MAX)
-            || ((CURRENT > THE_MIN) && (CURRENT < THE_MAX)));
+        BOOST_CHECK(IsRealClose(slider.From(), FROM));
+        BOOST_CHECK(IsRealClose(slider.To(), TO));
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealClose(slider.Value(), TO));
+    }
 
-        BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
-        BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-        BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
+    // updates after stop (negative)
+
+    for (int i(0); i < 100; ++i)
+    {
+        slider.Update(-9999.9999f);
+
+        BOOST_CHECK(IsRealClose(slider.From(), FROM));
+        BOOST_CHECK(IsRealClose(slider.To(), TO));
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealClose(slider.Value(), TO));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
+{
+    // should not compile
+    // SliderZeroToOne<int> slider;
+    // SliderZeroToOne<bool> slider;
+    // SliderZeroToOne<const bool> slider;
+
+    // invalid constructions
+
+    {
+        SliderZeroToOne slider;
+
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealZero(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealZero(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(-0.1f);
+
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealClose(slider.Speed(), -0.1f));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(0.0f);
+
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealZero(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, -0.1f);
+
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, 1.0f);
+
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealOne(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, 1.1f);
+
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealOne(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    // valid constructions
+
+    {
+        SliderZeroToOne slider(1.0f, 0.0f);
+
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, 0.5f);
+
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealClose(slider.Value(), 0.5f));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, 0.9f);
+
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealClose(slider.Value(), 0.9f));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+    }
+
+    {
+        // zero updates
+
+        SliderZeroToOne slider(1.0f);
+
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(0.0f);
+
+            BOOST_CHECK(slider.IsStopped() == false);
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealZero(slider.Value()));
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+        }
+
+        // updates after stop
+        slider.Stop();
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(0.0f);
+
+            BOOST_CHECK(slider.IsStopped());
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealZero(slider.Value()));
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+        }
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(9999.9999f);
+
+            BOOST_CHECK(slider.IsStopped());
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealZero(slider.Value()));
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+        }
+    }
+
+    // operation with speed=1 and 60fps updates
+    {
+        SliderZeroToOne slider(1.0f);
+        testSlider<float, SliderZeroToOne>(slider, 0.0f, 1.0f, 0.0f, 0.01667f, 100);
+    }
+
+    {
+        SliderZeroToOne slider(1.0f, 0.5f);
+        testSlider<float, SliderZeroToOne>(slider, 0.0f, 1.0f, 0.5f, 0.01667f, 50);
+    }
+
+    // updates that are too large
+    {
+        SliderZeroToOne slider(1.0f);
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(std::numeric_limits<float>::max());
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+            BOOST_CHECK(slider.IsStopped() == true);
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealOne(slider.Value()));
+        }
+    }
+
+    // updates that are too small (negative) and then too large
+    {
+        SliderZeroToOne slider(1.0f);
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealOne(slider.To()));
+        BOOST_CHECK(slider.IsStopped() == false);
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(IsRealZero(slider.Value()));
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(std::numeric_limits<float>::lowest());
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+            BOOST_CHECK(slider.IsStopped() == false);
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealZero(slider.Value()));
+        }
+
+        for (int i(0); i < 100; ++i)
+        {
+            slider.Update(std::numeric_limits<float>::max());
+
+            BOOST_CHECK(IsRealZero(slider.From()));
+            BOOST_CHECK(IsRealOne(slider.To()));
+            BOOST_CHECK(slider.IsStopped() == true);
+            BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+            BOOST_CHECK(IsRealOne(slider.Speed()));
+            BOOST_CHECK(IsRealOne(slider.Value()));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(SliderFromTo_Tests)
+{
+    // should not compile
+    // SliderFromTo<int> slider;
+    // SliderFromTo<bool> slider;
+    // SliderFromTo<const bool> slider;
+
+    // invalid constructions
+
+    {
+        SliderFromTo<int> slider;
+
+        BOOST_CHECK(slider.From() == 0);
+        BOOST_CHECK(slider.To() == 0);
+        BOOST_CHECK(IsRealZero(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.Value() == 0);
+    }
+
+    {
+        SliderFromTo<int> slider(0, 0, 1.0f);
+
+        BOOST_CHECK(slider.From() == 0);
+        BOOST_CHECK(slider.To() == 0);
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.Value() == 0);
+    }
+
+    {
+        SliderFromTo<float> slider(0.0, 0.0, 1.0f);
+
+        BOOST_CHECK(IsRealZero(slider.From()));
+        BOOST_CHECK(IsRealZero(slider.To()));
+        BOOST_CHECK(IsRealOne(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(IsRealZero(slider.Value()));
+    }
+
+    {
+        SliderFromTo<int> slider(0, 100, -0.1f);
+
+        BOOST_CHECK(slider.From() == 0);
+        BOOST_CHECK(slider.To() == 100);
+        BOOST_CHECK(IsRealClose(slider.Speed(), -0.1f));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.Value() == 0);
+    }
+
+    {
+        SliderFromTo<int> slider(0, 100, 0.0f);
+
+        BOOST_CHECK(slider.From() == 0);
+        BOOST_CHECK(slider.To() == 100);
+        BOOST_CHECK(IsRealZero(slider.Speed()));
+        BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.Value() == 0);
+    }
+
+    {
+        SliderFromTo<int> slider(-100, 100, 1.0f);
+        testSlider<int, SliderFromTo<int>>(slider, -100, 100, -100, 0.01667f, 100);
+    }
+
+    {
+        SliderFromTo<int> slider(-1, 1, 1.0f);
+        testSlider<int, SliderFromTo<int>>(slider, -1, 1, -1, 0.01667f, 0);
+    }
+
+    {
+        SliderFromTo<int> slider(0, 1, 1.0f);
+        testSlider<int, SliderFromTo<int>>(slider, 0, 1, 0, 0.01667f, 0);
+    }
+
+    {
+        SliderFromTo<int> slider(-1, 0, 1.0f);
+        testSlider<int, SliderFromTo<int>>(slider, -1, 0, -1, 0.01667f, 0);
     }
 }

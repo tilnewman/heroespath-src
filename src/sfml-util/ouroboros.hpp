@@ -48,9 +48,9 @@ namespace sfml_util
         float rotation_;
         sfml_util::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
-        sliders::Drifter<float> sizeDrifter_;
-        sliders::Drifter<float> shadeDrifter_;
-        sliders::Drifter<float> rotSpeedDrifter_;
+        SliderDrift<float> sizeSliderDrift_;
+        SliderDrift<float> shadeSliderDrift_;
+        SliderDrift<float> rotSpeedSliderDrift_;
     };
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;

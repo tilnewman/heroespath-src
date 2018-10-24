@@ -61,9 +61,24 @@ namespace popup
         , spellDetailsTextUPtr_()
         , unableTextUPtr_()
         , spellDescTextUPtr_()
-        , warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f)
-        , imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
-        , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
+        , imageColorSlider_(
+              sf::Color::Transparent,
+              sf::Color::White,
+              COLOR_FADE_SPEED_,
+              sfml_util::WillOscillate::No,
+              sfml_util::WillAutoStart::No)
+        , textColorSlider_(
+              sf::Color::Transparent,
+              sf::Color::Black,
+              COLOR_FADE_SPEED_,
+              sfml_util::WillOscillate::No,
+              sfml_util::WillAutoStart::No)
+        , warnTextColorSlider_(
+              UNABLE_TEXT_COLOR_,
+              sf::Color::Transparent,
+              20.0f,
+              sfml_util::WillOscillate::Yes,
+              sfml_util::WillAutoStart::Yes)
         , currentListboxIndex_(0)
     {}
 
@@ -84,9 +99,13 @@ namespace popup
 
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
-                    imageColorSlider_.ChangeDirection();
+                    imageColorSlider_.ReverseDirection();
                     imageColorSlider_.Start();
-                    textColorSlider_.ChangeDirection();
+                }
+
+                if (textColorSlider_.Direction() != sfml_util::Moving::Away)
+                {
+                    textColorSlider_.ReverseDirection();
                     textColorSlider_.Start();
                 }
 
@@ -151,26 +170,28 @@ namespace popup
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        textColorSlider_.UpdateTime(ELAPSED_TIME_SECONDS);
-        imageColorSlider_.UpdateTime(ELAPSED_TIME_SECONDS);
+        const auto HAS_TEXT_COLOR_SLIDER_STOPPED { textColorSlider_.UpdateAndReturnIsStopped(
+            ELAPSED_TIME_SECONDS) };
 
-        SetPageRightColors(imageColorSlider_.Current(), textColorSlider_.Current());
+        const auto HAS_IMAGE_COLOR_SLIDER_STOPPED { imageColorSlider_.UpdateAndReturnIsStopped(
+            ELAPSED_TIME_SECONDS) };
 
-        if ((imageColorSlider_.IsMoving() == false)
-            && (imageColorSlider_.Direction() == sfml_util::Moving::Away))
+        SetPageRightColors(imageColorSlider_.Value(), textColorSlider_.Value());
+
+        if (HAS_TEXT_COLOR_SLIDER_STOPPED || HAS_IMAGE_COLOR_SLIDER_STOPPED)
         {
             sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::Magic1);
 
             SetupPageRightText(CurrentSelectedSpell());
-            imageColorSlider_.ChangeDirection();
-            imageColorSlider_.Start();
-            textColorSlider_.ChangeDirection();
-            textColorSlider_.Start();
+
+            imageColorSlider_.Reset();
+            textColorSlider_.Reset();
         }
 
         if (willShowXImage_)
         {
-            unableTextUPtr_->SetEntityColorFgBoth(warnColorShaker_.Update(ELAPSED_TIME_SECONDS));
+            unableTextUPtr_->SetEntityColorFgBoth(
+                warnTextColorSlider_.UpdateAndReturnValue(ELAPSED_TIME_SECONDS));
         }
     }
 
@@ -416,7 +437,7 @@ namespace popup
 
         const auto SPELL_IMAGE_SCALE { sfutil::MapByRes(0.75f, 4.0f) };
         spellSprite_.setScale(SPELL_IMAGE_SCALE, SPELL_IMAGE_SCALE);
-        spellSprite_.setColor(imageColorSlider_.Current());
+        spellSprite_.setColor(imageColorSlider_.Value());
 
         spellSprite_.setPosition(
             (pageRectRight_.left + (pageRectRight_.width * 0.5f))

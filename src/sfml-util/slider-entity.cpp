@@ -7,9 +7,9 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-//  entity-slider.cpp
+// slider-entity.cpp
 //
-#include "entity-slider.hpp"
+#include "slider-entity.hpp"
 
 #include "sfml-util/i-entity.hpp"
 
@@ -18,39 +18,45 @@ namespace heroespath
 namespace sfml_util
 {
 
+    EntitySlider::EntitySlider()
+        : PosSlider()
+        , guiEntityPtrOpt_(boost::none)
+    {}
+
     EntitySlider::EntitySlider(
         const IEntityPtrOpt_t & ENTITY_PTR_OPT,
         const sf::Vector2f & FROM_POS_V,
         const sf::Vector2f & TO_POS_V,
-        const float SLIDER_SPEED)
-        : PosSlider(FROM_POS_V, TO_POS_V, SLIDER_SPEED)
+        const float SLIDER_SPEED,
+        const WillOscillate WILL_OSCILLATE,
+        const WillAutoStart WILL_AUTO_START,
+        const std::size_t CYCLE_COUNT_LIMIT)
+        : PosSlider(
+              FROM_POS_V,
+              TO_POS_V,
+              SLIDER_SPEED,
+              WILL_OSCILLATE,
+              WILL_AUTO_START,
+              CYCLE_COUNT_LIMIT)
         , guiEntityPtrOpt_(ENTITY_PTR_OPT)
     {
-        Setup(guiEntityPtrOpt_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+        OnUpdateChange();
     }
 
     EntitySlider::~EntitySlider() = default;
 
-    void EntitySlider::Setup(
-        const IEntityPtrOpt_t & ENTITY_PTR_OPT,
-        const sf::Vector2f & FROM_POS_V,
-        const sf::Vector2f & TO_POS_V,
-        const float SLIDER_SPEED)
+    void EntitySlider::SetEntity(const IEntityPtrOpt_t PTR_OPT)
     {
-        guiEntityPtrOpt_ = ENTITY_PTR_OPT;
-        PosSlider::Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+        guiEntityPtrOpt_ = PTR_OPT;
+        OnUpdateChange();
     }
 
-    bool EntitySlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    void EntitySlider::OnUpdateChange()
     {
-        const bool RESULT { PosSlider::UpdateTime(ELAPSED_TIME_SECONDS) };
-
-        if (RESULT && guiEntityPtrOpt_)
+        if (guiEntityPtrOpt_)
         {
-            guiEntityPtrOpt_.value()->SetEntityPos(Position());
+            guiEntityPtrOpt_.value()->SetEntityPos(Value());
         }
-
-        return RESULT;
     }
 
 } // namespace sfml_util

@@ -25,20 +25,11 @@ namespace sfml_util
         game::LoopManager::Instance()->CommandLoopAccess(this).Execute();
     }
 
-    void LoopCmd_StateChange::Execute()
-    {
-        game::LoopManager::Instance()->CommandLoopAccess(this).SetState(newState_);
-    }
+    void LoopCmd_StateChange::Execute() { game::LoopManager::Instance()->SetState(newState_); }
 
     void LoopCmd_SetMouseVisibility::Execute()
     {
         game::LoopManager::Instance()->CommandLoopAccess(this).SetMouseVisibility(isVisible_);
-    }
-
-    void LoopCmd_AddStage_Default::Execute()
-    {
-        game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(
-            new Stage("Default", {}, false));
     }
 
     void LoopCmd_SetHoldTime::Execute()
@@ -51,21 +42,15 @@ namespace sfml_util
         game::LoopManager::Instance()->CommandLoopAccess(this).FreeAllStages();
     }
 
-    void LoopCmd_ExitAfterFade::Execute()
-    {
-        game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitAfterFade(true);
-    }
-
     void LoopCmd_FadeIn::Execute()
     {
         game::LoopManager::Instance()->CommandLoopAccess(this).FadeIn(
-            fadeFromColor_, speedMult_, willHoldAfter_);
+            speed_, willExitAfter_, fadeFromColor_);
     }
 
     void LoopCmd_FadeOut::Execute()
     {
-        game::LoopManager::Instance()->CommandLoopAccess(this).FadeOut(
-            fadeToColor_, speedMult_, willHoldAfter_);
+        game::LoopManager::Instance()->CommandLoopAccess(this).FadeOut(speed_, fadeToColor_);
     }
 
     void LoopCmd_ExitAfterKeypress::Execute()
@@ -104,8 +89,8 @@ namespace sfml_util
     const std::string LoopCmd_FadeIn::Name() const
     {
         std::ostringstream ss;
-        ss << LoopCmd::Name() << "_FromColor=" << fadeFromColor_ << "_WithSpeedMult=" << speedMult_
-           << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
+        ss << LoopCmd::Name() << "_FromColor=" << fadeFromColor_ << "_WithSpeedMult=" << speed_
+           << "_willExitAfter=" << std::boolalpha << willExitAfter_;
 
         return ss.str();
     }
@@ -113,9 +98,7 @@ namespace sfml_util
     const std::string LoopCmd_FadeOut::Name() const
     {
         std::ostringstream ss;
-        ss << LoopCmd::Name() << "To=" << fadeToColor_ << "_WithSpeedMult=" << speedMult_
-           << "_WillHoldAfter=" << std::boolalpha << willHoldAfter_;
-
+        ss << LoopCmd::Name() << "To=" << fadeToColor_ << "_WithSpeedMult=" << speed_;
         return ss.str();
     }
 

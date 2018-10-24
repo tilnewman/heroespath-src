@@ -144,7 +144,7 @@ namespace popup
             if (areImagesMoving_)
             {
                 currRatio = imageSlider_.Update(ELAPSED_TIME_SECONDS);
-                areImagesMoving_ = !imageSlider_.IsDone();
+                areImagesMoving_ = !imageSlider_.IsStopped();
 
                 if (false == areImagesMoving_)
                 {
@@ -271,7 +271,7 @@ namespace popup
 
         if ((NEW_IMAGE_INDEX_TO_USE != imageIndex_) || (isInitialAnimComplete_ == false))
         {
-            imageSlider_.Reset(SLIDER_SPEED);
+            imageSlider_ = sfml_util::SliderZeroToOne(SLIDER_SPEED);
 
             SetupSelectImage_SetupNewImageIndex(NEW_IMAGE_INDEX_TO_USE);
             SetupSelectImage_SetupImageResources();

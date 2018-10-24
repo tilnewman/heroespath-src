@@ -14,6 +14,7 @@
 #include "misc/not-null.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/resolution.hpp"
+#include "sfml-util/slider-colored-rect.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -25,8 +26,6 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    class Fade;
-
     class IStage;
     using IStagePtr_t = misc::NotNull<IStage *>;
 
@@ -99,8 +98,6 @@ namespace sfml_util
         bool GetVerticalSync() const { return willVerticalSync_; }
 
         void ConsumeEvents();
-
-        void DrawFader(const Fade &) const;
 
         void DrawStage(const IStagePtr_t &);
 
@@ -178,9 +175,12 @@ namespace sfml_util
 
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
-        const sf::FloatRect FullscreenRect() const
+        void DrawFullScreenFader(const ColoredRectSlider & COLOR_SLIDER_RECT)
         {
-            return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight());
+            if (winUPtr_)
+            {
+                winUPtr_->draw(COLOR_SLIDER_RECT);
+            }
         }
 
     private:

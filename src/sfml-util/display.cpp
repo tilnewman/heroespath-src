@@ -15,7 +15,6 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/date-time.hpp"
-#include "sfml-util/fade.hpp"
 #include "sfml-util/i-stage.hpp"
 
 #include <SFML/Graphics/Texture.hpp>
@@ -156,8 +155,6 @@ namespace sfml_util
         {
         }
     }
-
-    void Display::DrawFader(const Fade & fader) const { winUPtr_->draw(fader); }
 
     void Display::DrawStage(const IStagePtr_t & ISTAGE_PTR)
     {

@@ -89,7 +89,7 @@ namespace sfml_util
             sprite_.setScale(SCALE, SCALE);
 
             // check if done animating
-            isFinished_ = slider_.IsDone();
+            isFinished_ = slider_.IsStopped();
             return isFinished_;
         }
 

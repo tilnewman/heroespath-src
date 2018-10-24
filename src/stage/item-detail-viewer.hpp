@@ -12,7 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/pos-slider.hpp"
+#include "sfml-util/slider-ratio.hpp"
 #include "sfml-util/text-region.hpp"
 #include "sfutil/vertex.hpp"
 
@@ -72,12 +72,11 @@ namespace stage
         sf::VertexArray backgroundQuads_;
         sfml_util::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
-        sfml_util::sliders::PosSlider slider_;
+        sfml_util::RatioSlider slider_;
         sfml_util::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect sourceRect;
         item::ItemPtrOpt_t itemPtrOpt_;
         bool willShowImage_;
-        bool isBeforeAnyChange_;
         bool isShowing_;
     };
 

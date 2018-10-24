@@ -43,6 +43,8 @@ namespace sfml_util
             const Side::Enum SIDES_WITH_FROM_COLOR,
             const Corner::Enum CORNERS_WITH_FROM_COLOR = Corner::None);
 
+        virtual ~ColoredRect() = default;
+
         ColoredRect(const ColoredRect &) = default;
         ColoredRect(ColoredRect &&) = default;
         ColoredRect & operator=(const ColoredRect &) = default;

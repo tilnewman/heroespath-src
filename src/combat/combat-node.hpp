@@ -188,7 +188,7 @@ namespace combat
         sfml_util::CachedTexture wingCachedTexture_;
         sf::Sprite wingSprite_;
         bool isFlying_;
-        sfml_util::sliders::Slider<float> wingFlapSlider_;
+        sfml_util::SliderOscillator<float> wingFlapSlider_;
 
         // members that control the shake or image position offset
         sf::Vector2f imagePosV_;

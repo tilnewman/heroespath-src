@@ -14,9 +14,8 @@
 #include "popup/popup-stage-base.hpp"
 #include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/color-shaker.hpp"
-#include "sfml-util/color-slider.hpp"
 #include "sfml-util/list-box.hpp"
+#include "sfml-util/slider-color.hpp"
 #include "sfml-util/sliders.hpp"
 
 #include <string>
@@ -114,9 +113,9 @@ namespace popup
         sfml_util::TextRegionUPtr_t spellDetailsTextUPtr_;
         sfml_util::TextRegionUPtr_t unableTextUPtr_;
         sfml_util::TextRegionUPtr_t spellDescTextUPtr_;
-        sfml_util::ColorShaker warnColorShaker_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
+        sfml_util::ColorSlider warnTextColorSlider_;
         std::size_t currentListboxIndex_;
     };
 

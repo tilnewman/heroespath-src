@@ -92,7 +92,7 @@ namespace stage
         bool isHeldDown_;
         sfml_util::TextInfo textInfo_;
         sfml_util::Text text_;
-        sfml_util::sliders::ZeroSliderOnce<float> sliderX_;
+        sfml_util::SliderZeroToOne sliderX_;
         float timerSec_;
         float prevPosX_;
     };

@@ -59,7 +59,7 @@ namespace sfml_util
             sf::Vector2f endPosV_;
             bool isFinished_;
             TextRegionUPtr_t textRegionUPtr_;
-            sliders::ZeroSliderOnce<float> slider_;
+            SliderZeroToOne slider_;
         };
 
         using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;

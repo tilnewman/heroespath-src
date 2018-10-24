@@ -47,7 +47,7 @@ namespace sfml_util
             sf::Sprite sprite_;
             sf::Vector2f posV_;
             float targetScale_;
-            sliders::ZeroSliderOnce<float> slider_;
+            SliderZeroToOne slider_;
         };
 
         using SparkleVec_t = std::vector<Sparkle>;

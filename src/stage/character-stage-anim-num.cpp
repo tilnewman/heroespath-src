@@ -179,7 +179,7 @@ namespace stage
              && (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_))
              && (misc::IsRealClose(L.timerSec_, R.timerSec_))
              && (misc::IsRealClose(L.prevPosX_, R.prevPosX_))
-             && (misc::IsRealClose(L.sliderX_.Current(), R.sliderX_.Current())))
+             && (misc::IsRealClose(L.sliderX_.Value(), R.sliderX_.Value())))
             == false)
         {
             return false;

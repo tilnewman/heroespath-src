@@ -79,8 +79,8 @@ namespace stage
     const creature::Trait_t CharacterStage::STAT_INVALID_ { -1 };
     const creature::Trait_t CharacterStage::STAT_INITIAL_MAX_ { 20 };
 
-    const double CharacterStage::SMOKE_ANIM_SPEED_MIN_ { 0.05 };
-    const double CharacterStage::SMOKE_ANIM_SPEED_MAX_ { 0.5 };
+    const float CharacterStage::SMOKE_ANIM_SPEED_MIN_ { 0.05f };
+    const float CharacterStage::SMOKE_ANIM_SPEED_MAX_ { 0.5f };
 
     CharacterStage::CharacterStage()
         : Stage(
@@ -100,8 +100,8 @@ namespace stage
               LIGHT_TEXT_COLOR_)
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("CharacterStage's"))
         , stageTitle_("media-images-buttons-mainmenu-character-normal")
-        , smokeAnimDrifterX_(0.0f, 1.0f, 0.1, 1.0) // these drifter values are reset below
-        , smokeAnimDrifterY_(0.0f, 1.0f, 0.1, 1.0) // these drifter values are reset below
+        , smokeAnimSliderDriftX_()
+        , smokeAnimSliderDriftY_()
         , background_()
         , smokeAnimUPtr_()
         , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
@@ -301,8 +301,8 @@ namespace stage
 
         // drift the position of the smoke anim
         smokeAnimUPtr_->SetEntityPos(
-            smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS),
-            smokeAnimDrifterY_.Update(ELAPSED_TIME_SECONDS));
+            smokeAnimSliderDriftX_.Update(ELAPSED_TIME_SECONDS),
+            smokeAnimSliderDriftY_.Update(ELAPSED_TIME_SECONDS));
 
         // ramp the smoke anim speed up and down when the spacebar is held
         if (isAnimStats_)
@@ -859,7 +859,7 @@ namespace stage
         const auto DRIFT_LIMIT_RIGHT { StageRegionWidth()
                                        - smokeAnimUPtr_->GetEntityRegion().width };
 
-        smokeAnimDrifterX_.Reset(
+        smokeAnimSliderDriftX_ = sfml_util::SliderDrift<float>(
             DRIFT_LIMIT_LEFT,
             DRIFT_LIMIT_RIGHT,
             SMOKE_ANIM_SPEED_MIN_,
@@ -874,7 +874,7 @@ namespace stage
         const auto DRIFT_LIMIT_BOTTOM { (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height)
                                         + (VERT_OVERLAP * 2.0f) };
 
-        smokeAnimDrifterY_.Reset(
+        smokeAnimSliderDriftY_ = sfml_util::SliderDrift<float>(
             DRIFT_LIMIT_TOP,
             DRIFT_LIMIT_BOTTOM,
             SMOKE_ANIM_SPEED_MIN_,
