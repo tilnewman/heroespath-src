@@ -10,7 +10,7 @@
 // main-menu-buttons.hpp
 //
 #include "sfml-util/image-text-entity.hpp"
-#include "sfml-util/loop-state-enum.hpp"
+#include "stage/stage-enum.hpp"
 
 #include <memory>
 #include <vector>
@@ -32,7 +32,7 @@ namespace sfml_util
 
         // if FORCED_IMAGE_WIDTH=0 it is ignored, if <0 then the default is used
         explicit MainMenuButton(
-            const LoopState::Enum TRANSITION_TO = LoopState::Count,
+            const stage::Stage::Enum TRANSITION_TO = stage::Stage::Count,
             const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT
             = boost::none,
             const float FORCED_IMAGE_WIDTH = 0.0f,
@@ -51,14 +51,14 @@ namespace sfml_util
         void OnClick(const sf::Vector2f &) override;
 
         static const MouseImageInfo MakeMouseImageInfo(
-            const LoopState::Enum TRANSITION_TO,
+            const stage::Stage::Enum TRANSITION_TO,
             const sf::Vector2f & POS_V,
             const float FORCED_IMAGE_WIDTH);
 
     private:
         static const float SCREEN_SIZE_RATIO_WIDTH_DEFAULT_;
 
-        sfml_util::LoopState::Enum transitionTo_;
+        stage::Stage::Enum transitionTo_;
     };
 
     using MainMenuButtonUPtr_t = std::unique_ptr<MainMenuButton>;

@@ -18,6 +18,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include <numeric>
 
 namespace heroespath
@@ -32,18 +34,14 @@ namespace stage
     const float InteractStage::SUBJECT_IMAGE_PAD_RATIO_ { 0.9f };
     const float InteractStage::CONTEXT_IMAGE_PAD_RATIO_ { 0.8f };
 
-    InteractStage::InteractStage(
-        map::Map & map,
-        const sf::FloatRect & REGION,
-        interact::InteractionManager & interactionManager)
-        : Stage("AdventureInteract", REGION, { sfml_util::GuiFont::DialogMedieval }, false)
-        , map_(map)
+    InteractStage::InteractStage(interact::InteractionManager & interactionManager)
+        : StageBase(
+            "AdventureInteract",
+            { sfml_util::GuiFont::DialogMedieval },
+            false) // Stage Region set in PreSetup() below
+        , mapPtrOpt_(boost::none)
         , regionPad_(sfutil::MapByRes(18.0f, 52.0f))
-        , innerRect_(
-              REGION.left + regionPad_,
-              REGION.top + regionPad_,
-              REGION.width - (regionPad_ * 2.0f),
-              REGION.height - (regionPad_ * 2.0f))
+        , innerRect_() // set in PreSetup() below
         , interactionManager_(interactionManager)
         , subjectSprite_()
         , contextSprite_()
@@ -52,7 +50,7 @@ namespace stage
               std::make_unique<sfml_util::TextRegion>("AdventureStage'sInteractStage's"))
         , buttons_()
         , lockPicking_()
-        , backgroundColoredRect_(innerRect_, sf::Color(0, 0, 0, BACKGROUND_ALPHA_))
+        , backgroundColoredRect_() // set in PreSetup() below
     {}
 
     InteractStage::~InteractStage() = default;
@@ -71,11 +69,12 @@ namespace stage
         return false;
     }
 
-    bool InteractStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET)
+    bool InteractStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (PACKET->Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (lockPicking_.HandleCharacterSelectionPopupResponse(this, PACKET))
+            if (lockPicking_.HandleCharacterSelectionPopupResponse(
+                    this, PACKET_PTR, stage::IStagePtr_t(this)))
             {
                 return false;
             }
@@ -85,12 +84,13 @@ namespace stage
                 return true;
             }
         }
-        else if (PACKET->Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        else if (PACKET_PTR->name == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             // at this point the attempting popup has finished playing the sfx and closed
             if (lockPicking_.Attempt())
             {
-                if (lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(this))
+                if (lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
+                        this, stage::IStagePtr_t(this)))
                 {
                     // return the opposite because we need to return false if actually opening a
                     // popup window
@@ -110,7 +110,7 @@ namespace stage
                 interactionManager_.Unlock();
             }
         }
-        else if (PACKET->Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        else if (PACKET_PTR->name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             if (interactionManager_.Current())
             {
@@ -122,12 +122,33 @@ namespace stage
         return true;
     }
 
-    void InteractStage::Setup() {}
+    void InteractStage::PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr)
+    {
+        StageRegion(STAGE_REGION);
+        mapPtrOpt_ = mapPtr;
+    }
+
+    void InteractStage::Setup()
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (!mapPtrOpt_),
+            "stage::InteractStage::Setup() called but mapPtrOpt_ was invalid.  It "
+            "should be set before this function is called by stage::StageFactory::Make(), which "
+            "sets it by calling InteractStage::PreSetup().");
+
+        innerRect_ = sf::FloatRect(
+            StageRegion().left + regionPad_,
+            StageRegion().top + regionPad_,
+            StageRegion().width - (regionPad_ * 2.0f),
+            StageRegion().height - (regionPad_ * 2.0f));
+
+        backgroundColoredRect_.Setup(innerRect_, sf::Color(0, 0, 0, BACKGROUND_ALPHA_));
+    }
 
     void InteractStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         DrawInteraction(target);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void InteractStage::UpdateTime(const float)
@@ -154,7 +175,10 @@ namespace stage
 
     void InteractStage::MapTransition(const map::Transition & TRANSITION)
     {
-        map_.TransitionLevel(TRANSITION);
+        if (mapPtrOpt_)
+        {
+            mapPtrOpt_.value()->TransitionLevel(TRANSITION);
+        }
     }
 
     void InteractStage::SetupInteractionForDrawing(
@@ -199,8 +223,7 @@ namespace stage
                 subjectSprite_,
                 sfutil::ScaleAndReCenterCopy(SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_));
 
-            textRegionUPtr_->Setup(
-                INTERACTION_PTR->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
+            textRegionUPtr_->Setup(INTERACTION_PTR->Text(), TEXT_REGION, stage::IStagePtr_t(this));
 
             for (auto & buttonUPtr : buttons_)
             {

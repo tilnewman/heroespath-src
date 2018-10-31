@@ -17,7 +17,7 @@
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -48,7 +48,7 @@ namespace stage
 
     // A Stage class that allows players to load saved games
     class LoadGameStage
-        : public sfml_util::Stage
+        : public stage::StageBase
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
         , public sfml_util::ListBox<LoadGameStage, game::GameStatePtr_t>::Callback_t::IHandler_t
     {
@@ -61,7 +61,6 @@ namespace stage
         LoadGameStage & operator=(const LoadGameStage &) = delete;
         LoadGameStage & operator=(LoadGameStage &&) = delete;
 
-    public:
         LoadGameStage();
         virtual ~LoadGameStage();
 

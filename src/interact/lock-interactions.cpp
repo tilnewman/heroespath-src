@@ -17,13 +17,14 @@
 #include "creature/stats.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "stage/achievement-handler.hpp"
+#include "stage/i-stage.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -81,7 +82,8 @@ namespace interact
     }
 
     void LockPicking::PopupCharacterSelection(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR) const
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        stage::IStagePtr_t iStagePtr) const
     {
         const auto INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
 
@@ -98,8 +100,7 @@ namespace interact
                 INVALID_MSGS,
                 CharacterIndexWhoPrevAttempted()) };
 
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
-                POPUP_HANDLER_PTR, POPUP_INFO);
+            iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
         }
         else
         {
@@ -113,17 +114,18 @@ namespace interact
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(POPUP_HANDLER_PTR, POPUP_INFO);
+            iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
         }
     }
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+        const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR,
+        stage::IStagePtr_t iStagePtr)
     {
-        if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
+        if (PACKET_PTR->type == popup::ResponseTypes::Select)
         {
-            const auto SELECTION_OPT { PACKET_PTR->SelectionOpt() };
+            const auto SELECTION_OPT { PACKET_PTR->selection_opt };
 
             if (SELECTION_OPT < game::Game::Instance()->State().Party().Characters().size())
             {
@@ -131,7 +133,7 @@ namespace interact
                     = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION_OPT.value());
 
                 combat::Encounter::Instance()->LockPickCreaturePtr(characterPtrOpt_.value());
-                PopupAttempting(POPUP_HANDLER_PTR, characterPtrOpt_.value()->Name());
+                PopupAttempting(POPUP_HANDLER_PTR, characterPtrOpt_.value()->Name(), iStagePtr);
                 return true;
             }
         }
@@ -142,7 +144,8 @@ namespace interact
 
     void LockPicking::PopupAttempting(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const std::string & CHARACTER_NAME) const
+        const std::string & CHARACTER_NAME,
+        stage::IStagePtr_t iStagePtr) const
     {
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_ATTEMPTING_,
@@ -153,13 +156,13 @@ namespace interact
             popup::PopupImage::Regular,
             RandomPickingSfx()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
-            POPUP_HANDLER_PTR, POPUP_INFO);
+        iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     void LockPicking::PopupSuccess(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const std::string & NAME_OF_WHAT_OPENED) const
+        const std::string & NAME_OF_WHAT_OPENED,
+        stage::IStagePtr_t iStagePtr) const
     {
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_SUCCESS_,
@@ -170,12 +173,12 @@ namespace interact
             popup::PopupImage::Regular,
             sfml_util::sound_effect::None) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
-            POPUP_HANDLER_PTR, POPUP_INFO);
+        iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        stage::IStagePtr_t iStagePtr)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!characterPtrOpt_),
@@ -184,6 +187,7 @@ namespace interact
 
         return stage::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
             POPUP_HANDLER_PTR,
+            iStagePtr,
             POPUP_NAME_TITLE_ARCHIEVED_,
             characterPtrOpt_.value(),
             creature::AchievementType::LocksPicked);
@@ -266,5 +270,6 @@ namespace interact
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             sfml_util::sound_effect::LockPickingFail);
     }
+
 } // namespace interact
 } // namespace heroespath

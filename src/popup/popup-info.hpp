@@ -19,6 +19,7 @@
 #include "sfml-util/text-info.hpp"
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
@@ -38,6 +39,7 @@ namespace popup
     public:
         // default constructor for most popups
         PopupInfo(
+            const PopupStage::Enum STAGE,
             const std::string & NAME,
             const sfml_util::TextInfo & TEXT_INFO,
             const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
@@ -85,6 +87,7 @@ namespace popup
         PopupInfo & operator=(const PopupInfo &) = default;
         PopupInfo & operator=(PopupInfo &&) = default;
 
+        PopupStage::Enum Stage() const { return stage_; }
         const std::string Name() const { return name_; }
         PopupButtons::Enum Buttons() const { return buttons_; }
         PopupImage::Enum Image() const { return image_; }
@@ -130,12 +133,44 @@ namespace popup
 
         void TextVec(const std::vector<std::string> & NEW_TEXT_VEC) { textVec_ = NEW_TEXT_VEC; }
 
+        bool IsAsCloseAsIsReasonableToCheck(const PopupInfo & OTHER) const
+        {
+            return (
+                std::tie(
+                    stage_,
+                    name_,
+                    textInfo_,
+                    titleText_,
+                    descText_,
+                    buttons_,
+                    image_,
+                    buttonColor_,
+                    numberMin_,
+                    numberMax_,
+                    howCombatEnded_,
+                    creaturePtrOpt_)
+                == std::tie(
+                    OTHER.stage_,
+                    OTHER.name_,
+                    OTHER.textInfo_,
+                    OTHER.titleText_,
+                    OTHER.descText_,
+                    OTHER.buttons_,
+                    OTHER.image_,
+                    OTHER.buttonColor_,
+                    OTHER.numberMin_,
+                    OTHER.numberMax_,
+                    OTHER.howCombatEnded_,
+                    OTHER.creaturePtrOpt_));
+        }
+
     public:
         static const float IMAGE_FADE_SPEED_DEFAULT_;
 
     private:
         const std::string ToStringCommon(const bool WILL_WRAP, const bool WILL_SHORTEN) const;
         //
+        PopupStage::Enum stage_;
         std::string name_;
         sfml_util::TextInfo textInfo_;
         PopupButtons::Enum buttons_;

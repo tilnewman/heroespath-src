@@ -20,13 +20,15 @@
 #include "sfutil/fitting.hpp"
 #include "sfutil/primitives.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
 {
 
     StatBox::StatBox(
-        sfml_util::IStagePtr_t owningStagePtr,
+        stage::IStagePtr_t owningStagePtr,
         const float WIDTH,
         const float HEIGHT_RATIO,
         const sf::Color & TEXT_COLOR)

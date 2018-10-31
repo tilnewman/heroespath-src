@@ -25,7 +25,6 @@ namespace popup
         PopupStageResChange & operator=(const PopupStageResChange &) = delete;
         PopupStageResChange & operator=(PopupStageResChange &&) = delete;
 
-    public:
         explicit PopupStageResChange(const PopupInfo &);
         virtual ~PopupStageResChange();
 

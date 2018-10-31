@@ -11,7 +11,8 @@
 //
 #include "enum-util.hpp"
 
-#include "game/loop-manager.hpp"
+#include "game/game-controller.hpp"
+#include "misc/log.hpp"
 
 namespace heroespath
 {
@@ -19,13 +20,41 @@ namespace misc
 {
     namespace enum_util
     {
-
-        void TestLog(const std::string & MSG_STR)
+        namespace helpers
         {
-            game::LoopManager::Instance()->TestingStrIncrement(MSG_STR);
-        }
 
+            void
+                Log(const bool IS_ERROR,
+                    const std::string & MESSAGE,
+                    const std::string & FILE,
+                    const std::string & FUNCTION,
+                    const int LINE,
+                    const bool WILL_THROW)
+            {
+                misc::Log::Instance()->Append(
+                    ((IS_ERROR) ? misc::LogPriority::Error : misc::LogPriority::Default),
+                    MESSAGE,
+                    FILE,
+                    FUNCTION,
+                    LINE);
+
+                if (WILL_THROW)
+                {
+                    std::ostringstream ss;
+
+                    ss << "M_HP_ENUM_UTIL_LOG_AND_THROW(" << FILE << ":" << FUNCTION << ":" << LINE
+                       << ": \"" << MESSAGE << "\"";
+
+                    throw std::runtime_error(ss.str());
+                }
+            }
+
+            void TestingSystemLog(const std::string & MESSAGE)
+            {
+                game::GameController::Instance()->TestingStrIncrement(MESSAGE);
+            }
+
+        } // namespace helpers
     } // namespace enum_util
-
 } // namespace misc
 } // namespace heroespath

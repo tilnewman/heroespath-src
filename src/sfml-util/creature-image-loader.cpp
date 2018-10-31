@@ -13,7 +13,6 @@
 
 #include "creature/body-type.hpp"
 #include "creature/creature.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
@@ -21,6 +20,7 @@
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfutil/image-manip.hpp"
+#include "stage/i-stage.hpp"
 
 #include <exception>
 #include <sstream>
@@ -37,14 +37,13 @@ namespace sfml_util
             misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir"));
     }
 
-    bool CreatureImageLoader::Test() const
+    bool CreatureImageLoader::Test(stage::IStagePtr_t iStagePtr) const
     {
         static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::CreatureImageLoader::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("sfml_util::CreatureImageLoader::Test() Starting Tests...");
         }
 
         static auto allPaths { misc::filesystem::FindFiles(
@@ -116,7 +115,7 @@ namespace sfml_util
 
                                 if (imagePathFoundIter != std::end(allPaths))
                                 {
-                                    game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                    iStagePtr->TestingImageSet(PATH, true);
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
@@ -125,7 +124,7 @@ namespace sfml_util
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
                                    << " wolfen_class=" << CLASS_STR << " filename=" << FILENAME;
 
-                                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                                iStagePtr->TestingStrAppend(ss.str());
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -177,7 +176,7 @@ namespace sfml_util
 
                                 if (imagePathFoundIter != std::end(allPaths))
                                 {
-                                    game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                    iStagePtr->TestingImageSet(PATH, true);
                                     allPaths.erase(imagePathFoundIter);
                                 }
 
@@ -186,7 +185,7 @@ namespace sfml_util
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
                                    << " dragon_class=" << CLASS_STR << " filename=" << FILENAME;
 
-                                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                                iStagePtr->TestingStrAppend(ss.str());
 
                                 allPaths.erase(
                                     std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -230,7 +229,7 @@ namespace sfml_util
 
                             if (imagePathFoundIter != std::end(allPaths))
                             {
-                                game::LoopManager::Instance()->TestingImageSet(PATH, true);
+                                iStagePtr->TestingImageSet(PATH, true);
                                 allPaths.erase(imagePathFoundIter);
                             }
 
@@ -239,7 +238,7 @@ namespace sfml_util
                                << " role=" << ROLE_STR << " sex=" << SEX_STR
                                << " filename=" << FILENAME;
 
-                            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                            iStagePtr->TestingStrAppend(ss.str());
 
                             allPaths.erase(
                                 std::remove(std::begin(allPaths), std::end(allPaths), PATH),
@@ -276,9 +275,7 @@ namespace sfml_util
                 << PATH);
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "sfml_util::CreatureImageLoader::Test()  ALL TESTS PASSED.");
-
+        iStagePtr->TestingStrAppend("sfml_util::CreatureImageLoader::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -1026,24 +1023,42 @@ namespace sfml_util
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling: { return { "dragon-fb-hatchling.png" };
+                    case creature::dragon_class::Hatchling:
+                    {
+                        return { "dragon-fb-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp: { return { "dragon-fb-whelp.png" };
+                    case creature::dragon_class::Whelp:
+                    {
+                        return { "dragon-fb-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling: { return { "dragon-fb-fledgling.png" };
+                    case creature::dragon_class::Fledgling:
+                    {
+                        return { "dragon-fb-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile: { return { "dragon-fb-juvenile.png" };
+                    case creature::dragon_class::Juvenile:
+                    {
+                        return { "dragon-fb-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult: { return { "dragon-fb-adult.png" };
+                    case creature::dragon_class::Adult:
+                    {
+                        return { "dragon-fb-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm: { return { "dragon-fb-wyrm.png" };
+                    case creature::dragon_class::Wyrm:
+                    {
+                        return { "dragon-fb-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster: { return { "dragon-fb-skycaster.png" };
+                    case creature::dragon_class::Skycaster:
+                    {
+                        return { "dragon-fb-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder: { return { "dragon-fb-elder.png" };
+                    case creature::dragon_class::Elder:
+                    {
+                        return { "dragon-fb-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
@@ -1052,24 +1067,42 @@ namespace sfml_util
             {
                 switch (DRAGON_CLASS)
                 {
-                    case creature::dragon_class::Hatchling: { return { "dragon-syl-hatchling.png" };
+                    case creature::dragon_class::Hatchling:
+                    {
+                        return { "dragon-syl-hatchling.png" };
                     }
-                    case creature::dragon_class::Whelp: { return { "dragon-syl-whelp.png" };
+                    case creature::dragon_class::Whelp:
+                    {
+                        return { "dragon-syl-whelp.png" };
                     }
-                    case creature::dragon_class::Fledgling: { return { "dragon-syl-fledgling.png" };
+                    case creature::dragon_class::Fledgling:
+                    {
+                        return { "dragon-syl-fledgling.png" };
                     }
-                    case creature::dragon_class::Juvenile: { return { "dragon-syl-juvenile.png" };
+                    case creature::dragon_class::Juvenile:
+                    {
+                        return { "dragon-syl-juvenile.png" };
                     }
-                    case creature::dragon_class::Adult: { return { "dragon-syl-adult.png" };
+                    case creature::dragon_class::Adult:
+                    {
+                        return { "dragon-syl-adult.png" };
                     }
-                    case creature::dragon_class::Wyrm: { return { "dragon-syl-wyrm.png" };
+                    case creature::dragon_class::Wyrm:
+                    {
+                        return { "dragon-syl-wyrm.png" };
                     }
-                    case creature::dragon_class::Skycaster: { return { "dragon-syl-skycaster.png" };
+                    case creature::dragon_class::Skycaster:
+                    {
+                        return { "dragon-syl-skycaster.png" };
                     }
-                    case creature::dragon_class::Elder: { return { "dragon-syl-elder.png" };
+                    case creature::dragon_class::Elder:
+                    {
+                        return { "dragon-syl-elder.png" };
                     }
                     case creature::dragon_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
@@ -1488,20 +1521,34 @@ namespace sfml_util
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case creature::wolfen_class::Pup: { return { "wolfen-pup.png" };
+                    case creature::wolfen_class::Pup:
+                    {
+                        return { "wolfen-pup.png" };
                     }
-                    case creature::wolfen_class::Juvenile: { return { "wolfen-juvenile.png" };
+                    case creature::wolfen_class::Juvenile:
+                    {
+                        return { "wolfen-juvenile.png" };
                     }
-                    case creature::wolfen_class::Adult: { return { "wolfen-adult.png" };
+                    case creature::wolfen_class::Adult:
+                    {
+                        return { "wolfen-adult.png" };
                     }
-                    case creature::wolfen_class::Noble: { return { "wolfen-noble.png" };
+                    case creature::wolfen_class::Noble:
+                    {
+                        return { "wolfen-noble.png" };
                     }
-                    case creature::wolfen_class::Highborn: { return { "wolfen-highborn.png" };
+                    case creature::wolfen_class::Highborn:
+                    {
+                        return { "wolfen-highborn.png" };
                     }
-                    case creature::wolfen_class::Elder: { return { "wolfen-elder.png" };
+                    case creature::wolfen_class::Elder:
+                    {
+                        return { "wolfen-elder.png" };
                     }
                     case creature::wolfen_class::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }

@@ -32,7 +32,6 @@ namespace popup
         PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) = delete;
         PopupStageNumberSelect & operator=(PopupStageNumberSelect &&) = delete;
 
-    public:
         explicit PopupStageNumberSelect(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageNumberSelect();
 

@@ -12,7 +12,6 @@
 #include "inn-stage.hpp"
 
 #include "game/game-state-factory.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/animation-factory.hpp"
@@ -21,20 +20,22 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
 {
 
     InnStage::InnStage()
-        : Stage(
-              "Inn",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        : StageBase(
+            "Inn",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , stageTitle_()
         , backgroundBox_(
               "InnStage'sBackground",
@@ -49,7 +50,7 @@ namespace stage
         , bottomSymbol_()
     {}
 
-    InnStage::~InnStage() { Stage::ClearAllEntities(); }
+    InnStage::~InnStage() { StageBase::ClearAllEntities(); }
 
     void InnStage::Setup()
     {
@@ -59,8 +60,8 @@ namespace stage
 
         // candle image
         const sf::Vector2f CANDLE_POS_V(
-            StageRegionWidth() - sfutil::ScreenRatioToPixelsHoriz(0.16f),
-            StageRegionHeight() - sfutil::ScreenRatioToPixelsVert(0.222f));
+            StageRegion().width - sfutil::ScreenRatioToPixelsHoriz(0.16f),
+            StageRegion().height - sfutil::ScreenRatioToPixelsVert(0.222f));
 
         const sf::Vector2f CANDLE_SIZE_CONSTRAINTS_V(
             sfutil::ScreenRatioToPixelsHoriz(0.065f), 0.0f);
@@ -82,7 +83,7 @@ namespace stage
     {
         target.draw(backgroundBox_, STATES);
         target.draw(bottomSymbol_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
 } // namespace stage

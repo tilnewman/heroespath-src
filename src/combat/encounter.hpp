@@ -45,7 +45,6 @@ namespace combat
         Encounter & operator=(const Encounter &) = delete;
         Encounter & operator=(Encounter &&) = delete;
 
-    public:
         Encounter();
         ~Encounter();
 
@@ -124,6 +123,8 @@ namespace combat
         }
 
         float DefeatedPartyTreasureRatioPer() const;
+
+        void BeginAndEndFakeCombatForTesting();
 
     private:
         void PopulateTurnInfoMap();

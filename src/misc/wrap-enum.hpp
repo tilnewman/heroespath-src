@@ -9,7 +9,15 @@
 //
 // enum-util.hpp
 //
-
+//  WARNING:
+//      To avoid circular dependancies this file cannot include:
+//          "misc/enum-util.hpp"
+//          "misc/log-macros.hpp"
+//          "misc/assertlogandthrow.hpp"
+//          -or any other header that includes these!
+//
+//      This means that this enum cannot use the enum helper code.
+//
 namespace heroespath
 {
 namespace misc
@@ -19,7 +27,6 @@ namespace misc
         No = false,
         Yes = true
     };
-
 }
 } // namespace heroespath
 

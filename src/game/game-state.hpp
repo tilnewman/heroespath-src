@@ -34,7 +34,6 @@ namespace game
         GameState & operator=(const GameState &) = delete;
         GameState & operator=(GameState &&) = delete;
 
-    public:
         explicit GameState(
             creature::PlayerPartyUPtr_t PARTY_UPTR = creature::PlayerPartyUPtr_t(),
             WorldUPtr_t WORLD_UPTR = WorldUPtr_t());
@@ -47,7 +46,7 @@ namespace game
 
         bool IsNewGame() const { return isGameNew_; }
 
-        void IsNewGameSet(const bool B) { isGameNew_ = B; }
+        void SetupAsNewGame();
 
         const sfml_util::DateTime DateTimeStarted() const { return dateTimeStarted_; }
 
@@ -86,6 +85,7 @@ namespace game
 
     using GameStatePtr_t = misc::NotNull<GameState *>;
     using GameStatePVec_t = std::vector<GameStatePtr_t>;
+    using GameStateUPtr_t = std::unique_ptr<GameState>;
 
     bool operator<(const GameState & L, const GameState & R);
 

@@ -31,7 +31,7 @@ namespace sfml_util
         : TextEntity(std::string(NAME).append("_TextButton"), POS_LEFT, POS_TOP, MOUSE_TEXT_INFO)
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
     {
-        Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, CALLBACK_HANDLER_PTR_OPT);
+        // no need to call setup
     }
 
     TextButton::~TextButton() = default;

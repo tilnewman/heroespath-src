@@ -21,7 +21,6 @@
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
@@ -38,7 +37,10 @@
 #include "sfml-util/list-element.hpp"
 #include "sfml-util/text-region.hpp"
 #include "sfml-util/title-image-loader.hpp"
+#include "stage/stage-enum.hpp"
 #include "stage/treasure-display-stage.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 #include <exception>
@@ -83,16 +85,16 @@ namespace stage
     };
 
     TreasureStage::TreasureStage()
-        : Stage(
-              "Treasure",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::DefaultBoldFlavor,
-                sfml_util::GuiFont::Handwriting },
-              true)
-        , displayStagePtr_(new TreasureDisplayStage(this))
+        : StageBase(
+            "Treasure",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::DefaultBoldFlavor,
+              sfml_util::GuiFont::Handwriting },
+            true)
+        , displayStagePtrOpt_(boost::none)
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
         , itemCacheLockbox_()
@@ -110,29 +112,29 @@ namespace stage
     {
         item::ItemWarehouse::Access().Free(itemCacheHeld_.items_pvec);
         item::ItemWarehouse::Access().Free(itemCacheLockbox_.items_pvec);
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
     }
 
     bool TreasureStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (PACKET_PTR->Name() == POPUP_NAME_NO_TREASURE_)
+        if (PACKET_PTR->name == POPUP_NAME_NO_TREASURE_)
         {
             TransitionToAdventureStage();
             return false;
         }
 
-        if (PACKET_PTR->Name() == POPUP_NAME_WORN_ONLY_)
+        if (PACKET_PTR->name == POPUP_NAME_WORN_ONLY_)
         {
             SetupForCollection();
             return true;
         }
 
-        if ((PACKET_PTR->Name() == POPUP_NAME_LOCKBOX_ONLY_)
-            || (PACKET_PTR->Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
+        if ((PACKET_PTR->name == POPUP_NAME_LOCKBOX_ONLY_)
+            || (PACKET_PTR->name == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (PACKET_PTR->Response() == popup::ResponseTypes::Yes)
+            if (PACKET_PTR->type == popup::ResponseTypes::Yes)
             {
-                lockPicking_.PopupCharacterSelection(this);
+                lockPicking_.PopupCharacterSelection(this, stage::IStagePtr_t(this));
                 return false;
             }
             else
@@ -142,11 +144,12 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (PACKET_PTR->Response() == popup::ResponseTypes::Select)
+            if (PACKET_PTR->type == popup::ResponseTypes::Select)
             {
-                if (lockPicking_.HandleCharacterSelectionPopupResponse(this, PACKET_PTR))
+                if (lockPicking_.HandleCharacterSelectionPopupResponse(
+                        this, PACKET_PTR, stage::IStagePtr_t(this)))
                 {
                     return false;
                 }
@@ -162,7 +165,8 @@ namespace stage
                 {
                     // Since the player is choosing to skip the lockbox and there is no
                     // held treasure, then simply return to the Adventure Stage.
-                    game::LoopManager::Instance()->TransitionTo_Adventure();
+                    TransitionTo(stage::Stage::Adventure);
+
                     return false;
                 }
                 else if (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_)
@@ -175,13 +179,13 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
         {
             SetupForCollectionWithoutLockbox();
             return true;
         }
 
-        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             if (lockPicking_.Attempt())
             {
@@ -195,8 +199,8 @@ namespace stage
             return false;
         }
 
-        if ((PACKET_PTR->Name() == POPUP_NAME_LOCK_PICK_FAILURE_)
-            || (PACKET_PTR->Name() == POPUP_NAME_DAMAGE_REPORT_))
+        if ((PACKET_PTR->name == POPUP_NAME_LOCK_PICK_FAILURE_)
+            || (PACKET_PTR->name == POPUP_NAME_DAMAGE_REPORT_))
         {
             if (PromptPlayerWithDamagePopups() == DamagePopup::Displayed)
             {
@@ -213,9 +217,9 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_SUCCESS_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_SUCCESS_)
         {
-            displayStagePtr_->UpdateTreasureImage(treasureImageType_);
+            displayStagePtrOpt_.value()->UpdateTreasureImage(treasureImageType_);
 
             if (ShareAndShowPopupIfNeeded(ShareType::Coins))
             {
@@ -242,7 +246,7 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == POPUP_NAME_COIN_SHARE_)
+        if (PACKET_PTR->name == POPUP_NAME_COIN_SHARE_)
         {
             if (ShareAndShowPopupIfNeeded(ShareType::Gems))
             {
@@ -262,7 +266,7 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == POPUP_NAME_GEM_SHARE_)
+        if (PACKET_PTR->name == POPUP_NAME_GEM_SHARE_)
         {
             if (ProcessLockpickTitleAndPopupIfNeeded())
             {
@@ -275,15 +279,15 @@ namespace stage
             }
         }
 
-        if (PACKET_PTR->Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             SetupForCollection();
             return true;
         }
 
-        if (PACKET_PTR->Name() == POPUP_NAME_ITEM_TAKE_REJECTION_)
+        if (PACKET_PTR->name == POPUP_NAME_ITEM_TAKE_REJECTION_)
         {
-            displayStagePtr_->CanDisplayItemDetail(true);
+            displayStagePtrOpt_.value()->CanDisplayItemDetail(true);
             return true;
         }
 
@@ -292,35 +296,33 @@ namespace stage
 
     void TreasureStage::Setup()
     {
-        displayStagePtr_->Setup();
-
-        // give control of the TreasureDispayStage object lifetime to the Loop class
-        game::LoopManager::Instance()->AddStage(displayStagePtr_);
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (!displayStagePtrOpt_),
+            "stage::TreasureStage::Setup() called but displayStagePtrOpt_ was invalid.  It "
+            "should be set before this function is called by stage::StageFactory::Make().");
 
         // TODO TEMP REMOVE -once finished testing
         // create a fake collection of dead creatures, using the predetermined initial encounter
-        combat::Encounter::Instance()->BeginCombatTasks();
-        //
-        const auto NONPLAYER_CREATURE_PVEC { creature::Algorithms::NonPlayers() };
-        for (const auto & NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
-        {
-            combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
-        }
-        //
-        combat::Encounter::Instance()->EndCombatTasks();
+        combat::Encounter::Instance()->BeginAndEndFakeCombatForTesting();
 
+        // one of these calls
         treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
         itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
         itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
 
-        displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
+        // One of the Encounter functions called above code above will force the item code to
+        // generate all of the items in the game.  This can take a few seconds so there might be a
+        // popup saying please wait.  This is why some functions contain the words
+        // "AfterPleaseWait" in this class.
+
+        displayStagePtrOpt_.value()->SetupAfterPleaseWait(treasureImageType_);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedOnTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         if (updateItemDisplayNeeded_)
         {
@@ -331,7 +333,7 @@ namespace stage
 
     bool TreasureStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (displayStagePtr_->IsItemDetailMovingOrShowing())
+        if (displayStagePtrOpt_.value()->IsItemDetailMovingOrShowing())
         {
             return false;
         }
@@ -361,7 +363,7 @@ namespace stage
             Exit();
         }
 
-        return Stage::KeyRelease(KEY_EVENT);
+        return StageBase::KeyRelease(KEY_EVENT);
     }
 
     bool TreasureStage::HandleListboxCallback(
@@ -392,8 +394,8 @@ namespace stage
     void TreasureStage::TakeAllItems()
     {
         item::ItemPVec_t & itemsPVec { (
-            (displayStagePtr_->IsShowingHeldItems()) ? itemCacheHeld_.items_pvec
-                                                     : itemCacheLockbox_.items_pvec) };
+            (displayStagePtrOpt_.value()->IsShowingHeldItems()) ? itemCacheHeld_.items_pvec
+                                                                : itemCacheLockbox_.items_pvec) };
 
         if (itemsPVec.empty())
         {
@@ -407,7 +409,7 @@ namespace stage
 
         creature::CreaturePVec_t whoWillTakeItems
             = { game::Game::Instance()->State().Party().Characters().at(
-                displayStagePtr_->CharacterIndexShowingInventory()) };
+                displayStagePtrOpt_.value()->CharacterIndexShowingInventory()) };
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
@@ -458,7 +460,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
         }
         else if (itemsToRemovePVec.empty())
         {
@@ -470,7 +472,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
         }
         else
         {
@@ -486,7 +488,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
         }
     }
 
@@ -531,7 +533,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::HeldOnly:
@@ -546,7 +548,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::LockboxOnly:
@@ -565,7 +567,7 @@ namespace stage
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::Count:
@@ -636,8 +638,7 @@ namespace stage
             trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageTreasureTrap>(
-            this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
     }
 
     TreasureStage::DamagePopup TreasureStage::PromptPlayerWithDamagePopups()
@@ -672,7 +673,7 @@ namespace stage
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
 
             ++creatureEffectIndex_;
             return DamagePopup::Displayed;
@@ -690,7 +691,7 @@ namespace stage
 
         if (ALL_LIVING_PVEC.empty())
         {
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+            SpawnPopup(
                 this,
                 popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     POPUP_NAME_ALL_CHARACTERS_DIED_, combat::CombatEnd::Lose));
@@ -717,7 +718,10 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             SelectRandomTreasureOpeningSfx(), 0.5f);
 
-        lockPicking_.PopupSuccess(this, item::TreasureImage::ToContainerName(treasureImageType_));
+        lockPicking_.PopupSuccess(
+            this,
+            item::TreasureImage::ToContainerName(treasureImageType_),
+            stage::IStagePtr_t(this));
     }
 
     bool TreasureStage::ShareAndShowPopupIfNeeded(const ShareType WHAT_IS_SHARED)
@@ -754,7 +758,7 @@ namespace stage
                 SOUND_EFFECT,
                 sfml_util::FontManager::Instance()->Size_Normal()) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             return true;
         }
     }
@@ -815,15 +819,15 @@ namespace stage
 
     void TreasureStage::SetupForCollection()
     {
-        displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
-        displayStagePtr_->SetupForCollection(treasureAvailable_, treasureImageType_);
+        displayStagePtrOpt_.value()->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
+        displayStagePtrOpt_.value()->SetupForCollection(treasureAvailable_, treasureImageType_);
     }
 
     bool TreasureStage::HandleKeypress_Space()
     {
-        if (displayStagePtr_->CanTreasureChange())
+        if (displayStagePtrOpt_.value()->CanTreasureChange())
         {
-            displayStagePtr_->TreasureChange();
+            displayStagePtrOpt_.value()->TreasureChange();
             PlaySoundEffect_KeypressValid();
             return true;
         }
@@ -853,13 +857,13 @@ namespace stage
                 return 5;
         }() };
 
-        const auto CHARACTER_INDEX_MAX { displayStagePtr_->CharacterIndexMax() };
+        const auto CHARACTER_INDEX_MAX { displayStagePtrOpt_.value()->CharacterIndexMax() };
         if (characterIndex > CHARACTER_INDEX_MAX)
         {
             characterIndex = CHARACTER_INDEX_MAX;
         }
 
-        displayStagePtr_->InventoryChange(characterIndex);
+        displayStagePtrOpt_.value()->InventoryChange(characterIndex);
         return true;
     }
 
@@ -869,18 +873,18 @@ namespace stage
         {
             PlaySoundEffect_KeypressValid();
 
-            auto characterIndex { displayStagePtr_->CharacterIndex() };
+            auto characterIndex { displayStagePtrOpt_.value()->CharacterIndex() };
 
             if (0 == characterIndex)
             {
-                characterIndex = displayStagePtr_->CharacterIndexMax();
+                characterIndex = displayStagePtrOpt_.value()->CharacterIndexMax();
             }
             else
             {
                 --characterIndex;
             }
 
-            displayStagePtr_->InventoryChange(characterIndex);
+            displayStagePtrOpt_.value()->InventoryChange(characterIndex);
 
             return true;
         }
@@ -889,9 +893,9 @@ namespace stage
         {
             PlaySoundEffect_KeypressValid();
 
-            auto characterIndex { displayStagePtr_->CharacterIndex() };
+            auto characterIndex { displayStagePtrOpt_.value()->CharacterIndex() };
 
-            if (displayStagePtr_->CharacterIndexMax() == characterIndex)
+            if (displayStagePtrOpt_.value()->CharacterIndexMax() == characterIndex)
             {
                 characterIndex = 0;
             }
@@ -900,7 +904,7 @@ namespace stage
                 ++characterIndex;
             }
 
-            displayStagePtr_->InventoryChange(characterIndex);
+            displayStagePtrOpt_.value()->InventoryChange(characterIndex);
 
             return true;
         }
@@ -920,7 +924,7 @@ namespace stage
 
     void TreasureStage::TakeItem(const item::ItemPtr_t ITEM_PTR)
     {
-        auto creaturePtr { displayStagePtr_->WhichCharacterInventoryIsDisplayed() };
+        auto creaturePtr { displayStagePtrOpt_.value()->WhichCharacterInventoryIsDisplayed() };
         const auto IS_ITEM_ADD_ALLOWED_STR { creaturePtr->ItemIsAddAllowed(ITEM_PTR) };
 
         if (IS_ITEM_ADD_ALLOWED_STR.empty())
@@ -929,7 +933,7 @@ namespace stage
 
             creaturePtr->ItemAdd(ITEM_PTR);
 
-            if (displayStagePtr_->IsShowingHeldItems())
+            if (displayStagePtrOpt_.value()->IsShowingHeldItems())
             {
                 itemCacheHeld_.items_pvec.erase(
                     std::remove(
@@ -953,7 +957,7 @@ namespace stage
         }
         else
         {
-            displayStagePtr_->CanDisplayItemDetail(false);
+            displayStagePtrOpt_.value()->CanDisplayItemDetail(false);
 
             std::ostringstream ss;
             ss << creaturePtr->Name() << " can't take the " << ITEM_PTR->Name()
@@ -968,7 +972,7 @@ namespace stage
                 sfml_util::sound_effect::PromptWarn,
                 sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
         }
     }
 
@@ -978,9 +982,9 @@ namespace stage
             ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
             .PlayRandom();
 
-        displayStagePtr_->WhichCharacterInventoryIsDisplayed()->ItemRemove(ITEM_PTR);
+        displayStagePtrOpt_.value()->WhichCharacterInventoryIsDisplayed()->ItemRemove(ITEM_PTR);
 
-        if (displayStagePtr_->IsShowingHeldItems())
+        if (displayStagePtrOpt_.value()->IsShowingHeldItems())
         {
             itemCacheHeld_.items_pvec.emplace_back(ITEM_PTR);
         }
@@ -995,8 +999,8 @@ namespace stage
 
     void TreasureStage::UpdateItemDisplay()
     {
-        displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
-        displayStagePtr_->RefreshAfterCacheUpdate();
+        displayStagePtrOpt_.value()->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
+        displayStagePtrOpt_.value()->RefreshAfterCacheUpdate();
     }
 
     bool TreasureStage::ProcessLockpickTitleAndPopupIfNeeded()
@@ -1004,7 +1008,9 @@ namespace stage
         if (willProcessLockpickTitle_)
         {
             willProcessLockpickTitle_ = false;
-            return lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(this);
+
+            return lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
+                this, stage::IStagePtr_t(this));
         }
         else
         {
@@ -1017,7 +1023,7 @@ namespace stage
         combat::Encounter::Instance()->EndTreasureStageTasks(itemCacheHeld_, itemCacheLockbox_);
         itemCacheHeld_.Reset();
         itemCacheLockbox_.Reset();
-        game::LoopManager::Instance()->TransitionTo_Adventure();
+        TransitionTo(stage::Stage::Adventure);
     }
 
 } // namespace stage

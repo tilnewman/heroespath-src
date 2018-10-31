@@ -18,7 +18,6 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "game/world.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
@@ -27,6 +26,9 @@
 #include "misc/vectors.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sound-manager.hpp"
+
+// TODO remove this include when finished cleaning up, see comments below
+#include "game/game-controller.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -248,7 +250,7 @@ namespace combat
         // TODO move this to the Adventure Stage as well
         // TODO Encounter will need a function that plays combat music and that takes a bool
         //     for whether or not to play the same music or to pick new music.
-        if (game::LoopManager::Instance()->GetPhase() == game::Phase::Combat)
+        if (game::GameController::Instance()->GetPhase() == game::Phase::Combat)
         {
             sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
         }
@@ -383,6 +385,18 @@ namespace combat
     float Encounter::DefeatedPartyTreasureRatioPer() const
     {
         return treasureFactory_.TreasureRatioPer(deadNonPlayerPartyPVec_);
+    }
+
+    void Encounter::BeginAndEndFakeCombatForTesting()
+    {
+        BeginCombatTasks();
+
+        for (const auto & NEXT_CREATURE_PTR : creature::Algorithms::NonPlayers())
+        {
+            HandleKilledCreature(NEXT_CREATURE_PTR);
+        }
+
+        EndCombatTasks();
     }
 
     void Encounter::PopulateTurnInfoMap()

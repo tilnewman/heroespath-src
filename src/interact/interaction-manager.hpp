@@ -33,7 +33,6 @@ namespace interact
         InteractionManager & operator=(const InteractionManager &) = delete;
         InteractionManager & operator=(InteractionManager &&) = delete;
 
-    public:
         InteractionManager();
         ~InteractionManager();
 

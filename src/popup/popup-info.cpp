@@ -25,6 +25,7 @@ namespace popup
     const float PopupInfo::IMAGE_FADE_SPEED_DEFAULT_(-1.0f); // any negative value will work here
 
     PopupInfo::PopupInfo(
+        const PopupStage::Enum STAGE,
         const std::string & NAME,
         const sfml_util::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
@@ -41,7 +42,8 @@ namespace popup
         const std::string & TITLE_TEXT,
         const std::string & DESC_TEXT,
         const float KEEP_ALIVE_SECONDS)
-        : name_(NAME)
+        : stage_(STAGE)
+        , name_(NAME)
         , textInfo_(TEXT_INFO)
         , buttons_(BUTTONS)
         , image_(IMAGE)
@@ -97,6 +99,7 @@ namespace popup
         }
     }
 
+    // use this constructor for image selection popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
         const sfml_util::TextInfo & TEXT_INFO,
@@ -104,7 +107,8 @@ namespace popup
         const std::size_t INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const PopupButtonColor::Enum BUTTON_COLOR)
-        : name_(NAME)
+        : stage_(PopupStage::ImageSelect)
+        , name_(NAME)
         , textInfo_(TEXT_INFO)
         , buttons_(PopupButtons::SelectCancel)
         , image_(PopupImage::Large)
@@ -134,12 +138,14 @@ namespace popup
                 << textures_.size());
     }
 
+    // use this constructor for number selection popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
         const sfml_util::TextInfo & TEXT_INFO,
         const std::size_t THE_MIN,
         const std::size_t THE_MAX)
-        : name_(NAME)
+        : stage_(PopupStage::NumberSelect)
+        , name_(NAME)
         , textInfo_(TEXT_INFO)
         , buttons_(PopupButtons::SelectCancel)
         , image_(PopupImage::Large)
@@ -163,12 +169,14 @@ namespace popup
         , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
 
+    // use this constructor for end-of-combat popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
         const sfml_util::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
         const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
-        : name_(NAME)
+        : stage_(PopupStage::CombatOver)
+        , name_(NAME)
         , textInfo_(TEXT_INFO)
         , buttons_(BUTTONS)
         , image_(PopupImage::Large)
@@ -211,79 +219,77 @@ namespace popup
             ss << "(";
         }
 
-        ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_) << ", ";
+        ss << PopupStage::ToStringNoThrow(stage_) << ", ";
 
-        if (WILL_SHORTEN)
+        ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_)
+           << ", image=" << PopupImage::ToString(image_);
+
+        if (WILL_SHORTEN == false)
         {
-            ss << PopupImage::ToString(image_);
-        }
-        else
-        {
-            ss << ", image=" << PopupImage::ToString(image_);
             ss << ", button_color=" << PopupButtonColor::ToString(buttonColor_);
-        }
 
-        ss << ", accent_image=" << std::boolalpha << willAddRandImage_;
+            ss << ", accent_image=" << std::boolalpha << willAddRandImage_;
 
-        ss << ", sound_effect=" << sfml_util::sound_effect::ToString(soundEffect_);
+            ss << ", sound_effect=" << sfml_util::sound_effect::ToString(soundEffect_);
 
-        if (numberMin_ != numberMax_)
-        {
-            ss << ", number_select=[" << numberMin_ << "," << numberMax_ << "]";
-        }
+            if (numberMin_ != numberMax_)
+            {
+                ss << ", number_select=[" << numberMin_ << "," << numberMax_ << "]";
+            }
 
-        if (textures_.size() > 0)
-        {
-            ss << ", images_count=" << textures_.size();
-        }
+            if (textures_.size() > 0)
+            {
+                ss << ", images_count=" << textures_.size();
+            }
 
-        if (imageFadeSpeed_ > 0.0f)
-        {
-            ss << ", fade_speed=" << imageFadeSpeed_;
-        }
+            if (imageFadeSpeed_ > 0.0f)
+            {
+                ss << ", fade_speed=" << imageFadeSpeed_;
+            }
 
-        if (creaturePtrOpt_)
-        {
-            ss << ", creature=" << creaturePtrOpt_.value()->Name();
-        }
+            if (creaturePtrOpt_)
+            {
+                ss << ", creature=" << creaturePtrOpt_.value()->Name();
+            }
 
-        if (initialSelection_ != 0)
-        {
-            ss << ", initial_selection=" << initialSelection_;
-        }
+            if (initialSelection_ != 0)
+            {
+                ss << ", initial_selection=" << initialSelection_;
+            }
 
-        if ((textInfo_.text.size() > 20) && (WILL_SHORTEN))
-        {
-            ss << ", \"" << std::string(textInfo_.text.substr(0, 19).append("...")) << "\"";
-        }
-        else
-        {
-            ss << ", \"" << textInfo_.text << "\"";
-        }
+            if ((textInfo_.text.size() > 20) && (WILL_SHORTEN))
+            {
+                ss << ", \"" << std::string(textInfo_.text.substr(0, 19).append("...")) << "\"";
+            }
+            else
+            {
+                ss << ", \"" << textInfo_.text << "\"";
+            }
 
-        if (numberInvalidVec_.empty() == false)
-        {
-            ss << ", invalid_selections=" << misc::Vector::Join(numberInvalidVec_);
-        }
+            if (numberInvalidVec_.empty() == false)
+            {
+                ss << ", invalid_selections=" << misc::Vector::Join(numberInvalidVec_);
+            }
 
-        if (creaturePtrOpt_)
-        {
-            ss << ", creature=" << creaturePtrOpt_.value()->NameAndRaceAndRole();
-        }
+            if (creaturePtrOpt_)
+            {
+                ss << ", creature=" << creaturePtrOpt_.value()->NameAndRaceAndRole();
+            }
 
-        if (howCombatEnded_ != combat::CombatEnd::Count)
-        {
-            ss << ", combat_ended=" << combat::CombatEnd::ToString(howCombatEnded_);
-        }
+            if (howCombatEnded_ != combat::CombatEnd::Count)
+            {
+                ss << ", combat_ended=" << combat::CombatEnd::ToString(howCombatEnded_);
+            }
 
-        if (titleText_.empty() == false)
-        {
-            ss << ", title_text=\"" << titleText_ << "\"";
-        }
+            if (titleText_.empty() == false)
+            {
+                ss << ", title_text=\"" << titleText_ << "\"";
+            }
 
-        if (descText_.empty() == false)
-        {
-            ss << ", desc_text=\"" << descText_ << "\"";
+            if (descText_.empty() == false)
+            {
+                ss << ", desc_text=\"" << descText_ << "\"";
+            }
         }
 
         if (WILL_WRAP)

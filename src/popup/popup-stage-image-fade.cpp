@@ -17,6 +17,8 @@
 #include "sfutil/fitting.hpp"
 #include "sfutil/position.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include <algorithm>
 
 namespace heroespath
@@ -126,12 +128,12 @@ namespace popup
         target.draw(*titleTextRegionUPtr_, STATES);
         target.draw(*descTextRegionUPtr_, STATES);
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void PopupStageImageFade::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         if (beforeFadeTimerSec_ < BEFORE_FADE_STARTS_DELAY_SEC_)
         {

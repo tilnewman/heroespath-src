@@ -30,7 +30,7 @@
 #include "sfml-util/sliderbar.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <set>
@@ -98,7 +98,8 @@ namespace stage
 
     // A Stage class that allows camping characters
     class CombatStage
-        : public sfml_util::Stage
+        : public stage::StageBase
+
         , public sfml_util::PopupCallback_t::IHandler_t
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
         , public CombatStageListBox_t::Callback_t::IHandler_t
@@ -198,7 +199,11 @@ namespace stage
         };
 
     public:
-        explicit CombatStage(const bool WILL_ADVANCE_TURN);
+        explicit CombatStage(
+            combat::CombatAnimationUPtr_t combatAnimUPtr,
+            const combat::CombatDisplayPtr_t COMBAT_DISPLAY_STAGE_PTR,
+            const bool WILL_ADVANCE_TURN);
+
         virtual ~CombatStage();
 
         bool HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t &) override;
@@ -208,6 +213,7 @@ namespace stage
         bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
         bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
+        void PreSetup();
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
@@ -223,15 +229,24 @@ namespace stage
         bool IsPlayerCharacterTurnValid() const;
         bool IsNonPlayerCharacterTurnValid() const;
 
+        const sf::FloatRect CombatRegion() const { return COMBAT_REGION_; }
+
     private:
+        const sf::FloatRect CalcCombatRegion() const;
+        const sf::FloatRect CalcStatusRegion(const sf::FloatRect & COMBAT_REGION) const;
+        const sf::FloatRect CalcCommandRegion() const;
+
         void AppendInitialStatus();
         void AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM = true);
         void StartPause(const float DURATION_SEC, const std::string & TITLE);
         void EndPause();
         void HandlePerformReportPhaseOverTasks();
+
         void HandleEnemyTurnStep1_Decide(const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
         TurnActionPhase
             HandleEnemyTurnStep2_Perform(const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
         void StartTurn_Step1();
         void StartTurn_Step2(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         void EndTurn();
@@ -418,8 +433,12 @@ namespace stage
         static combat::RestoreInfo restoreInfo_;
         //
         const bool WILL_ADVANCE_TURN_;
-        const float SCREEN_WIDTH_;
-        const float SCREEN_HEIGHT_;
+        const float COMBAT_REGION_MARGIN_;
+        const float STATUS_REGION_SLIDERBAR_WIDTH_;
+        const float COMMAND_REGION_PAD_;
+        const sf::FloatRect COMBAT_REGION_;
+        const sf::FloatRect STATUS_REGION_;
+        const sf::FloatRect COMMAND_REGION_;
         //
         combat::Text combatText_;
         combat::TurnDecider turnDecider_;

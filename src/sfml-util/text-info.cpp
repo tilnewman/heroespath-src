@@ -105,129 +105,143 @@ namespace sfml_util
     const std::string TextInfo::ToString(
         const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
-        std::ostringstream ss;
+        auto appendWithSeparator = [&](std::ostringstream & strstrm, const auto & THING) {
+            if (strstrm.str().empty() == false)
+            {
+                strstrm << SEPARATOR;
+            }
+
+            strstrm << THING;
+        };
+
+        std::ostringstream ssInfo;
+        std::ostringstream ssInvalid;
 
         if (*this == TextInfo())
         {
-            ss << "DEFAULT" << SEPARATOR << "INVALID" << SEPARATOR << "WONT_DRAW";
+            appendWithSeparator(ssInvalid, "default_constructed");
+        }
+
+        if (WillDraw() == false)
+        {
+            appendWithSeparator(ssInvalid, "will_draw_false");
+        }
+        else if (IsValid() == false)
+        {
+            appendWithSeparator(ssInvalid, "is_valid_false");
+        }
+
+        if (text.empty())
+        {
+            appendWithSeparator(ssInvalid, "text_empty");
         }
         else
         {
-            if (WillDraw() == false)
-            {
-                ss << "INVALID" << SEPARATOR << "WONT_DRAW";
-            }
-            else if (IsValid() == false)
-            {
-                ss << "INVALID";
-            }
+            appendWithSeparator(ssInfo, misc::Quoted(misc::MakeLoggableString(text)));
+        }
 
-            ss << SEPARATOR;
-            if (text.empty())
-            {
-                ss << "(invalid, text is empty)";
-            }
-            else
-            {
-                ss << misc::MakeLoggableString(text);
-            }
+        if (GuiFont::IsValid(font_letters))
+        {
+            appendWithSeparator(ssInfo, GuiFont::ToString(font_letters));
+        }
+        else
+        {
+            appendWithSeparator(
+                ssInvalid,
+                "letter_font=" + misc::ToString(GuiFont::ToUnderlyingType(font_letters)));
+        }
 
-            ss << SEPARATOR;
-            if (GuiFont::IsValid(font_letters))
+        if (GuiFont::Number != font_numbers)
+        {
+            if (GuiFont::IsValid(font_numbers))
             {
-                ss << GuiFont::ToString(font_letters);
+                appendWithSeparator(ssInfo, GuiFont::ToString(font_numbers));
             }
             else
             {
-                ss << "(invalid letter_font=" << GuiFont::ToUnderlyingType(font_letters) << ")";
-            }
-
-            if (GuiFont::Number != font_numbers)
-            {
-                ss << SEPARATOR;
-                if (GuiFont::IsValid(font_numbers))
-                {
-                    ss << GuiFont::ToString(font_numbers);
-                }
-                else
-                {
-                    ss << "(invalid number_font=" << GuiFont::ToUnderlyingType(font_numbers) << ")";
-                }
-            }
-
-            ss << SEPARATOR << size;
-            ss << SEPARATOR << sfutil::ToString(color, misc::ToStringPrefix::SimpleName);
-
-            ss << SEPARATOR;
-            if (sfml_util::Justified::IsValid(justified))
-            {
-                ss << sfml_util::Justified::ToString(justified);
-            }
-            else
-            {
-                ss << "(invalid justify=" << Justified::ToUnderlyingType(justified) << ")";
-            }
-
-            if (0 != style)
-            {
-                auto separatorIfNotEmpty = [&](std::ostringstream & strstrm) -> std::string {
-                    if (strstrm.str().empty())
-                    {
-                        return "";
-                    }
-                    else
-                    {
-                        return SEPARATOR;
-                    }
-                };
-
-                std::ostringstream oss;
-
-                // if (STYLE & sf::Text::Style::Regular)
-                //     oss << "Regular";
-
-                if (style & sf::Text::Style::Bold)
-                {
-                    oss << "Bold";
-                }
-
-                if (style & sf::Text::Style::Italic)
-                {
-                    oss << separatorIfNotEmpty(oss) << "Italic";
-                }
-
-                if (style & sf::Text::Style::Underlined)
-                {
-                    oss << separatorIfNotEmpty(oss) << "Underlined";
-                }
-
-                if (style & sf::Text::Style::StrikeThrough)
-                {
-                    oss << separatorIfNotEmpty(oss) << "StrikeThrough";
-                }
-
-                if (oss.str().empty())
-                {
-                    ss << "(invalid sf::Style=" << style << ")";
-                }
-                else
-                {
-                    ss << oss.str();
-                }
+                appendWithSeparator(
+                    ssInvalid,
+                    "letter_font=" + misc::ToString(GuiFont::ToUnderlyingType(font_numbers)));
             }
         }
 
-        const auto PARTS_STR { (
-            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        appendWithSeparator(ssInfo, misc::ToString(size));
+        appendWithSeparator(ssInfo, sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
+
+        if (sfml_util::Justified::IsValid(justified))
+        {
+            appendWithSeparator(ssInfo, sfml_util::Justified::ToString(justified));
+        }
+        else
+        {
+            appendWithSeparator(
+                ssInvalid, "justify=" + misc::ToString(Justified::ToUnderlyingType(justified)));
+        }
+
+        if (0 != style)
+        {
+            std::ostringstream ssStyle;
+
+            if (style & sf::Text::Style::Bold)
+            {
+                appendWithSeparator(ssStyle, "Bold");
+            }
+
+            if (style & sf::Text::Style::Italic)
+            {
+                appendWithSeparator(ssStyle, "Italic");
+            }
+
+            if (style & sf::Text::Style::Underlined)
+            {
+                appendWithSeparator(ssStyle, "Underlined");
+            }
+
+            if (style & sf::Text::Style::StrikeThrough)
+            {
+                appendWithSeparator(ssStyle, "StrikeThrough");
+            }
+
+            if (ssStyle.str().empty())
+            {
+                appendWithSeparator(ssInvalid, "unknown_style=" + misc::ToString(style));
+            }
+            else
+            {
+                appendWithSeparator(ssInfo, ssStyle.str());
+            }
+        }
+
+        std::ostringstream ssFinal;
+
+        if (WILL_WRAP == misc::Wrap::Yes)
+        {
+            ssFinal << "(";
+        }
+
+        if (ssInfo.str().empty() == false)
+        {
+            ssFinal << ssInfo.str();
+        }
+
+        if (ssInvalid.str().empty() == false)
+        {
+            appendWithSeparator(ssFinal, ssInvalid.str());
+        }
+
+        if (WILL_WRAP == misc::Wrap::Yes)
+        {
+            ssFinal << ")";
+        }
 
         if (WILL_PREFIX)
         {
             return std::string("TextInfo").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
+                + ssFinal.str();
         }
         else
         {
-            return PARTS_STR;
+            return ssFinal.str();
         }
     }
 

@@ -10,9 +10,12 @@
 // key-value-file.hpp
 //
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
+#include "misc/type-helpers.hpp"
 
 #include <boost/lexical_cast.hpp>
+#include <boost/type_index.hpp>
 
 #include <iostream> //for std::ios
 #include <string>
@@ -118,19 +121,67 @@ namespace misc
                 return RETURN_IF_NOT_FOUND;
             }
 
-            if constexpr (std::is_same<std::remove_const_t<T>, bool>::value)
+            if constexpr (
+                std::is_same<std::remove_const_t<T>, bool>::value || std::is_same<T, bool>::value)
             {
                 const auto VALUE_STR_CLEANED { boost::algorithm::trim_copy(
                     boost::algorithm::to_lower_copy(VALUE_STR)) };
 
-                if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "1"))
+                if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "1")
+                    || (VALUE_STR_CLEANED == "true"))
                 {
                     return true;
                 }
 
-                if ((VALUE_STR_CLEANED == "no") || (VALUE_STR_CLEANED == "0"))
+                if ((VALUE_STR_CLEANED == "no") || (VALUE_STR_CLEANED == "0")
+                    || (VALUE_STR_CLEANED == "false"))
                 {
                     return false;
+                }
+            }
+
+            // lexical_cast<>() does not work as expeted with one byte arithmetic types, so
+            // this block is a work-around for that
+            if constexpr (misc::is_number_non_floating_point_v<T> && (sizeof(T) == 1))
+            {
+                const int NUMBER_MIN_INT { std::numeric_limits<int>::lowest() };
+                const int NUMBER_MAX_INT { std::numeric_limits<int>::max() };
+
+                const int NUMBER_MIN_T_AS_INT { static_cast<int>(
+                    std::numeric_limits<T>::lowest()) };
+                const int NUMBER_MAX_T_AS_INT { static_cast<int>(std::numeric_limits<T>::max()) };
+
+                const int RESULT_AS_INT { ValueAs<int>(KEY, NUMBER_MIN_INT, NUMBER_MAX_INT) };
+
+                if (RESULT_AS_INT == NUMBER_MIN_INT)
+                {
+                    // key not found error and that has already been logged
+                    return RETURN_IF_NOT_FOUND;
+                }
+                else if (RESULT_AS_INT == NUMBER_MAX_INT)
+                {
+                    // conversion error and that has already been logged
+                    return RETURN_IF_CONVERSION_ERROR;
+                }
+                else if (
+                    (RESULT_AS_INT < NUMBER_MIN_T_AS_INT) || (RESULT_AS_INT > NUMBER_MAX_T_AS_INT))
+                {
+                    M_HP_LOG_ERR(
+                        "For key=\""
+                        << KEY << "\" boost::lexical_cast<"
+                        << boost::typeindex::type_id<T>().pretty_name() << ">(value=\"" << VALUE_STR
+                        << "\") fails because the desired type is a one-byte type with a range "
+                           "limited to ["
+                        << NUMBER_MIN_T_AS_INT << ", " << NUMBER_MAX_T_AS_INT
+                        << "] and the given value of \"" << VALUE_STR << "\" or (" << RESULT_AS_INT
+                        << ") is outside of that range.  Returning return_on_conversion_error="
+                        << misc::ToString(RETURN_IF_CONVERSION_ERROR));
+
+                    return RETURN_IF_CONVERSION_ERROR;
+                }
+                else
+                {
+                    return static_cast<T>(RESULT_AS_INT);
                 }
             }
 
@@ -138,10 +189,19 @@ namespace misc
             {
                 return boost::lexical_cast<T>(VALUE_STR);
             }
-            catch (...)
-            {}
+            catch (const std::exception & EXCEPTION)
+            {
+                M_HP_LOG_ERR(
+                    "For key=\"" << KEY << "\" boost::lexical_cast<"
+                                 << boost::typeindex::type_id<T>().pretty_name() << ">(value=\""
+                                 << VALUE_STR << "\") threw exception \"" << EXCEPTION.what()
+                                 << "\".  Returning return_on_conversion_error="
+                                 << RETURN_IF_CONVERSION_ERROR << ".  "
+                                 << M_HP_VAR_STR(RETURN_IF_NOT_FOUND)
+                                 << M_HP_VAR_STR(RETURN_IF_CONVERSION_ERROR));
 
-            return RETURN_IF_CONVERSION_ERROR;
+                return RETURN_IF_CONVERSION_ERROR;
+            }
         }
 
         // returns RETURN_IF_NOT_FOUND if KEY is empty

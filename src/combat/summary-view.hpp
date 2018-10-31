@@ -72,7 +72,6 @@ namespace combat
         SummaryView & operator=(const SummaryView &) = delete;
         SummaryView & operator=(SummaryView &&) = delete;
 
-    public:
         SummaryView();
         virtual ~SummaryView() = default;
 

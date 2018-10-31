@@ -20,11 +20,19 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
+
 namespace item
 {
     class ItemProfile;
@@ -43,7 +51,7 @@ namespace item
 
         ItemFactory() = default;
 
-        bool Test() const;
+        bool Test(stage::IStagePtr_t iStagePtr) const;
 
         const ItemPtr_t Make(const ItemProfile &) const;
         const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t) const;

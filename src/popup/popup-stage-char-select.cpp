@@ -15,11 +15,12 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {

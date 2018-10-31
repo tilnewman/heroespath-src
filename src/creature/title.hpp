@@ -46,7 +46,6 @@ namespace creature
         Title & operator=(const Title &) = delete;
         Title & operator=(Title &&) = delete;
 
-    public:
         explicit Title(
             const Titles::Enum TITLE = Titles::Count,
             const AchievementType::Enum ACHIEVEMENT_TYPE = AchievementType::None,

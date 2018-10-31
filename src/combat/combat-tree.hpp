@@ -113,7 +113,6 @@ namespace combat
         CombatTree & operator=(const CombatTree &) = delete;
         CombatTree & operator=(CombatTree &&) = delete;
 
-    public:
         CombatTree();
 
         // reuses IDs that were preveiously removed

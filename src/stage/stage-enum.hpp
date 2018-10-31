@@ -4,10 +4,10 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#ifndef HEROESPATH_STAGE_STAGE_ENUM_HPP_INCLUDED
+#define HEROESPATH_STAGE_STAGE_ENUM_HPP_INCLUDED
 //
-// loop-state-enum.hpp
+// stage-enum.hpp
 //  An enum describing the game loop state.
 //
 #include "misc/enum-util.hpp"
@@ -16,10 +16,10 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace stage
 {
 
-    struct LoopState : public misc::EnumBaseCounting<LoopState, misc::EnumFirstValueNone>
+    struct Stage : public misc::EnumBaseCounting<Stage, misc::EnumFirstValueNone>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -33,7 +33,6 @@ namespace sfml_util
             Combat,
             Camp,
             Inn,
-            Query,
             Popup,
             Credits,
             Settings,
@@ -42,24 +41,24 @@ namespace sfml_util
             Treasure,
             Test,
             Previous,
-            Start,
             Next,
             Save,
             Help,
             Count
         };
 
-        static const std::string ToString(const LoopState::Enum);
-        static bool HasFadedImage(const LoopState::Enum);
-        static bool WillTransition(const LoopState::Enum);
+        static const std::string ToString(const Enum);
+        static bool HasFadedImage(const Enum);
+        static bool IsPlayable(const Enum);
+        static bool IsPlayableAndNotPopup(const Enum);
 
         static void TestHelper()
         {
-            misc::EnumBaseCounting<LoopState, misc::EnumFirstValueNone>::Test();
+            misc::EnumBaseCounting<Stage, misc::EnumFirstValueNone>::Test();
         }
     };
 
-} // namespace sfml_util
+} // namespace stage
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_STAGE_ENUM_HPP_INCLUDED

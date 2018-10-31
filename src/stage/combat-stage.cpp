@@ -25,7 +25,6 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "game/phase-enum.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
@@ -55,6 +54,9 @@
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "stage/achievement-handler.hpp"
+#include "stage/stage-setup-packet.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <exception>
 #include <sstream>
@@ -139,19 +141,26 @@ namespace stage
     //
     combat::RestoreInfo CombatStage::restoreInfo_;
 
-    CombatStage::CombatStage(const bool WILL_ADVANCE_TURN)
-        : Stage(
-              "Combat",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::DefaultBoldFlavor,
-                sfml_util::GuiFont::Handwriting },
-              true)
+    CombatStage::CombatStage(
+        combat::CombatAnimationUPtr_t combatAnimUPtr,
+        const combat::CombatDisplayPtr_t COMBAT_DISPLAY_STAGE_PTR,
+        const bool WILL_ADVANCE_TURN)
+        : StageBase(
+            "Combat",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::DefaultBoldFlavor,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , COMBAT_REGION_MARGIN_(25.0f)
+        , STATUS_REGION_SLIDERBAR_WIDTH_(35.0f)
+        , COMMAND_REGION_PAD_(10.0f)
+        , COMBAT_REGION_(CalcCombatRegion())
+        , STATUS_REGION_(CalcStatusRegion(COMBAT_REGION_))
+        , COMMAND_REGION_(CalcCommandRegion())
         , combatText_()
         , turnDecider_()
         , commandBoxUPtr_()
@@ -186,8 +195,8 @@ namespace stage
         , conditionEffectsCenterPosV_(0.0f, 0.0f)
         , conditionEffectsWillSkip_(false)
         , slider_()
-        , combatAnimationUPtr_(std::make_unique<combat::CombatAnimation>())
-        , combatDisplayStagePtr_(new combat::CombatDisplay(combatAnimationUPtr_.get()))
+        , combatAnimationUPtr_(std::move(combatAnimUPtr))
+        , combatDisplayStagePtr_(COMBAT_DISPLAY_STAGE_PTR)
         , settingsButtonUPtr_()
         , pauseDurationSec_(0.0f)
         , pauseElapsedSec_(
@@ -251,7 +260,7 @@ namespace stage
         restoreInfo_.CanTurnAdvance(false);
     }
 
-    CombatStage::~CombatStage() { Stage::ClearAllEntities(); }
+    CombatStage::~CombatStage() { StageBase::ClearAllEntities(); }
 
     bool CombatStage::HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t &)
     {
@@ -348,7 +357,7 @@ namespace stage
         if (PACKET_PTR->entity_ptr == settingsButtonUPtr_.get())
         {
             restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-            game::LoopManager::Instance()->TransitionTo_Settings();
+            TransitionTo(stage::Stage::Settings);
             return true;
         }
 
@@ -380,20 +389,19 @@ namespace stage
 
     bool CombatStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if (PACKET_PTR->Name() == POPUP_NAME_ACHIEVEMENT_)
+        if (PACKET_PTR->name == POPUP_NAME_ACHIEVEMENT_)
         {
             return HandleAchievementPopups();
         }
-        else if ((PACKET_PTR->Name() == POPUP_NAME_MUSICSHEET_) && turnCreaturePtrOpt_)
+        else if ((PACKET_PTR->name == POPUP_NAME_MUSICSHEET_) && turnCreaturePtrOpt_)
         {
             const auto CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
-            if ((PACKET_PTR->Response() == popup::ResponseTypes::Select)
-                && PACKET_PTR->SelectionOpt())
+            if ((PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
             {
                 const auto SONGS_PVEC { CREATURE_PTR->SongsPVec() };
 
-                const auto SELECTED_INDEX { PACKET_PTR->SelectionOpt().value() };
+                const auto SELECTED_INDEX { PACKET_PTR->selection_opt.value() };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (SELECTED_INDEX < SONGS_PVEC.size()),
@@ -411,14 +419,13 @@ namespace stage
                 return false;
             }
         }
-        if (PACKET_PTR->Name() == POPUP_NAME_SPELLBOOK_)
+        if (PACKET_PTR->name == POPUP_NAME_SPELLBOOK_)
         {
-            if ((PACKET_PTR->Response() == popup::ResponseTypes::Select)
-                && PACKET_PTR->SelectionOpt())
+            if ((PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
             {
                 const auto SPELLS_PVEC { turnCreaturePtrOpt_.value()->SpellsPVec() };
 
-                const auto SELECTED_INDEX { PACKET_PTR->SelectionOpt().value() };
+                const auto SELECTED_INDEX { PACKET_PTR->selection_opt.value() };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (SELECTED_INDEX < SPELLS_PVEC.size()),
@@ -436,59 +443,29 @@ namespace stage
                 return false;
             }
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_COMBATOVER_WIN_)
+        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_WIN_)
         {
             // TODO If popup response is YES, then goto the loot stage, and if NO,
             //     then goto the adventure stage.
-            game::LoopManager::Instance()->TransitionTo_Credits();
+            TransitionTo(stage::Stage::Credits);
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_COMBATOVER_LOSE_)
+        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_LOSE_)
         {
             // TODO if popup response is YES, then load last saved game
-            game::LoopManager::Instance()->TransitionTo_Credits();
+            TransitionTo(stage::Stage::Credits);
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_COMBATOVER_RAN_)
+        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_RAN_)
         {
             // TODO go directly back to adventure stage
-            game::LoopManager::Instance()->TransitionTo_Credits();
+            TransitionTo(stage::Stage::Credits);
         }
 
         return false;
     }
 
-    void CombatStage::Setup()
+    void CombatStage::PreSetup()
     {
-        // define combat region
-        const float COMBAT_REGION_MARGIN(25.0f);
-        const float COMBAT_REGION_TOP(COMBAT_REGION_MARGIN);
-        const float COMBAT_REGION_LEFT(COMBAT_REGION_MARGIN);
-        const float COMBAT_REGION_WIDTH(SCREEN_WIDTH_ - (COMBAT_REGION_MARGIN * 2.0f) + 10.0f);
-
-        const float COMBAT_REGION_HEIGHT(
-            (SCREEN_HEIGHT_ - (COMBAT_REGION_MARGIN * 2.0f)) - sfutil::MapByRes(200.0f, 800.0f));
-
-        const sf::FloatRect COMBAT_REGION(
-            COMBAT_REGION_LEFT, COMBAT_REGION_TOP, COMBAT_REGION_WIDTH, COMBAT_REGION_HEIGHT);
-
         // status box
-        const float SLIDERBAR_VERT_SPACER(25.0f);
-        const float STATUS_REGION_WIDTH_RATIO(0.666f);
-        const float STATUS_REGION_SLIDERBAR_WIDTH(35.0f);
-        const float STATUS_REGION_LEFT(COMBAT_REGION_LEFT);
-
-        const float STATUS_REGION_TOP(
-            COMBAT_REGION_TOP + COMBAT_REGION_HEIGHT + SLIDERBAR_VERT_SPACER);
-
-        const float STATUS_REGION_WIDTH(
-            (SCREEN_WIDTH_ * STATUS_REGION_WIDTH_RATIO) - STATUS_REGION_SLIDERBAR_WIDTH);
-
-        const float STATUS_REGION_HEIGHT(
-            (((SCREEN_HEIGHT_ - COMBAT_REGION_TOP) - COMBAT_REGION_HEIGHT) - SLIDERBAR_VERT_SPACER)
-            - 25.0f);
-
-        const sf::FloatRect STATUS_REGION(
-            STATUS_REGION_LEFT, STATUS_REGION_TOP, STATUS_REGION_WIDTH, STATUS_REGION_HEIGHT);
-
         sfml_util::BoxEntityInfo statusBoxInfo;
 
         statusBoxInfo.SetupImage(
@@ -509,7 +486,7 @@ namespace stage
             this,
             this,
             sfml_util::ListBoxPacket(
-                STATUS_REGION,
+                STATUS_REGION_,
                 statusBoxInfo,
                 LISTBOX_LINE_COLOR_,
                 sfml_util::ListBoxPacket::DEFAULT_IMAGE_COLOR_,
@@ -518,26 +495,6 @@ namespace stage
         EntityAdd(statusBoxUPtr_.get());
 
         // command box
-        const float COMMAND_REGION_HORIZ_SPACER(25.0f);
-        const float COMMAND_REGION_VERT_SPACER(25.0f);
-
-        const float COMMAND_REGION_LEFT(
-            STATUS_REGION_LEFT + STATUS_REGION_WIDTH + COMMAND_REGION_HORIZ_SPACER
-            + STATUS_REGION_SLIDERBAR_WIDTH);
-
-        const float COMMAND_REGION_TOP(
-            COMBAT_REGION_TOP + COMBAT_REGION_HEIGHT + COMMAND_REGION_VERT_SPACER);
-
-        const float COMMAND_REGION_WIDTH(
-            ((((SCREEN_WIDTH_ - COMMAND_REGION_HORIZ_SPACER) - COMBAT_REGION_MARGIN)
-              - STATUS_REGION_WIDTH)
-             - 15.0f)
-            - STATUS_REGION_SLIDERBAR_WIDTH);
-
-        const float COMMAND_REGION_HEIGHT(STATUS_REGION_HEIGHT);
-
-        const sf::FloatRect COMMAND_REGION(
-            COMMAND_REGION_LEFT, COMMAND_REGION_TOP, COMMAND_REGION_WIDTH, COMMAND_REGION_HEIGHT);
 
         sfml_util::BoxEntityInfo commandBoxInfo;
 
@@ -550,11 +507,10 @@ namespace stage
         commandBoxInfo.SetupBorder(true);
 
         commandBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
-            "CombatStage'sCommand", COMMAND_REGION, commandBoxInfo);
+            "CombatStage'sCommand", COMMAND_REGION_, commandBoxInfo);
 
         // turn box
-        turnBoxRegion_ = sf::FloatRect(
-            STATUS_REGION_LEFT, STATUS_REGION_TOP, STATUS_REGION_WIDTH, STATUS_REGION_HEIGHT);
+        turnBoxRegion_ = STATUS_REGION_;
 
         sfml_util::BoxEntityInfo turnBoxInfo;
 
@@ -674,15 +630,13 @@ namespace stage
         MakeButton(runTBoxButtonUPtr_, "R(u)n", combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_);
 
         // settings button (gears symbol)
-        const float COMMAND_REGION_PAD(10.0f);
-
         const sf::Vector2f GEAR_IMAGE_SIZE_V { sfutil::ScreenRatioToPixelsHoriz(0.052f),
                                                sfutil::ScreenRatioToPixelsVert(0.0853f) };
 
-        const sf::Vector2f GEAR_IMAGE_POS_V { ((COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH)
+        const sf::Vector2f GEAR_IMAGE_POS_V { ((COMMAND_REGION_.left + COMMAND_REGION_.width)
                                                - GEAR_IMAGE_SIZE_V.x)
-                                                  - COMMAND_REGION_PAD,
-                                              COMMAND_REGION_TOP + COMMAND_REGION_PAD };
+                                                  - COMMAND_REGION_PAD_,
+                                              COMMAND_REGION_.top + COMMAND_REGION_PAD_ };
 
         const sf::FloatRect GEAR_IMAGE_REGION(GEAR_IMAGE_POS_V, GEAR_IMAGE_SIZE_V);
 
@@ -703,10 +657,10 @@ namespace stage
         EntityAdd(settingsButtonUPtr_.get());
 
         // position turn buttons
-        const auto LEFT_ALIGN_PAD { COMMAND_REGION.width * 0.25f };
-        const auto COLUMN_1_LEFT { (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 1.0f)) - 15.0f };
-        const auto COLUMN_2_LEFT { COMMAND_REGION.left + (LEFT_ALIGN_PAD * 2.0f) };
-        const auto COLUMN_3_LEFT { (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
+        const auto LEFT_ALIGN_PAD { COMMAND_REGION_.width * 0.25f };
+        const auto COLUMN_1_LEFT { (COMMAND_REGION_.left + (LEFT_ALIGN_PAD * 1.0f)) - 15.0f };
+        const auto COLUMN_2_LEFT { COMMAND_REGION_.left + (LEFT_ALIGN_PAD * 2.0f) };
+        const auto COLUMN_3_LEFT { (COMMAND_REGION_.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
 
         const auto COLUMN_TOP { settingsButtonUPtr_->GetEntityPos().y
                                 + settingsButtonUPtr_->GetEntityRegion().height
@@ -773,14 +727,10 @@ namespace stage
 
             combat::Encounter::Instance()->BeginCombatTasks();
         }
+    }
 
-        // combat display
-        combatDisplayStagePtr_->StageRegionSet(COMBAT_REGION);
-        combatDisplayStagePtr_->Setup();
-
-        // give control of the CombatDisplay object lifetime to the Loop class
-        game::LoopManager::Instance()->AddStage(combatDisplayStagePtr_.Ptr());
-
+    void CombatStage::Setup()
+    {
         if (restoreInfo_.HasRestored())
         {
             conditionEffectsWillSkip_ = true;
@@ -803,27 +753,38 @@ namespace stage
             sfml_util::Justified::Left);
 
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(
-            0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
+            0.0f, COMMAND_REGION_.top + COMMAND_REGION_PAD_, 0.0f, 0.0f);
 
         zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "ZoomSlider's", ZOOMSLIDER_LABEL_TEXT_INFO, ZOOMSLIDER_LABEL_RECT);
 
+        const auto ZOOM_SLIDERBAR_POS_LEFT { COMMAND_REGION_.left + COMMAND_REGION_PAD_ };
+
+        const auto ZOOM_SLIDERBAR_POS_TOP { zoomLabelTextRegionUPtr_->GetEntityRegion().top
+                                            + zoomLabelTextRegionUPtr_->GetEntityRegion().height };
+
+        const auto ZOOM_SLIDERBAR_LENGTH { (settingsButtonUPtr_->GetEntityPos().x
+                                            - COMMAND_REGION_.left)
+                                           - (COMMAND_REGION_PAD_ * 2.0f) };
+
         zoomSliderBarUPtr_ = std::make_unique<sfml_util::SliderBar>(
             "CombatStageZoom",
-            COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
-            zoomLabelTextRegionUPtr_->GetEntityRegion().top
-                + zoomLabelTextRegionUPtr_->GetEntityRegion().height,
-            (settingsButtonUPtr_->GetEntityPos().x - COMMAND_REGION_LEFT)
-                - (COMMAND_REGION_PAD * 2.0f),
+            ZOOM_SLIDERBAR_POS_LEFT,
+            ZOOM_SLIDERBAR_POS_TOP,
+            ZOOM_SLIDERBAR_LENGTH,
             sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
             sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         zoomSliderBarUPtr_->PositionRatio(1.0f);
-        zoomLabelTextRegionUPtr_->SetEntityPos(
-            (zoomSliderBarUPtr_->GetEntityPos().x
-             + (zoomSliderBarUPtr_->GetEntityRegion().width * 0.5f))
-                - (zoomLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f),
-            zoomLabelTextRegionUPtr_->GetEntityPos().y);
+
+        const auto ZOOM_LABEL_POS_LEFT { (zoomSliderBarUPtr_->GetEntityPos().x
+                                          + (zoomSliderBarUPtr_->GetEntityRegion().width * 0.5f))
+                                         - (zoomLabelTextRegionUPtr_->GetEntityRegion().width
+                                            * 0.5f) };
+
+        const auto ZOOM_LABEL_POS_TOP { zoomLabelTextRegionUPtr_->GetEntityPos().y };
+
+        zoomLabelTextRegionUPtr_->SetEntityPos(ZOOM_LABEL_POS_LEFT, ZOOM_LABEL_POS_TOP);
 
         EntityAdd(zoomLabelTextRegionUPtr_.get());
         EntityAdd(zoomSliderBarUPtr_.get());
@@ -842,7 +803,7 @@ namespace stage
     void CombatStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(*commandBoxUPtr_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         // statusBoxUPtr_->draw(target, STATES);
 
@@ -886,7 +847,7 @@ namespace stage
 
     void CombatStage::UpdateTime(const float ELAPSED_TIME_SEC)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SEC);
+        StageBase::UpdateTime(ELAPSED_TIME_SEC);
 
         if (hasCombatEnded_)
         {
@@ -1229,8 +1190,7 @@ namespace stage
         // handle creature turn start hook, catches the start of a new turn
         if ((combat::Encounter::Instance()->HasStarted()) && (IsPaused() == false)
             && !turnCreaturePtrOpt_ && (TurnPhase::NotATurn == turnPhase_)
-            && (PreTurnPhase::End == preTurnPhase_)
-            && (game::LoopManager::Instance()->IsFading() == false))
+            && (PreTurnPhase::End == preTurnPhase_) && (IsFading() == false))
         {
             if ((HandleWin() == false) && (HandleLose() == false))
             {
@@ -1240,8 +1200,8 @@ namespace stage
         }
 
         // initial hook for taking action before the first turn (pre-turn logic)
-        if ((zoomSliderBarUPtr_) && (game::LoopManager::Instance()->IsFading() == false)
-            && (TurnPhase::NotATurn == turnPhase_) && (PreTurnPhase::Start == preTurnPhase_))
+        if ((zoomSliderBarUPtr_) && (IsFading() == false) && (TurnPhase::NotATurn == turnPhase_)
+            && (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
             slider_ = sfml_util::SliderZeroToOne(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
@@ -1255,7 +1215,7 @@ namespace stage
 
     void CombatStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        Stage::UpdateMouseDown(MOUSE_POS_V);
+        StageBase::UpdateMouseDown(MOUSE_POS_V);
 
         // cancel summary view if visible or even just starting
         if (combatDisplayStagePtr_->GetIsSummaryViewInProgress())
@@ -1273,7 +1233,7 @@ namespace stage
     {
         const auto WAS_MOUSE_HELD_DOWN_AND_MOVING { isMouseHeldDownAndMoving_ };
 
-        const auto GUI_ENTITY_WITH_FOCUS_PTR_OPT { Stage::UpdateMouseUp(MOUSE_POS_V) };
+        const auto GUI_ENTITY_WITH_FOCUS_PTR_OPT { StageBase::UpdateMouseUp(MOUSE_POS_V) };
 
         if (WAS_MOUSE_HELD_DOWN_AND_MOVING)
         {
@@ -1305,8 +1265,11 @@ namespace stage
 
                 restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
 
-                game::LoopManager::Instance()->TransitionTo_Inventory(
-                    turnCreaturePtrOpt_.value(), CREATURE_AT_POS_PTR, game::Phase::Combat);
+                TransitionTo(stage::SetupPacket(
+                    stage::Stage::Inventory,
+                    false,
+                    stage::InventorySetupPacket(
+                        game::Phase::Combat, turnCreaturePtrOpt_.value(), CREATURE_AT_POS_PTR)));
 
                 return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
             }
@@ -1334,6 +1297,7 @@ namespace stage
                 {
                     combatAnimationUPtr_->SelectAnimStart(
                         combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
+
                     HandleAttackTasks(CREATURE_AT_POS_PTR);
                 }
                 else
@@ -1360,6 +1324,7 @@ namespace stage
             {
                 combatAnimationUPtr_->SelectAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
+
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t { CREATURE_AT_POS_PTR });
             }
         }
@@ -1377,6 +1342,7 @@ namespace stage
             {
                 combatAnimationUPtr_->SelectAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
+
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t { CREATURE_AT_POS_PTR });
             }
         }
@@ -1506,9 +1472,11 @@ namespace stage
                     if (TURN_CREATURE_PTR->IsPlayerCharacter())
                     {
                         restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
-
-                        game::LoopManager::Instance()->TransitionTo_Inventory(
-                            TURN_CREATURE_PTR, TURN_CREATURE_PTR, game::Phase::Combat);
+                        TransitionTo(stage::SetupPacket(
+                            stage::Stage::Inventory,
+                            false,
+                            stage::InventorySetupPacket(
+                                game::Phase::Combat, TURN_CREATURE_PTR, TURN_CREATURE_PTR)));
                     }
                 }
 
@@ -1521,7 +1489,7 @@ namespace stage
             }
         }
 
-        return Stage::KeyRelease(KE);
+        return StageBase::KeyRelease(KE);
     }
 
     bool CombatStage::IsPlayerCharacterTurnValid() const
@@ -1536,6 +1504,61 @@ namespace stage
         return (
             (TurnPhase::NotATurn != turnPhase_) && turnCreaturePtrOpt_
             && (turnCreaturePtrOpt_.value()->IsPlayerCharacter() == false));
+    }
+
+    const sf::FloatRect CombatStage::CalcCombatRegion() const
+    {
+        const float TOP(COMBAT_REGION_MARGIN_);
+        const float LEFT(COMBAT_REGION_MARGIN_);
+
+        const float WIDTH(StageRegion().width - (COMBAT_REGION_MARGIN_ * 2.0f) + 10.0f);
+
+        const float HEIGHT(
+            (StageRegion().height - (COMBAT_REGION_MARGIN_ * 2.0f))
+            - sfutil::MapByRes(200.0f, 800.0f));
+
+        return sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT);
+    }
+
+    const sf::FloatRect CombatStage::CalcStatusRegion(const sf::FloatRect & COMBAT_REGION) const
+    {
+        const float SLIDERBAR_VERT_SPACER(25.0f);
+        const float STATUS_REGION_WIDTH_RATIO(0.666f);
+        const float LEFT(COMBAT_REGION.left);
+
+        const float TOP(COMBAT_REGION.top + COMBAT_REGION.height + SLIDERBAR_VERT_SPACER);
+
+        const float WIDTH(
+            (StageRegion().width * STATUS_REGION_WIDTH_RATIO) - STATUS_REGION_SLIDERBAR_WIDTH_);
+
+        const float HEIGHT(
+            (((StageRegion().height - COMBAT_REGION.top) - COMBAT_REGION.height)
+             - SLIDERBAR_VERT_SPACER)
+            - 25.0f);
+
+        return sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT);
+    }
+
+    const sf::FloatRect CombatStage::CalcCommandRegion() const
+    {
+        const float COMMAND_REGION_HORIZ_SPACER(25.0f);
+        const float COMMAND_REGION_VERT_SPACER(25.0f);
+
+        const float LEFT(
+            STATUS_REGION_.left + STATUS_REGION_.width + COMMAND_REGION_HORIZ_SPACER
+            + STATUS_REGION_SLIDERBAR_WIDTH_);
+
+        const float TOP(COMBAT_REGION_.top + COMBAT_REGION_.height + COMMAND_REGION_VERT_SPACER);
+
+        const float WIDTH(
+            ((((StageRegion().width - COMMAND_REGION_HORIZ_SPACER) - COMBAT_REGION_MARGIN_)
+              - STATUS_REGION_.width)
+             - 15.0f)
+            - STATUS_REGION_SLIDERBAR_WIDTH_);
+
+        const float HEIGHT(STATUS_REGION_.height);
+
+        return sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT);
     }
 
     void CombatStage::AppendInitialStatus()
@@ -2310,8 +2333,7 @@ namespace stage
                 TURN_CREATURE_PTR,
                 TURN_CREATURE_PTR->LastSongPlayedNum()) };
 
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(
-                this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
 
             return true;
         }
@@ -2385,8 +2407,7 @@ namespace stage
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                 POPUP_NAME_SPELLBOOK_, TURN_CREATURE_PTR, TURN_CREATURE_PTR->LastSpellCastNum()) };
 
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSpellbook>(
-                this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
 
             return true;
         }
@@ -2978,7 +2999,7 @@ namespace stage
                                      : sfml_util::sound_effect::PromptWarn),
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
     }
 
     void CombatStage::SetupTurnBox()
@@ -3465,7 +3486,9 @@ namespace stage
             case TurnActionPhase::Pounce:
             case TurnActionPhase::None:
             case TurnActionPhase::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
     }
@@ -3474,42 +3497,78 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnPhase::NotATurn: { return "NotATurn";
+            case TurnPhase::NotATurn:
+            {
+                return "NotATurn";
             }
-            case TurnPhase::CenterAndZoomIn: { return "CenterAndZoomIn";
+            case TurnPhase::CenterAndZoomIn:
+            {
+                return "CenterAndZoomIn";
             }
-            case TurnPhase::PostCenterAndZoomInPause: { return "PostZInPause";
+            case TurnPhase::PostCenterAndZoomInPause:
+            {
+                return "PostZInPause";
             }
-            case TurnPhase::Determine: { return "Determine";
+            case TurnPhase::Determine:
+            {
+                return "Determine";
             }
-            case TurnPhase::TargetSelect: { return "TargetSelect";
+            case TurnPhase::TargetSelect:
+            {
+                return "TargetSelect";
             }
-            case TurnPhase::ConditionEffectPause: { return "ConditionEffectPause";
+            case TurnPhase::ConditionEffectPause:
+            {
+                return "ConditionEffectPause";
             }
-            case TurnPhase::CenterAndZoomOut: { return "CenterAndZoomOut";
+            case TurnPhase::CenterAndZoomOut:
+            {
+                return "CenterAndZoomOut";
             }
-            case TurnPhase::PostCenterAndZoomOutPause: { return "PostZOutPause";
+            case TurnPhase::PostCenterAndZoomOutPause:
+            {
+                return "PostZOutPause";
             }
-            case TurnPhase::PerformAnim: { return "PerformAnim";
+            case TurnPhase::PerformAnim:
+            {
+                return "PerformAnim";
             }
-            case TurnPhase::PerformReport: { return "PerformReport";
+            case TurnPhase::PerformReport:
+            {
+                return "PerformReport";
             }
-            case TurnPhase::PostPerformPause: { return "PostPerformPause";
+            case TurnPhase::PostPerformPause:
+            {
+                return "PostPerformPause";
             }
-            case TurnPhase::StatusAnim: { return "StatusAnim";
+            case TurnPhase::StatusAnim:
+            {
+                return "StatusAnim";
             }
-            case TurnPhase::DeathAnim: { return "DeathAnim";
+            case TurnPhase::DeathAnim:
+            {
+                return "DeathAnim";
             }
-            case TurnPhase::RepositionAnim: { return "RepositionAnim";
+            case TurnPhase::RepositionAnim:
+            {
+                return "RepositionAnim";
             }
-            case TurnPhase::PostTurnPause: { return "PostTurnPause";
+            case TurnPhase::PostTurnPause:
+            {
+                return "PostTurnPause";
             }
-            case TurnPhase::Achievements: { return "Achievements";
+            case TurnPhase::Achievements:
+            {
+                return "Achievements";
             }
-            case TurnPhase::End: { return "End";
+            case TurnPhase::End:
+            {
+                return "End";
             }
             case TurnPhase::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3518,34 +3577,62 @@ namespace stage
     {
         switch (ENUM)
         {
-            case TurnActionPhase::None: { return "None";
+            case TurnActionPhase::None:
+            {
+                return "None";
             }
-            case TurnActionPhase::PauseAndReport: { return "PauseAndReport";
+            case TurnActionPhase::PauseAndReport:
+            {
+                return "PauseAndReport";
             }
-            case TurnActionPhase::MeleeWeapon: { return "MeleeWeapon";
+            case TurnActionPhase::MeleeWeapon:
+            {
+                return "MeleeWeapon";
             }
-            case TurnActionPhase::ShootSling: { return "ShootSling";
+            case TurnActionPhase::ShootSling:
+            {
+                return "ShootSling";
             }
-            case TurnActionPhase::ShootArrow: { return "ShootArrow";
+            case TurnActionPhase::ShootArrow:
+            {
+                return "ShootArrow";
             }
-            case TurnActionPhase::ShootBlowpipe: { return "ShootBlowpipe";
+            case TurnActionPhase::ShootBlowpipe:
+            {
+                return "ShootBlowpipe";
             }
-            case TurnActionPhase::Advance: { return "Advance";
+            case TurnActionPhase::Advance:
+            {
+                return "Advance";
             }
-            case TurnActionPhase::Retreat: { return "Retreat";
+            case TurnActionPhase::Retreat:
+            {
+                return "Retreat";
             }
-            case TurnActionPhase::Cast: { return "Cast";
+            case TurnActionPhase::Cast:
+            {
+                return "Cast";
             }
-            case TurnActionPhase::PlaySong: { return "PlaySong";
+            case TurnActionPhase::PlaySong:
+            {
+                return "PlaySong";
             }
-            case TurnActionPhase::Roar: { return "Roar";
+            case TurnActionPhase::Roar:
+            {
+                return "Roar";
             }
-            case TurnActionPhase::Pounce: { return "Pounce";
+            case TurnActionPhase::Pounce:
+            {
+                return "Pounce";
             }
-            case TurnActionPhase::Run: { return "Run";
+            case TurnActionPhase::Run:
+            {
+                return "Run";
             }
             case TurnActionPhase::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3554,20 +3641,34 @@ namespace stage
     {
         switch (ENUM)
         {
-            case PreTurnPhase::Start: { return "Start";
+            case PreTurnPhase::Start:
+            {
+                return "Start";
             }
-            case PreTurnPhase::PanToCenter: { return "PanToCenter";
+            case PreTurnPhase::PanToCenter:
+            {
+                return "PanToCenter";
             }
-            case PreTurnPhase::PostPanPause: { return "PostPanPause";
+            case PreTurnPhase::PostPanPause:
+            {
+                return "PostPanPause";
             }
-            case PreTurnPhase::ZoomOut: { return "ZOut";
+            case PreTurnPhase::ZoomOut:
+            {
+                return "ZOut";
             }
-            case PreTurnPhase::PostZoomOutPause: { return "PostZOutPause";
+            case PreTurnPhase::PostZoomOutPause:
+            {
+                return "PostZOutPause";
             }
-            case PreTurnPhase::End: { return "End";
+            case PreTurnPhase::End:
+            {
+                return "End";
             }
             case PreTurnPhase::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3576,40 +3677,74 @@ namespace stage
     {
         switch (ENUM)
         {
-            case AnimPhase::NotAnimating: { return "NotAnimating";
+            case AnimPhase::NotAnimating:
+            {
+                return "NotAnimating";
             }
-            case AnimPhase::AdvanceOrRetreat: { return "AdvanceOrRetreat";
+            case AnimPhase::AdvanceOrRetreat:
+            {
+                return "AdvanceOrRetreat";
             }
-            case AnimPhase::ProjectileShoot: { return "ProjShoot";
+            case AnimPhase::ProjectileShoot:
+            {
+                return "ProjShoot";
             }
-            case AnimPhase::MoveToward: { return "MoveToward";
+            case AnimPhase::MoveToward:
+            {
+                return "MoveToward";
             }
-            case AnimPhase::PostMoveTowardPause: { return "PostTowardPause";
+            case AnimPhase::PostMoveTowardPause:
+            {
+                return "PostTowardPause";
             }
-            case AnimPhase::Impact: { return "Impact";
+            case AnimPhase::Impact:
+            {
+                return "Impact";
             }
-            case AnimPhase::PostImpactPause: { return "PostImpactPause";
+            case AnimPhase::PostImpactPause:
+            {
+                return "PostImpactPause";
             }
-            case AnimPhase::Spell: { return "Spell";
+            case AnimPhase::Spell:
+            {
+                return "Spell";
             }
-            case AnimPhase::PostSpellPause: { return "PostSpellPause";
+            case AnimPhase::PostSpellPause:
+            {
+                return "PostSpellPause";
             }
-            case AnimPhase::Song: { return "Song";
+            case AnimPhase::Song:
+            {
+                return "Song";
             }
-            case AnimPhase::PostSongPause: { return "PostSongPause";
+            case AnimPhase::PostSongPause:
+            {
+                return "PostSongPause";
             }
-            case AnimPhase::MoveBack: { return "MoveBack";
+            case AnimPhase::MoveBack:
+            {
+                return "MoveBack";
             }
-            case AnimPhase::Roar: { return "Roar";
+            case AnimPhase::Roar:
+            {
+                return "Roar";
             }
-            case AnimPhase::PostRoarPause: { return "PostRoarPause";
+            case AnimPhase::PostRoarPause:
+            {
+                return "PostRoarPause";
             }
-            case AnimPhase::Run: { return "Run";
+            case AnimPhase::Run:
+            {
+                return "Run";
             }
-            case AnimPhase::FinalPause: { return "FinalPause";
+            case AnimPhase::FinalPause:
+            {
+                return "FinalPause";
             }
             case AnimPhase::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3617,10 +3752,11 @@ namespace stage
     void CombatStage::UpdateTestingText()
     {
         std::ostringstream ss;
-        ss << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_)
-                                                    : PreTurnPhaseToString(preTurnPhase_))
-           << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A") << ", "
-           << TurnActionPhaseToString(turnActionPhase_) << ", " << AnimPhaseToString(animPhase_);
+        ss
+            << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_)
+                                                     : PreTurnPhaseToString(preTurnPhase_))
+            << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A") << ", "
+            << TurnActionPhaseToString(turnActionPhase_) << ", " << AnimPhaseToString(animPhase_);
 
         testingTextRegionUPtr_->SetText(ss.str());
     }
@@ -3872,7 +4008,7 @@ namespace stage
 
             if (didAnyPlayersRunAway && areAllNonRunawaysIncapacitated)
             {
-                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+                SpawnPopup(
                     this,
                     popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                         POPUP_NAME_COMBATOVER_RAN_, combat::CombatEnd::Ran));
@@ -3899,7 +4035,7 @@ namespace stage
 
         if (areAllIncapacitated)
         {
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+            SpawnPopup(
                 this,
                 popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
@@ -3925,7 +4061,7 @@ namespace stage
         const std::string & TECH_ERROR_MSG,
         const std::string & TITLE_MSG)
     {
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSystemError>(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
                 "Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG, TECH_ERROR_MSG, TITLE_MSG));
@@ -4118,6 +4254,7 @@ namespace stage
 
             stage::TitleTransitionPopup(
                 this,
+                stage::IStagePtr_t(this),
                 POPUP_NAME_ACHIEVEMENT_,
                 TITLE_TRANSITION.creaturePtr,
                 TITLE_TRANSITION.fromTitlePtrOpt,

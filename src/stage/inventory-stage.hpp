@@ -25,7 +25,7 @@
 #include "sfml-util/margins.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -86,7 +86,8 @@ namespace stage
 
     // displays all the information about a player character including the inventory
     class InventoryStage
-        : public sfml_util::Stage
+        : public stage::StageBase
+
         , public sfml_util::PopupCallback_t::IHandler_t
         , public sfml_util::ListBox<InventoryStage, item::ItemPtr_t>::Callback_t::IHandler_t
 
@@ -94,9 +95,7 @@ namespace stage
               IHandler_t
 
         , public sfml_util::ListBox<InventoryStage, spell::SpellPtr_t>::Callback_t::IHandler_t
-
         , public sfml_util::ListBox<InventoryStage, creature::TitlePtr_t>::Callback_t::IHandler_t
-
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
         using ItemListBox_t = sfml_util::ListBox<InventoryStage, item::ItemPtr_t>;
@@ -156,7 +155,7 @@ namespace stage
         InventoryStage(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-            const game::Phase::Enum CURRENT_PHASE);
+            const game::Phase::Enum PREVIOUS_PHASE);
 
         virtual ~InventoryStage();
 
@@ -557,7 +556,7 @@ namespace stage
 
         // members that control combat action restrictions
         creature::CreaturePtr_t turnCreaturePtr_;
-        game::Phase::Enum currentPhase_;
+        game::Phase::Enum previousPhase_;
         bool hasTakenActionSpellOrSong_;
 
         combat::CreatureInteraction creatureInteraction_;

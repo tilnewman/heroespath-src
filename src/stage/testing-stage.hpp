@@ -11,18 +11,13 @@
 //  A Stage class that allows visualization of testing routines.
 //
 #include "creature/stat-set.hpp"
-#include "game/loop-manager.hpp"
-#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/border.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/gold-bar.hpp"
-#include "sfml-util/ouroboros.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/text.hpp"
 #include "sfutil/rectangle-shape.hpp"
 #include "sfutil/vertex.hpp"
-
-#include <boost/type_index.hpp>
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <sstream>
@@ -55,6 +50,15 @@
         return;                                                                                    \
     }
 
+#define M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(test_name, type_name)                         \
+    static bool hasTestingTypeAndCallCompleted_##test_name { false };                              \
+    if (false == hasTestingTypeAndCallCompleted_##test_name)                                       \
+    {                                                                                              \
+        static type_name thing;                                                                    \
+        hasTestingTypeAndCallCompleted_##test_name = thing.Test(stage::IStagePtr_t(this));         \
+        return;                                                                                    \
+    }
+
 #define M_TESTING_STRINGIFY(x) #x
 #define M_TESTING_TOSTRING(x) M_TESTING_STRINGIFY(x)
 
@@ -75,6 +79,14 @@
 
 namespace heroespath
 {
+namespace sfml_util
+{
+    class Ouroboros;
+    using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
+
+    class Animation;
+    using AnimationUPtr_t = std::unique_ptr<Animation>;
+} // namespace sfml_util
 namespace stage
 {
 
@@ -93,7 +105,7 @@ namespace stage
     };
 
     // A Stage class that allows visualizing testing info
-    class TestingStage : public sfml_util::Stage
+    class TestingStage : public stage::StageBase
     {
     public:
         TestingStage(const TestingStage &) = delete;
@@ -101,7 +113,6 @@ namespace stage
         TestingStage & operator=(const TestingStage &) = delete;
         TestingStage & operator=(TestingStage &&) = delete;
 
-    public:
         TestingStage();
         virtual ~TestingStage();
 

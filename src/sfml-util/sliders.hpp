@@ -55,15 +55,15 @@ namespace sfml_util
     struct SliderValidators
     {
         template <typename T>
-        static void SpeedGreaterThanZero(
+        static void SpeedShouldNotBeNegative(
             bool & isStopped, const T SPEED, const std::string & FILE_FUNC_LINE_STR)
         {
-            if (misc::IsRealZeroOrLess(SPEED))
+            if (SPEED < 0.0f)
             {
                 M_HP_LOG_ERR(
                     "(" + FILE_FUNC_LINE_STR + ")  The given SPEED<"
                     + boost::typeindex::type_id<T>().pretty_name() + ">=" + misc::ToString(SPEED)
-                    + " is less than or equal to zero which is invalid.  This slider will be "
+                    + " is less than zero which is invalid.  This slider will be "
                       "stopped.");
 
                 isStopped = true;
@@ -231,7 +231,7 @@ namespace sfml_util
             , radiansTo_(1.5f * boost::math::constants::pi<float>())
             , radians_(radiansFrom_ + (boost::math::constants::pi<float>() * value_))
         {
-            SliderValidators::SpeedGreaterThanZero(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
+            SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
 
             if (misc::IsRealClose(value_, 1.0f))
             {
@@ -329,7 +329,7 @@ namespace sfml_util
             , value_(FROM)
             , sliderZeroToOne_(speed_)
         {
-            SliderValidators::SpeedGreaterThanZero(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
+            SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, M_HP_FILE_FUNC_LINE_STR);
             SliderValidators::FromTo(isStopped_, FROM, TO, M_HP_FILE_FUNC_LINE_STR);
 
             if (isStopped_)
@@ -476,7 +476,7 @@ namespace sfml_util
             const std::string & FILE_FUNC_LINE_STR)
         {
             SliderValidators::FromTo(isStopped_, FROM, TO, FILE_FUNC_LINE_STR);
-            SliderValidators::SpeedGreaterThanZero(isStopped_, SPEED, FILE_FUNC_LINE_STR);
+            SliderValidators::SpeedShouldNotBeNegative(isStopped_, SPEED, FILE_FUNC_LINE_STR);
 
             value_ = SliderValidators::StartAtClamp(
                 std::min(FROM, TO), std::max(FROM, TO), START_AT_ORIG, FILE_FUNC_LINE_STR);
@@ -522,9 +522,9 @@ namespace sfml_util
             , valueMin_(T(0))
             , valueMax_(T(0))
             , value_(T(0))
-            , speedMin_(T(0))
-            , speedMax_(T(0))
-            , speed_(T(0))
+            , speedMin_(0.0f)
+            , speedMax_(0.0f)
+            , speed_(0.0f)
             , sliderFromTo_()
         {}
 

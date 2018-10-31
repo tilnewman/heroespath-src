@@ -24,7 +24,7 @@
 #include "sfml-util/slider-colored-rect.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -50,7 +50,7 @@ namespace stage
 
     // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
-        : public sfml_util::Stage
+        : public stage::StageBase
         , public sfml_util::ListBox<PartyStage, creature::CreaturePtr_t>::Callback_t::IHandler_t
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
         , public sfml_util::PopupCallback_t::IHandler_t

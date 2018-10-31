@@ -23,7 +23,6 @@
 #include "creature/role-stats.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/title.hpp"
-#include "game/loop-manager.hpp"
 #include "item/inventory.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
@@ -47,6 +46,8 @@
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/size-and-scale.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <memory>
 #include <sstream>
@@ -83,18 +84,18 @@ namespace stage
     const float CharacterStage::SMOKE_ANIM_SPEED_MAX_ { 0.5f };
 
     CharacterStage::CharacterStage()
-        : Stage(
-              "CharacterCreation",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        : StageBase(
+            "CharacterCreation",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , DESC_TEXT_FONT_SIZE_(sfml_util::FontManager::Instance()->Size_Small())
         , RADIO_BUTTON_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , statBox_(
-              sfml_util::IStagePtr_t(this),
+              stage::IStagePtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.125f),
               (4.0f / 3.5f),
               LIGHT_TEXT_COLOR_)
@@ -105,19 +106,19 @@ namespace stage
         , background_()
         , smokeAnimUPtr_()
         , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Previous,
+              stage::Stage::Previous,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , saveButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Save,
+              stage::Stage::Save,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , helpButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Help,
+              stage::Stage::Help,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , nextButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Next,
+              stage::Stage::Next,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , statSetBase_()
@@ -138,7 +139,7 @@ namespace stage
         , woodCachedTexture_("media-images-backgrounds-tile-wood")
     {}
 
-    CharacterStage::~CharacterStage() { Stage::ClearAllEntities(); }
+    CharacterStage::~CharacterStage() { StageBase::ClearAllEntities(); }
 
     /*bool CharacterStage::HandleCallback(
         const sfml_util::RadioButton::Callback_t::PacketPtr_t & RADIOBUTTON_WRAPPER)
@@ -161,41 +162,40 @@ namespace stage
 
     bool CharacterStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        if ((PACKET_PTR->Name() == POPUP_NAME_CREATECONFIRM_)
-            && (popup::ResponseTypes::IsAffirmative(PACKET_PTR->Response())))
+        if ((PACKET_PTR->name == POPUP_NAME_CREATECONFIRM_)
+            && (popup::ResponseTypes::IsAffirmative(PACKET_PTR->type)))
         {
             return CreateCharacter();
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->Response()))
+            (PACKET_PTR->name == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
+            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->type))
         {
-            game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::Menu);
+            TransitionTo(stage::Stage::Menu);
             return true;
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->Response()))
+            (PACKET_PTR->name == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
+            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->type))
         {
-            game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::Party);
+            TransitionTo(stage::Stage::Party);
             return true;
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_HELP_1_)
+        else if (PACKET_PTR->name == POPUP_NAME_HELP_1_)
         {
             Help2Popup();
             return false;
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_HELP_2_)
+        else if (PACKET_PTR->name == POPUP_NAME_HELP_2_)
         {
             Help3Popup();
             return true;
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_IMAGE_SELECTION_)
-            && (PACKET_PTR->Response() != popup::ResponseTypes::Cancel)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_IMAGE_SELECTION_)
+            && (PACKET_PTR->type != popup::ResponseTypes::Cancel) && PACKET_PTR->selection_opt)
         {
-            CharacterCreationConfirmPopup(PACKET_PTR->SelectionOpt().value());
+            CharacterCreationConfirmPopup(PACKET_PTR->selection_opt.value());
             return false;
         }
 
@@ -262,7 +262,7 @@ namespace stage
 
     void CharacterStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
         /*
         // oscillate the spacebar instruction text's color to help players know what to do initially
         if (AreAnyStatsIgnored() && (false == AreAnyAnimNumStillMoving()))
@@ -348,13 +348,13 @@ namespace stage
         target.draw(background_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
         target.draw(statBox_, STATES);
     }
 
     bool CharacterStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        const auto RESULT { Stage::KeyPress(KEY_EVENT) };
+        const auto RESULT { StageBase::KeyPress(KEY_EVENT) };
         return RESULT;
         /*if ((KEY_EVENT.code == sf::Keyboard::Space) && (false == isAnimStats_)
             && (false == nameTextEntryBoxUPtr_->HasFocus()))
@@ -379,7 +379,7 @@ namespace stage
 
     bool CharacterStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (Stage::KeyRelease(KEY_EVENT))
+        if (StageBase::KeyRelease(KEY_EVENT))
         {
             return true;
         }
@@ -411,7 +411,7 @@ namespace stage
     {
         if (false == AreAnyAnimNumStillMoving())
         {
-            Stage::UpdateMouseDown(MOUSE_POS_V);
+            StageBase::UpdateMouseDown(MOUSE_POS_V);
         }
 
         /*if ((initialRollCounter_ >= 6) && (false == AreAnyAnimNumStillMoving()))
@@ -440,7 +440,7 @@ namespace stage
         const auto MENU_BUTTON_EXTRA_SPACER_RATIO { 0.0125f };
 
         const sfml_util::EvenSpacer SPACER(
-            MENU_BUTTON_COUNT, StageRegionWidth(), MENU_BUTTON_EXTRA_SPACER_RATIO);
+            MENU_BUTTON_COUNT, StageRegion().width, MENU_BUTTON_EXTRA_SPACER_RATIO);
 
         auto calcButtonPos = [&](const std::size_t BUTTON_INDEX_LEFT_TO_RIGHT,
                                  const sf::Vector2f & BUTTON_SIZE_V) {
@@ -583,7 +583,7 @@ namespace stage
                 "RaceDescription",
                 raceDescTextInfo,
                 REGION,
-                sfml_util::IStagePtr_t(this),
+                stage::IStagePtr_t(this),
                 DESC_TEXT_FONT_SIZE_);
 
             EntityAdd(racetDescTextRegionUPtr_.get());
@@ -591,7 +591,7 @@ namespace stage
         else
         {
             racetDescTextRegionUPtr_->Setup(
-                raceDescTextInfo, REGION, sfml_util::IStagePtr_t(this), DESC_TEXT_FONT_SIZE_);
+                raceDescTextInfo, REGION, stage::IStagePtr_t(this), DESC_TEXT_FONT_SIZE_);
         }
         */
     }
@@ -629,7 +629,7 @@ namespace stage
                 "RoleDescription",
                 roleDescTextInfo,
                 REGION,
-                sfml_util::IStagePtr_t(this),
+                stage::IStagePtr_t(this),
                 DESC_TEXT_FONT_SIZE_);
 
             EntityAdd(roletDescTextRegionUPtr_.get());
@@ -637,7 +637,7 @@ namespace stage
         else
         {
             roletDescTextRegionUPtr_->Setup(
-                roleDescTextInfo, REGION, sfml_util::IStagePtr_t(this), DESC_TEXT_FONT_SIZE_);
+                roleDescTextInfo, REGION, stage::IStagePtr_t(this), DESC_TEXT_FONT_SIZE_);
         }
         */
     }
@@ -645,7 +645,7 @@ namespace stage
     void CharacterStage::Setup_NameLabel()
     {
         const sf::FloatRect REGION(
-            (StageRegionWidth() * 0.5f) - 150.0f,
+            (StageRegion().width * 0.5f) - 150.0f,
             sfutil::Bottom(stageTitle_.Region()) - 20.0f,
             0.0f,
             0.0f);
@@ -662,7 +662,7 @@ namespace stage
             = std::make_unique<sfml_util::TextRegion>("NameLabel", NAME_LABEL_TEXT_INFO, REGION);
 
         nInsTextRegionUPtr_->SetEntityPos(
-            (StageRegionWidth() * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f)
+            (StageRegion().width * 0.5f) - (nInsTextRegionUPtr_->GetEntityRegion().width * 0.5f)
                 + 45.0f,
             nInsTextRegionUPtr_->GetEntityPos().y);
 
@@ -676,7 +676,7 @@ namespace stage
         const auto WIDTH { creatureNameInfo.DefaultTextEntryBoxWidth() };
 
         const sf::FloatRect REGION(
-            (StageRegionWidth() * 0.5f) - (WIDTH * 0.5f),
+            (StageRegion().width * 0.5f) - (WIDTH * 0.5f),
             nInsTextRegionUPtr_->GetEntityRegion().top
                 + nInsTextRegionUPtr_->GetEntityRegion().height,
             WIDTH,
@@ -738,7 +738,7 @@ namespace stage
             0.0f);
 
         sexRadioButtonUPtr_->SetEntityPos(
-            (StageRegionWidth() * 0.5f) - (sexRadioButtonUPtr_->GetEntityRegion().width * 0.5f),
+            (StageRegion().width * 0.5f) - (sexRadioButtonUPtr_->GetEntityRegion().width * 0.5f),
             nameTextEntryBoxUPtr_->GetEntityPos().y
                 + nameTextEntryBoxUPtr_->GetEntityRegion().height
                 + sfutil::MapByRes(25.0f, 70.0f));
@@ -767,7 +767,7 @@ namespace stage
             "SpacebarInstructions", insTextInfo, sf::FloatRect());
 
         sbInsTextRegionUPtr_->SetEntityPos(
-            ((StageRegionWidth() * 0.5f) - (sbInsTextRegionUPtr_->GetEntityRegion().width * 0.5f))
+            ((StageRegion().width * 0.5f) - (sbInsTextRegionUPtr_->GetEntityRegion().width * 0.5f))
                 + 100.0f,
             sexRadioButtonUPtr_->GetEntityRegion().top
                 + sexRadioButtonUPtr_->GetEntityRegion().height
@@ -855,8 +855,8 @@ namespace stage
 
         EntityAdd(smokeAnimUPtr_.get());
 
-        const auto DRIFT_LIMIT_LEFT { StageRegionWidth() * 0.65f };
-        const auto DRIFT_LIMIT_RIGHT { StageRegionWidth()
+        const auto DRIFT_LIMIT_LEFT { StageRegion().width * 0.65f };
+        const auto DRIFT_LIMIT_RIGHT { StageRegion().width
                                        - smokeAnimUPtr_->GetEntityRegion().width };
 
         smokeAnimSliderDriftX_ = sfml_util::SliderDrift<float>(
@@ -890,7 +890,7 @@ namespace stage
         const auto REGION_TOP { sfutil::MapByRes(450.0f, 1600.0f) };
 
         const sf::FloatRect REGION(
-            (StageRegionWidth() - ATTR_DESC_WIDTH) - sfutil::MapByRes(15.0f, 300.0f),
+            (StageRegion().width - ATTR_DESC_WIDTH) - sfutil::MapByRes(15.0f, 300.0f),
             REGION_TOP,
             ATTR_DESC_WIDTH,
             sfutil::MapByRes(310.0f, 2100.0f));
@@ -957,13 +957,13 @@ namespace stage
         if (!attrDescTextRegionUPtr_)
         {
             attrDescTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-                "AttributeDescription", descTextInfo, REGION, sfml_util::IStagePtr_t(this));
+                "AttributeDescription", descTextInfo, REGION, stage::IStagePtr_t(this));
 
             EntityAdd(attrDescTextRegionUPtr_.get());
         }
         else
         {
-            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, sfml_util::IStagePtr_t(this));
+            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, stage::IStagePtr_t(this));
         }
 
         for (const auto & NEXT_TR_UPTR : textRegionUVec)
@@ -1092,7 +1092,7 @@ namespace stage
 
             ss << "to be lost.  Are you sure?";
 
-            game::LoopManager::Instance()->PopupWaitBegin(
+            SpawnPopup(
                 this,
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
@@ -1106,7 +1106,7 @@ namespace stage
         }
         else
         {
-            game::LoopManager::Instance()->TransitionTo_PartyCreation();
+            TransitionTo(stage::Stage::Party);
         }
 
         return true;
@@ -1140,12 +1140,12 @@ namespace stage
             sfml_util::Justified::Left,
             sfml_util::sound_effect::PromptQuestion) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
     }
 
     void CharacterStage::CharacterNameMissingPopup()
     {
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NONAMEERROR_,
@@ -1187,7 +1187,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_IMAGE_SELECTION_, ss.str(), characterTextureVec, true) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
+        SpawnPopup(
             this, POPUP_INFO);
             */
     }
@@ -1211,7 +1211,7 @@ namespace stage
 
             ss << "to be lost.  Are you sure?";
 
-            game::LoopManager::Instance()->PopupWaitBegin(
+            SpawnPopup(
                 this,
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
@@ -1223,13 +1223,13 @@ namespace stage
         }
         else
         {
-            game::LoopManager::Instance()->TransitionTo_MainMenu();
+            TransitionTo(stage::Stage::Menu);
         }
     }
 
     void CharacterStage::Help1Popup()
     {
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_1_,
@@ -1250,7 +1250,7 @@ namespace stage
 
     void CharacterStage::Help2Popup()
     {
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_2_,
@@ -1269,7 +1269,7 @@ namespace stage
 
     void CharacterStage::Help3Popup()
     {
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_3_,
@@ -1337,7 +1337,7 @@ namespace stage
            << "   Speed=" << statSetFinal.Spd() << "\n"
            << "   Intelligence=" << statSetFinal.Int() << "\n";
 
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_CREATECONFIRM_,
@@ -1987,7 +1987,7 @@ namespace stage
         }*/
 
         // process MouseUp() on all other entitys
-        auto entityWithFocusPtrOpt { Stage::UpdateMouseUp(MOUSE_POS_V) };
+        auto entityWithFocusPtrOpt { StageBase::UpdateMouseUp(MOUSE_POS_V) };
 
         // remove animations that are finished from the vector
         /*animStatsSVec_.clear();
@@ -2029,7 +2029,7 @@ namespace stage
 
     void CharacterStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS_V)
     {
-        Stage::UpdateMousePos(NEW_MOUSE_POS_V);
+        StageBase::UpdateMousePos(NEW_MOUSE_POS_V);
         HandleAttributeDragging(sf::Vector2f(NEW_MOUSE_POS_V));
     }
 

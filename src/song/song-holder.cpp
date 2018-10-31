@@ -11,9 +11,9 @@
 //
 #include "song-holder.hpp"
 
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "song/song.hpp"
+#include "stage/i-stage.hpp"
 
 #include <memory>
 
@@ -99,14 +99,13 @@ namespace song
 
     void Holder::Empty() { songsUVec_.clear(); }
 
-    bool Holder::Test()
+    bool Holder::Test(stage::IStagePtr_t iStagePtr)
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "song::Holder::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("song::Holder::Test() Starting Tests...");
         }
 
         static std::size_t songIndex { 0 };
@@ -146,14 +145,12 @@ namespace song
                                         << "\") Song is out of order.");
 
             ++songIndex;
-            game::LoopManager::Instance()->TestingStrIncrement(
-                "Song Test \"" + SONG_PTR->Name() + "\"");
+            iStagePtr->TestingStrIncrement("Song Test \"" + SONG_PTR->Name() + "\"");
 
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend("song::Holder::Test()  ALL TESTS PASSED.");
-
+        iStagePtr->TestingStrAppend("song::Holder::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -171,9 +168,8 @@ namespace song
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
-            "song::Holder::Get("
-                << Songs::ToString(E)
-                << ") found insuff sized songsUVec_, probably from a bug in Setup().");
+            "song::Holder::Get(" << Songs::ToString(
+                E) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return songsUVec_[INDEX].get();
     }

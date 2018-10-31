@@ -9,12 +9,12 @@
 //
 // locked-door.cpp
 //
-#include "locked-door.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/maps.hpp"
 #include "game/world.hpp"
 #include "interact/lock-interactions.hpp"
+#include "locked-door.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
@@ -28,11 +28,11 @@ namespace interact
 
     LockedDoor::LockedDoor(const map::Transition & TRANSITION)
         : InteractionBase(
-              Interact::Lock,
-              InteractionBase::MakeTextInfo("This door is locked.", Text::System),
-              ButtonVec_t({ Button(Buttons::Unlock), Button(Buttons::Ignore) }),
-              "media-images-misc-door-locked",
-              sfml_util::sound_effect::DoorLocked)
+            Interact::Lock,
+            InteractionBase::MakeTextInfo("This door is locked.", Text::System),
+            ButtonVec_t({ Button(Buttons::Unlock), Button(Buttons::Ignore) }),
+            "media-images-misc-door-locked",
+            sfml_util::sound_effect::DoorLocked)
         , transition_(TRANSITION)
     {}
 
@@ -47,7 +47,10 @@ namespace interact
         else if (BUTTON.Which() == Buttons::Unlock)
         {
             Lock(); // this refers to locking the interaction NOT the door
-            INTERACTION_STAGE_PTR->LockPick().PopupCharacterSelection(INTERACTION_STAGE_PTR);
+
+            INTERACTION_STAGE_PTR->LockPick().PopupCharacterSelection(
+                INTERACTION_STAGE_PTR, INTERACTION_STAGE_PTR.Ptr());
+
             return true;
         }
 

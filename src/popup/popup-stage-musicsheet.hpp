@@ -45,7 +45,6 @@ namespace popup
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) = delete;
         PopupStageMusicSheet & operator=(PopupStageMusicSheet &&) = delete;
 
-    public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
 
         virtual ~PopupStageMusicSheet();

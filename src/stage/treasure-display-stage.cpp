@@ -31,6 +31,8 @@
 #include "sfml-util/text-entity.hpp"
 #include "stage/treasure-stage.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
@@ -83,9 +85,9 @@ namespace stage
 
     const float TreasureDisplayStage::ITEM_DETAIL_TIMEOUT_SEC_ { 3.0f };
 
-    TreasureDisplayStage::TreasureDisplayStage(const TreasureStagePtr_t TREASURE_STAGE_PTR)
-        : Stage("TreasureDisplay", {}, false)
-        , treasureStagePtr_(TREASURE_STAGE_PTR)
+    TreasureDisplayStage::TreasureDisplayStage()
+        : StageBase("TreasureDisplay", {}, false)
+        , treasureStagePtrOpt_(boost::none)
         , titleImage_("media-images-buttons-gui-treasure-normal", true, 1.0f, 0.75f)
         , bottomImage_(0.75f, true, sf::Color::White)
         , ouroborosUPtr_()
@@ -136,8 +138,15 @@ namespace stage
     bool TreasureDisplayStage::HandleCallback(
         const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        return treasureStagePtr_->HandleListboxCallback(
-            treasureListboxUPtr_.get(), inventoryListboxUPtr_.get(), PACKET_PTR);
+        if (!treasureStagePtrOpt_)
+        {
+            return false;
+        }
+        else
+        {
+            return treasureStagePtrOpt_.value()->HandleListboxCallback(
+                treasureListboxUPtr_.get(), inventoryListboxUPtr_.get(), PACKET_PTR);
+        }
     }
 
     bool TreasureDisplayStage::HandleCallback(
@@ -185,14 +194,14 @@ namespace stage
 
             return true;
         }
-        else if (PACKET_PTR->entity_ptr == takeAllButtonUPtr_.get())
+        else if ((PACKET_PTR->entity_ptr == takeAllButtonUPtr_.get()) && treasureStagePtrOpt_)
         {
-            treasureStagePtr_->TakeAllItems();
+            treasureStagePtrOpt_.value()->TakeAllItems();
             return true;
         }
-        else if (PACKET_PTR->entity_ptr == doneButtonUPtr_.get())
+        else if ((PACKET_PTR->entity_ptr == doneButtonUPtr_.get()) && treasureStagePtrOpt_)
         {
-            treasureStagePtr_->Exit();
+            treasureStagePtrOpt_.value()->Exit();
             return true;
         }
 
@@ -201,13 +210,12 @@ namespace stage
 
     void TreasureDisplayStage::Setup()
     {
-        Stage::StageRegionSet(sf::FloatRect(
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight()));
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (!treasureStagePtrOpt_),
+            "stage::TreasureDisplayStage::Setup() called but treasureStagePtrOpt_ was invalid.  It "
+            "should be set before this function is called by stage::StageFactory::Make().");
 
-        if ((sfutil::Bottom(bottomImage_.Region()) > StageRegionHeight()) == false)
+        if ((sfutil::Bottom(bottomImage_.Region()) > StageRegion().height) == false)
         {
             bottomImage_.MovePos(0.0f, (bottomImage_.Region().height * 0.4f));
         }
@@ -239,7 +247,7 @@ namespace stage
             target.draw(coinsSprite_, STATES);
         }
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         if (redXImageUPtr_)
         {
@@ -252,7 +260,7 @@ namespace stage
     bool TreasureDisplayStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
         ItemViewerInterruption();
-        return Stage::KeyRelease(KEY_EVENT);
+        return StageBase::KeyRelease(KEY_EVENT);
     }
 
     void TreasureDisplayStage::UpdateMousePos(const sf::Vector2i & MOUSE_POS_V)
@@ -268,20 +276,20 @@ namespace stage
 
         mousePos_ = NEW_MOUSE_POS;
 
-        Stage::UpdateMousePos(MOUSE_POS_V);
+        StageBase::UpdateMousePos(MOUSE_POS_V);
     }
 
     void TreasureDisplayStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         ItemViewerInterruption();
-        Stage::UpdateMouseDown(MOUSE_POS_V);
+        StageBase::UpdateMouseDown(MOUSE_POS_V);
     }
 
     void TreasureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         UpdateTime_StageMover(ELAPSED_TIME_SECONDS);
         UpdateTime_ItemDetailViewer(ELAPSED_TIME_SECONDS);
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
     }
 
     void TreasureDisplayStage::UpdateTime_StageMover(const float ELAPSED_TIME_SECONDS)

@@ -11,10 +11,13 @@
 //
 #include "popup-stage-image-select.hpp"
 
-#include "game/loop-manager.hpp"
+#include "popup/popup-manager.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfutil/display.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 
@@ -130,12 +133,12 @@ namespace popup
             imageNumTextRegionUPtr_->draw(target, STATES);
         }
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void PopupStageImageSelect::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         if (areImagesMoving_ || (imageMoveQueue_.empty() == false))
         {

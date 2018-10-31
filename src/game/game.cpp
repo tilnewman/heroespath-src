@@ -12,6 +12,7 @@
 #include "game.hpp"
 
 #include "creature/player-party.hpp"
+#include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/world-factory.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -75,15 +76,16 @@ namespace game
         return *stateUPtr_;
     }
 
-    const GameStatePtr_t Game::MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR)
+    void Game::Set(GameStateUPtr_t gameStateUPtr) { stateUPtr_ = std::move(gameStateUPtr); }
+
+    void Game::MakeNewAndSet(creature::PlayerPartyUPtr_t playerPartyUPtr)
     {
-        stateUPtr_
-            = std::make_unique<GameState>(std::move(PARTY_UPTR), WorldFactory::MakeForNewGame());
+        Set(GameStateFactory::Instance()->MakeForNewGame(std::move(playerPartyUPtr)));
+    }
 
-        stateUPtr_->IsNewGameSet(true);
-        stateUPtr_->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());
-
-        return stateUPtr_.get();
+    void Game::MakeNewForTestingAndSet()
+    {
+        Set(GameStateFactory::Instance()->MakeForNewGameForTesting());
     }
 
 } // namespace game

@@ -23,8 +23,8 @@ namespace misc
 
         for (const char CHAR : STRING_ORIG)
         {
-            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CHAR)
-                && (IsLower(prevChar) != IsLower(CHAR)))
+            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CHAR) && IsLower(prevChar)
+                && !IsLower(CHAR))
             {
                 result += SEPARATOR;
             }

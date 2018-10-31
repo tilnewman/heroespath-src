@@ -11,7 +11,6 @@
 //
 #include "achievement-handler.hpp"
 
-#include "game/loop-manager.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 
@@ -47,6 +46,7 @@ namespace stage
 
     void TitleTransitionPopup(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
@@ -55,12 +55,12 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME, CREATURE_PTR, FROM_TITLE_PTR_OPT, TO_TITLE_PTR) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
-            POPUP_HANDLER_PTR, POPUP_INFO);
+        iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE)
@@ -74,7 +74,12 @@ namespace stage
             ApplyTitleChangesToCreature(CREATURE_PTR, toTitlePtrOpt.get());
 
             TitleTransitionPopup(
-                POPUP_HANDLER_PTR, POPUP_NAME, CREATURE_PTR, fromTitlePtrOpt, toTitlePtrOpt.get());
+                POPUP_HANDLER_PTR,
+                iStagePtr,
+                POPUP_NAME,
+                CREATURE_PTR,
+                fromTitlePtrOpt,
+                toTitlePtrOpt.get());
 
             return true;
         }

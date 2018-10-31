@@ -11,7 +11,6 @@
 //
 #include "settings-stage.hpp"
 
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
@@ -25,6 +24,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/position.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -35,14 +36,14 @@ namespace stage
 {
 
     SettingsStage::SettingsStage()
-        : Stage(
-              "Settings",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              false)
+        : StageBase(
+            "Settings",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            false)
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(sfml_util::Display::Instance()->AntialiasLevel())
@@ -55,7 +56,7 @@ namespace stage
         , stageTitle_("media-images-buttons-mainmenu-settings-normal")
         , bottomSymbol_()
         , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Previous,
+              stage::Stage::Previous,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , settingsBoxUPtr_()
@@ -72,7 +73,7 @@ namespace stage
         , revLabelTextRegionUPtr_()
     {}
 
-    SettingsStage::~SettingsStage() { Stage::ClearAllEntities(); }
+    SettingsStage::~SettingsStage() { StageBase::ClearAllEntities(); }
 
     /*bool SettingsStage::HandleCallback(
         const sfml_util::RadioButton::Callback_t::PacketPtr_t & PACKAGE_PTR)
@@ -87,7 +88,7 @@ namespace stage
             const auto NEW_ANTIALIAS_LEVEL { (
                 (PACKAGE.PTR_->GetSelectedNumber() == 0) ? 0 : SELECT_SELECT) };
 
-            game::LoopManager::Instance()->ChangeResolution(
+            gChangeResolution(
                 this, this, sfml_util::Display::GetCurrentResolution(), NEW_ANTIALIAS_LEVEL);
 
             return true;
@@ -103,21 +104,21 @@ namespace stage
         /*
         M_HP_LOG(
             GetStageName() << " HandlePopupCallback(response=\""
-                           << popup::ResponseTypes::ToString(PACKET_PTR->Response()) << "\")");
+                           << popup::ResponseTypes::ToString(PACKET_PTR->type) << "\")");
 
-        if (PACKET_PTR->Response() == popup::ResponseTypes::No)
+        if (PACKET_PTR->type == popup::ResponseTypes::No)
         {
             M_HP_LOG(
                 GetStageName() << " Stage.  User rejected the new antialias level.  "
                                << "Changing back to the previous.");
 
-            game::LoopManager::Instance()->ChangeResolution(
+            ChangeResolution(
                 this, this, sfml_util::Display::Instance()->GetCurrentResolution(), prevAALevel_);
 
             HandleResolutionChange();
             return false;
         }
-        else if (PACKET_PTR->Response() == popup::ResponseTypes::Okay)
+        else if (PACKET_PTR->type == popup::ResponseTypes::Okay)
         {
             // case where the antialiasing mode was not supported and
             // need to revert back to original value
@@ -199,14 +200,14 @@ namespace stage
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
         target.draw(*settingsBoxUPtr_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void SettingsStage::HandleResolutionChange() { Setup(); }
 
     bool SettingsStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (Stage::KeyRelease(KEY_EVENT))
+        if (StageBase::KeyRelease(KEY_EVENT))
         {
             return true;
         }
@@ -214,7 +215,7 @@ namespace stage
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            game::LoopManager::Instance()->TransitionTo_Previous();
+            TransitionTo(stage::Stage::Previous);
             return true;
         }
         else
@@ -225,13 +226,7 @@ namespace stage
 
     void SettingsStage::Setup_StageRegionToFullscreen()
     {
-        const sf::FloatRect STAGE_REGION(
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight());
-
-        StageRegionSet(STAGE_REGION);
+        StageRegion(sfml_util::Display::Instance()->FullScreenRect());
     }
 
     void SettingsStage::Setup_BackgroundImage() { ; }
@@ -258,10 +253,10 @@ namespace stage
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
     {
-        const auto BG_BOX_WIDTH { std::max(StageRegionWidth() * 0.45f, 1000.0f) };
-        const auto BG_BOX_HEIGHT { std::max(StageRegionHeight() * 0.5f, 500.0f) };
+        const auto BG_BOX_WIDTH { std::max(StageRegion().width * 0.45f, 1000.0f) };
+        const auto BG_BOX_HEIGHT { std::max(StageRegion().height * 0.5f, 500.0f) };
 
-        const auto BG_BOX_LEFT { (StageRegionWidth() * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
+        const auto BG_BOX_LEFT { (StageRegion().width * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
 
         const auto BG_BOX_TOP { sfutil::Bottom(stageTitle_.Region())
                                 + stageTitle_.DefaultBottomPad() };
@@ -319,7 +314,7 @@ namespace stage
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfutil::MapByRes(20.0f, 50.0f),
                 sfml_util::RadioButtonSetCallbackHandlerPtr_t(this),
-                sfml_util::IStagePtr_t(this));
+                stage::IStagePtr_t(this));
 
             resRadioButtonSetUPtr_->SetEntityColors(sfml_util::FocusColors(
                 sf::Color(180, 180, 180),

@@ -17,10 +17,11 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-enum.hpp"
 #include "stage/adventure-display-stage.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -28,45 +29,26 @@ namespace stage
 {
 
     AdventureStage::AdventureStage()
-        : Stage(
-              "Adventure",
-              0.0f,
-              0.0f,
-              sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight(),
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::DialogMedieval,
-                sfml_util::GuiFont::DialogModern,
-                sfml_util::GuiFont::DefaultBoldFlavor,
-                sfml_util::GuiFont::Handwriting },
-              true,
-              { sfml_util::sound_effect::FootstepGrass,
-                sfml_util::sound_effect::FootstepGravel,
-                sfml_util::sound_effect::FootstepLeaves,
-                sfml_util::sound_effect::FootstepSolid,
-                sfml_util::sound_effect::FootstepWood })
-        , interactionManager_()
-        , adventureDisplayStagePtr_(new AdventureDisplayStage(interactionManager_))
+        : StageBase(
+            "Adventure",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::DialogMedieval,
+              sfml_util::GuiFont::DialogModern,
+              sfml_util::GuiFont::DefaultBoldFlavor,
+              sfml_util::GuiFont::Handwriting },
+            true,
+            { sfml_util::sound_effect::FootstepGrass,
+              sfml_util::sound_effect::FootstepGravel,
+              sfml_util::sound_effect::FootstepLeaves,
+              sfml_util::sound_effect::FootstepSolid,
+              sfml_util::sound_effect::FootstepWood })
     {}
 
     AdventureStage::~AdventureStage() = default;
-
-    void AdventureStage::Setup()
-    {
-        adventureDisplayStagePtr_->Setup();
-
-        // See AdventureDisplayStage::Setup() for where this is actually done.
-        // The AdventureDisplayStage gives itself to the LoopManager so that it
-        // can do so before adding its own substages, so that it will be drawn
-        // before those substages.
-        // game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
-    }
-
-    void AdventureStage::UpdateTime(const float) { interactionManager_.Update(); }
 
 } // namespace stage
 } // namespace heroespath

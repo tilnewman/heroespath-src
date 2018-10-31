@@ -9,11 +9,16 @@
 //
 // enum-util.hpp
 //
-#include "misc/assertlogandthrow.hpp"
+//  WARNING:
+//      To avoid circular dependancies this file cannot include:
+//          "misc/log-macros.hpp"
+//          "misc/assertlogandthrow.hpp"
+//          -or any other header that includes these!
+//
+//      See the work-around code below.
+//
 #include "misc/boost-string-includes.hpp"
-#include "misc/log-macros.hpp"
 #include "misc/strings-split-by-char.hpp"
-#include "misc/vector-map.hpp"
 #include "misc/wrap-enum.hpp"
 
 #include <boost/type_index.hpp>
@@ -29,13 +34,93 @@ namespace heroespath
 {
 namespace misc
 {
+    namespace enum_util
+    {
+
+        // a collection of functions to move code out of the template class below, or to move code
+        // out of this header, or to move code into a cpp file because in this header some things
+        // cannot be included (see WARNING above about circular dependancies)
+        namespace helpers
+        {
+
+            void
+                Log(const bool IS_ERROR,
+                    const std::string & MESSAGE,
+                    const std::string & FILE,
+                    const std::string & FUNCTION,
+                    const int LINE,
+                    const bool WILL_THROW = false);
+
+            void TestingSystemLog(const std::string & MESSAGE);
+
+        } // namespace helpers
+
+    } // namespace enum_util
+} // namespace misc
+} // namespace heroespath
+
+// This file cannot include "misc/assertlogandthrow.hpp" or else a circular dependancy will be
+// created, so these macros are here to get around that.
+#define M_HP_ENUM_UTIL_LOG_AND_THROW_HELPER(str_stuff)                                             \
+    {                                                                                              \
+        std::ostringstream _m_oss_enumutil_temp;                                                   \
+                                                                                                   \
+        _m_oss_enumutil_temp << str_stuff;                                                         \
+                                                                                                   \
+        heroespath::misc::enum_util::helpers::Log(                                                 \
+            true, _m_oss_enumutil_temp.str(), __FILE__, __func__, __LINE__, true);                 \
+    }
+
+#define M_HP_ENUM_UTIL_LOG_AND_THROW(exp, str_stuff)                                               \
+    {                                                                                              \
+        {                                                                                          \
+            if (!(exp))                                                                            \
+            {                                                                                      \
+                M_HP_ENUM_UTIL_LOG_AND_THROW_HELPER(str_stuff)                                     \
+            }                                                                                      \
+        }                                                                                          \
+    }
+
+#define M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(exp, str_stuff)                                     \
+    {                                                                                              \
+        {                                                                                          \
+            if constexpr (!(exp))                                                                  \
+            {                                                                                      \
+                M_HP_ENUM_UTIL_LOG_AND_THROW_HELPER(str_stuff)                                     \
+            }                                                                                      \
+        }                                                                                          \
+    }
+
+namespace heroespath
+{
+namespace misc
+{
 
     using EnumUnderlying_t = unsigned int;
 
+    enum class NoneEmpty : bool
+    {
+        No = false,
+        Yes = true
+    };
+
+    struct EnumFirstValueValid
+    {};
+
+    struct EnumFirstValueNot
+    {};
+
+    struct EnumFirstValueNothing
+    {};
+
+    struct EnumFirstValueNever
+    {};
+
+    struct EnumFirstValueNone
+    {};
+
     namespace enum_util
     {
-        void TestLog(const std::string &);
-
         template <typename EnumWrapper_t>
         void Test(
             const EnumUnderlying_t LAST_VALID_VALUE,
@@ -51,10 +136,10 @@ namespace misc
 
             if (WILL_DISPLAY_MSG_ON_SCREEN)
             {
-                TestLog(msgSS.str() + "Starting...");
+                helpers::TestingSystemLog(msgSS.str() + "Starting...");
             }
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
+            M_HP_ENUM_UTIL_LOG_AND_THROW(
                 (LAST_VALID_VALUE > 0),
                 msgSS.str() << "was given a last_valid_value that was not > zero.");
 
@@ -77,10 +162,12 @@ namespace misc
                             FLAG_VALUE_TO_TEST_AND_REPORT))
                         == false)
                     {
-                        M_HP_LOG_DBG(
-                            msgSS.str()
-                            << "skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT);
+                        std::ostringstream skipSS;
 
+                        skipSS << msgSS.str()
+                               << " skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT;
+
+                        helpers::Log(false, skipSS.str(), __FILE__, __func__, __LINE__);
                         continue;
                     }
 
@@ -89,14 +176,14 @@ namespace misc
 
                     if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
                     {
-                        M_HP_ASSERT_OR_LOG_AND_THROW(
+                        M_HP_ENUM_UTIL_LOG_AND_THROW(
                             (STRING.empty()),
                             msgSS.str() << "ToString() returned non-empty string (\"" << STRING
                                         << "\") on first value.");
                     }
                     else
                     {
-                        M_HP_ASSERT_OR_LOG_AND_THROW(
+                        M_HP_ENUM_UTIL_LOG_AND_THROW(
                             (STRING.empty() == false),
                             msgSS.str() << "ToString() returned an empty string on value "
                                         << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
@@ -108,19 +195,19 @@ namespace misc
                                                   STRING)
                                               != std::end(alreadyGeneratedStrings) };
 
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
+                    M_HP_ENUM_UTIL_LOG_AND_THROW(
                         (IS_DUPLICATE == false),
                         msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
                                     << "\" is a duplicate of a previous generated string.");
 
                     const auto FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
 
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
+                    M_HP_ENUM_UTIL_LOG_AND_THROW(
                         (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
                         msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
                                     << "!=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
 
-                    M_HP_ASSERT_OR_LOG_AND_THROW(
+                    M_HP_ENUM_UTIL_LOG_AND_THROW(
                         (EnumWrapper_t::IsValid(
                             static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
                         msgSS.str()
@@ -133,9 +220,10 @@ namespace misc
             {
                 --flagValue;
 
-                M_HP_LOG_ERR(
-                    msgSS.str() << "threw exception \"" << EXCEPTION.what()
-                                << "\" on value=" << flagValue << ".");
+                msgSS << "threw exception \"" << EXCEPTION.what() << "\" on value=" << flagValue
+                      << ".";
+
+                helpers::Log(false, msgSS.str(), __FILE__, __func__, __LINE__);
 
                 throw;
             }
@@ -143,31 +231,10 @@ namespace misc
             if (WILL_DISPLAY_MSG_ON_SCREEN)
             {
                 msgSS << "Done testing all " << flagValue << " values.";
-                TestLog(msgSS.str());
+                helpers::TestingSystemLog(msgSS.str());
             }
         }
     } // namespace enum_util
-
-    enum class NoneEmpty : bool
-    {
-        No = false,
-        Yes = true
-    };
-
-    struct EnumFirstValueValid
-    {};
-
-    struct EnumFirstValueNot
-    {};
-
-    struct EnumFirstValueNothing
-    {};
-
-    struct EnumFirstValueNever
-    {};
-
-    struct EnumFirstValueNone
-    {};
 
     // Responsible for common operations of enums that are used as counted values.
     template <typename EnumWrapper_t, typename EnumFirstValue_t>
@@ -241,7 +308,7 @@ namespace misc
             using UnderlyingTypeActual_t =
                 typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
+            M_HP_ENUM_UTIL_LOG_AND_THROW(
                 (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
                 TypeName() << "Underlying type was: "
                            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
@@ -249,38 +316,38 @@ namespace misc
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNot>::value)
             {
-                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+                M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Not == 0),
                     TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNothing>::value)
             {
-                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+                M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Nothing == 0),
                     TypeName() << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNever>::value)
             {
-                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+                M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::Never == 0),
                     TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
             }
 
             if constexpr (std::is_same<EnumFirstValue_t, EnumFirstValueNone>::value)
             {
-                M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+                M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                     (EnumWrapper_t::None == 0),
                     TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
             }
 
-            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+            M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Count > 0),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not > zero.");
 
-            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+            M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Count == LargestValidValue() + 1),
                 TypeName() << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
                            << " is not one less than the largest valid value="
@@ -496,16 +563,16 @@ namespace misc
             using UnderlyingTypeActual_t =
                 typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
+            M_HP_ENUM_UTIL_LOG_AND_THROW(
                 (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
                 TypeName() << "Underlying type was: "
                            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
                            << " instead of what it should be: " << UnderlyingTypeName() << ".");
 
-            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+            M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::None == 0), TypeName() << "::None was not zero.");
 
-            M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(
+            M_HP_ENUM_UTIL_LOG_AND_THROW_CONSTEXPR(
                 (EnumWrapper_t::Last > 0),
                 TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
                            << " is not > zero.");

@@ -29,7 +29,6 @@ namespace popup
         PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) = delete;
         PopupStageTreasureTrap & operator=(PopupStageTreasureTrap &&) = delete;
 
-    public:
         explicit PopupStageTreasureTrap(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageTreasureTrap();
 

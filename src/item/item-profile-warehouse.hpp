@@ -39,7 +39,6 @@ namespace item
         ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) = delete;
         ItemProfileWarehouse & operator=(ItemProfileWarehouse &&) = delete;
 
-    public:
         ItemProfileWarehouse();
         ~ItemProfileWarehouse();
 
@@ -49,22 +48,32 @@ namespace item
 
         void Initialize();
 
+        const ItemProfileVec_t & GetNormalProfiles()
+        {
+            EnsureInitialized();
+            return profiles_;
+        }
+
+        const ItemProfileVec_t & GetReligiousProfiles()
+        {
+            EnsureInitialized();
+            return religiousProfiles_;
+        }
+
+        const misc::VectorMap<misc_type::Enum, ItemProfile> & GetQuestProfiles()
+        {
+            EnsureInitialized();
+            return questItemProfilesMap_;
+        }
+
+    private:
+        void EnsureInitialized();
         void Setup_StandardEquipment();
         void Setup_MiscItems();
         void Setup_NamedEquipment();
         void Setup_SetEquipment();
         void Setup_SummoningItems();
 
-        const ItemProfileVec_t & GetNormalProfiles() const { return profiles_; }
-
-        const ItemProfileVec_t & GetReligiousProfiles() const { return religiousProfiles_; }
-
-        const misc::VectorMap<misc_type::Enum, ItemProfile> & GetQuestProfiles() const
-        {
-            return questItemProfilesMap_;
-        }
-
-    private:
         const ElementEnumVec_t ElementTypesIncludingNone(
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum NAMED_TYPE,
@@ -116,6 +125,8 @@ namespace item
         ItemProfileVec_t religiousProfiles_;
 
         misc::VectorMap<misc_type::Enum, ItemProfile> questItemProfilesMap_;
+
+        bool hasInitialized_;
     };
 
 } // namespace item

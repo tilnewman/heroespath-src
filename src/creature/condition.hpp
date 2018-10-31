@@ -43,7 +43,6 @@ namespace creature
         Condition & operator=(const Condition &) = delete;
         Condition & operator=(Condition &&) = delete;
 
-    public:
         explicit Condition(
             const Conditions::Enum TYPE = Conditions::Good,
             const bool IS_MAGICAL = false,

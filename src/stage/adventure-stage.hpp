@@ -10,8 +10,9 @@
 // adventure-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 namespace heroespath
 {
@@ -20,9 +21,11 @@ namespace stage
 
     class AdventureDisplayStage;
     using AdventureDisplayStagePtr_t = misc::NotNull<AdventureDisplayStage *>;
+    using AdventureDisplayStagePtrOpt_t = boost::optional<AdventureDisplayStagePtr_t>;
 
     // Responsible for managing all AdventureStage interactions with the player.
-    class AdventureStage : public sfml_util::Stage
+    class AdventureStage : public stage::StageBase
+
     {
     public:
         AdventureStage(const AdventureStage &) = delete;
@@ -30,16 +33,10 @@ namespace stage
         AdventureStage & operator=(const AdventureStage &) = delete;
         AdventureStage & operator=(AdventureStage &&) = delete;
 
-    public:
         AdventureStage();
         virtual ~AdventureStage();
 
-        void Setup() override;
-        void UpdateTime(const float ELAPSED_TIME_SEC) override;
-
-    private:
-        interact::InteractionManager interactionManager_;
-        AdventureDisplayStagePtr_t adventureDisplayStagePtr_;
+        void Setup() override {}
     };
 
 } // namespace stage

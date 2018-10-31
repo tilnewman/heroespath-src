@@ -20,7 +20,6 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
@@ -31,8 +30,11 @@
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -45,14 +47,14 @@ namespace stage
     const std::string CampStage::NEWHEROESPATH_POPUP_NAME4_ { "NewGameIntroStoryPopup4" };
 
     CampStage::CampStage()
-        : Stage(
-              "Camp",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        : StageBase(
+            "Camp",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , stageTitle_("")
         , campfireCachedTexture_("media-images-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())
@@ -83,12 +85,12 @@ namespace stage
         // Camp Stage, then set it back again once leaving the Intro Stage.
         sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
 
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
     }
 
     bool CampStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
-        const auto CALLBACK_NAME { PACKET_PTR->Name() };
+        const auto CALLBACK_NAME { PACKET_PTR->name };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
         {
             showNewGamePopup2_ = true;
@@ -117,9 +119,9 @@ namespace stage
         // campfire image
         const auto CAMPFIRE_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.286f) };
 
-        const auto CAMPFIRE_POS_LEFT { StageRegionWidth()
+        const auto CAMPFIRE_POS_LEFT { StageRegion().width
                                        - sfutil::ScreenRatioToPixelsHoriz(0.06f) };
-        const auto CAMPFIRE_POS_TOP { StageRegionHeight()
+        const auto CAMPFIRE_POS_TOP { StageRegion().height
                                       - sfutil::ScreenRatioToPixelsVert(0.0667f) };
 
         const sf::FloatRect CAMPFIRE_CONSTRAINING_REGION(
@@ -147,12 +149,12 @@ namespace stage
         target.draw(stageTitle_, STATES);
         target.draw(campfireSprite_, STATES);
         target.draw(botSymbol_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void CampStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         if (showNewGamePopup1_)
         {
@@ -164,7 +166,7 @@ namespace stage
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             showNewGamePopup1_ = false;
         }
         else if (showNewGamePopup2_)
@@ -177,7 +179,7 @@ namespace stage
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             showNewGamePopup2_ = false;
         }
         else if (showNewGamePopup3_)
@@ -190,7 +192,7 @@ namespace stage
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             showNewGamePopup3_ = false;
         }
         else if (showNewGamePopup4_)
@@ -203,7 +205,7 @@ namespace stage
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             showNewGamePopup4_ = false;
         }
     }

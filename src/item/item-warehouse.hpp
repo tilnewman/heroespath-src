@@ -36,7 +36,6 @@ namespace item
         ItemWarehouse & operator=(const ItemWarehouse &) = delete;
         ItemWarehouse & operator=(ItemWarehouse &&) = delete;
 
-    public:
         ItemWarehouse();
         ~ItemWarehouse();
 

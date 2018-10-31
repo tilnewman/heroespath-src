@@ -72,9 +72,8 @@ namespace combat
     const float CombatDisplay::BATTLEFIELD_DRAG_SPEED_(3.0f);
     const std::size_t CombatDisplay::SHOULDER_TO_SHOULDER_MAX_(10);
 
-    CombatDisplay::CombatDisplay(
-        const CombatAnimationPtr_t COMBAT_ANIM_PTR, const sf::FloatRect & REGION)
-        : Stage("CombatDisplay", REGION, {}, false)
+    CombatDisplay::CombatDisplay(const CombatAnimationPtr_t COMBAT_ANIM_PTR)
+        : StageBase("CombatDisplay", {}, false) // stage region set by
         , POSITIONING_MARGIN_HORIZ_(sfutil::MapByRes(50.0f, 300.0f))
         , POSITIONING_MARGIN_VERT_(sfutil::MapByRes(50.0f, 300.0f))
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))
@@ -117,7 +116,7 @@ namespace combat
         , centeringToPosV_(-1.0f, -1.0f) // any negative values will work here
     {}
 
-    CombatDisplay::~CombatDisplay() { sfml_util::Stage::ClearAllEntities(); }
+    CombatDisplay::~CombatDisplay() { stage::StageBase::ClearAllEntities(); }
 
     void CombatDisplay::Setup()
     {
@@ -135,7 +134,7 @@ namespace combat
         InitialNonPlayerPartyCombatTreeSetup();
 
         // establish primary drawing area as battlefieldRect_
-        // StageRegionSet() must have already been called
+        // StageRegion() must have already been called
         battlefieldRect_ = StageRegion();
 
         PositionCombatTreeCells(false);
@@ -175,7 +174,7 @@ namespace combat
     {
         target.draw(offScreenSprite_, STATES);
         target.draw(*boxUPtr_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
         target.draw(*summaryViewUPtr_, STATES);
     }
 
@@ -284,7 +283,7 @@ namespace combat
     {
         const sf::Vector2f NEW_MOUSE_POS_F { NEW_MOUSE_POS };
 
-        Stage::UpdateMousePos(NEW_MOUSE_POS);
+        StageBase::UpdateMousePos(NEW_MOUSE_POS);
 
         if (isScrollAllowed_ && isMouseHeldDownInBF_)
         {
@@ -299,7 +298,7 @@ namespace combat
     {
         if ((GetIsSummaryViewInProgress() == false) && isScrollAllowed_)
         {
-            Stage::UpdateMouseDown(MOUSE_POS_V);
+            StageBase::UpdateMouseDown(MOUSE_POS_V);
 
             const auto COMBAT_NODE_CLICKED_ON_PTR_OPT { combatTree_.GetNodePtrOpt(
                 MOUSE_POS_V.x, MOUSE_POS_V.y) };
@@ -321,7 +320,7 @@ namespace combat
         if (isScrollAllowed_)
         {
             isMouseHeldDownInBF_ = false;
-            return Stage::UpdateMouseUp(MOUSE_POS_V);
+            return StageBase::UpdateMouseUp(MOUSE_POS_V);
         }
         else
         {
@@ -1348,7 +1347,7 @@ namespace combat
             return;
         }
 
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         summaryViewUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
 

@@ -13,6 +13,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace popup
@@ -39,7 +41,7 @@ namespace popup
     {
         PopupStageBase::Draw(target, STATES);
         target.draw(bgSprite_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
 } // namespace popup

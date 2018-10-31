@@ -46,6 +46,12 @@ namespace game
         return *partyUPtr_;
     }
 
+    void GameState::SetupAsNewGame()
+    {
+        isGameNew_ = true;
+        dateTimeStarted_ = sfml_util::DateTime::CurrentDateTime();
+    }
+
     void GameState::BeforeSerialize()
     {
         partyUPtr_->BeforeSerialize();

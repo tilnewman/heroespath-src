@@ -16,8 +16,8 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/callback.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/text-button.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -35,13 +35,16 @@ namespace sfml_util
 namespace map
 {
     class Map;
-}
+    using MapPtr_t = misc::NotNull<Map *>;
+    using MapPtrOpt_t = boost::optional<MapPtr_t>;
+} // namespace map
 namespace stage
 {
 
     // Responsible for the interaction region of the Adventure Stage.
     class InteractStage
-        : public sfml_util::Stage
+        : public stage::StageBase
+
         , public sfml_util::TextButton::Callback_t::IHandler_t
         , public sfml_util::PopupCallback_t::IHandler_t
     {
@@ -51,15 +54,14 @@ namespace stage
         InteractStage & operator=(const InteractStage &) = delete;
         InteractStage & operator=(InteractStage &&) = delete;
 
-    public:
-        InteractStage(
-            map::Map &, const sf::FloatRect & STAGE_REGION, interact::InteractionManager &);
+        InteractStage(interact::InteractionManager &);
 
         virtual ~InteractStage();
 
         bool HandleCallback(const sfml_util::TextButton::Callback_t::PacketPtr_t &) final;
-
         bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
+
+        void PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr);
 
         void Setup() override;
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
@@ -84,9 +86,9 @@ namespace stage
         static const float SUBJECT_IMAGE_PAD_RATIO_;
         static const float CONTEXT_IMAGE_PAD_RATIO_;
 
-        map::Map & map_;
+        map::MapPtrOpt_t mapPtrOpt_;
         float regionPad_;
-        // sf::FloatRect outerRect_; the outer rect is Stage::StageRegion()
+        // sf::FloatRect outerRect_; the outer rect is StageBase::StageRegion()
         sf::FloatRect innerRect_;
         interact::InteractionManager & interactionManager_;
         sf::Sprite subjectSprite_;

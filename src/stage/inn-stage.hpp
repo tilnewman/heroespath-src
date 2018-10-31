@@ -14,7 +14,7 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 
@@ -33,7 +33,7 @@ namespace stage
 {
 
     // A Stage class that allows starting the game
-    class InnStage : public sfml_util::Stage
+    class InnStage : public stage::StageBase
     {
     public:
         InnStage(const InnStage &) = delete;
@@ -41,12 +41,11 @@ namespace stage
         InnStage & operator=(const InnStage &) = delete;
         InnStage & operator=(InnStage &&) = delete;
 
-    public:
         InnStage();
         virtual ~InnStage();
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
+        void Setup() final;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) final;
 
     private:
         sfml_util::StageTitle stageTitle_;
@@ -57,6 +56,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

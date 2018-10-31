@@ -11,13 +11,14 @@
 //
 #include "popup-stage-num-select.hpp"
 
-#include "game/loop-manager.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/sound-manager.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -43,9 +44,9 @@ namespace popup
 
         const auto CURR_VAL { popupInfo_.NumberSelMin()
                               + static_cast<std::size_t>(
-                                    CURR_RATIO
-                                    * static_cast<float>(
-                                          popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
+                                  CURR_RATIO
+                                  * static_cast<float>(
+                                      popupInfo_.NumberSelMax() - popupInfo_.NumberSelMin())) };
 
         selection_ = static_cast<int>(CURR_VAL);
 
@@ -140,7 +141,7 @@ namespace popup
     void PopupStageNumberSelect::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     bool PopupStageNumberSelect::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
@@ -151,8 +152,7 @@ namespace popup
             {
                 PlayValidKeypressSoundEffect();
 
-                game::LoopManager::Instance()->PopupWaitEnd(
-                    ResponseTypes::Select, static_cast<std::size_t>(GetSelectNumber()));
+                RemovePopup(ResponseTypes::Select, static_cast<std::size_t>(GetSelectNumber()));
 
                 return true;
             }

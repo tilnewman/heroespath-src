@@ -269,26 +269,16 @@ namespace sfml_util
         // intentionally ignore the clock and it's bool flag
         return std::tie(
                    L.entityName_,
-                   L.entityRegion_,
                    L.entityMouseState_,
-                   L.entityFocusColors_,
                    L.entityHasFocus_,
                    L.entityWillFocus_,
-                   L.entityMouseHoverText_,
-                   L.entityFgColor_,
-                   L.entityBgColor_,
-                   L.entityPrevPos_)
+                   L.entityMouseHoverText_)
             < std::tie(
                    R.entityName_,
-                   R.entityRegion_,
                    R.entityMouseState_,
-                   R.entityFocusColors_,
                    R.entityHasFocus_,
                    R.entityWillFocus_,
-                   R.entityMouseHoverText_,
-                   R.entityFgColor_,
-                   R.entityBgColor_,
-                   R.entityPrevPos_);
+                   R.entityMouseHoverText_);
     }
 
     bool operator==(const Entity & L, const Entity & R)

@@ -12,13 +12,14 @@
 #include "popup-stage-musicsheet.hpp"
 
 #include "creature/creature.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "song/song.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -160,14 +161,14 @@ namespace popup
 
         descTextUPtr_->draw(target, STATES);
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         PopupStageBase::DrawRedX(target, STATES);
     }
 
     void PopupStageMusicSheet::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         const auto HAS_TEXT_COLOR_SLIDER_STOPPED { textColorSlider_.UpdateAndReturnIsStopped(
             ELAPSED_TIME_SECONDS) };
@@ -198,7 +199,7 @@ namespace popup
             if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
             {
                 PlayValidKeypressSoundEffect();
-                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
+                RemovePopup(ResponseTypes::Cancel, 0);
                 return true;
             }
             else if (
@@ -480,7 +481,7 @@ namespace popup
         {
             willShowXImage_ = true;
 
-            const auto CURRENT_PHASE { game::LoopManager::Instance()->GetPhase() };
+            const auto CURRENT_PHASE { GetPhase() };
 
             if (CURRENT_PHASE & game::Phase::Combat)
             {
@@ -574,8 +575,7 @@ namespace popup
         }
         else
         {
-            descTextUPtr_->Setup(
-                SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, sfml_util::IStagePtr_t(this));
+            descTextUPtr_->Setup(SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT, stage::IStagePtr_t(this));
         }
     }
 
@@ -611,7 +611,7 @@ namespace popup
 
     bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtr_t SONG_PTR) const
     {
-        return (SONG_PTR->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+        return (SONG_PTR->ValidPhases() & GetPhase());
     }
 
     bool PopupStageMusicSheet::CanPlaySong(const song::SongPtr_t SONG_PTR) const
@@ -638,8 +638,7 @@ namespace popup
                     .PlayRandom();
             }
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, listBoxUPtr_->SelectionIndex());
+            RemovePopup(ResponseTypes::Select, listBoxUPtr_->SelectionIndex());
 
             return true;
         }

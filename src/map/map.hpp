@@ -15,6 +15,7 @@
 #include "map/parser.hpp"
 #include "map/transition.hpp"
 #include "map/walk-sfx.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/timer.hpp"
 #include "misc/vector-map.hpp"
@@ -50,7 +51,6 @@ namespace map
         Map & operator=(const Map &) = delete;
         Map & operator=(Map &&) = delete;
 
-    public:
         Map(const sf::FloatRect &, interact::InteractionManager &);
         virtual ~Map();
 
@@ -149,6 +149,8 @@ namespace map
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;
+    using MapPtr_t = misc::NotNull<Map *>;
+    using MapPtrOpt_t = boost::optional<MapPtr_t>;
 
 } // namespace map
 } // namespace heroespath

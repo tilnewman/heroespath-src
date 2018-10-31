@@ -9,6 +9,8 @@
 //
 // log-pri-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,14 +18,9 @@ namespace heroespath
 namespace misc
 {
 
-    // Responsible for enumerating all possible log priorities
-    //
-    // NOTE:  This does not use the helper stuff in enum-util.hpp because it can't, because the code
-    // in that file uses the logger!
-    //
-    struct LogPriority
+    struct LogPriority : public misc::EnumBaseCounting<LogPriority, misc::EnumFirstValueValid>
     {
-        enum Enum : unsigned int
+        enum Enum : misc::EnumUnderlying_t
         {
             Debug = 0,
             Default,
@@ -33,19 +30,10 @@ namespace misc
             Count,
         };
 
-        static bool IsValid(const unsigned int ENUM_VALUE);
-
         static const std::string ToString(const Enum PRIORITY);
-
         static const std::string ToStringAcronym(const Enum PRIORITY);
-
         static const std::string ConsoleColorStringBegin(const Enum PRIORITY);
-
         static const std::string ConsoleColorStringEnd();
-
-    private:
-        static const std::string
-            MakeErrorString(const Enum PRIORITY, const std::string & FUNCTION_NAME);
     };
 
 } // namespace misc

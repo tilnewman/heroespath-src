@@ -11,6 +11,8 @@
 //
 #include "popup-stage-generic.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace popup
@@ -25,7 +27,7 @@ namespace popup
     void PopupStageGeneric::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
 } // namespace popup

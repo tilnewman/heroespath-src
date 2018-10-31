@@ -13,8 +13,8 @@
 
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "stage/i-stage.hpp"
 
 #include <exception>
 #include <memory>
@@ -1890,14 +1890,13 @@ namespace creature
             return TitlePtr_t { titleUVec_[INDEX].get() };
         }
 
-        bool Holder::Test()
+        bool Holder::Test(stage::IStagePtr_t iStagePtr)
         {
             static auto hasInitialPrompt { false };
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
-                game::LoopManager::Instance()->TestingStrAppend(
-                    "creature::Titles::Holder::Test() Starting Tests...");
+                iStagePtr->TestingStrAppend("creature::Titles::Holder::Test() Starting Tests...");
             }
 
             static misc::EnumUnderlying_t titleIndex { 0 };
@@ -1918,9 +1917,8 @@ namespace creature
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->ImageFilename().empty() == false),
-                    "creature::Titles::Holder::Test(\""
-                        << Titles::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty ImageFilename().");
+                    "creature::Titles::Holder::Test(\"" << Titles::ToString(
+                        NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (TITLE_PTR->RolesCopy().empty() == false),
@@ -1939,14 +1937,12 @@ namespace creature
                     "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
                                                         << "\") Title is out of order.");
 
-                game::LoopManager::Instance()->TestingStrIncrement("Title Test #");
+                iStagePtr->TestingStrIncrement("Title Test #");
                 ++titleIndex;
                 return false;
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "creature::Titles::Holder::Test()  ALL TESTS PASSED.");
-
+            iStagePtr->TestingStrAppend("creature::Titles::Holder::Test()  ALL TESTS PASSED.");
             return true;
         }
 

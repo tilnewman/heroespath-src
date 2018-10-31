@@ -10,6 +10,7 @@
 // not-null.hpp
 //
 #include "misc/assertlogandthrow.hpp"
+
 #include <algorithm>
 #include <iosfwd>
 #include <type_traits>
@@ -129,18 +130,19 @@ namespace misc
         return !(L == R);
     }
 
-    // more unwanted operators
-    template <typename T, typename U>
-    std::ptrdiff_t operator-(const NotNull<T> &, const NotNull<U> &) = delete;
+    //// more unwanted operators
+    // template <typename T, typename U>
+    // std::ptrdiff_t operator-(const NotNull<T> &, const NotNull<U> &) = delete;
+    //
+    // template <typename T>
+    // NotNull<T> operator-(const NotNull<T> &, std::ptrdiff_t) = delete;
+    //
+    // template <typename T>
+    // NotNull<T> operator+(const NotNull<T> &, std::ptrdiff_t) = delete;
+    //
+    // template <typename T>
+    // NotNull<T> operator+(std::ptrdiff_t, const NotNull<T> &) = delete;
 
-    template <typename T>
-    NotNull<T> operator-(const NotNull<T> &, std::ptrdiff_t) = delete;
-
-    template <typename T>
-    NotNull<T> operator+(const NotNull<T> &, std::ptrdiff_t) = delete;
-
-    template <typename T>
-    NotNull<T> operator+(std::ptrdiff_t, const NotNull<T> &) = delete;
 } // namespace misc
 } // namespace heroespath
 

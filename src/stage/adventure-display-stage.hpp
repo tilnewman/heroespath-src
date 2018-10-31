@@ -10,13 +10,14 @@
 // adventure-display-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
 #include "stage/adventure-stage-char-list.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -27,6 +28,7 @@ namespace heroespath
 namespace map
 {
     class Map;
+    using MapPtr_t = misc::NotNull<Map *>;
     using MapUPtr_t = std::unique_ptr<Map>;
 } // namespace map
 namespace stage
@@ -36,7 +38,8 @@ namespace stage
     using InteractStagePtr_t = misc::NotNull<InteractStage *>;
 
     // Responsible for all drawing operations of the AdventureStage.
-    class AdventureDisplayStage : public sfml_util::Stage
+    class AdventureDisplayStage : public stage::StageBase
+
     {
     public:
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
@@ -44,13 +47,21 @@ namespace stage
         AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;
         AdventureDisplayStage & operator=(AdventureDisplayStage &&) = delete;
 
-    public:
-        explicit AdventureDisplayStage(interact::InteractionManager &);
+        explicit AdventureDisplayStage();
         virtual ~AdventureDisplayStage();
 
         void Setup() override;
         void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+
+        map::MapPtr_t GetMapForStageFactory() { return mapUPtr_.get(); }
+
+        interact::InteractionManager & GetInteractionManagerForStageFactory()
+        {
+            return interactionManager_;
+        }
+
+        const sf::FloatRect CalcInteractRegionForStageFactory() const;
 
     private:
         void Setup_CharacterList();
@@ -60,18 +71,15 @@ namespace stage
         void HandleMovementKeypresses(
             const sfml_util::Direction::Enum, bool & wasPressed, const bool IS_PRESSED);
 
-        const sf::FloatRect CalcInteractRegion(const sf::FloatRect & MAP_REGION) const;
-
     private:
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
-        interact::InteractionManager & interactionManager_;
+        interact::InteractionManager interactionManager_;
         sfml_util::StageTitle stageTitle_;
         sfml_util::BottomSymbol bottomImage_;
         const sf::FloatRect MAP_OUTER_REGION_;
         const sf::FloatRect MAP_INNER_REGION_;
         map::MapUPtr_t mapUPtr_;
-        InteractStagePtr_t interactStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sfml_util::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
@@ -81,6 +89,9 @@ namespace stage
         bool wasPressedUp_;
         bool wasPressedDown_;
     };
+
+    using AdventureDisplayStagePtr_t = misc::NotNull<AdventureDisplayStage *>;
+    using AdventureDisplayStagePtrOpt_t = boost::optional<AdventureDisplayStagePtr_t>;
 
 } // namespace stage
 } // namespace heroespath

@@ -40,7 +40,6 @@ namespace sfml_util
         Entity & operator=(const Entity &) = delete;
         Entity & operator=(Entity &&) = delete;
 
-    public:
         Entity(
             const std::string & NAME,
             const sf::FloatRect & SCREEN_REGION,

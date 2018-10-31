@@ -15,7 +15,7 @@
 #include "sfml-util/main-menu-background.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/ouroboros.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -28,7 +28,7 @@ namespace stage
     // Responsible for displaying and managing mouse-clicks of five menu options:
     // Resume Game, Create Characters, Settings, Credits, Exit
     class MainMenuStage
-        : public sfml_util::Stage
+        : public stage::StageBase
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
     public:

@@ -25,7 +25,6 @@ namespace popup
         PopupStageSystemError & operator=(const PopupStageSystemError &) = delete;
         PopupStageSystemError & operator=(PopupStageSystemError &&) = delete;
 
-    public:
         explicit PopupStageSystemError(const PopupInfo &);
         virtual ~PopupStageSystemError();
 

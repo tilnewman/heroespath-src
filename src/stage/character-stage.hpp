@@ -27,11 +27,11 @@
 #include "sfml-util/sliderbar.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/text-entry-box.hpp"
 #include "sfml-util/text-region.hpp"
 #include "stage/character-stage-anim-num.hpp"
 #include "stage/character-stage-stat-box.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -57,7 +57,7 @@ namespace stage
 
     // manages the CharacterCreation process
     class CharacterStage
-        : public sfml_util::Stage
+        : public stage::StageBase
         //, public sfml_util::RadioButtonSet::Callback_t::IHandler_t
         , public sfml_util::PopupCallback_t::IHandler_t
         , public sfml_util::SliderBar::Callback_t::IHandler_t

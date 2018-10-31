@@ -35,7 +35,6 @@ namespace game
         NpcWarehouse & operator=(const NpcWarehouse &) = delete;
         NpcWarehouse & operator=(NpcWarehouse &&) = delete;
 
-    public:
         NpcWarehouse();
         ~NpcWarehouse();
 

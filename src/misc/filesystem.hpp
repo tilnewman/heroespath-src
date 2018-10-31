@@ -15,6 +15,9 @@
 
 #include <boost/system/error_code.hpp>
 
+#include <string>
+#include <vector>
+
 namespace heroespath
 {
 namespace misc

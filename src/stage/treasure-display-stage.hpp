@@ -23,8 +23,8 @@
 #include "sfml-util/list-box.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
 #include "stage/item-detail-viewer.hpp"
+#include "stage/stage-base.hpp"
 #include "stage/treasure-stage-mover.hpp"
 #include "stage/treasure-stage.hpp"
 
@@ -113,16 +113,13 @@ namespace stage
 
     // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
-        : public sfml_util::Stage
+        : public stage::StageBase
 
         , public sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>::Callback_t::IHandler_t
-
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
     {
         using ItemListBox_t = sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
-
         using ItemListBoxPtr_t = sfml_util::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
-
         using ItemListBoxUPtr_t = sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
@@ -131,13 +128,16 @@ namespace stage
         TreasureDisplayStage & operator=(const TreasureDisplayStage &) = delete;
         TreasureDisplayStage & operator=(TreasureDisplayStage &&) = delete;
 
-    public:
-        explicit TreasureDisplayStage(const TreasureStagePtr_t);
+        explicit TreasureDisplayStage();
         virtual ~TreasureDisplayStage() = default;
 
         bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t &) override;
-
         bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+
+        void SetModelStage(const TreasureStagePtr_t treasureStagePtr)
+        {
+            treasureStagePtrOpt_ = treasureStagePtr;
+        }
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -293,7 +293,7 @@ namespace stage
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 
-        TreasureStagePtr_t treasureStagePtr_;
+        TreasureStagePtrOpt_t treasureStagePtrOpt_;
         sfml_util::StageTitle titleImage_;
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
@@ -345,6 +345,7 @@ namespace stage
     };
 
     using TreasureDisplayStagePtr_t = misc::NotNull<TreasureDisplayStage *>;
+    using TreasureDisplayStagePtrOpt_t = boost::optional<TreasureDisplayStagePtr_t>;
 
 } // namespace stage
 } // namespace heroespath

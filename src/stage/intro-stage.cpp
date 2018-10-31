@@ -19,25 +19,41 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
 {
 
     IntroStage::IntroStage()
-        : Stage("Intro", {}, true)
+        : StageBase("Intro", {}, true)
+        , backgroundMusic_(sfml_util::music::Theme)
+        , musicVolumeOrig_(sfml_util::SoundManager::Instance()->MusicVolume())
+        , timeFromStartToMusicSec_(1.5f)
+        , timeFromMusicToAnimSec_(2.0f)
+        , timeFromAnimToExitSec_(4.0f)
+        , imageScaleSpeed_(0.028f)
         , titleCachedTexture_("media-images-title-intro")
         , titleSprite_(titleCachedTexture_.Get())
-        , initialDrawHoldCounter_(0)
+        , elapsedSec_(0.0f)
+        , hasMusicStarted_(false)
+        , hasAnimStarted_(false)
+        , hasExited_(false)
+        , wasMusicVolumeChanged_(false)
     {}
 
     IntroStage::~IntroStage()
     {
-        // If the theme music volume was changed just because this was the
-        // Intro Stage, then set it back again once leaving the Intro Stage.
-        sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
+        if (wasMusicVolumeChanged_)
+        {
+            sfml_util::SoundManager::Instance()->MusicVolume(
+                { backgroundMusic_ },
+                musicVolumeOrig_,
+                sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_);
+        }
 
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
     }
 
     void IntroStage::Setup()
@@ -51,13 +67,7 @@ namespace stage
 
     void IntroStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        // This counter eliminates the flicker caused by the Loop's Fade in feature
-        // that does not clear the screen for the first few draw loops.
-        // if (initialDrawHoldCounter_ < 5)
-        //{
-        //    ++initialDrawHoldCounter_;
-        //}
-        // else
+        if (hasAnimStarted_)
         {
             target.draw(titleSprite_, STATES);
         }
@@ -65,12 +75,56 @@ namespace stage
 
     void IntroStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        const auto NEW_SCALE { titleSprite_.getScale().x
-                               * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
+        elapsedSec_ += ELAPSED_TIME_SECONDS;
 
-        titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
-        sfutil::Center(titleSprite_);
+        if (!hasMusicStarted_ && (elapsedSec_ > timeFromStartToMusicSec_))
+        {
+            hasMusicStarted_ = true;
+
+            const auto VOLUME_MIN { 15.0f };
+
+            auto volume { musicVolumeOrig_ };
+            if (volume < VOLUME_MIN)
+            {
+                volume = VOLUME_MIN;
+                wasMusicVolumeChanged_ = true;
+            }
+
+            sfml_util::SoundManager::Instance()->MusicStart(
+                backgroundMusic_, sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_, volume);
+        }
+
+        if (!hasAnimStarted_
+            && (elapsedSec_ > (timeFromStartToMusicSec_ + timeFromMusicToAnimSec_)))
+        {
+            hasAnimStarted_ = true;
+        }
+
+        if (hasAnimStarted_)
+        {
+            const auto NEW_SCALE { titleSprite_.getScale().x
+                                   * (1.0f + (ELAPSED_TIME_SECONDS * imageScaleSpeed_)) };
+
+            titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
+            sfutil::Center(titleSprite_);
+        }
+
+        if (!hasExited_
+            && (elapsedSec_
+                > (timeFromStartToMusicSec_ + timeFromMusicToAnimSec_ + timeFromAnimToExitSec_)))
+        {
+            hasExited_ = true;
+            TransitionTo(stage::Stage::Menu);
+        }
     }
+
+    bool IntroStage::KeyPress(const sf::Event::KeyEvent &)
+    {
+        TransitionTo(stage::Stage::Menu);
+        return false;
+    }
+
+    void IntroStage::UpdateMouseDown(const sf::Vector2f &) { TransitionTo(stage::Stage::Menu); }
 
 } // namespace stage
 } // namespace heroespath

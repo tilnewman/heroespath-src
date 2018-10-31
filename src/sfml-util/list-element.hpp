@@ -36,6 +36,14 @@ namespace heroespath
 namespace sfml_util
 {
 
+    namespace ListElementHelpers
+    {
+
+        void DrawHelper(
+            sf::RenderTarget & target, const sf::RenderStates states, const sf::Drawable &);
+
+    }
+
     // Responsible for keeping everything required of an element listed in a ListBox,
     // essentially a collection of: (1) an observer pointer to a game resource, (2) an image,
     // (3) some text, and (4) a bool indicating if this element is valid.
@@ -135,12 +143,12 @@ namespace sfml_util
         {
             if (textRegionUPtr_)
             {
-                target.draw(*textRegionUPtr_, states);
+                ListElementHelpers::DrawHelper(target, states, *textRegionUPtr_);
             }
 
             if (cachedTextureOpt_)
             {
-                target.draw(sprite_, states);
+                ListElementHelpers::DrawHelper(target, states, sprite_);
             }
         }
 

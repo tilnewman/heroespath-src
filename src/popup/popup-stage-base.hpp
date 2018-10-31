@@ -12,9 +12,9 @@
 #include "popup/popup-info.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/text-button.hpp"
 #include "sfml-util/text-region.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -27,7 +27,7 @@ namespace popup
 
     // Responsible for encapsulating all state and operations common to popup windows.
     class PopupStageBase
-        : public sfml_util::Stage
+        : public stage::StageBase
         , public sfml_util::SliderBar::Callback_t::IHandler_t
         , public sfml_util::TextButton::Callback_t::IHandler_t
     {

@@ -12,8 +12,8 @@
 #include "condition-holder.hpp"
 
 #include "creature/condition.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "stage/i-stage.hpp"
 
 namespace heroespath
 {
@@ -145,13 +145,13 @@ namespace creature
 
         void Holder::Empty() { conditionsUVec_.clear(); }
 
-        bool Holder::Test()
+        bool Holder::Test(stage::IStagePtr_t iStagePtr)
         {
             static auto hasInitialPrompt { false };
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
-                game::LoopManager::Instance()->TestingStrAppend(
+                iStagePtr->TestingStrAppend(
                     "creature::condition::Holder::Test() Starting Tests...");
             }
 
@@ -168,15 +168,13 @@ namespace creature
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->LongDesc().empty() == false),
-                    "creature::condition::Holder::Test(\""
-                        << Conditions::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty LongDesc().");
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(
+                        NEXT_ENUM) << "\") resulted in an empty LongDesc().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->ToString().empty() == false),
-                    "creature::condition::Holder::Test(\""
-                        << Conditions::ToString(NEXT_ENUM)
-                        << "\") resulted in an empty ImageFilename().");
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(
+                        NEXT_ENUM) << "\") resulted in an empty ImageFilename().");
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (CONDITION_PTR->Name().empty() == false),
@@ -191,14 +189,12 @@ namespace creature
 
                 ++condIndex;
 
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    "Condition Test \"" + CONDITION_PTR->Name() + "\"");
+                iStagePtr->TestingStrIncrement("Condition Test \"" + CONDITION_PTR->Name() + "\"");
 
                 return false;
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "creature::title::Holder::Test()  ALL TESTS PASSED.");
+            iStagePtr->TestingStrAppend("creature::title::Holder::Test()  ALL TESTS PASSED.");
 
             return true;
         }
@@ -214,9 +210,8 @@ namespace creature
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),
-                "creature::condition::Holder::Get("
-                    << Conditions::ToString(E)
-                    << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
+                "creature::condition::Holder::Get(" << Conditions::ToString(
+                    E) << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
             return conditionsUVec_[INDEX].get();
         }

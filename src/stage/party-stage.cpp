@@ -19,7 +19,6 @@
 #include "creature/player-party.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
@@ -30,6 +29,8 @@
 #include "sfml-util/gui-images.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/sound-manager.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -51,25 +52,25 @@ namespace stage
     const float PartyStage::MOUSEOVER_BACKGROUND_FINAL_ALPHA_ { 120.0f };
 
     PartyStage::PartyStage()
-        : Stage(
-              "Party",
-              sfml_util::Display::Instance()->FullScreenRect(),
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        : StageBase(
+            "Party",
+            sfml_util::Display::Instance()->FullScreenRect(),
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , LISTBOX_FONT_ENUM_(sfml_util::GuiFont::System)
         , LISTBOX_FONT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
         , LISTBOX_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.33f))
         , LISTBOX_HEIGHT_(sfutil::ScreenRatioToPixelsVert(0.5f))
         , BETWEEN_LISTBOXES_SPACER_(sfutil::ScreenRatioToPixelsHoriz(0.077f))
         , CHAR_LISTBOX_POS_LEFT_(
-              ((Stage::StageRegionWidth() * 0.5f) - (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
+              ((StageBase::StageRegion().width * 0.5f) - (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
               - LISTBOX_WIDTH_)
         , PARTY_LISTBOX_POS_LEFT_(
-              (Stage::StageRegionWidth() * 0.5f) + (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
+              (StageBase::StageRegion().width * 0.5f) + (BETWEEN_LISTBOXES_SPACER_ * 0.5f))
         , MOUSEOVER_FINAL_INNER_EDGE_PAD_(sfutil::ScreenRatioToPixelsHoriz(0.008f))
         , MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_(sfutil::ScreenRatioToPixelsHoriz(0.115f))
         , MOUSEOVER_COLORCYCLE_START_(sf::Color::Transparent)
@@ -88,7 +89,7 @@ namespace stage
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Previous,
+              stage::Stage::Previous,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               -1.0f))
         , startButtonUPtr_(std::make_unique<sfml_util::ImageTextEntity>(
@@ -132,7 +133,7 @@ namespace stage
 
     PartyStage::~PartyStage()
     {
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
         creature::CreatureWarehouse::Access().Free(unplayedCharactersPVec_);
     }
 
@@ -192,8 +193,8 @@ namespace stage
     {
         ResetMouseOverPopupState();
 
-        if ((PACKET_PTR->Name() == POPUP_NAME_STR_DELETE_CONFIRM_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Yes))
+        if ((PACKET_PTR->name == POPUP_NAME_STR_DELETE_CONFIRM_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Yes))
         {
             if (partyListBoxUPtr_->HasFocus())
             {
@@ -205,12 +206,11 @@ namespace stage
             }
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
-            && (PACKET_PTR->Response() != popup::ResponseTypes::Cancel)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
+            && (PACKET_PTR->type != popup::ResponseTypes::Cancel) && PACKET_PTR->selection_opt)
         {
             const auto SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
-                PACKET_PTR->SelectionOpt().value()) };
+                PACKET_PTR->selection_opt.value()) };
             const auto ANIM_NUM { avatar::Avatar::Player_First + SELECTED_NUM };
             const auto ANIM_ENUM { static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
 
@@ -267,7 +267,7 @@ namespace stage
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
         return true;
     }
 
@@ -285,7 +285,7 @@ namespace stage
         UpdateWillDisplayCharacterCountWarning();
         ResetMouseOverPopupState();
 
-        Stage::SetFocus(characterListBoxUPtr_.get());
+        StageBase::SetFocus(characterListBoxUPtr_.get());
     }
 
     void PartyStage::Setup_Ouroboros() { EntityAdd(ouroborosUPtr_.get()); }
@@ -330,7 +330,7 @@ namespace stage
         const auto HALF_INSTR_TEXT_WIDTH { insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
 
         insTextRegionUPtr_->SetEntityPos(
-            ((Stage::StageRegionWidth() * 0.5f) - HALF_INSTR_TEXT_WIDTH) + 125.0f,
+            ((StageBase::StageRegion().width * 0.5f) - HALF_INSTR_TEXT_WIDTH) + 125.0f,
             sfutil::Bottom(stageTitle_.Region()) - 45.0f);
 
         EntityAdd(insTextRegionUPtr_.get());
@@ -353,7 +353,7 @@ namespace stage
         warningTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
             "WarningsText", warningTextInfo_, sf::FloatRect());
 
-        const auto WARNING_TEXT_LEFT { (Stage::StageRegionWidth() * 0.5f)
+        const auto WARNING_TEXT_LEFT { (StageBase::StageRegion().width * 0.5f)
                                        - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f)
                                        + 110.0f };
 
@@ -491,7 +491,7 @@ namespace stage
         target.draw(backgroundBox_, STATES);
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         if (willDisplayCharacterCountWarningText_)
         {
@@ -527,7 +527,7 @@ namespace stage
 
     void PartyStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
         UpdateTime_WarningTextColorCycling(ELAPSED_TIME_SECONDS);
         UpdateTime_MouseOver_Detection(ELAPSED_TIME_SECONDS);
         UpdateTime_MouseOver_Animation(ELAPSED_TIME_SECONDS);
@@ -594,9 +594,9 @@ namespace stage
 
                 const auto ELEMENT_RECT { (
                     (isMouseOverCharacterListBox) ? characterListBoxUPtr_->ElementRegion(
-                                                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)
+                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)
                                                   : partyListBoxUPtr_->ElementRegion(
-                                                        MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
+                                                      MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
 
                 listboxSelectedItemColoredRectSlider_ = sfml_util::ColoredRectSlider(
                     ELEMENT_RECT,
@@ -682,14 +682,14 @@ namespace stage
         const sf::Vector2f NEW_MOUSE_POS_VF { NEW_MOUSE_POS_V };
         mousePosV_ = NEW_MOUSE_POS_VF;
         ResetMouseOverPopupState();
-        Stage::UpdateMousePos(NEW_MOUSE_POS_V);
+        StageBase::UpdateMousePos(NEW_MOUSE_POS_V);
     }
 
     bool PartyStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
         ResetMouseOverPopupState();
 
-        if (Stage::KeyRelease(KEY_EVENT))
+        if (StageBase::KeyRelease(KEY_EVENT))
         {
             return true;
         }
@@ -741,14 +741,14 @@ namespace stage
 
         // create a new GameState with the given party and then save it
         creature::PlayerPartyFactory partyFactory;
-        game::GameStateFactory::Instance()->NewGame(partyFactory.Make(PARTY_AVATAR, characters));
+        game::Game::Instance()->MakeNewAndSet(partyFactory.Make(PARTY_AVATAR, characters));
 
         // Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning
         // to the Camp Stage anyway.
         // partyListBoxUPtr_->Clear();
 
-        game::LoopManager::Instance()->TransitionTo_Camp();
+        TransitionTo(stage::Stage::Camp);
     }
 
     void PartyStage::ResetMouseOverPopupState()
@@ -791,7 +791,7 @@ namespace stage
             sfml_util::Justified::Left,
             sfml_util::sound_effect::PromptWarn) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
+        SpawnPopup(this, POP_INFO);
     }
 
     void PartyStage::NotEnoughCharactersPopup()
@@ -809,7 +809,7 @@ namespace stage
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptQuestion) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
     }
 
     void PartyStage::PartyAvatarSelectionPopup()
@@ -832,8 +832,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_STR_PARTY_IMAGE_SELECT_, ss.str(), partyCachedTextures, false) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
-            this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
     }
 
     void PartyStage::UpdateWillDisplayCharacterCountWarning()
@@ -880,10 +879,12 @@ namespace stage
             = (TEXT_HEIGHT + (MOUSEOVER_FINAL_INNER_EDGE_PAD_ * 2.0f));
 
         mouseOverBackgroundRectFinal_.left
-            = ((Stage::StageRegionWidth() * 0.5f) - (mouseOverBackgroundRectFinal_.width * 0.5f));
+            = ((StageBase::StageRegion().width * 0.5f)
+               - (mouseOverBackgroundRectFinal_.width * 0.5f));
 
         mouseOverBackgroundRectFinal_.top
-            = ((Stage::StageRegionHeight() * 0.5f) - (mouseOverBackgroundRectFinal_.height * 0.5f));
+            = ((StageBase::StageRegion().height * 0.5f)
+               - (mouseOverBackgroundRectFinal_.height * 0.5f));
 
         // temp scale the sprite to see what the final dimmensions will be so that the text can be
         // positioned, see actual sprite scale set below

@@ -25,7 +25,6 @@ namespace popup
         PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &) = delete;
         PopupStageInventoryPrompt & operator=(PopupStageInventoryPrompt &&) = delete;
 
-    public:
         explicit PopupStageInventoryPrompt(const PopupInfo &);
         virtual ~PopupStageInventoryPrompt();
 

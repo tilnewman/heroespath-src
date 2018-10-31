@@ -19,6 +19,8 @@
 #include "sfutil/position.hpp"
 #include "sfutil/size-and-scale.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage

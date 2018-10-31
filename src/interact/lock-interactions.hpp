@@ -18,12 +18,20 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 } // namespace creature
+
 namespace interact
 {
 
@@ -35,24 +43,29 @@ namespace interact
 
         bool Attempt() const;
 
-        void PopupCharacterSelection(const sfml_util::PopupCallback_t::IHandlerPtr_t) const;
+        void PopupCharacterSelection(
+            const sfml_util::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr) const;
 
         // returns true if a character was selected and characterPtr_ is not null,
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
             const sfml_util::PopupCallback_t::IHandlerPtr_t,
-            const sfml_util::PopupCallback_t::PacketPtr_t &);
+            const sfml_util::PopupCallback_t::PacketPtr_t &,
+            stage::IStagePtr_t iStagePtr);
 
         void PopupAttempting(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t, const std::string &) const;
+            const sfml_util::PopupCallback_t::IHandlerPtr_t,
+            const std::string &,
+            stage::IStagePtr_t iStagePtr) const;
 
         void PopupSuccess(
             const sfml_util::PopupCallback_t::IHandlerPtr_t,
-            const std::string & NAME_OF_WHAT_OPENED) const;
+            const std::string & NAME_OF_WHAT_OPENED,
+            stage::IStagePtr_t iStagePtr) const;
 
         // returns true if a new title is achieved and the popup is displayed
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t);
+            const sfml_util::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr);
 
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 

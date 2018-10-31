@@ -12,11 +12,11 @@
 #include "creature/stat-set.hpp"
 #include "creature/trait-enum.hpp"
 #include "creature/trait.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/text.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/vector-and-rect.hpp"
+#include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
 
@@ -45,7 +45,7 @@ namespace stage
     {
     public:
         StatBox(
-            sfml_util::IStagePtr_t owningStagePtr,
+            stage::IStagePtr_t owningStagePtr,
             const float WIDTH,
             const float HEIGHT_RATIO,
             const sf::Color & TEXT_COLOR);
@@ -129,7 +129,7 @@ namespace stage
 
         void Sync();
 
-        sfml_util::IStagePtr_t owningStagePtr_;
+        stage::IStagePtr_t owningStagePtr_;
         sfml_util::BoxEntityUPtr_t boxUPtr_;
         std::vector<sf::FloatRect> fullRegions_;
         std::vector<sf::FloatRect> labelRegions_;

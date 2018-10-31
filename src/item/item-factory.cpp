@@ -13,7 +13,6 @@
 
 #include "creature/creature.hpp"
 #include "creature/summon-info.hpp"
-#include "game/loop-manager.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -27,6 +26,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/item-image-loader.hpp"
+#include "stage/i-stage.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -37,15 +37,14 @@ namespace heroespath
 namespace item
 {
 
-    bool ItemFactory::Test() const
+    bool ItemFactory::Test(stage::IStagePtr_t iStagePtr) const
     {
         static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("item::ItemFactory::Test() Starting Tests...");
 
             return false;
         }
@@ -53,7 +52,7 @@ namespace item
         static auto didPostItemProfileCreationStart { false };
         if (false == didPostItemProfileCreationStart)
         {
-            game::LoopManager::Instance()->TestingStrAppend(
+            iStagePtr->TestingStrAppend(
                 "item::ItemFactory::Test() Starting ItemProfile creation.  Please wait...");
 
             didPostItemProfileCreationStart = true;
@@ -98,7 +97,7 @@ namespace item
         static auto hasTestedForDuplicates { false };
         if (false == hasTestedForDuplicates)
         {
-            game::LoopManager::Instance()->TestingStrAppend(
+            iStagePtr->TestingStrAppend(
                 "item::ItemFactory::Test() Starting Duplicate Test.  Please "
                 "wait...");
 
@@ -134,8 +133,7 @@ namespace item
                 }
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Duplicate Test finished.");
+            iStagePtr->TestingStrAppend("item::ItemFactory::Test() Duplicate Test finished.");
 
             hasTestedForDuplicates = true;
             return false;
@@ -147,7 +145,7 @@ namespace item
         static auto hasCreatedAndTestedAll { false };
         if (false == hasCreatedAndTestedAll)
         {
-            game::LoopManager::Instance()->TestingStrAppend(
+            iStagePtr->TestingStrAppend(
                 "item::ItemFactory::Test() Starting Individual Item Tests....");
 
             for (const auto & PROFILE : profiles)
@@ -158,7 +156,7 @@ namespace item
                 ItemWarehouse::Access().Free(itemPtr);
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
+            iStagePtr->TestingStrAppend(
                 "item::ItemFactory::Test() Finished Individual Item Tests.");
 
             hasCreatedAndTestedAll = true;
@@ -172,7 +170,7 @@ namespace item
             ss << "item::ItemFactory::Test() Starting Images Test.  ("
                << imageFilenameProfileMap.Size() << ")  Please wait...";
 
-            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+            iStagePtr->TestingStrAppend(ss.str());
 
             sfml_util::ItemImageLoader itemImageLoader;
 
@@ -189,8 +187,7 @@ namespace item
                         << FILENAME_PROFILE_PAIR.second.ToString() << "}");
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Images Test Complete.");
+            iStagePtr->TestingStrAppend("item::ItemFactory::Test() Starting Images Test Complete.");
 
             didTestImages = true;
             return false;
@@ -376,7 +373,7 @@ namespace item
         {
             didPostFinal = true;
 
-            game::LoopManager::Instance()->TestingStrAppend(
+            iStagePtr->TestingStrAppend(
                 "item::ItemFactory::Test() Testing Complete:  ALL TESTS PASSED");
 
             return false;
@@ -555,7 +552,7 @@ namespace item
                     << ((ITEM_PTR->ArmorInfo().NameMaterialType() == name_material_type::Count)
                             ? "Count"
                             : name_material_type::ToString(
-                                  ITEM_PTR->ArmorInfo().NameMaterialType()))
+                                ITEM_PTR->ArmorInfo().NameMaterialType()))
                     << ".");
 
             if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
@@ -797,7 +794,7 @@ namespace item
                     << ((ITEM_PTR->WeaponInfo().NameMaterialType() == name_material_type::Count)
                             ? "Count"
                             : name_material_type::ToString(
-                                  ITEM_PTR->WeaponInfo().NameMaterialType()))
+                                ITEM_PTR->WeaponInfo().NameMaterialType()))
                     << ".");
         }
 
@@ -998,9 +995,10 @@ namespace item
         }
 
         const auto WEAPON_DETAILS_NAME { (
-            (body_part::Breath == BODY_PART) ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
-                                                + creature::role::ToString(CREATURE_PTR->Role()))
-                                             : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+            (body_part::Breath == BODY_PART)
+                ? (WEAPON_TYPE_WRAPPER.DetailsKeyName()
+                   + creature::role::ToString(CREATURE_PTR->Role()))
+                : WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
 
         const weapon::WeaponDetails WEAPON_DETAILS {
             weapon::WeaponDetailLoader::LookupWeaponDetails(WEAPON_DETAILS_NAME)
@@ -1078,7 +1076,7 @@ namespace item
 
         Coin_t price { BASE_PRICE_FINAL
                        + material::PriceAdj(
-                             PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
+                           PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary()) };
 
         if (PROFILE.IsPixie())
         {

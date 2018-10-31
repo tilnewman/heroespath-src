@@ -14,7 +14,6 @@
 #include "creature/dragon-class-enum.hpp"
 #include "creature/nonplayer-inventory-types.hpp"
 #include "creature/wolfen-class-enum.hpp"
-#include "game/loop-manager.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -24,6 +23,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "sfml-util/loaders.hpp"
+#include "stage/i-stage.hpp"
 
 #include <exception>
 #include <sstream>
@@ -44,7 +44,7 @@ namespace sfml_util
             misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir"));
     }
 
-    bool ItemImageLoader::Test() const
+    bool ItemImageLoader::Test(stage::IStagePtr_t iStagePtr) const
     {
         using namespace item;
 
@@ -52,8 +52,7 @@ namespace sfml_util
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::ItemImageLoader::Test()  Starting tests...");
+            iStagePtr->TestingStrAppend("sfml_util::ItemImageLoader::Test()  Starting tests...");
         }
 
         const std::string TEST_PRE_STR { "ItemImageLoader Test " };
@@ -87,15 +86,12 @@ namespace sfml_util
 
             if (imagePathFoundIter != std::end(allPaths))
             {
-                game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
                 allPaths.erase(imagePathFoundIter);
             }
 
-            game::LoopManager::Instance()->TestingStrIncrement(
-                TEST_PRE_STR + WEAPON_TYPE_WRAPPER.ReadableName());
-
+            iStagePtr->TestingStrIncrement(TEST_PRE_STR + WEAPON_TYPE_WRAPPER.ReadableName());
             EnsureValidDimmensions(texture, WEAPON_TYPE_WRAPPER.ReadableName());
-
             ++weaponIndex;
             return false;
         }
@@ -123,13 +119,11 @@ namespace sfml_util
 
                 if (imagePathFoundIter != std::end(allPaths))
                 {
-                    game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                    iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
                     allPaths.erase(imagePathFoundIter);
                 }
 
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    TEST_PRE_STR + ARMOR_TYPE_WRAPPER.ReadableName());
-
+                iStagePtr->TestingStrIncrement(TEST_PRE_STR + ARMOR_TYPE_WRAPPER.ReadableName());
                 EnsureValidDimmensions(texture, ARMOR_TYPE_WRAPPER.ReadableName());
             }
 
@@ -170,11 +164,11 @@ namespace sfml_util
 
             if (imagePathFoundIter != std::end(allPaths))
             {
-                game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
                 allPaths.erase(imagePathFoundIter);
             }
 
-            game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR + FILENAME);
+            iStagePtr->TestingStrIncrement(TEST_PRE_STR + FILENAME);
             EnsureValidDimmensions(texture, FILENAME);
 
             ++skinIndex;
@@ -218,7 +212,7 @@ namespace sfml_util
                     ss << "ItemImageLoader Testing \"" << ENUM_STR << "\", file_index=" << fileIndex
                        << " (" << ((IS_JEWELED) ? "jeweled" : "not-jeweled") << ")";
 
-                    game::LoopManager::Instance()->TestingStrIncrement(ss.str());
+                    iStagePtr->TestingStrIncrement(ss.str());
 
                     sf::Texture texture;
                     Load(texture, FILENAME);
@@ -231,7 +225,7 @@ namespace sfml_util
 
                     if (imagePathFoundIter != std::end(allPaths))
                     {
-                        game::LoopManager::Instance()->TestingImageSet(IMAGE_PATH_STR, true);
+                        iStagePtr->TestingImageSet(IMAGE_PATH_STR, true);
                         allPaths.erase(imagePathFoundIter);
                     }
 
@@ -261,9 +255,7 @@ namespace sfml_util
                 << FILENAME);
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "sfml_util::ItemImageLoader::Test()  ALL TESTS PASSED.");
-
+        iStagePtr->TestingStrAppend("sfml_util::ItemImageLoader::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -368,27 +360,47 @@ namespace sfml_util
 
                 // these misc_types have specific filenames
             case misc_type::ManaAmulet:
-            case misc_type::Pendant: { return MakeFilenames("amulet", 23);
+            case misc_type::Pendant:
+            {
+                return MakeFilenames("amulet", 23);
             }
             case misc_type::CapeCommanders:
             case misc_type::CapeGenerals:
-            case misc_type::CapeKings: { return { ("cape" + FILE_EXT_STR_) };
+            case misc_type::CapeKings:
+            {
+                return { ("cape" + FILE_EXT_STR_) };
             }
-            case misc_type::ShadeCloak: { return { ("cloak" + FILE_EXT_STR_) };
+            case misc_type::ShadeCloak:
+            {
+                return { ("cloak" + FILE_EXT_STR_) };
             }
-            case misc_type::SpecterRobe: { return { ("robe" + FILE_EXT_STR_) };
+            case misc_type::SpecterRobe:
+            {
+                return { ("robe" + FILE_EXT_STR_) };
             }
-            case misc_type::Goblet: { return MakeFilenames("goblet", 8);
+            case misc_type::Goblet:
+            {
+                return MakeFilenames("goblet", 8);
             }
-            case misc_type::Key: { return MakeFilenames("key", 11);
+            case misc_type::Key:
+            {
+                return MakeFilenames("key", 11);
             }
-            case misc_type::LockPicks: { return MakeFilenames("lockpicks", 6);
+            case misc_type::LockPicks:
+            {
+                return MakeFilenames("lockpicks", 6);
             }
-            case misc_type::Mirror: { return MakeFilenames("mirror", 10);
+            case misc_type::Mirror:
+            {
+                return MakeFilenames("mirror", 10);
             }
-            case misc_type::DrumLute: { return MakeFilenames("drumlute", 13);
+            case misc_type::DrumLute:
+            {
+                return MakeFilenames("drumlute", 13);
             }
-            case misc_type::Orb: { return MakeFilenames("orb", 9);
+            case misc_type::Orb:
+            {
+                return MakeFilenames("orb", 9);
             }
             case misc_type::Ring:
             {
@@ -405,37 +417,67 @@ namespace sfml_util
                     return { "ring" + FILE_EXT_STR_ };
                 }
             }
-            case misc_type::RingHobo: { return { "ring" + FILE_EXT_STR_ };
+            case misc_type::RingHobo:
+            {
+                return { "ring" + FILE_EXT_STR_ };
             }
-            case misc_type::Shard: { return MakeFilenames("shard", 7);
+            case misc_type::Shard:
+            {
+                return MakeFilenames("shard", 7);
             }
-            case misc_type::Wand: { return MakeFilenames("wand", 11);
+            case misc_type::Wand:
+            {
+                return MakeFilenames("wand", 11);
             }
-            case misc_type::Scepter: { return MakeFilenames("scepter", 26);
+            case misc_type::Scepter:
+            {
+                return MakeFilenames("scepter", 26);
             }
-            case misc_type::DollBlessed: { return MakeFilenames("doll", 4, 2);
+            case misc_type::DollBlessed:
+            {
+                return MakeFilenames("doll", 4, 2);
             }
-            case misc_type::DollCursed: { return MakeFilenames("doll", 10, 5);
+            case misc_type::DollCursed:
+            {
+                return MakeFilenames("doll", 10, 5);
             }
-            case misc_type::Doll: { return { "doll-1" + FILE_EXT_STR_ };
+            case misc_type::Doll:
+            {
+                return { "doll-1" + FILE_EXT_STR_ };
             }
-            case misc_type::FigurineBlessed: { return MakeFilenames("figurine", 6);
+            case misc_type::FigurineBlessed:
+            {
+                return MakeFilenames("figurine", 6);
             }
-            case misc_type::FigurineCursed: { return MakeFilenames("figurine-evil", 6);
+            case misc_type::FigurineCursed:
+            {
+                return MakeFilenames("figurine-evil", 6);
             }
-            case misc_type::Staff: { return MakeFilenames("staff", 21);
+            case misc_type::Staff:
+            {
+                return MakeFilenames("staff", 21);
             }
-            case misc_type::SummoningStatue: { return MakeFilenames("summoning-statue", 3);
+            case misc_type::SummoningStatue:
+            {
+                return MakeFilenames("summoning-statue", 3);
             }
-            case misc_type::BloodyDragonScale: { return { "scales" + FILE_EXT_STR_ };
+            case misc_type::BloodyDragonScale:
+            {
+                return { "scales" + FILE_EXT_STR_ };
             }
             case misc_type::FlagFanatics:
             case misc_type::FlagRegalCaptains:
-            case misc_type::FlagTribal: { return { "flag" + FILE_EXT_STR_ };
+            case misc_type::FlagTribal:
+            {
+                return { "flag" + FILE_EXT_STR_ };
             }
-            case misc_type::MinotaurHide: { return { "hide" + FILE_EXT_STR_ };
+            case misc_type::MinotaurHide:
+            {
+                return { "hide" + FILE_EXT_STR_ };
             }
-            case misc_type::ReaperScythe: { return { "bladedstaff-scythe" + FILE_EXT_STR_ };
+            case misc_type::ReaperScythe:
+            {
+                return { "bladedstaff-scythe" + FILE_EXT_STR_ };
             }
 
             // these misc_types are compound words whose filenames have dashes between each word

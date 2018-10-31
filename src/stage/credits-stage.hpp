@@ -14,8 +14,8 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/stage.hpp"
 #include "stage/credit.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -28,7 +28,7 @@ namespace stage
 {
 
     // A simple class that displays the credits
-    class CreditsStage : public sfml_util::Stage
+    class CreditsStage : public stage::StageBase
     {
     public:
         CreditsStage(const CreditsStage &) = delete;
@@ -36,16 +36,16 @@ namespace stage
         CreditsStage & operator=(const CreditsStage &) = delete;
         CreditsStage & operator=(CreditsStage &&) = delete;
 
-    public:
         CreditsStage();
         virtual ~CreditsStage();
 
-        virtual void Setup();
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
+        void Setup() final;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) final;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) final;
 
-        virtual bool KeyPress(const sf::Event::KeyEvent & KE);
-        virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
+        bool KeyPress(const sf::Event::KeyEvent &) final;
+        bool KeyRelease(const sf::Event::KeyEvent &) final;
+        void UpdateMouseDown(const sf::Vector2f &) final;
 
     private:
         void UpdateCreditAnimations(const float ELAPSED_TIME_SECONDS);

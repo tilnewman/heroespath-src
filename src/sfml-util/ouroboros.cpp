@@ -29,8 +29,8 @@ namespace sfml_util
         : Entity(std::string(NAME).append("_Ouroboros"), sf::FloatRect())
         , IMAGE_INITIAL_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.34f))
         , IMAGE_DRIFT_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.12f))
-        , IMAGE_MIN_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ - (IMAGE_DRIFT_WIDTH_ * 0.5f))
-        , IMAGE_MAX_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ + (IMAGE_DRIFT_WIDTH_ * 0.5f))
+        , IMAGE_MIN_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ * 0.5f)
+        , IMAGE_MAX_DRIFT_WIDTH_(IMAGE_INITIAL_WIDTH_ * 1.5f)
         , rotation_(0.0f)
         , cachedTexture_(
               "media-images-gui-accents-ouroboros",

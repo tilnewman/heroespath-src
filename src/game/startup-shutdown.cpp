@@ -19,9 +19,10 @@
 #include "creature/nonplayer-inventory-chances.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
+#include "game/game-controller.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
+#include "game/loop.hpp"
 #include "game/npc-warehouse.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-ratings.hpp"
@@ -41,7 +42,6 @@
 #include "sfml-util/creature-image-loader.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/loop.hpp"
 #include "sfml-util/song-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/spell-image-loader.hpp"
@@ -49,6 +49,8 @@
 #include "sfml-util/title-image-loader.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
+
+#include <SFML/Window/WindowStyle.hpp>
 
 #include <cstdlib>
 #include <exception>
@@ -73,6 +75,8 @@ namespace game
 
         // initialize the log first so that all Setup() actions can be logged
         misc::Log::Acquire();
+
+        M_HP_LOG("game setup starting");
 
         platform_.Log();
         if (platform_.IsSupported() == false)
@@ -99,19 +103,23 @@ namespace game
         Setup_HoldersFill();
 
         // this causes the initial stage transition/creation so it must occur last
-        LoopManager::Instance()->Initialize();
+        GameController::Instance()->Initialize();
+
+        M_HP_LOG("game setup finished");
     }
 
     StartupShutdown::~StartupShutdown() { Teardown(); }
 
-    void StartupShutdown::Run() const { game::LoopManager::Instance()->Execute(); }
+    void StartupShutdown::Run() const { game::GameController::Instance()->PlayGame(); }
 
     void StartupShutdown::Teardown() const
     {
+        M_HP_LOG("game teardown starting");
         Teardown_SettingsFile();
         Teardown_CloseDisplay();
         Teardown_ReleaseSubsystems();
         Teardown_EmptyHolders();
+        M_HP_LOG("game teardown (alomst) finished");
         Teardown_Logger();
     }
 
@@ -138,10 +146,7 @@ namespace game
     {
         try
         {
-            if (sfml_util::Display::Instance()->IsOpen())
-            {
-                sfml_util::Display::Instance()->Close();
-            }
+            sfml_util::Display::Instance()->Close();
         }
         catch (const std::exception & E)
         {
@@ -194,8 +199,8 @@ namespace game
             game::GameStateFactory::Release();
             creature::nonplayer::ChanceFactory::Release();
 
-            // release LoopManager early because it frees all the stages and their resources
-            LoopManager::Release();
+            // release GameController early because it frees all the stages and their resources
+            GameController::Release();
 
             // these must occur after all the stages have been released
             sfml_util::FontManager::Release(); // after NameInfo::Release()
@@ -265,8 +270,7 @@ namespace game
     {
         if (ARGC >= 2)
         {
-            std::cout << "Will attempt to start in stage: \"" << argv[1] << "\"" << std::endl;
-            LoopManager::SetStartupStage(argv[1]);
+            GameController::SetStartupStage(argv[1]);
 
             if (ARGC > 2)
             {
@@ -328,7 +332,7 @@ namespace game
         item::ItemProfileWarehouse::Acquire();
         creature::nonplayer::ChanceFactory::Acquire();
         misc::SettingsFile::Acquire();
-        LoopManager::Acquire();
+        GameController::Acquire();
     }
 
     void StartupShutdown::Setup_SubsystemsInitialize() const
@@ -340,7 +344,12 @@ namespace game
         sfml_util::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         creature::nonplayer::ChanceFactory::Instance()->Initialize();
-        item::ItemProfileWarehouse::Instance()->Initialize();
+
+        if (misc::ConfigFile::Instance()->ValueAs<bool>(
+                "system-items-will-create-items-at-startup", true))
+        {
+            item::ItemProfileWarehouse::Instance()->Initialize();
+        }
     }
 
 } // namespace game

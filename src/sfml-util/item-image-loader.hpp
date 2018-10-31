@@ -28,6 +28,13 @@ class Texture;
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace item
 {
     class Item;
@@ -48,7 +55,7 @@ namespace sfml_util
 
         ItemImageLoader();
 
-        bool Test() const;
+        bool Test(stage::IStagePtr_t iStagePtr) const;
 
         float MaxDimmension() const { return StandardImageDimmension(); }
 

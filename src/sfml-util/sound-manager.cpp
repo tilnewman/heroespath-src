@@ -11,15 +11,16 @@
 //
 #include "sound-manager.hpp"
 
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
+#include "misc/vectors.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
+#include "stage/i-stage.hpp"
 
 #include <chrono>
 #include <thread>
@@ -700,14 +701,13 @@ namespace sfml_util
         return musicOperator;
     }
 
-    bool SoundManager::Test()
+    bool SoundManager::Test(stage::IStagePtr_t iStagePtr)
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::SoundManager::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("sfml_util::SoundManager::Test() Starting Tests...");
         }
 
         static auto counter { 0 };
@@ -719,9 +719,7 @@ namespace sfml_util
             static auto hasSFXPromptedStart { false };
             if (false == hasSFXPromptedStart)
             {
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    "SoundManager SFX Tests starting...");
-
+                iStagePtr->TestingStrIncrement("SoundManager SFX Tests starting...");
                 hasSFXPromptedStart = true;
             }
 
@@ -731,8 +729,7 @@ namespace sfml_util
                 const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
                 const auto ENUM_STR { sound_effect::ToString(ENUM) };
 
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    "SoundManager SFX Test \"" + ENUM_STR + "\"");
+                iStagePtr->TestingStrIncrement("SoundManager SFX Test \"" + ENUM_STR + "\"");
 
                 SoundEffectPlay(ENUM);
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -743,9 +740,7 @@ namespace sfml_util
             static auto hasSFXPromptedEnd { false };
             if (false == hasSFXPromptedEnd)
             {
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    "SoundManager SFX Tests finished.  All Passed.");
-
+                iStagePtr->TestingStrIncrement("SoundManager SFX Tests finished.  All Passed.");
                 hasSFXPromptedEnd = true;
                 ClearSoundEffectsCache();
             }
@@ -756,8 +751,7 @@ namespace sfml_util
             static auto hasStaticSFXPromptedStart { false };
             if (false == hasStaticSFXPromptedStart)
             {
-                game::LoopManager::Instance()->TestingStrIncrement(
-                    "SoundManager SfxSet SFX Tests starting...");
+                iStagePtr->TestingStrIncrement("SoundManager SfxSet SFX Tests starting...");
 
                 hasStaticSFXPromptedStart = true;
             }
@@ -783,7 +777,7 @@ namespace sfml_util
                 {
                     std::ostringstream ss;
                     ss << sfxSetIndex;
-                    game::LoopManager::Instance()->TestingStrIncrement(
+                    iStagePtr->TestingStrIncrement(
                         "SoundManager SfxSet SFX Tested Set #" + ss.str());
 
                     sfxSetInnerIndex = 0;
@@ -796,7 +790,7 @@ namespace sfml_util
             static auto hasStaticSFXPromptedEnd { false };
             if (false == hasStaticSFXPromptedEnd)
             {
-                game::LoopManager::Instance()->TestingStrIncrement(
+                iStagePtr->TestingStrIncrement(
                     "SoundManager SfxSet SFX Tests finished.  All Passed.");
 
                 hasStaticSFXPromptedEnd = true;
@@ -824,7 +818,7 @@ namespace sfml_util
 
                 if (counter < MUSIC_COUNT_MAX)
                 {
-                    game::LoopManager::Instance()->TestingStrIncrement(
+                    iStagePtr->TestingStrIncrement(
                         "SoundManager Music Test #" + ss.str() + " Delay...");
 
                     ++counter;
@@ -836,18 +830,13 @@ namespace sfml_util
                     MusicStop(NEXT_ENUM);
                     playOrStop = false;
                     ++musicIndex;
-
-                    game::LoopManager::Instance()->TestingStrIncrement(
-                        "SoundManager Music Test #" + ss.str());
-
+                    iStagePtr->TestingStrIncrement("SoundManager Music Test #" + ss.str());
                     return false;
                 }
             }
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "sfml_util::SoundManager::Test() ALL TESTS PASSED");
-
+        iStagePtr->TestingStrAppend("sfml_util::SoundManager::Test() ALL TESTS PASSED");
         return true;
     }
 

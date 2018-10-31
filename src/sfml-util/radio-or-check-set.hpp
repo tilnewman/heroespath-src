@@ -14,7 +14,6 @@
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/callback.hpp"
 #include "sfml-util/entity.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/mouse-text-info.hpp"
 
 #include <SFML/Graphics/Color.hpp>

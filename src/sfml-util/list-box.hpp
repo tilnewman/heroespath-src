@@ -16,7 +16,6 @@
 #include "sfml-util/callback.hpp"
 #include "sfml-util/entity.hpp"
 #include "sfml-util/gui-event-enum.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/list-box-event-packet.hpp"
 #include "sfml-util/list-box-packet.hpp"
 #include "sfml-util/list-element.hpp"
@@ -25,6 +24,7 @@
 #include "sfutil/center-of.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
+#include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>

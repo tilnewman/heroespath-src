@@ -28,7 +28,6 @@ namespace popup
         PopupStageGeneric & operator=(const PopupStageGeneric &) = delete;
         PopupStageGeneric & operator=(PopupStageGeneric &&) = delete;
 
-    public:
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageGeneric();
 

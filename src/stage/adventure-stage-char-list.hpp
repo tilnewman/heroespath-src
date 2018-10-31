@@ -14,9 +14,9 @@
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/colored-rect.hpp"
 #include "sfml-util/gold-bar.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/image-text-entity.hpp"
 #include "sfml-util/text-region.hpp"
+#include "stage/i-stage.hpp"
 
 #include <memory>
 #include <string>
@@ -38,7 +38,7 @@ namespace stage
         AdventureCharacterList & operator=(const AdventureCharacterList &);
 
     public:
-        explicit AdventureCharacterList(const sfml_util::IStagePtr_t);
+        explicit AdventureCharacterList(const stage::IStagePtr_t);
         virtual ~AdventureCharacterList();
 
         bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override
@@ -96,7 +96,7 @@ namespace stage
         const float MANA_COLUMN_WIDTH_;
         const float CELL_TEXT_LEFT_SPACER_;
         const float CHARLIST_SEP_SPACER_;
-        sfml_util::IStagePtr_t stagePtr_;
+        stage::IStagePtr_t stagePtr_;
         sfml_util::ImageTextEntityUVec_t namesButtonUVec_;
         sfml_util::TextRegionUVec_t condsTextRegionsUVec_;
         sfml_util::TextRegionUVec_t healthTextRegionsUVec_;

@@ -35,7 +35,6 @@ namespace creature
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;
         EnchantmentWarehouse & operator=(EnchantmentWarehouse &&) = delete;
 
-    public:
         EnchantmentWarehouse();
         ~EnchantmentWarehouse();
 

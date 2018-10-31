@@ -14,10 +14,15 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "sfml-util/date-time.hpp"
-#include "sfml-util/i-stage.hpp"
+#include "sfml-util/slider-colored-rect.hpp"
+#include "sfutil/color.hpp"
+#include "stage/i-stage.hpp"
 
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 #include <exception>
 #include <sstream>
@@ -29,28 +34,6 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::string DisplayChangeResult::ToString(const DisplayChangeResult::Enum E)
-    {
-        switch (E)
-        {
-            case Success: { return "Success";
-            }
-            case FailThenRevert: { return "FailThenRevert";
-            }
-            case FailNoChange: { return "FailNoChange";
-            }
-            case FailChange: { return "FailChange";
-            }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::DisplayChangeResult::Enum::ToString(" << E << ")_UnknownValue";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
     std::unique_ptr<Display> Display::instanceUPtr_;
 
     Display::Display(
@@ -61,6 +44,7 @@ namespace sfml_util
         , willVerticalSync_(false)
         , winUPtr_(std::make_unique<sf::RenderWindow>(
               EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
+        , fadeColoredRectSliderUPtr_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Display");
 
@@ -84,13 +68,7 @@ namespace sfml_util
         }
     }
 
-    Display::~Display()
-    {
-        if (winUPtr_->isOpen())
-        {
-            winUPtr_->close();
-        }
-    }
+    Display::~Display() { Close(); }
 
     misc::NotNull<Display *> Display::Instance()
     {
@@ -121,9 +99,9 @@ namespace sfml_util
         instanceUPtr_.reset();
     }
 
-    float Display::GetWinWidth() const { return static_cast<float>(winUPtr_->getSize().x); }
+    float Display::GetWinWidth() const { return static_cast<float>(GetWinWidthu()); }
 
-    float Display::GetWinHeight() const { return static_cast<float>(winUPtr_->getSize().y); }
+    float Display::GetWinHeight() const { return static_cast<float>(GetWinHeightu()); }
 
     unsigned int Display::GetWinWidthu() const { return winUPtr_->getSize().x; }
 
@@ -148,17 +126,22 @@ namespace sfml_util
         winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
     }
 
-    void Display::ConsumeEvents()
-    {
-        sf::Event ignored;
-        while (winUPtr_->pollEvent(ignored))
-        {
-        }
-    }
-
-    void Display::DrawStage(const IStagePtr_t & ISTAGE_PTR)
+    void Display::DrawStage(const stage::IStagePtr_t & ISTAGE_PTR)
     {
         ISTAGE_PTR->Draw(*winUPtr_, sf::RenderStates());
+    }
+
+    const std::vector<sf::Event> Display::PollEvents()
+    {
+        std::vector<sf::Event> eventsVec;
+
+        sf::Event event;
+        while (winUPtr_->pollEvent(event))
+        {
+            eventsVec.emplace_back(event);
+        }
+
+        return eventsVec;
     }
 
     void Display::TakeScreenshot()
@@ -210,6 +193,21 @@ namespace sfml_util
         }
     }
 
+    void Display::Close() { winUPtr_->close(); }
+
+    void Display::SetMouseCursorVisibility(const bool IS_VISIBLE)
+    {
+        winUPtr_->setMouseCursorVisible(IS_VISIBLE);
+    }
+
+    const sf::Vector2i Display::GetMousePosition() { return sf::Mouse::getPosition(*winUPtr_); }
+
+    bool Display::IsOpen() const { return winUPtr_->isOpen(); }
+
+    void Display::ClearToBlack() { winUPtr_->clear(sf::Color::Black); }
+
+    void Display::DisplayFrameBuffer() { winUPtr_->display(); }
+
     bool Display::IsResolutionListed(const Resolution & RES)
     {
         Resolution r(RES);
@@ -220,6 +218,78 @@ namespace sfml_util
     {
         Resolution r(VM);
         return SetResolutionNameAndRatio(r);
+    }
+
+    void Display::FadeOutStart(const sf::Color & COLOR, const float SPEED)
+    {
+        if (!winUPtr_)
+        {
+            return;
+        }
+
+        fadeColoredRectSliderUPtr_ = std::make_unique<sfml_util::ColoredRectSlider>(
+            FullScreenRect(),
+            sf::Color::Transparent,
+            COLOR,
+            SPEED,
+            sfml_util::WillOscillate::No,
+            sfml_util::WillAutoStart::Yes);
+
+        M_HP_LOG_DBG("fade out started: color=" << COLOR << ", speed=" << SPEED);
+    }
+
+    void Display::FadeInStart(const float SPEED)
+    {
+        if (!winUPtr_)
+        {
+            return;
+        }
+
+        sf::Color fadeFromColor { sf::Color::Black };
+
+        if (fadeColoredRectSliderUPtr_)
+        {
+            fadeFromColor = fadeColoredRectSliderUPtr_->Value();
+        }
+
+        fadeColoredRectSliderUPtr_ = std::make_unique<sfml_util::ColoredRectSlider>(
+            FullScreenRect(),
+            fadeFromColor,
+            sf::Color::Transparent,
+            SPEED,
+            sfml_util::WillOscillate::No,
+            sfml_util::WillAutoStart::Yes);
+
+        M_HP_LOG_DBG("fade in started: color=" << fadeFromColor << ", speed=" << SPEED);
+    }
+
+    bool Display::UpdateTimeForFade(const float FRAME_TIME_SEC)
+    {
+        if (fadeColoredRectSliderUPtr_)
+        {
+            const auto IS_STILL_MOVING { fadeColoredRectSliderUPtr_->UpdateAndReturnIsMoving(
+                FRAME_TIME_SEC) };
+
+            // M_HP_LOG_DBG(
+            //    "fade update: time_elapsed="
+            //    << FRAME_TIME_SEC << ", color=" << fadeColoredRectSliderUPtr_->Value()
+            //    << ", progress=" << fadeColoredRectSliderUPtr_->PositionRatio()
+            //    << ", is_still_moving=" << std::boolalpha << IS_STILL_MOVING);
+
+            return IS_STILL_MOVING;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void Display::DrawFade()
+    {
+        if (fadeColoredRectSliderUPtr_)
+        {
+            winUPtr_->draw(*fadeColoredRectSliderUPtr_);
+        }
     }
 
     bool Display::SetResolutionNameAndRatio(Resolution & res)
@@ -644,6 +714,7 @@ namespace sfml_util
             res.aspect_ratio = "16:9";
             return true;
         }
+        else
         {
             res.name = "?";
             res.aspect_ratio = "?";
@@ -658,7 +729,7 @@ namespace sfml_util
         std::vector<sf::VideoMode> fullScreenVideoModes(sf::VideoMode::getFullscreenModes());
 
         for (const auto & NEXT_VIDEO_MODE : fullScreenVideoModes)
-            M_HP_LOG("\t" << ConvertVideoModeToReslution(NEXT_VIDEO_MODE).ToString());
+            M_HP_LOG("\t" << ConvertVideoModeToResolution(NEXT_VIDEO_MODE).ToString());
     }
 
     std::size_t Display::ComposeSupportedFullScreenVideoModesVec(ResolutionVec_t & vec)
@@ -670,7 +741,7 @@ namespace sfml_util
 
         for (const auto & NEXT_VIDEO_MODE : fullScreenSupportedModesVec)
         {
-            const Resolution R(ConvertVideoModeToReslution(NEXT_VIDEO_MODE));
+            const Resolution R(ConvertVideoModeToResolution(NEXT_VIDEO_MODE));
             if (IsResolutionSupported(R))
                 vec.emplace_back(R);
 
@@ -682,7 +753,7 @@ namespace sfml_util
 
         // add the current video mode if supported and not already listed
         if (IsCurrentDesktopResolutionSupported() && (false == isCurrentVideoModeListed))
-            vec.emplace_back(ConvertVideoModeToReslution(sf::VideoMode::getDesktopMode()));
+            vec.emplace_back(ConvertVideoModeToResolution(sf::VideoMode::getDesktopMode()));
 
         return vec.size();
     }
@@ -726,7 +797,7 @@ namespace sfml_util
         if (IsCurrentDesktopResolutionSupported())
         {
             M_HP_LOG(
-                "Current video mode " << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString()
+                "Current video mode " << ConvertVideoModeToResolution(CURR_VIDEO_MODE).ToString()
                                       << " is supported, and will be used.");
 
             videoMode = CURR_VIDEO_MODE;
@@ -735,7 +806,7 @@ namespace sfml_util
         {
             M_HP_LOG(
                 "Current video mode "
-                << ConvertVideoModeToReslution(CURR_VIDEO_MODE).ToString()
+                << ConvertVideoModeToResolution(CURR_VIDEO_MODE).ToString()
                 << " is NOT supported.  The resolution must be greater, at least "
                 << GetWinWidthMin() << "x" << GetWinHeightMin()
                 << ".  Below is a list of supported modes you can use instead.");
@@ -788,10 +859,10 @@ namespace sfml_util
 
     const Resolution Display::GetCurrentResolution()
     {
-        return ConvertVideoModeToReslution(GetCurrentVideoMode());
+        return ConvertVideoModeToResolution(GetCurrentVideoMode());
     }
 
-    DisplayChangeResult::Enum
+    const DisplayChangeResult
         Display::ChangeVideoMode(const Resolution & RES_PARAM, const unsigned ANTIALIAS_LEVEL)
     {
         Resolution resToUse(RES_PARAM);
@@ -806,114 +877,135 @@ namespace sfml_util
             ANTIALIAS_LEVEL);
     }
 
-    DisplayChangeResult::Enum Display::ChangeVideoMode(
-        const sf::VideoMode & VM_PARAM, const unsigned ANTIALIAS_LEVEL_PARAM)
+    const DisplayChangeResult Display::ChangeVideoMode(
+        const sf::VideoMode & VIDEO_MODE_INTENDED_PARAM, const unsigned ANTIALIAS_LEVEL_INTENDED)
     {
-        // construct the intended video mode with 32bpp if the bpp was originally zero
-        const sf::VideoMode INTENDED_VIDEO_MODE(
-            VM_PARAM.width,
-            VM_PARAM.height,
-            ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
+        using ModeAAPair_t = std::pair<sf::VideoMode, unsigned>;
 
-        const auto INTENDED_ANTIALIAS_LEVEL { ANTIALIAS_LEVEL_PARAM };
+        const auto DISPLAY_SETTINGS_BEFORE { std::make_pair(
+            GetCurrentVideoMode(), winUPtr_->getSettings().antialiasingLevel) };
 
-        // save original video mode for later comparrison
-        const auto ORIG_VIDEO_MODE { GetCurrentVideoMode() };
-        const auto ORIG_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
+        const sf::VideoMode VIDEO_MODE_INTENDED(
+            VIDEO_MODE_INTENDED_PARAM.width,
+            VIDEO_MODE_INTENDED_PARAM.height,
+            ((0 == VIDEO_MODE_INTENDED_PARAM.bitsPerPixel)
+                 ? 32
+                 : VIDEO_MODE_INTENDED_PARAM.bitsPerPixel));
 
-        if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE)
-            && (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
+        const auto DISPLAY_SETTINGS_INTENDED { std::make_pair(
+            VIDEO_MODE_INTENDED, ANTIALIAS_LEVEL_INTENDED) };
+
+        auto makeResMessage
+            = [](const std::string & MESSAGE, const ModeAAPair_t & DISPLAY_SETTINGS) {
+                  return MESSAGE + ConvertVideoModeToResolution(DISPLAY_SETTINGS.first).ToString()
+                      + "_AA=" + misc::ToString(DISPLAY_SETTINGS.second);
+              };
+
+        auto makeLogMessage
+            = [&](const std::string & MESSAGE_PREFIX, const std::string & MESSAGE_POSTFIX) {
+                  return MESSAGE_PREFIX + makeResMessage("from ", DISPLAY_SETTINGS_BEFORE)
+                      + makeResMessage(" to ", DISPLAY_SETTINGS_INTENDED) + MESSAGE_POSTFIX;
+              };
+
+        if (DISPLAY_SETTINGS_BEFORE == DISPLAY_SETTINGS_INTENDED)
         {
-            M_HP_LOG_WRN(
-                "Asked to change to a resolution and AA that matches the current"
-                << "resolution and AA.  Ignoring...");
+            M_HP_LOG_WRN(makeLogMessage(
+                "Ignored request to change resolution ", " because already at that resolution."));
 
-            return DisplayChangeResult::Success;
+            DisplayChangeResult result;
+            result.is_aa_intended = true;
+            result.is_res_intended = true;
+            return result;
         }
 
-        M_HP_LOG(
-            "Changing resolution from "
-            << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString()
-            << " AA=" << ORIG_ANTIALIAS_LEVEL << " to "
-            << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
-            << " AA=" << INTENDED_ANTIALIAS_LEVEL << ".");
+        // this call closes the window if open
+        winUPtr_->create(
+            DISPLAY_SETTINGS_INTENDED.first,
+            winTitle_,
+            winStyle_,
+            sf::ContextSettings(0, 0, DISPLAY_SETTINGS_INTENDED.second));
 
-        winUPtr_->close();
-
-        // re-open
-        sf::ContextSettings contextSettings(0, 0, ANTIALIAS_LEVEL_PARAM);
-
-        winUPtr_->create(INTENDED_VIDEO_MODE, winTitle_, winStyle_, contextSettings);
-
-        const bool WAS_SUCCESS(winUPtr_->isOpen());
-        if (WAS_SUCCESS)
+        if (winUPtr_->isOpen() == false)
         {
-            const auto NEW_VIDEO_MODE { GetCurrentVideoMode() };
-            const auto NEW_ANTIALIAS_LEVEL { winUPtr_->getSettings().antialiasingLevel };
+            M_HP_LOG_ERR(makeLogMessage(
+                "Failed to change resolution ",
+                ".  The call to sf::RenderWindow::create() resulted in the window NOT being open, "
+                "so reverting back to original."));
 
-            // for some reason sfml is finiky on some hardware and has a habit of switching
-            // back to the original video mode without warning or error
-            if ((NEW_VIDEO_MODE == ORIG_VIDEO_MODE)
-                && (NEW_ANTIALIAS_LEVEL == ORIG_ANTIALIAS_LEVEL))
-            {
-                M_HP_LOG_ERR(
-                    "Failed to change video mode to the intended "
-                    << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
-                    << " AA=" << INTENDED_ANTIALIAS_LEVEL
-                    << ", and for some reason SFML switched back to the original video mode of "
-                    << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString()
-                    << " AA=" << ORIG_ANTIALIAS_LEVEL << ".");
-
-                return DisplayChangeResult::FailNoChange;
-            }
-            else
-            {
-                if ((NEW_VIDEO_MODE == INTENDED_VIDEO_MODE)
-                    && (NEW_ANTIALIAS_LEVEL == INTENDED_ANTIALIAS_LEVEL))
-                {
-                    M_HP_LOG(
-                        "Changed video mode to "
-                        << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString()
-                        << " AA=" << NEW_ANTIALIAS_LEVEL);
-
-                    return DisplayChangeResult::Success;
-                }
-                else
-                {
-                    M_HP_LOG_ERR(
-                        "Failed to change video mode to "
-                        << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
-                        << " AA=" << NEW_ANTIALIAS_LEVEL
-                        << ". For some unknown reason (ahem) SFML switched to a new video mode of "
-                        << ConvertVideoModeToReslution(NEW_VIDEO_MODE).ToString()
-                        << " AA=" << NEW_ANTIALIAS_LEVEL << ".");
-
-                    return DisplayChangeResult::FailChange;
-                }
-            }
+            winUPtr_->create(
+                DISPLAY_SETTINGS_BEFORE.first,
+                winTitle_,
+                winStyle_,
+                sf::ContextSettings(0, 0, DISPLAY_SETTINGS_BEFORE.second));
         }
-        else
+
+        // the fader needs to be re-setup every time the resolution changes
+        UpdateFaderRegion();
+
+        const auto DISPLAY_SETTINGS_AFTER { std::make_pair(
+            GetCurrentVideoMode(), winUPtr_->getSettings().antialiasingLevel) };
+
+        const DisplayChangeResult RESULT = [&]() {
+            DisplayChangeResult result;
+
+            result.did_res_change = (DISPLAY_SETTINGS_AFTER.first == DISPLAY_SETTINGS_BEFORE.first);
+
+            result.did_aa_change
+                = (DISPLAY_SETTINGS_AFTER.second == DISPLAY_SETTINGS_BEFORE.second);
+
+            result.is_res_intended
+                = (DISPLAY_SETTINGS_AFTER.first == DISPLAY_SETTINGS_INTENDED.first);
+
+            result.is_aa_intended
+                = (DISPLAY_SETTINGS_AFTER.second == DISPLAY_SETTINGS_INTENDED.second);
+
+            return result;
+        }();
+
+        if (RESULT.Success())
         {
-            M_HP_LOG_ERR(
-                "Failed to change video mode to "
-                << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA="
-                << INTENDED_ANTIALIAS_LEVEL << ".  Reverting back to original video mode of "
-                << ConvertVideoModeToReslution(ORIG_VIDEO_MODE).ToString()
-                << " AA=" << ORIG_ANTIALIAS_LEVEL << " instead.");
-
-            contextSettings.antialiasingLevel = ORIG_ANTIALIAS_LEVEL;
-
-            winUPtr_->create(ORIG_VIDEO_MODE, winTitle_, winStyle_, contextSettings);
-
-            return DisplayChangeResult::FailThenRevert;
+            M_HP_LOG(makeLogMessage("Changed resolution ", "."));
         }
+        else if (RESULT.FailedButReverted())
+        {
+            M_HP_LOG_ERR(makeLogMessage(
+                "Failed to change resolution ", " but was able to revert back to the original."));
+        }
+        else if (RESULT.FailedButOnlyAA())
+        {
+            M_HP_LOG_ERR(makeLogMessage(
+                "Changed resolution ",
+                " succeeded in changing the resolution but not in changing the AA level.  The AA "
+                "ended up="
+                    + misc::ToString(DISPLAY_SETTINGS_AFTER.second) + "."));
+        }
+        else if (RESULT.FailedAndRevertFailed())
+        {
+            M_HP_LOG_ERR(makeLogMessage(
+                "Failed to change resolution ",
+                makeResMessage(
+                    ".  For some unknown reason (ahem) SFML switched to a new resolution that was "
+                    "not "
+                    "the intended or the original.  New resolution=",
+                    DISPLAY_SETTINGS_AFTER)));
+        }
+
+        return RESULT;
     }
 
-    Resolution Display::ConvertVideoModeToReslution(const sf::VideoMode & VM)
+    Resolution Display::ConvertVideoModeToResolution(const sf::VideoMode & VM)
     {
         Resolution res(VM);
         SetResolutionNameAndRatio(res);
         return res;
+    }
+
+    void Display::UpdateFaderRegion()
+    {
+        if (fadeColoredRectSliderUPtr_)
+        {
+            fadeColoredRectSliderUPtr_->Rect(FullScreenRect());
+        }
     }
 
 } // namespace sfml_util

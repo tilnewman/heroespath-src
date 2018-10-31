@@ -18,11 +18,12 @@
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/callback.hpp"
 #include "sfml-util/list-box-event-packet.hpp"
-#include "sfml-util/stage.hpp"
-#include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
+#include "stage/stage-base.hpp"
+#include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enumop
 
 #include <memory>
 #include <string>
@@ -53,16 +54,16 @@ namespace stage
 
     class TreasureDisplayStage;
     using TreasureDisplayStagePtr_t = misc::NotNull<TreasureDisplayStage *>;
+    using TreasureDisplayStagePtrOpt_t = boost::optional<TreasureDisplayStagePtr_t>;
 
     // A Stage class that allows starting the game
     class TreasureStage
-        : public sfml_util::Stage
+        : public stage::StageBase
+
         , public sfml_util::PopupCallback_t::IHandler_t
     {
         using ItemListBox_t = sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
-
         using ItemListBoxPtr_t = sfml_util::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
-
         using ItemListBoxUPtr_t = sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
@@ -71,9 +72,13 @@ namespace stage
         TreasureStage & operator=(const TreasureStage &) = delete;
         TreasureStage & operator=(TreasureStage &&) = delete;
 
-    public:
         TreasureStage();
         virtual ~TreasureStage();
+
+        void SetViewStage(TreasureDisplayStagePtr_t viewStagePtr)
+        {
+            displayStagePtrOpt_ = viewStagePtr;
+        }
 
         bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
 
@@ -163,7 +168,7 @@ namespace stage
         static const std::string POPUP_NAME_ALL_ITEMS_TAKEN_;
         static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
-        TreasureDisplayStagePtr_t displayStagePtr_;
+        TreasureDisplayStagePtrOpt_t displayStagePtrOpt_;
         item::TreasureImage::Enum treasureImageType_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
@@ -178,6 +183,7 @@ namespace stage
     };
 
     using TreasureStagePtr_t = misc::NotNull<TreasureStage *>;
+    using TreasureStagePtrOpt_t = boost::optional<TreasureStagePtr_t>;
 
 } // namespace stage
 } // namespace heroespath

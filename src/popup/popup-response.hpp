@@ -20,16 +20,23 @@ namespace popup
 {
 
     // Responsible for wrapping everything about the player's response to a popup
-    class PopupResponse
+    struct PopupResponse
     {
-    public:
+        PopupResponse()
+            : name("")
+            , type(ResponseTypes::None)
+            , selection_opt(boost::none)
+        {
+            Reset();
+        }
+
         PopupResponse(
-            const std::string & POPUP_NAME,
-            const ResponseTypes::Enum RESPONSE,
+            const std::string & NAME,
+            const ResponseTypes::Enum RESPONSE_TYPE,
             const SizetOpt_t SELECTION_OPT)
-            : name_(POPUP_NAME)
-            , response_(RESPONSE)
-            , selectionOpt_(SELECTION_OPT)
+            : name(NAME)
+            , type(RESPONSE_TYPE)
+            , selection_opt(SELECTION_OPT)
         {}
 
         PopupResponse(const PopupResponse &) = default;
@@ -37,14 +44,16 @@ namespace popup
         PopupResponse & operator=(const PopupResponse &) = default;
         PopupResponse & operator=(PopupResponse &&) = default;
 
-        const std::string Name() const { return name_; }
-        ResponseTypes::Enum Response() const { return response_; }
-        SizetOpt_t SelectionOpt() const { return selectionOpt_; }
+        void Reset(const std::string & NAME = "")
+        {
+            name = NAME;
+            type = ResponseTypes::None;
+            selection_opt = boost::none;
+        }
 
-    private:
-        std::string name_;
-        ResponseTypes::Enum response_;
-        SizetOpt_t selectionOpt_;
+        std::string name;
+        ResponseTypes::Enum type;
+        SizetOpt_t selection_opt;
     };
 
 } // namespace popup

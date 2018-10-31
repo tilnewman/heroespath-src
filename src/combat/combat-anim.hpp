@@ -110,7 +110,6 @@ namespace combat
         CombatAnimation & operator=(const CombatAnimation &) = delete;
         CombatAnimation & operator=(CombatAnimation &&) = delete;
 
-    public:
         CombatAnimation();
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);

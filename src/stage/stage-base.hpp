@@ -4,28 +4,31 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
+#ifndef HEROESPATH_STAGE_STAGE_BASE_HPP_INCLUDED
+#define HEROESPATH_STAGE_STAGE_BASE_HPP_INCLUDED
 //
-// stage.hpp
-//  Helper classes and functions for managing Entity's in a collection on screen.
+// stage-base.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/font-enum.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/text.hpp"
-
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include "stage/i-stage.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
+namespace sf
+{
+class RenderTarget;
+class RenderStates;
+} // namespace sf
+
 namespace heroespath
 {
+
 namespace sfml_util
 {
     class IEntity;
@@ -35,52 +38,41 @@ namespace sfml_util
 
     class BoxEntity;
     using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
+} // namespace sfml_util
+
+namespace stage
+{
 
     // A base class for types that hold and draw a group of on screen resources.
-    class Stage : public IStage
+    class StageBase : public IStage
     {
     public:
-        Stage(const Stage &) = delete;
-        Stage(Stage &&) = delete;
-        Stage & operator=(const Stage &) = delete;
-        Stage & operator=(Stage &&) = delete;
-
-        Stage(
+        StageBase(
             const std::string & NAME,
-            const FontEnumVec_t & FONTS_TO_PRELOAD,
+            const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
             const bool WILL_CLEAR_CACHE_ON_EXIT,
-            const SfxEnumVec_t & SFX_TO_PRELOAD = {});
+            const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
-        Stage(
+        StageBase(
             const std::string & NAME,
             const sf::FloatRect & REGION,
-            const FontEnumVec_t & FONTS_TO_PRELOAD,
+            const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
             const bool WILL_CLEAR_CACHE_ON_EXIT,
-            const SfxEnumVec_t & SFX_TO_PRELOAD = {});
+            const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
-        Stage(
-            const std::string & NAME,
-            const float REGION_LEFT,
-            const float REGION_TOP,
-            const float REGION_WIDTH,
-            const float REGION_HEIGHT,
-            const FontEnumVec_t & FONTS_TO_PRELOAD,
-            const bool WILL_CLEAR_CACHE_ON_EXIT,
-            const SfxEnumVec_t & SFX_TO_PRELOAD = {});
+        virtual ~StageBase();
 
-        virtual ~Stage();
-
-        void Setup() override {}
+        StageBase(const StageBase &) = delete;
+        StageBase(StageBase &&) = delete;
+        StageBase & operator=(const StageBase &) = delete;
+        StageBase & operator=(StageBase &&) = delete;
 
         const std::string GetStageName() const override final { return STAGE_NAME_; }
 
-        const sf::FloatRect StageRegion() const override final { return stageRegion_; }
-        void StageRegionSet(const sf::FloatRect & RECT) override final { stageRegion_ = RECT; }
+        game::Phase::Enum GetPhase() const override final;
 
-        float StageRegionLeft() const override final { return stageRegion_.left; }
-        float StageRegionTop() const override final { return stageRegion_.top; }
-        float StageRegionWidth() const override final { return stageRegion_.width; }
-        float StageRegionHeight() const override final { return stageRegion_.height; }
+        const sf::FloatRect StageRegion() const override final { return stageRegion_; }
+        void StageRegion(const sf::FloatRect & RECT) override final { stageRegion_ = RECT; }
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS) override;
@@ -89,37 +81,35 @@ namespace sfml_util
         void UpdateMouseWheel(
             const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) override;
 
-        const IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
-        const IEntityPtrOpt_t GetEntityWithFocus() const override final
+        const sfml_util::IEntityPtrOpt_t GetEntityWithFocus() const override final
         {
             return entityWithFocusPtrOpt_;
         }
 
         void RemoveFocus() override final;
-        void SetFocus(const IEntityPtr_t ENTITY_PTR) override final;
+        void SetFocus(const sfml_util::IEntityPtr_t ENTITY_PTR) override final;
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
-        // only a required function for the SettingsStage which can change resolution
         void HandleResolutionChange() override {}
 
-        // throws if the entity to add was already there
-        void EntityAdd(const IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
-            override final;
+        void EntityAdd(
+            const sfml_util::IEntityPtr_t,
+            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override final;
 
-        // returns false if the entity to remove was not found
-        bool EntityRemove(const IEntityPtr_t) override final;
+        void EntityRemove(const sfml_util::IEntityPtr_t) override final;
 
         void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override final;
 
-        void TestingStrAppend(const std::string &) override {}
-        void TestingStrIncrement(const std::string &) override {}
-
-        void TestingImageSet(const std::string &, const bool = false) override {}
+        void TestingStrAppend(const std::string &) override;
+        void TestingStrIncrement(const std::string &) override;
+        void TestingImageSet(
+            const std::string &, const bool WILL_CHECK_FOR_OUTLINE = false) override;
 
         void PerformNextTest() override {}
         void ClearAllEntities() override final;
@@ -128,6 +118,25 @@ namespace sfml_util
         bool IsMouseHeldDownAndMoving() const override final { return isMouseHeldDownAndMoving_; }
         const sf::Vector2f MouseDownPosV() const override final { return mouseDownPosV_; }
 
+        bool IsFading() const override final { return isFading_; }
+        void IsFading(const bool IS_FADING) override final { isFading_ = IS_FADING; }
+
+        void SpawnPopup(
+            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO) const override final;
+
+        void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0)
+            const override final;
+
+        void TransitionTo(const stage::Stage::Enum NEW_STAGE) const override final;
+
+        void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const override final;
+
+        const sfml_util::DisplayChangeResult ChangeResolution(
+            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const sfml_util::Resolution & NEW_RES,
+            const unsigned ANTIALIAS_LEVEL) const override final;
+
     private:
         static const float MOUSE_DRAG_MIN_DISTANCE_;
         //
@@ -135,13 +144,14 @@ namespace sfml_util
         sf::FloatRect stageRegion_;
 
         // these are observer pointers whose lifetime is not controlled by this class
-        IEntityPVec_t entityPVec_;
+        sfml_util::IEntityPVec_t entityPVec_;
 
-        // a copy of a ptr in entityPVec_
-        IEntityPtrOpt_t entityWithFocusPtrOpt_;
+        // a copy of an observer ptr in entityPVec_
+        sfml_util::IEntityPtrOpt_t entityWithFocusPtrOpt_;
 
-        BoxEntityUPtr_t hoverTextBoxUPtr_;
+        sfml_util::BoxEntityUPtr_t hoverTextBoxUPtr_;
         sfml_util::Text hoverText_;
+        bool isFading_;
 
     protected:
         bool isMouseHeldDown_;
@@ -150,7 +160,7 @@ namespace sfml_util
         bool willClearCachesOnExit_;
     };
 
-} // namespace sfml_util
+} // namespace stage
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_STAGE_BASE_HPP_INCLUDED

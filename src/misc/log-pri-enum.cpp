@@ -11,15 +11,10 @@
 
 #include "misc/platform.hpp"
 
-#include <iostream>
-#include <sstream>
-
 namespace heroespath
 {
 namespace misc
 {
-
-    bool LogPriority::IsValid(const unsigned int ENUM_VALUE) { return (ENUM_VALUE < Count); }
 
     const std::string LogPriority::ToString(const Enum PRIORITY)
     {
@@ -48,8 +43,7 @@ namespace misc
             case Count:
             default:
             {
-                std::cerr << MakeErrorString(PRIORITY, "ToString") << std::endl;
-                return "(enum_out_of_bounds_error)";
+                ThrowInvalidValueForFunction(PRIORITY, "ToString");
             }
         }
     }
@@ -81,16 +75,17 @@ namespace misc
             case Count:
             default:
             {
-                std::cerr << MakeErrorString(PRIORITY, "ToStringAcronym") << std::endl;
-                return "(enum_out_of_bounds_error)";
+                ThrowInvalidValueForFunction(PRIORITY, "ToStringAcronym");
             }
         }
     }
 
     const std::string LogPriority::ConsoleColorStringBegin(const Enum PRIORITY)
     {
+
+        // this just prevents a Visual Studio warning that PRIORITY is not used
 #if defined(HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS)
-        const auto IGNORED { PRIORITY }; // this just prevents the Visual Studio warning
+        const auto IGNORED { PRIORITY };
         return "";
 #else
         switch (PRIORITY)
@@ -128,18 +123,6 @@ namespace misc
 #else
         return "\033[0;0m";
 #endif
-    }
-
-    const std::string LogPriority::MakeErrorString(
-        const LogPriority::Enum PRIORITY, const std::string & FUNCTION_NAME)
-    {
-        std::ostringstream ss;
-
-        ss << "misc::LogPriority::" << FUNCTION_NAME << "(" << unsigned(PRIORITY)
-           << ") but that enum value is out of range (>=) with max=(Count-1)="
-           << unsigned(Count - 1);
-
-        return ss.str();
     }
 
 } // namespace misc

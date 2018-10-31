@@ -11,7 +11,7 @@
 //
 #include "popup-stage-res-change.hpp"
 
-#include "game/loop-manager.hpp"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -29,12 +29,12 @@ namespace popup
     void PopupStageResChange::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void PopupStageResChange::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         if (secondCounter_ > 0)
         {
@@ -54,11 +54,11 @@ namespace popup
 
                     textInfo.text = ss.str();
 
-                    textRegionUPtr_->Setup(textInfo, textRegion_, sfml_util::IStagePtr_t(this));
+                    textRegionUPtr_->Setup(textInfo, textRegion_, stage::IStagePtr_t(this));
                 }
                 else
                 {
-                    game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
+                    RemovePopup(ResponseTypes::No);
                 }
             }
         }

@@ -11,7 +11,7 @@
 //
 #include "main-menu-buttons.hpp"
 
-#include "game/loop-manager.hpp"
+#include "game/game-controller.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfutil/display.hpp"
@@ -26,16 +26,16 @@ namespace sfml_util
     const float MainMenuButton::SCREEN_SIZE_RATIO_WIDTH_DEFAULT_(0.1f);
 
     MainMenuButton::MainMenuButton(
-        const LoopState::Enum TRANSITION_TO,
+        const stage::Stage::Enum TRANSITION_TO,
         const ImageTextEntity::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT,
         const float FORCED_IMAGE_WIDTH,
         const sf::Vector2f & POS_V)
         : ImageTextEntity(
-              "MainMenuButton_" + LoopState::ToString(TRANSITION_TO),
-              MakeMouseImageInfo(TRANSITION_TO, POS_V, FORCED_IMAGE_WIDTH),
-              MouseTextInfo(),
-              CALLBACK_HANDLER_PTR_OPT,
-              ImageTextEntity::MouseStateSync::Image)
+            "MainMenuButton_" + stage::Stage::ToString(TRANSITION_TO),
+            MakeMouseImageInfo(TRANSITION_TO, POS_V, FORCED_IMAGE_WIDTH),
+            MouseTextInfo(),
+            CALLBACK_HANDLER_PTR_OPT,
+            ImageTextEntity::MouseStateSync::Image)
         , transitionTo_(TRANSITION_TO)
     {}
 
@@ -46,16 +46,16 @@ namespace sfml_util
 
     void MainMenuButton::OnClick(const sf::Vector2f & MOUSE_POS_V)
     {
-        if (LoopState::WillTransition(transitionTo_))
+        if (stage::Stage::IsPlayableAndNotPopup(transitionTo_))
         {
-            game::LoopManager::Instance()->TransitionTo(transitionTo_);
+            game::GameController::Instance()->TransitionTo(transitionTo_);
         }
 
         ImageTextEntity::OnClick(MOUSE_POS_V);
     }
 
     const MouseImageInfo MainMenuButton::MakeMouseImageInfo(
-        const LoopState::Enum TRANSITION_TO,
+        const stage::Stage::Enum TRANSITION_TO,
         const sf::Vector2f & POS_V,
         const float FORCED_IMAGE_WIDTH_ORIG)
     {
@@ -67,7 +67,7 @@ namespace sfml_util
         const std::string IMAGE_PATH_KEY_PREFIX("media-images-buttons-mainmenu-");
 
         const auto LOOPSTATE_NAME { boost::algorithm::to_lower_copy(
-            LoopState::ToString(TRANSITION_TO)) };
+            stage::Stage::ToString(TRANSITION_TO)) };
 
         MouseImageInfo mouseImageInfo(
             true,
@@ -77,7 +77,7 @@ namespace sfml_util
             EntityImageInfo(
                 CachedTexture(IMAGE_PATH_KEY_PREFIX + LOOPSTATE_NAME + "-lit"), IMAGE_REGION));
 
-        if (LoopState::HasFadedImage(TRANSITION_TO))
+        if (stage::Stage::HasFadedImage(TRANSITION_TO))
         {
             mouseImageInfo.disabled = EntityImageInfo(
                 CachedTexture(IMAGE_PATH_KEY_PREFIX + LOOPSTATE_NAME + "-faded"), IMAGE_REGION);

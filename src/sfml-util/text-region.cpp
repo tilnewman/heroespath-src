@@ -15,11 +15,11 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "sfml-util/box-entity.hpp"
-#include "sfml-util/i-stage.hpp"
 #include "sfml-util/text-renderer.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "sfutil/size-and-scale.hpp"
+#include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -78,7 +78,7 @@ namespace sfml_util
         const std::string & NAME,
         const TextInfo & TEXT_INFO,
         const sf::FloatRect & REGION,
-        const IStagePtr_t ISTAGE_PTR,
+        const stage::IStagePtr_t ISTAGE_PTR,
         const unsigned int SMALLER_FONT_SIZE,
         const BoxEntityInfo & BOX_INFO,
         const Margins & MARGINS)
@@ -126,7 +126,7 @@ namespace sfml_util
     void TextRegion::Setup(
         const TextInfo & TEXT_INFO,
         const sf::FloatRect & REGION_ORIG,
-        const IStagePtrOpt_t & ISTAGE_PTR_OPT,
+        const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT,
         const unsigned int SMALLER_FONT_SIZE,
         const BoxEntityInfo & BOX_INFO,
         const Margins & MARGINS,

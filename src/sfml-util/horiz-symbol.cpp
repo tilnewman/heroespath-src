@@ -15,6 +15,7 @@
 #include "sfutil/fitting.hpp"
 #include "sfutil/vertex.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath

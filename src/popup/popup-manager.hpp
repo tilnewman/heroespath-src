@@ -28,6 +28,12 @@
 namespace heroespath
 {
 
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace creature
 {
     class Creature;
@@ -56,40 +62,24 @@ namespace popup
         static void SetTexturesDirectoryPaths(
             const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH);
 
-        bool Test();
+        bool Test(stage::IStagePtr_t iStagePtr);
 
         // throws range error on invalid PopupImage::Enum
         const std::string BackgroundImagePath(const PopupImage::Enum IMAGE) const;
 
-        // The Fade color is not black so that the stage can still be seen in the background
-        static sf::Color Color_Fade() { return { 0, 0, 0, 12 }; }
-
         static sf::Color Color_Font() { return fontColor_; }
 
-        // speed multipliers
-        static float SpeedMult_Fade() { return 500.0f; }
-
         // inner rects that content can appear within
+        // TODO move this to the config file
         static sf::IntRect Rect_Banner() { return { 78, 32, 338, 180 }; }
-
         static sf::IntRect Rect_Regular() { return { 32, 32, 431, 260 }; }
-
         static sf::IntRect Rect_RegularSidebar() { return { 115, 32, 347, 260 }; }
-
         static sf::IntRect Rect_Large() { return { 47, 47, 407, 400 }; }
-
         static sf::IntRect Rect_LargeSidebar() { return { 85, 47, 360, 400 }; }
-
         static sf::IntRect Rect_Spellbook_PageLeft() { return { 165, 155, 652, 990 }; }
-
         static sf::IntRect Rect_Spellbook_PageRight() { return { 932, 155, 652, 990 }; }
-
         static sf::IntRect Rect_MusicSheet_LeftSide() { return { 116, 116, 700, 840 }; }
-
         static sf::IntRect Rect_MusicSheet_RightSide() { return { 816, 116, 700, 840 }; }
-
-        // throws range_error on an unknown enum value
-        const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;
 
         // TextInfo creation helper functions
         const sfml_util::TextInfo TextInfoDefault(
@@ -192,6 +182,9 @@ namespace popup
             const std::string & POPUP_NAME,
             const std::string & TRAP_DESCRIPTION,
             const sfml_util::sound_effect::Enum SOUND_EFFECT) const;
+
+        const PopupInfo
+            CreateResolutionChangePopupInfo(const sfml_util::TextInfo & TEXT_INFO) const;
 
         sfml_util::CachedTexture LoadRandomAccentImage() const;
 

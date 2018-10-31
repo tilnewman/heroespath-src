@@ -12,15 +12,17 @@
 #include "popup-stage-base.hpp"
 
 #include "creature/name-info.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/size-and-scale.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -34,13 +36,14 @@ namespace popup
     const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_ { 0.85f };
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
-        : Stage(
-              POPUP_INFO.Name() + "_PopupStage",
-              { sfml_util::GuiFont::Handwriting, sfml_util::GuiFont::Number },
-              false)
+        : StageBase(
+            POPUP_INFO.Name() + "_PopupStage",
+            { sfml_util::GuiFont::Handwriting, sfml_util::GuiFont::Number },
+            false)
         , popupInfo_(POPUP_INFO)
         , innerRegion_()
-        , backgroundTexture_(PopupManager::Instance()->BackgroundImagePath(POPUP_INFO.Image()))
+        , backgroundTexture_(
+              PathWrapper(PopupManager::Instance()->BackgroundImagePath(POPUP_INFO.Image())))
         , textRegionUPtr_()
         , textRegion_()
         , buttonSelectUPtr_()
@@ -65,7 +68,7 @@ namespace popup
         , keepAliveTimerSec_(POPUP_INFO.KeepAliveSec())
     {}
 
-    PopupStageBase::~PopupStageBase() { Stage::ClearAllEntities(); }
+    PopupStageBase::~PopupStageBase() { StageBase::ClearAllEntities(); }
 
     bool PopupStageBase::HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &)
     {
@@ -82,31 +85,31 @@ namespace popup
         else if (PACKET_PTR == buttonYesUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
+            RemovePopup(ResponseTypes::Yes);
             return true;
         }
         else if (PACKET_PTR == buttonNoUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
+            RemovePopup(ResponseTypes::No);
             return true;
         }
         else if (PACKET_PTR == buttonCancelUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
+            RemovePopup(ResponseTypes::Cancel);
             return true;
         }
         else if (PACKET_PTR == buttonContinueUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
+            RemovePopup(ResponseTypes::Continue);
             return true;
         }
         else if (PACKET_PTR == buttonOkayUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
+            RemovePopup(ResponseTypes::Okay);
             return true;
         }
 
@@ -156,7 +159,7 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
+                RemovePopup(ResponseTypes::Continue);
                 return true;
             }
         }
@@ -169,7 +172,7 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
+                RemovePopup(ResponseTypes::Okay);
                 return true;
             }
         }
@@ -178,7 +181,7 @@ namespace popup
         {
             EndKeepAliveTimer();
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
+            RemovePopup(ResponseTypes::Yes);
             return true;
         }
 
@@ -186,7 +189,7 @@ namespace popup
             && ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
             PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
+            RemovePopup(ResponseTypes::No);
             return true;
         }
 
@@ -199,7 +202,7 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
+                RemovePopup(ResponseTypes::Cancel);
                 return true;
             }
         }
@@ -211,17 +214,19 @@ namespace popup
             return HandleSelect();
         }
 
-        return Stage::KeyRelease(KEY_EVENT);
+        return StageBase::KeyRelease(KEY_EVENT);
     }
 
     void PopupStageBase::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
+
         if (keepAliveTimerSec_ > 0.0f)
         {
             keepAliveTimerSec_ -= ELAPSED_TIME_SECONDS;
             if (keepAliveTimerSec_ < 0.0f)
             {
-                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
+                RemovePopup(ResponseTypes::Continue);
             }
         }
     }
@@ -237,8 +242,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, static_cast<std::size_t>(selection_));
+            RemovePopup(ResponseTypes::Select, static_cast<std::size_t>(selection_));
 
             return true;
         }
@@ -268,7 +272,7 @@ namespace popup
         innerRegion_ = sf::FloatRect(BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE));
         backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
         sfutil::Center(backgroundSprite_);
-        StageRegionSet(backgroundSprite_.getGlobalBounds());
+        StageRegion(backgroundSprite_.getGlobalBounds());
     }
 
     void PopupStageBase::SetupForFullScreenWithBorderRatio(const float BORDER_RATIO)
@@ -279,7 +283,7 @@ namespace popup
                                 .ApplyShrinkCopy(
                                     sfml_util::Display::Instance()->FullScreenRect()) };
 
-        StageRegionSet(REGION);
+        StageRegion(REGION);
         innerRegion_ = REGION;
         sfutil::SetSizeAndPos(backgroundSprite_, REGION);
     }
@@ -301,7 +305,7 @@ namespace popup
         const auto BUTTON_HEIGHT { ButtonTextHeight() + POPUPBUTTON_TEXT_BOTTOM_MARGIN };
 
         buttonVertPos_
-            = (StageRegionTop() + innerRegion_.top + innerRegion_.height) - BUTTON_HEIGHT;
+            = (StageRegion().top + innerRegion_.top + innerRegion_.height) - BUTTON_HEIGHT;
     }
 
     void PopupStageBase::SetupButtons()
@@ -310,7 +314,7 @@ namespace popup
         {
             buttonYesUPtr_ = std::make_unique<sfml_util::TextButton>(
                 "PopupStage'sYes",
-                StageRegionLeft() + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
+                StageRegion().left + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
                 buttonVertPos_,
                 sfml_util::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
                 sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
@@ -322,7 +326,7 @@ namespace popup
         {
             buttonNoUPtr_ = std::make_unique<sfml_util::TextButton>(
                 "PopupStage'sNo",
-                StageRegionLeft() + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f))
+                StageRegion().left + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f))
                     - 40.0f,
                 buttonVertPos_,
                 sfml_util::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
@@ -335,7 +339,7 @@ namespace popup
         {
             buttonCancelUPtr_ = std::make_unique<sfml_util::TextButton>(
                 "PopupStage'sCancel",
-                (StageRegionLeft() + innerRegion_.left + innerRegion_.width)
+                (StageRegion().left + innerRegion_.left + innerRegion_.width)
                     - (innerRegion_.width / 3.0f),
                 buttonVertPos_,
                 sfml_util::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
@@ -346,7 +350,7 @@ namespace popup
 
         if (popupInfo_.Buttons() & ResponseTypes::Continue)
         {
-            const auto MIDDLE { StageRegionLeft() + innerRegion_.left
+            const auto MIDDLE { StageRegion().left + innerRegion_.left
                                 + (innerRegion_.width * 0.5f) };
 
             buttonContinueUPtr_ = std::make_unique<sfml_util::TextButton>(
@@ -361,7 +365,8 @@ namespace popup
 
         if (popupInfo_.Buttons() & ResponseTypes::Okay)
         {
-            const float MIDDLE(StageRegionLeft() + innerRegion_.left + (innerRegion_.width * 0.5f));
+            const float MIDDLE(
+                StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
 
             buttonOkayUPtr_ = std::make_unique<sfml_util::TextButton>(
                 "PopupStage'sOkay",
@@ -375,7 +380,8 @@ namespace popup
 
         if (popupInfo_.Buttons() & ResponseTypes::Select)
         {
-            const float MIDDLE(StageRegionLeft() + innerRegion_.left + (innerRegion_.width * 0.5f));
+            const float MIDDLE(
+                StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
 
             buttonSelectUPtr_ = std::make_unique<sfml_util::TextButton>(
                 "PopupStage'sSelect",
@@ -390,8 +396,8 @@ namespace popup
 
     void PopupStageBase::SetupTextRegion()
     {
-        textRegion_.left = StageRegionLeft() + innerRegion_.left;
-        textRegion_.top = StageRegionTop() + innerRegion_.top;
+        textRegion_.left = StageRegion().left + innerRegion_.left;
+        textRegion_.top = StageRegion().top + innerRegion_.top;
         textRegion_.width = innerRegion_.width;
 
         const auto TEXT_TO_BUTTON_SPACER { 12.0f }; // found by experiment
@@ -404,7 +410,7 @@ namespace popup
         tempRect.height = 0.0f;
 
         textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "PopupStage's", popupInfo_.TextInfo(), tempRect, sfml_util::IStagePtr_t(this));
+            "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
 
         if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height)
             > (textRegion_.top + textRegion_.height))
@@ -412,7 +418,7 @@ namespace popup
             tempRect.height = textRegion_.height;
 
             textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-                "PopupStage's", popupInfo_.TextInfo(), tempRect, sfml_util::IStagePtr_t(this));
+                "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
         }
     }
 
@@ -501,11 +507,15 @@ namespace popup
         // These values found by experiment to look good at various resolutions.
         switch (E)
         {
-            case PopupImage::Banner: { return sfutil::MapByRes(0.7f, 2.0f);
+            case PopupImage::Banner:
+            {
+                return sfutil::MapByRes(0.7f, 2.0f);
             }
 
             case PopupImage::Regular:
-            case PopupImage::RegularSidebar: { return sfutil::MapByRes(0.85f, 3.5f);
+            case PopupImage::RegularSidebar:
+            {
+                return sfutil::MapByRes(0.85f, 3.5f);
             }
 
             case PopupImage::Large:
@@ -521,7 +531,9 @@ namespace popup
 
             case PopupImage::MusicSheet:
             case PopupImage::Count:
-            default: { return 1.0f;
+            default:
+            {
+                return 1.0f;
             }
         }
     }

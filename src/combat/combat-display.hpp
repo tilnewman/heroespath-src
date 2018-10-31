@@ -15,7 +15,7 @@
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -77,7 +77,8 @@ namespace combat
     using NodePosTrackerMap_t = misc::VectorMap<CombatNodePtr_t, NodePosTracker>;
 
     // Handles drawing the combat tree
-    class CombatDisplay : public sfml_util::Stage
+    class CombatDisplay : public stage::StageBase
+
     {
     public:
         CombatDisplay(const CombatDisplay &) = delete;
@@ -85,9 +86,7 @@ namespace combat
         CombatDisplay & operator=(const CombatDisplay &) = delete;
         CombatDisplay & operator=(CombatDisplay &&) = delete;
 
-    public:
-        explicit CombatDisplay(
-            const CombatAnimationPtr_t, const sf::FloatRect & REGION = sf::FloatRect());
+        explicit CombatDisplay(const CombatAnimationPtr_t);
 
         virtual ~CombatDisplay();
 

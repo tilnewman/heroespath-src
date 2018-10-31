@@ -11,9 +11,9 @@
 //
 #include "popup-stage-inventory-prompt.hpp"
 
-#include "game/loop-manager.hpp"
-
 #include "sfml-util/sound-manager.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 namespace heroespath
 {
@@ -29,7 +29,7 @@ namespace popup
     void PopupStageInventoryPrompt::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     bool PopupStageInventoryPrompt::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
@@ -38,8 +38,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, PopupInfo::ContentNum_Item());
+            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Item());
 
             return true;
         }
@@ -47,8 +46,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, PopupInfo::ContentNum_Coins());
+            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Coins());
 
             return true;
         }
@@ -56,8 +54,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, PopupInfo::ContentNum_Gems());
+            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Gems());
 
             return true;
         }
@@ -65,8 +62,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, PopupInfo::ContentNum_MeteorShards());
+            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_MeteorShards());
 
             return true;
         }

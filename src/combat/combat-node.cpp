@@ -23,6 +23,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/position.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace combat
@@ -64,8 +66,8 @@ namespace combat
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
         : Entity(
-              std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
-              sf::FloatRect())
+            std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
+            sf::FloatRect())
         , creatureNameInfo_()
         , isPlayer_(CREATURE_PTR->IsPlayerCharacter())
         , nameText_(

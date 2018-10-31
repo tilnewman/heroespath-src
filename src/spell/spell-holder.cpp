@@ -13,9 +13,9 @@
 
 #include "combat/effect-type-enum.hpp"
 #include "combat/target-enum.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "spell/spell.hpp"
+#include "stage/i-stage.hpp"
 
 namespace heroespath
 {
@@ -158,14 +158,13 @@ namespace spell
 
     void Holder::Empty() { spellsUVec_.clear(); }
 
-    bool Holder::Test()
+    bool Holder::Test(stage::IStagePtr_t iStagePtr)
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "spell::Holder::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("spell::Holder::Test() Starting Tests...");
         }
 
         static misc::EnumUnderlying_t spellIndex { 0 };
@@ -206,14 +205,12 @@ namespace spell
 
             ++spellIndex;
 
-            game::LoopManager::Instance()->TestingStrIncrement(
-                "Spell Test \"" + SPELL_PTR->Name() + "\"");
+            iStagePtr->TestingStrIncrement("Spell Test \"" + SPELL_PTR->Name() + "\"");
 
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend("spell::Holder::Test()  ALL TESTS PASSED.");
-
+        iStagePtr->TestingStrAppend("spell::Holder::Test()  ALL TESTS PASSED.");
         return true;
     }
 

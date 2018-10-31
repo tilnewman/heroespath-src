@@ -12,13 +12,14 @@
 #include "popup-stage-spellbook.hpp"
 
 #include "creature/creature.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/cached-texture.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "spell/spell.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -161,14 +162,14 @@ namespace popup
 
         spellDescTextUPtr_->draw(target, STATES);
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         PopupStageBase::DrawRedX(target, STATES);
     }
 
     void PopupStageSpellbook::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         const auto HAS_TEXT_COLOR_SLIDER_STOPPED { textColorSlider_.UpdateAndReturnIsStopped(
             ELAPSED_TIME_SECONDS) };
@@ -201,7 +202,7 @@ namespace popup
         {
             PlayValidKeypressSoundEffect();
 
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
+            RemovePopup(ResponseTypes::Cancel, 0);
             return true;
         }
         else if ((KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::C))
@@ -511,7 +512,7 @@ namespace popup
         {
             willShowXImage_ = true;
 
-            const auto CURRENT_PHASE { game::LoopManager::Instance()->GetPhase() };
+            const auto CURRENT_PHASE { GetPhase() };
 
             if (CURRENT_PHASE & game::Phase::Combat)
             {
@@ -607,7 +608,7 @@ namespace popup
         else
         {
             spellDescTextUPtr_->Setup(
-                SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, sfml_util::IStagePtr_t(this));
+                SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, stage::IStagePtr_t(this));
         }
     }
 
@@ -619,7 +620,7 @@ namespace popup
 
     bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtr_t SPELL_PTR) const
     {
-        return (SPELL_PTR->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+        return (SPELL_PTR->ValidPhases() & GetPhase());
     }
 
     bool PopupStageSpellbook::CanCastSpell(const spell::SpellPtr_t SPELL_PTR) const
@@ -636,8 +637,7 @@ namespace popup
                 ->GetSoundEffectSet(sfml_util::sound_effect_set::SpellSelect)
                 .PlayRandom();
 
-            game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, listBoxUPtr_->SelectionIndex());
+            RemovePopup(ResponseTypes::Select, listBoxUPtr_->SelectionIndex());
 
             willShowXImage_ = false;
 

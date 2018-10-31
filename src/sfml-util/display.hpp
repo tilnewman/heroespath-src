@@ -12,57 +12,49 @@
 //  For example, the window size and color depth, etc.
 //
 #include "misc/not-null.hpp"
-#include "popup/popup-manager.hpp"
+#include "sfml-util/display-change-result.hpp"
 #include "sfml-util/resolution.hpp"
-#include "sfml-util/slider-colored-rect.hpp"
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include <memory>
 #include <string>
+#include <vector>
+
+namespace sf
+{
+class RenderWindow;
+}
 
 namespace heroespath
 {
-namespace sfml_util
+
+namespace stage
 {
-    class IStage;
+    struct IStage;
     using IStagePtr_t = misc::NotNull<IStage *>;
 
-    struct DisplayChangeResult
-    {
-        enum Enum
-        {
-            // the new video mode was achieved
-            Success = 0,
+} // namespace stage
 
-            // failed to set new video mode so reverted back to the original
-            FailThenRevert,
+namespace sfml_util
+{
 
-            // failed to set new video mode and SFML set the mode back to what it was automatically
-            FailNoChange,
-
-            // failed to set new video mode and SFML set the mode to something completely different
-            FailChange,
-
-            Count
-        };
-
-        static const std::string ToString(const DisplayChangeResult::Enum E);
-    };
+    class ColoredRectSlider;
+    using ColoredRectSliderUPtr_t = std::unique_ptr<ColoredRectSlider>;
 
     // A Subsystem that retains details pertaining to an sfml application.
     class Display
     {
     public:
+        Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
+        ~Display();
+
         Display(const Display &) = delete;
         Display(Display &&) = delete;
         Display & operator=(const Display &) = delete;
         Display & operator=(Display &&) = delete;
-
-    public:
-        Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
-        ~Display();
 
         static misc::NotNull<Display *> Instance();
 
@@ -78,15 +70,12 @@ namespace sfml_util
         unsigned int WinColorDepth() const;
         unsigned int AntialiasLevel() const;
 
-        const sf::FloatRect FullScreenRect() const
-        {
-            return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight());
-        }
+        const sf::FloatRect FullScreenRect() const { return sf::FloatRect(FullScreenRecti()); }
 
         const sf::IntRect FullScreenRecti() const
         {
             return sf::IntRect(
-                0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
+                0, 0, static_cast<int>(GetWinWidthu()), static_cast<int>(GetWinHeightu()));
         }
 
         void SetFrameRateLimit(const unsigned LIMIT);
@@ -97,28 +86,23 @@ namespace sfml_util
 
         bool GetVerticalSync() const { return willVerticalSync_; }
 
-        void ConsumeEvents();
+        void DrawStage(const stage::IStagePtr_t &);
 
-        void DrawStage(const IStagePtr_t &);
-
-        bool PollEvent(sf::Event & e) { return winUPtr_->pollEvent(e); }
+        const std::vector<sf::Event> PollEvents();
 
         void TakeScreenshot();
 
-        void Close() { winUPtr_->close(); }
+        void Close();
 
-        void SetMouseCursorVisibility(const bool IS_VISIBLE)
-        {
-            winUPtr_->setMouseCursorVisible(IS_VISIBLE);
-        }
+        void SetMouseCursorVisibility(const bool IS_VISIBLE);
 
-        const sf::Vector2i GetMousePosition() { return sf::Mouse::getPosition(*winUPtr_); }
+        const sf::Vector2i GetMousePosition();
 
-        bool IsOpen() const { return winUPtr_->isOpen(); }
+        bool IsOpen() const;
 
-        void ClearToBlack() { winUPtr_->clear(sf::Color::Black); }
+        void ClearToBlack();
 
-        void DisplayFrameBuffer() { winUPtr_->display(); }
+        void DisplayFrameBuffer();
 
         static float GetWinWidthMin() { return 1280.0f; }
         static float GetWinHeightMin() { return 900.0f; }
@@ -129,12 +113,37 @@ namespace sfml_util
         // WARNING:  Changing these values will throw off all relative positions returned by
         // sfutil::MapByRes(), in other words, everything in all UIs will not be positioned
         // correctly!
+        //
+        // When I finish eliminating all calls to MapByRes() then this crap can be removed.
         static float GetWinWidthMax() { return 7680.0f; }
         static float GetWinHeightMax() { return 4800.0f; }
 
         static bool IsResolutionListed(const Resolution & RES);
         static bool IsVideoModeListed(const sf::VideoMode & VM);
 
+        static void LogAllFullScreenVideoModes();
+
+        // returns the number of supported fullscreen video modes that were listed.
+        static std::size_t LogAllSupportedFullScreenVideoModes();
+
+        static const sf::VideoMode GetCurrentVideoMode();
+        static const Resolution GetCurrentResolution();
+
+        const DisplayChangeResult
+            ChangeVideoMode(const Resolution & RES, const unsigned ANTIALIAS_LEVEL);
+
+        const DisplayChangeResult
+            ChangeVideoMode(const sf::VideoMode & VM, const unsigned ANTIALIAS_LEVEL);
+
+        void FadeOutStart(const sf::Color & COLOR, const float SPEED);
+        void FadeInStart(const float SPEED);
+
+        // returns true if the fade is still moving (not finished yet)
+        bool UpdateTimeForFade(const float FRAME_TIME_SEC);
+
+        void DrawFade();
+
+    private:
         static bool SetResolutionNameAndRatio(Resolution & res);
 
         // Decided to allow resolutions that are equal or greater than the
@@ -154,34 +163,14 @@ namespace sfml_util
             return IsVideoModeSupported(sf::VideoMode::getDesktopMode());
         }
 
-        static void LogAllFullScreenVideoModes();
-
         // returns the number of supported fullscreen video modes that were supported.
         static std::size_t ComposeSupportedFullScreenVideoModesVec(ResolutionVec_t & vec);
 
-        // returns the number of supported fullscreen video modes that were listed.
-        static std::size_t LogAllSupportedFullScreenVideoModes();
-
         static const sf::VideoMode EstablishVideoMode();
 
-        static const sf::VideoMode GetCurrentVideoMode();
-        static const Resolution GetCurrentResolution();
+        static Resolution ConvertVideoModeToResolution(const sf::VideoMode & VM);
 
-        DisplayChangeResult::Enum
-            ChangeVideoMode(const Resolution & RES, const unsigned ANTIALIAS_LEVEL);
-
-        DisplayChangeResult::Enum
-            ChangeVideoMode(const sf::VideoMode & VM, const unsigned ANTIALIAS_LEVEL);
-
-        static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
-
-        void DrawFullScreenFader(const ColoredRectSlider & COLOR_SLIDER_RECT)
-        {
-            if (winUPtr_)
-            {
-                winUPtr_->draw(COLOR_SLIDER_RECT);
-            }
-        }
+        void UpdateFaderRegion();
 
     private:
         static std::unique_ptr<Display> instanceUPtr_;
@@ -191,6 +180,7 @@ namespace sfml_util
         unsigned frameRateLimit_;
         bool willVerticalSync_;
         std::unique_ptr<sf::RenderWindow> winUPtr_;
+        ColoredRectSliderUPtr_t fadeColoredRectSliderUPtr_;
     };
 
 } // namespace sfml_util

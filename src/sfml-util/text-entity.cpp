@@ -172,6 +172,7 @@ namespace sfml_util
     void TextEntity::Sync()
     {
         const auto CURRENT_MOUSE_STATE { GetMouseState() };
+
         willDraw_ = false;
 
         // make sure all text is rendered and cached
@@ -186,11 +187,17 @@ namespace sfml_util
                 continue;
             }
 
-            auto finalRegion { sfutil::MakeRectWithPosition(sfutil::Position(entityRegion_)) };
+            auto finalRegion { entityRegion_ };
+
             auto & renderTextureUPtr { cacheMap_[TEXT_INFO] };
 
             if (!renderTextureUPtr)
             {
+                // make sure the region has size zero if rendering otherwise the size will limit the
+                // rendered text
+                finalRegion.width = 0.0f;
+                finalRegion.height = 0.0f;
+
                 const auto RENDER_RESULT { TextRenderer::ToTexture(
                     TEXT_INFO, finalRegion, renderTextureUPtr, finalRegion) };
 
@@ -227,7 +234,6 @@ namespace sfml_util
                 sprite_.setColor(TEXT_INFO.color);
 
                 entityRegion_ = finalRegion;
-
                 willDraw_ = true;
             }
         }

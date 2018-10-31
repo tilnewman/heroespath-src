@@ -34,7 +34,6 @@ namespace creature
         PlayerParty & operator=(const PlayerParty &) = delete;
         PlayerParty & operator=(PlayerParty &&) = delete;
 
-    public:
         explicit PlayerParty(
             const avatar::Avatar::Enum PARTY_AVATAR = avatar::Avatar::Player_First,
             const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());

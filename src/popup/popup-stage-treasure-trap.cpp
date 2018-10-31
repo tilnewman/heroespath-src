@@ -16,6 +16,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace popup
@@ -41,7 +43,7 @@ namespace popup
     void PopupStageTreasureTrap::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void PopupStageTreasureTrap::SetupTitleText()
@@ -58,10 +60,7 @@ namespace popup
             sf::Text::Bold);
 
         textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "PopupStageTreasureTrap's_Title",
-            TITLE_TEXTINFO,
-            tempRect,
-            sfml_util::IStagePtr_t(this));
+            "PopupStageTreasureTrap's_Title", TITLE_TEXTINFO, tempRect, stage::IStagePtr_t(this));
     }
 
     void PopupStageTreasureTrap::SetupDescriptionText()
@@ -78,9 +77,9 @@ namespace popup
             sfml_util::Justified::Center);
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, sfml_util::IStagePtr_t(this));
+            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, stage::IStagePtr_t(this));
 
-        Stage::EntityAdd(descTextRegionUPtr_.get());
+        StageBase::EntityAdd(descTextRegionUPtr_.get());
     }
 
     void PopupStageTreasureTrap::SetupAccentImage()

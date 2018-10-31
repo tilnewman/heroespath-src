@@ -10,7 +10,10 @@
 // intro-stage.hpp
 //
 #include "sfml-util/cached-texture.hpp"
-#include "sfml-util/stage.hpp"
+#include "sfml-util/music-enum.hpp"
+#include "stage/stage-base.hpp"
+
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace heroespath
 {
@@ -18,7 +21,7 @@ namespace stage
 {
 
     // Responsible for drawing a single centered title image that fades in/out
-    class IntroStage : public sfml_util::Stage
+    class IntroStage : public stage::StageBase
     {
     public:
         IntroStage(const IntroStage &) = delete;
@@ -29,14 +32,27 @@ namespace stage
         IntroStage();
         virtual ~IntroStage();
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
+        void Setup() final;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) final;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) final;
+
+        bool KeyPress(const sf::Event::KeyEvent &) final;
+        void UpdateMouseDown(const sf::Vector2f &) final;
 
     private:
+        const sfml_util::music::Enum backgroundMusic_;
+        const float musicVolumeOrig_;
+        const float timeFromStartToMusicSec_;
+        const float timeFromMusicToAnimSec_;
+        const float timeFromAnimToExitSec_;
+        const float imageScaleSpeed_;
         sfml_util::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
-        std::size_t initialDrawHoldCounter_;
+        float elapsedSec_;
+        bool hasMusicStarted_;
+        bool hasAnimStarted_;
+        bool hasExited_;
+        bool wasMusicVolumeChanged_;
     };
 
 } // namespace stage

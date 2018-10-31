@@ -17,6 +17,8 @@
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace popup
@@ -48,13 +50,19 @@ namespace popup
         const auto TITLE_TEXT { [&]() {
             switch (popupInfo_.HowCombatEnded())
             {
-                case combat::CombatEnd::Win: { return "Victory!";
+                case combat::CombatEnd::Win:
+                {
+                    return "Victory!";
                 }
-                case combat::CombatEnd::Lose: { return "Death Strikes!";
+                case combat::CombatEnd::Lose:
+                {
+                    return "Death Strikes!";
                 }
                 case combat::CombatEnd::Ran:
                 case combat::CombatEnd::Count:
-                default: { return "Defeat!";
+                default:
+                {
+                    return "Defeat!";
                 }
             }
         }() };
@@ -139,7 +147,7 @@ namespace popup
         target.draw(*titleTextRegionUPtr_, STATES);
         target.draw(*descTextRegionUPtr_, STATES);
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     const std::string
@@ -147,15 +155,21 @@ namespace popup
     {
         switch (HOW_COMBAT_ENDED)
         {
-            case combat::CombatEnd::Win: { return "media-images-combat-crossswords";
+            case combat::CombatEnd::Win:
+            {
+                return "media-images-combat-crossswords";
             }
 
-            case combat::CombatEnd::Lose: { return "media-images-combat-crossbones";
+            case combat::CombatEnd::Lose:
+            {
+                return "media-images-combat-crossbones";
             }
 
             case combat::CombatEnd::Ran:
             case combat::CombatEnd::Count:
-            default: { return "media-images-combat-run";
+            default:
+            {
+                return "media-images-combat-run";
             }
         }
     }

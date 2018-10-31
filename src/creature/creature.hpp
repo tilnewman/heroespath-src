@@ -90,7 +90,6 @@ namespace creature
         Creature & operator=(const Creature &) = delete;
         Creature & operator=(Creature &&) = delete;
 
-    public:
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
         explicit Creature(
             const bool IS_PLAYER = false,

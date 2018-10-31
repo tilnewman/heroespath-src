@@ -19,30 +19,21 @@ namespace heroespath
 namespace map
 {
 
-    const std::string LayerType::ToString(const LayerType::Enum E)
+    const std::string LayerType::ToString(const LayerType::Enum LAYER)
     {
-        switch (E)
+        switch (LAYER)
         {
-            case Ground:
-            {
-                return "Ground";
+            case Ground: { return "Ground";
             }
-            case Object:
-            {
-                return "Object";
+            case Object: { return "Object";
             }
-            case Shadow:
-            {
-                return "Shadow";
+            case Shadow: { return "Shadow";
             }
             case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "map::LayerType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+            default: { ThrowInvalidValueForFunction(LAYER, "ToString");
             }
         }
     }
+
 } // namespace map
 } // namespace heroespath

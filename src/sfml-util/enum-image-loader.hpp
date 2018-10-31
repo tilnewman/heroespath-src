@@ -9,7 +9,6 @@
 //
 // enum-image-loader.hpp
 //
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "sfml-util/image-options.hpp"
@@ -24,6 +23,11 @@ namespace heroespath
 {
 namespace sfml_util
 {
+
+    namespace EnumImageLoaderHelpers
+    {
+        void TestLog(const std::string & MESSAGE);
+    }
 
     // Responsible for implementing loading and returned an image based on enum values.
     template <typename EnumWrapper_t>
@@ -63,9 +67,7 @@ namespace sfml_util
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
-
-                game::LoopManager::Instance()->TestingStrAppend(
-                    makeLogPrefix() + "Starting Tests...");
+                EnumImageLoaderHelpers::TestLog(makeLogPrefix() + "Starting Tests...");
             }
 
             static misc::EnumUnderlying_t imageIndex { 0 };
@@ -87,12 +89,11 @@ namespace sfml_util
                         << MAX_DIMMENSION_U << ".  The actual size=" << texture.getSize().x << "x"
                         << texture.getSize().y << ".");
 
-                game::LoopManager::Instance()->TestingImageSet(Path(ENUM_VALUE));
+                EnumImageLoaderHelpers::TestLog(Path(ENUM_VALUE));
                 return false;
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(makeLogPrefix() + "  All Test Passed");
-
+            EnumImageLoaderHelpers::TestLog(makeLogPrefix() + "  All Test Passed");
             return true;
         }
 

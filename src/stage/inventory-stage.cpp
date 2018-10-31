@@ -19,12 +19,12 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "game/loop-manager.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
+#include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-inventory-prompt.hpp"
 #include "popup/popup-stage-musicsheet.hpp"
@@ -32,6 +32,7 @@
 #include "popup/popup-stage-spellbook.hpp"
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/cached-texture.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/list-box-helpers.hpp"
@@ -43,6 +44,9 @@
 #include "sfml-util/text-region.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
+#include "stage/stage-setup-packet.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 
@@ -97,19 +101,15 @@ namespace stage
     InventoryStage::InventoryStage(
         const creature::CreaturePtr_t TURN_CREATURE_PTR,
         const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-        const game::Phase::Enum CURRENT_PHASE)
-        : Stage(
-              "Inventory",
-              0.0f,
-              0.0f,
-              sfml_util::Display::Instance()->GetWinWidth(),
-              sfml_util::Display::Instance()->GetWinHeight(),
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        const game::Phase::Enum PREVIOUS_PHASE)
+        : StageBase(
+            "Inventory",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))
@@ -278,7 +278,7 @@ namespace stage
         , sparkleAnimUPtr_()
         , songAnimUPtr_()
         , turnCreaturePtr_(TURN_CREATURE_PTR)
-        , currentPhase_(CURRENT_PHASE)
+        , previousPhase_(PREVIOUS_PHASE)
         , hasTakenActionSpellOrSong_(false)
         , creatureInteraction_()
         , creatureToImageMap_()
@@ -291,7 +291,7 @@ namespace stage
     InventoryStage::~InventoryStage()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
     }
 
     bool InventoryStage::HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
@@ -431,50 +431,48 @@ namespace stage
     {
         isWaitingOnPopup_ = false;
 
-        if (PACKET_PTR->Name() == POPUP_NAME_SONG_RESULT_)
+        if (PACKET_PTR->name == POPUP_NAME_SONG_RESULT_)
         {
             return HandleSong_Step2_DisplayResults();
         }
-        else if (PACKET_PTR->Name() == POPUP_NAME_SPELL_RESULT_)
+        else if (PACKET_PTR->name == POPUP_NAME_SPELL_RESULT_)
         {
             return HandleCast_Step3_DisplayResults();
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_DROPCONFIRM_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Yes))
+            (PACKET_PTR->name == POPUP_NAME_DROPCONFIRM_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Yes))
         {
             return HandleDropActual();
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_GIVE_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_GIVE_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
         {
-            if (PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_Item())
+            if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Item())
             {
                 return HandleGiveRequestItems();
             }
-            else if (PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_Coins())
+            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
             {
                 return HandleGiveRequestCoins();
             }
-            else if (PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_Gems())
+            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
             {
                 return HandleGiveRequestGems();
             }
             else if (
-                PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_MeteorShards())
+                PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 return HandleGiveRequestMeteorShards();
             }
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_CHAR_SELECT_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_CHAR_SELECT_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
         {
             creatureToGiveToPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(
-                PACKET_PTR->SelectionOpt().value());
+                PACKET_PTR->selection_opt.value());
 
             const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
@@ -491,25 +489,33 @@ namespace stage
 
             switch (contentType_)
             {
-                case ContentType::Item: { return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Item:
+                {
+                    return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
                 }
-                case ContentType::Coins: { return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Coins:
+                {
+                    return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
                 }
-                case ContentType::Gems: { return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
+                case ContentType::Gems:
+                {
+                    return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::MeteorShards:
                 {
                     return HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::Count:
-                default: { return true;
+                default:
+                {
+                    return true;
                 }
             }
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_NUMBER_SELECT_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_NUMBER_SELECT_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
+            && PACKET_PTR->selection_opt)
         {
             const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
@@ -518,31 +524,32 @@ namespace stage
                 case ContentType::MeteorShards:
                 {
                     HandleMeteorShardsGive(
-                        PACKET_PTR->SelectionOpt().value(), CREATURE_TO_GIVE_TO_PTR);
+                        PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Coins:
                 {
-                    HandleCoinsGive(PACKET_PTR->SelectionOpt().value(), CREATURE_TO_GIVE_TO_PTR);
+                    HandleCoinsGive(PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Gems:
                 {
-                    HandleGemsGive(PACKET_PTR->SelectionOpt().value(), CREATURE_TO_GIVE_TO_PTR);
+                    HandleGemsGive(PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Item:
                 case ContentType::Count:
-                default: { return true;
+                default:
+                {
+                    return true;
                 }
             }
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_CONTENTSELECTION_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_CONTENTSELECTION_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
         {
-            if (PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_Coins())
+            if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -555,7 +562,7 @@ namespace stage
 
                 return false;
             }
-            else if (PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_Gems())
+            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -569,7 +576,7 @@ namespace stage
                 return false;
             }
             else if (
-                PACKET_PTR->SelectionOpt().value() == popup::PopupInfo::ContentNum_MeteorShards())
+                PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -584,18 +591,17 @@ namespace stage
             }
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_SPELLBOOK_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_SPELLBOOK_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
         {
             const spell::SpellPVec_t SPELLS_PVEC { creaturePtr_->SpellsPVec() };
 
-            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->selection_opt.value() };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SPELL, selection="
-                    << PACKET_PTR->SelectionOpt().value()
+                    << PACKET_PTR->selection_opt.value()
                     << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
             const auto SPELL_PTR { SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
@@ -604,17 +610,16 @@ namespace stage
             return HandleCast_Step1_TargetSelection(SPELL_PTR);
         }
         else if (
-            (PACKET_PTR->Name() == POPUP_NAME_MUSICSHEET_)
-            && (PACKET_PTR->Response() == popup::ResponseTypes::Select)
-            && PACKET_PTR->SelectionOpt())
+            (PACKET_PTR->name == POPUP_NAME_MUSICSHEET_)
+            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
         {
             const auto SONGS_PVEC { creaturePtr_->SongsPVec() };
-            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->SelectionOpt().value() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->selection_opt.value() };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SONG, selection="
-                    << PACKET_PTR->SelectionOpt().value()
+                    << PACKET_PTR->selection_opt.value()
                     << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
 
             creaturePtr_->LastSongPlayedNum(RESPONSE_SELECTION_INDEX);
@@ -650,7 +655,7 @@ namespace stage
         target.draw(stageTitle_, STATES);
         target.draw(bottomSymbol_, STATES);
         target.draw(creatureSprite_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         // Always draw because it is a fast operation and will
         // be fully transparent when should not be drawn.
@@ -682,7 +687,7 @@ namespace stage
     bool InventoryStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
         if ((isSliderAnimating_ == false) && (IsDetailViewFadingOrVisible() == false)
-            && (game::LoopManager::Instance()->IsFading() == false))
+            && (IsFading() == false))
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
 
@@ -801,7 +806,7 @@ namespace stage
             detailViewTimerSec_ = 0.0f;
         }
 
-        return Stage::KeyRelease(KEY_EVENT);
+        return StageBase::KeyRelease(KEY_EVENT);
     }
 
     void InventoryStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
@@ -875,8 +880,7 @@ namespace stage
         }
         else
         {
-            if (hasMouseMoved_ && (IsDetailViewFadingOrVisible() == false)
-                && (game::LoopManager::Instance()->IsFading() == false)
+            if (hasMouseMoved_ && (IsDetailViewFadingOrVisible() == false) && (IsFading() == false)
                 && GetItemMouseIsOver(mousePosV_) && (false == isWaitingOnPopup_))
             {
                 UpdateTime_DetailView(ELAPSED_TIME_SECONDS);
@@ -891,7 +895,7 @@ namespace stage
             UpdateTime_SongAnimation(ELAPSED_TIME_SECONDS);
         }
 
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
     }
 
     void InventoryStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
@@ -899,13 +903,13 @@ namespace stage
         const sf::Vector2f NEW_MOUSE_POS_F { NEW_MOUSE_POS };
         hasMouseMoved_ = true;
         HandleDetailViewMouseInterrupt(NEW_MOUSE_POS_F);
-        Stage::UpdateMousePos(NEW_MOUSE_POS);
+        StageBase::UpdateMousePos(NEW_MOUSE_POS);
     }
 
     void InventoryStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         HandleDetailViewMouseInterrupt(MOUSE_POS_V);
-        Stage::UpdateMouseDown(MOUSE_POS_V);
+        StageBase::UpdateMouseDown(MOUSE_POS_V);
 
         if (IfMouseDownIsOnDisabledButtonPopupRejection(backButtonUPtr_, MOUSE_POS_V))
             return;
@@ -2440,13 +2444,14 @@ namespace stage
 
     bool InventoryStage::HandleBack()
     {
-        game::LoopManager::Instance()->TransitionTo_Previous(hasTakenActionSpellOrSong_);
+        TransitionTo(stage::SetupPacket(stage::Stage::Previous, hasTakenActionSpellOrSong_));
+
         return true;
     }
 
     bool InventoryStage::HandleEquipRequest()
     {
-        if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2489,7 +2494,7 @@ namespace stage
                     popup::PopupButtons::Okay,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
                 isWaitingOnPopup_ = true;
             }
         }
@@ -2499,7 +2504,7 @@ namespace stage
 
     bool InventoryStage::HandleUnequipRequest()
     {
-        if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2555,8 +2560,7 @@ namespace stage
             true,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageInventoryPrompt>(
-            this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
 
         isWaitingOnPopup_ = true;
         return true;
@@ -2564,7 +2568,7 @@ namespace stage
 
     bool InventoryStage::HandleGiveRequestItems()
     {
-        if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2672,7 +2676,7 @@ namespace stage
             return true;
         }
 
-        if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2789,7 +2793,7 @@ namespace stage
             && (equipButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
             && itemRightListBoxUPtr_ && (itemRightListBoxUPtr_->Empty() == false))
         {
-            if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+            if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
             {
                 std::ostringstream ss;
                 ss << "\nDuring combat, only the character whose turn it is may "
@@ -2812,7 +2816,7 @@ namespace stage
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptQuestion) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            SpawnPopup(this, POPUP_INFO);
             isWaitingOnPopup_ = true;
             return true;
         }
@@ -2827,7 +2831,7 @@ namespace stage
             return false;
         }
 
-        if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2999,8 +3003,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_, PROMPT_TEXT, invalidTextVec) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(
-            this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
 
         isWaitingOnPopup_ = true;
     }
@@ -3019,7 +3022,7 @@ namespace stage
             sfml_util::sound_effect::PromptWarn,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+        SpawnPopup(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
     }
@@ -3036,8 +3039,7 @@ namespace stage
                 sfml_util::FontManager::Instance()->Size_Largeish())
         };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageNumberSelect>(
-            this, POPUP_INFO_NUMBER_SELECT);
+        SpawnPopup(this, POPUP_INFO_NUMBER_SELECT);
 
         isWaitingOnPopup_ = true;
     }
@@ -3055,7 +3057,7 @@ namespace stage
                                      : sfml_util::sound_effect::None),
             sfml_util::FontManager::Instance()->Size_Largeish()) };
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO_DONE);
+        SpawnPopup(this, POPUP_INFO_DONE);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
     }
@@ -3075,8 +3077,7 @@ namespace stage
             false,
             sfml_util::FontManager::Instance()->Size_Normal()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageInventoryPrompt>(
-            this, POPUP_INFO);
+        SpawnPopup(this, POPUP_INFO);
 
         isWaitingOnPopup_ = true;
     }
@@ -3721,47 +3722,87 @@ namespace stage
     {
         switch (WHICH_ACHV)
         {
-            case creature::AchievementType::EnemiesFaced: { return ":               ";
+            case creature::AchievementType::EnemiesFaced:
+            {
+                return ":               ";
             }
-            case creature::AchievementType::MeleeHits: { return ":                    ";
+            case creature::AchievementType::MeleeHits:
+            {
+                return ":                    ";
             }
-            case creature::AchievementType::BattlesSurvived: { return ":             ";
+            case creature::AchievementType::BattlesSurvived:
+            {
+                return ":             ";
             }
-            case creature::AchievementType::ProjectileHits: { return ":               ";
+            case creature::AchievementType::ProjectileHits:
+            {
+                return ":               ";
             }
-            case creature::AchievementType::BeastMindLinks: { return ":          ";
+            case creature::AchievementType::BeastMindLinks:
+            {
+                return ":          ";
             }
-            case creature::AchievementType::DodgedStanding: { return ":  ";
+            case creature::AchievementType::DodgedStanding:
+            {
+                return ":  ";
             }
-            case creature::AchievementType::DodgedFlying: { return ":      ";
+            case creature::AchievementType::DodgedFlying:
+            {
+                return ":      ";
             }
-            case creature::AchievementType::LocksPicked: { return ":                  ";
+            case creature::AchievementType::LocksPicked:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::BackstabsHits: { return ":                ";
+            case creature::AchievementType::BackstabsHits:
+            {
+                return ":                ";
             }
-            case creature::AchievementType::SongsPlayed: { return ":                 ";
+            case creature::AchievementType::SongsPlayed:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::SpiritsLifted: { return ":                 ";
+            case creature::AchievementType::SpiritsLifted:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::BeastRoars: { return ":                   ";
+            case creature::AchievementType::BeastRoars:
+            {
+                return ":                   ";
             }
-            case creature::AchievementType::MoonHowls: { return ":                  ";
+            case creature::AchievementType::MoonHowls:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::PackActions: { return ":                  ";
+            case creature::AchievementType::PackActions:
+            {
+                return ":                  ";
             }
-            case creature::AchievementType::FlyingAttackHits: { return ":         ";
+            case creature::AchievementType::FlyingAttackHits:
+            {
+                return ":         ";
             }
-            case creature::AchievementType::TurnsInFlight: { return ":              ";
+            case creature::AchievementType::TurnsInFlight:
+            {
+                return ":              ";
             }
-            case creature::AchievementType::SpellsCast: { return ":                    ";
+            case creature::AchievementType::SpellsCast:
+            {
+                return ":                    ";
             }
-            case creature::AchievementType::HealthGiven: { return ":                 ";
+            case creature::AchievementType::HealthGiven:
+            {
+                return ":                 ";
             }
-            case creature::AchievementType::HealthTraded: { return ":                ";
+            case creature::AchievementType::HealthTraded:
+            {
+                return ":                ";
             }
             case creature::AchievementType::None:
             case creature::AchievementType::Count:
-            default: { return "";
+            default:
+            {
+                return "";
             }
         }
     }
@@ -3891,7 +3932,7 @@ namespace stage
             }
         }
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+        SpawnPopup(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
         return false;
     }
@@ -3920,7 +3961,7 @@ namespace stage
     {
         const auto IS_SPELLS { (creaturePtr_->Role() != creature::role::Bard) };
 
-        if (game::Phase::Combat == currentPhase_)
+        if (game::Phase::Combat == previousPhase_)
         {
             if (creaturePtr_ != turnCreaturePtr_)
             {
@@ -3970,8 +4011,7 @@ namespace stage
                 const auto POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_, creaturePtr_, creaturePtr_->LastSpellCastNum()) };
 
-                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSpellbook>(
-                    this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
             }
             else
             {
@@ -3986,8 +4026,7 @@ namespace stage
                 const auto POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_, creaturePtr_, creaturePtr_->LastSongPlayedNum()) };
 
-                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageMusicSheet>(
-                    this, POPUP_INFO);
+                SpawnPopup(this, POPUP_INFO);
             }
             else
             {
@@ -4099,7 +4138,7 @@ namespace stage
             }
         }
 
-        game::LoopManager::Instance()->PopupWaitBegin(this, POPUPINFO_NOITEM);
+        SpawnPopup(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
 
         // return false because one popup is replacing another
@@ -4111,7 +4150,7 @@ namespace stage
         const std::string & TECH_ERROR_MSG,
         const std::string & TITLE_MSG)
     {
-        game::LoopManager::Instance()->PopupWaitBegin(
+        SpawnPopup(
             this,
             popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
                 "Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG, TECH_ERROR_MSG, TITLE_MSG));

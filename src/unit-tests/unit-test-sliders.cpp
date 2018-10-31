@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
         BOOST_CHECK(IsRealZero(slider.Speed()));
         BOOST_CHECK(IsRealZero(slider.Value()));
         BOOST_CHECK(IsRealZero(slider.From()));
-        BOOST_CHECK(IsRealZero(slider.To()));
+        BOOST_CHECK(IsRealOne(slider.To()));
     }
 
     {
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(SliderZeroToOne_Tests)
     {
         SliderZeroToOne slider(0.0f);
 
-        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped() == false);
         BOOST_CHECK(IsRealZero(slider.Speed()));
         BOOST_CHECK(IsRealZero(slider.Value()));
 
@@ -412,7 +412,7 @@ BOOST_AUTO_TEST_CASE(SliderFromTo_Tests)
         BOOST_CHECK(slider.To() == 100);
         BOOST_CHECK(IsRealZero(slider.Speed()));
         BOOST_CHECK(slider.IsMoving() != slider.IsStopped());
-        BOOST_CHECK(slider.IsStopped());
+        BOOST_CHECK(slider.IsStopped() == false);
         BOOST_CHECK(slider.Value() == 0);
     }
 

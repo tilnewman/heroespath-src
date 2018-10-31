@@ -20,8 +20,8 @@
 #include "sfml-util/sliderbar-music.hpp"
 #include "sfml-util/sliderbar-sfx.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/text-region.hpp"
+#include "stage/stage-base.hpp"
 
 #include <memory>
 #include <string>
@@ -33,7 +33,8 @@ namespace stage
 
     // A simple class that displays the system and game settings
     class SettingsStage
-        : public sfml_util::Stage
+        : public stage::StageBase
+
         , public sfml_util::PopupCallback_t::IHandler_t
         //, public sfml_util::RadioButtonSet::Callback_t::IHandler_t
         , public sfml_util::ImageTextEntity::Callback_t::IHandler_t

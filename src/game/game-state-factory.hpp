@@ -37,6 +37,7 @@ namespace game
     // forward declarations
     class GameState;
     using GameStatePtr_t = misc::NotNull<GameState *>;
+    using GameStateUPtr_t = std::unique_ptr<GameState>;
     using GameStatePtrOpt_t = boost::optional<GameStatePtr_t>;
     using GameStatePVec_t = std::vector<GameStatePtr_t>;
 
@@ -49,7 +50,6 @@ namespace game
         GameStateFactory & operator=(const GameStateFactory &) = delete;
         GameStateFactory & operator=(GameStateFactory &&) = delete;
 
-    public:
         GameStateFactory();
         ~GameStateFactory();
 
@@ -57,7 +57,8 @@ namespace game
         static void Acquire();
         static void Release();
 
-        void NewGame(creature::PlayerPartyUPtr_t) const;
+        GameStateUPtr_t MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const;
+        GameStateUPtr_t MakeForNewGameForTesting() const;
 
         // Caller is responsible for the lifetime of the returned GameState objects.
         const GameStatePVec_t LoadAllGames() const;

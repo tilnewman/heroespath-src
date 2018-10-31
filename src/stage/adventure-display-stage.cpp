@@ -11,7 +11,6 @@
 //
 #include "adventure-display-stage.hpp"
 
-#include "game/loop-manager.hpp"
 #include "map/level-enum.hpp"
 #include "map/map-display.hpp"
 #include "map/map.hpp"
@@ -24,6 +23,9 @@
 #include "stage/adventure-stage-interact-stage.hpp"
 #include "stage/adventure-stage.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Keyboard.hpp>
+
 namespace heroespath
 {
 namespace stage
@@ -31,9 +33,9 @@ namespace stage
 
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_ { 0.0333f };
 
-    AdventureDisplayStage::AdventureDisplayStage(interact::InteractionManager & interactionManager)
-        : Stage("AdventureDisplay", {}, false)
-        , interactionManager_(interactionManager)
+    AdventureDisplayStage::AdventureDisplayStage()
+        : StageBase("AdventureDisplay", {}, false)
+        , interactionManager_()
         , stageTitle_("", true, 0.0f, sfutil::ScreenRatioToPixelsVert(0.12f))
         , bottomImage_(0.75f, true, sf::Color::White)
         , MAP_OUTER_REGION_(
@@ -43,8 +45,6 @@ namespace stage
               sfutil::ScreenRatioToPixelsVert(0.3f))
         , MAP_INNER_REGION_(MAP_OUTER_REGION_)
         , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
-        , interactStagePtr_(new stage::InteractStage(
-              *mapUPtr_, CalcInteractRegion(MAP_OUTER_REGION_), interactionManager_))
         , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
         , bgCachedTexture_(
               "media-images-backgrounds-paper-2",
@@ -64,11 +64,6 @@ namespace stage
         Setup_CharacterList();
         Setup_BackgroundImage();
         Setup_Map();
-        interactStagePtr_->Setup();
-
-        // give control of Stages object lifetime to the Loop class
-        game::LoopManager::Instance()->AddStage(this);
-        game::LoopManager::Instance()->AddStage(interactStagePtr_.Ptr());
     }
 
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -78,11 +73,13 @@ namespace stage
         target.draw(stageTitle_, STATES);
         target.draw(*characterListUPtr_, STATES);
         target.draw(*mapUPtr_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     void AdventureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        interactionManager_.Update();
+
         mapUPtr_->Update(ELAPSED_TIME_SECONDS);
 
         // don't process map moves every frame to save resources
@@ -94,22 +91,22 @@ namespace stage
             HandleMovementKeypresses(
                 sfml_util::Direction::Left,
                 wasPressedLeft_,
-                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left));
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Left));
 
             HandleMovementKeypresses(
                 sfml_util::Direction::Right,
                 wasPressedRight_,
-                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right));
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Right));
 
             HandleMovementKeypresses(
                 sfml_util::Direction::Up,
                 wasPressedUp_,
-                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up));
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Up));
 
             HandleMovementKeypresses(
                 sfml_util::Direction::Down,
                 wasPressedDown_,
-                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down));
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Down));
 
             mapUPtr_->MoveNonPlayers();
         }
@@ -119,10 +116,10 @@ namespace stage
     {
         characterListUPtr_->Setup();
 
-        const auto CHARACTER_LIST_LEFT { (StageRegionWidth() * 0.5f)
+        const auto CHARACTER_LIST_LEFT { (StageRegion().width * 0.5f)
                                          - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
 
-        const auto CHARACTER_LIST_TOP { StageRegionHeight()
+        const auto CHARACTER_LIST_TOP { StageRegion().height
                                         - characterListUPtr_->GetEntityRegion().height
                                         - bottomImage_.Region().height
                                         - sfutil::ScreenRatioToPixelsVert(0.0333f) };
@@ -154,46 +151,46 @@ namespace stage
             if ((DIRECTION == sfml_util::Direction::Up)
                 || (DIRECTION == sfml_util::Direction::Down))
             {
-                if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
                 }
-                else if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right))
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
                 }
                 else if (
                     (DIRECTION == sfml_util::Direction::Up)
-                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down)))
+                    && (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
                 }
                 else if (
                     (DIRECTION == sfml_util::Direction::Down)
-                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up)))
+                    && (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
                 }
             }
             else
             {
-                if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
                 }
-                else if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
                 }
                 else if (
                     (DIRECTION == sfml_util::Direction::Left)
-                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right)))
+                    && (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
                 }
                 else if (
                     (DIRECTION == sfml_util::Direction::Right)
-                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left)))
+                    && (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
                 }
@@ -208,8 +205,7 @@ namespace stage
         wasPressed = IS_PRESSED;
     }
 
-    const sf::FloatRect
-        AdventureDisplayStage::CalcInteractRegion(const sf::FloatRect & MAP_REGION) const
+    const sf::FloatRect AdventureDisplayStage::CalcInteractRegionForStageFactory() const
     {
         sf::FloatRect interactRegion;
 
@@ -217,8 +213,8 @@ namespace stage
 
         const auto BETWEEN_MAP_AND_INTERACT_REGION_WIDTH { VERT_SPACER };
 
-        interactRegion.left
-            = MAP_REGION.left + MAP_REGION.width + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
+        interactRegion.left = MAP_OUTER_REGION_.left + MAP_OUTER_REGION_.width
+            + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
         const auto RIGHT_MARGIN { sfutil::ScreenRatioToPixelsHoriz(0.04f) };
 
@@ -226,11 +222,11 @@ namespace stage
 
         const auto TOP_MARGIN { VERT_SPACER };
 
-        interactRegion.top = MAP_REGION.top + TOP_MARGIN;
+        interactRegion.top = MAP_OUTER_REGION_.top + TOP_MARGIN;
 
         const auto BOTTOM_MARGIN { TOP_MARGIN / 2.0f };
 
-        interactRegion.height = MAP_REGION.height - (TOP_MARGIN + BOTTOM_MARGIN);
+        interactRegion.height = MAP_OUTER_REGION_.height - (TOP_MARGIN + BOTTOM_MARGIN);
 
         return interactRegion;
     }

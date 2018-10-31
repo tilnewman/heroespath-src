@@ -29,6 +29,13 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace sfml_util
 {
 
@@ -65,7 +72,6 @@ namespace sfml_util
         SoundManager & operator=(const SoundManager &) = delete;
         SoundManager & operator=(SoundManager &&) = delete;
 
-    public:
         SoundManager();
         ~SoundManager();
 
@@ -77,7 +83,7 @@ namespace sfml_util
         static void SetSoundsDirectory(
             const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH);
 
-        bool Test();
+        bool Test(stage::IStagePtr_t iStagePtr);
         bool TestSfxSet(SfxSet &, const std::size_t INDEX);
 
         void LoadSoundSets();

@@ -9,7 +9,7 @@
 //
 // texture-cache.cpp
 //
-#include "game/loop-manager.hpp"
+#include "game/game-controller.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
@@ -608,7 +608,7 @@ namespace sfml_util
 
         if (stageName_.empty())
         {
-            stageName_ = game::LoopManager::Instance()->GetStateName();
+            stageName_ = game::GameController::Instance()->GetStageName();
         }
 
         auto & countSizePair { stageToCountDataMap_[stageName_] };

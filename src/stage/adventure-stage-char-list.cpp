@@ -26,6 +26,7 @@
 #include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 
@@ -34,7 +35,7 @@ namespace heroespath
 namespace stage
 {
 
-    AdventureCharacterList::AdventureCharacterList(const sfml_util::IStagePtr_t ISTAGE_PTR)
+    AdventureCharacterList::AdventureCharacterList(const stage::IStagePtr_t ISTAGE_PTR)
         : sfml_util::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
         , ALPHA_FOR_LINES_(180)
         , ALPHA_FOR_TEXT_(160)

@@ -18,9 +18,9 @@
 #include "creature/creature-factory.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
+#include "creature/player-party-factory.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
-#include "game/game.hpp"
 #include "game/world-factory.hpp"
 #include "game/world.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -61,6 +61,7 @@ namespace game
         {
             M_HP_LOG_ERR(
                 "Subsystem Instance() called but instanceUPtr_ was null: GameStateFactory");
+
             Acquire();
         }
 
@@ -87,9 +88,20 @@ namespace game
         instanceUPtr_.reset();
     }
 
-    void GameStateFactory::NewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const
+    GameStateUPtr_t GameStateFactory::MakeForNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR) const
     {
-        game::Game::Instance()->MakeNewGame(std::move(PARTY_UPTR));
+        auto gameStateUPtr { std::make_unique<GameState>(
+            std::move(PARTY_UPTR), WorldFactory::MakeForNewGame()) };
+
+        gameStateUPtr->SetupAsNewGame();
+
+        return gameStateUPtr;
+    }
+
+    GameStateUPtr_t GameStateFactory::MakeForNewGameForTesting() const
+    {
+        creature::PlayerPartyFactory partyFactory;
+        return MakeForNewGame(partyFactory.MakeFakeForTesting());
     }
 
     const GameStatePVec_t GameStateFactory::LoadAllGames() const

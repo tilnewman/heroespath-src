@@ -13,7 +13,6 @@
 
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
-#include "game/loop-manager.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -27,6 +26,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-options.hpp"
+#include "stage/i-stage.hpp"
 
 #include <exception>
 #include <sstream>
@@ -90,20 +90,18 @@ namespace popup
         accentTextureDirectoryPath_ = ACCENTS_PATH;
     }
 
-    bool PopupManager::Test()
+    bool PopupManager::Test(stage::IStagePtr_t iStagePtr)
     {
         static auto hasInitialPrompt { false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "popup::PopupManager::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("popup::PopupManager::Test() Starting Tests...");
         }
 
         // TODO
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "popup::PopupManager::Test()  ALL TESTS PASSED.");
+        iStagePtr->TestingStrAppend("popup::PopupManager::Test()  ALL TESTS PASSED.");
 
         return true;
     }
@@ -181,6 +179,7 @@ namespace popup
         const unsigned int FONT_SIZE) const
     {
         return PopupInfo(
+            PopupStage::Generic,
             POPUP_NAME,
             TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
             BUTTONS,
@@ -297,6 +296,7 @@ namespace popup
         textureVec.emplace_back(sfml_util::LoadAndCacheImage(TO_TITLE_PTR));
 
         return PopupInfo(
+            PopupStage::ImageFade,
             POPUP_NAME,
             TextInfoDefault(
                 " ",
@@ -323,6 +323,7 @@ namespace popup
         const std::size_t INITIAL_SELECTION) const
     {
         return PopupInfo(
+            PopupStage::Spellbook,
             POPUP_NAME,
             TextInfoDefault(
                 " ",
@@ -347,6 +348,7 @@ namespace popup
         const std::size_t INITIAL_SELECTION) const
     {
         return PopupInfo(
+            PopupStage::Musicsheet,
             POPUP_NAME,
             TextInfoDefault(
                 " ",
@@ -409,6 +411,7 @@ namespace popup
         }
 
         return PopupInfo(
+            PopupStage::SystemError,
             POPUP_NAME,
             TextInfoDefault(
                 ss.str(),
@@ -444,6 +447,7 @@ namespace popup
         const sfml_util::sound_effect::Enum SOUND_EFFECT) const
     {
         return PopupInfo(
+            PopupStage::Generic,
             POPUP_NAME,
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             BUTTONS,
@@ -473,6 +477,7 @@ namespace popup
         const unsigned int FONT_SIZE) const
     {
         PopupInfo popupInfo(
+            PopupStage::InventoryPrompt,
             POPUP_NAME,
             TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE),
             BUTTONS,
@@ -496,6 +501,18 @@ namespace popup
             popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             SOUND_EFFECT);
+    }
+
+    const PopupInfo
+        PopupManager::CreateResolutionChangePopupInfo(const sfml_util::TextInfo & TEXT_INFO) const
+    {
+        return PopupInfo(
+            PopupStage::Generic,
+            "ResolutionChange",
+            TEXT_INFO,
+            popup::PopupButtons::YesNo,
+            popup::PopupImage::Regular,
+            sfml_util::sound_effect::PromptQuestion);
     }
 
     sfml_util::CachedTexture PopupManager::LoadRandomAccentImage() const

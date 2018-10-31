@@ -11,6 +11,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "misc/real.hpp"
 #include "misc/strings.hpp"
 
 #include <algorithm>

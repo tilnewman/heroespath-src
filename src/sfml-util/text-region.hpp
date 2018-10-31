@@ -33,11 +33,17 @@ class RenderTexture;
 
 namespace heroespath
 {
-namespace sfml_util
+
+namespace stage
 {
-    class IStage;
+    struct IStage;
     using IStagePtr_t = misc::NotNull<IStage *>;
     using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
+
+} // namespace stage
+
+namespace sfml_util
+{
 
     using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
 
@@ -55,7 +61,6 @@ namespace sfml_util
         TextRegion & operator=(const TextRegion &) = delete;
         TextRegion & operator=(TextRegion &&) = delete;
 
-    public:
         // if using this constructor, Setup() must be called before any other function
         explicit TextRegion(const std::string & NAME);
 
@@ -73,7 +78,7 @@ namespace sfml_util
             const std::string & NAME,
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
-            const IStagePtr_t ISTAGE_PTR,
+            const stage::IStagePtr_t ISTAGE_PTR,
             const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
             const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const Margins & MARGINS = Margins());
@@ -92,7 +97,7 @@ namespace sfml_util
         void Setup(
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
-            const IStagePtrOpt_t & ISTAGE_PTR_OPT,
+            const stage::IStagePtrOpt_t & ISTAGE_PTR_OPT,
             const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
             const BoxEntityInfo & BOX_INFO = BoxEntityInfo(),
             const Margins & MARGINS = Margins(),
@@ -142,7 +147,7 @@ namespace sfml_util
     protected:
         BoxEntityUPtr_t boxEntityUPtr_;
         SliderBarUPtr_t sliderBarUPtr_;
-        IStagePtrOpt_t stagePtrOpt_;
+        stage::IStagePtrOpt_t stagePtrOpt_;
         std::size_t startLine_;
         std::size_t stopLine_;
         sf::FloatRect regionOrig_;

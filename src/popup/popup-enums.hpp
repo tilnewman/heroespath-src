@@ -19,6 +19,28 @@ namespace heroespath
 namespace popup
 {
 
+    struct PopupStage : public misc::EnumBaseCounting<PopupStage, misc::EnumFirstValueValid>
+    {
+        enum Enum : misc::EnumUnderlying_t
+        {
+            Generic = 0,
+            CharacterSelect,
+            CombatOver,
+            ImageFade,
+            ImageSelect,
+            InventoryPrompt,
+            Musicsheet,
+            NumberSelect,
+            ResolutionChange,
+            Spellbook,
+            SystemError,
+            TreasureTrap,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+    };
+
     struct PopupButtons
     {
         enum Enum : misc::EnumUnderlying_t

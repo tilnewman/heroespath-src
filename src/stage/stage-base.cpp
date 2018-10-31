@@ -7,20 +7,24 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// stage.cpp
+// stage-base.cpp
 //
-#include "stage.hpp"
+#include "stage-base.hpp"
 
-#include "game/loop-manager.hpp"
+#include "game/game-controller.hpp"
 #include "sfml-util/box-entity-info.hpp"
 #include "sfml-util/box-entity.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/entity.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/i-entity.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-info.hpp"
 #include "sfml-util/texture-cache.hpp"
 #include "sfutil/distance.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <algorithm>
 #include <exception>
@@ -28,88 +32,70 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace stage
 {
 
-    const float Stage::MOUSE_DRAG_MIN_DISTANCE_ { 3.0f };
+    const float StageBase::MOUSE_DRAG_MIN_DISTANCE_ { 3.0f };
 
-    Stage::Stage(
+    StageBase::StageBase(
         const std::string & NAME,
-        const FontEnumVec_t & FONTS_TO_PRELOAD,
+        const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
         const bool WILL_CLEAR_CACHE_ON_EXIT,
-        const SfxEnumVec_t & SFX_TO_PRELOAD)
-        : STAGE_NAME_(std::string(NAME).append("_Stage"))
-        , stageRegion_(sf::FloatRect(
-              0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight()))
+        const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD)
+        : STAGE_NAME_(std::string(NAME).append("_StageBase"))
+        , stageRegion_(sfml_util::Display::Instance()->FullScreenRect())
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
         , hoverText_()
+        , isFading_(false)
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
+        sfml_util::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        sfml_util::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
-    Stage::Stage(
+    StageBase::StageBase(
         const std::string & NAME,
         const sf::FloatRect & REGION,
-        const FontEnumVec_t & FONTS_TO_PRELOAD,
+        const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
         const bool WILL_CLEAR_CACHE_ON_EXIT,
-        const SfxEnumVec_t & SFX_TO_PRELOAD)
-        : STAGE_NAME_(std::string(NAME).append("_Stage"))
+        const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD)
+        : STAGE_NAME_(std::string(NAME).append("_StageBase"))
         , stageRegion_(REGION)
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
         , hoverText_()
+        , isFading_(false)
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
+        sfml_util::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        sfml_util::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
-    Stage::Stage(
-        const std::string & NAME,
-        const float REGION_LEFT,
-        const float REGION_TOP,
-        const float REGION_WIDTH,
-        const float REGION_HEIGHT,
-        const FontEnumVec_t & FONTS_TO_PRELOAD,
-        const bool WILL_CLEAR_CACHE_ON_EXIT,
-        const SfxEnumVec_t & SFX_TO_PRELOAD)
-        : STAGE_NAME_(std::string(NAME).append("_Stage"))
-        , stageRegion_(sf::FloatRect(REGION_LEFT, REGION_TOP, REGION_WIDTH, REGION_HEIGHT))
-        , entityPVec_()
-        , entityWithFocusPtrOpt_()
-        , hoverTextBoxUPtr_()
-        , hoverText_()
-        , isMouseHeldDown_(false)
-        , isMouseHeldDownAndMoving_(false)
-        , mouseDownPosV_(0.0f, 0.0f)
-        , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
-    {
-        FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
-    }
-
-    Stage::~Stage()
+    StageBase::~StageBase()
     {
         if (willClearCachesOnExit_)
         {
-            SoundManager::Instance()->ClearSoundEffectsCache();
-            TextureCache::Instance()->RemoveAll();
-            FontManager::Instance()->UnloadAll();
+            sfml_util::SoundManager::Instance()->ClearSoundEffectsCache();
+            sfml_util::TextureCache::Instance()->RemoveAll();
+            sfml_util::FontManager::Instance()->UnloadAll();
         }
     }
 
-    void Stage::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    game::Phase::Enum StageBase::GetPhase() const
+    {
+        return game::GameController::Instance()->GetPhase();
+    }
+
+    void StageBase::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         for (auto & entityPtr : entityPVec_)
         {
@@ -117,7 +103,7 @@ namespace sfml_util
         }
     }
 
-    void Stage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
+    void StageBase::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS)
     {
         const sf::Vector2f NEW_MOUSE_POS_F(NEW_MOUSE_POS);
 
@@ -131,7 +117,7 @@ namespace sfml_util
         }
     }
 
-    void Stage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
+    void StageBase::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         isMouseHeldDown_ = true;
         mouseDownPosV_ = MOUSE_POS_V;
@@ -142,7 +128,7 @@ namespace sfml_util
         }
     }
 
-    const IEntityPtrOpt_t Stage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::IEntityPtrOpt_t StageBase::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
@@ -160,7 +146,7 @@ namespace sfml_util
         return entityWithFocusPtrOpt_;
     }
 
-    void Stage::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
+    void StageBase::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
     {
         for (auto & entityPtr : entityPVec_)
         {
@@ -168,17 +154,17 @@ namespace sfml_util
         }
     }
 
-    bool Stage::KeyPress(const sf::Event::KeyEvent & KE)
+    bool StageBase::KeyPress(const sf::Event::KeyEvent & KE)
     {
         return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_.value()->KeyPress(KE)));
     }
 
-    bool Stage::KeyRelease(const sf::Event::KeyEvent & KE)
+    bool StageBase::KeyRelease(const sf::Event::KeyEvent & KE)
     {
         return (entityWithFocusPtrOpt_ && (entityWithFocusPtrOpt_.value()->KeyRelease(KE)));
     }
 
-    void Stage::RemoveFocus()
+    void StageBase::RemoveFocus()
     {
         entityWithFocusPtrOpt_ = boost::none;
 
@@ -188,7 +174,7 @@ namespace sfml_util
         }
     }
 
-    void Stage::SetFocus(const IEntityPtr_t ENTITY_PTR)
+    void StageBase::SetFocus(const sfml_util::IEntityPtr_t ENTITY_PTR)
     {
         const auto ORIG_ENTITY_WITH_FOCUS_NAME {
             ((entityWithFocusPtrOpt_) ? entityWithFocusPtrOpt_.value()->GetEntityName() : "(None)")
@@ -207,7 +193,7 @@ namespace sfml_util
         else
         {
             M_HP_LOG_ERR(
-                "sfml_util::Stage::SetFocus(entity="
+                "stage::StageBase::SetFocus(entity="
                 << ENTITY_PTR->GetEntityName()
                 << ")  Attempt to set focus with an IEntityPtr_t that was not in entityPVec_.  "
                    "orig_enity_withfocus=\""
@@ -215,7 +201,7 @@ namespace sfml_util
         }
     }
 
-    void Stage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void StageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         for (auto & entityPtr : entityPVec_)
         {
@@ -229,19 +215,23 @@ namespace sfml_util
         }
     }
 
-    void Stage::EntityAdd(
-        const IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK)
+    void StageBase::EntityAdd(
+        const sfml_util::IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT)
     {
         const auto WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (WAS_FOUND == false),
-            "sfml_util::Stage::EntityAdd(\""
-                << ENTITY_PTR->GetEntityName()
-                << "\") tried to add but it was already in the entityPVec_.");
+        if (WAS_FOUND)
+        {
+            M_HP_LOG_WRN(
+                "Ignoring because this entity was already in the list. (entity_name=\""
+                << ENTITY_PTR->GetEntityName() << "\")" << M_HP_VAR_STR(WILL_INSERT_AT_FRONT)
+                << "(stage=" << GetStageName() << ")");
 
-        if (WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK)
+            return;
+        }
+
+        if (WILL_INSERT_AT_FRONT)
         {
             entityPVec_.insert(std::begin(entityPVec_), ENTITY_PTR);
         }
@@ -251,25 +241,32 @@ namespace sfml_util
         }
     }
 
-    bool Stage::EntityRemove(const IEntityPtr_t ENTITY_PTR)
+    void StageBase::EntityRemove(const sfml_util::IEntityPtr_t ENTITY_PTR)
     {
         const auto ORIG_NUM_ENTITYS { entityPVec_.size() };
 
         entityPVec_.erase(
             std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR), entityPVec_.end());
 
+        bool wasEntityFoundAndRemoved { false };
         if (entityWithFocusPtrOpt_ == ENTITY_PTR)
         {
             entityWithFocusPtrOpt_ = boost::none;
-            return true;
+            wasEntityFoundAndRemoved = true;
         }
         else
         {
-            return !(ORIG_NUM_ENTITYS == entityPVec_.size());
+            wasEntityFoundAndRemoved = (ORIG_NUM_ENTITYS != entityPVec_.size());
+        }
+
+        if (false == wasEntityFoundAndRemoved)
+        {
+            M_HP_LOG_WRN(
+                "Entity to remove named \"" << ENTITY_PTR->GetEntityName() << "\" was not found.");
         }
     }
 
-    void Stage::SetMouseHover(const sf::Vector2f & MOUSE_POS_V, const bool IS_MOUSE_HOVERING)
+    void StageBase::SetMouseHover(const sf::Vector2f & MOUSE_POS_V, const bool IS_MOUSE_HOVERING)
     {
         if (IS_MOUSE_HOVERING)
         {
@@ -309,12 +306,12 @@ namespace sfml_util
                 return;
             }
 
-            const TextInfo TEXT_INFO(
+            const sfml_util::TextInfo TEXT_INFO(
                 text,
                 sfml_util::GuiFont::System,
-                FontManager::Instance()->Size_Smallish(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
                 sf::Color(50, 50, 50),
-                Justified::Left);
+                sfml_util::Justified::Left);
 
             hoverText_.setup(TEXT_INFO);
 
@@ -324,7 +321,7 @@ namespace sfml_util
                 hoverText_.getGlobalBounds().width + 20.0f,
                 hoverText_.getGlobalBounds().height + 8.0f);
 
-            const auto SCREEN_WIDTH { Display::Instance()->GetWinWidth() };
+            const auto SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
             {
                 region.left = SCREEN_WIDTH - region.width;
@@ -337,12 +334,12 @@ namespace sfml_util
 
             hoverText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
-            BoxEntityInfo boxInfo;
+            sfml_util::BoxEntityInfo boxInfo;
             boxInfo.SetupColor(sfutil::color::Orange - sf::Color(20, 0, 0, 0));
             boxInfo.SetupBorder(true, 1.0f);
 
-            hoverTextBoxUPtr_
-                = std::make_unique<BoxEntity>(GetStageName() + "'sHoverText", region, boxInfo);
+            hoverTextBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
+                GetStageName() + "'sHoverText", region, boxInfo);
         }
         else
         {
@@ -353,11 +350,58 @@ namespace sfml_util
         }
     }
 
-    void Stage::ClearAllEntities()
+    void StageBase::TestingStrAppend(const std::string & MESSAGE)
+    {
+        game::GameController::Instance()->TestingStrAppend(MESSAGE);
+    }
+
+    void StageBase::TestingStrIncrement(const std::string & MESSAGE)
+    {
+        game::GameController::Instance()->TestingStrIncrement(MESSAGE);
+    }
+
+    void StageBase::TestingImageSet(const std::string & MESSAGE, const bool WILL_CHECK_FOR_OUTLINE)
+    {
+        game::GameController::Instance()->TestingImageSet(MESSAGE, WILL_CHECK_FOR_OUTLINE);
+    }
+
+    void StageBase::ClearAllEntities()
     {
         entityWithFocusPtrOpt_ = boost::none;
         entityPVec_.clear();
     }
 
-} // namespace sfml_util
+    void StageBase::SpawnPopup(
+        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const popup::PopupInfo & POPUP_INFO) const
+    {
+        game::GameController::Instance()->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
+    }
+
+    void StageBase::RemovePopup(
+        const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION) const
+    {
+        game::GameController::Instance()->RemovePopup(TYPE, SELECTION);
+    }
+
+    void StageBase::TransitionTo(const stage::Stage::Enum NEW_STAGE) const
+    {
+        game::GameController::Instance()->TransitionTo(NEW_STAGE);
+    }
+
+    void StageBase::TransitionTo(const stage::SetupPacket & SETUP_PACKET) const
+    {
+        game::GameController::Instance()->TransitionTo(SETUP_PACKET);
+    }
+
+    const sfml_util::DisplayChangeResult StageBase::ChangeResolution(
+        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const sfml_util::Resolution & NEW_RES,
+        const unsigned ANTIALIAS_LEVEL) const
+    {
+        return game::GameController::Instance()->ChangeResolution(
+            POPUP_HANDLER_PTR, NEW_RES, ANTIALIAS_LEVEL);
+    }
+
+} // namespace stage
 } // namespace heroespath

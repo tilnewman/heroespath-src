@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
-#define HEROESPATH_GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
+#ifndef HEROESPATH_STAGE_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
+#define HEROESPATH_STAGE_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
 //
 // loop-cmd-addstage.hpp
 //  A common header for all loop-add-stage commands.
@@ -58,7 +58,7 @@ namespace stage
 
         void Execute() override
         {
-            const sfml_util::IStagePtr_t ISTAGE_PTR{ new StageType_t() };
+            const stage::IStagePtr_t ISTAGE_PTR { new StageType_t() };
             ISTAGE_PTR->Setup();
             game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
         }
@@ -76,7 +76,7 @@ namespace stage
 
         void Execute() override
         {
-            const sfml_util::IStagePtr_t ISTAGE_PTR(new stage::CombatStage(willAdvanceTurn_));
+            const stage::IStagePtr_t ISTAGE_PTR(new stage::CombatStage(willAdvanceTurn_));
             ISTAGE_PTR->Setup();
             game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
         }
@@ -102,7 +102,7 @@ namespace stage
 
         void Execute() override
         {
-            const sfml_util::IStagePtr_t ISTAGE_PTR(
+            const stage::IStagePtr_t ISTAGE_PTR(
                 new InventoryStage(turnCreaturePtr, inventoryCreaturePtr, currentPhase_));
 
             ISTAGE_PTR->Setup();
@@ -118,4 +118,4 @@ namespace stage
 } // namespace stage
 } // namespace heroespath
 
-#endif // HEROESPATH_GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_LOOPCOMMANDADDSTAGE_HPP_INCLUDED

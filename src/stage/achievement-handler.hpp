@@ -17,6 +17,13 @@
 
 namespace heroespath
 {
+
+namespace stage
+{
+    struct IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+} // namespace stage
+
 namespace stage
 {
 
@@ -31,6 +38,7 @@ namespace stage
 
     void TitleTransitionPopup(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
@@ -38,6 +46,7 @@ namespace stage
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE);

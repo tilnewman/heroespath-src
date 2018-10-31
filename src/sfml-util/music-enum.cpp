@@ -18,9 +18,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::string music::ToString(const music::Enum E)
+    const std::string music::ToString(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case None:
             {
@@ -73,21 +73,21 @@ namespace sfml_util
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                ThrowInvalidValueForFunction(MUSIC, "ToString");
             }
         }
     }
 
-    const std::string music::Filename(const music::Enum E)
+    const std::string music::Filename(const music::Enum MUSIC)
     {
         std::ostringstream ss;
-        ss << ToString(E) << FileExt();
+        ss << ToString(MUSIC) << FileExt();
         return ss.str();
     }
 
-    const std::string music::Directory(const music::Enum E)
+    const std::string music::Directory(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case Theme:
             {
@@ -122,23 +122,23 @@ namespace sfml_util
             }
             case All:
             {
-                ThrowInvalidValueForFunction(E, "Directory(All)");
+                ThrowInvalidValueForFunction(MUSIC, "Directory(All)");
             }
             case None:
             {
-                ThrowInvalidValueForFunction(E, "Directory(None)");
+                ThrowInvalidValueForFunction(MUSIC, "Directory(None)");
             }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "Directory");
+                ThrowInvalidValueForFunction(MUSIC, "Directory");
             }
         }
     }
 
-    bool music::IsLooped(const music::Enum E)
+    bool music::IsLooped(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case Theme:
             case Wind:
@@ -158,23 +158,23 @@ namespace sfml_util
             }
             case All:
             {
-                ThrowInvalidValueForFunction(E, "IsLooped(All)");
+                ThrowInvalidValueForFunction(MUSIC, "IsLooped(All)");
             }
             case None:
             {
-                ThrowInvalidValueForFunction(E, "IsLooped(None)");
+                ThrowInvalidValueForFunction(MUSIC, "IsLooped(None)");
             }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "IsLooped");
+                ThrowInvalidValueForFunction(MUSIC, "IsLooped");
             }
         }
     }
 
-    const std::string music::ArtistName(const music::Enum E)
+    const std::string music::ArtistName(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case Wind:
             {
@@ -206,23 +206,23 @@ namespace sfml_util
             }
             case All:
             {
-                ThrowInvalidValueForFunction(E, "ArtistName(All)");
+                ThrowInvalidValueForFunction(MUSIC, "ArtistName(All)");
             }
             case None:
             {
-                ThrowInvalidValueForFunction(E, "ArtistName(None)");
+                ThrowInvalidValueForFunction(MUSIC, "ArtistName(None)");
             }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "ArtistName");
+                ThrowInvalidValueForFunction(MUSIC, "ArtistName");
             }
         }
     }
 
-    const std::string music::LicenseTitle(const music::Enum E)
+    const std::string music::LicenseTitle(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case FireIndoorSmall:
             {
@@ -254,23 +254,23 @@ namespace sfml_util
             }
             case All:
             {
-                ThrowInvalidValueForFunction(E, "LicenseTitle(All)");
+                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle(All)");
             }
             case None:
             {
-                ThrowInvalidValueForFunction(E, "LicenseTitle(None)");
+                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle(None)");
             }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "LicenseTitle");
+                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle");
             }
         }
     }
 
-    const std::string music::SongName(const music::Enum E)
+    const std::string music::SongName(const music::Enum MUSIC)
     {
-        switch (E)
+        switch (MUSIC)
         {
             case Theme:
             {
@@ -314,16 +314,16 @@ namespace sfml_util
             }
             case All:
             {
-                ThrowInvalidValueForFunction(E, "SongName(All)");
+                ThrowInvalidValueForFunction(MUSIC, "SongName(All)");
             }
             case None:
             {
-                ThrowInvalidValueForFunction(E, "SongName(None)");
+                ThrowInvalidValueForFunction(MUSIC, "SongName(None)");
             }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "SongName");
+                ThrowInvalidValueForFunction(MUSIC, "SongName");
             }
         }
     }

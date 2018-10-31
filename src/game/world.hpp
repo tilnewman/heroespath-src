@@ -30,7 +30,6 @@ namespace game
         World & operator=(const World &) = delete;
         World & operator=(World &&) = delete;
 
-    public:
         World();
 
         Maps & GetMaps() { return maps_; }

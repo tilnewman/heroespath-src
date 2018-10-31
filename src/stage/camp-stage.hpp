@@ -14,7 +14,7 @@
 #include "sfml-util/callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/stage-title.hpp"
-#include "sfml-util/stage.hpp"
+#include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -37,7 +37,7 @@ namespace stage
 
     // A Stage class that allows the party to camp for resting and healing
     class CampStage
-        : public sfml_util::Stage
+        : public stage::StageBase
         , public sfml_util::PopupCallback_t::IHandler_t
     {
     public:

@@ -37,7 +37,6 @@ namespace game
         Game & operator=(const Game &) = delete;
         Game & operator=(Game &&) = delete;
 
-    public:
         Game();
         ~Game();
 
@@ -46,7 +45,9 @@ namespace game
         static void Release();
 
         GameState & State() const;
-        const GameStatePtr_t MakeNewGame(creature::PlayerPartyUPtr_t PARTY_UPTR);
+        void Set(GameStateUPtr_t gameStateUPtr);
+        void MakeNewAndSet(creature::PlayerPartyUPtr_t playerPartyUPtr);
+        void MakeNewForTestingAndSet();
 
     private:
         static std::unique_ptr<Game> instanceUPtr_;

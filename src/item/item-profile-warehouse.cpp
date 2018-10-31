@@ -18,6 +18,8 @@
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 
+#include <SFML/System/Clock.hpp>
+
 #include <algorithm>
 #include <exception>
 #include <sstream>
@@ -37,6 +39,7 @@ namespace item
         , profiles_()
         , religiousProfiles_()
         , questItemProfilesMap_()
+        , hasInitialized_(false)
     {
         M_HP_LOG_DBG("Subsystem Construction: ItemProfileWarehouse");
     }
@@ -81,6 +84,9 @@ namespace item
 
     void ItemProfileWarehouse::Initialize()
     {
+        M_HP_LOG_DBG("ItemProfileWarehouse::Initialize() start");
+        sf::Clock totalClock;
+
         profiles_.clear();
 
         // As of 2017-8-17 there were 849299 raw item profiles created before cleanup.
@@ -98,19 +104,57 @@ namespace item
         // 2018-5-17 317
         religiousProfiles_.reserve(320);
 
+        sf::Clock jobClock;
+
+        auto logJobDuration = [&](const std::string & NAME) {
+            M_HP_LOG_DBG(
+                "ItemProfileWarehouse::Initialize() Job \""
+                << NAME << "\" took " << jobClock.getElapsedTime().asMilliseconds() << "ms.");
+            jobClock.restart();
+        };
+
         Setup_StandardEquipment();
+        logJobDuration("Setup_StandardEquipment");
+
         Setup_MiscItems();
+        logJobDuration("Setup_MiscItems");
+
         Setup_NamedEquipment();
+        logJobDuration("Setup_NamedEquipment");
+
         Setup_SetEquipment();
+        logJobDuration("Setup_SetEquipment");
+
         Setup_SummoningItems();
+        logJobDuration("Setup_SummoningItems");
 
         profiles_.shrink_to_fit();
         religiousProfiles_.shrink_to_fit();
+        logJobDuration("shrink_to_fit");
 
         // correct operation of the Treasure Stage requires sorting by PROFILE.TreasureScore()
         // see operator< in ItemProfile.hpp
+
         std::sort(std::begin(profiles_), std::end(profiles_));
+        logJobDuration("sort normal profiles");
+
         std::sort(std::begin(religiousProfiles_), std::end(religiousProfiles_));
+        logJobDuration("sort religious profiles");
+
+        hasInitialized_ = true;
+
+        M_HP_LOG_DBG(
+            "ItemProfileWarehouse::Initialize() end, duration="
+            << totalClock.getElapsedTime().asMilliseconds() << "ms, normal_profile_count="
+            << profiles_.size() << ", religious_profile_count=" << religiousProfiles_.size());
+    }
+
+    void ItemProfileWarehouse::EnsureInitialized()
+    {
+        if (!hasInitialized_)
+        {
+            Initialize();
+        }
     }
 
     void ItemProfileWarehouse::Setup_StandardEquipment()
@@ -523,7 +567,9 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 

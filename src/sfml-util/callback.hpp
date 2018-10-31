@@ -24,13 +24,14 @@ namespace sfml_util
     {
         Callback() = delete;
         ~Callback() = delete;
+
         Callback(const Callback &) = delete;
         Callback(Callback &&) = delete;
         Callback & operator=(const Callback &) = delete;
         Callback & operator=(Callback &&) = delete;
 
         using Packet_t = T;
-        using PacketPtr_t = misc::NotNull<T *>;
+        using PacketPtr_t = misc::NotNull<Packet_t *>;
 
         // Responsible for declaring the interface of a callback handler. (typically a
         // Stage) A callback is required to pass a non-null pointer to whatever initiated
@@ -48,7 +49,7 @@ namespace sfml_util
         using IHandlerPtrOpt_t = boost::optional<IHandlerPtr_t>;
     };
 
-    using PopupCallback_t = Callback<popup::PopupResponse>;
+    using PopupCallback_t = Callback<const popup::PopupResponse>;
 
 } // namespace sfml_util
 } // namespace heroespath

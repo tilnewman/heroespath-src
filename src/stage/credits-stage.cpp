@@ -11,7 +11,6 @@
 //
 #include "credits-stage.hpp"
 
-#include "game/loop-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
@@ -25,6 +24,8 @@
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
@@ -35,21 +36,21 @@ namespace stage
     const float CreditsStage::SCROLL_SPEED_MAX_(600.0f);
 
     CreditsStage::CreditsStage()
-        : Stage(
-              "Credits",
-              {
-                  sfml_util::GuiFont::Default,
-                  sfml_util::GuiFont::DefaultBoldFlavor,
-                  sfml_util::GuiFont::Number,
-                  sfml_util::GuiFont::System,
-                  sfml_util::GuiFont::SystemCondensed,
-                  sfml_util::GuiFont::SignThinTallNarrow,
-                  sfml_util::GuiFont::SignBoldShortWide,
-                  sfml_util::GuiFont::Handwriting,
-                  sfml_util::GuiFont::DialogModern,
-                  sfml_util::GuiFont::DialogMedieval,
-              },
-              true)
+        : StageBase(
+            "Credits",
+            {
+                sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::DefaultBoldFlavor,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::SignThinTallNarrow,
+                sfml_util::GuiFont::SignBoldShortWide,
+                sfml_util::GuiFont::Handwriting,
+                sfml_util::GuiFont::DialogModern,
+                sfml_util::GuiFont::DialogMedieval,
+            },
+            true)
         , titleCachedTexture_("media-images-title-blacksymbol")
         , bpTitleSprite_(titleCachedTexture_.Get())
         , boxUPtr_()
@@ -68,7 +69,7 @@ namespace stage
     CreditsStage::~CreditsStage()
     {
         sfml_util::SoundManager::Instance()->MusicStop(sfml_util::music::Credits);
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
     }
 
     void CreditsStage::Setup()
@@ -83,9 +84,9 @@ namespace stage
         const auto CREDITS_BOX_REGION = [&]() {
             sf::FloatRect rect;
             rect.width = sfutil::ScreenRatioToPixelsHoriz(0.4f);
-            rect.left = (StageRegionWidth() * 0.5f) - (rect.width * 0.5f);
+            rect.left = (StageRegion().width * 0.5f) - (rect.width * 0.5f);
             rect.top = sfutil::Bottom(bpTitleSprite_) + TITLE_VERT_PAD;
-            rect.height = (StageRegionHeight() - rect.top) - (TITLE_VERT_PAD * 2.0f);
+            rect.height = (StageRegion().height - rect.top) - (TITLE_VERT_PAD * 2.0f);
             return rect;
         }();
 
@@ -121,15 +122,15 @@ namespace stage
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when they move outside the box
         blackRectUpper_.Setup(
-            sf::FloatRect(0.0f, 0.0f, StageRegionWidth(), boxUPtr_->OuterRegion().top),
+            sf::FloatRect(0.0f, 0.0f, StageRegion().width, boxUPtr_->OuterRegion().top),
             sf::Color::Black);
 
         blackRectLower_.Setup(
             sf::FloatRect(
                 0.0f,
                 sfutil::Bottom(boxUPtr_->OuterRegion()),
-                StageRegionWidth(),
-                StageRegionHeight()),
+                StageRegion().width,
+                StageRegion().height),
             sf::Color::Black);
 
         const auto CREDIT_BOX_INNER_PAD { sfutil::ScreenRatioToPixelsHoriz(0.0333f) };
@@ -298,7 +299,7 @@ namespace stage
 
     void CreditsStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
         UpdateCreditAnimations(ELAPSED_TIME_SECONDS);
         UpdateCreditPositions(ELAPSED_TIME_SECONDS);
         UpdateScrollSpeed(ELAPSED_TIME_SECONDS);
@@ -308,7 +309,7 @@ namespace stage
     {
         target.draw(*boxUPtr_, STATES);
 
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
 
         for (const auto & CREDIT_UPTR : creditUVec_)
         {
@@ -341,7 +342,7 @@ namespace stage
         else
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            game::LoopManager::Instance()->TransitionTo_MainMenu();
+            TransitionTo(stage::Stage::Menu);
         }
 
         return true;
@@ -366,6 +367,8 @@ namespace stage
             return false;
         }
     }
+
+    void CreditsStage::UpdateMouseDown(const sf::Vector2f &) { TransitionTo(stage::Stage::Menu); }
 
     void CreditsStage::UpdateScrollSpeed(const float ELAPSED_TIME_SECONDS)
     {

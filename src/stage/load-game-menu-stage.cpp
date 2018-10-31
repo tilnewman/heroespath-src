@@ -15,7 +15,6 @@
 #include "creature/player-party.hpp"
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
-#include "game/loop-manager.hpp"
 #include "game/world.hpp"
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
@@ -25,20 +24,22 @@
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sound-manager.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace heroespath
 {
 namespace stage
 {
 
     LoadGameStage::LoadGameStage()
-        : Stage(
-              "LoadGameMenu",
-              { sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::Handwriting },
-              true)
+        : StageBase(
+            "LoadGameMenu",
+            { sfml_util::GuiFont::Default,
+              sfml_util::GuiFont::System,
+              sfml_util::GuiFont::SystemCondensed,
+              sfml_util::GuiFont::Number,
+              sfml_util::GuiFont::Handwriting },
+            true)
         , stageTitle_("media-images-buttons-mainmenu-load-normal")
         , backgroundBox_(
               "LoadGameStage'sBackground",
@@ -47,7 +48,7 @@ namespace stage
                   "media-images-backgrounds-tile-darkknot",
                   sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
         , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              sfml_util::LoopState::Previous,
+              stage::Stage::Previous,
               sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               1.0f,
               sf::Vector2f(200.0f, sfutil::DisplaySize().y - 100.0f)))
@@ -73,7 +74,7 @@ namespace stage
 
     LoadGameStage::~LoadGameStage()
     {
-        Stage::ClearAllEntities();
+        StageBase::ClearAllEntities();
 
         for (const auto & GAME_STATE_PTR : gamestatePVec_)
         {
@@ -227,12 +228,12 @@ namespace stage
     {
         target.draw(backgroundBox_, STATES);
         target.draw(stageTitle_, STATES);
-        Stage::Draw(target, STATES);
+        StageBase::Draw(target, STATES);
     }
 
     bool LoadGameStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (Stage::KeyRelease(KEY_EVENT))
+        if (StageBase::KeyRelease(KEY_EVENT))
         {
             return true;
         }
@@ -240,7 +241,7 @@ namespace stage
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            game::LoopManager::Instance()->TransitionTo_MainMenu();
+            TransitionTo(stage::Stage::Menu);
             return true;
         }
         else

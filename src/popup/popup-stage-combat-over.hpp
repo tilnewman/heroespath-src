@@ -31,7 +31,6 @@ namespace popup
         PopupStageCombatOver & operator=(const PopupStageCombatOver &) = delete;
         PopupStageCombatOver & operator=(PopupStageCombatOver &&) = delete;
 
-    public:
         explicit PopupStageCombatOver(const PopupInfo &);
         virtual ~PopupStageCombatOver();
 

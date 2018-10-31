@@ -9,6 +9,8 @@
 //
 // layer-type-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace map
 {
 
-    struct LayerType
+    struct LayerType : public misc::EnumBaseCounting<LayerType, misc::EnumFirstValueValid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Ground = 0,
             Object,
@@ -26,7 +28,7 @@ namespace map
             Count
         };
 
-        static const std::string ToString(const LayerType::Enum);
+        static const std::string ToString(const Enum);
     };
 } // namespace map
 } // namespace heroespath

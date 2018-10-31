@@ -38,7 +38,6 @@ namespace misc
         NotNullWarehouse & operator=(const NotNullWarehouse &) = delete;
         NotNullWarehouse & operator=(NotNullWarehouse &&) = delete;
 
-    public:
         NotNullWarehouse()
             : uPtrVec_()
         {}

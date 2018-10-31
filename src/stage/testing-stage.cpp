@@ -23,6 +23,7 @@
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
+#include "map/layer-type-enum.hpp"
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
 #include "misc/config-file.hpp"
@@ -30,9 +31,12 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/types.hpp"
+#include "popup/popup-manager.hpp"
+#include "sfml-util/animation-factory.hpp"
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/combat-image-loader.hpp"
 #include "sfml-util/condition-image-loader.hpp"
+#include "sfml-util/corner-enum.hpp"
 #include "sfml-util/creature-image-loader.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -41,7 +45,7 @@
 #include "sfml-util/image-loaders.hpp"
 #include "sfml-util/image-option-enum.hpp"
 #include "sfml-util/item-image-loader.hpp"
-#include "sfml-util/loop-state-enum.hpp"
+#include "sfml-util/ouroboros.hpp"
 #include "sfml-util/side-enum.hpp"
 #include "sfml-util/song-image-loader.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -54,6 +58,9 @@
 #include "sfutil/size-and-scale.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
+#include "stage/stage-enum.hpp"
+
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
 #include <chrono>
@@ -108,21 +115,21 @@ namespace stage
     sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
 
     TestingStage::TestingStage()
-        : Stage(
-              "Testing",
-              {
-                  sfml_util::GuiFont::Default,
-                  sfml_util::GuiFont::DefaultBoldFlavor,
-                  sfml_util::GuiFont::System,
-                  sfml_util::GuiFont::Number,
-                  sfml_util::GuiFont::SystemCondensed,
-                  sfml_util::GuiFont::SignThinTallNarrow,
-                  sfml_util::GuiFont::SignBoldShortWide,
-                  sfml_util::GuiFont::Handwriting,
-                  sfml_util::GuiFont::DialogModern,
-                  sfml_util::GuiFont::DialogMedieval,
-              },
-              true)
+        : StageBase(
+            "Testing",
+            {
+                sfml_util::GuiFont::Default,
+                sfml_util::GuiFont::DefaultBoldFlavor,
+                sfml_util::GuiFont::System,
+                sfml_util::GuiFont::Number,
+                sfml_util::GuiFont::SystemCondensed,
+                sfml_util::GuiFont::SignThinTallNarrow,
+                sfml_util::GuiFont::SignBoldShortWide,
+                sfml_util::GuiFont::Handwriting,
+                sfml_util::GuiFont::DialogModern,
+                sfml_util::GuiFont::DialogMedieval,
+            },
+            true)
         , textures_()
         , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
@@ -146,7 +153,7 @@ namespace stage
         , waitingForKeyOrClick_ToDraw_Texts_()
     {}
 
-    TestingStage::~TestingStage() { Stage::ClearAllEntities(); }
+    TestingStage::~TestingStage() { StageBase::ClearAllEntities(); }
 
     void TestingStage::Setup()
     {
@@ -192,7 +199,7 @@ namespace stage
         }
         else
         {
-            Stage::Draw(target, STATES);
+            StageBase::Draw(target, STATES);
 
             if (isInspectingImages_)
             {
@@ -207,7 +214,7 @@ namespace stage
 
     void TestingStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+        StageBase::UpdateTime(ELAPSED_TIME_SECONDS);
 
         if (!isWaitingForKeyOrClickPaused_ && (waitingForKeyOrClickId_ > 0))
         {
@@ -224,10 +231,10 @@ namespace stage
         if (isInspectingImages_)
         {
             const auto INSPECT_IMAGE_COUNT_HORIZ { static_cast<std::size_t>(
-                StageRegionWidth() / IMAGE_INSPECT_DIMMENSION_) };
+                StageRegion().width / IMAGE_INSPECT_DIMMENSION_) };
 
             const auto INSPECT_IMAGE_COUNT_VERT { static_cast<std::size_t>(
-                StageRegionHeight() / IMAGE_INSPECT_DIMMENSION_) };
+                StageRegion().height / IMAGE_INSPECT_DIMMENSION_) };
 
             const auto INSPECT_IMAGE_COUNT { INSPECT_IMAGE_COUNT_HORIZ * INSPECT_IMAGE_COUNT_VERT };
 
@@ -249,7 +256,7 @@ namespace stage
 
             if (imageInspectIndex_ >= imageInspectPackets_.size())
             {
-                game::LoopManager::Instance()->TransitionTo_Exit();
+                TransitionTo(stage::Stage::Exit);
             }
 
             return true;
@@ -365,7 +372,7 @@ namespace stage
 
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilliseconds_));
 
-        if (game::LoopManager::Instance()->IsFading())
+        if (IsFading())
         {
             return;
         }
@@ -393,7 +400,7 @@ namespace stage
         M_TESTING_STAGE_TEST(Enums);
         M_TESTING_STAGE_TEST(Fonts);
         M_TESTING_STAGE_TEST(Maps);
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemFactory, item::ItemFactory);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemFactory, item::ItemFactory);
         M_TESTING_STAGE_TEST(ItemProfileReport);
         M_TESTING_STAGE_TEST(InventoryFactory);
         M_TESTING_STAGE_TEST(ArmorRatings);
@@ -421,9 +428,9 @@ namespace stage
 
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(CombatImageLoader, sfml_util::CombatImageLoader);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ItemImageLoader, sfml_util::ItemImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemImageLoader, sfml_util::ItemImageLoader);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(
             CreatureImageLoader, sfml_util::CreatureImageLoader);
 
         M_TESTING_STAGE_TEST(Animations);
@@ -438,25 +445,34 @@ namespace stage
         M_TESTING_STAGE_TEST(SoundManager);
 
         std::cout << "ALL TESTS PASSED" << std::endl;
-        game::LoopManager::Instance()->TransitionTo_Exit();
+        TransitionTo(stage::Stage::Exit);
     }
 
-    bool TestingStage::PerformTest_Spells() { return spell::Holder::Test(); }
+    bool TestingStage::PerformTest_Spells()
+    {
+        return spell::Holder::Test(stage::IStagePtr_t(this));
+    }
 
-    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(); }
+    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(stage::IStagePtr_t(this)); }
 
-    bool TestingStage::PerformTest_Conditions() { return creature::condition::Holder::Test(); }
+    bool TestingStage::PerformTest_Conditions()
+    {
+        return creature::condition::Holder::Test(stage::IStagePtr_t(this));
+    }
 
-    bool TestingStage::PerformTest_Titles() { return creature::title::Holder::Test(); }
+    bool TestingStage::PerformTest_Titles()
+    {
+        return creature::title::Holder::Test(stage::IStagePtr_t(this));
+    }
 
     bool TestingStage::PerformTest_SoundManager()
     {
-        return sfml_util::SoundManager::Instance()->Test();
+        return sfml_util::SoundManager::Instance()->Test(stage::IStagePtr_t(this));
     }
 
     bool TestingStage::PerformTest_PopupManager()
     {
-        return popup::PopupManager::Instance()->Test();
+        return popup::PopupManager::Instance()->Test(stage::IStagePtr_t(this));
     }
 
     bool TestingStage::PerformTest_ItemProfileReport()
@@ -1014,19 +1030,19 @@ namespace stage
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "heroespath-creature-dragon-class-rank-min-Elder");
+                                "heroespath-creature-dragon-class-rank-min-Elder");
                     }
                     else if (RACE_ENUM == creature::race::Wolfen)
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "heroespath-creature-wolfen-class-rank-min-Elder");
+                                "heroespath-creature-wolfen-class-rank-min-Elder");
                     }
                     else
                     {
                         return RANK_BASE
                             + misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                                  "heroespath-rankclass-Master-rankmax");
+                                "heroespath-rankclass-Master-rankmax");
                     }
                 }() };
 
@@ -1117,17 +1133,25 @@ namespace stage
             const auto FIRST_COLOR { [&]() {
                 switch (ENUM)
                 {
-                    case TopLeftTop: { return image.getPixel(OFFSET, 0);
+                    case TopLeftTop:
+                    {
+                        return image.getPixel(OFFSET, 0);
                     }
-                    case TopLeftLeft: { return image.getPixel(0, OFFSET);
+                    case TopLeftLeft:
+                    {
+                        return image.getPixel(0, OFFSET);
                     }
                     case TopRightTop:
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, 0);
                     }
-                    case TopRightRight: { return image.getPixel((WIDTH - 1), 0);
+                    case TopRightRight:
+                    {
+                        return image.getPixel((WIDTH - 1), 0);
                     }
-                    case BotLeftBot: { return image.getPixel(OFFSET, (HEIGHT - 1));
+                    case BotLeftBot:
+                    {
+                        return image.getPixel(OFFSET, (HEIGHT - 1));
                     }
                     case BotLeftLeft:
                     {
@@ -1137,10 +1161,14 @@ namespace stage
                     {
                         return image.getPixel(((WIDTH - 1) - OFFSET) - RUN_LENGTH, (HEIGHT - 1));
                     }
-                    case BotRightRight: { return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
+                    case BotRightRight:
+                    {
+                        return image.getPixel((WIDTH - 1), (HEIGHT - 1) - OFFSET);
                     }
                     case Count:
-                    default: { return image.getPixel(0, 0);
+                    default:
+                    {
+                        return image.getPixel(0, 0);
                     }
                 }
             }() };
@@ -1150,17 +1178,25 @@ namespace stage
                 const auto NEXT_COLOR { [&]() {
                     switch (ENUM)
                     {
-                        case TopLeftTop: { return image.getPixel(OFFSET + rl, 0);
+                        case TopLeftTop:
+                        {
+                            return image.getPixel(OFFSET + rl, 0);
                         }
-                        case TopLeftLeft: { return image.getPixel(0, OFFSET + rl);
+                        case TopLeftLeft:
+                        {
+                            return image.getPixel(0, OFFSET + rl);
                         }
                         case TopRightTop:
                         {
                             return image.getPixel((((WIDTH - 1) - OFFSET) - RUN_LENGTH) + rl, 0);
                         }
-                        case TopRightRight: { return image.getPixel((WIDTH - 1), 0 + rl);
+                        case TopRightRight:
+                        {
+                            return image.getPixel((WIDTH - 1), 0 + rl);
                         }
-                        case BotLeftBot: { return image.getPixel(OFFSET + rl, (HEIGHT - 1));
+                        case BotLeftBot:
+                        {
+                            return image.getPixel(OFFSET + rl, (HEIGHT - 1));
                         }
                         case BotLeftLeft:
                         {
@@ -1177,7 +1213,9 @@ namespace stage
                                 (WIDTH - 1), (((HEIGHT - 1) - OFFSET) - RUN_LENGTH) + rl);
                         }
                         case Count:
-                        default: { return image.getPixel(0, 0);
+                        default:
+                        {
+                            return image.getPixel(0, 0);
                         }
                     }
                 }() };
@@ -1293,7 +1331,7 @@ namespace stage
         creature::dragon_class::Test();
         creature::wolfen_class::Test();
         creature::Traits::Test();
-        // combat::strategy::SelectType::Test(); //bah, this takes too long...
+        // combat::strategy::SelectType::Test(); //this one takes too long
         combat::strategy::RefineType::Test();
         combat::strategy::AdvanceType::Test();
         combat::strategy::RetreatType::Test();
@@ -1310,7 +1348,7 @@ namespace stage
         sfml_util::GuiEvent::Test();
         sfml_util::Side::Test();
         sfml_util::Animations::Test();
-        sfml_util::LoopState::TestHelper();
+        stage::Stage::TestHelper();
         sfml_util::Footstep::Test();
         sfml_util::music::Test();
         sfml_util::sound_effect::Test();
@@ -1323,6 +1361,9 @@ namespace stage
         avatar::Avatar::Test();
         spell::Spells::Test();
         song::Songs::Test();
+        map::LayerType::Test();
+        popup::PopupStage::Test();
+        misc::LogPriority::Test();
         return true;
     }
 
@@ -1363,7 +1404,7 @@ namespace stage
         const auto IMAGE_POS_TOP { 1.0f };
         {
             std::size_t imageDrawCount { 0 };
-            auto posLeft { StageRegionWidth() };
+            auto posLeft { StageRegion().width };
 
             auto rItr(textures_.rbegin());
             for (; rItr != textures_.rend(); ++rItr)
@@ -1419,7 +1460,7 @@ namespace stage
             auto DO_NOT_PASS_TOP { IMAGE_POS_TOP + 256.0f + TEXT_HEIGHT };
 
             // The extra * 2 is added because without it, the text at the bottom is cut off.
-            auto posTop { StageRegionHeight() - (TEXT_HEIGHT * 2.0f) };
+            auto posTop { StageRegion().height - (TEXT_HEIGHT * 2.0f) };
 
             StrSizePairVec_t::reverse_iterator rItr { testingBlurbsVec_.rbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
@@ -1458,9 +1499,9 @@ namespace stage
         auto posY { 0.0f };
         auto imageIndex { imageInspectIndex_ };
 
-        while (posY < (StageRegionHeight() - IMAGE_INSPECT_DIMMENSION_))
+        while (posY < (StageRegion().height - IMAGE_INSPECT_DIMMENSION_))
         {
-            while (posX < (StageRegionWidth() - IMAGE_INSPECT_DIMMENSION_))
+            while (posX < (StageRegion().width - IMAGE_INSPECT_DIMMENSION_))
             {
                 if (imageIndex >= imageInspectPackets_.size())
                 {
@@ -1495,7 +1536,7 @@ namespace stage
 
     void TestingStage::SetupWaitTest_GoldBar()
     {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegionWidth() * StageRegionHeight()))
+        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
                                      * 0.092f };
 
         const auto BETWEEN_PAD { SCREEN_EDGE_PAD * 0.025f };
@@ -1618,7 +1659,7 @@ namespace stage
 
     void TestingStage::SetupWaitTest_GoldBar2()
     {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegionWidth() * StageRegionHeight()))
+        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
                                      * 0.12f };
 
         const auto BETWEEN_SPACER { SCREEN_EDGE_PAD * 0.025f };
@@ -1639,7 +1680,7 @@ namespace stage
 
             auto horizGrowthPrev { GROWTH_MIN };
             auto vertGrowthPrev { GROWTH_MIN };
-            while (posX < (StageRegionWidth() - SCREEN_EDGE_PAD))
+            while (posX < (StageRegion().width - SCREEN_EDGE_PAD))
             {
                 const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
 
@@ -1704,7 +1745,7 @@ namespace stage
 
     void TestingStage::SetupWaitTest_Border()
     {
-        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegionWidth() * StageRegionHeight()))
+        const auto SCREEN_EDGE_PAD { std::sqrt((StageRegion().width * StageRegion().height))
                                      * 0.12f };
 
         const auto BETWEEN_SPACER { SCREEN_EDGE_PAD * 0.025f };
@@ -1726,7 +1767,7 @@ namespace stage
 
             auto horizGrowthPrev { GROWTH_MIN };
             auto vertGrowthPrev { GROWTH_MIN };
-            while (posX < (StageRegionWidth() - SCREEN_EDGE_PAD))
+            while (posX < (StageRegion().width - SCREEN_EDGE_PAD))
             {
                 const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
 
@@ -1835,7 +1876,8 @@ namespace stage
 
         sfml_util::Text text(TEXT_INFO);
 
-        const sf::Vector2f POS_V((StageRegionWidth() * 0.5f) - text.getGlobalBounds().width, 50.0f);
+        const sf::Vector2f POS_V(
+            (StageRegion().width * 0.5f) - text.getGlobalBounds().width, 50.0f);
 
         waitingForKeyOrClick_ToDraw_Texts_.emplace_back(text);
     }

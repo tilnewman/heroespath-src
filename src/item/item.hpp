@@ -42,7 +42,6 @@ namespace item
         Item & operator=(const Item &) = delete;
         Item & operator=(Item &&) = delete;
 
-    public:
         explicit Item(
             const std::string & NAME = "",
             const std::string & DESC = "",

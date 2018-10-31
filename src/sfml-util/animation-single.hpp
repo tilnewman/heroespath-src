@@ -30,7 +30,6 @@ namespace sfml_util
         AnimationSingleTexture & operator=(const AnimationSingleTexture &) = delete;
         AnimationSingleTexture & operator=(AnimationSingleTexture &&) = delete;
 
-    public:
         AnimationSingleTexture(
             const Animations::Enum ENUM,
             const sf::FloatRect & REGION,

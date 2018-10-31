@@ -393,32 +393,31 @@ namespace misc
             return KeyValueLine(LINE_STR);
         }
 
-        auto makeErrorMessage = [&](const std::string & MESSAGE) {
-            return "(path=\"" + path_ + "\", line=\"" + LINE_STR
-                + "\", line_number=" + misc::ToString(LINE_NUMBER) + ")  " + MESSAGE;
+        auto makeErrorMessage = [&](const std::string & SYNTAX_ERROR_MESSAGE,
+                                    const std::string & FINAL_ACTION_TAKEN_MESSAGE) {
+            return SYNTAX_ERROR_MESSAGE + "  " + FINAL_ACTION_TAKEN_MESSAGE + "  "
+                + M_HP_VAR_STR(path_) + M_HP_VAR_STR(LINE_NUMBER) + M_HP_VAR_STR(LINE_STR)
+                + M_HP_VAR_STR(separator_) + M_HP_VAR_STR(commentPrefix_);
         };
 
-        auto returnError = [&](const std::string & MESSAGE) {
-            const std::string ERROR_MESSAGE_BASE { makeErrorMessage(MESSAGE) };
-
+        auto returnError = [&](const std::string & SYNTAX_ERROR_MESSAGE) {
             if (commentPrefix_.empty())
             {
-                M_HP_LOG_ERR(
-                    ERROR_MESSAGE_BASE
-                    + "  This line will not be loaded and a blank line will take its place.");
+                M_HP_LOG_ERR(makeErrorMessage(
+                    SYNTAX_ERROR_MESSAGE,
+                    "This line will not be loaded and a blank line will take its place."));
 
                 return KeyValueLine();
             }
             else
             {
-                const auto ERROR_MESSAGE_FINAL {
-                    ERROR_MESSAGE_BASE
-                    + "  This line will be loaded as a comment containing this error message."
-                };
+                const auto FINAL_ERROR_MESSAGE { makeErrorMessage(
+                    SYNTAX_ERROR_MESSAGE,
+                    "This line will be loaded as a comment containing this error message.") };
 
-                M_HP_LOG_ERR(ERROR_MESSAGE_FINAL);
+                M_HP_LOG_ERR(FINAL_ERROR_MESSAGE);
 
-                return KeyValueLine(commentPrefix_ + ERROR_MESSAGE_FINAL);
+                return KeyValueLine(commentPrefix_ + FINAL_ERROR_MESSAGE);
             }
         };
 
