@@ -67,11 +67,12 @@ namespace game
     private:
         void ExecuteCleanup();
         const MouseThisFrame UpdateMouseInfo();
-        void UpdateTimeStages(const float FRAME_TIME_SEC);
-        void HandleFade(const float FRAME_TIME_SEC);
-        void DrawStages();
         void ExecuteNextTest();
-        void RecordFramerate(const float FRAME_TIME_SEC);
+
+        void UpdateTimeStages(const float FRAME_TIME_SEC);
+        void UpdateTimeFade(const float FRAME_TIME_SEC);
+        void UpdateTimeRecordFramerate(const float FRAME_TIME_SEC);
+        void UpdateTimeAudio(const float FRAME_TIME_SEC);
         void HandleMouseMove();
 
         void StopMouseHover(const bool HAS_MOUSE_MOVED);
@@ -90,6 +91,8 @@ namespace game
         bool HandleEventIfWindowClosed(const sf::Event &);
 
         void ConsumeAndIgnoreStrayEvents();
+
+        void Draw();
 
     private:
         ActiveStages & stages_;

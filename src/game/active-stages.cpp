@@ -19,49 +19,48 @@ namespace game
 {
 
     ActiveStages::ActiveStages()
-        : non_popup_uvec()
-        , focus_entity_ptr_opt(boost::none)
-        , popup_uptr()
-        , popup_callback_handler_ptr_opt(boost::none)
-        , popup_desc("")
-        , popup_response()
+        : nonPopupUVec_()
+        , popupUPtr_()
+        , popupCallbackHandlerPtrOpt_(boost::none)
+        , popupDescriptionStr_("")
+        , popupResponse_()
     {}
 
     void ActiveStages::SetIsFadingForAllStages(const bool IS_FADING)
     {
         M_HP_LOG_DBG("fade flag being set for all stages to " << std::boolalpha << IS_FADING);
 
-        for (auto & iStageUPtr : non_popup_uvec)
+        for (auto & iStageUPtr : nonPopupUVec_)
         {
             iStageUPtr->IsFading(IS_FADING);
         }
 
-        if (popup_uptr)
+        if (popupUPtr_)
         {
-            popup_uptr->IsFading(IS_FADING);
+            popupUPtr_->IsFading(IS_FADING);
         }
     }
 
     void ActiveStages::HandlePopupResponseCallback()
     {
-        if (!popup_callback_handler_ptr_opt || (popup::ResponseTypes::None == popup_response.type))
+        if (!popupCallbackHandlerPtrOpt_ || (popup::ResponseTypes::None == popupResponse_.type))
         {
             return;
         }
 
         // who knows what a Stage will do when handling a popup response callback, so use a copy
-        // of the popup_response to avoid passing a pointer/reference to GameController's
+        // of the popupResponse_ to avoid passing a pointer/reference to GameController's
         // ActiveStages object (context_)
-        const auto POPUP_RESPONSE_COPY { popup_response };
-        popup_callback_handler_ptr_opt.value()->HandleCallback(&POPUP_RESPONSE_COPY);
+        const auto popupResponse__COPY { popupResponse_ };
+        popupCallbackHandlerPtrOpt_.value()->HandleCallback(&popupResponse__COPY);
 
         RemovePopupResponse();
     }
 
     void ActiveStages::ReplaceStages(const stage::SetupPacket & SETUP_PACKET)
     {
-        non_popup_uvec.clear();
-        non_popup_uvec = stage::StageFactory::Make(SETUP_PACKET);
+        nonPopupUVec_.clear();
+        nonPopupUVec_ = stage::StageFactory::Make(SETUP_PACKET);
     }
 
     void ActiveStages::ReplacePopupStage(
@@ -69,30 +68,24 @@ namespace game
         const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         RemovePopupAll();
-        popup_response.Reset(POPUP_INFO.Name());
-        popup_desc = POPUP_INFO.ToStringShort();
-        popup_callback_handler_ptr_opt = POPUP_HANDLER_PTR;
-        popup_uptr = stage::StageFactory::MakePopup(POPUP_INFO);
+        popupResponse_.Reset(POPUP_INFO.Name());
+        popupDescriptionStr_ = POPUP_INFO.ToStringShort();
+        popupCallbackHandlerPtrOpt_ = POPUP_HANDLER_PTR;
+        popupUPtr_ = stage::StageFactory::MakePopup(POPUP_INFO);
     }
 
     void ActiveStages::SetPopupResponse(
         const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION)
     {
-        popup_response.type = TYPE;
-        popup_response.selection_opt = SELECTION;
-    }
-
-    void ActiveStages::Focus(const sfml_util::IEntityPtr_t & IENTITY_PTR)
-    {
-        FocusRemove();
-        FocusSet(IENTITY_PTR);
+        popupResponse_.type = TYPE;
+        popupResponse_.selection_opt = SELECTION;
     }
 
     void ActiveStages::RemovePopupResponse()
     {
-        popup_response.Reset();
-        popup_desc.clear();
-        popup_callback_handler_ptr_opt = boost::none;
+        popupResponse_.Reset();
+        popupDescriptionStr_.clear();
+        popupCallbackHandlerPtrOpt_ = boost::none;
     }
 
     void ActiveStages::RemovePopupAll()
@@ -101,34 +94,16 @@ namespace game
         RemovePopupResponse();
     }
 
-    void ActiveStages::FocusSet(const sfml_util::IEntityPtr_t IENTITY_PTR)
-    {
-        focus_entity_ptr_opt = IENTITY_PTR;
-        focus_entity_ptr_opt.value()->SetHasFocus(true);
-
-        for (auto & iStageUPtr : non_popup_uvec)
-        {
-            iStageUPtr->SetFocus(IENTITY_PTR);
-        }
-
-        if (popup_uptr)
-        {
-            popup_uptr->SetFocus(IENTITY_PTR);
-        }
-    }
-
     void ActiveStages::FocusRemove()
     {
-        focus_entity_ptr_opt = boost::none;
-
-        for (auto & iStageUPtr : non_popup_uvec)
+        for (auto & iStageUPtr : nonPopupUVec_)
         {
             iStageUPtr->RemoveFocus();
         }
 
-        if (popup_uptr)
+        if (popupUPtr_)
         {
-            popup_uptr->RemoveFocus();
+            popupUPtr_->RemoveFocus();
         }
     }
 

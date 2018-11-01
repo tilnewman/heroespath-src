@@ -20,12 +20,15 @@ namespace game
 {
 
     const CommandVec_t CommandFactory::MakeCommandsForPopupSpawn(
-        const PopupReplaceCommand & POPUP_ADD_COMMAND) const
+        const PopupReplaceCommand & POPUP_ADD_COMMAND, const bool IS_ALREADY_POPUP) const
     {
         CommandVec_t commandVec;
 
-        MakeAndAppendCommandFade(
-            commandVec, MakeCommandForStateChangeFade(FadeDirection::Out, ForPopup::Yes));
+        if (IS_ALREADY_POPUP == false)
+        {
+            MakeAndAppendCommandFade(
+                commandVec, MakeCommandForStateChangeFade(FadeDirection::Out, ForPopup::Yes, true));
+        }
 
         MakeAndAppendCommandReplacePopup(commandVec, POPUP_ADD_COMMAND);
         MakeAndAppendCommandExecute(commandVec, ExecuteCommand());
@@ -41,7 +44,7 @@ namespace game
         MakeAndAppendCommandRemovePopup(commandVec);
 
         MakeAndAppendCommandFade(
-            commandVec, MakeCommandForStateChangeFade(FadeDirection::In, ForPopup::Yes));
+            commandVec, MakeCommandForStateChangeFade(FadeDirection::In, ForPopup::Yes, false));
 
         MakeAndAppendCommandExecute(commandVec, EXECUTE_COMMAND_BEFORE_CHANGE);
 
@@ -58,12 +61,12 @@ namespace game
             STAGE_SETUP_COMMAND.stage) };
 
         FadeCommandOpt_t fadeOutCommandOpt { MakeCommandForStateChangeFade(
-            FadeDirection::Out, ForPopup::No) };
+            FadeDirection::Out, ForPopup::No, false) };
 
         StageReplaceCommandOpt_t stageReplaceCommandOpt { STAGE_SETUP_COMMAND };
 
         FadeCommandOpt_t fadeInCommandOpt { MakeCommandForStateChangeFade(
-            FadeDirection::In, ForPopup::No) };
+            FadeDirection::In, ForPopup::No, false) };
 
         ExecuteCommandOpt_t executeCommandOpt { MakeCommandForStateChangeExecute(
             STAGE_SETUP_COMMAND.stage) };
@@ -250,7 +253,9 @@ namespace game
     }
 
     const FadeCommand CommandFactory::MakeCommandForStateChangeFade(
-        const FadeDirection DIRECTION, const ForPopup IS_FOR_POPUP) const
+        const FadeDirection DIRECTION,
+        const ForPopup IS_FOR_POPUP,
+        const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT) const
     {
         const auto FADE_SPEED = [&]() {
             if (DIRECTION == FadeDirection::In)
@@ -283,7 +288,8 @@ namespace game
 
         if (DIRECTION == FadeDirection::In)
         {
-            return FadeCommand(DIRECTION, FADE_SPEED);
+            return FadeCommand(
+                DIRECTION, FADE_SPEED, SET_WILL_DRAW_UNDER_POPUP_OPT, sf::Color::Transparent);
         }
         else
         {
@@ -295,7 +301,7 @@ namespace game
                     "system-ui-stage-change-popup-fade-alpha");
             }
 
-            return FadeCommand(DIRECTION, FADE_SPEED, fadeToColor);
+            return FadeCommand(DIRECTION, FADE_SPEED, SET_WILL_DRAW_UNDER_POPUP_OPT, fadeToColor);
         }
     }
 } // namespace game

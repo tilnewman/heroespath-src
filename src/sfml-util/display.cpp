@@ -126,9 +126,9 @@ namespace sfml_util
         winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
     }
 
-    void Display::DrawStage(const stage::IStagePtr_t & ISTAGE_PTR)
+    void Display::DrawStage(stage::IStagePtr_t & iStagePtr)
     {
-        ISTAGE_PTR->Draw(*winUPtr_, sf::RenderStates());
+        iStagePtr->Draw(*winUPtr_, sf::RenderStates());
     }
 
     const std::vector<sf::Event> Display::PollEvents()
@@ -235,7 +235,7 @@ namespace sfml_util
             sfml_util::WillOscillate::No,
             sfml_util::WillAutoStart::Yes);
 
-        M_HP_LOG_DBG("fade out started: color=" << COLOR << ", speed=" << SPEED);
+        M_HP_LOG_DBG("fade out started, to_color=" << COLOR);
     }
 
     void Display::FadeInStart(const float SPEED)
@@ -260,27 +260,30 @@ namespace sfml_util
             sfml_util::WillOscillate::No,
             sfml_util::WillAutoStart::Yes);
 
-        M_HP_LOG_DBG("fade in started: color=" << fadeFromColor << ", speed=" << SPEED);
+        M_HP_LOG_DBG("fade in started, from_color=" << fadeFromColor);
     }
 
-    bool Display::UpdateTimeForFade(const float FRAME_TIME_SEC)
+    const sf::Color Display::UpdateFadeColor(const float FRAME_TIME_SEC)
     {
         if (fadeColoredRectSliderUPtr_)
         {
-            const auto IS_STILL_MOVING { fadeColoredRectSliderUPtr_->UpdateAndReturnIsMoving(
-                FRAME_TIME_SEC) };
-
-            // M_HP_LOG_DBG(
-            //    "fade update: time_elapsed="
-            //    << FRAME_TIME_SEC << ", color=" << fadeColoredRectSliderUPtr_->Value()
-            //    << ", progress=" << fadeColoredRectSliderUPtr_->PositionRatio()
-            //    << ", is_still_moving=" << std::boolalpha << IS_STILL_MOVING);
-
-            return IS_STILL_MOVING;
+            return fadeColoredRectSliderUPtr_->UpdateAndReturnValue(FRAME_TIME_SEC);
         }
         else
         {
-            return false;
+            return sf::Color::Transparent;
+        }
+    }
+
+    bool Display::IsFadeFinished() const
+    {
+        if (fadeColoredRectSliderUPtr_)
+        {
+            return fadeColoredRectSliderUPtr_->IsStopped();
+        }
+        else
+        {
+            return true;
         }
     }
 

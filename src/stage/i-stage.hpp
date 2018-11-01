@@ -128,9 +128,10 @@ namespace stage
     };
 
     using IStageUPtr_t = std::unique_ptr<IStage>;
-    using IStagePtr_t = misc::NotNull<IStage *>;
-    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
     using IStageUVec_t = std::vector<IStageUPtr_t>;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+    using IStagePVec_t = std::vector<IStagePtr_t>;
+    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
 
 } // namespace stage
 } // namespace heroespath

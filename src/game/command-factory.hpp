@@ -22,8 +22,8 @@ namespace game
     class CommandFactory
     {
     public:
-        const CommandVec_t
-            MakeCommandsForPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND) const;
+        const CommandVec_t MakeCommandsForPopupSpawn(
+            const PopupReplaceCommand & POPUP_ADD_COMMAND, const bool IS_ALREADY_POPUP) const;
 
         const CommandVec_t
             MakeCommandsForPopupRemove(const ExecuteCommand & EXECUTE_COMMAND_BEFORE_CHANGE) const;
@@ -63,7 +63,9 @@ namespace game
         const ExecuteCommandOpt_t MakeCommandForStateChangeExecute(const stage::Stage::Enum) const;
 
         const FadeCommand MakeCommandForStateChangeFade(
-            const FadeDirection FADE_DIRECTION, const ForPopup IS_FOR_POPUP) const;
+            const FadeDirection FADE_DIRECTION,
+            const ForPopup IS_FOR_POPUP,
+            const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT) const;
     };
 
 } // namespace game

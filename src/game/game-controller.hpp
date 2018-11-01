@@ -70,8 +70,6 @@ namespace game
 
         Phase::Enum GetPhase() const { return stageTracker_.GetPhase(); }
 
-        const std::string GetStatusString() const;
-
         void PlayGame();
 
         void SpawnPopup(
@@ -95,6 +93,8 @@ namespace game
             const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE = false);
 
     private:
+        void PreTaskLogs(
+            const std::string & NAME_OF_TASK_ABOUT_TO_EXECUTE, const Command & COMMAND) const;
         void ExecuteGameCommand(const Command &);
         void ExecuteGameCommandFade(const FadeCommand &);
         void RequestLoopExit() { status_.LoopStopRequest(); }

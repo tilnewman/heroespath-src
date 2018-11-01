@@ -111,16 +111,16 @@ namespace game
         }
     }
 
-    const std::string GameController::GetStatusString() const
+    void GameController::PreTaskLogs(
+        const std::string & NAME_OF_TASK_ABOUT_TO_EXECUTE, const Command & COMMAND) const
     {
-        std::ostringstream ss;
+        M_HP_LOG("Pre \"" << NAME_OF_TASK_ABOUT_TO_EXECUTE << "\" " << COMMAND.ToString());
 
-        ss << "GameControllerStatus{stage=" << GetStageName()
-           << ", phase=" << game::Phase::ToStringNoThrow(GetPhase())
-           << ", cmd_q_size=" << commandQueue_.Size() << ", " << status_.ToString() << ", "
-           << activeStages_.AllStageNames() << "}";
-
-        return ss.str();
+        M_HP_LOG(
+            "Pre \"" << NAME_OF_TASK_ABOUT_TO_EXECUTE << "\" GameControllerStatus(stage="
+                     << GetStageName() << ", phase=" << game::Phase::ToStringNoThrow(GetPhase())
+                     << ", cmd_q_size=" << commandQueue_.Size() << ", " << status_.ToString()
+                     << ")");
     }
 
     void GameController::PlayGame()
@@ -185,7 +185,7 @@ namespace game
     {
         // this order is critical
 
-        M_HP_LOG_DBG(COMMAND.ToString() << ", " << GetStatusString());
+        PreTaskLogs("GameCommand", COMMAND);
 
         if (COMMAND.music_opt)
         {
@@ -216,11 +216,12 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
+                PreTaskLogs("Music Exception", COMMAND);
+
                 M_HP_LOG_ERR(
                     "Exception=\"" << EXCEPTION.what()
                                    << "\" thrown during music comamnd processing.  This is not "
-                                      "considered fatal so the game will continue.  "
-                                   << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                                      "considered fatal so the game will continue.");
             }
         }
 
@@ -232,12 +233,13 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
+                PreTaskLogs("Stage Replace Exception", COMMAND);
+
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
                                    << "\" thrown during stage replace comamnd processing.  This "
                                       "means a Stage could not be constructed and setup, which is "
-                                      "fatal.  Re-Throwing to kill the game.  "
-                                   << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                                      "fatal.  Re-Throwing to kill the game.");
 
                 throw;
             }
@@ -254,13 +256,14 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
+                PreTaskLogs("Popup Replace Exception", COMMAND);
+
                 M_HP_LOG_FAT(
                     "Exception=\""
                     << EXCEPTION.what()
                     << "\" thrown during popup replace comamnd processing.  This "
                        "means a Popup Stage could not be constructed and setup, which is "
-                       "fatal.  Re-Throwing to kill the game.  "
-                    << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                       "fatal.  Re-Throwing to kill the game.");
 
                 throw;
             }
@@ -274,12 +277,13 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
+                PreTaskLogs("Popup Remove Exception", COMMAND);
+
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
                                    << "\" thrown during popup remove comamnd processing.  This "
                                       "means a Popup Stage could not be rmeoved, which is "
-                                      "fatal.  Re-Throwing to kill the game.  "
-                                   << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                                      "fatal.  Re-Throwing to kill the game.");
 
                 throw;
             }
@@ -303,11 +307,12 @@ namespace game
                 }
                 catch (const std::exception & EXCEPTION)
                 {
+                    PreTaskLogs("Fade Exception", COMMAND);
+
                     M_HP_LOG_ERR(
                         "Exception=\"" << EXCEPTION.what()
                                        << "\" thrown during fade comamnd processing.  This is not "
-                                          "considered fatal so the game will continue.  "
-                                       << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                                          "considered fatal so the game will continue.");
                 }
             }
 
@@ -323,13 +328,14 @@ namespace game
             }
             catch (const std::exception & EXCEPTION)
             {
+                PreTaskLogs("GameLoop Exception", COMMAND);
+
                 M_HP_LOG_FAT(
                     "Exception=\""
                     << EXCEPTION.what()
                     << "\" thrown during exeute comamnd processing (during the game loop).  This "
                        "is considered fatal, at least untul zTn implements some kind of retry...  "
-                       "Re-Throwing to kill the game.  "
-                    << GetStatusString() << M_HP_VAR_STR(COMMAND));
+                       "Re-Throwing to kill the game.");
 
                 throw;
             }
@@ -338,10 +344,8 @@ namespace game
             {
                 status_.GameExitRequestReset();
 
-                M_HP_LOG(
-                    "GameController acknowledging the GameExitRequested flag and "
-                    "transitioning Stage to Exit.  "
-                    << GetStatusString());
+                M_HP_LOG("GameController acknowledging the GameExitRequested flag and "
+                         "transitioning Stage to Exit.");
 
                 TransitionTo(stage::Stage::Exit);
             }
@@ -354,14 +358,15 @@ namespace game
         if (IS_FADING_IN)
         {
             sfml_util::Display::Instance()->FadeInStart(FADE_COMMAND.speed);
+            status_.StartFadeIn(FADE_COMMAND.set_will_draw_under_popup_opt);
         }
         else
         {
             sfml_util::Display::Instance()->FadeOutStart(FADE_COMMAND.color, FADE_COMMAND.speed);
+            status_.StartFadeOut(FADE_COMMAND.color, FADE_COMMAND.set_will_draw_under_popup_opt);
         }
 
         activeStages_.SetIsFadingForAllStages(true);
-        status_.StartFading(IS_FADING_IN);
     }
 
     const sfml_util::DisplayChangeResult GameController::ChangeResolution(
@@ -379,12 +384,13 @@ namespace game
 
         if (RESULT.did_res_change)
         {
-            auto handleResolutionChange
-                = [](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                      iStageUPtr->HandleResolutionChange();
-                  };
+            auto handleResolutionChange = [](stage::IStagePtr_t iStagePtr) {
+                iStagePtr->HandleResolutionChange();
+                return boost::none;
+            };
 
-            activeStages_.ExecuteOn(game::WhichStages::NonPopupOnly, handleResolutionChange);
+            activeStages_.ExecuteOnNonPopupStages(handleResolutionChange);
+            activeStages_.ExecuteOnPopupStage(handleResolutionChange);
         }
 
         sfml_util::TextInfo textInfo(
@@ -404,41 +410,42 @@ namespace game
 
     void GameController::TestingStrAppend(const std::string & MESSAGE)
     {
-        auto handleTestStringAppend
-            = [MESSAGE](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->TestingStrAppend(MESSAGE);
-              };
+        auto handleTestStringAppend = [MESSAGE](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingStrAppend(MESSAGE);
+            return boost::none;
+        };
 
-        activeStages_.ExecuteOn(game::WhichStages::NonPopupOnly, handleTestStringAppend);
+        activeStages_.ExecuteOnNonPopupStages(handleTestStringAppend);
     }
 
     void GameController::TestingStrIncrement(const std::string & MESSAGE)
     {
-        auto handleTestStringIncrement
-            = [MESSAGE](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->TestingStrIncrement(MESSAGE);
-              };
+        auto handleTestStringIncrement = [MESSAGE](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingStrIncrement(MESSAGE);
+            return boost::none;
+        };
 
-        activeStages_.ExecuteOn(game::WhichStages::NonPopupOnly, handleTestStringIncrement);
+        activeStages_.ExecuteOnNonPopupStages(handleTestStringIncrement);
     }
 
     void GameController::TestingImageSet(
         const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
-        auto handleTestImageSet
-            = [PATH_STR, WILL_CHECK_FOR_OUTLINE](
-                  game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
-              };
+        auto handleTestImageSet = [PATH_STR, WILL_CHECK_FOR_OUTLINE](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->TestingImageSet(PATH_STR, WILL_CHECK_FOR_OUTLINE);
+            return boost::none;
+        };
 
-        activeStages_.ExecuteOn(game::WhichStages::NonPopupOnly, handleTestImageSet);
+        activeStages_.ExecuteOnNonPopupStages(handleTestImageSet);
     }
 
     void GameController::StageChangePostPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND)
     {
         M_HP_LOG("popup spawn post: " << POPUP_ADD_COMMAND.popup_info.ToStringShort());
         RequestLoopExit();
-        commandQueue_.ClearAndPush(commandFactory_.MakeCommandsForPopupSpawn(POPUP_ADD_COMMAND));
+
+        commandQueue_.ClearAndPush(commandFactory_.MakeCommandsForPopupSpawn(
+            POPUP_ADD_COMMAND, activeStages_.HasPopupStage()));
     }
 
     void GameController::StageChangePostPopupRemove(

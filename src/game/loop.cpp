@@ -62,15 +62,6 @@ namespace game
 
                 frameMouseInfo_ = UpdateMouseInfo();
 
-                const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
-                frameClock.restart();
-
-                RecordFramerate(FRAME_TIME_SEC);
-
-                OncePerSecondTasks(secondClock_);
-
-                sfml_util::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
-
                 // TODO TEMP REMOVE remove this crap once all testing is in unit tests
                 ExecuteNextTest();
 
@@ -79,16 +70,21 @@ namespace game
                 HandleMouseMove();
                 HandleEvents();
 
+                const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
+                frameClock.restart();
+
+                UpdateTimeFade(FRAME_TIME_SEC);
+                UpdateTimeRecordFramerate(FRAME_TIME_SEC);
+                UpdateTimeAudio(FRAME_TIME_SEC);
                 UpdateTimeStages(FRAME_TIME_SEC);
 
-                DrawStages();
+                OncePerSecondTasks(secondClock_);
 
-                // this must remain second-to-last so that any of the code above can set a popup
-                // response and it will always be handled before the loop exits
+                Draw();
+
+                // this must remain last (just before display) so that any of the code above can set
+                // a popup response and it will always be handled before the loop exits
                 stages_.HandlePopupResponseCallback();
-
-                // this must remain last so that the fade is the last to be drawn
-                HandleFade(FRAME_TIME_SEC);
 
                 sfml_util::Display::Instance()->DisplayFrameBuffer();
             }
@@ -134,12 +130,13 @@ namespace game
 
         isMouseHovering_ = false;
 
-        auto handleStopMouseHover
-            = [](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->SetMouseHover(sf::Vector2f(0.0f, 0.0f), false);
-              };
+        auto handleStopMouseHover = [](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->SetMouseHover(sf::Vector2f(0.0f, 0.0f), false);
+            return boost::none;
+        };
 
-        stages_.ExecuteOn(game::WhichStages::All, handleStopMouseHover);
+        stages_.ExecuteOnPopupStage(handleStopMouseHover);
+        stages_.ExecuteOnNonPopupStages(handleStopMouseHover);
     }
 
     void Loop::OncePerSecondTasks(sf::Clock & secondClock)
@@ -203,7 +200,7 @@ namespace game
     void Loop::OncePerSecondTaskStartMouseHover()
     {
         // don't show mouseovers while fading, if the mouse is moving, or if already showing
-        if (iStatus_.IsFading() || frameMouseInfo_.has_moved || isMouseHovering_)
+        if (iStatus_.GetFadeStatus().is_fading || frameMouseInfo_.has_moved || isMouseHovering_)
         {
             return;
         }
@@ -211,12 +208,12 @@ namespace game
         isMouseHovering_ = true;
 
         auto handleStartMouseHover
-            = [MOUSE_POS_V = frameMouseInfo_.pos_vf](
-                  game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->SetMouseHover(MOUSE_POS_V, true);
+            = [MOUSE_POS_V = frameMouseInfo_.pos_vf](stage::IStagePtr_t iStagePtr) {
+                  iStagePtr->SetMouseHover(MOUSE_POS_V, true);
+                  return boost::none;
               };
 
-        stages_.ExecuteOn(game::WhichStages::Foreground, handleStartMouseHover);
+        stages_.ExecuteOnForegroundStages(handleStartMouseHover);
     }
 
     void Loop::OncePerSecondTaskCheckIfDisplayOpen()
@@ -234,29 +231,30 @@ namespace game
             return;
         }
 
-        auto handleMouseMove = [MOUSE_THIS_FRAME = frameMouseInfo_](
-                                   game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-            iStageUPtr->UpdateMousePos(MOUSE_THIS_FRAME.pos_vi);
+        auto handleMouseMove = [MOUSE_THIS_FRAME = frameMouseInfo_](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->UpdateMousePos(MOUSE_THIS_FRAME.pos_vi);
+            return boost::none;
         };
 
-        stages_.ExecuteOn(game::WhichStages::Foreground, handleMouseMove);
+        stages_.ExecuteOnForegroundStages(handleMouseMove);
     }
 
-    void Loop::HandleFade(const float FRAME_TIME_SEC)
+    void Loop::UpdateTimeFade(const float FRAME_TIME_SEC)
     {
-        if (!iStatus_.IsFading())
+        if (iStatus_.GetFadeStatus().is_fading == false)
         {
             return;
         }
 
-        if (sfml_util::Display::Instance()->UpdateTimeForFade(FRAME_TIME_SEC) == false)
+        iStatus_.SetFadeCurrentColor(
+            sfml_util::Display::Instance()->UpdateFadeColor(FRAME_TIME_SEC));
+
+        if (sfml_util::Display::Instance()->IsFadeFinished())
         {
-            iStatus_.StopFading();
+            iStatus_.SetFadeTargetColorReached();
             iStatus_.LoopStopRequest();
             stages_.SetIsFadingForAllStages(false);
         }
-
-        sfml_util::Display::Instance()->DrawFade();
     }
 
     void Loop::HandleEvents()
@@ -280,23 +278,23 @@ namespace game
             return;
         }
 
-        if (EVENT.mouseButton.button == sf::Mouse::Left)
+        if ((EVENT.type == sf::Event::MouseButtonPressed)
+            && (EVENT.mouseButton.button == sf::Mouse::Left))
         {
-            if (EVENT.type == sf::Event::MouseButtonPressed)
-            {
-                HandleEventMouseButtonLeftPressed();
-                return;
-            }
-            else if (EVENT.type == sf::Event::MouseButtonReleased)
-            {
-                HandleEventMouseButtonLeftReleased();
-                return;
-            }
+            HandleEventMouseButtonLeftPressed();
+            return;
+        }
+
+        if ((EVENT.type == sf::Event::MouseButtonReleased)
+            && (EVENT.mouseButton.button == sf::Mouse::Left))
+        {
+            HandleEventMouseButtonLeftReleased();
+            return;
         }
 
         if (EVENT.type != sf::Event::EventType::MouseMoved)
         {
-            M_HP_LOG_DBG("unhandled " << ToString(EVENT));
+            M_HP_LOG_WRN("unhandled " << ToString(EVENT));
         }
     }
 
@@ -320,7 +318,8 @@ namespace game
         };
 
         // allow screenshots even if keystrokes are ignored
-        if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (EVENT.key.code == sf::Keyboard::F12))
+        if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
+            && (EVENT.key.code == sf::Keyboard::F12))
         {
             M_HP_LOG(makeLogString() + " causing screenshot save.");
             sfml_util::Display::Instance()->TakeScreenshot();
@@ -329,7 +328,8 @@ namespace game
 
         // TEMP TODO REMOVE AFTER TESTING
         // allow F1 to instant kill the game even if keystrokes are ignored
-        if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (EVENT.key.code == sf::Keyboard::F1))
+        if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
+            && (EVENT.key.code == sf::Keyboard::F1))
         {
             M_HP_LOG(makeLogString() + " forcing the game to exit.");
             iStatus_.GameExitRequest();
@@ -349,19 +349,19 @@ namespace game
             return;
         }
 
-        auto handleKeyPressOrRelease
-            = [EVENT](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  if (EVENT.type == sf::Event::KeyPressed)
-                  {
-                      iStageUPtr->KeyPress(EVENT.key);
-                  }
-                  else
-                  {
-                      iStageUPtr->KeyRelease(EVENT.key);
-                  }
-              };
+        auto handleKeyPressOrRelease = [EVENT](stage::IStagePtr_t iStagePtr) {
+            if (EVENT.type == sf::Event::KeyPressed)
+            {
+                iStagePtr->KeyPress(EVENT.key);
+            }
+            else
+            {
+                iStagePtr->KeyRelease(EVENT.key);
+            }
+            return boost::none;
+        };
 
-        stages_.ExecuteOn(game::WhichStages::Foreground, handleKeyPressOrRelease);
+        stages_.ExecuteOnForegroundStages(handleKeyPressOrRelease);
     }
 
     void Loop::HandleEventMouseButtonLeftPressed()
@@ -383,12 +383,12 @@ namespace game
             "mouse button (left) pressed at " << frameMouseInfo_.pos_vf << " (before handling)");
 
         auto handleMouseButtonPressed
-            = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](
-                  game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->UpdateMouseDown(MOUSE_POS_VF);
+            = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](stage::IStagePtr_t iStagePtr) {
+                  iStagePtr->UpdateMouseDown(MOUSE_POS_VF);
+                  return boost::none;
               };
 
-        stages_.ExecuteOn(game::WhichStages::Foreground, handleMouseButtonPressed);
+        stages_.ExecuteOnForegroundStages(handleMouseButtonPressed);
 
         M_HP_LOG_DBG(
             "mouse button (left) pressed at " << frameMouseInfo_.pos_vf << " (after handling)");
@@ -406,17 +406,11 @@ namespace game
             "mouse button (left) released at " << frameMouseInfo_.pos_vf << " (before handling)");
 
         auto handleLeftMouseButtonRelease
-            = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](
-                  game::ActiveStages & stages, const stage::IStageUPtr_t & iStageUPtr) {
-                  const auto IENTITY_WITH_FOCUS_PTR_OPT { iStageUPtr->UpdateMouseUp(MOUSE_POS_VF) };
-
-                  if (IENTITY_WITH_FOCUS_PTR_OPT)
-                  {
-                      stages.Focus(IENTITY_WITH_FOCUS_PTR_OPT.value());
-                  }
+            = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](stage::IStagePtr_t iStagePtr) {
+                  return iStagePtr->UpdateMouseUp(MOUSE_POS_VF);
               };
 
-        stages_.ExecuteOn(game::WhichStages::Foreground, handleLeftMouseButtonRelease);
+        stages_.ExecuteOnForegroundStages(handleLeftMouseButtonRelease);
 
         M_HP_LOG_DBG(
             "mouse button (left) released at " << frameMouseInfo_.pos_vf << " (after handling)");
@@ -470,34 +464,48 @@ namespace game
 
     void Loop::UpdateTimeStages(const float FRAME_TIME_SEC)
     {
-        auto handleTimeUpdate
-            = [FRAME_TIME_SEC](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->UpdateTime(FRAME_TIME_SEC);
-              };
-
-        stages_.ExecuteOn(game::WhichStages::All, handleTimeUpdate, true);
-    }
-
-    void Loop::DrawStages()
-    {
-        auto handleDrawing = [](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-            sfml_util::Display::Instance()->DrawStage(iStageUPtr.get());
+        auto handleTimeUpdate = [FRAME_TIME_SEC](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->UpdateTime(FRAME_TIME_SEC);
+            return boost::none;
         };
 
-        stages_.ExecuteOn(game::WhichStages::All, handleDrawing, true);
+        stages_.ExecuteOnNonPopupStages(handleTimeUpdate);
+        stages_.ExecuteOnPopupStage(handleTimeUpdate);
+    }
+
+    void Loop::Draw()
+    {
+        auto handleDrawing = [](stage::IStagePtr_t iStagePtr) {
+            sfml_util::Display::Instance()->DrawStage(iStagePtr);
+            return boost::none;
+        };
+
+        stages_.ExecuteOnNonPopupStages(handleDrawing);
+
+        if (iStatus_.GetFadeStatus().will_draw_under_popup)
+        {
+            sfml_util::Display::Instance()->DrawFade();
+        }
+
+        stages_.ExecuteOnPopupStage(handleDrawing);
+
+        if (iStatus_.GetFadeStatus().will_draw_under_popup == false)
+        {
+            sfml_util::Display::Instance()->DrawFade();
+        }
     }
 
     void Loop::ExecuteNextTest()
     {
-        auto handlePerformNextTest
-            = [](game::ActiveStages &, const stage::IStageUPtr_t & iStageUPtr) {
-                  iStageUPtr->PerformNextTest();
-              };
+        auto handlePerformNextTest = [](stage::IStagePtr_t iStagePtr) {
+            iStagePtr->PerformNextTest();
+            return boost::none;
+        };
 
-        stages_.ExecuteOn(game::WhichStages::NonPopupOnly, handlePerformNextTest);
+        stages_.ExecuteOnNonPopupStages(handlePerformNextTest);
     }
 
-    void Loop::RecordFramerate(const float FRAME_TIME_SEC)
+    void Loop::UpdateTimeRecordFramerate(const float FRAME_TIME_SEC)
     {
         const float FRAME_TIME_MIN_SEC { 0.000001f };
         const auto FRAME_TIME_SEC_TO_USE { std::max(FRAME_TIME_SEC, FRAME_TIME_MIN_SEC) };
@@ -508,6 +516,11 @@ namespace game
         {
             frameRateVec_.resize(frameRateSampleCount_ * 2);
         }
+    }
+
+    void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)
+    {
+        sfml_util::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
     }
 
 } // namespace game

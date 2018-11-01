@@ -33,14 +33,6 @@ namespace popup
 namespace game
 {
 
-    enum class WhichStages
-    {
-        All,
-        Foreground,
-        PopupOnly,
-        NonPopupOnly
-    };
-
     // Wraps all of the highest-level game objects (Stages, Popups, Focus, etc.) required by
     // Loop::Execution() to run the game.  Except for popup_callback_ptr and focus_entity all
     // pointers are owning pointers who control the lifetime.
@@ -53,20 +45,20 @@ namespace game
         ActiveStages & operator=(const ActiveStages &) = delete;
         ActiveStages & operator=(ActiveStages &&) = delete;
 
-        bool HasPopupStage() const { return !!popup_uptr; }
-        bool HasNonPopupStage() const { return !non_popup_uvec.empty(); }
+        bool HasPopupStage() const { return !!popupUPtr_; }
+        bool HasNonPopupStage() const { return !nonPopupUVec_.empty(); }
         bool HasAnyStages() const { return (HasPopupStage() || HasNonPopupStage()); }
 
         const std::string AllStageNames() const
         {
             std::ostringstream ss;
 
-            if (popup_uptr)
+            if (popupUPtr_)
             {
-                ss << popup_uptr->GetStageName();
+                ss << popupUPtr_->GetStageName();
             }
 
-            for (const auto & ISTAGE_UPTR : non_popup_uvec)
+            for (const auto & ISTAGE_UPTR : nonPopupUVec_)
             {
                 if (ss.str().empty() == false)
                 {
@@ -89,98 +81,90 @@ namespace game
         void SetIsFadingForAllStages(const bool IS_FADING);
 
         template <typename Lambda_t>
-        void ExecuteOn(
-            const WhichStages WHICH_STAGES, Lambda_t & lambda, const bool NON_POPUP_FIRST = false)
-        {
-            const auto WILL_EXECUTE_ON_POPUP { (
-                HasPopupStage() && (WHICH_STAGES != WhichStages::NonPopupOnly)) };
-
-            const auto POPUP_ONLY_FOREGROUND_RESTRICTION { (
-                (WHICH_STAGES == WhichStages::Foreground) && HasPopupStage()) };
-
-            const auto WILL_EXECUTE_ON_NON_POPUPS { (
-                HasNonPopupStage() && !POPUP_ONLY_FOREGROUND_RESTRICTION
-                && (WHICH_STAGES != WhichStages::PopupOnly)) };
-
-            if (NON_POPUP_FIRST)
-            {
-                if (WILL_EXECUTE_ON_NON_POPUPS)
-                {
-                    ExecuteOnNonPopupStages<Lambda_t>(lambda);
-                }
-
-                if (WILL_EXECUTE_ON_POPUP)
-                {
-                    ExecuteOnPopupStage<Lambda_t>(lambda);
-                }
-            }
-            else
-            {
-                if (WILL_EXECUTE_ON_POPUP)
-                {
-                    ExecuteOnPopupStage<Lambda_t>(lambda);
-                }
-
-                if (WILL_EXECUTE_ON_NON_POPUPS)
-                {
-                    ExecuteOnNonPopupStages<Lambda_t>(lambda);
-                }
-            }
-        }
-
-        void HandlePopupResponseCallback();
-        void ReplaceStages(const stage::SetupPacket & SETUP_PACKET);
-        void RemovePopupStage() { popup_uptr.reset(); }
-
-        void ReplacePopupStage(
-            const popup::PopupInfo & POPUP_INFO,
-            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
-
-        void SetPopupResponse(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
-        void Focus(const sfml_util::IEntityPtr_t & IENTITY_PTR);
-
-    private:
-        void RemovePopupResponse();
-        void RemovePopupAll();
-
-        template <typename Lambda_t>
         void ExecuteOnPopupStage(Lambda_t & lambda)
         {
-            if (popup_uptr)
+            if (popupUPtr_)
             {
-                lambda(*this, popup_uptr);
+                ExecuteAndHandleFocusChange(popupUPtr_.get(), lambda);
             }
         }
 
         template <typename Lambda_t>
         void ExecuteOnNonPopupStages(Lambda_t & lambda)
         {
-            for (auto & iStageUPtr : non_popup_uvec)
+            for (auto & iStageUPtr : nonPopupUVec_)
             {
-                lambda(*this, iStageUPtr);
+                if (ExecuteAndHandleFocusChange(iStageUPtr.get(), lambda))
+                {
+                    break;
+                }
             }
         }
 
-        void FocusSet(const sfml_util::IEntityPtr_t IENTITY_PTR);
+        template <typename Lambda_t>
+        void ExecuteOnForegroundStages(Lambda_t & lambda)
+        {
+            if (HasPopupStage())
+            {
+                ExecuteOnPopupStage(lambda);
+            }
+            else
+            {
+                ExecuteOnNonPopupStages(lambda);
+            }
+        }
+
+        void HandlePopupResponseCallback();
+        void ReplaceStages(const stage::SetupPacket & SETUP_PACKET);
+        void RemovePopupStage() { popupUPtr_.reset(); }
+
+        void ReplacePopupStage(
+            const popup::PopupInfo & POPUP_INFO,
+            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
+
+        void SetPopupResponse(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
+
+    private:
+        // returns true if focus was changed
+        template <typename Lambda_t>
+        bool ExecuteAndHandleFocusChange(stage::IStagePtr_t iStagePtr, Lambda_t & lambda)
+        {
+            const sfml_util::IEntityPtrOpt_t NEW_FOCUS_IENTITY_PTR_OPT { lambda(iStagePtr) };
+
+            if (NEW_FOCUS_IENTITY_PTR_OPT)
+            {
+                M_HP_LOG(
+                    "\"" << iStagePtr->GetStageName() << "\" stage changing focus to \""
+                         << NEW_FOCUS_IENTITY_PTR_OPT.value()->GetEntityName() << "\"");
+
+                FocusRemove();
+                iStagePtr->SetFocus(NEW_FOCUS_IENTITY_PTR_OPT.value());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        void RemovePopupResponse();
+        void RemovePopupAll();
         void FocusRemove();
 
     private:
         // this vector owns and controls the lifetime of all Stages in the game
-        stage::IStageUVec_t non_popup_uvec;
-
-        // observer pointer copy from one of non_popup_uvec's Stages
-        sfml_util::IEntityPtrOpt_t focus_entity_ptr_opt;
+        stage::IStageUVec_t nonPopupUVec_;
 
         // this owns and controls the lifetime of all Popup Stages in the game
         // this pointer will never be added to iStageUPVec_
-        stage::IStageUPtr_t popup_uptr;
+        stage::IStageUPtr_t popupUPtr_;
 
         // this is an observer pointer to the Stage that handles all popup callbacks
-        sfml_util::PopupCallback_t::IHandlerPtrOpt_t popup_callback_handler_ptr_opt;
+        sfml_util::PopupCallback_t::IHandlerPtrOpt_t popupCallbackHandlerPtrOpt_;
 
-        std::string popup_desc;
+        std::string popupDescriptionStr_;
 
-        popup::PopupResponse popup_response;
+        popup::PopupResponse popupResponse_;
     };
 
 } // namespace game

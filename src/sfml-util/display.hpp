@@ -14,6 +14,7 @@
 #include "misc/not-null.hpp"
 #include "sfml-util/display-change-result.hpp"
 #include "sfml-util/resolution.hpp"
+#include "stage/i-stage.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -86,7 +87,7 @@ namespace sfml_util
 
         bool GetVerticalSync() const { return willVerticalSync_; }
 
-        void DrawStage(const stage::IStagePtr_t &);
+        void DrawStage(stage::IStagePtr_t &);
 
         const std::vector<sf::Event> PollEvents();
 
@@ -138,8 +139,9 @@ namespace sfml_util
         void FadeOutStart(const sf::Color & COLOR, const float SPEED);
         void FadeInStart(const float SPEED);
 
-        // returns true if the fade is still moving (not finished yet)
-        bool UpdateTimeForFade(const float FRAME_TIME_SEC);
+        const sf::Color UpdateFadeColor(const float FRAME_TIME_SEC);
+
+        bool IsFadeFinished() const;
 
         void DrawFade();
 

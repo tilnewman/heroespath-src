@@ -9,6 +9,7 @@
 //
 // game-command.hpp
 //
+#include "game/status.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
@@ -27,21 +28,17 @@ namespace heroespath
 namespace game
 {
 
-    enum class FadeDirection
-    {
-        In,
-        Out
-    };
-
     // wraps all the information needed to setup a fade in or out
     struct FadeCommand
     {
         FadeCommand(
             const FadeDirection DIRECTION,
             const float SPEED,
-            const sf::Color & COLOR = sf::Color::Black)
+            const BoolOpt_t SET_WILL_DRAW_UNDER_POPUP_OPT,
+            const sf::Color & COLOR)
             : direction(DIRECTION)
             , speed(SPEED)
+            , set_will_draw_under_popup_opt(SET_WILL_DRAW_UNDER_POPUP_OPT)
             , color(COLOR)
         {}
 
@@ -57,11 +54,18 @@ namespace game
             ss << "cmd=fade, " << ((FadeDirection::In == direction) ? "in" : "out")
                << ", fade_speed=" << speed << ", fade_color=" << color;
 
+            if (set_will_draw_under_popup_opt)
+            {
+                ss << ", set_will_drawn_under_popup_to=" << std::boolalpha
+                   << set_will_draw_under_popup_opt.value();
+            }
+
             return ss.str();
         }
 
         FadeDirection direction;
         float speed;
+        BoolOpt_t set_will_draw_under_popup_opt;
         sf::Color color;
     };
 
@@ -71,6 +75,7 @@ namespace game
     {
         return (
             (L.direction == R.direction) && (L.color == R.color)
+            && (L.set_will_draw_under_popup_opt == R.set_will_draw_under_popup_opt)
             && misc::IsRealClose(L.speed, R.speed));
     }
 
@@ -138,7 +143,8 @@ namespace game
                 ss << fade_opt->ToString();
             }
 
-            if (DoFlagsMatch(MakeForFade(FadeCommand(FadeDirection::In, 0.0f))))
+            if (DoFlagsMatch(MakeForFade(
+                    FadeCommand(FadeDirection::In, 0.0f, false, sf::Color::Transparent))))
             {
                 prefixSeparatorString();
                 ss << "flags=fade_default_of_ignore_all";

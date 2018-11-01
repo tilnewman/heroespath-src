@@ -137,13 +137,11 @@ namespace stage
         {
             if ((ENTITY_PTR->MouseUp(MOUSE_POS_V)) && ENTITY_PTR->WillAcceptFocus())
             {
-                ENTITY_PTR->SetHasFocus(true);
-                entityWithFocusPtrOpt_ = ENTITY_PTR;
-                break; // can only find one entity with focus
+                return ENTITY_PTR;
             }
         }
 
-        return entityWithFocusPtrOpt_;
+        return boost::none;
     }
 
     void StageBase::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
@@ -166,11 +164,10 @@ namespace stage
 
     void StageBase::RemoveFocus()
     {
-        entityWithFocusPtrOpt_ = boost::none;
-
-        for (auto & entityPtr : entityPVec_)
+        if (entityWithFocusPtrOpt_)
         {
-            entityPtr->SetHasFocus(false);
+            entityWithFocusPtrOpt_.value()->SetHasFocus(false);
+            entityWithFocusPtrOpt_ = boost::none;
         }
     }
 
@@ -180,21 +177,20 @@ namespace stage
             ((entityWithFocusPtrOpt_) ? entityWithFocusPtrOpt_.value()->GetEntityName() : "(None)")
         };
 
-        // TODO Should we eliminate the current focus before we know if we are setting a new focus?
-        entityWithFocusPtrOpt_ = boost::none;
-
         const auto WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
 
         if (WAS_FOUND)
         {
+            RemoveFocus();
+            ENTITY_PTR->SetHasFocus(true);
             entityWithFocusPtrOpt_ = ENTITY_PTR;
         }
         else
         {
             M_HP_LOG_ERR(
-                "stage::StageBase::SetFocus(entity="
-                << ENTITY_PTR->GetEntityName()
+                "stage::StageBase("
+                << GetStageName() << ")::SetFocus(entity=" << ENTITY_PTR->GetEntityName()
                 << ")  Attempt to set focus with an IEntityPtr_t that was not in entityPVec_.  "
                    "orig_enity_withfocus=\""
                 << ORIG_ENTITY_WITH_FOCUS_NAME << "\"");
@@ -248,21 +244,19 @@ namespace stage
         entityPVec_.erase(
             std::remove(entityPVec_.begin(), entityPVec_.end(), ENTITY_PTR), entityPVec_.end());
 
-        bool wasEntityFoundAndRemoved { false };
+        bool wasEntityFoundAndRemoved { (ORIG_NUM_ENTITYS != entityPVec_.size()) };
+
         if (entityWithFocusPtrOpt_ == ENTITY_PTR)
         {
-            entityWithFocusPtrOpt_ = boost::none;
+            RemoveFocus();
             wasEntityFoundAndRemoved = true;
-        }
-        else
-        {
-            wasEntityFoundAndRemoved = (ORIG_NUM_ENTITYS != entityPVec_.size());
         }
 
         if (false == wasEntityFoundAndRemoved)
         {
             M_HP_LOG_WRN(
-                "Entity to remove named \"" << ENTITY_PTR->GetEntityName() << "\" was not found.");
+                "Entity to remove named \"" << ENTITY_PTR->GetEntityName() << "\" was not found.  "
+                                            << "(stage=" << GetStageName() << ")");
         }
     }
 

@@ -3,11 +3,11 @@ system-revision alpha 0.1
 #graphics settings
 system-window-sync false
 system-window-frame-rate-limit 0
-system-ui-stage-change-popup-fade-speed-out 1.0
-system-ui-stage-change-popup-fade-speed-in 2.0
+system-ui-stage-change-popup-fade-speed-out 8.0
+system-ui-stage-change-popup-fade-speed-in 12.0
 system-ui-stage-change-non-popup-fade-speed-out 3.0
 system-ui-stage-change-non-popup-fade-speed-in 3.0
-system-ui-stage-change-popup-fade-alpha 12
+system-ui-stage-change-popup-fade-alpha 127
 system-audio-music-volume-min 20.0
 
 #creating and sorting all possible items takes a few seconds and while the final version of the game should do it at startup time it is a problem during development because debug runs of the app start so slow...

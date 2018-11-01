@@ -10,6 +10,8 @@
 // status.hpp
 //
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
+#include "sfutil/color.hpp"
 
 #include <sstream>
 
@@ -18,6 +20,35 @@ namespace heroespath
 namespace game
 {
 
+    using BoolOpt_t = boost::optional<bool>;
+
+    enum class FadeDirection
+    {
+        In,
+        Out
+    };
+
+    struct FadeStatus
+    {
+        const std::string ToString() const
+        {
+            std::ostringstream ss;
+
+            ss << "FadeStatus(is_fading" << std::boolalpha << is_fading
+               << ", direction=" << ((FadeDirection::In == direction) ? "in" : "out")
+               << ", current_color=" << current_color << ", target_color=" << target_color
+               << ", will_draw_under_popup=" << will_draw_under_popup << ")";
+
+            return ss.str();
+        }
+
+        bool is_fading = false;
+        sf::Color target_color = sf::Color::Transparent;
+        sf::Color current_color = sf::Color::Transparent;
+        FadeDirection direction = FadeDirection::Out;
+        bool will_draw_under_popup = false;
+    };
+
     struct IStatusForLoop
     {
         virtual ~IStatusForLoop() = default;
@@ -25,8 +56,9 @@ namespace game
         virtual bool IsLoopStopRequested() const = 0;
         virtual void SetLoopRunning(const bool IS_LOOP_RUNNING) = 0;
         virtual void LoopStopRequest() = 0;
-        virtual bool IsFading() const = 0;
-        virtual void StopFading() = 0;
+        virtual const FadeStatus GetFadeStatus() const = 0;
+        virtual void SetFadeTargetColorReached() = 0;
+        virtual void SetFadeCurrentColor(const sf::Color &) = 0;
         virtual bool IsGameExitRequested() const = 0;
         virtual void GameExitRequest() = 0;
     };
@@ -58,18 +90,50 @@ namespace game
             M_HP_LOG_DBG("game loop stop request reset");
         }
 
-        bool IsFading() const final { return is_fading; }
+        const FadeStatus GetFadeStatus() const final { return fade_status; }
 
-        void StartFading(const bool IS_FADING_IN)
+        void SetFadeCurrentColor(const sf::Color & COLOR) final
         {
-            is_fading = true;
-            M_HP_LOG_DBG("fade " << ((IS_FADING_IN) ? "in" : "out") << " started");
+            fade_status.current_color = COLOR;
         }
 
-        void StopFading() final
+        void SetFadeTargetColorReached() final { fade_status.is_fading = false; }
+
+        void StartFadeOut(const sf::Color & COLOR, const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT)
         {
-            is_fading = false;
-            M_HP_LOG_DBG("fade finished");
+            fade_status.is_fading = true;
+            fade_status.target_color = COLOR;
+            fade_status.direction = FadeDirection::Out;
+
+            std::string drawUnderMessage;
+            if (SET_WILL_DRAW_UNDER_POPUP_OPT)
+            {
+                fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
+
+                drawUnderMessage = " (will_draw_under_popup set to "
+                    + misc::ToString(fade_status.will_draw_under_popup) + ")";
+            }
+
+            M_HP_LOG_DBG(
+                "fade out to " << fade_status.target_color << " started" << drawUnderMessage);
+        }
+
+        void StartFadeIn(const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT)
+        {
+            fade_status.is_fading = true;
+            fade_status.target_color = sf::Color::Transparent;
+            fade_status.direction = FadeDirection::Out;
+
+            std::string drawUnderMessage;
+            if (SET_WILL_DRAW_UNDER_POPUP_OPT)
+            {
+                fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
+
+                drawUnderMessage = " (will_draw_under_popup set to "
+                    + misc::ToString(fade_status.will_draw_under_popup) + ")";
+            }
+
+            M_HP_LOG_DBG("fade in started" << drawUnderMessage);
         }
 
         bool IsGameExitRequested() const final { return will_exit_game; }
@@ -109,17 +173,14 @@ namespace game
                 ss << "loop_exit_requested";
             }
 
-            if (is_fading)
-            {
-                prefixSeparatorString();
-                ss << "fading";
-            }
-
             if (will_exit_game)
             {
                 prefixSeparatorString();
                 ss << "game_exit_requested";
             }
+
+            prefixSeparatorString();
+            ss << fade_status.ToString();
 
             if (ss.str().empty())
             {
@@ -134,8 +195,8 @@ namespace game
     private:
         bool is_loop_running = false;
         bool is_loop_stop_requested = false;
-        bool is_fading = false;
         bool will_exit_game = false;
+        FadeStatus fade_status = FadeStatus();
     };
 
 } // namespace game
