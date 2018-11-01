@@ -9,11 +9,11 @@
 //
 // i-interaction.hpp
 //
+#include "gui/text-button.hpp"
+#include "gui/text-info.hpp"
 #include "interact/interact-enum.hpp"
 #include "interact/interaction-button.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/text-button.hpp"
-#include "sfml-util/text-info.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>

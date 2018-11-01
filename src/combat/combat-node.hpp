@@ -11,12 +11,12 @@
 //  A class that handles drawing nodes on the combat tree.
 //
 #include "creature/name-info.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/entity.hpp"
+#include "gui/sliders.hpp"
+#include "gui/text.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/entity.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/text.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

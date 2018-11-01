@@ -13,13 +13,13 @@
 
 #include "combat/combat-node.hpp"
 #include "creature/creature.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/image-loaders.hpp"
+#include "gui/text-info.hpp"
+#include "gui/text-region.hpp"
 #include "item/item.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/image-loaders.hpp"
-#include "sfml-util/text-info.hpp"
-#include "sfml-util/text-region.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/size-and-scale.hpp"
 

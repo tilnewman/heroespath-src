@@ -9,8 +9,8 @@
 //
 // interaction-text-enum.hpp
 //
+#include "gui/font-enum.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/font-enum.hpp"
 
 #include <string>
 

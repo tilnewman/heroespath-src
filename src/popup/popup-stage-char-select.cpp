@@ -15,8 +15,8 @@
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sound-manager.hpp"
+#include "gui/image-loaders.hpp"
+#include "gui/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 

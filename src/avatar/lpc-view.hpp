@@ -12,8 +12,8 @@
 #include "avatar/animation.hpp"
 #include "avatar/avatar-enum.hpp"
 #include "avatar/pose-enum.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/direction-enum.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/direction-enum.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

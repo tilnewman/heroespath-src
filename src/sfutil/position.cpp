@@ -9,7 +9,7 @@
 //
 #include "position.hpp"
 
-#include "sfml-util/text.hpp"
+#include "gui/text.hpp"
 #include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

@@ -12,11 +12,11 @@
 #include "popup-stage-spellbook.hpp"
 
 #include "creature/creature.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "spell/spell.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

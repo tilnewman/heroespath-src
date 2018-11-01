@@ -11,8 +11,8 @@
 //
 #include "popup-stage-treasure-trap.hpp"
 
+#include "gui/font-manager.hpp"
 #include "misc/config-file.hpp"
-#include "sfml-util/font-manager.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 

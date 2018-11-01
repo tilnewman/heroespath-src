@@ -9,7 +9,7 @@
 //
 // vertex.hpp
 //
-#include "sfml-util/orientation-enum.hpp"
+#include "gui/orientation-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/VertexArray.hpp>

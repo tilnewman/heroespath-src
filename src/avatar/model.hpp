@@ -12,9 +12,9 @@
 #include "avatar/avatar-enum.hpp"
 #include "avatar/lpc-view.hpp"
 #include "avatar/pose-enum.hpp"
+#include "gui/direction-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/direction-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>

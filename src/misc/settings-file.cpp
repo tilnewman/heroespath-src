@@ -11,10 +11,10 @@
 //
 #include "settings-file.hpp"
 
+#include "gui/display.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/video-mode.hpp"
 
 namespace heroespath

@@ -10,8 +10,8 @@
 // combat-sound-effects.hpp
 //
 #include "combat/fight-results.hpp"
+#include "gui/sound-effects-enum.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <memory>
 

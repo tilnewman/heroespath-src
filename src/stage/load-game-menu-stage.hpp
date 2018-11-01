@@ -10,13 +10,13 @@
 // load-game-menu-stage.hpp
 //  A Stage class that allows players to load previous games
 //
+#include "gui/box-entity.hpp"
+#include "gui/horiz-symbol.hpp"
+#include "gui/list-box.hpp"
+#include "gui/main-menu-buttons.hpp"
+#include "gui/sliders.hpp"
+#include "gui/stage-title.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/list-box.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/stage-title.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>

@@ -12,10 +12,10 @@
 #include "game/active-stages.hpp"
 #include "game/command.hpp"
 #include "game/status.hpp"
+#include "gui/callback.hpp"
+#include "gui/i-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/i-entity.hpp"
 
 #include <SFML/System/Clock.hpp>
 

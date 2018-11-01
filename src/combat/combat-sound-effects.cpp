@@ -12,11 +12,11 @@
 #include "combat-sound-effects.hpp"
 
 #include "creature/creature.hpp"
+#include "gui/sound-manager.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 

@@ -9,12 +9,12 @@
 //
 // credits-stage.hpp
 //
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/image-text-entity.hpp"
-#include "sfml-util/main-menu-background.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/ouroboros.hpp"
+#include "gui/box-entity.hpp"
+#include "gui/horiz-symbol.hpp"
+#include "gui/image-text-entity.hpp"
+#include "gui/main-menu-background.hpp"
+#include "gui/main-menu-buttons.hpp"
+#include "gui/ouroboros.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>

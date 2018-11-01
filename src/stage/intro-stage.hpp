@@ -9,8 +9,8 @@
 //
 // intro-stage.hpp
 //
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/music-enum.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/music-enum.hpp"
 #include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

@@ -9,11 +9,11 @@
 //
 // stage-base.hpp
 //
+#include "gui/font-enum.hpp"
+#include "gui/sound-effects-enum.hpp"
+#include "gui/text.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/font-enum.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
-#include "sfml-util/text.hpp"
 #include "stage/i-stage.hpp"
 
 #include <memory>

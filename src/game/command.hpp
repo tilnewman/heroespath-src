@@ -10,10 +10,10 @@
 // game-command.hpp
 //
 #include "game/status.hpp"
+#include "gui/music-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
-#include "sfml-util/music-enum.hpp"
 #include "stage/stage-enum.hpp"
 #include "stage/stage-setup-packet.hpp"
 

@@ -11,9 +11,9 @@
 //
 #include "interaction-base.hpp"
 
+#include "gui/font-manager.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/color.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
 

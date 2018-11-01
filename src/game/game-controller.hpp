@@ -16,9 +16,9 @@
 #include "game/phase-enum.hpp"
 #include "game/stage-tracker.hpp"
 #include "game/status.hpp"
+#include "gui/display-change-result.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-response-enum.hpp"
-#include "sfml-util/display-change-result.hpp"
 #include "stage/stage-enum.hpp"
 #include "stage/stage-setup-packet.hpp"
 

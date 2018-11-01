@@ -9,10 +9,10 @@
 //
 // vector-and-rect.hpp
 //
+#include "gui/orientation-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
-#include "sfml-util/orientation-enum.hpp"
 #include "sfutil/position.hpp"
 
 #include <SFML/Graphics/Rect.hpp> //also includes System/Vector2.hpp

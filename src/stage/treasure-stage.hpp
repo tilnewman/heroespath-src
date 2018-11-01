@@ -14,14 +14,14 @@
 #include "combat/trap.hpp"
 #include "combat/turn-action-info.hpp"
 #include "creature/race-enum.hpp"
+#include "gui/callback.hpp"
+#include "gui/list-box-event-packet.hpp"
 #include "interact/lock-interactions.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/list-box-event-packet.hpp"
 #include "stage/stage-base.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enumop
 

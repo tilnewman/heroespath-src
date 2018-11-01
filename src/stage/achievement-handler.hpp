@@ -11,7 +11,7 @@
 //
 #include "creature/achievements.hpp"
 #include "creature/creature.hpp"
-#include "sfml-util/callback.hpp"
+#include "gui/callback.hpp"
 
 #include <string>
 

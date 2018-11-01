@@ -11,10 +11,10 @@
 //
 #include "name-info.hpp"
 
+#include "gui/display.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/text-region.hpp"
 #include "misc/log-macros.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/text-region.hpp"
 
 #include <sstream>
 #include <string>

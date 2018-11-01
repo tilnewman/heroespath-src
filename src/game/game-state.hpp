@@ -12,10 +12,10 @@
 //
 #include "creature/player-party.hpp"
 #include "game/world.hpp"
+#include "gui/date-time.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/date-time.hpp"
 
 #include <memory>
 #include <vector>

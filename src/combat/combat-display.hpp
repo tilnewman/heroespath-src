@@ -11,10 +11,10 @@
 //  A class that handles drawing the combat tree.
 //
 #include "combat/combat-tree.hpp"
+#include "gui/cached-texture.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/cached-texture.hpp"
 #include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>

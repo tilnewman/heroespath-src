@@ -9,11 +9,11 @@
 //
 // item-detail-viewer.hpp
 //
+#include "gui/cached-texture.hpp"
+#include "gui/slider-ratio.hpp"
+#include "gui/text-region.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/slider-ratio.hpp"
-#include "sfml-util/text-region.hpp"
 #include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

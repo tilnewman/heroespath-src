@@ -16,13 +16,13 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/world.hpp"
+#include "gui/display.hpp"
+#include "gui/gui-images.hpp"
+#include "gui/ouroboros.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui-images.hpp"
-#include "sfml-util/ouroboros.hpp"
-#include "sfml-util/sound-manager.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

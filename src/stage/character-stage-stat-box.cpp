@@ -11,10 +11,10 @@
 //
 #include "character-stage-stat-box.hpp"
 
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/margins.hpp"
-#include "sfml-util/text-region.hpp"
+#include "gui/box-entity.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/margins.hpp"
+#include "gui/text-region.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"

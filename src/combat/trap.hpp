@@ -10,9 +10,9 @@
 // trap.hpp
 //
 #include "creature/trait.hpp"
+#include "gui/sound-effects-enum.hpp"
 #include "misc/range.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <string>
 #include <vector>

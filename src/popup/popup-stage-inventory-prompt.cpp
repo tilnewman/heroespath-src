@@ -11,7 +11,7 @@
 //
 #include "popup-stage-inventory-prompt.hpp"
 
-#include "sfml-util/sound-manager.hpp"
+#include "gui/sound-manager.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

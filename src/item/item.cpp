@@ -13,10 +13,10 @@
 
 #include "creature/enchantment-factory.hpp"
 #include "creature/enchantment-warehouse.hpp"
+#include "gui/item-image-loader.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/item-image-loader.hpp"
 
 #include <exception>
 #include <iomanip>

@@ -9,10 +9,10 @@
 //
 // popup-stage-char-select.hpp
 //
+#include "gui/text-region.hpp"
 #include "misc/vector-map.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-image-select.hpp"
-#include "sfml-util/text-region.hpp"
 
 #include <string>
 

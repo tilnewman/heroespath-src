@@ -9,9 +9,9 @@
 //
 #include "log.hpp"
 
+#include "gui/date-time.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/filesystem.hpp"
-#include "sfml-util/date-time.hpp"
 
 #include <boost/algorithm/string/join.hpp>
 

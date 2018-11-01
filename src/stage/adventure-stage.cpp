@@ -17,8 +17,8 @@
 #include "game/game-state-factory.hpp"
 #include "game/game-state.hpp"
 #include "game/game.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-enum.hpp"
+#include "gui/display.hpp"
+#include "gui/font-enum.hpp"
 #include "stage/adventure-display-stage.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

@@ -9,7 +9,7 @@
 //
 #include "display.hpp"
 
-#include "sfml-util/display.hpp"
+#include "gui/display.hpp"
 
 namespace heroespath
 {

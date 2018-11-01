@@ -12,11 +12,11 @@
 #include "inn-stage.hpp"
 
 #include "game/game-state-factory.hpp"
+#include "gui/animation-factory.hpp"
+#include "gui/gui-images.hpp"
+#include "gui/ouroboros.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/animation-factory.hpp"
-#include "sfml-util/gui-images.hpp"
-#include "sfml-util/ouroboros.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 

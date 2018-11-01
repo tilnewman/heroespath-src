@@ -9,11 +9,11 @@
 //
 // popup-stage-base.hpp
 //
+#include "gui/cached-texture.hpp"
+#include "gui/colored-rect.hpp"
+#include "gui/text-button.hpp"
+#include "gui/text-region.hpp"
 #include "popup/popup-info.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/colored-rect.hpp"
-#include "sfml-util/text-button.hpp"
-#include "sfml-util/text-region.hpp"
 #include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

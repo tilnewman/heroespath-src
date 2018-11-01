@@ -9,8 +9,8 @@
 //
 // map-anim.hpp
 //
-#include "sfml-util/animation-enum.hpp"
-#include "sfml-util/music-enum.hpp"
+#include "gui/animation-enum.hpp"
+#include "gui/music-enum.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <string>
 #include <vector>

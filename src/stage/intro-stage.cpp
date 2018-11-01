@@ -11,10 +11,10 @@
 //
 #include "intro-stage.hpp"
 
+#include "gui/music-operator.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/music-operator.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"

@@ -9,13 +9,13 @@
 //
 // adventure-display-stage.hpp
 //
+#include "gui/cached-texture.hpp"
+#include "gui/direction-enum.hpp"
+#include "gui/horiz-symbol.hpp"
+#include "gui/stage-title.hpp"
 #include "interact/interaction-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/direction-enum.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/stage-title.hpp"
 #include "stage/adventure-stage-char-list.hpp"
 #include "stage/stage-base.hpp"
 

@@ -10,10 +10,10 @@
 // inn-stage.hpp
 //  A Stage class that allows starting the game
 //
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/stage-title.hpp"
+#include "gui/box-entity.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/horiz-symbol.hpp"
+#include "gui/stage-title.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>

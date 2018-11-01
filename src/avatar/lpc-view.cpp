@@ -9,11 +9,11 @@
 //
 // lpc-view.cpp
 //
+#include "gui/loaders.hpp"
 #include "lpc-view.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
-#include "sfml-util/loaders.hpp"
 
 namespace heroespath
 {

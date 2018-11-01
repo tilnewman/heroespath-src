@@ -9,6 +9,10 @@
 //
 // map-display.hpp
 //
+#include "gui/animation-base.hpp"
+#include "gui/animation-factory.hpp"
+#include "gui/collision-quad-tree.hpp"
+#include "gui/direction-enum.hpp"
 #include "map/layer.hpp"
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
@@ -16,10 +20,6 @@
 #include "map/tile-offsets.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/animation-base.hpp"
-#include "sfml-util/animation-factory.hpp"
-#include "sfml-util/collision-quad-tree.hpp"
-#include "sfml-util/direction-enum.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

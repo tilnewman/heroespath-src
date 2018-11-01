@@ -11,7 +11,7 @@
 //
 #include "interaction-button.hpp"
 
-#include "sfml-util/text-button.hpp"
+#include "gui/text-button.hpp"
 #include "sfutil/keyboard.hpp"
 
 namespace heroespath

@@ -9,10 +9,10 @@
 //
 #include "command-factory.hpp"
 
+#include "gui/display.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/display.hpp"
 
 namespace heroespath
 {

@@ -10,10 +10,10 @@
 // i-stage.hpp
 //
 #include "game/phase-enum.hpp"
+#include "gui/callback.hpp"
+#include "gui/display-change-result.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/display-change-result.hpp"
 #include "stage/stage-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>

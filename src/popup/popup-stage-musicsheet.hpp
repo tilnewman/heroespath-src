@@ -9,15 +9,15 @@
 //
 // popup-stage-musicsheet.hpp
 //
+#include "gui/box-entity-info.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/list-box.hpp"
+#include "gui/list-element.hpp"
+#include "gui/slider-color.hpp"
+#include "gui/sliders.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
-#include "sfml-util/box-entity-info.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/list-box.hpp"
-#include "sfml-util/list-element.hpp"
-#include "sfml-util/slider-color.hpp"
-#include "sfml-util/sliders.hpp"
 
 #include <string>
 

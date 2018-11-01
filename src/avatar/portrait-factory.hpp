@@ -10,7 +10,7 @@
 // portrait-factory.hpp
 //
 #include "avatar/avatar-enum.hpp"
-#include "sfml-util/cached-texture.hpp"
+#include "gui/cached-texture.hpp"
 
 #include <string>
 

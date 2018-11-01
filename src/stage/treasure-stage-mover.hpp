@@ -9,10 +9,10 @@
 //
 // treasure-stage-listbox-mover.hpp
 //
+#include "gui/entity.hpp"
+#include "gui/slider-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/entity.hpp"
-#include "sfml-util/slider-entity.hpp"
 
 #include <memory>
 #include <vector>

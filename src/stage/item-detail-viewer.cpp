@@ -11,11 +11,11 @@
 //
 #include "item-detail-viewer.hpp"
 
+#include "gui/display.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/image-loaders.hpp"
+#include "gui/sound-manager.hpp"
 #include "item/item.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/display.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

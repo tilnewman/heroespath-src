@@ -19,13 +19,13 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/world.hpp"
+#include "gui/music-enum.hpp"
+#include "gui/sound-manager.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/music-enum.hpp"
-#include "sfml-util/sound-manager.hpp"
 
 // TODO remove this include when finished cleaning up, see comments below
 #include "game/game-controller.hpp"

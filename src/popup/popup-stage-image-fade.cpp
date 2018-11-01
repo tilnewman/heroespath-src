@@ -11,8 +11,8 @@
 //
 #include "popup-stage-image-fade.hpp"
 
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/text-region.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/text-region.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 #include "sfutil/position.hpp"

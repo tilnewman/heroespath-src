@@ -11,9 +11,9 @@
 //  An animated number that is used on the CharacterCreation Stage
 //
 #include "creature/stat-set.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/text-info.hpp"
-#include "sfml-util/text.hpp"
+#include "gui/sliders.hpp"
+#include "gui/text-info.hpp"
+#include "gui/text.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 

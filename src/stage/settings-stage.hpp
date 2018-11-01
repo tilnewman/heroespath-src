@@ -10,17 +10,17 @@
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
 //
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/radio-or-check-set.hpp"
-#include "sfml-util/sliderbar-music.hpp"
-#include "sfml-util/sliderbar-sfx.hpp"
-#include "sfml-util/stage-title.hpp"
-#include "sfml-util/text-region.hpp"
+#include "gui/box-entity.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/callback.hpp"
+#include "gui/display.hpp"
+#include "gui/horiz-symbol.hpp"
+#include "gui/main-menu-buttons.hpp"
+#include "gui/radio-or-check-set.hpp"
+#include "gui/sliderbar-music.hpp"
+#include "gui/sliderbar-sfx.hpp"
+#include "gui/stage-title.hpp"
+#include "gui/text-region.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>

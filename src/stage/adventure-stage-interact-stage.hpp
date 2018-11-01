@@ -9,14 +9,14 @@
 //
 // adventure-stage-interact-stage.hpp
 //
+#include "gui/callback.hpp"
+#include "gui/colored-rect.hpp"
+#include "gui/text-button.hpp"
 #include "interact/interaction-manager.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/transition.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/colored-rect.hpp"
-#include "sfml-util/text-button.hpp"
 #include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

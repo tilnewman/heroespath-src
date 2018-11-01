@@ -9,8 +9,8 @@
 //
 // transition.hpp
 //
+#include "gui/sound-effects-enum.hpp"
 #include "map/level-enum.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 

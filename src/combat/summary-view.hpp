@@ -10,10 +10,10 @@
 // summary-view.hpp
 //  Classes responsible for displaying creature details on the Combat Stage
 //
+#include "gui/cached-texture.hpp"
+#include "gui/slider-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/slider-entity.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/VertexArray.hpp>

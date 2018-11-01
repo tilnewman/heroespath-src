@@ -12,11 +12,11 @@
 #include "popup-stage-musicsheet.hpp"
 
 #include "creature/creature.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/image-loaders.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/image-loaders.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "song/song.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>

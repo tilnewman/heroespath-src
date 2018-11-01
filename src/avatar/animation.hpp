@@ -10,7 +10,7 @@
 // animation.hpp
 //
 #include "avatar/pose-enum.hpp"
-#include "sfml-util/direction-enum.hpp"
+#include "gui/direction-enum.hpp"
 
 #include <vector>
 

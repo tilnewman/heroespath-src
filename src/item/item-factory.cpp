@@ -13,6 +13,7 @@
 
 #include "creature/creature.hpp"
 #include "creature/summon-info.hpp"
+#include "gui/item-image-loader.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -25,7 +26,6 @@
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/item-image-loader.hpp"
 #include "stage/i-stage.hpp"
 
 #include <algorithm>

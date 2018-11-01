@@ -9,7 +9,7 @@
 //
 #include "size-and-scale.hpp"
 
-#include "sfml-util/text.hpp"
+#include "gui/text.hpp"
 #include "sfutil/center-to.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>

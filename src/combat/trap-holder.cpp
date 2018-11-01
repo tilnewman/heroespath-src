@@ -11,10 +11,10 @@
 //
 #include "trap-holder.hpp"
 
+#include "gui/sound-effects-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <algorithm>
 

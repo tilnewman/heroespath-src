@@ -11,10 +11,10 @@
 //
 #include "credit.hpp"
 
+#include "gui/display.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/text-region.hpp"
 #include "misc/config-file.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/text-region.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/size-and-scale.hpp"

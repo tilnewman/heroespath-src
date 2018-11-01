@@ -9,9 +9,9 @@
 //
 // credit.hpp
 //
-#include "sfml-util/animation-factory.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/font-enum.hpp"
+#include "gui/animation-factory.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/font-enum.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

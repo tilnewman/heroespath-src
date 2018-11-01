@@ -11,12 +11,12 @@
 //
 #include "popup-stage-num-select.hpp"
 
+#include "gui/font-manager.hpp"
+#include "gui/gui-images.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui-images.hpp"
-#include "sfml-util/sound-manager.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

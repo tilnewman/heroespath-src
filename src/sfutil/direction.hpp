@@ -9,8 +9,8 @@
 //
 // direction.hpp
 //
+#include "gui/direction-enum.hpp"
 #include "misc/real.hpp"
-#include "sfml-util/direction-enum.hpp"
 #include "sfutil/center.hpp"
 
 #include <SFML/Graphics/Rect.hpp>

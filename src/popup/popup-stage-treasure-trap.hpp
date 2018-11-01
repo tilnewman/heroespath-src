@@ -11,7 +11,7 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/text-region.hpp"
+#include "gui/text-region.hpp"
 
 #include <string>
 

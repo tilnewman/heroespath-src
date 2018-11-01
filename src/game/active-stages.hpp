@@ -9,11 +9,11 @@
 //
 // active-stages.hpp
 //
+#include "gui/callback.hpp"
+#include "gui/i-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-response.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/i-entity.hpp"
 #include "stage/i-stage.hpp"
 #include "stage/stage-setup-packet.hpp"
 

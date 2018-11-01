@@ -11,12 +11,12 @@
 //
 #include "combat/combat-over-enum.hpp"
 #include "creature/title.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/sound-effects-enum.hpp"
+#include "gui/text-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-enums.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
-#include "sfml-util/text-info.hpp"
 
 #include <string>
 #include <tuple>

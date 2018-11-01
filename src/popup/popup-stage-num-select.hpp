@@ -9,10 +9,10 @@
 //
 // popup-stage-num-select.hpp
 //
+#include "gui/sliderbar.hpp"
+#include "gui/text-entry-box.hpp"
+#include "gui/text-region.hpp"
 #include "popup/popup-stage-base.hpp"
-#include "sfml-util/sliderbar.hpp"
-#include "sfml-util/text-entry-box.hpp"
-#include "sfml-util/text-region.hpp"
 
 #include <string>
 

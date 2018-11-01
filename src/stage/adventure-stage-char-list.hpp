@@ -10,12 +10,12 @@
 // adventure-stage-char-list.hpp
 //
 #include "creature/creature.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/colored-rect.hpp"
+#include "gui/gold-bar.hpp"
+#include "gui/image-text-entity.hpp"
+#include "gui/text-region.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/colored-rect.hpp"
-#include "sfml-util/gold-bar.hpp"
-#include "sfml-util/image-text-entity.hpp"
-#include "sfml-util/text-region.hpp"
 #include "stage/i-stage.hpp"
 
 #include <memory>

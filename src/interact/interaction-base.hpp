@@ -9,11 +9,11 @@
 //
 // interaction-base.hpp
 //
+#include "gui/cached-texture.hpp"
+#include "gui/sound-effects-enum.hpp"
 #include "interact/i-interaction.hpp"
 #include "interact/interaction-button.hpp"
 #include "interact/interaction-text-enum.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

@@ -11,13 +11,13 @@
 //
 #include "loop.hpp"
 
+#include "gui/callback.hpp"
+#include "gui/date-time.hpp"
+#include "gui/display.hpp"
+#include "gui/music-operator.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/date-time.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/music-operator.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/event.hpp"
 #include "stage/stage-base.hpp"
 

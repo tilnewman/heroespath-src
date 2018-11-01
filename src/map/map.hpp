@@ -10,6 +10,7 @@
 // map.hpp
 //
 #include "avatar/model.hpp"
+#include "gui/direction-enum.hpp"
 #include "interact/interaction-manager.hpp"
 #include "map/level-enum.hpp"
 #include "map/parser.hpp"
@@ -19,7 +20,6 @@
 #include "misc/not-null.hpp"
 #include "misc/timer.hpp"
 #include "misc/vector-map.hpp"
-#include "sfml-util/direction-enum.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>

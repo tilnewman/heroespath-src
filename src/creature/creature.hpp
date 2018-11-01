@@ -25,11 +25,11 @@
 #include "creature/trait.hpp"
 #include "creature/traits-set.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "gui/date-time.hpp"
 #include "item/inventory.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/date-time.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 

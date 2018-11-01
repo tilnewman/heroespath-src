@@ -11,10 +11,10 @@
 //
 #include "adventure-stage-interact-stage.hpp"
 
+#include "gui/text-region.hpp"
 #include "interact/i-interaction.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/map.hpp"
-#include "sfml-util/text-region.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 

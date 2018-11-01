@@ -11,6 +11,7 @@
 //
 #include "parser.hpp"
 
+#include "gui/loaders.hpp"
 #include "map/shadow-masker.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -18,7 +19,6 @@
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
-#include "sfml-util/loaders.hpp"
 
 #include <boost/lexical_cast.hpp>
 

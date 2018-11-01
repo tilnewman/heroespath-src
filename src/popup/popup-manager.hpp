@@ -11,15 +11,15 @@
 //
 #include "combat/combat-over-enum.hpp"
 #include "creature/title.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/callback.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/justified-enum.hpp"
+#include "gui/sound-effects-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/callback.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/justified-enum.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 
 #include <memory>
 #include <string>

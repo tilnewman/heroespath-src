@@ -12,11 +12,11 @@
 #include "popup-stage-base.hpp"
 
 #include "creature/name-info.hpp"
+#include "gui/display.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
 #include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"

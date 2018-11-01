@@ -11,10 +11,10 @@
 //  A Stage class that allows visualization of testing routines.
 //
 #include "creature/stat-set.hpp"
-#include "sfml-util/border.hpp"
-#include "sfml-util/cached-texture.hpp"
-#include "sfml-util/gold-bar.hpp"
-#include "sfml-util/text.hpp"
+#include "gui/border.hpp"
+#include "gui/cached-texture.hpp"
+#include "gui/gold-bar.hpp"
+#include "gui/text.hpp"
 #include "sfutil/rectangle-shape.hpp"
 #include "sfutil/vertex.hpp"
 #include "stage/stage-base.hpp"

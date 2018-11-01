@@ -13,6 +13,12 @@
 
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
+#include "gui/box-entity-info.hpp"
+#include "gui/box-entity.hpp"
+#include "gui/display.hpp"
+#include "gui/font-manager.hpp"
+#include "gui/image-loaders.hpp"
+#include "gui/image-options.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -20,12 +26,6 @@
 #include "misc/types.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-stage-generic.hpp"
-#include "sfml-util/box-entity-info.hpp"
-#include "sfml-util/box-entity.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/image-loaders.hpp"
-#include "sfml-util/image-options.hpp"
 #include "stage/i-stage.hpp"
 
 #include <exception>

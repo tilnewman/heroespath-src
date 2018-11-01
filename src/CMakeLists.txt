@@ -8,7 +8,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #list of library names (also the directory name)
 set(library_names
     misc
-    sfml-util
+    gui
     sfutil
     popup
     game
@@ -24,7 +24,7 @@ set(library_names
 
 
 #list of directories with executables
-set(executable_directory_names heroespath unit-tests)
+set(executable_directory_names heroespath test)
 
 
 #list of all sub-directories
@@ -134,7 +134,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 else()
 
     file(COPY config.txt DESTINATION heroespath)
-    file(COPY config.txt DESTINATION unit-tests)
+    file(COPY config.txt DESTINATION test)
 
 endif()
 
@@ -161,7 +161,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	if(EXISTS ${CMAKE_BINARY_DIR}/${suppress_name})
             file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/${suppress_name})
         else()
-            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/unit-tests)
+            file(COPY ${suppress_files_directory}/${suppress_name}.suppress DESTINATION ${CMAKE_BINARY_DIR}/test)
         endif()
 
     endforeach()

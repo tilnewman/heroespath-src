@@ -11,9 +11,9 @@
 //
 #include "popup-stage-combat-over.hpp"
 
+#include "gui/font-manager.hpp"
+#include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
