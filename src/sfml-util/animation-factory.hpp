@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
-#define HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#ifndef HEROESPATH_GUI_ANIMATIONFACTORY_HPP_INCLUDE
+#define HEROESPATH_GUI_ANIMATIONFACTORY_HPP_INCLUDE
 //
 // animation-factory.hpp
 //
@@ -14,7 +14,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct AnimationFactory
@@ -52,7 +52,7 @@ namespace sfml_util
             const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#endif // HEROESPATH_GUI_ANIMATIONFACTORY_HPP_INCLUDE

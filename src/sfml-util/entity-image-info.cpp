@@ -13,10 +13,10 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     EntityImageInfo::EntityImageInfo(
-        const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_OPT,
         const FloatRectOpt_t & REGION_OPT,
         const IntRectOpt_t & TEXTURE_REGION_OPT,
         const ColorOpt_t & COLOR_OPT,
@@ -34,7 +34,7 @@ namespace sfml_util
     }
 
     EntityImageInfo::EntityImageInfo(
-        const sfml_util::CachedTexture & TEXTURE,
+        const gui::CachedTexture & TEXTURE,
         const Vector2fOpt_t & POS_V_OPT,
         const Vector2fOpt_t & SCALE_V_OPT,
         const IntRectOpt_t & TEXTURE_REGION_OPT,
@@ -54,7 +54,7 @@ namespace sfml_util
     }
 
     void EntityImageInfo::Setup(
-        const sfml_util::CachedTexture & TEXTURE,
+        const gui::CachedTexture & TEXTURE,
         const Vector2fOpt_t & POS_V_OPT,
         const Vector2fOpt_t & SCALE_V_OPT,
         const IntRectOpt_t & TEXTURE_REGION_OPT,
@@ -88,7 +88,7 @@ namespace sfml_util
     }
 
     void EntityImageInfo::Setup(
-        const sfml_util::CachedTextureOpt_t & TEXTURE_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_OPT,
         const FloatRectOpt_t & REGION_OPT,
         const IntRectOpt_t & TEXTURE_REGION_OPT,
         const ColorOpt_t & COLOR_OPT,
@@ -170,5 +170,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

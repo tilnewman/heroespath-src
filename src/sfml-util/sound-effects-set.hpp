@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SOUNDEFFECTSSET_HPP_INCLUDED
+#define HEROESPATH_GUI_SOUNDEFFECTSSET_HPP_INCLUDED
 //
 // sound-effects-set.hpp
 //  Simple wrapper of sound effects
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Wraps a set of sound effects for easy playing of a random selection
@@ -50,7 +50,7 @@ namespace sfml_util
 
     using SfxSetVec_t = std::vector<SfxSet>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SOUNDEFFECTSSET_HPP_INCLUDED

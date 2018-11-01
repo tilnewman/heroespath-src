@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SLIDERBAR_MUSIC_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SLIDERBAR_MUSIC_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SLIDERBAR_MUSIC_HPP_INCLUDED
+#define HEROESPATH_GUI_SLIDERBAR_MUSIC_HPP_INCLUDED
 //
 // sliderbar-music.hpp
 //
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Encapsulates a gui sliderbar with a label that controls the music volume.
@@ -49,7 +49,7 @@ namespace sfml_util
 
     using SliderBarMusicUPtr_t = std::unique_ptr<SliderBarMusic>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SLIDERBAR_MUSIC_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SLIDERBAR_MUSIC_HPP_INCLUDED

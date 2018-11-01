@@ -39,7 +39,7 @@ namespace item
     // are required to be set and valid for a thin item profile.  This makes sense because all items
     // are either weapons, armor, or misc_type.  This means that all other values can be ignored,
     // and set to whatever valid defaults are handy at the time.  Examples of these ignored fields
-    // are the sfml_util::Size for weapons and the armor::base_type for armor.
+    // are the gui::Size for weapons and the armor::base_type for armor.
     class ItemProfileThin
     {
         friend ItemProfileThinFactory;

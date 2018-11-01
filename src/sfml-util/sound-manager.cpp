@@ -27,7 +27,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     std::string SoundManager::soundsDirectoryPath_("");
@@ -76,8 +76,7 @@ namespace sfml_util
     void SoundManager::Release()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_),
-            "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "gui::SoundManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -85,8 +84,7 @@ namespace sfml_util
     void SoundManager::Initialize()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_),
-            "sfml_util::SoundManager::Initialize() found instanceUPtr that was null.");
+            (instanceUPtr_), "gui::SoundManager::Initialize() found instanceUPtr that was null.");
 
         instanceUPtr_->CacheMusicInfo_CombatIntro();
         instanceUPtr_->LoadSoundSets();
@@ -449,7 +447,7 @@ namespace sfml_util
             if ((songSet.IsValid()) && (songSet.op.Info().Which() == MUSIC_ENUM))
             {
                 const float CURRENT_VOLUME(songSet.op.Volume());
-                const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
+                const float INTENDED_VOLUME(gui::SoundManager::Instance()->MusicVolume());
 
                 if (misc::IsRealClose(CURRENT_VOLUME, INTENDED_VOLUME) == false)
                 {
@@ -462,8 +460,8 @@ namespace sfml_util
                         songSet.op.VolumeFadeTo(
                             INTENDED_VOLUME,
                             ((CURRENT_VOLUME < INTENDED_VOLUME)
-                                 ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_
-                                 : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                                 ? gui::MusicOperator::FADE_MULT_DEFAULT_IN_
+                                 : gui::MusicOperator::FADE_MULT_DEFAULT_OUT_));
                     }
                 }
             }
@@ -525,24 +523,24 @@ namespace sfml_util
 
     void SoundManager::PlaySfx_AckMinor()
     {
-        GetSoundEffectSet(sfml_util::sound_effect_set::Switch).PlayRandom();
+        GetSoundEffectSet(gui::sound_effect_set::Switch).PlayRandom();
     }
 
     void SoundManager::PlaySfx_AckMajor()
     {
-        GetSoundEffectSet(sfml_util::sound_effect_set::Thock).PlayRandom();
+        GetSoundEffectSet(gui::sound_effect_set::Thock).PlayRandom();
     }
 
-    void SoundManager::PlaySfx_Reject() { SoundEffectPlay(sfml_util::sound_effect::PromptWarn); }
+    void SoundManager::PlaySfx_Reject() { SoundEffectPlay(gui::sound_effect::PromptWarn); }
 
     void SoundManager::PlaySfx_TickOn()
     {
-        GetSoundEffectSet(sfml_util::sound_effect_set::TickOn).PlayRandom();
+        GetSoundEffectSet(gui::sound_effect_set::TickOn).PlayRandom();
     }
 
     void SoundManager::PlaySfx_TickOff()
     {
-        GetSoundEffectSet(sfml_util::sound_effect_set::TickOff).PlayRandom();
+        GetSoundEffectSet(gui::sound_effect_set::TickOff).PlayRandom();
     }
 
     void SoundManager::PlaySfx_Keypress() { PlaySfx_AckMinor(); }
@@ -622,7 +620,7 @@ namespace sfml_util
         const auto PATH_STR { misc::filesystem::CombinePathsThenClean(
             musicDirectoryPath_, MUSIC_DIR_NAME, MUSIC_FILE_NAME) };
 
-        return sfml_util::Loaders::Music(PATH_STR);
+        return gui::Loaders::Music(PATH_STR);
     }
 
     void SoundManager::CacheMusicInfo_CombatIntro()
@@ -632,7 +630,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR)),
-            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() but the directory does not "
+            "gui::SoundManager::CacheMusicInfo_CombatIntro() but the directory does not "
             "exist: "
                 << DIR_PATH_STR);
 
@@ -670,7 +668,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (combatIntroMusicInfoVec_.empty() == false),
-            "sfml_util::SoundManager::CacheMusicInfo_CombatIntro() failed to load any music info "
+            "gui::SoundManager::CacheMusicInfo_CombatIntro() failed to load any music info "
             "from the directory: "
                 << DIR_PATH_STR);
     }
@@ -707,7 +705,7 @@ namespace sfml_util
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            iStagePtr->TestingStrAppend("sfml_util::SoundManager::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("gui::SoundManager::Test() Starting Tests...");
         }
 
         static auto counter { 0 };
@@ -763,7 +761,7 @@ namespace sfml_util
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (sfxSetVec_.at(sfxSetIndex).IsValid()),
-                    "sfml_util::SoundManager::Test() While testing SoudEffectsSets #"
+                    "gui::SoundManager::Test() While testing SoudEffectsSets #"
                         << sfxSetIndex << ", enum="
                         << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
                         << " found IsValid()==false.");
@@ -836,7 +834,7 @@ namespace sfml_util
             }
         }
 
-        iStagePtr->TestingStrAppend("sfml_util::SoundManager::Test() ALL TESTS PASSED");
+        iStagePtr->TestingStrAppend("gui::SoundManager::Test() ALL TESTS PASSED");
         return true;
     }
 
@@ -935,20 +933,20 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(SOUND_FILE_PATH_STR)),
-            "sfml_util::SoundManager::LoadSound("
-                << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
-                << "\", failed because that file does not exist.");
+            "gui::SoundManager::LoadSound(" << sound_effect::ToString(ENUM)
+                                            << "), attempting path=\"" << SOUND_FILE_PATH_STR
+                                            << "\", failed because that file does not exist.");
 
         auto bufferUPtr { std::make_unique<sf::SoundBuffer>() };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             bufferUPtr->loadFromFile(SOUND_FILE_PATH_STR),
-            "sfml_util::SoundManager::LoadSound("
+            "gui::SoundManager::LoadSound("
                 << sound_effect::ToString(ENUM) << "), attempting path=\"" << SOUND_FILE_PATH_STR
                 << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
                 << " for more information.");
 
         return bufferUPtr;
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

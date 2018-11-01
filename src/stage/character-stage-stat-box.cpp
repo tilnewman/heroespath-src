@@ -52,15 +52,15 @@ namespace stage
         const sf::Vector2f SIZE_V(WIDTH, HEIGHT_RATIO * WIDTH);
         const sf::FloatRect REGION_ORIG(sfutil::CenterCopy(SIZE_V), SIZE_V);
 
-        sfml_util::BoxEntityInfo statsBoxInfo;
-        statsBoxInfo.SetupImage(sfml_util::CachedTexture(
+        gui::BoxEntityInfo statsBoxInfo;
+        statsBoxInfo.SetupImage(gui::CachedTexture(
             "media-images-backgrounds-tile-wood",
-            sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated));
+            gui::ImageOpt::Default | gui::ImageOpt::Repeated));
         statsBoxInfo.SetupBorder(true);
         statsBoxInfo.focus_colors = sfutil::color::GuiFocusColors;
 
-        boxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
-            "CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
+        boxUPtr_
+            = std::make_unique<gui::BoxEntity>("CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
 
         owningStagePtr_->EntityAdd(boxUPtr_.get());
 
@@ -101,10 +101,10 @@ namespace stage
             numberRegions_.emplace_back(REGION_NUMBER);
 
             // the stat name/label text
-            sfml_util::Text labelText(
+            gui::Text labelText(
                 StatName(TRAIT),
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::FontManager::Instance()->Size_Larger());
+                gui::GuiFont::SystemCondensed,
+                gui::FontManager::Instance()->Size_Larger());
 
             labelText.setFillColor(TEXT_COLOR);
 
@@ -130,7 +130,7 @@ namespace stage
             textLabels_.emplace_back(labelText);
 
             // the stat value text
-            sfml_util::Text valueText(labelText);
+            gui::Text valueText(labelText);
             valueText.setString("");
             textValues_.emplace_back(valueText);
 
@@ -157,7 +157,7 @@ namespace stage
                     sf::Vertex(sf::Vector2f(LINE_POS_RIGHT, LINE_POS_TOP), sf::Color::Transparent));
             }
 
-            modTextRegionVecs_.emplace_back(sfml_util::TextRegionUVec_t());
+            modTextRegionVecs_.emplace_back(gui::TextRegionUVec_t());
         }
 
         Reset();
@@ -337,14 +337,11 @@ namespace stage
             return ss.str();
         }();
 
-        const sfml_util::TextInfo TEXT_INFO(
-            TEXT,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Small(),
-            TEXT_COLOR);
+        const gui::TextInfo TEXT_INFO(
+            TEXT, gui::GuiFont::System, gui::FontManager::Instance()->Size_Small(), TEXT_COLOR);
 
-        modTextRegionVecs_.at(INDEX).emplace_back(std::make_unique<sfml_util::TextRegion>(
-            "CharacterStageStatBoxModText_" + TEXT, TEXT_INFO));
+        modTextRegionVecs_.at(INDEX).emplace_back(
+            std::make_unique<gui::TextRegion>("CharacterStageStatBoxModText_" + TEXT, TEXT_INFO));
 
         modSet_.Set(TRAIT, modSet_.Get(TRAIT) + VALUE);
 

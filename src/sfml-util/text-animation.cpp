@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -59,10 +59,10 @@ namespace sfml_util
 
             const TextInfo TEXT_INFO(
                 TEXT,
-                sfml_util::GuiFont::Default,
+                gui::GuiFont::Default,
                 START_FONT_SIZE_,
                 START_COLOR_,
-                sfml_util::Justified::Center);
+                gui::Justified::Center);
 
             sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -88,15 +88,15 @@ namespace sfml_util
 
             const auto FONT_SIZE { START_FONT_SIZE_
                                    + static_cast<unsigned int>(
-                                         static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
-                                         * SLIDER_POS) };
+                                       static_cast<float>(END_FONT_SIZE_ - START_FONT_SIZE_)
+                                       * SLIDER_POS) };
 
             const TextInfo TEXT_INFO(
                 TEXT_,
-                sfml_util::GuiFont::Default,
+                gui::GuiFont::Default,
                 FONT_SIZE,
                 sfutil::Transition(START_COLOR_, END_COLOR_, SLIDER_POS),
-                sfml_util::Justified::Center,
+                gui::Justified::Center,
                 sf::Text::Bold);
 
             sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
@@ -120,5 +120,5 @@ namespace sfml_util
         }
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

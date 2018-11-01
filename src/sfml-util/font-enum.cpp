@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string GuiFont::ToString(const GuiFont::Enum FONT)
@@ -160,5 +160,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

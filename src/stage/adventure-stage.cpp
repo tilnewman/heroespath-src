@@ -31,21 +31,21 @@ namespace stage
     AdventureStage::AdventureStage()
         : StageBase(
             "Adventure",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::DialogMedieval,
-              sfml_util::GuiFont::DialogModern,
-              sfml_util::GuiFont::DefaultBoldFlavor,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::Number,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::DialogMedieval,
+              gui::GuiFont::DialogModern,
+              gui::GuiFont::DefaultBoldFlavor,
+              gui::GuiFont::Handwriting },
             true,
-            { sfml_util::sound_effect::FootstepGrass,
-              sfml_util::sound_effect::FootstepGravel,
-              sfml_util::sound_effect::FootstepLeaves,
-              sfml_util::sound_effect::FootstepSolid,
-              sfml_util::sound_effect::FootstepWood })
+            { gui::sound_effect::FootstepGrass,
+              gui::sound_effect::FootstepGravel,
+              gui::sound_effect::FootstepLeaves,
+              gui::sound_effect::FootstepSolid,
+              gui::sound_effect::FootstepWood })
     {}
 
     AdventureStage::~AdventureStage() = default;

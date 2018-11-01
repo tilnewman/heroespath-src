@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_MUSIC_OPERATOR_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_MUSIC_OPERATOR_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_MUSIC_OPERATOR_HPP_INCLUDED
+#define HEROESPATH_GUI_MUSIC_OPERATOR_HPP_INCLUDED
 //
 // music-operator.hpp
 //  The only place that sf::Music objects are stored and controlled.
@@ -23,7 +23,7 @@ class Music;
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct music_update_status
@@ -147,7 +147,7 @@ namespace sfml_util
     bool operator==(const MusicOperator & L, const MusicOperator & R);
 
     inline bool operator!=(const MusicOperator & L, const MusicOperator & R) { return !(L == R); }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_MUSIC_OPERATOR_HPP_INCLUDED
+#endif // HEROESPATH_GUI_MUSIC_OPERATOR_HPP_INCLUDED

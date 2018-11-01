@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace EnumImageLoaderHelpers
     {
@@ -24,5 +24,5 @@ namespace sfml_util
         }
 
     } // namespace EnumImageLoaderHelpers
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

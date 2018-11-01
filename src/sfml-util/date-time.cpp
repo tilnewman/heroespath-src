@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Date::Date(const int YEAR, const int MONTH, const int DAY)
@@ -106,5 +106,5 @@ namespace sfml_util
         return ss.str();
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string CombatImageType::ToString(const Enum E)
@@ -67,7 +67,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::CombatImageType::ToString(" << E << ")_InvalidValueError.";
+                ss << "gui::CombatImageType::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -121,10 +121,10 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::CombatImageType::ImageFilename(" << E << ")_InvalidValueError.";
+                ss << "gui::CombatImageType::ImageFilename(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

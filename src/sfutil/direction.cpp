@@ -16,8 +16,8 @@ namespace heroespath
 namespace sfutil
 {
 
-    sfml_util::Direction::Enum DirectionFromAToB(
-        const sf::Sprite & A, const sf::Sprite & B, const sfml_util::Direction::Enum DEFAULT)
+    gui::Direction::Enum DirectionFromAToB(
+        const sf::Sprite & A, const sf::Sprite & B, const gui::Direction::Enum DEFAULT)
     {
         return DirectionFromAToB(CenterOf(A), CenterOf(B), DEFAULT);
     }

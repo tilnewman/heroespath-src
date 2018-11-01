@@ -23,13 +23,13 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
     using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
 
-} // namespace sfml_util
+} // namespace gui
 namespace item
 {
     class Item;
@@ -53,11 +53,11 @@ namespace combat
         static const float ITEM_IMAGE_SCALE_MIN_;
 
         item::ItemPtr_t item_ptr;
-        sfml_util::CachedTexture cached_texture;
+        gui::CachedTexture cached_texture;
         sf::Sprite sprite;
-        sfml_util::TextRegionUPtr_t name_text_region_uptr;
-        sfml_util::TextRegionUPtr_t desc_text_region_uptr;
-        sfml_util::TextRegionUPtr_t info_text_region_uptr;
+        gui::TextRegionUPtr_t name_text_region_uptr;
+        gui::TextRegionUPtr_t desc_text_region_uptr;
+        gui::TextRegionUPtr_t info_text_region_uptr;
     };
 
     using ItemWithTextUPtr_t = std::unique_ptr<ItemWithText>;
@@ -101,8 +101,8 @@ namespace combat
         bool IsTransitionToComplete() const { return isTransToComplete_; }
         bool IsTransitionBackComplete() const { return isTransBackComplete_; }
 
-        sfml_util::Moving::Enum MovingDir() const { return movingDir_; }
-        void MovingDir(const sfml_util::Moving::Enum E) { movingDir_ = E; }
+        gui::Moving::Enum MovingDir() const { return movingDir_; }
+        void MovingDir(const gui::Moving::Enum E) { movingDir_ = E; }
 
         const CombatNodePtrOpt_t CombatNodePtrOpt() const { return combatNodePtrOpt_; }
 
@@ -128,17 +128,17 @@ namespace combat
         //
         bool isTransToComplete_;
         bool isTransBackComplete_;
-        sfml_util::Moving::Enum movingDir_;
+        gui::Moving::Enum movingDir_;
         ItemWithTextUVec_t itemWithTextUVec_;
         sf::VertexArray bgQuads_;
         CombatNodePtrOpt_t combatNodePtrOpt_;
-        sfml_util::TextRegionUPtr_t nameTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t rankTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t healthTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t condTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t armorTextRegionUPtr_;
-        sfml_util::EntitySlider geSlider_;
+        gui::TextRegionUPtr_t nameTextRegionUPtr_;
+        gui::TextRegionUPtr_t rankTextRegionUPtr_;
+        gui::TextRegionUPtr_t healthTextRegionUPtr_;
+        gui::TextRegionUPtr_t descTextRegionUPtr_;
+        gui::TextRegionUPtr_t condTextRegionUPtr_;
+        gui::TextRegionUPtr_t armorTextRegionUPtr_;
+        gui::EntitySlider geSlider_;
         bool preventNextTrans_;
     };
 

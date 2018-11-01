@@ -39,11 +39,11 @@ namespace stage
 
     StageBase::StageBase(
         const std::string & NAME,
-        const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
+        const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
         const bool WILL_CLEAR_CACHE_ON_EXIT,
-        const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD)
+        const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_StageBase"))
-        , stageRegion_(sfml_util::Display::Instance()->FullScreenRect())
+        , stageRegion_(gui::Display::Instance()->FullScreenRect())
         , entityPVec_()
         , entityWithFocusPtrOpt_()
         , hoverTextBoxUPtr_()
@@ -54,16 +54,16 @@ namespace stage
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        sfml_util::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        sfml_util::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
+        gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
     StageBase::StageBase(
         const std::string & NAME,
         const sf::FloatRect & REGION,
-        const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
+        const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
         const bool WILL_CLEAR_CACHE_ON_EXIT,
-        const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD)
+        const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_StageBase"))
         , stageRegion_(REGION)
         , entityPVec_()
@@ -76,17 +76,17 @@ namespace stage
         , mouseDownPosV_(0.0f, 0.0f)
         , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
-        sfml_util::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
-        sfml_util::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
+        gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
+        gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
     StageBase::~StageBase()
     {
         if (willClearCachesOnExit_)
         {
-            sfml_util::SoundManager::Instance()->ClearSoundEffectsCache();
-            sfml_util::TextureCache::Instance()->RemoveAll();
-            sfml_util::FontManager::Instance()->UnloadAll();
+            gui::SoundManager::Instance()->ClearSoundEffectsCache();
+            gui::TextureCache::Instance()->RemoveAll();
+            gui::FontManager::Instance()->UnloadAll();
         }
     }
 
@@ -128,7 +128,7 @@ namespace stage
         }
     }
 
-    const sfml_util::IEntityPtrOpt_t StageBase::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const gui::IEntityPtrOpt_t StageBase::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
@@ -171,7 +171,7 @@ namespace stage
         }
     }
 
-    void StageBase::SetFocus(const sfml_util::IEntityPtr_t ENTITY_PTR)
+    void StageBase::SetFocus(const gui::IEntityPtr_t ENTITY_PTR)
     {
         const auto ORIG_ENTITY_WITH_FOCUS_NAME {
             ((entityWithFocusPtrOpt_) ? entityWithFocusPtrOpt_.value()->GetEntityName() : "(None)")
@@ -211,8 +211,7 @@ namespace stage
         }
     }
 
-    void StageBase::EntityAdd(
-        const sfml_util::IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT)
+    void StageBase::EntityAdd(const gui::IEntityPtr_t ENTITY_PTR, const bool WILL_INSERT_AT_FRONT)
     {
         const auto WAS_FOUND { std::find(std::begin(entityPVec_), std::end(entityPVec_), ENTITY_PTR)
                                != std::end(entityPVec_) };
@@ -237,7 +236,7 @@ namespace stage
         }
     }
 
-    void StageBase::EntityRemove(const sfml_util::IEntityPtr_t ENTITY_PTR)
+    void StageBase::EntityRemove(const gui::IEntityPtr_t ENTITY_PTR)
     {
         const auto ORIG_NUM_ENTITYS { entityPVec_.size() };
 
@@ -300,12 +299,12 @@ namespace stage
                 return;
             }
 
-            const sfml_util::TextInfo TEXT_INFO(
+            const gui::TextInfo TEXT_INFO(
                 text,
-                sfml_util::GuiFont::System,
-                sfml_util::FontManager::Instance()->Size_Smallish(),
+                gui::GuiFont::System,
+                gui::FontManager::Instance()->Size_Smallish(),
                 sf::Color(50, 50, 50),
-                sfml_util::Justified::Left);
+                gui::Justified::Left);
 
             hoverText_.setup(TEXT_INFO);
 
@@ -315,7 +314,7 @@ namespace stage
                 hoverText_.getGlobalBounds().width + 20.0f,
                 hoverText_.getGlobalBounds().height + 8.0f);
 
-            const auto SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() };
+            const auto SCREEN_WIDTH { gui::Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
             {
                 region.left = SCREEN_WIDTH - region.width;
@@ -328,12 +327,12 @@ namespace stage
 
             hoverText_.setPosition(region.left + 10.0f, region.top + 2.0f);
 
-            sfml_util::BoxEntityInfo boxInfo;
+            gui::BoxEntityInfo boxInfo;
             boxInfo.SetupColor(sfutil::color::Orange - sf::Color(20, 0, 0, 0));
             boxInfo.SetupBorder(true, 1.0f);
 
-            hoverTextBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
-                GetStageName() + "'sHoverText", region, boxInfo);
+            hoverTextBoxUPtr_
+                = std::make_unique<gui::BoxEntity>(GetStageName() + "'sHoverText", region, boxInfo);
         }
         else
         {
@@ -366,7 +365,7 @@ namespace stage
     }
 
     void StageBase::SpawnPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO) const
     {
         game::GameController::Instance()->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
@@ -388,9 +387,9 @@ namespace stage
         game::GameController::Instance()->TransitionTo(SETUP_PACKET);
     }
 
-    const sfml_util::DisplayChangeResult StageBase::ChangeResolution(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-        const sfml_util::Resolution & NEW_RES,
+    const gui::DisplayChangeResult StageBase::ChangeResolution(
+        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL) const
     {
         return game::GameController::Instance()->ChangeResolution(

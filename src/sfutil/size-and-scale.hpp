@@ -26,7 +26,7 @@ class Sprite;
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Text;
 }
@@ -40,7 +40,7 @@ namespace sfutil
     }
 
     float Width(const sf::Sprite &);
-    float Width(const sfml_util::Text &);
+    float Width(const gui::Text &);
 
     template <typename T>
     constexpr T Height(const sf::Rect<T> & RECT)
@@ -49,7 +49,7 @@ namespace sfutil
     }
 
     float Height(const sf::Sprite &);
-    float Height(const sfml_util::Text &);
+    float Height(const gui::Text &);
 
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
     template <
@@ -169,10 +169,10 @@ namespace sfutil
     const sf::Vector2f Size(const sf::Sprite & S, const float SCALE = 1.0f);
 
     // returns the size of T (global) scaled by SCALE_V
-    const sf::Vector2f Size(const sfml_util::Text & T, const sf::Vector2f & SCALE_V);
+    const sf::Vector2f Size(const gui::Text & T, const sf::Vector2f & SCALE_V);
 
     // returns the size of T (global) scaled by SCALE
-    const sf::Vector2f Size(const sfml_util::Text & T, const float SCALE = 1.0f);
+    const sf::Vector2f Size(const gui::Text & T, const float SCALE = 1.0f);
 
     // returns a copy of R with size scaled by SCALE and then re-centered to the orig center of R
     template <
@@ -383,16 +383,16 @@ namespace sfutil
     bool IsSizeLessThanOneBoth(const sf::Sprite & S);
 
     // returns true if either the global bounds width or height are <= 0
-    bool IsSizeZeroOrLessEither(const sfml_util::Text & T);
+    bool IsSizeZeroOrLessEither(const gui::Text & T);
 
     // returns true if both the global bounds width and height are <= 0
-    bool IsSizeZeroOrLessBoth(const sfml_util::Text & T);
+    bool IsSizeZeroOrLessBoth(const gui::Text & T);
 
     // returns true if either the global bounds width or height are < 1
-    bool IsSizeLessThanOneEither(const sfml_util::Text & T);
+    bool IsSizeLessThanOneEither(const gui::Text & T);
 
     // returns true if both the global bounds width and height are < 1
-    bool IsSizeLessThanOneBoth(const sfml_util::Text & T);
+    bool IsSizeLessThanOneBoth(const gui::Text & T);
 
     // returns the smallest sf::Rect that fully includes rects A and B
     template <typename T1, typename T2>
@@ -467,8 +467,8 @@ namespace sfutil
 
     // returns the smallest sf::FloatRect that includes the global bounds of both
     const sf::FloatRect MinimallyEnclosing(
-        const sfml_util::Text & A,
-        const sfml_util::Text & B,
+        const gui::Text & A,
+        const gui::Text & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
@@ -478,7 +478,7 @@ namespace sfutil
 
     // returns the smallest sf::Rect that fully includes all the sprites (global) in V
     const sf::FloatRect MinimallyEnclosing(
-        const std::vector<sfml_util::Text> & VEC,
+        const std::vector<gui::Text> & VEC,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
     // returns a copy of R that has the smaller dimmension set equal to the larger then scaled to

@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     AnimationMultiTexture::AnimationMultiTexture(
@@ -98,5 +98,5 @@ namespace sfml_util
         return isFinished_;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

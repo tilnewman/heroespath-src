@@ -82,7 +82,7 @@ namespace interact
     }
 
     void LockPicking::PopupCharacterSelection(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         stage::IStagePtr_t iStagePtr) const
     {
         const auto INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
@@ -119,8 +119,8 @@ namespace interact
     }
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR,
         stage::IStagePtr_t iStagePtr)
     {
         if (PACKET_PTR->type == popup::ResponseTypes::Select)
@@ -143,7 +143,7 @@ namespace interact
     }
 
     void LockPicking::PopupAttempting(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & CHARACTER_NAME,
         stage::IStagePtr_t iStagePtr) const
     {
@@ -151,7 +151,7 @@ namespace interact
             POPUP_NAME_ATTEMPTING_,
             CHARACTER_NAME + " is attempting to pick the lock...",
             4.0f, // the duration of the longest lockpick sfx
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::FontManager::Instance()->Size_Normal(),
             popup::PopupButtons::None,
             popup::PopupImage::Regular,
             RandomPickingSfx()) };
@@ -160,7 +160,7 @@ namespace interact
     }
 
     void LockPicking::PopupSuccess(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & NAME_OF_WHAT_OPENED,
         stage::IStagePtr_t iStagePtr) const
     {
@@ -168,17 +168,16 @@ namespace interact
             POPUP_NAME_SUCCESS_,
             "\nThe " + NAME_OF_WHAT_OPENED + " Opens!",
             4.0f, // number of seconds before the popup disapears
-            sfml_util::FontManager::Instance()->Size_Large(),
+            gui::FontManager::Instance()->Size_Large(),
             popup::PopupButtons::Continue,
             popup::PopupImage::Regular,
-            sfml_util::sound_effect::None) };
+            gui::sound_effect::None) };
 
         iStagePtr->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        stage::IStagePtr_t iStagePtr)
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR, stage::IStagePtr_t iStagePtr)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!characterPtrOpt_),
@@ -249,26 +248,25 @@ namespace interact
         return 0;
     }
 
-    sfml_util::sound_effect::Enum LockPicking::RandomPickingSfx() const
+    gui::sound_effect::Enum LockPicking::RandomPickingSfx() const
     {
-        std::vector<sfml_util::sound_effect::Enum> lockPickingSfx
-            = { sfml_util::sound_effect::LockPicking1, sfml_util::sound_effect::LockPicking2,
-                sfml_util::sound_effect::LockPicking3, sfml_util::sound_effect::LockPicking4,
-                sfml_util::sound_effect::LockPicking5, sfml_util::sound_effect::LockPicking6,
-                sfml_util::sound_effect::LockPicking7 };
+        std::vector<gui::sound_effect::Enum> lockPickingSfx
+            = { gui::sound_effect::LockPicking1, gui::sound_effect::LockPicking2,
+                gui::sound_effect::LockPicking3, gui::sound_effect::LockPicking4,
+                gui::sound_effect::LockPicking5, gui::sound_effect::LockPicking6,
+                gui::sound_effect::LockPicking7 };
 
         return misc::Vector::SelectRandom(lockPickingSfx);
     }
 
     void LockPicking::PlaySuccessSfx() const
     {
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::LockUnlock);
+        gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::LockUnlock);
     }
 
     void LockPicking::PlayFailureSfx() const
     {
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(
-            sfml_util::sound_effect::LockPickingFail);
+        gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::LockPickingFail);
     }
 
 } // namespace interact

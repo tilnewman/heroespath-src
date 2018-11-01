@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SPARKLEANIMATION_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SPARKLEANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SPARKLEANIMATION_HPP_INCLUDED
+#define HEROESPATH_GUI_SPARKLEANIMATION_HPP_INCLUDED
 //
 // sparkle-animation.hpp
 //
@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -89,9 +89,9 @@ namespace sfml_util
             float emitTimerDurationSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sfml_util::CachedTexture sparkCachedTexture1_;
-            sfml_util::CachedTexture sparkCachedTexture2_;
-            sfml_util::CachedTexture sparkCachedTexture3_;
+            gui::CachedTexture sparkCachedTexture1_;
+            gui::CachedTexture sparkCachedTexture2_;
+            gui::CachedTexture sparkCachedTexture3_;
             SparkleVec_t sparkleVec_;
         };
 
@@ -99,7 +99,7 @@ namespace sfml_util
         using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SPARKLEANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SPARKLEANIMATION_HPP_INCLUDED

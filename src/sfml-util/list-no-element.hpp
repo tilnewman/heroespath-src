@@ -4,15 +4,15 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LIST_NO_ELEMENT_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LIST_NO_ELEMENT_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_LIST_NO_ELEMENT_HPP_INCLUDED
+#define HEROESPATH_GUI_LIST_NO_ELEMENT_HPP_INCLUDED
 //
 // list-no-element.hpp
 //
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // responsible for being a type that indicates a ListElement contains no element, only
@@ -27,7 +27,7 @@ namespace sfml_util
     inline bool operator<=(const NoElement_t & L, const NoElement_t & R) { return !(L > R); }
     inline bool operator>=(const NoElement_t & L, const NoElement_t & R) { return !(L < R); }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LIST_NO_ELEMENT_HPP_INCLUDED
+#endif // HEROESPATH_GUI_LIST_NO_ELEMENT_HPP_INCLUDED

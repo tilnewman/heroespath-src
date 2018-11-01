@@ -79,14 +79,14 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
     class Animation;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
-} // namespace sfml_util
+} // namespace gui
 namespace stage
 {
 
@@ -95,13 +95,13 @@ namespace stage
 
     struct ImageInspectPacket : public sf::Drawable
     {
-        ImageInspectPacket(const sfml_util::CachedTextureOpt_t & = boost::none);
+        ImageInspectPacket(const gui::CachedTextureOpt_t & = boost::none);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        sfml_util::CachedTextureOpt_t cached_texture_opt;
+        gui::CachedTextureOpt_t cached_texture_opt;
         sf::Sprite sprite;
-        sfml_util::Text text;
+        gui::Text text;
     };
 
     // A Stage class that allows visualizing testing info
@@ -173,15 +173,15 @@ namespace stage
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
-        static sfml_util::AnimationUPtr_t animUPtr_;
+        static gui::AnimationUPtr_t animUPtr_;
         static const float IMAGE_INSPECT_DIMMENSION_;
 
     private:
-        std::vector<sfml_util::CachedTexture> textures_;
-        sfml_util::OuroborosUPtr_t ouroborosUPtr_;
+        std::vector<gui::CachedTexture> textures_;
+        gui::OuroborosUPtr_t ouroborosUPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;
-        sfml_util::CachedTexture animBackgroundCachedTexture_;
+        gui::CachedTexture animBackgroundCachedTexture_;
         sf::Sprite animBackgroundSprite_;
         std::vector<ImageInspectPacket> imageInspectPackets_;
         bool willInspectImages_;
@@ -193,13 +193,13 @@ namespace stage
         bool isWaitingForKeyOrClickPaused_;
 
         // all these members are drawn during waitingForKeyOrClick tests
-        sfml_util::CachedTextureVec_t waitingForKeyOrClick_CachedTextures_;
+        gui::CachedTextureVec_t waitingForKeyOrClick_CachedTextures_;
         std::vector<sf::Sprite> waitingForKeyOrClick_ToDraw_Sprites_;
-        std::vector<sfml_util::GoldBar> waitingForKeyOrClick_ToDraw_GoldBars_;
-        std::vector<sfml_util::Border> waitingForKeyOrClick_ToDraw_Borders_;
+        std::vector<gui::GoldBar> waitingForKeyOrClick_ToDraw_GoldBars_;
+        std::vector<gui::Border> waitingForKeyOrClick_ToDraw_Borders_;
         std::vector<sf::RectangleShape> waitingForKeyOrClick_ToDraw_RectangleShapes_;
         std::vector<sf::VertexArray> waitingForKeyOrClick_ToDraw_VertexArrays_;
-        std::vector<sfml_util::Text> waitingForKeyOrClick_ToDraw_Texts_;
+        std::vector<gui::Text> waitingForKeyOrClick_ToDraw_Texts_;
     };
 
 } // namespace stage

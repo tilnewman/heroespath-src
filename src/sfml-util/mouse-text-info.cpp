@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     MouseTextInfo::MouseTextInfo()
@@ -76,7 +76,7 @@ namespace sfml_util
     {
         return MouseTextInfo(
             NAME,
-            sfml_util::GuiFont::Handwriting,
+            gui::GuiFont::Handwriting,
             FontManager::Instance()->Size_Larger(),
             FontManager::Color_PopupButtonUp(COLOR),
             FontManager::Color_PopupButtonDown(COLOR),
@@ -88,7 +88,7 @@ namespace sfml_util
     {
         return MouseTextInfo(
             NAME,
-            sfml_util::GuiFont::DialogMedieval,
+            gui::GuiFont::DialogMedieval,
             FontManager::Instance()->Size_Large(),
             FontManager::Color_PopupButtonUp(popup::PopupButtonColor::Dark),
             FontManager::Color_PopupButtonDown(popup::PopupButtonColor::Dark),
@@ -132,5 +132,5 @@ namespace sfml_util
             == std::tie(R.up, R.down, R.over, R.disabled);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_HORIZSYMBOL_HPP_INCLUDED
+#define HEROESPATH_GUI_HORIZSYMBOL_HPP_INCLUDED
 //
 // horiz-symbol.hpp
 //
@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for drawing the horizontal symbols at the bottom of Stages. Bottom(Region()) is
@@ -59,14 +59,14 @@ namespace sfml_util
         static const std::string IMAGE_PATH_KEY_;
 
     private:
-        sfml_util::ImageOpt::Enum MakeImageOpt(const bool WILL_INVERT_COLOR) const;
+        gui::ImageOpt::Enum MakeImageOpt(const bool WILL_INVERT_COLOR) const;
 
         CachedTexture cachedTexture_;
         std::vector<sf::Sprite> sprites_;
         sf::FloatRect region_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#endif // HEROESPATH_GUI_HORIZSYMBOL_HPP_INCLUDED

@@ -28,8 +28,8 @@ namespace stage
 
     IntroStage::IntroStage()
         : StageBase("Intro", {}, true)
-        , backgroundMusic_(sfml_util::music::Theme)
-        , musicVolumeOrig_(sfml_util::SoundManager::Instance()->MusicVolume())
+        , backgroundMusic_(gui::music::Theme)
+        , musicVolumeOrig_(gui::SoundManager::Instance()->MusicVolume())
         , timeFromStartToMusicSec_(1.5f)
         , timeFromMusicToAnimSec_(2.0f)
         , timeFromAnimToExitSec_(4.0f)
@@ -47,10 +47,8 @@ namespace stage
     {
         if (wasMusicVolumeChanged_)
         {
-            sfml_util::SoundManager::Instance()->MusicVolume(
-                { backgroundMusic_ },
-                musicVolumeOrig_,
-                sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_);
+            gui::SoundManager::Instance()->MusicVolume(
+                { backgroundMusic_ }, musicVolumeOrig_, gui::MusicOperator::FADE_MULT_DEFAULT_IN_);
         }
 
         StageBase::ClearAllEntities();
@@ -90,8 +88,8 @@ namespace stage
                 wasMusicVolumeChanged_ = true;
             }
 
-            sfml_util::SoundManager::Instance()->MusicStart(
-                backgroundMusic_, sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_, volume);
+            gui::SoundManager::Instance()->MusicStart(
+                backgroundMusic_, gui::MusicOperator::FADE_MULT_DEFAULT_IN_, volume);
         }
 
         if (!hasAnimStarted_

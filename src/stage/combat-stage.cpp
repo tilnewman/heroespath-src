@@ -147,12 +147,12 @@ namespace stage
         const bool WILL_ADVANCE_TURN)
         : StageBase(
             "Combat",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::DefaultBoldFlavor,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::DefaultBoldFlavor,
+              gui::GuiFont::Handwriting },
             true)
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , COMBAT_REGION_MARGIN_(25.0f)
@@ -167,10 +167,10 @@ namespace stage
         , statusBoxUPtr_()
         , statusBoxTextInfo_(
               " ",
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::FontManager::Instance()->Size_Small(),
+              gui::GuiFont::SystemCondensed,
+              gui::FontManager::Instance()->Size_Small(),
               sfutil::color::Orange,
-              sfml_util::Justified::Left)
+              gui::Justified::Left)
         , zoomSliderBarUPtr_()
         , turnBoxUPtr_()
         , turnBoxRegion_()
@@ -208,14 +208,14 @@ namespace stage
               sfutil::color::Orange,
               sf::Color::White,
               TEXT_COLOR_SHAKER_SPEED_,
-              sfml_util::WillOscillate::Yes,
-              sfml_util::WillAutoStart::Yes)
+              gui::WillOscillate::Yes,
+              gui::WillAutoStart::Yes)
         , redTextColorSlider_(
               sf::Color(255, 127, 127),
               sf::Color::White,
               TEXT_COLOR_SHAKER_SPEED_ * 0.65f,
-              sfml_util::WillOscillate::Yes,
-              sfml_util::WillAutoStart::Yes)
+              gui::WillOscillate::Yes,
+              gui::WillAutoStart::Yes)
         , turnActionInfo_()
         , fightResult_()
         , willRedColorShakeWeaponText_(false)
@@ -246,8 +246,8 @@ namespace stage
               LISTBOX_HIGHLIGHT_COLOR_,
               LISTBOX_HIGHLIGHT_ALT_COLOR_,
               35.0f,
-              sfml_util::WillOscillate::Yes,
-              sfml_util::WillAutoStart::Yes)
+              gui::WillOscillate::Yes,
+              gui::WillAutoStart::Yes)
         , testingTextRegionUPtr_()
         , pauseTitle_("")
         , clickTimerSec_(-1.0f)
@@ -268,7 +268,7 @@ namespace stage
     }
 
     bool CombatStage::HandleCallback(
-        const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::Determine != turnPhase_))
         {
@@ -369,8 +369,7 @@ namespace stage
         return false;
     }
 
-    bool CombatStage::HandleCallback(
-        const sfml_util::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool CombatStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR == zoomSliderBarUPtr_.get())
         {
@@ -387,7 +386,7 @@ namespace stage
         }
     }
 
-    bool CombatStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CombatStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->name == POPUP_NAME_ACHIEVEMENT_)
         {
@@ -466,12 +465,12 @@ namespace stage
     void CombatStage::PreSetup()
     {
         // status box
-        sfml_util::BoxEntityInfo statusBoxInfo;
+        gui::BoxEntityInfo statusBoxInfo;
 
         statusBoxInfo.SetupImage(
-            sfml_util::CachedTexture(
+            gui::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+                gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         statusBoxInfo.SetupColor(LISTBOX_BACKGROUND_COLOR_);
@@ -479,84 +478,84 @@ namespace stage
         statusBoxInfo.SetupBorder(true);
 
         statusBoxInfo.focus_colors
-            = sfml_util::FocusColors(LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
+            = gui::FocusColors(LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
 
-        statusBoxUPtr_ = std::make_unique<sfml_util::ListBox<CombatStage, sfml_util::NoElement_t>>(
+        statusBoxUPtr_ = std::make_unique<gui::ListBox<CombatStage, gui::NoElement_t>>(
             "ComabtStage'sStatus",
             this,
             this,
-            sfml_util::ListBoxPacket(
+            gui::ListBoxPacket(
                 STATUS_REGION_,
                 statusBoxInfo,
                 LISTBOX_LINE_COLOR_,
-                sfml_util::ListBoxPacket::DEFAULT_IMAGE_COLOR_,
+                gui::ListBoxPacket::DEFAULT_IMAGE_COLOR_,
                 LISTBOX_HIGHLIGHT_COLOR_));
 
         EntityAdd(statusBoxUPtr_.get());
 
         // command box
 
-        sfml_util::BoxEntityInfo commandBoxInfo;
+        gui::BoxEntityInfo commandBoxInfo;
 
         commandBoxInfo.SetupImage(
-            sfml_util::CachedTexture(
+            gui::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+                gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         commandBoxInfo.SetupBorder(true);
 
-        commandBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
+        commandBoxUPtr_ = std::make_unique<gui::BoxEntity>(
             "CombatStage'sCommand", COMMAND_REGION_, commandBoxInfo);
 
         // turn box
         turnBoxRegion_ = STATUS_REGION_;
 
-        sfml_util::BoxEntityInfo turnBoxInfo;
+        gui::BoxEntityInfo turnBoxInfo;
 
         turnBoxInfo.SetupImage(
-            sfml_util::CachedTexture(
+            gui::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+                gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.06f));
 
         turnBoxInfo.SetupBorder(true);
 
-        turnBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
-            "CombatStage'sTurnBox", turnBoxRegion_, turnBoxInfo);
+        turnBoxUPtr_
+            = std::make_unique<gui::BoxEntity>("CombatStage'sTurnBox", turnBoxRegion_, turnBoxInfo);
 
         // turnbox title text region
-        const sfml_util::TextInfo TURNBOXTITLE_TEXT_INFO(
+        const gui::TextInfo TURNBOXTITLE_TEXT_INFO(
             " ",
-            sfml_util::GuiFont::DefaultBoldFlavor,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::DefaultBoldFlavor,
+            gui::FontManager::Instance()->Size_Largeish(),
             sfutil::color::Light,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         sf::FloatRect turnBoxTitleTextRegion(turnBoxRegion_);
         turnBoxTitleTextRegion.height = 0.0f;
 
-        titleTBoxTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        titleTBoxTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "TurnBox'sTitle", TURNBOXTITLE_TEXT_INFO, turnBoxTitleTextRegion);
 
-        const sfml_util::TextInfo TURNBOXINFO_TEXT_INFO(
+        const gui::TextInfo TURNBOXINFO_TEXT_INFO(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayLight,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         sf::FloatRect turnBoxInfoTextRegion(turnBoxRegion_);
 
-        infoTBoxTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        infoTBoxTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "CombatStage'sTurnInfo", TURNBOXINFO_TEXT_INFO, turnBoxInfoTextRegion);
 
-        const sfml_util::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
+        const gui::TextInfo TURNBOXENEMYACTION_TEXT_INFO(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::Light,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         sf::FloatRect turnBoxEnemyActionTextRegion(turnBoxRegion_);
 
@@ -565,51 +564,51 @@ namespace stage
         turnBoxEnemyActionTextRegion.left += PAD;
         turnBoxEnemyActionTextRegion.width -= PAD * 2.0f;
 
-        enemyActionTBoxRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        enemyActionTBoxRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "CombatStage'sTurnEnemyAction",
             TURNBOXENEMYACTION_TEXT_INFO,
             turnBoxEnemyActionTextRegion);
 
-        const sfml_util::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
+        const gui::TextInfo TURNBOXENEMYCONDS_TEXT_INFO(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayLight,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         sf::FloatRect turnBoxEnemyCondsTextRegion(turnBoxRegion_);
-        enemyCondsTBoxRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        enemyCondsTBoxRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "CombatStage'sTurnEnemyConds",
             TURNBOXENEMYCONDS_TEXT_INFO,
             turnBoxEnemyCondsTextRegion);
 
-        sfml_util::TextInfo turnBoxWeaponTextInfo(
+        gui::TextInfo turnBoxWeaponTextInfo(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayLight,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
-        weaponTBoxTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        weaponTBoxTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "TurnBox'sWeapon", turnBoxWeaponTextInfo, turnBoxTitleTextRegion);
 
-        sfml_util::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
+        gui::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
 
-        armorTBoxTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        armorTBoxTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "TurnBox'sArmor", turnBoxWeaponTextInfo, turnBoxTitleTextRegion);
 
-        const sfml_util::TextInfo TESTING_TEXT_INFO(
+        const gui::TextInfo TESTING_TEXT_INFO(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayLight,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         sf::FloatRect testingTextRegion(turnBoxRegion_);
         testingTextRegion.left += testingTextRegion.width - 50.0f;
         testingTextRegion.top += (testingTextRegion.height - 400.0f);
 
-        testingTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        testingTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "CombatStage'sTesting", TESTING_TEXT_INFO, testingTextRegion);
 
         MakeButton(
@@ -640,19 +639,19 @@ namespace stage
 
         const sf::FloatRect GEAR_IMAGE_REGION(GEAR_IMAGE_POS_V, GEAR_IMAGE_SIZE_V);
 
-        const sfml_util::EntityImageInfo GEAR_IMAGE_INFO_UP(
-            sfml_util::CachedTexture("media-images-buttons-gui-gears-normal"), GEAR_IMAGE_REGION);
+        const gui::EntityImageInfo GEAR_IMAGE_INFO_UP(
+            gui::CachedTexture("media-images-buttons-gui-gears-normal"), GEAR_IMAGE_REGION);
 
-        const sfml_util::EntityImageInfo GEAR_IMAGE_INFO_OVER(
-            sfml_util::CachedTexture("media-images-buttons-gui-gears-lit"), GEAR_IMAGE_REGION);
+        const gui::EntityImageInfo GEAR_IMAGE_INFO_OVER(
+            gui::CachedTexture("media-images-buttons-gui-gears-lit"), GEAR_IMAGE_REGION);
 
-        settingsButtonUPtr_ = std::make_unique<sfml_util::ImageTextEntity>(
+        settingsButtonUPtr_ = std::make_unique<gui::ImageTextEntity>(
             "CombatStage'sSettingsGears",
-            sfml_util::MouseImageInfo(
-                true, GEAR_IMAGE_INFO_UP, sfml_util::EntityImageInfo(), GEAR_IMAGE_INFO_OVER),
-            sfml_util::MouseTextInfo(),
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Image);
+            gui::MouseImageInfo(
+                true, GEAR_IMAGE_INFO_UP, gui::EntityImageInfo(), GEAR_IMAGE_INFO_OVER),
+            gui::MouseTextInfo(),
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Image);
 
         EntityAdd(settingsButtonUPtr_.get());
 
@@ -745,17 +744,17 @@ namespace stage
         }
 
         // CombatDisplay Zoom Sliderbar
-        const sfml_util::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO(
+        const gui::TextInfo ZOOMSLIDER_LABEL_TEXT_INFO(
             "Zoom",
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::Light,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(
             0.0f, COMMAND_REGION_.top + COMMAND_REGION_PAD_, 0.0f, 0.0f);
 
-        zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        zoomLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "ZoomSlider's", ZOOMSLIDER_LABEL_TEXT_INFO, ZOOMSLIDER_LABEL_RECT);
 
         const auto ZOOM_SLIDERBAR_POS_LEFT { COMMAND_REGION_.left + COMMAND_REGION_PAD_ };
@@ -767,13 +766,13 @@ namespace stage
                                             - COMMAND_REGION_.left)
                                            - (COMMAND_REGION_PAD_ * 2.0f) };
 
-        zoomSliderBarUPtr_ = std::make_unique<sfml_util::SliderBar>(
+        zoomSliderBarUPtr_ = std::make_unique<gui::SliderBar>(
             "CombatStageZoom",
             ZOOM_SLIDERBAR_POS_LEFT,
             ZOOM_SLIDERBAR_POS_TOP,
             ZOOM_SLIDERBAR_LENGTH,
-            sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
+            gui::SliderStyle(gui::Orientation::Horiz),
+            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         zoomSliderBarUPtr_->PositionRatio(1.0f);
 
@@ -1204,7 +1203,7 @@ namespace stage
             && (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
-            slider_ = sfml_util::SliderZeroToOne(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
 
             combatAnimationUPtr_->CenteringStart(
                 combatDisplayStagePtr_->GetCenterOfAllNodes(), combatDisplayStagePtr_);
@@ -1229,7 +1228,7 @@ namespace stage
         }
     }
 
-    const sfml_util::IEntityPtrOpt_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const gui::IEntityPtrOpt_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         const auto WAS_MOUSE_HELD_DOWN_AND_MOVING { isMouseHeldDownAndMoving_ };
 
@@ -1569,7 +1568,7 @@ namespace stage
 
         statusBoxTextInfo_.text = ss.str();
 
-        statusBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<sfml_util::NoElement_t>>(
+        statusBoxUPtr_->Append(std::make_unique<gui::ListElement<gui::NoElement_t>>(
             boost::none, statusBoxTextInfo_, boost::none));
 
         statusBoxUPtr_->SelectNext();
@@ -1584,7 +1583,7 @@ namespace stage
     {
         statusBoxTextInfo_.text = MSG_STR;
 
-        statusBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<sfml_util::NoElement_t>>(
+        statusBoxUPtr_->Append(std::make_unique<gui::ListElement<gui::NoElement_t>>(
             boost::none, statusBoxTextInfo_, boost::none));
 
         statusBoxUPtr_->SelectNext();
@@ -1628,7 +1627,7 @@ namespace stage
             SetAnimPhase(AnimPhase::MoveBack);
             SetupTurnBox();
             combatAnimationUPtr_->MeleeMoveBackAnimStart();
-            slider_ = sfml_util::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
             return;
         }
 
@@ -1650,14 +1649,14 @@ namespace stage
             SetAnimPhase(AnimPhase::Impact);
             SetupTurnBox();
             combatAnimationUPtr_->ImpactAnimStart(ANIM_IMPACT_SHAKE_SLIDER_SPEED_);
-            slider_ = sfml_util::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
             return;
         }
 
         if (PreTurnPhase::PostPanPause == preTurnPhase_)
         {
             SetPreTurnPhase(PreTurnPhase::ZoomOut);
-            slider_ = sfml_util::SliderZeroToOne(ZOOM_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ZOOM_SLIDER_SPEED_);
             return;
         }
 
@@ -1693,7 +1692,7 @@ namespace stage
                 conditionEffectsCenterPosV_ = COMBAT_NODE_PTR->GetEntityPos();
                 combatAnimationUPtr_->ShakeAnimStop(COMBAT_NODE_PTR);
                 combatAnimationUPtr_->DeathAnimStart({ COMBAT_NODE_PTR });
-                slider_ = sfml_util::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
+                slider_ = gui::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This the first of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
@@ -1802,7 +1801,7 @@ namespace stage
                 {
                     SetTurnPhase(TurnPhase::CenterAndZoomOut);
                     AnimationCenteringStart(allEffectedCreaturesPVec);
-                    slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+                    slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
                 }
             }
             return;
@@ -1879,7 +1878,7 @@ namespace stage
                     combatDisplayStagePtr_->GetCombatNodesForCreatures(
                         killedNonPlayerCreaturesPVec));
 
-                slider_ = sfml_util::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
+                slider_ = gui::SliderZeroToOne(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This is the second of two places where non-player death sfx is played,
                 // so it can coincide with the non-player death animation start.
@@ -2130,7 +2129,7 @@ namespace stage
         combatAnimationUPtr_->CenteringStart(
             combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtrOpt_.value()));
 
-        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
     }
 
     // start pre-pause
@@ -2268,7 +2267,7 @@ namespace stage
 
         combatAnimationUPtr_->ShakeAnimStop(
             combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
-        slider_ = sfml_util::SliderZeroToOne(ANIM_CREATURE_POS_SLIDER_SPEED_);
+        slider_ = gui::SliderZeroToOne(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
     bool CombatStage::HandleAttack()
@@ -2383,7 +2382,7 @@ namespace stage
             isShortPostZoomOutPause_ = true;
             creaturesListeningPVec.emplace_back(TURN_CREATURE_PTR);
             AnimationCenteringStart(creaturesListeningPVec);
-            slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
             SetupTurnBox();
         }
     }
@@ -2474,7 +2473,7 @@ namespace stage
         isShortPostZoomOutPause_ = true;
         creaturesToCastUponCopyPVec.emplace_back(TURN_CREATURE_PTR);
         AnimationCenteringStart(creaturesToCastUponCopyPVec);
-        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
         SetupTurnBox();
     }
 
@@ -2572,7 +2571,7 @@ namespace stage
 
     bool CombatStage::HandleSkip()
     {
-        if (skipTBoxButtonUPtr_->GetMouseState() == sfml_util::MouseState::Disabled)
+        if (skipTBoxButtonUPtr_->GetMouseState() == gui::MouseState::Disabled)
         {
             return false;
         }
@@ -2700,7 +2699,7 @@ namespace stage
 
             creaturesToCenterOnPVec.emplace_back(TURN_CREATURE_PTR);
             AnimationCenteringStart(creaturesToCenterOnPVec);
-            slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+            slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
             SetTurnActionPhase(TurnActionPhase::Roar);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
@@ -2994,10 +2993,10 @@ namespace stage
             ss.str(),
             popup::PopupButtons::Okay,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            ((IS_SOUNDEFFECT_NORMAL) ? sfml_util::sound_effect::PromptGeneric
-                                     : sfml_util::sound_effect::PromptWarn),
-            sfml_util::FontManager::Instance()->Size_Normal()) };
+            gui::Justified::Center,
+            ((IS_SOUNDEFFECT_NORMAL) ? gui::sound_effect::PromptGeneric
+                                     : gui::sound_effect::PromptWarn),
+            gui::FontManager::Instance()->Size_Normal()) };
 
         SpawnPopup(this, POPUP_INFO);
     }
@@ -3320,7 +3319,7 @@ namespace stage
                 combatAnimationUPtr_->RunAnimStart(
                     combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
 
-                slider_ = sfml_util::SliderZeroToOne(ANIM_RUN_SLIDER_SPEED_);
+                slider_ = gui::SliderZeroToOne(ANIM_RUN_SLIDER_SPEED_);
                 SetAnimPhase(AnimPhase::Run);
                 break;
             }
@@ -3358,7 +3357,7 @@ namespace stage
                     combatDisplayStagePtr_->GetCombatNodeForCreature(
                         CREATURE_EFFECTS_VEC[0].GetCreature()));
 
-                slider_ = sfml_util::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
+                slider_ = gui::SliderZeroToOne(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
             }
 
@@ -3393,7 +3392,7 @@ namespace stage
                             WEAPON_PTR_OPT.value(),
                             HIT_INFO.WasHit());
 
-                        slider_ = sfml_util::SliderZeroToOne(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
+                        slider_ = gui::SliderZeroToOne(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
                         SetAnimPhase(AnimPhase::ProjectileShoot);
                         break;
                     }
@@ -3453,7 +3452,7 @@ namespace stage
                     ANIM_IMPACT_SHAKE_SLIDER_SPEED_,
                     true);
 
-                slider_ = sfml_util::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
+                slider_ = gui::SliderZeroToOne(ANIM_IMPACT_SLIDER_SPEED_);
 
                 SetAnimPhase(AnimPhase::Roar);
                 break;
@@ -3873,8 +3872,7 @@ namespace stage
 
         if (wasPlayerKilled)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(
-                sfml_util::sound_effect::CharacterDeath);
+            gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::CharacterDeath);
         }
 
         combatDisplayStagePtr_->UpdateHealthTasks();
@@ -3904,7 +3902,7 @@ namespace stage
         AnimationCenteringStart(
             creature::CreaturePVec_t { TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR });
 
-        slider_ = sfml_util::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
+        slider_ = gui::SliderZeroToOne(ANIM_CENTERING_SLIDER_SPEED_);
 
         SetupTurnBox();
     }
@@ -4281,46 +4279,46 @@ namespace stage
     }
 
     void CombatStage::MakeButton(
-        sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
+        gui::ImageTextEntityUPtr_t & buttonUPtr,
         const std::string & TEXT,
         const std::string & HOVER_TEXT)
     {
-        sfml_util::TextInfo turnButtonTextInfo(
+        gui::TextInfo turnButtonTextInfo(
             " ",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::Orange,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const auto BUTTON_COLOR_OVER { sf::Color::White };
         const auto BUTTON_COLOR_DOWN { sfutil::color::Light };
         const auto BUTTON_COLOR_DISABLED { sfutil::color::Orange - sf::Color(0, 0, 0, 176) };
 
-        buttonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
+        buttonUPtr = std::make_unique<gui::ImageTextEntity>(
             "CombatStage's_" + TEXT,
-            sfml_util::MouseImageInfo(),
-            sfml_util::MouseTextInfo(
-                sfml_util::TextInfo(turnButtonTextInfo, TEXT),
+            gui::MouseImageInfo(),
+            gui::MouseTextInfo(
+                gui::TextInfo(turnButtonTextInfo, TEXT),
                 BUTTON_COLOR_DOWN,
                 BUTTON_COLOR_OVER,
                 BUTTON_COLOR_DISABLED),
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Text);
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Text);
 
         buttonUPtr->SetMouseHoverText(HOVER_TEXT);
         EntityAdd(buttonUPtr.get());
     }
 
     void CombatStage::SetButtonDisabledIf(
-        sfml_util::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE)
+        gui::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE)
     {
         if (WILL_DISABLE)
         {
-            buttonUPtr->SetMouseState(sfml_util::MouseState::Disabled);
+            buttonUPtr->SetMouseState(gui::MouseState::Disabled);
         }
         else
         {
-            buttonUPtr->SetMouseState(sfml_util::MouseState::Up);
+            buttonUPtr->SetMouseState(gui::MouseState::Up);
         }
     }
 

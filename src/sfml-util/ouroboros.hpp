@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_OUROBOROS_HPP_INCLUDED
+#define HEROESPATH_GUI_OUROBOROS_HPP_INCLUDED
 //
 // ouroboros.hpp
 //  An animated snake eating its own tail for the background of main menu screens.
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // manages an animated snake image that spins, grows/shrinks, and fades in/out
@@ -46,7 +46,7 @@ namespace sfml_util
         const float IMAGE_MIN_DRIFT_WIDTH_;
         const float IMAGE_MAX_DRIFT_WIDTH_;
         float rotation_;
-        sfml_util::CachedTexture cachedTexture_;
+        gui::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
         SliderDrift<float> sizeSliderDrift_;
         SliderDrift<float> shadeSliderDrift_;
@@ -55,7 +55,7 @@ namespace sfml_util
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED
+#endif // HEROESPATH_GUI_OUROBOROS_HPP_INCLUDED

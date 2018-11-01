@@ -23,32 +23,58 @@ namespace popup
     {
         switch (POPUP_STAGE)
         {
-            case Generic: { return "Generic";
+            case Generic:
+            {
+                return "Generic";
             }
-            case CharacterSelect: { return "CharacterSelect";
+            case CharacterSelect:
+            {
+                return "CharacterSelect";
             }
-            case CombatOver: { return "CombatOver";
+            case CombatOver:
+            {
+                return "CombatOver";
             }
-            case ImageFade: { return "ImageFade";
+            case ImageFade:
+            {
+                return "ImageFade";
             }
-            case ImageSelect: { return "ImageSelect";
+            case ImageSelect:
+            {
+                return "ImageSelect";
             }
-            case InventoryPrompt: { return "InventoryPrompt";
+            case InventoryPrompt:
+            {
+                return "InventoryPrompt";
             }
-            case Musicsheet: { return "Musicsheet";
+            case Musicsheet:
+            {
+                return "Musicsheet";
             }
-            case NumberSelect: { return "NumberSelect";
+            case NumberSelect:
+            {
+                return "NumberSelect";
             }
-            case ResolutionChange: { return "ResolutionChange:";
+            case ResolutionChange:
+            {
+                return "ResolutionChange:";
             }
-            case Spellbook: { return "Spellbook";
+            case Spellbook:
+            {
+                return "Spellbook";
             }
-            case SystemError: { return "SystemError";
+            case SystemError:
+            {
+                return "SystemError";
             }
-            case TreasureTrap: { return "TreasureTrap";
+            case TreasureTrap:
+            {
+                return "TreasureTrap";
             }
             case Count:
-            default: { ThrowInvalidValueForFunction(POPUP_STAGE, "ToString");
+            default:
+            {
+                ThrowInvalidValueForFunction(POPUP_STAGE, "ToString");
             }
         }
     }
@@ -57,21 +83,37 @@ namespace popup
     {
         switch (E)
         {
-            case None: { return "None";
+            case None:
+            {
+                return "None";
             }
-            case Okay: { return "Okay";
+            case Okay:
+            {
+                return "Okay";
             }
-            case Select: { return "Select";
+            case Select:
+            {
+                return "Select";
             }
-            case Cancel: { return "Cancel";
+            case Cancel:
+            {
+                return "Cancel";
             }
-            case SelectCancel: { return "SelectCancel";
+            case SelectCancel:
+            {
+                return "SelectCancel";
             }
-            case Continue: { return "Continue";
+            case Continue:
+            {
+                return "Continue";
             }
-            case YesNo: { return "YesNo";
+            case YesNo:
+            {
+                return "YesNo";
             }
-            case YesNoCancel: { return "YesNoCancel";
+            case YesNoCancel:
+            {
+                return "YesNoCancel";
             }
             default:
             {
@@ -93,9 +135,13 @@ namespace popup
             case SelectCancel:
             case Continue:
             case YesNo:
-            case YesNoCancel: { return true;
+            case YesNoCancel:
+            {
+                return true;
             }
-            default: { return false;
+            default:
+            {
+                return false;
             }
         }
     }
@@ -104,15 +150,19 @@ namespace popup
     {
         switch (E)
         {
-            case Light: { return "Light";
+            case Light:
+            {
+                return "Light";
             }
-            case Dark: { return "Dark";
+            case Dark:
+            {
+                return "Dark";
             }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupButtonColor::ToString(" << E << ")_InvalidValueError.";
+                ss << "gui::PopupButtonColor::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -123,10 +173,14 @@ namespace popup
         switch (E)
         {
             case Light:
-            case Dark: { return true;
+            case Dark:
+            {
+                return true;
             }
             case Count:
-            default: { return false;
+            default:
+            {
+                return false;
             }
         }
     }
@@ -135,19 +189,33 @@ namespace popup
     {
         switch (E)
         {
-            case Banner: { return "Banner";
+            case Banner:
+            {
+                return "Banner";
             }
-            case Regular: { return "Regular";
+            case Regular:
+            {
+                return "Regular";
             }
-            case RegularSidebar: { return "RegularSidebar";
+            case RegularSidebar:
+            {
+                return "RegularSidebar";
             }
-            case Large: { return "Large";
+            case Large:
+            {
+                return "Large";
             }
-            case LargeSidebar: { return "LargeSidebar";
+            case LargeSidebar:
+            {
+                return "LargeSidebar";
             }
-            case Spellbook: { return "Spellbook";
+            case Spellbook:
+            {
+                return "Spellbook";
             }
-            case MusicSheet: { return "MusicSheet";
+            case MusicSheet:
+            {
+                return "MusicSheet";
             }
             case Count:
             default:
@@ -169,10 +237,14 @@ namespace popup
             case Large:
             case LargeSidebar:
             case Spellbook:
-            case MusicSheet: { return true;
+            case MusicSheet:
+            {
+                return true;
             }
             case Count:
-            default: { return false;
+            default:
+            {
+                return false;
             }
         }
     }

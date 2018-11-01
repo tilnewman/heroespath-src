@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Border::Border(
@@ -259,5 +259,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

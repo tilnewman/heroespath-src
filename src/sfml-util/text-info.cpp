@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     TextInfo::TextInfo()
@@ -168,9 +168,9 @@ namespace sfml_util
         appendWithSeparator(ssInfo, misc::ToString(size));
         appendWithSeparator(ssInfo, sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
 
-        if (sfml_util::Justified::IsValid(justified))
+        if (gui::Justified::IsValid(justified))
         {
-            appendWithSeparator(ssInfo, sfml_util::Justified::ToString(justified));
+            appendWithSeparator(ssInfo, gui::Justified::ToString(justified));
         }
         else
         {
@@ -261,5 +261,5 @@ namespace sfml_util
                    R.size, R.text, R.font_letters, R.color, R.justified, R.font_numbers, R.style);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -61,7 +61,7 @@ namespace popup
         auto charDetailsTextInfo { popupInfo_.TextInfo() };
         charDetailsTextInfo.text = " ";
 
-        charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        charDetailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupWindow's_CharacterSelection_DetailsText",
             charDetailsTextInfo,
             charDetailsTextRegion);
@@ -80,13 +80,13 @@ namespace popup
             EntityRemove(sliderbarUPtr_.get());
         }
 
-        sliderbarUPtr_ = std::make_unique<sfml_util::SliderBar>(
+        sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
             "PopupStage's",
             SLIDERBAR_POS_LEFT,
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
-            sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
+            gui::SliderStyle(gui::Orientation::Horiz),
+            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
 
@@ -214,7 +214,7 @@ namespace popup
         }
     }
 
-    const sfml_util::CachedTexture &
+    const gui::CachedTexture &
         PopupStageCharacterSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
     {
         const auto CREATURE_PTR { game::Game::Instance()->State().Party().GetAtOrderPos(
@@ -226,8 +226,8 @@ namespace popup
         {
             creatureToTextureMap_.Append(
                 CREATURE_PTR,
-                sfml_util::LoadAndCacheImage(
-                    CREATURE_PTR, sfml_util::ImageOptions::InvertedCharacterOptions()));
+                gui::LoadAndCacheImage(
+                    CREATURE_PTR, gui::ImageOptions::InvertedCharacterOptions()));
 
             foundIter = creatureToTextureMap_.Find(CREATURE_PTR);
         }

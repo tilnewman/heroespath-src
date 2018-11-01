@@ -59,17 +59,17 @@ namespace stage
         static const float SCROLL_SPEED_MULT_;
         static const float SCROLL_SPEED_MAX_;
 
-        sfml_util::CachedTexture titleCachedTexture_;
+        gui::CachedTexture titleCachedTexture_;
         sf::Sprite bpTitleSprite_;
-        sfml_util::BoxEntityUPtr_t boxUPtr_;
-        sfml_util::BoxEntityUPtr_t boxBorderUPtr_;
+        gui::BoxEntityUPtr_t boxUPtr_;
+        gui::BoxEntityUPtr_t boxBorderUPtr_;
         CreditUVec_t creditUVec_;
         float scrollSpeed_;
         bool isKeyHeldArrowUp_;
         bool isKeyHeldArrowDown_;
         sf::Clock keyPressClock_;
-        sfml_util::ColoredRect blackRectUpper_;
-        sfml_util::ColoredRect blackRectLower_;
+        gui::ColoredRect blackRectUpper_;
+        gui::ColoredRect blackRectLower_;
     };
 
 } // namespace stage

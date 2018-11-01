@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_CLOUDANIMATION_HPP_INCLUDED
+#define HEROESPATH_GUI_CLOUDANIMATION_HPP_INCLUDED
 //
 // cloud-animation.hpp
 //
@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -109,9 +109,9 @@ namespace sfml_util
             float emitTimerDurationSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sfml_util::CachedTexture cloudCachedTexture1_;
-            sfml_util::CachedTexture cloudCachedTexture2_;
-            sfml_util::CachedTexture cloudCachedTexture3_;
+            gui::CachedTexture cloudCachedTexture1_;
+            gui::CachedTexture cloudCachedTexture2_;
+            gui::CachedTexture cloudCachedTexture3_;
             CloudVec_t cloudVec_;
         };
 
@@ -119,7 +119,7 @@ namespace sfml_util
         using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_GUI_CLOUDANIMATION_HPP_INCLUDED

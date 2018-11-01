@@ -9,8 +9,8 @@
 //
 // portrait-factory.hpp
 //
-#include "portrait-factory.hpp"
 #include "avatar/lpc-view.hpp"
+#include "portrait-factory.hpp"
 #include "sfml-util/loaders.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -21,13 +21,13 @@ namespace heroespath
 namespace avatar
 {
 
-    sfml_util::CachedTexture PortraitFactory::Make(
+    gui::CachedTexture PortraitFactory::Make(
         const std::string & FAKE_PATH_STR,
         const Avatar::Enum WHICH_AVATAR,
-        const sfml_util::ImageOptions & OPTIONS)
+        const gui::ImageOptions & OPTIONS)
     {
         sf::Texture texture;
-        sfml_util::Loaders::Texture(texture, Avatar::ImagePath(WHICH_AVATAR));
+        gui::Loaders::Texture(texture, Avatar::ImagePath(WHICH_AVATAR));
 
         sf::Sprite sprite(texture, LPCView::GetStandingRightFrameRect());
 
@@ -41,7 +41,7 @@ namespace avatar
         renderTexture.draw(sprite);
         renderTexture.display();
 
-        return sfml_util::CachedTexture(
+        return gui::CachedTexture(
             "TextureCreatedBy_avatar::PortraitFactory::Make()_" + FAKE_PATH_STR,
             renderTexture.getTexture(),
             OPTIONS);

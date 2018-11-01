@@ -65,7 +65,7 @@ namespace game
 
     void ActiveStages::ReplacePopupStage(
         const popup::PopupInfo & POPUP_INFO,
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         RemovePopupAll();
         popupResponse_.Reset(POPUP_INFO.Name());

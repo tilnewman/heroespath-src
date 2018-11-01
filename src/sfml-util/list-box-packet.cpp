@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const sf::Color ListBoxPacket::DEFAULT_IMAGE_COLOR_ { sf::Color::White };
@@ -90,5 +90,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

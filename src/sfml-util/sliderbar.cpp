@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const float SliderBar::POS_OFFSET_HORIZ_(18.0f);
@@ -651,5 +651,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

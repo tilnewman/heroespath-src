@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     MusicSet::MusicSet(
@@ -51,7 +51,7 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (whichVec_.empty() == false),
-            "sfml_util::MusicSet::Constructor(vector version) was given an empty vector.");
+            "gui::MusicSet::Constructor(vector version) was given an empty vector.");
 
         const auto ORIG_RANDOM_SETTING { willRandomize_ };
         willRandomize_ = WILL_START_AT_RANDOM;
@@ -140,12 +140,12 @@ namespace sfml_util
                 L.fadeInMult_,
                 L.volume_)
             == std::tie(
-                   R.whichVec_,
-                   R.currentlyPlaying_,
-                   R.previouslyPlaying_,
-                   R.willRandomize_,
-                   R.fadeInMult_,
-                   R.volume_));
+                R.whichVec_,
+                R.currentlyPlaying_,
+                R.previouslyPlaying_,
+                R.willRandomize_,
+                R.fadeInMult_,
+                R.volume_));
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

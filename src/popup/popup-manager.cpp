@@ -150,8 +150,7 @@ namespace popup
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupManager::BackgroundImagePath(" << IMAGE
-                   << ")_InvalidValueError.";
+                ss << "gui::PopupManager::BackgroundImagePath(" << IMAGE << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
@@ -160,13 +159,12 @@ namespace popup
         return misc::filesystem::CombinePathsThenClean(windowTextureDirectoryPath_, filename);
     }
 
-    const sfml_util::TextInfo PopupManager::TextInfoDefault(
+    const gui::TextInfo PopupManager::TextInfoDefault(
         const std::string & TEXT,
-        const sfml_util::Justified::Enum JUSTIFIED,
+        const gui::Justified::Enum JUSTIFIED,
         const unsigned int FONT_SIZE) const
     {
-        return sfml_util::TextInfo(
-            TEXT, sfml_util::GuiFont::System, FONT_SIZE, fontColor_, JUSTIFIED);
+        return gui::TextInfo(TEXT, gui::GuiFont::System, FONT_SIZE, fontColor_, JUSTIFIED);
     }
 
     const PopupInfo PopupManager::CreatePopupInfo(
@@ -174,8 +172,8 @@ namespace popup
         const std::string & PROMPT_TEXT,
         const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
-        const sfml_util::Justified::Enum JUSTIFIED,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::Justified::Enum JUSTIFIED,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const unsigned int FONT_SIZE) const
     {
         return PopupInfo(
@@ -190,14 +188,14 @@ namespace popup
     const PopupInfo PopupManager::CreateImageSelectionPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
-        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
+        const gui::CachedTextureVec_t & TEXTURE_VEC,
         const std::size_t INITIAL_SELECTION,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const unsigned int FONT_SIZE) const
     {
         return PopupInfo(
             POPUP_NAME,
-            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            TextInfoDefault(PROMPT_TEXT, gui::Justified::Center, FONT_SIZE),
             TEXTURE_VEC,
             INITIAL_SELECTION,
             SOUND_EFFECT);
@@ -212,7 +210,7 @@ namespace popup
     {
         return PopupInfo(
             POPUP_NAME,
-            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            TextInfoDefault(PROMPT_TEXT, gui::Justified::Center, FONT_SIZE),
             THE_MIN,
             THE_MAX);
     }
@@ -226,10 +224,10 @@ namespace popup
         auto popupInfo { CreateImageSelectionPopupInfo(
             POPUP_NAME,
             PROMPT_TEXT,
-            sfml_util::CachedTextureVec_t(),
+            gui::CachedTextureVec_t(),
             INITIAL_SELECTION,
-            sfml_util::sound_effect::PromptGeneric,
-            sfml_util::FontManager::Instance()->Size_Smallish()) };
+            gui::sound_effect::PromptGeneric,
+            gui::FontManager::Instance()->Size_Smallish()) };
 
         popupInfo.TextVec(INVALID_MSG_VEC);
 
@@ -287,24 +285,22 @@ namespace popup
                    << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";
         }
 
-        sfml_util::CachedTextureVec_t textureVec;
+        gui::CachedTextureVec_t textureVec;
         if (FROM_TITLE_PTR_OPT)
         {
-            textureVec.emplace_back(sfml_util::LoadAndCacheImage(FROM_TITLE_PTR_OPT.value()));
+            textureVec.emplace_back(gui::LoadAndCacheImage(FROM_TITLE_PTR_OPT.value()));
         }
 
-        textureVec.emplace_back(sfml_util::LoadAndCacheImage(TO_TITLE_PTR));
+        textureVec.emplace_back(gui::LoadAndCacheImage(TO_TITLE_PTR));
 
         return PopupInfo(
             PopupStage::ImageFade,
             POPUP_NAME,
             TextInfoDefault(
-                " ",
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Normal()),
+                " ", gui::Justified::Center, gui::FontManager::Instance()->Size_Normal()),
             PopupButtons::Okay,
             PopupImage::Large,
-            sfml_util::sound_effect::Achievement,
+            gui::sound_effect::Achievement,
             PopupButtonColor::Dark,
             true,
             std::vector<std::size_t>(),
@@ -326,16 +322,14 @@ namespace popup
             PopupStage::Spellbook,
             POPUP_NAME,
             TextInfoDefault(
-                " ",
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Large()),
+                " ", gui::Justified::Center, gui::FontManager::Instance()->Size_Large()),
             PopupButtons::None,
             PopupImage::Spellbook,
-            sfml_util::sound_effect::None,
+            gui::sound_effect::None,
             PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::CachedTextureVec_t(),
+            gui::CachedTextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             CREATURE_PTR,
@@ -351,16 +345,14 @@ namespace popup
             PopupStage::Musicsheet,
             POPUP_NAME,
             TextInfoDefault(
-                " ",
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Large()),
+                " ", gui::Justified::Center, gui::FontManager::Instance()->Size_Large()),
             PopupButtons::None,
             PopupImage::MusicSheet,
-            sfml_util::sound_effect::None,
+            gui::sound_effect::None,
             PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::CachedTextureVec_t(),
+            gui::CachedTextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             CREATURE_PTR,
@@ -373,9 +365,7 @@ namespace popup
         return PopupInfo(
             POPUP_NAME,
             TextInfoDefault(
-                " ",
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Large()),
+                " ", gui::Justified::Center, gui::FontManager::Instance()->Size_Large()),
             ((HOW_COMBAT_ENDED == combat::CombatEnd::Ran) ? PopupButtons::Continue
                                                           : PopupButtons::YesNo),
             HOW_COMBAT_ENDED);
@@ -414,12 +404,10 @@ namespace popup
             PopupStage::SystemError,
             POPUP_NAME,
             TextInfoDefault(
-                ss.str(),
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Smallish()),
+                ss.str(), gui::Justified::Center, gui::FontManager::Instance()->Size_Smallish()),
             PopupButtons::Continue,
             PopupImage::Regular,
-            sfml_util::sound_effect::PromptWarn,
+            gui::sound_effect::PromptWarn,
             PopupButtonColor::Dark,
             false);
     }
@@ -431,8 +419,8 @@ namespace popup
             POPUP_NAME,
             TextInfoDefault(
                 "\nPlease Wait",
-                sfml_util::Justified::Center,
-                sfml_util::FontManager::Instance()->Size_Normal()),
+                gui::Justified::Center,
+                gui::FontManager::Instance()->Size_Normal()),
             PopupButtons::None,
             PopupImage::Banner);
     }
@@ -444,19 +432,19 @@ namespace popup
         const unsigned int FONT_SIZE,
         const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT) const
+        const gui::sound_effect::Enum SOUND_EFFECT) const
     {
         return PopupInfo(
             PopupStage::Generic,
             POPUP_NAME,
-            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            TextInfoDefault(PROMPT_TEXT, gui::Justified::Center, FONT_SIZE),
             BUTTONS,
             IMAGE,
             SOUND_EFFECT,
             popup::PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
-            sfml_util::CachedTextureVec_t(),
+            gui::CachedTextureVec_t(),
             std::vector<std::string>(),
             popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             boost::none,
@@ -471,8 +459,8 @@ namespace popup
         const std::string & PROMPT_TEXT,
         const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
-        const sfml_util::Justified::Enum JUSTIFIED,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::Justified::Enum JUSTIFIED,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const bool WILL_INCLUDE_ITEMS,
         const unsigned int FONT_SIZE) const
     {
@@ -492,19 +480,19 @@ namespace popup
     const PopupInfo PopupManager::CreateTrapPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & TRAP_DESCRIPTION,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT) const
+        const gui::sound_effect::Enum SOUND_EFFECT) const
     {
         return CreatePopupInfo(
             POPUP_NAME,
             TRAP_DESCRIPTION,
             popup::PopupButtons::Continue,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
+            gui::Justified::Center,
             SOUND_EFFECT);
     }
 
     const PopupInfo
-        PopupManager::CreateResolutionChangePopupInfo(const sfml_util::TextInfo & TEXT_INFO) const
+        PopupManager::CreateResolutionChangePopupInfo(const gui::TextInfo & TEXT_INFO) const
     {
         return PopupInfo(
             PopupStage::Generic,
@@ -512,16 +500,15 @@ namespace popup
             TEXT_INFO,
             popup::PopupButtons::YesNo,
             popup::PopupImage::Regular,
-            sfml_util::sound_effect::PromptQuestion);
+            gui::sound_effect::PromptQuestion);
     }
 
-    sfml_util::CachedTexture PopupManager::LoadRandomAccentImage() const
+    gui::CachedTexture PopupManager::LoadRandomAccentImage() const
     {
-        return sfml_util::CachedTexture(
+        return gui::CachedTexture(
             PathWrapper(misc::Vector::SelectRandom(accentPaths_)),
-            sfml_util::ImageOptions(
-                ((misc::random::Bool()) ? sfml_util::ImageOpt::Default
-                                        : sfml_util::ImageOpt::FlipHoriz)));
+            gui::ImageOptions(
+                ((misc::random::Bool()) ? gui::ImageOpt::Default : gui::ImageOpt::FlipHoriz)));
     }
 
     void PopupManager::LoadAccentImagePaths()

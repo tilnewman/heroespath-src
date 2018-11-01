@@ -38,7 +38,7 @@ namespace popup
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
         : StageBase(
             POPUP_INFO.Name() + "_PopupStage",
-            { sfml_util::GuiFont::Handwriting, sfml_util::GuiFont::Number },
+            { gui::GuiFont::Handwriting, gui::GuiFont::Number },
             false)
         , popupInfo_(POPUP_INFO)
         , innerRegion_()
@@ -70,13 +70,12 @@ namespace popup
 
     PopupStageBase::~PopupStageBase() { StageBase::ClearAllEntities(); }
 
-    bool PopupStageBase::HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &)
+    bool PopupStageBase::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &)
     {
         return false;
     }
 
-    bool PopupStageBase::HandleCallback(
-        const sfml_util::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool PopupStageBase::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR == buttonSelectUPtr_.get())
         {
@@ -118,7 +117,7 @@ namespace popup
 
     void PopupStageBase::Setup()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(popupInfo_.SoundEffect());
+        gui::SoundManager::Instance()->SoundEffectPlay(popupInfo_.SoundEffect());
         SetupOuterAndInnerRegion();
         SetupVariousButtonPositionValues();
         SetupButtons();
@@ -250,12 +249,12 @@ namespace popup
 
     void PopupStageBase::PlayValidKeypressSoundEffect() const
     {
-        sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+        gui::SoundManager::Instance()->PlaySfx_Keypress();
     }
 
     void PopupStageBase::PlayInvalidKeypressSoundEffect() const
     {
-        sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+        gui::SoundManager::Instance()->PlaySfx_Reject();
     }
 
     void PopupStageBase::EndKeepAliveTimer()
@@ -277,11 +276,10 @@ namespace popup
 
     void PopupStageBase::SetupForFullScreenWithBorderRatio(const float BORDER_RATIO)
     {
-        const auto REGION { sfml_util::Margins(
+        const auto REGION { gui::Margins(
                                 sfutil::ScreenRatioToPixelsHoriz(BORDER_RATIO),
                                 sfutil::ScreenRatioToPixelsVert(BORDER_RATIO))
-                                .ApplyShrinkCopy(
-                                    sfml_util::Display::Instance()->FullScreenRect()) };
+                                .ApplyShrinkCopy(gui::Display::Instance()->FullScreenRect()) };
 
         StageRegion(REGION);
         innerRegion_ = REGION;
@@ -292,12 +290,12 @@ namespace popup
     {
         creature::NameInfo creatureNameInfo;
 
-        const auto TEMP_MOUSE_TEXT_INFO { sfml_util::MouseTextInfo::Make_PopupButtonSet(
+        const auto TEMP_MOUSE_TEXT_INFO { gui::MouseTextInfo::Make_PopupButtonSet(
             creatureNameInfo.LargestLetterString(), popupInfo_.ButtonColor()) };
 
-        const sfml_util::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
-                                              TEMP_MOUSE_TEXT_INFO.up.font_letters,
-                                              TEMP_MOUSE_TEXT_INFO.up.size };
+        const gui::Text TEMP_TEXT_OBJ { TEMP_MOUSE_TEXT_INFO.up.text,
+                                        TEMP_MOUSE_TEXT_INFO.up.font_letters,
+                                        TEMP_MOUSE_TEXT_INFO.up.size };
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;
 
@@ -312,38 +310,38 @@ namespace popup
     {
         if (popupInfo_.Buttons() & ResponseTypes::Yes)
         {
-            buttonYesUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonYesUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sYes",
                 StageRegion().left + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonYesUPtr_.get());
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::No)
         {
-            buttonNoUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonNoUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sNo",
                 StageRegion().left + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f))
                     - 40.0f,
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonNoUPtr_.get());
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::Cancel)
         {
-            buttonCancelUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonCancelUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sCancel",
                 (StageRegion().left + innerRegion_.left + innerRegion_.width)
                     - (innerRegion_.width / 3.0f),
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonCancelUPtr_.get());
         }
@@ -353,12 +351,12 @@ namespace popup
             const auto MIDDLE { StageRegion().left + innerRegion_.left
                                 + (innerRegion_.width * 0.5f) };
 
-            buttonContinueUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonContinueUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sContinue",
                 MIDDLE - 30.0f,
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonContinueUPtr_.get());
         }
@@ -368,12 +366,12 @@ namespace popup
             const float MIDDLE(
                 StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
 
-            buttonOkayUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonOkayUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sOkay",
                 MIDDLE - 50.0f,
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonOkayUPtr_.get());
         }
@@ -383,12 +381,12 @@ namespace popup
             const float MIDDLE(
                 StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
 
-            buttonSelectUPtr_ = std::make_unique<sfml_util::TextButton>(
+            buttonSelectUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sSelect",
                 MIDDLE - 100.0f,
                 buttonVertPos_,
-                sfml_util::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_.ButtonColor()),
-                sfml_util::TextButton::Callback_t::IHandlerPtr_t(this));
+                gui::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_.ButtonColor()),
+                gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
             EntityAdd(buttonSelectUPtr_.get());
         }
@@ -409,7 +407,7 @@ namespace popup
         sf::FloatRect tempRect(textRegion_);
         tempRect.height = 0.0f;
 
-        textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        textRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
 
         if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height)
@@ -417,7 +415,7 @@ namespace popup
         {
             tempRect.height = textRegion_.height;
 
-            textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            textRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "PopupStage's", popupInfo_.TextInfo(), tempRect, stage::IStagePtr_t(this));
         }
     }
@@ -444,7 +442,7 @@ namespace popup
 
     void PopupStageBase::SetupRedXImage()
     {
-        xSymbolCachedTextureOpt_ = sfml_util::CachedTexture("media-images-misc-x");
+        xSymbolCachedTextureOpt_ = gui::CachedTexture("media-images-misc-x");
         xSymbolSprite_.setTexture(xSymbolCachedTextureOpt_->Get());
         xSymbolSprite_.setColor(sf::Color(255, 0, 0, 127));
     }

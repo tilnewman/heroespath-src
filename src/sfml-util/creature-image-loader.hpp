@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_CREATURE_IMAGE_LOADER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_CREATURE_IMAGE_LOADER_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED
+#define HEROESPATH_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED
 //
 // creature-image-loader.hpp
 //
@@ -42,7 +42,7 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for loading Creature images.
@@ -88,7 +88,7 @@ namespace sfml_util
         std::string imageDirectoryPath_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_CREATURE_IMAGE_LOADER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_CREATURE_IMAGE_LOADER_HPP_INCLUDED

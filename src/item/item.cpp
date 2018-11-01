@@ -78,7 +78,7 @@ namespace item
 
         if (NAME.empty() == false)
         {
-            sfml_util::ItemImageLoader itemImageLoader;
+            gui::ItemImageLoader itemImageLoader;
             imageFilename_ = itemImageLoader.Filename(this, true);
         }
     }
@@ -317,23 +317,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             < std::tie(
-                  R.price_,
-                  R.weight_,
-                  R.damageMin_,
-                  R.damageMax_,
-                  R.armorRating_,
-                  R.exclusiveToRole_,
-                  R.category_,
-                  R.miscType_,
-                  R.materialPri_,
-                  R.materialSec_,
-                  R.weaponInfo_,
-                  R.armorInfo_,
-                  R.isPixie_,
-                  R.setType_,
-                  R.namedType_,
-                  R.summonInfo_,
-                  R.elementType_))
+                R.price_,
+                R.weight_,
+                R.damageMin_,
+                R.damageMax_,
+                R.armorRating_,
+                R.exclusiveToRole_,
+                R.category_,
+                R.miscType_,
+                R.materialPri_,
+                R.materialSec_,
+                R.weaponInfo_,
+                R.armorInfo_,
+                R.isPixie_,
+                R.setType_,
+                R.namedType_,
+                R.summonInfo_,
+                R.elementType_))
         {
             return true;
         }
@@ -365,23 +365,23 @@ namespace item
                 L.summonInfo_,
                 L.elementType_)
             != std::tie(
-                   R.price_,
-                   R.weight_,
-                   R.damageMin_,
-                   R.damageMax_,
-                   R.armorRating_,
-                   R.exclusiveToRole_,
-                   R.category_,
-                   R.miscType_,
-                   R.materialPri_,
-                   R.materialSec_,
-                   R.weaponInfo_,
-                   R.armorInfo_,
-                   R.isPixie_,
-                   R.setType_,
-                   R.namedType_,
-                   R.summonInfo_,
-                   R.elementType_))
+                R.price_,
+                R.weight_,
+                R.damageMin_,
+                R.damageMax_,
+                R.armorRating_,
+                R.exclusiveToRole_,
+                R.category_,
+                R.miscType_,
+                R.materialPri_,
+                R.materialSec_,
+                R.weaponInfo_,
+                R.armorInfo_,
+                R.isPixie_,
+                R.setType_,
+                R.namedType_,
+                R.summonInfo_,
+                R.elementType_))
         {
             return false;
         }

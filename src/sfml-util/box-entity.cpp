@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     BoxEntity::BoxEntity(
@@ -213,5 +213,5 @@ namespace sfml_util
         sprite_.setColor(GetEntityColorForeground());
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

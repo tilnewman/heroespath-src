@@ -28,10 +28,10 @@ namespace sfutil
     // returns the screen coordinate direction that B is from A, returns DEFAULT if A and B are
     // equal
     template <typename T1, typename T2>
-    constexpr sfml_util::Direction::Enum DirectionFromAToB(
+    constexpr gui::Direction::Enum DirectionFromAToB(
         const sf::Vector2<T1> & A,
         const sf::Vector2<T2> & B,
-        const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count)
+        const gui::Direction::Enum DEFAULT = gui::Direction::Count)
     {
         const auto A_X { static_cast<double>(A.x) };
         const auto A_Y { static_cast<double>(A.y) };
@@ -45,33 +45,33 @@ namespace sfutil
         {
             if (B_X < A_X)
             {
-                return sfml_util::Direction::Left;
+                return gui::Direction::Left;
             }
             else
             {
-                return sfml_util::Direction::Right;
+                return gui::Direction::Right;
             }
         }
         else if (DIFF_Y_ABS > DIFF_X_ABS)
         {
             if (B_Y < A_Y)
             {
-                return sfml_util::Direction::Up;
+                return gui::Direction::Up;
             }
             else
             {
-                return sfml_util::Direction::Down;
+                return gui::Direction::Down;
             }
         }
         else
         {
             if (B_X < A_X)
             {
-                return sfml_util::Direction::Left;
+                return gui::Direction::Left;
             }
             else if (A_X < B_X)
             {
-                return sfml_util::Direction::Right;
+                return gui::Direction::Right;
             }
             else
             {
@@ -83,20 +83,20 @@ namespace sfutil
     // returns the screen coordinate direction that the center of B is from the center of A, returns
     // DEFAULT if A and B are equal
     template <typename T1, typename T2>
-    constexpr sfml_util::Direction::Enum DirectionFromAToB(
+    constexpr gui::Direction::Enum DirectionFromAToB(
         const sf::Rect<T1> & A,
         const sf::Rect<T2> & B,
-        const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count)
+        const gui::Direction::Enum DEFAULT = gui::Direction::Count)
     {
         return DirectionFromAToB(CenterOf(A), CenterOf(B), DEFAULT);
     }
 
     // returns the screen coordinate direction that the global center of B is from the global center
     // of A, returns DEFAULT if A and B are equal
-    sfml_util::Direction::Enum DirectionFromAToB(
+    gui::Direction::Enum DirectionFromAToB(
         const sf::Sprite & A,
         const sf::Sprite & B,
-        const sfml_util::Direction::Enum DEFAULT = sfml_util::Direction::Count);
+        const gui::Direction::Enum DEFAULT = gui::Direction::Count);
 
 } // namespace sfutil
 } // namespace heroespath

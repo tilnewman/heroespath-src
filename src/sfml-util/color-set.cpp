@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const sf::Uint8 FocusColors::DEFAULT_OFFSET_VALUE_(35);
@@ -106,5 +106,5 @@ namespace sfml_util
                    R.background_without);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

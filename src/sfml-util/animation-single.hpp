@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ANIMATIONSINGLE_HPP_INCLUDED
+#define HEROESPATH_GUI_ANIMATIONSINGLE_HPP_INCLUDED
 //
 // animation-single.hpp
 //
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // An animation that is sourced from a single texture
@@ -60,7 +60,7 @@ namespace sfml_util
         std::vector<sf::IntRect> rects_; // rects_.size() == frame count
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ANIMATIONSINGLE_HPP_INCLUDED

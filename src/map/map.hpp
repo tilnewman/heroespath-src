@@ -61,7 +61,7 @@ namespace map
             const Level::Enum LEVEL_FROM,
             const bool IS_TEST_LOAD = false);
 
-        bool MovePlayer(const sfml_util::Direction::Enum);
+        bool MovePlayer(const gui::Direction::Enum);
 
         void MoveNonPlayers();
 
@@ -71,7 +71,7 @@ namespace map
 
         void Update(const float TIME_ELAPSED);
 
-        void SetPlayerWalkAnim(const sfml_util::Direction::Enum, const bool);
+        void SetPlayerWalkAnim(const gui::Direction::Enum, const bool);
 
         const avatar::Model & Player() const { return player_; }
 
@@ -81,23 +81,23 @@ namespace map
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
 
     private:
-        bool DoesAdjPlayerPosCollide(const sfml_util::Direction::Enum DIR, const float ADJ);
+        bool DoesAdjPlayerPosCollide(const gui::Direction::Enum DIR, const float ADJ);
 
         const sf::Vector2f FindStartPos(
             const TransitionVec_t &, const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
         bool CheckIfEnteringTransition(
-            const sfml_util::Direction::Enum DIRECTION,
+            const gui::Direction::Enum DIRECTION,
             const float ADJUSTMENT,
             Transition & transition) const;
 
         void HandleEnteringTransition(const Transition &);
 
-        const sf::Vector2f CalcAdjPlayerPos(
-            const sfml_util::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
+        const sf::Vector2f
+            CalcAdjPlayerPos(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
 
         void PlayTransitionSfx(
-            const sfml_util::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
+            const gui::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
 
         void UpdateWalkSfx();
 
@@ -143,7 +143,7 @@ namespace map
 
         WalkRectMap_t walkRectVecMap_;
         WalkSfxRegionLayers walkSfxLayers_;
-        sfml_util::sound_effect::Enum walkSfx_;
+        gui::sound_effect::Enum walkSfx_;
         bool walkSfxIsWalking_;
         misc::Timer sfxTimer_;
     };

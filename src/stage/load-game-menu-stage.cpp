@@ -34,22 +34,22 @@ namespace stage
     LoadGameStage::LoadGameStage()
         : StageBase(
             "LoadGameMenu",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting },
             true)
         , stageTitle_("media-images-buttons-mainmenu-load-normal")
         , backgroundBox_(
               "LoadGameStage'sBackground",
               StageRegion(),
-              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
+              gui::BoxEntityInfo(gui::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
-        , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
+        , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Previous,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               1.0f,
               sf::Vector2f(200.0f, sfutil::DisplaySize().y - 100.0f)))
         , screenSizeV_(sfutil::DisplaySize())
@@ -62,13 +62,13 @@ namespace stage
         , gsListBoxFocusColors_(
               sfutil::color::Orange,
               gsListBoxBGColor_,
-              sfutil::color::Orange - sfml_util::FocusColors::DEFAULT_OFFSET_COLOR_,
+              sfutil::color::Orange - gui::FocusColors::DEFAULT_OFFSET_COLOR_,
               gsListBoxBGColor_ - sf::Color(40, 40, 40, 0))
         , gsListBoxUPtr_()
         , locTextRegionUPtr_()
         , charTextRegionUVec_()
         , charLabelTextRegionUPtr_()
-        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("LoadGameStage's"))
+        , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("LoadGameStage's"))
         , gamestatePVec_()
     {}
 
@@ -115,16 +115,14 @@ namespace stage
                << GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
                << GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
 
-            const sfml_util::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::GuiFont::System,
-                sfml_util::FontManager::Instance()->Size_Normal());
+            const gui::TextInfo TEXT_INFO(
+                ss.str(), gui::GuiFont::System, gui::FontManager::Instance()->Size_Normal());
 
-            gsListBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<game::GameStatePtr_t>>(
-                GAMESTATE_PTR, TEXT_INFO));
+            gsListBoxUPtr_->Append(
+                std::make_unique<gui::ListElement<game::GameStatePtr_t>>(GAMESTATE_PTR, TEXT_INFO));
         }
 
-        sfml_util::BoxEntityInfo gsListBoxInfo;
+        gui::BoxEntityInfo gsListBoxInfo;
         gsListBoxInfo.SetupBorder(true);
         gsListBoxInfo.focus_colors = gsListBoxFocusColors_;
         gsListBoxInfo.SetupColor(gsListBoxBGColor_);
@@ -133,7 +131,7 @@ namespace stage
             "LoadGameStage'sGame",
             this,
             this,
-            sfml_util::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfutil::color::Orange));
+            gui::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfutil::color::Orange));
 
         EntityAdd(gsListBoxUPtr_.get());
         SetupGameInfoDisplay();
@@ -158,8 +156,8 @@ namespace stage
 
         const auto GAMESTATE_PTR { gsListBoxUPtr_->Selection()->Element() };
 
-        sfml_util::TextInfo descTextInfo(
-            "", sfml_util::GuiFont::System, sfml_util::FontManager::Instance()->Size_Smallish());
+        gui::TextInfo descTextInfo(
+            "", gui::GuiFont::System, gui::FontManager::Instance()->Size_Smallish());
 
         // establish positions
         const auto CHAR_LIST_POS_LEFT { sfutil::Right(gsListBoxRect_) + 75.0f };
@@ -168,7 +166,7 @@ namespace stage
         // setup location text
         if (!locTextRegionUPtr_)
         {
-            locTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>("LoadGameLocation");
+            locTextRegionUPtr_ = std::make_unique<gui::TextRegion>("LoadGameLocation");
             EntityAdd(locTextRegionUPtr_.get());
         }
 
@@ -183,8 +181,7 @@ namespace stage
         // setup character list label text
         if (!charLabelTextRegionUPtr_)
         {
-            charLabelTextRegionUPtr_
-                = std::make_unique<sfml_util::TextRegion>("CharacterListLabel");
+            charLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>("CharacterListLabel");
 
             EntityAdd(charLabelTextRegionUPtr_.get());
         }
@@ -215,7 +212,7 @@ namespace stage
 
             const sf::FloatRect RECT(CHAR_LIST_POS_LEFT + 25.0f, posY, 0.0f, 0.0f);
 
-            auto textRegionUPtr { std::make_unique<sfml_util::TextRegion>(
+            auto textRegionUPtr { std::make_unique<gui::TextRegion>(
                 TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
 
             EntityAdd(textRegionUPtr.get());
@@ -239,8 +236,8 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
-            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            backButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Menu);
             return true;
         }

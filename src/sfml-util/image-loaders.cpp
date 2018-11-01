@@ -29,13 +29,13 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     CachedTexture LoadAndCacheImage(
-        const creature::CreaturePtr_t & CREATURE_PTR, const sfml_util::ImageOptions & OPTIONS)
+        const creature::CreaturePtr_t & CREATURE_PTR, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::CreatureImageLoader creatureImageLoader;
+        gui::CreatureImageLoader creatureImageLoader;
 
         auto imageOptions { OPTIONS };
 
@@ -50,96 +50,95 @@ namespace sfml_util
     CachedTexture LoadAndCacheImage(
         const std::string & FAKE_PATH,
         const avatar::Avatar::Enum WHICH_AVATAR,
-        const sfml_util::ImageOptions & OPTIONS)
+        const gui::ImageOptions & OPTIONS)
     {
         return avatar::PortraitFactory::Make(
-            "FAKE_PATH_FOR_sfml_util::image::Load(Avatar::Enum="
-                + avatar::Avatar::ToString(WHICH_AVATAR) + ", fake_path=" + FAKE_PATH + ")",
+            "FAKE_PATH_FOR_gui::image::Load(Avatar::Enum=" + avatar::Avatar::ToString(WHICH_AVATAR)
+                + ", fake_path=" + FAKE_PATH + ")",
             WHICH_AVATAR,
             OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
-        const game::GameStatePtr_t & GAMESTATE_PTR, const sfml_util::ImageOptions & OPTIONS)
+        const game::GameStatePtr_t & GAMESTATE_PTR, const gui::ImageOptions & OPTIONS)
     {
         return LoadAndCacheImage(
-            "FAKE_PATH_FOR_sfml_util::image::Load(game::GameStatePtr_t)",
+            "FAKE_PATH_FOR_gui::image::Load(game::GameStatePtr_t)",
             GAMESTATE_PTR->Party().Avatar(),
             OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
-        const creature::Conditions::Enum WHICH_CONDITION, const sfml_util::ImageOptions & OPTIONS)
+        const creature::Conditions::Enum WHICH_CONDITION, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::ConditionImageLoader conditionImageLoader;
+        gui::ConditionImageLoader conditionImageLoader;
 
         return CachedTexture(PathWrapper(conditionImageLoader.Path(WHICH_CONDITION)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
-        const creature::ConditionPtr_t & CONDITION_PTR, const sfml_util::ImageOptions & OPTIONS)
+        const creature::ConditionPtr_t & CONDITION_PTR, const gui::ImageOptions & OPTIONS)
     {
         return LoadAndCacheImage(CONDITION_PTR->Which(), OPTIONS);
     }
 
     CachedTexture
-        LoadAndCacheImage(const item::ItemPtr_t & ITEM_PTR, const sfml_util::ImageOptions & OPTIONS)
+        LoadAndCacheImage(const item::ItemPtr_t & ITEM_PTR, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::ItemImageLoader itemImageLoader;
+        gui::ItemImageLoader itemImageLoader;
 
         return CachedTexture(PathWrapper(itemImageLoader.Path(ITEM_PTR)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
-        const creature::Titles::Enum WHICH_TITLE, const sfml_util::ImageOptions & OPTIONS)
+        const creature::Titles::Enum WHICH_TITLE, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::TitleImageLoader titleImageLoader;
+        gui::TitleImageLoader titleImageLoader;
 
         return CachedTexture(PathWrapper(titleImageLoader.Path(WHICH_TITLE)), OPTIONS);
     }
 
-    CachedTexture LoadAndCacheImage(
-        const creature::TitlePtr_t & TITLE_PTR, const sfml_util::ImageOptions & OPTIONS)
+    CachedTexture
+        LoadAndCacheImage(const creature::TitlePtr_t & TITLE_PTR, const gui::ImageOptions & OPTIONS)
     {
         return LoadAndCacheImage(TITLE_PTR->Which(), OPTIONS);
     }
 
-    CachedTexture LoadAndCacheImage(
-        const spell::Spells::Enum WHICH_SPELL, const sfml_util::ImageOptions & OPTIONS)
+    CachedTexture
+        LoadAndCacheImage(const spell::Spells::Enum WHICH_SPELL, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::SpellImageLoader spellImageLoader;
+        gui::SpellImageLoader spellImageLoader;
 
         return CachedTexture(PathWrapper(spellImageLoader.Path(WHICH_SPELL)), OPTIONS);
     }
 
-    CachedTexture LoadAndCacheImage(
-        const spell::SpellPtr_t & SPELL_PTR, const sfml_util::ImageOptions & OPTIONS)
+    CachedTexture
+        LoadAndCacheImage(const spell::SpellPtr_t & SPELL_PTR, const gui::ImageOptions & OPTIONS)
     {
         return LoadAndCacheImage(SPELL_PTR->Which(), OPTIONS);
     }
 
-    CachedTexture LoadAndCacheImage(
-        const song::Songs::Enum WHICH_SONG, const sfml_util::ImageOptions & OPTIONS)
+    CachedTexture
+        LoadAndCacheImage(const song::Songs::Enum WHICH_SONG, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::SongImageLoader songImageLoader;
+        gui::SongImageLoader songImageLoader;
 
         return CachedTexture(PathWrapper(songImageLoader.Path(WHICH_SONG)), OPTIONS);
     }
 
     CachedTexture
-        LoadAndCacheImage(const song::SongPtr_t & SONG_PTR, const sfml_util::ImageOptions & OPTIONS)
+        LoadAndCacheImage(const song::SongPtr_t & SONG_PTR, const gui::ImageOptions & OPTIONS)
     {
         return LoadAndCacheImage(SONG_PTR->Which(), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
-        const sfml_util::CombatImageType::Enum WHICH_COMBAT_IMAGE,
-        const sfml_util::ImageOptions & OPTIONS)
+        const gui::CombatImageType::Enum WHICH_COMBAT_IMAGE, const gui::ImageOptions & OPTIONS)
     {
-        sfml_util::CombatImageLoader combatImageLoader;
+        gui::CombatImageLoader combatImageLoader;
 
         return CachedTexture(PathWrapper(combatImageLoader.Path(WHICH_COMBAT_IMAGE)), OPTIONS);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

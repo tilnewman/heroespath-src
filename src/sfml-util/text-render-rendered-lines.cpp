@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace text_rendering
     {
@@ -86,7 +86,7 @@ namespace sfml_util
             lines.emplace_back(RenderedLine(sf::Vector2f(posLeft, posTop)));
         }
 
-        void RenderedLines::CurrentLineAppend(const sfml_util::Text & TEXT)
+        void RenderedLines::CurrentLineAppend(const gui::Text & TEXT)
         {
             CurrentLine().Append(TEXT);
             region = sfutil::MinimallyEnclosing(region, CurrentLine().Region(), true);
@@ -218,5 +218,5 @@ namespace sfml_util
         }
 
     } // namespace text_rendering
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

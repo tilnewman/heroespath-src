@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string
@@ -75,14 +75,14 @@ namespace sfml_util
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor2_",
-              std::make_unique<sfml_util::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
-              std::make_unique<sfml_util::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor2_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", MOUSE_IMAGE_INFO),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor2_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -93,17 +93,17 @@ namespace sfml_util
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor3_",
-              std::make_unique<sfml_util::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
-              std::make_unique<sfml_util::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
-                  0.0f,
-                  0.0f,
-                  MouseTextInfo(TEXT_INFO)),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor3_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor3_'s_", MOUSE_IMAGE_INFO),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor3_'s_",
+                0.0f,
+                0.0f,
+                MouseTextInfo(TEXT_INFO)),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::ImageTextEntity(
@@ -114,15 +114,15 @@ namespace sfml_util
         const MouseStateSync::Enum MOUSE_STATE_SYNC,
         const bool WILL_SYNC_MOUSESTATES)
         : ImageTextEntity(
-              NAME + "_Constructor4_",
-              std::make_unique<sfml_util::ImageEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
-                  sfml_util::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
-              std::make_unique<sfml_util::TextEntity>(
-                  NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
-              CALLBACK_HANDLER_PTR_OPT,
-              MOUSE_STATE_SYNC,
-              WILL_SYNC_MOUSESTATES)
+            NAME + "_Constructor4_",
+            std::make_unique<gui::ImageEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor4_'s_",
+                gui::MouseImageInfo(true, ENTITY_IMAGE_INFO)),
+            std::make_unique<gui::TextEntity>(
+                NAME + "'s_ImageTextEntity_FromConstructor4_'s_", 0.0f, 0.0f, MOUSE_TEXT_INFO),
+            CALLBACK_HANDLER_PTR_OPT,
+            MOUSE_STATE_SYNC,
+            WILL_SYNC_MOUSESTATES)
     {}
 
     ImageTextEntity::~ImageTextEntity() = default;
@@ -455,5 +455,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

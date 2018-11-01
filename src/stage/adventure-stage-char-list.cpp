@@ -36,7 +36,7 @@ namespace stage
 {
 
     AdventureCharacterList::AdventureCharacterList(const stage::IStagePtr_t ISTAGE_PTR)
-        : sfml_util::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
+        : gui::Entity("AdventureStage'sCharacterList", 0.0f, 0.0f)
         , ALPHA_FOR_LINES_(180)
         , ALPHA_FOR_TEXT_(160)
         , ALPHA_FOR_CHAR_IMAGES_(150)
@@ -135,17 +135,17 @@ namespace stage
 
         for (const auto & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            const sfml_util::TextInfo TEXT_INFO { CHARACTER_PTR->Name(),
-                                                  sfml_util::GuiFont::Default,
-                                                  sfml_util::FontManager::Instance()->Size_Large(),
-                                                  FadedDarkColor_Text() };
+            const gui::TextInfo TEXT_INFO { CHARACTER_PTR->Name(),
+                                            gui::GuiFont::Default,
+                                            gui::FontManager::Instance()->Size_Large(),
+                                            FadedDarkColor_Text() };
 
-            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::ImageTextEntity>(
+            namesButtonUVec_.emplace_back(std::make_unique<gui::ImageTextEntity>(
                 "AdventureStage'sCharacterList'sNameButtonFor_" + CHARACTER_PTR->Name(),
-                sfml_util::MouseImageInfo(),
+                gui::MouseImageInfo(),
                 TEXT_INFO,
                 boost::none,
-                sfml_util::ImageTextEntity::MouseStateSync::Image));
+                gui::ImageTextEntity::MouseStateSync::Image));
         }
 
         for (const auto & BUTTON_UPTR : namesButtonUVec_)
@@ -168,12 +168,10 @@ namespace stage
             std::ostringstream ss;
             ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
 
-            const sfml_util::TextInfo TEXT_INFO {
-                ss.str(),
-                sfml_util::GuiFont::Number,
-                sfml_util::FontManager::Instance()->Size_Smallish(),
-                FadedDarkColor_Text()
-            };
+            const gui::TextInfo TEXT_INFO { ss.str(),
+                                            gui::GuiFont::Number,
+                                            gui::FontManager::Instance()->Size_Smallish(),
+                                            FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f, // actual position will be set by SetupPositions_Conditions()
@@ -181,7 +179,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            healthTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
+            healthTextRegionsUVec_.emplace_back(std::make_unique<gui::TextRegion>(
                 "AdventureStage'sCharacterList'sHealthTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -204,12 +202,10 @@ namespace stage
             std::ostringstream ss;
             ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();
 
-            const sfml_util::TextInfo TEXT_INFO {
-                ss.str(),
-                sfml_util::GuiFont::Number,
-                sfml_util::FontManager::Instance()->Size_Smallish(),
-                FadedDarkColor_Text()
-            };
+            const gui::TextInfo TEXT_INFO { ss.str(),
+                                            gui::GuiFont::Number,
+                                            gui::FontManager::Instance()->Size_Smallish(),
+                                            FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f, // actual position will be set by SetupPositions_Conditions()
@@ -217,7 +213,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            manaTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
+            manaTextRegionsUVec_.emplace_back(std::make_unique<gui::TextRegion>(
                 "AdventureStage'sCharacterList'sManaTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -239,10 +235,10 @@ namespace stage
         {
             const auto CHARACTER_PTR { CHARACTER_PVEC[i] };
 
-            const sfml_util::TextInfo TEXT_INFO { CHARACTER_PTR->ConditionNames(),
-                                                  sfml_util::GuiFont::Default,
-                                                  sfml_util::FontManager::Instance()->Size_Normal(),
-                                                  FadedDarkColor_Text() };
+            const gui::TextInfo TEXT_INFO { CHARACTER_PTR->ConditionNames(),
+                                            gui::GuiFont::Default,
+                                            gui::FontManager::Instance()->Size_Normal(),
+                                            FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f, // actual position will be set by SetupPositions_Conditions()
@@ -250,7 +246,7 @@ namespace stage
                 conditionColumnRects_[i].width - (CELL_TEXT_LEFT_SPACER_ * 2.0f),
                 conditionColumnRects_[i].height);
 
-            condsTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::TextRegion>(
+            condsTextRegionsUVec_.emplace_back(std::make_unique<gui::TextRegion>(
                 "AdventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -362,7 +358,7 @@ namespace stage
         conditionColumnRects_.clear();
 
         const auto OUTER_PAD_HORIZ { 2.0f * OUTER_SPACER_ };
-        const auto SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() };
+        const auto SCREEN_WIDTH { gui::Display::Instance()->GetWinWidth() };
 
         const auto NON_COND_COLUMN_WIDTHS { imageColumnRects_[0].width + nameColumnRects_[0].width
                                             + healthColumnRects_[0].width
@@ -452,11 +448,11 @@ namespace stage
             const auto LEFT { CHARLIST_SEP_SPACER_ };
             const auto TOP { imageColumnRects_[0].top - 10.0f };
 
-            const auto LENGTH { sfml_util::Display::Instance()->GetWinWidth()
+            const auto LENGTH { gui::Display::Instance()->GetWinWidth()
                                 - (CHARLIST_SEP_SPACER_ * 2.0f) };
 
             charListSepLine_.Setup(
-                LEFT, TOP, LENGTH, sfml_util::Orientation::Horiz, sfml_util::Side::Top, true);
+                LEFT, TOP, LENGTH, gui::Orientation::Horiz, gui::Side::Top, true);
         }
 
         {
@@ -555,11 +551,11 @@ namespace stage
                 COLOR_BAR_ALPHA) };
 
             // draw inner colored bar
-            colorGradientBars_.emplace_back(sfml_util::ColoredRect(
+            colorGradientBars_.emplace_back(gui::ColoredRect(
                 sf::FloatRect(LEFT + 2.0f, TOP + 2.0f, BAR_WIDTH, HEIGHT - 4.0f),
                 COLOR_BAR_LEFT,
                 COLOR_BAR_RIGHT,
-                sfml_util::Side::Left));
+                gui::Side::Left));
 
             const auto NUMBER_TEXT_TOP_SPACER { sfutil::MapByRes(0.0f, 10.0f) };
 
@@ -619,8 +615,8 @@ namespace stage
             const auto CHARACTER_PTR { CHARACTER_VEC[i] };
 
             ImagePair_t imagePair(
-                sfml_util::LoadAndCacheImage(
-                    CHARACTER_PTR, sfml_util::ImageOptions::InvertedCharacterOptions()),
+                gui::LoadAndCacheImage(
+                    CHARACTER_PTR, gui::ImageOptions::InvertedCharacterOptions()),
                 sf::Sprite());
 
             imagePair.second.setTexture(imagePair.first.Get(), true);

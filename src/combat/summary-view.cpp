@@ -34,7 +34,7 @@ namespace combat
 
     ItemWithText::ItemWithText(const item::ItemPtr_t ITEM_PTR)
         : item_ptr(ITEM_PTR)
-        , cached_texture(sfml_util::LoadAndCacheImage(ITEM_PTR))
+        , cached_texture(gui::LoadAndCacheImage(ITEM_PTR))
         , sprite(cached_texture.Get())
         , name_text_region_uptr()
         , desc_text_region_uptr()
@@ -77,7 +77,7 @@ namespace combat
         , IMAGE_BETWEEN_PAD_(sfutil::MapByRes(10.0f, 35.0f))
         , isTransToComplete_(false)
         , isTransBackComplete_(true)
-        , movingDir_(sfml_util::Moving::Still)
+        , movingDir_(gui::Moving::Still)
         , itemWithTextUVec_()
         , bgQuads_(sf::Quads, 4)
         , combatNodePtrOpt_()
@@ -93,12 +93,12 @@ namespace combat
 
     void SummaryView::StartTransitionBack()
     {
-        if (sfml_util::Moving::Away == movingDir_)
+        if (gui::Moving::Away == movingDir_)
         {
             return;
         }
 
-        if ((sfml_util::Moving::Still == movingDir_) && (false == isTransToComplete_))
+        if ((gui::Moving::Still == movingDir_) && (false == isTransToComplete_))
         {
             return;
         }
@@ -109,15 +109,15 @@ namespace combat
             const auto FROM { geSlider_.From() };
             const auto TO { geSlider_.To() };
 
-            geSlider_ = sfml_util::EntitySlider(
+            geSlider_ = gui::EntitySlider(
                 ENTITY_PTR_OPT,
                 TO,
                 FROM,
                 (SLIDER_SPEED_ * 2.0f),
-                sfml_util::WillOscillate::No,
-                sfml_util::WillAutoStart::Yes);
+                gui::WillOscillate::No,
+                gui::WillAutoStart::Yes);
 
-            movingDir_ = sfml_util::Moving::Away;
+            movingDir_ = gui::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
             combatNodePtrOpt_.value()->IsSummaryView(false);
@@ -138,17 +138,17 @@ namespace combat
 
         combatNodePtrOpt_ = COMBAT_NODE_PTR;
 
-        geSlider_ = sfml_util::EntitySlider(
-            sfml_util::IEntityPtrOpt_t(COMBAT_NODE_PTR.Ptr()),
+        geSlider_ = gui::EntitySlider(
+            gui::IEntityPtrOpt_t(COMBAT_NODE_PTR.Ptr()),
             COMBAT_NODE_PTR->GetEntityPos(),
             DEST_POS_V,
             SLIDER_SPEED_,
-            sfml_util::WillOscillate::No,
-            sfml_util::WillAutoStart::Yes);
+            gui::WillOscillate::No,
+            gui::WillAutoStart::Yes);
 
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
-        movingDir_ = sfml_util::Moving::Toward;
+        movingDir_ = gui::Moving::Toward;
         isTransToComplete_ = false;
         isTransBackComplete_ = false;
         COMBAT_NODE_PTR->IsMoving(true);
@@ -176,7 +176,7 @@ namespace combat
     {
         isTransToComplete_ = true;
         isTransBackComplete_ = false;
-        movingDir_ = sfml_util::Moving::Still;
+        movingDir_ = gui::Moving::Still;
 
         if (combatNodePtrOpt_)
         {
@@ -189,7 +189,7 @@ namespace combat
     {
         isTransToComplete_ = false;
         isTransBackComplete_ = true;
-        movingDir_ = sfml_util::Moving::Still;
+        movingDir_ = gui::Moving::Still;
         itemWithTextUVec_.clear();
 
         if (combatNodePtrOpt_)
@@ -241,11 +241,11 @@ namespace combat
 
         if (DID_SLIDER_STOP)
         {
-            if (sfml_util::Moving::Toward == movingDir_)
+            if (gui::Moving::Toward == movingDir_)
             {
                 SetTransitionToComplete();
             }
-            else if (sfml_util::Moving::Away == movingDir_)
+            else if (gui::Moving::Away == movingDir_)
             {
                 SetTransitionBackComplete();
             }
@@ -271,25 +271,25 @@ namespace combat
             ss << ", " + creaturePtr->RoleName();
         }
 
-        const sfml_util::TextInfo CREATURE_NAME_TEXT_INFO(
+        const gui::TextInfo CREATURE_NAME_TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        nameTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        nameTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sName", CREATURE_NAME_TEXT_INFO, sf::FloatRect());
 
         std::ostringstream rankSS;
         rankSS << "Rank " << creaturePtr->Rank() << " (" << creaturePtr->RankClassName() << ")";
 
-        const sfml_util::TextInfo CREATURE_RANK_TEXT_INFO(
+        const gui::TextInfo CREATURE_RANK_TEXT_INFO(
             rankSS.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        rankTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        rankTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sRank", CREATURE_RANK_TEXT_INFO, sf::FloatRect());
 
         std::ostringstream healthSS;
@@ -303,48 +303,48 @@ namespace combat
             healthSS << creaturePtr->HealthPercentStr();
         }
 
-        const sfml_util::TextInfo CREATURE_HEALTH_TEXT_INFO(
+        const gui::TextInfo CREATURE_HEALTH_TEXT_INFO(
             healthSS.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        healthTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        healthTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sHealth", CREATURE_HEALTH_TEXT_INFO, sf::FloatRect());
 
         std::ostringstream armorRatingSS;
         armorRatingSS << "Armor Rating: " << creaturePtr->ArmorRating();
 
-        const sfml_util::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
+        const gui::TextInfo CREATURE_ARMORRATING_TEXT_INFO(
             armorRatingSS.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        armorTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        armorTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sArmorRating", CREATURE_ARMORRATING_TEXT_INFO, sf::FloatRect());
 
-        const sfml_util::TextInfo CREATURE_DESC_TEXT_INFO(
+        const gui::TextInfo CREATURE_DESC_TEXT_INFO(
             creaturePtr->Body().ToString(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light,
-            sfml_util::Justified::Left,
+            gui::Justified::Left,
             sf::Text::Italic);
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sDesc", CREATURE_DESC_TEXT_INFO, sf::FloatRect());
 
         std::ostringstream condSS;
         condSS << "Condition:  " << creaturePtr->ConditionNames(6);
 
-        const sfml_util::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
+        const gui::TextInfo CREATURE_CONDITIONS_TEXT_INFO(
             condSS.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::Light);
 
-        condTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        condTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "SummaryView'sCondition", CREATURE_CONDITIONS_TEXT_INFO, sf::FloatRect());
 
         const float IMAGE_POS_LEFT(COMBAT_REGION.left + BLOCK_POS_LEFT_ + IMAGE_EDGE_PAD_);
@@ -570,12 +570,12 @@ namespace combat
             nextItemTextUPtr->sprite.setPosition(
                 ITEM_IMAGE_POS_LEFT, ITEM_IMAGE_POS_TOP_START + itemListHeight);
 
-            const sfml_util::TextInfo ITEM_NAME_TEXT_INFO(
+            const gui::TextInfo ITEM_NAME_TEXT_INFO(
                 nextItemTextUPtr->item_ptr->Name(),
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Small(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
-                sfml_util::Justified::Left);
+                gui::Justified::Left);
 
             const sf::FloatRect ITEM_NAME_RECT(
                 ITEM_IMAGE_POS_LEFT + nextItemTextUPtr->sprite.getGlobalBounds().width
@@ -584,18 +584,18 @@ namespace combat
                 0.0f,
                 0.0f);
 
-            nextItemTextUPtr->name_text_region_uptr = std::make_unique<sfml_util::TextRegion>(
+            nextItemTextUPtr->name_text_region_uptr = std::make_unique<gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemName_"
                     + nextItemTextUPtr->item_ptr->Name(),
                 ITEM_NAME_TEXT_INFO,
                 ITEM_NAME_RECT);
 
-            const sfml_util::TextInfo ITEM_DESC_TEXT_INFO(
+            const gui::TextInfo ITEM_DESC_TEXT_INFO(
                 nextItemTextUPtr->item_ptr->Desc(),
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Small(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
-                sfml_util::Justified::Left);
+                gui::Justified::Left);
 
             const sf::FloatRect ITEM_DESC_RECT(
                 ITEM_IMAGE_POS_LEFT + nextItemTextUPtr->sprite.getGlobalBounds().width
@@ -605,7 +605,7 @@ namespace combat
                 0.0f,
                 0.0f);
 
-            nextItemTextUPtr->desc_text_region_uptr = std::make_unique<sfml_util::TextRegion>(
+            nextItemTextUPtr->desc_text_region_uptr = std::make_unique<gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemDesc_"
                     + nextItemTextUPtr->item_ptr->Name(),
                 ITEM_DESC_TEXT_INFO,
@@ -637,12 +637,12 @@ namespace combat
                 infoSS << " ";
             }
 
-            const sfml_util::TextInfo INFO_TEXT_INFO(
+            const gui::TextInfo INFO_TEXT_INFO(
                 infoSS.str(),
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Small(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
                 sfutil::color::Light,
-                sfml_util::Justified::Left);
+                gui::Justified::Left);
 
             const sf::FloatRect INFO_RECT(
                 ITEM_IMAGE_POS_LEFT + nextItemTextUPtr->sprite.getGlobalBounds().width
@@ -652,7 +652,7 @@ namespace combat
                 0.0f,
                 0.0f);
 
-            nextItemTextUPtr->info_text_region_uptr = std::make_unique<sfml_util::TextRegion>(
+            nextItemTextUPtr->info_text_region_uptr = std::make_unique<gui::TextRegion>(
                 "CombatDisplay_EnemyDetails_ItemList_ItemInfo_"
                     + nextItemTextUPtr->item_ptr->Name(),
                 INFO_TEXT_INFO,

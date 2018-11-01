@@ -139,7 +139,7 @@ namespace game
     }
 
     void GameController::SpawnPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO)
     {
         StageChangePostPopupSpawn(PopupReplaceCommand(POPUP_INFO, POPUP_HANDLER_PTR));
@@ -169,7 +169,7 @@ namespace game
 
     void GameController::StageChangeActualPopupReplace(
         const popup::PopupInfo & POPUP_INFO,
-        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR)
+        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR)
     {
         stageTracker_.SetCurrent(stage::Stage::Popup);
         activeStages_.ReplacePopupStage(POPUP_INFO, POPUP_HANDLER_PTR);
@@ -193,25 +193,23 @@ namespace game
             {
                 const auto MUSIC_COMMAND { COMMAND.music_opt.value() };
 
-                if ((MUSIC_COMMAND.to_stop <= sfml_util::music::All)
-                    && (MUSIC_COMMAND.to_stop != sfml_util::music::Count))
+                if ((MUSIC_COMMAND.to_stop <= gui::music::All)
+                    && (MUSIC_COMMAND.to_stop != gui::music::Count))
                 {
-                    sfml_util::SoundManager::Instance()->MusicStop(
-                        MUSIC_COMMAND.to_stop, sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_);
+                    gui::SoundManager::Instance()->MusicStop(
+                        MUSIC_COMMAND.to_stop, gui::MusicOperator::FADE_MULT_DEFAULT_OUT_);
                 }
 
-                if (MUSIC_COMMAND.to_start < sfml_util::music::Count)
+                if (MUSIC_COMMAND.to_start < gui::music::Count)
                 {
-                    auto volume { sfml_util::SoundManager::Instance()->MusicVolume() };
+                    auto volume { gui::SoundManager::Instance()->MusicVolume() };
                     if (volume < MUSIC_COMMAND.volume_min)
                     {
                         volume = MUSIC_COMMAND.volume_min;
                     }
 
-                    sfml_util::SoundManager::Instance()->MusicStart(
-                        MUSIC_COMMAND.to_start,
-                        sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_,
-                        volume);
+                    gui::SoundManager::Instance()->MusicStart(
+                        MUSIC_COMMAND.to_start, gui::MusicOperator::FADE_MULT_DEFAULT_IN_, volume);
                 }
             }
             catch (const std::exception & EXCEPTION)
@@ -316,7 +314,7 @@ namespace game
                 }
             }
 
-            sfml_util::Display::Instance()->PollEvents();
+            gui::Display::Instance()->PollEvents();
 
             try
             {
@@ -357,25 +355,24 @@ namespace game
         const auto IS_FADING_IN { (FADE_COMMAND.direction == FadeDirection::In) };
         if (IS_FADING_IN)
         {
-            sfml_util::Display::Instance()->FadeInStart(FADE_COMMAND.speed);
+            gui::Display::Instance()->FadeInStart(FADE_COMMAND.speed);
             status_.StartFadeIn(FADE_COMMAND.set_will_draw_under_popup_opt);
         }
         else
         {
-            sfml_util::Display::Instance()->FadeOutStart(FADE_COMMAND.color, FADE_COMMAND.speed);
+            gui::Display::Instance()->FadeOutStart(FADE_COMMAND.color, FADE_COMMAND.speed);
             status_.StartFadeOut(FADE_COMMAND.color, FADE_COMMAND.set_will_draw_under_popup_opt);
         }
 
         activeStages_.SetIsFadingForAllStages(true);
     }
 
-    const sfml_util::DisplayChangeResult GameController::ChangeResolution(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-        const sfml_util::Resolution & NEW_RES,
+    const gui::DisplayChangeResult GameController::ChangeResolution(
+        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
-        const auto RESULT { sfml_util::Display::Instance()->ChangeVideoMode(
-            NEW_RES, ANTIALIAS_LEVEL) };
+        const auto RESULT { gui::Display::Instance()->ChangeVideoMode(NEW_RES, ANTIALIAS_LEVEL) };
 
         if (RESULT.Changed() == false)
         {
@@ -393,12 +390,12 @@ namespace game
             activeStages_.ExecuteOnPopupStage(handleResolutionChange);
         }
 
-        sfml_util::TextInfo textInfo(
+        gui::TextInfo textInfo(
             "Keep this setting?",
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Normal(),
             sf::Color::Black,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateResolutionChangePopupInfo(
             textInfo) };

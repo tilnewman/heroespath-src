@@ -40,13 +40,13 @@ namespace stage
         void UpdateMouseDown(const sf::Vector2f &) final;
 
     private:
-        const sfml_util::music::Enum backgroundMusic_;
+        const gui::music::Enum backgroundMusic_;
         const float musicVolumeOrig_;
         const float timeFromStartToMusicSec_;
         const float timeFromMusicToAnimSec_;
         const float timeFromAnimToExitSec_;
         const float imageScaleSpeed_;
-        sfml_util::CachedTexture titleCachedTexture_;
+        gui::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
         float elapsedSec_;
         bool hasMusicStarted_;

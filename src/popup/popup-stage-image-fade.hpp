@@ -15,11 +15,11 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-} // namespace sfml_util
+} // namespace gui
 
 namespace popup
 {
@@ -48,8 +48,8 @@ namespace popup
         sf::Sprite spritePrev_;
         float beforeFadeTimerSec_;
         float fadeAlpha_;
-        sfml_util::TextRegionUPtr_t titleTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
+        gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 } // namespace popup
 } // namespace heroespath

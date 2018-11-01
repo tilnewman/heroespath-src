@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_BOX_ENTITY_INFO_HPP_INCLUDED
+#define HEROESPATH_GUI_BOX_ENTITY_INFO_HPP_INCLUDED
 //
 // box-entity-info.hpp
 //
@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for wraping all the information needed to consruct a Background entity except
@@ -223,7 +223,7 @@ namespace sfml_util
 
     inline bool operator!=(const BoxEntityInfo & L, const BoxEntityInfo & R) { return !(L == R); }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_BOX_ENTITY_INFO_HPP_INCLUDED
+#endif // HEROESPATH_GUI_BOX_ENTITY_INFO_HPP_INCLUDED

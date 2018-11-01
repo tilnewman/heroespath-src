@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const float TextEntryBox::INNER_PAD_(2.0f);
@@ -596,5 +596,5 @@ namespace sfml_util
         UpdateText();
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

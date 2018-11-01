@@ -16,25 +16,25 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     MainMenuBackground::MainMenuBackground()
         : boxUPtr_()
     {
-        sfml_util::BoxEntityInfo backgroundBoxInfo;
+        gui::BoxEntityInfo backgroundBoxInfo;
 
         backgroundBoxInfo.SetupImage(
-            sfml_util::CachedTexture(
+            gui::CachedTexture(
                 "media-images-backgrounds-tile-darkknot",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+                gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.075f));
 
         backgroundBoxInfo.SetupColor(
             sf::Color::Transparent,
             sf::Color(0, 0, 0, 200),
-            sfml_util::Side::None,
-            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+            gui::Side::None,
+            gui::Corner::TopLeft | gui::Corner::BottomRight);
 
         boxUPtr_ = std::make_unique<BoxEntity>(
             "MainMenuBackground_", sfutil::DisplayRect(), backgroundBoxInfo);
@@ -45,5 +45,5 @@ namespace sfml_util
         target.draw(*boxUPtr_, states);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

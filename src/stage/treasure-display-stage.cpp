@@ -52,8 +52,8 @@ namespace stage
 
         DisplayMeasurements::DisplayMeasurements(
             const float COINS_IMAGE_BOTTOM, const float BOTTOM_SYMBOL_HEIGHT)
-            : screenWidth(sfml_util::Display::Instance()->GetWinWidth())
-            , screenHeight(sfml_util::Display::Instance()->GetWinHeight())
+            : screenWidth(gui::Display::Instance()->GetWinWidth())
+            , screenHeight(gui::Display::Instance()->GetWinHeight())
             , innerPad(sfutil::MapByRes(10.0f, 40.0f))
             , innerRect(
                   innerPad,
@@ -150,47 +150,41 @@ namespace stage
     }
 
     bool TreasureDisplayStage::HandleCallback(
-        const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->entity_ptr == treasureAlphaButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByName(
-                *treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
+            gui::listbox::SortByName(*treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
 
             return true;
         }
         else if (PACKET_PTR->entity_ptr == treasureMoneyButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByPrice(
-                *treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
+            gui::listbox::SortByPrice(*treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
 
             return true;
         }
         else if (PACKET_PTR->entity_ptr == treasureWeightButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByWeight(
-                *treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
+            gui::listbox::SortByWeight(*treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
 
             return true;
         }
         else if (PACKET_PTR->entity_ptr == inventoryAlphaButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByName(
-                *inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
+            gui::listbox::SortByName(*inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
 
             return true;
         }
         else if (PACKET_PTR->entity_ptr == inventoryMoneyButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByPrice(
-                *inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
+            gui::listbox::SortByPrice(*inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
 
             return true;
         }
         else if (PACKET_PTR->entity_ptr == inventoryWeightButtonUPtr_.get())
         {
-            sfml_util::listbox::SortByWeight(
-                *inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
+            gui::listbox::SortByWeight(*inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
 
             return true;
         }
@@ -382,11 +376,11 @@ namespace stage
     {
         if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
         {
-            treasureCachedTextureOpt_ = sfml_util::CachedTexture("media-images-chest-open");
+            treasureCachedTextureOpt_ = gui::CachedTexture("media-images-chest-open");
         }
         else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
         {
-            treasureCachedTextureOpt_ = sfml_util::CachedTexture("media-images-lockbox-open");
+            treasureCachedTextureOpt_ = gui::CachedTexture("media-images-lockbox-open");
         }
     }
 
@@ -521,18 +515,18 @@ namespace stage
 
     void TreasureDisplayStage::SetupInitial_Ouroboros()
     {
-        ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("TreasureDisplayStage's", true);
+        ouroborosUPtr_ = std::make_unique<gui::Ouroboros>("TreasureDisplayStage's", true);
         EntityAdd(ouroborosUPtr_.get());
     }
 
     void TreasureDisplayStage::SetupAfterPleaseWait_CorpseImage()
     {
-        corpseCachedTextureOpt_ = sfml_util::CachedTexture(CorpseImageKeyFromEnemyParty());
+        corpseCachedTextureOpt_ = gui::CachedTexture(CorpseImageKeyFromEnemyParty());
 
         corpseSprite_.setTexture(corpseCachedTextureOpt_->Get(), true);
 
-        const auto SCREEN_WIDTH { sfml_util::Display::Instance()->GetWinWidth() };
-        const auto SCREEN_HEIGHT { sfml_util::Display::Instance()->GetWinHeight() };
+        const auto SCREEN_WIDTH { gui::Display::Instance()->GetWinWidth() };
+        const auto SCREEN_HEIGHT { gui::Display::Instance()->GetWinHeight() };
 
         sfutil::Fit(corpseSprite_, (SCREEN_WIDTH * 0.75f), (SCREEN_HEIGHT * 0.5f));
 
@@ -557,7 +551,7 @@ namespace stage
             || (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-2")
         };
 
-        treasureCachedTextureOpt_ = sfml_util::CachedTexture(TREASURE_IMAGE_KEY);
+        treasureCachedTextureOpt_ = gui::CachedTexture(TREASURE_IMAGE_KEY);
 
         treasureSprite_.setTexture(treasureCachedTextureOpt_->Get(), true);
 
@@ -582,7 +576,7 @@ namespace stage
     // The scales/colors/positions found by experiment to look good at various resolutions.
     void TreasureDisplayStage::SetupAfterPleaseWait_CoinsImage()
     {
-        const auto COINS_IMAGE_WIDTH { (sfml_util::Display::Instance()->GetWinWidth() * 0.125f) };
+        const auto COINS_IMAGE_WIDTH { (gui::Display::Instance()->GetWinWidth() * 0.125f) };
         const auto COINS_SCALE { COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width };
         coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
 
@@ -653,7 +647,7 @@ namespace stage
             MEASUREMENTS.treasureListboxRegion.top) };
 
         stageMoverUPtr_->AddTreasureObject(
-            sfml_util::IEntityPtrOpt_t(treasureListboxUPtr_.get()),
+            gui::IEntityPtrOpt_t(treasureListboxUPtr_.get()),
             TREASURE_ONSCREEN_POS_V,
             TREASURE_OFFSCREEN_POS_V);
     }
@@ -674,7 +668,7 @@ namespace stage
             CalculateHorizOffscreenPos(), MEASUREMENTS.inventoryListboxRegion.top) };
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(inventoryListboxUPtr_.get()),
+            gui::IEntityPtrOpt_t(inventoryListboxUPtr_.get()),
             INVENTORY_ONSCREEN_POS_V,
             INVENTORY_OFFSCREEN_POS_V);
     }
@@ -684,7 +678,7 @@ namespace stage
         SetupTreasure_ListboxLabel();
 
         stageMoverUPtr_->AddTreasureObject(
-            sfml_util::IEntityPtrOpt_t(treasureLabelUPtr_.get()),
+            gui::IEntityPtrOpt_t(treasureLabelUPtr_.get()),
             treasureLabelUPtr_->GetEntityPos(),
             sf::Vector2f(-750.0f, treasureLabelUPtr_->GetEntityPos().y));
     }
@@ -698,17 +692,17 @@ namespace stage
         const auto OFFSCREEN_POS_HORIZ { -300.0f };
 
         stageMoverUPtr_->AddTreasureObject(
-            sfml_util::IEntityPtrOpt_t(treasureAlphaButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(treasureAlphaButtonUPtr_.get()),
             treasureAlphaButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            sfml_util::IEntityPtrOpt_t(treasureMoneyButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(treasureMoneyButtonUPtr_.get()),
             treasureMoneyButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            sfml_util::IEntityPtrOpt_t(treasureWeightButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(treasureWeightButtonUPtr_.get()),
             treasureWeightButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureWeightButtonUPtr_->GetEntityPos().y));
     }
@@ -718,7 +712,7 @@ namespace stage
         SetupInventory_ListboxLabel();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(inventoryLabelUPtr_.get()),
+            gui::IEntityPtrOpt_t(inventoryLabelUPtr_.get()),
             inventoryLabelUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), inventoryLabelUPtr_->GetEntityPos().y));
     }
@@ -728,7 +722,7 @@ namespace stage
         SetupInventory_CoinsText();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(coinsTextUPtr_.get()),
+            gui::IEntityPtrOpt_t(coinsTextUPtr_.get()),
             coinsTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), coinsTextUPtr_->GetEntityPos().y));
     }
@@ -738,7 +732,7 @@ namespace stage
         SetupInventory_GemsText();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(gemsTextUPtr_.get()),
+            gui::IEntityPtrOpt_t(gemsTextUPtr_.get()),
             gemsTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), gemsTextUPtr_->GetEntityPos().y));
     }
@@ -748,7 +742,7 @@ namespace stage
         SetupInventory_CharacterImage();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(characterImageUPtr_.get()),
+            gui::IEntityPtrOpt_t(characterImageUPtr_.get()),
             characterImageUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), characterImageUPtr_->GetEntityPos().y));
     }
@@ -758,7 +752,7 @@ namespace stage
         SetupInventory_WeightText();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(weightTextUPtr_.get()),
+            gui::IEntityPtrOpt_t(weightTextUPtr_.get()),
             weightTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), weightTextUPtr_->GetEntityPos().y));
     }
@@ -768,7 +762,7 @@ namespace stage
         SetupInventory_RedXImage();
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(redXImageUPtr_.get()),
+            gui::IEntityPtrOpt_t(redXImageUPtr_.get()),
             inventoryListboxUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), inventoryListboxUPtr_->GetEntityPos().y));
     }
@@ -782,35 +776,35 @@ namespace stage
         const auto OFFSCREEN_POS_HORIZ { MEASUREMENTS.screenWidth + MEASUREMENTS.listboxWidth };
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(inventoryAlphaButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(inventoryAlphaButtonUPtr_.get()),
             inventoryAlphaButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(inventoryMoneyButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(inventoryMoneyButtonUPtr_.get()),
             inventoryMoneyButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            sfml_util::IEntityPtrOpt_t(inventoryWeightButtonUPtr_.get()),
+            gui::IEntityPtrOpt_t(inventoryWeightButtonUPtr_.get()),
             inventoryWeightButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryWeightButtonUPtr_->GetEntityPos().y));
     }
 
     void TreasureDisplayStage::SetupForCollection_InstructionsText()
     {
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             "(press spacebar to change treasure, use arrows or numbers to change characters)",
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::GrayDark,
-            sfml_util::Justified::Left,
+            gui::Justified::Left,
             sf::Text::Italic);
 
         // initial position doesn't matter since the position must be set after rendering
         const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
 
-        instrTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        instrTextUPtr_ = std::make_unique<gui::TextRegion>(
             "TreasureStage'sInstructionText", TEXT_INFO, EMPTY_RECT);
 
         // the +93 and -10 were found by experiment to look better
@@ -837,33 +831,31 @@ namespace stage
     }
 
     void TreasureDisplayStage::SetupLowerButton(
-        sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
-        const std::string & TEXT,
-        const float VERT_POS)
+        gui::ImageTextEntityUPtr_t & buttonUPtr, const std::string & TEXT, const float VERT_POS)
     {
         const auto COLOR_UP { sfutil::color::GrayDarker };
         const auto COLOR_OVER { COLOR_UP - sf::Color(0, 0, 0, 127) };
         const auto COLOR_DOWN { sf::Color::Black };
 
-        sfml_util::TextInfo textInfo(
+        gui::TextInfo textInfo(
             TEXT,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Largeish(),
             COLOR_UP,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
-        const sfml_util::MouseTextInfo MOUSE_TEXT_INFO {
+        const gui::MouseTextInfo MOUSE_TEXT_INFO {
             textInfo, COLOR_DOWN, COLOR_OVER, sf::Color::White
         };
 
         GetEntityPtrAndRemoveIfNeeded(buttonUPtr);
 
-        buttonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
+        buttonUPtr = std::make_unique<gui::ImageTextEntity>(
             "TreasureStage's" + TEXT,
-            sfml_util::MouseImageInfo(),
+            gui::MouseImageInfo(),
             MOUSE_TEXT_INFO,
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Text);
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Text);
 
         const auto HORIZ_POS { (CreateDisplayMeasurements().screenWidth * 0.5f)
                                - (buttonUPtr->GetEntityRegion().width * 0.5f) };
@@ -874,7 +866,7 @@ namespace stage
 
     void TreasureDisplayStage::SetupListbox(
         const treasure::WhichListbox WHICH_LISTBOX,
-        sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t> & listboxUPtr,
+        gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t> & listboxUPtr,
         const item::ItemPVec_t & ITEMS_PVEC)
     {
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(listboxUPtr) };
@@ -888,7 +880,7 @@ namespace stage
                 ? MEASUREMENTS.treasureListboxRegion
                 : MEASUREMENTS.inventoryListboxRegion) };
 
-        sfml_util::BoxEntityInfo listBoxInfo;
+        gui::BoxEntityInfo listBoxInfo;
 
         listBoxInfo.SetupBorder(true, 1.0f);
 
@@ -896,22 +888,22 @@ namespace stage
 
         listBoxInfo.SetupColor(listboxColors.background);
 
-        sfml_util::ListBoxPacket listBoxPacket(
+        gui::ListBoxPacket listBoxPacket(
             LISTBOX_REGION, listBoxInfo, listboxColors.line, listboxColors.image);
 
-        listboxUPtr = std::make_unique<sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>>(
+        listboxUPtr = std::make_unique<gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>>(
             "TreasureDisplayStage's_CharacterInventoryListBox", this, this, listBoxPacket);
 
-        sfml_util::TextInfo textInfo(
+        gui::TextInfo textInfo(
             "",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayDarker);
 
         for (const auto & ITEM_PTR : ITEMS_PVEC)
         {
-            listboxUPtr->Append(std::make_unique<sfml_util::ListElement<item::ItemPtr_t>>(
-                ITEM_PTR, sfml_util::TextInfo(textInfo, ITEM_PTR->Name())));
+            listboxUPtr->Append(std::make_unique<gui::ListElement<item::ItemPtr_t>>(
+                ITEM_PTR, gui::TextInfo(textInfo, ITEM_PTR->Name())));
         }
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr.get());
@@ -930,19 +922,19 @@ namespace stage
             }
         }() };
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             LABEL_TEXT,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Large(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Large(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
 
         // initial position doesn't matter since the position must be set after rendering
         const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
 
-        treasureLabelUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        treasureLabelUPtr_ = std::make_unique<gui::TextRegion>(
             "TreasureStage'sTreasureListboxLabel", TEXT_INFO, EMPTY_RECT);
 
         const auto MEASUREMENTS { CreateDisplayMeasurements() };
@@ -1088,12 +1080,12 @@ namespace stage
         const sf::Vector2f POS_V(
             MEASUREMENTS.characterImageLeft,
             inventoryListboxUPtr_->GetEntityPos().y
-                - (sfml_util::StandardImageDimmension() * MEASUREMENTS.characterImageScale));
+                - (gui::StandardImageDimmension() * MEASUREMENTS.characterImageScale));
 
-        const sfml_util::EntityImageInfo ENTITY_IMAGE_INFO(
-            sfml_util::LoadAndCacheImage(
+        const gui::EntityImageInfo ENTITY_IMAGE_INFO(
+            gui::LoadAndCacheImage(
                 WhichCharacterInventoryIsDisplayed(),
-                sfml_util::ImageOptions::InvertedCharacterOptions()),
+                gui::ImageOptions::InvertedCharacterOptions()),
             POS_V,
             SCALE_V,
             boost::none,
@@ -1101,9 +1093,8 @@ namespace stage
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(characterImageUPtr_) };
 
-        characterImageUPtr_ = std::make_unique<sfml_util::ImageEntity>(
-            "TreasureDisplayStage's_CharacterImage",
-            sfml_util::MouseImageInfo(true, ENTITY_IMAGE_INFO));
+        characterImageUPtr_ = std::make_unique<gui::ImageEntity>(
+            "TreasureDisplayStage's_CharacterImage", gui::MouseImageInfo(true, ENTITY_IMAGE_INFO));
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, characterImageUPtr_.get());
     }
@@ -1119,7 +1110,7 @@ namespace stage
             ((IS_BEAST) ? "(beasts cannot carry items)" : CREATURE_PTR->Name()),
             CalculateInventoryTextPosLeft(),
             characterImageUPtr_->GetEntityPos().y + sfutil::MapByRes(25.0f, 50.0f),
-            sfml_util::FontManager::Instance()->Size_Large());
+            gui::FontManager::Instance()->Size_Large());
     }
 
     void TreasureDisplayStage::SetupInventory_CoinsText()
@@ -1153,7 +1144,7 @@ namespace stage
             CalculateInventoryTextPosLeft(),
             (inventoryLabelUPtr_->GetEntityPos().y + inventoryLabelUPtr_->GetEntityRegion().height)
                 - CalculateInventoryTextVertShift(),
-            sfml_util::FontManager::Instance()->Size_Normal());
+            gui::FontManager::Instance()->Size_Normal());
     }
 
     void TreasureDisplayStage::SetupInventory_GemsText()
@@ -1187,7 +1178,7 @@ namespace stage
             CalculateInventoryTextPosLeft(),
             (coinsTextUPtr_->GetEntityPos().y + coinsTextUPtr_->GetEntityRegion().height)
                 - CalculateInventoryTextVertShift(),
-            sfml_util::FontManager::Instance()->Size_Normal());
+            gui::FontManager::Instance()->Size_Normal());
     }
 
     void TreasureDisplayStage::SetupInventory_WeightText()
@@ -1218,7 +1209,7 @@ namespace stage
             CalculateInventoryTextPosLeft(),
             (gemsTextUPtr_->GetEntityPos().y + gemsTextUPtr_->GetEntityRegion().height)
                 - CalculateInventoryTextVertShift(),
-            sfml_util::FontManager::Instance()->Size_Normal());
+            gui::FontManager::Instance()->Size_Normal());
     }
 
     void TreasureDisplayStage::SetupInventory_RedXImage()
@@ -1226,7 +1217,7 @@ namespace stage
         auto makeEntityImageInfo = [&]() {
             if (WhichCharacterInventoryIsDisplayed()->IsBeast())
             {
-                return sfml_util::EntityImageInfo(
+                return gui::EntityImageInfo(
                     xCachedTexture_,
                     inventoryListboxUPtr_->GetEntityRegion(),
                     boost::none,
@@ -1234,15 +1225,14 @@ namespace stage
             }
             else
             {
-                return sfml_util::EntityImageInfo();
+                return gui::EntityImageInfo();
             }
         };
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(redXImageUPtr_) };
 
-        redXImageUPtr_ = std::make_unique<sfml_util::ImageEntity>(
-            "TreasureDisplayStage's_RedXImage",
-            sfml_util::MouseImageInfo(true, makeEntityImageInfo()));
+        redXImageUPtr_ = std::make_unique<gui::ImageEntity>(
+            "TreasureDisplayStage's_RedXImage", gui::MouseImageInfo(true, makeEntityImageInfo()));
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(
             PREV_ENTITY_PTR, redXImageUPtr_.get(), StageAddEntity::Wont);
@@ -1291,26 +1281,22 @@ namespace stage
     }
 
     void TreasureDisplayStage::SetupInventoryText(
-        sfml_util::TextRegionUPtr_t & textRegionUPtr,
+        gui::TextRegionUPtr_t & textRegionUPtr,
         const std::string & NAME,
         const std::string & TEXT,
         const float HORIZ_POS,
         const float VERT_POS,
         const unsigned int FONT_SIZE)
     {
-        const sfml_util::TextInfo TEXT_INFO(
-            TEXT,
-            sfml_util::GuiFont::System,
-            FONT_SIZE,
-            sfutil::color::GrayDarker,
-            sfml_util::Justified::Left);
+        const gui::TextInfo TEXT_INFO(
+            TEXT, gui::GuiFont::System, FONT_SIZE, sfutil::color::GrayDarker, gui::Justified::Left);
 
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(textRegionUPtr) };
 
         // initial position doesn't matter since the position must be set after rendering
         const auto EMPTY_RECT { sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
 
-        textRegionUPtr = std::make_unique<sfml_util::TextRegion>(
+        textRegionUPtr = std::make_unique<gui::TextRegion>(
             "TreasureStage'sInventory" + NAME, TEXT_INFO, EMPTY_RECT);
 
         textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
@@ -1321,8 +1307,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (sfml_util::StandardImageDimmension()
-               * CreateDisplayMeasurements().characterImageScale);
+            + (gui::StandardImageDimmension() * CreateDisplayMeasurements().characterImageScale);
     }
 
     void TreasureDisplayStage::ItemViewerInterruption()
@@ -1362,8 +1347,8 @@ namespace stage
     }
 
     void TreasureDisplayStage::EntityPtrAddCurrAndReplacePrevIfNeeded(
-        const sfml_util::IEntityPtrOpt_t & PREV_GUI_ENTITY_PTR_OPT,
-        const sfml_util::IEntityPtr_t CURR_GUI_ENTITY_PTR,
+        const gui::IEntityPtrOpt_t & PREV_GUI_ENTITY_PTR_OPT,
+        const gui::IEntityPtr_t CURR_GUI_ENTITY_PTR,
         const StageAddEntity WILL_ADD)
     {
         if (WILL_ADD == StageAddEntity::Will)
@@ -1382,23 +1367,23 @@ namespace stage
         const std::string & IMAGE_PATH_KEY,
         const sf::Color & COLOR,
         const float SCALE,
-        sfml_util::ImageTextEntityUPtr_t & sortButtonUPtr)
+        gui::ImageTextEntityUPtr_t & sortButtonUPtr)
     {
         const auto PREV_ENTITY_PTR { GetEntityPtrAndRemoveIfNeeded(sortButtonUPtr) };
 
-        const sfml_util::EntityImageInfo SORT_IMAGE_ENTITY_INFO_UP(
-            sfml_util::CachedTexture(IMAGE_PATH_KEY),
+        const gui::EntityImageInfo SORT_IMAGE_ENTITY_INFO_UP(
+            gui::CachedTexture(IMAGE_PATH_KEY),
             sf::Vector2f(0.0f, 0.0f),
             sf::Vector2f(SCALE, SCALE),
             boost::none,
             COLOR);
 
-        sortButtonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
+        sortButtonUPtr = std::make_unique<gui::ImageTextEntity>(
             NAME,
-            sfml_util::MouseImageInfo(true, SORT_IMAGE_ENTITY_INFO_UP),
-            sfml_util::MouseTextInfo(),
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Image);
+            gui::MouseImageInfo(true, SORT_IMAGE_ENTITY_INFO_UP),
+            gui::MouseTextInfo(),
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Image);
 
         EntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, sortButtonUPtr.get());
     }

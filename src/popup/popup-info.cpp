@@ -27,14 +27,14 @@ namespace popup
     PopupInfo::PopupInfo(
         const PopupStage::Enum STAGE,
         const std::string & NAME,
-        const sfml_util::TextInfo & TEXT_INFO,
+        const gui::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const PopupButtonColor::Enum BUTTON_COLOR,
         const bool WILL_ADD_RAND_IMAGE,
         const std::vector<std::size_t> & INVALID_CHAR_NUM_VEC,
-        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
+        const gui::CachedTextureVec_t & TEXTURE_VEC,
         const std::vector<std::string> & TEXT_VEC,
         const float IMAGE_FADE_SPEED,
         const creature::CreaturePtrOpt_t & CREATURE_PTR_OPT,
@@ -102,10 +102,10 @@ namespace popup
     // use this constructor for image selection popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::TextInfo & TEXT_INFO,
-        const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
+        const gui::TextInfo & TEXT_INFO,
+        const gui::CachedTextureVec_t & TEXTURE_VEC,
         const std::size_t INITIAL_SELECTION,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const PopupButtonColor::Enum BUTTON_COLOR)
         : stage_(PopupStage::ImageSelect)
         , name_(NAME)
@@ -141,7 +141,7 @@ namespace popup
     // use this constructor for number selection popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::TextInfo & TEXT_INFO,
+        const gui::TextInfo & TEXT_INFO,
         const std::size_t THE_MIN,
         const std::size_t THE_MAX)
         : stage_(PopupStage::NumberSelect)
@@ -149,7 +149,7 @@ namespace popup
         , textInfo_(TEXT_INFO)
         , buttons_(PopupButtons::SelectCancel)
         , image_(PopupImage::Large)
-        , soundEffect_(sfml_util::sound_effect::PromptQuestion)
+        , soundEffect_(gui::sound_effect::PromptQuestion)
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(PopupButtonColor::Dark)
@@ -172,7 +172,7 @@ namespace popup
     // use this constructor for end-of-combat popups
     PopupInfo::PopupInfo(
         const std::string & NAME,
-        const sfml_util::TextInfo & TEXT_INFO,
+        const gui::TextInfo & TEXT_INFO,
         const PopupButtons::Enum BUTTONS,
         const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
         : stage_(PopupStage::CombatOver)
@@ -180,7 +180,7 @@ namespace popup
         , textInfo_(TEXT_INFO)
         , buttons_(BUTTONS)
         , image_(PopupImage::Large)
-        , soundEffect_(sfml_util::sound_effect::None)
+        , soundEffect_(gui::sound_effect::None)
         , ratioX_(1.0f)
         , ratioY_(1.0f)
         , buttonColor_(PopupButtonColor::Dark)
@@ -230,7 +230,7 @@ namespace popup
 
             ss << ", accent_image=" << std::boolalpha << willAddRandImage_;
 
-            ss << ", sound_effect=" << sfml_util::sound_effect::ToString(soundEffect_);
+            ss << ", sound_effect=" << gui::sound_effect::ToString(soundEffect_);
 
             if (numberMin_ != numberMax_)
             {

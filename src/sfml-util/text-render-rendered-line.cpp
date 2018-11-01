@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace text_rendering
     {
@@ -55,7 +55,7 @@ namespace sfml_util
             region.height = 1.0f;
         }
 
-        void RenderedLine::Append(const sfml_util::Text & TEXT)
+        void RenderedLine::Append(const gui::Text & TEXT)
         {
             if (TEXT.IsValid() == false)
             {
@@ -199,5 +199,5 @@ namespace sfml_util
         }
 
     } // namespace text_rendering
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

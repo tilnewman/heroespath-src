@@ -23,10 +23,8 @@ namespace interact
     {
         switch (TEXT_TYPE)
         {
-            case Text::System:
-                return "System";
-            case Text::Dialog:
-                return "Dialog";
+            case Text::System: return "System";
+            case Text::Dialog: return "Dialog";
             case Text::Count:
             default:
             {
@@ -38,14 +36,12 @@ namespace interact
         }
     }
 
-    sfml_util::GuiFont::Enum Text::Font(const Text::Enum TEXT_TYPE)
+    gui::GuiFont::Enum Text::Font(const Text::Enum TEXT_TYPE)
     {
         switch (TEXT_TYPE)
         {
-            case Text::System:
-                return sfml_util::GuiFont::Default;
-            case Text::Dialog:
-                return sfml_util::GuiFont::DialogMedieval;
+            case Text::System: return gui::GuiFont::Default;
+            case Text::Dialog: return gui::GuiFont::DialogMedieval;
             case Text::Count:
             default:
             {

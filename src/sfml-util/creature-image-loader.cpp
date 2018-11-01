@@ -27,7 +27,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     CreatureImageLoader::CreatureImageLoader()
@@ -43,7 +43,7 @@ namespace sfml_util
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            iStagePtr->TestingStrAppend("sfml_util::CreatureImageLoader::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("gui::CreatureImageLoader::Test() Starting Tests...");
         }
 
         static auto allPaths { misc::filesystem::FindFiles(
@@ -96,7 +96,7 @@ namespace sfml_util
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
-                                "sfml_util::CreatureImageLoader() (wolfen_classes) race="
+                                "gui::CreatureImageLoader() (wolfen_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                     << ", wolfen_class=" << CLASS_STR
                                     << ", GetFilenames() failed to return anything.");
@@ -157,7 +157,7 @@ namespace sfml_util
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
-                                "sfml_util::CreatureImageLoader() (dragon_classes) race="
+                                "gui::CreatureImageLoader() (dragon_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                     << ", dragon_class=" << CLASS_STR
                                     << ", GetFilenames() failed to return anything.");
@@ -211,7 +211,7 @@ namespace sfml_util
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (FILENAMES.empty() == false),
-                            "sfml_util::CreatureImageLoader() race="
+                            "gui::CreatureImageLoader() race="
                                 << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                 << ", GetFilenames() failed to return anything.");
 
@@ -270,12 +270,12 @@ namespace sfml_util
         for (const auto & PATH : allPaths)
         {
             M_HP_LOG_WRN(
-                "sfml_util::CreatureImageLoader::Test() found the following item image "
+                "gui::CreatureImageLoader::Test() found the following item image "
                 "unused: "
                 << PATH);
         }
 
-        iStagePtr->TestingStrAppend("sfml_util::CreatureImageLoader::Test()  ALL TESTS PASSED.");
+        iStagePtr->TestingStrAppend("gui::CreatureImageLoader::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -300,7 +300,7 @@ namespace sfml_util
         const std::string & FILENAME,
         const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT) const
     {
-        sfml_util::Loaders::Texture(texture, Path(FILENAME));
+        gui::Loaders::Texture(texture, Path(FILENAME));
 
         if (WILL_HORIZ_FLIP_TO_FACE_RIGHT)
         {
@@ -320,7 +320,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
-            "sfml_util::CreatureImageLoader::GetRandomFilename(creature={"
+            "gui::CreatureImageLoader::GetRandomFilename(creature={"
                 << CREATURE_PTR->ToString()
                 << "}) (which actually calls GetFilenames()) returned no filenames.");
 
@@ -333,7 +333,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(FULL_PATH_STR)),
-            "sfml_util::CreatureImageLoader::EnsureFileExists(\""
+            "gui::CreatureImageLoader::EnsureFileExists(\""
                 << FULL_PATH_STR
                 << "\") but that file either does not exist or is not a regular file.");
     }
@@ -1709,7 +1709,7 @@ namespace sfml_util
         }
 
         std::ostringstream ss;
-        ss << "sfml_util::CreatureImageLoader::GetFilenames(race="
+        ss << "gui::CreatureImageLoader::GetFilenames(race="
            << ((RACE == creature::race::Count) ? "(count)" : creature::race::ToString(RACE))
            << ", role="
            << ((ROLE == creature::role::Count) ? "(count)" : creature::role::ToString(ROLE))
@@ -1720,5 +1720,5 @@ namespace sfml_util
         throw std::runtime_error(ss.str());
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

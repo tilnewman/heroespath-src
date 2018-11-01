@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     ColoredRect::ColoredRect(const sf::FloatRect & RECT, const sf::Color & COLOR)
@@ -190,5 +190,5 @@ namespace sfml_util
         return (L.vertexes_ == R.vertexes_);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

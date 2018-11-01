@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXT_RENDER_RENDERING_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXT_RENDER_RENDERING_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXT_RENDER_RENDERING_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXT_RENDER_RENDERING_HPP_INCLUDED
 //
 // text-render-rendered-lines.hpp
 //
@@ -15,11 +15,11 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace text_rendering
     {
-        // RenderedLinesing takes ParsedText and makes sfml_util::Text objects (sf::Text wrappers)
+        // RenderedLinesing takes ParsedText and makes gui::Text objects (sf::Text wrappers)
         struct Renderer
         {
             Renderer() = delete;
@@ -32,7 +32,7 @@ namespace sfml_util
         };
 
     } // namespace text_rendering
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXT_RENDER_RENDERING_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXT_RENDER_RENDERING_HPP_INCLUDED

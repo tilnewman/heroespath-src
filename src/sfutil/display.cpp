@@ -19,8 +19,7 @@ namespace sfutil
     const sf::Vector2f DisplaySize()
     {
         return sf::Vector2f(
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight());
+            gui::Display::Instance()->GetWinWidth(), gui::Display::Instance()->GetWinHeight());
     }
 
 } // namespace sfutil

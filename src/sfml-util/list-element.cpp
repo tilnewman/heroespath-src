@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace ListElementHelpers
     {
@@ -25,5 +25,5 @@ namespace sfml_util
         }
 
     } // namespace ListElementHelpers
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

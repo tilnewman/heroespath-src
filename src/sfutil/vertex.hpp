@@ -41,8 +41,7 @@ namespace sfutil
         const sf::Vector2f & POS_V,
         const sf::Vector2f & SIZE_FULL_V,
         const sf::Vector2f & SIZE_LIMIT_V = sf::Vector2f(0.0f, 0.0f),
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END
-        = sfml_util::Orientation::Count);
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END = gui::Orientation::Count);
 
     // if either SIZE_LIMIT_V is <= 0.0f, or if either TEXTURE_RECT.width/height < 0.0f, then
     // nothing is appended
@@ -52,8 +51,7 @@ namespace sfutil
         const sf::FloatRect & TEXTURE_RECT,
         const sf::Color & COLOR = sf::Color::White,
         const sf::Vector2f & SIZE_LIMIT_V = sf::Vector2f(0.0f, 0.0f),
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END
-        = sfml_util::Orientation::Count);
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END = gui::Orientation::Count);
 
     // if REGION.width or .height is < 0.0f then nothing will be appended
     void AppendVertexesForQuad(
@@ -72,12 +70,11 @@ namespace sfutil
         sf::VertexArray & vertexArray,
         const sf::Vector2f & POS_V,
         const sf::FloatRect & TEXTURE_RECT,
-        const sfml_util::Orientation::Enum ORIENTATION,
+        const gui::Orientation::Enum ORIENTATION,
         const float LENGTH,
         const sf::Color & COLOR = sf::Color::White,
         const float OPPOSITE_ORIENTATION_SIZE_LIMIT = 0.0f,
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END
-        = sfml_util::Orientation::Count);
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END = gui::Orientation::Count);
 
 } // namespace sfutil
 } // namespace heroespath

@@ -27,7 +27,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const unsigned int TextRegion::DEFAULT_NO_RESIZE_ { 0 };
@@ -424,5 +424,5 @@ namespace sfml_util
         renderedText_.regions[startLine_].top);*/
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

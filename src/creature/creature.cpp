@@ -62,7 +62,7 @@ namespace creature
         , conditionsVec_({ Conditions::Good })
         , titlesVec_()
         , inventory_()
-        , dateTimeCreated_(sfml_util::DateTime::CurrentDateTime())
+        , dateTimeCreated_(gui::DateTime::CurrentDateTime())
         , spellsVec_()
         , achievements_(NAME, ROLE)
         , heldWeaponsPVec_()
@@ -79,7 +79,7 @@ namespace creature
     {
         if (imageFilename_.empty())
         {
-            sfml_util::CreatureImageLoader creatureImageLoader;
+            gui::CreatureImageLoader creatureImageLoader;
             imageFilename_ = creatureImageLoader.FilenameRandom(this);
         }
 
@@ -1767,21 +1767,21 @@ namespace creature
                 L.actualSet_,
                 L.bonusSet_)
             != std::tie(
-                   R.name_,
-                   R.imageFilename_,
-                   R.sex_,
-                   R.bodyType_,
-                   R.race_,
-                   R.role_,
-                   R.achievements_,
-                   R.lastSpellCastNum_,
-                   R.lastSongPlayedNum_,
-                   R.healthCurrent_,
-                   R.healthNormal_,
-                   R.rank_,
-                   R.experience_,
-                   R.actualSet_,
-                   R.bonusSet_))
+                R.name_,
+                R.imageFilename_,
+                R.sex_,
+                R.bodyType_,
+                R.race_,
+                R.role_,
+                R.achievements_,
+                R.lastSpellCastNum_,
+                R.lastSongPlayedNum_,
+                R.healthCurrent_,
+                R.healthNormal_,
+                R.rank_,
+                R.experience_,
+                R.actualSet_,
+                R.bonusSet_))
         {
             return false;
         }
@@ -1837,21 +1837,21 @@ namespace creature
                 L.imageFilename_,
                 L.dateTimeCreated_)
             < std::tie(
-                  R.sex_,
-                  R.race_,
-                  R.role_,
-                  R.rank_,
-                  R.experience_,
-                  R.achievements_,
-                  R.lastSpellCastNum_,
-                  R.lastSongPlayedNum_,
-                  R.healthCurrent_,
-                  R.healthNormal_,
-                  R.actualSet_,
-                  R.bonusSet_,
-                  R.bodyType_,
-                  R.imageFilename_,
-                  R.dateTimeCreated_))
+                R.sex_,
+                R.race_,
+                R.role_,
+                R.rank_,
+                R.experience_,
+                R.achievements_,
+                R.lastSpellCastNum_,
+                R.lastSongPlayedNum_,
+                R.healthCurrent_,
+                R.healthNormal_,
+                R.actualSet_,
+                R.bonusSet_,
+                R.bodyType_,
+                R.imageFilename_,
+                R.dateTimeCreated_))
         {
             return true;
         }

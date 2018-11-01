@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     CachedTexture::CachedTexture(const CachedTexture & CT)
@@ -85,7 +85,7 @@ namespace sfml_util
 
     CachedTexture::CachedTexture(const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -93,7 +93,7 @@ namespace sfml_util
     CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -197,7 +197,7 @@ namespace sfml_util
     CachedTextures::CachedTextures(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(
-              misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}
@@ -225,7 +225,7 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < indexes_.size()),
-            "sfml_util::CachedTextures::At("
+            "gui::CachedTextures::At("
                 << INDEX << ") but that index was out of bounds.  (indexes_.size()="
                 << indexes_.size() << ", path=\"" << path_ << "\", " << options_ << ")");
 
@@ -247,5 +247,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

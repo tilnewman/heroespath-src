@@ -35,7 +35,7 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -52,8 +52,7 @@ namespace popup
 
         virtual std::size_t CountMax() const;
         virtual void SetupContent(const bool) {}
-        virtual const sfml_util::CachedTexture &
-            GetCurrentCachedTexture(const std::size_t IMAGE_INDEX);
+        virtual const gui::CachedTexture & GetCurrentCachedTexture(const std::size_t IMAGE_INDEX);
 
         bool KeyReleaseHandleNumbers(const sf::Event::KeyEvent &);
         bool KeyReleaseHandleLeft();
@@ -73,14 +72,14 @@ namespace popup
         bool isChangingImageAllowed_;
         bool isInitialAnimComplete_;
         bool willShowImageCount_;
-        sfml_util::CachedTextureOpt_t cachedTexturePrevOpt_;
+        gui::CachedTextureOpt_t cachedTexturePrevOpt_;
         sf::Sprite spriteCurr_;
         sf::Sprite spritePrev_;
         bool areImagesMoving_;
         bool areImagesMovingLeft_;
         sf::FloatRect imagesRect_;
-        sfml_util::TextRegionUPtr_t imageWrnTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t imageNumTextRegionUPtr_;
+        gui::TextRegionUPtr_t imageWrnTextRegionUPtr_;
+        gui::TextRegionUPtr_t imageNumTextRegionUPtr_;
         std::size_t imageIndex_;
         std::size_t imageIndexLastSoundOn_;
         std::size_t imageIndexLastSoundOff_;
@@ -90,7 +89,7 @@ namespace popup
         float travelDistCurr_;
         float travelDistPrev_;
         std::queue<std::size_t> imageMoveQueue_;
-        sfml_util::SliderZeroToOne imageSlider_;
+        gui::SliderZeroToOne imageSlider_;
         float imagePosTop_;
     };
 } // namespace popup

@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace text_rendering
     {
@@ -132,5 +132,5 @@ namespace sfml_util
         }
 
     } // namespace text_rendering
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

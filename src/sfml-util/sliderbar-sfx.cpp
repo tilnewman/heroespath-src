@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     bool SliderBarSfx::isConstructionAndInitFinished_ { false };
 
@@ -34,19 +34,19 @@ namespace sfml_util
         const float RELATIVE_LABEL_POS_LEFT,
         const float RELATIVE_LABEL_POS_TOP)
         : SliderBarLabeled(
-              std::string(NAME).append("_SliderBarMusic"),
-              POS_LEFT,
-              POS_TOP,
-              LENGTH,
-              STYLE,
-              THREE_TEXT_INFOS,
-              INITIAL_VALUE,
-              RELATIVE_LABEL_POS_LEFT,
-              RELATIVE_LABEL_POS_TOP)
+            std::string(NAME).append("_SliderBarMusic"),
+            POS_LEFT,
+            POS_TOP,
+            LENGTH,
+            STYLE,
+            THREE_TEXT_INFOS,
+            INITIAL_VALUE,
+            RELATIVE_LABEL_POS_LEFT,
+            RELATIVE_LABEL_POS_TOP)
         , willPlaySfx_(false)
         , timeSinceLastPlaySec_(0.0f)
     {
-        PositionRatio(sfml_util::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
+        PositionRatio(gui::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
         isConstructionAndInitFinished_ = true;
     }
 
@@ -70,12 +70,12 @@ namespace sfml_util
         if (CURRENT_POS_PERCENT_INT == 0)
         {
             ss << "MUTE";
-            textInfo.font_letters = sfml_util::GuiFont::SystemCondensed;
+            textInfo.font_letters = gui::GuiFont::SystemCondensed;
         }
         else
         {
             ss << CURRENT_POS_PERCENT_INT;
-            textInfo.font_letters = sfml_util::GuiFont::Number;
+            textInfo.font_letters = gui::GuiFont::Number;
         }
 
         textInfo.text = ss.str();
@@ -100,5 +100,5 @@ namespace sfml_util
         return false;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -87,12 +87,12 @@ namespace stage
     TreasureStage::TreasureStage()
         : StageBase(
             "Treasure",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::DefaultBoldFlavor,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::DefaultBoldFlavor,
+              gui::GuiFont::Handwriting },
             true)
         , displayStagePtrOpt_(boost::none)
         , treasureImageType_(item::TreasureImage::Count)
@@ -115,7 +115,7 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool TreasureStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool TreasureStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->name == POPUP_NAME_NO_TREASURE_)
         {
@@ -371,7 +371,7 @@ namespace stage
         const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
         const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        if ((PACKET_PTR->gui_event == sfml_util::GuiEvent::DoubleClick)
+        if ((PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick)
             || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
         {
             const auto ITEM_PTR { PACKET_PTR->selected_element_ptr->Element() };
@@ -399,7 +399,7 @@ namespace stage
 
         if (itemsPVec.empty())
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+            gui::SoundManager::Instance()->PlaySfx_Reject();
             return;
         }
 
@@ -448,7 +448,7 @@ namespace stage
         const auto NUM_ITEMS_REMAINING { itemsPVec.size() };
         if (NUM_ITEMS_REMAINING == 0)
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+            gui::SoundManager::Instance()->PlaySfx_AckMajor();
 
             std::ostringstream ss;
             ss << "\n"
@@ -464,7 +464,7 @@ namespace stage
         }
         else if (itemsToRemovePVec.empty())
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+            gui::SoundManager::Instance()->PlaySfx_Reject();
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
@@ -476,7 +476,7 @@ namespace stage
         }
         else
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+            gui::SoundManager::Instance()->PlaySfx_Reject();
 
             std::ostringstream ss;
             ss << "\n"
@@ -598,14 +598,14 @@ namespace stage
                 creature::Stats::With::RaceRoleBonus | creature::Stats::With::StandardBonus));
     }
 
-    sfml_util::sound_effect::Enum TreasureStage::SelectRandomTreasureOpeningSfx() const
+    gui::sound_effect::Enum TreasureStage::SelectRandomTreasureOpeningSfx() const
     {
-        std::vector<sfml_util::sound_effect::Enum> treasureOpeningSfx
-            = { sfml_util::sound_effect::TreasureOpen1,
-                sfml_util::sound_effect::TreasureOpen2,
-                sfml_util::sound_effect::TreasureOpen3,
-                sfml_util::sound_effect::TreasureOpen4,
-                sfml_util::sound_effect::TreasureOpen5 };
+        std::vector<gui::sound_effect::Enum> treasureOpeningSfx
+            = { gui::sound_effect::TreasureOpen1,
+                gui::sound_effect::TreasureOpen2,
+                gui::sound_effect::TreasureOpen3,
+                gui::sound_effect::TreasureOpen4,
+                gui::sound_effect::TreasureOpen5 };
 
         return misc::Vector::SelectRandom(treasureOpeningSfx);
     }
@@ -715,8 +715,7 @@ namespace stage
             treasureImageType_ = item::TreasureImage::LockboxOpen;
         }
 
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(
-            SelectRandomTreasureOpeningSfx(), 0.5f);
+        gui::SoundManager::Instance()->SoundEffectPlay(SelectRandomTreasureOpeningSfx(), 0.5f);
 
         lockPicking_.PopupSuccess(
             this,
@@ -742,21 +741,21 @@ namespace stage
                                                      : POPUP_NAME_GEM_SHARE_) };
 
             const auto SOUND_EFFECT_SET { (
-                (WHAT_IS_SHARED == ShareType::Coins) ? sfml_util::sound_effect_set::Coin
-                                                     : sfml_util::sound_effect_set::Gem) };
+                (WHAT_IS_SHARED == ShareType::Coins) ? gui::sound_effect_set::Coin
+                                                     : gui::sound_effect_set::Gem) };
 
-            const auto SOUND_EFFECT { sfml_util::SoundManager::Instance()
-                                          ->GetSoundEffectSet(SOUND_EFFECT_SET)
-                                          .SelectRandom() };
+            const auto SOUND_EFFECT {
+                gui::SoundManager::Instance()->GetSoundEffectSet(SOUND_EFFECT_SET).SelectRandom()
+            };
 
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME,
                 ss.str(),
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular,
-                sfml_util::Justified::Center,
+                gui::Justified::Center,
                 SOUND_EFFECT,
-                sfml_util::FontManager::Instance()->Size_Normal()) };
+                gui::FontManager::Instance()->Size_Normal()) };
 
             SpawnPopup(this, POPUP_INFO);
             return true;
@@ -914,12 +913,12 @@ namespace stage
 
     void TreasureStage::PlaySoundEffect_KeypressValid() const
     {
-        sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+        gui::SoundManager::Instance()->PlaySfx_Keypress();
     }
 
     void TreasureStage::PlaySoundEffect_KeypressInvalid() const
     {
-        sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+        gui::SoundManager::Instance()->PlaySfx_Reject();
     }
 
     void TreasureStage::TakeItem(const item::ItemPtr_t ITEM_PTR)
@@ -929,7 +928,7 @@ namespace stage
 
         if (IS_ITEM_ADD_ALLOWED_STR.empty())
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+            gui::SoundManager::Instance()->PlaySfx_AckMajor();
 
             creaturePtr->ItemAdd(ITEM_PTR);
 
@@ -968,9 +967,9 @@ namespace stage
                 ss.str(),
                 popup::PopupButtons::Cancel,
                 popup::PopupImage::Regular,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::PromptWarn,
-                sfml_util::FontManager::Instance()->Size_Largeish()) };
+                gui::Justified::Center,
+                gui::sound_effect::PromptWarn,
+                gui::FontManager::Instance()->Size_Largeish()) };
 
             SpawnPopup(this, POPUP_INFO);
         }
@@ -978,8 +977,8 @@ namespace stage
 
     void TreasureStage::PutItemBack(const item::ItemPtr_t ITEM_PTR)
     {
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::ItemDrop)
             .PlayRandom();
 
         displayStagePtrOpt_.value()->WhichCharacterInventoryIsDisplayed()->ItemRemove(ITEM_PTR);

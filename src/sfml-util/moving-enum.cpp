@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string Moving::ToString(const Moving::Enum E)
@@ -39,10 +39,10 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Moving::ToString(" << E << ")_InvalidValueError.";
+                ss << "gui::Moving::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         };
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

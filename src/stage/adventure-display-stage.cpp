@@ -47,8 +47,7 @@ namespace stage
         , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
         , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
         , bgCachedTexture_(
-              "media-images-backgrounds-paper-2",
-              sfml_util::ImageOpt::Default | sfml_util::ImageOpt::FlipVert)
+              "media-images-backgrounds-paper-2", gui::ImageOpt::Default | gui::ImageOpt::FlipVert)
         , bgSprite_(bgCachedTexture_.Get())
         , moveTimerSec_(0.0f)
         , wasPressedLeft_(false)
@@ -89,22 +88,20 @@ namespace stage
             moveTimerSec_ = 0.0f;
 
             HandleMovementKeypresses(
-                sfml_util::Direction::Left,
+                gui::Direction::Left,
                 wasPressedLeft_,
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Left));
 
             HandleMovementKeypresses(
-                sfml_util::Direction::Right,
+                gui::Direction::Right,
                 wasPressedRight_,
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Right));
 
             HandleMovementKeypresses(
-                sfml_util::Direction::Up,
-                wasPressedUp_,
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Up));
+                gui::Direction::Up, wasPressedUp_, sf::Keyboard::isKeyPressed(sf::Keyboard::Up));
 
             HandleMovementKeypresses(
-                sfml_util::Direction::Down,
+                gui::Direction::Down,
                 wasPressedDown_,
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Down));
 
@@ -138,7 +135,7 @@ namespace stage
     }
 
     void AdventureDisplayStage::HandleMovementKeypresses(
-        const sfml_util::Direction::Enum DIRECTION, bool & wasPressed, const bool IS_PRESSED)
+        const gui::Direction::Enum DIRECTION, bool & wasPressed, const bool IS_PRESSED)
     {
         if ((false == wasPressed) && IS_PRESSED)
         {
@@ -148,51 +145,50 @@ namespace stage
         {
             mapUPtr_->SetPlayerWalkAnim(DIRECTION, false);
 
-            if ((DIRECTION == sfml_util::Direction::Up)
-                || (DIRECTION == sfml_util::Direction::Down))
+            if ((DIRECTION == gui::Direction::Up) || (DIRECTION == gui::Direction::Down))
             {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Left, true);
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Right, true);
                 }
                 else if (
-                    (DIRECTION == sfml_util::Direction::Up)
+                    (DIRECTION == gui::Direction::Up)
                     && (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Down, true);
                 }
                 else if (
-                    (DIRECTION == sfml_util::Direction::Down)
+                    (DIRECTION == gui::Direction::Down)
                     && (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Up, true);
                 }
             }
             else
             {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Up, true);
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Down, true);
                 }
                 else if (
-                    (DIRECTION == sfml_util::Direction::Left)
+                    (DIRECTION == gui::Direction::Left)
                     && (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Right, true);
                 }
                 else if (
-                    (DIRECTION == sfml_util::Direction::Right)
+                    (DIRECTION == gui::Direction::Right)
                     && (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
+                    mapUPtr_->SetPlayerWalkAnim(gui::Direction::Left, true);
                 }
             }
         }

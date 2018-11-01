@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_I_ENTITY_HPP_INCLUDED
+#define HEROESPATH_GUI_I_ENTITY_HPP_INCLUDED
 //
 // i-entity.hpp
 //
@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for defining a common interface for all gui Entities.
@@ -94,7 +94,7 @@ namespace sfml_util
     using IEntityPVec_t = std::vector<IEntityPtr_t>;
     using IEntityUPtr_t = std::unique_ptr<IEntity>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_I_ENTITY_HPP_INCLUDED
+#endif // HEROESPATH_GUI_I_ENTITY_HPP_INCLUDED

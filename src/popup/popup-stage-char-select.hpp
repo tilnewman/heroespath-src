@@ -45,12 +45,11 @@ namespace popup
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
 
-        const sfml_util::CachedTexture &
-            GetCurrentCachedTexture(const std::size_t IMAGE_INDEX) override;
+        const gui::CachedTexture & GetCurrentCachedTexture(const std::size_t IMAGE_INDEX) override;
 
     private:
-        sfml_util::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        misc::VectorMap<creature::CreaturePtr_t, sfml_util::CachedTexture> creatureToTextureMap_;
+        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        misc::VectorMap<creature::CreaturePtr_t, gui::CachedTexture> creatureToTextureMap_;
     };
 
 } // namespace popup

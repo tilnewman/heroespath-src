@@ -23,7 +23,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     TextEntity::TextEntity(
@@ -239,5 +239,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

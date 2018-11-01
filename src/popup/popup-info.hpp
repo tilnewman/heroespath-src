@@ -41,15 +41,14 @@ namespace popup
         PopupInfo(
             const PopupStage::Enum STAGE,
             const std::string & NAME,
-            const sfml_util::TextInfo & TEXT_INFO,
+            const gui::TextInfo & TEXT_INFO,
             const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric,
             const PopupButtonColor::Enum BUTTON_COLOR = PopupButtonColor::Dark,
             const bool WILL_ADD_RAND_IMAGE = true,
             const std::vector<std::size_t> & INVALID_NUM_VEC = std::vector<std::size_t>(),
-            const sfml_util::CachedTextureVec_t & TEXTURE_VEC = sfml_util::CachedTextureVec_t(),
+            const gui::CachedTextureVec_t & TEXTURE_VEC = gui::CachedTextureVec_t(),
             const std::vector<std::string> & TEXT_VEC = std::vector<std::string>(),
             const float IMAGE_FADE_SPEED = IMAGE_FADE_SPEED_DEFAULT_,
             const creature::CreaturePtrOpt_t & CREATURE_PTR_OPT = boost::none,
@@ -61,24 +60,23 @@ namespace popup
         // use this constructor for image selection popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::TextInfo & TEXT_INFO,
-            const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
+            const gui::TextInfo & TEXT_INFO,
+            const gui::CachedTextureVec_t & TEXTURE_VEC,
             const std::size_t INITIAL_SELECTION,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric,
             const PopupButtonColor::Enum BUTTON_COLOR = PopupButtonColor::Dark);
 
         // use this constructor for number selection popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::TextInfo & TEXT_INFO,
+            const gui::TextInfo & TEXT_INFO,
             const std::size_t THE_MIN,
             const std::size_t THE_MAX);
 
         // use this constructor for end-of-combat popups
         PopupInfo(
             const std::string & NAME,
-            const sfml_util::TextInfo & TEXT_INFO,
+            const gui::TextInfo & TEXT_INFO,
             const PopupButtons::Enum BUTTONS,
             const combat::CombatEnd::Enum HOW_COMBAT_ENDED);
 
@@ -91,8 +89,8 @@ namespace popup
         const std::string Name() const { return name_; }
         PopupButtons::Enum Buttons() const { return buttons_; }
         PopupImage::Enum Image() const { return image_; }
-        const sfml_util::TextInfo TextInfo() const { return textInfo_; }
-        sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
+        const gui::TextInfo TextInfo() const { return textInfo_; }
+        gui::sound_effect::Enum SoundEffect() const { return soundEffect_; }
         float SizeX() const { return ratioX_; }
         float SizeY() const { return ratioY_; }
         PopupButtonColor::Enum ButtonColor() const { return buttonColor_; }
@@ -111,7 +109,7 @@ namespace popup
         bool WillIncludeItems() const { return willIncludeItems_; }
         float KeepAliveSec() const { return keepAliveSeconds_; }
 
-        const sfml_util::CachedTexture & ImagesAt(const std::size_t INDEX) const
+        const gui::CachedTexture & ImagesAt(const std::size_t INDEX) const
         {
             return textures_.at(INDEX);
         }
@@ -172,15 +170,15 @@ namespace popup
         //
         PopupStage::Enum stage_;
         std::string name_;
-        sfml_util::TextInfo textInfo_;
+        gui::TextInfo textInfo_;
         PopupButtons::Enum buttons_;
         PopupImage::Enum image_;
-        sfml_util::sound_effect::Enum soundEffect_;
+        gui::sound_effect::Enum soundEffect_;
         float ratioX_;
         float ratioY_;
         PopupButtonColor::Enum buttonColor_;
         bool willAddRandImage_;
-        sfml_util::CachedTextureVec_t textures_;
+        gui::CachedTextureVec_t textures_;
         std::size_t numberMin_;
         std::size_t numberMax_;
         std::vector<std::size_t> numberInvalidVec_;

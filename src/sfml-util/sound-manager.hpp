@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SOUNDMANAGER_HPP_INCLUDED
+#define HEROESPATH_GUI_SOUNDMANAGER_HPP_INCLUDED
 //
 // sound-manager.hpp
 //  Aound managing class that handles both sf::Sound and sf::Music instances.
@@ -36,7 +36,7 @@ namespace stage
     using IStagePtr_t = misc::NotNull<IStage *>;
 } // namespace stage
 
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for storing all the information needed to play an sfx at some time in the future.
@@ -103,7 +103,7 @@ namespace sfml_util
             const bool WILL_LOOP = true);
 
         void MusicStop(
-            const music::Enum WHICH = sfml_util::music::All,
+            const music::Enum WHICH = gui::music::All,
             const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
         void MusicStop(
@@ -200,7 +200,7 @@ namespace sfml_util
         SfxWrapperVec_t sfxWrapperVec_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SOUNDMANAGER_HPP_INCLUDED

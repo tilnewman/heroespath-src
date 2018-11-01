@@ -29,8 +29,8 @@ namespace map
             const bool IS_ENTRY = true,
             const Level::Enum LEVEL = Level::Count,
             const sf::FloatRect & RECT = sf::FloatRect(),
-            const sfml_util::sound_effect::MapTransition TRANS_TYPE
-            = sfml_util::sound_effect::MapTransition::Count)
+            const gui::sound_effect::MapTransition TRANS_TYPE
+            = gui::sound_effect::MapTransition::Count)
             : isEntry_(IS_ENTRY)
             , level_(LEVEL)
             , rect_(RECT)
@@ -40,7 +40,7 @@ namespace map
         bool IsEntry() const { return isEntry_; }
         Level::Enum WhichLevel() const { return level_; }
         const sf::FloatRect Rect() const { return rect_; }
-        sfml_util::sound_effect::MapTransition TransType() const { return transSfxType_; }
+        gui::sound_effect::MapTransition TransType() const { return transSfxType_; }
 
         const sf::Vector2f Center() const
         {
@@ -52,7 +52,7 @@ namespace map
         bool isEntry_;
         Level::Enum level_;
         sf::FloatRect rect_;
-        sfml_util::sound_effect::MapTransition transSfxType_;
+        gui::sound_effect::MapTransition transSfxType_;
     };
 
     using TransitionVec_t = std::vector<Transition>;

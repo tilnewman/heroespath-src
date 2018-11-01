@@ -41,10 +41,10 @@ namespace popup
         const std::string PickImagePathKey(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
         void PlaySfxForHowCombatEnded(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
 
-        sfml_util::CachedTexture bgCachedTexture_;
+        gui::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
-        sfml_util::TextRegionUPtr_t titleTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
+        gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 } // namespace popup
 } // namespace heroespath

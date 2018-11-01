@@ -205,7 +205,7 @@ namespace creature
 
         Intell_t Intelligence() const { return Intell_t(TraitWorking(Traits::Intelligence)); }
 
-        const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
+        const gui::DateTime DateTimeCreated() const { return dateTimeCreated_; }
 
         const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
 
@@ -416,7 +416,7 @@ namespace creature
         CondEnumVec_t conditionsVec_;
         TitleEnumVec_t titlesVec_;
         item::Inventory inventory_;
-        sfml_util::DateTime dateTimeCreated_;
+        gui::DateTime dateTimeCreated_;
         spell::SpellEnumVec_t spellsVec_;
         Achievements achievements_;
 

@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for holding the amounts of empty space that surround a region.
@@ -88,7 +88,7 @@ namespace sfml_util
         float bottom;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
 #endif // HEROESPATH_GAME_MARGINS_HPP_INCLUDED

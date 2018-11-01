@@ -295,8 +295,7 @@ namespace game
 
             if (GAMESTATE_PTR_OPT)
             {
-                GAMESTATE_PTR_OPT.value()->DateTimeOfLastSaveSet(
-                    sfml_util::DateTime::CurrentDateTime());
+                GAMESTATE_PTR_OPT.value()->DateTimeOfLastSaveSet(gui::DateTime::CurrentDateTime());
 
                 GAMESTATE_PTR_OPT.value()->BeforeSerialize();
                 outputTextArchive << *GAMESTATE_PTR_OPT.value();

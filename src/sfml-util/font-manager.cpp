@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     const unsigned int FontManager::SIZE_LARGER_MIN_(36);
     const unsigned int FontManager::SIZE_LARGER_MAX_(144);
@@ -85,7 +85,7 @@ namespace sfml_util
     void FontManager::Release()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "sfml_util::FontManager::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "gui::FontManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -94,13 +94,13 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
-            "sfml_util::FontManager::GetFont(font_enum="
-                << static_cast<misc::EnumUnderlying_t>(FONT) << ") given an invalid font enum.");
+            "gui::FontManager::GetFont(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+                                                   << ") given an invalid font enum.");
 
         if (IsLoaded(FONT) == false)
         {
             M_HP_LOG_WRN(
-                "sfml_util::FontManager::GetFont("
+                "gui::FontManager::GetFont("
                 << GuiFont::ToString(FONT) << "/" << GuiFont::Name(FONT)
                 << ") asked to return a font that was not already loaded.  Loading now...");
 
@@ -114,14 +114,14 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
-            "sfml_util::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
-                                                      << ") given an invalid font enum.");
+            "gui::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+                                                << ") given an invalid font enum.");
 
         if (IsLoaded(FONT) == false)
         {
             auto & fontUPtr { GetFontRef(FONT) };
             fontUPtr = std::make_unique<sf::Font>();
-            sfml_util::Loaders::Font(
+            gui::Loaders::Font(
                 *fontUPtr,
                 misc::filesystem::CombinePathsThenClean(fontsDirPathStr_, GuiFont::Path(FONT)));
         }
@@ -139,8 +139,8 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (GuiFont::IsValid(FONT)),
-            "sfml_util::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
-                                                        << ") given an invalid font enum.");
+            "gui::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+                                                  << ") given an invalid font enum.");
 
         GetFontRef(FONT).reset();
     }
@@ -261,5 +261,5 @@ namespace sfml_util
         return fontUVec_.at(static_cast<std::size_t>(FONT));
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

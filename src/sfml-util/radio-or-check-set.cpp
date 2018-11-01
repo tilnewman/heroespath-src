@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     RadioOrCheckSet::RadioOrCheckSet(
@@ -75,7 +75,7 @@ namespace sfml_util
             mti.over.text = TITLE_VALID_PAIR.first;
             mti.disabled.text = TITLE_VALID_PAIR.first;
 
-            entityUVec_.emplace_back(std::make_unique<sfml_util::RadioOrCheckEntity>(
+            entityUVec_.emplace_back(std::make_unique<gui::RadioOrCheckEntity>(
                 "RadioOrCheckEntity_For_" + GetEntityName(),
                 TITLE_VALID_PAIR.second,
                 IS_RADIO_BUTTON,
@@ -308,5 +308,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -24,7 +24,7 @@ namespace popup
         : PopupStageBase(POPUP_INFO)
         , bgCachedTexture_(
               "media-images-misc-error",
-              sfml_util::ImageOptions(sfml_util::ImageOpt::Default, sf::Color::White))
+              gui::ImageOptions(gui::ImageOpt::Default, sf::Color::White))
         , bgSprite_(bgCachedTexture_.Get())
     {}
 

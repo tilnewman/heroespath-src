@@ -14,7 +14,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Animation::Animation(
@@ -44,5 +44,5 @@ namespace sfml_util
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

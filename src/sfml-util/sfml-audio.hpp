@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SFMLAUDIO_HPP_INCLUDED
+#define HEROESPATH_GUI_SFMLAUDIO_HPP_INCLUDED
 //
 // sfml-audio.hpp
 //
@@ -29,12 +29,12 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     using MusicUPtr_t = std::unique_ptr<sf::Music>;
     using SoundUPtr_t = std::unique_ptr<sf::Sound>;
     using SoundBufferUPtr_t = std::unique_ptr<sf::SoundBuffer>;
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SFMLAUDIO_HPP_INCLUDED

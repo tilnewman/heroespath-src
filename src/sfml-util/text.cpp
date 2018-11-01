@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Text::Text()
@@ -71,7 +71,7 @@ namespace sfml_util
 
         if (GuiFont::IsValid(font_))
         {
-            sfText_.setFont(*sfml_util::FontManager::Instance()->GetFont(font_));
+            sfText_.setFont(*gui::FontManager::Instance()->GetFont(font_));
         }
 
         UpdateAfterChangingCachedString();
@@ -113,7 +113,7 @@ namespace sfml_util
 
         if (GuiFont::IsValid(font_))
         {
-            sfText_.setFont(*sfml_util::FontManager::Instance()->GetFont(font_));
+            sfText_.setFont(*gui::FontManager::Instance()->GetFont(font_));
         }
 
         if (sf::Color::Transparent == COLOR)
@@ -319,5 +319,5 @@ namespace sfml_util
         sfText_.setOrigin(sfutil::Position(sfText_.getLocalBounds()));
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

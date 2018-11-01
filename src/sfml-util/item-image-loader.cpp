@@ -31,7 +31,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string ItemImageLoader::FILE_EXT_STR_ { ".png" };
@@ -52,7 +52,7 @@ namespace sfml_util
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            iStagePtr->TestingStrAppend("sfml_util::ItemImageLoader::Test()  Starting tests...");
+            iStagePtr->TestingStrAppend("gui::ItemImageLoader::Test()  Starting tests...");
         }
 
         const std::string TEST_PRE_STR { "ItemImageLoader Test " };
@@ -191,7 +191,7 @@ namespace sfml_util
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (FILENAMES_VEC.empty() == false),
-                    "sfml_util::ItemImageLoader::Test() While testing misc item #"
+                    "gui::ItemImageLoader::Test() While testing misc item #"
                         << miscIndex << " \"" << ENUM_STR << "\", is_jeweled=" << std::boolalpha
                         << IS_JEWELED << ", Filenames() returned an empty vector.");
 
@@ -203,7 +203,7 @@ namespace sfml_util
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (FILENAME.empty() == false),
-                        "sfml_util::ItemImageLoader::Test() (rand)  "
+                        "gui::ItemImageLoader::Test() (rand)  "
                             << "While testing misc item #" << miscIndex << " \"" << ENUM_STR
                             << "\", filename #" << fileIndex << ", is_jeweled=" << std::boolalpha
                             << IS_JEWELED << ", found an empty filename string.");
@@ -250,12 +250,12 @@ namespace sfml_util
         for (const auto & FILENAME : allPaths)
         {
             M_HP_LOG_WRN(
-                "sfml_util::ItemImageLoader::Test() found the following item image "
+                "gui::ItemImageLoader::Test() found the following item image "
                 "unused: "
                 << FILENAME);
         }
 
-        iStagePtr->TestingStrAppend("sfml_util::ItemImageLoader::Test()  ALL TESTS PASSED.");
+        iStagePtr->TestingStrAppend("gui::ItemImageLoader::Test()  ALL TESTS PASSED.");
         return true;
     }
 
@@ -305,7 +305,7 @@ namespace sfml_util
         }
 
         std::ostringstream ss;
-        ss << "sfml_util::ItemImageLoader::Filename(item={" << ITEM_PTR->ToString()
+        ss << "gui::ItemImageLoader::Filename(item={" << ITEM_PTR->ToString()
            << "}, will_randomize=" << std::boolalpha << WILL_RANDOMIZE
            << ") failed to find the image filename for that item because it was not weapon, "
               "armor, or misc type.";
@@ -597,7 +597,7 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::ItemImageLoader::Filenames(misc_type="
+                ss << "gui::ItemImageLoader::Filenames(misc_type="
                    << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
                    << ", is_jeweled=" << std::boolalpha << IS_JEWELED << ", is_bone=" << IS_BONE
                    << ") but that misc_type is somehow invalid.";
@@ -617,7 +617,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
-            "sfml_util::ItemImageLoader::Filename(misc_type="
+            "gui::ItemImageLoader::Filename(misc_type="
                 << ((MISC_TYPE == item::misc_type::Count) ? "Count"
                                                           : item::misc_type::ToString(MISC_TYPE))
                 << ", is_jeweled=" << std::boolalpha << IS_JEWELED << ", is_bone=" << IS_BONE
@@ -685,7 +685,7 @@ namespace sfml_util
 
     void ItemImageLoader::Load(sf::Texture & texture, const std::string & FILENAME) const
     {
-        sfml_util::Loaders::Texture(texture, MakeFullPathFromFilename(FILENAME));
+        gui::Loaders::Texture(texture, MakeFullPathFromFilename(FILENAME));
     }
 
     const std::string ItemImageLoader::MakeFullPathFromFilename(const std::string & FILENAME) const
@@ -702,7 +702,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             ((SIZE.x == DIMMENSION) || (SIZE.y == DIMMENSION)),
-            "sfml_util::ItemImageLoader::EnsureValidDimmensions() was given an image of "
+            "gui::ItemImageLoader::EnsureValidDimmensions() was given an image of "
             "size="
                 << SIZE.x << "x" << SIZE.y << " but neither of those dimmensions was the required "
                 << DIMMENSION << ".  This error occured during testing \"" << ERROR_MSG << "\".");
@@ -724,5 +724,5 @@ namespace sfml_util
         return filenames;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

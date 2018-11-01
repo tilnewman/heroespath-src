@@ -48,13 +48,13 @@ namespace game
 
         void SetupAsNewGame();
 
-        const sfml_util::DateTime DateTimeStarted() const { return dateTimeStarted_; }
+        const gui::DateTime DateTimeStarted() const { return dateTimeStarted_; }
 
-        void DateTimeStartedSet(const sfml_util::DateTime & DT) { dateTimeStarted_ = DT; }
+        void DateTimeStartedSet(const gui::DateTime & DT) { dateTimeStarted_ = DT; }
 
-        const sfml_util::DateTime DateTimeOfLastSave() const { return dateTimeLastSave_; }
+        const gui::DateTime DateTimeOfLastSave() const { return dateTimeLastSave_; }
 
-        void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT) { dateTimeLastSave_ = DT; }
+        void DateTimeOfLastSaveSet(const gui::DateTime & DT) { dateTimeLastSave_ = DT; }
 
         void BeforeSerialize();
         void AfterSerialize();
@@ -67,8 +67,8 @@ namespace game
         creature::PlayerPartyUPtr_t partyUPtr_;
         WorldUPtr_t worldUPtr_;
         bool isGameNew_;
-        sfml_util::DateTime dateTimeStarted_;
-        sfml_util::DateTime dateTimeLastSave_;
+        gui::DateTime dateTimeStarted_;
+        gui::DateTime dateTimeLastSave_;
 
     private:
         friend class boost::serialization::access;

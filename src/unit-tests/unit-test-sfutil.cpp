@@ -59,7 +59,7 @@
 #include "unit-test-test-stuff.hpp"
 
 using namespace test_stuff;
-using namespace heroespath::sfml_util;
+using namespace heroespath::gui;
 using namespace heroespath::sfutil;
 using namespace heroespath::misc;
 
@@ -1169,7 +1169,7 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
     // display tests
 
     heroespath::misc::Log::Acquire();
-    heroespath::sfml_util::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0);
+    heroespath::gui::Display::Acquire("HeroespathTestDisplay", sf::Style::None, 0);
 
     const sf::Vector2f SCREEN_SIZE_V(DisplaySize());
     const float HALF_SCALE(0.5f);
@@ -1229,7 +1229,7 @@ BOOST_AUTO_TEST_CASE(DisplayAndCenterTests)
             SCREEN_CENTER_V - ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F * 0.5f),
             ScaleCopy(sf::Vector2f(300.0f, 400.0f), SCALE_V_F)));
 
-    heroespath::sfml_util::Display::Release();
+    heroespath::gui::Display::Release();
     heroespath::misc::Log::Release();
 }
 

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_BORDER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_BORDER_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_BORDER_HPP_INCLUDED
+#define HEROESPATH_GUI_BORDER_HPP_INCLUDED
 //
 // border.hpp
 //
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for keeping and drawing a rectangular border that can be made of lines or
@@ -118,7 +118,7 @@ namespace sfml_util
     // intentionally ignores willDraw_
     inline bool operator!=(const Border & L, const Border & R) { return !(L == R); }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_BORDER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_BORDER_HPP_INCLUDED

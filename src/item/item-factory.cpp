@@ -172,7 +172,7 @@ namespace item
 
             iStagePtr->TestingStrAppend(ss.str());
 
-            sfml_util::ItemImageLoader itemImageLoader;
+            gui::ItemImageLoader itemImageLoader;
 
             for (const auto & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {

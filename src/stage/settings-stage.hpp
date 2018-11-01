@@ -35,9 +35,9 @@ namespace stage
     class SettingsStage
         : public stage::StageBase
 
-        , public sfml_util::PopupCallback_t::IHandler_t
-        //, public sfml_util::RadioButtonSet::Callback_t::IHandler_t
-        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
+        , public gui::PopupCallback_t::IHandler_t
+        //, public gui::RadioButtonSet::Callback_t::IHandler_t
+        , public gui::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
         SettingsStage(const SettingsStage &) = delete;
@@ -48,12 +48,12 @@ namespace stage
         SettingsStage();
         virtual ~SettingsStage();
 
-        // bool HandleCallback(const sfml_util::RadioButton::Callback_t::PacketPtr_t &)
+        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t &)
         // override;
 
-        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -82,9 +82,9 @@ namespace stage
         void Setup_MusicInfoBox(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT);
 
-        const sfml_util::TextInfo CreateLabelTextInfo(const std::string & TITLE) const;
+        const gui::TextInfo CreateLabelTextInfo(const std::string & TITLE) const;
 
-        const sfml_util::MouseTextInfo CreateSliderbarValueTextInfoSet() const;
+        const gui::MouseTextInfo CreateSliderbarValueTextInfoSet() const;
 
         float HorizPositionOfColumn(
             const std::size_t COLUMN_NUM, const sf::FloatRect & BG_BOX_INNER_RECT);
@@ -95,22 +95,22 @@ namespace stage
         const float SLIDER_LENGTH_VERT_;
         bool hasStageAlreadyBeenSetup_;
         unsigned prevAALevel_;
-        sfml_util::BoxEntity screenBgBox_;
-        sfml_util::StageTitle stageTitle_;
-        sfml_util::BottomSymbol bottomSymbol_;
-        sfml_util::MainMenuButtonUPtr_t backButtonUPtr_;
-        sfml_util::BoxEntityUPtr_t settingsBoxUPtr_;
-        sfml_util::TextRegionUPtr_t resLabelTextRegionUPtr_;
-        // sfml_util::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
-        sfml_util::TextRegionUPtr_t aaLabelTextRegionUPtr_;
-        // sfml_util::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
-        sfml_util::TextRegionUPtr_t musicVolLabelTextRegionUPtr_;
-        sfml_util::SliderBarMusicUPtr_t musicVolSliderBarUPtr_;
-        sfml_util::TextRegionUPtr_t effectsVolLabelTextRegionUPtr_;
-        sfml_util::SliderBarSfxUPtr_t effectsVolSliderBarUPtr_;
-        sfml_util::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t revLabelTextRegionUPtr_;
+        gui::BoxEntity screenBgBox_;
+        gui::StageTitle stageTitle_;
+        gui::BottomSymbol bottomSymbol_;
+        gui::MainMenuButtonUPtr_t backButtonUPtr_;
+        gui::BoxEntityUPtr_t settingsBoxUPtr_;
+        gui::TextRegionUPtr_t resLabelTextRegionUPtr_;
+        // gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
+        gui::TextRegionUPtr_t aaLabelTextRegionUPtr_;
+        // gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
+        gui::TextRegionUPtr_t musicVolLabelTextRegionUPtr_;
+        gui::SliderBarMusicUPtr_t musicVolSliderBarUPtr_;
+        gui::TextRegionUPtr_t effectsVolLabelTextRegionUPtr_;
+        gui::SliderBarSfxUPtr_t effectsVolSliderBarUPtr_;
+        gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
+        gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
+        gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
     };
 
 } // namespace stage

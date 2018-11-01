@@ -72,7 +72,7 @@ namespace map
             const boost::property_tree::ptree &,
             bool &,
             Level::Enum &,
-            sfml_util::sound_effect::MapTransition &) const;
+            gui::sound_effect::MapTransition &) const;
 
         void Parse_Layer_WalkSfxs(const boost::property_tree::ptree &, WalkSfxRegionLayers &) const;
 

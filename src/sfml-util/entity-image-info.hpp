@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ENTITY_IMAGE_INFO_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_ENTITY_IMAGE_INFO_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ENTITY_IMAGE_INFO_HPP_INCLUDED
+#define HEROESPATH_GUI_ENTITY_IMAGE_INFO_HPP_INCLUDED
 //
 // entity-image-info.hpp
 //
@@ -22,7 +22,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for wrapping all the information required by a Entity to store and draw an
@@ -103,9 +103,9 @@ namespace sfml_util
         return !(R == L);
     }
 
-} // namespace sfml_util
+} // namespace gui
 
-inline std::ostream & operator<<(std::ostream & os, const sfml_util::EntityImageInfo & EII)
+inline std::ostream & operator<<(std::ostream & os, const gui::EntityImageInfo & EII)
 {
     os << EII.ToString();
     return os;
@@ -113,4 +113,4 @@ inline std::ostream & operator<<(std::ostream & os, const sfml_util::EntityImage
 
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ENTITY_IMAGE_INFO_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ENTITY_IMAGE_INFO_HPP_INCLUDED

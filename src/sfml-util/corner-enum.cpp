@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     void Corner::ToStringPopulate(
         std::ostringstream & ss,
@@ -26,5 +26,5 @@ namespace sfml_util
         AppendNameIfBitIsSet(ss, ENUM_VALUE, Corner::BottomRight, "BottomRight", SEPARATOR);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

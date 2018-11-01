@@ -176,11 +176,11 @@ namespace game
         {
             case stage::Stage::Settings:
             {
-                return MusicCommand(sfml_util::music::All, sfml_util::music::Theme);
+                return MusicCommand(gui::music::All, gui::music::Theme);
             }
             case stage::Stage::Menu:
             {
-                return MusicCommand(sfml_util::music::Wind, sfml_util::music::Theme);
+                return MusicCommand(gui::music::Wind, gui::music::Theme);
             }
             case stage::Stage::Intro:
             {
@@ -193,27 +193,26 @@ namespace game
             }
             case stage::Stage::Credits:
             {
-                return MusicCommand(sfml_util::music::All, sfml_util::music::Credits);
+                return MusicCommand(gui::music::All, gui::music::Credits);
             }
             case stage::Stage::Party:
             {
-                return MusicCommand(sfml_util::music::All, sfml_util::music::PartyCreation);
+                return MusicCommand(gui::music::All, gui::music::PartyCreation);
             }
             case stage::Stage::Camp:
             {
                 const auto MUSIC_VOLUME_MIN { misc::ConfigFile::Instance()->ValueOrDefault<float>(
                     "system-audio-music-volume-min") };
 
-                return MusicCommand(
-                    sfml_util::music::All, sfml_util::music::Theme, MUSIC_VOLUME_MIN);
+                return MusicCommand(gui::music::All, gui::music::Theme, MUSIC_VOLUME_MIN);
             }
             case stage::Stage::Character:
             {
-                return MusicCommand(sfml_util::music::All, sfml_util::music::Wind);
+                return MusicCommand(gui::music::All, gui::music::Wind);
             }
             case stage::Stage::Inventory:
             {
-                return MusicCommand(sfml_util::music::None, sfml_util::music::Inventory);
+                return MusicCommand(gui::music::None, gui::music::Inventory);
             }
             case stage::Stage::Load:
             case stage::Stage::Previous:

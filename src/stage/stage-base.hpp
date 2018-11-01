@@ -29,7 +29,7 @@ class RenderStates;
 namespace heroespath
 {
 
-namespace sfml_util
+namespace gui
 {
     class IEntity;
     using IEntityPtr_t = misc::NotNull<IEntity *>;
@@ -38,7 +38,7 @@ namespace sfml_util
 
     class BoxEntity;
     using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
-} // namespace sfml_util
+} // namespace gui
 
 namespace stage
 {
@@ -49,16 +49,16 @@ namespace stage
     public:
         StageBase(
             const std::string & NAME,
-            const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
+            const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
             const bool WILL_CLEAR_CACHE_ON_EXIT,
-            const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD = {});
+            const gui::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
         StageBase(
             const std::string & NAME,
             const sf::FloatRect & REGION,
-            const sfml_util::FontEnumVec_t & FONTS_TO_PRELOAD,
+            const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
             const bool WILL_CLEAR_CACHE_ON_EXIT,
-            const sfml_util::SfxEnumVec_t & SFX_TO_PRELOAD = {});
+            const gui::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
         virtual ~StageBase();
 
@@ -81,28 +81,28 @@ namespace stage
         void UpdateMouseWheel(
             const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) override;
 
-        const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
-        const sfml_util::IEntityPtrOpt_t GetEntityWithFocus() const override final
+        const gui::IEntityPtrOpt_t GetEntityWithFocus() const override final
         {
             return entityWithFocusPtrOpt_;
         }
 
         void RemoveFocus() override final;
-        void SetFocus(const sfml_util::IEntityPtr_t ENTITY_PTR) override final;
+        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override final;
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
         void HandleResolutionChange() override {}
 
         void EntityAdd(
-            const sfml_util::IEntityPtr_t,
+            const gui::IEntityPtr_t,
             const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override final;
 
-        void EntityRemove(const sfml_util::IEntityPtr_t) override final;
+        void EntityRemove(const gui::IEntityPtr_t) override final;
 
         void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override final;
 
@@ -122,7 +122,7 @@ namespace stage
         void IsFading(const bool IS_FADING) override final { isFading_ = IS_FADING; }
 
         void SpawnPopup(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO) const override final;
 
         void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0)
@@ -132,9 +132,9 @@ namespace stage
 
         void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const override final;
 
-        const sfml_util::DisplayChangeResult ChangeResolution(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-            const sfml_util::Resolution & NEW_RES,
+        const gui::DisplayChangeResult ChangeResolution(
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL) const override final;
 
     private:
@@ -144,13 +144,13 @@ namespace stage
         sf::FloatRect stageRegion_;
 
         // these are observer pointers whose lifetime is not controlled by this class
-        sfml_util::IEntityPVec_t entityPVec_;
+        gui::IEntityPVec_t entityPVec_;
 
         // a copy of an observer ptr in entityPVec_
-        sfml_util::IEntityPtrOpt_t entityWithFocusPtrOpt_;
+        gui::IEntityPtrOpt_t entityWithFocusPtrOpt_;
 
-        sfml_util::BoxEntityUPtr_t hoverTextBoxUPtr_;
-        sfml_util::Text hoverText_;
+        gui::BoxEntityUPtr_t hoverTextBoxUPtr_;
+        gui::Text hoverText_;
         bool isFading_;
 
     protected:

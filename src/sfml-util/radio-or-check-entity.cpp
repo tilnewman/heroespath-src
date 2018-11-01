@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     RadioOrCheckEntity::RadioOrCheckEntity(
@@ -30,12 +30,12 @@ namespace sfml_util
         const float TEXT_POS_TOP,
         const float BETWEEN_SPACER)
         : ImageTextEntity(
-              NAME + "_RadioOrCheckEntity",
-              MouseImageInfo(),
-              MouseTextInfo(),
-              boost::none,
-              ImageTextEntity::MouseStateSync::Image,
-              true)
+            NAME + "_RadioOrCheckEntity",
+            MouseImageInfo(),
+            MouseTextInfo(),
+            boost::none,
+            ImageTextEntity::MouseStateSync::Image,
+            true)
         , isRadioButton_(IS_RADIO_BUTTON)
         , isMouseDownOnImage_(false)
         , isMouseOverRegion_(false)
@@ -51,7 +51,7 @@ namespace sfml_util
 
         const auto TEXT_POS_LEFT { IMAGE_POS_LEFT + IMAGE_SIZE_V.x + BETWEEN_SPACER };
 
-        textEntityUPtr_ = std::make_unique<sfml_util::TextEntity>(
+        textEntityUPtr_ = std::make_unique<gui::TextEntity>(
             "TextEntity_Of_" + GetEntityName(), TEXT_POS_LEFT, TEXT_POS_TOP, MOUSE_TEXT_INFO);
 
         const auto IMAGE_POS_TOP { sfutil::CenterOfVert(textEntityUPtr_->GetEntityRegion())
@@ -75,7 +75,7 @@ namespace sfml_util
         const MouseImageInfo MOUSE_IMAGE_INFO(
             false, IMAGE_INFO_UP, IMAGE_INFO_DOWN, EntityImageInfo(), IMAGE_INFO_DISABLED);
 
-        imageEntityUPtr_ = std::make_unique<sfml_util::ImageEntity>(
+        imageEntityUPtr_ = std::make_unique<gui::ImageEntity>(
             "ImageEntity_Of_" + GetEntityName(), MOUSE_IMAGE_INFO);
 
         if (IS_INVALID)
@@ -275,5 +275,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

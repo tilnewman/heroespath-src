@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_FONTMANAGER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_FONTMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_FONTMANAGER_HPP_INCLUDED
+#define HEROESPATH_GUI_FONTMANAGER_HPP_INCLUDED
 //
 // font-manager.hpp
 //  Font specific gui code.
@@ -34,7 +34,7 @@ using FontPtrOpt_t = boost::optional<FontPtr_t>;
 using FontUPtr_t = std::unique_ptr<sf::Font>;
 using FontUVec_t = std::vector<FontUPtr_t>;
 
-namespace sfml_util
+namespace gui
 {
 
     // A class that loads, stores, and distributes fonts.
@@ -103,7 +103,7 @@ namespace sfml_util
         std::string fontsDirPathStr_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_FONTMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_FONTMANAGER_HPP_INCLUDED

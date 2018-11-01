@@ -22,7 +22,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     SliderBarLabeled::SliderBarLabeled(
@@ -36,14 +36,14 @@ namespace sfml_util
         const float LABEL_POS_OFFSET_LEFT,
         const float LABEL_POS_OFFSET_TOP)
         : SliderBar(
-              std::string(NAME).append("_SliderBarLabeled"),
-              POS_LEFT,
-              POS_TOP,
-              LENGTH,
-              STYLE,
-              boost::none,
-              INITIAL_VALUE,
-              true)
+            std::string(NAME).append("_SliderBarLabeled"),
+            POS_LEFT,
+            POS_TOP,
+            LENGTH,
+            STYLE,
+            boost::none,
+            INITIAL_VALUE,
+            true)
         , threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER)
         , textRegionUPtr_(std::make_unique<TextRegion>("SliderBarLabeled's"))
         , labelOffsetX_(LABEL_POS_OFFSET_LEFT)
@@ -118,5 +118,5 @@ namespace sfml_util
         return textInfo;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

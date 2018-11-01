@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     void Loaders::Texture(
@@ -27,13 +27,13 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::Texture(\""
+            "gui::Loaders::Texture(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             texture.loadFromFile(PATH_STR_COMPLETE),
-            "sfml_util::Loaders::Texture(), sf::(Image or Texture).loadFromFile(\""
+            "gui::Loaders::Texture(), sf::(Image or Texture).loadFromFile(\""
                 << PATH_STR_COMPLETE << "\") failed.  Check console output for information.");
 
         if (WILL_SMOOTH)
@@ -51,7 +51,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsDirectory(DIR_PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::AllTexturesInDir(\""
+            "gui::Loaders::AllTexturesInDir(\""
                 << DIR_PATH_STR_COMPLETE
                 << "\") failed because either that path is not a directory or it does not exist.");
 
@@ -79,13 +79,13 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::Font(\""
+            "gui::Loaders::Font(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (font.loadFromFile(PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::Font(), sf::Font::loadFromFile(\""
+            "gui::Loaders::Font(), sf::Font::loadFromFile(\""
                 << PATH_STR_COMPLETE << "\") failed.  "
                 << "Check console output for information.");
     }
@@ -96,7 +96,7 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::Music(\""
+            "gui::Loaders::Music(\""
                 << PATH_STR_COMPLETE
                 << "\") failed because that file either does not exist or is not a regular file.");
 
@@ -104,12 +104,12 @@ namespace sfml_util
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (musicUPtr->openFromFile(PATH_STR_COMPLETE)),
-            "sfml_util::Loaders::Music(\"" << PATH_STR_COMPLETE
-                                           << "\"), sf::Music::OpenFromFile() returned false.  "
-                                           << "See console output for more information.");
+            "gui::Loaders::Music(\"" << PATH_STR_COMPLETE
+                                     << "\"), sf::Music::OpenFromFile() returned false.  "
+                                     << "See console output for more information.");
 
         return musicUPtr;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

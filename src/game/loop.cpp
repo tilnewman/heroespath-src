@@ -37,7 +37,7 @@ namespace game
         , isMouseHovering_(false)
         , frameRateVec_(4096, 0.0f) // any number over 1000 should work here
         , frameRateSampleCount_(0)
-        , prevMousePosV_(sfml_util::Display::Instance()->GetMousePosition())
+        , prevMousePosV_(gui::Display::Instance()->GetMousePosition())
         , frameMouseInfo_(false, sf::Vector2i())
     {
         iStatus_.SetLoopRunning(true);
@@ -47,7 +47,7 @@ namespace game
 
     void Loop::Execute()
     {
-        sfml_util::Display::Instance()->SetMouseCursorVisibility(!flags_.will_hide_mouse);
+        gui::Display::Instance()->SetMouseCursorVisibility(!flags_.will_hide_mouse);
 
         sf::Clock secondClock_;
         sf::Clock frameClock;
@@ -58,7 +58,7 @@ namespace game
 
             while (!iStatus_.IsLoopStopRequested())
             {
-                sfml_util::Display::Instance()->ClearToBlack();
+                gui::Display::Instance()->ClearToBlack();
 
                 frameMouseInfo_ = UpdateMouseInfo();
 
@@ -86,7 +86,7 @@ namespace game
                 // a popup response and it will always be handled before the loop exits
                 stages_.HandlePopupResponseCallback();
 
-                sfml_util::Display::Instance()->DisplayFrameBuffer();
+                gui::Display::Instance()->DisplayFrameBuffer();
             }
         }
         catch (const std::exception & EXCEPTION)
@@ -107,7 +107,7 @@ namespace game
 
     const MouseThisFrame Loop::UpdateMouseInfo()
     {
-        const auto NEW_MOUSE_POS_VI { sfml_util::Display::Instance()->GetMousePosition() };
+        const auto NEW_MOUSE_POS_VI { gui::Display::Instance()->GetMousePosition() };
         const auto HAS_MOUSE_MOVED { (NEW_MOUSE_POS_VI != prevMousePosV_) };
         prevMousePosV_ = NEW_MOUSE_POS_VI;
         return MouseThisFrame(HAS_MOUSE_MOVED, NEW_MOUSE_POS_VI);
@@ -218,7 +218,7 @@ namespace game
 
     void Loop::OncePerSecondTaskCheckIfDisplayOpen()
     {
-        if (sfml_util::Display::Instance()->IsOpen() == false)
+        if (gui::Display::Instance()->IsOpen() == false)
         {
             iStatus_.LoopStopRequest();
         }
@@ -246,10 +246,9 @@ namespace game
             return;
         }
 
-        iStatus_.SetFadeCurrentColor(
-            sfml_util::Display::Instance()->UpdateFadeColor(FRAME_TIME_SEC));
+        iStatus_.SetFadeCurrentColor(gui::Display::Instance()->UpdateFadeColor(FRAME_TIME_SEC));
 
-        if (sfml_util::Display::Instance()->IsFadeFinished())
+        if (gui::Display::Instance()->IsFadeFinished())
         {
             iStatus_.SetFadeTargetColorReached();
             iStatus_.LoopStopRequest();
@@ -259,7 +258,7 @@ namespace game
 
     void Loop::HandleEvents()
     {
-        for (const auto & EVENT : sfml_util::Display::Instance()->PollEvents())
+        for (const auto & EVENT : gui::Display::Instance()->PollEvents())
         {
             HandleEvent(EVENT);
         }
@@ -322,7 +321,7 @@ namespace game
             && (EVENT.key.code == sf::Keyboard::F12))
         {
             M_HP_LOG(makeLogString() + " causing screenshot save.");
-            sfml_util::Display::Instance()->TakeScreenshot();
+            gui::Display::Instance()->TakeScreenshot();
             return;
         }
 
@@ -433,7 +432,7 @@ namespace game
 
     void Loop::ConsumeAndIgnoreStrayEvents()
     {
-        for (const auto & EVENT : sfml_util::Display::Instance()->PollEvents())
+        for (const auto & EVENT : gui::Display::Instance()->PollEvents())
         {
             if (HandleEventIfWindowClosed(EVENT))
             {
@@ -476,7 +475,7 @@ namespace game
     void Loop::Draw()
     {
         auto handleDrawing = [](stage::IStagePtr_t iStagePtr) {
-            sfml_util::Display::Instance()->DrawStage(iStagePtr);
+            gui::Display::Instance()->DrawStage(iStagePtr);
             return boost::none;
         };
 
@@ -484,14 +483,14 @@ namespace game
 
         if (iStatus_.GetFadeStatus().will_draw_under_popup)
         {
-            sfml_util::Display::Instance()->DrawFade();
+            gui::Display::Instance()->DrawFade();
         }
 
         stages_.ExecuteOnPopupStage(handleDrawing);
 
         if (iStatus_.GetFadeStatus().will_draw_under_popup == false)
         {
-            sfml_util::Display::Instance()->DrawFade();
+            gui::Display::Instance()->DrawFade();
         }
     }
 
@@ -520,7 +519,7 @@ namespace game
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)
     {
-        sfml_util::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
+        gui::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
     }
 
 } // namespace game

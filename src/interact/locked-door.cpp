@@ -32,7 +32,7 @@ namespace interact
             InteractionBase::MakeTextInfo("This door is locked.", Text::System),
             ButtonVec_t({ Button(Buttons::Unlock), Button(Buttons::Ignore) }),
             "media-images-misc-door-locked",
-            sfml_util::sound_effect::DoorLocked)
+            gui::sound_effect::DoorLocked)
         , transition_(TRANSITION)
     {}
 

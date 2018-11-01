@@ -28,9 +28,9 @@ namespace stage
 {
 
     ItemDetailViewer::ItemDetailViewer()
-        : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        : SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , HALF_SCREEN_WIDTH_(SCREEN_WIDTH_ * 0.5f)
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , IMAGE_TOP_SPACER_(sfutil::MapByRes(35.0f, 100.0f))
         , INNER_SPACER_(20.0f)
         , DOUBLE_INNER_SPACER_(INNER_SPACER_ * 2.0f)
@@ -44,7 +44,7 @@ namespace stage
         , backgroundQuads_(sf::Quads, 4)
         , cachedTextureOpt_()
         , sprite_()
-        , slider_(SLIDER_SPEED_, sfml_util::WillOscillate::No, sfml_util::WillAutoStart::No)
+        , slider_(SLIDER_SPEED_, gui::WillOscillate::No, gui::WillAutoStart::No)
         , textRegionUPtr_()
         , sourceRect()
         , itemPtrOpt_()
@@ -105,7 +105,7 @@ namespace stage
             slider_.ReverseDirection();
             slider_.Start();
 
-            sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
+            gui::SoundManager::Instance()->PlaySfx_TickOn();
         }
     }
 
@@ -121,7 +121,7 @@ namespace stage
             slider_.ReverseDirection();
             slider_.Start();
 
-            sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
+            gui::SoundManager::Instance()->PlaySfx_TickOff();
         }
     }
 
@@ -178,7 +178,7 @@ namespace stage
 
         willShowImage_ = true;
 
-        cachedTextureOpt_ = sfml_util::LoadAndCacheImage(ITEM_PTR_OPT.value());
+        cachedTextureOpt_ = gui::LoadAndCacheImage(ITEM_PTR_OPT.value());
 
         sprite_.setTexture(cachedTextureOpt_->Get(), true);
 
@@ -231,12 +231,12 @@ namespace stage
 
         ss << "\n\n";
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const auto TEXT_LEFT { TARGET_RECT_.left + INNER_SPACER_ };
 
@@ -251,7 +251,7 @@ namespace stage
 
         const sf::FloatRect TEXT_RECT { TEXT_LEFT, TEXT_TOP, TEXT_WIDTH, TEXT_HEIGHT };
 
-        textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        textRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);
     }
 

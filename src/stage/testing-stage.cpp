@@ -74,7 +74,7 @@ namespace heroespath
 {
 namespace stage
 {
-    ImageInspectPacket::ImageInspectPacket(const sfml_util::CachedTextureOpt_t & CACHED_TEXTURE_OPT)
+    ImageInspectPacket::ImageInspectPacket(const gui::CachedTextureOpt_t & CACHED_TEXTURE_OPT)
         : cached_texture_opt(CACHED_TEXTURE_OPT)
         , sprite()
         , text()
@@ -88,9 +88,9 @@ namespace stage
                 TestingStage::IMAGE_INSPECT_DIMMENSION_,
                 TestingStage::IMAGE_INSPECT_DIMMENSION_);
 
-            text = sfml_util::Text(
+            text = gui::Text(
                 misc::filesystem::Filename(cached_texture_opt.value().Path()),
-                sfml_util::GuiFont::Default,
+                gui::GuiFont::Default,
                 24);
 
             text.setFillColor(sf::Color::Red);
@@ -112,26 +112,26 @@ namespace stage
 
     const float TestingStage::IMAGE_INSPECT_DIMMENSION_ { 256.0f };
     const std::size_t TestingStage::TEXT_LINES_COUNT_MAX_ { 100 };
-    sfml_util::AnimationUPtr_t TestingStage::animUPtr_;
+    gui::AnimationUPtr_t TestingStage::animUPtr_;
 
     TestingStage::TestingStage()
         : StageBase(
             "Testing",
             {
-                sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::DefaultBoldFlavor,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::SignThinTallNarrow,
-                sfml_util::GuiFont::SignBoldShortWide,
-                sfml_util::GuiFont::Handwriting,
-                sfml_util::GuiFont::DialogModern,
-                sfml_util::GuiFont::DialogMedieval,
+                gui::GuiFont::Default,
+                gui::GuiFont::DefaultBoldFlavor,
+                gui::GuiFont::System,
+                gui::GuiFont::Number,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::SignThinTallNarrow,
+                gui::GuiFont::SignBoldShortWide,
+                gui::GuiFont::Handwriting,
+                gui::GuiFont::DialogModern,
+                gui::GuiFont::DialogMedieval,
             },
             true)
         , textures_()
-        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("TestingStage's"))
+        , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()
         , sleepMilliseconds_(0)
         , animBackgroundCachedTexture_("media-images-backgrounds-tile-wood")
@@ -163,7 +163,7 @@ namespace stage
 
     void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        sfml_util::Display::Instance()->ClearToBlack();
+        gui::Display::Instance()->ClearToBlack();
 
         if (waitingForKeyOrClickId_ > 0)
         {
@@ -321,15 +321,15 @@ namespace stage
 
         //#ifndef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
         //        // hack to get status messages on the screen BEFORE a test is finished
-        //        sfml_util::Display::Instance()->ClearToBlack();
+        //        gui::Display::Instance()->ClearToBlack();
         //
         //        // okay, wow, if we pass "this" to Display::DrawStage(this) then the windows build
         //        seems to
         //        // slice the this pointer itself and crash hard, no real understanding here...
         //        const auto THIS_STAGE_PTR { this };
         //
-        //        sfml_util::Display::Instance()->DrawStage(THIS_STAGE_PTR);
-        //        sfml_util::Display::Instance()->DisplayFrameBuffer();
+        //        gui::Display::Instance()->DrawStage(THIS_STAGE_PTR);
+        //        gui::Display::Instance()->DisplayFrameBuffer();
         //#endif
     }
 
@@ -355,7 +355,7 @@ namespace stage
     void TestingStage::TestingImageSet(
         const std::string & PATH_STR, const bool WILL_CHECK_FOR_OUTLINE)
     {
-        sfml_util::CachedTexture cachedTexture { PathWrapper(PATH_STR) };
+        gui::CachedTexture cachedTexture { PathWrapper(PATH_STR) };
 
         imageInspectPackets_.emplace_back(cachedTexture);
         textures_.emplace_back(cachedTexture);
@@ -409,29 +409,27 @@ namespace stage
         M_TESTING_STAGE_TEST(CharacterImageSet);
         M_TESTING_STAGE_TEST(Spells);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SpellsImageLoader, sfml_util::SpellImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SpellsImageLoader, gui::SpellImageLoader);
 
         M_TESTING_STAGE_TEST(Songs);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, sfml_util::SongImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, gui::SongImageLoader);
 
         M_TESTING_STAGE_TEST(Conditions);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(
-            ConditionImageLoader, sfml_util::ConditionImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ConditionImageLoader, gui::ConditionImageLoader);
 
         M_TESTING_STAGE_TEST(Titles);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, sfml_util::TitleImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, gui::TitleImageLoader);
 
         M_TESTING_STAGE_TEST(PopupManager);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(CombatImageLoader, sfml_util::CombatImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(CombatImageLoader, gui::CombatImageLoader);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemImageLoader, sfml_util::ItemImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemImageLoader, gui::ItemImageLoader);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(
-            CreatureImageLoader, sfml_util::CreatureImageLoader);
+        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(CreatureImageLoader, gui::CreatureImageLoader);
 
         M_TESTING_STAGE_TEST(Animations);
 
@@ -467,7 +465,7 @@ namespace stage
 
     bool TestingStage::PerformTest_SoundManager()
     {
-        return sfml_util::SoundManager::Instance()->Test(stage::IStagePtr_t(this));
+        return gui::SoundManager::Instance()->Test(stage::IStagePtr_t(this));
     }
 
     bool TestingStage::PerformTest_PopupManager()
@@ -501,9 +499,9 @@ namespace stage
                 switch (sizeIndex)
                 {
                     // clang-format off
-                    case 0: { return sfml_util::FontManager::Instance()->Size_Normal(); }
-                    case 1: { return sfml_util::FontManager::Instance()->Size_Largeish(); }
-                    case 2: { return sfml_util::FontManager::Instance()->Size_Large(); }
+                    case 0: { return gui::FontManager::Instance()->Size_Normal(); }
+                    case 1: { return gui::FontManager::Instance()->Size_Largeish(); }
+                    case 2: { return gui::FontManager::Instance()->Size_Large(); }
                     default: { return unsigned(0); }
                         // clang-format on
                 }
@@ -525,9 +523,9 @@ namespace stage
 
             for (int fontIndex(0); fontIndex <= 3; ++fontIndex)
             {
-                const auto FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
+                const auto FONT_ENUM { static_cast<gui::GuiFont::Enum>(fontIndex) };
 
-                const auto LENGTH { nameInfo.Length(sfml_util::TextInfo(
+                const auto LENGTH { nameInfo.Length(gui::TextInfo(
                     nameInfo.LargestName(),
                     FONT_ENUM,
                     FONT_SIZE)) };
@@ -535,10 +533,10 @@ namespace stage
                 lengths.emplace_back(LENGTH);
 
                 M_HP_LOG_DBG(
-                    sfml_util::GuiFont::ToString(FONT_ENUM)
+                    gui::GuiFont::ToString(FONT_ENUM)
                     << "\t" << FONT_SIZE_STR << '\t' << LENGTH << '\t' << "(" << LENGTH << "/"
-                    << sfml_util::Display::Instance()->GetWinWidth()
-                    << ")=" << (LENGTH / sfml_util::Display::Instance()->GetWinWidth()));
+                    << gui::Display::Instance()->GetWinWidth()
+                    << ")=" << (LENGTH / gui::Display::Instance()->GetWinWidth()));
             }
 
             misc::Vector::MinMaxAvgSum<float> mmas(lengths);
@@ -962,23 +960,22 @@ namespace stage
 
         static std::size_t animIndex { 0 };
 
-        if (animIndex < sfml_util::Animations::Count)
+        if (animIndex < gui::Animations::Count)
         {
             if (!animUPtr_)
             {
-                const auto ENUM { static_cast<sfml_util::Animations::Enum>(animIndex) };
+                const auto ENUM { static_cast<gui::Animations::Enum>(animIndex) };
 
                 std::ostringstream ss;
-                ss << "PerformTest_Animations() \"" << sfml_util::Animations::ToString(ENUM)
-                   << "\"";
+                ss << "PerformTest_Animations() \"" << gui::Animations::ToString(ENUM) << "\"";
                 TestingStrAppend(ss.str());
 
-                animUPtr_ = sfml_util::AnimationFactory::Make(
-                    static_cast<sfml_util::Animations::Enum>(animIndex),
+                animUPtr_ = gui::AnimationFactory::Make(
+                    static_cast<gui::Animations::Enum>(animIndex),
                     sf::FloatRect(0.0f, 0.0f, 512.0f, 512.0f),
                     0.05f,
                     sf::Color::White,
-                    ((ENUM == sfml_util::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd));
+                    ((ENUM == gui::Animations::Smoke) ? sf::BlendAlpha : sf::BlendAdd));
             }
 
             if (animUPtr_->UpdateTime(0.02f))
@@ -1277,7 +1274,7 @@ namespace stage
             }
 
             sf::Texture texture;
-            sfml_util::Loaders::Texture(texture, FILE_PATH_STR, false);
+            gui::Loaders::Texture(texture, FILE_PATH_STR, false);
             sf::Image image{ texture.copyToImage() };
 
             const auto WIDTH{ texture.getSize().x };
@@ -1343,21 +1340,21 @@ namespace stage
         creature::nonplayer::owns_magic_type::Test();
         creature::nonplayer::complexity_type::Test();
         popup::ResponseTypes::Test();
-        sfml_util::Brightness::Test();
-        sfml_util::Corner::Test();
-        sfml_util::GuiEvent::Test();
-        sfml_util::Side::Test();
-        sfml_util::Animations::Test();
+        gui::Brightness::Test();
+        gui::Corner::Test();
+        gui::GuiEvent::Test();
+        gui::Side::Test();
+        gui::Animations::Test();
         stage::Stage::TestHelper();
-        sfml_util::Footstep::Test();
-        sfml_util::music::Test();
-        sfml_util::sound_effect::Test();
-        sfml_util::sound_effect_set::Test();
-        sfml_util::Footstep::Test();
-        sfml_util::GuiFont::Test();
-        sfml_util::ImageOpt::Test();
-        sfml_util::Justified::Test();
-        // sfml_util::text_render::engine::StopReason::Test();
+        gui::Footstep::Test();
+        gui::music::Test();
+        gui::sound_effect::Test();
+        gui::sound_effect_set::Test();
+        gui::Footstep::Test();
+        gui::GuiFont::Test();
+        gui::ImageOpt::Test();
+        gui::Justified::Test();
+        // gui::text_render::engine::StopReason::Test();
         avatar::Avatar::Test();
         spell::Spells::Test();
         song::Songs::Test();
@@ -1379,10 +1376,10 @@ namespace stage
 
         static misc::EnumUnderlying_t fontIndex { 0 };
 
-        if (fontIndex < sfml_util::GuiFont::Count)
+        if (fontIndex < gui::GuiFont::Count)
         {
-            const auto FONT_ENUM { static_cast<sfml_util::GuiFont::Enum>(fontIndex) };
-            sfml_util::Text text("asdf", FONT_ENUM, 30);
+            const auto FONT_ENUM { static_cast<gui::GuiFont::Enum>(fontIndex) };
+            gui::Text text("asdf", FONT_ENUM, 30);
             ++fontIndex;
             return false;
         }
@@ -1448,10 +1445,8 @@ namespace stage
 
         {
             // find out how tall the text lines will be
-            sfml_util::Text testText(
-                "M",
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Normal());
+            gui::Text testText(
+                "M", gui::GuiFont::Default, gui::FontManager::Instance()->Size_Normal());
 
             // The extra +10 is added because testText's height is only an estimation.
             const auto TEXT_HEIGHT { testText.getGlobalBounds().height + 10.0f };
@@ -1473,10 +1468,8 @@ namespace stage
                     ss << " " << rItr->second;
                 }
 
-                sfml_util::Text text(
-                    ss.str(),
-                    sfml_util::GuiFont::Default,
-                    sfml_util::FontManager::Instance()->Size_Normal());
+                gui::Text text(
+                    ss.str(), gui::GuiFont::Default, gui::FontManager::Instance()->Size_Normal());
 
                 text.setPosition(1.0f, posTop);
 
@@ -1543,8 +1536,8 @@ namespace stage
 
         auto createGoldBars = [&](const float LEFT,
                                   const float TOP,
-                                  const sfml_util::Orientation::Enum ORIENTATION,
-                                  const sfml_util::Side::Enum SIDE,
+                                  const gui::Orientation::Enum ORIENTATION,
+                                  const gui::Side::Enum SIDE,
                                   const bool WILL_CAP_ENDS) {
             float posX { LEFT };
             float posY { TOP };
@@ -1553,14 +1546,14 @@ namespace stage
             while (((posX - LEFT) < SCREEN_EDGE_PAD) && ((posY - TOP) < SCREEN_EDGE_PAD))
             {
                 waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
-                    sfml_util::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
+                    gui::GoldBar(posX, posY, length, ORIENTATION, SIDE, WILL_CAP_ENDS));
 
                 const auto REGION { waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion() };
 
                 waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
                     sfutil::MakeRectangleHollow(REGION, sf::Color::Red, 1.0f, true));
 
-                if (ORIENTATION == sfml_util::Orientation::Horiz)
+                if (ORIENTATION == gui::Orientation::Horiz)
                 {
                     posY += REGION.height + BETWEEN_PAD;
                 }
@@ -1585,71 +1578,69 @@ namespace stage
         const auto BETWEEN_SERIES_PAD { BETWEEN_PAD * 2.0f };
         const auto BETWEEN_SET_PAD { BETWEEN_SERIES_PAD * 2.0f };
 
-        auto createGoldBarsOfAllSides
-            = [&](const sf::Vector2f & POS_V, const sfml_util::Orientation::Enum ORIENTATION) {
-                  sf::Vector2f posV { POS_V };
-                  misc::EnumUnderlying_t flag(1);
-                  while (flag <= sfml_util::Side::Last)
-                  {
-                      posV = createGoldBars(
-                          posV.x, posV.y, ORIENTATION, sfml_util::Side::Enum(flag), false);
+        auto createGoldBarsOfAllSides = [&](const sf::Vector2f & POS_V,
+                                            const gui::Orientation::Enum ORIENTATION) {
+            sf::Vector2f posV { POS_V };
+            misc::EnumUnderlying_t flag(1);
+            while (flag <= gui::Side::Last)
+            {
+                posV = createGoldBars(posV.x, posV.y, ORIENTATION, gui::Side::Enum(flag), false);
 
-                      flag <<= 1;
+                flag <<= 1;
 
-                      if (ORIENTATION == sfml_util::Orientation::Horiz)
-                      {
-                          posV.y += BETWEEN_SERIES_PAD;
-                          posV.x = POS_V.x;
-                      }
-                      else
-                      {
-                          posV.x += BETWEEN_SERIES_PAD;
-                          posV.y = POS_V.y;
-                      }
-                  }
+                if (ORIENTATION == gui::Orientation::Horiz)
+                {
+                    posV.y += BETWEEN_SERIES_PAD;
+                    posV.x = POS_V.x;
+                }
+                else
+                {
+                    posV.x += BETWEEN_SERIES_PAD;
+                    posV.y = POS_V.y;
+                }
+            }
 
-                  if (ORIENTATION == sfml_util::Orientation::Horiz)
-                  {
-                      posV.y += BETWEEN_SET_PAD;
-                      posV.x = POS_V.x;
-                  }
-                  else
-                  {
-                      posV.x += BETWEEN_SET_PAD;
-                      posV.y = POS_V.y;
-                  }
+            if (ORIENTATION == gui::Orientation::Horiz)
+            {
+                posV.y += BETWEEN_SET_PAD;
+                posV.x = POS_V.x;
+            }
+            else
+            {
+                posV.x += BETWEEN_SET_PAD;
+                posV.y = POS_V.y;
+            }
 
-                  const auto START_POS_V { posV };
+            const auto START_POS_V { posV };
 
-                  flag = 1;
-                  while (flag <= sfml_util::Side::Last)
-                  {
-                      posV = createGoldBars(
-                          posV.x, posV.y, ORIENTATION, sfml_util::Side::Enum(flag), true);
+            flag = 1;
+            while (flag <= gui::Side::Last)
+            {
+                posV = createGoldBars(posV.x, posV.y, ORIENTATION, gui::Side::Enum(flag), true);
 
-                      flag <<= 1;
+                flag <<= 1;
 
-                      if (ORIENTATION == sfml_util::Orientation::Horiz)
-                      {
-                          posV.y += BETWEEN_SERIES_PAD;
-                          posV.x = START_POS_V.x;
-                      }
-                      else
-                      {
-                          posV.x += BETWEEN_SERIES_PAD;
-                          posV.y = START_POS_V.y;
-                      }
-                  }
-              };
+                if (ORIENTATION == gui::Orientation::Horiz)
+                {
+                    posV.y += BETWEEN_SERIES_PAD;
+                    posV.x = START_POS_V.x;
+                }
+                else
+                {
+                    posV.x += BETWEEN_SERIES_PAD;
+                    posV.y = START_POS_V.y;
+                }
+            }
+        };
 
         createGoldBarsOfAllSides(
-            sf::Vector2f(SCREEN_EDGE_PAD, SCREEN_EDGE_PAD * 1.9f), sfml_util::Orientation::Horiz);
+            sf::Vector2f(SCREEN_EDGE_PAD, SCREEN_EDGE_PAD * 1.9f), gui::Orientation::Horiz);
 
         createGoldBarsOfAllSides(
-            sf::Vector2f(SCREEN_EDGE_PAD * 1.9f, SCREEN_EDGE_PAD), sfml_util::Orientation::Vert);
+            sf::Vector2f(SCREEN_EDGE_PAD * 1.9f, SCREEN_EDGE_PAD), gui::Orientation::Vert);
 
         waitingForKeyOrClick_CachedTextures_.emplace_back(
-            sfml_util::CachedTexture(sfml_util::GuiImages::PathKey()));
+            gui::CachedTexture(gui::GuiImages::PathKey()));
 
         sf::Sprite sprite(waitingForKeyOrClick_CachedTextures_.back().Get());
         sfutil::Center(sprite);
@@ -1684,8 +1675,8 @@ namespace stage
             {
                 const sf::FloatRect REGION_INITIAL(posX, posY, width, height);
 
-                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(sfml_util::GoldBar(
-                    REGION_INITIAL, sfml_util::Orientation::Count, WILL_GROW_BORDER));
+                waitingForKeyOrClick_ToDraw_GoldBars_.emplace_back(
+                    gui::GoldBar(REGION_INITIAL, gui::Orientation::Count, WILL_GROW_BORDER));
 
                 const auto REGION_OUTER {
                     waitingForKeyOrClick_ToDraw_GoldBars_.back().OuterRegion()
@@ -1774,11 +1765,11 @@ namespace stage
                 if (WILL_DRAW_LINES)
                 {
                     waitingForKeyOrClick_ToDraw_Borders_.emplace_back(
-                        sfml_util::Border(REGION_INITIAL, WILL_GROW_BORDER));
+                        gui::Border(REGION_INITIAL, WILL_GROW_BORDER));
                 }
                 else
                 {
-                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(sfml_util::Border(
+                    waitingForKeyOrClick_ToDraw_Borders_.emplace_back(gui::Border(
                         REGION_INITIAL,
                         1.0f,
                         sf::Color::White,
@@ -1869,12 +1860,10 @@ namespace stage
 
     void TestingStage::AppendWaitTestTitle(const std::string & TITLE_STR)
     {
-        const sfml_util::TextInfo TEXT_INFO(
-            TITLE_STR,
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Larger());
+        const gui::TextInfo TEXT_INFO(
+            TITLE_STR, gui::GuiFont::Default, gui::FontManager::Instance()->Size_Larger());
 
-        sfml_util::Text text(TEXT_INFO);
+        gui::Text text(TEXT_INFO);
 
         const sf::Vector2f POS_V(
             (StageRegion().width * 0.5f) - text.getGlobalBounds().width, 50.0f);
@@ -1889,10 +1878,10 @@ namespace stage
                   waitingForKeyOrClick_ToDraw_RectangleShapes_.emplace_back(
                       sfutil::MakeRectangleHollow(REGION, sf::Color::Green));
 
-                  const sfml_util::TextInfo TEXT_INFO(
-                      "This is text.", sfml_util::GuiFont::SystemCondensed, FONT_SIZE);
+                  const gui::TextInfo TEXT_INFO(
+                      "This is text.", gui::GuiFont::SystemCondensed, FONT_SIZE);
 
-                  sfml_util::Text text(TEXT_INFO);
+                  gui::Text text(TEXT_INFO);
                   text.setScale(sf::Vector2f(SCALE, SCALE));
                   text.setPosition(sfutil::Position(REGION));
 

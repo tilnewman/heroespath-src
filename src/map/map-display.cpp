@@ -87,20 +87,30 @@ namespace map
         UpdateAnimMusicVolume();
     }
 
-    bool MapDisplay::Move(const sfml_util::Direction::Enum DIR, const float ADJUSTMENT)
+    bool MapDisplay::Move(const gui::Direction::Enum DIR, const float ADJUSTMENT)
     {
         switch (DIR)
         {
-            case sfml_util::Direction::Up: { return MoveUp(ADJUSTMENT);
+            case gui::Direction::Up:
+            {
+                return MoveUp(ADJUSTMENT);
             }
-            case sfml_util::Direction::Down: { return MoveDown(ADJUSTMENT);
+            case gui::Direction::Down:
+            {
+                return MoveDown(ADJUSTMENT);
             }
-            case sfml_util::Direction::Left: { return MoveLeft(ADJUSTMENT);
+            case gui::Direction::Left:
+            {
+                return MoveLeft(ADJUSTMENT);
             }
-            case sfml_util::Direction::Right: { return MoveRight(ADJUSTMENT);
+            case gui::Direction::Right:
+            {
+                return MoveRight(ADJUSTMENT);
             }
-            case sfml_util::Direction::Count:
-            default: { return false;
+            case gui::Direction::Count:
+            default:
+            {
+                return false;
             }
         }
     }
@@ -124,7 +134,7 @@ namespace map
 
                 const auto DISTANCE_TO_PLAYER { sfutil::Distance(ANIM_POS_V, PlayerPosMap()) };
 
-                sfml_util::SoundManager::Instance()->MusicVolume(
+                gui::SoundManager::Instance()->MusicVolume(
                     ANIM_INFO.music_vec, CalcAnimationVolume(DISTANCE_TO_PLAYER));
             }
         }
@@ -151,7 +161,7 @@ namespace map
 
                 if (misc::IsRealZero(offScreenRect_.top))
                 {
-                    IncrementTileOffsetsInDirection(sfml_util::Direction::Up);
+                    IncrementTileOffsetsInDirection(gui::Direction::Up);
                 }
             }
             else
@@ -174,7 +184,7 @@ namespace map
         {
             const auto VERT_POS { offScreenRect_.top
                                   + static_cast<float>(
-                                        tileOffsets_.begin_v.y * layout_.tile_size_v.y) };
+                                      tileOffsets_.begin_v.y * layout_.tile_size_v.y) };
 
             const auto VERT_LIMIT { static_cast<float>(
                                         layout_.tile_count_v.y * layout_.tile_size_v.y)
@@ -192,7 +202,7 @@ namespace map
 
                 if ((offScreenRect_.top + offScreenRect_.height) > offScreenMapSize_.y)
                 {
-                    IncrementTileOffsetsInDirection(sfml_util::Direction::Down);
+                    IncrementTileOffsetsInDirection(gui::Direction::Down);
                 }
             }
         }
@@ -221,7 +231,7 @@ namespace map
 
                 if (misc::IsRealZero(offScreenRect_.left))
                 {
-                    IncrementTileOffsetsInDirection(sfml_util::Direction::Left);
+                    IncrementTileOffsetsInDirection(gui::Direction::Left);
                 }
             }
             else
@@ -262,7 +272,7 @@ namespace map
 
                 if ((offScreenRect_.left + offScreenRect_.width) > offScreenMapSize_.x)
                 {
-                    IncrementTileOffsetsInDirection(sfml_util::Direction::Right);
+                    IncrementTileOffsetsInDirection(gui::Direction::Right);
                 }
             }
         }
@@ -423,12 +433,12 @@ namespace map
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             offScreenTextureBelow_.create(WIDTH, HEIGHT),
-            "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
+            "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'below' texture.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             offScreenTextureAbove_.create(WIDTH, HEIGHT),
-            "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
+            "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'above' texture.");
 
         // set the initial position of what is drawn on-screen from the off-screen texture
@@ -646,13 +656,13 @@ namespace map
         }
 
         std::ostringstream ss;
-        ss << "sfml_util::MapDisplay::TilesPanelFromId(id=" << ID
+        ss << "gui::MapDisplay::TilesPanelFromId(id=" << ID
            << ") failed to find the owning TilesPanel.";
 
         throw std::runtime_error(ss.str());
     }
 
-    void MapDisplay::IncrementTileOffsetsInDirection(const sfml_util::Direction::Enum DIR)
+    void MapDisplay::IncrementTileOffsetsInDirection(const gui::Direction::Enum DIR)
     {
         auto wereChangesMade { false };
 
@@ -661,7 +671,7 @@ namespace map
 
         switch (DIR)
         {
-            case sfml_util::Direction::Up:
+            case gui::Direction::Up:
             {
                 if (tileOffsets_.begin_v.y > 0)
                 {
@@ -673,7 +683,7 @@ namespace map
                 break;
             }
 
-            case sfml_util::Direction::Down:
+            case gui::Direction::Down:
             {
                 if (tileOffsets_.end_v.y < layout_.tile_count_v.y)
                 {
@@ -685,7 +695,7 @@ namespace map
                 break;
             }
 
-            case sfml_util::Direction::Left:
+            case gui::Direction::Left:
             {
                 if (tileOffsets_.begin_v.x > 0)
                 {
@@ -697,7 +707,7 @@ namespace map
                 break;
             }
 
-            case sfml_util::Direction::Right:
+            case gui::Direction::Right:
             {
                 if (tileOffsets_.end_v.x < layout_.tile_count_v.x)
                 {
@@ -709,8 +719,10 @@ namespace map
                 break;
             }
 
-            case sfml_util::Direction::Count:
-            default: { break;
+            case gui::Direction::Count:
+            default:
+            {
+                break;
             }
         }
 
@@ -735,7 +747,7 @@ namespace map
 
     void MapDisplay::SetupNPCShadowImage()
     {
-        sfml_util::Loaders::Texture(
+        gui::Loaders::Texture(
             npcShadowTexture_,
             misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
 
@@ -749,10 +761,10 @@ namespace map
 
         for (const auto & ANIM_INFO : animInfoVec_)
         {
-            animUPtrVec_.emplace_back(sfml_util::AnimationFactory::Make(
+            animUPtrVec_.emplace_back(gui::AnimationFactory::Make(
                 ANIM_INFO.which_anim,
                 ANIM_INFO.rect,
-                sfml_util::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
+                gui::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
 
             animUPtrVec_.back()->RandomVaryTimePerFrame();
         }
@@ -764,7 +776,7 @@ namespace map
         {
             if (ANIM_INFO.music_vec.empty() == false)
             {
-                sfml_util::SoundManager::Instance()->MusicStart(ANIM_INFO.music_vec);
+                gui::SoundManager::Instance()->MusicStart(ANIM_INFO.music_vec);
             }
         }
     }
@@ -775,7 +787,7 @@ namespace map
         {
             if (ANIM_INFO.music_vec.empty() == false)
             {
-                sfml_util::SoundManager::Instance()->MusicStop(ANIM_INFO.music_vec);
+                gui::SoundManager::Instance()->MusicStop(ANIM_INFO.music_vec);
             }
         }
     }
@@ -784,9 +796,9 @@ namespace map
     {
         const auto DIFF_DISTANCE { ANIM_SFX_DISTANCE_MAX_ - ANIM_SFX_DISTANCE_MIN_ };
 
-        // Sounds coming from animations are sfml_util::music and not sfml_util::sound_effects,
+        // Sounds coming from animations are gui::music and not gui::sound_effects,
         // but they are goverened by the SoundEffectsVolume and not the MusicVolume.
-        const auto MAX_VOLUME { sfml_util::SoundManager::Instance()->SoundEffectVolume() };
+        const auto MAX_VOLUME { gui::SoundManager::Instance()->SoundEffectVolume() };
         const auto MIN_VOLUME { MAX_VOLUME * ANIM_SFX_VOLUME_MIN_RATIO_ };
         const auto DIFF_VOLUME { MAX_VOLUME - MIN_VOLUME };
 

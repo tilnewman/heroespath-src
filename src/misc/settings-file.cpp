@@ -74,18 +74,17 @@ namespace misc
 
     void SettingsFile::AcquireAndSave()
     {
-        SetOrAppendAs(KEY_MUSIC_VOLUME_, sfml_util::SoundManager::Instance()->MusicVolume());
+        SetOrAppendAs(KEY_MUSIC_VOLUME_, gui::SoundManager::Instance()->MusicVolume());
+
+        SetOrAppendAs(KEY_SOUND_FX_VOLUME_, gui::SoundManager::Instance()->SoundEffectVolume());
 
         SetOrAppendAs(
-            KEY_SOUND_FX_VOLUME_, sfml_util::SoundManager::Instance()->SoundEffectVolume());
+            KEY_DISPLAY_WIDTH_, static_cast<int>(gui::Display::Instance()->GetWinWidthu()));
 
         SetOrAppendAs(
-            KEY_DISPLAY_WIDTH_, static_cast<int>(sfml_util::Display::Instance()->GetWinWidthu()));
+            KEY_DISPLAY_HEIGHT_, static_cast<int>(gui::Display::Instance()->GetWinHeightu()));
 
-        SetOrAppendAs(
-            KEY_DISPLAY_HEIGHT_, static_cast<int>(sfml_util::Display::Instance()->GetWinHeightu()));
-
-        const auto BIT_DEPTH { sfml_util::Display::Instance()->WinColorDepth() };
+        const auto BIT_DEPTH { gui::Display::Instance()->WinColorDepth() };
 
         // for some reason SFML reports 32 bit depth as 0 sometimes...
         if (BIT_DEPTH == 0)
@@ -97,16 +96,15 @@ namespace misc
             SetOrAppendAs(KEY_DISPLAY_BIT_DEPTH_, BIT_DEPTH);
         }
 
-        SetOrAppendAs(
-            KEY_DISPLAY_WILL_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
+        SetOrAppendAs(KEY_DISPLAY_WILL_VERTICAL_SYNC_, gui::Display::Instance()->GetVerticalSync());
 
         SetOrAppendAs(
             KEY_DISPLAY_FRAMERATE_LIMIT_,
-            static_cast<int>(sfml_util::Display::Instance()->GetFrameRateLimit()));
+            static_cast<int>(gui::Display::Instance()->GetFrameRateLimit()));
 
         SetOrAppendAs(
             KEY_DISPLAY_ANTIALIAS_LEVEL_,
-            static_cast<int>(sfml_util::Display::Instance()->AntialiasLevel()));
+            static_cast<int>(gui::Display::Instance()->AntialiasLevel()));
 
         if (DeleteReCreateSave() == false)
         {
@@ -145,7 +143,7 @@ namespace misc
         if ((MUSIC_VOLUME < 0.0f) == false)
         {
             M_HP_LOG("Settings file restoring previous music volume." + M_HP_VAR_STR(MUSIC_VOLUME));
-            sfml_util::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME);
+            gui::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME);
         }
 
         const float SOUND_FX_VOLUME { ValueAs(KEY_SOUND_FX_VOLUME_, -1.0f) };
@@ -155,7 +153,7 @@ namespace misc
                 "Settings file restoring previous sound fx volume."
                 + M_HP_VAR_STR(SOUND_FX_VOLUME));
 
-            sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME);
+            gui::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME);
         }
 
         const unsigned DISPLAY_DIMMENSION_TOO_BIG { 10000 };
@@ -187,11 +185,11 @@ namespace misc
             const auto DISPLAY_ANTIALIAS_LEVEL_U { static_cast<unsigned>(DISPLAY_ANTIALIAS_LEVEL) };
 
             const auto ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT {
-                (sfml_util::Display::Instance()->GetWinWidthu() != DISPLAY_WIDTH_U)
-                || (sfml_util::Display::Instance()->GetWinHeightu() != DISPLAY_HEIGHT_U)
-                || (sfml_util::Display::Instance()->GetCurrentVideoMode().bitsPerPixel
+                (gui::Display::Instance()->GetWinWidthu() != DISPLAY_WIDTH_U)
+                || (gui::Display::Instance()->GetWinHeightu() != DISPLAY_HEIGHT_U)
+                || (gui::Display::Instance()->GetCurrentVideoMode().bitsPerPixel
                     != DISPLAY_BIT_DEPTH_U)
-                || (sfml_util::Display::Instance()->AntialiasLevel() != DISPLAY_ANTIALIAS_LEVEL_U)
+                || (gui::Display::Instance()->AntialiasLevel() != DISPLAY_ANTIALIAS_LEVEL_U)
             };
 
             if (ARE_DISPLAY_VALUES_DIFFERENT_FROM_CURRENT)
@@ -203,8 +201,7 @@ namespace misc
                     "Settings file restoring previous video mode." + M_HP_VAR_STR(VIDEO_MODE)
                     + M_HP_VAR_STR(DISPLAY_ANTIALIAS_LEVEL_U));
 
-                sfml_util::Display::Instance()->ChangeVideoMode(
-                    VIDEO_MODE, DISPLAY_ANTIALIAS_LEVEL_U);
+                gui::Display::Instance()->ChangeVideoMode(VIDEO_MODE, DISPLAY_ANTIALIAS_LEVEL_U);
             }
         }
 
@@ -219,7 +216,7 @@ namespace misc
                 "Settings file restoring previous frame rate limit."
                 + M_HP_VAR_STR(DISPLAY_FRAME_RATE_LIMIT));
 
-            sfml_util::Display::Instance()->SetFrameRateLimit(DISPLAY_FRAME_RATE_LIMIT);
+            gui::Display::Instance()->SetFrameRateLimit(DISPLAY_FRAME_RATE_LIMIT);
         }
 
         if (ContainsKey(KEY_DISPLAY_WILL_VERTICAL_SYNC_))
@@ -230,7 +227,7 @@ namespace misc
                 "Settings file restoring previous rule about display vertical sync."
                 + M_HP_VAR_STR(WILL_VERTICAL_SYNC));
 
-            sfml_util::Display::Instance()->SetVerticalSync(WILL_VERTICAL_SYNC);
+            gui::Display::Instance()->SetVerticalSync(WILL_VERTICAL_SYNC);
         }
     }
 
@@ -244,8 +241,8 @@ namespace misc
             "defaults:"
             + M_HP_VAR_STR(MUSIC_VOLUME_PERCENT) + M_HP_VAR_STR(SOUND_FX_VOLUME_PERCENT));
 
-        sfml_util::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME_PERCENT);
-        sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME_PERCENT);
+        gui::SoundManager::Instance()->MusicVolumeSet(MUSIC_VOLUME_PERCENT);
+        gui::SoundManager::Instance()->SoundEffectVolumeSet(SOUND_FX_VOLUME_PERCENT);
     }
 
 } // namespace misc

@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     AnimationUPtr_t AnimationFactory::Make(
@@ -40,7 +40,7 @@ namespace sfml_util
         // initial position is the origin, and the initial size is default
         sf::FloatRect r(0.0f, 0.0f, 0.0f, 0.0f);
 
-        auto animUPtr{ Make(ENUM, r, TIME_PER_FRAME_SEC, COLOR_FROM, COLOR_TO, BLEND_MODE) };
+        auto animUPtr { Make(ENUM, r, TIME_PER_FRAME_SEC, COLOR_FROM, COLOR_TO, BLEND_MODE) };
 
         // correct the size (account for the given SCALE)
         r.width = animUPtr->OrigSize().x * SCALE;
@@ -80,5 +80,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

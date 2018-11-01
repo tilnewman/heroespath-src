@@ -28,8 +28,7 @@ namespace popup
         : PopupStageBase(POPUP_INFO)
         , bgCachedTexture_(
               PickImagePathKey(popupInfo_.HowCombatEnded()),
-              sfml_util::ImageOptions(
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Invert, sf::Color::White))
+              gui::ImageOptions(gui::ImageOpt::Default | gui::ImageOpt::Invert, sf::Color::White))
         , bgSprite_(bgCachedTexture_.Get())
         , titleTextRegionUPtr_()
         , descTextRegionUPtr_()
@@ -67,16 +66,16 @@ namespace popup
             }
         }() };
 
-        const sfml_util::TextInfo COMBAT_TITLE_TEXTINFO(
+        const gui::TextInfo COMBAT_TITLE_TEXTINFO(
             TITLE_TEXT,
-            sfml_util::GuiFont::DefaultBoldFlavor,
-            sfml_util::FontManager::Instance()->Size_Large(),
+            gui::GuiFont::DefaultBoldFlavor,
+            gui::FontManager::Instance()->Size_Large(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Center,
+            gui::Justified::Center,
             sf::Text::Bold);
 
-        titleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
+        titleTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("CombatOverPopupTitle", COMBAT_TITLE_TEXTINFO);
 
         const auto TITLE_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
                                     - (titleTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
@@ -120,12 +119,12 @@ namespace popup
             return descSS.str();
         }() };
 
-        const sfml_util::TextInfo COMBAT_DESC_TEXTINFO(
+        const gui::TextInfo COMBAT_DESC_TEXTINFO(
             DESC_TEXT,
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const sf::FloatRect COMBAT_DESC_RECT(
             textRegion_.left,
@@ -135,7 +134,7 @@ namespace popup
             textRegion_.height
                 - (titleTextRegionUPtr_->GetEntityRegion().height + (VERT_SPACER * 2.0f)));
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "CombatOverPopupDesc", COMBAT_DESC_TEXTINFO, COMBAT_DESC_RECT);
     }
 
@@ -181,16 +180,16 @@ namespace popup
         {
             case combat::CombatEnd::Win:
             {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatWin)
+                gui::SoundManager::Instance()
+                    ->GetSoundEffectSet(gui::sound_effect_set::CombatWin)
                     .PlayRandom();
                 break;
             }
 
             case combat::CombatEnd::Lose:
             {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
+                gui::SoundManager::Instance()
+                    ->GetSoundEffectSet(gui::sound_effect_set::CombatLose)
                     .PlayRandom();
                 break;
             }
@@ -199,8 +198,8 @@ namespace popup
             case combat::CombatEnd::Count:
             default:
             {
-                sfml_util::SoundManager::Instance()
-                    ->GetSoundEffectSet(sfml_util::sound_effect_set::CombatLose)
+                gui::SoundManager::Instance()
+                    ->GetSoundEffectSet(gui::sound_effect_set::CombatLose)
                     .PlayRandom();
                 break;
             }

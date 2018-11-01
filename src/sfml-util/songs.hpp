@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SONGS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SONGS_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SONGS_HPP_INCLUDED
+#define HEROESPATH_GUI_SONGS_HPP_INCLUDED
 //
 // songs.hpp
 //
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for wrapping a set of songs as an enum vector and a single sf::Music instance.
@@ -39,7 +39,7 @@ namespace sfml_util
 
     using SongSetVec_t = std::vector<SongSet>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SONGS_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SONGS_HPP_INCLUDED

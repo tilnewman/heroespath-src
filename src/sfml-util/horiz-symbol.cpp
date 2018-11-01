@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const sf::Color BottomSymbol::DEFAULT_COLOR_ { sf::Color(255, 255, 255, 127) };
@@ -57,7 +57,7 @@ namespace sfml_util
         const sf::FloatRect TEXTURE_REGION(
             sf::Vector2f(0.0f, 0.0f), sf::Vector2f(cachedTexture_.Get().getSize()));
 
-        const auto FULL_SCREEN_RECT { sfml_util::Display::Instance()->FullScreenRect() };
+        const auto FULL_SCREEN_RECT { gui::Display::Instance()->FullScreenRect() };
 
         const sf::Vector2f IMAGE_SIZE_CONTRAINTS_V(
             0.0f, (sfutil::ScreenRatioToPixelsVert(0.137f) * VERT_SCALE));
@@ -136,10 +136,10 @@ namespace sfml_util
         region_.top += VERT;
     }
 
-    sfml_util::ImageOpt::Enum BottomSymbol::MakeImageOpt(const bool WILL_INVERT_COLOR) const
+    gui::ImageOpt::Enum BottomSymbol::MakeImageOpt(const bool WILL_INVERT_COLOR) const
     {
         return ImageOpt::Default | ((WILL_INVERT_COLOR) ? ImageOpt::Invert : ImageOpt::None);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

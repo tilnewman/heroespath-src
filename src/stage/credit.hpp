@@ -21,12 +21,12 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
-} // namespace sfml_util
+} // namespace gui
 
 namespace stage
 {
@@ -57,7 +57,7 @@ namespace stage
             const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
             const std::string & CONTENT_TEXT,
-            const sfml_util::Animations::Enum ANIM_ENUM,
+            const gui::Animations::Enum ANIM_ENUM,
             const float ANIM_SIZE_HORIZ,
             const float ANIM_FRAME_TIME_SEC);
 
@@ -73,19 +73,19 @@ namespace stage
         Credit(
             const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
-            const sfml_util::GuiFont::Enum FONT,
+            const gui::GuiFont::Enum FONT,
             const std::string & CONTENT_TEXT);
 
         // used to help construct all types of credits
         void Setup(
             const float MAX_WIDTH,
             const std::string & TITLE_TEXT,
-            const sfml_util::GuiFont::Enum TITLE_FONT,
+            const gui::GuiFont::Enum TITLE_FONT,
             const unsigned int TITLE_FONT_SIZE,
             const std::string & CONTENT_TEXT,
             const MediaType::Enum MEDIA_TYPE,
             const float MEDIA_SIZE_HORIZ = 0.0f,
-            const sfml_util::Animations::Enum ANIM_ENUM = sfml_util::Animations::Count,
+            const gui::Animations::Enum ANIM_ENUM = gui::Animations::Count,
             const float ANIM_FRAME_TIME_SEC = 0.0f);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override final;
@@ -97,12 +97,12 @@ namespace stage
     private:
         const sf::FloatRect CalcBounds() const;
 
-        sfml_util::TextRegionUPtr_t titleTextUPtr_;
-        sfml_util::TextRegionUPtr_t contentTextUPtr_;
+        gui::TextRegionUPtr_t titleTextUPtr_;
+        gui::TextRegionUPtr_t contentTextUPtr_;
         MediaType::Enum mediaType_;
-        sfml_util::CachedTextureOpt_t cachedTextureOpt_;
+        gui::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
-        sfml_util::AnimationUPtr_t animUPtr_;
+        gui::AnimationUPtr_t animUPtr_;
         float screenSizeVert_;
         sf::FloatRect region_;
     };

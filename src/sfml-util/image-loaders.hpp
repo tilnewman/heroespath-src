@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_IMAGE_LOADERS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_IMAGE_LOADERS_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_IMAGE_LOADERS_HPP_INCLUDED
+#define HEROESPATH_GUI_IMAGE_LOADERS_HPP_INCLUDED
 //
 // image-loaders.hpp
 //
@@ -56,63 +56,61 @@ namespace game
     using GameStatePtr_t = misc::NotNull<GameState *>;
 } // namespace game
 
-namespace sfml_util
+namespace gui
 {
 
     CachedTexture LoadAndCacheImage(
         const creature::CreaturePtr_t & CREATURE_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const std::string & FAKE_PATH,
         const avatar::Avatar::Enum WHICH_AVATAR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const game::GameStatePtr_t & GAMESTATE_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const creature::Conditions::Enum WHICH_CONDITION,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const creature::ConditionPtr_t & CONDITION_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
-        const item::ItemPtr_t & ITEM_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const item::ItemPtr_t & ITEM_PTR, const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const creature::Titles::Enum WHICH_TITLE,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const creature::TitlePtr_t & TITLE_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const spell::Spells::Enum WHICH_SPELL,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const spell::SpellPtr_t & SPELL_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
         const song::Songs::Enum WHICH_SONG,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
-        const song::SongPtr_t & SONG_PTR,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const song::SongPtr_t & SONG_PTR, const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
-        const sfml_util::CombatImageType::Enum WHICH_COMBAT_IMAGE,
-        const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+        const gui::CombatImageType::Enum WHICH_COMBAT_IMAGE,
+        const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_IMAGE_LOADERS_HPP_INCLUDED
+#endif // HEROESPATH_GUI_IMAGE_LOADERS_HPP_INCLUDED

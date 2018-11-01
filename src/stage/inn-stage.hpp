@@ -20,14 +20,14 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Animation;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
 
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
-} // namespace sfml_util
+} // namespace gui
 
 namespace stage
 {
@@ -48,13 +48,13 @@ namespace stage
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) final;
 
     private:
-        sfml_util::StageTitle stageTitle_;
-        sfml_util::BoxEntity backgroundBox_;
-        sfml_util::CachedTexture candleCachedTexture_;
+        gui::StageTitle stageTitle_;
+        gui::BoxEntity backgroundBox_;
+        gui::CachedTexture candleCachedTexture_;
         sf::Sprite candleSprite_;
-        sfml_util::AnimationUPtr_t candleAnimUPtr_;
-        sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        sfml_util::BottomSymbol bottomSymbol_;
+        gui::AnimationUPtr_t candleAnimUPtr_;
+        gui::OuroborosUPtr_t ouroborosUPtr_;
+        gui::BottomSymbol bottomSymbol_;
     };
 
 } // namespace stage

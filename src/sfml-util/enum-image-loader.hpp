@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED
+#define HEROESPATH_GUI_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED
 //
 // enum-image-loader.hpp
 //
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     namespace EnumImageLoaderHelpers
@@ -47,7 +47,7 @@ namespace sfml_util
 
         void Load(sf::Texture & texture, const typename EnumWrapper_t::Enum ENUM_VALUE) const
         {
-            sfml_util::Loaders::Texture(texture, Path(ENUM_VALUE));
+            gui::Loaders::Texture(texture, Path(ENUM_VALUE));
         }
 
         const std::string Path(const typename EnumWrapper_t::Enum ENUM_VALUE) const
@@ -59,7 +59,7 @@ namespace sfml_util
         bool Test() const
         {
             auto makeLogPrefix { []() {
-                return "sfml_util::EnumImageLoader<"
+                return "gui::EnumImageLoader<"
                     + boost::typeindex::type_id<EnumWrapper_t>().pretty_name() + "> ";
             } };
 
@@ -101,7 +101,7 @@ namespace sfml_util
         std::string imageDirectoryPath_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ENUM_IMAGE_LOADER_BASE_HPP_INCLUDED

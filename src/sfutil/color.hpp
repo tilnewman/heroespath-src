@@ -55,7 +55,7 @@ namespace sfutil
         const sf::Color FocusIn { 220, 220, 220 };
         const sf::Color FocusOut { 180, 180, 180 };
 
-        const sfml_util::FocusColors GuiFocusColors { FocusIn, FocusIn, FocusOut, FocusOut };
+        const gui::FocusColors GuiFocusColors { FocusIn, FocusIn, FocusOut, FocusOut };
 
     } // namespace color
 

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SFXWRAPPER_HPP_INCLUDED
+#define HEROESPATH_GUI_SFXWRAPPER_HPP_INCLUDED
 //
 // sfx-wrapper.hpp
 //
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for storing all sfml objects relating to a single sound effect,
@@ -134,7 +134,7 @@ namespace sfml_util
 
     using SfxWrapperVec_t = std::vector<SfxWrapper>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SFXWRAPPER_HPP_INCLUDED

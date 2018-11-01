@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_COMBATIMAGEENUM_HPP_INCLUDED
+#define HEROESPATH_GUI_COMBATIMAGEENUM_HPP_INCLUDED
 //
 // combat-image-enum.hpp
 //
@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct CombatImageType
@@ -36,7 +36,7 @@ namespace sfml_util
         static const std::string ToString(const Enum);
         static const std::string ImageFilename(const Enum);
     };
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
+#endif // HEROESPATH_GUI_COMBATIMAGEENUM_HPP_INCLUDED

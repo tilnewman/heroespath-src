@@ -43,7 +43,7 @@ namespace map
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
         : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-              "heroespath-sound-map-walk-sfx-volume-ratio"))
+            "heroespath-sound-map-walk-sfx-volume-ratio"))
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(*this, REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
@@ -53,7 +53,7 @@ namespace map
         , nonPlayers_()
         , walkRectVecMap_()
         , walkSfxLayers_()
-        , walkSfx_(sfml_util::sound_effect::Count)
+        , walkSfx_(gui::sound_effect::Count)
         , walkSfxIsWalking_(false)
         , sfxTimer_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-sfx-time-between-updates"))
@@ -108,7 +108,7 @@ namespace map
         player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
     }
 
-    bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
+    bool Map::MovePlayer(const gui::Direction::Enum DIRECTION)
     {
         if (interactionManager_.IsLocked())
         {
@@ -173,23 +173,23 @@ namespace map
 
                 switch (NPC_VIEW.Direction())
                 {
-                    case sfml_util::Direction::Left:
+                    case gui::Direction::Left:
                     {
                         rect.left -= NONPLAYER_MOVE_DISTANCE_;
                         break;
                     }
-                    case sfml_util::Direction::Right:
+                    case gui::Direction::Right:
                     {
                         rect.left += NONPLAYER_MOVE_DISTANCE_;
                         break;
                     }
-                    case sfml_util::Direction::Up:
+                    case gui::Direction::Up:
                     {
                         rect.top -= NONPLAYER_MOVE_DISTANCE_;
                         break;
                     }
-                    case sfml_util::Direction::Down:
-                    case sfml_util::Direction::Count:
+                    case gui::Direction::Down:
+                    case gui::Direction::Count:
                     default:
                     {
                         rect.top += NONPLAYER_MOVE_DISTANCE_;
@@ -235,15 +235,23 @@ namespace map
                     const auto IS_IN_THE_WAY { [&]() {
                         switch (NPC_VIEW.Direction())
                         {
-                            case sfml_util::Direction::Left: { return (SUB_POS_V.x < NPC_POS_V.x);
+                            case gui::Direction::Left:
+                            {
+                                return (SUB_POS_V.x < NPC_POS_V.x);
                             }
-                            case sfml_util::Direction::Right: { return (SUB_POS_V.x > NPC_POS_V.x);
+                            case gui::Direction::Right:
+                            {
+                                return (SUB_POS_V.x > NPC_POS_V.x);
                             }
-                            case sfml_util::Direction::Up: { return (SUB_POS_V.y < NPC_POS_V.y);
+                            case gui::Direction::Up:
+                            {
+                                return (SUB_POS_V.y < NPC_POS_V.y);
                             }
-                            case sfml_util::Direction::Down:
-                            case sfml_util::Direction::Count:
-                            default: { return (SUB_POS_V.y > NPC_POS_V.y);
+                            case gui::Direction::Down:
+                            case gui::Direction::Count:
+                            default:
+                            {
+                                return (SUB_POS_V.y > NPC_POS_V.y);
                             }
                         }
                     }() };
@@ -307,7 +315,7 @@ namespace map
         }
     }
 
-    void Map::SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    void Map::SetPlayerWalkAnim(const gui::Direction::Enum DIRECTION, const bool WILL_START)
     {
         player_.SetWalkAnim(DIRECTION, WILL_START);
         player_.MovingIntoReset();
@@ -329,7 +337,7 @@ namespace map
         }
     }
 
-    bool Map::DoesAdjPlayerPosCollide(const sfml_util::Direction::Enum DIR, const float ADJ)
+    bool Map::DoesAdjPlayerPosCollide(const gui::Direction::Enum DIR, const float ADJ)
     {
         const auto PLAYER_POS_V { CalcAdjPlayerPos(DIR, ADJ) };
 
@@ -406,9 +414,7 @@ namespace map
     }
 
     bool Map::CheckIfEnteringTransition(
-        const sfml_util::Direction::Enum DIRECTION,
-        const float ADJUSTMENT,
-        Transition & transition) const
+        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT, Transition & transition) const
     {
         const auto ADJ_PLAYER_POS_V { CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
 
@@ -453,35 +459,37 @@ namespace map
         }
     }
 
-    const sf::Vector2f Map::CalcAdjPlayerPos(
-        const sfml_util::Direction::Enum DIRECTION, const float ADJUSTMENT) const
+    const sf::Vector2f
+        Map::CalcAdjPlayerPos(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const
     {
         auto posToTest { mapDisplayUPtr_->PlayerPosMap() };
 
         switch (DIRECTION)
         {
-            case sfml_util::Direction::Left:
+            case gui::Direction::Left:
             {
                 posToTest.x -= ADJUSTMENT;
                 break;
             }
-            case sfml_util::Direction::Right:
+            case gui::Direction::Right:
             {
                 posToTest.x += ADJUSTMENT;
                 break;
             }
-            case sfml_util::Direction::Up:
+            case gui::Direction::Up:
             {
                 posToTest.y -= ADJUSTMENT;
                 break;
             }
-            case sfml_util::Direction::Down:
+            case gui::Direction::Down:
             {
                 posToTest.y += ADJUSTMENT;
                 break;
             }
-            case sfml_util::Direction::Count:
-            default: { break;
+            case gui::Direction::Count:
+            default:
+            {
+                break;
             }
         }
 
@@ -489,31 +497,31 @@ namespace map
     }
 
     void Map::PlayTransitionSfx(
-        const sfml_util::sound_effect::MapTransition TRANS_TYPE, const bool IS_DOOR_OPENING) const
+        const gui::sound_effect::MapTransition TRANS_TYPE, const bool IS_DOOR_OPENING) const
     {
-        if (TRANS_TYPE != sfml_util::sound_effect::MapTransition::Count)
+        if (TRANS_TYPE != gui::sound_effect::MapTransition::Count)
         {
             const auto DOOR_ACTION { (
-                (IS_DOOR_OPENING) ? sfml_util::sound_effect::DoorAction::Open
-                                  : sfml_util::sound_effect::DoorAction::Close) };
+                (IS_DOOR_OPENING) ? gui::sound_effect::DoorAction::Open
+                                  : gui::sound_effect::DoorAction::Close) };
 
-            const auto TRANS_SFX { sfml_util::sound_effect::RandomMapTransitionSfx(
+            const auto TRANS_SFX { gui::sound_effect::RandomMapTransitionSfx(
                 TRANS_TYPE, DOOR_ACTION) };
 
-            if ((TRANS_SFX == sfml_util::sound_effect::Stairs) && (IS_DOOR_OPENING))
+            if ((TRANS_SFX == gui::sound_effect::Stairs) && (IS_DOOR_OPENING))
             {
                 return;
             }
 
-            if (TRANS_SFX != sfml_util::sound_effect::Count)
+            if (TRANS_SFX != gui::sound_effect::Count)
             {
                 if (IS_DOOR_OPENING)
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX);
+                    gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX);
                 }
                 else
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX, 1.0f);
+                    gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX, 1.0f);
                 }
             }
         }
@@ -528,15 +536,15 @@ namespace map
         {
             StopWalkSfxIfValid();
 
-            if (NEW_WALK_SFX != sfml_util::sound_effect::Count)
+            if (NEW_WALK_SFX != gui::sound_effect::Count)
             {
-                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                gui::SoundManager::Instance()->SoundEffectPlay(
                     NEW_WALK_SFX, true, WALK_SFX_VOLUME_RATIO_);
             }
         }
-        else if ((NEW_IS_WALKING == false) && (sfml_util::sound_effect::Count != walkSfx_))
+        else if ((NEW_IS_WALKING == false) && (gui::sound_effect::Count != walkSfx_))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectStop(walkSfx_);
+            gui::SoundManager::Instance()->SoundEffectStop(walkSfx_);
         }
 
         walkSfx_ = NEW_WALK_SFX;
@@ -691,9 +699,9 @@ namespace map
 
     void Map::StopWalkSfxIfValid()
     {
-        if (sfml_util::sound_effect::Count != walkSfx_)
+        if (gui::sound_effect::Count != walkSfx_)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectStop(walkSfx_);
+            gui::SoundManager::Instance()->SoundEffectStop(walkSfx_);
         }
     }
 

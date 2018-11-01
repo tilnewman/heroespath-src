@@ -73,13 +73,13 @@ namespace combat
         , nameText_(
               CREATURE_PTR->Name(),
               creatureNameInfo_.DefaultFont(),
-              sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
+              gui::FontManager::Instance()->Size_CombatCreatureLabels())
         , condText_(
               "",
               creatureNameInfo_.DefaultFont(),
-              sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
+              gui::FontManager::Instance()->Size_CombatCreatureLabels())
         , blockingPos_(0)
-        , cachedTexture_(sfml_util::LoadAndCacheImage(CREATURE_PTR))
+        , cachedTexture_(gui::LoadAndCacheImage(CREATURE_PTR))
         , sprite_(cachedTexture_.Get())
         , creatureImageColor_()
         , isSummaryView_(false)
@@ -98,11 +98,11 @@ namespace combat
 
         , healthLines_(sf::Lines, HEALTH_LINE_COUNT_)
         , isDead_(false)
-        , wingCachedTexture_(sfml_util::LoadAndCacheImage(
-              sfml_util::CombatImageType::Wing,
-              sfml_util::ImageOptions(
-                  ((!isPlayer_) ? sfml_util::ImageOpt::FlipHoriz | sfml_util::ImageOpt::Default
-                                : sfml_util::ImageOpt::Default))))
+        , wingCachedTexture_(gui::LoadAndCacheImage(
+              gui::CombatImageType::Wing,
+              gui::ImageOptions(
+                  ((!isPlayer_) ? gui::ImageOpt::FlipHoriz | gui::ImageOpt::Default
+                                : gui::ImageOpt::Default))))
         , wingSprite_(wingCachedTexture_.Get())
         , isFlying_(false)
         , wingFlapSlider_(0.0f, WING_IMAGE_ROTATION_MAX_, WING_IMAGE_ANIM_SPEED_)
@@ -285,7 +285,7 @@ namespace combat
     bool CombatNode::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
         const bool DID_MOUSE_STATE_CHANGE(Entity::UpdateMousePos(MOUSE_POS_V));
-        SetHighlight((sfml_util::MouseState::Over == entityMouseState_), DID_MOUSE_STATE_CHANGE);
+        SetHighlight((gui::MouseState::Over == entityMouseState_), DID_MOUSE_STATE_CHANGE);
         return DID_MOUSE_STATE_CHANGE;
     }
 
@@ -324,8 +324,7 @@ namespace combat
             SetWingImageScaleAndOrigin();
             SetWingImagePosition();
 
-            wingFlapSlider_
-                = sfml_util::SliderOscillator<float>(0.0f, WING_IMAGE_ROTATION_MAX_, 1.0f);
+            wingFlapSlider_ = gui::SliderOscillator<float>(0.0f, WING_IMAGE_ROTATION_MAX_, 1.0f);
         }
 
         isFlying_ = IS_FLYING;
@@ -428,8 +427,8 @@ namespace combat
                 entityRegion_.left + entityRegion_.width + 15.0f, NAME_TEXT_POS_TOP);
 
             condText_.setPosition(
-                sfml_util::Display::Instance()->GetWinWidth() + 1.0f,
-                sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
+                gui::Display::Instance()->GetWinWidth() + 1.0f,
+                gui::Display::Instance()->GetWinHeight() + 1.0f);
         }
         else
         {
@@ -488,7 +487,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
+                gui::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
             nameText_.setFillColor(NameColor() + HIGHLIGHT_ADJ_COLOR_);
@@ -503,7 +502,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
+                gui::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
             nameText_.setFillColor(NameColor());

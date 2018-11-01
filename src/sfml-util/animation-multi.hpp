@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ANIMATIONMULTI_HPP_INCLUDED
+#define HEROESPATH_GUI_ANIMATIONMULTI_HPP_INCLUDED
 //
 // animation-multi.hpp
 //  An animation class sourced from multiples textures.
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // An animtion class sourced from multiple textures.
@@ -53,12 +53,12 @@ namespace sfml_util
         const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
     protected:
-        sfml_util::CachedTextures cachedTextures_;
+        gui::CachedTextures cachedTextures_;
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ANIMATIONMULTI_HPP_INCLUDED

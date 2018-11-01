@@ -32,7 +32,7 @@ namespace popup
 
     class PopupStageSpellbook
         : public PopupStageBase
-        , public sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::IHandler_t
+        , public gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::IHandler_t
     {
     public:
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
@@ -58,8 +58,9 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const sfml_util::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::
-                                Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(
+            const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t &)
+            override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -93,29 +94,29 @@ namespace popup
         static const sf::Color UNABLE_TEXT_COLOR_;
         static const float WARNING_DURATION_SEC_;
 
-        sfml_util::CachedTextureOpt_t playerCachedTextureOpt_;
+        gui::CachedTextureOpt_t playerCachedTextureOpt_;
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
-        sfml_util::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::ListBoxUPtr_t<PopupStageSpellbook, spell::SpellPtr_t> listBoxUPtr_;
+        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
+        gui::ListBoxUPtr_t<PopupStageSpellbook, spell::SpellPtr_t> listBoxUPtr_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
         const sf::Color LISTBOX_COLOR_BG_;
-        const sfml_util::FocusColors LISTBOX_COLORSET_;
-        sfml_util::BoxEntityInfo listBoxBackgroundInfo_;
-        sfml_util::TextInfo listElementTextInfo_;
-        sfml_util::CachedTextureOpt_t spellCachedTextureOpt_;
+        const gui::FocusColors LISTBOX_COLORSET_;
+        gui::BoxEntityInfo listBoxBackgroundInfo_;
+        gui::TextInfo listElementTextInfo_;
+        gui::CachedTextureOpt_t spellCachedTextureOpt_;
         sf::Sprite spellSprite_;
-        sfml_util::TextRegionUPtr_t spellTitleTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t spellDetailsTextUPtr_;
-        sfml_util::TextRegionUPtr_t unableTextUPtr_;
-        sfml_util::TextRegionUPtr_t spellDescTextUPtr_;
-        sfml_util::ColorSlider imageColorSlider_;
-        sfml_util::ColorSlider textColorSlider_;
-        sfml_util::ColorSlider warnTextColorSlider_;
+        gui::TextRegionUPtr_t spellTitleTextRegionUPtr_;
+        gui::TextRegionUPtr_t spellDetailsTextUPtr_;
+        gui::TextRegionUPtr_t unableTextUPtr_;
+        gui::TextRegionUPtr_t spellDescTextUPtr_;
+        gui::ColorSlider imageColorSlider_;
+        gui::ColorSlider textColorSlider_;
+        gui::ColorSlider warnTextColorSlider_;
         std::size_t currentListboxIndex_;
     };
 

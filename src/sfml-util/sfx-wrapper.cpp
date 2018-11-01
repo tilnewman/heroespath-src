@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     SfxWrapper::SfxWrapper(
@@ -63,5 +63,5 @@ namespace sfml_util
         bufferUPtr_.reset();
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

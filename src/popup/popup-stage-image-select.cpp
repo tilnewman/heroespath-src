@@ -56,8 +56,7 @@ namespace popup
 
     PopupStageImageSelect::~PopupStageImageSelect() = default;
 
-    bool
-        PopupStageImageSelect::HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &)
+    bool PopupStageImageSelect::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &)
     {
         if (isChangingImageAllowed_)
         {
@@ -96,17 +95,17 @@ namespace popup
 
         if (popupInfo_.ImagesCount() == 1)
         {
-            const sfml_util::TextInfo TEXT_INFO(
+            const gui::TextInfo TEXT_INFO(
                 "(there is only one image)",
-                sfml_util::GuiFont::Default,
-                sfml_util::FontManager::Instance()->Size_Small(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
                 PopupManager::Color_Font(),
-                sfml_util::Justified::Center);
+                gui::Justified::Center);
 
             sf::FloatRect region(textRegion_);
             region.top = sliderbarPosTop_;
             region.height = 0.0f;
-            imageWrnTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            imageWrnTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "PopupStage'sImageSelectionion", TEXT_INFO, region);
 
             EntityAdd(imageWrnTextRegionUPtr_.get());
@@ -156,7 +155,7 @@ namespace popup
 
                     if (imageIndexLastSoundOff_ != imageIndex_)
                     {
-                        sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
+                        gui::SoundManager::Instance()->PlaySfx_TickOff();
                     }
 
                     imageIndexLastSoundOff_ = imageIndex_;
@@ -175,7 +174,7 @@ namespace popup
 
                 if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
                 {
-                    sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
+                    gui::SoundManager::Instance()->PlaySfx_TickOn();
                 }
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();
@@ -274,7 +273,7 @@ namespace popup
 
         if ((NEW_IMAGE_INDEX_TO_USE != imageIndex_) || (isInitialAnimComplete_ == false))
         {
-            imageSlider_ = sfml_util::SliderZeroToOne(SLIDER_SPEED);
+            imageSlider_ = gui::SliderZeroToOne(SLIDER_SPEED);
 
             SetupSelectImage_SetupNewImageIndex(NEW_IMAGE_INDEX_TO_USE);
             SetupSelectImage_SetupImageResources();
@@ -329,17 +328,17 @@ namespace popup
         std::ostringstream ss;
         ss << IMAGE_INDEX + 1 << "/" << CountMax();
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             PopupManager::Color_Font(),
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         sf::FloatRect imageCountTextRect(textRegion_);
         imageCountTextRect.height = 0.0f;
 
-        imageNumTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        imageNumTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStage'sSelectNumber", TEXT_INFO, imageCountTextRect);
     }
 
@@ -375,7 +374,7 @@ namespace popup
 
     std::size_t PopupStageImageSelect::CountMax() const { return popupInfo_.ImagesCount(); }
 
-    const sfml_util::CachedTexture &
+    const gui::CachedTexture &
         PopupStageImageSelect::GetCurrentCachedTexture(const std::size_t IMAGE_INDEX)
     {
         return popupInfo_.ImagesAt(IMAGE_INDEX);
@@ -482,13 +481,13 @@ namespace popup
         const auto SLIDERBAR_POS_LEFT { textRegion_.left
                                         + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
 
-        sliderbarUPtr_ = std::make_unique<sfml_util::SliderBar>(
+        sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
             "PopupStage's",
             SLIDERBAR_POS_LEFT,
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
-            sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
+            gui::SliderStyle(gui::Orientation::Horiz),
+            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
     }

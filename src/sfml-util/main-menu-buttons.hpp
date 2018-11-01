@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_MAINMENUBUTTONS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_MAINMENUBUTTONS_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_MAINMENUBUTTONS_HPP_INCLUDED
+#define HEROESPATH_GUI_MAINMENUBUTTONS_HPP_INCLUDED
 //
 // main-menu-buttons.hpp
 //
@@ -17,12 +17,12 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for implementing an ImageTextEntity that behaves like a one of the standard
     // menu stage buttons such as Back/Next/etc.
-    class MainMenuButton : public sfml_util::ImageTextEntity
+    class MainMenuButton : public gui::ImageTextEntity
     {
     public:
         MainMenuButton(const MainMenuButton &) = delete;
@@ -64,7 +64,7 @@ namespace sfml_util
     using MainMenuButtonUPtr_t = std::unique_ptr<MainMenuButton>;
     using MainMenuButtonUVec_t = std::vector<MainMenuButtonUPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_MAINMENUBUTTONS_HPP_INCLUDED
+#endif // HEROESPATH_GUI_MAINMENUBUTTONS_HPP_INCLUDED

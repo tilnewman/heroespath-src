@@ -39,16 +39,16 @@ namespace stage
         : StageBase(
             "Credits",
             {
-                sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::DefaultBoldFlavor,
-                sfml_util::GuiFont::Number,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::SystemCondensed,
-                sfml_util::GuiFont::SignThinTallNarrow,
-                sfml_util::GuiFont::SignBoldShortWide,
-                sfml_util::GuiFont::Handwriting,
-                sfml_util::GuiFont::DialogModern,
-                sfml_util::GuiFont::DialogMedieval,
+                gui::GuiFont::Default,
+                gui::GuiFont::DefaultBoldFlavor,
+                gui::GuiFont::Number,
+                gui::GuiFont::System,
+                gui::GuiFont::SystemCondensed,
+                gui::GuiFont::SignThinTallNarrow,
+                gui::GuiFont::SignBoldShortWide,
+                gui::GuiFont::Handwriting,
+                gui::GuiFont::DialogModern,
+                gui::GuiFont::DialogMedieval,
             },
             true)
         , titleCachedTexture_("media-images-title-blacksymbol")
@@ -63,12 +63,12 @@ namespace stage
         , blackRectUpper_()
         , blackRectLower_()
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits);
+        gui::SoundManager::Instance()->MusicStart(gui::music::Credits);
     }
 
     CreditsStage::~CreditsStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStop(sfml_util::music::Credits);
+        gui::SoundManager::Instance()->MusicStop(gui::music::Credits);
         StageBase::ClearAllEntities();
     }
 
@@ -91,33 +91,33 @@ namespace stage
         }();
 
         // rune background
-        sfml_util::BoxEntityInfo boxInfo;
+        gui::BoxEntityInfo boxInfo;
 
         boxInfo.SetupImage(
-            sfml_util::CachedTexture(
+            gui::CachedTexture(
                 "media-images-backgrounds-tile-runes",
-                sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated),
+                gui::ImageOpt::Default | gui::ImageOpt::Repeated),
             sfutil::ScreenRatioToPixelsHoriz(0.15f));
 
         boxInfo.SetupColor(
             sf::Color::Transparent,
             sf::Color(0, 0, 0, 200),
-            sfml_util::Side::None,
-            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+            gui::Side::None,
+            gui::Corner::TopLeft | gui::Corner::BottomRight);
 
-        boxInfo.focus_colors = sfml_util::FocusColors(
+        boxInfo.focus_colors = gui::FocusColors(
             sfutil::color::GrayLight,
             sf::Color::Transparent,
             sfutil::color::GrayLight,
             sf::Color::Transparent);
 
-        boxUPtr_ = std::make_unique<sfml_util::BoxEntity>("Credits", CREDITS_BOX_REGION, boxInfo);
+        boxUPtr_ = std::make_unique<gui::BoxEntity>("Credits", CREDITS_BOX_REGION, boxInfo);
 
-        sfml_util::BoxEntityInfo boxBorderInfo;
+        gui::BoxEntityInfo boxBorderInfo;
         boxBorderInfo.SetupBorder(true);
 
-        boxBorderUPtr_ = std::make_unique<sfml_util::BoxEntity>(
-            "CreditsBorder", CREDITS_BOX_REGION, boxBorderInfo);
+        boxBorderUPtr_
+            = std::make_unique<gui::BoxEntity>("CreditsBorder", CREDITS_BOX_REGION, boxBorderInfo);
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when they move outside the box
@@ -225,7 +225,7 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Neo Euler\"",
-            sfml_util::GuiFont::Default,
+            gui::GuiFont::Default,
             "Hermann Zapf\nCopyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder "
             "the "
             "SIL Open Font "
@@ -234,7 +234,7 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Modern Antiqua\"",
-            sfml_util::GuiFont::DefaultBoldFlavor,
+            gui::GuiFont::DefaultBoldFlavor,
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the "
             "SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
@@ -242,7 +242,7 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Gentium Plus\"",
-            sfml_util::GuiFont::System,
+            gui::GuiFont::System,
             "J.Victor Gaultney\nAnnie Olsen\nIska Routamaa\nBecca "
             "Hirsbrunner\nCopyright (c) SIL International, "
             "2003-2014\nwww.scripts.sil.org/Gentium\nUnder the "
@@ -252,14 +252,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Goudy Bookletter 1911\"",
-            sfml_util::GuiFont::SystemCondensed,
+            gui::GuiFont::SystemCondensed,
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
         /*
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Quill Sword\"",
-            sfml_util::GuiFont::Number,
+            gui::GuiFont::Number,
             "by Daniel Zadorozny\n2015 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the
         " "author at iconian@aol.com."));
@@ -267,14 +267,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Queen & Country\"",
-            sfml_util::GuiFont::SignBoldShortWide,
+            gui::GuiFont::SignBoldShortWide,
             "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.
         " "If you like it,\nplease e-mail the author at iconian@aol.com."));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Valley Forge\"",
-            sfml_util::GuiFont::System,
+            gui::GuiFont::System,
             "by Daniel Zadorozny\n2008 Iconian Fonts\nwww.iconian.com\n\"free for all "
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the
         " "author at iconian@aol.com."));
@@ -282,14 +282,14 @@ namespace stage
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Square Antiqua\"",
-            sfml_util::GuiFont::DialogModern,
+            gui::GuiFont::DialogModern,
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the
         SIL " "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
 
         creditUVec_.emplace_back(std::make_unique<Credit>(
             CREDIT_MAX_WIDTH,
             "Font \"Mops Antiqua\"",
-            sfml_util::GuiFont::DialogModern,
+            gui::GuiFont::DialogModern,
             "Created by Uwe Borchert\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL\nFound at www.fontlibrary.org"));
         */
@@ -341,7 +341,7 @@ namespace stage
         }
         else
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Menu);
         }
 

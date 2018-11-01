@@ -32,14 +32,14 @@ class RenderStates;
 namespace heroespath
 {
 
-namespace sfml_util
+namespace gui
 {
     class IEntity;
     using IEntityPtr_t = misc::NotNull<IEntity *>;
     using IEntityPtrOpt_t = boost::optional<IEntityPtr_t>;
 
     struct Resolution;
-} // namespace sfml_util
+} // namespace gui
 
 namespace popup
 {
@@ -71,25 +71,24 @@ namespace stage
             UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
             = 0;
 
-        virtual const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
-            = 0;
+        virtual const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE) = 0;
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE) = 0;
 
-        virtual const sfml_util::IEntityPtrOpt_t GetEntityWithFocus() const = 0;
+        virtual const gui::IEntityPtrOpt_t GetEntityWithFocus() const = 0;
         virtual void RemoveFocus() = 0;
-        virtual void SetFocus(const sfml_util::IEntityPtr_t ENTITY_PTR) = 0;
+        virtual void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) = 0;
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
 
         virtual void HandleResolutionChange() = 0;
 
         virtual void EntityAdd(
-            const sfml_util::IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
+            const gui::IEntityPtr_t, const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false)
             = 0;
 
-        virtual void EntityRemove(const sfml_util::IEntityPtr_t) = 0;
+        virtual void EntityRemove(const gui::IEntityPtr_t) = 0;
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) = 0;
 
@@ -112,7 +111,7 @@ namespace stage
         virtual void IsFading(const bool IS_FADING) = 0;
 
         virtual void SpawnPopup(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO) const = 0;
 
         virtual void RemovePopup(
@@ -121,9 +120,9 @@ namespace stage
         virtual void TransitionTo(const stage::Stage::Enum NEW_STAGE) const = 0;
         virtual void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const = 0;
 
-        virtual const sfml_util::DisplayChangeResult ChangeResolution(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-            const sfml_util::Resolution & NEW_RES,
+        virtual const gui::DisplayChangeResult ChangeResolution(
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL) const = 0;
     };
 

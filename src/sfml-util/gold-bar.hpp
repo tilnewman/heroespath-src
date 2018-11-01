@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_GOLD_BAR_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_GOLD_BAR_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_GOLD_BAR_HPP_INCLUDED
+#define HEROESPATH_GUI_GOLD_BAR_HPP_INCLUDED
 //
 // gold-bar.hpp
 //
@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Reponsible for storing and drawing a gui gold bar, which is just a fat line that is
@@ -160,7 +160,7 @@ namespace sfml_util
     // intetionally ignoring the texture because it will be the same for all GoldBars
     inline bool operator!=(const GoldBar & L, const GoldBar & R) { return !(L == R); }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_GOLD_BAR_HPP_INCLUDED
+#endif // HEROESPATH_GUI_GOLD_BAR_HPP_INCLUDED

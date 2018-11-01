@@ -35,10 +35,10 @@ namespace popup
     // Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
         : public PopupStageBase
-        , public sfml_util::ListBox<PopupStageMusicSheet, song::SongPtr_t>::Callback_t::IHandler_t
+        , public gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>::Callback_t::IHandler_t
     {
     public:
-        using SongListBox_t = sfml_util::ListBox<PopupStageMusicSheet, song::SongPtr_t>;
+        using SongListBox_t = gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>;
 
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
         PopupStageMusicSheet(PopupStageMusicSheet &&) = delete;
@@ -85,30 +85,30 @@ namespace popup
         static const float WARNING_DURATION_SEC_;
 
         const float PLAYER_IMAGE_HEIGHT_;
-        sfml_util::TextRegionUPtr_t charDetailsTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
-        sfml_util::ListBoxUPtr_t<PopupStageMusicSheet, song::SongPtr_t> listBoxUPtr_;
-        sfml_util::CachedTexture playerCachedTexture_;
+        gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
+        gui::ListBoxUPtr_t<PopupStageMusicSheet, song::SongPtr_t> listBoxUPtr_;
+        gui::CachedTexture playerCachedTexture_;
         sf::Sprite playerSprite_;
         sf::FloatRect pageRectLeft_;
         sf::FloatRect pageRectRight_;
-        sfml_util::TextRegionUPtr_t titleTextRegionUPtr_;
-        sfml_util::TextRegionUPtr_t detailsTextUPtr_;
-        sfml_util::TextRegionUPtr_t unableTextUPtr_;
-        sfml_util::TextRegionUPtr_t descTextUPtr_;
-        sfml_util::CachedTextureOpt_t songCachedTextureOpt_;
+        gui::TextRegionUPtr_t titleTextRegionUPtr_;
+        gui::TextRegionUPtr_t detailsTextUPtr_;
+        gui::TextRegionUPtr_t unableTextUPtr_;
+        gui::TextRegionUPtr_t descTextUPtr_;
+        gui::CachedTextureOpt_t songCachedTextureOpt_;
         sf::Sprite songSprite_;
         const sf::Color LISTBOX_IMAGE_COLOR_;
         const sf::Color LISTBOX_LINE_COLOR_;
         const sf::Color LISTBOX_COLOR_FG_;
         const sf::Color LISTBOX_COLOR_BG_;
-        const sfml_util::FocusColors LISTBOX_COLORSET_;
-        sfml_util::BoxEntityInfo listBoxBackgroundInfo_;
-        sfml_util::TextInfo listElementTextInfo_;
+        const gui::FocusColors LISTBOX_COLORSET_;
+        gui::BoxEntityInfo listBoxBackgroundInfo_;
+        gui::TextInfo listElementTextInfo_;
         std::size_t currentSongIndex_;
-        sfml_util::ColorSlider imageColorSlider_;
-        sfml_util::ColorSlider textColorSlider_;
-        sfml_util::ColorSlider warnTextColorSlider_;
+        gui::ColorSlider imageColorSlider_;
+        gui::ColorSlider textColorSlider_;
+        gui::ColorSlider warnTextColorSlider_;
     };
 
 } // namespace popup

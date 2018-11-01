@@ -26,7 +26,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     bool TextRenderer::ToTexture(
         const TextInfo & TEXT_INFO,
@@ -37,8 +37,8 @@ namespace sfml_util
         auto logErrorMsgAndReturnErrorResult = [&](const std::string & ERROR_MSG) {
             std::ostringstream ss;
 
-            ss << "sfml_util::TextRenderer::ToTexture(" << TEXT_INFO
-               << ", region=" << BOUNDING_REGION << ")  " << ERROR_MSG;
+            ss << "gui::TextRenderer::ToTexture(" << TEXT_INFO << ", region=" << BOUNDING_REGION
+               << ")  " << ERROR_MSG;
 
             M_HP_LOG_ERR(ss.str());
             return false;
@@ -61,7 +61,7 @@ namespace sfml_util
         if (TEXT_INFO.text != TEXT_CLEANER.text)
         {
             M_HP_LOG_WRN(
-                "sfml_util::text_render::Render("
+                "gui::text_render::Render("
                 << TEXT_INFO << ", region=" << BOUNDING_REGION
                 << ")  Original text was changed during engine::CleanText():\nold=\""
                 << TEXT_INFO.text << "\"\nnew=\"" << TEXT_CLEANER.text << "\"");
@@ -69,9 +69,8 @@ namespace sfml_util
 
         const text_rendering::Context CONTEXT(TEXT_INFO, TEXT_CLEANER, BOUNDING_REGION.width);
 
-        const sfml_util::text_rendering::RenderedLines RENDERED_LINES {
-            text_rendering::Renderer::Make(CONTEXT)
-        };
+        const gui::text_rendering::RenderedLines RENDERED_LINES { text_rendering::Renderer::Make(
+            CONTEXT) };
 
         if (RENDERED_LINES.IsValid())
         {
@@ -131,7 +130,7 @@ namespace sfml_util
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (CREATE_TEXTURE_RESULT),
-                "sfml_util::TextRenderer::Draw(rendered_text="
+                "gui::TextRenderer::Draw(rendered_text="
                     << RENDERED_LINES.ToString() << ", render_texture_size_orig=" << ORIG_SIZE
                     << ")  The sf::RenderTexture give was not big enough, but attempting to "
                        "make "
@@ -151,5 +150,5 @@ namespace sfml_util
         renderTexture.display();
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

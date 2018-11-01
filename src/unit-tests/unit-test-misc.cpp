@@ -30,7 +30,7 @@
 #include <limits>
 #include <type_traits>
 
-using namespace heroespath::sfml_util;
+using namespace heroespath::gui;
 using namespace heroespath::misc;
 
 // a simple class used to test working with non-POD
@@ -57,7 +57,7 @@ bool testTypeIsZero()
 
     bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
                         && IsRealZero(
-                               std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
+                            std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
 
     if constexpr (std::is_signed<T>::value)
     {
@@ -78,7 +78,7 @@ bool testTypeIsRealZero()
 {
     bool didPassTests { IsRealZero(T(0)) && !IsRealZero(T(1)) && IsRealZero(T(1) - T(1))
                         && IsRealZero(
-                               std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
+                            std::numeric_limits<T>::max() - std::numeric_limits<T>::max()) };
 
     if constexpr (std::is_signed<T>::value)
     {
@@ -325,7 +325,7 @@ BOOST_AUTO_TEST_CASE(BoostOptionalNoElementTests)
     BOOST_CHECK(noElement1 == NoElement_t());
     BOOST_CHECK(noElement2 == NoElement_t());
 
-    // test that an optional of type sfml_util::NoElement_t works in every way
+    // test that an optional of type gui::NoElement_t works in every way
     boost::optional<NoElement_t> noOpt;
     BOOST_CHECK(!noOpt);
     BOOST_CHECK(!noOpt.is_initialized());

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_MOUSESTATE_ENTITY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_MOUSESTATE_ENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_MOUSESTATE_ENTITY_HPP_INCLUDED
+#define HEROESPATH_GUI_MOUSESTATE_ENTITY_HPP_INCLUDED
 //
 // image-text-entity.hpp
 //
@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     class ImageEntity;
@@ -45,7 +45,7 @@ namespace sfml_util
         {
             EventPacket(
                 const misc::NotNull<ImageTextEntity *> & LISTBOX_PTR,
-                const sfml_util::GuiEvent::Enum GUI_EVENT,
+                const gui::GuiEvent::Enum GUI_EVENT,
                 const sf::Vector2f & MOUSE_POS_V = sf::Vector2f(0.0f, 0.0f),
                 const bool IS_MOUSE_OVER_IMAGE = false,
                 const bool IS_MOUSE_OVER_TEXT = false)
@@ -62,7 +62,7 @@ namespace sfml_util
             EventPacket & operator=(EventPacket &&) = default;
 
             misc::NotNull<ImageTextEntity *> entity_ptr;
-            sfml_util::GuiEvent::Enum gui_event;
+            gui::GuiEvent::Enum gui_event;
             sf::Vector2f mouse_pos_v;
             bool is_mouse_over_image;
             bool is_mouse_over_text;
@@ -200,7 +200,7 @@ namespace sfml_util
     using ImageTextEntityUPtr_t = std::unique_ptr<ImageTextEntity>;
     using ImageTextEntityUVec_t = std::vector<ImageTextEntityUPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_MOUSESTATE_ENTITY_HPP_INCLUDED
+#endif // HEROESPATH_GUI_MOUSESTATE_ENTITY_HPP_INCLUDED

@@ -85,21 +85,21 @@ namespace stage
         }
 
         void StageMover::AddTreasureObject(
-            const sfml_util::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
+            const gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            treasureSliders_.emplace_back(sfml_util::EntitySlider(
-                IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+            treasureSliders_.emplace_back(
+                gui::EntitySlider(IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
         void StageMover::AddInventoryObject(
-            const sfml_util::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
+            const gui::IEntityPtrOpt_t & IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            inventorySliders_.emplace_back(sfml_util::EntitySlider(
-                IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+            inventorySliders_.emplace_back(
+                gui::EntitySlider(IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
         Type StageMover::TreasureSwitch()
@@ -130,7 +130,7 @@ namespace stage
 
                 for (auto & slider : inventorySliders_)
                 {
-                    if (slider.Direction() == sfml_util::Moving::Toward)
+                    if (slider.Direction() == gui::Moving::Toward)
                     {
                         slider.ReverseDirection();
                     }
@@ -187,8 +187,7 @@ namespace stage
         }
 
         void StageMover::ReplaceEntity(
-            const sfml_util::IEntityPtr_t FROM_ENTITY_PTR,
-            const sfml_util::IEntityPtr_t TO_ENTITY_PTR)
+            const gui::IEntityPtr_t FROM_ENTITY_PTR, const gui::IEntityPtr_t TO_ENTITY_PTR)
         {
             for (auto & slider : treasureSliders_)
             {
@@ -209,8 +208,7 @@ namespace stage
             }
         }
 
-        bool StageMover::UpdateTime(
-            sfml_util::EntitySlider & slider, const float ELAPSED_TIME_SECONDS)
+        bool StageMover::UpdateTime(gui::EntitySlider & slider, const float ELAPSED_TIME_SECONDS)
         {
             const auto IS_STOPPED { slider.UpdateAndReturnIsStopped(ELAPSED_TIME_SECONDS) };
             return (IS_STOPPED && (slider.IsMovingToward() == false));

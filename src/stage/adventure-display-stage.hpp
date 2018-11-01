@@ -69,19 +69,19 @@ namespace stage
         void Setup_Map();
 
         void HandleMovementKeypresses(
-            const sfml_util::Direction::Enum, bool & wasPressed, const bool IS_PRESSED);
+            const gui::Direction::Enum, bool & wasPressed, const bool IS_PRESSED);
 
     private:
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
         interact::InteractionManager interactionManager_;
-        sfml_util::StageTitle stageTitle_;
-        sfml_util::BottomSymbol bottomImage_;
+        gui::StageTitle stageTitle_;
+        gui::BottomSymbol bottomImage_;
         const sf::FloatRect MAP_OUTER_REGION_;
         const sf::FloatRect MAP_INNER_REGION_;
         map::MapUPtr_t mapUPtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
-        sfml_util::CachedTexture bgCachedTexture_;
+        gui::CachedTexture bgCachedTexture_;
         sf::Sprite bgSprite_;
         float moveTimerSec_;
         bool wasPressedLeft_;

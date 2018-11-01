@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -238,5 +238,5 @@ namespace sfml_util
         }
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

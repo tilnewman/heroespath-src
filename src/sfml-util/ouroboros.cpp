@@ -22,7 +22,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Ouroboros::Ouroboros(const std::string & NAME, const bool WILL_MAKE_BLACK)
@@ -82,5 +82,5 @@ namespace sfml_util
         return true;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

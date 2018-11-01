@@ -37,7 +37,7 @@ namespace combat
             const Health_t & DAMAGE_MIN,
             const Health_t & DAMAGE_MAX,
             const std::string & HIT_VERB,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT,
+            const gui::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESCRIPTION);
 
         Trap(
@@ -46,11 +46,11 @@ namespace combat
             const Health_t & DAMAGE_MIN,
             const Health_t & DAMAGE_MAX,
             const std::string & HIT_VERB,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT,
+            const gui::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESC_PREFIX,
             const std::string & DES_POSTFIX);
 
-        sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
+        gui::sound_effect::Enum SoundEffect() const { return soundEffect_; }
 
         const std::string Description(const std::string & CONTAINER_NAME) const;
 
@@ -68,7 +68,7 @@ namespace combat
     private:
         SizeRange_t playerCountRange_;
         HealthRange_t damageRange_;
-        sfml_util::sound_effect::Enum soundEffect_;
+        gui::sound_effect::Enum soundEffect_;
         std::string descPrefix_;
         std::string descPostfix_;
         bool willDescUseContainerName_;

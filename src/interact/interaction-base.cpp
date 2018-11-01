@@ -24,11 +24,11 @@ namespace interact
 
     InteractionBase::InteractionBase(
         const Interact::Enum INTERACTION_TYPE,
-        const sfml_util::TextInfo & TEXT,
+        const gui::TextInfo & TEXT,
         const ButtonVec_t & BUTTONS,
         const std::string & SUBJECT_IMAGE_KEY,
-        const sfml_util::sound_effect::Enum SFX_ENTER,
-        const sfml_util::sound_effect::Enum SFX_EXIT,
+        const gui::sound_effect::Enum SFX_ENTER,
+        const gui::sound_effect::Enum SFX_EXIT,
         const sf::Sprite & NPC_SPRITE)
         : interactionType_(INTERACTION_TYPE)
         , text_(TEXT)
@@ -43,34 +43,34 @@ namespace interact
 
     void InteractionBase::PlayEnterSfx() const
     {
-        if (sfml_util::sound_effect::Count != sfxEnter_)
+        if (gui::sound_effect::Count != sfxEnter_)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(sfxEnter_);
+            gui::SoundManager::Instance()->SoundEffectPlay(sfxEnter_);
         }
     }
 
     void InteractionBase::PlayExitSfx() const
     {
-        if (sfml_util::sound_effect::Count != sfxExit_)
+        if (gui::sound_effect::Count != sfxExit_)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(sfxExit_);
+            gui::SoundManager::Instance()->SoundEffectPlay(sfxExit_);
         }
     }
 
-    const sfml_util::TextInfo
+    const gui::TextInfo
         InteractionBase::MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE)
     {
-        return sfml_util::TextInfo(
+        return gui::TextInfo(
             ((TYPE == Text::Dialog) ? ("\"" + TEXT + "\"") : TEXT),
             Text::Font(TYPE),
-            sfml_util::FontManager::Instance()->Size_Large(),
+            gui::FontManager::Instance()->Size_Large(),
             sfutil::color::GrayDark,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
     }
 
     bool InteractionBase::OnButtonClick(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
-        const sfml_util::TextButtonPtr_t TEXT_BUTTON_PTR)
+        const gui::TextButtonPtr_t TEXT_BUTTON_PTR)
     {
         for (const auto & BUTTON : buttons_)
         {

@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
     test(
         "A aB Ab xYz XyZ xYZ Xyz aBcD AbCd A",
         SEPARATOR_STR,
-        "a a_b a_b x_y_z x_y_z x_yz x_yz a_b_c_d a_b_c_d a",
+        "a ab a_b xy_z x_yz xyz x_yz ab_cd a_bc_d a",
         "complex");
 
     test(

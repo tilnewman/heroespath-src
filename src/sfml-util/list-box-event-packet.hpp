@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LISTBOX_EVENT_PACKET_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LISTBOX_EVENT_PACKET_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_LISTBOX_EVENT_PACKET_HPP_INCLUDED
+#define HEROESPATH_GUI_LISTBOX_EVENT_PACKET_HPP_INCLUDED
 //
 // list-box-event-packet.hpp
 //
@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     template <typename Element_t>
@@ -58,7 +58,7 @@ namespace sfml_util
         ListElementPtr_t<Element_t> selected_element_ptr;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LISTBOX_EVENT_PACKET_HPP_INCLUDED
+#endif // HEROESPATH_GUI_LISTBOX_EVENT_PACKET_HPP_INCLUDED

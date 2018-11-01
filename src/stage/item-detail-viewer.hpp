@@ -70,10 +70,10 @@ namespace stage
         const float SLIDER_SPEED_;
 
         sf::VertexArray backgroundQuads_;
-        sfml_util::CachedTextureOpt_t cachedTextureOpt_;
+        gui::CachedTextureOpt_t cachedTextureOpt_;
         sf::Sprite sprite_;
-        sfml_util::RatioSlider slider_;
-        sfml_util::TextRegionUPtr_t textRegionUPtr_;
+        gui::RatioSlider slider_;
+        gui::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect sourceRect;
         item::ItemPtrOpt_t itemPtrOpt_;
         bool willShowImage_;

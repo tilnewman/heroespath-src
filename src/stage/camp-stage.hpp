@@ -23,14 +23,14 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Animation;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
 
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
-} // namespace sfml_util
+} // namespace gui
 
 namespace stage
 {
@@ -38,7 +38,7 @@ namespace stage
     // A Stage class that allows the party to camp for resting and healing
     class CampStage
         : public stage::StageBase
-        , public sfml_util::PopupCallback_t::IHandler_t
+        , public gui::PopupCallback_t::IHandler_t
     {
     public:
         CampStage(const CampStage &) = delete;
@@ -49,7 +49,7 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        virtual bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &);
+        virtual bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
@@ -68,17 +68,17 @@ namespace stage
         static const std::string NEWHEROESPATH_POPUP_NAME4_;
 
     private:
-        sfml_util::StageTitle stageTitle_;
-        sfml_util::CachedTexture campfireCachedTexture_;
+        gui::StageTitle stageTitle_;
+        gui::CachedTexture campfireCachedTexture_;
         sf::Sprite campfireSprite_;
-        sfml_util::BoxEntity backgroundBox_;
-        sfml_util::AnimationUPtr_t fireAnimUPtr_;
+        gui::BoxEntity backgroundBox_;
+        gui::AnimationUPtr_t fireAnimUPtr_;
         bool showNewGamePopup1_;
         bool showNewGamePopup2_;
         bool showNewGamePopup3_;
         bool showNewGamePopup4_;
-        sfml_util::OuroborosUPtr_t ouroborosUPtr_;
-        sfml_util::BottomSymbol botSymbol_;
+        gui::OuroborosUPtr_t ouroborosUPtr_;
+        gui::BottomSymbol botSymbol_;
     };
 
 } // namespace stage

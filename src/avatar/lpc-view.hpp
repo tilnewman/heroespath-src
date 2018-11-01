@@ -28,11 +28,11 @@ namespace avatar
     public:
         explicit LPCView(const Avatar::Enum, const sf::Vector2f & CENTERED_MAP_POS_V);
 
-        void Set(const Pose::Enum, const sfml_util::Direction::Enum);
+        void Set(const Pose::Enum, const gui::Direction::Enum);
 
         bool Update(const float TIME_ELAPSED);
 
-        sfml_util::Direction::Enum Direction() const { return animation_.direction; }
+        gui::Direction::Enum Direction() const { return animation_.direction; }
 
         void MoveIfWalking(const float AMOUNT);
 
@@ -51,15 +51,15 @@ namespace avatar
 
         static const sf::IntRect GetStandingRightFrameRect()
         {
-            return FrameRect(FrameNumbers(Pose::Standing, sfml_util::Direction::Right).at(0));
+            return FrameRect(FrameNumbers(Pose::Standing, gui::Direction::Right).at(0));
         }
 
     private:
-        static const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum);
+        static const FrameNumVec_t FrameNumbers(const Pose::Enum, const gui::Direction::Enum);
 
         static const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM);
 
-        const Animation CreateAnimation(const Pose::Enum, const sfml_util::Direction::Enum) const;
+        const Animation CreateAnimation(const Pose::Enum, const gui::Direction::Enum) const;
 
         float FrameDuration(const Pose::Enum) const;
 
@@ -75,7 +75,7 @@ namespace avatar
         static const float FRAME_DURATION_SEC_BLINK_MAX_;
 
         Avatar::Enum whichAvatar_;
-        sfml_util::CachedTexture cachedTexture_;
+        gui::CachedTexture cachedTexture_;
 
         // note that sprite_.getPosition() does not hold the actual top-left corner position of the
         // sprite, instead this holds the centered map coordinates position, see

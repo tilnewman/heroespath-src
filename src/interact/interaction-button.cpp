@@ -24,8 +24,8 @@ namespace interact
         , ptrOpt_()
     {}
 
-    sfml_util::TextButtonUPtr_t Button::Make(
-        const sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT)
+    gui::TextButtonUPtr_t
+        Button::Make(const gui::TextButton::Callback_t::IHandlerPtrOpt_t & CALLBACK_HANDLER_PTR_OPT)
     {
         const auto KEY { Key() };
 
@@ -40,11 +40,11 @@ namespace interact
             }
         }() };
 
-        auto uptr { std::make_unique<sfml_util::TextButton>(
+        auto uptr { std::make_unique<gui::TextButton>(
             Name(),
             0.0f,
             0.0f,
-            sfml_util::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
+            gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
             CALLBACK_HANDLER_PTR_OPT) };
 
         ptrOpt_ = uptr.get();

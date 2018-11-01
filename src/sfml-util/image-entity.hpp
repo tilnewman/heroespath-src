@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_IMAGE_ENTITY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_IMAGE_ENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_IMAGE_ENTITY_HPP_INCLUDED
+#define HEROESPATH_GUI_IMAGE_ENTITY_HPP_INCLUDED
 //
 // image-entity.hpp
 //
@@ -23,7 +23,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for being an Entity that has different images for different MouseStates.
@@ -41,10 +41,10 @@ namespace sfml_util
         ImageEntity(
             const std::string & NAME,
             const FloatRectOpt_t & REGION_OPT,
-            const sfml_util::CachedTextureOpt_t & TEXTURE_UP_OPT = boost::none,
-            const sfml_util::CachedTextureOpt_t & TEXTURE_DOWN_OPT = boost::none,
-            const sfml_util::CachedTextureOpt_t & TEXTURE_OVER_OPT = boost::none,
-            const sfml_util::CachedTextureOpt_t & TEXTURE_DISABLED_OPT = boost::none,
+            const gui::CachedTextureOpt_t & TEXTURE_UP_OPT = boost::none,
+            const gui::CachedTextureOpt_t & TEXTURE_DOWN_OPT = boost::none,
+            const gui::CachedTextureOpt_t & TEXTURE_OVER_OPT = boost::none,
+            const gui::CachedTextureOpt_t & TEXTURE_DISABLED_OPT = boost::none,
             const bool WILL_DRAW_UP_IF_MISSING = false,
             const ColorOpt_t & COLOR_OPT = boost::none,
             const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION = false);
@@ -118,7 +118,7 @@ namespace sfml_util
     using ImageEntityPtr_t = misc::NotNull<ImageEntity *>;
     using ImageEntityUPtr_t = std::unique_ptr<ImageEntity>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_IMAGE_ENTITY_HPP_INCLUDED
+#endif // HEROESPATH_GUI_IMAGE_ENTITY_HPP_INCLUDED

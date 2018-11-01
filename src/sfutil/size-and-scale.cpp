@@ -20,10 +20,10 @@ namespace sfutil
 {
 
     float Width(const sf::Sprite & S) { return Width(S.getGlobalBounds()); }
-    float Width(const sfml_util::Text & T) { return Width(T.getGlobalBounds()); }
+    float Width(const gui::Text & T) { return Width(T.getGlobalBounds()); }
 
     float Height(const sf::Sprite & S) { return Height(S.getGlobalBounds()); }
-    float Height(const sfml_util::Text & T) { return Height(T.getGlobalBounds()); }
+    float Height(const gui::Text & T) { return Height(T.getGlobalBounds()); }
 
     const sf::Vector2f Size(const sf::Sprite & S, const sf::Vector2f & SCALE_V)
     {
@@ -35,12 +35,12 @@ namespace sfutil
         return Size(S, sf::Vector2f(SCALE, SCALE));
     }
 
-    const sf::Vector2f Size(const sfml_util::Text & T, const sf::Vector2f & SCALE_V)
+    const sf::Vector2f Size(const gui::Text & T, const sf::Vector2f & SCALE_V)
     {
         return Size(T.getGlobalBounds(), SCALE_V);
     }
 
-    const sf::Vector2f Size(const sfml_util::Text & T, const float SCALE)
+    const sf::Vector2f Size(const gui::Text & T, const float SCALE)
     {
         return Size(T, sf::Vector2f(SCALE, SCALE));
     }
@@ -113,22 +113,22 @@ namespace sfutil
         return IsSizeLessThanOneBoth(S.getGlobalBounds());
     }
 
-    bool IsSizeZeroOrLessEither(const sfml_util::Text & T)
+    bool IsSizeZeroOrLessEither(const gui::Text & T)
     {
         return IsSizeZeroOrLessEither(T.getGlobalBounds());
     }
 
-    bool IsSizeZeroOrLessBoth(const sfml_util::Text & T)
+    bool IsSizeZeroOrLessBoth(const gui::Text & T)
     {
         return IsSizeZeroOrLessBoth(T.getGlobalBounds());
     }
 
-    bool IsSizeLessThanOneEither(const sfml_util::Text & T)
+    bool IsSizeLessThanOneEither(const gui::Text & T)
     {
         return IsSizeLessThanOneEither(T.getGlobalBounds());
     }
 
-    bool IsSizeLessThanOneBoth(const sfml_util::Text & T)
+    bool IsSizeLessThanOneBoth(const gui::Text & T)
     {
         return IsSizeLessThanOneBoth(T.getGlobalBounds());
     }
@@ -155,8 +155,8 @@ namespace sfutil
     }
 
     const sf::FloatRect MinimallyEnclosing(
-        const sfml_util::Text & A,
-        const sfml_util::Text & B,
+        const gui::Text & A,
+        const gui::Text & B,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         return MinimallyEnclosing(
@@ -164,8 +164,7 @@ namespace sfutil
     }
 
     const sf::FloatRect MinimallyEnclosing(
-        const std::vector<sfml_util::Text> & VEC,
-        const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
+        const std::vector<gui::Text> & VEC, const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS)
     {
         std::vector<sf::FloatRect> frv;
         for (const auto & T : VEC)

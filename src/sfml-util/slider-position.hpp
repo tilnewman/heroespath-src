@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SLIDER_POSITION_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SLIDER_POSITION_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SLIDER_POSITION_HPP_INCLUDED
+#define HEROESPATH_GUI_SLIDER_POSITION_HPP_INCLUDED
 //
 //  slider-position.hpp
 //
@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Uses the smooth motion slider method to oscillate a position between two points.
@@ -96,7 +96,7 @@ namespace sfml_util
         sf::Vector2f value_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SLIDER_POSITION_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SLIDER_POSITION_HPP_INCLUDED

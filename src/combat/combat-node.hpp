@@ -36,7 +36,7 @@ namespace combat
 {
 
     // represents a node in the CombatTree
-    class CombatNode : public sfml_util::Entity
+    class CombatNode : public gui::Entity
     {
     public:
         CombatNode(const CombatNode &) = delete;
@@ -152,10 +152,10 @@ namespace combat
         //
         creature::NameInfo creatureNameInfo_;
         bool isPlayer_;
-        sfml_util::Text nameText_;
-        sfml_util::Text condText_;
+        gui::Text nameText_;
+        gui::Text condText_;
         int blockingPos_;
-        sfml_util::CachedTexture cachedTexture_;
+        gui::CachedTexture cachedTexture_;
         sf::Sprite sprite_;
         sf::Color creatureImageColor_;
         bool isSummaryView_;
@@ -164,7 +164,7 @@ namespace combat
         bool willDraw_;
 
         // members that control the display of skull and crossbones
-        sfml_util::CachedTexture crossBonesCachedTexture_;
+        gui::CachedTexture crossBonesCachedTexture_;
         sf::Sprite crossBonesSprite_;
         bool willShowCrossBones_;
 
@@ -185,10 +185,10 @@ namespace combat
         bool isDead_;
 
         // members that control the flapping wing animation
-        sfml_util::CachedTexture wingCachedTexture_;
+        gui::CachedTexture wingCachedTexture_;
         sf::Sprite wingSprite_;
         bool isFlying_;
-        sfml_util::SliderOscillator<float> wingFlapSlider_;
+        gui::SliderOscillator<float> wingFlapSlider_;
 
         // members that control the shake or image position offset
         sf::Vector2f imagePosV_;

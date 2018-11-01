@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // This size was found by experiment to work well the the typical map found in the game.
@@ -117,5 +117,5 @@ namespace sfml_util
             }
         }
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

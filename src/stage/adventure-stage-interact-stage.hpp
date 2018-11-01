@@ -27,11 +27,11 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-} // namespace sfml_util
+} // namespace gui
 namespace map
 {
     class Map;
@@ -45,8 +45,8 @@ namespace stage
     class InteractStage
         : public stage::StageBase
 
-        , public sfml_util::TextButton::Callback_t::IHandler_t
-        , public sfml_util::PopupCallback_t::IHandler_t
+        , public gui::TextButton::Callback_t::IHandler_t
+        , public gui::PopupCallback_t::IHandler_t
     {
     public:
         InteractStage(const InteractStage &) = delete;
@@ -58,8 +58,8 @@ namespace stage
 
         virtual ~InteractStage();
 
-        bool HandleCallback(const sfml_util::TextButton::Callback_t::PacketPtr_t &) final;
-        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t &) final;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
         void PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr);
 
@@ -94,10 +94,10 @@ namespace stage
         sf::Sprite subjectSprite_;
         sf::Sprite contextSprite_;
         sf::Sprite npcSprite_;
-        sfml_util::TextRegionUPtr_t textRegionUPtr_;
-        std::vector<sfml_util::TextButtonUPtr_t> buttons_;
+        gui::TextRegionUPtr_t textRegionUPtr_;
+        std::vector<gui::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;
-        sfml_util::ColoredRect backgroundColoredRect_;
+        gui::ColoredRect backgroundColoredRect_;
     };
 
     using InteractStagePtr_t = misc::NotNull<InteractStage *>;

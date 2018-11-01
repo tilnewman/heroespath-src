@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     const std::string Size::ToString(const Size::Enum SIZE_ENUM)
     {
@@ -38,10 +38,10 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Size::ToString(" << SIZE_ENUM << ")_InvalidValueError.";
+                ss << "gui::Size::ToString(" << SIZE_ENUM << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

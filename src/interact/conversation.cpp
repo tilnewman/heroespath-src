@@ -22,13 +22,13 @@ namespace interact
 
     Conversation::Conversation(const game::NpcPtr_t NPC_PTR, const sf::Sprite & NPC_SPRITE)
         : InteractionBase(
-              Interact::Conversation,
-              InteractionBase::MakeTextInfo(NPC_PTR->ConversationPoint().Text(), Text::Dialog),
-              MakeButtonVecFromButtonEnumVec(NPC_PTR->ConversationPoint().Buttons()),
-              "media-images-misc-talk",
-              sfml_util::sound_effect::Count,
-              sfml_util::sound_effect::Count,
-              NPC_SPRITE)
+            Interact::Conversation,
+            InteractionBase::MakeTextInfo(NPC_PTR->ConversationPoint().Text(), Text::Dialog),
+            MakeButtonVecFromButtonEnumVec(NPC_PTR->ConversationPoint().Buttons()),
+            "media-images-misc-talk",
+            gui::sound_effect::Count,
+            gui::sound_effect::Count,
+            NPC_SPRITE)
         , npcPtr_(NPC_PTR)
     {}
 

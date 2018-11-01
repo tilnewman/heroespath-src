@@ -18,7 +18,7 @@ class Sprite;
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Text;
 }
@@ -32,7 +32,7 @@ namespace sfutil
     }
 
     const sf::Vector2f Position(const sf::Sprite &);
-    const sf::Vector2f Position(const sfml_util::Text &);
+    const sf::Vector2f Position(const gui::Text &);
 
     template <typename T>
     constexpr T Left(const sf::Rect<T> & RECT)
@@ -41,7 +41,7 @@ namespace sfutil
     }
 
     float Left(const sf::Sprite &);
-    float Left(const sfml_util::Text &);
+    float Left(const gui::Text &);
 
     template <typename T>
     constexpr T Right(const sf::Rect<T> & RECT)
@@ -50,7 +50,7 @@ namespace sfutil
     }
 
     float Right(const sf::Sprite &);
-    float Right(const sfml_util::Text &);
+    float Right(const gui::Text &);
 
     template <typename T>
     constexpr T Top(const sf::Rect<T> & RECT)
@@ -59,7 +59,7 @@ namespace sfutil
     }
 
     float Top(const sf::Sprite &);
-    float Top(const sfml_util::Text &);
+    float Top(const gui::Text &);
 
     template <typename T>
     constexpr T Bottom(const sf::Rect<T> & RECT)
@@ -68,7 +68,7 @@ namespace sfutil
     }
 
     float Bottom(const sf::Sprite &);
-    float Bottom(const sfml_util::Text &);
+    float Bottom(const gui::Text &);
 
     template <typename T>
     const sf::Vector2<T> BottomRight(const sf::Rect<T> & R)

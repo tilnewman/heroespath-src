@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXTENTRYBOX_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXTENTRYBOX_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXTENTRYBOX_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXTENTRYBOX_HPP_INCLUDED
 //
 // text-entry-box.hpp
 //
@@ -22,7 +22,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     class TextRegion;
@@ -91,7 +91,7 @@ namespace sfml_util
 
     using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXTENTRYBOX_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXTENTRYBOX_HPP_INCLUDED

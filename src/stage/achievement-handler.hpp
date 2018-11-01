@@ -37,7 +37,7 @@ namespace stage
         const creature::CreaturePtr_t CHARACTER_PTR, const creature::TitlePtr_t & TITLE_PTR);
 
     void TitleTransitionPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
@@ -45,7 +45,7 @@ namespace stage
         const creature::TitlePtr_t TO_TITLE_PTR);
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         IStagePtr_t iStagePtr,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,

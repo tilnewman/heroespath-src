@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_DISPLAY_HPP_INCLUDED
+#define HEROESPATH_GUI_DISPLAY_HPP_INCLUDED
 //
 // display.hpp
 //  Code that manages the display.
@@ -39,7 +39,7 @@ namespace stage
 
 } // namespace stage
 
-namespace sfml_util
+namespace gui
 {
 
     class ColoredRectSlider;
@@ -185,7 +185,7 @@ namespace sfml_util
         ColoredRectSliderUPtr_t fadeColoredRectSliderUPtr_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
+#endif // HEROESPATH_GUI_DISPLAY_HPP_INCLUDED

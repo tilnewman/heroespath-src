@@ -36,7 +36,7 @@ namespace item
     using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 
-namespace sfml_util
+namespace gui
 {
     template <typename Stage_t, typename Element_t>
     class ListBox;
@@ -47,7 +47,7 @@ namespace sfml_util
     template <typename Stage_t, typename Element_t>
     using ListBoxUPtr_t = std::unique_ptr<ListBox<Stage_t, Element_t>>;
 
-} // namespace sfml_util
+} // namespace gui
 
 namespace stage
 {
@@ -60,11 +60,11 @@ namespace stage
     class TreasureStage
         : public stage::StageBase
 
-        , public sfml_util::PopupCallback_t::IHandler_t
+        , public gui::PopupCallback_t::IHandler_t
     {
-        using ItemListBox_t = sfml_util::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
-        using ItemListBoxPtr_t = sfml_util::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
-        using ItemListBoxUPtr_t = sfml_util::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBox_t = gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxPtr_t = gui::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
+        using ItemListBoxUPtr_t = gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
         TreasureStage(const TreasureStage &) = delete;
@@ -80,7 +80,7 @@ namespace stage
             displayStagePtrOpt_ = viewStagePtr;
         }
 
-        bool HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -89,9 +89,8 @@ namespace stage
         bool HandleListboxCallback(
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-            const sfml_util::Callback<
-                sfml_util::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::PacketPtr_t &
-                PACKET_PTR);
+            const gui::Callback<gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::
+                PacketPtr_t & PACKET_PTR);
 
         void TakeAllItems();
         void Exit();
@@ -106,7 +105,7 @@ namespace stage
         void SetupForCollectionWithoutLockbox();
         bool DetermineIfLockPickingSucceeded(const creature::CreaturePtr_t) const;
 
-        sfml_util::sound_effect::Enum SelectRandomTreasureOpeningSfx() const;
+        gui::sound_effect::Enum SelectRandomTreasureOpeningSfx() const;
 
         void LockPickSuccess();
         void LockPickFailure();

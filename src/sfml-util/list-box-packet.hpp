@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LISTBOX_PACKET_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LISTBOX_PACKET_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_LISTBOX_PACKET_HPP_INCLUDED
+#define HEROESPATH_GUI_LISTBOX_PACKET_HPP_INCLUDED
 //
 // list-box-packet.hpp
 //
@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for wrapping the details required to create a ListBox.
@@ -93,7 +93,7 @@ namespace sfml_util
         sf::Vector2f elementSizeWithoutPadV_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LISTBOX_PACKET_HPP_INCLUDED
+#endif // HEROESPATH_GUI_LISTBOX_PACKET_HPP_INCLUDED

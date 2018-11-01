@@ -52,7 +52,7 @@ namespace avatar
 
         const LPCView & GetView() const { return view_; }
 
-        void SetWalkAnim(const sfml_util::Direction::Enum, const bool WILL_START_OR_STOP);
+        void SetWalkAnim(const gui::Direction::Enum, const bool WILL_START_OR_STOP);
 
         bool IsPlayer() const { return walkRects_.empty(); }
 
@@ -109,8 +109,7 @@ namespace avatar
 
         const sf::Vector2f RandomWalkTarget() const;
 
-        sfml_util::Direction::Enum
-            WalkDirection(const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const;
+        gui::Direction::Enum WalkDirection(const gui::Direction::Enum DIRECTION_TO_MAINTAIN) const;
 
     private:
         static const float NUM_BLINKS_TIME_WINDOW_SEC_;
@@ -132,7 +131,7 @@ namespace avatar
         std::vector<sf::FloatRect> walkRects_;
         sf::Vector2f walkTargetPosV_;
         std::size_t walkRectIndex_;
-        sfml_util::Direction::Enum prevWalkDirection_;
+        gui::Direction::Enum prevWalkDirection_;
         float walkingIntoTimerSec_;
         game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
         bool isNextToPlayer_;

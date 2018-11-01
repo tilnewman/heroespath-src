@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LISTBOX_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LISTBOX_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_LISTBOX_HPP_INCLUDED
+#define HEROESPATH_GUI_LISTBOX_HPP_INCLUDED
 //
 // list-box.hpp
 //
@@ -43,7 +43,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // A class that manages a vertical list of elements with a sliderbar that can be scrolled
@@ -1302,7 +1302,7 @@ namespace sfml_util
         return rend(LB);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LISTBOX_HPP_INCLUDED
+#endif // HEROESPATH_GUI_LISTBOX_HPP_INCLUDED

@@ -31,8 +31,8 @@ namespace stage
     // Responsible for displaying and managing player interactions with a
     // list of characters and associated information about them.
     class AdventureCharacterList
-        : public sfml_util::Entity
-        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
+        : public gui::Entity
+        , public gui::ImageTextEntity::Callback_t::IHandler_t
     {
         AdventureCharacterList(const AdventureCharacterList &);
         AdventureCharacterList & operator=(const AdventureCharacterList &);
@@ -41,7 +41,7 @@ namespace stage
         explicit AdventureCharacterList(const stage::IStagePtr_t);
         virtual ~AdventureCharacterList();
 
-        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -97,23 +97,23 @@ namespace stage
         const float CELL_TEXT_LEFT_SPACER_;
         const float CHARLIST_SEP_SPACER_;
         stage::IStagePtr_t stagePtr_;
-        sfml_util::ImageTextEntityUVec_t namesButtonUVec_;
-        sfml_util::TextRegionUVec_t condsTextRegionsUVec_;
-        sfml_util::TextRegionUVec_t healthTextRegionsUVec_;
-        sfml_util::TextRegionUVec_t manaTextRegionsUVec_;
+        gui::ImageTextEntityUVec_t namesButtonUVec_;
+        gui::TextRegionUVec_t condsTextRegionsUVec_;
+        gui::TextRegionUVec_t healthTextRegionsUVec_;
+        gui::TextRegionUVec_t manaTextRegionsUVec_;
         FloatRectVec_t imageColumnRects_;
         FloatRectVec_t nameColumnRects_;
         FloatRectVec_t healthColumnRects_;
         FloatRectVec_t manaColumnRects_;
         FloatRectVec_t conditionColumnRects_;
         std::vector<sf::Vertex> lineVerts_;
-        std::vector<sfml_util::ColoredRect> colorGradientBars_;
+        std::vector<gui::ColoredRect> colorGradientBars_;
 
-        using ImagePair_t = std::pair<sfml_util::CachedTexture, sf::Sprite>;
+        using ImagePair_t = std::pair<gui::CachedTexture, sf::Sprite>;
         using CharImageMap_t = misc::VectorMap<creature::CreaturePtr_t, ImagePair_t>;
         CharImageMap_t charImages_;
 
-        sfml_util::GoldBar charListSepLine_;
+        gui::GoldBar charListSepLine_;
     };
 
     using AdventureCharacterListUPtr_t = std::unique_ptr<AdventureCharacterList>;

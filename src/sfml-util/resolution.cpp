@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     Resolution::Resolution(
@@ -63,5 +63,5 @@ namespace sfml_util
             == std::tie(V.width, V.height, V.bitsPerPixel);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

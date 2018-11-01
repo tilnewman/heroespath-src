@@ -27,28 +27,25 @@ namespace creature
     float NameInfo::DefaultTextEntryBoxWidth() const
     {
         // The +1 is to accomodate the TextEntryBox's padding and margins
-        return Size(sfml_util::TextInfo(
-                        LargestName() + LargestLetter(), DefaultFont(), DefaultSize()))
-            .x;
+        return Size(gui::TextInfo(LargestName() + LargestLetter(), DefaultFont(), DefaultSize())).x;
     }
 
-    sfml_util::GuiFont::Enum NameInfo::DefaultFont() const { return sfml_util::GuiFont::System; }
+    gui::GuiFont::Enum NameInfo::DefaultFont() const { return gui::GuiFont::System; }
 
     unsigned int NameInfo::DefaultSize() const
     {
-        return sfml_util::FontManager::Instance()->Size_Normal();
+        return gui::FontManager::Instance()->Size_Normal();
     }
 
-    const sfml_util::TextInfo NameInfo::MakeTextInfo(
-        const sfml_util::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const
+    const gui::TextInfo
+        NameInfo::MakeTextInfo(const gui::GuiFont::Enum FONT, const unsigned int CHAR_SIZE) const
     {
-        return sfml_util::TextInfo(LargestName(), FONT, CHAR_SIZE);
+        return gui::TextInfo(LargestName(), FONT, CHAR_SIZE);
     }
 
-    const sf::Vector2f NameInfo::Size(const sfml_util::TextInfo & TEXT_INFO) const
+    const sf::Vector2f NameInfo::Size(const gui::TextInfo & TEXT_INFO) const
     {
-        sfml_util::TextRegion textRegion(
-            "CreatureNameInfoSizeDeterminer", TEXT_INFO, sf::FloatRect());
+        gui::TextRegion textRegion("CreatureNameInfoSizeDeterminer", TEXT_INFO, sf::FloatRect());
 
         return sf::Vector2f(
             textRegion.GetEntityRegion().width, textRegion.GetEntityRegion().height);
@@ -57,8 +54,8 @@ namespace creature
     const sf::Vector2f NameInfo::ConvertSizeToScreenRatio(const sf::Vector2f & SIZE_V) const
     {
         return sf::Vector2f(
-            SIZE_V.x / sfml_util::Display::Instance()->GetWinWidth(),
-            SIZE_V.y / sfml_util::Display::Instance()->GetWinHeight());
+            SIZE_V.x / gui::Display::Instance()->GetWinWidth(),
+            SIZE_V.y / gui::Display::Instance()->GetWinHeight());
     }
 
 } // namespace creature

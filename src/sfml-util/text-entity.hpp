@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXT_ENTITY_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXT_ENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXT_ENTITY_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXT_ENTITY_HPP_INCLUDED
 //
 // text-entity.hpp
 //
@@ -30,7 +30,7 @@ class RenderTexture;
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     using RenderTextureUPtr_t = std::unique_ptr<sf::RenderTexture>;
@@ -143,7 +143,7 @@ namespace sfml_util
     using TextEntityPtr_t = misc::NotNull<TextEntity *>;
     using TextEntityUPtr_t = std::unique_ptr<TextEntity>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXT_ENTITY_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXT_ENTITY_HPP_INCLUDED

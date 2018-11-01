@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_LOADERS_HPP_INCLUDED
+#define HEROESPATH_GUI_LOADERS_HPP_INCLUDED
 //
 // loaders.hpp
 //
@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for loading sfml media
@@ -41,7 +41,7 @@ namespace sfml_util
         static MusicUPtr_t Music(const std::string & PATH_STR);
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED
+#endif // HEROESPATH_GUI_LOADERS_HPP_INCLUDED

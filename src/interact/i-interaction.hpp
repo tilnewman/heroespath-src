@@ -36,16 +36,14 @@ namespace interact
         virtual ~IInteraction() = default;
 
         virtual Interact::Enum Type() const = 0;
-        virtual const sfml_util::TextInfo & Text() const = 0;
+        virtual const gui::TextInfo & Text() const = 0;
         virtual ButtonVec_t & Buttons() = 0;
         virtual const sf::Texture & SubjectTexture() const = 0;
         virtual const sf::Texture & ContextTexture() const = 0;
         virtual void PlayEnterSfx() const = 0;
         virtual void PlayExitSfx() const = 0;
 
-        virtual bool
-            OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::TextButtonPtr_t)
-            = 0;
+        virtual bool OnButtonClick(const stage::InteractStagePtr_t, const gui::TextButtonPtr_t) = 0;
 
         virtual bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) = 0;
 

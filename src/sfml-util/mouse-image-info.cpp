@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const EntityImageInfo & MouseImageInfo::FromMouseState(const MouseState::Enum MOUSE_STATE) const
@@ -161,5 +161,5 @@ namespace sfml_util
         disabled.SetRegion(NEW_GLOBAL_BOUNDS);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

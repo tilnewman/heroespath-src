@@ -37,7 +37,7 @@ namespace combat
                 2_health,
                 6_health,
                 "blasted",
-                sfml_util::sound_effect::TrapPop,
+                gui::sound_effect::TrapPop,
                 "The lock bursts in the lock picker's hands!"));
 
             traps_.emplace_back(Trap(
@@ -46,7 +46,7 @@ namespace combat
                 3_health,
                 8_health,
                 "stabbed",
-                sfml_util::sound_effect::TrapMetalBang,
+                gui::sound_effect::TrapMetalBang,
                 "A metal spike pops out from the",
                 "!"));
 
@@ -56,7 +56,7 @@ namespace combat
                 4_health,
                 9_health,
                 "sliced",
-                sfml_util::sound_effect::TrapMetal,
+                gui::sound_effect::TrapMetal,
                 "Sharp metal pieces burst out and tear through the party!"));
 
             traps_.emplace_back(Trap(
@@ -65,7 +65,7 @@ namespace combat
                 6_health,
                 12_health,
                 "poisoned",
-                sfml_util::sound_effect::TrapSplutter,
+                gui::sound_effect::TrapSplutter,
                 "The lock oozes with toxic black sludge!"));
 
             traps_.emplace_back(Trap(
@@ -74,7 +74,7 @@ namespace combat
                 8_health,
                 14_health,
                 "sickened",
-                sfml_util::sound_effect::TrapSplatDunk,
+                gui::sound_effect::TrapSplatDunk,
                 "Green slime spits out from holes in the ",
                 "!"));
 
@@ -84,7 +84,7 @@ namespace combat
                 6_health,
                 12_health,
                 "blasted",
-                sfml_util::sound_effect::TrapBang,
+                gui::sound_effect::TrapBang,
                 "The lock detonates!"));
 
             traps_.emplace_back(Trap(
@@ -93,7 +93,7 @@ namespace combat
                 8_health,
                 16_health,
                 "blasted",
-                sfml_util::sound_effect::TrapBoom,
+                gui::sound_effect::TrapBoom,
                 "The ",
                 "  blows apart!"));
 
@@ -103,7 +103,7 @@ namespace combat
                 10_health,
                 20_health,
                 "blasted",
-                sfml_util::sound_effect::TrapChungSplutter,
+                gui::sound_effect::TrapChungSplutter,
                 "The ",
                 "  explodes!"));
 
@@ -113,7 +113,7 @@ namespace combat
                 8_health,
                 14_health,
                 "burned",
-                sfml_util::sound_effect::TrapFire,
+                gui::sound_effect::TrapFire,
                 "The lock becomes scalding and burns the lock picker!"));
 
             traps_.emplace_back(Trap(
@@ -122,7 +122,7 @@ namespace combat
                 10_health,
                 15_health,
                 "burned",
-                sfml_util::sound_effect::TrapInferno,
+                gui::sound_effect::TrapInferno,
                 "The whole ",
                 "  erupts into a raging inferno!"));
 
@@ -132,7 +132,7 @@ namespace combat
                 15_health,
                 20_health,
                 "burned",
-                sfml_util::sound_effect::TrapFireball,
+                gui::sound_effect::TrapFireball,
                 "A fireball engulfs the party!"));
 
             traps_.emplace_back(Trap(
@@ -141,7 +141,7 @@ namespace combat
                 8_health,
                 14_health,
                 "burned",
-                sfml_util::sound_effect::TrapChiaowahh,
+                gui::sound_effect::TrapChiaowahh,
                 "You hear haunting moans and a ghostly yellow light shines from the ",
                 "  searing the party!"));
 
@@ -151,7 +151,7 @@ namespace combat
                 11_health,
                 18_health,
                 "burned",
-                sfml_util::sound_effect::TrapChiaowahh,
+                gui::sound_effect::TrapChiaowahh,
                 "You hear cries of pain and a ghostly green light shines from the ",
                 "  searing the party!"));
 
@@ -161,7 +161,7 @@ namespace combat
                 14_health,
                 24_health,
                 "burned",
-                sfml_util::sound_effect::TrapChiaowahh,
+                gui::sound_effect::TrapChiaowahh,
                 "You hear frightful screams and a ghostly blue light shines from the ",
                 "  searing the party!"));
 
@@ -171,7 +171,7 @@ namespace combat
                 17_health,
                 28_health,
                 "burned",
-                sfml_util::sound_effect::TrapChiaowahh,
+                gui::sound_effect::TrapChiaowahh,
                 "You hear horrible wailing and a ghostly red light shines from the ",
                 "  searing the party!"));
 
@@ -181,7 +181,7 @@ namespace combat
                 12_health,
                 18_health,
                 "poisoned",
-                sfml_util::sound_effect::TrapGasExhale,
+                gui::sound_effect::TrapGasExhale,
                 "Noxious gas hisses from vents in the ",
                 "!"));
 
@@ -191,7 +191,7 @@ namespace combat
                 16_health,
                 24_health,
                 "poisoned",
-                sfml_util::sound_effect::TrapGasLeak,
+                gui::sound_effect::TrapGasLeak,
                 "A deadly chemical mist escapes!"));
 
             traps_.emplace_back(Trap(
@@ -200,7 +200,7 @@ namespace combat
                 8_health,
                 14_health,
                 "burned",
-                sfml_util::sound_effect::TrapSparksHiss,
+                gui::sound_effect::TrapSparksHiss,
                 "Sparks spray out from the ",
                 "!"));
 
@@ -210,7 +210,7 @@ namespace combat
                 12_health,
                 24_health,
                 "sliced",
-                sfml_util::sound_effect::TrapSparksAhh,
+                gui::sound_effect::TrapSparksAhh,
                 "A torrent of molten metal showers the party!"));
 
             traps_.emplace_back(Trap(
@@ -219,7 +219,7 @@ namespace combat
                 25_health,
                 50_health,
                 "sliced",
-                sfml_util::sound_effect::TrapSpiritShortHiss,
+                gui::sound_effect::TrapSpiritShortHiss,
                 "A spectral skeleton hand reaches out and strikes at the lock picker!"));
 
             traps_.emplace_back(Trap(
@@ -228,7 +228,7 @@ namespace combat
                 30_health,
                 50_health,
                 "sliced",
-                sfml_util::sound_effect::TrapGhost2,
+                gui::sound_effect::TrapGhost2,
                 "The raging ghost of a murdered witch emerges and slashes the party with ghostly "
                 "claws!"));
 
@@ -238,7 +238,7 @@ namespace combat
                 20_health,
                 40_health,
                 "sliced",
-                sfml_util::sound_effect::TrapGhost2,
+                gui::sound_effect::TrapGhost2,
                 "Evil spirits emerge and tear through the party!"));
 
             std::sort(std::begin(traps_), std::end(traps_), [](const auto & A, const auto & B) {

@@ -34,18 +34,18 @@ namespace interact
     public:
         InteractionBase(
             const Interact::Enum,
-            const sfml_util::TextInfo & TEXT,
+            const gui::TextInfo & TEXT,
             const ButtonVec_t & BUTTONS,
             const std::string & SUBJECT_IMAGE_KEY,
-            const sfml_util::sound_effect::Enum SFX_ENTER = sfml_util::sound_effect::Count,
-            const sfml_util::sound_effect::Enum SFX_EXIT = sfml_util::sound_effect::Count,
+            const gui::sound_effect::Enum SFX_ENTER = gui::sound_effect::Count,
+            const gui::sound_effect::Enum SFX_EXIT = gui::sound_effect::Count,
             const sf::Sprite & NPC_SPRITE = sf::Sprite());
 
         virtual ~InteractionBase() = default;
 
         Interact::Enum Type() const final { return interactionType_; }
 
-        const sfml_util::TextInfo & Text() const final { return text_; }
+        const gui::TextInfo & Text() const final { return text_; }
 
         ButtonVec_t & Buttons() final { return buttons_; }
 
@@ -57,10 +57,9 @@ namespace interact
 
         void PlayExitSfx() const final;
 
-        static const sfml_util::TextInfo
-            MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
+        static const gui::TextInfo MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
-        bool OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::TextButtonPtr_t) final;
+        bool OnButtonClick(const stage::InteractStagePtr_t, const gui::TextButtonPtr_t) final;
 
         bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) final;
 
@@ -82,12 +81,12 @@ namespace interact
 
     private:
         Interact::Enum interactionType_;
-        sfml_util::TextInfo text_;
+        gui::TextInfo text_;
         ButtonVec_t buttons_;
-        sfml_util::CachedTexture subjectCachedTexture_;
-        sfml_util::CachedTexture contextCachedTexture_;
-        sfml_util::sound_effect::Enum sfxEnter_;
-        sfml_util::sound_effect::Enum sfxExit_;
+        gui::CachedTexture subjectCachedTexture_;
+        gui::CachedTexture contextCachedTexture_;
+        gui::sound_effect::Enum sfxEnter_;
+        gui::sound_effect::Enum sfxExit_;
         bool isLocked_;
         sf::Sprite npcSprite_;
     };

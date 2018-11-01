@@ -24,32 +24,46 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string music_update_status::ToString(const music_update_status::Enum E)
     {
         switch (E)
         {
-            case Stopped: { return "Stopped";
+            case Stopped:
+            {
+                return "Stopped";
             }
-            case Playing: { return "Playing";
+            case Playing:
+            {
+                return "Playing";
             }
-            case FadingOut: { return "FadingOut";
+            case FadingOut:
+            {
+                return "FadingOut";
             }
-            case FadedOut: { return "FadedOut";
+            case FadedOut:
+            {
+                return "FadedOut";
             }
-            case FadedOutKill: { return "FadedOutKill";
+            case FadedOutKill:
+            {
+                return "FadedOutKill";
             }
-            case FadingIn: { return "FadingIn";
+            case FadingIn:
+            {
+                return "FadingIn";
             }
-            case FadedIn: { return "FadedIn";
+            case FadedIn:
+            {
+                return "FadedIn";
             }
             case Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::music_update_status::ToString(" << E << ")_InvalidValueError.";
+                ss << "gui::music_update_status::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -74,7 +88,7 @@ namespace sfml_util
     {
         if (IsValid())
         {
-            info_.Duration(sfml_util::Time(musicUPtr_->getDuration()));
+            info_.Duration(gui::Time(musicUPtr_->getDuration()));
             musicUPtr_->setLoop(MUSIC_INFO.IsLooped());
         }
     }
@@ -117,7 +131,7 @@ namespace sfml_util
 
     void MusicOperator::VolumeFadeToGlobal(const float FADE_MULT)
     {
-        VolumeFadeTo(sfml_util::SoundManager::Instance()->MusicVolume(), FADE_MULT);
+        VolumeFadeTo(gui::SoundManager::Instance()->MusicVolume(), FADE_MULT);
     }
 
     void MusicOperator::VolumeFadeOut(const float FADE_MULT, const bool WILL_KILL_AFTER)
@@ -207,12 +221,12 @@ namespace sfml_util
                 L.killAfterFadeOut_,
                 L.musicUPtr_)
             == std::tie(
-                   R.info_,
-                   R.targetVolume_,
-                   R.fadeInMult_,
-                   R.fadeOutMult_,
-                   R.killAfterFadeOut_,
-                   R.musicUPtr_));
+                R.info_,
+                R.targetVolume_,
+                R.fadeInMult_,
+                R.fadeOutMult_,
+                R.killAfterFadeOut_,
+                R.musicUPtr_));
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

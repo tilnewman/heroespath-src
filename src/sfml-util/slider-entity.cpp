@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     EntitySlider::EntitySlider()
@@ -32,12 +32,7 @@ namespace sfml_util
         const WillAutoStart WILL_AUTO_START,
         const std::size_t CYCLE_COUNT_LIMIT)
         : PosSlider(
-              FROM_POS_V,
-              TO_POS_V,
-              SLIDER_SPEED,
-              WILL_OSCILLATE,
-              WILL_AUTO_START,
-              CYCLE_COUNT_LIMIT)
+            FROM_POS_V, TO_POS_V, SLIDER_SPEED, WILL_OSCILLATE, WILL_AUTO_START, CYCLE_COUNT_LIMIT)
         , guiEntityPtrOpt_(ENTITY_PTR_OPT)
     {
         OnUpdateChange();
@@ -59,5 +54,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

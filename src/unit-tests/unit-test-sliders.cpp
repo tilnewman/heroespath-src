@@ -33,7 +33,7 @@
 
 using namespace heroespath;
 using namespace heroespath::misc;
-using namespace heroespath::sfml_util;
+using namespace heroespath::gui;
 
 namespace ts = test_stuff;
 

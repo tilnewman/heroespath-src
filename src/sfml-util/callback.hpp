@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_CALLBACK_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_CALLBACK_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_CALLBACK_HPP_INCLUDED
+#define HEROESPATH_GUI_CALLBACK_HPP_INCLUDED
 //
 // callback.hpp
 //
@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for defining all the types that are handy to have when working with callbacks
@@ -51,7 +51,7 @@ namespace sfml_util
 
     using PopupCallback_t = Callback<const popup::PopupResponse>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ICALLBACK_HANDLER_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ICALLBACK_HANDLER_HPP_INCLUDED

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED
+#define HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED
 //
 // animation-base.hpp
 //  A class responsible for common state and operation of all animation objects.
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for state and operations common to all animations in the game that work by
@@ -85,7 +85,7 @@ namespace sfml_util
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_ANIMATIONBASE_HPP_INCLUDED

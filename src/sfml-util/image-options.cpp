@@ -23,7 +23,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     void ImageOptions::Apply(sf::Texture & texture) const
@@ -153,9 +153,9 @@ namespace sfml_util
             == std::tie(R.option_enum, R.mask_color_opt, R.mask_alpha);
     }
 
-} // namespace sfml_util
+} // namespace gui
 
-std::ostream & operator<<(std::ostream & os, const sfml_util::ImageOptions & OPTIONS)
+std::ostream & operator<<(std::ostream & os, const gui::ImageOptions & OPTIONS)
 {
     os << OPTIONS.ToString();
     return os;

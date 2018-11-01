@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_IMAGE_OPTION_ENUM_HPP_INCLUDED
+#define HEROESPATH_GUI_IMAGE_OPTION_ENUM_HPP_INCLUDED
 //
 // image-option-enum.hpp
 //
@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for enumerating all possible alterations for a cached texture.
@@ -49,7 +49,7 @@ namespace sfml_util
             const std::string & SEPARATOR = "/");
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_IMAGE_OPTION_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_GUI_IMAGE_OPTION_ENUM_HPP_INCLUDED

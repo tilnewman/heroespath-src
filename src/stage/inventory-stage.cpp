@@ -104,14 +104,14 @@ namespace stage
         const game::Phase::Enum PREVIOUS_PHASE)
         : StageBase(
             "Inventory",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting },
             true)
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))
         , INNER_RECT_(
               INNER_PAD_,
@@ -120,7 +120,7 @@ namespace stage
               SCREEN_HEIGHT_ - (2.0f * INNER_PAD_))
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfutil::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfutil::MapByRes(0.75f, 3.25f))
-        , CREATURE_IMAGE_HEIGHT_MAX_(sfml_util::StandardImageDimmension() * CREATURE_IMAGE_SCALE_)
+        , CREATURE_IMAGE_HEIGHT_MAX_(gui::StandardImageDimmension() * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfutil::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfutil::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfutil::MapByRes(65.0f, 200.0f))
@@ -140,7 +140,7 @@ namespace stage
         , LISTBOX_COLOR_BG_(sfutil::color::Orange - sf::Color(100, 100, 100, 220))
         , LISTBOX_COLOR_TITLE_(sfutil::color::Orange - sf::Color(130, 130, 130, 0))
         , DESCBOX_TEXT_COLOR_(LISTBOX_COLOR_TITLE_ - sf::Color(50, 50, 50, 0))
-        , DESCBOX_TEXT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
+        , DESCBOX_TEXT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
         , stageTitle_(
               "media-images-buttons-gui-inventory-normal",
@@ -169,15 +169,15 @@ namespace stage
         , SORT_ICON_COLOR_(sf::Color(255, 255, 255, 127))
         , LIST_ELEMENT_TEXT_INFO_DEFAULT_(
               "",
-              sfml_util::GuiFont::System,
-              sfml_util::FontManager::Instance()->Size_Smallish(),
+              gui::GuiFont::System,
+              gui::FontManager::Instance()->Size_Smallish(),
               sfutil::color::GrayDarker,
-              sfml_util::Justified::Left)
+              gui::Justified::Left)
         , creaturePtr_(INVENTORY_CREATURE_PTR)
         , bottomSymbol_(0.75f, true, sf::Color::White)
         , paperBgCachedTexture_("media-images-backgrounds-paper-2")
         , paperBgSprite_(paperBgCachedTexture_.Get())
-        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("InventoryStage's", true))
+        , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("InventoryStage's", true))
         , creatureSprite_()
         , view_(ViewType::Items)
         , characterViewMap_()
@@ -284,13 +284,13 @@ namespace stage
         , creatureToImageMap_()
         , creatureImageWidthScaled_(0.0f)
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
+        gui::SoundManager::Instance()->MusicStart(gui::music::Inventory);
         UpdateCreatureImage();
     }
 
     InventoryStage::~InventoryStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
+        gui::SoundManager::Instance()->MusicStart(gui::music::Inventory);
         StageBase::ClearAllEntities();
     }
 
@@ -306,7 +306,7 @@ namespace stage
 
     bool InventoryStage::HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
     {
-        if ((PACKET_PTR->gui_event != sfml_util::GuiEvent::DoubleClick)
+        if ((PACKET_PTR->gui_event != gui::GuiEvent::DoubleClick)
             && (PACKET_PTR->keypress_event.code != sf::Keyboard::Return))
         {
             return false;
@@ -325,7 +325,7 @@ namespace stage
     }
 
     bool InventoryStage::HandleCallback(
-        const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         if (isSliderAnimating_)
         {
@@ -389,37 +389,37 @@ namespace stage
 
         if ((PACKET_PTR->entity_ptr == eqSortButtonNameUPtr_.get()) && itemLeftListBoxUPtr_)
         {
-            sfml_util::listbox::SortByName(*itemLeftListBoxUPtr_, isSortReversedEqName_);
+            gui::listbox::SortByName(*itemLeftListBoxUPtr_, isSortReversedEqName_);
             return true;
         }
 
         if ((PACKET_PTR->entity_ptr == eqSortButtonPriceUPtr_.get()) && itemLeftListBoxUPtr_)
         {
-            sfml_util::listbox::SortByPrice(*itemLeftListBoxUPtr_, isSortReversedEqPrice_);
+            gui::listbox::SortByPrice(*itemLeftListBoxUPtr_, isSortReversedEqPrice_);
             return true;
         }
 
         if ((PACKET_PTR->entity_ptr == eqSortButtonWeightUPtr_.get()) && itemLeftListBoxUPtr_)
         {
-            sfml_util::listbox::SortByWeight(*itemLeftListBoxUPtr_, isSortReversedEqWeight_);
+            gui::listbox::SortByWeight(*itemLeftListBoxUPtr_, isSortReversedEqWeight_);
             return true;
         }
 
         if ((PACKET_PTR->entity_ptr == unEqSortButtonNameUPtr_.get()) && itemRightListBoxUPtr_)
         {
-            sfml_util::listbox::SortByName(*itemRightListBoxUPtr_, isSortReversedUneqName_);
+            gui::listbox::SortByName(*itemRightListBoxUPtr_, isSortReversedUneqName_);
             return true;
         }
 
         if ((PACKET_PTR->entity_ptr == unEqSortButtonPriceUPtr_.get()) && itemRightListBoxUPtr_)
         {
-            sfml_util::listbox::SortByPrice(*itemRightListBoxUPtr_, isSortReversedUneqPrice_);
+            gui::listbox::SortByPrice(*itemRightListBoxUPtr_, isSortReversedUneqPrice_);
             return true;
         }
 
         if ((PACKET_PTR->entity_ptr == unEqSortButtonWeightUPtr_.get()) && itemRightListBoxUPtr_)
         {
-            sfml_util::listbox::SortByWeight(*itemRightListBoxUPtr_, isSortReversedUneqWeight_);
+            gui::listbox::SortByWeight(*itemRightListBoxUPtr_, isSortReversedUneqWeight_);
 
             return true;
         }
@@ -427,7 +427,7 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool InventoryStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         isWaitingOnPopup_ = false;
 
@@ -689,7 +689,7 @@ namespace stage
         if ((isSliderAnimating_ == false) && (IsDetailViewFadingOrVisible() == false)
             && (IsFading() == false))
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
 
             if (KEY_EVENT.code == sf::Keyboard::A)
             {
@@ -954,15 +954,15 @@ namespace stage
 
     void InventoryStage::Setup_InstructionText()
     {
-        const sfml_util::TextInfo INSTR_TEXT_INFO(
+        const gui::TextInfo INSTR_TEXT_INFO(
             "(use arrows or numbers to change characters, press 'a' to see achievements)",
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             sfutil::color::GrayDark,
-            sfml_util::Justified::Left,
+            gui::Justified::Left,
             sf::Text::Italic);
 
-        insTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        insTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
             sf::FloatRect(0.0f, sfutil::Bottom(stageTitle_.Region()) - 10.0f, 0.0f, 0.0f));
@@ -1006,12 +1006,12 @@ namespace stage
            << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
            << "\n";
 
-        const sfml_util::TextInfo DETAILS_TEXT_INFO(
+        const gui::TextInfo DETAILS_TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         sf::FloatRect detailsTextRect(
             CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width
@@ -1029,7 +1029,7 @@ namespace stage
 
         if (!detailsTextRegionUPtr_)
         {
-            detailsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            detailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
 
             EntityAdd(detailsTextRegionUPtr_.get());
@@ -1069,19 +1069,19 @@ namespace stage
            << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
            << "\n \n ";
 
-        const sfml_util::TextInfo STATS_TEXT_INFO(
+        const gui::TextInfo STATS_TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         if (!statsTextRegionUPtr_)
         {
             const sf::FloatRect STATS_TEXT_RECT(
                 STATS_POS_LEFT_, sfutil::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
 
-            statsTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            statsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
 
             EntityAdd(statsTextRegionUPtr_.get());
@@ -1104,12 +1104,12 @@ namespace stage
            << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
 
-        const sfml_util::TextInfo CENTER_TEXT_INFO(
+        const gui::TextInfo CENTER_TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Normal(),
             sfutil::color::GrayDarker,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
 
@@ -1126,7 +1126,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            centerTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            centerTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
 
             EntityAdd(centerTextRegionUPtr_.get());
@@ -1157,12 +1157,12 @@ namespace stage
 
         FreeAllLeftListBoxes();
 
-        sfml_util::BoxEntityInfo listBoxInfoLeft;
+        gui::BoxEntityInfo listBoxInfoLeft;
         listBoxInfoLeft.SetupBorder(true, 1);
         listBoxInfoLeft.SetupColor(LISTBOX_COLOR_BG_);
         listBoxInfoLeft.focus_colors = LISTBOX_COLORSET_;
 
-        sfml_util::ListBoxPacket listBoxPacketLeft(
+        gui::ListBoxPacket listBoxPacketLeft(
             LISTBOX_REGION_LEFT_, listBoxInfoLeft, LISTBOX_COLOR_LINE_, LISTBOX_COLOR_IMAGE_);
 
         switch (viewToUse)
@@ -1175,10 +1175,9 @@ namespace stage
                 for (const auto & CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
                     condLeftListBoxUPtr_->Append(
-                        std::make_unique<sfml_util::ListElement<creature::ConditionPtr_t>>(
+                        std::make_unique<gui::ListElement<creature::ConditionPtr_t>>(
                             CONDITION_PTR,
-                            sfml_util::TextInfo(
-                                LIST_ELEMENT_TEXT_INFO_DEFAULT_, CONDITION_PTR->Name())));
+                            gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, CONDITION_PTR->Name())));
                 }
 
                 EntityAdd(condLeftListBoxUPtr_.get());
@@ -1192,10 +1191,9 @@ namespace stage
                 for (const auto & ITEM_PTR : creaturePtr_->Inventory().ItemsEquipped())
                 {
                     itemLeftListBoxUPtr_->Append(
-                        std::make_unique<sfml_util::ListElement<item::ItemPtr_t>>(
+                        std::make_unique<gui::ListElement<item::ItemPtr_t>>(
                             ITEM_PTR,
-                            sfml_util::TextInfo(
-                                LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
+                            gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
                 }
 
                 EntityAdd(itemLeftListBoxUPtr_.get());
@@ -1209,10 +1207,9 @@ namespace stage
                 for (const auto & SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     spellLeftListBoxUPtr_->Append(
-                        std::make_unique<sfml_util::ListElement<spell::SpellPtr_t>>(
+                        std::make_unique<gui::ListElement<spell::SpellPtr_t>>(
                             SPELL_PTR,
-                            sfml_util::TextInfo(
-                                LIST_ELEMENT_TEXT_INFO_DEFAULT_, SPELL_PTR->Name())));
+                            gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, SPELL_PTR->Name())));
                 }
 
                 EntityAdd(spellLeftListBoxUPtr_.get());
@@ -1228,10 +1225,9 @@ namespace stage
                 for (const auto & TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     titleLeftListBoxUPtr_->Append(
-                        std::make_unique<sfml_util::ListElement<creature::TitlePtr_t>>(
+                        std::make_unique<gui::ListElement<creature::TitlePtr_t>>(
                             TITLE_PTR,
-                            sfml_util::TextInfo(
-                                LIST_ELEMENT_TEXT_INFO_DEFAULT_, TITLE_PTR->Name())));
+                            gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, TITLE_PTR->Name())));
                 }
 
                 EntityAdd(titleLeftListBoxUPtr_.get());
@@ -1251,12 +1247,12 @@ namespace stage
             EntityRemove(itemRightListBoxUPtr_.get());
         }
 
-        sfml_util::BoxEntityInfo listBoxInfoRight;
+        gui::BoxEntityInfo listBoxInfoRight;
         listBoxInfoRight_.SetupColor(LISTBOX_COLOR_BG_);
         listBoxInfoRight_.SetupBorder(true, 1.0f);
         listBoxInfoRight_.focus_colors = LISTBOX_COLORSET_;
 
-        sfml_util::ListBoxPacket listBoxPacketRight(
+        gui::ListBoxPacket listBoxPacketRight(
             LISTBOX_REGION_RIGHT_, listBoxInfoRight_, LISTBOX_COLOR_LINE_, LISTBOX_COLOR_IMAGE_);
 
         itemRightListBoxUPtr_ = std::make_unique<ItemListBox_t>(
@@ -1264,8 +1260,8 @@ namespace stage
 
         for (const auto & ITEM_PTR : creaturePtr_->Inventory().Items())
         {
-            itemRightListBoxUPtr_->Append(std::make_unique<sfml_util::ListElement<item::ItemPtr_t>>(
-                ITEM_PTR, sfml_util::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
+            itemRightListBoxUPtr_->Append(std::make_unique<gui::ListElement<item::ItemPtr_t>>(
+                ITEM_PTR, gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
         }
 
         EntityAdd(itemRightListBoxUPtr_.get());
@@ -1285,7 +1281,7 @@ namespace stage
 
         if (!descBoxUPtr_)
         {
-            descBoxUPtr_ = std::make_unique<sfml_util::BoxEntity>(
+            descBoxUPtr_ = std::make_unique<gui::BoxEntity>(
                 "InventoryStage'sDesc", LISTBOX_REGION_RIGHT_, listBoxInfoRight);
 
             EntityAdd(descBoxUPtr_.get());
@@ -1298,12 +1294,12 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sDescriptionBox",
-            sfml_util::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, " ", DESCBOX_TEXT_COLOR_),
+            gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, " ", DESCBOX_TEXT_COLOR_),
             LISTBOX_REGION_RIGHT_,
-            sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
-            sfml_util::BoxEntityInfo(),
+            gui::TextRegion::DEFAULT_NO_RESIZE_,
+            gui::BoxEntityInfo(),
             DESCBOX_MARGINS_);
 
         EntityAdd(descTextRegionUPtr_.get());
@@ -1407,24 +1403,21 @@ namespace stage
     void InventoryStage::Setup_SortButton(
         const std::string & NAME,
         const std::string & IMAGE_PATH_KEY,
-        sfml_util::ImageTextEntityUPtr_t & sortButtonUPtr)
+        gui::ImageTextEntityUPtr_t & sortButtonUPtr)
     {
         const auto SORT_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.02f) };
 
         const sf::FloatRect SORT_IMAGE_REGION(0.0f, 0.0f, SORT_IMAGE_WIDTH, 0.0f);
 
-        const sfml_util::EntityImageInfo SORT_ENTITY_IMAGE(
-            sfml_util::CachedTexture(IMAGE_PATH_KEY),
-            SORT_IMAGE_REGION,
-            boost::none,
-            SORT_ICON_COLOR_);
+        const gui::EntityImageInfo SORT_ENTITY_IMAGE(
+            gui::CachedTexture(IMAGE_PATH_KEY), SORT_IMAGE_REGION, boost::none, SORT_ICON_COLOR_);
 
-        sortButtonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
+        sortButtonUPtr = std::make_unique<gui::ImageTextEntity>(
             NAME,
-            sfml_util::MouseImageInfo(true, SORT_ENTITY_IMAGE),
-            sfml_util::MouseTextInfo(),
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Image);
+            gui::MouseImageInfo(true, SORT_ENTITY_IMAGE),
+            gui::MouseTextInfo(),
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Image);
 
         EntityAdd(sortButtonUPtr.get());
     }
@@ -1458,18 +1451,18 @@ namespace stage
             }
         }
 
-        const sfml_util::TextInfo LISTBOX_TEXT_INFO(
+        const gui::TextInfo LISTBOX_TEXT_INFO(
             titleText,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
         if (!eqTitleTextRegionUPtr_)
         {
-            eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            eqTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sEquippedListBoxTitle", LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
 
             EntityAdd(eqTitleTextRegionUPtr_.get());
@@ -1488,18 +1481,18 @@ namespace stage
     {
         const auto TITLETEXT { (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
 
-        const sfml_util::TextInfo DESC_TEXT_INFO(
+        const gui::TextInfo DESC_TEXT_INFO(
             TITLETEXT,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Normal(),
             LISTBOX_COLOR_TITLE_,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const sf::FloatRect DESC_TEXT_RECT(SECOND_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
         if (!unEqTitleTextRegionUPtr_)
         {
-            unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            unEqTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sUnequippedListBoxTitle", DESC_TEXT_INFO, DESC_TEXT_RECT);
 
             EntityAdd(unEqTitleTextRegionUPtr_.get());
@@ -1515,30 +1508,29 @@ namespace stage
     }
 
     void InventoryStage::Setup_MenuButton(
-        sfml_util::ImageTextEntityUPtr_t & buttonUPtr,
+        gui::ImageTextEntityUPtr_t & buttonUPtr,
         const std::string & TEXT,
         const float HORIZ_OFFSET_MULT)
     {
-        sfml_util::TextInfo textInfo(
+        gui::TextInfo textInfo(
             TEXT,
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const auto COLOR_DISABLED { sf::Color(0, 0, 0, 180) };
         const auto COLOR_OVER { sfutil::color::GrayDarker };
         const auto COLOR_DOWN { COLOR_DISABLED };
 
-        const sfml_util::MouseTextInfo MOUSE_TEXT_INFO(
-            textInfo, COLOR_DOWN, COLOR_OVER, COLOR_DISABLED);
+        const gui::MouseTextInfo MOUSE_TEXT_INFO(textInfo, COLOR_DOWN, COLOR_OVER, COLOR_DISABLED);
 
-        buttonUPtr = std::make_unique<sfml_util::ImageTextEntity>(
+        buttonUPtr = std::make_unique<gui::ImageTextEntity>(
             "InventoryStage's" + TEXT,
-            sfml_util::MouseImageInfo(),
+            gui::MouseImageInfo(),
             MOUSE_TEXT_INFO,
-            sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-            sfml_util::ImageTextEntity::MouseStateSync::Image);
+            gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+            gui::ImageTextEntity::MouseStateSync::Image);
 
         buttonUPtr->SetEntityPos(
             (INNER_RECT_.left + (HORIZ_OFFSET_MULT * INNER_RECT_.width))
@@ -1861,7 +1853,7 @@ namespace stage
 
         isDetailViewFadingIn_ = true;
         detailViewTimerSec_ = 0.0f;
-        detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
+        detailViewSlider_ = gui::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
         return true;
     }
 
@@ -1869,21 +1861,21 @@ namespace stage
     {
         if ((NEW_VIEW == ViewType::Items)
             && ((ViewType::Items == view_)
-                || (itemsButtonUPtr_->GetMouseState() == sfml_util::MouseState::Disabled)))
+                || (itemsButtonUPtr_->GetMouseState() == gui::MouseState::Disabled)))
         {
             return false;
         }
 
         if ((NEW_VIEW == ViewType::Titles)
             && ((ViewType::Titles == view_)
-                || (titlesButtonUPtr_->GetMouseState() == sfml_util::MouseState::Disabled)))
+                || (titlesButtonUPtr_->GetMouseState() == gui::MouseState::Disabled)))
         {
             return false;
         }
 
         if ((NEW_VIEW == ViewType::Conditions)
             && ((ViewType::Conditions == view_)
-                || (condsButtonUPtr_->GetMouseState() == sfml_util::MouseState::Disabled)))
+                || (condsButtonUPtr_->GetMouseState() == gui::MouseState::Disabled)))
         {
             return false;
         }
@@ -1932,7 +1924,7 @@ namespace stage
                 creatureSprite_.setPosition(OUT_OF_SIGHT_POS_, creatureSprite_.getPosition().y);
 
                 hasImageChanged_ = true;
-                imageSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                imageSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2004,7 +1996,7 @@ namespace stage
                     SCREEN_WIDTH_ + 1.0f, detailsTextRegionUPtr_->GetEntityPos().y);
 
                 hasDetailsChanged_ = true;
-                detailsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                detailsSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2063,7 +2055,7 @@ namespace stage
                     SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
 
                 hasCenterChanged_ = true;
-                centerSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                centerSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2122,7 +2114,7 @@ namespace stage
                     OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
 
                 hasStatsChanged_ = true;
-                statsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                statsSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2176,7 +2168,7 @@ namespace stage
                 LeftListBoxSetHorizPosition(SCREEN_WIDTH_ + 1.0f);
 
                 hasListBoxChanged_ = true;
-                listBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                listBoxSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2264,7 +2256,7 @@ namespace stage
                 descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
 
                 hasDescBoxChanged_ = true;
-                descBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+                descBoxSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
             }
         }
         else
@@ -2327,7 +2319,7 @@ namespace stage
 
         if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
         {
-            sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
+            gui::SoundManager::Instance()->PlaySfx_TickOn();
 
             const auto ITEM_RECT_OPT { GetItemRectMouseIsOver(mousePosV_) };
 
@@ -2337,7 +2329,7 @@ namespace stage
                 isAchievementDisplaying_ = false;
                 isDetailViewFadingIn_ = true;
                 detailViewTimerSec_ = 0.0f;
-                detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
+                detailViewSlider_ = gui::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
             }
         }
     }
@@ -2469,7 +2461,7 @@ namespace stage
     bool InventoryStage::HandleEquipActual()
     {
         if ((ViewType::Items == view_)
-            && (equipButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
+            && (equipButtonUPtr_->GetMouseState() != gui::MouseState::Disabled)
             && itemLeftListBoxUPtr_ && itemRightListBoxUPtr_
             && (itemRightListBoxUPtr_->Empty() == false))
         {
@@ -2478,7 +2470,7 @@ namespace stage
             const auto EQUIP_RESULT { creaturePtr_->ItemEquip(ITEM_PTR) };
             if (EQUIP_RESULT.empty())
             {
-                sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                gui::SoundManager::Instance()->PlaySfx_AckMajor();
                 itemRightListBoxUPtr_->Move(ITEM_PTR, *itemLeftListBoxUPtr_);
                 Setup_ButtonMouseoverText();
                 return true;
@@ -2522,7 +2514,7 @@ namespace stage
     bool InventoryStage::HandleUnequipActual()
     {
         if ((ViewType::Items == view_)
-            && (unequipButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
+            && (unequipButtonUPtr_->GetMouseState() != gui::MouseState::Disabled)
             && itemLeftListBoxUPtr_ && (itemLeftListBoxUPtr_->Empty() == false)
             && itemRightListBoxUPtr_)
         {
@@ -2534,7 +2526,7 @@ namespace stage
             }
             else
             {
-                sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                gui::SoundManager::Instance()->PlaySfx_AckMajor();
                 creaturePtr_->ItemUnEquip(ITEM_PTR);
                 itemLeftListBoxUPtr_->Move(ITEM_PTR, *itemRightListBoxUPtr_);
                 Setup_ButtonMouseoverText();
@@ -2555,10 +2547,10 @@ namespace stage
                 .append("Shards\n\n...or (Escape) to Cancel"),
             popup::PopupButtons::Cancel,
             popup::PopupImage::Large,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptGeneric,
+            gui::Justified::Center,
+            gui::sound_effect::PromptGeneric,
             true,
-            sfml_util::FontManager::Instance()->Size_Largeish()) };
+            gui::FontManager::Instance()->Size_Largeish()) };
 
         SpawnPopup(this, POPUP_INFO);
 
@@ -2693,8 +2685,8 @@ namespace stage
 
         if (CAN_GIVE_ITEM_STR.empty())
         {
-            sfml_util::SoundManager::Instance()
-                ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemGive)
+            gui::SoundManager::Instance()
+                ->GetSoundEffectSet(gui::sound_effect_set::ItemGive)
                 .PlayRandom();
 
             creaturePtr_->ItemRemove(ITEM_PTR);
@@ -2790,7 +2782,7 @@ namespace stage
     bool InventoryStage::HandleDropRequest()
     {
         if ((ViewType::Items == view_)
-            && (equipButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
+            && (equipButtonUPtr_->GetMouseState() != gui::MouseState::Disabled)
             && itemRightListBoxUPtr_ && (itemRightListBoxUPtr_->Empty() == false))
         {
             if ((game::Phase::Combat == previousPhase_) && (creaturePtr_ != turnCreaturePtr_))
@@ -2813,8 +2805,8 @@ namespace stage
                     + listElementToDropPtrOpt_.value()->Element()->Name() + "?",
                 popup::PopupButtons::YesNo,
                 popup::PopupImage::Regular,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::PromptQuestion) };
+                gui::Justified::Center,
+                gui::sound_effect::PromptQuestion) };
 
             SpawnPopup(this, POPUP_INFO);
             isWaitingOnPopup_ = true;
@@ -2841,8 +2833,8 @@ namespace stage
             return false;
         }
 
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::ItemDrop)
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::ItemDrop)
             .PlayRandom();
 
         const auto ITEM_PTR { listElementToDropPtrOpt_.value()->Element() };
@@ -2943,12 +2935,12 @@ namespace stage
         isListBoxSlidingDone_ = false;
         isDescBoxSlidingDone_ = false;
 
-        imageSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
-        detailsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
-        centerSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
-        statsSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
-        listBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
-        descBoxSlider_ = sfml_util::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        imageSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        detailsSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        centerSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        statsSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        listBoxSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
+        descBoxSlider_ = gui::SliderZeroToOne(VIEW_CHANGE_SLIDER_SPEED_);
     }
 
     void InventoryStage::SetDescBoxText(const std::string & TEXT)
@@ -2958,14 +2950,14 @@ namespace stage
             EntityRemove(descTextRegionUPtr_.get());
         }
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sDescription",
-            sfml_util::TextInfo(
+            gui::TextInfo(
                 LIST_ELEMENT_TEXT_INFO_DEFAULT_, TEXT, DESCBOX_TEXT_COLOR_, DESCBOX_TEXT_SIZE_),
             LISTBOX_REGION_RIGHT_,
             this,
-            sfml_util::TextRegion::DEFAULT_NO_RESIZE_,
-            sfml_util::BoxEntityInfo(),
+            gui::TextRegion::DEFAULT_NO_RESIZE_,
+            gui::BoxEntityInfo(),
             DESCBOX_MARGINS_);
 
         EntityAdd(descTextRegionUPtr_.get());
@@ -3018,9 +3010,9 @@ namespace stage
             ss.str(),
             popup::PopupButtons::Cancel,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptWarn,
-            sfml_util::FontManager::Instance()->Size_Largeish()) };
+            gui::Justified::Center,
+            gui::sound_effect::PromptWarn,
+            gui::FontManager::Instance()->Size_Largeish()) };
 
         SpawnPopup(this, POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
@@ -3036,7 +3028,7 @@ namespace stage
                 PROMPT_TEXT,
                 1,
                 NUMBER_MAX,
-                sfml_util::FontManager::Instance()->Size_Largeish())
+                gui::FontManager::Instance()->Size_Largeish())
         };
 
         SpawnPopup(this, POPUP_INFO_NUMBER_SELECT);
@@ -3052,10 +3044,9 @@ namespace stage
             PROMPT_TEXT,
             popup::PopupButtons::Okay,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            ((WILL_PLAY_SOUNDEFFECT) ? sfml_util::sound_effect::PromptGeneric
-                                     : sfml_util::sound_effect::None),
-            sfml_util::FontManager::Instance()->Size_Largeish()) };
+            gui::Justified::Center,
+            ((WILL_PLAY_SOUNDEFFECT) ? gui::sound_effect::PromptGeneric : gui::sound_effect::None),
+            gui::FontManager::Instance()->Size_Largeish()) };
 
         SpawnPopup(this, POPUP_INFO_DONE);
         isWaitingOnPopup_ = true;
@@ -3072,10 +3063,10 @@ namespace stage
             ss.str(),
             popup::PopupButtons::Cancel,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptGeneric,
+            gui::Justified::Center,
+            gui::sound_effect::PromptGeneric,
             false,
-            sfml_util::FontManager::Instance()->Size_Normal()) };
+            gui::FontManager::Instance()->Size_Normal()) };
 
         SpawnPopup(this, POPUP_INFO);
 
@@ -3085,9 +3076,7 @@ namespace stage
     void InventoryStage::HandleCoinsGive(
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Coin).PlayRandom();
 
         creaturePtr_->CoinsAdj(Coin_t(static_cast<int>(COUNT) * -1));
         creatureToGiveToPtr->CoinsAdj(Coin_t::Make(COUNT));
@@ -3102,9 +3091,7 @@ namespace stage
     void InventoryStage::HandleGemsGive(
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Gem).PlayRandom();
 
         creaturePtr_->GemsAdj(Gem_t(static_cast<int>(COUNT) * -1));
         creatureToGiveToPtr->GemsAdj(Gem_t(static_cast<int>(COUNT)));
@@ -3119,8 +3106,8 @@ namespace stage
     void InventoryStage::HandleMeteorShardsGive(
         const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
             .PlayRandom();
 
         creaturePtr_->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT) * -1));
@@ -3159,8 +3146,8 @@ namespace stage
 
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
-            sfml_util::SoundManager::Instance()
-                ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
+            gui::SoundManager::Instance()
+                ->GetSoundEffectSet(gui::sound_effect_set::Coin)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3199,8 +3186,8 @@ namespace stage
 
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
-            sfml_util::SoundManager::Instance()
-                ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
+            gui::SoundManager::Instance()
+                ->GetSoundEffectSet(gui::sound_effect_set::Gem)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3239,8 +3226,8 @@ namespace stage
 
         if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
-            sfml_util::SoundManager::Instance()
-                ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
+            gui::SoundManager::Instance()
+                ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
                 .PlayRandom();
 
             std::ostringstream ss;
@@ -3270,9 +3257,7 @@ namespace stage
             }
         }
 
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::Coin)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Coin).PlayRandom();
 
         HandleCoinsGather(false);
 
@@ -3339,9 +3324,7 @@ namespace stage
             }
         }
 
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::Gem)
-            .PlayRandom();
+        gui::SoundManager::Instance()->GetSoundEffectSet(gui::sound_effect_set::Gem).PlayRandom();
 
         HandleGemsGather(false);
 
@@ -3407,8 +3390,8 @@ namespace stage
             }
         }
 
-        sfml_util::SoundManager::Instance()
-            ->GetSoundEffectSet(sfml_util::sound_effect_set::MeteorShard)
+        gui::SoundManager::Instance()
+            ->GetSoundEffectSet(gui::sound_effect_set::MeteorShard)
             .PlayRandom();
 
         HandleMeteorShardsGather(false);
@@ -3550,7 +3533,7 @@ namespace stage
 
         const auto ITEM_PTR { ITEM_PTR_OPT.value() };
 
-        detailViewCachedTextureOpt_ = sfml_util::LoadAndCacheImage(ITEM_PTR);
+        detailViewCachedTextureOpt_ = gui::LoadAndCacheImage(ITEM_PTR);
         detailViewSprite_.setTexture(detailViewCachedTextureOpt_->Get(), true);
 
         const auto DETAILVIEW_IMAGE_SCALE { sfutil::MapByRes(0.75f, 1.25f) };
@@ -3587,12 +3570,12 @@ namespace stage
 
         ss << "\n\n";
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Normal(),
             sf::Color::White,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         const auto DETAILVIEW_SPRITE_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
@@ -3608,7 +3591,7 @@ namespace stage
 
         const sf::FloatRect TEXT_RECT(LEFT, TOP, WIDTH, HEIGHT);
 
-        detailViewTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        detailViewTextUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT);
     }
 
@@ -3622,7 +3605,7 @@ namespace stage
 
         const auto CREATURE_PTR { CREATURE_PTR_OPT.value() };
 
-        detailViewCachedTextureOpt_ = sfml_util::LoadAndCacheImage(CREATURE_PTR);
+        detailViewCachedTextureOpt_ = gui::LoadAndCacheImage(CREATURE_PTR);
         detailViewSprite_.setTexture(detailViewCachedTextureOpt_->Get(), true);
         detailViewSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
 
@@ -3652,12 +3635,12 @@ namespace stage
            << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthGiven)
            << MakeTitleString(CREATURE_PTR, creature::AchievementType::HealthTraded);
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Smallish(),
             sf::Color::White,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         const auto DETAILVIEW_BOTTOM { sfutil::Bottom(detailViewSprite_) };
 
@@ -3667,7 +3650,7 @@ namespace stage
             DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
             (DETAILVIEW_HEIGHT_ - DETAILVIEW_BOTTOM) - (2.0f * DETAILVIEW_INNER_PAD_));
 
-        detailViewTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        detailViewTextUPtr_ = std::make_unique<gui::TextRegion>(
             "InventoryStage'sDetailViewForCreatureAchievements", TEXT_INFO, TEXT_RECT);
     }
 
@@ -3809,12 +3792,12 @@ namespace stage
 
     void InventoryStage::StartDetailViewFadeOutTasks()
     {
-        sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
+        gui::SoundManager::Instance()->PlaySfx_TickOff();
 
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;
-        detailViewSlider_ = sfml_util::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
+        detailViewSlider_ = gui::SliderZeroToOne(DETAILVIEW_SLIDER_SPEED_);
         SetupDetailViewItem(boost::none);
         SetupDetailViewCreature(boost::none);
     }
@@ -3880,7 +3863,7 @@ namespace stage
 
         hasTakenActionSpellOrSong_ = true;
 
-        sparkleAnimUPtr_ = std::make_unique<sfml_util::animation::SparkleAnimation>(
+        sparkleAnimUPtr_ = std::make_unique<gui::animation::SparkleAnimation>(
             creatureSprite_.getGlobalBounds(),
             sfutil::MapByRes(0.333f, 1.33f),
             0.5f,
@@ -3915,9 +3898,9 @@ namespace stage
             ACTION_TEXT,
             popup::PopupButtons::Okay,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::None,
-            sfml_util::FontManager::Instance()->Size_Normal()) };
+            gui::Justified::Center,
+            gui::sound_effect::None,
+            gui::FontManager::Instance()->Size_Normal()) };
 
         const auto CREATURE_EFFECTS_VEC { fightResult_.Effects() };
 
@@ -4076,7 +4059,7 @@ namespace stage
 
             hasTakenActionSpellOrSong_ = true;
 
-            songAnimUPtr_ = std::make_unique<sfml_util::animation::SongAnimation>(
+            songAnimUPtr_ = std::make_unique<gui::animation::SongAnimation>(
                 creatureSprite_.getGlobalBounds(),
                 0.1f,
                 sfutil::MapByRes(0.1f, 0.25f),
@@ -4121,9 +4104,9 @@ namespace stage
             ACTION_TEXT,
             popup::PopupButtons::Okay,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::None,
-            sfml_util::FontManager::Instance()->Size_Normal()) };
+            gui::Justified::Center,
+            gui::sound_effect::None,
+            gui::FontManager::Instance()->Size_Normal()) };
 
         const auto CREATURE_EFFECTS_VEC { fightResult_.Effects() };
         const auto HIT_INFO_VEC { CREATURE_EFFECTS_VEC[creatureEffectIndex_].GetHitInfoVec() };
@@ -4191,9 +4174,9 @@ namespace stage
     }
 
     bool InventoryStage::IfMouseDownIsOnDisabledButtonPopupRejection(
-        const sfml_util::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V)
+        const gui::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V)
     {
-        if ((BUTTON_UPTR->GetMouseState() == sfml_util::MouseState::Disabled)
+        if ((BUTTON_UPTR->GetMouseState() == gui::MouseState::Disabled)
             && BUTTON_UPTR->GetEntityRegion().contains(MOUSE_POS_V))
         {
             PopupRejectionWindow(BUTTON_UPTR->GetMouseHoverText());
@@ -4262,8 +4245,8 @@ namespace stage
 
         if (FOUND_ITER == std::end(creatureToImageMap_))
         {
-            auto cachedTexture { sfml_util::LoadAndCacheImage(
-                creaturePtr_, sfml_util::ImageOptions::InvertedCharacterOptions()) };
+            auto cachedTexture { gui::LoadAndCacheImage(
+                creaturePtr_, gui::ImageOptions::InvertedCharacterOptions()) };
 
             creatureSprite_.setTexture(cachedTexture.Get(), true);
 
@@ -4281,15 +4264,15 @@ namespace stage
     }
 
     void InventoryStage::SetButtonDisabledIf(
-        sfml_util::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE)
+        gui::ImageTextEntityUPtr_t & buttonUPtr, const bool WILL_DISABLE)
     {
         if (WILL_DISABLE)
         {
-            buttonUPtr->SetMouseState(sfml_util::MouseState::Disabled);
+            buttonUPtr->SetMouseState(gui::MouseState::Disabled);
         }
         else
         {
-            buttonUPtr->SetMouseState(sfml_util::MouseState::Up);
+            buttonUPtr->SetMouseState(gui::MouseState::Up);
         }
     }
 

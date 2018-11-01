@@ -120,7 +120,7 @@ namespace game
 
         void ReplacePopupStage(
             const popup::PopupInfo & POPUP_INFO,
-            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
+            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
 
         void SetPopupResponse(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
 
@@ -129,7 +129,7 @@ namespace game
         template <typename Lambda_t>
         bool ExecuteAndHandleFocusChange(stage::IStagePtr_t iStagePtr, Lambda_t & lambda)
         {
-            const sfml_util::IEntityPtrOpt_t NEW_FOCUS_IENTITY_PTR_OPT { lambda(iStagePtr) };
+            const gui::IEntityPtrOpt_t NEW_FOCUS_IENTITY_PTR_OPT { lambda(iStagePtr) };
 
             if (NEW_FOCUS_IENTITY_PTR_OPT)
             {
@@ -160,7 +160,7 @@ namespace game
         stage::IStageUPtr_t popupUPtr_;
 
         // this is an observer pointer to the Stage that handles all popup callbacks
-        sfml_util::PopupCallback_t::IHandlerPtrOpt_t popupCallbackHandlerPtrOpt_;
+        gui::PopupCallback_t::IHandlerPtrOpt_t popupCallbackHandlerPtrOpt_;
 
         std::string popupDescriptionStr_;
 

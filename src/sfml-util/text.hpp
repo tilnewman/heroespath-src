@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXT_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXT_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXT_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXT_HPP_INCLUDED
 //
 // text.hpp
 //
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     struct TextInfo;
 
@@ -180,9 +180,9 @@ namespace sfml_util
     inline auto rend(const Text & TEXT) noexcept { return TEXT.rend(); }
     inline auto crend(const Text & TEXT) noexcept { return rend(TEXT); }
 
-} // namespace sfml_util
+} // namespace gui
 
-inline std::ostream & operator<<(std::ostream & os, const sfml_util::Text & TEXT)
+inline std::ostream & operator<<(std::ostream & os, const gui::Text & TEXT)
 {
     os << TEXT.ToString();
     return os;
@@ -190,4 +190,4 @@ inline std::ostream & operator<<(std::ostream & os, const sfml_util::Text & TEXT
 
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXT_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXT_HPP_INCLUDED

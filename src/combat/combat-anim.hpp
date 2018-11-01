@@ -26,7 +26,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Animation;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
@@ -54,7 +54,7 @@ namespace sfml_util
         using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
         using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 
 namespace item
 {
@@ -92,7 +92,7 @@ namespace combat
         static const float PAUSE_DURATION_SEC;
         static const float SHAKE_DURATION_SEC;
 
-        sfml_util::SliderOscillator<float> slider;
+        gui::SliderOscillator<float> slider;
         float pause_duration_timer_sec;
         float shake_duration_timer_sec;
 
@@ -228,7 +228,7 @@ namespace combat
 
         void SetupAnimations(
             const combat::CombatNodePVec_t & TARGETS_PVEC,
-            const sfml_util::Animations::Enum ENUM,
+            const gui::Animations::Enum ENUM,
             const float FRAME_DELAY_SEC,
             const sf::Color & COLOR_FROM,
             const sf::Color & COLOR_TO);
@@ -265,10 +265,10 @@ namespace combat
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
 
-        sfml_util::SliderZeroToOne slider_;
+        gui::SliderZeroToOne slider_;
 
         // members supporting the Projectile Shoot Animation
-        sfml_util::CachedTextureOpt_t projAnimCachedTextureOpt_;
+        gui::CachedTextureOpt_t projAnimCachedTextureOpt_;
         sf::Sprite projAnimSprite_;
         sf::Vector2f projAnimBeginPosV_;
         sf::Vector2f projAnimEndPosV_;
@@ -301,15 +301,15 @@ namespace combat
         // members to perform the selection animation
         CombatNodePtrOpt_t selectAnimCombatNodePtrOpt_;
 
-        sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
-        sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
+        gui::animation::SparksAnimationUVec_t sparksAnimUVec_;
+        gui::animation::CloudAnimationUVec_t cloudAnimUVec_;
 
         // members that control animations in general
-        sfml_util::AnimationUVec_t animUVec_;
+        gui::AnimationUVec_t animUVec_;
 
-        sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
-        sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
-        sfml_util::animation::TextAnimationUVec_t textAnimUVec_;
+        gui::animation::SongAnimationUVec_t songAnimUVec_;
+        gui::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
+        gui::animation::TextAnimationUVec_t textAnimUVec_;
 
         // members that control the run animation
         CombatNodePtrOpt_t runAnimCombatNodePtrOpt_;

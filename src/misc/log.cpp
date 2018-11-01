@@ -185,7 +185,7 @@ namespace misc
 
     void Log::AppendDateString(std::ostream & ostream) const
     {
-        const auto DATE_AND_TIME { sfml_util::DateTime::CurrentDateTime() };
+        const auto DATE_AND_TIME { gui::DateTime::CurrentDateTime() };
 
         ostream << std::setfill('0') << DATE_AND_TIME.date.year << "-" << std::setw(2)
                 << DATE_AND_TIME.date.month << "-" << std::setw(2) << DATE_AND_TIME.date.day;
@@ -193,7 +193,7 @@ namespace misc
 
     void Log::AppendTimeString(std::ostream & ostream) const
     {
-        const auto DATE_AND_TIME { sfml_util::DateTime::CurrentDateTime() };
+        const auto DATE_AND_TIME { gui::DateTime::CurrentDateTime() };
 
         ostream << std::setfill('0') << std::setw(2) << DATE_AND_TIME.time.hours << ":"
                 << std::setw(2) << DATE_AND_TIME.time.minutes << ":" << std::setw(2)

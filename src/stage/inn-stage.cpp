@@ -30,19 +30,19 @@ namespace stage
     InnStage::InnStage()
         : StageBase(
             "Inn",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting },
             true)
         , stageTitle_()
         , backgroundBox_(
               "InnStage'sBackground",
               StageRegion(),
-              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
+              gui::BoxEntityInfo(gui::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
+                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
         , candleCachedTexture_("media-images-candle")
         , candleSprite_(candleCachedTexture_.Get())
         , candleAnimUPtr_()
@@ -55,7 +55,7 @@ namespace stage
     void InnStage::Setup()
     {
         // ouroboros
-        ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("InnStage's");
+        ouroborosUPtr_ = std::make_unique<gui::Ouroboros>("InnStage's");
         EntityAdd(ouroborosUPtr_.get());
 
         // candle image
@@ -71,8 +71,7 @@ namespace stage
         sfutil::FitAndCenterTo(candleSprite_, CANDLE_REGION_CONSTRAINTS);
 
         // candle anim
-        candleAnimUPtr_
-            = sfml_util::AnimationFactory::Make(sfml_util::Animations::CandleFlame, 1.0f, 0.05f);
+        candleAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::CandleFlame, 1.0f, 0.05f);
 
         candleAnimUPtr_->SetEntityPos(CANDLE_POS_V - sf::Vector2f(25.0f, 90.0f));
 

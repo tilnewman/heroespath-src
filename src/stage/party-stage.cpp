@@ -54,15 +54,15 @@ namespace stage
     PartyStage::PartyStage()
         : StageBase(
             "Party",
-            sfml_util::Display::Instance()->FullScreenRect(),
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::Handwriting },
+            gui::Display::Instance()->FullScreenRect(),
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting },
             true)
-        , LISTBOX_FONT_ENUM_(sfml_util::GuiFont::System)
-        , LISTBOX_FONT_SIZE_(sfml_util::FontManager::Instance()->Size_Largeish())
+        , LISTBOX_FONT_ENUM_(gui::GuiFont::System)
+        , LISTBOX_FONT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , LISTBOX_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.33f))
         , LISTBOX_HEIGHT_(sfutil::ScreenRatioToPixelsVert(0.5f))
         , BETWEEN_LISTBOXES_SPACER_(sfutil::ScreenRatioToPixelsHoriz(0.077f))
@@ -85,29 +85,27 @@ namespace stage
         , backgroundBox_(
               "PartyStage'sBackground",
               StageRegion(),
-              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
+              gui::BoxEntityInfo(gui::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
-        , backButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
-              stage::Stage::Previous,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              -1.0f))
-        , startButtonUPtr_(std::make_unique<sfml_util::ImageTextEntity>(
+                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
+        , backButtonUPtr_(std::make_unique<gui::MainMenuButton>(
+              stage::Stage::Previous, gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this), -1.0f))
+        , startButtonUPtr_(std::make_unique<gui::ImageTextEntity>(
               "PartyStage'sStartGame",
               MakeMouseImageInfoForMenuButton(
                   "media-images-buttons-mainmenu-start-normal",
                   "media-images-buttons-mainmenu-start-lit"),
-              sfml_util::MouseTextInfo(),
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ImageTextEntity::MouseStateSync::Image))
-        , deleteButtonUPtr_(std::make_unique<sfml_util::ImageTextEntity>(
+              gui::MouseTextInfo(),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::MouseStateSync::Image))
+        , deleteButtonUPtr_(std::make_unique<gui::ImageTextEntity>(
               "PartyStage'sDelete",
               MakeMouseImageInfoForMenuButton(
                   "media-images-buttons-mainmenu-delete-normal",
                   "media-images-buttons-mainmenu-delete-lit"),
-              sfml_util::MouseTextInfo(),
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
-              sfml_util::ImageTextEntity::MouseStateSync::Image))
+              gui::MouseTextInfo(),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::MouseStateSync::Image))
         , characterListBoxUPtr_()
         , partyListBoxUPtr_()
         , insTextRegionUPtr_()
@@ -116,7 +114,7 @@ namespace stage
         , warningTextInfo_()
         , warningTextRegionUPtr_()
         , warningTextSlider_(150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255)))
-        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("PartyStage's"))
+        , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("PartyStage's"))
         , willDisplayCharacterCountWarningText_(false)
         , unplayedCharactersPVec_()
         , listboxSelectedItemColoredRectSlider_()
@@ -141,27 +139,27 @@ namespace stage
     {
         ResetMouseOverPopupState();
 
-        if (((PACKET_PTR->gui_event == sfml_util::GuiEvent::Keypress)
+        if (((PACKET_PTR->gui_event == gui::GuiEvent::Keypress)
              && (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
-            || (PACKET_PTR->gui_event == sfml_util::GuiEvent::DoubleClick))
+            || (PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick))
         {
             if (PACKET_PTR->listbox_ptr == characterListBoxUPtr_.get())
             {
                 if (partyListBoxUPtr_->Size() < creature::PlayerParty::MAX_CHARACTER_COUNT_)
                 {
                     characterListBoxUPtr_->MoveSelection(*partyListBoxUPtr_);
-                    sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                    gui::SoundManager::Instance()->PlaySfx_AckMajor();
                     return true;
                 }
                 else
                 {
-                    sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+                    gui::SoundManager::Instance()->PlaySfx_Reject();
                 }
             }
             else if (PACKET_PTR->listbox_ptr == partyListBoxUPtr_.get())
             {
                 partyListBoxUPtr_->MoveSelection(*characterListBoxUPtr_);
-                sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                gui::SoundManager::Instance()->PlaySfx_AckMajor();
                 return true;
             }
         }
@@ -169,8 +167,8 @@ namespace stage
         return false;
     }
 
-    bool PartyStage::HandleCallback(
-        const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool
+        PartyStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         ResetMouseOverPopupState();
 
@@ -189,7 +187,7 @@ namespace stage
         return false;
     }
 
-    bool PartyStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool PartyStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         ResetMouseOverPopupState();
 
@@ -264,8 +262,8 @@ namespace stage
             ss.str(),
             popup::PopupButtons::YesNo,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptWarn) };
+            gui::Justified::Center,
+            gui::sound_effect::PromptWarn) };
 
         SpawnPopup(this, POPUP_INFO);
         return true;
@@ -316,16 +314,16 @@ namespace stage
 
     void PartyStage::Setup_TopInstructionText()
     {
-        sfml_util::TextInfo insTextInfo(
+        gui::TextInfo insTextInfo(
             "(double-click or use the arrow keys and enter to move characters back and forth)",
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::GrayLight,
-            sfml_util::Justified::Left,
+            gui::Justified::Left,
             sf::Text::Italic);
 
         insTextRegionUPtr_
-            = std::make_unique<sfml_util::TextRegion>("Instructions", insTextInfo, sf::FloatRect());
+            = std::make_unique<gui::TextRegion>("Instructions", insTextInfo, sf::FloatRect());
 
         const auto HALF_INSTR_TEXT_WIDTH { insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
 
@@ -342,16 +340,16 @@ namespace stage
         warningSS << "(There are not enough characters to make a party of six.  Go back and "
                      "create more.)";
 
-        warningTextInfo_ = sfml_util::TextInfo(
+        warningTextInfo_ = gui::TextInfo(
             warningSS.str(),
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             sf::Color(255, 200, 200),
-            sfml_util::Justified::Left,
+            gui::Justified::Left,
             sf::Text::Italic);
 
-        warningTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "WarningsText", warningTextInfo_, sf::FloatRect());
+        warningTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("WarningsText", warningTextInfo_, sf::FloatRect());
 
         const auto WARNING_TEXT_LEFT { (StageBase::StageRegion().width * 0.5f)
                                        - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f)
@@ -366,14 +364,14 @@ namespace stage
 
     void PartyStage::Setup_CharactersListBoxLabel()
     {
-        sfml_util::TextInfo labelTextInfo(
+        gui::TextInfo labelTextInfo(
             "Unplayed Characters",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Largeish(),
             sfutil::color::Orange + sf::Color(0, 30, 30, 0));
 
-        upTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "CharacterLabel", labelTextInfo, sf::FloatRect());
+        upTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("CharacterLabel", labelTextInfo, sf::FloatRect());
 
         upTextRegionUPtr_->SetEntityPos(
             CHAR_LISTBOX_POS_LEFT_ + sfutil::ScreenRatioToPixelsHoriz(0.025f),
@@ -386,14 +384,14 @@ namespace stage
 
     void PartyStage::Setup_PartyListBoxLabel()
     {
-        sfml_util::TextInfo labelTextInfo(
+        gui::TextInfo labelTextInfo(
             "New Party",
-            sfml_util::GuiFont::System,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::System,
+            gui::FontManager::Instance()->Size_Largeish(),
             sfutil::color::Orange + sf::Color(0, 30, 30, 0));
 
         partyTextRegionUPtr_
-            = std::make_unique<sfml_util::TextRegion>("PartyLabel", labelTextInfo, sf::FloatRect());
+            = std::make_unique<gui::TextRegion>("PartyLabel", labelTextInfo, sf::FloatRect());
 
         partyTextRegionUPtr_->SetEntityPos(
             PARTY_LISTBOX_POS_LEFT_ + sfutil::ScreenRatioToPixelsHoriz(0.025f),
@@ -422,23 +420,22 @@ namespace stage
         listBoxInfo_.SetupBorder(true, 1.0f);
         listBoxInfo_.SetupColor(BG_COLOR);
 
-        listBoxInfo_.focus_colors = sfml_util::FocusColors(
+        listBoxInfo_.focus_colors = gui::FocusColors(
             sfutil::color::Orange,
             BG_COLOR,
-            sfutil::color::Orange - sfml_util::FocusColors::DEFAULT_OFFSET_COLOR_,
+            sfutil::color::Orange - gui::FocusColors::DEFAULT_OFFSET_COLOR_,
             BG_COLOR - sf::Color(40, 40, 40, 0));
 
-        sfml_util::ListBoxPacket charListBoxPacket(
+        gui::ListBoxPacket charListBoxPacket(
             CHAR_LIST_RECT, listBoxInfo_, sfutil::color::Orange, sf::Color(255, 255, 255, 190));
 
-        characterListBoxUPtr_
-            = std::make_unique<sfml_util::ListBox<PartyStage, creature::CreaturePtr_t>>(
-                "PartyStage'sCharacter", this, this, charListBoxPacket);
+        characterListBoxUPtr_ = std::make_unique<gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
+            "PartyStage'sCharacter", this, this, charListBoxPacket);
 
         // load all players not yet assigned to a party/started game
         unplayedCharactersPVec_ = game::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
 
-        sfml_util::TextInfo textInfo("", LISTBOX_FONT_ENUM_, LISTBOX_FONT_SIZE_);
+        gui::TextInfo textInfo("", LISTBOX_FONT_ENUM_, LISTBOX_FONT_SIZE_);
 
         for (const auto & CHARACTER_PTR : unplayedCharactersPVec_)
         {
@@ -451,8 +448,8 @@ namespace stage
             }
 
             characterListBoxUPtr_->Append(
-                std::make_unique<sfml_util::ListElement<creature::CreaturePtr_t>>(
-                    CHARACTER_PTR, sfml_util::TextInfo(textInfo, ssTitle.str())));
+                std::make_unique<gui::ListElement<creature::CreaturePtr_t>>(
+                    CHARACTER_PTR, gui::TextInfo(textInfo, ssTitle.str())));
         }
 
         characterListBoxUPtr_->Sort([](const auto & A, const auto & B) {
@@ -476,12 +473,11 @@ namespace stage
         const sf::FloatRect PARTY_LIST_RECT(
             PARTY_LIST_POS_LEFT, PARTY_LIST_POS_TOP, PARTY_LIST_WIDTH, PARTY_LIST_HEIGHT);
 
-        sfml_util::ListBoxPacket partyListBoxPacket(
+        gui::ListBoxPacket partyListBoxPacket(
             PARTY_LIST_RECT, listBoxInfo_, sfutil::color::Orange, sf::Color(255, 255, 255, 190));
 
-        partyListBoxUPtr_
-            = std::make_unique<sfml_util::ListBox<PartyStage, creature::CreaturePtr_t>>(
-                "PartyStage'sParty", this, this, partyListBoxPacket);
+        partyListBoxUPtr_ = std::make_unique<gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
+            "PartyStage'sParty", this, this, partyListBoxPacket);
 
         EntityAdd(partyListBoxUPtr_.get());
     }
@@ -564,7 +560,7 @@ namespace stage
             auto isMouseOverCharacterListBox { false };
 
             const auto MOUSEOVER_ELEMENT_PTR_OPT
-                = [&]() -> sfml_util::ListElementPtrOpt_t<creature::CreaturePtr_t> {
+                = [&]() -> gui::ListElementPtrOpt_t<creature::CreaturePtr_t> {
                 if (characterListBoxUPtr_->GetEntityRegion().contains(mousePosV_))
                 {
                     isMouseOverCharacterListBox = true;
@@ -586,9 +582,9 @@ namespace stage
                 const auto CHARACTER_PTR { MOUSEOVER_ELEMENT_PTR_OPT.value()->Element() };
 
                 willShowMouseOverPopup_ = true;
-                mouseOverSlider_ = sfml_util::SliderZeroToOne(MOUSEOVER_SLIDER_SPEED_);
+                mouseOverSlider_ = gui::SliderZeroToOne(MOUSEOVER_SLIDER_SPEED_);
 
-                mouseOverCreatureTextureOpt_ = sfml_util::LoadAndCacheImage(CHARACTER_PTR);
+                mouseOverCreatureTextureOpt_ = gui::LoadAndCacheImage(CHARACTER_PTR);
                 mouseOverCreatureSprite_.setTexture(mouseOverCreatureTextureOpt_->Get(), true);
                 SetupMouseOverPositionsAndDimmensions(CHARACTER_PTR);
 
@@ -598,13 +594,13 @@ namespace stage
                                                   : partyListBoxUPtr_->ElementRegion(
                                                       MOUSEOVER_ELEMENT_PTR_OPT.value(), true)) };
 
-                listboxSelectedItemColoredRectSlider_ = sfml_util::ColoredRectSlider(
+                listboxSelectedItemColoredRectSlider_ = gui::ColoredRectSlider(
                     ELEMENT_RECT,
                     MOUSEOVER_COLORCYCLE_START_,
                     MOUSEOVER_COLORCYCLE_ALT_,
                     MOUSEOVER_COLORCYCLE_SPEED_,
-                    sfml_util::WillOscillate::Yes,
-                    sfml_util::WillAutoStart::Yes,
+                    gui::WillOscillate::Yes,
+                    gui::WillAutoStart::Yes,
                     MOUSEOVER_COLORCYCLE_COUNT_);
 
                 mouseOverBackground_.Color(sf::Color::Transparent);
@@ -695,22 +691,22 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
-            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            backButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             backButtonUPtr_->PretendClicked();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
-            deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            deleteButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             HandleCallback_DeleteButton();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
-            startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            startButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             HandleCallback_StartButton();
             return true;
         }
@@ -788,8 +784,8 @@ namespace stage
             ss.str(),
             popup::PopupButtons::Okay,
             popup::PopupImage::RegularSidebar,
-            sfml_util::Justified::Left,
-            sfml_util::sound_effect::PromptWarn) };
+            gui::Justified::Left,
+            gui::sound_effect::PromptWarn) };
 
         SpawnPopup(this, POP_INFO);
     }
@@ -806,15 +802,15 @@ namespace stage
             ss.str(),
             popup::PopupButtons::Okay,
             popup::PopupImage::Regular,
-            sfml_util::Justified::Center,
-            sfml_util::sound_effect::PromptQuestion) };
+            gui::Justified::Center,
+            gui::sound_effect::PromptQuestion) };
 
         SpawnPopup(this, POPUP_INFO);
     }
 
     void PartyStage::PartyAvatarSelectionPopup()
     {
-        sfml_util::CachedTextureVec_t partyCachedTextures;
+        gui::CachedTextureVec_t partyCachedTextures;
 
         for (misc::EnumUnderlying_t i(avatar::Avatar::Player_First);
              i <= avatar::Avatar::Player_Last;
@@ -857,15 +853,15 @@ namespace stage
            << "Speed:            " << CREATURE_PTR->Speed() << "\n"
            << "Intelligence:    " << CREATURE_PTR->Intelligence();
 
-        const sfml_util::TextInfo TEXT_INFO(
+        const gui::TextInfo TEXT_INFO(
             ss.str(),
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             sfutil::color::Light,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
         // initially the TextRegion is not positioned, see below
-        mouseOverTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        mouseOverTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PartyStage'sMouseOverPopup", TEXT_INFO, sf::FloatRect());
 
         const auto TEXT_WIDTH { mouseOverTextRegionUPtr_->GetEntityRegion().width };
@@ -925,22 +921,21 @@ namespace stage
         return true;
     }
 
-    const sfml_util::MouseImageInfo PartyStage::MakeMouseImageInfoForMenuButton(
+    const gui::MouseImageInfo PartyStage::MakeMouseImageInfoForMenuButton(
         const std::string & IMAGE_PATH_KEY_UP, const std::string & IMAGE_PATH_KEY_OVER)
     {
         const sf::FloatRect INITIAL_REGION_TO_SET_WIDTH_(
-            0.0f, 0.0f, sfml_util::MainMenuButton::DefaultWidth(), 0.0f);
+            0.0f, 0.0f, gui::MainMenuButton::DefaultWidth(), 0.0f);
 
-        const sfml_util::EntityImageInfo ENTITY_IMAGE_INFO_UP(
-            (sfml_util::CachedTexture(IMAGE_PATH_KEY_UP)),
+        const gui::EntityImageInfo ENTITY_IMAGE_INFO_UP(
+            (gui::CachedTexture(IMAGE_PATH_KEY_UP)), (sf::FloatRect(INITIAL_REGION_TO_SET_WIDTH_)));
+
+        const gui::EntityImageInfo ENTITY_IMAGE_INFO_OVER(
+            (gui::CachedTexture(IMAGE_PATH_KEY_OVER)),
             (sf::FloatRect(INITIAL_REGION_TO_SET_WIDTH_)));
 
-        const sfml_util::EntityImageInfo ENTITY_IMAGE_INFO_OVER(
-            (sfml_util::CachedTexture(IMAGE_PATH_KEY_OVER)),
-            (sf::FloatRect(INITIAL_REGION_TO_SET_WIDTH_)));
-
-        return sfml_util::MouseImageInfo(
-            true, ENTITY_IMAGE_INFO_UP, sfml_util::EntityImageInfo(), ENTITY_IMAGE_INFO_OVER);
+        return gui::MouseImageInfo(
+            true, ENTITY_IMAGE_INFO_UP, gui::EntityImageInfo(), ENTITY_IMAGE_INFO_OVER);
     }
 
 } // namespace stage

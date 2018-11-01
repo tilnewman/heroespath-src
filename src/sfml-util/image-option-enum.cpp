@@ -11,7 +11,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     void ImageOpt::ToStringPopulate(
@@ -32,5 +32,5 @@ namespace sfml_util
             ss, ENUM_VALUE, ImageOpt::InvertIncludesAlpha, "InvertIncludesAlpha", SEPARATOR);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

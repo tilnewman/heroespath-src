@@ -28,7 +28,7 @@ namespace combat
     Trap::Trap()
         : playerCountRange_(0, 0)
         , damageRange_(0_health, 0_health)
-        , soundEffect_(sfml_util::sound_effect::None)
+        , soundEffect_(gui::sound_effect::None)
         , descPrefix_("")
         , descPostfix_("")
         , willDescUseContainerName_(false)
@@ -41,7 +41,7 @@ namespace combat
         const Health_t & DAMAGE_MIN,
         const Health_t & DAMAGE_MAX,
         const std::string & HIT_VERB,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESCRIPTION)
         : playerCountRange_(PLAYER_COUNT_MIN, PLAYER_COUNT_MAX)
         , damageRange_(DAMAGE_MIN, DAMAGE_MAX)
@@ -58,7 +58,7 @@ namespace combat
         const Health_t & DAMAGE_MIN,
         const Health_t & DAMAGE_MAX,
         const std::string & HIT_VERB,
-        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const gui::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESC_PREFIX,
         const std::string & DES_POSTFIX)
         : playerCountRange_(PLAYER_COUNT_MIN, PLAYER_COUNT_MAX)

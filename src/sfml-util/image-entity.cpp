@@ -17,14 +17,14 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     ImageEntity::ImageEntity(const std::string & NAME, const MouseImageInfo & MOUSE_IMAGE_INFO)
         : Entity(
-              std::string(NAME).append("_ImageEntity(MouseImageInfo-constructor)_"),
-              ((MOUSE_IMAGE_INFO.up.HasTexture()) ? MOUSE_IMAGE_INFO.up.sprite.getGlobalBounds()
-                                                  : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
+            std::string(NAME).append("_ImageEntity(MouseImageInfo-constructor)_"),
+            ((MOUSE_IMAGE_INFO.up.HasTexture()) ? MOUSE_IMAGE_INFO.up.sprite.getGlobalBounds()
+                                                : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
         , mouseImageInfo_(MOUSE_IMAGE_INFO)
         , sprite_()
         , willDraw_(false)
@@ -35,16 +35,16 @@ namespace sfml_util
     ImageEntity::ImageEntity(
         const std::string & NAME,
         const FloatRectOpt_t & REGION_OPT,
-        const sfml_util::CachedTextureOpt_t & TEXTURE_UP_OPT,
-        const sfml_util::CachedTextureOpt_t & TEXTURE_DOWN_OPT,
-        const sfml_util::CachedTextureOpt_t & TEXTURE_OVER_OPT,
-        const sfml_util::CachedTextureOpt_t & TEXTURE_DISABLED_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_UP_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_DOWN_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_OVER_OPT,
+        const gui::CachedTextureOpt_t & TEXTURE_DISABLED_OPT,
         const bool WILL_DRAW_UP_IF_MISSING,
         const ColorOpt_t & COLOR_OPT,
         const bool WILL_RESIZE_INSTEAD_OF_FIT_TO_REGION)
         : Entity(
-              std::string(NAME).append("_ImageEntity(cached-texture-constructor)_"),
-              ((REGION_OPT) ? REGION_OPT.value() : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
+            std::string(NAME).append("_ImageEntity(cached-texture-constructor)_"),
+            ((REGION_OPT) ? REGION_OPT.value() : sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f)))
         , mouseImageInfo_(
               WILL_DRAW_UP_IF_MISSING,
               EntityImageInfo(
@@ -178,5 +178,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

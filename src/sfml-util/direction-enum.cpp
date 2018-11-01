@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string Direction::ToString(const Direction::Enum E)
@@ -43,13 +43,13 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Direction::ToString(" << E << ")_InvalidValueError.";
+                ss << "gui::Direction::ToString(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
-    sfml_util::Direction::Enum Direction::Opposite(const Direction::Enum E)
+    gui::Direction::Enum Direction::Opposite(const Direction::Enum E)
     {
         switch (E)
         {
@@ -76,10 +76,10 @@ namespace sfml_util
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::Direction::Opposite(" << E << ")_InvalidValueError.";
+                ss << "gui::Direction::Opposite(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

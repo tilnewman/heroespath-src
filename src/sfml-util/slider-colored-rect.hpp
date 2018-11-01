@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SLIDER_COLORED_RECT_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SLIDER_COLORED_RECT_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SLIDER_COLORED_RECT_HPP_INCLUDED
+#define HEROESPATH_GUI_SLIDER_COLORED_RECT_HPP_INCLUDED
 //
 // slider-colored-rect.hpp
 //
@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Uses the smooth motion slider method to oscillate a ColoredRect between two colors.
@@ -40,7 +40,7 @@ namespace sfml_util
             const WillAutoStart WILL_AUTO_START,
             const std::size_t CYCLE_COUNT_LIMIT = 0)
             : ColorSlider(
-                  COLOR_FROM, COLOR_TO, SPEED, WILL_OSCILLATE, WILL_AUTO_START, CYCLE_COUNT_LIMIT)
+                COLOR_FROM, COLOR_TO, SPEED, WILL_OSCILLATE, WILL_AUTO_START, CYCLE_COUNT_LIMIT)
             , coloredRect_(REGION, COLOR_FROM)
         {
             OnUpdateChange();
@@ -71,16 +71,16 @@ namespace sfml_util
         bool WillDraw() const { return coloredRect_.WillDraw(); }
         void WillDraw(const bool WILL_DRAW) { coloredRect_.WillDraw(WILL_DRAW); }
 
-        const sfml_util::ColoredRect RectColored() const { return coloredRect_; }
+        const gui::ColoredRect RectColored() const { return coloredRect_; }
 
     protected:
         void OnUpdateChange() override { coloredRect_.Color(Value()); }
 
     private:
-        sfml_util::ColoredRect coloredRect_;
+        gui::ColoredRect coloredRect_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SLIDER_COLORED_RECT_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SLIDER_COLORED_RECT_HPP_INCLUDED

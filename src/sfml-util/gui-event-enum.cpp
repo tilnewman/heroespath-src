@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     void GuiEvent::ToStringPopulate(
@@ -32,5 +32,5 @@ namespace sfml_util
         AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::FocusChange, "FocusChange", SEPARATOR);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     SliderBarMusic::SliderBarMusic(
@@ -33,17 +33,17 @@ namespace sfml_util
         const float RELATIVE_LABEL_POS_LEFT,
         const float RELATIVE_LABEL_POS_TOP)
         : SliderBarLabeled(
-              std::string(NAME).append("_SliderBarMusic"),
-              POS_LEFT,
-              POS_TOP,
-              LENGTH,
-              STYLE,
-              THREE_TEXT_INFOS,
-              INITIAL_VALUE,
-              RELATIVE_LABEL_POS_LEFT,
-              RELATIVE_LABEL_POS_TOP)
+            std::string(NAME).append("_SliderBarMusic"),
+            POS_LEFT,
+            POS_TOP,
+            LENGTH,
+            STYLE,
+            THREE_TEXT_INFOS,
+            INITIAL_VALUE,
+            RELATIVE_LABEL_POS_LEFT,
+            RELATIVE_LABEL_POS_TOP)
     {
-        PositionRatio((sfml_util::SoundManager::Instance()->MusicVolume() / 100.0f));
+        PositionRatio((gui::SoundManager::Instance()->MusicVolume() / 100.0f));
     }
 
     SliderBarMusic::~SliderBarMusic() = default;
@@ -51,7 +51,7 @@ namespace sfml_util
     void SliderBarMusic::OnChange(const float CURRENT_POS_RATIO)
     {
         const auto CURRENT_POS_PERCENT { CURRENT_POS_RATIO * 100.0f };
-        sfml_util::SoundManager::Instance()->MusicVolumeSet(CURRENT_POS_PERCENT);
+        gui::SoundManager::Instance()->MusicVolumeSet(CURRENT_POS_PERCENT);
         SliderBarLabeled::OnChange(CURRENT_POS_RATIO);
     }
 
@@ -65,17 +65,17 @@ namespace sfml_util
         if (CURRENT_POS_PERCENT == 0)
         {
             ss << "MUTE";
-            textInfo.font_letters = sfml_util::GuiFont::SystemCondensed;
+            textInfo.font_letters = gui::GuiFont::SystemCondensed;
         }
         else
         {
             ss << CURRENT_POS_PERCENT;
-            textInfo.font_letters = sfml_util::GuiFont::Number;
+            textInfo.font_letters = gui::GuiFont::Number;
         }
 
         textInfo.text = ss.str();
         return textInfo;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -252,7 +252,7 @@ namespace combat
         //     for whether or not to play the same music or to pick new music.
         if (game::GameController::Instance()->GetPhase() == game::Phase::Combat)
         {
-            sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
+            gui::SoundManager::Instance()->MusicStart(gui::music::CombatIntro);
         }
 
         M_HP_ASSERT_OR_LOG_AND_THROW(

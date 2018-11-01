@@ -31,7 +31,7 @@
 #include <exception>
 
 using namespace heroespath;
-using namespace heroespath::sfml_util;
+using namespace heroespath::gui;
 using namespace heroespath::misc;
 
 inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
@@ -61,7 +61,7 @@ inline const sf::Image
     quickLoadByPath(const std::string & PATH, const ImageOptions & OPTIONS = ImageOptions())
 {
     sf::Texture texture;
-    heroespath::sfml_util::Loaders::Texture(texture, PATH);
+    heroespath::gui::Loaders::Texture(texture, PATH);
     sf::Image image(texture.copyToImage());
     OPTIONS.Apply(image);
     return image;
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
         == false);
 
     sf::Texture texture1;
-    heroespath::sfml_util::Loaders::Texture(
+    heroespath::gui::Loaders::Texture(
         texture1, heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
 
     BOOST_CHECK(areImagesEqual(texture1, quickLoadByKey(IMAGE1_PATH_KEY)));
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
 {
     heroespath::game::StartupShutdown startStop("Heroes' Path Test", 0, nullptr);
 
-    TextureCache & tc = *heroespath::sfml_util::TextureCache::Instance();
+    TextureCache & tc = *heroespath::gui::TextureCache::Instance();
 
     const std::string IMAGE1_PATH_KEY("media-images-logos-sound");
     const std::string IMAGE2_PATH_KEY("media-images-logos-avalontrees");

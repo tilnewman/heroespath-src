@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SONGANIMATION_HPP_INCLUDED
+#define HEROESPATH_GUI_SONGANIMATION_HPP_INCLUDED
 //
 // song-animation.hpp
 //
@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -109,12 +109,12 @@ namespace sfml_util
             float emitTimerDurationSec_;
             float durationTimerSec_;
             bool isFinished_;
-            sfml_util::CachedTexture noteCachedTexture1_;
-            sfml_util::CachedTexture noteCachedTexture2_;
-            sfml_util::CachedTexture noteCachedTexture3_;
-            sfml_util::CachedTexture noteCachedTexture4_;
-            sfml_util::CachedTexture noteCachedTexture5_;
-            sfml_util::CachedTexture noteCachedTexture6_;
+            gui::CachedTexture noteCachedTexture1_;
+            gui::CachedTexture noteCachedTexture2_;
+            gui::CachedTexture noteCachedTexture3_;
+            gui::CachedTexture noteCachedTexture4_;
+            gui::CachedTexture noteCachedTexture5_;
+            gui::CachedTexture noteCachedTexture6_;
             NoteVec_t noteVec_;
         };
 
@@ -122,7 +122,7 @@ namespace sfml_util
         using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SONGANIMATION_HPP_INCLUDED

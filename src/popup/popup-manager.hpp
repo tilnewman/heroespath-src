@@ -82,9 +82,9 @@ namespace popup
         static sf::IntRect Rect_MusicSheet_RightSide() { return { 816, 116, 700, 840 }; }
 
         // TextInfo creation helper functions
-        const sfml_util::TextInfo TextInfoDefault(
+        const gui::TextInfo TextInfoDefault(
             const std::string & TEXT,
-            const sfml_util::Justified::Enum JUSTIFIED,
+            const gui::Justified::Enum JUSTIFIED,
             const unsigned int FONT_SIZE) const;
 
         // create popup window info objects
@@ -94,20 +94,18 @@ namespace popup
             const std::string & PROMPT_TEXT,
             const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
-            const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
-            const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Normal()) const;
+            const gui::Justified::Enum JUSTIFIED = gui::Justified::Center,
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric,
+            const unsigned int FONT_SIZE = gui::FontManager::Instance()->Size_Normal()) const;
 
         // use this function to create image select popup windows
         const PopupInfo CreateImageSelectionPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & PROMPT_TEXT,
-            const sfml_util::CachedTextureVec_t & TEXTURE_VEC,
+            const gui::CachedTextureVec_t & TEXTURE_VEC,
             const std::size_t INITIAL_SELECTION = 0,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
-            const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Normal()) const;
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric,
+            const unsigned int FONT_SIZE = gui::FontManager::Instance()->Size_Normal()) const;
 
         // use this function to create the number selection popup window
         const PopupInfo CreateNumberSelectionPopupInfo(
@@ -115,7 +113,7 @@ namespace popup
             const std::string & PROMPT_TEXT,
             const std::size_t THE_MIN,
             const std::size_t THE_MAX,
-            const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Normal()) const;
+            const unsigned int FONT_SIZE = gui::FontManager::Instance()->Size_Normal()) const;
 
         // use this function to make character selection popup windows
         const PopupInfo CreateCharacterSelectPopupInfo(
@@ -159,11 +157,10 @@ namespace popup
             const std::string & PROMPT_TEXT,
             const PopupButtons::Enum BUTTONS = PopupButtons::Okay,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
-            const sfml_util::Justified::Enum JUSTIFIED = sfml_util::Justified::Center,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric,
+            const gui::Justified::Enum JUSTIFIED = gui::Justified::Center,
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric,
             const bool WILL_INCLUDE_ITEMS = false,
-            const unsigned int FONT_SIZE = sfml_util::FontManager::Instance()->Size_Normal()) const;
+            const unsigned int FONT_SIZE = gui::FontManager::Instance()->Size_Normal()) const;
 
         const PopupInfo CreateItemProfilePleaseWaitPopupInfo(const std::string & POPUP_NAME) const;
 
@@ -175,18 +172,16 @@ namespace popup
             const unsigned int FONT_SIZE,
             const PopupButtons::Enum BUTTONS = PopupButtons::None,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT
-            = sfml_util::sound_effect::PromptGeneric) const;
+            const gui::sound_effect::Enum SOUND_EFFECT = gui::sound_effect::PromptGeneric) const;
 
         const PopupInfo CreateTrapPopupInfo(
             const std::string & POPUP_NAME,
             const std::string & TRAP_DESCRIPTION,
-            const sfml_util::sound_effect::Enum SOUND_EFFECT) const;
+            const gui::sound_effect::Enum SOUND_EFFECT) const;
 
-        const PopupInfo
-            CreateResolutionChangePopupInfo(const sfml_util::TextInfo & TEXT_INFO) const;
+        const PopupInfo CreateResolutionChangePopupInfo(const gui::TextInfo & TEXT_INFO) const;
 
-        sfml_util::CachedTexture LoadRandomAccentImage() const;
+        gui::CachedTexture LoadRandomAccentImage() const;
 
         void LoadAccentImagePaths();
 

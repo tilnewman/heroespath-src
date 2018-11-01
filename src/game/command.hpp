@@ -219,8 +219,8 @@ namespace game
     struct MusicCommand
     {
         MusicCommand(
-            const sfml_util::music::Enum TO_STOP = sfml_util::music::None,
-            const sfml_util::music::Enum TO_START = sfml_util::music::None,
+            const gui::music::Enum TO_STOP = gui::music::None,
+            const gui::music::Enum TO_START = gui::music::None,
             const float VOLUME_MIN = 0.0f)
             : to_stop(TO_STOP)
             , to_start(TO_START)
@@ -234,7 +234,7 @@ namespace game
 
         static const MusicCommand MakeToStopAllMusic()
         {
-            return MusicCommand(sfml_util::music::All, sfml_util::music::None);
+            return MusicCommand(gui::music::All, gui::music::None);
         }
 
         const std::string ToString() const
@@ -248,34 +248,34 @@ namespace game
                 }
             };
 
-            auto musicToString = [](const sfml_util::music::Enum MUSIC) -> std::string {
-                if (MUSIC == sfml_util::music::Count)
+            auto musicToString = [](const gui::music::Enum MUSIC) -> std::string {
+                if (MUSIC == gui::music::Count)
                 {
                     return "Count";
                 }
-                else if (MUSIC == sfml_util::music::All)
+                else if (MUSIC == gui::music::All)
                 {
                     return "All";
                 }
-                else if (MUSIC == sfml_util::music::None)
+                else if (MUSIC == gui::music::None)
                 {
                     return "None";
                 }
                 else
                 {
-                    return sfml_util::music::ToStringNoThrow(MUSIC);
+                    return gui::music::ToStringNoThrow(MUSIC);
                 }
             };
 
             ss << "cmd=music";
 
-            if ((to_stop <= sfml_util::music::All) && (to_stop != sfml_util::music::Count))
+            if ((to_stop <= gui::music::All) && (to_stop != gui::music::Count))
             {
                 prefixSeparatorString();
                 ss << "music_stop=" << musicToString(to_stop);
             }
 
-            if (to_start < sfml_util::music::Count)
+            if (to_start < gui::music::Count)
             {
                 prefixSeparatorString();
                 ss << "music_start=" << musicToString(to_start);
@@ -290,8 +290,8 @@ namespace game
             return ss.str();
         }
 
-        sfml_util::music::Enum to_stop;
-        sfml_util::music::Enum to_start;
+        gui::music::Enum to_stop;
+        gui::music::Enum to_start;
         float volume_min;
     };
 
@@ -310,7 +310,7 @@ namespace game
     {
         PopupReplaceCommand(
             const popup::PopupInfo & POPUP_INFO,
-            const sfml_util::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
             : popup_info(POPUP_INFO)
             , handler_ptr(POPUP_HANDLER_PTR)
         {}
@@ -326,7 +326,7 @@ namespace game
         }
 
         popup::PopupInfo popup_info;
-        sfml_util::PopupCallback_t::IHandlerPtr_t handler_ptr;
+        gui::PopupCallback_t::IHandlerPtr_t handler_ptr;
     };
 
     using PopupReplaceCommandOpt_t = boost::optional<PopupReplaceCommand>;

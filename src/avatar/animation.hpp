@@ -27,7 +27,7 @@ namespace avatar
     {
         Animation(
             const Pose::Enum POSE,
-            const sfml_util::Direction::Enum DIRECTION,
+            const gui::Direction::Enum DIRECTION,
             const std::vector<FrameNum_t> & FRAME_NUM_VEC,
             const float FRAME_DURATION,
             const bool WILL_LOOP)
@@ -39,7 +39,7 @@ namespace avatar
         {}
 
         Pose::Enum pose;
-        sfml_util::Direction::Enum direction;
+        gui::Direction::Enum direction;
         FrameNumVec_t frame_num_vec;
         float frame_duration;
         bool will_loop;

@@ -38,7 +38,7 @@ namespace popup
     PopupStageNumberSelect::~PopupStageNumberSelect() = default;
 
     bool PopupStageNumberSelect::HandleCallback(
-        const sfml_util::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         const auto CURR_RATIO { PACKET_PTR->PositionRatio() };
 
@@ -61,8 +61,7 @@ namespace popup
         return true;
     }
 
-    bool PopupStageNumberSelect::HandleCallback(
-        const sfml_util::TextEntryBox::Callback_t::PacketPtr_t &)
+    bool PopupStageNumberSelect::HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t &)
     {
         selection_ = GetSelectNumber();
 
@@ -78,14 +77,14 @@ namespace popup
     {
         PopupStageBase::Setup();
 
-        const sfml_util::TextInfo MSG_TEXT_INFO { " ",
-                                                  sfml_util::GuiFont::Default,
-                                                  sfml_util::FontManager::Instance()->Size_Small(),
-                                                  PopupManager::Color_Font(),
-                                                  sfml_util::Justified::Center };
+        const gui::TextInfo MSG_TEXT_INFO { " ",
+                                            gui::GuiFont::Default,
+                                            gui::FontManager::Instance()->Size_Small(),
+                                            PopupManager::Color_Font(),
+                                            gui::Justified::Center };
 
-        msgTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
-            "PopupStage'sInfo", MSG_TEXT_INFO, sf::FloatRect());
+        msgTextRegionUPtr_
+            = std::make_unique<gui::TextRegion>("PopupStage'sInfo", MSG_TEXT_INFO, sf::FloatRect());
 
         EntityAdd(msgTextRegionUPtr_.get());
         SetupInfoText("(type a number or use the slider below)");
@@ -110,20 +109,20 @@ namespace popup
         std::ostringstream minNumSS;
         minNumSS << popupInfo_.NumberSelMin();
 
-        const sfml_util::TextInfo TEXTENTRY_TEXT_INFO(
+        const gui::TextInfo TEXTENTRY_TEXT_INFO(
             minNumSS.str(),
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Large(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Large(),
             sf::Color::White,
-            sfml_util::Justified::Left);
+            gui::Justified::Left);
 
-        sfml_util::BoxEntityInfo boxInfo;
-        boxInfo.SetupImage(sfml_util::CachedTexture("media-images-backgrounds-tile-wood"));
+        gui::BoxEntityInfo boxInfo;
+        boxInfo.SetupImage(gui::CachedTexture("media-images-backgrounds-tile-wood"));
         boxInfo.SetupBorder(true);
-        boxInfo.focus_colors = sfml_util::FocusColors(sf::Color::White);
+        boxInfo.focus_colors = gui::FocusColors(sf::Color::White);
 
-        textEntryBoxUPtr_ = std::make_unique<sfml_util::TextEntryBox>(
-            sfml_util::TextEntryBox::Callback_t::IHandlerPtr_t(this),
+        textEntryBoxUPtr_ = std::make_unique<gui::TextEntryBox>(
+            gui::TextEntryBox::Callback_t::IHandlerPtr_t(this),
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
@@ -169,16 +168,16 @@ namespace popup
     {
         const auto TEXT_TO_USE { (TEXT.empty()) ? " " : TEXT };
 
-        const sfml_util::TextInfo INFO_TEXT_INFO(
+        const gui::TextInfo INFO_TEXT_INFO(
             TEXT_TO_USE,
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Small(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Small(),
             PopupManager::Color_Font(),
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         EntityRemove(msgTextRegionUPtr_.get());
 
-        msgTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
 
         EntityAdd(msgTextRegionUPtr_.get());
@@ -286,13 +285,13 @@ namespace popup
         const auto SLIDERBAR_POS_LEFT { textRegion_.left
                                         + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f) };
 
-        sliderbarUPtr_ = std::make_unique<sfml_util::SliderBar>(
+        sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
             "PopupStage's",
             SLIDERBAR_POS_LEFT,
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
-            sfml_util::SliderStyle(sfml_util::Orientation::Horiz),
-            sfml_util::SliderBar::Callback_t::IHandlerPtr_t(this));
+            gui::SliderStyle(gui::Orientation::Horiz),
+            gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
     }

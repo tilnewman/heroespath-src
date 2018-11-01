@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_STAGE_TITLE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_STAGE_TITLE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_STAGE_TITLE_HPP_INCLUDED
+#define HEROESPATH_GUI_STAGE_TITLE_HPP_INCLUDED
 //
 // stage-title.hpp
 //
@@ -17,7 +17,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for drawing the stage title symbol and text title image at the top of a stage.
@@ -47,13 +47,13 @@ namespace sfml_util
         static const float DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_;
         static const float TITLE_IMAGE_HEIGHT_RATIO_OF_SYMBOL_HEIGHT_;
         //
-        sfml_util::CachedTexture symbolCachedTexture_;
+        gui::CachedTexture symbolCachedTexture_;
         sf::Sprite symbolSprite_;
-        sfml_util::CachedTextureOpt_t titleCachedTextureOpt_;
+        gui::CachedTextureOpt_t titleCachedTextureOpt_;
         sf::Sprite titleSprite_;
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_STAGE_TITLE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_STAGE_TITLE_HPP_INCLUDED

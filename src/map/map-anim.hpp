@@ -24,17 +24,17 @@ namespace map
     struct MapAnim
     {
         explicit MapAnim(
-            const sfml_util::Animations::Enum ENUM = sfml_util::Animations::Count,
+            const gui::Animations::Enum ENUM = gui::Animations::Count,
             const sf::FloatRect & RECT = sf::FloatRect(),
-            const sfml_util::MusicEnumVec_t & MUSIC_VEC = sfml_util::MusicEnumVec_t())
+            const gui::MusicEnumVec_t & MUSIC_VEC = gui::MusicEnumVec_t())
             : which_anim(ENUM)
             , rect(RECT)
             , music_vec(MUSIC_VEC)
         {}
 
-        sfml_util::Animations::Enum which_anim;
+        gui::Animations::Enum which_anim;
         sf::FloatRect rect;
-        sfml_util::MusicEnumVec_t music_vec;
+        gui::MusicEnumVec_t music_vec;
     };
 
     using MapAnimVec_t = std::vector<MapAnim>;

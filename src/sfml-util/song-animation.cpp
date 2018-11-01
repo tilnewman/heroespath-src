@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     namespace animation
     {
@@ -173,7 +173,7 @@ namespace sfml_util
                         ? (HORIZ_START_POS - misc::random::Float(HORIZ_START_POS - REGION_.left))
                         : (HORIZ_START_POS
                            + misc::random::Float(
-                                 (REGION_.left + REGION_.width) - HORIZ_START_POS))) };
+                               (REGION_.left + REGION_.width) - HORIZ_START_POS))) };
 
                 const auto VERT_CENTER { REGION_.top + (REGION_.height * 0.5f) };
                 const auto VERT_RAND_SPAN { (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
@@ -274,5 +274,5 @@ namespace sfml_util
         }
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

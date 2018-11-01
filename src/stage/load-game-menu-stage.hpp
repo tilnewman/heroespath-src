@@ -25,7 +25,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
@@ -34,7 +34,7 @@ namespace sfml_util
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
     using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 
 namespace game
 {
@@ -49,11 +49,11 @@ namespace stage
     // A Stage class that allows players to load saved games
     class LoadGameStage
         : public stage::StageBase
-        , public sfml_util::ImageTextEntity::Callback_t::IHandler_t
-        , public sfml_util::ListBox<LoadGameStage, game::GameStatePtr_t>::Callback_t::IHandler_t
+        , public gui::ImageTextEntity::Callback_t::IHandler_t
+        , public gui::ListBox<LoadGameStage, game::GameStatePtr_t>::Callback_t::IHandler_t
     {
     public:
-        using GameListBox_t = sfml_util::ListBox<LoadGameStage, game::GameStatePtr_t>;
+        using GameListBox_t = gui::ListBox<LoadGameStage, game::GameStatePtr_t>;
         using GameListBoxUPtr_t = std::unique_ptr<GameListBox_t>;
 
         LoadGameStage(const LoadGameStage &) = delete;
@@ -66,7 +66,7 @@ namespace stage
 
         bool HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
         {
             return false;
         }
@@ -79,18 +79,18 @@ namespace stage
         void SetupGameInfoDisplay();
 
     private:
-        sfml_util::StageTitle stageTitle_;
-        sfml_util::BoxEntity backgroundBox_;
-        sfml_util::MainMenuButtonUPtr_t backButtonUPtr_;
+        gui::StageTitle stageTitle_;
+        gui::BoxEntity backgroundBox_;
+        gui::MainMenuButtonUPtr_t backButtonUPtr_;
         sf::Vector2f screenSizeV_;
         sf::FloatRect gsListBoxRect_;
         sf::Color gsListBoxBGColor_;
-        sfml_util::FocusColors gsListBoxFocusColors_;
+        gui::FocusColors gsListBoxFocusColors_;
         GameListBoxUPtr_t gsListBoxUPtr_;
-        sfml_util::TextRegionUPtr_t locTextRegionUPtr_;
-        sfml_util::TextRegionUVec_t charTextRegionUVec_;
-        sfml_util::TextRegionUPtr_t charLabelTextRegionUPtr_;
-        sfml_util::OuroborosUPtr_t ouroborosUPtr_;
+        gui::TextRegionUPtr_t locTextRegionUPtr_;
+        gui::TextRegionUVec_t charTextRegionUVec_;
+        gui::TextRegionUPtr_t charLabelTextRegionUPtr_;
+        gui::OuroborosUPtr_t ouroborosUPtr_;
         game::GameStatePVec_t gamestatePVec_;
     };
 

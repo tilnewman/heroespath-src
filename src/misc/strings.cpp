@@ -21,16 +21,16 @@ namespace misc
         char prevChar { 0 };
         std::string result;
 
-        for (const char CHAR : STRING_ORIG)
+        for (const char CURR_CHAR : STRING_ORIG)
         {
-            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CHAR) && IsLower(prevChar)
-                && !IsLower(CHAR))
+            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CURR_CHAR) && IsUpper(prevChar)
+                && IsLower(CURR_CHAR))
             {
                 result += SEPARATOR;
             }
 
-            result += ToLowerCopy(CHAR);
-            prevChar = CHAR;
+            result += ToLowerCopy(CURR_CHAR);
+            prevChar = CURR_CHAR;
         }
 
         return result;

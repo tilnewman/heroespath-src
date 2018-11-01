@@ -49,11 +49,11 @@ namespace stage
     CampStage::CampStage()
         : StageBase(
             "Camp",
-            { sfml_util::GuiFont::Default,
-              sfml_util::GuiFont::System,
-              sfml_util::GuiFont::SystemCondensed,
-              sfml_util::GuiFont::Number,
-              sfml_util::GuiFont::Handwriting },
+            { gui::GuiFont::Default,
+              gui::GuiFont::System,
+              gui::GuiFont::SystemCondensed,
+              gui::GuiFont::Number,
+              gui::GuiFont::Handwriting },
             true)
         , stageTitle_("")
         , campfireCachedTexture_("media-images-campfire")
@@ -61,9 +61,9 @@ namespace stage
         , backgroundBox_(
               "CampStage'sBackground",
               StageRegion(),
-              sfml_util::BoxEntityInfo(sfml_util::CachedTexture(
+              gui::BoxEntityInfo(gui::CachedTexture(
                   "media-images-backgrounds-tile-darkknot",
-                  sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)))
+                  gui::ImageOpt::Default | gui::ImageOpt::Repeated)))
         , fireAnimUPtr_()
         , showNewGamePopup1_(false)
         , showNewGamePopup2_(false)
@@ -72,23 +72,23 @@ namespace stage
         , ouroborosUPtr_()
         , botSymbol_()
     {
-        sfml_util::SoundManager::Instance()->MusicStart(
-            { sfml_util::music::FireOutdoor1, sfml_util::music::FireOutdoor2 });
+        gui::SoundManager::Instance()->MusicStart(
+            { gui::music::FireOutdoor1, gui::music::FireOutdoor2 });
     }
 
     CampStage::~CampStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStop(
-            { sfml_util::music::FireOutdoor1, sfml_util::music::FireOutdoor2 });
+        gui::SoundManager::Instance()->MusicStop(
+            { gui::music::FireOutdoor1, gui::music::FireOutdoor2 });
 
         // If the theme music volume was changed just because this was the
         // Camp Stage, then set it back again once leaving the Intro Stage.
-        sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
+        gui::SoundManager::Instance()->MusicVolumeFadeToCurrent(gui::music::Theme);
 
         StageBase::ClearAllEntities();
     }
 
-    bool CampStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CampStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         const auto CALLBACK_NAME { PACKET_PTR->name };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
@@ -113,7 +113,7 @@ namespace stage
     void CampStage::Setup()
     {
         // ouroboros
-        ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("CampStage's");
+        ouroborosUPtr_ = std::make_unique<gui::Ouroboros>("CampStage's");
         EntityAdd(ouroborosUPtr_.get());
 
         // campfire image
@@ -130,8 +130,7 @@ namespace stage
         sfutil::FitAndCenterTo(campfireSprite_, CAMPFIRE_CONSTRAINING_REGION);
 
         // campfire animation
-        fireAnimUPtr_
-            = sfml_util::AnimationFactory::Make(sfml_util::Animations::Inferno, 1.2f, 0.05f);
+        fireAnimUPtr_ = gui::AnimationFactory::Make(gui::Animations::Inferno, 1.2f, 0.05f);
 
         const auto CAMPFIRE_ANIM_POS_V { sfutil::CenterToCopy(
             sfutil::Size(fireAnimUPtr_->GetEntityRegion()), CAMPFIRE_CONSTRAINING_REGION) };
@@ -163,8 +162,8 @@ namespace stage
                 std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Large,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) };
+                gui::Justified::Center,
+                gui::sound_effect::None) };
 
             SpawnPopup(this, POPUP_INFO);
             showNewGamePopup1_ = false;
@@ -176,8 +175,8 @@ namespace stage
                 ComposeNewGamePopupText2(),
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Large,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) };
+                gui::Justified::Center,
+                gui::sound_effect::None) };
 
             SpawnPopup(this, POPUP_INFO);
             showNewGamePopup2_ = false;
@@ -189,8 +188,8 @@ namespace stage
                 ComposeNewGamePopupText3(),
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Large,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) };
+                gui::Justified::Center,
+                gui::sound_effect::None) };
 
             SpawnPopup(this, POPUP_INFO);
             showNewGamePopup3_ = false;
@@ -202,8 +201,8 @@ namespace stage
                 ComposeNewGamePopupText4(),
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Large,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::None) };
+                gui::Justified::Center,
+                gui::sound_effect::None) };
 
             SpawnPopup(this, POPUP_INFO);
             showNewGamePopup4_ = false;

@@ -79,17 +79,17 @@ namespace combat
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))
         , POSITIONING_BETWEEN_SPACER_VERT_(sfutil::MapByRes(25.0f, 200.0f))
         , CELL_HEIGHT_(sfutil::MapByRes(
-              sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-              sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
-        , NAME_CHAR_SIZE_ORIG_(sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
-        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+              gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+              gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
+        , NAME_CHAR_SIZE_ORIG_(gui::FontManager::Instance()->Size_CombatCreatureLabels())
+        , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , nameCharSizeCurr_(NAME_CHAR_SIZE_ORIG_)
         , battlefieldRect_()
         , boxUPtr_()
         , bgCachedTexture_(
               "media-images-backgrounds-tile-darkpaper",
-              sfml_util::ImageOpt::Default | sfml_util::ImageOpt::Repeated)
+              gui::ImageOpt::Default | gui::ImageOpt::Repeated)
         , offScreenTexture_()
         , offScreenSprite_()
         , offScreenPosX_(0.0f)
@@ -140,13 +140,12 @@ namespace combat
         PositionCombatTreeCells(false);
 
         // battlefield bounding box
-        sfml_util::BoxEntityInfo boxInfo;
+        gui::BoxEntityInfo boxInfo;
         boxInfo.SetupBorder(true);
 
-        boxInfo.focus_colors = sfml_util::FocusColors(sf::Color::White, sf::Color::Transparent);
+        boxInfo.focus_colors = gui::FocusColors(sf::Color::White, sf::Color::Transparent);
 
-        boxUPtr_
-            = std::make_unique<sfml_util::BoxEntity>("CombatDisplay's'", battlefieldRect_, boxInfo);
+        boxUPtr_ = std::make_unique<gui::BoxEntity>("CombatDisplay's'", battlefieldRect_, boxInfo);
 
         // setup offscreen texture
         const auto OFFSCREEN_SIZE_V_U { sf::Vector2u(sfutil::Size(boxUPtr_->InnerRegion())) };
@@ -260,12 +259,12 @@ namespace combat
 
             if ((battlefieldRect_.contains(NEXT_VERT_RECT.left, NEXT_VERT_RECT.top))
                 && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
+                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width, NEXT_VERT_RECT.top))
                 && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
+                    NEXT_VERT_RECT.left, NEXT_VERT_RECT.top + NEXT_VERT_RECT.height))
                 && (battlefieldRect_.contains(
-                       NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
-                       NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
+                    NEXT_VERT_RECT.left + NEXT_VERT_RECT.width,
+                    NEXT_VERT_RECT.top + NEXT_VERT_RECT.height)))
             {
                 isAnyNodeDrawn = true;
                 COMBAT_NODE_PTR->WillDraw(true);
@@ -315,7 +314,7 @@ namespace combat
         prevMousePos_ = MOUSE_POS_V;
     }
 
-    const sfml_util::IEntityPtrOpt_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const gui::IEntityPtrOpt_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {
@@ -932,8 +931,8 @@ namespace combat
         const auto TOLERANCE { sfutil::MapByRes(300.0f, 600.0f) };
 
         return (
-            (horizPosDiffMax > (sfml_util::Display::Instance()->GetWinWidth() - TOLERANCE))
-            || (vertPosDiffMax > (sfml_util::Display::Instance()->GetWinHeight() - TOLERANCE)));
+            (horizPosDiffMax > (gui::Display::Instance()->GetWinWidth() - TOLERANCE))
+            || (vertPosDiffMax > (gui::Display::Instance()->GetWinHeight() - TOLERANCE)));
     }
 
     const sf::Vector2f CombatDisplay::FindCenterOfCreatures(
@@ -1248,8 +1247,8 @@ namespace combat
         }
 
         const float CELL_WIDTH_MIN(sfutil::MapByRes(
-            sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-            sfml_util::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
+            gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+            gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
 
         const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
 
@@ -1351,11 +1350,11 @@ namespace combat
 
         summaryViewUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
 
-        if (summaryViewUPtr_->MovingDir() == sfml_util::Moving::Toward)
+        if (summaryViewUPtr_->MovingDir() == gui::Moving::Toward)
         {
             CreatureToneDown(summaryViewUPtr_->GetTransitionStatus());
         }
-        else if (summaryViewUPtr_->MovingDir() == sfml_util::Moving::Away)
+        else if (summaryViewUPtr_->MovingDir() == gui::Moving::Away)
         {
             CreatureToneDown(1.0f - summaryViewUPtr_->GetTransitionStatus());
 

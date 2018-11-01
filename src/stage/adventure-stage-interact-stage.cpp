@@ -37,7 +37,7 @@ namespace stage
     InteractStage::InteractStage(interact::InteractionManager & interactionManager)
         : StageBase(
             "AdventureInteract",
-            { sfml_util::GuiFont::DialogMedieval },
+            { gui::GuiFont::DialogMedieval },
             false) // Stage Region set in PreSetup() below
         , mapPtrOpt_(boost::none)
         , regionPad_(sfutil::MapByRes(18.0f, 52.0f))
@@ -46,8 +46,7 @@ namespace stage
         , subjectSprite_()
         , contextSprite_()
         , npcSprite_()
-        , textRegionUPtr_(
-              std::make_unique<sfml_util::TextRegion>("AdventureStage'sInteractStage's"))
+        , textRegionUPtr_(std::make_unique<gui::TextRegion>("AdventureStage'sInteractStage's"))
         , buttons_()
         , lockPicking_()
         , backgroundColoredRect_() // set in PreSetup() below
@@ -55,21 +54,19 @@ namespace stage
 
     InteractStage::~InteractStage() = default;
 
-    bool InteractStage::HandleCallback(
-        const sfml_util::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool InteractStage::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
     {
         const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
-                this,
-                sfml_util::TextButtonPtr_t(const_cast<sfml_util::TextButton *>(PACKET_PTR.Ptr())));
+                this, gui::TextButtonPtr_t(const_cast<gui::TextButton *>(PACKET_PTR.Ptr())));
         }
 
         return false;
     }
 
-    bool InteractStage::HandleCallback(const sfml_util::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool InteractStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
     {
         if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
@@ -235,7 +232,7 @@ namespace stage
             for (auto & button : INTERACTION_PTR->Buttons())
             {
                 buttons_.emplace_back(
-                    button.Make(sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
+                    button.Make(gui::TextButton::Callback_t::IHandlerPtrOpt_t(this)));
             }
 
             const auto ALL_BUTTONS_HEIGHT { std::accumulate(

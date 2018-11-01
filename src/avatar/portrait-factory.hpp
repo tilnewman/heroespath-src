@@ -22,10 +22,10 @@ namespace avatar
     // Responsible for making default portrait images textures of Avatars/NPCs.
     struct PortraitFactory
     {
-        static sfml_util::CachedTexture Make(
+        static gui::CachedTexture Make(
             const std::string & FAKE_PATH_STR,
             const Avatar::Enum,
-            const sfml_util::ImageOptions & OPTIONS = sfml_util::ImageOptions());
+            const gui::ImageOptions & OPTIONS = gui::ImageOptions());
     };
 
 } // namespace avatar

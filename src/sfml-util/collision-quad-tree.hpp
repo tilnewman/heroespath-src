@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_COLLISIONQUADTREE_HPP_INCLUDED
+#define HEROESPATH_GUI_COLLISIONQUADTREE_HPP_INCLUDED
 //
 // collision-quad-tree.hpp
 //
@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     using FloatRectVec_t = std::vector<sf::FloatRect>;
 
@@ -54,7 +54,7 @@ namespace sfml_util
         static const float MIN_QUAD_SIZE_;
         Quad headQuad_;
     };
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_COLLISIONQUADTREE_HPP_INCLUDED

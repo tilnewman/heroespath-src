@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     SfxSet::SfxSet(const SfxEnumVec_t & ENUM_VEC)
@@ -94,7 +94,7 @@ namespace sfml_util
             }
 
             std::ostringstream ssErr;
-            ssErr << "sfml_util::SfxSet::Play(" << sound_effect::ToString(E)
+            ssErr << "gui::SfxSet::Play(" << sound_effect::ToString(E)
                   << ") did not find that sound effect amoung the static sounds.";
             throw std::range_error(ssErr.str());
         }
@@ -104,7 +104,7 @@ namespace sfml_util
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxEnums_.size()),
-            "sfml_util::SfxSet::PlayAt(" << INDEX << ") was given an index out of range.");
+            "gui::SfxSet::PlayAt(" << INDEX << ") was given an index out of range.");
 
         SoundManager::Instance()->SoundEffectPlay(sfxEnums_[INDEX]);
     }
@@ -136,5 +136,5 @@ namespace sfml_util
             return misc::Vector::SelectRandom(sfxEnums_);
         }
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

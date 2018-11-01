@@ -36,7 +36,7 @@ namespace interact
         };
 
         static const std::string ToString(const Enum);
-        static sfml_util::GuiFont::Enum Font(const Enum);
+        static gui::GuiFont::Enum Font(const Enum);
     };
 
 } // namespace interact

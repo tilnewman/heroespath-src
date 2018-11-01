@@ -219,7 +219,7 @@ namespace map
             FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
             TEXTURE_INDEX));
 
-        sfml_util::Loaders::Texture(
+        gui::Loaders::Texture(
             layout.texture_vec[TEXTURE_INDEX], layout.tiles_panel_vec.back().path_str);
     }
 
@@ -360,11 +360,11 @@ namespace map
                 const auto ANIM_NAME { FetchXMLAttribute<std::string>(
                     OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
-                const auto ANIM_ENUM { static_cast<sfml_util::Animations::Enum>(
-                    sfml_util::Animations::FromString(ANIM_NAME)) };
+                const auto ANIM_ENUM { static_cast<gui::Animations::Enum>(
+                    gui::Animations::FromString(ANIM_NAME)) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (ANIM_ENUM != sfml_util::Animations::Count),
+                    (ANIM_ENUM != gui::Animations::Count),
                     "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
                         << ANIM_NAME << "\"");
 
@@ -388,8 +388,7 @@ namespace map
                     throw;
                 }
 
-                anims_.emplace_back(
-                    MapAnim(ANIM_ENUM, rect, sfml_util::Animations::Sfx(ANIM_ENUM)));
+                anims_.emplace_back(MapAnim(ANIM_ENUM, rect, gui::Animations::Sfx(ANIM_ENUM)));
             }
         }
     }
@@ -434,9 +433,7 @@ namespace map
         auto isEntry { false };
         Level::Enum level { Level::Count };
 
-        sfml_util::sound_effect::MapTransition transSfxType {
-            sfml_util::sound_effect::MapTransition::Count
-        };
+        gui::sound_effect::MapTransition transSfxType { gui::sound_effect::MapTransition::Count };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
@@ -453,7 +450,7 @@ namespace map
         const boost::property_tree::ptree & PTREE,
         bool & isEntry,
         Level::Enum & level,
-        sfml_util::sound_effect::MapTransition & transSfxType) const
+        gui::sound_effect::MapTransition & transSfxType) const
     {
         namespace ba = boost::algorithm;
 
@@ -505,7 +502,7 @@ namespace map
             {
                 try
                 {
-                    transSfxType = sfml_util::sound_effect::MapTransitionFromString(VALUE_STR);
+                    transSfxType = gui::sound_effect::MapTransitionFromString(VALUE_STR);
                 }
                 catch (...)
                 {
@@ -569,11 +566,10 @@ namespace map
             throw;
         }
 
-        const auto SFX { sfml_util::sound_effect::FootstepToSfx(
-            static_cast<sfml_util::Footstep::Enum>(
-                sfml_util::Footstep::FromString(footstepName))) };
+        const auto SFX { gui::sound_effect::FootstepToSfx(
+            static_cast<gui::Footstep::Enum>(gui::Footstep::FromString(footstepName))) };
 
-        if (SFX == sfml_util::sound_effect::Count)
+        if (SFX == gui::sound_effect::Count)
         {
             std::ostringstream ss;
             ss << "map::Parser::Parse_WalkSfx() failed to translate footstep sfx name \""

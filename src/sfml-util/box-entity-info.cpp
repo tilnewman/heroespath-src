@@ -11,7 +11,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     BoxEntityInfo::BoxEntityInfo()
@@ -176,5 +176,5 @@ namespace sfml_util
         will_size_instead_of_fit = WILL_SIZE_INSTEAD_OF_FIT;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

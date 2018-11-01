@@ -34,12 +34,12 @@ namespace creature
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
-namespace sfml_util
+namespace gui
 {
     class BoxEntity;
     using BoxEntityUPtr_t = std::unique_ptr<BoxEntity>;
 
-} // namespace sfml_util
+} // namespace gui
 
 namespace combat
 {
@@ -105,7 +105,7 @@ namespace combat
         void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        const sfml_util::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        const gui::IEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         const sf::Vector2f GetCenterOfAllNodes() const;
 
@@ -278,8 +278,8 @@ namespace combat
         //
         unsigned int nameCharSizeCurr_;
         sf::FloatRect battlefieldRect_;
-        sfml_util::BoxEntityUPtr_t boxUPtr_;
-        sfml_util::CachedTexture bgCachedTexture_;
+        gui::BoxEntityUPtr_t boxUPtr_;
+        gui::CachedTexture bgCachedTexture_;
         sf::RenderTexture offScreenTexture_;
         sf::Sprite offScreenSprite_;
         float offScreenPosX_;

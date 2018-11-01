@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_FONT_ENUM_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_FONT_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_FONT_ENUM_HPP_INCLUDED
+#define HEROESPATH_GUI_FONT_ENUM_HPP_INCLUDED
 //
 // font-enum.hpp
 //
@@ -16,7 +16,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct GuiFont : public misc::EnumBaseCounting<GuiFont, misc::EnumFirstValueValid>
@@ -69,7 +69,7 @@ namespace sfml_util
 
     using FontEnumVec_t = std::vector<GuiFont::Enum>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_FONT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_GUI_FONT_ENUM_HPP_INCLUDED

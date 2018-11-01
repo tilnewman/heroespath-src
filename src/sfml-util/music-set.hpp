@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_MUSICSET_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_MUSICSET_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_MUSICSET_HPP_INCLUDED
+#define HEROESPATH_GUI_MUSICSET_HPP_INCLUDED
 //
 // music-set.hpp
 //  A class that keeps a set of songs and presents an interface to interact with them.
@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Everything needed to keep and interact with a list of songs, and the order they are played.
@@ -87,7 +87,7 @@ namespace sfml_util
     bool operator==(const MusicSet & L, const MusicSet & R);
 
     inline bool operator!=(const MusicSet & L, const MusicSet & R) { return !(L == R); }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_MUSICSET_HPP_INCLUDED
+#endif // HEROESPATH_GUI_MUSICSET_HPP_INCLUDED

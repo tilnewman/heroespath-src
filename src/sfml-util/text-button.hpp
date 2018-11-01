@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXTBUTTON_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXTBUTTON_HPP_INCLUDED
 //
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Base class for a text button that has different text styles for mouse positions
@@ -63,7 +63,7 @@ namespace sfml_util
     using TextButtonUPtr_t = std::unique_ptr<TextButton>;
     using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXTBUTTON_HPP_INCLUDED

@@ -146,7 +146,7 @@ namespace game
     {
         try
         {
-            sfml_util::Display::Instance()->Close();
+            gui::Display::Instance()->Close();
         }
         catch (const std::exception & E)
         {
@@ -203,10 +203,10 @@ namespace game
             GameController::Release();
 
             // these must occur after all the stages have been released
-            sfml_util::FontManager::Release(); // after NameInfo::Release()
+            gui::FontManager::Release(); // after NameInfo::Release()
             popup::PopupManager::Release();
-            sfml_util::SoundManager::Release();
-            sfml_util::TextureCache::Release();
+            gui::SoundManager::Release();
+            gui::TextureCache::Release();
 
             // this will cause all party creatures/items/enchantments/etc to be Warehouses::Free()'d
             Game::Release();
@@ -229,7 +229,7 @@ namespace game
             // released, so there is no reason for this to be one of the last things to be released,
             // but for some reason I liked the idea of the screen staying black while the
             // application shuts down
-            sfml_util::Display::Release();
+            gui::Display::Release();
 
             // these two are needed almost everywhere so release them last
             misc::ConfigFile::Release();
@@ -285,14 +285,14 @@ namespace game
 
     void StartupShutdown::Setup_Display(const std::string & APPLICATION_NAME) const
     {
-        sfml_util::Display::LogAllFullScreenVideoModes();
-        sfml_util::Display::LogAllSupportedFullScreenVideoModes();
-        sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
+        gui::Display::LogAllFullScreenVideoModes();
+        gui::Display::LogAllSupportedFullScreenVideoModes();
+        gui::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
 
-        sfml_util::Display::Instance()->SetFrameRateLimit(static_cast<unsigned>(
+        gui::Display::Instance()->SetFrameRateLimit(static_cast<unsigned>(
             misc::ConfigFile::Instance()->ValueOrDefault<int>("system-window-frame-rate-limit")));
 
-        sfml_util::Display::Instance()->SetVerticalSync(
+        gui::Display::Instance()->SetVerticalSync(
             misc::ConfigFile::Instance()->ValueOrDefault<bool>("system-window-sync"));
     }
 
@@ -302,7 +302,7 @@ namespace game
             misc::ConfigFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             misc::ConfigFile::Instance()->GetMediaPath("media-images-accents-dir"));
 
-        sfml_util::SoundManager::SetSoundsDirectory(
+        gui::SoundManager::SetSoundsDirectory(
             misc::ConfigFile::Instance()->GetMediaPath("media-sounds-dir"),
             misc::ConfigFile::Instance()->GetMediaPath("media-music-dir"));
     }
@@ -319,12 +319,12 @@ namespace game
     void StartupShutdown::Setup_SubsystemsAcquire() const
     {
         game::NpcWarehouse::Acquire();
-        sfml_util::TextureCache::Acquire();
+        gui::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
         item::ItemWarehouse::Acquire();
         creature::CreatureWarehouse::Acquire();
-        sfml_util::SoundManager::Acquire();
-        sfml_util::FontManager::Acquire();
+        gui::SoundManager::Acquire();
+        gui::FontManager::Acquire();
         popup::PopupManager::Acquire();
         Game::Acquire();
         game::GameStateFactory::Acquire();
@@ -341,7 +341,7 @@ namespace game
         // use the settings saved from the last run of the game.
         misc::SettingsFile::Instance()->LoadAndRestore();
 
-        sfml_util::SoundManager::Instance()->Initialize();
+        gui::SoundManager::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         creature::nonplayer::ChanceFactory::Instance()->Initialize();
 

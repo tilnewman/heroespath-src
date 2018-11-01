@@ -28,8 +28,8 @@ namespace popup
     // Responsible for encapsulating all state and operations common to popup windows.
     class PopupStageBase
         : public stage::StageBase
-        , public sfml_util::SliderBar::Callback_t::IHandler_t
-        , public sfml_util::TextButton::Callback_t::IHandler_t
+        , public gui::SliderBar::Callback_t::IHandler_t
+        , public gui::TextButton::Callback_t::IHandler_t
     {
     public:
         PopupStageBase(const PopupStageBase &) = delete;
@@ -40,9 +40,9 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        bool HandleCallback(const sfml_util::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
-        bool HandleCallback(const sfml_util::TextButton::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
 
@@ -91,19 +91,19 @@ namespace popup
     protected:
         PopupInfo popupInfo_;
         sf::FloatRect innerRegion_;
-        sfml_util::CachedTexture backgroundTexture_;
-        sfml_util::TextRegionUPtr_t textRegionUPtr_;
+        gui::CachedTexture backgroundTexture_;
+        gui::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect textRegion_;
-        sfml_util::TextButtonUPtr_t buttonSelectUPtr_;
-        sfml_util::TextButtonUPtr_t buttonYesUPtr_;
-        sfml_util::TextButtonUPtr_t buttonNoUPtr_;
-        sfml_util::TextButtonUPtr_t buttonCancelUPtr_;
-        sfml_util::TextButtonUPtr_t buttonContinueUPtr_;
-        sfml_util::TextButtonUPtr_t buttonOkayUPtr_;
-        sfml_util::SliderBarUPtr_t sliderbarUPtr_;
-        sfml_util::CachedTextureOpt_t accent1CachedTextureOpt_;
+        gui::TextButtonUPtr_t buttonSelectUPtr_;
+        gui::TextButtonUPtr_t buttonYesUPtr_;
+        gui::TextButtonUPtr_t buttonNoUPtr_;
+        gui::TextButtonUPtr_t buttonCancelUPtr_;
+        gui::TextButtonUPtr_t buttonContinueUPtr_;
+        gui::TextButtonUPtr_t buttonOkayUPtr_;
+        gui::SliderBarUPtr_t sliderbarUPtr_;
+        gui::CachedTextureOpt_t accent1CachedTextureOpt_;
         sf::Sprite accentSprite1_;
-        sfml_util::CachedTextureOpt_t accent2CachedTextureOpt_;
+        gui::CachedTextureOpt_t accent2CachedTextureOpt_;
         sf::Sprite accentSprite2_;
         float sliderbarPosTop_;
         int selection_;
@@ -114,7 +114,7 @@ namespace popup
         sf::Sprite backgroundSprite_;
         float buttonTextHeight_;
         float buttonVertPos_;
-        sfml_util::CachedTextureOpt_t xSymbolCachedTextureOpt_;
+        gui::CachedTextureOpt_t xSymbolCachedTextureOpt_;
         float keepAliveTimerSec_;
     };
 

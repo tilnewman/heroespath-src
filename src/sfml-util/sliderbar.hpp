@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_SLIDERBAR_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_SLIDERBAR_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_SLIDERBAR_HPP_INCLUDED
+#define HEROESPATH_GUI_SLIDERBAR_HPP_INCLUDED
 //
 // sliderbar.hpp
 //
@@ -24,7 +24,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
@@ -120,7 +120,7 @@ namespace sfml_util
         float currentPosRatio_;
         float length_;
         SliderStyle style_;
-        sfml_util::CachedTexture guiElementsCachedTexture_;
+        gui::CachedTexture guiElementsCachedTexture_;
         sf::Sprite botOrLeftSprite_;
         sf::Sprite topOrRightSprite_;
         sf::Sprite barSprite_;
@@ -137,7 +137,7 @@ namespace sfml_util
     using SliderBarPtrOpt_t = boost::optional<SliderBarPtr_t>;
     using SliderBarUPtr_t = std::unique_ptr<SliderBar>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_SLIDERBAR_HPP_INCLUDED
+#endif // HEROESPATH_GUI_SLIDERBAR_HPP_INCLUDED

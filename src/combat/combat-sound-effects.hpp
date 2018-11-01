@@ -61,7 +61,7 @@ namespace combat
         void PlayDeath(const creature::CreaturePtr_t) const;
 
     private:
-        void GetDeathSfx(const creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
+        void GetDeathSfx(const creature::CreaturePtr_t, gui::SfxEnumVec_t &) const;
     };
 
 } // namespace combat

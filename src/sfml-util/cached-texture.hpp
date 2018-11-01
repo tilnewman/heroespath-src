@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_CACHED_TEXTURE_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_CACHED_TEXTURE_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_CACHED_TEXTURE_HPP_INCLUDED
+#define HEROESPATH_GUI_CACHED_TEXTURE_HPP_INCLUDED
 //
 // caced-texture.hpp
 //
@@ -41,7 +41,7 @@ struct PathWrapper
     std::string path_str;
 };
 
-namespace sfml_util
+namespace gui
 {
 
     // Responsible for the cached lifetime of, and fast access to, a single sf::Texture.
@@ -199,7 +199,7 @@ namespace sfml_util
     using CachedTexturesUPtr_t = std::unique_ptr<CachedTextures>;
     using CachedTexturesOpt_t = boost::optional<CachedTextures>;
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_CACHED_TEXTURE_HPP_INCLUDED
+#endif // HEROESPATH_GUI_CACHED_TEXTURE_HPP_INCLUDED

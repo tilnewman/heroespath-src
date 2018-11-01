@@ -250,19 +250,17 @@ namespace sfutil
 
     template <typename T>
     const sf::Vector2<T> CreateVector(
-        const sfml_util::Orientation::Enum ORIENTATION,
-        const T VALUE_AT_ORIENTATION,
-        const T OTHER_VALUE)
+        const gui::Orientation::Enum ORIENTATION, const T VALUE_AT_ORIENTATION, const T OTHER_VALUE)
     {
-        if (ORIENTATION == sfml_util::Orientation::Horiz)
+        if (ORIENTATION == gui::Orientation::Horiz)
         {
             return sf::Vector2<T>(VALUE_AT_ORIENTATION, OTHER_VALUE);
         }
-        else if (ORIENTATION == sfml_util::Orientation::Vert)
+        else if (ORIENTATION == gui::Orientation::Vert)
         {
             return sf::Vector2<T>(OTHER_VALUE, VALUE_AT_ORIENTATION);
         }
-        else if (ORIENTATION == sfml_util::Orientation::Both)
+        else if (ORIENTATION == gui::Orientation::Both)
         {
             return sf::Vector2<T>(VALUE_AT_ORIENTATION, VALUE_AT_ORIENTATION);
         }
@@ -274,17 +272,17 @@ namespace sfutil
 
     template <typename T>
     constexpr void ChangeVector(
-        sf::Vector2<T> & orig, const sfml_util::Orientation::Enum ORIENTATION, const T NEW_VALUE)
+        sf::Vector2<T> & orig, const gui::Orientation::Enum ORIENTATION, const T NEW_VALUE)
     {
-        if (ORIENTATION == sfml_util::Orientation::Horiz)
+        if (ORIENTATION == gui::Orientation::Horiz)
         {
             orig.x = NEW_VALUE;
         }
-        else if (ORIENTATION == sfml_util::Orientation::Vert)
+        else if (ORIENTATION == gui::Orientation::Vert)
         {
             orig.y = NEW_VALUE;
         }
-        else if (ORIENTATION == sfml_util::Orientation::Both)
+        else if (ORIENTATION == gui::Orientation::Both)
         {
             orig.x = NEW_VALUE;
             orig.y = NEW_VALUE;
@@ -293,9 +291,7 @@ namespace sfutil
 
     template <typename T>
     const sf::Vector2<T> ChangeVectorCopy(
-        const sf::Vector2<T> & ORIG,
-        const sfml_util::Orientation::Enum ORIENTATION,
-        const T NEW_VALUE)
+        const sf::Vector2<T> & ORIG, const gui::Orientation::Enum ORIENTATION, const T NEW_VALUE)
     {
         sf::Vector2<T> v(ORIG);
         ChangeVector(v, ORIENTATION, NEW_VALUE);

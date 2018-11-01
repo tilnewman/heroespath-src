@@ -49,7 +49,7 @@ namespace game
     void GameState::SetupAsNewGame()
     {
         isGameNew_ = true;
-        dateTimeStarted_ = sfml_util::DateTime::CurrentDateTime();
+        dateTimeStarted_ = gui::DateTime::CurrentDateTime();
     }
 
     void GameState::BeforeSerialize()

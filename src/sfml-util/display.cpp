@@ -31,7 +31,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     std::unique_ptr<Display> Display::instanceUPtr_;
@@ -73,7 +73,7 @@ namespace sfml_util
     misc::NotNull<Display *> Display::Instance()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "sfml_util::Display::Instance() found instanceUPtr that was null.");
+            (instanceUPtr_), "gui::Display::Instance() found instanceUPtr that was null.");
 
         return instanceUPtr_.get();
     }
@@ -94,7 +94,7 @@ namespace sfml_util
     void Display::Release()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "sfml_util::Display::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "gui::Display::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -173,7 +173,7 @@ namespace sfml_util
         }
 
         // compose the filename
-        const auto DATE_TIME { sfml_util::DateTime::CurrentDateTime() };
+        const auto DATE_TIME { gui::DateTime::CurrentDateTime() };
         std::ostringstream ssFileName;
         ssFileName << "heroespath_screenshot_" << DATE_TIME.date.year << "-" << DATE_TIME.date.month
                    << "-" << DATE_TIME.date.day << "_" << DATE_TIME.time.hours << ":"
@@ -227,13 +227,13 @@ namespace sfml_util
             return;
         }
 
-        fadeColoredRectSliderUPtr_ = std::make_unique<sfml_util::ColoredRectSlider>(
+        fadeColoredRectSliderUPtr_ = std::make_unique<gui::ColoredRectSlider>(
             FullScreenRect(),
             sf::Color::Transparent,
             COLOR,
             SPEED,
-            sfml_util::WillOscillate::No,
-            sfml_util::WillAutoStart::Yes);
+            gui::WillOscillate::No,
+            gui::WillAutoStart::Yes);
 
         M_HP_LOG_DBG("fade out started, to_color=" << COLOR);
     }
@@ -252,13 +252,13 @@ namespace sfml_util
             fadeFromColor = fadeColoredRectSliderUPtr_->Value();
         }
 
-        fadeColoredRectSliderUPtr_ = std::make_unique<sfml_util::ColoredRectSlider>(
+        fadeColoredRectSliderUPtr_ = std::make_unique<gui::ColoredRectSlider>(
             FullScreenRect(),
             fadeFromColor,
             sf::Color::Transparent,
             SPEED,
-            sfml_util::WillOscillate::No,
-            sfml_util::WillAutoStart::Yes);
+            gui::WillOscillate::No,
+            gui::WillAutoStart::Yes);
 
         M_HP_LOG_DBG("fade in started, from_color=" << fadeFromColor);
     }
@@ -1011,5 +1011,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

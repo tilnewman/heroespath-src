@@ -15,7 +15,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const sf::Int32 Entity::DOUBLE_CLICK_TIME_MS_(300);
@@ -202,8 +202,8 @@ namespace sfml_util
         entityPrevPos_ = GetEntityPos();
 
         SetEntityPos(
-            sfml_util::Display::Instance()->GetWinWidth() + 1.0f,
-            sfml_util::Display::Instance()->GetWinHeight() + 1.0f);
+            gui::Display::Instance()->GetWinWidth() + 1.0f,
+            gui::Display::Instance()->GetWinHeight() + 1.0f);
     }
 
     void Entity::MoveEntityBackFromOffScreen()
@@ -308,5 +308,5 @@ namespace sfml_util
                    R.entityPrevPos_);
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -54,7 +54,7 @@ namespace combat
         const auto SHAKE_DISTANCE { CombatAnimation::ShakeAnimDistance(
             WILL_DOUBLE_SHAKE_DISTANCE) };
 
-        slider = sfml_util::SliderOscillator<float>(
+        slider = gui::SliderOscillator<float>(
             0.0f, SHAKE_DISTANCE, SLIDER_SPEED, (SHAKE_DISTANCE * 0.5f));
 
         // anything larger than PAUSE_DURATION_SEC will work here
@@ -68,8 +68,8 @@ namespace combat
     const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_ { 232 };
 
     CombatAnimation::CombatAnimation()
-        : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
-        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        : SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         ,
 
         // found by experiment to be good speeds
@@ -249,7 +249,7 @@ namespace combat
 
         if ((!projAnimCachedTextureOpt_) || (projAnimCachedTextureOpt_->Path() != IMAGE_PATH))
         {
-            projAnimCachedTextureOpt_ = sfml_util::CachedTexture(pathKey);
+            projAnimCachedTextureOpt_ = gui::CachedTexture(pathKey);
         }
 
         projAnimSprite_.setTexture(projAnimCachedTextureOpt_->Get(), true);
@@ -651,7 +651,7 @@ namespace combat
     {
         selectAnimCombatNodePtrOpt_ = COMBAT_NODE_PTR;
         selectAnimCombatNodePtrOpt_.value()->SelectAnimStart();
-        slider_ = sfml_util::SliderZeroToOne(SELECT_ANIM_SLIDER_SPEED_);
+        slider_ = gui::SliderZeroToOne(SELECT_ANIM_SLIDER_SPEED_);
     }
 
     void CombatAnimation::SelectAnimStop()
@@ -686,7 +686,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::FlashSparkle,
+                    gui::Animations::FlashSparkle,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
@@ -697,7 +697,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::Shimmer,
+                    gui::Animations::Shimmer,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
@@ -708,7 +708,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::FlashSparkle,
+                    gui::Animations::FlashSparkle,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
                     sf::Color::White,
                     sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
@@ -719,7 +719,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::Shimmer,
+                    gui::Animations::Shimmer,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
                     sf::Color::White,
                     sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
@@ -730,7 +730,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::FlashSparkle,
+                    gui::Animations::FlashSparkle,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
@@ -741,7 +741,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::Shimmer,
+                    gui::Animations::Shimmer,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
@@ -752,7 +752,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::Shimmer,
+                    gui::Animations::Shimmer,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
                     sf::Color::White,
                     sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
@@ -763,7 +763,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::FlashSparkle,
+                    gui::Animations::FlashSparkle,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
                     sf::Color::White,
                     sf::Color::White);
@@ -774,7 +774,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::Shimmer,
+                    gui::Animations::Shimmer,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
@@ -785,7 +785,7 @@ namespace combat
             {
                 SetupAnimations(
                     TARGETS_PVEC,
-                    sfml_util::Animations::FlashSparkle,
+                    gui::Animations::FlashSparkle,
                     ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
                     sf::Color::White,
                     sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
@@ -799,7 +799,9 @@ namespace combat
             }
 
             case spell::Spells::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
 
@@ -862,15 +864,14 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->WillDraw())
             {
-                sparksAnimUVec_.emplace_back(
-                    std::make_unique<sfml_util::animation::SparksAnimation>(
-                        !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
-                        NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                        0.33f,
-                        sfutil::MapByRes(0.15f, 0.45f),
-                        0.9f,
-                        CASTING_CREATURE_PTR->RankRatio(),
-                        1.25f));
+                sparksAnimUVec_.emplace_back(std::make_unique<gui::animation::SparksAnimation>(
+                    !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
+                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                    0.33f,
+                    sfutil::MapByRes(0.15f, 0.45f),
+                    0.9f,
+                    CASTING_CREATURE_PTR->RankRatio(),
+                    1.25f));
             }
         }
     }
@@ -900,7 +901,7 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->WillDraw())
             {
-                cloudAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::CloudAnimation>(
+                cloudAnimUVec_.emplace_back(std::make_unique<gui::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
                     0.35f,
                     sfutil::MapByRes(0.1f, 0.35f),
@@ -937,7 +938,7 @@ namespace combat
 
     void CombatAnimation::SetupAnimations(
         const combat::CombatNodePVec_t & TARGETS_PVEC,
-        const sfml_util::Animations::Enum ENUM,
+        const gui::Animations::Enum ENUM,
         const float FRAME_DELAY_SEC,
         const sf::Color & COLOR_FROM,
         const sf::Color & COLOR_TO)
@@ -955,7 +956,7 @@ namespace combat
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
             // grow the shimmer animation to better cover the creature image
-            if (ENUM == sfml_util::Animations::Shimmer)
+            if (ENUM == gui::Animations::Shimmer)
             {
                 const auto ADJ { sfutil::MapByRes(40.0f, 120.0f) };
                 region.left -= ADJ * 0.5f;
@@ -964,8 +965,8 @@ namespace combat
                 region.height += ADJ * 2.0f;
             }
 
-            animUVec_.emplace_back(sfml_util::AnimationFactory::Make(
-                ENUM, region, FRAME_DELAY_SEC, COLOR_FROM, COLOR_TO));
+            animUVec_.emplace_back(
+                gui::AnimationFactory::Make(ENUM, region, FRAME_DELAY_SEC, COLOR_FROM, COLOR_TO));
         }
     }
 
@@ -980,7 +981,7 @@ namespace combat
                 continue;
             }
 
-            songAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SongAnimation>(
+            songAnimUVec_.emplace_back(std::make_unique<gui::animation::SongAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 0.1f,
                 sfutil::MapByRes(0.1f, 0.25f),
@@ -1025,7 +1026,7 @@ namespace combat
                 continue;
             }
 
-            sparkleAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SparkleAnimation>(
+            sparkleAnimUVec_.emplace_back(std::make_unique<gui::animation::SparkleAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 sfutil::MapByRes(0.333f, 1.0f),
                 0.5f,
@@ -1109,12 +1110,12 @@ namespace combat
 
             ss << NEXT_DAMAGE_VALUE;
 
-            textAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::TextAnimation>(
+            textAnimUVec_.emplace_back(std::make_unique<gui::animation::TextAnimation>(
                 ss.str(),
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 1.0f,
                 1,
-                sfml_util::FontManager::Instance()->Size_Larger() + 64,
+                gui::FontManager::Instance()->Size_Larger() + 64,
                 startColor,
                 endColor));
         }
@@ -1135,7 +1136,7 @@ namespace combat
         else
         {
             runAnimPosVTarget_
-                = sf::Vector2f(sfml_util::Display::Instance()->GetWinWidth() + OFFSCREEN_PAD, 0.0f);
+                = sf::Vector2f(gui::Display::Instance()->GetWinWidth() + OFFSCREEN_PAD, 0.0f);
         }
     }
 

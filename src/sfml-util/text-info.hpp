@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXTINFO_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXTINFO_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXTINFO_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXTINFO_HPP_INCLUDED
 //
 // text-info.hpp
 //
@@ -22,7 +22,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     class Text;
@@ -100,9 +100,9 @@ namespace sfml_util
     // comparison ordered for speed
     inline bool operator!=(const TextInfo & L, const TextInfo & R) { return !(L == R); }
 
-} // namespace sfml_util
+} // namespace gui
 
-inline std::ostream & operator<<(std::ostream & os, const sfml_util::TextInfo & TI)
+inline std::ostream & operator<<(std::ostream & os, const gui::TextInfo & TI)
 {
     os << TI.ToString();
     return os;
@@ -110,4 +110,4 @@ inline std::ostream & operator<<(std::ostream & os, const sfml_util::TextInfo & 
 
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXTINFO_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXTINFO_HPP_INCLUDED

@@ -25,13 +25,13 @@ namespace map
     {
         explicit WalkSfxRegion(
             const sf::FloatRect & REGION = sf::FloatRect(),
-            const sfml_util::sound_effect::Enum SFX = sfml_util::sound_effect::Count)
+            const gui::sound_effect::Enum SFX = gui::sound_effect::Count)
             : region(REGION)
             , sfx(SFX)
         {}
 
         sf::FloatRect region;
-        sfml_util::sound_effect::Enum sfx;
+        gui::sound_effect::Enum sfx;
     };
 
     inline bool operator<(const WalkSfxRegion & L, const WalkSfxRegion & R)
@@ -52,7 +52,7 @@ namespace map
             , top_layers(TOP_LAYERS)
         {}
 
-        sfml_util::sound_effect::Enum FindSfx(const sf::Vector2f & POSITION) const
+        gui::sound_effect::Enum FindSfx(const sf::Vector2f & POSITION) const
         {
             for (const auto & SFX_REGION : top_layers)
             {
@@ -70,7 +70,7 @@ namespace map
                 }
             }
 
-            return sfml_util::sound_effect::Count;
+            return gui::sound_effect::Count;
         }
 
         WalkSfxRegionVec_t bottom_layers;

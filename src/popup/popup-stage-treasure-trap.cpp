@@ -51,15 +51,15 @@ namespace popup
         sf::FloatRect tempRect(textRegion_);
         tempRect.height = 0.0f;
 
-        const sfml_util::TextInfo TITLE_TEXTINFO(
+        const gui::TextInfo TITLE_TEXTINFO(
             "You sprung the trap!",
-            sfml_util::GuiFont::DefaultBoldFlavor,
-            sfml_util::FontManager::Instance()->Size_Larger(),
+            gui::GuiFont::DefaultBoldFlavor,
+            gui::FontManager::Instance()->Size_Larger(),
             sf::Color(127, 32, 32),
-            sfml_util::Justified::Center,
+            gui::Justified::Center,
             sf::Text::Bold);
 
-        textRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        textRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStageTreasureTrap's_Title", TITLE_TEXTINFO, tempRect, stage::IStagePtr_t(this));
     }
 
@@ -69,14 +69,14 @@ namespace popup
         tempRect.height = 0.0f;
         tempRect.top += sfutil::MapByRes(75.0f, 225.0f);
 
-        const sfml_util::TextInfo DESC_TEXTINFO(
+        const gui::TextInfo DESC_TEXTINFO(
             popupInfo_.TextInfo().text,
-            sfml_util::GuiFont::Default,
-            sfml_util::FontManager::Instance()->Size_Largeish(),
+            gui::GuiFont::Default,
+            gui::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
-        descTextRegionUPtr_ = std::make_unique<sfml_util::TextRegion>(
+        descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, stage::IStagePtr_t(this));
 
         StageBase::EntityAdd(descTextRegionUPtr_.get());
@@ -84,7 +84,7 @@ namespace popup
 
     void PopupStageTreasureTrap::SetupAccentImage()
     {
-        accent1CachedTextureOpt_ = sfml_util::CachedTexture("media-images-trap");
+        accent1CachedTextureOpt_ = gui::CachedTexture("media-images-trap");
         accentSprite1_.setTexture(accent1CachedTextureOpt_->Get(), true);
 
         sfutil::FitAndReCenter(accentSprite1_, sfutil::ScaleAndReCenterCopy(textRegion_, 0.65f));

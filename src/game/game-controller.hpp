@@ -27,7 +27,7 @@
 namespace heroespath
 {
 
-namespace sfml_util
+namespace gui
 {
     struct Resolution;
 }
@@ -73,16 +73,16 @@ namespace game
         void PlayGame();
 
         void SpawnPopup(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO);
 
         void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0);
         void TransitionTo(const stage::Stage::Enum NEW_STAGE);
         void TransitionTo(const stage::SetupPacket & SETUP_PACKET);
 
-        const sfml_util::DisplayChangeResult ChangeResolution(
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-            const sfml_util::Resolution & NEW_RES,
+        const gui::DisplayChangeResult ChangeResolution(
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
         // TODO TEMP REMOVE remove this crap once all testing is in unit tests
@@ -102,7 +102,7 @@ namespace game
         // change stages now
         void StageChangeActualPopupReplace(
             const popup::PopupInfo & POPUP_INFO,
-            const sfml_util::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR);
+            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR);
 
         void StageChangeActualPopupRemove();
 

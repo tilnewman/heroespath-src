@@ -38,9 +38,9 @@ namespace avatar
 
     Model::Model(const Avatar::Enum AVATAR_ENUM)
         : view_(
-              AVATAR_ENUM,
-              sf::Vector2f(
-                  0.0f, 0.0f)) // see Map::Load() and Map::Move() for where player model pos is set
+            AVATAR_ENUM,
+            sf::Vector2f(
+                0.0f, 0.0f)) // see Map::Load() and Map::Move() for where player model pos is set
         , blinkTimerSec_(0.0f)
         , timeUntilNextBlinkSec_(RandomBlinkDelay())
         , blinkTimes_()
@@ -50,7 +50,7 @@ namespace avatar
         , walkRects_()
         , walkTargetPosV_()
         , walkRectIndex_(0)
-        , prevWalkDirection_(sfml_util::Direction::Count)
+        , prevWalkDirection_(gui::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
@@ -71,7 +71,7 @@ namespace avatar
         , walkRects_(WALK_RECTS)
         , walkTargetPosV_()
         , walkRectIndex_(CURRENT_WALK_RECT_INDEX)
-        , prevWalkDirection_(sfml_util::Direction::Count)
+        , prevWalkDirection_(gui::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
@@ -88,7 +88,7 @@ namespace avatar
         }
     }
 
-    void Model::SetWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    void Model::SetWalkAnim(const gui::Direction::Enum DIRECTION, const bool WILL_START)
     {
         view_.Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
     }
@@ -101,10 +101,9 @@ namespace avatar
 
     void Model::ChangeDirection()
     {
-        std::vector<sfml_util::Direction::Enum> dirVec { sfml_util::Direction::Left,
-                                                         sfml_util::Direction::Right,
-                                                         sfml_util::Direction::Up,
-                                                         sfml_util::Direction::Down };
+        std::vector<gui::Direction::Enum> dirVec {
+            gui::Direction::Left, gui::Direction::Right, gui::Direction::Up, gui::Direction::Down
+        };
 
         dirVec.erase(
             std::remove(std::begin(dirVec), std::end(dirVec), GetView().Direction()),
@@ -116,23 +115,23 @@ namespace avatar
 
         switch (NEW_DIRECTION)
         {
-            case sfml_util::Direction::Left:
+            case gui::Direction::Left:
             {
                 walkTargetPosV_.x = RECT.left;
                 break;
             }
-            case sfml_util::Direction::Right:
+            case gui::Direction::Right:
             {
                 walkTargetPosV_.x = RECT.left + RECT.width;
                 break;
             }
-            case sfml_util::Direction::Up:
+            case gui::Direction::Up:
             {
                 walkTargetPosV_.y = RECT.top;
                 break;
             }
-            case sfml_util::Direction::Down:
-            case sfml_util::Direction::Count:
+            case gui::Direction::Down:
+            case gui::Direction::Count:
             default:
             {
                 walkTargetPosV_.y = RECT.top + RECT.height;
@@ -251,9 +250,9 @@ namespace avatar
                 walkRectIndex_ = RandomWalkRectIndex();
                 walkTargetPosV_ = RandomWalkTarget();
 
-                const auto NEW_DIRECTION { WalkDirection(sfml_util::Direction::Count) };
+                const auto NEW_DIRECTION { WalkDirection(gui::Direction::Count) };
 
-                if (NEW_DIRECTION != sfml_util::Direction::Count)
+                if (NEW_DIRECTION != gui::Direction::Count)
                 {
                     action_ = Pose::Walking;
                     SetWalkAnim(NEW_DIRECTION, true);
@@ -267,7 +266,7 @@ namespace avatar
 
             if (NEW_DIRECTION != prevWalkDirection_)
             {
-                if (NEW_DIRECTION == sfml_util::Direction::Count)
+                if (NEW_DIRECTION == gui::Direction::Count)
                 {
                     StopWalking();
                 }
@@ -342,38 +341,38 @@ namespace avatar
         }
     }
 
-    sfml_util::Direction::Enum
-        Model::WalkDirection(const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const
+    gui::Direction::Enum
+        Model::WalkDirection(const gui::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
         const auto CURRENT_POS_V { GetCenteredMapPos() };
 
-        if (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Count)
+        if (DIRECTION_TO_MAINTAIN == gui::Direction::Count)
         {
-            std::vector<sfml_util::Direction::Enum> dirVec;
+            std::vector<gui::Direction::Enum> dirVec;
 
             if ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.emplace_back(sfml_util::Direction::Up);
+                dirVec.emplace_back(gui::Direction::Up);
             }
 
             if ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.emplace_back(sfml_util::Direction::Down);
+                dirVec.emplace_back(gui::Direction::Down);
             }
 
             if ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.emplace_back(sfml_util::Direction::Right);
+                dirVec.emplace_back(gui::Direction::Right);
             }
 
             if ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.emplace_back(sfml_util::Direction::Left);
+                dirVec.emplace_back(gui::Direction::Left);
             }
 
             if (dirVec.empty())
             {
-                return sfml_util::Direction::Count;
+                return gui::Direction::Count;
             }
             else
             {
@@ -382,48 +381,48 @@ namespace avatar
         }
         else
         {
-            if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Up)
+            if ((DIRECTION_TO_MAINTAIN == gui::Direction::Up)
                 && ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
             {
-                return sfml_util::Direction::Up;
+                return gui::Direction::Up;
             }
             else if (
-                (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Down)
+                (DIRECTION_TO_MAINTAIN == gui::Direction::Down)
                 && ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_))
             {
-                return sfml_util::Direction::Down;
+                return gui::Direction::Down;
             }
             else if (
-                (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Right)
+                (DIRECTION_TO_MAINTAIN == gui::Direction::Right)
                 && ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_))
             {
-                return sfml_util::Direction::Right;
+                return gui::Direction::Right;
             }
             else if (
-                (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Left)
+                (DIRECTION_TO_MAINTAIN == gui::Direction::Left)
                 && ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
             {
-                return sfml_util::Direction::Left;
+                return gui::Direction::Left;
             }
             else if ((CURRENT_POS_V.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                return sfml_util::Direction::Up;
+                return gui::Direction::Up;
             }
             else if ((walkTargetPosV_.y - CURRENT_POS_V.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                return sfml_util::Direction::Down;
+                return gui::Direction::Down;
             }
             else if ((walkTargetPosV_.x - CURRENT_POS_V.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                return sfml_util::Direction::Right;
+                return gui::Direction::Right;
             }
             else if ((CURRENT_POS_V.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                return sfml_util::Direction::Left;
+                return gui::Direction::Left;
             }
             else
             {
-                return sfml_util::Direction::Count;
+                return gui::Direction::Count;
             }
         }
     }

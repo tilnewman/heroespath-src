@@ -18,13 +18,13 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextButton;
     using TextButtonPtr_t = misc::NotNull<TextButton *>;
     using TextButtonPtrOpt_t = boost::optional<TextButtonPtr_t>;
 
-} // namespace sfml_util
+} // namespace gui
 namespace interact
 {
 
@@ -41,14 +41,13 @@ namespace interact
 
         sf::Keyboard::Key Key() const { return Buttons::Key(whichButton_); }
 
-        bool DoPointersMatch(const sfml_util::TextButtonPtr_t P) const { return (P == ptrOpt_); }
+        bool DoPointersMatch(const gui::TextButtonPtr_t P) const { return (P == ptrOpt_); }
 
-        sfml_util::TextButtonUPtr_t
-            Make(const sfml_util::TextButton::Callback_t::IHandlerPtrOpt_t &);
+        gui::TextButtonUPtr_t Make(const gui::TextButton::Callback_t::IHandlerPtrOpt_t &);
 
     private:
         Buttons::Enum whichButton_;
-        sfml_util::TextButtonPtrOpt_t ptrOpt_;
+        gui::TextButtonPtrOpt_t ptrOpt_;
     };
 
     using ButtonVec_t = std::vector<Button>;

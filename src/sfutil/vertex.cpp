@@ -110,7 +110,7 @@ namespace sfutil
         const sf::Vector2f & POS_V,
         const sf::Vector2f & SIZE_FULL_V,
         const sf::Vector2f & SIZE_LIMIT_V,
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
         std::vector<sf::Vector2f> v;
 
@@ -126,14 +126,14 @@ namespace sfutil
             ((SIZE_LIMIT_V.x > 0.0f) ? std::min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
             ((SIZE_LIMIT_V.y > 0.0f) ? std::min(SIZE_LIMIT_V.y, SIZE_FULL_V.y) : SIZE_FULL_V.y)) };
 
-        if (ORIENTATIONS_TO_DRAW_FROM_END == sfml_util::Orientation::Count)
+        if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Count)
         {
             v.emplace_back(POS_V);
             v.emplace_back(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y);
             v.emplace_back(POS_V + SIZE_ACTUAL_V);
             v.emplace_back(POS_V.x, POS_V.y + SIZE_ACTUAL_V.y);
         }
-        else if (ORIENTATIONS_TO_DRAW_FROM_END == sfml_util::Orientation::Both)
+        else if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Both)
         {
             const auto BOT_RIGHT_POS_V { POS_V + SIZE_FULL_V };
             const auto TOP_LEFT_POS_V { BOT_RIGHT_POS_V - SIZE_ACTUAL_V };
@@ -145,7 +145,7 @@ namespace sfutil
             v.emplace_back(BOT_RIGHT_POS_V);
             v.emplace_back(BOT_LEFT_POS_V);
         }
-        else if (ORIENTATIONS_TO_DRAW_FROM_END == sfml_util::Orientation::Horiz)
+        else if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Horiz)
         {
             v.emplace_back(POS_V.x + (SIZE_FULL_V.x - SIZE_ACTUAL_V.x), POS_V.y);
             v.emplace_back(POS_V.x + SIZE_FULL_V.x, POS_V.y);
@@ -169,7 +169,7 @@ namespace sfutil
         const sf::FloatRect & TEXTURE_RECT,
         const sf::Color & COLOR,
         const sf::Vector2f & SIZE_LIMIT_V,
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
         if ((SIZE_LIMIT_V.x < 0.0f) || (SIZE_LIMIT_V.y < 0.0f) || (TEXTURE_RECT.width < 0.0f)
             || (TEXTURE_RECT.height < 0.0f))
@@ -220,23 +220,23 @@ namespace sfutil
         sf::VertexArray & vertexArray,
         const sf::Vector2f & POS_V,
         const sf::FloatRect & TEXTURE_RECT,
-        const sfml_util::Orientation::Enum ORIENTATION,
+        const gui::Orientation::Enum ORIENTATION,
         const float LENGTH,
         const sf::Color & COLOR,
         const float OPPOSITE_ORIENTATION_SIZE_LIMIT,
-        const sfml_util::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
+        const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
-        if (((LENGTH > 0.0f) == false) || (ORIENTATION == sfml_util::Orientation::Count))
+        if (((LENGTH > 0.0f) == false) || (ORIENTATION == gui::Orientation::Count))
         {
             return;
         }
-        else if (ORIENTATION == sfml_util::Orientation::Both)
+        else if (ORIENTATION == gui::Orientation::Both)
         {
             AppendVertexesForQuadRepeatedOverLength(
                 vertexArray,
                 POS_V,
                 TEXTURE_RECT,
-                sfml_util::Orientation::Horiz,
+                gui::Orientation::Horiz,
                 LENGTH,
                 COLOR,
                 OPPOSITE_ORIENTATION_SIZE_LIMIT,
@@ -246,7 +246,7 @@ namespace sfutil
                 vertexArray,
                 POS_V,
                 TEXTURE_RECT,
-                sfml_util::Orientation::Vert,
+                gui::Orientation::Vert,
                 LENGTH,
                 COLOR,
                 OPPOSITE_ORIENTATION_SIZE_LIMIT,
@@ -254,13 +254,13 @@ namespace sfutil
         }
         else
         {
-            float pos { ((ORIENTATION == sfml_util::Orientation::Horiz) ? POS_V.x : POS_V.y) };
+            float pos { ((ORIENTATION == gui::Orientation::Horiz) ? POS_V.x : POS_V.y) };
 
             const auto POS_LIMIT { pos + LENGTH };
 
             const auto TEXTURE_LENGTH_OF_ORIENTATION { (
-                (ORIENTATION == sfml_util::Orientation::Horiz) ? TEXTURE_RECT.width
-                                                               : TEXTURE_RECT.height) };
+                (ORIENTATION == gui::Orientation::Horiz) ? TEXTURE_RECT.width
+                                                         : TEXTURE_RECT.height) };
 
             if (TEXTURE_LENGTH_OF_ORIENTATION < LENGTH)
             {

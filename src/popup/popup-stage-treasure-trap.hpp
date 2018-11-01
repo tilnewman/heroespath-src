@@ -43,7 +43,7 @@ namespace popup
     private:
         sf::Texture trapTexture_;
         sf::Sprite trapSprite_;
-        sfml_util::TextRegionUPtr_t descTextRegionUPtr_;
+        gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 } // namespace popup
 } // namespace heroespath

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
-#define HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#ifndef HEROESPATH_GUI_ANIMATIONENUM_HPP_INCLUDE
+#define HEROESPATH_GUI_ANIMATIONENUM_HPP_INCLUDE
 //
 // animation-enum.hpp
 //  An enumeration of all animations.
@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct Animations : public misc::EnumBaseCounting<Animations, misc::EnumFirstValueValid>
@@ -68,7 +68,7 @@ namespace sfml_util
         static const MusicEnumVec_t Sfx(const Enum);
     };
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#endif // HEROESPATH_GUI_ANIMATIONENUM_HPP_INCLUDE

@@ -49,7 +49,7 @@ namespace map
 
         void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
 
-        bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
+        bool Move(const gui::Direction::Enum, const float ADJUSTMENT);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -89,7 +89,7 @@ namespace map
 
         const TilesPanel & TilesPanelFromId(const int) const;
 
-        void IncrementTileOffsetsInDirection(const sfml_util::Direction::Enum);
+        void IncrementTileOffsetsInDirection(const gui::Direction::Enum);
 
         const sf::Vector2f CalcOffScreenMapSize() const;
 
@@ -140,7 +140,7 @@ namespace map
         sf::Sprite npcShadowSprite_;
 
         MapAnimVec_t animInfoVec_;
-        std::vector<sfml_util::AnimationUPtr_t> animUPtrVec_;
+        std::vector<gui::AnimationUPtr_t> animUPtrVec_;
 
         ShadowMasker shadowMasker_;
     };

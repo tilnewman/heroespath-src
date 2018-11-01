@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_TEXTANIMATION_HPP_INCLUDED
+#define HEROESPATH_GUI_TEXTANIMATION_HPP_INCLUDED
 //
 // text-animation.hpp
 //
@@ -21,7 +21,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
     class TextRegion;
     using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
@@ -66,7 +66,7 @@ namespace sfml_util
         using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
 
     } // namespace animation
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_GUI_TEXTANIMATION_HPP_INCLUDED

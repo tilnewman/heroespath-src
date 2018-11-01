@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_MUSICINFO_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_MUSICINFO_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_MUSICINFO_HPP_INCLUDED
+#define HEROESPATH_GUI_MUSICINFO_HPP_INCLUDED
 //
 // music-info.hpp
 //  A class that completely defines a piece of music.
@@ -18,7 +18,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     // simple wrapper class for information known about a piece of music
@@ -33,7 +33,7 @@ namespace sfml_util
             const std::string & LICENSE_TITLE = "",
             const std::string & FILE_NAME = "",
             const std::string & DIR_NAME = "",
-            const sfml_util::Time & DURATION = sfml_util::Time());
+            const gui::Time & DURATION = gui::Time());
 
         music::Enum Which() const { return which_; }
         bool IsLooped() const { return isLooped_; }
@@ -44,8 +44,8 @@ namespace sfml_util
         const std::string Filename() const { return filename_; }
         const std::string DirName() const { return dirName_; }
 
-        const sfml_util::Time Duration() const { return duration_; }
-        void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
+        const gui::Time Duration() const { return duration_; }
+        void Duration(const gui::Time & DURATION) { duration_ = DURATION; }
 
         void AutoSetup();
 
@@ -59,7 +59,7 @@ namespace sfml_util
         std::string licenseTitle_;
         std::string filename_;
         std::string dirName_;
-        sfml_util::Time duration_;
+        gui::Time duration_;
     };
 
     using MusicInfoVec_t = std::vector<MusicInfo>;
@@ -67,7 +67,7 @@ namespace sfml_util
     bool operator==(const MusicInfo & L, const MusicInfo & R);
 
     inline bool operator!=(const MusicInfo & L, const MusicInfo & R) { return !(L == R); }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_MUSICINFO_HPP_INCLUDED
+#endif // HEROESPATH_GUI_MUSICINFO_HPP_INCLUDED

@@ -20,7 +20,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const float MainMenuButton::SCREEN_SIZE_RATIO_WIDTH_DEFAULT_(0.1f);
@@ -86,5 +86,5 @@ namespace sfml_util
         return mouseImageInfo;
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     MusicInfo::MusicInfo(
@@ -24,7 +24,7 @@ namespace sfml_util
         const std::string & LICENSE_TITLE,
         const std::string & FILE_NAME,
         const std::string & DIR_NAME,
-        const sfml_util::Time & DURATION)
+        const gui::Time & DURATION)
         : which_(WHICH)
         , isLooped_(IS_LOOPED)
         , artistName_(ARTIST_NAME)
@@ -71,5 +71,5 @@ namespace sfml_util
                    R.dirName_,
                    R.duration_);
     }
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

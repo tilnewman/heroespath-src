@@ -19,7 +19,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const float StageTitle::DEFAULT_IMAGE_WIDTH_AS_SCREEN_RATIO_ { 0.6f };
@@ -31,17 +31,16 @@ namespace sfml_util
         const float SIZE_HORIZ,
         const float SIZE_VERT)
         : symbolCachedTexture_(
-              "media-images-gui-accents-symbol2",
-              ImageOptions(
-                  (WILL_INVERT_SYMBOL) ? (ImageOpt::Default | ImageOpt::Invert)
-                                       : ImageOpt::Default))
+            "media-images-gui-accents-symbol2",
+            ImageOptions(
+                (WILL_INVERT_SYMBOL) ? (ImageOpt::Default | ImageOpt::Invert) : ImageOpt::Default))
         , symbolSprite_(symbolCachedTexture_.Get())
         , titleCachedTextureOpt_()
         , titleSprite_()
     {
         if (TITLE_IMAGE_PATH_KEY.empty() == false)
         {
-            titleCachedTextureOpt_ = sfml_util::CachedTexture(TITLE_IMAGE_PATH_KEY);
+            titleCachedTextureOpt_ = gui::CachedTexture(TITLE_IMAGE_PATH_KEY);
             titleSprite_.setTexture(titleCachedTextureOpt_->Get(), true);
         }
 
@@ -101,5 +100,5 @@ namespace sfml_util
 
     float StageTitle::DefaultBottomPad() const { return sfutil::ScreenRatioToPixelsVert(0.039f); }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

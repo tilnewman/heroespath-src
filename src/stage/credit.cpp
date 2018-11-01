@@ -34,14 +34,14 @@ namespace stage
         , cachedTextureOpt_()
         , sprite_()
         , animUPtr_()
-        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_);
     }
@@ -50,7 +50,7 @@ namespace stage
         const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
         const std::string & CONTENT_TEXT,
-        const sfml_util::Animations::Enum ANIM_ENUM,
+        const gui::Animations::Enum ANIM_ENUM,
         const float ANIM_SIZE_HORIZ,
         const float ANIM_FRAME_TIME_SEC)
         : titleTextUPtr_()
@@ -59,14 +59,14 @@ namespace stage
         , cachedTextureOpt_()
         , sprite_()
         , animUPtr_()
-        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
             ANIM_SIZE_HORIZ,
@@ -86,14 +86,14 @@ namespace stage
         , cachedTextureOpt_(IMAGE_PATH_KEY)
         , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
-        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
             IMAGE_SIZE_HORIZ);
@@ -102,7 +102,7 @@ namespace stage
     Credit::Credit(
         const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
-        const sfml_util::GuiFont::Enum FONT,
+        const gui::GuiFont::Enum FONT,
         const std::string & CONTENT_TEXT)
         : titleTextUPtr_()
         , contentTextUPtr_()
@@ -110,14 +110,14 @@ namespace stage
         , cachedTextureOpt_("media-images-logos-openfontlicense")
         , sprite_(cachedTextureOpt_.value().Get())
         , animUPtr_()
-        , screenSizeVert_(sfml_util::Display::Instance()->GetWinHeight())
+        , screenSizeVert_(gui::Display::Instance()->GetWinHeight())
         , region_()
     {
         Setup(
             MAX_WIDTH,
             TITLE_TEXT,
             FONT,
-            sfml_util::FontManager::Instance()->Size_Smallish(),
+            gui::FontManager::Instance()->Size_Smallish(),
             CONTENT_TEXT,
             mediaType_,
             sfutil::ScreenRatioToPixelsHoriz(0.08f));
@@ -126,12 +126,12 @@ namespace stage
     void Credit::Setup(
         const float MAX_WIDTH,
         const std::string & TITLE_TEXT,
-        const sfml_util::GuiFont::Enum TITLE_FONT,
+        const gui::GuiFont::Enum TITLE_FONT,
         const unsigned int TITLE_FONT_SIZE,
         const std::string & CONTENT_TEXT,
         const MediaType::Enum MEDIA_TYPE,
         const float MEDIA_SIZE_HORIZ,
-        const sfml_util::Animations::Enum ANIM_ENUM,
+        const gui::Animations::Enum ANIM_ENUM,
         const float ANIM_FRAME_TIME_SEC)
     {
         if (MEDIA_TYPE == MediaType::Image)
@@ -144,8 +144,8 @@ namespace stage
         else if (MEDIA_TYPE == MediaType::Anim)
         {
             // inital size and pos are default (zeros)
-            animUPtr_ = sfml_util::AnimationFactory::Make(
-                ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
+            animUPtr_
+                = gui::AnimationFactory::Make(ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 
             const auto SCALE { MEDIA_SIZE_HORIZ / animUPtr_->OrigSize().x };
             const auto WIDTH { animUPtr_->OrigSize().x * SCALE };
@@ -167,8 +167,8 @@ namespace stage
         const auto CONTENT_COLOR { (
             (WILL_TITLE_USE_BRIGHT_TEXT_COLOR) ? TEXT_COLOR_NOTASBRIGHT : TEXT_COLOR_BRIGHT) };
 
-        const sfml_util::TextInfo TEXT_INFO_TITLE(
-            TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, sfml_util::Justified::Center);
+        const gui::TextInfo TEXT_INFO_TITLE(
+            TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, gui::Justified::Center);
 
         const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
@@ -180,16 +180,16 @@ namespace stage
 
         if (TITLE_TEXT.empty() == false)
         {
-            titleTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            titleTextUPtr_ = std::make_unique<gui::TextRegion>(
                 "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, titleTextRegion);
         }
 
-        sfml_util::TextInfo textInfoContent(
+        gui::TextInfo textInfoContent(
             CONTENT_TEXT,
-            sfml_util::GuiFont::SystemCondensed,
-            sfml_util::FontManager::Instance()->Size_Normal(),
+            gui::GuiFont::SystemCondensed,
+            gui::FontManager::Instance()->Size_Normal(),
             CONTENT_COLOR,
-            sfml_util::Justified::Center);
+            gui::Justified::Center);
 
         // if there is a lot of content text, reduce the font size to look better
         const auto NUM_NEWLINES { static_cast<int>(
@@ -221,7 +221,7 @@ namespace stage
 
         if (CONTENT_TEXT.empty() == false)
         {
-            contentTextUPtr_ = std::make_unique<sfml_util::TextRegion>(
+            contentTextUPtr_ = std::make_unique<gui::TextRegion>(
                 "CreditContent", textInfoContent, contentTextRegion);
         }
 

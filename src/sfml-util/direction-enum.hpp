@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SFMLUTIL_DIRECTION_ENUM_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_DIRECTION_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_DIRECTION_ENUM_HPP_INCLUDED
+#define HEROESPATH_GUI_DIRECTION_ENUM_HPP_INCLUDED
 //
 // direction-enum.hpp
 //
@@ -13,7 +13,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     struct Direction
@@ -28,9 +28,9 @@ namespace sfml_util
         };
 
         static const std::string ToString(const Direction::Enum);
-        static sfml_util::Direction::Enum Opposite(const Direction::Enum);
+        static gui::Direction::Enum Opposite(const Direction::Enum);
     };
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_SFMLUTIL_DIRECTION_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_GUI_DIRECTION_ENUM_HPP_INCLUDED

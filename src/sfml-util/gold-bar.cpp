@@ -23,7 +23,7 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace gui
 {
 
     const std::string GoldBar::IMAGE_PATH_KEY_ { "media-images-gui-elements" };
@@ -827,5 +827,5 @@ namespace sfml_util
         }
     }
 
-} // namespace sfml_util
+} // namespace gui
 } // namespace heroespath

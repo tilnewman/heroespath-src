@@ -36,34 +36,34 @@ namespace stage
         : StageBase(
             "MainMenu",
             {
-                sfml_util::GuiFont::Default,
-                sfml_util::GuiFont::System,
-                sfml_util::GuiFont::Number,
+                gui::GuiFont::Default,
+                gui::GuiFont::System,
+                gui::GuiFont::Number,
             },
             true)
         , titleCachedTexture_("media-images-title-blacksymbol")
         , titleSprite_(titleCachedTexture_.Get())
-        , resumeButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+        , resumeButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Load,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.305f)))
-        , createButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+        , createButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Character,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.43f)))
-        , settingsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+        , settingsButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Settings,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.201f)))
-        , creditsButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+        , creditsButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Credits,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.177f)))
-        , exitButtonUPtr_(std::make_unique<sfml_util::MainMenuButton>(
+        , exitButtonUPtr_(std::make_unique<gui::MainMenuButton>(
               stage::Stage::Exit,
-              sfml_util::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
+              gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
               sfutil::ScreenRatioToPixelsHoriz(0.114f)))
-        , ouroborosUPtr_(std::make_unique<sfml_util::Ouroboros>("MainMenu's"))
+        , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("MainMenu's"))
         , bottomSymbol_()
         , background_()
     {}
@@ -133,7 +133,7 @@ namespace stage
 
         if (ARE_THERE_GAMES_TO_LOAD == false)
         {
-            resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Disabled);
+            resumeButtonUPtr_->SetMouseState(gui::MouseState::Disabled);
         }
 
         EntityAdd(resumeButtonUPtr_.get());
@@ -159,38 +159,38 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
-            createButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            createButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Menu);
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
-            settingsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            settingsButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Settings);
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
-            creditsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            creditsButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Credits);
             return true;
         }
         else if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::E))
         {
-            exitButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+            exitButtonUPtr_->SetMouseState(gui::MouseState::Over);
+            gui::SoundManager::Instance()->PlaySfx_Keypress();
             TransitionTo(stage::Stage::Exit);
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::R)
         {
-            if (resumeButtonUPtr_->GetMouseState() != sfml_util::MouseState::Disabled)
+            if (resumeButtonUPtr_->GetMouseState() != gui::MouseState::Disabled)
             {
-                resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-                sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
+                resumeButtonUPtr_->SetMouseState(gui::MouseState::Over);
+                gui::SoundManager::Instance()->PlaySfx_Keypress();
                 TransitionTo(stage::Stage::Load);
                 return true;
             }
