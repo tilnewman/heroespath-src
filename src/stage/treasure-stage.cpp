@@ -320,9 +320,9 @@ namespace stage
         PromptUserBasedOnTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
 
-    void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void TreasureStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
 
         if (updateItemDisplayNeeded_)
         {
@@ -996,7 +996,7 @@ namespace stage
         updateItemDisplayNeeded_ = true;
     }
 
-    void TreasureStage::UpdateItemDisplay()
+    void TreasureStage::UpdateItemDisplay() const
     {
         displayStagePtrOpt_.value()->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
         displayStagePtrOpt_.value()->RefreshAfterCacheUpdate();

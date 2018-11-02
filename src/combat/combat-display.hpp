@@ -92,7 +92,7 @@ namespace combat
 
         void Setup() override;
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         bool StartSummaryView(const sf::Vector2f & MOUSE_POS);
 

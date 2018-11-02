@@ -35,7 +35,7 @@ namespace popup
         virtual ~PopupStageCombatOver();
 
         void Setup() override;
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     private:
         const std::string PickImagePathKey(const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;

@@ -28,7 +28,7 @@ namespace popup
         explicit PopupStageInventoryPrompt(const PopupInfo &);
         virtual ~PopupStageInventoryPrompt();
 
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:

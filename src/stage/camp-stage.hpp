@@ -49,11 +49,11 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        virtual bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &);
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
+        void Setup() override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     private:
         const std::string ComposeNewGamePopupText1();

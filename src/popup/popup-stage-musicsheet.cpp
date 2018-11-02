@@ -139,29 +139,29 @@ namespace popup
         SetFocus(listBoxUPtr_.get());
     }
 
-    void PopupStageMusicSheet::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageMusicSheet::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
 
-        target.draw(accentSprite1_, STATES);
-        target.draw(accentSprite2_, STATES);
-        target.draw(playerSprite_, STATES);
-        target.draw(songSprite_, STATES);
-        charDetailsTextRegionUPtr_->draw(target, STATES);
-        listBoxLabelTextRegionUPtr_->draw(target, STATES);
-        titleTextRegionUPtr_->draw(target, STATES);
-        detailsTextUPtr_->draw(target, STATES);
+        target.draw(accentSprite1_, states);
+        target.draw(accentSprite2_, states);
+        target.draw(playerSprite_, states);
+        target.draw(songSprite_, states);
+        charDetailsTextRegionUPtr_->draw(target, states);
+        listBoxLabelTextRegionUPtr_->draw(target, states);
+        titleTextRegionUPtr_->draw(target, states);
+        detailsTextUPtr_->draw(target, states);
 
         if (willShowXImage_)
         {
-            unableTextUPtr_->draw(target, STATES);
+            unableTextUPtr_->draw(target, states);
         }
 
-        descTextUPtr_->draw(target, STATES);
+        descTextUPtr_->draw(target, states);
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
 
-        PopupStageBase::DrawRedX(target, STATES);
+        PopupStageBase::DrawRedX(target, states);
     }
 
     void PopupStageMusicSheet::UpdateTime(const float ELAPSED_TIME_SECONDS)

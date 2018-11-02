@@ -46,7 +46,7 @@ namespace stage
         }
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:

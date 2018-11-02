@@ -128,7 +128,7 @@ namespace gui
 
     void Display::DrawStage(stage::IStagePtr_t & iStagePtr)
     {
-        iStagePtr->Draw(*winUPtr_, sf::RenderStates());
+        winUPtr_->draw(*iStagePtr, sf::RenderStates());
     }
 
     const std::vector<sf::Event> Display::PollEvents()

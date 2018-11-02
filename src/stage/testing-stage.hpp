@@ -117,7 +117,7 @@ namespace stage
         virtual ~TestingStage();
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyPress(const sf::Event::KeyEvent &) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
@@ -156,8 +156,8 @@ namespace stage
         bool PerformTest_ItemProfileReport();
         bool PerformTest_ArmorRatings();
 
-        void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
-        void DrawImageInspect(sf::RenderTarget &, const sf::RenderStates &);
+        void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
+        void DrawImageInspect(sf::RenderTarget &, sf::RenderStates) const;
 
         // see comment in .cpp file
         // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
@@ -177,13 +177,13 @@ namespace stage
         static const float IMAGE_INSPECT_DIMMENSION_;
 
     private:
-        std::vector<gui::CachedTexture> textures_;
+        mutable std::vector<gui::CachedTexture> textures_;
         gui::OuroborosUPtr_t ouroborosUPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;
         gui::CachedTexture animBackgroundCachedTexture_;
         sf::Sprite animBackgroundSprite_;
-        std::vector<ImageInspectPacket> imageInspectPackets_;
+        mutable std::vector<ImageInspectPacket> imageInspectPackets_;
         bool willInspectImages_;
         bool isInspectingImages_;
         std::size_t imageInspectIndex_;

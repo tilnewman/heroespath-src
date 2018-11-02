@@ -38,7 +38,7 @@ namespace popup
         bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 

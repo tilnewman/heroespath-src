@@ -799,49 +799,49 @@ namespace stage
         }
     }
 
-    void CombatStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CombatStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(*commandBoxUPtr_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(*commandBoxUPtr_, states);
+        StageBase::draw(target, states);
 
-        // statusBoxUPtr_->draw(target, STATES);
+        // statusBoxUPtr_->draw(target, states);
 
         if (((turnPhase_ >= TurnPhase::Determine) && (turnPhase_ <= TurnPhase::PostPerformPause))
             || (IsNonPlayerCharacterTurnValid()
                 && (TurnPhase::PostCenterAndZoomInPause == turnPhase_)))
         {
-            turnBoxUPtr_->draw(target, STATES);
+            turnBoxUPtr_->draw(target, states);
 
-            titleTBoxTextRegionUPtr_->draw(target, STATES);
-            weaponTBoxTextRegionUPtr_->draw(target, STATES);
-            armorTBoxTextRegionUPtr_->draw(target, STATES);
-            infoTBoxTextRegionUPtr_->draw(target, STATES);
-            enemyActionTBoxRegionUPtr_->draw(target, STATES);
-            enemyCondsTBoxRegionUPtr_->draw(target, STATES);
+            titleTBoxTextRegionUPtr_->draw(target, states);
+            weaponTBoxTextRegionUPtr_->draw(target, states);
+            armorTBoxTextRegionUPtr_->draw(target, states);
+            infoTBoxTextRegionUPtr_->draw(target, states);
+            enemyActionTBoxRegionUPtr_->draw(target, states);
+            enemyCondsTBoxRegionUPtr_->draw(target, states);
 
-            attackTBoxButtonUPtr_->draw(target, STATES);
-            fightTBoxButtonUPtr_->draw(target, STATES);
-            castTBoxButtonUPtr_->draw(target, STATES);
-            runTBoxButtonUPtr_->draw(target, STATES);
+            attackTBoxButtonUPtr_->draw(target, states);
+            fightTBoxButtonUPtr_->draw(target, states);
+            castTBoxButtonUPtr_->draw(target, states);
+            runTBoxButtonUPtr_->draw(target, states);
 
-            advanceTBoxButtonUPtr_->draw(target, STATES);
-            retreatTBoxButtonUPtr_->draw(target, STATES);
-            flyTBoxButtonUPtr_->draw(target, STATES);
-            landTBoxButtonUPtr_->draw(target, STATES);
+            advanceTBoxButtonUPtr_->draw(target, states);
+            retreatTBoxButtonUPtr_->draw(target, states);
+            flyTBoxButtonUPtr_->draw(target, states);
+            landTBoxButtonUPtr_->draw(target, states);
 
-            blockTBoxButtonUPtr_->draw(target, STATES);
-            skipTBoxButtonUPtr_->draw(target, STATES);
-            roarTBoxButtonUPtr_->draw(target, STATES);
-            pounceTBoxButtonUPtr_->draw(target, STATES);
+            blockTBoxButtonUPtr_->draw(target, states);
+            skipTBoxButtonUPtr_->draw(target, states);
+            roarTBoxButtonUPtr_->draw(target, states);
+            pounceTBoxButtonUPtr_->draw(target, states);
         }
 
         if (false == hasCombatEnded_)
         {
-            combatAnimationUPtr_->Draw(target, STATES);
+            combatAnimationUPtr_->draw(target, states);
         }
 
-        // DrawHoverText(target, STATES);
-        // testingTextRegionUPtr_->draw(target, STATES);
+        // DrawHoverText(target, states);
+        // testingTextRegionUPtr_->draw(target, states);
     }
 
     void CombatStage::UpdateTime(const float ELAPSED_TIME_SEC)

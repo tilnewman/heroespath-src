@@ -24,10 +24,10 @@ namespace popup
 
     PopupStageGeneric::~PopupStageGeneric() = default;
 
-    void PopupStageGeneric::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageGeneric::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        StageBase::draw(target, states);
     }
 
 } // namespace popup

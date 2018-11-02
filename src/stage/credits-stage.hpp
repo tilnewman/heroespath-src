@@ -41,7 +41,7 @@ namespace stage
 
         void Setup() final;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) final;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) final;
+        void draw(sf::RenderTarget &, sf::RenderStates) const final;
 
         bool KeyPress(const sf::Event::KeyEvent &) final;
         bool KeyRelease(const sf::Event::KeyEvent &) final;

@@ -97,11 +97,11 @@ namespace popup
         EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
     }
 
-    void PopupStageCharacterSelect::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageCharacterSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageImageSelect::Draw(target, STATES);
-        charDetailsTextRegionUPtr_->draw(target, STATES);
-        PopupStageBase::DrawRedX(target, STATES);
+        PopupStageImageSelect::draw(target, states);
+        charDetailsTextRegionUPtr_->draw(target, states);
+        PopupStageBase::DrawRedX(target, states);
     }
 
     std::size_t PopupStageCharacterSelect::CountMax() const

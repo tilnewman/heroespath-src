@@ -78,11 +78,11 @@ namespace stage
         EntityAdd(candleAnimUPtr_.get());
     }
 
-    void InnStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void InnStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundBox_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(backgroundBox_, states);
+        target.draw(bottomSymbol_, states);
+        StageBase::draw(target, states);
     }
 
 } // namespace stage

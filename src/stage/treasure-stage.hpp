@@ -83,7 +83,7 @@ namespace stage
         bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         bool HandleListboxCallback(
@@ -146,7 +146,7 @@ namespace stage
         void TakeItem(const item::ItemPtr_t);
         void PutItemBack(const item::ItemPtr_t);
 
-        void UpdateItemDisplay();
+        void UpdateItemDisplay() const;
 
         // returns true if a popup is displayed
         bool ProcessLockpickTitleAndPopupIfNeeded();
@@ -167,7 +167,7 @@ namespace stage
         static const std::string POPUP_NAME_ALL_ITEMS_TAKEN_;
         static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
-        TreasureDisplayStagePtrOpt_t displayStagePtrOpt_;
+        mutable TreasureDisplayStagePtrOpt_t displayStagePtrOpt_;
         item::TreasureImage::Enum treasureImageType_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
@@ -175,7 +175,7 @@ namespace stage
         combat::Trap trap_;
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
-        bool updateItemDisplayNeeded_;
+        mutable bool updateItemDisplayNeeded_;
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
         combat::CreatureInteraction creatureInteraction_;

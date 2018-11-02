@@ -138,15 +138,15 @@ namespace popup
             "CombatOverPopupDesc", COMBAT_DESC_TEXTINFO, COMBAT_DESC_RECT);
     }
 
-    void PopupStageCombatOver::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageCombatOver::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
 
-        target.draw(bgSprite_, STATES);
-        target.draw(*titleTextRegionUPtr_, STATES);
-        target.draw(*descTextRegionUPtr_, STATES);
+        target.draw(bgSprite_, states);
+        target.draw(*titleTextRegionUPtr_, states);
+        target.draw(*descTextRegionUPtr_, states);
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
     }
 
     const std::string

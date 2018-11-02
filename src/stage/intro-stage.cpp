@@ -63,11 +63,11 @@ namespace stage
         sfutil::Center(titleSprite_);
     }
 
-    void IntroStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void IntroStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         if (hasAnimStarted_)
         {
-            target.draw(titleSprite_, STATES);
+            target.draw(titleSprite_, states);
         }
     }
 

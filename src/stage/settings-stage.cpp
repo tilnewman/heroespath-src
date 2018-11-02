@@ -192,13 +192,13 @@ namespace stage
         hasStageAlreadyBeenSetup_ = true;
     }
 
-    void SettingsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void SettingsStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(screenBgBox_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        target.draw(*settingsBoxUPtr_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(screenBgBox_, states);
+        target.draw(stageTitle_, states);
+        target.draw(bottomSymbol_, states);
+        target.draw(*settingsBoxUPtr_, states);
+        StageBase::draw(target, states);
     }
 
     void SettingsStage::HandleResolutionChange() { Setup(); }

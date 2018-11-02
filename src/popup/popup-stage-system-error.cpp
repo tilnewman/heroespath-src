@@ -37,11 +37,11 @@ namespace popup
         sfutil::FitAndCenterTo(bgSprite_, textRegion_);
     }
 
-    void PopupStageSystemError::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageSystemError::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        target.draw(bgSprite_, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        target.draw(bgSprite_, states);
+        StageBase::draw(target, states);
     }
 
 } // namespace popup

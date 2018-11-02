@@ -649,28 +649,28 @@ namespace stage
         ForceSelectionAndDrawOfLeftListBox();
     }
 
-    void InventoryStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void InventoryStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(paperBgSprite_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        target.draw(creatureSprite_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(paperBgSprite_, states);
+        target.draw(stageTitle_, states);
+        target.draw(bottomSymbol_, states);
+        target.draw(creatureSprite_, states);
+        StageBase::draw(target, states);
 
         // Always draw because it is a fast operation and will
         // be fully transparent when should not be drawn.
-        target.draw(detailViewQuads_, STATES);
+        target.draw(detailViewQuads_, states);
 
         if (detailViewTextUPtr_)
         {
-            sf::RenderStates statesBlendAdd { STATES };
+            sf::RenderStates statesBlendAdd { states };
             statesBlendAdd.blendMode = sf::BlendAdd;
             target.draw(detailViewSprite_, statesBlendAdd);
 
-            detailViewTextUPtr_->draw(target, STATES);
+            detailViewTextUPtr_->draw(target, states);
         }
 
-        auto newBlendModeStates { STATES };
+        auto newBlendModeStates { states };
         newBlendModeStates.blendMode = sf::BlendAdd;
 
         if (sparkleAnimUPtr_)

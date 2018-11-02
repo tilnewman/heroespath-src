@@ -33,7 +33,7 @@ namespace stage
         virtual ~IntroStage();
 
         void Setup() final;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) final;
+        void draw(sf::RenderTarget &, sf::RenderStates) const final;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) final;
 
         bool KeyPress(const sf::Event::KeyEvent &) final;

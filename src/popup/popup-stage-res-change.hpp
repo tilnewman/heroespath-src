@@ -28,7 +28,7 @@ namespace popup
         explicit PopupStageResChange(const PopupInfo &);
         virtual ~PopupStageResChange();
 
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     private:

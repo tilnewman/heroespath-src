@@ -142,10 +142,10 @@ namespace stage
         backgroundColoredRect_.Setup(innerRect_, sf::Color(0, 0, 0, BACKGROUND_ALPHA_));
     }
 
-    void InteractStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void InteractStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         DrawInteraction(target);
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
     }
 
     void InteractStage::UpdateTime(const float)

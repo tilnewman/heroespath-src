@@ -65,14 +65,14 @@ namespace stage
         Setup_Map();
     }
 
-    void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void AdventureDisplayStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(bgSprite_, STATES);
-        target.draw(bottomImage_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(*characterListUPtr_, STATES);
-        target.draw(*mapUPtr_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(bgSprite_, states);
+        target.draw(bottomImage_, states);
+        target.draw(stageTitle_, states);
+        target.draw(*characterListUPtr_, states);
+        target.draw(*mapUPtr_, states);
+        StageBase::draw(target, states);
     }
 
     void AdventureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)

@@ -305,26 +305,26 @@ namespace stage
         UpdateScrollSpeed(ELAPSED_TIME_SECONDS);
     }
 
-    void CreditsStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CreditsStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(*boxUPtr_, STATES);
+        target.draw(*boxUPtr_, states);
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
 
         for (const auto & CREDIT_UPTR : creditUVec_)
         {
             if (IsCreditVisible(*CREDIT_UPTR))
             {
-                target.draw(*CREDIT_UPTR, STATES);
+                target.draw(*CREDIT_UPTR, states);
             }
         }
 
         // draw solid black rectangles above and below the credits box to hide the
         // scrolling credits when outside the box
-        target.draw(blackRectUpper_, STATES);
-        target.draw(blackRectLower_, STATES);
-        target.draw(bpTitleSprite_, STATES);
-        target.draw(*boxBorderUPtr_, STATES);
+        target.draw(blackRectUpper_, states);
+        target.draw(blackRectLower_, states);
+        target.draw(bpTitleSprite_, states);
+        target.draw(*boxBorderUPtr_, states);
     }
 
     bool CreditsStage::KeyPress(const sf::Event::KeyEvent & KE)

@@ -128,23 +128,23 @@ namespace popup
         SetupRedXImage();
     }
 
-    void PopupStageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageBase::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundSprite_, STATES);
+        target.draw(backgroundSprite_, states);
 
         if (popupInfo_.WillAddRandImage())
         {
-            target.draw(accentSprite1_, STATES);
+            target.draw(accentSprite1_, states);
         }
 
-        textRegionUPtr_->draw(target, STATES);
+        textRegionUPtr_->draw(target, states);
     }
 
-    void PopupStageBase::DrawRedX(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageBase::DrawRedX(sf::RenderTarget & target, sf::RenderStates states) const
     {
         if (willShowXImage_)
         {
-            target.draw(xSymbolSprite_, STATES);
+            target.draw(xSymbolSprite_, states);
         }
     }
 

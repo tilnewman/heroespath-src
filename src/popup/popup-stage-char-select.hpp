@@ -34,7 +34,7 @@ namespace popup
         using PopupStageBase::HandleCallback;
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     protected:
         bool HandleSelect() override;

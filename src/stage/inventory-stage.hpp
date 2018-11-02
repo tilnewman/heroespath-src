@@ -174,7 +174,7 @@ namespace stage
         bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;

@@ -26,10 +26,10 @@ namespace popup
 
     PopupStageResChange::~PopupStageResChange() = default;
 
-    void PopupStageResChange::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageResChange::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        StageBase::draw(target, states);
     }
 
     void PopupStageResChange::UpdateTime(const float ELAPSED_TIME_SECONDS)

@@ -161,53 +161,51 @@ namespace stage
         animBackgroundSprite_.setPosition(0.0f, 0.0f);
     }
 
-    void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void TestingStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        gui::Display::Instance()->ClearToBlack();
-
         if (waitingForKeyOrClickId_ > 0)
         {
             for (const auto & SPRITE : waitingForKeyOrClick_ToDraw_Sprites_)
             {
-                target.draw(SPRITE, STATES);
+                target.draw(SPRITE, states);
             }
 
             for (const auto & GOLDBAR : waitingForKeyOrClick_ToDraw_GoldBars_)
             {
-                target.draw(GOLDBAR, STATES);
+                target.draw(GOLDBAR, states);
             }
 
             for (const auto & BORDER : waitingForKeyOrClick_ToDraw_Borders_)
             {
-                target.draw(BORDER, STATES);
+                target.draw(BORDER, states);
             }
 
             for (const auto & RECTANGLE_SHAPE : waitingForKeyOrClick_ToDraw_RectangleShapes_)
             {
-                target.draw(RECTANGLE_SHAPE, STATES);
+                target.draw(RECTANGLE_SHAPE, states);
             }
 
             for (const auto & VERTEX_ARRAY : waitingForKeyOrClick_ToDraw_VertexArrays_)
             {
-                target.draw(VERTEX_ARRAY, STATES);
+                target.draw(VERTEX_ARRAY, states);
             }
 
             for (const auto & TEXT : waitingForKeyOrClick_ToDraw_Texts_)
             {
-                target.draw(TEXT, STATES);
+                target.draw(TEXT, states);
             }
         }
         else
         {
-            StageBase::Draw(target, STATES);
+            StageBase::draw(target, states);
 
             if (isInspectingImages_)
             {
-                DrawImageInspect(target, STATES);
+                DrawImageInspect(target, states);
             }
             else
             {
-                DrawNormal(target, STATES);
+                DrawNormal(target, states);
             }
         }
     }
@@ -1390,12 +1388,12 @@ namespace stage
         }
     }
 
-    void TestingStage::DrawNormal(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void TestingStage::DrawNormal(sf::RenderTarget & target, sf::RenderStates states) const
     {
         if (animUPtr_)
         {
-            target.draw(animBackgroundSprite_, STATES);
-            animUPtr_->draw(target, STATES);
+            target.draw(animBackgroundSprite_, states);
+            animUPtr_->draw(target, states);
         }
 
         const auto IMAGE_POS_TOP { 1.0f };
@@ -1428,7 +1426,7 @@ namespace stage
 
                 posLeft -= (sprite.getGlobalBounds().width + 5.0f);
                 sprite.setPosition(posLeft, IMAGE_POS_TOP);
-                target.draw(sprite, STATES);
+                target.draw(sprite, states);
                 ++imageDrawCount;
 
                 if (posLeft < 0.0f)
@@ -1457,7 +1455,7 @@ namespace stage
             // The extra * 2 is added because without it, the text at the bottom is cut off.
             auto posTop { StageRegion().height - (TEXT_HEIGHT * 2.0f) };
 
-            StrSizePairVec_t::reverse_iterator rItr { testingBlurbsVec_.rbegin() };
+            StrSizePairVec_t::const_reverse_iterator rItr { testingBlurbsVec_.crbegin() };
             for (; rItr != testingBlurbsVec_.rend(); ++rItr)
             {
                 std::ostringstream ss;
@@ -1473,7 +1471,7 @@ namespace stage
 
                 text.setPosition(1.0f, posTop);
 
-                target.draw(text, STATES);
+                target.draw(text, states);
 
                 posTop -= TEXT_HEIGHT;
 
@@ -1485,7 +1483,7 @@ namespace stage
         }
     }
 
-    void TestingStage::DrawImageInspect(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void TestingStage::DrawImageInspect(sf::RenderTarget & target, sf::RenderStates states) const
     {
         auto willLowerText { false };
         auto posX { 0.0f };
@@ -1516,7 +1514,7 @@ namespace stage
 
                 willLowerText = !willLowerText;
 
-                target.draw(packet, STATES);
+                target.draw(packet, states);
 
                 posX += IMAGE_INSPECT_DIMMENSION_;
                 ++imageIndex;

@@ -169,12 +169,12 @@ namespace combat
         offScreenSprite_.setPosition(battlefieldRect_.left, battlefieldRect_.top);
     }
 
-    void CombatDisplay::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CombatDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(offScreenSprite_, STATES);
-        target.draw(*boxUPtr_, STATES);
-        StageBase::Draw(target, STATES);
-        target.draw(*summaryViewUPtr_, STATES);
+        target.draw(offScreenSprite_, states);
+        target.draw(*boxUPtr_, states);
+        StageBase::draw(target, states);
+        target.draw(*summaryViewUPtr_, states);
     }
 
     bool CombatDisplay::StartSummaryView(const sf::Vector2f & MOUSE_POS)

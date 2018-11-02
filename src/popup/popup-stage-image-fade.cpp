@@ -115,20 +115,20 @@ namespace popup
         spriteCurr_.setColor(sf::Color(255, 255, 255, 0));
     }
 
-    void PopupStageImageFade::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageImageFade::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
 
         if (popupInfo_.ImagesCount() > 1)
         {
-            target.draw(spritePrev_, STATES);
+            target.draw(spritePrev_, states);
         }
 
-        target.draw(spriteCurr_, STATES);
-        target.draw(*titleTextRegionUPtr_, STATES);
-        target.draw(*descTextRegionUPtr_, STATES);
+        target.draw(spriteCurr_, states);
+        target.draw(*titleTextRegionUPtr_, states);
+        target.draw(*descTextRegionUPtr_, states);
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
     }
 
     void PopupStageImageFade::UpdateTime(const float ELAPSED_TIME_SECONDS)

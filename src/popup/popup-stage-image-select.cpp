@@ -116,23 +116,23 @@ namespace popup
         }
     }
 
-    void PopupStageImageSelect::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageImageSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
 
-        target.draw(spriteCurr_, STATES);
+        target.draw(spriteCurr_, states);
 
         if (areImagesMoving_ && (isInitialAnimComplete_))
         {
-            target.draw(spritePrev_, STATES);
+            target.draw(spritePrev_, states);
         }
 
         if (willShowImageCount_ && (imageNumTextRegionUPtr_))
         {
-            imageNumTextRegionUPtr_->draw(target, STATES);
+            imageNumTextRegionUPtr_->draw(target, states);
         }
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
     }
 
     void PopupStageImageSelect::UpdateTime(const float ELAPSED_TIME_SECONDS)

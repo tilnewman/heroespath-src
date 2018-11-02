@@ -143,12 +143,12 @@ namespace stage
         EntityAdd(exitButtonUPtr_.get());
     }
 
-    void MainMenuStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void MainMenuStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(background_, STATES);
-        target.draw(titleSprite_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(background_, states);
+        target.draw(titleSprite_, states);
+        target.draw(bottomSymbol_, states);
+        StageBase::draw(target, states);
     }
 
     bool MainMenuStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)

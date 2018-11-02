@@ -31,7 +31,7 @@ namespace popup
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageGeneric();
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
     };
 } // namespace popup
 } // namespace heroespath

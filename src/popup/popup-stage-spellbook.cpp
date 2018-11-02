@@ -142,29 +142,29 @@ namespace popup
         SetFocus(listBoxUPtr_.get());
     }
 
-    void PopupStageSpellbook::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageSpellbook::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
 
-        target.draw(accentSprite1_, STATES);
-        target.draw(accentSprite2_, STATES);
-        target.draw(playerSprite_, STATES);
-        target.draw(spellSprite_, STATES);
-        charDetailsTextRegionUPtr_->draw(target, STATES);
-        listBoxLabelTextRegionUPtr_->draw(target, STATES);
-        spellTitleTextRegionUPtr_->draw(target, STATES);
-        spellDetailsTextUPtr_->draw(target, STATES);
+        target.draw(accentSprite1_, states);
+        target.draw(accentSprite2_, states);
+        target.draw(playerSprite_, states);
+        target.draw(spellSprite_, states);
+        charDetailsTextRegionUPtr_->draw(target, states);
+        listBoxLabelTextRegionUPtr_->draw(target, states);
+        spellTitleTextRegionUPtr_->draw(target, states);
+        spellDetailsTextUPtr_->draw(target, states);
 
         if (willShowXImage_)
         {
-            unableTextUPtr_->draw(target, STATES);
+            unableTextUPtr_->draw(target, states);
         }
 
-        spellDescTextUPtr_->draw(target, STATES);
+        spellDescTextUPtr_->draw(target, states);
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
 
-        PopupStageBase::DrawRedX(target, STATES);
+        PopupStageBase::DrawRedX(target, states);
     }
 
     void PopupStageSpellbook::UpdateTime(const float ELAPSED_TIME_SECONDS)

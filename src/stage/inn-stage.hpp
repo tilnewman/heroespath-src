@@ -45,7 +45,7 @@ namespace stage
         virtual ~InnStage();
 
         void Setup() final;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) final;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     private:
         gui::StageTitle stageTitle_;

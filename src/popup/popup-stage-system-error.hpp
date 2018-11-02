@@ -29,7 +29,7 @@ namespace popup
         virtual ~PopupStageSystemError();
 
         void Setup() override;
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     private:
         gui::CachedTexture bgCachedTexture_;

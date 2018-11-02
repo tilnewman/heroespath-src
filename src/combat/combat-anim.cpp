@@ -109,30 +109,30 @@ namespace combat
         , runAnimPosVOrig_(0.0f, 0.0f)
     {}
 
-    void CombatAnimation::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CombatAnimation::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         if (projAnimWillDraw_)
         {
-            sf::RenderStates tempStates(STATES);
+            sf::RenderStates tempStates(states);
             tempStates.blendMode = sf::BlendAdd;
             target.draw(projAnimSprite_, tempStates);
         }
 
         for (const auto & NEXT_SPARKSANIM_UPTR : sparksAnimUVec_)
         {
-            NEXT_SPARKSANIM_UPTR->draw(target, STATES);
+            NEXT_SPARKSANIM_UPTR->draw(target, states);
         }
 
         for (const auto & NEXT_CLOUDANIM_UPTR : cloudAnimUVec_)
         {
-            NEXT_CLOUDANIM_UPTR->draw(target, STATES);
+            NEXT_CLOUDANIM_UPTR->draw(target, states);
         }
 
         for (const auto & NEXT_ANIM_UPTR : animUVec_)
         {
             if (NEXT_ANIM_UPTR->IsFinished() == false)
             {
-                NEXT_ANIM_UPTR->draw(target, STATES);
+                NEXT_ANIM_UPTR->draw(target, states);
             }
         }
 
@@ -140,7 +140,7 @@ namespace combat
         {
             if (NEXT_SONGANIM_PTR->IsFinished() == false)
             {
-                NEXT_SONGANIM_PTR->draw(target, STATES);
+                NEXT_SONGANIM_PTR->draw(target, states);
             }
         }
 
@@ -148,7 +148,7 @@ namespace combat
         {
             if (NEXT_SPARKLEANIM_PTR->IsFinished() == false)
             {
-                NEXT_SPARKLEANIM_PTR->draw(target, STATES);
+                NEXT_SPARKLEANIM_PTR->draw(target, states);
             }
         }
 
@@ -156,7 +156,7 @@ namespace combat
         {
             if (NEXT_TEXTANIM_UPTR->IsFinished() == false)
             {
-                NEXT_TEXTANIM_UPTR->draw(target, STATES);
+                NEXT_TEXTANIM_UPTR->draw(target, states);
             }
         }
     }

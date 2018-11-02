@@ -215,7 +215,7 @@ namespace stage
 
         void PreSetup();
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;

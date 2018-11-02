@@ -217,38 +217,38 @@ namespace stage
         SetupInitial();
     }
 
-    void TreasureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void TreasureDisplayStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(bgSprite_, STATES);
-        target.draw(titleImage_, STATES);
-        target.draw(bottomImage_, STATES);
-        target.draw(corpseSprite_, STATES);
-        target.draw(treasureSprite_, STATES);
+        target.draw(bgSprite_, states);
+        target.draw(titleImage_, states);
+        target.draw(bottomImage_, states);
+        target.draw(corpseSprite_, states);
+        target.draw(treasureSprite_, states);
 
         if (instrTextUPtr_)
         {
-            target.draw(*instrTextUPtr_, STATES);
+            target.draw(*instrTextUPtr_, states);
         }
 
         if (characterImageUPtr_)
         {
-            target.draw(*characterImageUPtr_, STATES);
+            target.draw(*characterImageUPtr_, states);
         }
 
         if ((item::TreasureAvailable::HeldAndLockbox == treasureAvailable_)
             || (item::TreasureAvailable::LockboxOnly == treasureAvailable_))
         {
-            target.draw(coinsSprite_, STATES);
+            target.draw(coinsSprite_, states);
         }
 
-        StageBase::Draw(target, STATES);
+        StageBase::draw(target, states);
 
         if (redXImageUPtr_)
         {
-            target.draw(*redXImageUPtr_, STATES);
+            target.draw(*redXImageUPtr_, states);
         }
 
-        target.draw(itemDetailViewer_, STATES);
+        target.draw(itemDetailViewer_, states);
     }
 
     bool TreasureDisplayStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)

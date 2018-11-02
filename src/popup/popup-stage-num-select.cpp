@@ -137,10 +137,10 @@ namespace popup
         textEntryBoxUPtr_->SetHasFocus(true);
     }
 
-    void PopupStageNumberSelect::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageNumberSelect::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        StageBase::draw(target, states);
     }
 
     bool PopupStageNumberSelect::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)

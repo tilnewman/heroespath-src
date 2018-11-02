@@ -46,9 +46,9 @@ namespace popup
 
         void Setup() override;
 
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        void DrawRedX(sf::RenderTarget &, const sf::RenderStates &);
+        void DrawRedX(sf::RenderTarget &, sf::RenderStates) const;
 
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 

@@ -335,13 +335,13 @@ namespace stage
         */
     }
 
-    void CharacterStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CharacterStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(background_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        StageBase::Draw(target, STATES);
-        target.draw(statBox_, STATES);
+        target.draw(background_, states);
+        target.draw(stageTitle_, states);
+        target.draw(bottomSymbol_, states);
+        StageBase::draw(target, states);
+        target.draw(statBox_, states);
     }
 
     bool CharacterStage::KeyPress(const sf::Event::KeyEvent & KEY_EVENT)

@@ -42,7 +42,7 @@ namespace popup
         bool HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t &) override;
 
         void Setup() override;
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:

@@ -64,7 +64,7 @@ namespace stage
         void PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr);
 
         void Setup() override;
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 

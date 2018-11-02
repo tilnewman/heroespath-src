@@ -51,7 +51,7 @@ namespace stage
         virtual ~AdventureDisplayStage();
 
         void Setup() override;
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
         map::MapPtr_t GetMapForStageFactory() { return mapUPtr_.get(); }

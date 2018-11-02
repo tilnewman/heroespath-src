@@ -197,17 +197,17 @@ namespace stage
         }
     }
 
-    void StageBase::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void StageBase::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         for (auto & entityPtr : entityPVec_)
         {
-            entityPtr->draw(target, STATES);
+            entityPtr->draw(target, states);
         }
 
         if (hoverTextBoxUPtr_)
         {
-            target.draw(*hoverTextBoxUPtr_, STATES);
-            target.draw(hoverText_, STATES);
+            target.draw(*hoverTextBoxUPtr_, states);
+            target.draw(hoverText_, states);
         }
     }
 

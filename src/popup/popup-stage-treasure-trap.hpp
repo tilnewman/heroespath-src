@@ -33,7 +33,7 @@ namespace popup
         virtual ~PopupStageTreasureTrap();
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     private:
         void SetupTitleText();

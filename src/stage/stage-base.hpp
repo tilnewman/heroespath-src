@@ -94,7 +94,7 @@ namespace stage
         void RemoveFocus() override final;
         void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override final;
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         void HandleResolutionChange() override {}
 

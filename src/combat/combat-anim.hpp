@@ -102,7 +102,7 @@ namespace combat
     using ShakeInfoMap_t = misc::VectorMap<combat::CombatNodePtr_t, ShakeAnimInfo>;
 
     // Responsible for displaying combat related animations.
-    class CombatAnimation
+    class CombatAnimation : public sf::Drawable
     {
     public:
         CombatAnimation(const CombatAnimation &) = delete;
@@ -112,7 +112,7 @@ namespace combat
 
         CombatAnimation();
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 

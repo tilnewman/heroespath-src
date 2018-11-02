@@ -40,10 +40,10 @@ namespace popup
         SetupAccentImage();
     }
 
-    void PopupStageTreasureTrap::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageTreasureTrap::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        StageBase::draw(target, states);
     }
 
     void PopupStageTreasureTrap::SetupTitleText()

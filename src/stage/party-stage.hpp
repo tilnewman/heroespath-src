@@ -85,7 +85,7 @@ namespace stage
         void Setup_CharactersListBox();
         void Setup_PartyListBox();
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
 

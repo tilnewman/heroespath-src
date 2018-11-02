@@ -482,27 +482,27 @@ namespace stage
         EntityAdd(partyListBoxUPtr_.get());
     }
 
-    void PartyStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PartyStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundBox_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(bottomSymbol_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(backgroundBox_, states);
+        target.draw(stageTitle_, states);
+        target.draw(bottomSymbol_, states);
+        StageBase::draw(target, states);
 
         if (willDisplayCharacterCountWarningText_)
         {
-            target.draw(*warningTextRegionUPtr_, STATES);
+            target.draw(*warningTextRegionUPtr_, states);
         }
 
         if (willShowMouseOverPopup_)
         {
-            target.draw(listboxSelectedItemColoredRectSlider_, STATES);
-            target.draw(mouseOverBackground_, STATES);
-            target.draw(mouseOverCreatureSprite_, STATES);
+            target.draw(listboxSelectedItemColoredRectSlider_, states);
+            target.draw(mouseOverBackground_, states);
+            target.draw(mouseOverCreatureSprite_, states);
 
             if (mouseOverTextRegionUPtr_ && mouseOverSlider_.IsStopped())
             {
-                mouseOverTextRegionUPtr_->draw(target, STATES);
+                mouseOverTextRegionUPtr_->draw(target, states);
             }
         }
     }

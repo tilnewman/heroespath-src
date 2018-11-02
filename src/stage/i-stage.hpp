@@ -16,6 +16,7 @@
 #include "misc/not-null.hpp"
 #include "stage/stage-enum.hpp"
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
 
@@ -50,7 +51,7 @@ namespace stage
     struct SetupPacket;
 
     // A common pure-virtual interface for all Stage classes.
-    struct IStage
+    struct IStage : public sf::Drawable
     {
         virtual ~IStage() = default;
 
@@ -80,7 +81,7 @@ namespace stage
         virtual void RemoveFocus() = 0;
         virtual void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) = 0;
 
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
+        virtual void draw(sf::RenderTarget &, sf::RenderStates) const = 0;
 
         virtual void HandleResolutionChange() = 0;
 

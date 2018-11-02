@@ -142,13 +142,13 @@ namespace stage
         showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
 
-    void CampStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void CampStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundBox_, STATES);
-        target.draw(stageTitle_, STATES);
-        target.draw(campfireSprite_, STATES);
-        target.draw(botSymbol_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(backgroundBox_, states);
+        target.draw(stageTitle_, states);
+        target.draw(campfireSprite_, states);
+        target.draw(botSymbol_, states);
+        StageBase::draw(target, states);
     }
 
     void CampStage::UpdateTime(const float ELAPSED_TIME_SECONDS)

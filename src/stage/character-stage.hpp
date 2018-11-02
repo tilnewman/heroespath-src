@@ -91,7 +91,7 @@ namespace stage
 
         void Setup() override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;

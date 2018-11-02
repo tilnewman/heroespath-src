@@ -26,10 +26,10 @@ namespace popup
 
     PopupStageInventoryPrompt::~PopupStageInventoryPrompt() = default;
 
-    void PopupStageInventoryPrompt::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void PopupStageInventoryPrompt::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        PopupStageBase::Draw(target, STATES);
-        StageBase::Draw(target, STATES);
+        PopupStageBase::draw(target, states);
+        StageBase::draw(target, states);
     }
 
     bool PopupStageInventoryPrompt::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)

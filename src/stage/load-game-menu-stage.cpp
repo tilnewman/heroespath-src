@@ -221,11 +221,11 @@ namespace stage
         }
     }
 
-    void LoadGameStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void LoadGameStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(backgroundBox_, STATES);
-        target.draw(stageTitle_, STATES);
-        StageBase::Draw(target, STATES);
+        target.draw(backgroundBox_, states);
+        target.draw(stageTitle_, states);
+        StageBase::draw(target, states);
     }
 
     bool LoadGameStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
