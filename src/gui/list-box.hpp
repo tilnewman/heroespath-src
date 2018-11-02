@@ -835,24 +835,24 @@ namespace gui
                 MakeTypeString() << "::IndexOf(element={" << ELEMENT_PTR->ToString()
                                  << "}) but this listbox is empty.");
 
-            std::size_t index { elements_.size() };
-
             const auto ELEMENT_COUNT { elements_.size() };
+            std::size_t finalIndexOf { ELEMENT_COUNT };
+
             for (std::size_t i(0); i < ELEMENT_COUNT; ++i)
             {
                 if (ELEMENT_PTR == elements_.at(i).get())
                 {
-                    index = i;
+                    finalIndexOf = i;
                     break;
                 }
             }
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (index < elements_.size()),
+                (finalIndexOf < elements_.size()),
                 MakeTypeString() << "::IndexOf(element={" << ELEMENT_PTR->ToString()
                                  << "}) but that ListElement was not found.");
 
-            return index;
+            return finalIndexOf;
         }
 
         const_iterator begin() const noexcept { return std::begin(elements_); }

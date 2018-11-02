@@ -46,7 +46,7 @@ namespace creature
 
         ChanceFactory::ChanceFactory()
             : masterRankMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-rankclass-Master-rankmax"))
+                "heroespath-rankclass-Master-rankmax"))
             , clothingChanceMin_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
                   "heroespath-inventory-clothing-chance-min"))
             , clothingChanceMax_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
@@ -207,8 +207,6 @@ namespace creature
         const ClothingChances ChanceFactory::Make_ClothingChances(
             const Profile & PROFILE, const CreaturePtr_t CHARACTER_PTR) const
         {
-            using namespace item;
-
             ClothingChances clothingChances(Make_ClothingMaterialChances(PROFILE, CHARACTER_PTR));
 
             // capes, cloaks, and robes are mutually exclusive, so pre-select which (if any) are
@@ -217,7 +215,7 @@ namespace creature
             const auto IS_CLOAK_OWNED { [&]() {
                 try
                 {
-                    return clothingChances.cover_map[armor::cover_type::Cloak].IsOwned();
+                    return clothingChances.cover_map[item::armor::cover_type::Cloak].IsOwned();
                 }
                 catch (...)
                 {
@@ -225,7 +223,7 @@ namespace creature
                         "nonplayerMake_ClothingChances(creature={"
                         << CHARACTER_PTR->ToString()
                         << "})  threw exception during "
-                           "clothingChances.cover_map[armor::cover_type::Cloak].IsOwned()");
+                           "clothingChances.cover_map[item::armor::cover_type::Cloak].IsOwned()");
 
                     throw;
                 }
@@ -233,16 +231,19 @@ namespace creature
 
             if (IS_CLOAK_OWNED)
             {
-                clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleCertain();
-                clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cloak]
+                    .SetCountChanceSingleCertain();
+                clothingChances.cover_map[item::armor::cover_type::Cape]
+                    .SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Robe]
+                    .SetCountChanceSingleNoChance();
             }
             else
             {
                 const auto IS_ROBE_OWNED { [&]() {
                     try
                     {
-                        return clothingChances.cover_map[armor::cover_type::Robe].IsOwned();
+                        return clothingChances.cover_map[item::armor::cover_type::Robe].IsOwned();
                     }
                     catch (...)
                     {
@@ -250,7 +251,8 @@ namespace creature
                             "nonplayerMake_ClothingChances(creature={"
                             << CHARACTER_PTR->ToString()
                             << "})  threw exception during "
-                               "clothingChances.cover_map[armor::cover_type::Robe].IsOwned()");
+                               "clothingChances.cover_map[item::armor::cover_type::Robe].IsOwned("
+                               ")");
 
                         throw;
                     }
@@ -258,13 +260,13 @@ namespace creature
 
                 if (IS_ROBE_OWNED)
                 {
-                    clothingChances.cover_map[armor::cover_type::Cloak]
+                    clothingChances.cover_map[item::armor::cover_type::Cloak]
                         .SetCountChanceSingleNoChance();
 
-                    clothingChances.cover_map[armor::cover_type::Cape]
+                    clothingChances.cover_map[item::armor::cover_type::Cape]
                         .SetCountChanceSingleNoChance();
 
-                    clothingChances.cover_map[armor::cover_type::Robe]
+                    clothingChances.cover_map[item::armor::cover_type::Robe]
                         .SetCountChanceSingleCertain();
                 }
                 else
@@ -272,7 +274,8 @@ namespace creature
                     const auto IS_CAPE_OWNED { [&]() {
                         try
                         {
-                            return clothingChances.cover_map[armor::cover_type::Cape].IsOwned();
+                            return clothingChances.cover_map[item::armor::cover_type::Cape]
+                                .IsOwned();
                         }
                         catch (...)
                         {
@@ -280,7 +283,8 @@ namespace creature
                                 "nonplayerMake_ClothingChances(creature={"
                                 << CHARACTER_PTR->ToString()
                                 << "})  threw exception during "
-                                   "clothingChances.cover_map[armor::cover_type::Cape].IsOwned()");
+                                   "clothingChances.cover_map[item::armor::cover_type::Cape]."
+                                   "IsOwned()");
 
                             throw;
                         }
@@ -288,13 +292,13 @@ namespace creature
 
                     if (IS_CAPE_OWNED)
                     {
-                        clothingChances.cover_map[armor::cover_type::Cloak]
+                        clothingChances.cover_map[item::armor::cover_type::Cloak]
                             .SetCountChanceSingleNoChance();
 
-                        clothingChances.cover_map[armor::cover_type::Cape]
+                        clothingChances.cover_map[item::armor::cover_type::Cape]
                             .SetCountChanceSingleCertain();
 
-                        clothingChances.cover_map[armor::cover_type::Robe]
+                        clothingChances.cover_map[item::armor::cover_type::Robe]
                             .SetCountChanceSingleNoChance();
                     }
                 }
@@ -305,9 +309,12 @@ namespace creature
             if ((BODY_TYPE.NumArms() != 2) || (BODY_TYPE.HasWings() == true))
             {
                 clothingChances.shirt.SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cape]
+                    .SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cloak]
+                    .SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Robe]
+                    .SetCountChanceSingleNoChance();
             }
 
             if (BODY_TYPE.IsBiped())
@@ -320,9 +327,12 @@ namespace creature
                 clothingChances.pants.SetCountChanceSingleNoChance();
                 clothingChances.boots.SetCountChanceSingleNoChance();
                 clothingChances.shirt.SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
-                clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Robe]
+                    .SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cloak]
+                    .SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cape]
+                    .SetCountChanceSingleNoChance();
             }
 
             if ((BODY_TYPE.HasFingers() == false) || (BODY_TYPE.HasClaws() == true))
@@ -337,7 +347,8 @@ namespace creature
 
             if (BODY_TYPE.HasFangs() == true)
             {
-                clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cloak]
+                    .SetCountChanceSingleNoChance();
             }
 
             if (BODY_TYPE.IsSerpentine())
@@ -347,7 +358,8 @@ namespace creature
 
             if (BODY_TYPE.NumHeads() != 1)
             {
-                clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleNoChance();
+                clothingChances.cover_map[item::armor::cover_type::Cloak]
+                    .SetCountChanceSingleNoChance();
             }
 
             return clothingChances;
@@ -520,8 +532,6 @@ namespace creature
                     weaponChances.has_breath = true;
                 }
 
-                using namespace item;
-
                 if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsKnife()
                     || NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger())
                 {
@@ -535,21 +545,21 @@ namespace creature
                     MaterialChanceMap_t typicalKnifePrimaryMaterials;
                     if (PROFILE.complexityType == complexity_type::Simple)
                     {
-                        typicalKnifePrimaryMaterials[material::Stone] = 0.75f;
-                        typicalKnifePrimaryMaterials[material::Bone] = 0.25f;
+                        typicalKnifePrimaryMaterials[item::material::Stone] = 0.75f;
+                        typicalKnifePrimaryMaterials[item::material::Bone] = 0.25f;
                     }
                     else if (PROFILE.complexityType == complexity_type::Moderate)
                     {
-                        typicalKnifePrimaryMaterials[material::Stone] = 0.05f;
-                        typicalKnifePrimaryMaterials[material::Bone] = 0.05f;
-                        typicalKnifePrimaryMaterials[material::Steel] = 0.70f;
-                        typicalKnifePrimaryMaterials[material::Iron] = 0.20f;
+                        typicalKnifePrimaryMaterials[item::material::Stone] = 0.05f;
+                        typicalKnifePrimaryMaterials[item::material::Bone] = 0.05f;
+                        typicalKnifePrimaryMaterials[item::material::Steel] = 0.70f;
+                        typicalKnifePrimaryMaterials[item::material::Iron] = 0.20f;
                     }
                     else
                     {
-                        typicalKnifePrimaryMaterials[material::Steel] = 0.87f;
-                        typicalKnifePrimaryMaterials[material::Iron] = 0.1f;
-                        typicalKnifePrimaryMaterials[material::Platinum] = 0.03f;
+                        typicalKnifePrimaryMaterials[item::material::Steel] = 0.87f;
+                        typicalKnifePrimaryMaterials[item::material::Iron] = 0.1f;
+                        typicalKnifePrimaryMaterials[item::material::Platinum] = 0.03f;
                     }
 
                     PopulateWeaponMaterials(
@@ -573,7 +583,7 @@ namespace creature
                         = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsQuarterstaff();
 
                     MaterialChanceMap_t typicalStaffPrimaryMaterials;
-                    typicalStaffPrimaryMaterials[material::Wood] = 1.0f;
+                    typicalStaffPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     PopulateWeaponMaterials(
                         NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
@@ -586,11 +596,11 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalAxePrimaryMaterials;
-                    typicalAxePrimaryMaterials[material::Wood] = 1.0f;
+                    typicalAxePrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsAxe())
                     {
-                        SetWeaponChances<weapon::axe_type::Enum>(
+                        SetWeaponChances<item::weapon::axe_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.AxeType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -599,16 +609,17 @@ namespace creature
                             typicalAxePrimaryMaterials,
                             weaponChances.axe_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Axe)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Axe)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::axe_type::Count) };
+                                                           item::weapon::axe_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::axe_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::axe_type>())
                         {
-                            SetWeaponChances<weapon::axe_type::Enum>(
+                            SetWeaponChances<item::weapon::axe_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.AxeType(),
                                 CHANCE_PER_WEAPON,
@@ -622,11 +633,11 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
-                    typicalBladedStaffPrimaryMaterials[material::Wood] = 1.0f;
+                    typicalBladedStaffPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBladedStaff())
                     {
-                        SetWeaponChances<weapon::bladedstaff_type::Enum>(
+                        SetWeaponChances<item::weapon::bladedstaff_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.BladedStaffType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -635,16 +646,18 @@ namespace creature
                             typicalBladedStaffPrimaryMaterials,
                             weaponChances.bladedstaff_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::BladedStaff)
+                    else if (
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::BladedStaff)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::bladedstaff_type::Count) };
+                                                           item::weapon::bladedstaff_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::bladedstaff_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::bladedstaff_type>())
                         {
-                            SetWeaponChances<weapon::bladedstaff_type::Enum>(
+                            SetWeaponChances<item::weapon::bladedstaff_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.BladedStaffType(),
                                 CHANCE_PER_WEAPON,
@@ -658,11 +671,11 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalClubPrimaryMaterials;
-                    typicalClubPrimaryMaterials[material::Wood] = 1.0f;
+                    typicalClubPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsClub())
                     {
-                        SetWeaponChances<weapon::club_type::Enum>(
+                        SetWeaponChances<item::weapon::club_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.ClubType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -671,16 +684,17 @@ namespace creature
                             typicalClubPrimaryMaterials,
                             weaponChances.club_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Club)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Club)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::club_type::Count) };
+                                                           item::weapon::club_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::club_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::club_type>())
                         {
-                            SetWeaponChances<weapon::club_type::Enum>(
+                            SetWeaponChances<item::weapon::club_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.ClubType(),
                                 CHANCE_PER_WEAPON,
@@ -694,11 +708,11 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalProjectilePrimaryMaterials;
-                    typicalProjectilePrimaryMaterials[material::Wood] = 1.0f;
+                    typicalProjectilePrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsProjectile())
                     {
-                        SetWeaponChances<weapon::projectile_type::Enum>(
+                        SetWeaponChances<item::weapon::projectile_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.ProjectileType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -707,16 +721,18 @@ namespace creature
                             typicalProjectilePrimaryMaterials,
                             weaponChances.projectile_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Projectile)
+                    else if (
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Projectile)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::projectile_type::Count) };
+                                                           item::weapon::projectile_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::projectile_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::projectile_type>())
                         {
-                            SetWeaponChances<weapon::projectile_type::Enum>(
+                            SetWeaponChances<item::weapon::projectile_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.ProjectileType(),
                                 CHANCE_PER_WEAPON,
@@ -730,11 +746,11 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalSwordPrimaryMaterials;
-                    typicalSwordPrimaryMaterials[material::Steel] = 1.0f;
+                    typicalSwordPrimaryMaterials[item::material::Steel] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsSword())
                     {
-                        SetWeaponChances<weapon::sword_type::Enum>(
+                        SetWeaponChances<item::weapon::sword_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.SwordType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -743,16 +759,17 @@ namespace creature
                             typicalSwordPrimaryMaterials,
                             weaponChances.sword_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Sword)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Sword)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::sword_type::Count) };
+                                                           item::weapon::sword_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::sword_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::sword_type>())
                         {
-                            SetWeaponChances<weapon::sword_type::Enum>(
+                            SetWeaponChances<item::weapon::sword_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.SwordType(),
                                 CHANCE_PER_WEAPON,
@@ -765,24 +782,26 @@ namespace creature
                 }
 
                 {
-                    auto whipMaterialChanceMapMaker { [](const weapon::whip_type::Enum WHIP_TYPE) {
-                        MaterialChanceMap_t typicalWhipPrimaryMaterials;
+                    auto whipMaterialChanceMapMaker {
+                        [](const item::weapon::whip_type::Enum WHIP_TYPE) {
+                            MaterialChanceMap_t typicalWhipPrimaryMaterials;
 
-                        if (WHIP_TYPE == weapon::whip_type::Bullwhip)
-                        {
-                            typicalWhipPrimaryMaterials[material::Leather] = 1.0f;
-                        }
-                        else
-                        {
-                            typicalWhipPrimaryMaterials[material::Steel] = 1.0f;
-                        }
+                            if (WHIP_TYPE == item::weapon::whip_type::Bullwhip)
+                            {
+                                typicalWhipPrimaryMaterials[item::material::Leather] = 1.0f;
+                            }
+                            else
+                            {
+                                typicalWhipPrimaryMaterials[item::material::Steel] = 1.0f;
+                            }
 
-                        return typicalWhipPrimaryMaterials;
-                    } };
+                            return typicalWhipPrimaryMaterials;
+                        }
+                    };
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsWhip())
                     {
-                        SetWeaponChances<weapon::whip_type::Enum>(
+                        SetWeaponChances<item::weapon::whip_type::Enum>(
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.first.WhipType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
@@ -792,16 +811,17 @@ namespace creature
                                 NEXT_WEAPONINFO_CHANCE_PAIR.first.WhipType()),
                             weaponChances.whip_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Whip)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & item::weapon_type::Whip)
                     {
                         const auto CHANCE_PER_WEAPON { NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                        / static_cast<float>(
-                                                             weapon::whip_type::Count) };
+                                                           item::weapon::whip_type::Count) };
 
                         for (const auto & WEAPON_TYPE_WRAPPER :
-                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::whip_type>())
+                             item::weapon::WeaponTypeWrapper::MakeSpecificSet<
+                                 item::weapon::whip_type>())
                         {
-                            SetWeaponChances<weapon::whip_type::Enum>(
+                            SetWeaponChances<item::weapon::whip_type::Enum>(
                                 WEAPON_TYPE_WRAPPER.DetailsKeyName(),
                                 WEAPON_TYPE_WRAPPER.WhipType(),
                                 CHANCE_PER_WEAPON,
@@ -823,8 +843,6 @@ namespace creature
             const CreaturePtr_t CHARACTER_PTR,
             ArmorChances & armorChances) const
         {
-            using namespace boost::algorithm;
-
             RoleArmorChanceVec_t ignored;
             auto & roleArmorChances { ignored };
             roleArmorChanceMap_.Find(CHARACTER_PTR->Role(), roleArmorChances);
@@ -920,7 +938,9 @@ namespace creature
                     case item::armor_type::Skin:
                     case item::armor_type::Not:
                     case item::armor_type::Count:
-                    default: { break;
+                    default:
+                    {
+                        break;
                     }
                 }
             }
@@ -1762,17 +1782,15 @@ namespace creature
                         continue;
                     }
 
-                    using namespace item::armor;
-
-                    base_type::Enum baseType { base_type::Count };
+                    item::armor::base_type::Enum baseType { item::armor::base_type::Count };
                     const auto HAS_BASE_TYPE_STR { piecesVec.size() > 2 };
 
                     if (HAS_BASE_TYPE_STR)
                     {
-                        baseType = base_type::FromString(piecesVec[1]);
+                        baseType = item::armor::base_type::FromString(piecesVec[1]);
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
-                            (baseType != base_type::Count),
+                            (baseType != item::armor::base_type::Count),
                             "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
@@ -1781,7 +1799,7 @@ namespace creature
                                 << "to be parsed as a valid item::armor::base_type::Enum.");
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
-                            (baseType != base_type::Plain),
+                            (baseType != item::armor::base_type::Plain),
                             "nonplayerChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
@@ -1824,12 +1842,12 @@ namespace creature
         {
             ChanceFactory::WeaponSetVec_t weaponSets;
 
-            using namespace boost::algorithm;
+            namespace ba = boost::algorithm;
 
             const auto ROLE_STR { role::ToString(ROLE) };
             const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
-            const auto VALUE_STR_LOWER { to_lower_copy(
+            const auto VALUE_STR_LOWER { ba::to_lower_copy(
                 misc::ConfigFile::Instance()->Value(KEY_STR)) };
 
             std::vector<std::string> weaponSetVec;
@@ -1854,8 +1872,8 @@ namespace creature
                         {
                             // assume the instruction takes the form: [pick-<number>],
                             // where <number> must be a positive integer greater than zero
-                            const auto COUNT_STR { erase_first_copy(
-                                erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
+                            const auto COUNT_STR { ba::erase_first_copy(
+                                ba::erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
 
                             try
                             {

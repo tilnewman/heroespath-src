@@ -361,11 +361,11 @@ namespace combat
         AdjustCreatueVecForMurderousIntent(CREATURE_DECIDING_TURN_INFO, availableTargetsPVec);
 
         // prefer those reachable considering flying...
-        const auto REACHABLE_AVAILABLE_TARGETS_PVEC { (
-            (IS_FLYING)
-                ? availableTargetsPVec
-                : creature::Algorithms::FindByIsFlying(
-                      availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
+        const auto REACHABLE_AVAILABLE_TARGETS_PVEC {
+            ((IS_FLYING) ? availableTargetsPVec
+                         : creature::Algorithms::FindByIsFlying(
+                             availableTargetsPVec, creature::Algorithms::CriteriaOpt::DoesNotMeet))
+        };
 
         //...but accept those 'not reachable' if no other choice
         const auto POSSIBLE_TARGETS_PVEC { (
@@ -401,7 +401,7 @@ namespace combat
             (TURN_INFO.GetIsFlying())
                 ? ALL_LIVING_PLAYERS_PVEC
                 : creature::Algorithms::FindByIsFlying(
-                      ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
+                    ALL_LIVING_PLAYERS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (SELECTABLE_PLAYERS_PVEC.empty())
         {
@@ -793,7 +793,7 @@ namespace combat
             // separate chance to retreat if daunted
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Daunted)
                  && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                                                 "heroespath-fight-chance-daunted-will-retreat"))))
+                         "heroespath-fight-chance-daunted-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
@@ -801,7 +801,7 @@ namespace combat
             // separate chance to retreat if panicked
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Panic)
                  && (misc::random::Float() < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                                                 "heroespath-fight-chance-panicked-will-retreat"))))
+                         "heroespath-fight-chance-panicked-will-retreat"))))
             {
                 return TurnActionInfo(TurnAction::Retreat);
             }
@@ -954,8 +954,6 @@ namespace combat
     {
         if (CREATURE_DECIDING_PTR->IsBeast())
         {
-            creature::CreaturePtr_t creatureToActOn { MOST_DESIRED_TARGET_PTR };
-
             // action, chance, rand_value
             using ActionChances_t = std::tuple<TurnAction::Enum, float, float>;
             std::vector<ActionChances_t> actionChancesVec;
@@ -1034,16 +1032,12 @@ namespace combat
 
                 const auto DECIDED_ACTION { std::get<0>(actionChancesVec[0]) };
 
-                if (DECIDED_ACTION == TurnAction::LandPounce)
+                creature::CreaturePtr_t creatureToActOn { MOST_DESIRED_TARGET_PTR };
+
+                if ((DECIDED_ACTION == TurnAction::LandPounce)
+                    && (MOST_DESIRED_TARGET_CREATURE_DISTANCE != 0))
                 {
-                    if (MOST_DESIRED_TARGET_CREATURE_DISTANCE == 0)
-                    {
-                        creatureToActOn = MOST_DESIRED_TARGET_PTR;
-                    }
-                    else
-                    {
-                        creatureToActOn = misc::Vector::SelectRandom(PLAYERS_IN_MELEE_RANGE_PVEC);
-                    }
+                    creatureToActOn = misc::Vector::SelectRandom(PLAYERS_IN_MELEE_RANGE_PVEC);
                 }
 
                 return TurnActionInfo(DECIDED_ACTION, { creatureToActOn });
@@ -1269,7 +1263,7 @@ namespace combat
             (CREATURE_DECIDING_TURN_INFO.GetIsFlying())
                 ? AVAILABLE_TARGETS_PVEC
                 : creature::Algorithms::FindByIsFlying(
-                      AVAILABLE_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
+                    AVAILABLE_TARGETS_PVEC, creature::Algorithms::CriteriaOpt::DoesNotMeet)) };
 
         if (REACHABLE_AVAILABLE_TARGETS_PVEC.empty())
         {
@@ -1333,9 +1327,8 @@ namespace combat
         }
         else if (
             ARE_ANY_TARGETS_UNCONSCIOUS
-            && (misc::random::Float(1.0f)
-                < misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-fight-chance-enemies-ignore-unconscious")))
+            && (misc::random::Float(1.0f) < misc::ConfigFile::Instance()->ValueOrDefault<float>(
+                    "heroespath-fight-chance-enemies-ignore-unconscious")))
         {
             // most of the time, don't consider unconscious targets
             pVec_OutParam = creature::Algorithms::FindByHasCondition(

@@ -26,7 +26,7 @@ namespace map
     const sf::Color ShadowMasker::SHADOW_COLOR1_ { sf::Color(0, 0, 0, 100) };
     const sf::Color ShadowMasker::SHADOW_COLOR2_ { sf::Color(0, 0, 0, 65) };
     const sf::Color ShadowMasker::SHADOW_COLOR3_ { sf::Color(0, 0, 0, 35) };
-    const unsigned ShadowMasker::COLOR_COMPONENT_COUNT_ { 4 };
+    const std::size_t ShadowMasker::COLOR_COMPONENT_COUNT_ { 4 };
 
     void ShadowMasker::ChangeColors(
         const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout) const
@@ -48,32 +48,34 @@ namespace map
         sf::Image srcImage(texture.copyToImage());
         sf::Image destImage(srcImage);
 
-        const auto DEST_IMAGE_SIZE_X { destImage.getSize().x };
+        const auto DEST_IMAGE_SIZE_X { static_cast<std::size_t>(destImage.getSize().x) };
 
-        auto destPixelX { [&](const unsigned INDEX) {
-            return ((INDEX / COLOR_COMPONENT_COUNT_) % DEST_IMAGE_SIZE_X);
+        auto destPixelX { [&](const std::size_t INDEX) {
+            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) % DEST_IMAGE_SIZE_X);
         } };
 
-        auto destPixelY { [&](const unsigned INDEX) {
-            return ((INDEX / COLOR_COMPONENT_COUNT_) / DEST_IMAGE_SIZE_X);
+        auto destPixelY { [&](const std::size_t INDEX) {
+            return static_cast<unsigned>((INDEX / COLOR_COMPONENT_COUNT_) / DEST_IMAGE_SIZE_X);
         } };
 
-        const sf::Uint8 * const PIXEL_PTR { srcImage.getPixelsPtr() };
+        const sf::Uint8 * const FIRST_PIXEL_PTR { srcImage.getPixelsPtr() };
 
-        const auto PIXEL_COUNT { srcImage.getSize().x * srcImage.getSize().y
-                                 * COLOR_COMPONENT_COUNT_ };
+        const auto COLOR_COMPONENTS_IN_IMAGE_COUNT { static_cast<std::size_t>(
+            srcImage.getSize().x * srcImage.getSize().y * COLOR_COMPONENT_COUNT_) };
 
-        for (unsigned i(0); i < PIXEL_COUNT; i += 4)
+        for (std::size_t pixelIndex(0); pixelIndex < COLOR_COMPONENTS_IN_IMAGE_COUNT;
+             pixelIndex += COLOR_COMPONENT_COUNT_)
         {
-            const sf::Uint8 RED { *(PIXEL_PTR + i + 0) };
-            const sf::Uint8 GREEN { *(PIXEL_PTR + i + 1) };
-            const sf::Uint8 BLUE { *(PIXEL_PTR + i + 2) };
+            const sf::Uint8 RED { *(FIRST_PIXEL_PTR + pixelIndex + 0) };
+            const sf::Uint8 GREEN { *(FIRST_PIXEL_PTR + pixelIndex + 1) };
+            const sf::Uint8 BLUE { *(FIRST_PIXEL_PTR + pixelIndex + 2) };
 
             // check for faded blue background color that should be made fully transparent
             if ((RED == TRANSPARENT_MASK_.r) && (GREEN == TRANSPARENT_MASK_.g)
                 && (BLUE == TRANSPARENT_MASK_.b))
             {
-                destImage.setPixel(destPixelX(i), destPixelY(i), sf::Color::Transparent);
+                destImage.setPixel(
+                    destPixelX(pixelIndex), destPixelY(pixelIndex), sf::Color::Transparent);
             }
             else if (IS_SHADOW_IMAGE && (GREEN == 0))
             {
@@ -81,17 +83,20 @@ namespace map
 
                 if ((RED == SHADOW_MASK1_.r) && (BLUE == SHADOW_MASK1_.b))
                 {
-                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR1_);
+                    destImage.setPixel(
+                        destPixelX(pixelIndex), destPixelY(pixelIndex), SHADOW_COLOR1_);
                 }
                 else if (
                     ((RED == SHADOW_MASK2_.r) && (BLUE == SHADOW_MASK2_.b))
                     || ((RED == SHADOW_MASK2B_.r) && (BLUE == SHADOW_MASK2B_.b)))
                 {
-                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR2_);
+                    destImage.setPixel(
+                        destPixelX(pixelIndex), destPixelY(pixelIndex), SHADOW_COLOR2_);
                 }
                 else if ((RED == SHADOW_MASK3_.r) && (BLUE == SHADOW_MASK3_.b))
                 {
-                    destImage.setPixel(destPixelX(i), destPixelY(i), SHADOW_COLOR3_);
+                    destImage.setPixel(
+                        destPixelX(pixelIndex), destPixelY(pixelIndex), SHADOW_COLOR3_);
                 }
             }
         }

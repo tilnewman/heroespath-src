@@ -240,8 +240,6 @@ namespace popup
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR) const
     {
-        using namespace misc;
-
         std::ostringstream titleSS;
         titleSS << "New Title!";
 

@@ -167,21 +167,21 @@ namespace stage
         const auto CONTENT_COLOR { (
             (WILL_TITLE_USE_BRIGHT_TEXT_COLOR) ? TEXT_COLOR_NOTASBRIGHT : TEXT_COLOR_BRIGHT) };
 
-        const gui::TextInfo TEXT_INFO_TITLE(
-            TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, gui::Justified::Center);
-
         const auto BETWEEN_MEDIA_AND_TEXT_VERT_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
         const auto TITLE_TEXT_POS_TOP { (
             sfutil::Bottom(CalcBounds()) + BETWEEN_MEDIA_AND_TEXT_VERT_SPACER) };
 
-        sf::FloatRect titleTextRegion(
-            sfutil::DisplayCenterHoriz(MAX_WIDTH), TITLE_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
-
         if (TITLE_TEXT.empty() == false)
         {
+            const sf::FloatRect TITLE_TEXT_REGION(
+                sfutil::DisplayCenterHoriz(MAX_WIDTH), TITLE_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+
+            const gui::TextInfo TEXT_INFO_TITLE(
+                TITLE_TEXT, TITLE_FONT, TITLE_FONT_SIZE, TITLE_COLOR, gui::Justified::Center);
+
             titleTextUPtr_ = std::make_unique<gui::TextRegion>(
-                "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, titleTextRegion);
+                "CreditTitle_" + TITLE_TEXT, TEXT_INFO_TITLE, TITLE_TEXT_REGION);
         }
 
         gui::TextInfo textInfoContent(
@@ -216,13 +216,13 @@ namespace stage
         const auto CONTENT_TEXT_POS_TOP { (
             sfutil::Bottom(CalcBounds()) + BETWEEN_TITLE_AND_CONTENT_TEXT_VERTICAL_SPACER) };
 
-        sf::FloatRect contentTextRegion(
-            sfutil::DisplayCenterHoriz(MAX_WIDTH), CONTENT_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
-
         if (CONTENT_TEXT.empty() == false)
         {
+            const sf::FloatRect CONTENT_TEXT_REGION(
+                sfutil::DisplayCenterHoriz(MAX_WIDTH), CONTENT_TEXT_POS_TOP, MAX_WIDTH, 0.0f);
+
             contentTextUPtr_ = std::make_unique<gui::TextRegion>(
-                "CreditContent", textInfoContent, contentTextRegion);
+                "CreditContent", textInfoContent, CONTENT_TEXT_REGION);
         }
 
         region_ = CalcBounds();

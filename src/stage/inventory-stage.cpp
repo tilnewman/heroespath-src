@@ -1006,13 +1006,6 @@ namespace stage
            << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
            << "\n";
 
-        const gui::TextInfo DETAILS_TEXT_INFO(
-            ss.str(),
-            gui::GuiFont::Default,
-            gui::FontManager::Instance()->Size_Smallish(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Left);
-
         sf::FloatRect detailsTextRect(
             CREATURE_IMAGE_POS_LEFT_ + creatureSprite_.getGlobalBounds().width
                 + CREATURE_IMAGE_RIGHT_PAD_,
@@ -1029,6 +1022,13 @@ namespace stage
 
         if (!detailsTextRegionUPtr_)
         {
+            const gui::TextInfo DETAILS_TEXT_INFO(
+                ss.str(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Smallish(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Left);
+
             detailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
 
@@ -1069,17 +1069,17 @@ namespace stage
            << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
            << "\n \n ";
 
-        const gui::TextInfo STATS_TEXT_INFO(
-            ss.str(),
-            gui::GuiFont::SystemCondensed,
-            gui::FontManager::Instance()->Size_Normal(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Left);
-
         if (!statsTextRegionUPtr_)
         {
             const sf::FloatRect STATS_TEXT_RECT(
                 STATS_POS_LEFT_, sfutil::Bottom(stageTitle_.Region()) + 20.0f, 0.0f, 0.0f);
+
+            const gui::TextInfo STATS_TEXT_INFO(
+                ss.str(),
+                gui::GuiFont::SystemCondensed,
+                gui::FontManager::Instance()->Size_Normal(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Left);
 
             statsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
@@ -1104,13 +1104,6 @@ namespace stage
            << "Weight: " << INVENTORY.Weight() << "/" << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
 
-        const gui::TextInfo CENTER_TEXT_INFO(
-            ss.str(),
-            gui::GuiFont::SystemCondensed,
-            gui::FontManager::Instance()->Size_Normal(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Left);
-
         const bool WAS_ALREADY_INSTANTIATED { centerTextRegionUPtr_ };
 
         if (WAS_ALREADY_INSTANTIATED)
@@ -1125,6 +1118,13 @@ namespace stage
                     + sfutil::MapByRes(5.0f, 30.0f),
                 0.0f,
                 0.0f);
+
+            const gui::TextInfo CENTER_TEXT_INFO(
+                ss.str(),
+                gui::GuiFont::SystemCondensed,
+                gui::FontManager::Instance()->Size_Normal(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Left);
 
             centerTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);

@@ -29,9 +29,13 @@ namespace combat
     {
         switch (E)
         {
-            case EdgeType::Blocking: { return "Blocking";
+            case EdgeType::Blocking:
+            {
+                return "Blocking";
             }
-            case EdgeType::ShoulderToShoulder: { return "Shoulder-To-Shoulder";
+            case EdgeType::ShoulderToShoulder:
+            {
+                return "Shoulder-To-Shoulder";
             }
             case EdgeType::All:
             default:
@@ -786,7 +790,8 @@ namespace combat
     }
 
     int CombatTree::GetBlockingDistanceBetween(
-        creature::CreaturePtr_t CREATURE_A_PTR, creature::CreaturePtr_t CREATURE_B_PTR) const
+        const creature::CreaturePtr_t CREATURE_A_PTR,
+        const creature::CreaturePtr_t CREATURE_B_PTR) const
     {
         return GetNodePtr(CREATURE_B_PTR)->GetBlockingPos()
             - GetNodePtr(CREATURE_A_PTR)->GetBlockingPos();

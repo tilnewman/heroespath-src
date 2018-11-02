@@ -41,7 +41,7 @@ namespace gui
         , options_(std::move(ct.options_))
     {
         // empty ct's path_ so its destructor won't try to TextureCache::Remove()
-        ct.path_ = "";
+        ct.path_.clear();
     }
 
     CachedTexture & CachedTexture::operator=(const CachedTexture & CT)
@@ -77,7 +77,7 @@ namespace gui
             }
 
             // zero the moved ct's index_ so it's destructor won't try to TextureCache::Remove...()
-            ct.path_ = "";
+            ct.path_.clear();
         }
 
         return *this;
@@ -152,7 +152,7 @@ namespace gui
         , options_(ct.options_)
     {
         // zero the moved ct so its destructor won't try to TextureCache::Remove...()
-        ct.path_ = "";
+        ct.path_.clear();
     }
 
     CachedTextures & CachedTextures::operator=(const CachedTextures & CT)
@@ -188,7 +188,7 @@ namespace gui
             }
 
             // zero the moved ct so its destructor won't try to TextureCache::Remove...()
-            ct.path_ = "";
+            ct.path_.clear();
         }
 
         return *this;
@@ -243,7 +243,7 @@ namespace gui
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
             // empty indexes_ so that repeated calls to Release() are safe
-            path_ = "";
+            path_.clear();
         }
     }
 

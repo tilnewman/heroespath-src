@@ -96,7 +96,7 @@ namespace heroespath
 namespace misc
 {
 
-    using EnumUnderlying_t = unsigned int;
+    using EnumUnderlying_t = std::size_t;
 
     enum class NoneEmpty : bool
     {

@@ -554,8 +554,7 @@ namespace stage
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
 
-        if ((mouseOverPopupTimerSec_ > MOUSEOVER_POPUP_DELAY_SEC_)
-            && (false == willShowMouseOverPopup_))
+        if (mouseOverPopupTimerSec_ > MOUSEOVER_POPUP_DELAY_SEC_)
         {
             auto isMouseOverCharacterListBox { false };
 

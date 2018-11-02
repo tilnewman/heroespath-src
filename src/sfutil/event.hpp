@@ -282,8 +282,6 @@ namespace sfutil
             }
             case sf::Event::EventType::MouseWheelScrolled:
             {
-                std::ostringstream ss;
-
                 return std::string("(which_wheel=")
                     + ((EVENT.mouseWheelScroll.wheel == sf::Mouse::Wheel::HorizontalWheel) ? "horiz"
                                                                                            : "vert")

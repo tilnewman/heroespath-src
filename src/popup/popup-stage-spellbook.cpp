@@ -409,19 +409,18 @@ namespace popup
 
     void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtr_t SPELL_PTR)
     {
-        // setup spell title text
-        const gui::TextInfo SPELL_TITLE_TEXTINFO(
-            SPELL_PTR->Name(),
-            gui::GuiFont::Default,
-            gui::FontManager::Instance()->Size_Large(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Center);
-
         if (!spellTitleTextRegionUPtr_)
         {
             const sf::FloatRect SPELL_TITLE_TEXTRECT {
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
             };
+
+            const gui::TextInfo SPELL_TITLE_TEXTINFO(
+                SPELL_PTR->Name(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Large(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Center);
 
             spellTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "SpellnbookPopupWindowSpellTitle", SPELL_TITLE_TEXTINFO, SPELL_TITLE_TEXTRECT);
@@ -466,13 +465,6 @@ namespace popup
            << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
            << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases()) << "\n";
 
-        const gui::TextInfo SPELL_DETAILS_TEXTINFO(
-            ss.str(),
-            gui::GuiFont::Default,
-            gui::FontManager::Instance()->Size_Small(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Center);
-
         if (!spellDetailsTextUPtr_)
         {
             const auto SPELLDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
@@ -488,6 +480,13 @@ namespace popup
                                                          SPELLDETAILS_TEXTRECT_TOP,
                                                          SPELLDETAILS_TEXTRECT_WIDTH,
                                                          SPELLDETAILS_TEXTRECT_HEIGHT };
+
+            const gui::TextInfo SPELL_DETAILS_TEXTINFO(
+                ss.str(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Center);
 
             spellDetailsTextUPtr_ = std::make_unique<gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDetails",

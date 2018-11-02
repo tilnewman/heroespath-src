@@ -551,30 +551,25 @@ namespace gui
              OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
              OUTER_MOVE_BOT_RIGHT_V = OUTER_MOVE_BOT_RIGHT_V,
              OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
-                float top { 0.0f };
-                float right { 0.0f };
-                float bot { 0.0f };
-                float left { 0.0f };
-
-                top = std::max(
+                auto top { std::max(
                     0.0f,
                     ((REGION.width - CORNER_SIZE_TOP_LEFT_V.x)
-                     - (CORNER_SIZE_TOP_RIGHT_V.x + 1.0f)));
+                     - (CORNER_SIZE_TOP_RIGHT_V.x + 1.0f))) };
 
-                bot = std::max(
+                auto bot { std::max(
                     0.0f,
                     ((REGION.width - CORNER_SIZE_BOT_LEFT_V.x)
-                     - (CORNER_SIZE_BOT_RIGHT_V.x + 1.0f)));
+                     - (CORNER_SIZE_BOT_RIGHT_V.x + 1.0f))) };
 
-                left = std::max(
+                auto left { std::max(
                     0.0f,
                     ((REGION.height - CORNER_SIZE_TOP_LEFT_V.y)
-                     - (CORNER_SIZE_BOT_LEFT_V.y + 1.0f)));
+                     - (CORNER_SIZE_BOT_LEFT_V.y + 1.0f))) };
 
-                right = std::max(
+                auto right { std::max(
                     0.0f,
                     ((REGION.height - CORNER_SIZE_TOP_RIGHT_V.y)
-                     - (CORNER_SIZE_BOT_RIGHT_V.y + 1.0f)));
+                     - (CORNER_SIZE_BOT_RIGHT_V.y + 1.0f))) };
 
                 top += (std::abs(OUTER_MOVE_TOP_LEFT_V.x) + std::abs(OUTER_MOVE_TOP_RIGHT_V.x));
                 bot += (std::abs(OUTER_MOVE_BOT_LEFT_V.x) + std::abs(OUTER_MOVE_BOT_RIGHT_V.x));
@@ -595,23 +590,17 @@ namespace gui
                OUTER_MOVE_TOP_LEFT_V = OUTER_MOVE_TOP_LEFT_V,
                OUTER_MOVE_TOP_RIGHT_V = OUTER_MOVE_TOP_RIGHT_V,
                OUTER_MOVE_BOT_LEFT_V = OUTER_MOVE_BOT_LEFT_V]() {
-                  sf::Vector2f topLeft { 0.0f, 0.0f };
-                  sf::Vector2f topRight { 0.0f, 0.0f };
-                  sf::Vector2f botRight { 0.0f, 0.0f };
-                  sf::Vector2f botLeft { 0.0f, 0.0f };
+                  sf::Vector2f topLeft { POS_V + OUTER_MOVE_TOP_LEFT_V };
 
-                  topLeft = POS_V;
-                  topLeft += OUTER_MOVE_TOP_LEFT_V;
-
-                  topRight = sf::Vector2f(
+                  sf::Vector2f topRight(
                       (topLeft.x + CORNER_SIZE_TOP_LEFT_V.x + SIDE_LEN_TOP),
                       POS_V.y + OUTER_MOVE_TOP_RIGHT_V.y);
 
-                  botLeft = sf::Vector2f(
+                  sf::Vector2f botLeft(
                       POS_V.x + OUTER_MOVE_BOT_LEFT_V.x,
                       (topLeft.y + CORNER_SIZE_TOP_LEFT_V.y + SIDE_LEN_LEFT));
 
-                  botRight = sf::Vector2f(
+                  sf::Vector2f botRight(
                       (botLeft.x + CORNER_SIZE_BOT_LEFT_V.x + SIDE_LEN_BOT),
                       (topRight.y + CORNER_SIZE_TOP_RIGHT_V.y + SIDE_LEN_RIGHT));
 

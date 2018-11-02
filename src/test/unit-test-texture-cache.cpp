@@ -39,7 +39,11 @@ inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
     if (A.getSize() == B.getSize())
     {
         return (
-            memcmp(A.getPixelsPtr(), B.getPixelsPtr(), (A.getSize().x * A.getSize().y * 4)) == 0);
+            memcmp(
+                A.getPixelsPtr(),
+                B.getPixelsPtr(),
+                static_cast<std::size_t>(A.getSize().x * A.getSize().y * unsigned(4)))
+            == 0);
     }
     else
     {

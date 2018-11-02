@@ -380,19 +380,18 @@ namespace popup
 
     void PopupStageMusicSheet::SetupPageRightText(const song::SongPtr_t SONG_PTR)
     {
-        // setup song title text
-        const gui::TextInfo SONG_TITLE_TEXTINFO(
-            SONG_PTR->Name(),
-            gui::GuiFont::Default,
-            gui::FontManager::Instance()->Size_Large(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Center);
-
         if (!titleTextRegionUPtr_)
         {
             const sf::FloatRect SONG_TITLE_TEXTRECT {
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
             };
+
+            const gui::TextInfo SONG_TITLE_TEXTINFO(
+                SONG_PTR->Name(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Large(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Center);
 
             titleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "MusicSheetPopupWindowSongTitle", SONG_TITLE_TEXTINFO, SONG_TITLE_TEXTRECT);
@@ -436,13 +435,6 @@ namespace popup
            << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
            << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases()) << "\n";
 
-        const gui::TextInfo SONG_DETAILS_TEXTINFO(
-            ss.str(),
-            gui::GuiFont::Default,
-            gui::FontManager::Instance()->Size_Small(),
-            sfutil::color::GrayDarker,
-            gui::Justified::Center);
-
         const auto SONGDETAILS_TEXTRECT_LEFT { pageRectRight_.left };
 
         const auto SONGDETAILS_TEXTRECT_TOP { songSprite_.getGlobalBounds().top
@@ -459,6 +451,13 @@ namespace popup
 
         if (!detailsTextUPtr_)
         {
+            const gui::TextInfo SONG_DETAILS_TEXTINFO(
+                ss.str(),
+                gui::GuiFont::Default,
+                gui::FontManager::Instance()->Size_Small(),
+                sfutil::color::GrayDarker,
+                gui::Justified::Center);
+
             detailsTextUPtr_ = std::make_unique<gui::TextRegion>(
                 "MusicsheetPopupWindowSongDetails", SONG_DETAILS_TEXTINFO, SONG_DETAILS_TEXTRECT);
         }

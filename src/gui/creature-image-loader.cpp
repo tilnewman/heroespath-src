@@ -351,99 +351,97 @@ namespace gui
         const creature::wolfen_class::Enum WOLFEN_CLASS,
         const creature::dragon_class::Enum DRAGON_CLASS) const
     {
-        using namespace creature;
-
-        if (RACE == race::Troll)
+        if (RACE == creature::race::Troll)
         {
-            if (ROLE == role::Berserker)
+            if (ROLE == creature::role::Berserker)
             {
                 return { "troll-berserker.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "troll-brute.png" };
             }
 
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "troll-chieftain.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "troll-grunt-1.png", "troll-grunt-2.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "troll-mountain.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "troll-shaman.png" };
             }
 
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "troll-smasher.png" };
             }
 
-            if (ROLE == role::Strangler)
+            if (ROLE == creature::role::Strangler)
             {
                 return { "troll-strangler.png" };
             }
 
-            if (ROLE == role::Warlord)
+            if (ROLE == creature::role::Warlord)
             {
                 return { "troll-warlord.png" };
             }
 
-            if (ROLE == role::TwoHeaded)
+            if (ROLE == creature::role::TwoHeaded)
             {
                 return { "troll-two-headed.png" };
             }
         }
 
-        if (RACE == race::Orc)
+        if (RACE == creature::race::Orc)
         {
-            if (ROLE == role::Berserker)
+            if (ROLE == creature::role::Berserker)
             {
                 return { "orc-berserker.png" };
             }
 
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "orc-chieftain.png" };
             }
 
-            if (ROLE == role::Elder)
+            if (ROLE == creature::role::Elder)
             {
                 return { "orc-elder.png" };
             }
 
-            if (ROLE == role::FourArmed)
+            if (ROLE == creature::role::FourArmed)
             {
                 return { "orc-four-armed.png" };
             }
 
-            if (ROLE == role::Captain)
+            if (ROLE == creature::role::Captain)
             {
                 return { "orc-captain.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "orc-mountain.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "orc-spike.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 13; ++i)
@@ -456,55 +454,55 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "orc-shaman.png" };
             }
 
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "orc-smasher.png" };
             }
 
-            if (ROLE == role::Warlord)
+            if (ROLE == creature::role::Warlord)
             {
                 return { "orc-warlord.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "orc-grunt-1.png" };
             }
         }
 
-        if (RACE == race::Newt)
+        if (RACE == creature::race::Newt)
         {
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "newt-chieftain.png" };
             }
 
-            if (ROLE == role::Cleric)
+            if (ROLE == creature::role::Cleric)
             {
                 return { "newt-cleric.png" };
             }
 
-            if (ROLE == role::Elder)
+            if (ROLE == creature::role::Elder)
             {
                 return { "newt-elder.png" };
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
                 return { "newt-sorcerer.png" };
             }
 
-            if (ROLE == role::Trader)
+            if (ROLE == creature::role::Trader)
             {
                 return { "newt-trader.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 6; ++i)
@@ -517,7 +515,7 @@ namespace gui
             }
         }
 
-        if ((RACE == race::Spider) && (ROLE == role::Spider))
+        if ((RACE == creature::race::Spider) && (ROLE == creature::role::Spider))
         {
             std::vector<std::string> filenames;
             for (std::size_t i(1); i <= 9; ++i)
@@ -529,74 +527,74 @@ namespace gui
             return filenames;
         }
 
-        if (RACE == race::Bog)
+        if (RACE == creature::race::Bog)
         {
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "bog-chieftain.png" };
             }
 
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "bog-smasher.png" };
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
                 return { "bog-sorcerer.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "bog-shaman.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "bog-spike.png" };
             }
 
-            if (ROLE == role::Tendrilus)
+            if (ROLE == creature::role::Tendrilus)
             {
                 return { "bog-tendrilus.png" };
             }
 
-            if (ROLE == role::Wing)
+            if (ROLE == creature::role::Wing)
             {
                 return { "bog-wing.png" };
             }
 
-            if (ROLE == role::Whelp)
+            if (ROLE == creature::role::Whelp)
             {
                 return { "bog-whelp.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "bog-grunt-1.png", "bog-grunt-2.png", "bog-grunt-3.png" };
             }
         }
 
-        if ((RACE == race::CaveCrawler) && (ROLE == role::Mountain))
+        if ((RACE == creature::race::CaveCrawler) && (ROLE == creature::role::Mountain))
         {
             return { "cave-crawler-1.png", "cave-crawler-2.png", "cave-crawler-3.png" };
         }
 
-        if ((RACE == race::Hydra) && (ROLE == role::Wing))
+        if ((RACE == creature::race::Hydra) && (ROLE == creature::role::Wing))
         {
             return { "hydra-1.png" };
         }
 
-        if (RACE == race::LizardWalker)
+        if (RACE == creature::race::LizardWalker)
         {
-            if (ROLE == role::Whelp)
+            if (ROLE == creature::role::Whelp)
             {
                 return { "lizard-walker-whelp-1.png", "lizard-walker-whelp-2.png" };
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "lizard-walker-sorcerer-female.png" };
                 }
@@ -606,24 +604,24 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Captain)
+            if (ROLE == creature::role::Captain)
             {
                 return { "lizard-walker-captain.png" };
             }
 
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "lizard-walker-chieftain.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "lizard-walker-spike.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "lizard-walker-shaman-female.png" };
                 }
@@ -633,7 +631,7 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 12; ++i)
@@ -646,34 +644,34 @@ namespace gui
             }
         }
 
-        if (RACE == race::Minotaur)
+        if (RACE == creature::race::Minotaur)
         {
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "minotaur-grunt-1.png", "minotaur-grunt-2.png", "minotaur-grunt-3.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "minotaur-brute.png" };
             }
 
-            if (ROLE == role::FourArmed)
+            if (ROLE == creature::role::FourArmed)
             {
                 return { "minotaur-fourarmed.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "minotaur-mountain.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "minotaur-shaman.png" };
             }
 
-            if (ROLE == role::Warlord)
+            if (ROLE == creature::role::Warlord)
             {
                 return { "minotaur-warlord.png" };
             }
@@ -681,110 +679,110 @@ namespace gui
             return { "minotaur-1.png", "minotaur-2.png" };
         }
 
-        if (RACE == race::Ogre)
+        if (RACE == creature::race::Ogre)
         {
-            if (ROLE == role::Berserker)
+            if (ROLE == creature::role::Berserker)
             {
                 return { "ogre-berserker.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "ogre-brute.png" };
             }
 
-            if (ROLE == role::Elder)
+            if (ROLE == creature::role::Elder)
             {
                 return { "ogre-elder.png" };
             }
 
-            if (ROLE == role::FourArmed)
+            if (ROLE == creature::role::FourArmed)
             {
                 return { "ogre-four-armed.png" };
             }
 
-            if (ROLE == role::Giant)
+            if (ROLE == creature::role::Giant)
             {
                 return { "ogre-giant.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "ogre-mountain.png" };
             }
 
-            if (ROLE == role::Warlord)
+            if (ROLE == creature::role::Warlord)
             {
                 return { "ogre-warlord.png" };
             }
 
-            if (ROLE == role::Captain)
+            if (ROLE == creature::role::Captain)
             {
                 return { "ogre-captain.png" };
             }
 
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "ogre-chieftain.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "ogre-shaman.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "ogre-spike.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "ogre-1.png", "ogre-2.png", "ogre-3.png", "ogre-4.png" };
             }
         }
 
-        if (RACE == race::Plant)
+        if (RACE == creature::race::Plant)
         {
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "plant-smasher.png" };
             }
 
-            if (ROLE == role::Strangler)
+            if (ROLE == creature::role::Strangler)
             {
                 return { "plant-strangler.png" };
             }
 
-            if (ROLE == role::Tendrilus)
+            if (ROLE == creature::role::Tendrilus)
             {
                 return { "plant-tendrilus-1.png", "plant-tendrilus-2.png" };
             }
 
-            if (ROLE == role::Pod)
+            if (ROLE == creature::role::Pod)
             {
                 return { "plant-pod-1.png", "plant-pod-2.png" };
             }
         }
 
-        if (RACE == race::Skeleton)
+        if (RACE == creature::race::Skeleton)
         {
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "skeleton-chieftain.png" };
             }
 
-            if (ROLE == role::FourArmed)
+            if (ROLE == creature::role::FourArmed)
             {
                 return { "skeleton-four-armed.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "skeleton-mountain.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 8; ++i)
@@ -797,52 +795,52 @@ namespace gui
             }
         }
 
-        if (RACE == race::Werebear)
+        if (RACE == creature::race::Werebear)
         {
-            if (ROLE == role::Elder)
+            if (ROLE == creature::role::Elder)
             {
                 return { "werebear-elder.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "werebear-grunt-1.png", "werebear-grunt-2.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "werebear-mountain.png" };
             }
         }
 
-        if ((RACE == race::Beetle) && (ROLE == role::Beetle))
+        if ((RACE == creature::race::Beetle) && (ROLE == creature::role::Beetle))
         {
             return { "beetle-giant.png" };
         }
 
-        if ((RACE == race::Boar) && (ROLE == role::Boar))
+        if ((RACE == creature::race::Boar) && (ROLE == creature::role::Boar))
         {
             return { "boar-1.png" };
         }
 
-        if (RACE == race::Demon)
+        if (RACE == creature::race::Demon)
         {
-            if (ROLE == role::Skeleton)
+            if (ROLE == creature::role::Skeleton)
             {
                 return { "demon-skeleton.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "demon-spike.png" };
             }
 
-            if (ROLE == role::Strangler)
+            if (ROLE == creature::role::Strangler)
             {
                 return { "demon-strangler.png" };
             }
 
-            if (ROLE == role::Whelp)
+            if (ROLE == creature::role::Whelp)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 4; ++i)
@@ -854,12 +852,12 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Wing)
+            if (ROLE == creature::role::Wing)
             {
                 return { "demon-wing-1.png", "demon-wing-2.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 9; ++i)
@@ -872,115 +870,115 @@ namespace gui
             }
         }
 
-        if (RACE == race::Ghoul)
+        if (RACE == creature::race::Ghoul)
         {
-            if (ROLE == role::Strangler)
+            if (ROLE == creature::role::Strangler)
             {
                 return { "ghoul-strangler.png" };
             }
 
-            if (ROLE == role::Spike)
+            if (ROLE == creature::role::Spike)
             {
                 return { "ghoul-spike.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "ghoul-mountain.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "ghoul-1.png", "ghoul-2.png" };
             }
         }
 
-        if (RACE == race::Griffin)
+        if (RACE == creature::race::Griffin)
         {
-            if (ROLE == role::Whelp)
+            if (ROLE == creature::role::Whelp)
             {
                 return { "griffin-whelp.png" };
             }
 
-            if (ROLE == role::Wing)
+            if (ROLE == creature::role::Wing)
             {
                 return { "griffin-1.png" };
             }
         }
 
-        if (RACE == race::Giant)
+        if (RACE == creature::race::Giant)
         {
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "giant-smasher.png" };
             }
 
-            if (ROLE == role::Strangler)
+            if (ROLE == creature::role::Strangler)
             {
                 return { "giant-strangler.png" };
             }
 
-            if (ROLE == role::Warlord)
+            if (ROLE == creature::role::Warlord)
             {
                 return { "giant-warlord.png" };
             }
 
-            if (ROLE == role::Mountain)
+            if (ROLE == creature::role::Mountain)
             {
                 return { "giant-mountain.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "giant-grunt-1.png", "giant-grunt-2.png", "giant-grunt-3.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "giant-brute.png" };
             }
         }
 
-        if (RACE == race::Goblin)
+        if (RACE == creature::race::Goblin)
         {
-            if (ROLE == role::Thief)
+            if (ROLE == creature::role::Thief)
             {
                 return { "goblin-thief.png" };
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
                 return { "goblin-sorcerer.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "goblin-brute.png" };
             }
 
-            if (ROLE == role::Archer)
+            if (ROLE == creature::role::Archer)
             {
                 return { "goblin-archer.png" };
             }
 
-            if (ROLE == role::Captain)
+            if (ROLE == creature::role::Captain)
             {
                 return { "goblin-captain.png" };
             }
 
-            if (ROLE == role::Chieftain)
+            if (ROLE == creature::role::Chieftain)
             {
                 return { "goblin-chieftain.png" };
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "goblin-shaman.png" };
             }
 
-            if (ROLE == role::Trader)
+            if (ROLE == creature::role::Trader)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "goblin-trader-female-1.png", "goblin-trader-female-2.png" };
                 }
@@ -993,9 +991,9 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "goblin-female-1.png", "goblin-female-2.png", "goblin-female-3.png",
                              "goblin-female-4.png", "goblin-grunt-2.png",  "goblin-grunt-4.png",
@@ -1017,9 +1015,9 @@ namespace gui
             }
         }
 
-        if (RACE == race::Dragon)
+        if (RACE == creature::race::Dragon)
         {
-            if (ROLE == role::Firebrand)
+            if (ROLE == creature::role::Firebrand)
             {
                 switch (DRAGON_CLASS)
                 {
@@ -1063,7 +1061,7 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Sylavin)
+            if (ROLE == creature::role::Sylavin)
             {
                 switch (DRAGON_CLASS)
                 {
@@ -1108,13 +1106,13 @@ namespace gui
             }
         }
 
-        if (RACE == race::Gnome)
+        if (RACE == creature::race::Gnome)
         {
-            if (ROLE == role::Bard)
+            if (ROLE == creature::role::Bard)
             {
                 std::vector<std::string> filenames;
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("bard-gnome-female-1.png");
                     filenames.emplace_back("bard-female-1.png");
@@ -1127,7 +1125,7 @@ namespace gui
                 filenames.emplace_back("gnome-4.png");
                 filenames.emplace_back("gnome-7.png");
 
-                if (SEX == sex::Male)
+                if (SEX == creature::sex::Male)
                 {
                     filenames.emplace_back("gnome-male-1.png");
                     filenames.emplace_back("gnome-male-2.png");
@@ -1136,21 +1134,21 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Cleric)
+            if (ROLE == creature::role::Cleric)
             {
                 return { "gnome-4.png", "gnome-8.png" };
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
                 return { "gnome-5.png", "gnome-8.png" };
             }
 
-            if (ROLE == role::Knight)
+            if (ROLE == creature::role::Knight)
             {
                 std::vector<std::string> filenames { "knight-gnome-1.png", "knight-gnome-2.png" };
 
-                if (SEX == sex::Male)
+                if (SEX == creature::sex::Male)
                 {
                     filenames.emplace_back("knight-gnome-male-1.png");
                     filenames.emplace_back("gnome-male-1.png");
@@ -1160,17 +1158,17 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Beastmaster)
+            if (ROLE == creature::role::Beastmaster)
             {
                 std::vector<std::string> filenames {
                     "gnome-2.png", "gnome-3.png", "gnome-4.png", "gnome-6.png", "gnome-7.png"
                 };
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("gnome-female-1.png");
                 }
-                else if (SEX == sex::Male)
+                else if (SEX == creature::sex::Male)
                 {
                     filenames.emplace_back("gnome-male-1.png");
                     filenames.emplace_back("gnome-male-2.png");
@@ -1179,18 +1177,18 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Archer)
+            if (ROLE == creature::role::Archer)
             {
                 return { "archer-gnome-1.png", "gnome-2.png", "gnome-female-1.png" };
             }
 
-            if (ROLE == role::Thief)
+            if (ROLE == creature::role::Thief)
             {
                 std::vector<std::string> filenames {
                     "gnome-grunt.png", "gnome-2.png", "gnome-3.png", "gnome-6.png", "gnome-7.png"
                 };
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("gnome-female-1.png");
                 }
@@ -1198,19 +1196,19 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
                 return { "gnome-grunt.png" };
             }
         }
 
-        if (RACE == race::Human)
+        if (RACE == creature::race::Human)
         {
-            if (ROLE == role::Knight)
+            if (ROLE == creature::role::Knight)
             {
                 std::vector<std::string> filenames { "knight-human-1.png", "knight-human-2.png" };
 
-                if (SEX == sex::Male)
+                if (SEX == creature::sex::Male)
                 {
                     filenames.emplace_back("knight-human-male-1.png");
                     filenames.emplace_back("knight-human-male-2.png");
@@ -1219,11 +1217,11 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Archer)
+            if (ROLE == creature::role::Archer)
             {
                 std::vector<std::string> filenames { "archer-1.png", "archer-2.png" };
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("archer-female-1.png");
                     filenames.emplace_back("archer-female-2.png");
@@ -1242,11 +1240,11 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Bard)
+            if (ROLE == creature::role::Bard)
             {
                 std::vector<std::string> filenames;
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("bard-human-female-1.png");
                     filenames.emplace_back("bard-human-female-2.png");
@@ -1268,11 +1266,11 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Beastmaster)
+            if (ROLE == creature::role::Beastmaster)
             {
                 std::vector<std::string> filenames;
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("beastmaster-human-female-1.png");
                 }
@@ -1286,11 +1284,11 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Cleric)
+            if (ROLE == creature::role::Cleric)
             {
                 std::vector<std::string> filenames { "cleric-human-1.png", "cleric-human-2.png" };
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("cleric-human-female-1.png");
                 }
@@ -1305,20 +1303,7 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Knight)
-            {
-                std::vector<std::string> filenames { "knight-human-1.png", "knight-human-2.png" };
-
-                if (SEX == sex::Male)
-                {
-                    filenames.emplace_back("knight-human-male-1.png");
-                    filenames.emplace_back("knight-human-male-2.png");
-                }
-
-                return filenames;
-            }
-
-            if (ROLE == role::Thief)
+            if (ROLE == creature::role::Thief)
             {
                 std::vector<std::string> filenames { "thief-human-1.png",
                                                      "thief-human-2.png",
@@ -1326,7 +1311,7 @@ namespace gui
                                                      "thief-human-4.png",
                                                      "thief-human-5.png" };
 
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     filenames.emplace_back("thief-human-female-1.png");
                     filenames.emplace_back("thief-human-female-2.png");
@@ -1340,9 +1325,9 @@ namespace gui
                 return filenames;
             }
 
-            if (ROLE == role::Sorcerer)
+            if (ROLE == creature::role::Sorcerer)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "sorcerer-human-female-1.png",  "sorcerer-human-female-2.png",
                              "sorcerer-human-female-2b.png", "sorcerer-human-female-3.png",
@@ -1357,9 +1342,9 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Ranger)
+            if (ROLE == creature::role::Ranger)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "ranger-human-female-1.png",
                              "ranger-human-female-2.png",
@@ -1373,9 +1358,9 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Trader)
+            if (ROLE == creature::role::Trader)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "trader-human-1.png", "trader-human-2.png", "trader-human-3.png" };
                 }
@@ -1389,24 +1374,24 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Drunk)
+            if (ROLE == creature::role::Drunk)
             {
                 return { "drunk-1.png" };
             }
 
-            if (ROLE == role::Brute)
+            if (ROLE == creature::role::Brute)
             {
                 return { "soldier-brute.png" };
             }
 
-            if (ROLE == role::Smasher)
+            if (ROLE == creature::role::Smasher)
             {
                 return { "soldier-smasher-1.png", "soldier-smasher-2.png" };
             }
 
-            if (ROLE == role::Soldier)
+            if (ROLE == creature::role::Soldier)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "soldier-2.png",        "soldier-6.png",        "soldier-7.png",
                              "soldier-11.png",       "soldier-13.png",       "soldier-14.png",
@@ -1422,9 +1407,9 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Blacksmith)
+            if (ROLE == creature::role::Blacksmith)
             {
-                if (SEX == sex::Male)
+                if (SEX == creature::sex::Male)
                 {
                     return { "human-blacksmith-male-1.png",
                              "human-blacksmith-male-2.png",
@@ -1437,14 +1422,14 @@ namespace gui
                 }
             }
 
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "human-shaman.png" };
             }
 
-            if (ROLE == role::Grunt)
+            if (ROLE == creature::role::Grunt)
             {
-                if (SEX == sex::Female)
+                if (SEX == creature::sex::Female)
                 {
                     return { "human-1.png",         "human-2.png",         "human-3.png",
                              "human-4.png",         "human-5.png",         "human-6.png",
@@ -1469,50 +1454,52 @@ namespace gui
             }
         }
 
-        if (RACE == race::Pixie)
+        if (RACE == creature::race::Pixie)
         {
-            if (SEX == sex::Female)
+            if (SEX == creature::sex::Female)
             {
-                if (ROLE == role::Beastmaster)
+                if (ROLE == creature::role::Beastmaster)
                 {
                     return { "pixie-beastmaster-female.png" };
                 }
-                else if (ROLE == role::Sorcerer)
+                else if (ROLE == creature::role::Sorcerer)
                 {
                     return { "pixie-female-1.png", "pixie-female-3.png" };
                 }
-                else if (ROLE == role::Cleric)
+                else if (ROLE == creature::role::Cleric)
                 {
                     return { "pixie-female-2.png", "pixie-female-5.png" };
                 }
-                else if (ROLE == role::Bard)
+                else if (ROLE == creature::role::Bard)
                 {
                     return { "pixie-female-4.png", "pixie-3.png" };
                 }
             }
             else
             {
-                if (ROLE == role::Beastmaster)
+                if (ROLE == creature::role::Beastmaster)
                 {
                     return { "pixie-beastmaster-male.png" };
                 }
-                else if ((ROLE == role::Sorcerer) || (ROLE == role::Cleric) || (ROLE == role::Bard))
+                else if (
+                    (ROLE == creature::role::Sorcerer) || (ROLE == creature::role::Cleric)
+                    || (ROLE == creature::role::Bard))
                 {
                     return { "pixie-1.png", "pixie-2.png", "pixie-3.png", "pixie-male-1.png" };
                 }
             }
         }
 
-        if (RACE == race::Wolfen)
+        if (RACE == creature::race::Wolfen)
         {
-            if (WOLFEN_CLASS == wolfen_class::Count)
+            if (WOLFEN_CLASS == creature::wolfen_class::Count)
             {
-                if (ROLE == role::TwoHeaded)
+                if (ROLE == creature::role::TwoHeaded)
                 {
                     return { "wolfen-twoheaded.png" };
                 }
 
-                if (ROLE == role::Wolfen)
+                if (ROLE == creature::role::Wolfen)
                 {
                     return { "wolfen-1.png", "wolfen-2.png", "wolfen-3.png" };
                 }
@@ -1554,155 +1541,155 @@ namespace gui
             }
         }
 
-        if (RACE == race::Halfling)
+        if (RACE == creature::race::Halfling)
         {
-            if (ROLE == role::Shaman)
+            if (ROLE == creature::role::Shaman)
             {
                 return { "halfling-shaman.png" };
             }
-            else if (ROLE == role::Chieftain)
+            else if (ROLE == creature::role::Chieftain)
             {
                 return { "halfling-chieftain.png" };
             }
-            else if (ROLE == role::Captain)
+            else if (ROLE == creature::role::Captain)
             {
                 return { "halfling-captain.png" };
             }
-            else if (ROLE == role::Grunt)
+            else if (ROLE == creature::role::Grunt)
             {
                 return { "halfling-1.png" };
             }
         }
 
-        if ((RACE == race::Lion) && (ROLE == role::Lion))
+        if ((RACE == creature::race::Lion) && (ROLE == creature::role::Lion))
         {
             return { "lion.png" };
         }
 
-        if ((RACE == race::LionBoar) && (ROLE == role::Lion))
+        if ((RACE == creature::race::LionBoar) && (ROLE == creature::role::Lion))
         {
             return { "lion-boar.png" };
         }
 
-        if ((RACE == race::Naga) && (ROLE == role::Grunt))
+        if ((RACE == creature::race::Naga) && (ROLE == creature::role::Grunt))
         {
             return { "naga.png" };
         }
 
-        if (RACE == race::Pug)
+        if (RACE == creature::race::Pug)
         {
-            if (ROLE == role::Archer)
+            if (ROLE == creature::role::Archer)
             {
                 return { "pug-archer.png" };
             }
-            else if (ROLE == role::Cleric)
+            else if (ROLE == creature::role::Cleric)
             {
                 return { "pug-cleric.png" };
             }
-            else if (ROLE == role::Grunt)
+            else if (ROLE == creature::role::Grunt)
             {
                 return { "pug-grunt.png" };
             }
         }
 
-        if ((RACE == race::Ramonaut) && (ROLE == role::Ramonaut))
+        if ((RACE == creature::race::Ramonaut) && (ROLE == creature::role::Ramonaut))
         {
             return { "ramonaut.png" };
         }
 
-        if (RACE == race::Serpent)
+        if (RACE == creature::race::Serpent)
         {
-            if (ROLE == role::Water)
+            if (ROLE == creature::role::Water)
             {
                 return { "serpent-water.png" };
             }
-            else if (ROLE == role::Serpent)
+            else if (ROLE == creature::role::Serpent)
             {
                 return { "serpent-desert.png" };
             }
         }
 
-        if ((RACE == race::Shade) && (ROLE == role::Ghost))
+        if ((RACE == creature::race::Shade) && (ROLE == creature::role::Ghost))
         {
             return { "shade-1.png", "shade-2.png" };
         }
 
-        if ((RACE == race::Cobra) && (ROLE == role::Serpent))
+        if ((RACE == creature::race::Cobra) && (ROLE == creature::role::Serpent))
         {
             return { "cobra-1.png", "cobra-2.png" };
         }
 
-        if ((RACE == race::Werebat) && (ROLE == role::Bat))
+        if ((RACE == creature::race::Werebat) && (ROLE == creature::role::Bat))
         {
             return { "werebat-1.png", "werebat-2.png" };
         }
 
-        if ((RACE == race::Bat) && (ROLE == role::Bat))
+        if ((RACE == creature::race::Bat) && (ROLE == creature::role::Bat))
         {
             return { "bat-1.png", "bat-2.png", "bat-3.png" };
         }
 
-        if (RACE == race::Witch)
+        if (RACE == creature::race::Witch)
         {
-            if (ROLE == role::Elder)
+            if (ROLE == creature::role::Elder)
             {
                 return { "witch-elder.png" };
             }
-            else if (ROLE == role::Ghost)
+            else if (ROLE == creature::role::Ghost)
             {
                 return { "witch-ghost.png" };
             }
-            else if (ROLE == role::Strangler)
+            else if (ROLE == creature::role::Strangler)
             {
                 return { "witch-strangler.png" };
             }
-            else if (ROLE == role::Mountain)
+            else if (ROLE == creature::role::Mountain)
             {
                 return { "witch-mountain.png" };
             }
-            else if (ROLE == role::Sorcerer)
+            else if (ROLE == creature::role::Sorcerer)
             {
                 return { "witch-1.png" };
             }
         }
 
-        if ((RACE == race::Golem) && (ROLE == role::Brute))
+        if ((RACE == creature::race::Golem) && (ROLE == creature::role::Brute))
         {
             return { "golem.png" };
         }
 
-        if ((RACE == race::Harpy) && (ROLE == role::Wing))
+        if ((RACE == creature::race::Harpy) && (ROLE == creature::role::Wing))
         {
             return { "harpy.png" };
         }
 
-        if ((RACE == race::ThreeHeadedHound) && (ROLE == role::Mountain))
+        if ((RACE == creature::race::ThreeHeadedHound) && (ROLE == creature::role::Mountain))
         {
             return { "hound-three-headed.png" };
         }
 
-        if ((RACE == race::Wereboar) && (ROLE == role::Boar))
+        if ((RACE == creature::race::Wereboar) && (ROLE == creature::role::Boar))
         {
             return { "wereboar.png" };
         }
 
-        if ((RACE == race::Werecat) && (ROLE == role::Cat))
+        if ((RACE == creature::race::Werecat) && (ROLE == creature::role::Cat))
         {
             return { "werecat.png" };
         }
 
-        if ((RACE == race::Werewolf) && (ROLE == role::Wolf))
+        if ((RACE == creature::race::Werewolf) && (ROLE == creature::role::Wolf))
         {
             return { "werewolf.png" };
         }
 
-        if (RACE == race::Wyvern)
+        if (RACE == creature::race::Wyvern)
         {
-            if (ROLE == role::Whelp)
+            if (ROLE == creature::role::Whelp)
             {
                 return { "wyvern-whelp.png" };
             }
-            else if (ROLE == role::Wing)
+            else if (ROLE == creature::role::Wing)
             {
                 return { "wyvern-1.png", "wyvern-2.png" };
             }

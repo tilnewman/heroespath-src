@@ -355,7 +355,10 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
         BOOST_CHECK(FindNumber(2, "", ERROR_NUMBER) == ERROR_NUMBER);
         BOOST_CHECK(FindNumber(3, "", ERROR_NUMBER) == ERROR_NUMBER);
         BOOST_CHECK(FindNumber(10, "", ERROR_NUMBER) == ERROR_NUMBER);
-        BOOST_CHECK(FindNumber(std::numeric_limits<int>::max(), "", ERROR_NUMBER) == ERROR_NUMBER);
+
+        BOOST_CHECK(
+            FindNumber(static_cast<std::size_t>(std::numeric_limits<int>::max()), "", ERROR_NUMBER)
+            == ERROR_NUMBER);
     }
 
     // strings with no numbers tests

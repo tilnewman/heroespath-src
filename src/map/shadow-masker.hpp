@@ -48,7 +48,7 @@ namespace map
         static const sf::Color SHADOW_COLOR2_;
         static const sf::Color SHADOW_COLOR3_;
 
-        static const unsigned COLOR_COMPONENT_COUNT_;
+        static const std::size_t COLOR_COMPONENT_COUNT_;
     };
 
 } // namespace map

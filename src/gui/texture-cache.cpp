@@ -593,7 +593,9 @@ namespace gui
 
     long long TextureCache::TextureSizeInBytes(const sf::Texture & TEXTURE) const
     {
-        return static_cast<long long>(TEXTURE.getSize().x * TEXTURE.getSize().y * 4);
+        return (
+            static_cast<long long>(TEXTURE.getSize().x)
+            * static_cast<long long>(TEXTURE.getSize().y) * static_cast<long long>(4));
     }
 
     void TextureCache::UpdateCountAndSizeTracker(const sf::Texture & TEXTURE)

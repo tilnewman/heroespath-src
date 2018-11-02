@@ -64,7 +64,7 @@ namespace gui
         void Parser::SplitByNewlines(
             const Context & CONTEXT, const ParsedTextSegment & SEGMENT, ParsedTextLines & lines)
         {
-            const auto NEWLINE_CHAR_POS { SEGMENT.text.find("\n") };
+            const auto NEWLINE_CHAR_POS { SEGMENT.text.find('\n') };
 
             if (NEWLINE_CHAR_POS == std::string::npos)
             {

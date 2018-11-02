@@ -216,22 +216,21 @@ namespace item
 
     void ItemProfileWarehouse::Setup_SummoningItems()
     {
-        using namespace creature;
-
-        for (misc::EnumUnderlying_t raceIndex(0); raceIndex < race::Count; ++raceIndex)
+        for (misc::EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
         {
-            const auto RACE_TYPE { static_cast<race::Enum>(raceIndex) };
+            const auto RACE_TYPE { static_cast<creature::race::Enum>(raceIndex) };
 
-            const auto ROLES_VEC { race::Roles(RACE_TYPE) };
+            const auto ROLES_VEC { creature::race::Roles(RACE_TYPE) };
 
             for (const auto ROLE_TYPE : ROLES_VEC)
             {
-                const auto ORIGINS_VEC { race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
+                const auto ORIGINS_VEC { creature::race::OriginTypes(RACE_TYPE, ROLE_TYPE) };
                 for (const auto ORIGIN_TYPE : ORIGINS_VEC)
                 {
-                    const auto SUMMON_INFO { SummonInfo(ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
+                    const auto SUMMON_INFO { creature::SummonInfo(
+                        ORIGIN_TYPE, RACE_TYPE, ROLE_TYPE) };
 
-                    if (ORIGIN_TYPE == origin_type::Statue)
+                    if (ORIGIN_TYPE == creature::origin_type::Statue)
                     {
                         for (const auto ELEMENT_TYPE :
                              misc_type::ElementTypes(misc_type::SummoningStatue, true))
@@ -247,11 +246,11 @@ namespace item
                             {
                                 return misc_type::SpiderEggs;
                             }
-                            else if (ORIGIN_TYPE == origin_type::Egg)
+                            else if (ORIGIN_TYPE == creature::origin_type::Egg)
                             {
                                 return misc_type::Egg;
                             }
-                            else if (ORIGIN_TYPE == origin_type::Embryo)
+                            else if (ORIGIN_TYPE == creature::origin_type::Embryo)
                             {
                                 return misc_type::Embryo;
                             }

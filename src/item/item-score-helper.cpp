@@ -87,140 +87,208 @@ namespace item
 
     Score_t ScoreHelper::Score(const weapon::axe_type::Enum AXE_TYPE) const
     {
-        using namespace weapon;
-
         switch (AXE_TYPE)
         {
-            case axe_type::Handaxe: { return 50_score;
+            case weapon::axe_type::Handaxe:
+            {
+                return 50_score;
             }
-            case axe_type::Sickle: { return 80_score;
+            case weapon::axe_type::Sickle:
+            {
+                return 80_score;
             }
-            case axe_type::Battleaxe: { return 100_score;
+            case weapon::axe_type::Battleaxe:
+            {
+                return 100_score;
             }
-            case axe_type::Waraxe: { return 200_score;
+            case weapon::axe_type::Waraxe:
+            {
+                return 200_score;
             }
-            case axe_type::Count:
-            default: { return 0_score;
+            case weapon::axe_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const weapon::bladedstaff_type::Enum BSTAFF_TYPE) const
     {
-        using namespace weapon;
-
         switch (BSTAFF_TYPE)
         {
-            case bladedstaff_type::Spear: { return 70_score;
+            case weapon::bladedstaff_type::Spear:
+            {
+                return 70_score;
             }
-            case bladedstaff_type::ShortSpear: { return 50_score;
+            case weapon::bladedstaff_type::ShortSpear:
+            {
+                return 50_score;
             }
-            case bladedstaff_type::Scythe: { return 80_score;
+            case weapon::bladedstaff_type::Scythe:
+            {
+                return 80_score;
             }
-            case bladedstaff_type::Pike: { return 100_score;
+            case weapon::bladedstaff_type::Pike:
+            {
+                return 100_score;
             }
-            case bladedstaff_type::Partisan: { return 150_score;
+            case weapon::bladedstaff_type::Partisan:
+            {
+                return 150_score;
             }
-            case bladedstaff_type::Halberd: { return 200_score;
+            case weapon::bladedstaff_type::Halberd:
+            {
+                return 200_score;
             }
-            case bladedstaff_type::Count:
-            default: { return 0_score;
+            case weapon::bladedstaff_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const weapon::club_type::Enum CLUB_TYPE) const
     {
-        using namespace weapon;
-
         switch (CLUB_TYPE)
         {
-            case club_type::Spiked: { return 50_score;
+            case weapon::club_type::Spiked:
+            {
+                return 50_score;
             }
-            case club_type::Maul: { return 60_score;
+            case weapon::club_type::Maul:
+            {
+                return 60_score;
             }
-            case club_type::Mace: { return 80_score;
+            case weapon::club_type::Mace:
+            {
+                return 80_score;
             }
-            case club_type::Warhammer: { return 120_score;
+            case weapon::club_type::Warhammer:
+            {
+                return 120_score;
             }
-            case club_type::Count:
-            default: { return 0_score;
+            case weapon::club_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const weapon::projectile_type::Enum PROJ_TYPE) const
     {
-        using namespace weapon;
-
         switch (PROJ_TYPE)
         {
-            case projectile_type::Blowpipe: { return 50_score;
+            case weapon::projectile_type::Blowpipe:
+            {
+                return 50_score;
             }
-            case projectile_type::Sling: { return 60_score;
+            case weapon::projectile_type::Sling:
+            {
+                return 60_score;
             }
-            case projectile_type::Shortbow: { return 100_score;
+            case weapon::projectile_type::Shortbow:
+            {
+                return 100_score;
             }
-            case projectile_type::Longbow: { return 200_score;
+            case weapon::projectile_type::Longbow:
+            {
+                return 200_score;
             }
-            case projectile_type::CompositeBow: { return 300_score;
+            case weapon::projectile_type::CompositeBow:
+            {
+                return 300_score;
             }
-            case projectile_type::Crossbow: { return 300_score;
+            case weapon::projectile_type::Crossbow:
+            {
+                return 300_score;
             }
-            case projectile_type::Count:
-            default: { return 0_score;
+            case weapon::projectile_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const weapon::sword_type::Enum SWORD_TYPE) const
     {
-        using namespace weapon;
-
         switch (SWORD_TYPE)
         {
-            case sword_type::Claymore: { return 200_score;
+            case weapon::sword_type::Claymore:
+            {
+                return 200_score;
             }
-            case sword_type::Longsword: { return 120_score;
+            case weapon::sword_type::Longsword:
+            {
+                return 120_score;
             }
-            case sword_type::Flamberg: { return 190_score;
+            case weapon::sword_type::Flamberg:
+            {
+                return 190_score;
             }
-            case sword_type::Knightlysword: { return 110_score;
+            case weapon::sword_type::Knightlysword:
+            {
+                return 110_score;
             }
-            case sword_type::Broadsword: { return 100_score;
+            case weapon::sword_type::Broadsword:
+            {
+                return 100_score;
             }
-            case sword_type::Falcata: { return 50_score;
+            case weapon::sword_type::Falcata:
+            {
+                return 50_score;
             }
-            case sword_type::Saber: { return 70_score;
+            case weapon::sword_type::Saber:
+            {
+                return 70_score;
             }
-            case sword_type::Cutlass: { return 40_score;
+            case weapon::sword_type::Cutlass:
+            {
+                return 40_score;
             }
-            case sword_type::Rapier: { return 70_score;
+            case weapon::sword_type::Rapier:
+            {
+                return 70_score;
             }
-            case sword_type::Gladius: { return 55_score;
+            case weapon::sword_type::Gladius:
+            {
+                return 55_score;
             }
-            case sword_type::Shortsword: { return 50_score;
+            case weapon::sword_type::Shortsword:
+            {
+                return 50_score;
             }
-            case sword_type::Count:
-            default: { return 0_score;
+            case weapon::sword_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const weapon::whip_type::Enum WHIP_TYPE) const
     {
-        using namespace weapon;
-
         switch (WHIP_TYPE)
         {
-            case whip_type::Bullwhip: { return 30_score;
+            case weapon::whip_type::Bullwhip:
+            {
+                return 30_score;
             }
-            case whip_type::Flail: { return 60_score;
+            case weapon::whip_type::Flail:
+            {
+                return 60_score;
             }
-            case whip_type::MaceAndChain: { return 90_score;
+            case weapon::whip_type::MaceAndChain:
+            {
+                return 90_score;
             }
-            case whip_type::Count:
-            default: { return 0_score;
+            case weapon::whip_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
@@ -235,64 +303,92 @@ namespace item
 
     Score_t ScoreHelper::Score(const armor::cover_type::Enum COVER_TYPE) const
     {
-        using namespace armor;
-
         switch (COVER_TYPE)
         {
-            case cover_type::Cape: { return 25_score;
+            case armor::cover_type::Cape:
+            {
+                return 25_score;
             }
-            case cover_type::Vest: { return 50_score;
+            case armor::cover_type::Vest:
+            {
+                return 50_score;
             }
-            case cover_type::Robe: { return 75_score;
+            case armor::cover_type::Robe:
+            {
+                return 75_score;
             }
-            case cover_type::Cloak: { return 100_score;
+            case armor::cover_type::Cloak:
+            {
+                return 100_score;
             }
-            case cover_type::Count:
-            default: { return 0_score;
+            case armor::cover_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const armor::helm_type::Enum HELM_TYPE) const
     {
-        using namespace armor;
-
         switch (HELM_TYPE)
         {
-            case helm_type::Leather: { return 25_score;
+            case armor::helm_type::Leather:
+            {
+                return 25_score;
             }
-            case helm_type::MailCoif: { return 50_score;
+            case armor::helm_type::MailCoif:
+            {
+                return 50_score;
             }
-            case helm_type::Kettle: { return 75_score;
+            case armor::helm_type::Kettle:
+            {
+                return 75_score;
             }
-            case helm_type::Archers: { return 100_score;
+            case armor::helm_type::Archers:
+            {
+                return 100_score;
             }
-            case helm_type::Bascinet: { return 125_score;
+            case armor::helm_type::Bascinet:
+            {
+                return 125_score;
             }
-            case helm_type::Great: { return 150_score;
+            case armor::helm_type::Great:
+            {
+                return 150_score;
             }
-            case helm_type::Count:
-            default: { return 0_score;
+            case armor::helm_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
 
     Score_t ScoreHelper::Score(const armor::shield_type::Enum SHIELD_TYPE) const
     {
-        using namespace armor;
-
         switch (SHIELD_TYPE)
         {
-            case shield_type::Buckler: { return 50_score;
+            case armor::shield_type::Buckler:
+            {
+                return 50_score;
             }
-            case shield_type::Kite: { return 100_score;
+            case armor::shield_type::Kite:
+            {
+                return 100_score;
             }
-            case shield_type::Heater: { return 150_score;
+            case armor::shield_type::Heater:
+            {
+                return 150_score;
             }
-            case shield_type::Pavis: { return 200_score;
+            case armor::shield_type::Pavis:
+            {
+                return 200_score;
             }
-            case shield_type::Count:
-            default: { return 0_score;
+            case armor::shield_type::Count:
+            default:
+            {
+                return 0_score;
             }
         }
     }
@@ -332,19 +428,25 @@ namespace item
 
     Score_t ScoreHelper::Score(const armor::base_type::Enum ARMOR_BASE_TYPE) const
     {
-        using namespace armor;
-
         switch (ARMOR_BASE_TYPE)
         {
-            case base_type::Mail: { return 75_score;
+            case armor::base_type::Mail:
+            {
+                return 75_score;
             }
-            case base_type::Scale: { return 125_score;
+            case armor::base_type::Scale:
+            {
+                return 125_score;
             }
-            case base_type::Plate: { return 175_score;
+            case armor::base_type::Plate:
+            {
+                return 175_score;
             }
-            case base_type::Plain:
-            case base_type::Count:
-            default: { return 25_score;
+            case armor::base_type::Plain:
+            case armor::base_type::Count:
+            default:
+            {
+                return 25_score;
             }
         }
     }

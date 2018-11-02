@@ -257,7 +257,7 @@ namespace popup
                 ss << ", initial_selection=" << initialSelection_;
             }
 
-            if ((textInfo_.text.size() > 20) && (WILL_SHORTEN))
+            if (textInfo_.text.size() > 20)
             {
                 ss << ", \"" << std::string(textInfo_.text.substr(0, 19).append("...")) << "\"";
             }

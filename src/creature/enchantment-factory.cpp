@@ -73,55 +73,53 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        using namespace item;
-
         Score_t score { 0_score };
 
-        if ((MISC_TYPE == misc_type::Not) || (MISC_TYPE == misc_type::Count))
+        if ((MISC_TYPE == item::misc_type::Not) || (MISC_TYPE == item::misc_type::Count))
         {
             return score;
         }
 
         // below are score bonuses needed because enchantments don't provide enough
 
-        if (misc_type::AllowsCasting(MISC_TYPE))
+        if (item::misc_type::AllowsCasting(MISC_TYPE))
         {
             score += 150_score;
         }
 
-        if ((misc_type::IsBlessed(MISC_TYPE)) || (misc_type::IsCursed(MISC_TYPE)))
+        if ((item::misc_type::IsBlessed(MISC_TYPE)) || (item::misc_type::IsCursed(MISC_TYPE)))
         {
             score += 150_score;
         }
 
-        if (misc_type::IsQuestItem(MISC_TYPE))
+        if (item::misc_type::IsQuestItem(MISC_TYPE))
         {
             score += 250_score;
         }
 
-        if (misc_type::IsSummoning(MISC_TYPE))
+        if (item::misc_type::IsSummoning(MISC_TYPE))
         {
             score += 100_score;
         }
 
-        if (misc_type::IsUseable(MISC_TYPE))
+        if (item::misc_type::IsUseable(MISC_TYPE))
         {
             score += 150_score;
         }
 
-        if (MISC_TYPE == misc_type::SpiderEggs)
+        if (MISC_TYPE == item::misc_type::SpiderEggs)
         {
             score += 500_score;
         }
-        else if (MISC_TYPE == misc_type::Ring)
+        else if (MISC_TYPE == item::misc_type::Ring)
         {
             score += 20_score;
         }
-        else if (MISC_TYPE == misc_type::DrumLute)
+        else if (MISC_TYPE == item::misc_type::DrumLute)
         {
             score += 100_score;
         }
-        else if (MISC_TYPE == misc_type::LockPicks)
+        else if (MISC_TYPE == item::misc_type::LockPicks)
         {
             score += 200_score;
         }
@@ -217,21 +215,21 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        using namespace item;
-
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((MATERIAL_PRIMARY != material::Count) && (MATERIAL_PRIMARY != material::Nothing)),
+            ((MATERIAL_PRIMARY != item::material::Count)
+             && (MATERIAL_PRIMARY != item::material::Nothing)),
             "creature::EnchantmentFactory::MakeFromMiscType(misc_type="
-                << misc_type::ToString(MISC_TYPE) << ") given an invalid primary material="
-                << ((MATERIAL_PRIMARY == material::Count) ? "Count" : "Nothing"));
+                << item::misc_type::ToString(MISC_TYPE) << ") given an invalid primary material="
+                << ((MATERIAL_PRIMARY == item::material::Count) ? "Count" : "Nothing"));
 
-        if ((MATERIAL_SECONDARY != material::Count) && (MATERIAL_SECONDARY != material::Nothing))
+        if ((MATERIAL_SECONDARY != item::material::Count)
+            && (MATERIAL_SECONDARY != item::material::Nothing))
         {
             // intentionally use only the secondary material to get the USE_COUNT
-            const auto USE_COUNT { material::EnchantmentBonus(
+            const auto USE_COUNT { item::material::EnchantmentBonus(
                 MATERIAL_SECONDARY, MATERIAL_SECONDARY) };
 
-            if (misc_type::IsBlessed(MISC_TYPE))
+            if (item::misc_type::IsBlessed(MISC_TYPE))
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -246,7 +244,7 @@ namespace creature
                     250_score,
                     Enchantment::UseEffectType::Blessed) };
             }
-            else if (misc_type::IsCursed(MISC_TYPE))
+            else if (item::misc_type::IsCursed(MISC_TYPE))
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -263,12 +261,13 @@ namespace creature
             }
         }
 
-        const auto MAT_BONUS { material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
+        const auto MAT_BONUS { item::material::EnchantmentBonus(
+            MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
         switch (MISC_TYPE)
         {
                 // quest items (see below for AngelBraid and LitchHand)
-            case misc_type::Crumhorn:
+            case item::misc_type::Crumhorn:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -281,7 +280,7 @@ namespace creature
                                std::make_pair(Traits::CurseCast, 18),
                                std::make_pair(Traits::CurseEffect, 18) })) };
             }
-            case misc_type::DevilHorn:
+            case item::misc_type::DevilHorn:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -298,7 +297,7 @@ namespace creature
                                std::make_pair(Traits::CurseEffect, 80),
                                std::make_pair(Traits::ShadowDamage, 28) })) };
             }
-            case misc_type::GolemFinger:
+            case item::misc_type::GolemFinger:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -311,7 +310,7 @@ namespace creature
                                std::make_pair(Traits::HonorResist, 50),
                                std::make_pair(Traits::ShadowResist, 50) })) };
             }
-            case misc_type::HurdyGurdy:
+            case item::misc_type::HurdyGurdy:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -325,7 +324,7 @@ namespace creature
                                std::make_pair(Traits::CurseCast, 50),
                                std::make_pair(Traits::CurseEffect, 50) })) };
             }
-            case misc_type::Icicle:
+            case item::misc_type::Icicle:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -336,7 +335,7 @@ namespace creature
                                std::make_pair(Traits::FrostDamage, 75),
                                std::make_pair(Traits::FrostResist, 75) })) };
             }
-            case misc_type::Lyre:
+            case item::misc_type::Lyre:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -349,7 +348,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 18),
                                std::make_pair(Traits::FindCoinsAmount, 18) })) };
             }
-            case misc_type::MummyHand:
+            case item::misc_type::MummyHand:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -361,7 +360,7 @@ namespace creature
                                std::make_pair(Traits::CurseEffect, 33),
                                std::make_pair(Traits::CurseResist, 33) })) };
             }
-            case misc_type::PetrifiedSnake:
+            case item::misc_type::PetrifiedSnake:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -371,7 +370,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 16),
                                std::make_pair(Traits::PoisonOnAll, 33) })) };
             }
-            case misc_type::PipeAndTabor:
+            case item::misc_type::PipeAndTabor:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -385,7 +384,7 @@ namespace creature
                                std::make_pair(Traits::BlessCast, 50),
                                std::make_pair(Traits::BlessEffect, 50) })) };
             }
-            case misc_type::Recorder:
+            case item::misc_type::Recorder:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -401,7 +400,7 @@ namespace creature
                                std::make_pair(Traits::CurseResist, 25),
                                std::make_pair(Traits::ShadowResist, 18) })) };
             }
-            case misc_type::UnicornHorn:
+            case item::misc_type::UnicornHorn:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -417,7 +416,7 @@ namespace creature
                                std::make_pair(Traits::BlessEffect, 80),
                                std::make_pair(Traits::ShadowResist, 28) })) };
             }
-            case misc_type::Viol:
+            case item::misc_type::Viol:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -434,7 +433,7 @@ namespace creature
             }
 
             // unique items
-            case misc_type::BasiliskTonge:
+            case item::misc_type::BasiliskTonge:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -443,7 +442,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, 13),
                                std::make_pair(Traits::MagicResist, 13) })) };
             }
-            case misc_type::BerserkersBeard:
+            case item::misc_type::BerserkersBeard:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -454,7 +453,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 8),
                                std::make_pair(Traits::MagicResist, 18) })) };
             }
-            case misc_type::BishopsHanky:
+            case item::misc_type::BishopsHanky:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -469,7 +468,7 @@ namespace creature
                                std::make_pair(Traits::BlessEffect, 28),
                                std::make_pair(Traits::CurseResist, 22) })) };
             }
-            case misc_type::BleedingTrophy:
+            case item::misc_type::BleedingTrophy:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -480,7 +479,7 @@ namespace creature
                                std::make_pair(Traits::CurseEffect, 5 + (MAT_BONUS * 4)),
                                std::make_pair(Traits::FindMagic, MAT_BONUS) })) };
             }
-            case misc_type::BloodyDragonScale:
+            case item::misc_type::BloodyDragonScale:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -490,7 +489,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 10),
                                std::make_pair(Traits::Charm, -26) })) };
             }
-            case misc_type::BottleOfBansheeScreams:
+            case item::misc_type::BottleOfBansheeScreams:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -499,7 +498,7 @@ namespace creature
                                std::make_pair(Traits::Intelligence, -20),
                                std::make_pair(Traits::Encounter, -6) })) };
             }
-            case misc_type::BronzeTroll:
+            case item::misc_type::BronzeTroll:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -508,49 +507,49 @@ namespace creature
                                std::make_pair(Traits::Charm, -24),
                                std::make_pair(Traits::Encounter, -6) })) };
             }
-            case misc_type::Brooch_Crown:
+            case item::misc_type::Brooch_Crown:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Intelligence, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::Brooch_Feather:
+            case item::misc_type::Brooch_Feather:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Accuracy, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::Brooch_Fist:
+            case item::misc_type::Brooch_Fist:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Strength, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::Brooch_Hourglass:
+            case item::misc_type::Brooch_Hourglass:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Speed, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::Brooch_Key:
+            case item::misc_type::Brooch_Key:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::Brooch_Mask:
+            case item::misc_type::Brooch_Mask:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Charm, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::BurialShroud:
+            case item::misc_type::BurialShroud:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -564,7 +563,7 @@ namespace creature
                                std::make_pair(Traits::FindReligious, 18),
                                std::make_pair(Traits::BlessResist, 33) })) };
             }
-            case misc_type::CapeCommanders:
+            case item::misc_type::CapeCommanders:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -574,7 +573,7 @@ namespace creature
                                std::make_pair(Traits::CurseResist, 24) })) };
             }
 
-            case misc_type::CapeGenerals:
+            case item::misc_type::CapeGenerals:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -583,7 +582,7 @@ namespace creature
                                std::make_pair(Traits::ArmorRating, 24),
                                std::make_pair(Traits::CurseResist, 28) })) };
             }
-            case misc_type::CapeKings:
+            case item::misc_type::CapeKings:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -592,49 +591,49 @@ namespace creature
                                std::make_pair(Traits::ArmorRating, 30),
                                std::make_pair(Traits::CurseResist, 33) })) };
             }
-            case misc_type::Charm_Crown:
+            case item::misc_type::Charm_Crown:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Intelligence, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::Charm_Feather:
+            case item::misc_type::Charm_Feather:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Accuracy, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::Charm_Fist:
+            case item::misc_type::Charm_Fist:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Strength, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::Charm_Hourglass:
+            case item::misc_type::Charm_Hourglass:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Speed, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::Charm_Key:
+            case item::misc_type::Charm_Key:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::Charm_Mask:
+            case item::misc_type::Charm_Mask:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Charm, (MAT_BONUS * 5)) })) };
             }
-            case misc_type::ChimeraBone:
+            case item::misc_type::ChimeraBone:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -644,7 +643,7 @@ namespace creature
                                std::make_pair(Traits::Intelligence, 13),
                                std::make_pair(Traits::FindMagic, 8) })) };
             }
-            case misc_type::CobraTooth:
+            case item::misc_type::CobraTooth:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -652,7 +651,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::DamageBonusMelee, 16),
                                std::make_pair(Traits::PoisonOnAll, 36) })) };
             }
-            case misc_type::CrystalChimes:
+            case item::misc_type::CrystalChimes:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -666,7 +665,7 @@ namespace creature
                     1600_score + Score_t::Make(50 * MAT_BONUS),
                     Enchantment::UseEffectType::CrystalChimes) };
             }
-            case misc_type::DemonDiary:
+            case item::misc_type::DemonDiary:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -677,7 +676,7 @@ namespace creature
                                std::make_pair(Traits::CurseEffect, 33),
                                std::make_pair(Traits::CurseResist, 33) })) };
             }
-            case misc_type::DoveBloodVial:
+            case item::misc_type::DoveBloodVial:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -691,7 +690,7 @@ namespace creature
                     1900_score,
                     Enchantment::UseEffectType::DoveBloodVial) };
             }
-            case misc_type::DragonToothWhistle:
+            case item::misc_type::DragonToothWhistle:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -705,13 +704,13 @@ namespace creature
                     1500_score,
                     Enchantment::UseEffectType::DragonToothWhistle) };
             }
-            case misc_type::DriedFrog:
-            case misc_type::DriedGecko:
-            case misc_type::DriedIguana:
-            case misc_type::DriedLizard:
-            case misc_type::DriedSalamander:
-            case misc_type::DriedSkink:
-            case misc_type::DriedToad:
+            case item::misc_type::DriedFrog:
+            case item::misc_type::DriedGecko:
+            case item::misc_type::DriedIguana:
+            case item::misc_type::DriedLizard:
+            case item::misc_type::DriedSalamander:
+            case item::misc_type::DriedSkink:
+            case item::misc_type::DriedToad:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -725,7 +724,7 @@ namespace creature
                     800_score,
                     Enchantment::UseEffectType::DriedEdible) };
             }
-            case misc_type::DruidLeaf:
+            case item::misc_type::DruidLeaf:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -738,7 +737,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, MAT_BONUS),
                                std::make_pair(Traits::MagicResist, MAT_BONUS) })) };
             }
-            case misc_type::EvilRabbitsFoot:
+            case item::misc_type::EvilRabbitsFoot:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -755,7 +754,7 @@ namespace creature
                                std::make_pair(Traits::CurseResist, 666),
                                std::make_pair(Traits::AnimalResist, -66) })) };
             }
-            case misc_type::ExoticGoldenGong:
+            case item::misc_type::ExoticGoldenGong:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -771,7 +770,7 @@ namespace creature
                     2400_score,
                     Enchantment::UseEffectType::GoldenGong) };
             }
-            case misc_type::EyeCyclops:
+            case item::misc_type::EyeCyclops:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -779,7 +778,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::HitCritical, 1 + (MAT_BONUS / 2)),
                                std::make_pair(Traits::Surprise, (MAT_BONUS * -1)) })) };
             }
-            case misc_type::EyeGiantOwl:
+            case item::misc_type::EyeGiantOwl:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -790,7 +789,7 @@ namespace creature
                                std::make_pair(Traits::DamageBonusProj, 8),
                                std::make_pair(Traits::Surprise, -8) })) };
             }
-            case misc_type::EyeHawk:
+            case item::misc_type::EyeHawk:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -801,7 +800,7 @@ namespace creature
                                std::make_pair(Traits::DamageBonusProj, 10),
                                std::make_pair(Traits::Surprise, -6) })) };
             }
-            case misc_type::FlagFanatics:
+            case item::misc_type::FlagFanatics:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -812,7 +811,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 8),
                                std::make_pair(Traits::Surprise, 6) })) };
             }
-            case misc_type::FlagRegalCaptains:
+            case item::misc_type::FlagRegalCaptains:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -823,7 +822,7 @@ namespace creature
                                std::make_pair(Traits::Surprise, 8),
                                std::make_pair(Traits::MagicResist, 8) })) };
             }
-            case misc_type::FlagTribal:
+            case item::misc_type::FlagTribal:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -832,7 +831,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 6),
                                std::make_pair(Traits::Surprise, 8) })) };
             }
-            case misc_type::FriarsChronicle:
+            case item::misc_type::FriarsChronicle:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -844,7 +843,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 13),
                                std::make_pair(Traits::FindReligious, 6) })) };
             }
-            case misc_type::FuneralRecord:
+            case item::misc_type::FuneralRecord:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -857,7 +856,7 @@ namespace creature
                                std::make_pair(Traits::FindReligious, 8),
                                std::make_pair(Traits::Mana, 13) })) };
             }
-            case misc_type::GhostSheet:
+            case item::misc_type::GhostSheet:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -867,7 +866,7 @@ namespace creature
                                std::make_pair(Traits::Speed, -13),
                                std::make_pair(Traits::Encounter, -6) })) };
             }
-            case misc_type::GlassCat:
+            case item::misc_type::GlassCat:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -876,7 +875,7 @@ namespace creature
                                std::make_pair(Traits::Luck, 18),
                                std::make_pair(Traits::Encounter, -3) })) };
             }
-            case misc_type::GriffinFeather:
+            case item::misc_type::GriffinFeather:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -886,7 +885,7 @@ namespace creature
                                std::make_pair(Traits::Strength, 13),
                                std::make_pair(Traits::DamageBonusProj, 13) })) };
             }
-            case misc_type::HangmansNoose:
+            case item::misc_type::HangmansNoose:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -900,7 +899,7 @@ namespace creature
                                std::make_pair(Traits::ShadowDamage, 18) })) };
             }
 
-            case misc_type::HobgoblinNose:
+            case item::misc_type::HobgoblinNose:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -910,7 +909,7 @@ namespace creature
                                std::make_pair(Traits::Surprise, -10),
                                std::make_pair(Traits::MagicEffect, 13) })) };
             }
-            case misc_type::HolyEpic:
+            case item::misc_type::HolyEpic:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -923,7 +922,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 22),
                                std::make_pair(Traits::FindReligious, 16) })) };
             }
-            case misc_type::HornOfTheHorde:
+            case item::misc_type::HornOfTheHorde:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -932,7 +931,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, -8),
                                std::make_pair(Traits::Surprise, -8) })) };
             }
-            case misc_type::ImpTail:
+            case item::misc_type::ImpTail:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -940,7 +939,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::DamageBonusMelee, 20),
                                std::make_pair(Traits::Speed, 13) })) };
             }
-            case misc_type::IslanderHeaddress:
+            case item::misc_type::IslanderHeaddress:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -954,14 +953,14 @@ namespace creature
                                std::make_pair(Traits::Encounter, -8),
                                std::make_pair(Traits::ShadowResist, 20) })) };
             }
-            case misc_type::JeweledArmband:
+            case item::misc_type::JeweledArmband:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ArmorRating, (MAT_BONUS * 2)) })) };
             }
-            case misc_type::JeweledHandbag:
+            case item::misc_type::JeweledHandbag:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -970,7 +969,7 @@ namespace creature
                                std::make_pair(Traits::FindCoinsAmount, 1 + (MAT_BONUS / 2)),
                                std::make_pair(Traits::Luck, (MAT_BONUS * 2)) })) };
             }
-            case misc_type::JeweledPrincessVeil:
+            case item::misc_type::JeweledPrincessVeil:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -979,7 +978,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 1 + (MAT_BONUS / 2)) })) };
             }
 
-            case misc_type::LastRitesScroll:
+            case item::misc_type::LastRitesScroll:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -994,7 +993,7 @@ namespace creature
                                std::make_pair(Traits::FindReligious, 16),
                                std::make_pair(Traits::Mana, 26) })) };
             }
-            case misc_type::MacabreManuscript:
+            case item::misc_type::MacabreManuscript:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1007,7 +1006,7 @@ namespace creature
                                std::make_pair(Traits::FindReligious, 13),
                                std::make_pair(Traits::Mana, 22) })) };
             }
-            case misc_type::MadRatJuju:
+            case item::misc_type::MadRatJuju:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1017,7 +1016,7 @@ namespace creature
                                std::make_pair(Traits::Speed, 33),
                                std::make_pair(Traits::AnimalResist, -18) })) };
             }
-            case misc_type::MagicHorseshoe:
+            case item::misc_type::MagicHorseshoe:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1027,12 +1026,12 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 8),
                                std::make_pair(Traits::FindCoinsAmount, 16) })) };
             }
-            case misc_type::MagnifyingGlass:
+            case item::misc_type::MagnifyingGlass:
             {
                 // TODO
                 return {};
             }
-            case misc_type::ManaAmulet:
+            case item::misc_type::ManaAmulet:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1040,7 +1039,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Mana, 18 + MAT_BONUS),
                                std::make_pair(Traits::MagicEffect, 1 + (MAT_BONUS / 2)) })) };
             }
-            case misc_type::MaskMourners:
+            case item::misc_type::MaskMourners:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1051,7 +1050,7 @@ namespace creature
                                std::make_pair(Traits::CurseResist, 50),
                                std::make_pair(Traits::ShadowResist, 28) })) };
             }
-            case misc_type::MaskRascal:
+            case item::misc_type::MaskRascal:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1061,7 +1060,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 8),
                                std::make_pair(Traits::FindCoinsAmount, 16) })) };
             }
-            case misc_type::MinotaurHide:
+            case item::misc_type::MinotaurHide:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1072,7 +1071,7 @@ namespace creature
                                std::make_pair(Traits::Charm, -28),
                                std::make_pair(Traits::Intelligence, -16) })) };
             }
-            case misc_type::MortuaryOrnament:
+            case item::misc_type::MortuaryOrnament:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1081,7 +1080,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 13),
                                std::make_pair(Traits::FindReligious, 26) })) };
             }
-            case misc_type::NecklaceJeweledAnkh:
+            case item::misc_type::NecklaceJeweledAnkh:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1095,7 +1094,7 @@ namespace creature
                                std::make_pair(Traits::CurseEffect, 13 + (MAT_BONUS * 2)),
                                std::make_pair(Traits::CurseResist, 13 + (MAT_BONUS * 2)) })) };
             }
-            case misc_type::NecklaceSharkTooth:
+            case item::misc_type::NecklaceSharkTooth:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1103,7 +1102,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Strength, 13),
                                std::make_pair(Traits::DamageBonusMelee, 18) })) };
             }
-            case misc_type::NecklaceVampiresTooth:
+            case item::misc_type::NecklaceVampiresTooth:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1112,7 +1111,7 @@ namespace creature
                                std::make_pair(Traits::HealthGainAll, 25),
                                std::make_pair(Traits::CurseResist, 28) })) };
             }
-            case misc_type::PantherPaw:
+            case item::misc_type::PantherPaw:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1121,49 +1120,49 @@ namespace creature
                                std::make_pair(Traits::Strength, 13),
                                std::make_pair(Traits::AnimalResist, 13) })) };
             }
-            case misc_type::Pin_Crown:
+            case item::misc_type::Pin_Crown:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Intelligence, MAT_BONUS) })) };
             }
-            case misc_type::Pin_Feather:
+            case item::misc_type::Pin_Feather:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Accuracy, MAT_BONUS) })) };
             }
-            case misc_type::Pin_Fist:
+            case item::misc_type::Pin_Fist:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Strength, MAT_BONUS) })) };
             }
-            case misc_type::Pin_Hourglass:
+            case item::misc_type::Pin_Hourglass:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Speed, MAT_BONUS) })) };
             }
-            case misc_type::Pin_Key:
+            case item::misc_type::Pin_Key:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, MAT_BONUS) })) };
             }
-            case misc_type::Pin_Mask:
+            case item::misc_type::Pin_Mask:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Charm, MAT_BONUS) })) };
             }
-            case misc_type::PixieBell:
+            case item::misc_type::PixieBell:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1177,7 +1176,7 @@ namespace creature
                     1800_score,
                     Enchantment::UseEffectType::PixieBell) };
             }
-            case misc_type::RattlesnakeTail:
+            case item::misc_type::RattlesnakeTail:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1185,7 +1184,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Speed, 16),
                                std::make_pair(Traits::Encounter, 8) })) };
             }
-            case misc_type::RavenClaw:
+            case item::misc_type::RavenClaw:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1194,7 +1193,7 @@ namespace creature
                                std::make_pair(Traits::Accuracy, 13),
                                std::make_pair(Traits::DamageBonusProj, 18) })) };
             }
-            case misc_type::ReaperScythe:
+            case item::misc_type::ReaperScythe:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1202,7 +1201,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::HealthGainMelee, 25) })) };
             }
 
-            case misc_type::RequiemRegister:
+            case item::misc_type::RequiemRegister:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1215,7 +1214,7 @@ namespace creature
                                std::make_pair(Traits::FindReligious, 10),
                                std::make_pair(Traits::Mana, 18) })) };
             }
-            case misc_type::RingHobo:
+            case item::misc_type::RingHobo:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1227,7 +1226,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 22),
                                std::make_pair(Traits::FindReligious, 16) })) };
             }
-            case misc_type::RingMendicant:
+            case item::misc_type::RingMendicant:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1237,7 +1236,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 8),
                                std::make_pair(Traits::FindReligious, 18) })) };
             }
-            case misc_type::RingMonk:
+            case item::misc_type::RingMonk:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1249,7 +1248,7 @@ namespace creature
                                std::make_pair(Traits::FindCoinsAmount, 13),
                                std::make_pair(Traits::CurseResist, 28) })) };
             }
-            case misc_type::RingPriest:
+            case item::misc_type::RingPriest:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1260,7 +1259,7 @@ namespace creature
                                std::make_pair(Traits::BlessCast, 13),
                                std::make_pair(Traits::BlessEffect, 26) })) };
             }
-            case misc_type::RoyalScoutSpyglass:
+            case item::misc_type::RoyalScoutSpyglass:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1268,7 +1267,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Accuracy, 16),
                                std::make_pair(Traits::Surprise, -12) })) };
             }
-            case misc_type::SaintCameoPin:
+            case item::misc_type::SaintCameoPin:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1276,7 +1275,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Accuracy, 16),
                                std::make_pair(Traits::Surprise, -12) })) };
             }
-            case misc_type::SaintsJournal:
+            case item::misc_type::SaintsJournal:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1287,7 +1286,7 @@ namespace creature
                                std::make_pair(Traits::BlessCast, MAT_BONUS),
                                std::make_pair(Traits::BlessEffect, 10 + (MAT_BONUS * 2)) })) };
             }
-            case misc_type::SanguineRelic:
+            case item::misc_type::SanguineRelic:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1298,7 +1297,7 @@ namespace creature
                                std::make_pair(Traits::CurseResist, 10 + (MAT_BONUS * 5)),
                                std::make_pair(Traits::FindReligious, MAT_BONUS) })) };
             }
-            case misc_type::ScoundrelSack:
+            case item::misc_type::ScoundrelSack:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1308,7 +1307,7 @@ namespace creature
                                std::make_pair(Traits::Luck, 18),
                                std::make_pair(Traits::Backstab, 6) })) };
             }
-            case misc_type::SepultureDecoration:
+            case item::misc_type::SepultureDecoration:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1317,7 +1316,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 8),
                                std::make_pair(Traits::FindReligious, 13) })) };
             }
-            case misc_type::ShadeCloak:
+            case item::misc_type::ShadeCloak:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1327,7 +1326,7 @@ namespace creature
                                std::make_pair(Traits::Speed, -20),
                                std::make_pair(Traits::Encounter, -6) })) };
             }
-            case misc_type::ShamanRainmaker:
+            case item::misc_type::ShamanRainmaker:
             {
                 return { Enchantment(
                              static_cast<EnchantmentType::Enum>(
@@ -1352,7 +1351,7 @@ namespace creature
                              600_score,
                              Enchantment::UseEffectType::ShamanRainmaker) };
             }
-            case misc_type::SirenConch:
+            case item::misc_type::SirenConch:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1361,7 +1360,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, 13),
                                std::make_pair(Traits::Charm, 13) })) };
             }
-            case misc_type::SpecterChains:
+            case item::misc_type::SpecterChains:
             {
                 return { Enchantment(
                              static_cast<EnchantmentType::Enum>(
@@ -1381,7 +1380,7 @@ namespace creature
                              1300_score,
                              Enchantment::UseEffectType::SpecterChains) };
             }
-            case misc_type::SpecterRobe:
+            case item::misc_type::SpecterRobe:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1391,12 +1390,12 @@ namespace creature
                                std::make_pair(Traits::Speed, -13),
                                std::make_pair(Traits::Encounter, -8) })) };
             }
-            case misc_type::SpiderEggs:
+            case item::misc_type::SpiderEggs:
             {
                 return { Enchantment(
                     EnchantmentType::WhenUsed, TraitSet(), UseInfo(10, game::Phase::Combat)) };
             }
-            case misc_type::SprintersLegtie:
+            case item::misc_type::SprintersLegtie:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1404,7 +1403,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Speed, 22),
                                std::make_pair(Traits::Strength, -8) })) };
             }
-            case misc_type::SwindlersBag:
+            case item::misc_type::SwindlersBag:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1414,7 +1413,7 @@ namespace creature
                                std::make_pair(Traits::Luck, 22),
                                std::make_pair(Traits::HitCritical, 5) })) };
             }
-            case misc_type::TricksterPouch:
+            case item::misc_type::TricksterPouch:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1424,7 +1423,7 @@ namespace creature
                                std::make_pair(Traits::Luck, 16),
                                std::make_pair(Traits::Charm, 18) })) };
             }
-            case misc_type::TuningFork:
+            case item::misc_type::TuningFork:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1432,14 +1431,14 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Charm, MAT_BONUS),
                                std::make_pair(Traits::MagicCast, MAT_BONUS) })) };
             }
-            case misc_type::TurtleShell:
+            case item::misc_type::TurtleShell:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenHeld | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ArmorRating, (MAT_BONUS * 3)) })) };
             }
-            case misc_type::VultureGizzard:
+            case item::misc_type::VultureGizzard:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1453,7 +1452,7 @@ namespace creature
                     1000_score,
                     Enchantment::UseEffectType::VultureGizzard) };
             }
-            case misc_type::WarhorseMarionette:
+            case item::misc_type::WarhorseMarionette:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1464,7 +1463,7 @@ namespace creature
                                std::make_pair(Traits::HitPower, 13),
                                std::make_pair(Traits::Intelligence, -16) })) };
             }
-            case misc_type::WarTrumpet:
+            case item::misc_type::WarTrumpet:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1478,7 +1477,7 @@ namespace creature
                     1100_score,
                     Enchantment::UseEffectType::WarTrumpet) };
             }
-            case misc_type::WeaselTotem:
+            case item::misc_type::WeaselTotem:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1487,7 +1486,7 @@ namespace creature
                                std::make_pair(Traits::Luck, 18),
                                std::make_pair(Traits::Encounter, -6) })) };
             }
-            case misc_type::WolfenFur:
+            case item::misc_type::WolfenFur:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1497,7 +1496,7 @@ namespace creature
                                std::make_pair(Traits::Charm, -16),
                                std::make_pair(Traits::Intelligence, -13) })) };
             }
-            case misc_type::WraithTalisman:
+            case item::misc_type::WraithTalisman:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1513,7 +1512,7 @@ namespace creature
                         std::make_pair(Traits::CurseResist, 33),
                     })) };
             }
-            case misc_type::Scepter:
+            case item::misc_type::Scepter:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1524,13 +1523,13 @@ namespace creature
             }
 
             // standalone items
-            case misc_type::Egg:
-            case misc_type::Embryo:
+            case item::misc_type::Egg:
+            case item::misc_type::Embryo:
             {
                 return { Enchantment(
                     EnchantmentType::WhenUsed, TraitSet(), UseInfo(1, game::Phase::Combat)) };
             }
-            case misc_type::LockPicks:
+            case item::misc_type::LockPicks:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1539,7 +1538,7 @@ namespace creature
                                std::make_pair(Traits::Speed, 11 + (MAT_BONUS / 2)),
                                std::make_pair(Traits::Backstab, 1 + (MAT_BONUS / 2)) })) };
             }
-            case misc_type::Orb:
+            case item::misc_type::Orb:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1548,12 +1547,12 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, MAT_BONUS),
                                std::make_pair(Traits::MagicCast, 1 + (MAT_BONUS / 2)) })) };
             }
-            case misc_type::Seeds:
+            case item::misc_type::Seeds:
             {
                 return { Enchantment(
                     EnchantmentType::WhenUsed, TraitSet(), UseInfo(10, game::Phase::Combat)) };
             }
-            case misc_type::Shard:
+            case item::misc_type::Shard:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1561,7 +1560,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Mana, 11 + (MAT_BONUS / 2)),
                                std::make_pair(Traits::MagicEffect, (MAT_BONUS / 2)) })) };
             }
-            case misc_type::SummoningStatue:
+            case item::misc_type::SummoningStatue:
             {
                 return { Enchantment(
                     EnchantmentType::WhenUsed,
@@ -1570,33 +1569,35 @@ namespace creature
             }
 
             // see blessed and cursed above
-            case misc_type::Bust:
-            case misc_type::DollBlessed:
-            case misc_type::DollCursed:
-            case misc_type::DriedHead:
-            case misc_type::FigurineBlessed:
-            case misc_type::FigurineCursed:
-            case misc_type::PuppetBlessed:
-            case misc_type::PuppetCursed:
+            case item::misc_type::Bust:
+            case item::misc_type::DollBlessed:
+            case item::misc_type::DollCursed:
+            case item::misc_type::DriedHead:
+            case item::misc_type::FigurineBlessed:
+            case item::misc_type::FigurineCursed:
+            case item::misc_type::PuppetBlessed:
+            case item::misc_type::PuppetCursed:
 
             // no enchantments for these plain items
-            case misc_type::Doll:
-            case misc_type::DrumLute:
-            case misc_type::Goblet:
-            case misc_type::Key:
-            case misc_type::Mirror:
-            case misc_type::Pendant:
-            case misc_type::Ring:
-            case misc_type::Staff:
-            case misc_type::Wand:
+            case item::misc_type::Doll:
+            case item::misc_type::DrumLute:
+            case item::misc_type::Goblet:
+            case item::misc_type::Key:
+            case item::misc_type::Mirror:
+            case item::misc_type::Pendant:
+            case item::misc_type::Ring:
+            case item::misc_type::Staff:
+            case item::misc_type::Wand:
 
             // only a set_type so the set_type takes care of the enchantment
-            case misc_type::AngelBraid:
-            case misc_type::LitchHand:
+            case item::misc_type::AngelBraid:
+            case item::misc_type::LitchHand:
 
-            case misc_type::Not:
-            case misc_type::Count:
-            default: { return {};
+            case item::misc_type::Not:
+            case item::misc_type::Count:
+            default:
+            {
+                return {};
             }
         }
     }
@@ -1608,11 +1609,9 @@ namespace creature
 
     const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum E) const
     {
-        using namespace item;
-
         switch (E)
         {
-            case set_type::TheAssassins:
+            case item::set_type::TheAssassins:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1622,7 +1621,7 @@ namespace creature
                                std::make_pair(Traits::Backstab, 2),
                                std::make_pair(Traits::FindMagic, 2) }));
             }
-            case set_type::TheNeverwinter:
+            case item::set_type::TheNeverwinter:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1632,7 +1631,7 @@ namespace creature
                                std::make_pair(Traits::Backstab, 4),
                                std::make_pair(Traits::FindMagic, 3) }));
             }
-            case set_type::TheTickler:
+            case item::set_type::TheTickler:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1642,7 +1641,7 @@ namespace creature
                                std::make_pair(Traits::Backstab, 6),
                                std::make_pair(Traits::FindMagic, 4) }));
             }
-            case set_type::TheMagus:
+            case item::set_type::TheMagus:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1654,7 +1653,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 2),
                                std::make_pair(Traits::ShadowDamage, 2) }));
             }
-            case set_type::TheNecromancers:
+            case item::set_type::TheNecromancers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1666,7 +1665,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 4),
                                std::make_pair(Traits::ShadowDamage, 4) }));
             }
-            case set_type::TheWarlocks:
+            case item::set_type::TheWarlocks:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1678,7 +1677,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 8),
                                std::make_pair(Traits::ShadowDamage, 8) }));
             }
-            case set_type::TheLichKings:
+            case item::set_type::TheLichKings:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1701,7 +1700,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 10),
                                std::make_pair(Traits::FindReligious, 5) }));
             }
-            case set_type::TheSages:
+            case item::set_type::TheSages:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1713,7 +1712,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 2),
                                std::make_pair(Traits::ShadowResist, 2) }));
             }
-            case set_type::TheShamans:
+            case item::set_type::TheShamans:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1725,7 +1724,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 4),
                                std::make_pair(Traits::ShadowResist, 4) }));
             }
-            case set_type::TheOracles:
+            case item::set_type::TheOracles:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1737,7 +1736,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 8),
                                std::make_pair(Traits::ShadowResist, 8) }));
             }
-            case set_type::TheAngelic:
+            case item::set_type::TheAngelic:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1760,7 +1759,7 @@ namespace creature
                                std::make_pair(Traits::HonorResist, 13),
                                std::make_pair(Traits::ShadowResist, 13) }));
             }
-            case set_type::TheBalladeers:
+            case item::set_type::TheBalladeers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1772,7 +1771,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, 2),
                                std::make_pair(Traits::MagicResist, 2) }));
             }
-            case set_type::TheTroubadours:
+            case item::set_type::TheTroubadours:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1784,7 +1783,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, 5),
                                std::make_pair(Traits::MagicResist, 5) }));
             }
-            case set_type::TheMuses:
+            case item::set_type::TheMuses:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1796,7 +1795,7 @@ namespace creature
                                std::make_pair(Traits::MagicEffect, 10),
                                std::make_pair(Traits::MagicResist, 10) }));
             }
-            case set_type::TheCavaliers:
+            case item::set_type::TheCavaliers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1805,7 +1804,7 @@ namespace creature
                                std::make_pair(Traits::Speed, 2),
                                std::make_pair(Traits::HitPower, 1) }));
             }
-            case set_type::TheChampions:
+            case item::set_type::TheChampions:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1816,7 +1815,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 1),
                                std::make_pair(Traits::MagicResist, 1) }));
             }
-            case set_type::ThePaladins:
+            case item::set_type::ThePaladins:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1827,7 +1826,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 1),
                                std::make_pair(Traits::MagicResist, 2) }));
             }
-            case set_type::TheBerserkers:
+            case item::set_type::TheBerserkers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1838,7 +1837,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 2),
                                std::make_pair(Traits::MagicResist, 3) }));
             }
-            case set_type::TheRosewood:
+            case item::set_type::TheRosewood:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1849,7 +1848,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 2),
                                std::make_pair(Traits::MagicResist, 4) }));
             }
-            case set_type::TheDragonslayers:
+            case item::set_type::TheDragonslayers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1860,7 +1859,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 3),
                                std::make_pair(Traits::MagicResist, 5) }));
             }
-            case set_type::TheEventideRider:
+            case item::set_type::TheEventideRider:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1874,7 +1873,7 @@ namespace creature
                                std::make_pair(Traits::CurseOnDamage, 4),
                                std::make_pair(Traits::ShadowDamage, 2) }));
             }
-            case set_type::TheHunters:
+            case item::set_type::TheHunters:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1885,7 +1884,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 1),
                                std::make_pair(Traits::HitCritical, 1) }));
             }
-            case set_type::TheSureShot:
+            case item::set_type::TheSureShot:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1896,7 +1895,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 2),
                                std::make_pair(Traits::HitCritical, 2) }));
             }
-            case set_type::TheMarksmans:
+            case item::set_type::TheMarksmans:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1907,7 +1906,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 3),
                                std::make_pair(Traits::HitCritical, 3) }));
             }
-            case set_type::TheDeadeye:
+            case item::set_type::TheDeadeye:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1918,7 +1917,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 4),
                                std::make_pair(Traits::HitCritical, 4) }));
             }
-            case set_type::TheDuskRanger:
+            case item::set_type::TheDuskRanger:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1932,7 +1931,7 @@ namespace creature
                                std::make_pair(Traits::CurseOnDamage, 8),
                                std::make_pair(Traits::ShadowDamage, 3) }));
             }
-            case set_type::TheVenomBow:
+            case item::set_type::TheVenomBow:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1944,7 +1943,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 3),
                                std::make_pair(Traits::PoisonOnAll, 8) }));
             }
-            case set_type::TheCritterChannelers:
+            case item::set_type::TheCritterChannelers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1956,7 +1955,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 5),
                                std::make_pair(Traits::MagicResist, 1) }));
             }
-            case set_type::TheMammalianHead:
+            case item::set_type::TheMammalianHead:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1968,7 +1967,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 6),
                                std::make_pair(Traits::MagicResist, 1) }));
             }
-            case set_type::TheSavageTaskmasters:
+            case item::set_type::TheSavageTaskmasters:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1980,7 +1979,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 7),
                                std::make_pair(Traits::MagicResist, 2) }));
             }
-            case set_type::TheMonsterOverseers:
+            case item::set_type::TheMonsterOverseers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1992,7 +1991,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 8),
                                std::make_pair(Traits::MagicResist, 3) }));
             }
-            case set_type::TheBeastRulers:
+            case item::set_type::TheBeastRulers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2004,8 +2003,8 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 9),
                                std::make_pair(Traits::MagicResist, 4) }));
             }
-            case set_type::Not:
-            case set_type::Count:
+            case item::set_type::Not:
+            case item::set_type::Count:
             default:
             {
                 std::ostringstream ss;
@@ -2026,11 +2025,9 @@ namespace creature
     const Enchantment
         EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum E) const
     {
-        using namespace item;
-
         switch (E)
         {
-            case set_type::TheAssassins:
+            case item::set_type::TheAssassins:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2041,7 +2038,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 10),
                                std::make_pair(Traits::FindCoinsAmount, 13) }));
             }
-            case set_type::TheNeverwinter:
+            case item::set_type::TheNeverwinter:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2052,7 +2049,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 13),
                                std::make_pair(Traits::FindCoinsAmount, 18) }));
             }
-            case set_type::TheTickler:
+            case item::set_type::TheTickler:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2063,7 +2060,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 18),
                                std::make_pair(Traits::FindCoinsAmount, 24) }));
             }
-            case set_type::TheMagus:
+            case item::set_type::TheMagus:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2075,7 +2072,7 @@ namespace creature
                                std::make_pair(Traits::ShadowDamage, 10),
                                std::make_pair(Traits::Mana, 18) }));
             }
-            case set_type::TheNecromancers:
+            case item::set_type::TheNecromancers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2087,7 +2084,7 @@ namespace creature
                                std::make_pair(Traits::ShadowDamage, 20),
                                std::make_pair(Traits::Mana, 24) }));
             }
-            case set_type::TheWarlocks:
+            case item::set_type::TheWarlocks:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2101,7 +2098,7 @@ namespace creature
                                std::make_pair(Traits::CurseCast, 28),
                                std::make_pair(Traits::CurseEffect, 28) }));
             }
-            case set_type::TheLichKings:
+            case item::set_type::TheLichKings:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2124,7 +2121,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 20),
                                std::make_pair(Traits::FindReligious, 10) }));
             }
-            case set_type::TheSages:
+            case item::set_type::TheSages:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2139,7 +2136,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 18),
                                std::make_pair(Traits::ShadowResist, 10) }));
             }
-            case set_type::TheShamans:
+            case item::set_type::TheShamans:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2154,7 +2151,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 24),
                                std::make_pair(Traits::ShadowResist, 20) }));
             }
-            case set_type::TheOracles:
+            case item::set_type::TheOracles:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2169,7 +2166,7 @@ namespace creature
                                std::make_pair(Traits::Mana, 28),
                                std::make_pair(Traits::ShadowResist, 30) }));
             }
-            case set_type::TheAngelic:
+            case item::set_type::TheAngelic:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2192,7 +2189,7 @@ namespace creature
                                std::make_pair(Traits::HonorResist, 20),
                                std::make_pair(Traits::ShadowResist, 20) }));
             }
-            case set_type::TheBalladeers:
+            case item::set_type::TheBalladeers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2204,7 +2201,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 8),
                                std::make_pair(Traits::Mana, 18) }));
             }
-            case set_type::TheTroubadours:
+            case item::set_type::TheTroubadours:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2216,7 +2213,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 16),
                                std::make_pair(Traits::Mana, 24) }));
             }
-            case set_type::TheMuses:
+            case item::set_type::TheMuses:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2228,7 +2225,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 28),
                                std::make_pair(Traits::Mana, 28) }));
             }
-            case set_type::TheCavaliers:
+            case item::set_type::TheCavaliers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2240,7 +2237,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 2),
                                std::make_pair(Traits::HitPower, 5) }));
             }
-            case set_type::TheChampions:
+            case item::set_type::TheChampions:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2252,7 +2249,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 3),
                                std::make_pair(Traits::HitPower, 6) }));
             }
-            case set_type::ThePaladins:
+            case item::set_type::ThePaladins:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2264,7 +2261,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 4),
                                std::make_pair(Traits::HitPower, 7) }));
             }
-            case set_type::TheBerserkers:
+            case item::set_type::TheBerserkers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2276,7 +2273,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 5),
                                std::make_pair(Traits::HitPower, 8) }));
             }
-            case set_type::TheRosewood:
+            case item::set_type::TheRosewood:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2288,7 +2285,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 6),
                                std::make_pair(Traits::HitPower, 9) }));
             }
-            case set_type::TheDragonslayers:
+            case item::set_type::TheDragonslayers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2300,7 +2297,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 7),
                                std::make_pair(Traits::HitPower, 10) }));
             }
-            case set_type::TheEventideRider:
+            case item::set_type::TheEventideRider:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2314,7 +2311,7 @@ namespace creature
                                std::make_pair(Traits::CurseOnDamage, 26),
                                std::make_pair(Traits::ShadowDamage, 14) }));
             }
-            case set_type::TheHunters:
+            case item::set_type::TheHunters:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2326,7 +2323,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 4),
                                std::make_pair(Traits::HitPower, 2) }));
             }
-            case set_type::TheSureShot:
+            case item::set_type::TheSureShot:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2338,7 +2335,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 6),
                                std::make_pair(Traits::HitPower, 4) }));
             }
-            case set_type::TheMarksmans:
+            case item::set_type::TheMarksmans:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2350,7 +2347,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 8),
                                std::make_pair(Traits::HitPower, 6) }));
             }
-            case set_type::TheDeadeye:
+            case item::set_type::TheDeadeye:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2362,7 +2359,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 13),
                                std::make_pair(Traits::HitPower, 8) }));
             }
-            case set_type::TheDuskRanger:
+            case item::set_type::TheDuskRanger:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2376,7 +2373,7 @@ namespace creature
                                std::make_pair(Traits::CurseOnDamage, 33),
                                std::make_pair(Traits::ShadowDamage, 18) }));
             }
-            case set_type::TheVenomBow:
+            case item::set_type::TheVenomBow:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2388,7 +2385,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 20),
                                std::make_pair(Traits::PoisonOnAll, 33) }));
             }
-            case set_type::TheCritterChannelers:
+            case item::set_type::TheCritterChannelers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2400,7 +2397,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 8),
                                std::make_pair(Traits::MagicResist, 2) }));
             }
-            case set_type::TheMammalianHead:
+            case item::set_type::TheMammalianHead:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2412,7 +2409,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 13),
                                std::make_pair(Traits::MagicResist, 2) }));
             }
-            case set_type::TheSavageTaskmasters:
+            case item::set_type::TheSavageTaskmasters:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2424,7 +2421,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 18),
                                std::make_pair(Traits::MagicResist, 4) }));
             }
-            case set_type::TheMonsterOverseers:
+            case item::set_type::TheMonsterOverseers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2436,7 +2433,7 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 24),
                                std::make_pair(Traits::MagicResist, 8) }));
             }
-            case set_type::TheBeastRulers:
+            case item::set_type::TheBeastRulers:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2448,8 +2445,8 @@ namespace creature
                                std::make_pair(Traits::AnimalResist, 28),
                                std::make_pair(Traits::MagicResist, 16) }));
             }
-            case set_type::Not:
-            case set_type::Count:
+            case item::set_type::Not:
+            case item::set_type::Count:
             default:
             {
                 std::ostringstream ss;
@@ -2476,18 +2473,18 @@ namespace creature
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        using namespace item;
-
-        if (E == element_type::None)
+        if (E == item::element_type::None)
         {
             std::ostringstream ss;
             ss << "creature::EnchantmentFactory::NewFromElementType(element_type=" << E
                << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", mat_pri="
-               << ((MATERIAL_PRIMARY == material::Count) ? "Count"
-                                                         : material::ToString(MATERIAL_PRIMARY))
+               << ((MATERIAL_PRIMARY == item::material::Count)
+                       ? "Count"
+                       : item::material::ToString(MATERIAL_PRIMARY))
                << ", mat_sec="
-               << ((MATERIAL_SECONDARY == material::Count) ? "Count"
-                                                           : material::ToString(MATERIAL_SECONDARY))
+               << ((MATERIAL_SECONDARY == item::material::Count)
+                       ? "Count"
+                       : item::material::ToString(MATERIAL_SECONDARY))
                << ") was given an element_type of NONE.";
 
             throw std::runtime_error(ss.str());
@@ -2495,28 +2492,29 @@ namespace creature
 
         TraitSet traits;
 
-        if ((MATERIAL_PRIMARY == material::Nothing) || (MATERIAL_PRIMARY == material::Count))
+        if ((MATERIAL_PRIMARY == item::material::Nothing)
+            || (MATERIAL_PRIMARY == item::material::Count))
         {
             if (IS_WEAPON)
             {
                 const auto DAMAGE { 50 };
 
-                if (E & element_type::Fire)
+                if (E & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Frost)
+                if (E & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Honor)
+                if (E & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Shadow)
+                if (E & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowDamage).CurrentSet(DAMAGE);
                 }
@@ -2527,22 +2525,22 @@ namespace creature
 
                 const auto RESISTANCE { 13 };
 
-                if (E & element_type::Fire)
+                if (E & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Frost)
+                if (E & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Honor)
+                if (E & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Shadow)
+                if (E & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowResist).CurrentSet(RESISTANCE);
                 }
@@ -2550,7 +2548,7 @@ namespace creature
         }
         else
         {
-            const auto MAT_BONUS { material::EnchantmentBonus(
+            const auto MAT_BONUS { item::material::EnchantmentBonus(
                 MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
             if (IS_WEAPON)
@@ -2559,22 +2557,22 @@ namespace creature
                 const auto DAMAGE_MULT { 5 };
                 const auto DAMAGE { DAMAGE_BASE + (MAT_BONUS * DAMAGE_MULT) };
 
-                if (E & element_type::Fire)
+                if (E & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Frost)
+                if (E & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Honor)
+                if (E & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & element_type::Shadow)
+                if (E & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowDamage).CurrentSet(DAMAGE);
                 }
@@ -2587,22 +2585,22 @@ namespace creature
                 const auto RESISTANCE { static_cast<int>(
                     RES_BASE + (static_cast<float>(MAT_BONUS) * RES_MULT)) };
 
-                if (E & element_type::Fire)
+                if (E & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Frost)
+                if (E & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Honor)
+                if (E & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & element_type::Shadow)
+                if (E & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowResist).CurrentSet(RESISTANCE);
                 }
@@ -2630,11 +2628,9 @@ namespace creature
         const bool IS_WEAPON,
         const bool IS_ARMOR) const
     {
-        using namespace item;
-
         switch (NAMED_ENUM)
         {
-            case named_type::Wicked:
+            case item::named_type::Wicked:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2649,7 +2645,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 1),
                                std::make_pair(Traits::Surprise, 1) }));
             }
-            case named_type::Fiendish:
+            case item::named_type::Fiendish:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2664,7 +2660,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 2),
                                std::make_pair(Traits::Surprise, 2) }));
             }
-            case named_type::Infernal:
+            case item::named_type::Infernal:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2679,7 +2675,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 3),
                                std::make_pair(Traits::Surprise, 3) }));
             }
-            case named_type::Raging:
+            case item::named_type::Raging:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2694,7 +2690,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 4),
                                std::make_pair(Traits::Surprise, 4) }));
             }
-            case named_type::Diabolic:
+            case item::named_type::Diabolic:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2709,7 +2705,7 @@ namespace creature
                                std::make_pair(Traits::Encounter, 5),
                                std::make_pair(Traits::Surprise, 5) }));
             }
-            case named_type::Dancing:
+            case item::named_type::Dancing:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2721,7 +2717,7 @@ namespace creature
                                std::make_pair(Traits::ArmorRating, 16),
                                std::make_pair(Traits::Accuracy, 16) }));
             }
-            case named_type::Marauder:
+            case item::named_type::Marauder:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2730,7 +2726,7 @@ namespace creature
                                std::make_pair(Traits::Accuracy, 13),
                                std::make_pair(Traits::HitCritical, 5) }));
             }
-            case named_type::Honest:
+            case item::named_type::Honest:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2741,7 +2737,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 8),
                                std::make_pair(Traits::HonorResist, 8) }));
             }
-            case named_type::Noble:
+            case item::named_type::Noble:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2753,7 +2749,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 13),
                                std::make_pair(Traits::HonorResist, 13) }));
             }
-            case named_type::Daring:
+            case item::named_type::Daring:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2767,7 +2763,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 18),
                                std::make_pair(Traits::HonorResist, 18) }));
             }
-            case named_type::Elite:
+            case item::named_type::Elite:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2782,7 +2778,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 24),
                                std::make_pair(Traits::HonorResist, 24) }));
             }
-            case named_type::Valiant:
+            case item::named_type::Valiant:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2797,7 +2793,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 28),
                                std::make_pair(Traits::HonorResist, 28) }));
             }
-            case named_type::Heros:
+            case item::named_type::Heros:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2813,7 +2809,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 33),
                                std::make_pair(Traits::HonorResist, 33) }));
             }
-            case named_type::Army:
+            case item::named_type::Army:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2822,7 +2818,7 @@ namespace creature
                                std::make_pair(Traits::Speed, 3),
                                std::make_pair(Traits::ArmorRating, 3) }));
             }
-            case named_type::Gladiator:
+            case item::named_type::Gladiator:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2830,7 +2826,7 @@ namespace creature
                     TraitSet(
                         { std::make_pair(Traits::Strength, 8), std::make_pair(Traits::Speed, 6) }));
             }
-            case named_type::Soldiers:
+            case item::named_type::Soldiers:
             {
                 if (IS_WEAPON)
                 {
@@ -2854,13 +2850,13 @@ namespace creature
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=Soldiers, "
                       "is_weapon=false, is_armor=false, mat_pri = "
-                   << material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY)
+                   << item::material::ToString(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
                    << ") failed because for that named_type must be weapon or armor.";
 
                 throw std::runtime_error(ss.str());
             }
-            case named_type::Wardens:
+            case item::named_type::Wardens:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2869,7 +2865,7 @@ namespace creature
                                std::make_pair(Traits::ArmorRating, 5),
                                std::make_pair(Traits::Surprise, -3) }));
             }
-            case named_type::Princes:
+            case item::named_type::Princes:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2877,7 +2873,7 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Strength, 8),
                                std::make_pair(Traits::ArmorRating, 8) }));
             }
-            case named_type::Ranger:
+            case item::named_type::Ranger:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2886,7 +2882,7 @@ namespace creature
                                std::make_pair(Traits::Accuracy, 8),
                                std::make_pair(Traits::ArmorRating, 4) }));
             }
-            case named_type::Samurai:
+            case item::named_type::Samurai:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2895,7 +2891,7 @@ namespace creature
                                std::make_pair(Traits::Accuracy, 10),
                                std::make_pair(Traits::HitCritical, 2) }));
             }
-            case named_type::Thors:
+            case item::named_type::Thors:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -2905,7 +2901,7 @@ namespace creature
                                std::make_pair(Traits::MagicResist, 4),
                                std::make_pair(Traits::HitPower, 2) }));
             }
-            case named_type::Nile:
+            case item::named_type::Nile:
             {
                 if (IS_WEAPON)
                 {
@@ -2935,167 +2931,167 @@ namespace creature
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=Nile, "
                       "is_weapon=false, is_armor=false, mat_pri = "
-                   << material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY)
+                   << item::material::ToString(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
                    << ") failed because for that named_type must be weapon or armor.";
 
                 throw std::runtime_error(ss.str());
             }
-            case named_type::Searing:
+            case item::named_type::Searing:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FireDamage, 16) }));
             }
-            case named_type::Burning:
+            case item::named_type::Burning:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FireDamage, 33) }));
             }
-            case named_type::Fiery:
+            case item::named_type::Fiery:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FireDamage, 66) }));
             }
-            case named_type::Charred:
+            case item::named_type::Charred:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FireResist, 8) }));
             }
-            case named_type::Icy:
+            case item::named_type::Icy:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostDamage, 16) }));
             }
-            case named_type::Winter:
+            case item::named_type::Winter:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostDamage, 33) }));
             }
-            case named_type::Frigid:
+            case item::named_type::Frigid:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostDamage, 66) }));
             }
-            case named_type::Chill:
+            case item::named_type::Chill:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostResist, 8) }));
             }
-            case named_type::Frozen:
+            case item::named_type::Frozen:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostResist, 13) }));
             }
-            case named_type::Arctic:
+            case item::named_type::Arctic:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::FrostResist, 18) }));
             }
-            case named_type::Proud:
+            case item::named_type::Proud:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorDamage, 16) }));
             }
-            case named_type::Glory:
+            case item::named_type::Glory:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorDamage, 33) }));
             }
-            case named_type::Pure:
+            case item::named_type::Pure:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorDamage, 66) }));
             }
-            case named_type::Light:
+            case item::named_type::Light:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorResist, 8) }));
             }
-            case named_type::Dawn:
+            case item::named_type::Dawn:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorResist, 13) }));
             }
-            case named_type::Sun:
+            case item::named_type::Sun:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::HonorResist, 18) }));
             }
-            case named_type::Gloom:
+            case item::named_type::Gloom:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowDamage, 16) }));
             }
-            case named_type::Twilight:
+            case item::named_type::Twilight:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowDamage, 33) }));
             }
-            case named_type::Dusk:
+            case item::named_type::Dusk:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowDamage, 66) }));
             }
-            case named_type::Sorrow:
+            case item::named_type::Sorrow:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowResist, 20) }));
             }
-            case named_type::Woe:
+            case item::named_type::Woe:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowResist, 20) }));
             }
-            case named_type::Misery:
+            case item::named_type::Misery:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::ShadowResist, 30) }));
             }
-            case named_type::Moon:
+            case item::named_type::Moon:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3105,7 +3101,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 33),
                                std::make_pair(Traits::CurseResist, 33) }));
             }
-            case named_type::Dark:
+            case item::named_type::Dark:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3115,7 +3111,7 @@ namespace creature
                                std::make_pair(Traits::HitCritical, 4),
                                std::make_pair(Traits::Strength, 18) }));
             }
-            case named_type::Betrayer:
+            case item::named_type::Betrayer:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3127,7 +3123,7 @@ namespace creature
                                std::make_pair(Traits::Luck, -33),
                                std::make_pair(Traits::CurseResist, 33) }));
             }
-            case named_type::Imposters:
+            case item::named_type::Imposters:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3138,7 +3134,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 5),
                                std::make_pair(Traits::Surprise, -5) }));
             }
-            case named_type::Pickpocket:
+            case item::named_type::Pickpocket:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3149,7 +3145,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 6),
                                std::make_pair(Traits::Surprise, -6) }));
             }
-            case named_type::Burglar:
+            case item::named_type::Burglar:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3160,7 +3156,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 8),
                                std::make_pair(Traits::Surprise, -8) }));
             }
-            case named_type::Mountebank:
+            case item::named_type::Mountebank:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3171,7 +3167,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 4),
                                std::make_pair(Traits::Charm, 18) }));
             }
-            case named_type::Charlatans:
+            case item::named_type::Charlatans:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3182,7 +3178,7 @@ namespace creature
                                std::make_pair(Traits::FindMagic, 3),
                                std::make_pair(Traits::Charm, 24) }));
             }
-            case named_type::Focus:
+            case item::named_type::Focus:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3191,9 +3187,9 @@ namespace creature
                                std::make_pair(Traits::Strength, 13),
                                std::make_pair(Traits::DamageBonusProj, 16) }));
             }
-            case named_type::Robbers:
+            case item::named_type::Robbers:
             {
-                const auto MAT_BONUS { material::EnchantmentBonus(
+                const auto MAT_BONUS { item::material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3201,9 +3197,9 @@ namespace creature
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, (MAT_BONUS / 2)) }));
             }
-            case named_type::Thugs:
+            case item::named_type::Thugs:
             {
-                const auto MAT_BONUS { material::EnchantmentBonus(
+                const auto MAT_BONUS { item::material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3211,9 +3207,9 @@ namespace creature
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, 10 + (MAT_BONUS / 2)) }));
             }
-            case named_type::Knaves:
+            case item::named_type::Knaves:
             {
-                const auto MAT_BONUS { material::EnchantmentBonus(
+                const auto MAT_BONUS { item::material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3221,9 +3217,9 @@ namespace creature
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Luck, 20 + (MAT_BONUS / 2)) }));
             }
-            case named_type::Muggers:
+            case item::named_type::Muggers:
             {
-                const auto MAT_BONUS { material::EnchantmentBonus(
+                const auto MAT_BONUS { item::material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3231,10 +3227,10 @@ namespace creature
                         EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                     TraitSet({ std::make_pair(Traits::Backstab, (MAT_BONUS / 2)) }));
             }
-            case named_type::Thief:
+            case item::named_type::Thief:
             {
                 const auto MATERIAL_BASED_BONUS {
-                    5 + (material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) / 2)
+                    5 + (item::material::EnchantmentBonus(MATERIAL_PRIMARY, MATERIAL_SECONDARY) / 2)
                 };
 
                 return Enchantment(
@@ -3243,9 +3239,9 @@ namespace creature
                     TraitSet({ std::make_pair(Traits::Luck, MATERIAL_BASED_BONUS),
                                std::make_pair(Traits::Backstab, MATERIAL_BASED_BONUS) }));
             }
-            case named_type::Pirate:
+            case item::named_type::Pirate:
             {
-                const auto MAT_BONUS { material::EnchantmentBonus(
+                const auto MAT_BONUS { item::material::EnchantmentBonus(
                     MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
                 return Enchantment(
@@ -3256,15 +3252,15 @@ namespace creature
                                std::make_pair(Traits::Luck, (MAT_BONUS / 2)),
                                std::make_pair(Traits::FindMagic, (MAT_BONUS / 2)) }));
             }
-            case named_type::Not:
-            case named_type::Count:
+            case item::named_type::Not:
+            case item::named_type::Count:
             default:
             {
                 std::ostringstream ss;
                 ss << "creature::EnchantmentFactory::NewFromNamedType(named_type=" << NAMED_ENUM
                    << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", is_armor=" << IS_ARMOR
-                   << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
-                   << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY)
+                   << ", mat_pri=" << item::material::ToString(MATERIAL_PRIMARY)
+                   << ", mat_sec=" << item::material::ToString(MATERIAL_SECONDARY)
                    << ") failed to find a matching named_type.";
 
                 throw std::runtime_error(ss.str());

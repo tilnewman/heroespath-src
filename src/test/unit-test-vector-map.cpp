@@ -323,7 +323,7 @@ BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
     const Vector_t V_COUNT3(makeVectorCount(COUNT3));
     const Vector_t V_COUNT3_REV(copyAndReverse(V_COUNT3));
     const Vector_t V_COUNT32K(makeVectorCount(COUNT32K));
-    const Vector_t V_COUNT32K_REV(copyAndReverse(V_COUNT32K));
+    // const Vector_t V_COUNT32K_REV(copyAndReverse(V_COUNT32K));
 
     const PairVec_t PV_EMPTY;
     const PairVec_t PV_0(makePairVec(V_0));
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
     const PairVec_t PV_COUNT3(makePairVec(V_COUNT3));
     const PairVec_t PV_COUNT3_REV(copyAndReverse(PV_COUNT3));
     const PairVec_t PV_COUNT32K(makePairVec(V_COUNT32K));
-    const PairVec_t PV_COUNT32K_REV(copyAndReverse(PV_COUNT32K));
+    // const PairVec_t PV_COUNT32K_REV(copyAndReverse(PV_COUNT32K));
 
     const VectorMap_t VM_EMPTY;
     const VectorMap_t VM_0(makeVectorMap(V_0));
@@ -505,13 +505,11 @@ BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
             BOOST_CHECK(vmEmpty2 == vmEmpty1);
             BOOST_CHECK((vmEmpty2 != vmEmpty1) == false);
             BOOST_CHECK(vmEmpty2.Exists(i) == false);
-            BOOST_CHECK((vmEmpty2.Exists(i) != false) == false);
             BOOST_CHECK(vmEmpty2.Find(i) == std::end(vmEmpty2));
             BOOST_CHECK((vmEmpty2.Find(i) != std::end(vmEmpty2)) == false);
             BOOST_CHECK(vmEmpty2.Find(i) == vmEmpty2.end());
             BOOST_CHECK((vmEmpty2.Find(i) != vmEmpty2.end()) == false);
             BOOST_CHECK(vmEmpty2.Find(i, ignore) == false);
-            BOOST_CHECK((vmEmpty2.Find(i, ignore) != false) == false);
             BOOST_CHECK_NO_THROW(vmEmpty2.Size());
             BOOST_CHECK(vmEmpty2.Empty());
             // BOOST_CHECK_THROW(vmEmpty2.Front(), std::exception);
@@ -523,13 +521,11 @@ BOOST_AUTO_TEST_CASE(Misc_VectorMap_Tests)
             BOOST_CHECK(vmEmpty1 == VM_EMPTY);
             BOOST_CHECK((vmEmpty1 != VM_EMPTY) == false);
             BOOST_CHECK(VM_EMPTY.Exists(i) == false);
-            BOOST_CHECK((VM_EMPTY.Exists(i) != false) == false);
             BOOST_CHECK(VM_EMPTY.Find(i) == std::end(VM_EMPTY));
             BOOST_CHECK((VM_EMPTY.Find(i) != std::end(VM_EMPTY)) == false);
             BOOST_CHECK(VM_EMPTY.Find(i) == VM_EMPTY.end());
             BOOST_CHECK((VM_EMPTY.Find(i) != VM_EMPTY.end()) == false);
             BOOST_CHECK(VM_EMPTY.Find(i, ignore) == false);
-            BOOST_CHECK((VM_EMPTY.Find(i, ignore) != false) == false);
             BOOST_CHECK_NO_THROW(VM_EMPTY.Size());
             BOOST_CHECK(VM_EMPTY.Empty());
             // BOOST_CHECK_THROW(VM_EMPTY.Front(), std::exception);

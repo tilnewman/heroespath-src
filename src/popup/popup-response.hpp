@@ -23,7 +23,7 @@ namespace popup
     struct PopupResponse
     {
         PopupResponse()
-            : name("")
+            : name()
             , type(ResponseTypes::None)
             , selection_opt(boost::none)
         {

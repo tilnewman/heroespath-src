@@ -628,8 +628,6 @@ namespace creature
             }
         }
 
-        const std::string SEP(", ");
-
         // collect all the remaining reasons why the equip is not possible into one ss
         std::ostringstream equipFailReasonSS;
 
@@ -935,7 +933,7 @@ namespace creature
         }
         else
         {
-            return boost::algorithm::erase_last_copy(equipFailReasonSS.str(), SEP);
+            return boost::algorithm::erase_last_copy(equipFailReasonSS.str(), ", ");
         }
     }
 

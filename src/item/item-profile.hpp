@@ -528,8 +528,6 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::Not,
             const element_type::Enum ELEMENT_TYPE = element_type::None)
         {
-            using namespace weapon;
-
             item::ScoreHelper scoreHelper;
 
             SetWeaponHelper(
