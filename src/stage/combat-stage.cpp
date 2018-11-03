@@ -262,13 +262,12 @@ namespace stage
 
     CombatStage::~CombatStage() { StageBase::ClearAllEntities(); }
 
-    bool CombatStage::HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t &)
+    bool CombatStage::HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t)
     {
         return false;
     }
 
-    bool CombatStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool CombatStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::Determine != turnPhase_))
         {
@@ -369,7 +368,7 @@ namespace stage
         return false;
     }
 
-    bool CombatStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool CombatStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if (PACKET_PTR == zoomSliderBarUPtr_.get())
         {
@@ -386,7 +385,7 @@ namespace stage
         }
     }
 
-    bool CombatStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CombatStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         if (PACKET_PTR->name == POPUP_NAME_ACHIEVEMENT_)
         {
@@ -482,8 +481,8 @@ namespace stage
 
         statusBoxUPtr_ = std::make_unique<gui::ListBox<CombatStage, gui::NoElement_t>>(
             "ComabtStage'sStatus",
-            this,
-            this,
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
             gui::ListBoxPacket(
                 STATUS_REGION_,
                 statusBoxInfo,
@@ -491,7 +490,7 @@ namespace stage
                 gui::ListBoxPacket::DEFAULT_IMAGE_COLOR_,
                 LISTBOX_HIGHLIGHT_COLOR_));
 
-        EntityAdd(statusBoxUPtr_.get());
+        EntityAdd(statusBoxUPtr_);
 
         // command box
 
@@ -653,7 +652,7 @@ namespace stage
             gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
             gui::ImageTextEntity::MouseStateSync::Image);
 
-        EntityAdd(settingsButtonUPtr_.get());
+        EntityAdd(settingsButtonUPtr_);
 
         // position turn buttons
         const auto LEFT_ALIGN_PAD { COMMAND_REGION_.width * 0.25f };
@@ -785,8 +784,8 @@ namespace stage
 
         zoomLabelTextRegionUPtr_->SetEntityPos(ZOOM_LABEL_POS_LEFT, ZOOM_LABEL_POS_TOP);
 
-        EntityAdd(zoomLabelTextRegionUPtr_.get());
-        EntityAdd(zoomSliderBarUPtr_.get());
+        EntityAdd(zoomLabelTextRegionUPtr_);
+        EntityAdd(zoomSliderBarUPtr_);
 
         SetupTurnBoxButtons(boost::none, true);
         MoveTurnBoxObjectsOffScreen();
@@ -2332,7 +2331,7 @@ namespace stage
                 TURN_CREATURE_PTR,
                 TURN_CREATURE_PTR->LastSongPlayedNum()) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
             return true;
         }
@@ -2406,7 +2405,7 @@ namespace stage
             const auto POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                 POPUP_NAME_SPELLBOOK_, TURN_CREATURE_PTR, TURN_CREATURE_PTR->LastSpellCastNum()) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
             return true;
         }
@@ -2998,7 +2997,7 @@ namespace stage
                                      : gui::sound_effect::PromptWarn),
             gui::FontManager::Instance()->Size_Normal()) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
     }
 
     void CombatStage::SetupTurnBox()
@@ -4007,7 +4006,7 @@ namespace stage
             if (didAnyPlayersRunAway && areAllNonRunawaysIncapacitated)
             {
                 SpawnPopup(
-                    this,
+                    misc::MakeNotNull(this),
                     popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                         POPUP_NAME_COMBATOVER_RAN_, combat::CombatEnd::Ran));
 
@@ -4034,7 +4033,7 @@ namespace stage
         if (areAllIncapacitated)
         {
             SpawnPopup(
-                this,
+                misc::MakeNotNull(this),
                 popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
                     ((IS_DETECTING_WIN) ? combat::CombatEnd::Win : combat::CombatEnd::Lose)));
@@ -4060,7 +4059,7 @@ namespace stage
         const std::string & TITLE_MSG)
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
                 "Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG, TECH_ERROR_MSG, TITLE_MSG));
     }
@@ -4251,8 +4250,8 @@ namespace stage
                 TITLE_TRANSITION.creaturePtr, TITLE_TRANSITION.toTitlePtr);
 
             stage::TitleTransitionPopup(
-                this,
-                stage::IStagePtr_t(this),
+                misc::MakeNotNull(this),
+                misc::MakeNotNull(this),
                 POPUP_NAME_ACHIEVEMENT_,
                 TITLE_TRANSITION.creaturePtr,
                 TITLE_TRANSITION.fromTitlePtrOpt,
@@ -4306,7 +4305,7 @@ namespace stage
             gui::ImageTextEntity::MouseStateSync::Text);
 
         buttonUPtr->SetMouseHoverText(HOVER_TEXT);
-        EntityAdd(buttonUPtr.get());
+        EntityAdd(buttonUPtr);
     }
 
     void CombatStage::SetButtonDisabledIf(

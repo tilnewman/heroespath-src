@@ -206,12 +206,12 @@ namespace stage
 
         virtual ~CombatStage();
 
-        bool HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
         void PreSetup();
         void Setup() override;

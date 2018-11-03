@@ -171,7 +171,7 @@ namespace song
             "song::Holder::Get(" << Songs::ToString(
                 E) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
-        return songsUVec_[INDEX].get();
+        return SongPtr_t(songsUVec_[INDEX].get());
     }
 
 } // namespace song

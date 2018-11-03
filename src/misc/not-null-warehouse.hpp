@@ -12,6 +12,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
+
 #include <boost/type_index.hpp>
 
 #include <exception>
@@ -32,15 +33,19 @@ namespace misc
     template <typename T>
     class NotNullWarehouse
     {
+        using NotNullOfType_t = NotNull<T *>;
+
     public:
         NotNullWarehouse(const NotNullWarehouse &) = delete;
         NotNullWarehouse(NotNullWarehouse &&) = delete;
         NotNullWarehouse & operator=(const NotNullWarehouse &) = delete;
         NotNullWarehouse & operator=(NotNullWarehouse &&) = delete;
 
-        NotNullWarehouse()
+        NotNullWarehouse(const std::size_t RESERVE_COUNT)
             : uPtrVec_()
-        {}
+        {
+            uPtrVec_.reserve(RESERVE_COUNT);
+        }
 
         ~NotNullWarehouse()
         {
@@ -93,30 +98,57 @@ namespace misc
             return count;
         }
 
-        const misc::NotNull<T *> Store(const misc::NotNull<T *> NOT_NULL_PTR)
+        const NotNullOfType_t Store(const NotNullOfType_t NOT_NULL_PTR)
         {
-            return Store(NOT_NULL_PTR.Ptr());
+            return StoreImpl(NOT_NULL_PTR);
         }
 
-        const misc::NotNull<T *> Store(std::unique_ptr<T> uPtrToStore)
+        const NotNullOfType_t Store(std::unique_ptr<T> uPtrToStore)
         {
-            const auto NOTNULL_PTR_TO_RETURN { Store(uPtrToStore.get()) };
+            const auto NOTNULL_PTR_TO_RETURN { StoreImpl(uPtrToStore.get()) };
             uPtrToStore.release();
             return NOTNULL_PTR_TO_RETURN;
         }
 
-        const misc::NotNull<T *> Store(T * ptrToStore)
+        const NotNullOfType_t Store(T * const ptrToStore) { return StoreImpl(ptrToStore); }
+
+        void Free(std::vector<NotNull<T *>> & notNullVec)
+        {
+            for (const auto & NOT_NULL : notNullVec)
+            {
+                FreeImpl(NOT_NULL);
+            }
+
+            notNullVec.clear();
+        }
+
+        void Free(std::vector<T *> & ptrVec)
+        {
+            for (auto ptr : ptrVec)
+            {
+                FreeImpl(ptr);
+            }
+
+            ptrVec.clear();
+        }
+
+        void Free(const NotNullOfType_t NOT_NULL_PTR) { FreeImpl(NOT_NULL_PTR); }
+
+        void Free(T * ptrToFree) { FreeImpl(ptrToFree); }
+
+    private:
+        const NotNullOfType_t StoreImpl(T * const ptrToStore)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToStore != nullptr),
                 "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                                          << ">::Store() given a nullptr.");
+                                          << ">::StoreImpl() given a nullptr.");
 
-            std::size_t indexToSaveAt { uPtrVec_.size() };
+            const auto NUM_SLOTS { uPtrVec_.size() };
+            std::size_t indexToSaveAt { NUM_SLOTS };
 
             // Ensure this object is not already stored, and along the way,
             // look for an abandoned slot to use as indexToSaveAt.
-            const auto NUM_SLOTS { indexToSaveAt };
             for (std::size_t i(0); i < NUM_SLOTS; ++i)
             {
                 const auto STORED_PTR { uPtrVec_[i].get() };
@@ -124,7 +156,7 @@ namespace misc
                 {
                     std::ostringstream ss;
                     ss << "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                       << ">::Store(" << ptrToStore->ToString() << ") was already stored.";
+                       << ">::StoreImpl(" << ptrToStore->ToString() << ") was already stored.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -144,53 +176,36 @@ namespace misc
                 uPtrVec_.emplace_back(std::unique_ptr<T>(ptrToStore));
             }
 
-            return misc::NotNull<T *>(ptrToStore);
+            return NotNullOfType_t(ptrToStore);
         }
 
-        void Free(std::vector<NotNull<T *>> & notNullVec)
-        {
-            for (const auto & NOT_NULL : notNullVec)
-            {
-                Free(NOT_NULL.Ptr());
-            }
-
-            notNullVec.clear();
-        }
-
-        void Free(std::vector<T *> & ptrVec)
-        {
-            for (auto ptr : ptrVec)
-            {
-                Free(ptr);
-            }
-
-            ptrVec.clear();
-        }
-
-        void Free(const NotNull<T *> NOT_NULL_PTR) { Free(NOT_NULL_PTR.Ptr()); }
-
-        void Free(T * const ptrToFree)
+        void FreeImpl(T * ptrToFree)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (ptrToFree != nullptr),
                 "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                                          << ">::Free() given a nullptr.");
+                                          << ">::FreeImpl() given a nullptr.");
 
             for (auto & uPtr : uPtrVec_)
             {
                 if (uPtr.get() == ptrToFree)
                 {
                     uPtr.reset();
+                    ptrToFree = nullptr;
                     return;
                 }
             }
 
             M_HP_LOG_ERR(
-                "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                                          << ">::Free(" << ptrToFree->ToString() << ") not found.");
+                "misc::NotNullWarehouse<"
+                << boost::typeindex::type_id<T>().pretty_name() << ">::FreeImpl("
+                << ptrToFree->ToString()
+                << ") not found.  Will delete manually.  Cross your fingers...");
+
+            delete ptrToFree;
+            ptrToFree = nullptr;
         }
 
-    private:
         std::vector<std::unique_ptr<T>> uPtrVec_;
     };
 

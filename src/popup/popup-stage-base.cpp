@@ -70,12 +70,12 @@ namespace popup
 
     PopupStageBase::~PopupStageBase() { StageBase::ClearAllEntities(); }
 
-    bool PopupStageBase::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &)
+    bool PopupStageBase::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
     {
         return false;
     }
 
-    bool PopupStageBase::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool PopupStageBase::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if (PACKET_PTR == buttonSelectUPtr_.get())
         {
@@ -317,7 +317,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonYesUPtr_.get());
+            EntityAdd(buttonYesUPtr_);
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::No)
@@ -330,7 +330,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonNoUPtr_.get());
+            EntityAdd(buttonNoUPtr_);
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::Cancel)
@@ -343,7 +343,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonCancelUPtr_.get());
+            EntityAdd(buttonCancelUPtr_);
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::Continue)
@@ -358,7 +358,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonContinueUPtr_.get());
+            EntityAdd(buttonContinueUPtr_);
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::Okay)
@@ -373,7 +373,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonOkayUPtr_.get());
+            EntityAdd(buttonOkayUPtr_);
         }
 
         if (popupInfo_.Buttons() & ResponseTypes::Select)
@@ -388,7 +388,7 @@ namespace popup
                 gui::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_.ButtonColor()),
                 gui::TextButton::Callback_t::IHandlerPtr_t(this));
 
-            EntityAdd(buttonSelectUPtr_.get());
+            EntityAdd(buttonSelectUPtr_);
         }
     }
 

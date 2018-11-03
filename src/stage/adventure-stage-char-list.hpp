@@ -41,7 +41,7 @@ namespace stage
         explicit AdventureCharacterList(const stage::IStagePtr_t);
         virtual ~AdventureCharacterList();
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
         {
             return false;
         }

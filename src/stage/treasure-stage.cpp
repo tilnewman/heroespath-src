@@ -115,7 +115,7 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool TreasureStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool TreasureStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         if (PACKET_PTR->name == POPUP_NAME_NO_TREASURE_)
         {
@@ -134,7 +134,8 @@ namespace stage
         {
             if (PACKET_PTR->type == popup::ResponseTypes::Yes)
             {
-                lockPicking_.PopupCharacterSelection(this, stage::IStagePtr_t(this));
+                lockPicking_.PopupCharacterSelection(
+                    misc::MakeNotNull(this), misc::MakeNotNull(this));
                 return false;
             }
             else
@@ -149,7 +150,7 @@ namespace stage
             if (PACKET_PTR->type == popup::ResponseTypes::Select)
             {
                 if (lockPicking_.HandleCharacterSelectionPopupResponse(
-                        this, PACKET_PTR, stage::IStagePtr_t(this)))
+                        misc::MakeNotNull(this), PACKET_PTR, misc::MakeNotNull(this)))
                 {
                     return false;
                 }
@@ -369,18 +370,18 @@ namespace stage
     bool TreasureStage::HandleListboxCallback(
         const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
         const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-        const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+        const ItemListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if ((PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick)
             || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
         {
             const auto ITEM_PTR { PACKET_PTR->selected_element_ptr->Element() };
 
-            if (PACKET_PTR->listbox_ptr == TREASURE_LISTBOX_PTR.Ptr())
+            if (PACKET_PTR->listbox_ptr == TREASURE_LISTBOX_PTR)
             {
                 TakeItem(ITEM_PTR);
             }
-            else if (PACKET_PTR->listbox_ptr == INVENTORY_LISTBOX_PTR.Ptr())
+            else if (PACKET_PTR->listbox_ptr == INVENTORY_LISTBOX_PTR)
             {
                 PutItemBack(ITEM_PTR);
             }
@@ -460,7 +461,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
         }
         else if (itemsToRemovePVec.empty())
         {
@@ -472,7 +473,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
         }
         else
         {
@@ -488,7 +489,7 @@ namespace stage
                 popup::PopupButtons::Okay,
                 popup::PopupImage::Regular) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
         }
     }
 
@@ -533,7 +534,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::HeldOnly:
@@ -548,7 +549,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::LockboxOnly:
@@ -567,7 +568,7 @@ namespace stage
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::Count:
@@ -638,7 +639,7 @@ namespace stage
             trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
     }
 
     TreasureStage::DamagePopup TreasureStage::PromptPlayerWithDamagePopups()
@@ -673,7 +674,7 @@ namespace stage
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
             ++creatureEffectIndex_;
             return DamagePopup::Displayed;
@@ -692,7 +693,7 @@ namespace stage
         if (ALL_LIVING_PVEC.empty())
         {
             SpawnPopup(
-                this,
+                misc::MakeNotNull(this),
                 popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     POPUP_NAME_ALL_CHARACTERS_DIED_, combat::CombatEnd::Lose));
 
@@ -718,9 +719,9 @@ namespace stage
         gui::SoundManager::Instance()->SoundEffectPlay(SelectRandomTreasureOpeningSfx(), 0.5f);
 
         lockPicking_.PopupSuccess(
-            this,
+            misc::MakeNotNull(this),
             item::TreasureImage::ToContainerName(treasureImageType_),
-            stage::IStagePtr_t(this));
+            misc::MakeNotNull(this));
     }
 
     bool TreasureStage::ShareAndShowPopupIfNeeded(const ShareType WHAT_IS_SHARED)
@@ -757,7 +758,7 @@ namespace stage
                 SOUND_EFFECT,
                 gui::FontManager::Instance()->Size_Normal()) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             return true;
         }
     }
@@ -971,7 +972,7 @@ namespace stage
                 gui::sound_effect::PromptWarn,
                 gui::FontManager::Instance()->Size_Largeish()) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
         }
     }
 
@@ -1009,7 +1010,7 @@ namespace stage
             willProcessLockpickTitle_ = false;
 
             return lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-                this, stage::IStagePtr_t(this));
+                misc::MakeNotNull(this), misc::MakeNotNull(this));
         }
         else
         {

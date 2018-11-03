@@ -135,7 +135,7 @@ namespace stage
         creature::CreatureWarehouse::Access().Free(unplayedCharactersPVec_);
     }
 
-    bool PartyStage::HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool PartyStage::HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         ResetMouseOverPopupState();
 
@@ -167,19 +167,18 @@ namespace stage
         return false;
     }
 
-    bool
-        PartyStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool PartyStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
     {
         ResetMouseOverPopupState();
 
         // the back button is a MainMenuButton that will handle everything itself
 
-        if (PACKET_PTR->entity_ptr.Ptr() == startButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == startButtonUPtr_.get())
         {
             return HandleCallback_StartButton();
         }
 
-        if (PACKET_PTR->entity_ptr.Ptr() == deleteButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == deleteButtonUPtr_.get())
         {
             return HandleCallback_DeleteButton();
         }
@@ -187,7 +186,7 @@ namespace stage
         return false;
     }
 
-    bool PartyStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool PartyStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         ResetMouseOverPopupState();
 
@@ -265,7 +264,7 @@ namespace stage
             gui::Justified::Center,
             gui::sound_effect::PromptWarn) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
         return true;
     }
 
@@ -283,10 +282,10 @@ namespace stage
         UpdateWillDisplayCharacterCountWarning();
         ResetMouseOverPopupState();
 
-        StageBase::SetFocus(characterListBoxUPtr_.get());
+        StageBase::SetFocus(characterListBoxUPtr_);
     }
 
-    void PartyStage::Setup_Ouroboros() { EntityAdd(ouroborosUPtr_.get()); }
+    void PartyStage::Setup_Ouroboros() { EntityAdd(ouroborosUPtr_); }
 
     void PartyStage::Setup_Buttons()
     {
@@ -295,21 +294,21 @@ namespace stage
             sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
 
-        EntityAdd(backButtonUPtr_.get());
+        EntityAdd(backButtonUPtr_);
 
         startButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.586f),
             sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (startButtonUPtr_->GetEntityRegion().height * 0.5f));
 
-        EntityAdd(startButtonUPtr_.get());
+        EntityAdd(startButtonUPtr_);
 
         deleteButtonUPtr_->SetEntityPos(
             sfutil::ScreenRatioToPixelsHoriz(0.246f),
             sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (deleteButtonUPtr_->GetEntityRegion().height * 0.5f));
 
-        EntityAdd(deleteButtonUPtr_.get());
+        EntityAdd(deleteButtonUPtr_);
     }
 
     void PartyStage::Setup_TopInstructionText()
@@ -331,7 +330,7 @@ namespace stage
             ((StageBase::StageRegion().width * 0.5f) - HALF_INSTR_TEXT_WIDTH) + 125.0f,
             sfutil::Bottom(stageTitle_.Region()) - 45.0f);
 
-        EntityAdd(insTextRegionUPtr_.get());
+        EntityAdd(insTextRegionUPtr_);
     }
 
     void PartyStage::Setup_TopWarningText()
@@ -379,7 +378,7 @@ namespace stage
              + warningTextRegionUPtr_->GetEntityRegion().height)
                 + sfutil::ScreenRatioToPixelsVert(0.0025f));
 
-        EntityAdd(upTextRegionUPtr_.get());
+        EntityAdd(upTextRegionUPtr_);
     }
 
     void PartyStage::Setup_PartyListBoxLabel()
@@ -399,7 +398,7 @@ namespace stage
              + warningTextRegionUPtr_->GetEntityRegion().height)
                 + sfutil::ScreenRatioToPixelsVert(0.0025f));
 
-        EntityAdd(partyTextRegionUPtr_.get());
+        EntityAdd(partyTextRegionUPtr_);
     }
 
     void PartyStage::Setup_CharactersListBox()
@@ -430,7 +429,10 @@ namespace stage
             CHAR_LIST_RECT, listBoxInfo_, sfutil::color::Orange, sf::Color(255, 255, 255, 190));
 
         characterListBoxUPtr_ = std::make_unique<gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
-            "PartyStage'sCharacter", this, this, charListBoxPacket);
+            "PartyStage'sCharacter",
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
+            charListBoxPacket);
 
         // load all players not yet assigned to a party/started game
         unplayedCharactersPVec_ = game::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
@@ -456,7 +458,7 @@ namespace stage
             return (A->Element()->Name() < B->Element()->Name());
         });
 
-        EntityAdd(characterListBoxUPtr_.get());
+        EntityAdd(characterListBoxUPtr_);
     }
 
     void PartyStage::Setup_PartyListBox()
@@ -477,9 +479,12 @@ namespace stage
             PARTY_LIST_RECT, listBoxInfo_, sfutil::color::Orange, sf::Color(255, 255, 255, 190));
 
         partyListBoxUPtr_ = std::make_unique<gui::ListBox<PartyStage, creature::CreaturePtr_t>>(
-            "PartyStage'sParty", this, this, partyListBoxPacket);
+            "PartyStage'sParty",
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
+            partyListBoxPacket);
 
-        EntityAdd(partyListBoxUPtr_.get());
+        EntityAdd(partyListBoxUPtr_);
     }
 
     void PartyStage::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -786,7 +791,7 @@ namespace stage
             gui::Justified::Left,
             gui::sound_effect::PromptWarn) };
 
-        SpawnPopup(this, POP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POP_INFO);
     }
 
     void PartyStage::NotEnoughCharactersPopup()
@@ -804,7 +809,7 @@ namespace stage
             gui::Justified::Center,
             gui::sound_effect::PromptQuestion) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
     }
 
     void PartyStage::PartyAvatarSelectionPopup()
@@ -827,7 +832,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_STR_PARTY_IMAGE_SELECT_, ss.str(), partyCachedTextures, false) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
     }
 
     void PartyStage::UpdateWillDisplayCharacterCountWarning()

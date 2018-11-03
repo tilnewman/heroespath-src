@@ -157,7 +157,7 @@ namespace stage
 
     void TestingStage::Setup()
     {
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
         animBackgroundSprite_.setPosition(0.0f, 0.0f);
     }
 
@@ -444,31 +444,28 @@ namespace stage
         TransitionTo(stage::Stage::Exit);
     }
 
-    bool TestingStage::PerformTest_Spells()
-    {
-        return spell::Holder::Test(stage::IStagePtr_t(this));
-    }
+    bool TestingStage::PerformTest_Spells() { return spell::Holder::Test(misc::MakeNotNull(this)); }
 
-    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(stage::IStagePtr_t(this)); }
+    bool TestingStage::PerformTest_Songs() { return song::Holder::Test(misc::MakeNotNull(this)); }
 
     bool TestingStage::PerformTest_Conditions()
     {
-        return creature::condition::Holder::Test(stage::IStagePtr_t(this));
+        return creature::condition::Holder::Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_Titles()
     {
-        return creature::title::Holder::Test(stage::IStagePtr_t(this));
+        return creature::title::Holder::Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_SoundManager()
     {
-        return gui::SoundManager::Instance()->Test(stage::IStagePtr_t(this));
+        return gui::SoundManager::Instance()->Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_PopupManager()
     {
-        return popup::PopupManager::Instance()->Test(stage::IStagePtr_t(this));
+        return popup::PopupManager::Instance()->Test(misc::MakeNotNull(this));
     }
 
     bool TestingStage::PerformTest_ItemProfileReport()
@@ -1067,7 +1064,7 @@ namespace stage
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));
 
-                    inventoryFactory.SetupCreatureInventory(&character);
+                    inventoryFactory.SetupCreatureInventory(misc::MakeNotNull(&character));
                 }
 
                 ++roleIndex;

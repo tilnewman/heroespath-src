@@ -59,7 +59,7 @@ namespace popup
         using PopupStageBase::HandleCallback;
 
         bool HandleCallback(
-            const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t &)
+            const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t)
             override;
 
         void Setup() override;

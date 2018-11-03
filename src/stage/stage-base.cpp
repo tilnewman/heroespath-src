@@ -365,7 +365,7 @@ namespace stage
     }
 
     void StageBase::SpawnPopup(
-        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO) const
     {
         game::GameController::Instance()->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
@@ -388,7 +388,7 @@ namespace stage
     }
 
     const gui::DisplayChangeResult StageBase::ChangeResolution(
-        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const gui::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL) const
     {

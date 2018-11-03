@@ -50,7 +50,7 @@ namespace gui
     {
         if (callbackHandlerPtrOpt_)
         {
-            callbackHandlerPtrOpt_.value()->HandleCallback(this);
+            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(this));
         }
     }
 

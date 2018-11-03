@@ -39,7 +39,7 @@ namespace gui
         struct IHandler_t
         {
             // returns true if the callback was identified and handled (changed something)
-            virtual bool HandleCallback(const PacketPtr_t & CALLBACK_PACKET_PTR) = 0;
+            virtual bool HandleCallback(const PacketPtr_t CALLBACK_PACKET_PTR) = 0;
 
         protected:
             ~IHandler_t() {}

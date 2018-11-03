@@ -106,10 +106,10 @@ namespace gui
         {
             if (sliderBarUPtr_)
             {
-                stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_.get());
+                stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_);
             }
 
-            stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_.get());
+            stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_);
         }
     }
 
@@ -161,25 +161,25 @@ namespace gui
         {
             if (sliderBarUPtr_)
             {
-                stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_.get());
+                stagePtrOpt_.value()->EntityRemove(sliderBarUPtr_);
                 sliderBarUPtr_.reset();
             }
 
             if (SLIDERBAR_PTR_OPT)
             {
-                sliderBarUPtr_.reset(SLIDERBAR_PTR_OPT->Ptr());
+                sliderBarUPtr_.reset(SLIDERBAR_PTR_OPT.value());
 
                 sliderBarUPtr_->SetCallbackHandler(SliderBar::Callback_t::IHandlerPtrOpt_t(this));
 
                 sliderBarUPtr_->PositionRatio(0.0f);
-                stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_.get());
+                stagePtrOpt_.value()->EntityAdd(sliderBarUPtr_);
             }
         }
         else
         {
             if (SLIDERBAR_PTR_OPT)
             {
-                delete SLIDERBAR_PTR_OPT->Ptr();
+                delete SLIDERBAR_PTR_OPT.value();
             }
         }
     }
@@ -218,7 +218,7 @@ namespace gui
         }
     }
 
-    bool TextRegion::HandleCallback(const SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool TextRegion::HandleCallback(const SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if (sliderBarUPtr_)
         {
@@ -271,12 +271,12 @@ namespace gui
 
     const SliderBarPtr_t TextRegion::MakeSliderBar(const sf::FloatRect & REGION) const
     {
-        return new SliderBar(
+        return SliderBarPtr_t(new SliderBar(
             GetEntityName() + "'s_",
             sfutil::Right(REGION) - SliderBar::POS_OFFSET_HORIZ_,
             REGION.top + SliderBar::POS_OFFSET_VERT_,
             REGION.height - (SliderBar::POS_OFFSET_VERT_ * 2.0f),
-            SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
+            SliderStyle(Orientation::Vert, Brightness::Bright, true, true)));
     }
 
     void TextRegion::SetupEntityRegion(const sf::FloatRect & REGION_PARAM)
@@ -298,14 +298,14 @@ namespace gui
     {
         if (boxEntityUPtr_ && stagePtrOpt_)
         {
-            stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_.get());
+            stagePtrOpt_.value()->EntityRemove(boxEntityUPtr_);
         }
 
         boxEntityUPtr_ = std::make_unique<BoxEntity>("TextRegion's", regionOrig_, BOX_INFO);
 
         if (stagePtrOpt_)
         {
-            stagePtrOpt_.value()->EntityAdd(boxEntityUPtr_.get(), true);
+            stagePtrOpt_.value()->EntityAdd(boxEntityUPtr_, true);
         }
     }
 

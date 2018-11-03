@@ -67,7 +67,7 @@ namespace gui
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void FontManager::Acquire()
@@ -107,7 +107,7 @@ namespace gui
             Load(FONT);
         }
 
-        return GetFontRef(FONT).get();
+        return GetFontRef(FONT);
     }
 
     void FontManager::Load(const GuiFont::Enum FONT)

@@ -213,7 +213,7 @@ namespace creature
                 "creature::condition::Holder::Get(" << Conditions::ToString(
                     E) << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
-            return conditionsUVec_[INDEX].get();
+            return ConditionPtr_t(conditionsUVec_[INDEX].get());
         }
 
     } // namespace condition

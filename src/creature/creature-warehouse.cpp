@@ -22,7 +22,7 @@ namespace creature
     std::unique_ptr<CreatureWarehouse> CreatureWarehouse::instanceUPtr_;
 
     CreatureWarehouse::CreatureWarehouse()
-        : warehouse_()
+        : warehouse_(100) // found by experiment to be a good upper bound for the game
     {
         M_HP_LOG_DBG("Subsystem Construction: Non-Player CreatureWarehouse");
     }
@@ -41,7 +41,7 @@ namespace creature
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return misc::NotNull<CreatureWarehouse *>(instanceUPtr_.get());
     }
 
     void CreatureWarehouse::Acquire()

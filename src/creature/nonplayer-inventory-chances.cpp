@@ -99,7 +99,7 @@ namespace creature
                 Acquire();
             }
 
-            return instanceUPtr_.get();
+            return misc::NotNull<ChanceFactory *>(instanceUPtr_.get());
         }
 
         void ChanceFactory::Acquire()

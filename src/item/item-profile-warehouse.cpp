@@ -58,7 +58,7 @@ namespace item
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void ItemProfileWarehouse::Acquire()

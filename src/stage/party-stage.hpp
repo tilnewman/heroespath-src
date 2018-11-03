@@ -67,11 +67,11 @@ namespace stage
         PartyStage();
         virtual ~PartyStage();
 
-        bool HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
         bool HandleCallback_StartButton();
         bool HandleCallback_DeleteButton();
 

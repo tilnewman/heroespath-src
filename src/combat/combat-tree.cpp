@@ -72,7 +72,7 @@ namespace combat
         {
             if (VERTEX.id == ID)
             {
-                return VERTEX.node_sptr.get();
+                return VERTEX.node_sptr;
             }
         }
 
@@ -87,7 +87,7 @@ namespace combat
         {
             if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
-                return VERTEX.node_sptr.get();
+                return VERTEX.node_sptr;
             }
         }
 
@@ -184,7 +184,7 @@ namespace combat
     {
         const auto COMBAT_NODE_SPTR { std::make_shared<combat::CombatNode>(CREATURE_PTR) };
         vertexes_.emplace_back(Vertex(NextAvailableId(), COMBAT_NODE_SPTR));
-        return COMBAT_NODE_SPTR.get();
+        return COMBAT_NODE_SPTR;
     }
 
     void CombatTree::RemoveVertex(const ID_t & ID, const bool WILL_REMOVE_DANGLING_EDGES)
@@ -814,7 +814,7 @@ namespace combat
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
                     closestBlockingDistanceABS = ABS_DISTANCE;
-                    closestNodePtrOpt = VERTEX.node_sptr.get();
+                    closestNodePtrOpt = VERTEX.node_sptr;
                 }
             }
         }

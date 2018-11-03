@@ -225,13 +225,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseUp(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             didSomethingHappend = true;
         }
 
@@ -280,13 +280,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             isMouseDown_ = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->MouseDown(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             isMouseDown_ = true;
         }
 
@@ -299,13 +299,13 @@ namespace gui
 
         if (imageEntityUPtr_ && imageEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(imageEntityUPtr_);
             didSomethingHappend = true;
         }
 
         if (textEntityUPtr_ && textEntityUPtr_->UpdateMousePos(MOUSE_POS_V))
         {
-            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_.get());
+            SyncAfterImageOrTextMouseStateChange(textEntityUPtr_);
             didSomethingHappend = true;
         }
 
@@ -383,9 +383,13 @@ namespace gui
                 textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             EventPacket eventPackage(
-                this, GuiEvent::Click, MOUSE_POS_V, IS_MOUSE_OVER_IMAGE, IS_MOUSE_OVER_TEXT);
+                misc::MakeNotNull(this),
+                GuiEvent::Click,
+                MOUSE_POS_V,
+                IS_MOUSE_OVER_IMAGE,
+                IS_MOUSE_OVER_TEXT);
 
-            callbackHandlerPtrOpt_.value()->HandleCallback(&eventPackage);
+            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&eventPackage));
         }
     }
 
@@ -400,9 +404,13 @@ namespace gui
                 textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
             EventPacket eventPackage(
-                this, GuiEvent::Click, MOUSE_POS_V, IS_MOUSE_OVER_IMAGE, IS_MOUSE_OVER_TEXT);
+                misc::MakeNotNull(this),
+                GuiEvent::Click,
+                MOUSE_POS_V,
+                IS_MOUSE_OVER_IMAGE,
+                IS_MOUSE_OVER_TEXT);
 
-            callbackHandlerPtrOpt_.value()->HandleCallback(Callback_t::PacketPtr_t(&eventPackage));
+            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&eventPackage));
         }
     }
 
@@ -410,7 +418,7 @@ namespace gui
         const IEntityPtr_t & IENTITY_CHANGED_PTR)
     {
         const auto NEW_MOUSE_STATE { IENTITY_CHANGED_PTR->GetMouseState() };
-        const auto DID_IMAGE_CHANGE { IENTITY_CHANGED_PTR.Ptr() == imageEntityUPtr_.get() };
+        const auto DID_IMAGE_CHANGE { IENTITY_CHANGED_PTR == imageEntityUPtr_.get() };
 
         const auto DOES_OTHER_ENTITY_EXIST { (
             (DID_IMAGE_CHANGE) ? !!textEntityUPtr_ : !!imageEntityUPtr_) };

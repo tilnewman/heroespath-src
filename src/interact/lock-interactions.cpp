@@ -120,7 +120,7 @@ namespace interact
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
         const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR,
+        const gui::PopupCallback_t::PacketPtr_t PACKET_PTR,
         stage::IStagePtr_t iStagePtr)
     {
         if (PACKET_PTR->type == popup::ResponseTypes::Select)

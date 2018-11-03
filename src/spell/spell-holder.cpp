@@ -230,7 +230,7 @@ namespace spell
                 << ") that index was NOT less than the spellsUVec_.size()=" << spellsUVec_.size()
                 << ".");
 
-        return spellsUVec_[SPELL_INDEX].get();
+        return SpellPtr_t(spellsUVec_[SPELL_INDEX].get());
     }
 
 } // namespace spell

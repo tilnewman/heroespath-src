@@ -79,7 +79,7 @@ namespace popup
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, stage::IStagePtr_t(this));
 
-        StageBase::EntityAdd(descTextRegionUPtr_.get());
+        StageBase::EntityAdd(descTextRegionUPtr_);
     }
 
     void PopupStageTreasureTrap::SetupAccentImage()

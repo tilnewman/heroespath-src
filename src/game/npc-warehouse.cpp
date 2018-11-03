@@ -22,7 +22,7 @@ namespace game
     std::unique_ptr<NpcWarehouse> NpcWarehouse::instanceUPtr_;
 
     NpcWarehouse::NpcWarehouse()
-        : warehouse_()
+        : warehouse_(100) // found by experiment to be a good upper bound for the game
     {
         M_HP_LOG_DBG("Subsystem Construction: NpcWarehouse");
     }
@@ -37,7 +37,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void NpcWarehouse::Acquire()

@@ -58,14 +58,14 @@ namespace misc
 
     Log::~Log() { Append(LogPriority::Default, "(log destructed)"); }
 
-    Log * Log::Instance()
+    misc::NotNull<Log *> Log::Instance()
     {
         if (!instanceUPtr_)
         {
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void Log::Acquire()

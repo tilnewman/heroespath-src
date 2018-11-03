@@ -75,16 +75,16 @@ namespace stage
 
         // required by callback handler
 
-        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t &)
+        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t )
         // override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t) override
         {
             return false;
         }

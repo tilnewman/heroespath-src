@@ -10,6 +10,7 @@
 // log.hpp
 //
 #include "log-pri-enum.hpp"
+#include "misc/not-null.hpp"
 
 #include <fstream>
 #include <memory>
@@ -38,7 +39,7 @@ namespace misc
         Log & operator=(const Log &) = delete;
         Log & operator=(Log &&) = delete;
 
-        static Log * Instance();
+        static misc::NotNull<Log *> Instance();
         static void Acquire();
         static void Release();
 

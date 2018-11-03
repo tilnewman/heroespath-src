@@ -139,7 +139,7 @@ namespace combat
         combatNodePtrOpt_ = COMBAT_NODE_PTR;
 
         geSlider_ = gui::EntitySlider(
-            gui::IEntityPtrOpt_t(COMBAT_NODE_PTR.Ptr()),
+            gui::IEntityPtrOpt_t(COMBAT_NODE_PTR),
             COMBAT_NODE_PTR->GetEntityPos(),
             DEST_POS_V,
             SLIDER_SPEED_,

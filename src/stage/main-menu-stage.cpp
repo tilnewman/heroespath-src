@@ -81,7 +81,7 @@ namespace stage
             sfutil::MapByRes(20.0f, 188.0f));
 
         // Ouroboros
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
 
         const auto BETWEEN_BUTTONS_SPACER { sfutil::ScreenRatioToPixelsVert(0.01f) };
 
@@ -125,7 +125,7 @@ namespace stage
             const auto GAMESTATE_PVEC { game::GameStateFactory::Instance()->LoadAllGames() };
             for (const auto & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
             {
-                delete NEXT_GAMESTATE_PTR.Ptr();
+                delete NEXT_GAMESTATE_PTR;
             }
 
             return (GAMESTATE_PVEC.empty() == false);
@@ -136,11 +136,11 @@ namespace stage
             resumeButtonUPtr_->SetMouseState(gui::MouseState::Disabled);
         }
 
-        EntityAdd(resumeButtonUPtr_.get());
-        EntityAdd(createButtonUPtr_.get());
-        EntityAdd(settingsButtonUPtr_.get());
-        EntityAdd(creditsButtonUPtr_.get());
-        EntityAdd(exitButtonUPtr_.get());
+        EntityAdd(resumeButtonUPtr_);
+        EntityAdd(createButtonUPtr_);
+        EntityAdd(settingsButtonUPtr_);
+        EntityAdd(creditsButtonUPtr_);
+        EntityAdd(exitButtonUPtr_);
     }
 
     void MainMenuStage::draw(sf::RenderTarget & target, sf::RenderStates states) const

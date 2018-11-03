@@ -12,6 +12,7 @@
 #include "gui/callback.hpp"
 #include "gui/i-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-response.hpp"
 #include "stage/i-stage.hpp"
@@ -85,7 +86,7 @@ namespace game
         {
             if (popupUPtr_)
             {
-                ExecuteAndHandleFocusChange(popupUPtr_.get(), lambda);
+                ExecuteAndHandleFocusChange(misc::MakeNotNull(popupUPtr_.get()), lambda);
             }
         }
 
@@ -94,7 +95,7 @@ namespace game
         {
             for (auto & iStageUPtr : nonPopupUVec_)
             {
-                if (ExecuteAndHandleFocusChange(iStageUPtr.get(), lambda))
+                if (ExecuteAndHandleFocusChange(misc::MakeNotNull(iStageUPtr.get()), lambda))
                 {
                     break;
                 }

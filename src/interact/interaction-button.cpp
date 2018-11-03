@@ -49,7 +49,7 @@ namespace interact
             gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
             CALLBACK_HANDLER_PTR_OPT) };
 
-        ptrOpt_ = uptr.get();
+        ptrOpt_ = gui::TextButtonPtr_t(uptr.get());
         return uptr;
     }
 

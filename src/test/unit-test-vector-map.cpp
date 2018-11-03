@@ -22,7 +22,7 @@
 #pragma warning(pop)
 #endif
 
-#include <boost/type_traits.hpp>
+#include <boost/type_index.hpp>
 
 #include <algorithm>
 #include <iomanip>

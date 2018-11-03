@@ -49,7 +49,7 @@ namespace misc
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void ConfigFile::Acquire()

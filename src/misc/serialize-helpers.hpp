@@ -27,7 +27,7 @@ namespace misc
             rawPtrToSerializeVec.clear();
             for (const auto & NOT_NULL_PTR : notNullPtrVec)
             {
-                rawPtrToSerializeVec.emplace_back(NOT_NULL_PTR.Ptr());
+                rawPtrToSerializeVec.emplace_back(NOT_NULL_PTR);
             }
             notNullPtrVec.clear();
         }

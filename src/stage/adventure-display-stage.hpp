@@ -54,7 +54,7 @@ namespace stage
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
-        map::MapPtr_t GetMapForStageFactory() { return mapUPtr_.get(); }
+        map::MapPtr_t GetMapForStageFactory() { return map::MapPtr_t(mapUPtr_.get()); }
 
         interact::InteractionManager & GetInteractionManagerForStageFactory()
         {

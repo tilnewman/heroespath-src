@@ -56,7 +56,7 @@ namespace stage
     {
         // ouroboros
         ouroborosUPtr_ = std::make_unique<gui::Ouroboros>("InnStage's");
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
 
         // candle image
         const sf::Vector2f CANDLE_POS_V(
@@ -75,7 +75,7 @@ namespace stage
 
         candleAnimUPtr_->SetEntityPos(CANDLE_POS_V - sf::Vector2f(25.0f, 90.0f));
 
-        EntityAdd(candleAnimUPtr_.get());
+        EntityAdd(candleAnimUPtr_);
     }
 
     void InnStage::draw(sf::RenderTarget & target, sf::RenderStates states) const

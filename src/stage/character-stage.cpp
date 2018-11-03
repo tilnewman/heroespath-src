@@ -134,7 +134,7 @@ namespace stage
     CharacterStage::~CharacterStage() { StageBase::ClearAllEntities(); }
 
     /*bool CharacterStage::HandleCallback(
-        const gui::RadioButton::Callback_t::PacketPtr_t & RADIOBUTTON_WRAPPER)
+        const gui::RadioButton::Callback_t::PacketPtr_t  RADIOBUTTON_WRAPPER)
     {
         // was change to race
         if (raceRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
@@ -152,7 +152,7 @@ namespace stage
         return true;
     }*/
 
-    bool CharacterStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CharacterStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         if ((PACKET_PTR->name == POPUP_NAME_CREATECONFIRM_)
             && (popup::ResponseTypes::IsAffirmative(PACKET_PTR->type)))
@@ -194,30 +194,30 @@ namespace stage
         return true;
     }
 
-    bool CharacterStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &)
+    bool CharacterStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
     {
         return false;
     }
 
     bool CharacterStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
     {
-        if (PACKET_PTR->entity_ptr.Ptr() == helpButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == helpButtonUPtr_.get())
         {
             return OnHelpButton();
         }
 
-        if (PACKET_PTR->entity_ptr.Ptr() == backButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == backButtonUPtr_.get())
         {
             return OnBackButton();
         }
 
-        if (PACKET_PTR->entity_ptr.Ptr() == saveButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == saveButtonUPtr_.get())
         {
             return OnSaveButton();
         }
 
-        if (PACKET_PTR->entity_ptr.Ptr() == nextButtonUPtr_.get())
+        if (PACKET_PTR->entity_ptr == nextButtonUPtr_.get())
         {
             return OnNextButton();
         }
@@ -227,7 +227,7 @@ namespace stage
 
     void CharacterStage::Setup()
     {
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
 
         Setup_MenuButtons();
         Setup_RaceRadioButtons();
@@ -447,7 +447,7 @@ namespace stage
             buttonUPtr->SetEntityPos(
                 calcButtonPos(buttonCounter++, sfutil::Size(buttonUPtr->GetEntityRegion())));
 
-            EntityAdd(buttonUPtr.get());
+            EntityAdd(buttonUPtr);
         };
 
         setupButton(backButtonUPtr_);
@@ -494,7 +494,7 @@ namespace stage
             gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             0.0f);
 
-        EntityAdd(raceRadioButtonUPtr_.get());
+        EntityAdd(raceRadioButtonUPtr_);
         */
     }
 
@@ -543,7 +543,7 @@ namespace stage
             gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             -5.0f);
 
-        EntityAdd(roleRadioButtonUPtr_.get());
+        EntityAdd(roleRadioButtonUPtr_);
         */
     }
 
@@ -578,7 +578,7 @@ namespace stage
                 stage::IStagePtr_t(this),
                 DESC_TEXT_FONT_SIZE_);
 
-            EntityAdd(racetDescTextRegionUPtr_.get());
+            EntityAdd(racetDescTextRegionUPtr_);
         }
         else
         {
@@ -624,7 +624,7 @@ namespace stage
                 stage::IStagePtr_t(this),
                 DESC_TEXT_FONT_SIZE_);
 
-            EntityAdd(roletDescTextRegionUPtr_.get());
+            EntityAdd(roletDescTextRegionUPtr_);
         }
         else
         {
@@ -658,7 +658,7 @@ namespace stage
                 + 45.0f,
             nInsTextRegionUPtr_->GetEntityPos().y);
 
-        EntityAdd(nInsTextRegionUPtr_.get());
+        EntityAdd(nInsTextRegionUPtr_);
     }
 
     void CharacterStage::Setup_NameTextEntryBox()
@@ -691,7 +691,7 @@ namespace stage
             LIGHT_TEXT_COLOR_,
             textEntryBoxInfo);
 
-        EntityAdd(nameTextEntryBoxUPtr_.get());
+        EntityAdd(nameTextEntryBoxUPtr_);
     }
 
     void CharacterStage::Setup_SexRadioButtons()
@@ -735,7 +735,7 @@ namespace stage
                 + nameTextEntryBoxUPtr_->GetEntityRegion().height
                 + sfutil::MapByRes(25.0f, 70.0f));
 
-        EntityAdd(sexRadioButtonUPtr_.get());
+        EntityAdd(sexRadioButtonUPtr_);
         */
     }
 
@@ -765,7 +765,7 @@ namespace stage
                 + sexRadioButtonUPtr_->GetEntityRegion().height
                 + sfutil::MapByRes(30.0f, 90.0f));
 
-        EntityAdd(sbInsTextRegionUPtr_.get());
+        EntityAdd(sbInsTextRegionUPtr_);
         */
     }
 
@@ -845,7 +845,7 @@ namespace stage
             sf::Color::White,
             sf::BlendAlpha);
 
-        EntityAdd(smokeAnimUPtr_.get());
+        EntityAdd(smokeAnimUPtr_);
 
         const auto DRIFT_LIMIT_LEFT { StageRegion().width * 0.65f };
         const auto DRIFT_LIMIT_RIGHT { StageRegion().width
@@ -951,7 +951,7 @@ namespace stage
             attrDescTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "AttributeDescription", descTextInfo, REGION, stage::IStagePtr_t(this));
 
-            EntityAdd(attrDescTextRegionUPtr_.get());
+            EntityAdd(attrDescTextRegionUPtr_);
         }
         else
         {
@@ -1084,7 +1084,7 @@ namespace stage
             ss << "to be lost.  Are you sure?";
 
             SpawnPopup(
-                this,
+                misc::MakeNotNull(this),
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
@@ -1131,13 +1131,13 @@ namespace stage
             gui::Justified::Left,
             gui::sound_effect::PromptQuestion) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
     }
 
     void CharacterStage::CharacterNameMissingPopup()
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NONAMEERROR_,
                 "\n\nThe name box is empty.  You must name your character to continue.",
@@ -1178,8 +1178,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_IMAGE_SELECTION_, ss.str(), characterTextureVec, true) };
 
-        SpawnPopup(
-            this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             */
     }
 
@@ -1203,7 +1202,7 @@ namespace stage
             ss << "to be lost.  Are you sure?";
 
             SpawnPopup(
-                this,
+                misc::MakeNotNull(this),
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
@@ -1221,7 +1220,7 @@ namespace stage
     void CharacterStage::Help1Popup()
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_1_,
                 std::string(
@@ -1242,7 +1241,7 @@ namespace stage
     void CharacterStage::Help2Popup()
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_2_,
                 std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer")
@@ -1261,7 +1260,7 @@ namespace stage
     void CharacterStage::Help3Popup()
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_3_,
                 std::string("To make a character, first select the Race and Role.  ")
@@ -1328,8 +1327,7 @@ namespace stage
            << "   Speed=" << statSetFinal.Spd() << "\n"
            << "   Intelligence=" << statSetFinal.Int() << "\n";
 
-        SpawnPopup(
-            this,
+        SpawnPopup(misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_CREATECONFIRM_,
                 ss.str(),

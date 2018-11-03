@@ -74,7 +74,7 @@ namespace stage
     SettingsStage::~SettingsStage() { StageBase::ClearAllEntities(); }
 
     /*bool SettingsStage::HandleCallback(
-        const gui::RadioButton::Callback_t::PacketPtr_t & PACKAGE_PTR)
+        const gui::RadioButton::Callback_t::PacketPtr_t  PACKAGE_PTR)
     {
         if (PACKAGE.PTR_ == aaRadioButtonSetUPtr_.get())
         {
@@ -97,7 +97,7 @@ namespace stage
         }
     }*/
 
-    bool SettingsStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t &)
+    bool SettingsStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t)
     {
         /*
         M_HP_LOG(
@@ -237,7 +237,7 @@ namespace stage
 
         if (false == hasStageAlreadyBeenSetup_)
         {
-            EntityAdd(backButtonUPtr_.get());
+            EntityAdd(backButtonUPtr_);
         }
     }
 
@@ -294,7 +294,7 @@ namespace stage
             resLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "ResolutionChangeLabel", CreateLabelTextInfo("Change Resolution"), sf::FloatRect());
 
-            EntityAdd(resLabelTextRegionUPtr_.get());
+            EntityAdd(resLabelTextRegionUPtr_);
         }
 
         const auto LEFT { BG_BOX_INNER_RECT.left + sfutil::MapByRes(60.0f, 125.0f) };
@@ -312,7 +312,7 @@ namespace stage
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfutil::MapByRes(20.0f, 50.0f),
                 gui::RadioButtonSetCallbackHandlerPtr_t(this),
-                stage::IStagePtr_t(this));
+                misc::MakeNotNull(this));
 
             resRadioButtonSetUPtr_->SetEntityColors(gui::FocusColors(
                 sf::Color(180, 180, 180),
@@ -320,7 +320,7 @@ namespace stage
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60)));
 
-            EntityAdd(resRadioButtonSetUPtr_.get());
+            EntityAdd(resRadioButtonSetUPtr_);
         }
 
         const auto LEFT { BG_BOX_INNER_RECT.left };
@@ -338,7 +338,7 @@ namespace stage
             aaLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "AntiAliasSettingLabel", CreateLabelTextInfo("Anti-\nAliasing"), sf::FloatRect());
 
-            EntityAdd(aaLabelTextRegionUPtr_.get());
+            EntityAdd(aaLabelTextRegionUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(1, BG_BOX_INNER_RECT)
@@ -441,7 +441,7 @@ namespace stage
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60)));
 
-            EntityAdd(aaRadioButtonSetUPtr_.get());
+            EntityAdd(aaRadioButtonSetUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(1, BG_BOX_INNER_RECT)
@@ -460,7 +460,7 @@ namespace stage
             musicVolLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "MusicVolumeSettingLabel", CreateLabelTextInfo("Music\nVolume"), sf::FloatRect());
 
-            EntityAdd(musicVolLabelTextRegionUPtr_.get());
+            EntityAdd(musicVolLabelTextRegionUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(2, BG_BOX_INNER_RECT)
@@ -487,7 +487,7 @@ namespace stage
                 0.0f,
                 SLIDER_LENGTH_VERT_ + SliderLabelVertPad());
 
-            EntityAdd(musicVolSliderBarUPtr_.get());
+            EntityAdd(musicVolSliderBarUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(2, BG_BOX_INNER_RECT)
@@ -510,7 +510,7 @@ namespace stage
                 gui::TextRegion::DEFAULT_NO_RESIZE_,
                 gui::BoxEntityInfo());
 
-            EntityAdd(effectsVolLabelTextRegionUPtr_.get());
+            EntityAdd(effectsVolLabelTextRegionUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(3, BG_BOX_INNER_RECT)
@@ -537,7 +537,7 @@ namespace stage
                 0.0f,
                 SLIDER_LENGTH_VERT_ + SliderLabelVertPad());
 
-            EntityAdd(effectsVolSliderBarUPtr_.get());
+            EntityAdd(effectsVolSliderBarUPtr_);
         }
 
         const auto LEFT { HorizPositionOfColumn(3, BG_BOX_INNER_RECT)
@@ -556,7 +556,7 @@ namespace stage
             musicInfoLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "MusicInfoLabel", CreateLabelTextInfo("Music Currently Playing"), sf::FloatRect());
 
-            EntityAdd(musicInfoLabelTextRegionUPtr_.get());
+            EntityAdd(musicInfoLabelTextRegionUPtr_);
         }
 
         // const auto PAD { 30.0f };
@@ -631,11 +631,11 @@ namespace stage
                 "SettingsStageMusicInfo",
                 TEXT_INFO,
                 RECT,
-                this,
+                misc::MakeNotNull(this),
                 gui::TextRegion::DEFAULT_NO_RESIZE_,
                 musicBoxInfo);
 
-            EntityAdd(musicInfoDetailsTextRegionUPtr_.get());
+            EntityAdd(musicInfoDetailsTextRegionUPtr_);
         }
 
         musicInfoDetailsTextRegionUPtr_->Setup(
@@ -659,7 +659,7 @@ namespace stage
             revLabelTextRegionUPtr_
                 = std::make_unique<gui::TextRegion>("RevisionNumber", TEXT_INFO, sf::FloatRect());
 
-            EntityAdd(revLabelTextRegionUPtr_.get());
+            EntityAdd(revLabelTextRegionUPtr_);
         }
 
         const auto LEFT { BG_BOX_INNER_RECT.left };

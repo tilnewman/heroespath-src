@@ -123,13 +123,13 @@ namespace combat
         // create CombatNodes and add them into the combateTree_
         for (const auto & NEXT_CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
-            EntityAdd(combatTree_.AddVertex(NEXT_CHARACTER_PTR).Ptr());
+            EntityAdd(combatTree_.AddVertex(NEXT_CHARACTER_PTR));
         }
         InitialPlayerPartyCombatTreeSetup();
         //
         for (const auto & NEXT_CREATURE_PTR : creature::Algorithms::NonPlayers())
         {
-            EntityAdd(combatTree_.AddVertex(NEXT_CREATURE_PTR).Ptr());
+            EntityAdd(combatTree_.AddVertex(NEXT_CREATURE_PTR));
         }
         InitialNonPlayerPartyCombatTreeSetup();
 
@@ -1323,7 +1323,7 @@ namespace combat
     {
         for (const auto & ID : COMBAT_TREE_IDS_TO_REMOVE_VEC)
         {
-            EntityRemove(combatTree_.GetNodePtr(ID).Ptr());
+            EntityRemove(combatTree_.GetNodePtr(ID));
             combatTree_.RemoveVertex(ID, true);
         }
 

@@ -65,7 +65,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return misc::NotNull<GameStateFactory *>(instanceUPtr_.get());
     }
 
     void GameStateFactory::Acquire()
@@ -304,7 +304,7 @@ namespace game
             else
             {
                 CHARACTER_PTR_OPT.value()->BeforeSerialize();
-                outputTextArchive << CHARACTER_PTR_OPT.value().Obj();
+                outputTextArchive << *CHARACTER_PTR_OPT.value();
                 CHARACTER_PTR_OPT.value()->AfterSerialize();
             }
         }

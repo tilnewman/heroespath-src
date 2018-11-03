@@ -64,9 +64,9 @@ namespace stage
         LoadGameStage();
         virtual ~LoadGameStage();
 
-        bool HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
         {
             return false;
         }

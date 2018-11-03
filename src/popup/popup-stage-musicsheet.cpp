@@ -89,7 +89,7 @@ namespace popup
     PopupStageMusicSheet::~PopupStageMusicSheet() = default;
 
     bool PopupStageMusicSheet::HandleCallback(
-        const SongListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+        const SongListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)
             || (PACKET_PTR->gui_event == gui::GuiEvent::SelectionChange)
@@ -137,7 +137,7 @@ namespace popup
         currentSongIndex_ = listBoxUPtr_->SelectionIndex();
         SetupPageRightText(CurrentSelectedSong());
 
-        SetFocus(listBoxUPtr_.get());
+        SetFocus(listBoxUPtr_);
     }
 
     void PopupStageMusicSheet::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -362,8 +362,8 @@ namespace popup
 
         listBoxUPtr_ = std::make_unique<gui::ListBox<PopupStageMusicSheet, song::SongPtr_t>>(
             "PopupStage'sMusicListBox",
-            this,
-            this,
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
             gui::ListBoxPacket(
                 LISTBOX_RECT, listBoxBackgroundInfo_, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
 
@@ -376,7 +376,7 @@ namespace popup
                 CanPlaySong(SONG_PTR)));
         }
 
-        EntityAdd(listBoxUPtr_.get());
+        EntityAdd(listBoxUPtr_);
     }
 
     void PopupStageMusicSheet::SetupPageRightText(const song::SongPtr_t SONG_PTR)

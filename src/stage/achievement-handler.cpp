@@ -29,7 +29,7 @@ namespace stage
 
         if (toTitlePtrOpt)
         {
-            if ((!fromTitlePtrOpt) || (fromTitlePtrOpt->Ptr() != toTitlePtrOpt->Ptr()))
+            if ((!fromTitlePtrOpt) || (fromTitlePtrOpt.value() != toTitlePtrOpt.value()))
             {
                 return true;
             }

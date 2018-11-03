@@ -181,9 +181,9 @@ BOOST_AUTO_TEST_CASE(Real_IsRealClose)
 
 BOOST_AUTO_TEST_CASE(NotNull_Tests)
 {
-    // heroespath::misc::NotNull<int *> notNull; //should not compile
-    // heroespath::misc::NotNull<int *> notNull{ nullptr }; //should not compile
-    // heroespath::misc::NotNull<int *> notNull{ 0 }; //should not compile
+    // heroespath::misc::NotNull<int *> notNull; // should not compile
+    // heroespath::misc::NotNull<int *> notNull { nullptr }; // should not compile
+    // heroespath::misc::NotNull<int *> notNull { 0 }; // should not compile
 
     // std::cout << "(the next line output to the console will be an exception about a NotNull "
     //             "constructor given nullptr that is expected and can be ignored)"
@@ -194,101 +194,101 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
 
     int one { 1 };
     heroespath::misc::NotNull<int *> notNull1A { &one };
-    BOOST_CHECK(notNull1A.Obj() == one);
-    BOOST_CHECK(notNull1A.Obj() == 1);
-    // BOOST_CHECK(notNull1A != nullptr); // should not compile
-    BOOST_CHECK(notNull1A.Ptr() == &one);
-    BOOST_CHECK(&one == notNull1A.Ptr());
+    BOOST_CHECK(*notNull1A == one);
+    BOOST_CHECK(*notNull1A == 1);
+    BOOST_CHECK(notNull1A == &one);
+    BOOST_CHECK(&one == notNull1A);
     BOOST_CHECK(notNull1A == &one);
     BOOST_CHECK(&one == notNull1A);
 
     const int TEMP_ONE { *notNull1A };
     BOOST_CHECK(TEMP_ONE == 1);
 
-    BOOST_CHECK((notNull1A.Ptr() != &one) == false);
-    BOOST_CHECK((&one != notNull1A.Ptr()) == false);
+    BOOST_CHECK((notNull1A != &one) == false);
+    BOOST_CHECK((&one != notNull1A) == false);
     BOOST_CHECK((notNull1A != &one) == false);
     BOOST_CHECK((&one != notNull1A) == false);
 
     int * p1 { &one };
     heroespath::misc::NotNull<int *> notNull1B { p1 };
-    BOOST_CHECK(notNull1B.Obj() == one);
-    BOOST_CHECK(notNull1B.Obj() == 1);
+    BOOST_CHECK(*notNull1B == one);
+    BOOST_CHECK(*notNull1B == 1);
 
     BOOST_CHECK(notNull1A == notNull1B);
-    BOOST_CHECK(notNull1A.Ptr() == notNull1B.Ptr());
-    BOOST_CHECK(notNull1A.Obj() == notNull1B.Obj());
+    BOOST_CHECK(notNull1A == notNull1B);
+    BOOST_CHECK(*notNull1A == *notNull1B);
 
     heroespath::misc::NotNull<int *> notNull1C { notNull1A };
 
     BOOST_CHECK(notNull1A == notNull1C);
-    BOOST_CHECK(notNull1A.Ptr() == notNull1C.Ptr());
-    BOOST_CHECK(notNull1A.Obj() == notNull1C.Obj());
+    BOOST_CHECK(notNull1A == notNull1C);
+    BOOST_CHECK(*notNull1A == *notNull1C);
 
     char c { 'x' };
     heroespath::misc::NotNull<char *> notNullC { &c };
 
     // BOOST_CHECK(notNull1A != notNullC); //should not compile
-    // BOOST_CHECK(notNull1A.Ptr() != notNullC.Ptr()); // should not compile
+    // BOOST_CHECK(notNull1A != notNullC); // should not compile
 
     int * p2 { new int(2) };
     heroespath::misc::NotNull<int *> notNull2 { p2 };
 
-    BOOST_CHECK(notNull2.Ptr() == p2);
-    BOOST_CHECK(p2 == notNull2.Ptr());
+    BOOST_CHECK(notNull2 == p2);
+    BOOST_CHECK(p2 == notNull2);
     BOOST_CHECK(notNull2 == p2);
     BOOST_CHECK(p2 == notNull2);
 
     // heroespath::misc::NotNull<int *> notNullX{ *p2 }; // should not compile
 
     BOOST_CHECK(notNull1A != notNull2);
-    BOOST_CHECK(notNull1A.Ptr() != notNull2.Ptr());
-    BOOST_CHECK(notNull1A.Obj() != notNull2.Obj());
+    BOOST_CHECK(notNull1A != notNull2);
+    BOOST_CHECK(*notNull1A != *notNull2);
 
-    notNull1A = p2;
+    notNull1A = MakeNotNull(p2);
 
     BOOST_CHECK(notNull1A == notNull2);
-    BOOST_CHECK(notNull1A.Ptr() == notNull2.Ptr());
-    BOOST_CHECK(notNull1A.Obj() == notNull2.Obj());
+    BOOST_CHECK(notNull1A == notNull2);
+    BOOST_CHECK(*notNull1A == *notNull2);
 
     notNull1B = notNull2;
 
     BOOST_CHECK(notNull1B == notNull2);
-    BOOST_CHECK(notNull1B.Ptr() == notNull2.Ptr());
-    BOOST_CHECK(notNull1B.Obj() == notNull2.Obj());
+    BOOST_CHECK(notNull1B == notNull2);
+    BOOST_CHECK(*notNull1B == *notNull2);
 
     heroespath::misc::NotNull<int *> notNull3 { new int(3) };
 
     BOOST_CHECK(notNull2 != notNull3);
-    BOOST_CHECK(notNull2.Ptr() != notNull3.Ptr());
-    BOOST_CHECK(notNull2.Obj() != notNull3.Obj());
+    BOOST_CHECK(notNull2 != notNull3);
+    BOOST_CHECK(*notNull2 != *notNull3);
 
     *notNull3 = 2;
 
     BOOST_CHECK(notNull2 != notNull3);
-    BOOST_CHECK(notNull2.Ptr() != notNull3.Ptr());
-    BOOST_CHECK(notNull2.Obj() == notNull3.Obj());
+    BOOST_CHECK(notNull2 != notNull3);
+    BOOST_CHECK(*notNull2 == *notNull3);
 
-    notNull3.Obj() = 1;
-    BOOST_CHECK(notNull3.Obj() == 1);
+    *notNull3 = 1;
+    BOOST_CHECK(*notNull3 == 1);
 
-    const heroespath::misc::NotNull<int *> NOTNULL4 { new int(4) };
+    const heroespath::misc::NotNull<const int *> NOTNULL4 { new int(4) };
     BOOST_CHECK(NOTNULL4 != notNull3);
-    BOOST_CHECK(NOTNULL4.Ptr() != notNull3.Ptr());
-    BOOST_CHECK(NOTNULL4.Obj() != notNull3.Obj());
+    BOOST_CHECK(NOTNULL4 != notNull3);
+    BOOST_CHECK(*NOTNULL4 != *notNull3);
 
     // NOTNULL4 = 69; // should not compile
-    // NOTNULL4.Obj() = 69; // should not compile
+    //*NOTNULL4 = 0; // should NOT compile since the NotNull<T> type is a const
+    // NOTNULL4 = p2; //should NOT compile because the pointer type is const
 
     // delete notNull2; should not compile
     delete p2;
-    delete notNull3.Ptr();
-    delete NOTNULL4.Ptr();
+    delete notNull3;
+    delete NOTNULL4;
 
-    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThing { new Thing(69) };
-    BOOST_CHECK(notNullThing->Obj().get() == 69);
-    BOOST_CHECK((*notNullThing).Obj().get() == 69);
-    delete notNullThing->Ptr();
+    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThingPtrOpt { new Thing(69) };
+    BOOST_CHECK(notNullThingPtrOpt.value()->get() == 69);
+    BOOST_CHECK((*notNullThingPtrOpt)->get() == 69);
+    delete notNullThingPtrOpt.value();
 }
 
 BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)

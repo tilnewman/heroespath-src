@@ -131,8 +131,8 @@ namespace stage
         explicit TreasureDisplayStage();
         virtual ~TreasureDisplayStage() = default;
 
-        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t &) override;
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t) override;
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
 
         void SetModelStage(const TreasureStagePtr_t treasureStagePtr)
         {

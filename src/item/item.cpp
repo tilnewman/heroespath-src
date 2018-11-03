@@ -79,7 +79,7 @@ namespace item
         if (NAME.empty() == false)
         {
             gui::ItemImageLoader itemImageLoader;
-            imageFilename_ = itemImageLoader.Filename(this, true);
+            imageFilename_ = itemImageLoader.Filename(misc::MakeNotNull(this), true);
         }
     }
 

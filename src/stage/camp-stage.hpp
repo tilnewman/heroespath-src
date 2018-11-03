@@ -49,7 +49,7 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;

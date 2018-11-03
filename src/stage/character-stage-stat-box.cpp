@@ -62,7 +62,7 @@ namespace stage
         boxUPtr_
             = std::make_unique<gui::BoxEntity>("CharacterStageStatBox", REGION_ORIG, statsBoxInfo);
 
-        owningStagePtr_->EntityAdd(boxUPtr_.get());
+        owningStagePtr_->EntityAdd(boxUPtr_);
 
         const auto REGION_INNER { RegionInner() };
         const auto REGION_FULL_HEIGHT { REGION_INNER.height / static_cast<float>(StatCount()) };
@@ -163,7 +163,7 @@ namespace stage
         Reset();
     }
 
-    StatBox::~StatBox() { owningStagePtr_->EntityRemove(boxUPtr_.get()); }
+    StatBox::~StatBox() { owningStagePtr_->EntityRemove(boxUPtr_); }
 
     void StatBox::Reset()
     {
@@ -207,7 +207,7 @@ namespace stage
     void StatBox::Focus()
     {
         boxUPtr_->SetHasFocus(true);
-        owningStagePtr_->SetFocus(boxUPtr_.get());
+        owningStagePtr_->SetFocus(boxUPtr_);
     }
 
     const sf::FloatRect StatBox::RegionOuter() const { return boxUPtr_->OuterRegion(); }

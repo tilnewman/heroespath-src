@@ -128,7 +128,7 @@ namespace stage
     {
         for (const auto & BUTTON_UPTR : namesButtonUVec_)
         {
-            stagePtr_->EntityRemove(BUTTON_UPTR.get());
+            stagePtr_->EntityRemove(BUTTON_UPTR);
         }
 
         namesButtonUVec_.clear();
@@ -150,7 +150,7 @@ namespace stage
 
         for (const auto & BUTTON_UPTR : namesButtonUVec_)
         {
-            stagePtr_->EntityAdd(BUTTON_UPTR.get());
+            stagePtr_->EntityAdd(BUTTON_UPTR);
         }
     }
 
@@ -158,7 +158,7 @@ namespace stage
     {
         for (const auto & TEXT_UPTR : healthTextRegionsUVec_)
         {
-            stagePtr_->EntityRemove(TEXT_UPTR.get());
+            stagePtr_->EntityRemove(TEXT_UPTR);
         }
 
         healthTextRegionsUVec_.clear();
@@ -187,7 +187,7 @@ namespace stage
 
         for (const auto & TEXT_UPTR : healthTextRegionsUVec_)
         {
-            stagePtr_->EntityAdd(TEXT_UPTR.get());
+            stagePtr_->EntityAdd(TEXT_UPTR);
         }
     }
 
@@ -224,7 +224,7 @@ namespace stage
     {
         for (const auto & TEXTREGION_UPTR : condsTextRegionsUVec_)
         {
-            stagePtr_->EntityRemove(TEXTREGION_UPTR.get());
+            stagePtr_->EntityRemove(TEXTREGION_UPTR);
         }
 
         condsTextRegionsUVec_.clear();
@@ -254,7 +254,7 @@ namespace stage
 
         for (const auto & TEXTREGION_UPTR : condsTextRegionsUVec_)
         {
-            stagePtr_->EntityAdd(TEXTREGION_UPTR.get());
+            stagePtr_->EntityAdd(TEXTREGION_UPTR);
         }
     }
 

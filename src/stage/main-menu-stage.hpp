@@ -40,7 +40,7 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
         {
             return false;
         }

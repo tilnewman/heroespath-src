@@ -80,7 +80,7 @@ namespace creature
         if (imageFilename_.empty())
         {
             gui::CreatureImageLoader creatureImageLoader;
-            imageFilename_ = creatureImageLoader.FilenameRandom(this);
+            imageFilename_ = creatureImageLoader.FilenameRandom(CreaturePtr_t(this));
         }
 
         actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.As<int>());
@@ -216,7 +216,7 @@ namespace creature
     {
         if (ALLOW_CHANGES)
         {
-            title::Holder::Get(E)->Change(this);
+            title::Holder::Get(E)->Change(CreaturePtr_t(this));
         }
 
         titlesVec_.emplace_back(E);
@@ -227,7 +227,9 @@ namespace creature
         TitlePVec_t titlePVec;
 
         for (const auto NEXT_TITLE_ENUM : titlesVec_)
+        {
             titlePVec.emplace_back(title::Holder::Get(NEXT_TITLE_ENUM));
+        }
 
         return titlePVec;
     }
@@ -294,7 +296,7 @@ namespace creature
             // make the change to the creature
             if (ALLOW_CHANGES)
             {
-                condition::Holder::Get(E)->InitialChange(this);
+                condition::Holder::Get(E)->InitialChange(CreaturePtr_t(this));
                 ReCalculateTraitBonuses();
             }
 
@@ -319,7 +321,7 @@ namespace creature
         for (const auto NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
         {
             wasAnyConditionRemoved = true;
-            condition::Holder::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
+            condition::Holder::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(CreaturePtr_t(this));
 
             const auto FOUND_ITER { std::find(
                 conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM) };
@@ -350,7 +352,7 @@ namespace creature
         // undo the changes made by the conditions that will be removed
         for (const auto NEXT_COND_ENUM : conditionsVec_)
         {
-            condition::Holder::Get(NEXT_COND_ENUM)->FinalChange(this);
+            condition::Holder::Get(NEXT_COND_ENUM)->FinalChange(CreaturePtr_t(this));
         }
 
         conditionsVec_.clear();

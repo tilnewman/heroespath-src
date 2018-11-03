@@ -22,7 +22,7 @@ namespace item
     std::unique_ptr<ItemWarehouse> ItemWarehouse::instanceUPtr_;
 
     ItemWarehouse::ItemWarehouse()
-        : warehouse_()
+        : warehouse_(1000) // found by experiment to be a good upper bound for the game
     {
         M_HP_LOG_DBG("Subsystem Construction: ItemWarehouse");
     }
@@ -37,7 +37,7 @@ namespace item
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void ItemWarehouse::Acquire()

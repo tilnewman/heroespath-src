@@ -38,7 +38,7 @@ namespace popup
     PopupStageNumberSelect::~PopupStageNumberSelect() = default;
 
     bool PopupStageNumberSelect::HandleCallback(
-        const gui::SliderBar::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
     {
         const auto CURR_RATIO { PACKET_PTR->PositionRatio() };
 
@@ -61,7 +61,7 @@ namespace popup
         return true;
     }
 
-    bool PopupStageNumberSelect::HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t &)
+    bool PopupStageNumberSelect::HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t)
     {
         selection_ = GetSelectNumber();
 
@@ -86,7 +86,7 @@ namespace popup
         msgTextRegionUPtr_
             = std::make_unique<gui::TextRegion>("PopupStage'sInfo", MSG_TEXT_INFO, sf::FloatRect());
 
-        EntityAdd(msgTextRegionUPtr_.get());
+        EntityAdd(msgTextRegionUPtr_);
         SetupInfoText("(type a number or use the slider below)");
 
         const auto TEXTENTRY_BOX_WIDTH { textRegion_.width * 0.45f };
@@ -130,10 +130,10 @@ namespace popup
             boxInfo);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
-        EntityAdd(textEntryBoxUPtr_.get());
+        EntityAdd(textEntryBoxUPtr_);
 
         RemoveFocus();
-        SetFocus(textEntryBoxUPtr_.get());
+        SetFocus(textEntryBoxUPtr_);
         textEntryBoxUPtr_->SetHasFocus(true);
     }
 
@@ -175,12 +175,12 @@ namespace popup
             PopupManager::Color_Font(),
             gui::Justified::Center);
 
-        EntityRemove(msgTextRegionUPtr_.get());
+        EntityRemove(msgTextRegionUPtr_);
 
         msgTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
             "PopupStage'sInfo", INFO_TEXT_INFO, sf::FloatRect());
 
-        EntityAdd(msgTextRegionUPtr_.get());
+        EntityAdd(msgTextRegionUPtr_);
 
         const auto INFO_TEXT_POS_LEFT { (textRegion_.left + (textRegion_.width * 0.5f))
                                         - (msgTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
@@ -293,7 +293,7 @@ namespace popup
             gui::SliderStyle(gui::Orientation::Horiz),
             gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
-        EntityAdd(sliderbarUPtr_.get());
+        EntityAdd(sliderbarUPtr_);
     }
 
 } // namespace popup

@@ -55,7 +55,7 @@
     if (false == hasTestingTypeAndCallCompleted_##test_name)                                       \
     {                                                                                              \
         static type_name thing;                                                                    \
-        hasTestingTypeAndCallCompleted_##test_name = thing.Test(stage::IStagePtr_t(this));         \
+        hasTestingTypeAndCallCompleted_##test_name = thing.Test(misc::MakeNotNull(this));          \
         return;                                                                                    \
     }
 

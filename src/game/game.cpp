@@ -45,7 +45,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void Game::Acquire()

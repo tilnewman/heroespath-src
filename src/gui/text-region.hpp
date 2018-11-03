@@ -103,14 +103,12 @@ namespace gui
             const Margins & MARGINS = Margins(),
             const bool WILL_ALLOW_SCROLLBAR = true);
 
-        void HandleSliderBar(const SliderBarPtrOpt_t);
-
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t) override;
 
         const std::string GetText() const { return textInfoOrig_.text; }
         void SetText(const std::string &);
@@ -122,6 +120,8 @@ namespace gui
         void ShrinkEntityRegionToFitText();
 
     protected:
+        void HandleSliderBar(const SliderBarPtrOpt_t);
+
         void OnColorChange() override;
 
         const SliderBarPtr_t MakeSliderBar(const sf::FloatRect & REGION) const;

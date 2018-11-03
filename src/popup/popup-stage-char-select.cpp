@@ -77,7 +77,7 @@ namespace popup
 
         if (sliderbarUPtr_)
         {
-            EntityRemove(sliderbarUPtr_.get());
+            EntityRemove(sliderbarUPtr_);
         }
 
         sliderbarUPtr_ = std::make_unique<gui::SliderBar>(
@@ -88,7 +88,7 @@ namespace popup
             gui::SliderStyle(gui::Orientation::Horiz),
             gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
-        EntityAdd(sliderbarUPtr_.get());
+        EntityAdd(sliderbarUPtr_);
 
         isChangingImageAllowed_
             = (game::Game::Instance()->State().Party().Characters().size() != 0);

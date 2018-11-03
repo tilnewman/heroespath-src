@@ -11,6 +11,7 @@
 //
 #include "animation-single.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "misc/real.hpp"
 #include "sfutil/size-and-scale.hpp"
 

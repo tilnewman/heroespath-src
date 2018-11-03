@@ -88,7 +88,7 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool CampStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool CampStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         const auto CALLBACK_NAME { PACKET_PTR->name };
         if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
@@ -114,7 +114,7 @@ namespace stage
     {
         // ouroboros
         ouroborosUPtr_ = std::make_unique<gui::Ouroboros>("CampStage's");
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
 
         // campfire image
         const auto CAMPFIRE_IMAGE_WIDTH { sfutil::ScreenRatioToPixelsHoriz(0.286f) };
@@ -137,7 +137,7 @@ namespace stage
 
         fireAnimUPtr_->SetEntityPos(CAMPFIRE_ANIM_POS_V);
 
-        EntityAdd(fireAnimUPtr_.get());
+        EntityAdd(fireAnimUPtr_);
 
         showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
@@ -165,7 +165,7 @@ namespace stage
                 gui::Justified::Center,
                 gui::sound_effect::None) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             showNewGamePopup1_ = false;
         }
         else if (showNewGamePopup2_)
@@ -178,7 +178,7 @@ namespace stage
                 gui::Justified::Center,
                 gui::sound_effect::None) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             showNewGamePopup2_ = false;
         }
         else if (showNewGamePopup3_)
@@ -191,7 +191,7 @@ namespace stage
                 gui::Justified::Center,
                 gui::sound_effect::None) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             showNewGamePopup3_ = false;
         }
         else if (showNewGamePopup4_)
@@ -204,7 +204,7 @@ namespace stage
                 gui::Justified::Center,
                 gui::sound_effect::None) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             showNewGamePopup4_ = false;
         }
     }

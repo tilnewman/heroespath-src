@@ -30,7 +30,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-#include <boost/type_traits.hpp>
+#include <boost/type_index.hpp>
 
 #include <algorithm>
 #include <array>
@@ -77,7 +77,7 @@ namespace gui
         ListBox(
             const std::string & NAME,
             const OwningStagePtr_t & OWNING_STAGE_PTR,
-            const typename Callback_t::IHandlerPtr_t & CALLBACK_HANDLER_PTR,
+            const typename Callback_t::IHandlerPtr_t CALLBACK_HANDLER_PTR,
             const ListBoxPacket & PACKET = ListBoxPacket())
             : Entity(MakeTypeString(NAME), sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f))
             , owningStagePtr_(OWNING_STAGE_PTR)
@@ -103,7 +103,7 @@ namespace gui
             Setup();
         }
 
-        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t & PACKET_PTR) override
+        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t PACKET_PTR) override
         {
             if (Empty())
             {
@@ -359,7 +359,7 @@ namespace gui
 
         void AppendAndOwn(const ListElementPtr_t<Element_t> & ELEMENT_PTR)
         {
-            elements_.emplace_back(ListElementUPtr_t<Element_t>(ELEMENT_PTR.Ptr()));
+            elements_.emplace_back(ListElementUPtr_t<Element_t>(ELEMENT_PTR));
         }
 
         bool AppendAndOwn(const ListElementPtrOpt_t<Element_t> & ELEMENT_PTR_OPT)
@@ -1005,13 +1005,13 @@ namespace gui
         {
             if (boxUPtr_)
             {
-                owningStagePtr_->EntityRemove(boxUPtr_.get());
+                owningStagePtr_->EntityRemove(boxUPtr_);
                 boxUPtr_.reset();
             }
 
             if (sliderbarUPtr_)
             {
-                owningStagePtr_->EntityRemove(sliderbarUPtr_.get());
+                owningStagePtr_->EntityRemove(sliderbarUPtr_);
                 sliderbarUPtr_.reset();
             }
         }
@@ -1030,7 +1030,7 @@ namespace gui
                 "Box_for_{" + MakeTypeString() + "}", REGION, packet_.BoxInfo());
 
             boxUPtr_->SetWillAcceptFocus(false);
-            owningStagePtr_->EntityAdd(boxUPtr_.get(), true);
+            owningStagePtr_->EntityAdd(boxUPtr_, true);
 
             // sliderbar
             sliderbarUPtr_ = std::make_unique<SliderBar>(
@@ -1042,7 +1042,7 @@ namespace gui
                 SliderBar::Callback_t::IHandlerPtr_t(this));
 
             sliderbarUPtr_->PositionRatio(0.0f);
-            owningStagePtr_->EntityAdd(sliderbarUPtr_.get());
+            owningStagePtr_->EntityAdd(sliderbarUPtr_);
 
             willMuteAllSfx_ = false;
             ResetIndexes();
@@ -1089,9 +1089,9 @@ namespace gui
             {
 
                 ListBoxEventPacket<Stage_t, Element_t> eventPacket(
-                    this, GuiEvent::Keypress, KEY_EVENT);
+                    misc::MakeNotNull(this), GuiEvent::Keypress, KEY_EVENT);
 
-                callbackHandlerPtr_->HandleCallback(&eventPacket);
+                callbackHandlerPtr_->HandleCallback(misc::MakeNotNull(&eventPacket));
             }
         }
 
@@ -1128,8 +1128,10 @@ namespace gui
         {
             if (WillCallback())
             {
-                ListBoxEventPacket<Stage_t, Element_t> eventPacket(this, GuiEvent::DoubleClick);
-                callbackHandlerPtr_->HandleCallback(&eventPacket);
+                ListBoxEventPacket<Stage_t, Element_t> eventPacket(
+                    misc::MakeNotNull(this), GuiEvent::DoubleClick);
+
+                callbackHandlerPtr_->HandleCallback(misc::MakeNotNull(&eventPacket));
             }
         }
 

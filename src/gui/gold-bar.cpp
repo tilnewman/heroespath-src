@@ -120,7 +120,7 @@ namespace gui
 
     void GoldBar::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        states.texture = texturePtr_.Ptr();
+        states.texture = texturePtr_;
         target.draw(vertexArray_, states);
     }
 

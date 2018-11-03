@@ -57,7 +57,7 @@ namespace game
             Acquire();
         }
 
-        return instanceUPtr_.get();
+        return instanceUPtr_;
     }
 
     void GameController::Acquire()
@@ -139,7 +139,7 @@ namespace game
     }
 
     void GameController::SpawnPopup(
-        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO)
     {
         StageChangePostPopupSpawn(PopupReplaceCommand(POPUP_INFO, POPUP_HANDLER_PTR));
@@ -169,7 +169,7 @@ namespace game
 
     void GameController::StageChangeActualPopupReplace(
         const popup::PopupInfo & POPUP_INFO,
-        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR)
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         stageTracker_.SetCurrent(stage::Stage::Popup);
         activeStages_.ReplacePopupStage(POPUP_INFO, POPUP_HANDLER_PTR);
@@ -368,7 +368,7 @@ namespace game
     }
 
     const gui::DisplayChangeResult GameController::ChangeResolution(
-        const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const gui::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {

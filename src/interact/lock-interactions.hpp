@@ -50,7 +50,7 @@ namespace interact
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
             const gui::PopupCallback_t::IHandlerPtr_t,
-            const gui::PopupCallback_t::PacketPtr_t &,
+            const gui::PopupCallback_t::PacketPtr_t,
             stage::IStagePtr_t iStagePtr);
 
         void PopupAttempting(

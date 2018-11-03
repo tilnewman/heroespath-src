@@ -80,7 +80,7 @@ namespace stage
             displayStagePtrOpt_ = viewStagePtr;
         }
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
@@ -90,7 +90,7 @@ namespace stage
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
             const gui::Callback<gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::
-                PacketPtr_t & PACKET_PTR);
+                PacketPtr_t PACKET_PTR);
 
         void TakeAllItems();
         void Exit();

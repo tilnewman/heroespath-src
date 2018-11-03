@@ -86,7 +86,7 @@ namespace popup
     PopupStageSpellbook::~PopupStageSpellbook() = default;
 
     bool PopupStageSpellbook::HandleCallback(
-        const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t &
+        const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t
             PACKET_PTR)
     {
         if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)
@@ -139,7 +139,7 @@ namespace popup
         currentListboxIndex_ = listBoxUPtr_->SelectionIndex();
         SetupPageRightText(CurrentSelectedSpell());
 
-        SetFocus(listBoxUPtr_.get());
+        SetFocus(listBoxUPtr_);
     }
 
     void PopupStageSpellbook::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -390,8 +390,8 @@ namespace popup
 
         listBoxUPtr_ = std::make_unique<gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>>(
             "PopupStage'sSpellListBox",
-            this,
-            this,
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
             gui::ListBoxPacket(
                 LISTBOX_RECT, listBoxBackgroundInfo_, LISTBOX_LINE_COLOR_, LISTBOX_IMAGE_COLOR_));
 
@@ -404,7 +404,7 @@ namespace popup
                 CanCastSpell(SPELL_PTR)));
         }
 
-        EntityAdd(listBoxUPtr_.get());
+        EntityAdd(listBoxUPtr_);
     }
 
     void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtr_t SPELL_PTR)

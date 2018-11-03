@@ -294,17 +294,17 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool InventoryStage::HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool InventoryStage::HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         return HandleConditionOrTitleCallback<creature::ConditionPtr_t>(PACKET_PTR);
     }
 
-    bool InventoryStage::HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool InventoryStage::HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         return HandleConditionOrTitleCallback<creature::TitlePtr_t>(PACKET_PTR);
     }
 
-    bool InventoryStage::HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool InventoryStage::HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if ((PACKET_PTR->gui_event != gui::GuiEvent::DoubleClick)
             && (PACKET_PTR->keypress_event.code != sf::Keyboard::Return))
@@ -325,7 +325,7 @@ namespace stage
     }
 
     bool InventoryStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t & PACKET_PTR)
+        const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
     {
         if (isSliderAnimating_)
         {
@@ -427,7 +427,7 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool InventoryStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         isWaitingOnPopup_ = false;
 
@@ -631,7 +631,7 @@ namespace stage
 
     void InventoryStage::Setup()
     {
-        EntityAdd(ouroborosUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
 
         Setup_PaperBackground();
         Setup_InstructionText();
@@ -971,7 +971,7 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
             insTextRegionUPtr_->GetEntityPos().y);
 
-        EntityAdd(insTextRegionUPtr_.get());
+        EntityAdd(insTextRegionUPtr_);
     }
 
     void InventoryStage::Setup_CreatureImage() {}
@@ -1032,7 +1032,7 @@ namespace stage
             detailsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
 
-            EntityAdd(detailsTextRegionUPtr_.get());
+            EntityAdd(detailsTextRegionUPtr_);
         }
         else
         {
@@ -1084,7 +1084,7 @@ namespace stage
             statsTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
 
-            EntityAdd(statsTextRegionUPtr_.get());
+            EntityAdd(statsTextRegionUPtr_);
         }
         else
         {
@@ -1129,7 +1129,7 @@ namespace stage
             centerTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
 
-            EntityAdd(centerTextRegionUPtr_.get());
+            EntityAdd(centerTextRegionUPtr_);
         }
 
         const float POS_LEFT { ((WAS_ALREADY_INSTANTIATED == false) && creaturePtr_->IsBeast())
@@ -1170,7 +1170,10 @@ namespace stage
             case ViewType::Conditions:
             {
                 condLeftListBoxUPtr_ = std::make_unique<CondListBox_t>(
-                    "InventoryStage'sLeftCondition", this, this, listBoxPacketLeft);
+                    "InventoryStage'sLeftCondition",
+                    misc::MakeNotNull(this),
+                    misc::MakeNotNull(this),
+                    listBoxPacketLeft);
 
                 for (const auto & CONDITION_PTR : creaturePtr_->ConditionsPVec())
                 {
@@ -1180,13 +1183,16 @@ namespace stage
                             gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, CONDITION_PTR->Name())));
                 }
 
-                EntityAdd(condLeftListBoxUPtr_.get());
+                EntityAdd(condLeftListBoxUPtr_);
                 break;
             }
             case ViewType::Items:
             {
                 itemLeftListBoxUPtr_ = std::make_unique<ItemListBox_t>(
-                    "InventoryStage'sEquippedItem", this, this, listBoxPacketLeft);
+                    "InventoryStage'sEquippedItem",
+                    misc::MakeNotNull(this),
+                    misc::MakeNotNull(this),
+                    listBoxPacketLeft);
 
                 for (const auto & ITEM_PTR : creaturePtr_->Inventory().ItemsEquipped())
                 {
@@ -1196,13 +1202,16 @@ namespace stage
                             gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
                 }
 
-                EntityAdd(itemLeftListBoxUPtr_.get());
+                EntityAdd(itemLeftListBoxUPtr_);
                 break;
             }
             case ViewType::Spells:
             {
                 spellLeftListBoxUPtr_ = std::make_unique<SpellListBox_t>(
-                    "InventoryStage'sSpell", this, this, listBoxPacketLeft);
+                    "InventoryStage'sSpell",
+                    misc::MakeNotNull(this),
+                    misc::MakeNotNull(this),
+                    listBoxPacketLeft);
 
                 for (const auto & SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
@@ -1212,7 +1221,7 @@ namespace stage
                             gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, SPELL_PTR->Name())));
                 }
 
-                EntityAdd(spellLeftListBoxUPtr_.get());
+                EntityAdd(spellLeftListBoxUPtr_);
                 break;
             }
             case ViewType::Titles:
@@ -1220,7 +1229,10 @@ namespace stage
             default:
             {
                 titleLeftListBoxUPtr_ = std::make_unique<TitleListBox_t>(
-                    "InventoryStage'sTitle", this, this, listBoxPacketLeft);
+                    "InventoryStage'sTitle",
+                    misc::MakeNotNull(this),
+                    misc::MakeNotNull(this),
+                    listBoxPacketLeft);
 
                 for (const auto & TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
@@ -1230,7 +1242,7 @@ namespace stage
                             gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, TITLE_PTR->Name())));
                 }
 
-                EntityAdd(titleLeftListBoxUPtr_.get());
+                EntityAdd(titleLeftListBoxUPtr_);
                 break;
             }
         }
@@ -1244,7 +1256,7 @@ namespace stage
         if (IS_UNEQ_ALREADY_INSTANTIATED)
         {
             origPosV = itemRightListBoxUPtr_->GetEntityPos();
-            EntityRemove(itemRightListBoxUPtr_.get());
+            EntityRemove(itemRightListBoxUPtr_);
         }
 
         gui::BoxEntityInfo listBoxInfoRight;
@@ -1256,7 +1268,10 @@ namespace stage
             LISTBOX_REGION_RIGHT_, listBoxInfoRight_, LISTBOX_COLOR_LINE_, LISTBOX_COLOR_IMAGE_);
 
         itemRightListBoxUPtr_ = std::make_unique<ItemListBox_t>(
-            "InventoryStage'sUnEquippedItem", this, this, listBoxPacketRight);
+            "InventoryStage'sUnEquippedItem",
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
+            listBoxPacketRight);
 
         for (const auto & ITEM_PTR : creaturePtr_->Inventory().Items())
         {
@@ -1264,7 +1279,7 @@ namespace stage
                 ITEM_PTR, gui::TextInfo(LIST_ELEMENT_TEXT_INFO_DEFAULT_, ITEM_PTR->Name())));
         }
 
-        EntityAdd(itemRightListBoxUPtr_.get());
+        EntityAdd(itemRightListBoxUPtr_);
 
         if (IS_UNEQ_ALREADY_INSTANTIATED)
         {
@@ -1284,14 +1299,14 @@ namespace stage
             descBoxUPtr_ = std::make_unique<gui::BoxEntity>(
                 "InventoryStage'sDesc", LISTBOX_REGION_RIGHT_, listBoxInfoRight);
 
-            EntityAdd(descBoxUPtr_.get());
+            EntityAdd(descBoxUPtr_);
         }
 
         descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
 
         if (descTextRegionUPtr_)
         {
-            EntityRemove(descTextRegionUPtr_.get());
+            EntityRemove(descTextRegionUPtr_);
         }
 
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
@@ -1302,7 +1317,7 @@ namespace stage
             gui::BoxEntityInfo(),
             DESCBOX_MARGINS_);
 
-        EntityAdd(descTextRegionUPtr_.get());
+        EntityAdd(descTextRegionUPtr_);
 
         descTextRegionUPtr_->SetEntityPos(
             SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
@@ -1419,7 +1434,7 @@ namespace stage
             gui::ImageTextEntity::Callback_t::IHandlerPtr_t(this),
             gui::ImageTextEntity::MouseStateSync::Image);
 
-        EntityAdd(sortButtonUPtr.get());
+        EntityAdd(sortButtonUPtr);
     }
 
     void InventoryStage::Setup_FirstListBoxTitle()
@@ -1465,7 +1480,7 @@ namespace stage
             eqTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sEquippedListBoxTitle", LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
 
-            EntityAdd(eqTitleTextRegionUPtr_.get());
+            EntityAdd(eqTitleTextRegionUPtr_);
         }
         else
         {
@@ -1495,7 +1510,7 @@ namespace stage
             unEqTitleTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "InventoryStage'sUnequippedListBoxTitle", DESC_TEXT_INFO, DESC_TEXT_RECT);
 
-            EntityAdd(unEqTitleTextRegionUPtr_.get());
+            EntityAdd(unEqTitleTextRegionUPtr_);
         }
         else
         {
@@ -1538,7 +1553,7 @@ namespace stage
             sfutil::CenterOfVert(bottomSymbol_.Region())
                 - (buttonUPtr->GetEntityRegion().height * 0.5f));
 
-        EntityAdd(buttonUPtr.get());
+        EntityAdd(buttonUPtr);
     }
 
     void InventoryStage::Setup_ButtonMouseoverText()
@@ -2486,7 +2501,7 @@ namespace stage
                     popup::PopupButtons::Okay,
                     popup::PopupImage::Regular) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
                 isWaitingOnPopup_ = true;
             }
         }
@@ -2552,7 +2567,7 @@ namespace stage
             true,
             gui::FontManager::Instance()->Size_Largeish()) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
         isWaitingOnPopup_ = true;
         return true;
@@ -2808,7 +2823,7 @@ namespace stage
                 gui::Justified::Center,
                 gui::sound_effect::PromptQuestion) };
 
-            SpawnPopup(this, POPUP_INFO);
+            SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             isWaitingOnPopup_ = true;
             return true;
         }
@@ -2947,7 +2962,7 @@ namespace stage
     {
         if (descTextRegionUPtr_)
         {
-            EntityRemove(descTextRegionUPtr_.get());
+            EntityRemove(descTextRegionUPtr_);
         }
 
         descTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
@@ -2955,12 +2970,12 @@ namespace stage
             gui::TextInfo(
                 LIST_ELEMENT_TEXT_INFO_DEFAULT_, TEXT, DESCBOX_TEXT_COLOR_, DESCBOX_TEXT_SIZE_),
             LISTBOX_REGION_RIGHT_,
-            this,
+            misc::MakeNotNull(this),
             gui::TextRegion::DEFAULT_NO_RESIZE_,
             gui::BoxEntityInfo(),
             DESCBOX_MARGINS_);
 
-        EntityAdd(descTextRegionUPtr_.get());
+        EntityAdd(descTextRegionUPtr_);
     }
 
     void InventoryStage::PopupCharacterSelectWindow(
@@ -2995,7 +3010,7 @@ namespace stage
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_, PROMPT_TEXT, invalidTextVec) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
         isWaitingOnPopup_ = true;
     }
@@ -3014,7 +3029,7 @@ namespace stage
             gui::sound_effect::PromptWarn,
             gui::FontManager::Instance()->Size_Largeish()) };
 
-        SpawnPopup(this, POPUPINFO_NOITEM);
+        SpawnPopup(misc::MakeNotNull(this), POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
     }
@@ -3031,7 +3046,7 @@ namespace stage
                 gui::FontManager::Instance()->Size_Largeish())
         };
 
-        SpawnPopup(this, POPUP_INFO_NUMBER_SELECT);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO_NUMBER_SELECT);
 
         isWaitingOnPopup_ = true;
     }
@@ -3048,7 +3063,7 @@ namespace stage
             ((WILL_PLAY_SOUNDEFFECT) ? gui::sound_effect::PromptGeneric : gui::sound_effect::None),
             gui::FontManager::Instance()->Size_Largeish()) };
 
-        SpawnPopup(this, POPUP_INFO_DONE);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO_DONE);
         isWaitingOnPopup_ = true;
         EndOfGiveShareGatherTasks();
     }
@@ -3068,7 +3083,7 @@ namespace stage
             false,
             gui::FontManager::Instance()->Size_Normal()) };
 
-        SpawnPopup(this, POPUP_INFO);
+        SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
         isWaitingOnPopup_ = true;
     }
@@ -3915,7 +3930,7 @@ namespace stage
             }
         }
 
-        SpawnPopup(this, POPUPINFO_NOITEM);
+        SpawnPopup(misc::MakeNotNull(this), POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
         return false;
     }
@@ -3924,19 +3939,19 @@ namespace stage
     {
         if (itemLeftListBoxUPtr_)
         {
-            SetFocus(itemLeftListBoxUPtr_.get());
+            SetFocus(itemLeftListBoxUPtr_);
         }
         else if (condLeftListBoxUPtr_)
         {
-            SetFocus(condLeftListBoxUPtr_.get());
+            SetFocus(condLeftListBoxUPtr_);
         }
         else if (spellLeftListBoxUPtr_)
         {
-            SetFocus(spellLeftListBoxUPtr_.get());
+            SetFocus(spellLeftListBoxUPtr_);
         }
         else if (titleLeftListBoxUPtr_)
         {
-            SetFocus(titleLeftListBoxUPtr_.get());
+            SetFocus(titleLeftListBoxUPtr_);
         }
     }
 
@@ -3994,7 +4009,7 @@ namespace stage
                 const auto POPUP_INFO { popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_, creaturePtr_, creaturePtr_->LastSpellCastNum()) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             }
             else
             {
@@ -4009,7 +4024,7 @@ namespace stage
                 const auto POPUP_INFO { popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_, creaturePtr_, creaturePtr_->LastSongPlayedNum()) };
 
-                SpawnPopup(this, POPUP_INFO);
+                SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
             }
             else
             {
@@ -4121,7 +4136,7 @@ namespace stage
             }
         }
 
-        SpawnPopup(this, POPUPINFO_NOITEM);
+        SpawnPopup(misc::MakeNotNull(this), POPUPINFO_NOITEM);
         isWaitingOnPopup_ = true;
 
         // return false because one popup is replacing another
@@ -4134,7 +4149,7 @@ namespace stage
         const std::string & TITLE_MSG)
     {
         SpawnPopup(
-            this,
+            misc::MakeNotNull(this),
             popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
                 "Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG, TECH_ERROR_MSG, TITLE_MSG));
     }
@@ -4192,25 +4207,25 @@ namespace stage
     {
         if (itemLeftListBoxUPtr_)
         {
-            EntityRemove(itemLeftListBoxUPtr_.get());
+            EntityRemove(itemLeftListBoxUPtr_);
             itemLeftListBoxUPtr_.reset();
         }
 
         if (condLeftListBoxUPtr_)
         {
-            EntityRemove(condLeftListBoxUPtr_.get());
+            EntityRemove(condLeftListBoxUPtr_);
             condLeftListBoxUPtr_.reset();
         }
 
         if (spellLeftListBoxUPtr_)
         {
-            EntityRemove(spellLeftListBoxUPtr_.get());
+            EntityRemove(spellLeftListBoxUPtr_);
             spellLeftListBoxUPtr_.reset();
         }
 
         if (titleLeftListBoxUPtr_)
         {
-            EntityRemove(titleLeftListBoxUPtr_.get());
+            EntityRemove(titleLeftListBoxUPtr_);
             titleLeftListBoxUPtr_.reset();
         }
     }

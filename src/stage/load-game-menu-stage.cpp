@@ -78,13 +78,13 @@ namespace stage
 
         for (const auto & GAME_STATE_PTR : gamestatePVec_)
         {
-            delete GAME_STATE_PTR.Ptr();
+            delete GAME_STATE_PTR;
         }
 
         gamestatePVec_.clear();
     }
 
-    bool LoadGameStage::HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t &)
+    bool LoadGameStage::HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t)
     {
         // TODO Handle selection of a game to load and then load it,
         // including a call to all creatures StoreItemsInWarehouseAfterLoad(),
@@ -97,8 +97,8 @@ namespace stage
 
     void LoadGameStage::Setup()
     {
-        EntityAdd(ouroborosUPtr_.get());
-        EntityAdd(backButtonUPtr_.get());
+        EntityAdd(ouroborosUPtr_);
+        EntityAdd(backButtonUPtr_);
 
         // hand all GameState objects to the ListBox
         // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
@@ -129,14 +129,14 @@ namespace stage
 
         gsListBoxUPtr_ = std::make_unique<GameListBox_t>(
             "LoadGameStage'sGame",
-            this,
-            this,
+            misc::MakeNotNull(this),
+            misc::MakeNotNull(this),
             gui::ListBoxPacket(gsListBoxRect_, gsListBoxInfo, sfutil::color::Orange));
 
-        EntityAdd(gsListBoxUPtr_.get());
+        EntityAdd(gsListBoxUPtr_);
         SetupGameInfoDisplay();
 
-        SetFocus(gsListBoxUPtr_.get());
+        SetFocus(gsListBoxUPtr_);
     }
 
     void LoadGameStage::SetupGameInfoDisplay()
@@ -144,7 +144,7 @@ namespace stage
         // free any existing TextRegion objects
         for (const auto & NEXT_TEXTREGION_UPTR : charTextRegionUVec_)
         {
-            EntityRemove(NEXT_TEXTREGION_UPTR.get());
+            EntityRemove(NEXT_TEXTREGION_UPTR);
         }
 
         charTextRegionUVec_.clear();
@@ -167,7 +167,7 @@ namespace stage
         if (!locTextRegionUPtr_)
         {
             locTextRegionUPtr_ = std::make_unique<gui::TextRegion>("LoadGameLocation");
-            EntityAdd(locTextRegionUPtr_.get());
+            EntityAdd(locTextRegionUPtr_);
         }
 
         descTextInfo.text = std::string("Location:        ")
@@ -183,7 +183,7 @@ namespace stage
         {
             charLabelTextRegionUPtr_ = std::make_unique<gui::TextRegion>("CharacterListLabel");
 
-            EntityAdd(charLabelTextRegionUPtr_.get());
+            EntityAdd(charLabelTextRegionUPtr_);
         }
 
         descTextInfo.text = "Characters:";
@@ -215,7 +215,7 @@ namespace stage
             auto textRegionUPtr { std::make_unique<gui::TextRegion>(
                 TEXT_REGION_ENTITY_NAME, descTextInfo, RECT) };
 
-            EntityAdd(textRegionUPtr.get());
+            EntityAdd(textRegionUPtr);
             posY += textRegionUPtr->GetEntityRegion().height - 25.0f;
             charTextRegionUVec_.emplace_back(std::move(textRegionUPtr));
         }

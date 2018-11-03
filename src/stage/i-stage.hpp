@@ -112,7 +112,7 @@ namespace stage
         virtual void IsFading(const bool IS_FADING) = 0;
 
         virtual void SpawnPopup(
-            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO) const = 0;
 
         virtual void RemovePopup(
@@ -122,7 +122,7 @@ namespace stage
         virtual void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const = 0;
 
         virtual const gui::DisplayChangeResult ChangeResolution(
-            const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
+            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL) const = 0;
     };

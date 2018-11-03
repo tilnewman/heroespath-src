@@ -40,9 +40,9 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t) override;
 
         void Setup() override;
 

@@ -10,7 +10,6 @@
 // npc-factory.hpp
 //
 #include "game/npc-placeholder.hpp"
-#include "misc/not-null-warehouse.hpp"
 
 #include <vector>
 

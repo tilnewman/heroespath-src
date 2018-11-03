@@ -158,20 +158,20 @@ namespace stage
 
         virtual ~InventoryStage();
 
-        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const SpellListBox_t::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const SpellListBox_t::Callback_t::PacketPtr_t) override
         {
             return false;
         }
 
-        bool HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
@@ -329,7 +329,7 @@ namespace stage
 
         template <typename Element_t>
         bool HandleConditionOrTitleCallback(
-            const typename gui::ListBox<InventoryStage, Element_t>::Callback_t::PacketPtr_t &
+            const typename gui::ListBox<InventoryStage, Element_t>::Callback_t::PacketPtr_t
                 PACKET_PTR)
         {
             if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)

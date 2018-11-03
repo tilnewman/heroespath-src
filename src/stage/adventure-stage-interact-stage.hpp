@@ -58,8 +58,8 @@ namespace stage
 
         virtual ~InteractStage();
 
-        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t &) final;
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t) final;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
         void PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr);
 

@@ -56,7 +56,7 @@ namespace popup
 
     PopupStageImageSelect::~PopupStageImageSelect() = default;
 
-    bool PopupStageImageSelect::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t &)
+    bool PopupStageImageSelect::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
     {
         if (isChangingImageAllowed_)
         {
@@ -108,10 +108,10 @@ namespace popup
             imageWrnTextRegionUPtr_ = std::make_unique<gui::TextRegion>(
                 "PopupStage'sImageSelectionion", TEXT_INFO, region);
 
-            EntityAdd(imageWrnTextRegionUPtr_.get());
+            EntityAdd(imageWrnTextRegionUPtr_);
             if (sliderbarUPtr_)
             {
-                EntityRemove(sliderbarUPtr_.get());
+                EntityRemove(sliderbarUPtr_);
             }
         }
     }
@@ -489,7 +489,7 @@ namespace popup
             gui::SliderStyle(gui::Orientation::Horiz),
             gui::SliderBar::Callback_t::IHandlerPtr_t(this));
 
-        EntityAdd(sliderbarUPtr_.get());
+        EntityAdd(sliderbarUPtr_);
     }
 
     void PopupStageImageSelect::EnqueueImagesFromCurrentToTarget(

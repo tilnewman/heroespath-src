@@ -45,7 +45,7 @@ namespace stage
               sfutil::ScreenRatioToPixelsVert(0.3f))
         , MAP_INNER_REGION_(MAP_OUTER_REGION_)
         , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
-        , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
+        , characterListUPtr_(std::make_unique<AdventureCharacterList>(misc::MakeNotNull(this)))
         , bgCachedTexture_(
               "media-images-backgrounds-paper-2", gui::ImageOpt::Default | gui::ImageOpt::FlipVert)
         , bgSprite_(bgCachedTexture_.Get())

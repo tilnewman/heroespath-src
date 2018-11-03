@@ -50,7 +50,7 @@ namespace interact
             Lock(); // this refers to locking the interaction NOT the door
 
             INTERACTION_STAGE_PTR->LockPick().PopupCharacterSelection(
-                INTERACTION_STAGE_PTR, INTERACTION_STAGE_PTR.Ptr());
+                INTERACTION_STAGE_PTR, INTERACTION_STAGE_PTR);
 
             return true;
         }

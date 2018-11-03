@@ -51,8 +51,8 @@ namespace game
         // who knows what a Stage will do when handling a popup response callback, so use a copy
         // of the popupResponse_ to avoid passing a pointer/reference to GameController's
         // ActiveStages object (context_)
-        const auto popupResponse__COPY { popupResponse_ };
-        popupCallbackHandlerPtrOpt_.value()->HandleCallback(&popupResponse__COPY);
+        const auto popupResponseCopy { popupResponse_ };
+        popupCallbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&popupResponseCopy));
 
         RemovePopupResponse();
     }

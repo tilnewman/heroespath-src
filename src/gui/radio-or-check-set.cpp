@@ -246,7 +246,7 @@ namespace gui
     {
         if (callbackHandlerPtrOpt_)
         {
-            Callback_t::Packet_t callbackPacket(this, INDEX);
+            Callback_t::Packet_t callbackPacket(misc::MakeNotNull(this), INDEX);
 
             callbackHandlerPtrOpt_.value()->HandleCallback(
                 Callback_t::PacketPtr_t(&callbackPacket));

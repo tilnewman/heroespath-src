@@ -48,12 +48,12 @@ namespace stage
         SettingsStage();
         virtual ~SettingsStage();
 
-        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t &)
+        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t )
         // override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t &) override;
+        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t &) override
+        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
         {
             return false;
         }

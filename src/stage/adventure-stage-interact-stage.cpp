@@ -54,24 +54,24 @@ namespace stage
 
     InteractStage::~InteractStage() = default;
 
-    bool InteractStage::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t & PACKET_PTR)
+    bool InteractStage::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t PACKET_PTR)
     {
         const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
-                this, gui::TextButtonPtr_t(const_cast<gui::TextButton *>(PACKET_PTR.Ptr())));
+                stage::InteractStagePtr_t(this), PACKET_PTR);
         }
 
         return false;
     }
 
-    bool InteractStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t & PACKET_PTR)
+    bool InteractStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
     {
         if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
             if (lockPicking_.HandleCharacterSelectionPopupResponse(
-                    this, PACKET_PTR, stage::IStagePtr_t(this)))
+                    stage::InteractStagePtr_t(this), PACKET_PTR, stage::IStagePtr_t(this)))
             {
                 return false;
             }
@@ -87,7 +87,7 @@ namespace stage
             if (lockPicking_.Attempt())
             {
                 if (lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-                        this, stage::IStagePtr_t(this)))
+                        stage::InteractStagePtr_t(this), stage::IStagePtr_t(this)))
                 {
                     // return the opposite because we need to return false if actually opening a
                     // popup window
@@ -97,7 +97,8 @@ namespace stage
                 {
                     if (interactionManager_.Current())
                     {
-                        interactionManager_.Current().value()->OnSuccess(this);
+                        interactionManager_.Current().value()->OnSuccess(
+                            stage::InteractStagePtr_t(this));
                         return true;
                     }
                 }
@@ -111,7 +112,7 @@ namespace stage
         {
             if (interactionManager_.Current())
             {
-                interactionManager_.Current().value()->OnSuccess(this);
+                interactionManager_.Current().value()->OnSuccess(stage::InteractStagePtr_t(this));
                 return true;
             }
         }
@@ -163,7 +164,8 @@ namespace stage
             const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
             if (INTERACTION_PTR_OPT)
             {
-                return INTERACTION_PTR_OPT.value()->OnKeyRelease(this, KEY_EVENT.code);
+                return INTERACTION_PTR_OPT.value()->OnKeyRelease(
+                    stage::InteractStagePtr_t(this), KEY_EVENT.code);
             }
         }
 
@@ -224,7 +226,7 @@ namespace stage
 
             for (auto & buttonUPtr : buttons_)
             {
-                EntityRemove(buttonUPtr.get());
+                EntityRemove(buttonUPtr);
             }
 
             buttons_.clear();
@@ -257,7 +259,7 @@ namespace stage
 
                 vertPos += buttonUPtr->GetEntityRegion().height;
 
-                EntityAdd(buttonUPtr.get());
+                EntityAdd(buttonUPtr);
             }
 
             if (INTERACTION_PTR->Type() == interact::Interact::Conversation)
@@ -270,7 +272,7 @@ namespace stage
         {
             for (auto & buttonUPtr : buttons_)
             {
-                EntityRemove(buttonUPtr.get());
+                EntityRemove(buttonUPtr);
             }
 
             buttons_.clear();
