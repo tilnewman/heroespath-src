@@ -16,6 +16,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include <string>
+#include <vector>
 
 namespace heroespath
 {

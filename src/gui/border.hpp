@@ -31,7 +31,7 @@ namespace gui
     {
     public:
         // pad lines will not be drawn unless a non-transparent PAD_LINE_COLOR_ADJ is provided
-        Border(
+        explicit Border(
             const sf::FloatRect & REGION = sf::FloatRect(),
             const float LINE_THICKNESS = 1.0f,
             const sf::Color & LINE_COLOR = sf::Color::White,
@@ -39,7 +39,8 @@ namespace gui
             const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
         // use to create a border of gold bars
-        Border(const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
+        explicit Border(
+            const sf::FloatRect & REGION, const bool WILL_GROW_BORDER_TO_CONTAIN_REGION = false);
 
         Border(const Border &) = default;
         Border(Border &&) = default;

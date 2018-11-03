@@ -28,7 +28,7 @@ namespace gui
     class MouseTextInfo
     {
     public:
-        explicit MouseTextInfo();
+        MouseTextInfo();
 
         explicit MouseTextInfo(const TextInfo & TEXT_INFO);
 

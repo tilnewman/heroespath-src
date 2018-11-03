@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <exception>
 #include <sstream>
+#include <utility>
 
 namespace heroespath
 {

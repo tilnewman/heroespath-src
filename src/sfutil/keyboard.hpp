@@ -13,6 +13,8 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include <string>
+
 namespace sf
 {
 

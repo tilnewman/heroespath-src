@@ -13,6 +13,8 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
+#include <memory>
+
 namespace heroespath
 {
 namespace gui

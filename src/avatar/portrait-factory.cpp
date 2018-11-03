@@ -9,9 +9,10 @@
 //
 // portrait-factory.hpp
 //
+#include "portrait-factory.hpp"
+
 #include "avatar/lpc-view.hpp"
 #include "gui/loaders.hpp"
-#include "portrait-factory.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>

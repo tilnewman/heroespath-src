@@ -31,11 +31,9 @@ namespace gui
 {
 
     CreatureImageLoader::CreatureImageLoader()
-        : imageDirectoryPath_("")
-    {
-        imageDirectoryPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir"));
-    }
+        : imageDirectoryPath_(misc::filesystem::CleanPath(
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir")))
+    {}
 
     bool CreatureImageLoader::Test(stage::IStagePtr_t iStagePtr) const
     {

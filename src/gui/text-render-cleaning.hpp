@@ -24,7 +24,7 @@ namespace gui
         // cleans TEXT_INFO.text by removing non-displayable chars etc.
         struct TextCleaner
         {
-            TextCleaner(const TextInfo &);
+            explicit TextCleaner(const TextInfo &);
 
             TextCleaner(const TextCleaner &) = default;
             TextCleaner(TextCleaner &&) = default;

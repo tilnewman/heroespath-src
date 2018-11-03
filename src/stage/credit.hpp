@@ -88,7 +88,7 @@ namespace stage
             const gui::Animations::Enum ANIM_ENUM = gui::Animations::Count,
             const float ANIM_FRAME_TIME_SEC = 0.0f);
 
-        void draw(sf::RenderTarget &, sf::RenderStates) const override final;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
         void SetVerticalPosition(const float POS_TOP);
         void Move(const float ADJ_HORIZ, const float ADJ_VERT);

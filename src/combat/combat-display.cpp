@@ -688,16 +688,15 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_FIGHTING_PTR,
         const creature::CreaturePtr_t CREATURE_TARGETED_PTR) const
     {
-        for (const auto & NEXT_CREATURE_PTR :
-             FindCreaturesThatCanBeAttackedOfType(CREATURE_FIGHTING_PTR, false))
-        {
-            if (NEXT_CREATURE_PTR == CREATURE_TARGETED_PTR)
-            {
-                return true;
-            }
-        }
+        const auto ATTACKABLE_CREATURES_OF_TYPE { FindCreaturesThatCanBeAttackedOfType(
+            CREATURE_FIGHTING_PTR, false) };
 
-        return false;
+        return std::any_of(
+            std::begin(ATTACKABLE_CREATURES_OF_TYPE),
+            std::end(ATTACKABLE_CREATURES_OF_TYPE),
+            [CREATURE_TARGETED_PTR](const auto & CREATURE_PTR) {
+                return (CREATURE_PTR == CREATURE_TARGETED_PTR);
+            });
     }
 
     CombatNodePtr_t
@@ -879,15 +878,10 @@ namespace combat
 
         const auto COMBATNODES_PVEC { GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
 
-        for (const auto & COMBAT_NODE_PTR : COMBATNODES_PVEC)
-        {
-            if (COMBAT_NODE_PTR->WillDraw() == false)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return std::all_of(
+            std::begin(COMBATNODES_PVEC),
+            std::end(COMBATNODES_PVEC),
+            [](const auto & COMBAT_NODE_PTR) { return COMBAT_NODE_PTR->WillDraw(); });
     }
 
     bool CombatDisplay::IsZoomOutRequired(const creature::CreaturePVec_t & CREATURES_PVEC) const
@@ -1149,9 +1143,7 @@ namespace combat
         {
             if (COMBAT_NODE_PTR->Creature() == CREATURE_PTR)
             {
-                const auto REGION { COMBAT_NODE_PTR->GetEntityRegion() };
-                return sf::Vector2f(
-                    REGION.left + REGION.width * 0.5f, REGION.top + REGION.height * 0.5f);
+                return sfutil::CenterOf(COMBAT_NODE_PTR->GetEntityRegion());
             }
         }
 

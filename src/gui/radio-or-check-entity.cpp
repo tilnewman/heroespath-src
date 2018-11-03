@@ -7,11 +7,12 @@
 //
 // radio-or-check-entity.cpp
 //
+#include "radio-or-check-entity.hpp"
+
 #include "gui/cached-texture.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/image-entity.hpp"
 #include "gui/text-entity.hpp"
-#include "radio-or-check-entity.hpp"
 #include "sfutil/center-of.hpp"
 #include "sfutil/size-and-scale.hpp"
 

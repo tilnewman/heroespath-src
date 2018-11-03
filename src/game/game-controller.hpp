@@ -22,6 +22,7 @@
 #include "stage/stage-enum.hpp"
 #include "stage/stage-setup-packet.hpp"
 
+#include <memory>
 #include <string>
 
 namespace heroespath

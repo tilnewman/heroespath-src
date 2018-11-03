@@ -9,8 +9,9 @@
 //
 // npc.hpp
 //
-#include "interact/npc-conversation-factory.hpp"
 #include "npc.hpp"
+
+#include "interact/npc-conversation-factory.hpp"
 
 #include <sstream>
 

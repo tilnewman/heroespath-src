@@ -9,12 +9,13 @@
 //
 // locked-door.cpp
 //
+#include "locked-door.hpp"
+
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "game/maps.hpp"
 #include "game/world.hpp"
 #include "interact/lock-interactions.hpp"
-#include "locked-door.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"

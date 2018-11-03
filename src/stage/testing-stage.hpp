@@ -95,7 +95,7 @@ namespace stage
 
     struct ImageInspectPacket : public sf::Drawable
     {
-        ImageInspectPacket(const gui::CachedTextureOpt_t & = boost::none);
+        explicit ImageInspectPacket(const gui::CachedTextureOpt_t & = boost::none);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 

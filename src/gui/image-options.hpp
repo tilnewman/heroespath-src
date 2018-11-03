@@ -39,6 +39,7 @@ namespace gui
             , mask_alpha(0)
         {}
 
+        // intentionally can be used for implicit conversions
         ImageOptions(
             const ImageOpt::Enum OPTION_ENUM,
             const ColorOpt_t & MASK_COLOR_OPT = boost::none,
@@ -48,6 +49,7 @@ namespace gui
             , mask_alpha(MASK_ALPHA)
         {}
 
+        // intentionally can be used for implicit conversions
         ImageOptions(
             const misc::EnumUnderlying_t OPTION_ENUM_VALUE,
             const ColorOpt_t & MASK_COLOR_OPT = boost::none,

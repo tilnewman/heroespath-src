@@ -21,6 +21,8 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
+#include <algorithm>
+
 namespace heroespath
 {
 namespace gui

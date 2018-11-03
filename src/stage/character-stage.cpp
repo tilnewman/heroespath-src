@@ -1046,7 +1046,6 @@ namespace stage
         else
         {
             LeaveStageConfirmPopup(boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()));
-
             return true;
         }
     }
@@ -1068,7 +1067,7 @@ namespace stage
         const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
         // if it seems the user has been working on a character, prompt before losing the data
-        if ((false == AreAnyStatsIgnored()) || (false == NAME.empty()))
+        if (false == NAME.empty())
         {
             std::ostringstream ss;
             ss << "\n\nLeaving will cause ";

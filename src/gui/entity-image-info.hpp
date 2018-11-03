@@ -29,7 +29,7 @@ namespace gui
     // image.
     struct EntityImageInfo : public sf::Drawable
     {
-        EntityImageInfo(
+        explicit EntityImageInfo(
             const CachedTextureOpt_t & TEXTURE_OPT = boost::none,
             const FloatRectOpt_t & REGION_OPT = boost::none,
             const IntRectOpt_t & TEXTURE_REGION_OPT = boost::none,

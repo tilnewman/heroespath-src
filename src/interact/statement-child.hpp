@@ -12,8 +12,10 @@
 #include "creature/player-party.hpp"
 #include "interact/statement.hpp"
 #include "map/level-enum.hpp"
+
 #include <algorithm>
 #include <string>
+#include <vector>
 
 namespace heroespath
 {

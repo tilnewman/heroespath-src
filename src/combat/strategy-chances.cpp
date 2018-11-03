@@ -9,9 +9,10 @@
 //
 // strategy-chances.cpp
 //
+#include "strategy-chances.hpp"
+
 #include "misc/real.hpp"
 #include "misc/vector-map.hpp"
-#include "strategy-chances.hpp"
 
 #include <tuple>
 #include <utility>

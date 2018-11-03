@@ -9,9 +9,12 @@
 //
 // interaction-manager.cpp
 //
-#include "interact/i-interaction.hpp"
 #include "interaction-manager.hpp"
+
+#include "interact/i-interaction.hpp"
 #include "misc/log-macros.hpp"
+
+#include <utility>
 
 namespace heroespath
 {

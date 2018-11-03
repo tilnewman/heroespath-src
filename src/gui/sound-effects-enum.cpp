@@ -9,9 +9,10 @@
 //
 // sound-effects-enum.cpp
 //
+#include "sound-effects-enum.hpp"
+
 #include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
-#include "sound-effects-enum.hpp"
 
 #include <exception>
 #include <sstream>

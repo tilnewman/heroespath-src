@@ -185,7 +185,7 @@ namespace combat
         static float ShakeAnimDistance(const bool WILL_DOUBLE);
 
         void ShakeAnimStart(
-            const CombatNodePVec_t COMBAT_NODES_PVEC,
+            const CombatNodePVec_t & COMBAT_NODES_PVEC,
             const float SLIDER_SPEED,
             const bool WILL_DOUBLE_SHAKE_DISTANCE);
 

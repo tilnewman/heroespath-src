@@ -9,9 +9,10 @@
 //
 // nonplayer-inventory-types.cpp
 //
+#include "nonplayer-inventory-types.hpp"
+
 #include "creature/creature.hpp"
 #include "misc/config-file.hpp"
-#include "nonplayer-inventory-types.hpp"
 
 namespace heroespath
 {
@@ -293,22 +294,38 @@ namespace creature
         {
             switch (WEALTH_TYPE)
             {
-                case Destitute: { return "Destitute";
+                case Destitute:
+                {
+                    return "Destitute";
                 }
-                case Poor: { return "Poor";
+                case Poor:
+                {
+                    return "Poor";
                 }
-                case LowerMiddle: { return "LowerMiddle";
+                case LowerMiddle:
+                {
+                    return "LowerMiddle";
                 }
-                case UpperMiddle: { return "UpperMiddle";
+                case UpperMiddle:
+                {
+                    return "UpperMiddle";
                 }
-                case Rich: { return "Rich";
+                case Rich:
+                {
+                    return "Rich";
                 }
-                case Lavish: { return "Lavish";
+                case Lavish:
+                {
+                    return "Lavish";
                 }
-                case Royal: { return "Royal";
+                case Royal:
+                {
+                    return "Royal";
                 }
                 case Count:
-                default: { ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
+                default:
+                {
+                    ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
                 }
             }
         }
@@ -682,16 +699,26 @@ namespace creature
         {
             switch (COMPLEXITY_TYPE)
             {
-                case Animal: { return "Animal";
+                case Animal:
+                {
+                    return "Animal";
                 }
-                case Simple: { return "Simple";
+                case Simple:
+                {
+                    return "Simple";
                 }
-                case Moderate: { return "Moderate";
+                case Moderate:
+                {
+                    return "Moderate";
                 }
-                case Complex: { return "Complex";
+                case Complex:
+                {
+                    return "Complex";
                 }
                 case Count:
-                default: { ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
+                default:
+                {
+                    ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
                 }
             }
         }

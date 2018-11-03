@@ -90,6 +90,8 @@ namespace gui
             cachedTextureOpt_ = LE.cachedTextureOpt_;
             sprite_ = LE.sprite_;
             isValid_ = LE.isValid_;
+
+            return *this;
         }
 
         ListElement(ListElement<Element_t> &&) = default;

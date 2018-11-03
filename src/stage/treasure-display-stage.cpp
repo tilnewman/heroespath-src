@@ -33,6 +33,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <vector>
+
 namespace heroespath
 {
 namespace stage

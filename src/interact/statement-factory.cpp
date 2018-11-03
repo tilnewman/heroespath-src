@@ -9,6 +9,8 @@
 //
 // statement-factory.hpp
 //
+#include "statement-factory.hpp"
+
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
 #include "game/game-state.hpp"
@@ -22,7 +24,6 @@
 #include "interact/statement-town.hpp"
 #include "map/level-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "statement-factory.hpp"
 
 namespace heroespath
 {

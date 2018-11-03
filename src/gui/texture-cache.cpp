@@ -9,6 +9,8 @@
 //
 // texture-cache.cpp
 //
+#include "texture-cache.hpp"
+
 #include "game/game-controller.hpp"
 #include "gui/loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -16,7 +18,6 @@
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
-#include "texture-cache.hpp"
 
 #include <boost/lexical_cast.hpp>
 

@@ -11,6 +11,8 @@
 //
 #include "misc/enum-util.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui

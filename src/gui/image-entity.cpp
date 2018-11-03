@@ -29,7 +29,7 @@ namespace gui
         , sprite_()
         , willDraw_(false)
     {
-        Sync();
+        ImageEntity::Sync();
     }
 
     ImageEntity::ImageEntity(
@@ -74,7 +74,7 @@ namespace gui
         , sprite_()
         , willDraw_(false)
     {
-        Sync();
+        ImageEntity::Sync();
     }
 
     ImageEntity::~ImageEntity() = default;

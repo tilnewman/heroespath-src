@@ -38,11 +38,9 @@ namespace gui
     const std::string ItemImageLoader::SEPARATOR_ { "-" };
 
     ItemImageLoader::ItemImageLoader()
-        : imageDirectoryPath_("")
-    {
-        imageDirectoryPath_ = misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir"));
-    }
+        : imageDirectoryPath_(misc::filesystem::CleanPath(
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-items-dir")))
+    {}
 
     bool ItemImageLoader::Test(stage::IStagePtr_t iStagePtr) const
     {

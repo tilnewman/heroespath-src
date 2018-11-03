@@ -67,12 +67,12 @@ namespace stage
         StageBase & operator=(const StageBase &) = delete;
         StageBase & operator=(StageBase &&) = delete;
 
-        const std::string GetStageName() const override final { return STAGE_NAME_; }
+        const std::string GetStageName() const override { return STAGE_NAME_; }
 
-        game::Phase::Enum GetPhase() const override final;
+        game::Phase::Enum GetPhase() const override;
 
-        const sf::FloatRect StageRegion() const override final { return stageRegion_; }
-        void StageRegion(const sf::FloatRect & RECT) override final { stageRegion_ = RECT; }
+        const sf::FloatRect StageRegion() const override { return stageRegion_; }
+        void StageRegion(const sf::FloatRect & RECT) override { stageRegion_ = RECT; }
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS) override;
@@ -86,13 +86,13 @@ namespace stage
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
 
-        const gui::IEntityPtrOpt_t GetEntityWithFocus() const override final
+        const gui::IEntityPtrOpt_t GetEntityWithFocus() const override
         {
             return entityWithFocusPtrOpt_;
         }
 
-        void RemoveFocus() override final;
-        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override final;
+        void RemoveFocus() override;
+        void SetFocus(const gui::IEntityPtr_t ENTITY_PTR) override;
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -100,11 +100,11 @@ namespace stage
 
         void EntityAdd(
             const gui::IEntityPtr_t,
-            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override final;
+            const bool WILL_INSERT_AT_FRONT_INSTEAD_OF_BACK = false) override;
 
-        void EntityRemove(const gui::IEntityPtr_t) override final;
+        void EntityRemove(const gui::IEntityPtr_t) override;
 
-        void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override final;
+        void SetMouseHover(const sf::Vector2f &, const bool IS_MOUSE_HOVERING_NOW) override;
 
         void TestingStrAppend(const std::string &) override;
         void TestingStrIncrement(const std::string &) override;
@@ -112,30 +112,30 @@ namespace stage
             const std::string &, const bool WILL_CHECK_FOR_OUTLINE = false) override;
 
         void PerformNextTest() override {}
-        void ClearAllEntities() override final;
+        void ClearAllEntities() override;
 
-        bool IsMouseHeldDown() const override final { return isMouseHeldDown_; }
-        bool IsMouseHeldDownAndMoving() const override final { return isMouseHeldDownAndMoving_; }
-        const sf::Vector2f MouseDownPosV() const override final { return mouseDownPosV_; }
+        bool IsMouseHeldDown() const override { return isMouseHeldDown_; }
+        bool IsMouseHeldDownAndMoving() const override { return isMouseHeldDownAndMoving_; }
+        const sf::Vector2f MouseDownPosV() const override { return mouseDownPosV_; }
 
-        bool IsFading() const override final { return isFading_; }
-        void IsFading(const bool IS_FADING) override final { isFading_ = IS_FADING; }
+        bool IsFading() const override { return isFading_; }
+        void IsFading(const bool IS_FADING) override { isFading_ = IS_FADING; }
 
         void SpawnPopup(
             const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO) const override final;
+            const popup::PopupInfo & POPUP_INFO) const override;
 
-        void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0)
-            const override final;
+        void RemovePopup(
+            const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0) const override;
 
-        void TransitionTo(const stage::Stage::Enum NEW_STAGE) const override final;
+        void TransitionTo(const stage::Stage::Enum NEW_STAGE) const override;
 
-        void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const override final;
+        void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const override;
 
         const gui::DisplayChangeResult ChangeResolution(
             const gui::PopupCallback_t::IHandlerPtr_t & POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
-            const unsigned ANTIALIAS_LEVEL) const override final;
+            const unsigned ANTIALIAS_LEVEL) const override;
 
     private:
         static const float MOUSE_DRAG_MIN_DISTANCE_;

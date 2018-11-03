@@ -19,6 +19,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <memory>
+
 namespace heroespath
 {
 namespace popup

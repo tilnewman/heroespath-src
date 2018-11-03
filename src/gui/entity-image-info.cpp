@@ -8,8 +8,11 @@
 // entity-image-info.cpp
 //
 #include "entity-image-info.hpp"
+
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
+
+#include <string>
 
 namespace heroespath
 {

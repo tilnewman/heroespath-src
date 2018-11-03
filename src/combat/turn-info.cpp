@@ -9,8 +9,9 @@
 //
 // turn-info.cpp
 //
-#include "creature/creature.hpp"
 #include "turn-info.hpp"
+
+#include "creature/creature.hpp"
 
 #include <tuple>
 

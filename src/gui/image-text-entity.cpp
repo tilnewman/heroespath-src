@@ -64,7 +64,7 @@ namespace gui
         , callbackHandlerPtrOpt_(CALLBACK_HANDLER_PTR_OPT)
         , willSyncImageAndTextMouseState_(WILL_SYNC_MOUSESTATES)
     {
-        Sync();
+        ImageTextEntity::Sync();
     }
 
     ImageTextEntity::ImageTextEntity(

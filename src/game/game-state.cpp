@@ -9,8 +9,9 @@
 //
 // game-state.cpp
 //
-#include "creature/creature.hpp"
 #include "game-state.hpp"
+
+#include "creature/creature.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <tuple>

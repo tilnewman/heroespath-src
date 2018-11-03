@@ -16,6 +16,9 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include <algorithm>
+#include <string>
+
 namespace heroespath
 {
 namespace gui

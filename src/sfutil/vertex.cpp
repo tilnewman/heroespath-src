@@ -16,6 +16,7 @@
 
 #include <SFML/Graphics/VertexArray.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <tuple>
 

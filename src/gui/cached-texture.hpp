@@ -132,10 +132,10 @@ namespace gui
         CachedTextures & operator=(const CachedTextures &);
         CachedTextures & operator=(CachedTextures &&);
 
-        CachedTextures(
+        explicit CachedTextures(
             const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS = ImageOptions());
 
-        CachedTextures(
+        explicit CachedTextures(
             const PathWrapper & DIR_PATH_WRAPPER, const ImageOptions & OPTIONS = ImageOptions());
 
         ~CachedTextures();

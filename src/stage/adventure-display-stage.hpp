@@ -47,7 +47,7 @@ namespace stage
         AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;
         AdventureDisplayStage & operator=(AdventureDisplayStage &&) = delete;
 
-        explicit AdventureDisplayStage();
+        AdventureDisplayStage();
         virtual ~AdventureDisplayStage();
 
         void Setup() override;

@@ -9,13 +9,14 @@
 //
 // model.cpp
 //
+#include "model.hpp"
+
 #include "avatar/lpc-view.hpp"
 #include "game/npc.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "model.hpp"
 #include "sfutil/direction.hpp"
 
 #include <algorithm>

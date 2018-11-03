@@ -590,7 +590,7 @@ namespace combat
     }
 
     void CombatAnimation::ShakeAnimStart(
-        const CombatNodePVec_t COMBAT_NODES_PVEC,
+        const CombatNodePVec_t & COMBAT_NODES_PVEC,
         const float SLIDER_SPEED,
         const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
@@ -630,14 +630,17 @@ namespace combat
 
     void CombatAnimation::ShakeAnimTemporaryStop(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
+        const auto FOUND_ITER { std::find_if(
+            std::begin(shakeAnimInfoMap_),
+            std::end(shakeAnimInfoMap_),
+            [CREATURE_PTR](const auto & SHAKE_INFO_PAIR) {
+                return (SHAKE_INFO_PAIR.first->Creature() == CREATURE_PTR);
+            }) };
+
+        if (FOUND_ITER != std::end(shakeAnimInfoMap_))
         {
-            if (nextShakeInfoPair.first->Creature() == CREATURE_PTR)
-            {
-                shakeAnimWasCombatNodePtrOpt_ = nextShakeInfoPair.first;
-                ShakeAnimStop(shakeAnimWasCombatNodePtrOpt_);
-                break;
-            }
+            shakeAnimWasCombatNodePtrOpt_ = FOUND_ITER->first;
+            ShakeAnimStop(shakeAnimWasCombatNodePtrOpt_);
         }
     }
 
@@ -1055,16 +1058,12 @@ namespace combat
 
     bool CombatAnimation::SparkleAnimIsDone()
     {
-        auto areAllAnimsDone { true };
-        for (const auto & NEXT_SPARKLEANIM_UPTR : sparkleAnimUVec_)
-        {
-            if ((NEXT_SPARKLEANIM_UPTR) && (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
-            {
-                areAllAnimsDone = false;
-            }
-        }
-
-        return areAllAnimsDone;
+        return std::any_of(
+            std::begin(sparkleAnimUVec_),
+            std::end(sparkleAnimUVec_),
+            [](const auto & SPARKLE_ANIM_UPTR) {
+                return (SPARKLE_ANIM_UPTR && (SPARKLE_ANIM_UPTR->IsFinished() == false));
+            });
     }
 
     void CombatAnimation::SparkleAnimStop() { sparkleAnimUVec_.clear(); }

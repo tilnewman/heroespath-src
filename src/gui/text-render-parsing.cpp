@@ -11,6 +11,8 @@
 
 #include "gui/text-render-char-info.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace gui

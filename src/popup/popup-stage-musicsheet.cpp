@@ -22,6 +22,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
+#include <memory>
 #include <sstream>
 
 namespace heroespath

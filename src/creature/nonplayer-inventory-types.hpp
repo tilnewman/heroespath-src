@@ -24,6 +24,7 @@
 #include <boost/type_index.hpp>
 
 #include <cstddef> //for std::size_t
+#include <string>
 #include <utility>
 #include <vector>
 

@@ -218,7 +218,7 @@ namespace game
 
     struct MusicCommand
     {
-        MusicCommand(
+        explicit MusicCommand(
             const gui::music::Enum TO_STOP = gui::music::None,
             const gui::music::Enum TO_START = gui::music::None,
             const float VOLUME_MIN = 0.0f)

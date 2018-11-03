@@ -9,7 +9,8 @@
 //
 //  random.cpp
 //
-#include "misc/random.hpp"
+#include "random.hpp"
+
 #include <random>
 
 namespace heroespath

@@ -30,7 +30,7 @@ namespace gui
                 : CharInfo(CHAR, TEXT_INFO.font_letters, TEXT_INFO.font_numbers, PREV_FONT)
             {}
 
-            CharInfo(
+            explicit CharInfo(
                 const char CHAR,
                 const GuiFont::Enum LETTER_FONT = GuiFont::Count,
                 const GuiFont::Enum NUMBER_FONT = GuiFont::Count,

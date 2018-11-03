@@ -21,6 +21,7 @@
 #include "sfutil/event.hpp"
 #include "stage/stage-base.hpp"
 
+#include <algorithm>
 #include <iomanip>
 
 namespace heroespath

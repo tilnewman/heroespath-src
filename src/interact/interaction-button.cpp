@@ -14,6 +14,8 @@
 #include "gui/text-button.hpp"
 #include "sfutil/keyboard.hpp"
 
+#include <memory>
+
 namespace heroespath
 {
 namespace interact

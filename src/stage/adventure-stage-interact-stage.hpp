@@ -54,7 +54,7 @@ namespace stage
         InteractStage & operator=(const InteractStage &) = delete;
         InteractStage & operator=(InteractStage &&) = delete;
 
-        InteractStage(interact::InteractionManager &);
+        explicit InteractStage(interact::InteractionManager &);
 
         virtual ~InteractStage();
 

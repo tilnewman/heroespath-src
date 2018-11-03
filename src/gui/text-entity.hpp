@@ -46,7 +46,7 @@ namespace gui
         TextEntity & operator=(const TextEntity &) = delete;
         TextEntity & operator=(TextEntity &&) = delete;
 
-        TextEntity(
+        explicit TextEntity(
             const std::string & NAME,
             const bool WILL_CACHE = true,
             const bool WILL_PLAY_MOUSEOVER_TICK_SFX = false);

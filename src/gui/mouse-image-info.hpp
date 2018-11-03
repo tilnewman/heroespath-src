@@ -13,6 +13,7 @@
 #include "gui/mouse-state-enum.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
+#include <string>
 #include <tuple>
 
 namespace heroespath

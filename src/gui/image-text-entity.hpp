@@ -112,7 +112,7 @@ namespace gui
             const bool WILL_SYNC_MOUSESTATES);
 
     public:
-        ImageTextEntity(
+        explicit ImageTextEntity(
             const std::string & NAME,
             const MouseImageInfo & MOUSE_IMAGE_INFO = MouseImageInfo(),
             const MouseTextInfo & MOUSE_TEXT_INFO = MouseTextInfo(),

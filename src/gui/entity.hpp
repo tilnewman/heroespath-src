@@ -60,7 +60,7 @@ namespace gui
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override = 0;
 
-        MouseState::Enum GetMouseState() const override final { return entityMouseState_; }
+        MouseState::Enum GetMouseState() const override { return entityMouseState_; }
 
         bool SetMouseState(const MouseState::Enum E) override;
 
@@ -73,13 +73,13 @@ namespace gui
         // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
         bool UpdateMouseWheel(const sf::Vector2f &, const float) override { return false; }
 
-        bool HasFocus() const override final { return entityHasFocus_; }
+        bool HasFocus() const override { return entityHasFocus_; }
         bool SetHasFocus(const bool) override;
-        bool WillAcceptFocus() const override final { return entityWillFocus_; }
-        void SetWillAcceptFocus(const bool WILL) override final { entityWillFocus_ = WILL; }
-        const std::string GetMouseHoverText() override final { return entityMouseHoverText_; }
+        bool WillAcceptFocus() const override { return entityWillFocus_; }
+        void SetWillAcceptFocus(const bool WILL) override { entityWillFocus_ = WILL; }
+        const std::string GetMouseHoverText() override { return entityMouseHoverText_; }
 
-        void SetMouseHoverText(const std::string & S) override final { entityMouseHoverText_ = S; }
+        void SetMouseHoverText(const std::string & S) override { entityMouseHoverText_ = S; }
 
     protected:
         void OnClick(const sf::Vector2f &) override {}
@@ -89,19 +89,19 @@ namespace gui
 
         // IEntity
     public:
-        const sf::Vector2f GetEntityPos() const override final
+        const sf::Vector2f GetEntityPos() const override
         {
             return sf::Vector2f(entityRegion_.left, entityRegion_.top);
         }
 
         // only calls SetEntityPos(float, float), don't override
-        void SetEntityPos(const sf::Vector2f & V) override final { SetEntityPos(V.x, V.y); }
+        void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
 
         // sets entityRegion_.left and entityRegion_.top, override this one
         void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
         // only calls MoveEntityPos(float, float), don't override
-        void MoveEntityPos(const sf::Vector2f & V) override final { MoveEntityPos(V.x, V.y); }
+        void MoveEntityPos(const sf::Vector2f & V) override { MoveEntityPos(V.x, V.y); }
 
         // entityRegion_.left/top += HORIZ/VERT, override this one
         void MoveEntityPos(const float HORIZ, const float VERT) override;
@@ -112,17 +112,17 @@ namespace gui
         void SetEntityColors(const FocusColors & COLOR_SET) override;
         void SetEntityColorFg(const sf::Color & FG_COLOR) override;
         void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
-        const FocusColors GetEntityColors() const override final { return entityFocusColors_; }
+        const FocusColors GetEntityColors() const override { return entityFocusColors_; }
 
-        const sf::Color GetEntityColorForeground() const override final { return entityFgColor_; }
+        const sf::Color GetEntityColorForeground() const override { return entityFgColor_; }
 
-        const sf::Color GetEntityColorBackground() const override final { return entityBgColor_; }
+        const sf::Color GetEntityColorBackground() const override { return entityBgColor_; }
 
-        void FakeFocusColorsAsIfFocusIs(const bool) override final;
+        void FakeFocusColorsAsIfFocusIs(const bool) override;
 
-        const std::string GetEntityName() const override final { return entityName_; }
+        const std::string GetEntityName() const override { return entityName_; }
 
-        const sf::FloatRect GetEntityRegion() const override final { return entityRegion_; }
+        const sf::FloatRect GetEntityRegion() const override { return entityRegion_; }
 
         void SetEntityRegion(const sf::FloatRect & REGION) override { entityRegion_ = REGION; }
 
