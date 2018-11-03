@@ -46,9 +46,11 @@ namespace stage
         const float timeFromMusicToAnimSec_;
         const float timeFromAnimToExitSec_;
         const float imageScaleSpeed_;
+        const float fadeSpeed_;
         gui::CachedTexture titleCachedTexture_;
         sf::Sprite titleSprite_;
         float elapsedSec_;
+        float fadeColorAlpha_;
         bool hasMusicStarted_;
         bool hasAnimStarted_;
         bool hasExited_;

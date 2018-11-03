@@ -32,11 +32,13 @@ namespace stage
         , musicVolumeOrig_(gui::SoundManager::Instance()->MusicVolume())
         , timeFromStartToMusicSec_(1.5f)
         , timeFromMusicToAnimSec_(2.0f)
-        , timeFromAnimToExitSec_(4.0f)
+        , timeFromAnimToExitSec_(7.0f)
         , imageScaleSpeed_(0.028f)
+        , fadeSpeed_(100.0f)
         , titleCachedTexture_("media-images-title-intro")
         , titleSprite_(titleCachedTexture_.Get())
         , elapsedSec_(0.0f)
+        , fadeColorAlpha_(0.0f)
         , hasMusicStarted_(false)
         , hasAnimStarted_(false)
         , hasExited_(false)
@@ -100,6 +102,20 @@ namespace stage
 
         if (hasAnimStarted_)
         {
+            if (fadeColorAlpha_ < 255.0f)
+            {
+                fadeColorAlpha_ += ELAPSED_TIME_SECONDS * fadeSpeed_;
+
+                if (fadeColorAlpha_ > 255.0f)
+                {
+                    fadeColorAlpha_ = 255.0f;
+                }
+            }
+
+            sf::Color fadeColor { titleSprite_.getColor() };
+            fadeColor.a = static_cast<sf::Uint8>(fadeColorAlpha_);
+            titleSprite_.setColor(fadeColor);
+
             const auto NEW_SCALE { titleSprite_.getScale().x
                                    * (1.0f + (ELAPSED_TIME_SECONDS * imageScaleSpeed_)) };
 
