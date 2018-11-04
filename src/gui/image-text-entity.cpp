@@ -382,14 +382,19 @@ namespace gui
             const auto IS_MOUSE_OVER_TEXT { (
                 textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
-            EventPacket eventPackage(
+            const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),
                 GuiEvent::Click,
                 MOUSE_POS_V,
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&eventPackage));
+            std::ostringstream ss;
+            ss << "ImageTextEntity(" << GetEntityName()
+               << "\", on-mouse-single-click, is_mouse_over_image=" << std::boolalpha
+               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
         }
     }
 
@@ -403,14 +408,19 @@ namespace gui
             const auto IS_MOUSE_OVER_TEXT { (
                 textEntityUPtr_ && textEntityUPtr_->GetEntityRegion().contains(MOUSE_POS_V)) };
 
-            EventPacket eventPackage(
+            const EventPacket EVENT_PACKET(
                 misc::MakeNotNull(this),
                 GuiEvent::Click,
                 MOUSE_POS_V,
                 IS_MOUSE_OVER_IMAGE,
                 IS_MOUSE_OVER_TEXT);
 
-            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&eventPackage));
+            std::ostringstream ss;
+            ss << "ImageTextEntity(" << GetEntityName()
+               << "\", on-mouse-double-click, is_mouse_over_image=" << std::boolalpha
+               << IS_MOUSE_OVER_IMAGE << ", is_mouse_over_text=" << IS_MOUSE_OVER_TEXT << ")";
+
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
         }
     }
 

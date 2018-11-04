@@ -137,71 +137,92 @@ namespace stage
         , lockboxCache_()
     {}
 
-    bool TreasureDisplayStage::HandleCallback(
-        const ItemListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string TreasureDisplayStage::HandleCallback(
+        const ItemListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
         if (!treasureStagePtrOpt_)
         {
-            return false;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "NOT HANDLED because the treasure stage ptr opt is empty/invalid/boost::none");
         }
         else
         {
             return treasureStagePtrOpt_.value()->HandleListboxCallback(
-                treasureListboxUPtr_, inventoryListboxUPtr_, PACKET_PTR);
+                treasureListboxUPtr_, inventoryListboxUPtr_, PACKET, PACKET_DESCRIPTION);
         }
     }
 
-    bool TreasureDisplayStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string TreasureDisplayStage::HandleCallback(
+        const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        if (PACKET_PTR->entity_ptr == treasureAlphaButtonUPtr_.get())
+        if (PACKET.entity_ptr == treasureAlphaButtonUPtr_.get())
         {
             gui::listbox::SortByName(*treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "saw click on image for sort-treasure-list-by-name and did it");
         }
-        else if (PACKET_PTR->entity_ptr == treasureMoneyButtonUPtr_.get())
+        else if (PACKET.entity_ptr == treasureMoneyButtonUPtr_.get())
         {
             gui::listbox::SortByPrice(*treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for sort-treasure-list-by-price and did it");
         }
-        else if (PACKET_PTR->entity_ptr == treasureWeightButtonUPtr_.get())
+        else if (PACKET.entity_ptr == treasureWeightButtonUPtr_.get())
         {
             gui::listbox::SortByWeight(*treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for sort-treasure-list-by-weight and did it");
         }
-        else if (PACKET_PTR->entity_ptr == inventoryAlphaButtonUPtr_.get())
+        else if (PACKET.entity_ptr == inventoryAlphaButtonUPtr_.get())
         {
             gui::listbox::SortByName(*inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for sort-inventory-list-by-name and did it");
         }
-        else if (PACKET_PTR->entity_ptr == inventoryMoneyButtonUPtr_.get())
+        else if (PACKET.entity_ptr == inventoryMoneyButtonUPtr_.get())
         {
             gui::listbox::SortByPrice(*inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for sort-inventory-list-by-price and did it");
         }
-        else if (PACKET_PTR->entity_ptr == inventoryWeightButtonUPtr_.get())
+        else if (PACKET.entity_ptr == inventoryWeightButtonUPtr_.get())
         {
             gui::listbox::SortByWeight(*inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for sort-inventory-list-by-weight and did it");
         }
-        else if ((PACKET_PTR->entity_ptr == takeAllButtonUPtr_.get()) && treasureStagePtrOpt_)
+        else if ((PACKET.entity_ptr == takeAllButtonUPtr_.get()) && treasureStagePtrOpt_)
         {
             treasureStagePtrOpt_.value()->TakeAllItems();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for take-all-from-treasure-list and did it");
         }
-        else if ((PACKET_PTR->entity_ptr == doneButtonUPtr_.get()) && treasureStagePtrOpt_)
+        else if ((PACKET.entity_ptr == doneButtonUPtr_.get()) && treasureStagePtrOpt_)
         {
             treasureStagePtrOpt_.value()->Exit();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw click on image for done-taking-treasure and transitioned to the Adventure "
+                "Stage");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "ImageTextEntity callback UNHANDLED");
     }
 
     void TreasureDisplayStage::Setup()

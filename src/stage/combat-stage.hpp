@@ -20,7 +20,6 @@
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
 #include "gui/box-entity-info.hpp"
-#include "gui/callback.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/image-text-entity.hpp"
 #include "gui/list-box.hpp"
@@ -29,6 +28,7 @@
 #include "gui/sliders.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "stage/stage-base.hpp"
 
@@ -100,7 +100,7 @@ namespace stage
     class CombatStage
         : public stage::StageBase
 
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
         , public CombatStageListBox_t::Callback_t::IHandler_t
         , public gui::SliderBar::Callback_t::IHandler_t
@@ -206,12 +206,23 @@ namespace stage
 
         virtual ~CombatStage();
 
-        bool HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const CombatStageListBox_t::Callback_t::Packet_t &, const std::string &) override
+        {
+            return "";
+        }
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::SliderBar::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
+
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void PreSetup();
         void Setup() override;
@@ -251,15 +262,23 @@ namespace stage
         void StartTurn_Step2(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         void EndTurn();
         void PositionSlideStartTasks(const creature::CreaturePtr_t TURN_CREATURE_PTR);
-        bool HandleAttack();
-        bool HandleFight();
+        const std::string HandleAttack();
+        bool HandleAttackAndReturnTrueIfStarted();
+        const std::string HandleFight();
+        bool HandleFightAndReturnTrueIfStarted();
 
-        bool HandleSong_Step1_ValidatePlayAndSelectSong(
+        const std::string HandleSong_Step1_ValidatePlayAndSelectSong(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
+        bool HandleSong_Step1_ValidatePlayAndSelectSongAndReturnTrueIfStarted(
             const creature::CreaturePtr_t TURN_CREATURE_PTR);
 
         void HandleSong_Step2_PerformOnTargets(const creature::CreaturePtr_t TURN_CREATURE_PTR);
 
-        bool HandleCast_Step1_ValidateCastAndSelectSpell(
+        const std::string HandleCast_Step1_ValidateCastAndSelectSpell(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
+        bool HandleCast_Step1_ValidateCastAndSelectSpellAndReturnTrueIfStarted(
             const creature::CreaturePtr_t TURN_CREATURE_PTR);
 
         void HandleCast_Step2_SelectTargetOrPerformOnAll();
@@ -267,16 +286,27 @@ namespace stage
         void HandleCast_Step3_PerformOnTargets(
             const creature::CreaturePVec_t & CREATURES_TO_CAST_UPON_PVEC);
 
-        bool HandleAdvance();
-        bool HandleRetreat();
-        bool HandleBlock();
-        bool HandleSkip();
-        bool HandleFly();
-        bool HandleLand();
-        bool HandleRoar();
-        bool HandlePounce(const bool IS_SKY_POUNCE);
+        const std::string HandleAdvance();
+        const std::string HandleRetreat();
+        const std::string HandleBlock();
+        const std::string HandleSkip();
+        const std::string HandleFly();
+        const std::string HandleLand();
+        const std::string HandleRoar();
+        const std::string HandlePounce(const bool IS_SKY_POUNCE);
+        const std::string HandleRun();
+
+        bool HandleAdvanceAndReturnTrueIfStarted();
+        bool HandleRetreatAndReturnTrueIfStarted();
+        bool HandleBlockAndReturnTrueIfStarted();
+        bool HandleSkipAndReturnTrueIfStarted();
+        bool HandleFlyAndReturnTrueIfStarted();
+        bool HandleLandAndReturnTrueIfStarted();
+        bool HandleRoarAndReturnTrueIfStarted();
+        bool HandlePounceAndReturnTrueIfStarted(const bool IS_SKY_POUNCE);
+        bool HandleRunAndReturnTrueIfStarted();
+
         bool HandleWeaponChange();
-        bool HandleRun();
         void MoveTurnBoxObjectsOffScreen();
 
         void SetupTurnBoxButtons(
@@ -291,11 +321,12 @@ namespace stage
         void SetupTurnBox();
         void StartPerformAnim();
 
-        const std::string TurnPhaseToString(const TurnPhase);
-        const std::string TurnActionPhaseToString(const TurnActionPhase);
-        const std::string PreTurnPhaseToString(const PreTurnPhase);
-        const std::string AnimPhaseToString(const AnimPhase);
+        const std::string TurnPhaseToString(const TurnPhase) const;
+        const std::string TurnActionPhaseToString(const TurnActionPhase) const;
+        const std::string PreTurnPhaseToString(const PreTurnPhase) const;
+        const std::string AnimPhaseToString(const AnimPhase) const;
 
+        const std::string MakeStatusMessage() const;
         void UpdateTestingText();
 
         void SetTurnPhase(const TurnPhase TP)

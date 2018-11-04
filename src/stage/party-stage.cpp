@@ -28,6 +28,7 @@
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-image-select.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -135,113 +136,172 @@ namespace stage
         creature::CreatureWarehouse::Access().Free(unplayedCharactersPVec_);
     }
 
-    bool PartyStage::HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string PartyStage::HandleCallback(
+        const PartyListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
         ResetMouseOverPopupState();
 
-        if (((PACKET_PTR->gui_event == gui::GuiEvent::Keypress)
-             && (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
-            || (PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick))
+        if (((PACKET.gui_event == gui::GuiEvent::Keypress)
+             && (PACKET.keypress_event.code == sf::Keyboard::Return))
+            || (PACKET.gui_event == gui::GuiEvent::DoubleClick))
         {
-            if (PACKET_PTR->listbox_ptr == characterListBoxUPtr_.get())
+            if (PACKET.listbox_ptr == characterListBoxUPtr_.get())
             {
                 if (partyListBoxUPtr_->Size() < creature::PlayerParty::MAX_CHARACTER_COUNT_)
                 {
                     characterListBoxUPtr_->MoveSelection(*partyListBoxUPtr_);
                     gui::SoundManager::Instance()->PlaySfx_AckMajor();
-                    return true;
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION, "new characters listbox selection changed");
                 }
                 else
                 {
                     gui::SoundManager::Instance()->PlaySfx_Reject();
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "new characters listbox selection invalid and grunt sfx played");
                 }
             }
-            else if (PACKET_PTR->listbox_ptr == partyListBoxUPtr_.get())
+            else if (PACKET.listbox_ptr == partyListBoxUPtr_.get())
             {
                 partyListBoxUPtr_->MoveSelection(*characterListBoxUPtr_);
                 gui::SoundManager::Instance()->PlaySfx_AckMajor();
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "party characters listbox selection changed");
             }
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "listbox callback NOT HANDLED");
     }
 
-    bool PartyStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string PartyStage::HandleCallback(
+        const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
         ResetMouseOverPopupState();
 
-        // the back button is a MainMenuButton that will handle everything itself
+        // the back button is a MainMenuButton that will handle everything itself, but the other two
+        // buttons 'start' and 'delete' are handled by the (this) stage
 
-        if (PACKET_PTR->entity_ptr == startButtonUPtr_.get())
+        if (PACKET.entity_ptr == startButtonUPtr_.get())
         {
-            return HandleCallback_StartButton();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "start button clicked " + HandleCallback_StartButton());
         }
 
-        if (PACKET_PTR->entity_ptr == deleteButtonUPtr_.get())
+        if (PACKET.entity_ptr == deleteButtonUPtr_.get())
         {
-            return HandleCallback_DeleteButton();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "start button clicked " + HandleCallback_DeleteButton());
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "image-text-entity callback NOT HANDLED");
     }
 
-    bool PartyStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string PartyStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
         ResetMouseOverPopupState();
 
-        if ((PACKET_PTR->name == POPUP_NAME_STR_DELETE_CONFIRM_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Yes))
+        if ((PACKET.curently_open_popup_name == POPUP_NAME_STR_DELETE_CONFIRM_)
+            && (PACKET.type == popup::ResponseTypes::Yes))
         {
             if (partyListBoxUPtr_->HasFocus())
             {
-                return DeleteCharacterIfSelected(*partyListBoxUPtr_);
+                if (DeleteCharacterIfSelected(*partyListBoxUPtr_))
+                {
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player closed the delete confirm popup by selecting yes when party "
+                        "listbox had focus and the character "
+                        "was deleted");
+                }
+                else
+                {
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player closed the delete confirm popup by selecting yes when party "
+                        "listbox had focus but something "
+                        "went wrong and no character was deleted");
+                }
             }
             else if (characterListBoxUPtr_->HasFocus())
             {
-                return DeleteCharacterIfSelected(*characterListBoxUPtr_);
+                if (DeleteCharacterIfSelected(*characterListBoxUPtr_))
+                {
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player closed the delete confirm popup by selecting yes when new "
+                        "character listbox had focus and the character was deleted");
+                }
+                else
+                {
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player closed the delete confirm popup by selecting yes when new "
+                        "character listbox had focus but something went wrong and no character was "
+                        "deleted");
+                }
             }
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
-            && (PACKET_PTR->type != popup::ResponseTypes::Cancel) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
+            && (PACKET.type != popup::ResponseTypes::Cancel) && PACKET.selection_opt)
         {
             const auto SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
-                PACKET_PTR->selection_opt.value()) };
+                PACKET.selection_opt.value()) };
+
             const auto ANIM_NUM { avatar::Avatar::Player_First + SELECTED_NUM };
             const auto ANIM_ENUM { static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
 
             if (avatar::Avatar::IsPlayer(ANIM_ENUM))
             {
                 StartNewGame(ANIM_ENUM);
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player closed the party/avatar image selection popup by selecting a valid "
+                    "image and a new game was created");
+            }
+            else
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player closed the party/avatar image selection popup by selecting an invalid "
+                    "image (somehow?) and so this callback is ignored");
             }
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
     }
 
-    bool PartyStage::HandleCallback_StartButton()
+    const std::string PartyStage::HandleCallback_StartButton()
     {
         ResetMouseOverPopupState();
 
         if (partyListBoxUPtr_->Size() != creature::PlayerParty::MAX_CHARACTER_COUNT_)
         {
             NotEnoughCharactersPopup();
-            return false;
+            return "but party listbox does not have enough characters in it so ignored and spawned "
+                   "a popup saying so";
         }
 
         if (AreAnyInPartyBeasts() && (AreAnyInPartyBeastmasters() == false))
         {
             MissingBeastmasterPopup();
-            return false;
+            return "but there are beasts in the party without a beastmaster so ignored and spawned "
+                   "a popup saying so";
         }
 
         PartyAvatarSelectionPopup();
-        return true;
+        return "";
     }
 
-    bool PartyStage::HandleCallback_DeleteButton()
+    const std::string PartyStage::HandleCallback_DeleteButton()
     {
         ResetMouseOverPopupState();
 
@@ -249,7 +309,7 @@ namespace stage
 
         if (!SELECTED_CHARACTER_PTR_OPT)
         {
-            return false;
+            return "but there is no selected character to delete so ignoring";
         }
 
         std::ostringstream ss;
@@ -265,7 +325,7 @@ namespace stage
             gui::sound_effect::PromptWarn) };
 
         SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
-        return true;
+        return "";
     }
 
     void PartyStage::Setup()

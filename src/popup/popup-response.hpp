@@ -12,6 +12,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "popup/popup-response-enum.hpp"
 
+#include <sstream>
 #include <string>
 
 namespace heroespath
@@ -22,38 +23,36 @@ namespace popup
     // Responsible for wrapping everything about the player's response to a popup
     struct PopupResponse
     {
-        PopupResponse()
-            : name()
-            , type(ResponseTypes::None)
-            , selection_opt(boost::none)
-        {
-            Reset();
-        }
-
-        PopupResponse(
-            const std::string & NAME,
-            const ResponseTypes::Enum RESPONSE_TYPE,
-            const SizetOpt_t SELECTION_OPT)
-            : name(NAME)
-            , type(RESPONSE_TYPE)
-            , selection_opt(SELECTION_OPT)
-        {}
-
+        PopupResponse() = default;
         PopupResponse(const PopupResponse &) = default;
         PopupResponse(PopupResponse &&) = default;
         PopupResponse & operator=(const PopupResponse &) = default;
         PopupResponse & operator=(PopupResponse &&) = default;
 
-        void Reset(const std::string & NAME = "")
+        const std::string ToString() const
         {
-            name = NAME;
-            type = ResponseTypes::None;
-            selection_opt = boost::none;
+            std ::ostringstream ss;
+
+            ss << "PopupResonse(\"" << curently_open_popup_name << "\", "
+               << popup::ResponseTypes::ToStringNoThrow(type) << ", selected_index=";
+
+            if (selection_opt)
+            {
+                ss << selection_opt.value();
+            }
+            else
+            {
+                ss << "(none)";
+            }
+
+            ss << ")";
+
+            return ss.str();
         }
 
-        std::string name;
-        ResponseTypes::Enum type;
-        SizetOpt_t selection_opt;
+        std::string curently_open_popup_name;
+        ResponseTypes::Enum type = ResponseTypes::None;
+        SizetOpt_t selection_opt = boost::none;
     };
 
 } // namespace popup

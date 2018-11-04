@@ -9,12 +9,12 @@
 //
 // image-text-entity.hpp
 //
-#include "gui/callback.hpp"
 #include "gui/entity.hpp"
 #include "gui/gui-event-enum.hpp"
 #include "gui/mouse-image-info.hpp"
 #include "gui/mouse-text-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -68,7 +68,7 @@ namespace gui
             bool is_mouse_over_text;
         };
 
-        using Callback_t = Callback<EventPacket>;
+        using Callback_t = misc::Callback<EventPacket>;
 
         // Defines the relationship between an ImageTextEntity's mouse state and the mouse
         // states of it's image and text entity.  willSyncImageAndTextMouseState_ defines the

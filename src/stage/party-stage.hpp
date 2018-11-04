@@ -12,7 +12,6 @@
 #include "avatar/avatar-enum.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/colored-rect.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/image-text-entity.hpp"
@@ -23,6 +22,7 @@
 #include "gui/sliders.hpp"
 #include "gui/stage-title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "stage/stage-base.hpp"
 
@@ -53,7 +53,7 @@ namespace stage
         : public stage::StageBase
         , public gui::ListBox<PartyStage, creature::CreaturePtr_t>::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
     {
         using PartyListBox_t = gui::ListBox<PartyStage, creature::CreaturePtr_t>;
         using PartyListBoxUPtr_t = std::unique_ptr<PartyListBox_t>;
@@ -67,13 +67,20 @@ namespace stage
         PartyStage();
         virtual ~PartyStage();
 
-        bool HandleCallback(const PartyListBox_t::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const PartyListBox_t::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
-        bool HandleCallback_StartButton();
-        bool HandleCallback_DeleteButton();
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
+
+        const std::string HandleCallback_StartButton();
+        const std::string HandleCallback_DeleteButton();
 
         void Setup() override;
         void Setup_Ouroboros();

@@ -21,6 +21,7 @@
 #include "gui/sound-manager.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "stage/achievement-handler.hpp"
@@ -82,7 +83,7 @@ namespace interact
     }
 
     void LockPicking::PopupCharacterSelection(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         stage::IStagePtr_t iStagePtr) const
     {
         const auto INVALID_MSGS { MakeInvalidLockPickCharacterMessages() };
@@ -119,13 +120,13 @@ namespace interact
     }
 
     bool LockPicking::HandleCharacterSelectionPopupResponse(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
-        const gui::PopupCallback_t::PacketPtr_t PACKET_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::Packet_t & PACKET,
         stage::IStagePtr_t iStagePtr)
     {
-        if (PACKET_PTR->type == popup::ResponseTypes::Select)
+        if (PACKET.type == popup::ResponseTypes::Select)
         {
-            const auto SELECTION_OPT { PACKET_PTR->selection_opt };
+            const auto SELECTION_OPT { PACKET.selection_opt };
 
             if (SELECTION_OPT < game::Game::Instance()->State().Party().Characters().size())
             {
@@ -143,7 +144,7 @@ namespace interact
     }
 
     void LockPicking::PopupAttempting(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & CHARACTER_NAME,
         stage::IStagePtr_t iStagePtr) const
     {
@@ -160,7 +161,7 @@ namespace interact
     }
 
     void LockPicking::PopupSuccess(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & NAME_OF_WHAT_OPENED,
         stage::IStagePtr_t iStagePtr) const
     {
@@ -177,7 +178,7 @@ namespace interact
     }
 
     bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR, stage::IStagePtr_t iStagePtr)
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR, stage::IStagePtr_t iStagePtr)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (!!characterPtrOpt_),

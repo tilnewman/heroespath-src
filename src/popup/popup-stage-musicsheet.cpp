@@ -88,17 +88,23 @@ namespace popup
 
     PopupStageMusicSheet::~PopupStageMusicSheet() = default;
 
-    bool PopupStageMusicSheet::HandleCallback(
-        const SongListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string PopupStageMusicSheet::HandleCallback(
+        const SongListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)
-            || (PACKET_PTR->gui_event == gui::GuiEvent::SelectionChange)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Up)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Down))
+        if ((PACKET.gui_event == gui::GuiEvent::Click)
+            || (PACKET.gui_event == gui::GuiEvent::SelectionChange)
+            || (PACKET.keypress_event.code == sf::Keyboard::Up)
+            || (PACKET.keypress_event.code == sf::Keyboard::Down))
         {
-            if (currentSongIndex_ != PACKET_PTR->listbox_ptr->SelectionIndex())
+            if (currentSongIndex_ == PACKET.listbox_ptr->SelectionIndex())
             {
-                currentSongIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "song list keypress or click but the selection did not change so ignored");
+            }
+            else
+            {
+                currentSongIndex_ = PACKET.listbox_ptr->SelectionIndex();
 
                 gui::SoundManager::Instance()->SoundEffectPlay(gui::sound_effect::Magic1);
 
@@ -106,19 +112,24 @@ namespace popup
                 imageColorSlider_.Start();
                 textColorSlider_.SetDirectionAway();
                 textColorSlider_.Start();
-            }
 
-            return true;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "song list keypress or click and the selection changed");
+            }
         }
         else if (
-            (PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
+            (PACKET.gui_event == gui::GuiEvent::DoubleClick)
+            || (PACKET.keypress_event.code == sf::Keyboard::Return))
         {
-            currentSongIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
-            return HandleSongPlay();
+            currentSongIndex_ = PACKET.listbox_ptr->SelectionIndex();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "song list double-click or keypress-enter and the selection was set...maybe not "
+                "changed though...");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "song list event NOT HANDLED");
     }
 
     void PopupStageMusicSheet::Setup()

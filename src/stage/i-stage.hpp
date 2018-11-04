@@ -10,10 +10,11 @@
 // i-stage.hpp
 //
 #include "game/phase-enum.hpp"
-#include "gui/callback.hpp"
 #include "gui/display-change-result.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
+#include "popup/popup-response-enum.hpp"
 #include "stage/stage-enum.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -60,6 +61,9 @@ namespace stage
         virtual const std::string GetStageName() const = 0;
 
         virtual game::Phase::Enum GetPhase() const = 0;
+
+        virtual const std::string MakeCallbackHandlerMessage(
+            const std::string & EVENT_DESCRIPTION, const std::string & ACTION_TAKEN) const = 0;
 
         virtual const sf::FloatRect StageRegion() const = 0;
         virtual void StageRegion(const sf::FloatRect & RECT) = 0;
@@ -112,7 +116,7 @@ namespace stage
         virtual void IsFading(const bool IS_FADING) = 0;
 
         virtual void SpawnPopup(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO) const = 0;
 
         virtual void RemovePopup(
@@ -122,7 +126,7 @@ namespace stage
         virtual void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const = 0;
 
         virtual const gui::DisplayChangeResult ChangeResolution(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL) const = 0;
     };

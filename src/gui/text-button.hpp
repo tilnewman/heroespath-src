@@ -10,8 +10,8 @@
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
 //
-#include "gui/callback.hpp"
 #include "gui/text-entity.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -27,7 +27,7 @@ namespace gui
     class TextButton : public TextEntity
     {
     public:
-        using Callback_t = Callback<TextButton>;
+        using Callback_t = misc::Callback<TextButton>;
 
         TextButton(const TextButton &) = delete;
         TextButton(TextButton &&) = delete;

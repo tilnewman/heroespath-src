@@ -240,6 +240,37 @@ namespace sfutil
         }
     }
 
+    inline const std::string ToString(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        std::ostringstream ss;
+
+        ss << "(key=" << sfutil::ToString(KEY_EVENT.code);
+
+        if (KEY_EVENT.alt)
+        {
+            ss << "+alt";
+        }
+
+        if (KEY_EVENT.control)
+        {
+            ss << "+cntrl";
+        }
+
+        if (KEY_EVENT.shift)
+        {
+            ss << "+shift";
+        }
+
+        if (KEY_EVENT.system)
+        {
+            ss << "+system";
+        }
+
+        ss << ")";
+
+        return ss.str();
+    }
+
     inline const std::string ToDetailsString(const sf::Event & EVENT)
     {
         switch (EVENT.type)
@@ -272,9 +303,7 @@ namespace sfutil
             case sf::Event::EventType::KeyPressed:
             case sf::Event::EventType::KeyReleased:
             {
-                return "(key=" + sfutil::ToString(EVENT.key.code) + ")"
-                    + M_HP_VAR_STR(EVENT.key.alt) + M_HP_VAR_STR(EVENT.key.control)
-                    + M_HP_VAR_STR(EVENT.key.shift) + M_HP_VAR_STR(EVENT.key.system);
+                return "(key_event=" + ToString(EVENT.key) + ")";
             }
             case sf::Event::EventType::MouseWheelMoved:
             {
@@ -361,6 +390,25 @@ inline const std::string ToString(
        << sfutil::ToDescriptionString(EVENT) << "\"";
 
     return misc::MakeToStringPrefix(OPTIONS, "Event") + ss.str();
+}
+
+inline const std::string ToString(
+    const sf::Event::KeyEvent & KEY_EVENT,
+    const misc::ToStringPrefix::Enum OPTIONS = misc::ToStringPrefix::Default)
+{
+    return misc::MakeToStringPrefix(OPTIONS, "KeyEvent") + sfutil::ToString(KEY_EVENT);
+}
+
+inline std::ostream & operator<<(std::ostream & os, const sf::Event & EVENT)
+{
+    os << ToString(EVENT);
+    return os;
+}
+
+inline std::ostream & operator<<(std::ostream & os, const sf::Event::KeyEvent & KEY_EVENT)
+{
+    os << ToString(KEY_EVENT);
+    return os;
 }
 
 } // namespace heroespath

@@ -97,12 +97,12 @@ namespace gui
         {
             const auto C { mask_color_opt.value() };
 
-            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask" << C.r << "-" << C.g << "-"
-               << C.b;
+            ss << ((ss.str().empty()) ? "" : SEPARATOR) << "Mask" << int(C.r) << "-" << int(C.g)
+               << "-" << int(C.b);
 
             if (C.a < 255)
             {
-                ss << "-" << C.r;
+                ss << "-" << int(C.a);
             }
 
             if (IsMaskAlphaDefault() == false)

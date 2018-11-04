@@ -39,6 +39,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-image-select.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/color.hpp"
@@ -152,77 +153,113 @@ namespace stage
         return true;
     }*/
 
-    bool CharacterStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string CharacterStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if ((PACKET_PTR->name == POPUP_NAME_CREATECONFIRM_)
-            && (popup::ResponseTypes::IsAffirmative(PACKET_PTR->type)))
+        if ((PACKET.curently_open_popup_name == POPUP_NAME_CREATECONFIRM_)
+            && (popup::ResponseTypes::IsAffirmative(PACKET.type)))
         {
-            return CreateCharacter();
+            CreateCharacter();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player confirmed new character name and the new character was created and the "
+                "stage reset to be ready to make another");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->type))
+            (PACKET.curently_open_popup_name == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
+            && popup::ResponseTypes::IsAffirmative(PACKET.type))
         {
             TransitionTo(stage::Stage::Menu);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player confirmed that they want to leave this character creation stage and go "
+                "back to the menu, stage transitioned");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET_PTR->type))
+            (PACKET.curently_open_popup_name == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
+            && popup::ResponseTypes::IsAffirmative(PACKET.type))
         {
             TransitionTo(stage::Stage::Party);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player confirmed that they want to leave this character creation stage and go "
+                "on to the party creation stage, stage transitioned");
         }
-        else if (PACKET_PTR->name == POPUP_NAME_HELP_1_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_HELP_1_)
         {
             Help2Popup();
-            return false;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player finished reading help popup #1, spawning help popup #2");
         }
-        else if (PACKET_PTR->name == POPUP_NAME_HELP_2_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_HELP_2_)
         {
             Help3Popup();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player finished reading help popup #2, spawning help popup #3");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_IMAGE_SELECTION_)
-            && (PACKET_PTR->type != popup::ResponseTypes::Cancel) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_IMAGE_SELECTION_)
+            && (PACKET.type != popup::ResponseTypes::Cancel) && PACKET.selection_opt)
         {
-            CharacterCreationConfirmPopup(PACKET_PTR->selection_opt.value());
-            return false;
+            CharacterCreationConfirmPopup(PACKET.selection_opt.value());
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player picked an image for the new character and spawned the final creation "
+                "confirmation popup");
         }
 
-        return true;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
     }
 
-    bool CharacterStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
+    const std::string CharacterStage::HandleCallback(
+        const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        return false;
-    }
-
-    bool CharacterStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
-    {
-        if (PACKET_PTR->entity_ptr == helpButtonUPtr_.get())
+        if (PACKET.entity_ptr == helpButtonUPtr_.get())
         {
-            return OnHelpButton();
+            Help1Popup();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "help button clicked and spawned help popup #1");
         }
 
-        if (PACKET_PTR->entity_ptr == backButtonUPtr_.get())
+        if (PACKET.entity_ptr == backButtonUPtr_.get())
         {
-            return OnBackButton();
+            if (OnBackButton())
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "back button clicked and leave stage confirm popup spawned");
+            }
+            else
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "back button clicked but ignored because number anims are still moving around");
+            }
         }
 
-        if (PACKET_PTR->entity_ptr == saveButtonUPtr_.get())
+        if (PACKET.entity_ptr == saveButtonUPtr_.get())
         {
-            return OnSaveButton();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "save button clicked " + OnSaveButton());
         }
 
-        if (PACKET_PTR->entity_ptr == nextButtonUPtr_.get())
+        if (PACKET.entity_ptr == nextButtonUPtr_.get())
         {
-            return OnNextButton();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "next button clicked " + OnNextButton());
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
     }
 
     void CharacterStage::Setup()
@@ -1012,17 +1049,19 @@ namespace stage
         }
     }
 
-    bool CharacterStage::OnSaveButton()
+    const std::string CharacterStage::OnSaveButton()
     {
         if (AreAnyAnimNumStillMoving())
         {
-            return false;
+            return "ignored because number anims are still moving around";
         }
 
         if (AreAnyStatsIgnored())
         {
             MissingAttributesPopup();
-            return false;
+
+            return "but attributes were missing (without numbers) so spawned the missing "
+                   "attributes popup";
         }
 
         // verify name is not blank/empty
@@ -1030,11 +1069,11 @@ namespace stage
         if (CHARACTER_NAME.empty())
         {
             CharacterNameMissingPopup();
-            return false;
+            return "but the character name text entry box was empty so spawned a popup for that";
         }
 
         CharacterImageSelectionPopup(CHARACTER_NAME);
-        return true;
+        return "and so the character image selection popup was spawned";
     }
 
     bool CharacterStage::OnBackButton()
@@ -1050,18 +1089,12 @@ namespace stage
         }
     }
 
-    bool CharacterStage::OnHelpButton()
-    {
-        Help1Popup();
-        return true;
-    }
-
-    bool CharacterStage::OnNextButton()
+    const std::string CharacterStage::OnNextButton()
     {
         // verify all stats are ready
         if (AreAnyAnimNumStillMoving())
         {
-            return false;
+            return "but ignored because number anims are still moving around";
         }
 
         const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
@@ -1093,14 +1126,14 @@ namespace stage
                     gui::Justified::Center,
                     gui::sound_effect::PromptWarn));
 
-            return true;
+            return "and leave stage and partially completed character popup spawned";
         }
         else
         {
             TransitionTo(stage::Stage::Party);
-        }
 
-        return true;
+            return "and transitioned to party stage";
+        }
     }
 
     void CharacterStage::MissingAttributesPopup()
@@ -2434,7 +2467,7 @@ namespace stage
         {
             helpButtonUPtr_->SetMouseState(gui::MouseState::Over);
             gui::SoundManager::Instance()->PlaySfx_Keypress();
-            OnHelpButton();
+            Help1Popup();
             return true;
         }
         else
@@ -2477,7 +2510,7 @@ namespace stage
         return true;
     }
 
-    bool CharacterStage::CreateCharacter()
+    void CharacterStage::CreateCharacter()
     {
         /*M_HP_ASSERT_OR_LOG_AND_THROW(
             (selectedImageIndex_ < characterImageFilenamesVec_.size()),
@@ -2511,8 +2544,7 @@ namespace stage
 
         ResetForNewCharacterCreation();
         characterImageFilenamesVec_.clear();
-        return false;*/
-        return false;
+        */
     }
 
     creature::sex::Enum CharacterStage::GetCurrentSelectedSex() const

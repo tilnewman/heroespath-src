@@ -40,9 +40,10 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t &, const std::string &) override
         {
-            return false;
+            return "";
         }
 
         void Setup() override;

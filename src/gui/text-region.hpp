@@ -11,12 +11,12 @@
 //  A class that encapsulates text drawn to a bounded region that may need a scrollbar.
 //
 #include "gui/box-entity-info.hpp"
-#include "gui/callback.hpp"
 #include "gui/entity.hpp"
 #include "gui/margins.hpp"
 #include "gui/sliderbar.hpp"
 #include "gui/text-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
@@ -108,7 +108,9 @@ namespace gui
         void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const SliderBar::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         const std::string GetText() const { return textInfoOrig_.text; }
         void SetText(const std::string &);

@@ -31,6 +31,7 @@
 #include "misc/vectors.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
@@ -88,26 +89,38 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool CampStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string CampStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        const auto CALLBACK_NAME { PACKET_PTR->name };
-        if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
+        const auto POPUP_NAME { PACKET.curently_open_popup_name };
+
+        if (POPUP_NAME == NEWHEROESPATH_POPUP_NAME1_)
         {
             showNewGamePopup2_ = true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "player closed new game popup #1 and spawned #2");
         }
-        else if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME2_)
+        else if (POPUP_NAME == NEWHEROESPATH_POPUP_NAME2_)
         {
             showNewGamePopup3_ = true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "player closed new game popup #2 and spawned #3");
         }
-        else if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME3_)
+        else if (POPUP_NAME == NEWHEROESPATH_POPUP_NAME3_)
         {
             showNewGamePopup4_ = true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "player closed new game popup #3 and spawned #4");
         }
 
         // if (PACKAGE.Info().Name() == NEWHEROESPATH_POPUP_NAME4_)
         // TODO goto fight encounter
 
-        return true;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "popup callback NOT HANDLED TODO START GAME");
     }
 
     void CampStage::Setup()

@@ -49,12 +49,16 @@ namespace game
         }
 
         // who knows what a Stage will do when handling a popup response callback, so use a copy
-        // of the popupResponse_ to avoid passing a pointer/reference to GameController's
-        // ActiveStages object (context_)
-        const auto popupResponseCopy { popupResponse_ };
-        popupCallbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(&popupResponseCopy));
+        // of the popupResponse_ to avoid passing a pointer to the member popupResponse_ which might
+        // be changed
+        const auto POPUP_RESPONSE_COPY { popupResponse_ };
 
-        RemovePopupResponse();
+        misc::PopupCallback_t::HandleAndLog(
+            *popupCallbackHandlerPtrOpt_.value(),
+            POPUP_RESPONSE_COPY,
+            POPUP_RESPONSE_COPY.ToString());
+
+        ResetPopupResponse();
     }
 
     void ActiveStages::ReplaceStages(const stage::SetupPacket & SETUP_PACKET)
@@ -65,10 +69,11 @@ namespace game
 
     void ActiveStages::ReplacePopupStage(
         const popup::PopupInfo & POPUP_INFO,
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
     {
         RemovePopupAll();
-        popupResponse_.Reset(POPUP_INFO.Name());
+
+        popupResponse_.curently_open_popup_name = POPUP_INFO.Name();
         popupDescriptionStr_ = POPUP_INFO.ToStringShort();
         popupCallbackHandlerPtrOpt_ = POPUP_HANDLER_PTR;
         popupUPtr_ = stage::StageFactory::MakePopup(POPUP_INFO);
@@ -81,17 +86,12 @@ namespace game
         popupResponse_.selection_opt = SELECTION;
     }
 
-    void ActiveStages::RemovePopupResponse()
-    {
-        popupResponse_.Reset();
-        popupDescriptionStr_.clear();
-        popupCallbackHandlerPtrOpt_ = boost::none;
-    }
+    void ActiveStages::ResetPopupResponse() { popupResponse_ = popup::PopupResponse(); }
 
     void ActiveStages::RemovePopupAll()
     {
         RemovePopupStage();
-        RemovePopupResponse();
+        ResetPopupResponse();
     }
 
     void ActiveStages::FocusRemove()

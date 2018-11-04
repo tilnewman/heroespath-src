@@ -40,9 +40,15 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::SliderBar::Callback_t::Packet_t &, const std::string &) override
+        {
+            return "";
+        }
 
-        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::TextButton::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
 
@@ -57,6 +63,7 @@ namespace popup
     protected:
         float ButtonTextHeight() const { return buttonTextHeight_; }
 
+        // returns true if the selection was valid and the popup will be removed
         virtual bool HandleSelect();
 
         virtual void SetupOuterAndInnerRegion();

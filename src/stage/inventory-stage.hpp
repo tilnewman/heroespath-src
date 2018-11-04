@@ -15,7 +15,6 @@
 #include "game/phase-enum.hpp"
 #include "gui/box-entity-info.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/image-text-entity.hpp"
 #include "gui/list-box.hpp"
@@ -23,6 +22,7 @@
 #include "gui/sliders.hpp"
 #include "gui/stage-title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "stage/stage-base.hpp"
@@ -88,7 +88,7 @@ namespace stage
     class InventoryStage
         : public stage::StageBase
 
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
         , public gui::ListBox<InventoryStage, item::ItemPtr_t>::Callback_t::IHandler_t
 
         , public gui::ListBox<InventoryStage, creature::ConditionPtr_t>::Callback_t::IHandler_t
@@ -146,11 +146,6 @@ namespace stage
         using CharViewMap_t = misc::VectorMap<std::size_t, ViewType>;
 
     public:
-        InventoryStage(const InventoryStage &) = delete;
-        InventoryStage(InventoryStage &&) = delete;
-        InventoryStage & operator=(const InventoryStage &) = delete;
-        InventoryStage & operator=(InventoryStage &&) = delete;
-
         InventoryStage(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
@@ -158,20 +153,36 @@ namespace stage
 
         virtual ~InventoryStage();
 
-        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t) override;
+        InventoryStage(const InventoryStage &) = delete;
+        InventoryStage(InventoryStage &&) = delete;
+        InventoryStage & operator=(const InventoryStage &) = delete;
+        InventoryStage & operator=(InventoryStage &&) = delete;
 
-        bool HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const ItemListBox_t::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const SpellListBox_t::Callback_t::PacketPtr_t) override
+        const std::string HandleCallback(
+            const CondListBox_t::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
+
+        const std::string HandleCallback(
+            const SpellListBox_t::Callback_t::Packet_t &, const std::string &) override
         {
-            return false;
+            return "";
         }
 
-        bool HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const TitleListBox_t::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
@@ -328,20 +339,23 @@ namespace stage
             const gui::ImageTextEntityUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V);
 
         template <typename Element_t>
-        bool HandleConditionOrTitleCallback(
-            const typename gui::ListBox<InventoryStage, Element_t>::Callback_t::PacketPtr_t
-                PACKET_PTR)
+        const std::string HandleConditionOrTitleCallback(
+            const typename gui::ListBox<InventoryStage, Element_t>::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION)
         {
-            if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)
-                || (PACKET_PTR->gui_event == gui::GuiEvent::SelectionChange)
-                || (PACKET_PTR->keypress_event.code == sf::Keyboard::Up)
-                || (PACKET_PTR->keypress_event.code == sf::Keyboard::Down))
+            if ((PACKET.gui_event == gui::GuiEvent::Click)
+                || (PACKET.gui_event == gui::GuiEvent::SelectionChange)
+                || (PACKET.keypress_event.code == sf::Keyboard::Up)
+                || (PACKET.keypress_event.code == sf::Keyboard::Down))
             {
-                SetDescBoxTextToSelectedForConditionOrTitle(*PACKET_PTR->listbox_ptr);
-                return true;
+                SetDescBoxTextToSelectedForConditionOrTitle(*PACKET.listbox_ptr);
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "condition or title listbox selection changed");
             }
 
-            return false;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "condition or title listbox callback NOT HANDLED");
         }
 
         template <typename Element_t>

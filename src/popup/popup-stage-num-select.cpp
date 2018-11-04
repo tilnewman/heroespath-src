@@ -37,10 +37,10 @@ namespace popup
 
     PopupStageNumberSelect::~PopupStageNumberSelect() = default;
 
-    bool PopupStageNumberSelect::HandleCallback(
-        const gui::SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string PopupStageNumberSelect::HandleCallback(
+        const gui::SliderBar::Callback_t::Packet_t & PACKET, const std::string &)
     {
-        const auto CURR_RATIO { PACKET_PTR->PositionRatio() };
+        const auto CURR_RATIO { PACKET.PositionRatio() };
 
         const auto CURR_VAL { popupInfo_.NumberSelMin()
                               + static_cast<std::size_t>(
@@ -58,19 +58,20 @@ namespace popup
             SetupInfoText("");
         }
 
-        return true;
+        return "";
     }
 
-    bool PopupStageNumberSelect::HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t)
+    const std::string PopupStageNumberSelect::HandleCallback(
+        const gui::TextEntryBox::Callback_t::Packet_t &, const std::string &)
     {
         selection_ = GetSelectNumber();
 
         if (willTextBoxUpdate_)
         {
-            return ProcessSelectNumber();
+            ProcessSelectNumber();
         }
 
-        return true;
+        return "";
     }
 
     void PopupStageNumberSelect::Setup()
@@ -230,7 +231,7 @@ namespace popup
             SetupInfoText(ss.str());
             return false;
         }
-        if (ORIG_SELECTION_NUM < static_cast<int>(popupInfo_.NumberSelMin()))
+        else if (ORIG_SELECTION_NUM < static_cast<int>(popupInfo_.NumberSelMin()))
         {
             selection_ = NUMBER_SELECT_INVALID_;
             std::ostringstream ss;

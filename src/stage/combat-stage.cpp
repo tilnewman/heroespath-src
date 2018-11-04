@@ -46,6 +46,7 @@
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-combat-over.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "popup/popup-stage-musicsheet.hpp"
@@ -262,84 +263,124 @@ namespace stage
 
     CombatStage::~CombatStage() { StageBase::ClearAllEntities(); }
 
-    bool CombatStage::HandleCallback(const CombatStageListBox_t::Callback_t::PacketPtr_t)
+    const std::string CombatStage::HandleCallback(
+        const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        return false;
-    }
+        auto makeStatusString
+            = [&]() { return ".  CombatEngineStatus(" + MakeStatusMessage() + ")"; };
 
-    bool CombatStage::HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
-    {
-        if ((IsPlayerCharacterTurnValid() == false) || (TurnPhase::Determine != turnPhase_))
+        if (IsPlayerCharacterTurnValid() == false)
         {
-            return false;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "ignored because it is not the player's turn" + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == attackTBoxButtonUPtr_.get())
+        if (TurnPhase::Determine != turnPhase_)
         {
-            return HandleAttack();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "ignored because turnPhase_!=Determine" + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == fightTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == attackTBoxButtonUPtr_.get())
         {
-            return HandleFight();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on attack button " + HandleAttack() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == castTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == fightTBoxButtonUPtr_.get())
+        {
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on fight button " + HandleFight() + makeStatusString());
+        }
+
+        if (PACKET.entity_ptr == castTBoxButtonUPtr_.get())
         {
             if (turnCreaturePtrOpt_)
             {
                 const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
+
                 if (TURN_CREATURE_PTR->Role() == creature::role::Bard)
                 {
-                    return HandleSong_Step1_ValidatePlayAndSelectSong(TURN_CREATURE_PTR);
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player clicked on play song button "
+                            + HandleSong_Step1_ValidatePlayAndSelectSong(TURN_CREATURE_PTR)
+                            + makeStatusString());
                 }
                 else
                 {
-                    return HandleCast_Step1_ValidateCastAndSelectSpell(TURN_CREATURE_PTR);
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player clicked on cast spell button "
+                            + HandleCast_Step1_ValidateCastAndSelectSpell(TURN_CREATURE_PTR)
+                            + makeStatusString());
                 }
             }
             else
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player clicked on (play song/case spell) button but ignored because it's not "
+                    "the "
+                    "player's turn"
+                        + makeStatusString());
             }
         }
 
-        if (PACKET_PTR->entity_ptr == advanceTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == advanceTBoxButtonUPtr_.get())
         {
-            return HandleAdvance();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on advance button " + HandleAdvance() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == retreatTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == retreatTBoxButtonUPtr_.get())
         {
-            return HandleRetreat();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on retreat button " + HandleRetreat() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == blockTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == blockTBoxButtonUPtr_.get())
         {
-            return HandleBlock();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on block button " + HandleBlock() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == skipTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == skipTBoxButtonUPtr_.get())
         {
-            return HandleSkip();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on skip button " + HandleSkip() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == flyTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == flyTBoxButtonUPtr_.get())
         {
-            return HandleFly();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on fly button " + HandleFly() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == landTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == landTBoxButtonUPtr_.get())
         {
-            return HandleLand();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on land button " + HandleLand() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == roarTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == roarTBoxButtonUPtr_.get())
         {
-            return HandleRoar();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on roar button " + HandleRoar() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == pounceTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == pounceTBoxButtonUPtr_.get())
         {
             auto isSkyPounce(false);
 
@@ -350,115 +391,193 @@ namespace stage
                                   .GetIsFlying();
             }
 
-            return HandlePounce(isSkyPounce);
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                std::string("player clicked on ") + ((isSkyPounce) ? "sky" : "") + " pounce button "
+                    + HandleRoar() + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == settingsButtonUPtr_.get())
+        if (PACKET.entity_ptr == settingsButtonUPtr_.get())
         {
             restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
             TransitionTo(stage::Stage::Settings);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on settings button and transitioned to that stage"
+                    + makeStatusString());
         }
 
-        if (PACKET_PTR->entity_ptr == runTBoxButtonUPtr_.get())
+        if (PACKET.entity_ptr == runTBoxButtonUPtr_.get())
         {
-            return HandleRun();
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player clicked on run button " + HandleRun() + makeStatusString());
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "image-text-entity callback NOT HANDLED " + makeStatusString());
     }
 
-    bool CombatStage::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string CombatStage::HandleCallback(
+        const gui::SliderBar::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if (PACKET_PTR == zoomSliderBarUPtr_.get())
+        if (&PACKET == zoomSliderBarUPtr_.get())
         {
             // only zoom out half the distance that the slider actually shows
-            const auto HALF_ZOOM_DIFFERENCE { 1.0f
-                                              - ((1.0f - PACKET_PTR->PositionRatio()) * 0.5f) };
+            const auto HALF_ZOOM_DIFFERENCE { 1.0f - ((1.0f - PACKET.PositionRatio()) * 0.5f) };
 
             combatDisplayStagePtr_->SetZoomLevel(HALF_ZOOM_DIFFERENCE);
-            return true;
+            return "";
         }
         else
         {
-            return false;
+            auto makeStatusString
+                = [&]() { return ".  CombatEngineStatus(" + MakeStatusMessage() + ")"; };
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "sliderbar callback NOT HANDLED " + makeStatusString());
         }
     }
 
-    bool CombatStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string CombatStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if (PACKET_PTR->name == POPUP_NAME_ACHIEVEMENT_)
+        auto makeStatusString
+            = [&]() { return ".  CombatEngineStatus(" + MakeStatusMessage() + ")"; };
+
+        if (PACKET.curently_open_popup_name == POPUP_NAME_ACHIEVEMENT_)
         {
-            return HandleAchievementPopups();
+            if (HandleAchievementPopups())
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player closed on achievement popup but another was spawned "
+                        + makeStatusString());
+            }
+            else
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player closed on achievement popup and combat continued" + makeStatusString());
+            }
         }
-        else if ((PACKET_PTR->name == POPUP_NAME_MUSICSHEET_) && turnCreaturePtrOpt_)
+        else if ((PACKET.curently_open_popup_name == POPUP_NAME_MUSICSHEET_) && turnCreaturePtrOpt_)
         {
             const auto CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
-            if ((PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            if ((PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
             {
                 const auto SONGS_PVEC { CREATURE_PTR->SongsPVec() };
 
-                const auto SELECTED_INDEX { PACKET_PTR->selection_opt.value() };
+                const auto SELECTED_INDEX { PACKET.selection_opt.value() };
 
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (SELECTED_INDEX < SONGS_PVEC.size()),
-                    "stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
+                if (SELECTED_INDEX >= SONGS_PVEC.size())
+                {
+                    M_HP_LOG_ERR(
+                        "SONG_POPUP_RESPONSE, selection="
                         << SELECTED_INDEX
                         << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player selected an INVALID bard song so this callback is ignored"
+                            + makeStatusString());
+                }
 
                 CREATURE_PTR->LastSongPlayedNum(SELECTED_INDEX);
                 songBeingPlayedPtrOpt_ = SONGS_PVEC.at(SELECTED_INDEX);
                 HandleSong_Step2_PerformOnTargets(CREATURE_PTR);
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player selected a valid bard song and it will be played" + makeStatusString());
             }
             else
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player did NOT select a valid bard song ("
+                        + songBeingPlayedPtrOpt_.value()->Name() + ") so this callback is ignored"
+                        + makeStatusString());
             }
         }
-        if (PACKET_PTR->name == POPUP_NAME_SPELLBOOK_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_SPELLBOOK_)
         {
-            if ((PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            if ((PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
             {
                 const auto SPELLS_PVEC { turnCreaturePtrOpt_.value()->SpellsPVec() };
 
-                const auto SELECTED_INDEX { PACKET_PTR->selection_opt.value() };
+                const auto SELECTED_INDEX { PACKET.selection_opt.value() };
 
-                M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (SELECTED_INDEX < SPELLS_PVEC.size()),
-                    "stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
+                if (SELECTED_INDEX >= SPELLS_PVEC.size())
+                {
+                    M_HP_LOG_ERR(
+                        "SPELL_POPUP_RESPONSE, selection="
                         << SELECTED_INDEX
                         << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "player selected an INVALID spell so this callback is ignored"
+                            + makeStatusString());
+                }
 
                 spellBeingCastPtrOpt_ = SPELLS_PVEC.at(SELECTED_INDEX);
                 turnCreaturePtrOpt_.value()->LastSpellCastNum(SELECTED_INDEX);
                 HandleCast_Step2_SelectTargetOrPerformOnAll();
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player selected a valid spell and it will be cast" + makeStatusString());
             }
             else
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "player did NOT select a valid spell so this callback is ignored"
+                        + makeStatusString());
             }
         }
-        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_WIN_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_COMBATOVER_WIN_)
         {
             // TODO If popup response is YES, then goto the loot stage, and if NO,
             //     then goto the adventure stage.
             TransitionTo(stage::Stage::Credits);
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player closed the combat-over-win popup BUT THIS IS STILL TODO so transitioning "
+                "to credits when we really should transition to treasure or adventure..."
+                    + makeStatusString());
         }
-        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_LOSE_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_COMBATOVER_LOSE_)
         {
             // TODO if popup response is YES, then load last saved game
             TransitionTo(stage::Stage::Credits);
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player closed the combat-over-lose popup BUT THIS IS STILL TODO so transitioning "
+                "to credits when we really should transition to...i dont' know...what happens when "
+                "players lose in combat?"
+                    + makeStatusString());
         }
-        else if (PACKET_PTR->name == POPUP_NAME_COMBATOVER_RAN_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_COMBATOVER_RAN_)
         {
             // TODO go directly back to adventure stage
             TransitionTo(stage::Stage::Credits);
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "player closed the combat-over-ran popup BUT THIS IS STILL TODO so transitioning "
+                "to credits when we really should transition to...i dont' know...what happens when "
+                "players run away from combat?"
+                    + makeStatusString());
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "popup callback NOT HANDLED" + makeStatusString());
     }
 
     void CombatStage::PreSetup()
@@ -969,10 +1088,16 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::Spell == animPhase_))
         {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (!!spellBeingCastPtrOpt_),
-                "stage::CombatStage::UpdateTime() turnPhase_=PerformAnim and animPhase_=Spell but "
-                "spellBeingCastPtrOpt_ was uninitialized.");
+            if (!spellBeingCastPtrOpt_)
+            {
+                auto makeStatusString
+                    = [&]() { return ".  CombatEngineStatus(" + MakeStatusMessage() + ")"; };
+
+                M_HP_LOG_ERR(
+                    "turnPhase_=PerformAnim and animPhase_=Spell but spellBeingCastPtrOpt_ was "
+                    "uninitialized"
+                    + makeStatusString());
+            }
 
             if (combatAnimationUPtr_->SparkleAnimIsDone() == false)
             {
@@ -1374,7 +1499,7 @@ namespace stage
 
                 if (MOUSEOVER_ATTACK_STR == combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
                 {
-                    return HandleAttack();
+                    return HandleAttackAndReturnTrueIfStarted();
                 }
                 else
                 {
@@ -1383,23 +1508,23 @@ namespace stage
 
                     if (MOUSEOVER_STR == combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
                     {
-                        return HandleBlock();
+                        return HandleBlockAndReturnTrueIfStarted();
                     }
                     else
                     {
-                        return HandleSkip();
+                        return HandleSkipAndReturnTrueIfStarted();
                     }
                 }
             }
 
             if (KE.code == sf::Keyboard::A)
             {
-                return HandleAttack();
+                return HandleAttackAndReturnTrueIfStarted();
             }
 
             if (KE.code == sf::Keyboard::F)
             {
-                return HandleFight();
+                return HandleFightAndReturnTrueIfStarted();
             }
 
             if ((KE.code == sf::Keyboard::S) && turnCreaturePtrOpt_)
@@ -1408,37 +1533,39 @@ namespace stage
 
                 if (TURN_CREATURE_PTR->Role() == creature::role::Bard)
                 {
-                    return HandleSong_Step1_ValidatePlayAndSelectSong(TURN_CREATURE_PTR);
+                    return HandleSong_Step1_ValidatePlayAndSelectSongAndReturnTrueIfStarted(
+                        TURN_CREATURE_PTR);
                 }
                 else
                 {
-                    return HandleCast_Step1_ValidateCastAndSelectSpell(TURN_CREATURE_PTR);
+                    return HandleCast_Step1_ValidateCastAndSelectSpellAndReturnTrueIfStarted(
+                        TURN_CREATURE_PTR);
                 }
             }
 
             if ((KE.code == sf::Keyboard::Right) || (KE.code == sf::Keyboard::D))
             {
-                return HandleAdvance();
+                return HandleAdvanceAndReturnTrueIfStarted();
             }
 
             if ((KE.code == sf::Keyboard::Left) || (KE.code == sf::Keyboard::E))
             {
-                return HandleRetreat();
+                return HandleRetreatAndReturnTrueIfStarted();
             }
 
             if (KE.code == sf::Keyboard::Y)
             {
-                return HandleFly();
+                return HandleFlyAndReturnTrueIfStarted();
             }
 
             if (KE.code == sf::Keyboard::L)
             {
-                return HandleLand();
+                return HandleLandAndReturnTrueIfStarted();
             }
 
             if (KE.code == sf::Keyboard::R)
             {
-                return HandleRoar();
+                return HandleRoarAndReturnTrueIfStarted();
             }
 
             if (KE.code == sf::Keyboard::C)
@@ -1448,7 +1575,7 @@ namespace stage
 
             if (KE.code == sf::Keyboard::U)
             {
-                return HandleRun();
+                return HandleRunAndReturnTrueIfStarted();
             }
 
             if (turnCreaturePtrOpt_)
@@ -1457,12 +1584,12 @@ namespace stage
 
                 if (KE.code == sf::Keyboard::B)
                 {
-                    return HandleBlock();
+                    return HandleBlockAndReturnTrueIfStarted();
                 }
 
                 if (KE.code == sf::Keyboard::K)
                 {
-                    return HandleSkip();
+                    return HandleSkipAndReturnTrueIfStarted();
                 }
 
                 if (KE.code == sf::Keyboard::I)
@@ -1480,9 +1607,10 @@ namespace stage
 
                 if (KE.code == sf::Keyboard::P)
                 {
-                    return HandlePounce(combat::Encounter::Instance()
-                                            ->GetTurnInfoCopy(TURN_CREATURE_PTR)
-                                            .GetIsFlying());
+                    return HandlePounceAndReturnTrueIfStarted(
+                        combat::Encounter::Instance()
+                            ->GetTurnInfoCopy(TURN_CREATURE_PTR)
+                            .GetIsFlying());
                 }
             }
         }
@@ -2269,7 +2397,7 @@ namespace stage
         slider_ = gui::SliderZeroToOne(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
-    bool CombatStage::HandleAttack()
+    const std::string CombatStage::HandleAttack()
     {
         const auto MOUSEOVER_STR(combatText_.MouseOverTextAttackStr(
             turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
@@ -2277,18 +2405,22 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but attack request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
             HandleAttackTasks(creatureInteraction_.FindNonPlayerCreatureToAttack(
                 turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
 
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleFight()
+    bool CombatStage::HandleAttackAndReturnTrueIfStarted() { return HandleAttack().empty(); }
+
+    const std::string CombatStage::HandleFight()
     {
         const auto MOUSEOVER_STR(
             combatText_.MouseOverTextFightStr(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_));
@@ -2296,7 +2428,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but fight request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2306,11 +2440,13 @@ namespace stage
             combatDisplayStagePtr_->SetScrollingAllowed(true);
             SetTurnPhase(TurnPhase::TargetSelect);
             SetupTurnBox();
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleSong_Step1_ValidatePlayAndSelectSong(
+    bool CombatStage::HandleFightAndReturnTrueIfStarted() { return HandleFight().empty(); }
+
+    const std::string CombatStage::HandleSong_Step1_ValidatePlayAndSelectSong(
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
         const auto MOUSEOVER_STR(
@@ -2319,7 +2455,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but play song request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2333,8 +2471,14 @@ namespace stage
 
             SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
-            return true;
+            return "";
         }
+    }
+
+    bool CombatStage::HandleSong_Step1_ValidatePlayAndSelectSongAndReturnTrueIfStarted(
+        const creature::CreaturePtr_t TURN_CREATURE_PTR)
+    {
+        return HandleSong_Step1_ValidatePlayAndSelectSong(TURN_CREATURE_PTR).empty();
     }
 
     void CombatStage::HandleSong_Step2_PerformOnTargets(
@@ -2386,7 +2530,7 @@ namespace stage
         }
     }
 
-    bool CombatStage::HandleCast_Step1_ValidateCastAndSelectSpell(
+    const std::string CombatStage::HandleCast_Step1_ValidateCastAndSelectSpell(
         const creature::CreaturePtr_t TURN_CREATURE_PTR)
     {
         const auto MOUSEOVER_STR(
@@ -2395,7 +2539,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but cast spell request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2407,8 +2553,14 @@ namespace stage
 
             SpawnPopup(misc::MakeNotNull(this), POPUP_INFO);
 
-            return true;
+            return "";
         }
+    }
+
+    bool CombatStage::HandleCast_Step1_ValidateCastAndSelectSpellAndReturnTrueIfStarted(
+        const creature::CreaturePtr_t TURN_CREATURE_PTR)
+    {
+        return HandleCast_Step1_ValidateCastAndSelectSpell(TURN_CREATURE_PTR).empty();
     }
 
     void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll()
@@ -2476,7 +2628,7 @@ namespace stage
         SetupTurnBox();
     }
 
-    bool CombatStage::HandleAdvance()
+    const std::string CombatStage::HandleAdvance()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2486,7 +2638,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but advance request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2502,11 +2656,13 @@ namespace stage
 
             SetTurnActionPhase(TurnActionPhase::Advance);
             StartPerformAnim();
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleRetreat()
+    bool CombatStage::HandleAdvanceAndReturnTrueIfStarted() { return HandleAdvance().empty(); }
+
+    const std::string CombatStage::HandleRetreat()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2516,7 +2672,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but retreat request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2533,11 +2691,13 @@ namespace stage
 
             SetTurnActionPhase(TurnActionPhase::Retreat);
             StartPerformAnim();
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleBlock()
+    bool CombatStage::HandleRetreatAndReturnTrueIfStarted() { return HandleRetreat().empty(); }
+
+    const std::string CombatStage::HandleBlock()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2547,7 +2707,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but block request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2564,15 +2726,17 @@ namespace stage
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleSkip()
+    bool CombatStage::HandleBlockAndReturnTrueIfStarted() { return HandleBlock().empty(); }
+
+    const std::string CombatStage::HandleSkip()
     {
         if (skipTBoxButtonUPtr_->GetMouseState() == gui::MouseState::Disabled)
         {
-            return false;
+            return "but skip request ignored because that button is disabled";
         }
 
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
@@ -2588,10 +2752,12 @@ namespace stage
             combatText_.ActionText(TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
             true);
 
-        return true;
+        return "";
     }
 
-    bool CombatStage::HandleFly()
+    bool CombatStage::HandleSkipAndReturnTrueIfStarted() { return HandleSkip().empty(); }
+
+    const std::string CombatStage::HandleFly()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2601,7 +2767,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but fly request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2622,11 +2790,13 @@ namespace stage
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleLand()
+    bool CombatStage::HandleFlyAndReturnTrueIfStarted() { return HandleFly().empty(); }
+
+    const std::string CombatStage::HandleLand()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2636,7 +2806,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but land request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2657,11 +2829,13 @@ namespace stage
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandleRoar()
+    bool CombatStage::HandleLandAndReturnTrueIfStarted() { return HandleLand().empty(); }
+
+    const std::string CombatStage::HandleRoar()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2674,12 +2848,16 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but roar request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else if (creaturesToCenterOnPVec.empty())
         {
             QuickSmallPopup("There are no creatures in range to roar at.", false, true);
-            return false;
+
+            return "but roar request ignored because \"There are no creatures in range to roar "
+                   "at\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2703,11 +2881,13 @@ namespace stage
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
             SetupTurnBox();
-            return true;
+            return "";
         }
     }
 
-    bool CombatStage::HandlePounce(const bool IS_SKY_POUNCE)
+    bool CombatStage::HandleRoarAndReturnTrueIfStarted() { return HandleRoar().empty(); }
+
+    const std::string CombatStage::HandlePounce(const bool IS_SKY_POUNCE)
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2717,7 +2897,10 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return std::string("but ") + ((IS_SKY_POUNCE) ? "sky" : "")
+                + " pounce ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2734,8 +2917,13 @@ namespace stage
                     TURN_CREATURE_PTR, turnActionInfo_, fightResult_, true, true),
                 true);
 
-            return true;
+            return "";
         }
+    }
+
+    bool CombatStage::HandlePounceAndReturnTrueIfStarted(const bool IS_SKY_POUNCE)
+    {
+        return HandlePounce(IS_SKY_POUNCE).empty();
     }
 
     bool CombatStage::HandleWeaponChange()
@@ -2751,7 +2939,7 @@ namespace stage
         return true;
     }
 
-    bool CombatStage::HandleRun()
+    const std::string CombatStage::HandleRun()
     {
         const auto TURN_CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
@@ -2761,7 +2949,9 @@ namespace stage
         if (MOUSEOVER_STR != combatText_.TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_)
         {
             QuickSmallPopup(MOUSEOVER_STR, false, true);
-            return false;
+
+            return "but run request ignored because \"" + MOUSEOVER_STR
+                + "\" and popup spawned to tell that to the player";
         }
         else
         {
@@ -2790,17 +2980,20 @@ namespace stage
 
                 SetTurnActionPhase(TurnActionPhase::Run);
                 StartPerformAnim();
-                return true;
+                return "";
             }
             else
             {
                 AppendStatusMessage(
                     TURN_CREATURE_PTR->Name() + " tried to run away but was blocked.", true);
 
-                return false;
+                return "but run attempt failed because they were blocked and popup spawned to tell "
+                       "that to the player";
             }
         }
     }
+
+    bool CombatStage::HandleRunAndReturnTrueIfStarted() { return HandleRun().empty(); }
 
     void CombatStage::MoveTurnBoxObjectsOffScreen()
     {
@@ -3491,7 +3684,7 @@ namespace stage
         }
     }
 
-    const std::string CombatStage::TurnPhaseToString(const TurnPhase ENUM)
+    const std::string CombatStage::TurnPhaseToString(const TurnPhase ENUM) const
     {
         switch (ENUM)
         {
@@ -3566,12 +3759,12 @@ namespace stage
             case TurnPhase::Count:
             default:
             {
-                return "";
+                return "turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
 
-    const std::string CombatStage::TurnActionPhaseToString(const TurnActionPhase ENUM)
+    const std::string CombatStage::TurnActionPhaseToString(const TurnActionPhase ENUM) const
     {
         switch (ENUM)
         {
@@ -3630,12 +3823,12 @@ namespace stage
             case TurnActionPhase::Count:
             default:
             {
-                return "";
+                return "turn_action_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
 
-    const std::string CombatStage::PreTurnPhaseToString(const PreTurnPhase ENUM)
+    const std::string CombatStage::PreTurnPhaseToString(const PreTurnPhase ENUM) const
     {
         switch (ENUM)
         {
@@ -3666,12 +3859,12 @@ namespace stage
             case PreTurnPhase::Count:
             default:
             {
-                return "";
+                return "pre_turn_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
 
-    const std::string CombatStage::AnimPhaseToString(const AnimPhase ENUM)
+    const std::string CombatStage::AnimPhaseToString(const AnimPhase ENUM) const
     {
         switch (ENUM)
         {
@@ -3742,22 +3935,58 @@ namespace stage
             case AnimPhase::Count:
             default:
             {
-                return "";
+                return "anim_phase_enum_out_of_bounds_error_" + misc::ToString(int(ENUM));
             }
         }
     }
 
-    void CombatStage::UpdateTestingText()
+    const std::string CombatStage::MakeStatusMessage() const
     {
         std::ostringstream ss;
-        ss
-            << ((PreTurnPhase::End == preTurnPhase_) ? TurnPhaseToString(turnPhase_)
-                                                     : PreTurnPhaseToString(preTurnPhase_))
-            << ", " << pauseTitle_ << " " << ((IsPaused()) ? "D" : "A") << ", "
-            << TurnActionPhaseToString(turnActionPhase_) << ", " << AnimPhaseToString(animPhase_);
 
-        testingTextRegionUPtr_->SetText(ss.str());
+        if (PreTurnPhase::End == preTurnPhase_)
+        {
+            ss << "turn_phase=" << TurnPhaseToString(turnPhase_);
+        }
+        else
+        {
+            ss << "pre_turn_phase" << PreTurnPhaseToString(preTurnPhase_);
+        }
+
+        if (pauseTitle_.empty() == false)
+        {
+            ss << ", pause_title=" << pauseTitle_;
+        }
+
+        if (TurnActionPhase::None != turnActionPhase_)
+        {
+            ss << ", action_pase=" << TurnActionPhaseToString(turnActionPhase_);
+        }
+
+        if (AnimPhase::NotAnimating != animPhase_)
+        {
+            ss << ", anim_phase=" << AnimPhaseToString(animPhase_);
+        }
+
+        if (IsPaused())
+        {
+            ss << ", paused";
+        }
+
+        if (hasCombatEnded_)
+        {
+            ss << ", combat_has_ended";
+        }
+
+        if (turnCreaturePtrOpt_)
+        {
+            ss << ", turn_creature=\"" << turnCreaturePtrOpt_.value()->NameAndRaceAndRole() << "\"";
+        }
+
+        return ss.str();
     }
+
+    void CombatStage::UpdateTestingText() { testingTextRegionUPtr_->SetText(MakeStatusMessage()); }
 
     CombatStage::TurnActionPhase
         CombatStage::GetTurnActionPhaseFromWeaponType(const item::ItemPtr_t WEAPON_PTR) const
@@ -4234,9 +4463,7 @@ namespace stage
         {
             SetTurnPhase(TurnPhase::End);
             StartPause(END_PAUSE_SEC_, "End");
-
-            // return true because a popup will NOT be raised
-            return true;
+            return false;
         }
         else
         {
@@ -4257,8 +4484,7 @@ namespace stage
                 TITLE_TRANSITION.fromTitlePtrOpt,
                 TITLE_TRANSITION.toTitlePtr);
 
-            // return false because a popup will follow a popup
-            return false;
+            return true;
         }
     }
 

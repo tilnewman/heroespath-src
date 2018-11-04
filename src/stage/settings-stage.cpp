@@ -20,6 +20,7 @@
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
+#include "popup/popup-response.hpp"
 #include "sfutil/center.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/position.hpp"
@@ -97,7 +98,8 @@ namespace stage
         }
     }*/
 
-    bool SettingsStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t)
+    const std::string SettingsStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t &, const std::string & PACKET_DESCRIPTION)
     {
         /*
         M_HP_LOG(
@@ -156,10 +158,16 @@ namespace stage
 
             return true;
         }
-        else*/
+        else
         {
             return true;
         }
+        */
+
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION,
+            "popup callback NOT HANDLED TODO THIS CODE COMMENTED OUT UNTIL THE SETTINGS STAGE IS "
+            "FIXED");
     }
 
     void SettingsStage::Setup()

@@ -36,7 +36,7 @@ namespace interact
         virtual ~Conversation() = default;
 
     private:
-        bool OnInteraction(const stage::InteractStagePtr_t, const Button &) final;
+        const std::string OnInteraction(const stage::InteractStagePtr_t, const Button &) final;
 
     private:
         game::NpcPtr_t npcPtr_;

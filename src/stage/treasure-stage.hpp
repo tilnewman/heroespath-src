@@ -14,13 +14,13 @@
 #include "combat/trap.hpp"
 #include "combat/turn-action-info.hpp"
 #include "creature/race-enum.hpp"
-#include "gui/callback.hpp"
 #include "gui/list-box-event-packet.hpp"
 #include "interact/lock-interactions.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "stage/stage-base.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enumop
@@ -60,7 +60,7 @@ namespace stage
     class TreasureStage
         : public stage::StageBase
 
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
     {
         using ItemListBox_t = gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>;
         using ItemListBoxPtr_t = gui::ListBoxPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
@@ -80,17 +80,20 @@ namespace stage
             displayStagePtrOpt_ = viewStagePtr;
         }
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        bool HandleListboxCallback(
+        const std::string HandleListboxCallback(
             const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
             const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-            const gui::Callback<gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::
-                PacketPtr_t PACKET_PTR);
+            const misc::Callback<
+                gui::ListBoxEventPacket<TreasureDisplayStage, item::ItemPtr_t>>::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION);
 
         void TakeAllItems();
         void Exit();

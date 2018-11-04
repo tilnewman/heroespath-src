@@ -310,7 +310,7 @@ namespace game
     {
         PopupReplaceCommand(
             const popup::PopupInfo & POPUP_INFO,
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR)
             : popup_info(POPUP_INFO)
             , handler_ptr(POPUP_HANDLER_PTR)
         {}
@@ -326,7 +326,7 @@ namespace game
         }
 
         popup::PopupInfo popup_info;
-        gui::PopupCallback_t::IHandlerPtr_t handler_ptr;
+        misc::PopupCallback_t::IHandlerPtr_t handler_ptr;
     };
 
     using PopupReplaceCommandOpt_t = boost::optional<PopupReplaceCommand>;

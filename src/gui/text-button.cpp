@@ -50,7 +50,10 @@ namespace gui
     {
         if (callbackHandlerPtrOpt_)
         {
-            callbackHandlerPtrOpt_.value()->HandleCallback(misc::MakeNotNull(this));
+            std::ostringstream ss;
+            ss << "TextButton(" << GetEntityName() << "\", on-click)";
+
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), *this, ss.str());
         }
     }
 

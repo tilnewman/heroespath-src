@@ -9,9 +9,9 @@
 //
 // active-stages.hpp
 //
-#include "gui/callback.hpp"
 #include "gui/i-entity.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
 #include "popup/popup-response.hpp"
@@ -121,7 +121,7 @@ namespace game
 
         void ReplacePopupStage(
             const popup::PopupInfo & POPUP_INFO,
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
 
         void SetPopupResponse(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
 
@@ -148,7 +148,7 @@ namespace game
             }
         }
 
-        void RemovePopupResponse();
+        void ResetPopupResponse();
         void RemovePopupAll();
         void FocusRemove();
 
@@ -161,7 +161,7 @@ namespace game
         stage::IStageUPtr_t popupUPtr_;
 
         // this is an observer pointer to the Stage that handles all popup callbacks
-        gui::PopupCallback_t::IHandlerPtrOpt_t popupCallbackHandlerPtrOpt_;
+        misc::PopupCallback_t::IHandlerPtrOpt_t popupCallbackHandlerPtrOpt_;
 
         std::string popupDescriptionStr_;
 

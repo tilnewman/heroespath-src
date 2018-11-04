@@ -9,13 +9,16 @@
 //
 // list-box-event-packet.hpp
 //
-#include "gui/callback.hpp"
 #include "gui/gui-event-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+
+#include <sstream>
+#include <string>
 
 namespace heroespath
 {

@@ -56,7 +56,8 @@ namespace popup
 
     PopupStageImageSelect::~PopupStageImageSelect() = default;
 
-    bool PopupStageImageSelect::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
+    const std::string PopupStageImageSelect::HandleCallback(
+        const gui::SliderBar::Callback_t::Packet_t &, const std::string &)
     {
         if (isChangingImageAllowed_)
         {
@@ -72,7 +73,7 @@ namespace popup
             imageMoveQueue_.push(index);
         }
 
-        return true;
+        return "";
     }
 
     void PopupStageImageSelect::Setup()

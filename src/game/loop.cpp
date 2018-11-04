@@ -11,11 +11,11 @@
 //
 #include "loop.hpp"
 
-#include "gui/callback.hpp"
 #include "gui/date-time.hpp"
 #include "gui/display.hpp"
 #include "gui/music-operator.hpp"
 #include "gui/sound-manager.hpp"
+#include "misc/callback.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
 #include "sfutil/event.hpp"

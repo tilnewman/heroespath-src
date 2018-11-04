@@ -218,17 +218,15 @@ namespace gui
         }
     }
 
-    bool TextRegion::HandleCallback(const SliderBar::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string TextRegion::HandleCallback(
+        const SliderBar::Callback_t::Packet_t & PACKET, const std::string &)
     {
         if (sliderBarUPtr_)
         {
-            EstablishWhichLinesToDraw(PACKET_PTR->PositionRatio());
-            return true;
+            EstablishWhichLinesToDraw(PACKET.PositionRatio());
         }
-        else
-        {
-            return false;
-        }
+
+        return "";
     }
 
     void TextRegion::ShrinkEntityRegionToFitText() { SetEntityRegion(sprite_.getGlobalBounds()); }

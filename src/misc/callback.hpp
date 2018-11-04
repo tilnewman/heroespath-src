@@ -4,18 +4,22 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_GUI_CALLBACK_HPP_INCLUDED
-#define HEROESPATH_GUI_CALLBACK_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_CALLBACK_HPP_INCLUDED
+#define HEROESPATH_MISC_CALLBACK_HPP_INCLUDED
 //
 // callback.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/not-null.hpp"
-#include "popup/popup-response.hpp"
 
 namespace heroespath
 {
-namespace gui
+namespace popup
+{
+    struct PopupResponse;
+}
+namespace misc
 {
 
     // Responsible for defining all the types that are handy to have when working with callbacks
@@ -31,27 +35,39 @@ namespace gui
         Callback & operator=(Callback &&) = delete;
 
         using Packet_t = T;
-        using PacketPtr_t = misc::NotNull<Packet_t *>;
 
         // Responsible for declaring the interface of a callback handler. (typically a
-        // Stage) A callback is required to pass a non-null pointer to whatever initiated
-        // the callback.
+        // Stage) A callback is required to pass an information packet to the handler.
         struct IHandler_t
         {
-            // returns true if the callback was identified and handled (changed something)
-            virtual bool HandleCallback(const PacketPtr_t CALLBACK_PACKET_PTR) = 0;
+            // returns a description (including PACKET_DESCRIPTION) if anything meaningful was done
+            virtual const std::string
+                HandleCallback(const Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
+                = 0;
 
         protected:
-            ~IHandler_t() {}
+            virtual ~IHandler_t() = default;
         };
 
         using IHandlerPtr_t = misc::NotNull<IHandler_t *>;
         using IHandlerPtrOpt_t = boost::optional<IHandlerPtr_t>;
+
+        static void HandleAndLog(
+            IHandler_t & handler, const Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
+        {
+            const std::string CALLBACK_HANDLER_MESSAGE { handler.HandleCallback(
+                PACKET, PACKET_DESCRIPTION) };
+
+            if (CALLBACK_HANDLER_MESSAGE.empty() == false)
+            {
+                M_HP_LOG(CALLBACK_HANDLER_MESSAGE);
+            }
+        }
     };
 
-    using PopupCallback_t = Callback<const popup::PopupResponse>;
+    using PopupCallback_t = Callback<popup::PopupResponse>;
 
-} // namespace gui
+} // namespace misc
 } // namespace heroespath
 
-#endif // HEROESPATH_GUI_ICALLBACK_HANDLER_HPP_INCLUDED
+#endif // HEROESPATH_MISC_CALLBACK_HPP_INCLUDED

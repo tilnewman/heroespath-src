@@ -85,18 +85,24 @@ namespace popup
 
     PopupStageSpellbook::~PopupStageSpellbook() = default;
 
-    bool PopupStageSpellbook::HandleCallback(
-        const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t
-            PACKET_PTR)
+    const std::string PopupStageSpellbook::HandleCallback(
+        const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        if ((PACKET_PTR->gui_event == gui::GuiEvent::Click)
-            || (PACKET_PTR->gui_event == gui::GuiEvent::SelectionChange)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Up)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Down))
+        if ((PACKET.gui_event == gui::GuiEvent::Click)
+            || (PACKET.gui_event == gui::GuiEvent::SelectionChange)
+            || (PACKET.keypress_event.code == sf::Keyboard::Up)
+            || (PACKET.keypress_event.code == sf::Keyboard::Down))
         {
-            if (currentListboxIndex_ != PACKET_PTR->listbox_ptr->SelectionIndex())
+            if (currentListboxIndex_ == PACKET.listbox_ptr->SelectionIndex())
             {
-                currentListboxIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "spell list keypress or click but the selection did not change so ignored");
+            }
+            else
+            {
+                currentListboxIndex_ = PACKET.listbox_ptr->SelectionIndex();
 
                 if (imageColorSlider_.Direction() != gui::Moving::Away)
                 {
@@ -110,18 +116,23 @@ namespace popup
                     textColorSlider_.Start();
                 }
 
-                return true;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "spell list keypress or click and the selection changed");
             }
         }
         else if (
-            (PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
+            (PACKET.gui_event == gui::GuiEvent::DoubleClick)
+            || (PACKET.keypress_event.code == sf::Keyboard::Return))
         {
-            currentListboxIndex_ = PACKET_PTR->listbox_ptr->SelectionIndex();
-            return HandleSpellCast();
+            currentListboxIndex_ = PACKET.listbox_ptr->SelectionIndex();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "spell list double-click or keypress-enter and the selection was set...maybe not "
+                "changed though...");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "spell list event NOT HANDLED");
     }
 
     void PopupStageSpellbook::Setup()

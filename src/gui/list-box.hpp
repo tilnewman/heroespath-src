@@ -10,7 +10,6 @@
 // list-box.hpp
 //
 #include "gui/box-entity.hpp"
-#include "gui/callback.hpp"
 #include "gui/entity.hpp"
 #include "gui/gui-event-enum.hpp"
 #include "gui/list-box-event-packet.hpp"
@@ -19,9 +18,11 @@
 #include "gui/sliderbar.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfutil/center-of.hpp"
+#include "sfutil/event.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"
 #include "stage/i-stage.hpp"
@@ -58,7 +59,7 @@ namespace gui
         , public SliderBar::Callback_t::IHandler_t
     {
     public:
-        using Callback_t = Callback<ListBoxEventPacket<Stage_t, Element_t>>;
+        using Callback_t = misc::Callback<ListBoxEventPacket<Stage_t, Element_t>>;
 
         using OwningStagePtr_t = misc::NotNull<Stage_t *>;
 
@@ -103,21 +104,22 @@ namespace gui
             Setup();
         }
 
-        bool HandleCallback(const SliderBar::Callback_t::PacketPtr_t PACKET_PTR) override
+        const std::string HandleCallback(
+            const SliderBar::Callback_t::Packet_t & PACKET, const std::string &) override
         {
             if (Empty())
             {
                 ResetIndexes();
-                return false;
             }
             else
             {
                 const auto NEW_INDEX_F { static_cast<float>(elements_.size() - 1)
-                                         * PACKET_PTR->PositionRatio() };
+                                         * PACKET.PositionRatio() };
 
                 DisplayIndex(static_cast<std::size_t>(NEW_INDEX_F));
-                return true;
             }
+
+            return "";
         }
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override
@@ -1085,13 +1087,15 @@ namespace gui
 
         void CreateKeypressPacketAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT)
         {
-            if (WillCallback())
+            if (WillCallback() && callbackHandlerPtr_)
             {
-
-                ListBoxEventPacket<Stage_t, Element_t> eventPacket(
+                const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::Keypress, KEY_EVENT);
 
-                callbackHandlerPtr_->HandleCallback(misc::MakeNotNull(&eventPacket));
+                std::ostringstream ss;
+                ss << "ListBoxEvent(" << MakeTypeString() << "\", keypress=" << KEY_EVENT << ")";
+
+                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
             }
         }
 
@@ -1126,12 +1130,15 @@ namespace gui
 
         void OnDoubleClick(const sf::Vector2f &) override
         {
-            if (WillCallback())
+            if (WillCallback() && callbackHandlerPtr_)
             {
-                ListBoxEventPacket<Stage_t, Element_t> eventPacket(
+                const ListBoxEventPacket<Stage_t, Element_t> EVENT_PACKET(
                     misc::MakeNotNull(this), GuiEvent::DoubleClick);
 
-                callbackHandlerPtr_->HandleCallback(misc::MakeNotNull(&eventPacket));
+                std::ostringstream ss;
+                ss << "ListBoxEvent(" << MakeTypeString() << "\", double-click)";
+
+                Callback_t::HandleAndLog(*callbackHandlerPtr_, EVENT_PACKET, ss.str());
             }
         }
 

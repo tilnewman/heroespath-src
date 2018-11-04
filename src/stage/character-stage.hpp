@@ -16,7 +16,6 @@
 #include "creature/stat-set.hpp"
 #include "gui/box-entity.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/image-text-entity.hpp"
@@ -28,6 +27,7 @@
 #include "gui/stage-title.hpp"
 #include "gui/text-entry-box.hpp"
 #include "gui/text-region.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "stage/character-stage-anim-num.hpp"
 #include "stage/character-stage-stat-box.hpp"
@@ -59,34 +59,43 @@ namespace stage
     class CharacterStage
         : public stage::StageBase
         //, public gui::RadioButtonSet::Callback_t::IHandler_t
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
         , public gui::SliderBar::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
         , public gui::TextEntryBox::Callback_t::IHandler_t
     {
     public:
+        CharacterStage();
+        virtual ~CharacterStage();
+
         CharacterStage(const CharacterStage &) = delete;
         CharacterStage(CharacterStage &&) = delete;
         CharacterStage & operator=(const CharacterStage &) = delete;
         CharacterStage & operator=(CharacterStage &&) = delete;
-
-        CharacterStage();
-        virtual ~CharacterStage();
 
         // required by callback handler
 
         // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t )
         // override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
-
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
-
-        bool HandleCallback(const gui::TextEntryBox::Callback_t::PacketPtr_t) override
+        const std::string HandleCallback(
+            const gui::SliderBar::Callback_t::Packet_t &, const std::string &) override
         {
-            return false;
+            return "";
+        }
+
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
+
+        const std::string HandleCallback(
+            const gui::TextEntryBox::Callback_t::Packet_t &, const std::string &) override
+        {
+            return "";
         }
 
         void Setup() override;
@@ -129,10 +138,9 @@ namespace stage
             gui::TextInfo & helpTextInfo,
             gui::TextRegionUVec_t & textRegionUVec);
 
-        bool OnSaveButton();
+        const std::string OnSaveButton();
         bool OnBackButton();
-        bool OnHelpButton();
-        bool OnNextButton();
+        const std::string OnNextButton();
 
         void MissingAttributesPopup();
         void CharacterNameMissingPopup();
@@ -164,7 +172,7 @@ namespace stage
         void ResetForNewCharacterCreation();
         bool RaceChange(const creature::race::Enum);
         bool RoleChange();
-        bool CreateCharacter();
+        void CreateCharacter();
         creature::sex::Enum GetCurrentSelectedSex() const;
 
         void SetMenuButtonsDisabledWhileStatsAreAnimating(const bool WILL_DISABLE);

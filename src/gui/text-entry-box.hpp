@@ -11,10 +11,10 @@
 //
 #include "gui/box-entity-info.hpp"
 #include "gui/box-entity.hpp"
-#include "gui/callback.hpp"
 #include "gui/colored-rect.hpp"
 #include "gui/entity.hpp"
 #include "gui/text-info.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <memory>
@@ -32,7 +32,7 @@ namespace gui
     class TextEntryBox : public Entity
     {
     public:
-        using Callback_t = Callback<TextEntryBox>;
+        using Callback_t = misc::Callback<TextEntryBox>;
 
         TextEntryBox(const TextEntryBox &) = delete;
         TextEntryBox(TextEntryBox &&) = delete;

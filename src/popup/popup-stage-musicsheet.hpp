@@ -49,7 +49,9 @@ namespace popup
 
         virtual ~PopupStageMusicSheet();
 
-        bool HandleCallback(const SongListBox_t::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const SongListBox_t::Callback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
         using PopupStageBase::HandleCallback;
 

@@ -11,9 +11,9 @@
 //
 #include "gui/box-entity.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/stage-title.hpp"
+#include "misc/callback.hpp"
 #include "stage/stage-base.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -38,7 +38,7 @@ namespace stage
     // A Stage class that allows the party to camp for resting and healing
     class CampStage
         : public stage::StageBase
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
     {
     public:
         CampStage(const CampStage &) = delete;
@@ -49,7 +49,9 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;

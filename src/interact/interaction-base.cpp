@@ -68,29 +68,33 @@ namespace interact
             gui::Justified::Left);
     }
 
-    bool InteractionBase::OnButtonClick(
+    const std::string InteractionBase::OnButtonClick(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
-        const gui::TextButtonPtr_t TEXT_BUTTON_PTR)
+        const gui::TextButton & TEXT_BUTTON_INVOKING_THIS_CALLBACK,
+        const std::string & PACKET_DESCRIPTION)
     {
-        for (const auto & BUTTON : buttons_)
+        for (const auto & BUTTON_WRAPPER_OWNED_BY_THIS_STAGE : buttons_)
         {
-            if (BUTTON.DoPointersMatch(TEXT_BUTTON_PTR))
+            if (BUTTON_WRAPPER_OWNED_BY_THIS_STAGE.IsSameButton(
+                    &TEXT_BUTTON_INVOKING_THIS_CALLBACK))
             {
-                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON);
+                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON_WRAPPER_OWNED_BY_THIS_STAGE);
             }
         }
 
-        return false;
+        return "not handled by any of the buttons owned by this stage, packet_desription="
+            + PACKET_DESCRIPTION;
     }
 
     bool InteractionBase::OnKeyRelease(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const sf::Keyboard::Key KEY)
     {
-        for (const auto & BUTTON : buttons_)
+        for (const auto & BUTTON_WRAPPER_OWNED_BY_THIS_STAGE : buttons_)
         {
-            if (BUTTON.Key() == KEY)
+            if (BUTTON_WRAPPER_OWNED_BY_THIS_STAGE.Key() == KEY)
             {
-                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON);
+                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON_WRAPPER_OWNED_BY_THIS_STAGE)
+                    .empty();
             }
         }
 

@@ -70,49 +70,58 @@ namespace popup
 
     PopupStageBase::~PopupStageBase() { StageBase::ClearAllEntities(); }
 
-    bool PopupStageBase::HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t)
+    const std::string PopupStageBase::HandleCallback(
+        const gui::TextButton::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        return false;
-    }
-
-    bool PopupStageBase::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t PACKET_PTR)
-    {
-        if (PACKET_PTR == buttonSelectUPtr_.get())
+        if (&PACKET == buttonSelectUPtr_.get())
         {
-            return HandleSelect();
+            if (HandleSelect())
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "select text button clicked with a valid selection and this popup will be "
+                    "removed");
+            }
+            else
+            {
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "select text button clicked with an invalid selection so no action taken");
+            }
         }
-        else if (PACKET_PTR == buttonYesUPtr_.get())
+        else if (&PACKET == buttonYesUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             RemovePopup(ResponseTypes::Yes);
-            return true;
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "yes text button clicked");
         }
-        else if (PACKET_PTR == buttonNoUPtr_.get())
+        else if (&PACKET == buttonNoUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             RemovePopup(ResponseTypes::No);
-            return true;
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "no text button clicked");
         }
-        else if (PACKET_PTR == buttonCancelUPtr_.get())
+        else if (&PACKET == buttonCancelUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             RemovePopup(ResponseTypes::Cancel);
-            return true;
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "cancel text button clicked");
         }
-        else if (PACKET_PTR == buttonContinueUPtr_.get())
+        else if (&PACKET == buttonContinueUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             RemovePopup(ResponseTypes::Continue);
-            return true;
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "continue text button clicked");
         }
-        else if (PACKET_PTR == buttonOkayUPtr_.get())
+        else if (&PACKET == buttonOkayUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
             RemovePopup(ResponseTypes::Okay);
-            return true;
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "okay text button clicked");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "text button callback NOT HANDLED");
     }
 
     void PopupStageBase::Setup()
@@ -240,9 +249,7 @@ namespace popup
         else
         {
             PlayValidKeypressSoundEffect();
-
             RemovePopup(ResponseTypes::Select, static_cast<std::size_t>(selection_));
-
             return true;
         }
     }

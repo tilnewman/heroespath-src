@@ -246,10 +246,12 @@ namespace gui
     {
         if (callbackHandlerPtrOpt_)
         {
-            Callback_t::Packet_t callbackPacket(misc::MakeNotNull(this), INDEX);
+            const Callback_t::Packet_t EVENT_PACKET(misc::MakeNotNull(this), INDEX);
 
-            callbackHandlerPtrOpt_.value()->HandleCallback(
-                Callback_t::PacketPtr_t(&callbackPacket));
+            std::ostringstream ss;
+            ss << "RadioOrCheckSet(" << GetEntityName() << "\", index-changed=" << INDEX << ")";
+
+            Callback_t::HandleAndLog(*callbackHandlerPtrOpt_.value(), EVENT_PACKET, ss.str());
         }
     }
 

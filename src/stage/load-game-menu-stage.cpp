@@ -84,7 +84,8 @@ namespace stage
         gamestatePVec_.clear();
     }
 
-    bool LoadGameStage::HandleCallback(const GameListBox_t::Callback_t::PacketPtr_t)
+    const std::string LoadGameStage::HandleCallback(
+        const GameListBox_t::Callback_t::Packet_t &, const std::string & PACKET_DESCRIPTION)
     {
         // TODO Handle selection of a game to load and then load it,
         // including a call to all creatures StoreItemsInWarehouseAfterLoad(),
@@ -92,7 +93,9 @@ namespace stage
         // and call gamestatePSet_.erase(ptr)
 
         SetupGameInfoDisplay();
-        return true;
+
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "game listbox callback NOT HANDLED TODO");
     }
 
     void LoadGameStage::Setup()

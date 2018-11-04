@@ -15,6 +15,7 @@
 #include "interact/i-interaction.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/map.hpp"
+#include "popup/popup-response.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/fitting.hpp"
 
@@ -54,34 +55,43 @@ namespace stage
 
     InteractStage::~InteractStage() = default;
 
-    bool InteractStage::HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string InteractStage::HandleCallback(
+        const gui::TextButton::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
         const auto INTERACTION_PTR_OPT { interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
             return INTERACTION_PTR_OPT.value()->OnButtonClick(
-                stage::InteractStagePtr_t(this), PACKET_PTR);
+                stage::InteractStagePtr_t(this), PACKET, PACKET_DESCRIPTION);
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "text button callback NOT HANDLED");
     }
 
-    bool InteractStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string InteractStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
             if (lockPicking_.HandleCharacterSelectionPopupResponse(
-                    stage::InteractStagePtr_t(this), PACKET_PTR, stage::IStagePtr_t(this)))
+                    stage::InteractStagePtr_t(this), PACKET, stage::IStagePtr_t(this)))
             {
-                return false;
+                interactionManager_.Unlock();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw user decided which characcter will try to pick the lock and started all "
+                    "the unlocking attempt stuff");
             }
             else
             {
-                interactionManager_.Unlock();
-                return true;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw user failed to choose a valid characcter to try and pick the lock");
             }
         }
-        else if (PACKET_PTR->name == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        else if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             // at this point the attempting popup has finished playing the sfx and closed
             if (lockPicking_.Attempt())
@@ -89,9 +99,11 @@ namespace stage
                 if (lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
                         stage::InteractStagePtr_t(this), stage::IStagePtr_t(this)))
                 {
-                    // return the opposite because we need to return false if actually opening a
-                    // popup window
-                    return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "the lock was picked and that popup has finished playing the picking sfx "
+                        "and closed but that character earned a title for lockpicking so that "
+                        "popup was spawned");
                 }
                 else
                 {
@@ -99,25 +111,32 @@ namespace stage
                     {
                         interactionManager_.Current().value()->OnSuccess(
                             stage::InteractStagePtr_t(this));
-                        return true;
+
+                        return MakeCallbackHandlerMessage(
+                            PACKET_DESCRIPTION, "the lock was picked");
                     }
                 }
             }
             else
             {
+                // this unlocks the interaction NOT the door/chest/etc.
                 interactionManager_.Unlock();
+                return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "the lock was NOT picked");
             }
         }
-        else if (PACKET_PTR->name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        else if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             if (interactionManager_.Current())
             {
                 interactionManager_.Current().value()->OnSuccess(stage::InteractStagePtr_t(this));
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "the lock was picked and the title gained popup has closed so moving on now");
             }
         }
 
-        return true;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
     }
 
     void InteractStage::PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr)

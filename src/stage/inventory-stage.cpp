@@ -37,6 +37,7 @@
 #include "misc/config-file.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-inventory-prompt.hpp"
 #include "popup/popup-stage-musicsheet.hpp"
@@ -294,185 +295,255 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool InventoryStage::HandleCallback(const CondListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string InventoryStage::HandleCallback(
+        const CondListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        return HandleConditionOrTitleCallback<creature::ConditionPtr_t>(PACKET_PTR);
+        return HandleConditionOrTitleCallback<creature::ConditionPtr_t>(PACKET, PACKET_DESCRIPTION);
     }
 
-    bool InventoryStage::HandleCallback(const TitleListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string InventoryStage::HandleCallback(
+        const TitleListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        return HandleConditionOrTitleCallback<creature::TitlePtr_t>(PACKET_PTR);
+        return HandleConditionOrTitleCallback<creature::TitlePtr_t>(PACKET, PACKET_DESCRIPTION);
     }
 
-    bool InventoryStage::HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string InventoryStage::HandleCallback(
+        const ItemListBox_t::Callback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if ((PACKET_PTR->gui_event != gui::GuiEvent::DoubleClick)
-            && (PACKET_PTR->keypress_event.code != sf::Keyboard::Return))
+        if ((PACKET.gui_event != gui::GuiEvent::DoubleClick)
+            && (PACKET.keypress_event.code != sf::Keyboard::Return))
         {
-            return false;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "item listbox callback ignored because it was not a double-click or "
+                "keypress-renturn event");
         }
 
-        if (PACKET_PTR->listbox_ptr == itemLeftListBoxUPtr_.get())
+        if (PACKET.listbox_ptr == itemLeftListBoxUPtr_.get())
         {
-            return HandleUnequipRequest();
+            HandleUnequipRequest();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "left listbox (equipped item list) double-click or keypress-enter triggered "
+                "unequip attempt");
         }
-        else if (PACKET_PTR->listbox_ptr == itemRightListBoxUPtr_.get())
+        else if (PACKET.listbox_ptr == itemRightListBoxUPtr_.get())
         {
-            return HandleEquipRequest();
+            HandleEquipRequest();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "right listbox (unequipped item list) double-click or keypress-enter triggered "
+                "equip attempt");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "unknown listbox callback NOT HANDLED");
     }
 
-    bool InventoryStage::HandleCallback(
-        const gui::ImageTextEntity::Callback_t::PacketPtr_t PACKET_PTR)
+    const std::string InventoryStage::HandleCallback(
+        const gui::ImageTextEntity::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
         if (isSliderAnimating_)
         {
-            return false;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "image-text-entity callback ignored because animations are moving");
         }
 
-        if (PACKET_PTR->entity_ptr == backButtonUPtr_.get())
+        if (PACKET.entity_ptr == backButtonUPtr_.get())
         {
-            return HandleBack();
+            HandleBack();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "back button click");
         }
 
-        if (PACKET_PTR->entity_ptr == itemsButtonUPtr_.get())
+        if (PACKET.entity_ptr == itemsButtonUPtr_.get())
         {
-            return HandleViewChange(ViewType::Items);
+            HandleViewChange(ViewType::Items);
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "items button click");
         }
 
-        if (PACKET_PTR->entity_ptr == titlesButtonUPtr_.get())
+        if (PACKET.entity_ptr == titlesButtonUPtr_.get())
         {
-            return HandleViewChange(ViewType::Titles);
+            HandleViewChange(ViewType::Titles);
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "titles button click");
         }
 
-        if (PACKET_PTR->entity_ptr == condsButtonUPtr_.get())
+        if (PACKET.entity_ptr == condsButtonUPtr_.get())
         {
-            return HandleViewChange(ViewType::Conditions);
+            HandleViewChange(ViewType::Conditions);
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "conditions button click");
         }
 
-        if (PACKET_PTR->entity_ptr == spellsButtonUPtr_.get())
+        if (PACKET.entity_ptr == spellsButtonUPtr_.get())
         {
-            return HandleSpellsOrSongs();
+            HandleSpellsOrSongs();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "spells button click");
         }
 
-        if (PACKET_PTR->entity_ptr == giveButtonUPtr_.get())
+        if (PACKET.entity_ptr == giveButtonUPtr_.get())
         {
-            return HandleGiveRequestInitial();
+            HandleGiveRequestInitial();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "give button click");
         }
 
-        if (PACKET_PTR->entity_ptr == shareButtonUPtr_.get())
+        if (PACKET.entity_ptr == shareButtonUPtr_.get())
         {
-            return HandleShare();
+            HandleShare();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "share button click");
         }
 
-        if (PACKET_PTR->entity_ptr == gatherButtonUPtr_.get())
+        if (PACKET.entity_ptr == gatherButtonUPtr_.get())
         {
-            return HandleGather();
+            HandleGather();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "gather button click");
         }
 
-        if (PACKET_PTR->entity_ptr == equipButtonUPtr_.get())
+        if (PACKET.entity_ptr == equipButtonUPtr_.get())
         {
-            return HandleEquipActual();
+            HandleEquipActual();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "equip button click");
         }
 
-        if (PACKET_PTR->entity_ptr == unequipButtonUPtr_.get())
+        if (PACKET.entity_ptr == unequipButtonUPtr_.get())
         {
-            return HandleUnequipActual();
+            HandleUnequipActual();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "unequip button click");
         }
 
-        if (PACKET_PTR->entity_ptr == dropButtonUPtr_.get())
+        if (PACKET.entity_ptr == dropButtonUPtr_.get())
         {
-            return HandleDropRequest();
+            HandleDropRequest();
+            return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "drop button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == eqSortButtonNameUPtr_.get()) && itemLeftListBoxUPtr_)
+        if ((PACKET.entity_ptr == eqSortButtonNameUPtr_.get()) && itemLeftListBoxUPtr_)
         {
             gui::listbox::SortByName(*itemLeftListBoxUPtr_, isSortReversedEqName_);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "equipped-listbox sort-by-name button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == eqSortButtonPriceUPtr_.get()) && itemLeftListBoxUPtr_)
+        if ((PACKET.entity_ptr == eqSortButtonPriceUPtr_.get()) && itemLeftListBoxUPtr_)
         {
             gui::listbox::SortByPrice(*itemLeftListBoxUPtr_, isSortReversedEqPrice_);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "equipped-listbox sort-by-price button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == eqSortButtonWeightUPtr_.get()) && itemLeftListBoxUPtr_)
+        if ((PACKET.entity_ptr == eqSortButtonWeightUPtr_.get()) && itemLeftListBoxUPtr_)
         {
             gui::listbox::SortByWeight(*itemLeftListBoxUPtr_, isSortReversedEqWeight_);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "equipped-listbox sort-by-weight button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == unEqSortButtonNameUPtr_.get()) && itemRightListBoxUPtr_)
+        if ((PACKET.entity_ptr == unEqSortButtonNameUPtr_.get()) && itemRightListBoxUPtr_)
         {
             gui::listbox::SortByName(*itemRightListBoxUPtr_, isSortReversedUneqName_);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "unequipped-listbox sort-by-name button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == unEqSortButtonPriceUPtr_.get()) && itemRightListBoxUPtr_)
+        if ((PACKET.entity_ptr == unEqSortButtonPriceUPtr_.get()) && itemRightListBoxUPtr_)
         {
             gui::listbox::SortByPrice(*itemRightListBoxUPtr_, isSortReversedUneqPrice_);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "unequipped-listbox sort-by-price button click");
         }
 
-        if ((PACKET_PTR->entity_ptr == unEqSortButtonWeightUPtr_.get()) && itemRightListBoxUPtr_)
+        if ((PACKET.entity_ptr == unEqSortButtonWeightUPtr_.get()) && itemRightListBoxUPtr_)
         {
             gui::listbox::SortByWeight(*itemRightListBoxUPtr_, isSortReversedUneqWeight_);
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "unequipped-listbox sort-by-weight button click");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "image-text-entity callback NOT HANDLED");
     }
 
-    bool InventoryStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string InventoryStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
         isWaitingOnPopup_ = false;
 
-        if (PACKET_PTR->name == POPUP_NAME_SONG_RESULT_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_SONG_RESULT_)
         {
-            return HandleSong_Step2_DisplayResults();
+            HandleSong_Step2_DisplayResults();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "closed play bard song popup and spawned the play bard song result popup");
         }
-        else if (PACKET_PTR->name == POPUP_NAME_SPELL_RESULT_)
+        else if (PACKET.curently_open_popup_name == POPUP_NAME_SPELL_RESULT_)
         {
-            return HandleCast_Step3_DisplayResults();
-        }
-        else if (
-            (PACKET_PTR->name == POPUP_NAME_DROPCONFIRM_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Yes))
-        {
-            return HandleDropActual();
-        }
-        else if (
-            (PACKET_PTR->name == POPUP_NAME_GIVE_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
-        {
-            if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Item())
-            {
-                return HandleGiveRequestItems();
-            }
-            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
-            {
-                return HandleGiveRequestCoins();
-            }
-            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
-            {
-                return HandleGiveRequestGems();
-            }
-            else if (
-                PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
-            {
-                return HandleGiveRequestMeteorShards();
-            }
+            HandleCast_Step3_DisplayResults();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "closed cast spell result popup and spawned next spell popup");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_CHAR_SELECT_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_DROPCONFIRM_)
+            && (PACKET.type == popup::ResponseTypes::Yes))
+        {
+            HandleDropActual();
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "closed drop item confirmation popup by clicking yes so the item has been dropped");
+        }
+        else if (
+            (PACKET.curently_open_popup_name == POPUP_NAME_GIVE_)
+            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+        {
+            if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Item())
+            {
+                HandleGiveRequestItems();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed give popup by selecting items and the next popup spawned");
+            }
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
+            {
+                HandleGiveRequestCoins();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed give popup by selecting coins and the next popup spawned");
+            }
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
+            {
+                HandleGiveRequestGems();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed give popup by selecting gems and the next popup spawned");
+            }
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
+            {
+                HandleGiveRequestMeteorShards();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed give popup by selecting meteor shards and the next popup spawned");
+            }
+        }
+        else if (
+            (PACKET.curently_open_popup_name == POPUP_NAME_CHAR_SELECT_)
+            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
         {
             creatureToGiveToPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(
-                PACKET_PTR->selection_opt.value());
+                PACKET.selection_opt.value());
 
             const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
@@ -484,38 +555,60 @@ namespace stage
                 HandleCast_Step2_PerformSpell(
                     spellBeingCastPtrOpt_.value(), spellTargetCreaturePVec);
 
-                return true;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed who-will-cast popup by selecting a valid character and started cast "
+                    "spell process");
             }
 
             switch (contentType_)
             {
                 case ContentType::Item:
                 {
-                    return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed who-to-give-item-to popup and attempted to give");
                 }
                 case ContentType::Coins:
                 {
-                    return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed who-to-give-coins-to popup and attempted to give");
                 }
                 case ContentType::Gems:
                 {
-                    return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed who-to-give-gems-to popup and attempted to give");
                 }
                 case ContentType::MeteorShards:
                 {
-                    return HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
+                    HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed who-to-give-meteor-shards-to popup and attempted to give");
                 }
                 case ContentType::Count:
                 default:
                 {
-                    return true;
+                    break;
                 }
             }
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "closed character-select popup but NOT HANDLED");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_NUMBER_SELECT_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
-            && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_NUMBER_SELECT_)
+            && (PACKET.type == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
+            && PACKET.selection_opt)
         {
             const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
 
@@ -523,110 +616,168 @@ namespace stage
             {
                 case ContentType::MeteorShards:
                 {
-                    HandleMeteorShardsGive(
-                        PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
-                    return false;
+                    HandleMeteorShardsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed how-many-meteor-shards-select popup and attempted to give");
                 }
                 case ContentType::Coins:
                 {
-                    HandleCoinsGive(PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
-                    return false;
+                    HandleCoinsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed how-many-coins-select popup and attempted to give");
                 }
                 case ContentType::Gems:
                 {
-                    HandleGemsGive(PACKET_PTR->selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
-                    return false;
+                    HandleGemsGive(PACKET.selection_opt.value(), CREATURE_TO_GIVE_TO_PTR);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed how-many-gems-select popup and attempted to give");
                 }
                 case ContentType::Item:
                 case ContentType::Count:
                 default:
                 {
-                    return true;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed how-many-(? of something)-select popup NOT HANDLED");
                 }
             }
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_CONTENTSELECTION_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_CONTENTSELECTION_)
+            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
         {
-            if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
+            if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
             {
                 if (ActionType::Gather == actionType_)
                 {
                     HandleCoinsGather(true);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-coins popup by selecting gather");
                 }
                 else if (ActionType::Share == actionType_)
                 {
                     HandleCoinsShare();
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-coins popup by selecting coins share");
                 }
 
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "closed content-selection-coins popup NOT HANDLED");
             }
-            else if (PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Gems())
             {
                 if (ActionType::Gather == actionType_)
                 {
                     HandleGemsGather(true);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-gems popup by selecting gather");
                 }
                 else if (ActionType::Share == actionType_)
                 {
                     HandleGemsShare();
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-gems popup by selecting share");
                 }
 
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "closed content-selection-gems popup NOT HANDLED");
             }
-            else if (
-                PACKET_PTR->selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
+            else if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
                 {
                     HandleMeteorShardsGather(true);
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-shards popup by selecting gather");
                 }
                 else if (ActionType::Share == actionType_)
                 {
                     HandleMeteorShardsShare();
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "closed content-selection-shards popup by selecting share");
                 }
 
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "closed content-selection-gems popup NOT HANDLED");
             }
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_SPELLBOOK_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_SPELLBOOK_)
+            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
         {
             const spell::SpellPVec_t SPELLS_PVEC { creaturePtr_->SpellsPVec() };
 
-            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->selection_opt.value() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET.selection_opt.value() };
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
-                "stage::InventoryStage::HandleCallback(SPELL, selection="
-                    << PACKET_PTR->selection_opt.value()
-                    << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
+            if (RESPONSE_SELECTION_INDEX >= SPELLS_PVEC.size())
+            {
+                M_HP_LOG_ERR(
+                    "SPELL, selection=" << PACKET.selection_opt.value()
+                                        << ") Selection was greater than SpellPVec.size="
+                                        << SPELLS_PVEC.size());
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed spellbook popup by selecting but NOT HANDLED DUE TO ERROR where the "
+                    "selection was invalid somehow");
+            }
 
             const auto SPELL_PTR { SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
 
             creaturePtr_->LastSpellCastNum(RESPONSE_SELECTION_INDEX);
-            return HandleCast_Step1_TargetSelection(SPELL_PTR);
+            HandleCast_Step1_TargetSelection(SPELL_PTR);
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "closed spellbook popup by selecting and target selection process started");
         }
         else if (
-            (PACKET_PTR->name == POPUP_NAME_MUSICSHEET_)
-            && (PACKET_PTR->type == popup::ResponseTypes::Select) && PACKET_PTR->selection_opt)
+            (PACKET.curently_open_popup_name == POPUP_NAME_MUSICSHEET_)
+            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
         {
             const auto SONGS_PVEC { creaturePtr_->SongsPVec() };
-            const auto RESPONSE_SELECTION_INDEX { PACKET_PTR->selection_opt.value() };
+            const auto RESPONSE_SELECTION_INDEX { PACKET.selection_opt.value() };
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
-                "stage::InventoryStage::HandleCallback(SONG, selection="
-                    << PACKET_PTR->selection_opt.value()
-                    << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
+            if (RESPONSE_SELECTION_INDEX >= SONGS_PVEC.size())
+            {
+                M_HP_LOG_ERR(
+                    "SONG, selection=" << PACKET.selection_opt.value()
+                                       << ") Selection was greater than SpellPVec.size="
+                                       << SONGS_PVEC.size());
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "closed songbook popup by selecting but NOT HANDLED DUE TO ERROR where the "
+                    "selection was invalid somehow");
+            }
 
             creaturePtr_->LastSongPlayedNum(RESPONSE_SELECTION_INDEX);
-            return HandleSong_Step1_Play(SONGS_PVEC.at(RESPONSE_SELECTION_INDEX));
+            HandleSong_Step1_Play(SONGS_PVEC.at(RESPONSE_SELECTION_INDEX));
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "closed songbook popup by selecting and play song process started");
         }
 
-        return false;
+        return MakeCallbackHandlerMessage(
+            PACKET_DESCRIPTION, "image-text-entity callback NOT HANDLED");
     }
 
     void InventoryStage::Setup()

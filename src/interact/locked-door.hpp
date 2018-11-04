@@ -30,7 +30,7 @@ namespace interact
         bool OnSuccess(const stage::InteractStagePtr_t) final;
 
     private:
-        bool OnInteraction(const stage::InteractStagePtr_t, const Button &) final;
+        const std::string OnInteraction(const stage::InteractStagePtr_t, const Button &) final;
 
     private:
         map::Transition transition_;

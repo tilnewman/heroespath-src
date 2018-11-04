@@ -4,15 +4,14 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED
-#define HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED
+#ifndef HEROESPATH_STAGE_SETTINGSSTAGE_HPP_INCLUDED
+#define HEROESPATH_STAGE_SETTINGSSTAGE_HPP_INCLUDED
 //
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
 //
 #include "gui/box-entity.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/display.hpp"
 #include "gui/horiz-symbol.hpp"
 #include "gui/main-menu-buttons.hpp"
@@ -21,6 +20,7 @@
 #include "gui/sliderbar-sfx.hpp"
 #include "gui/stage-title.hpp"
 #include "gui/text-region.hpp"
+#include "misc/callback.hpp"
 #include "stage/stage-base.hpp"
 
 #include <memory>
@@ -34,28 +34,30 @@ namespace stage
     // A simple class that displays the system and game settings
     class SettingsStage
         : public stage::StageBase
-
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
         //, public gui::RadioButtonSet::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
     {
     public:
+        SettingsStage();
+        virtual ~SettingsStage();
+
         SettingsStage(const SettingsStage &) = delete;
         SettingsStage(SettingsStage &&) = delete;
         SettingsStage & operator=(const SettingsStage &) = delete;
         SettingsStage & operator=(SettingsStage &&) = delete;
 
-        SettingsStage();
-        virtual ~SettingsStage();
+        // const std::string HandleCallback(const gui::RadioButton::Callback_t::Packet_t & PACKET,
+        // const std::string & PACKET_DESCRIPTION) override;
 
-        // bool HandleCallback(const gui::RadioButton::Callback_t::PacketPtr_t )
-        // override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t & PACKET,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
-
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t &, const std::string &) override
         {
-            return false;
+            return "";
         }
 
         void Setup() override;

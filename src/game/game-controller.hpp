@@ -74,7 +74,7 @@ namespace game
         void PlayGame();
 
         void SpawnPopup(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO);
 
         void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0);
@@ -82,7 +82,7 @@ namespace game
         void TransitionTo(const stage::SetupPacket & SETUP_PACKET);
 
         const gui::DisplayChangeResult ChangeResolution(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
@@ -103,7 +103,7 @@ namespace game
         // change stages now
         void StageChangeActualPopupReplace(
             const popup::PopupInfo & POPUP_INFO,
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
 
         void StageChangeActualPopupRemove();
 

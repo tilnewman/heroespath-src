@@ -9,9 +9,9 @@
 //
 // lock-interactions.hpp
 //
-#include "gui/callback.hpp"
 #include "gui/sound-effects-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <string>
@@ -44,28 +44,28 @@ namespace interact
         bool Attempt() const;
 
         void PopupCharacterSelection(
-            const gui::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr) const;
+            const misc::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr) const;
 
         // returns true if a character was selected and characterPtr_ is not null,
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
-            const gui::PopupCallback_t::IHandlerPtr_t,
-            const gui::PopupCallback_t::PacketPtr_t,
+            const misc::PopupCallback_t::IHandlerPtr_t,
+            const misc::PopupCallback_t::Packet_t &,
             stage::IStagePtr_t iStagePtr);
 
         void PopupAttempting(
-            const gui::PopupCallback_t::IHandlerPtr_t,
+            const misc::PopupCallback_t::IHandlerPtr_t,
             const std::string &,
             stage::IStagePtr_t iStagePtr) const;
 
         void PopupSuccess(
-            const gui::PopupCallback_t::IHandlerPtr_t,
+            const misc::PopupCallback_t::IHandlerPtr_t,
             const std::string & NAME_OF_WHAT_OPENED,
             stage::IStagePtr_t iStagePtr) const;
 
         // returns true if a new title is achieved and the popup is displayed
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-            const gui::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr);
+            const misc::PopupCallback_t::IHandlerPtr_t, stage::IStagePtr_t iStagePtr);
 
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 

@@ -9,13 +9,13 @@
 //
 // adventure-stage-interact-stage.hpp
 //
-#include "gui/callback.hpp"
 #include "gui/colored-rect.hpp"
 #include "gui/text-button.hpp"
 #include "interact/interaction-manager.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/transition.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 #include "stage/stage-base.hpp"
 
@@ -46,20 +46,24 @@ namespace stage
         : public stage::StageBase
 
         , public gui::TextButton::Callback_t::IHandler_t
-        , public gui::PopupCallback_t::IHandler_t
+        , public misc::PopupCallback_t::IHandler_t
     {
     public:
+        explicit InteractStage(interact::InteractionManager &);
+        virtual ~InteractStage();
+
         InteractStage(const InteractStage &) = delete;
         InteractStage(InteractStage &&) = delete;
         InteractStage & operator=(const InteractStage &) = delete;
         InteractStage & operator=(InteractStage &&) = delete;
 
-        explicit InteractStage(interact::InteractionManager &);
+        const std::string HandleCallback(
+            const gui::TextButton::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) final;
 
-        virtual ~InteractStage();
-
-        bool HandleCallback(const gui::TextButton::Callback_t::PacketPtr_t) final;
-        bool HandleCallback(const gui::PopupCallback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const misc::PopupCallback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void PreSetup(const sf::FloatRect & STAGE_REGION, map::MapPtr_t mapPtr);
 

@@ -33,6 +33,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "popup/popup-manager.hpp"
+#include "popup/popup-response.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-combat-over.hpp"
 #include "popup/popup-stage-image-fade.hpp"
@@ -115,184 +116,271 @@ namespace stage
         StageBase::ClearAllEntities();
     }
 
-    bool TreasureStage::HandleCallback(const gui::PopupCallback_t::PacketPtr_t PACKET_PTR)
+    const std::string TreasureStage::HandleCallback(
+        const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
-        if (PACKET_PTR->name == POPUP_NAME_NO_TREASURE_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_NO_TREASURE_)
         {
             TransitionToAdventureStage();
-            return false;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "there is no treasure so transitioned to Adventure Stage");
         }
 
-        if (PACKET_PTR->name == POPUP_NAME_WORN_ONLY_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_WORN_ONLY_)
         {
             SetupForCollection();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "saw there was only worn treasure so setup treasure collection stage without a "
+                "lockbox");
         }
 
-        if ((PACKET_PTR->name == POPUP_NAME_LOCKBOX_ONLY_)
-            || (PACKET_PTR->name == POPUP_NAME_LOCKBOX_AND_HELD_))
+        if ((PACKET.curently_open_popup_name == POPUP_NAME_LOCKBOX_ONLY_)
+            || (PACKET.curently_open_popup_name == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (PACKET_PTR->type == popup::ResponseTypes::Yes)
+            if (PACKET.type == popup::ResponseTypes::Yes)
             {
                 lockPicking_.PopupCharacterSelection(
                     misc::MakeNotNull(this), misc::MakeNotNull(this));
-                return false;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw there was a lockbox and the user decided to try and open it so spawned "
+                    "the lock-pick-character-seletion popup");
             }
             else
             {
                 SetupForCollectionWithoutLockbox();
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw there was a lockbox but the user decided NOT to try and open it so "
+                    "setup treasure collection stage without a lockbox");
             }
         }
 
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (PACKET_PTR->type == popup::ResponseTypes::Select)
+            if (PACKET.type == popup::ResponseTypes::Select)
             {
                 if (lockPicking_.HandleCharacterSelectionPopupResponse(
-                        misc::MakeNotNull(this), PACKET_PTR, misc::MakeNotNull(this)))
+                        misc::MakeNotNull(this), PACKET, misc::MakeNotNull(this)))
                 {
-                    return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "saw the user decided NOT to pick a character to try and unlock the "
+                        "lockbox and "
+                        "spawned the lock picking popup");
                 }
                 else
                 {
                     SetupForCollectionWithoutLockbox();
-                    return true;
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "saw the user decided which character to try and unlock the lockbox and "
+                        "setup treasure collection stage without a lockbox");
                 }
             }
             else
             {
                 if (item::TreasureAvailable::LockboxOnly == treasureAvailable_)
                 {
-                    // Since the player is choosing to skip the lockbox and there is no
-                    // held treasure, then simply return to the Adventure Stage.
                     TransitionTo(stage::Stage::Adventure);
 
-                    return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "since the player is choosing to skip the lockbox and there is no "
+                        "held treasure, then simply return to the Adventure Stage");
                 }
                 else if (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_)
                 {
-                    // Since the player is choosing to skip the lockbox,
-                    // then prevent from searching the lockbox.
                     SetupForCollectionWithoutLockbox();
-                    return true;
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "since the player is choosing to skip the lockbox "
+                        "then prevent from searching the lockbox and setup treasure collection "
+                        "stage without a lockbox");
                 }
             }
         }
 
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
         {
             SetupForCollectionWithoutLockbox();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "since there is no character who can even attempt to pick the lock "
+                "setup treasure collection stage without a lockbox");
         }
 
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_ATTEMPTING_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
             if (lockPicking_.Attempt())
             {
                 LockPickSuccess();
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw the player actually picked the lock so the open lockbox popup was "
+                    "spawned");
             }
             else
             {
                 LockPickFailure();
-            }
 
-            return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw the player failed to pick the lock so the open trap popup was "
+                    "spawned");
+            }
         }
 
-        if ((PACKET_PTR->name == POPUP_NAME_LOCK_PICK_FAILURE_)
-            || (PACKET_PTR->name == POPUP_NAME_DAMAGE_REPORT_))
+        if ((PACKET.curently_open_popup_name == POPUP_NAME_LOCK_PICK_FAILURE_)
+            || (PACKET.curently_open_popup_name == POPUP_NAME_DAMAGE_REPORT_))
         {
             if (PromptPlayerWithDamagePopups() == DamagePopup::Displayed)
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION, "spawned the damage report popups");
             }
             else
             {
-                if (CheckAndHandleAllKilledByTrap() == false)
+                if (CheckAndHandleAllKilledByTrap())
+                {
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "lockbox trap killed all characters so spawned end game popup");
+                }
+                else
                 {
                     LockboxOpen();
-                }
 
-                return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "trap damaged characters but now it is open so setup treasure collection "
+                        "stage with lockbox");
+                }
             }
         }
 
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_SUCCESS_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_SUCCESS_)
         {
             displayStagePtrOpt_.value()->UpdateTreasureImage(treasureImageType_);
 
             if (ShareAndShowPopupIfNeeded(ShareType::Coins))
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "saw character actually picked the lock and spawned the 'shared coins' popup");
             }
             else
             {
                 if (ShareAndShowPopupIfNeeded(ShareType::Gems))
                 {
-                    return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "saw character actually picked the lock and spawned the 'shared gems' "
+                        "popup");
                 }
                 else
                 {
                     if (ProcessLockpickTitleAndPopupIfNeeded())
                     {
-                        return false;
+                        return MakeCallbackHandlerMessage(
+                            PACKET_DESCRIPTION,
+                            "saw character actually picked the lock and spawned the popup "
+                            "displaying that the lock picking character gained a "
+                            "title for doing so");
                     }
                     else
                     {
                         SetupForCollection();
-                        return true;
+
+                        return MakeCallbackHandlerMessage(
+                            PACKET_DESCRIPTION,
+                            "saw character actually picked the lock and saw the player unlocked "
+                            "the lockbox and now setup the treasure "
+                            "collection stage including that lockbox");
                     }
                 }
             }
         }
 
-        if (PACKET_PTR->name == POPUP_NAME_COIN_SHARE_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_COIN_SHARE_)
         {
             if (ShareAndShowPopupIfNeeded(ShareType::Gems))
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "after the 'shared coins' popup, spawned the 'shared gems' popup");
             }
             else
             {
                 if (ProcessLockpickTitleAndPopupIfNeeded())
                 {
-                    return false;
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "after the 'shared coins' popup, displaying that the lock picking "
+                        "character gained a title for doing so");
                 }
                 else
                 {
                     SetupForCollection();
-                    return true;
+
+                    return MakeCallbackHandlerMessage(
+                        PACKET_DESCRIPTION,
+                        "after the 'shared coins' popup, setup the treasure "
+                        "collection stage including that lockbox");
                 }
             }
         }
 
-        if (PACKET_PTR->name == POPUP_NAME_GEM_SHARE_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_GEM_SHARE_)
         {
             if (ProcessLockpickTitleAndPopupIfNeeded())
             {
-                return false;
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "after the 'shared gems' popup, displaying that the lock picking "
+                    "character gained a title for doing so");
             }
             else
             {
                 SetupForCollection();
-                return true;
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "after the 'shared gems' popup, setup the treasure "
+                    "collection stage including that lockbox");
             }
         }
 
-        if (PACKET_PTR->name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
+        if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             SetupForCollection();
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "after the 'lock picking title gained' popup, setup the treasure "
+                "collection stage including that lockbox");
         }
 
-        if (PACKET_PTR->name == POPUP_NAME_ITEM_TAKE_REJECTION_)
+        if (PACKET.curently_open_popup_name == POPUP_NAME_ITEM_TAKE_REJECTION_)
         {
             displayStagePtrOpt_.value()->CanDisplayItemDetail(true);
-            return true;
+
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION,
+                "after the player was told that a particular character could not take an item for "
+                "some reason, we um...went back to treausre collecting UI stage stuff");
         }
 
-        return true;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");
     }
 
     void TreasureStage::Setup()
@@ -367,29 +455,39 @@ namespace stage
         return StageBase::KeyRelease(KEY_EVENT);
     }
 
-    bool TreasureStage::HandleListboxCallback(
+    const std::string TreasureStage::HandleListboxCallback(
         const ItemListBoxPtr_t & TREASURE_LISTBOX_PTR,
         const ItemListBoxPtr_t & INVENTORY_LISTBOX_PTR,
-        const ItemListBox_t::Callback_t::PacketPtr_t PACKET_PTR)
+        const ItemListBox_t::Callback_t::Packet_t & PACKET,
+        const std::string & PACKET_DESCRIPTION)
     {
-        if ((PACKET_PTR->gui_event == gui::GuiEvent::DoubleClick)
-            || (PACKET_PTR->keypress_event.code == sf::Keyboard::Return))
+        if ((PACKET.gui_event == gui::GuiEvent::DoubleClick)
+            || (PACKET.keypress_event.code == sf::Keyboard::Return))
         {
-            const auto ITEM_PTR { PACKET_PTR->selected_element_ptr->Element() };
+            const auto ITEM_PTR { PACKET.selected_element_ptr->Element() };
 
-            if (PACKET_PTR->listbox_ptr == TREASURE_LISTBOX_PTR)
+            if (PACKET.listbox_ptr == TREASURE_LISTBOX_PTR)
             {
                 TakeItem(ITEM_PTR);
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "enter-keypress or double-click causing an item to be taken");
             }
-            else if (PACKET_PTR->listbox_ptr == INVENTORY_LISTBOX_PTR)
+            else if (PACKET.listbox_ptr == INVENTORY_LISTBOX_PTR)
             {
                 PutItemBack(ITEM_PTR);
+
+                return MakeCallbackHandlerMessage(
+                    PACKET_DESCRIPTION,
+                    "enter-keypress or double-click causing an item to be put back");
             }
 
-            return true;
+            return MakeCallbackHandlerMessage(
+                PACKET_DESCRIPTION, "enter-keypress or double-click NOT HANDLED");
         }
 
-        return true;
+        return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "listbox callback NOT HANDLED");
     }
 
     void TreasureStage::TakeAllItems()

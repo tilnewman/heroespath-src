@@ -19,6 +19,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include <memory>
+#include <string>
 
 namespace heroespath
 {
@@ -43,7 +44,11 @@ namespace interact
         virtual void PlayEnterSfx() const = 0;
         virtual void PlayExitSfx() const = 0;
 
-        virtual bool OnButtonClick(const stage::InteractStagePtr_t, const gui::TextButtonPtr_t) = 0;
+        virtual const std::string OnButtonClick(
+            const stage::InteractStagePtr_t,
+            const gui::TextButton & TEXT_BUTTON_INVOKING_THIS_CALLBACK,
+            const std::string & PACKET_DESCRIPTION)
+            = 0;
 
         virtual bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) = 0;
 

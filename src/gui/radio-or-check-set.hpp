@@ -10,10 +10,10 @@
 // radio-or-check-set.hpp
 //
 #include "gui/brightness-enum.hpp"
-#include "gui/callback.hpp"
 #include "gui/entity.hpp"
 #include "gui/mouse-text-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <SFML/Graphics/Color.hpp>
@@ -61,7 +61,7 @@ namespace gui
             bool is_changed_index_selected;
         };
 
-        using Callback_t = Callback<EventPacket>;
+        using Callback_t = misc::Callback<EventPacket>;
 
         RadioOrCheckSet(const RadioOrCheckSet &) = delete;
         RadioOrCheckSet(RadioOrCheckSet &&) = delete;

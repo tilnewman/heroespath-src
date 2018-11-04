@@ -37,13 +37,13 @@ namespace interact
         , transition_(TRANSITION)
     {}
 
-    bool LockedDoor::OnInteraction(
+    const std::string LockedDoor::OnInteraction(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const Button & BUTTON)
     {
         if (BUTTON.Which() == Buttons::Ignore)
         {
             HandleIgnore(INTERACTION_STAGE_PTR);
-            return true;
+            return "";
         }
         else if (BUTTON.Which() == Buttons::Unlock)
         {
@@ -52,10 +52,10 @@ namespace interact
             INTERACTION_STAGE_PTR->LockPick().PopupCharacterSelection(
                 INTERACTION_STAGE_PTR, INTERACTION_STAGE_PTR);
 
-            return true;
+            return "";
         }
 
-        return false;
+        return "not handled because it is not the ignore button or the unlock button";
     }
 
     bool LockedDoor::OnSuccess(const stage::InteractStagePtr_t INTERACTION_STAGE_PTR)

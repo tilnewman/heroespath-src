@@ -71,6 +71,9 @@ namespace stage
 
         game::Phase::Enum GetPhase() const override;
 
+        const std::string MakeCallbackHandlerMessage(
+            const std::string & EVENT_DESCRIPTION, const std::string & ACTION_TAKEN) const final;
+
         const sf::FloatRect StageRegion() const override { return stageRegion_; }
         void StageRegion(const sf::FloatRect & RECT) override { stageRegion_ = RECT; }
 
@@ -122,7 +125,7 @@ namespace stage
         void IsFading(const bool IS_FADING) override { isFading_ = IS_FADING; }
 
         void SpawnPopup(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO) const override;
 
         void RemovePopup(
@@ -133,7 +136,7 @@ namespace stage
         void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const override;
 
         const gui::DisplayChangeResult ChangeResolution(
-            const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+            const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const gui::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL) const override;
 

@@ -58,9 +58,9 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(
-            const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::PacketPtr_t)
-            override;
+        const std::string HandleCallback(
+            const gui::ListBox<PopupStageSpellbook, spell::SpellPtr_t>::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;

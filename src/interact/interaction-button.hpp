@@ -41,7 +41,17 @@ namespace interact
 
         sf::Keyboard::Key Key() const { return Buttons::Key(whichButton_); }
 
-        bool DoPointersMatch(const gui::TextButtonPtr_t P) const { return (P == ptrOpt_); }
+        bool IsSameButton(const gui::TextButton * const OTHER_BUTTON_PTR) const
+        {
+            if (ptrOpt_)
+            {
+                return (OTHER_BUTTON_PTR == ptrOpt_.value());
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         gui::TextButtonUPtr_t Make(const gui::TextButton::Callback_t::IHandlerPtrOpt_t &);
 

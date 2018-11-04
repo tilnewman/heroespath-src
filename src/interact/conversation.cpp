@@ -32,7 +32,7 @@ namespace interact
         , npcPtr_(NPC_PTR)
     {}
 
-    bool Conversation::OnInteraction(
+    const std::string Conversation::OnInteraction(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const Button & BUTTON)
     {
         INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
@@ -43,7 +43,7 @@ namespace interact
                 interact::InteractionFactory::MakeConversation(npcPtr_, NpcSprite()));
         }
 
-        return true;
+        return "";
     }
 
 } // namespace interact

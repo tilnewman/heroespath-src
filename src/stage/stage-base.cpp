@@ -95,6 +95,20 @@ namespace stage
         return game::GameController::Instance()->GetPhase();
     }
 
+    const std::string StageBase::MakeCallbackHandlerMessage(
+        const std::string & EVENT_DESCRIPTION, const std::string & ACTION_TAKEN) const
+    {
+        if (ACTION_TAKEN.empty())
+        {
+            return "";
+        }
+        else
+        {
+            return GetStageName() + " finished handling callback event " + EVENT_DESCRIPTION
+                + " and " + ACTION_TAKEN + ".";
+        }
+    }
+
     void StageBase::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         for (auto & entityPtr : entityPVec_)
@@ -365,7 +379,7 @@ namespace stage
     }
 
     void StageBase::SpawnPopup(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const popup::PopupInfo & POPUP_INFO) const
     {
         game::GameController::Instance()->SpawnPopup(POPUP_HANDLER_PTR, POPUP_INFO);
@@ -388,7 +402,7 @@ namespace stage
     }
 
     const gui::DisplayChangeResult StageBase::ChangeResolution(
-        const gui::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
+        const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
         const gui::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL) const
     {

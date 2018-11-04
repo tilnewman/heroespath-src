@@ -59,7 +59,10 @@ namespace interact
 
         static const gui::TextInfo MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
-        bool OnButtonClick(const stage::InteractStagePtr_t, const gui::TextButtonPtr_t) final;
+        const std::string OnButtonClick(
+            const stage::InteractStagePtr_t,
+            const gui::TextButton &,
+            const std::string & PACKET_DESCRIPTION) final;
 
         bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) final;
 
@@ -77,7 +80,9 @@ namespace interact
         const ButtonVec_t MakeButtonVecFromButtonEnumVec(const ButtonEnumVec_t &) const;
 
     private:
-        virtual bool OnInteraction(const stage::InteractStagePtr_t, const Button &) = 0;
+        // returns an error message or an empty string on success
+        virtual const std::string OnInteraction(const stage::InteractStagePtr_t, const Button &)
+            = 0;
 
     private:
         Interact::Enum interactionType_;

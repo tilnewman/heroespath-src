@@ -10,10 +10,10 @@
 // sliderbar.hpp
 //
 #include "gui/cached-texture.hpp"
-#include "gui/callback.hpp"
 #include "gui/entity.hpp"
 #include "gui/sliderbar-style.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -31,7 +31,7 @@ namespace gui
     class SliderBar : public Entity
     {
     public:
-        using Callback_t = Callback<SliderBar>;
+        using Callback_t = misc::Callback<SliderBar>;
 
         SliderBar(const SliderBar &) = delete;
         SliderBar(SliderBar &&) = delete;

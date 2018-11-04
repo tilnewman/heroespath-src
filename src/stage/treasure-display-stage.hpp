@@ -114,7 +114,6 @@ namespace stage
     // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
         : public stage::StageBase
-
         , public gui::ListBox<TreasureDisplayStage, item::ItemPtr_t>::Callback_t::IHandler_t
         , public gui::ImageTextEntity::Callback_t::IHandler_t
     {
@@ -123,16 +122,21 @@ namespace stage
         using ItemListBoxUPtr_t = gui::ListBoxUPtr_t<TreasureDisplayStage, item::ItemPtr_t>;
 
     public:
+        explicit TreasureDisplayStage();
+        virtual ~TreasureDisplayStage() = default;
+
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
         TreasureDisplayStage(TreasureDisplayStage &&) = delete;
         TreasureDisplayStage & operator=(const TreasureDisplayStage &) = delete;
         TreasureDisplayStage & operator=(TreasureDisplayStage &&) = delete;
 
-        explicit TreasureDisplayStage();
-        virtual ~TreasureDisplayStage() = default;
+        const std::string HandleCallback(
+            const ItemListBox_t::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
-        bool HandleCallback(const ItemListBox_t::Callback_t::PacketPtr_t) override;
-        bool HandleCallback(const gui::ImageTextEntity::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::ImageTextEntity::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void SetModelStage(const TreasureStagePtr_t treasureStagePtr)
         {

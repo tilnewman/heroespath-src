@@ -35,7 +35,9 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const gui::SliderBar::Callback_t::PacketPtr_t) override;
+        const std::string HandleCallback(
+            const gui::SliderBar::Callback_t::Packet_t &,
+            const std::string & PACKET_DESCRIPTION) override;
 
         void Setup() override;
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
