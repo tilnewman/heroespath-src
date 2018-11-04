@@ -44,7 +44,6 @@ namespace stage
     // Responsible for the interaction region of the Adventure Stage.
     class InteractStage
         : public stage::StageBase
-
         , public gui::TextButton::Callback_t::IHandler_t
         , public misc::PopupCallback_t::IHandler_t
     {

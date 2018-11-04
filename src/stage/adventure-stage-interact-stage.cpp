@@ -148,7 +148,7 @@ namespace stage
     void InteractStage::Setup()
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (!mapPtrOpt_),
+            (mapPtrOpt_),
             "stage::InteractStage::Setup() called but mapPtrOpt_ was invalid.  It "
             "should be set before this function is called by stage::StageFactory::Make(), which "
             "sets it by calling InteractStage::PreSetup().");
