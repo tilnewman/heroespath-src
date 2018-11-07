@@ -10,17 +10,17 @@
 // turn-state-enum.cpp
 //
 #include "turn-action-enum.hpp"
-#include <exception>
-#include <sstream>
+
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string TurnAction::ToString(const TurnAction::Enum E)
+    const std::string TurnAction::ToString(const TurnAction::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Nothing:
             {
@@ -83,18 +83,20 @@ namespace combat
                 return "TreasureUnlock";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "combat::TurnAction::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string TurnAction::Name(const TurnAction::Enum E)
+    const std::string TurnAction::Name(const TurnAction::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Nothing:
             {
@@ -157,13 +159,16 @@ namespace combat
                 return "Springs the trap";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "combat::TurnAction::Name(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace combat
 } // namespace heroespath

@@ -10,8 +10,8 @@
 // condition-enum.cpp
 //
 #include "interact-enum.hpp"
-#include <exception>
-#include <sstream>
+
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -31,13 +31,13 @@ namespace interact
                 return "Conversation";
             }
             case Interact::Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Interact::Enum::ToString(" << INTERACTION_TYPE
-                   << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(INTERACTION_TYPE));
+                return "";
             }
         }
     }
@@ -57,13 +57,11 @@ namespace interact
             case Interact::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Interact::Enum::ImageKey(" << INTERACTION_TYPE
-                   << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(INTERACTION_TYPE));
+                return "";
             }
         }
     }
+
 } // namespace interact
 } // namespace heroespath

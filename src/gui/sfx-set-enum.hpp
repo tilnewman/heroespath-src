@@ -19,7 +19,7 @@ namespace gui
 {
 
     struct sound_effect_set
-        : public misc::EnumBaseCounting<sound_effect_set, misc::EnumFirstValueValid>
+        : public misc::EnumBaseCounting<sound_effect_set, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

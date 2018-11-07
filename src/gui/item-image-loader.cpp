@@ -571,8 +571,14 @@ namespace gui
             case item::misc_type::PuppetBlessed:
             case item::misc_type::PuppetCursed:
             {
-                return { misc::CamelTo(item::misc_type::ToString(MISC_TYPE), SEPARATOR_)
-                         + FILE_EXT_STR_ };
+                const auto SEP_STR { misc::CamelTo(
+                    item::misc_type::ToString(MISC_TYPE),
+                    SEPARATOR_,
+                    misc::CaseChange::LowerToUpper) };
+
+                const auto SEP_STR_LOWER_CASE { misc::ToLowerCopy(SEP_STR) };
+
+                return { SEP_STR_LOWER_CASE + FILE_EXT_STR_ };
             }
 
             // these misc_types have single word names that are simply converted to lower-case
@@ -593,14 +599,12 @@ namespace gui
             case item::misc_type::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::ItemImageLoader::Filenames(misc_type="
-                   << ((MISC_TYPE == item::misc_type::Count) ? "Count"
-                                                             : item::misc_type::ToString(MISC_TYPE))
-                   << ", is_jeweled=" << std::boolalpha << IS_JEWELED << ", is_bone=" << IS_BONE
-                   << ") but that misc_type is somehow invalid.";
+                M_HP_LOG_ERR(
+                    "(misc_type=" << item::misc_type::ToString(MISC_TYPE) << ", is_jeweled="
+                                  << std::boolalpha << IS_JEWELED << ", is_bone=" << IS_BONE
+                                  << ") but that misc_type is somehow invalid.");
 
-                throw std::range_error(ss.str());
+                return {};
             }
         }
     }

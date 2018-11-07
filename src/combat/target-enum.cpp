@@ -11,6 +11,7 @@
 //
 #include "target-enum.hpp"
 
+#include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 
 namespace heroespath
@@ -51,9 +52,13 @@ namespace combat
                 return "QuestSpecific";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(TARGET_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TARGET_TYPE));
+                return "";
             }
         }
     }
@@ -91,16 +96,20 @@ namespace combat
                 return "(Quest Specific)";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(TARGET_TYPE, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TARGET_TYPE));
+                return "";
             }
         }
     }
 
     const std::string TargetType::ActionPhrase(const Enum TARGET_TYPE)
     {
-        const std::string PREAMBLE{ ((misc::random::Bool()) ? "at " : "upon ") };
+        const std::string PREAMBLE { ((misc::random::Bool()) ? "at " : "upon ") };
 
         switch (TARGET_TYPE)
         {

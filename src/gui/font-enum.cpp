@@ -11,6 +11,8 @@
 //
 #include "font-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
@@ -57,9 +59,13 @@ namespace gui
                 return "DialogMedieval";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(FONT, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                return "";
             }
         }
     }
@@ -105,9 +111,13 @@ namespace gui
                 return "Mops-Antiqua";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(FONT, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                return "";
             }
         }
     }
@@ -153,9 +163,13 @@ namespace gui
                 return "mops-antiqua/mops-antiqua.ttf";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(FONT, "Path");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                return "";
             }
         }
     }

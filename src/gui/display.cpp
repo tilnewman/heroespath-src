@@ -131,6 +131,11 @@ namespace gui
         winUPtr_->draw(*iStagePtr, sf::RenderStates());
     }
 
+    void Display::TestDraw(const sf::Drawable & DRAWABLE)
+    {
+        winUPtr_->draw(DRAWABLE, sf::RenderStates());
+    }
+
     const std::vector<sf::Event> Display::PollEvents()
     {
         std::vector<sf::Event> eventsVec;

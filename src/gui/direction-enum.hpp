@@ -9,6 +9,8 @@
 //
 // direction-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Direction
+    struct Direction : public misc::EnumBaseCounting<Direction, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Left = 0,
             Right,
@@ -30,6 +32,7 @@ namespace gui
         static const std::string ToString(const Direction::Enum);
         static gui::Direction::Enum Opposite(const Direction::Enum);
     };
+
 } // namespace gui
 } // namespace heroespath
 

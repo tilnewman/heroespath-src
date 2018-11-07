@@ -11,13 +11,13 @@
 //
 #include "size-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
+
     const std::string Size::ToString(const Size::Enum SIZE_ENUM)
     {
         switch (SIZE_ENUM)
@@ -35,13 +35,16 @@ namespace gui
                 return "Large";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::Size::ToString(" << SIZE_ENUM << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SIZE_ENUM));
+                return "";
             }
         }
     }
+
 } // namespace gui
 } // namespace heroespath

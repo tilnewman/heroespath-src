@@ -144,7 +144,7 @@ namespace creature
         Rank_t IncreaseRank(const Rank_t & R) { return rank_ += R; }
 
         Experience_t Exp() const { return experience_; }
-        Experience_t IncreaseExp(const Experience_t & E) { return experience_ += E; }
+        Experience_t IncreaseExp(const Experience_t & ENUM) { return experience_ += ENUM; }
 
         Health_t HealthCurrent() const { return healthCurrent_; }
         void HealthCurrentSet(const Health_t & H) { healthCurrent_ = H; }
@@ -158,7 +158,7 @@ namespace creature
         role::Enum Role() const { return role_; }
         const std::string RoleName() const { return role::Name(role_); }
 
-        void TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES = true);
+        void TitleAdd(const Titles::Enum ENUM, const bool ALLOW_CHANGES = true);
         const TitleEnumVec_t Titles() const { return titlesVec_; }
         const TitlePVec_t TitlesPVec() const;
 
@@ -330,56 +330,59 @@ namespace creature
 
         void ReCalculateTraitBonuses();
 
-        int TraitNormal(const Traits::Enum E) const { return actualSet_.GetCopy(E).Normal(); }
+        int TraitNormal(const Traits::Enum ENUM) const { return actualSet_.GetCopy(ENUM).Normal(); }
 
-        Trait_t TraitNormalAdj(const Traits::Enum E, const Trait_t ADJ)
+        Trait_t TraitNormalAdj(const Traits::Enum ENUM, const Trait_t ADJ)
         {
-            return actualSet_.Get(E).NormalAdj(ADJ);
+            return actualSet_.Get(ENUM).NormalAdj(ADJ);
         }
 
-        void TraitNormalSet(const Traits::Enum E, const Trait_t NEW_VALUE)
+        void TraitNormalSet(const Traits::Enum ENUM, const Trait_t NEW_VALUE)
         {
-            actualSet_.Get(E).NormalSet(NEW_VALUE);
+            actualSet_.Get(ENUM).NormalSet(NEW_VALUE);
         }
 
-        Trait_t TraitCurrent(const Traits::Enum E) const { return actualSet_.GetCopy(E).Current(); }
-
-        Trait_t TraitCurrentAdj(const Traits::Enum E, const Trait_t ADJ)
+        Trait_t TraitCurrent(const Traits::Enum ENUM) const
         {
-            return actualSet_.Get(E).CurrentAdj(ADJ);
+            return actualSet_.GetCopy(ENUM).Current();
         }
 
-        void TraitCurrentSet(const Traits::Enum E, const Trait_t NEW_VALUE)
+        Trait_t TraitCurrentAdj(const Traits::Enum ENUM, const Trait_t ADJ)
         {
-            actualSet_.Get(E).CurrentSet(NEW_VALUE);
+            return actualSet_.Get(ENUM).CurrentAdj(ADJ);
         }
 
-        Trait_t TraitWorking(const Traits::Enum E) const;
-
-        Trait_t TraitBonusNormal(const Traits::Enum E) const
+        void TraitCurrentSet(const Traits::Enum ENUM, const Trait_t NEW_VALUE)
         {
-            return bonusSet_.GetCopy(E).Normal();
+            actualSet_.Get(ENUM).CurrentSet(NEW_VALUE);
         }
 
-        Trait_t TraitBonusNormalAdj(const Traits::Enum E, const Trait_t ADJ);
+        Trait_t TraitWorking(const Traits::Enum ENUM) const;
 
-        Trait_t TraitBonusCurrent(const Traits::Enum E) const
+        Trait_t TraitBonusNormal(const Traits::Enum ENUM) const
         {
-            return bonusSet_.GetCopy(E).Current();
+            return bonusSet_.GetCopy(ENUM).Normal();
+        }
+
+        Trait_t TraitBonusNormalAdj(const Traits::Enum ENUM, const Trait_t ADJ);
+
+        Trait_t TraitBonusCurrent(const Traits::Enum ENUM) const
+        {
+            return bonusSet_.GetCopy(ENUM).Current();
         }
 
         bool TraitBonusTest(const Traits::Enum) const;
 
-        float TraitBonusActualAsRatio(const Traits::Enum E) const
+        float TraitBonusActualAsRatio(const Traits::Enum ENUM) const
         {
-            return static_cast<float>(bonusSet_.GetCopy(E).Current()) / 100.0f;
+            return static_cast<float>(bonusSet_.GetCopy(ENUM).Current()) / 100.0f;
         }
 
         const TraitSet TraitsWorking() const;
 
         const TraitSet TraitsBonuses() const { return bonusSet_; }
 
-        const std::string TraitModifiedString(const Traits::Enum E, const bool WILL_WRAP) const;
+        const std::string TraitModifiedString(const Traits::Enum ENUM, const bool WILL_WRAP) const;
 
         void StatTraitsModify(const StatSet &);
 

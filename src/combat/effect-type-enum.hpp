@@ -9,6 +9,8 @@
 //
 // effect-type-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 #include <vector>
 
@@ -17,9 +19,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct EffectType
+    struct EffectType : public misc::EnumBaseCounting<EffectType, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             CreatureHarmDamage = 0,
             CreatureHarmMisc,
@@ -38,6 +40,7 @@ namespace combat
     };
 
     using EffectTypeVec_t = std::vector<EffectType::Enum>;
+
 } // namespace combat
 } // namespace heroespath
 

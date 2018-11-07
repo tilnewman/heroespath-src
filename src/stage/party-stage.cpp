@@ -208,7 +208,7 @@ namespace stage
         ResetMouseOverPopupState();
 
         if ((PACKET.curently_open_popup_name == POPUP_NAME_STR_DELETE_CONFIRM_)
-            && (PACKET.type == popup::ResponseTypes::Yes))
+            && (PACKET.type == popup::PopupButtons::Yes))
         {
             if (partyListBoxUPtr_->HasFocus())
             {
@@ -250,7 +250,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
-            && (PACKET.type != popup::ResponseTypes::Cancel) && PACKET.selection_opt)
+            && (PACKET.type != popup::PopupButtons::Cancel) && PACKET.selection_opt)
         {
             const auto SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
                 PACKET.selection_opt.value()) };

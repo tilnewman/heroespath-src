@@ -11,14 +11,16 @@
 //
 #include "sfx-set-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string sound_effect_set::ToString(const sound_effect_set::Enum E)
+    const std::string sound_effect_set::ToString(const sound_effect_set::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Prompt:
             {
@@ -141,9 +143,13 @@ namespace gui
                 return "CombatLose";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }

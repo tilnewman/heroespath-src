@@ -55,9 +55,13 @@ namespace creature
                 return "Elder";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(DRAGON_CLASS_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(DRAGON_CLASS_TYPE));
+                return "";
             }
         }
     }
@@ -72,37 +76,37 @@ namespace creature
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Elder")))
+                "heroespath-creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Skycaster")))
+                "heroespath-creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Wyrm")))
+                "heroespath-creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Adult")))
+                "heroespath-creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Juvenile")))
+                "heroespath-creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-dragon-class-rank-min-Fledgling")))
+                "heroespath-creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;
         }

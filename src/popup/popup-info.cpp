@@ -219,7 +219,7 @@ namespace popup
             ss << "(";
         }
 
-        ss << PopupStage::ToStringNoThrow(stage_) << ", ";
+        ss << PopupStage::ToString(stage_) << ", ";
 
         ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_)
            << ", image=" << PopupImage::ToString(image_);

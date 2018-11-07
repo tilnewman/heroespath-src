@@ -74,7 +74,7 @@ namespace gui
         // states of it's image and text entity.  willSyncImageAndTextMouseState_ defines the
         // relationship between the image and text entities, see  below.
         struct MouseStateSync
-            : public misc::EnumBaseCounting<MouseStateSync, misc::EnumFirstValueNone>
+            : public misc::EnumBaseCounting<MouseStateSync, misc::EnumFirstValue::None>
         {
             enum Enum : misc::EnumUnderlying_t
             {

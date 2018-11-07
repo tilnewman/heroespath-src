@@ -9,6 +9,8 @@
 //
 // moving-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Moving
+    struct Moving : public misc::EnumBaseCounting<Moving, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Still = 0,
             Toward,
@@ -28,8 +30,12 @@ namespace gui
 
         static const std::string ToString(const Moving::Enum);
 
-        static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
+        static bool IsMoving(const Moving::Enum ENUM)
+        {
+            return ((ENUM == Toward) || (ENUM == Away));
+        }
     };
+
 } // namespace gui
 } // namespace heroespath
 

@@ -13,13 +13,9 @@
 
 #include "gui/sfml-audio.hpp"
 #include "gui/sound-manager.hpp"
-
 #include "misc/log-macros.hpp"
-
 #include "misc/real.hpp"
 
-#include <exception>
-#include <sstream>
 #include <tuple>
 
 namespace heroespath
@@ -27,9 +23,9 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string music_update_status::ToString(const music_update_status::Enum E)
+    const std::string music_update_status::ToString(const music_update_status::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Stopped:
             {
@@ -60,11 +56,13 @@ namespace gui
                 return "FadedIn";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::music_update_status::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
@@ -93,12 +91,7 @@ namespace gui
         }
     }
 
-    bool MusicOperator::IsValid() const
-    {
-        return (
-            (info_.Which() != music::Count) && (info_.Which() != music::All)
-            && (info_.Which() != music::None) && (musicUPtr_));
-    }
+    bool MusicOperator::IsValid() const { return (music::IsValid(info_.Which()) && musicUPtr_); }
 
     MusicOperator::~MusicOperator()
     {

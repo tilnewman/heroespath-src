@@ -386,7 +386,7 @@ namespace stage
     }
 
     void StageBase::RemovePopup(
-        const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION) const
+        const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION) const
     {
         game::GameController::Instance()->RemovePopup(TYPE, SELECTION);
     }

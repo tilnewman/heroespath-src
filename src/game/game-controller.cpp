@@ -33,8 +33,7 @@ namespace game
 
     std::unique_ptr<GameController> GameController::instanceUPtr_;
 
-    std::string GameController::startupStageName_ { stage::Stage::ToStringNoThrow(
-        stage::Stage::Intro) };
+    std::string GameController::startupStageName_ { stage::Stage::ToString(stage::Stage::Intro) };
 
     GameController::GameController()
         : status_()
@@ -92,7 +91,7 @@ namespace game
         {
             M_HP_LOG(
                 "command line specified which stage to start at \""
-                << startupStageName_ << "\" (" << stage::Stage::ToStringNoThrow(STARTUP_STAGE_ENUM)
+                << startupStageName_ << "\" (" << stage::Stage::ToString(STARTUP_STAGE_ENUM)
                 << ").  Jumping to that stage now.");
 
             // TEMP TODO REMOVE -once done testing
@@ -104,7 +103,7 @@ namespace game
         {
             M_HP_LOG(
                 "command line specified which stage to start at \""
-                << startupStageName_ << "\" (" << stage::Stage::ToStringNoThrow(STARTUP_STAGE_ENUM)
+                << startupStageName_ << "\" (" << stage::Stage::ToString(STARTUP_STAGE_ENUM)
                 << "), but that stage is not a valid start stage so ignoring it.");
 
             instanceUPtr_->TransitionTo(stage::Stage::Intro);
@@ -118,7 +117,7 @@ namespace game
 
         M_HP_LOG(
             "Pre \"" << NAME_OF_TASK_ABOUT_TO_EXECUTE << "\" GameControllerStatus(stage="
-                     << GetStageName() << ", phase=" << game::Phase::ToStringNoThrow(GetPhase())
+                     << GetStageName() << ", phase=" << game::Phase::ToString(GetPhase())
                      << ", cmd_q_size=" << commandQueue_.Size() << ", " << status_.ToString()
                      << ")");
     }
@@ -146,7 +145,7 @@ namespace game
     }
 
     void GameController::RemovePopup(
-        const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION)
+        const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION)
     {
         StageChangePostPopupRemove(TYPE, SELECTION);
     }
@@ -193,14 +192,14 @@ namespace game
             {
                 const auto MUSIC_COMMAND { COMMAND.music_opt.value() };
 
-                if ((MUSIC_COMMAND.to_stop <= gui::music::All)
-                    && (MUSIC_COMMAND.to_stop != gui::music::Count))
+                if (gui::music::IsValid(MUSIC_COMMAND.to_stop)
+                    || (gui::music::All == MUSIC_COMMAND.to_stop))
                 {
                     gui::SoundManager::Instance()->MusicStop(
                         MUSIC_COMMAND.to_stop, gui::MusicOperator::FADE_MULT_DEFAULT_OUT_);
                 }
 
-                if (MUSIC_COMMAND.to_start < gui::music::Count)
+                if (gui::music::IsValid(MUSIC_COMMAND.to_start))
                 {
                     auto volume { gui::SoundManager::Instance()->MusicVolume() };
                     if (volume < MUSIC_COMMAND.volume_min)
@@ -446,7 +445,7 @@ namespace game
     }
 
     void GameController::StageChangePostPopupRemove(
-        const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION)
+        const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION)
     {
         if (!activeStages_.HasPopupStage())
         {
@@ -459,7 +458,7 @@ namespace game
         }
 
         M_HP_LOG(
-            "popup remove post: type=" << popup::ResponseTypes::ToStringNoThrow(TYPE)
+            "popup remove post: type=" << popup::PopupButtons::ToString(TYPE)
                                        << ", selection=" << SELECTION);
 
         const auto CURRENT_EXECUTION_COMMAND_WITHOUT_FADE { prePopupExecuteCommandWithoutFade_ };
@@ -483,7 +482,7 @@ namespace game
             {
                 M_HP_LOG_DBG(
                     "Transitioning to previous stage: "
-                    + stage::Stage::ToStringNoThrow(NON_POPUP_PREVIOUS_STAGE));
+                    + stage::Stage::ToString(NON_POPUP_PREVIOUS_STAGE));
 
                 StageReplaceCommand stageReplaceCommand { STAGE_SETUP_COMMAND };
                 stageReplaceCommand.stage = NON_POPUP_PREVIOUS_STAGE;
@@ -495,7 +494,7 @@ namespace game
                 M_HP_LOG_ERR(
                     "Ignoring attempt to TransitionTo previous stage when there was no valid "
                     "previous stage.  previous="
-                    + stage::Stage::ToStringNoThrow(NON_POPUP_PREVIOUS_STAGE));
+                    + stage::Stage::ToString(NON_POPUP_PREVIOUS_STAGE));
 
                 return;
             }
@@ -525,7 +524,7 @@ namespace game
 
         M_HP_LOG(
             "non-popup stage create/replace post: stage="
-            << stage::Stage::ToStringNoThrow(STAGE_SETUP_COMMAND.stage));
+            << stage::Stage::ToString(STAGE_SETUP_COMMAND.stage));
 
         RequestLoopExit();
 

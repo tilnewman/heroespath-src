@@ -120,7 +120,7 @@ namespace sfutil
             }
             case sf::Event::EventType::Count:
             {
-                return "Count";
+                return "(Count)";
             }
             default:
             {
@@ -346,7 +346,7 @@ namespace sfutil
                         }
                         case sf::Mouse::Button::ButtonCount:
                         {
-                            return "Count";
+                            return "(Count)";
                         }
                         default:
                         {
@@ -367,7 +367,7 @@ namespace sfutil
             }
             case sf::Event::EventType::Count:
             {
-                return "Count";
+                return "(Count)";
             }
             default:
             {

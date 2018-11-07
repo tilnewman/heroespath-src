@@ -13,15 +13,17 @@
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace spell
 {
 
-    const std::string Spells::ToString(const Spells::Enum E)
+    const std::string Spells::ToString(const Spells::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Sparks:
             {
@@ -72,16 +74,20 @@ namespace spell
                 return "PoisonCloud";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Spells::Name(const Spells::Enum E)
+    const std::string Spells::Name(const Spells::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Sparks:
             {
@@ -132,30 +138,44 @@ namespace spell
                 return "Poison Cloud";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Spells::ShortDesc(const Spells::Enum E)
+    const std::string Spells::ShortDesc(const Spells::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-spell-" << ToString(E) << "-short-desc";
+        keySS << "heroespath-spell-" << ToString(ENUM) << "-short-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
-    const std::string Spells::ExtraDesc(const Spells::Enum E)
+    const std::string Spells::ExtraDesc(const Spells::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-spell-" << ToString(E) << "-extra-desc";
+        keySS << "heroespath-spell-" << ToString(ENUM) << "-extra-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
-    const std::string Spells::ImageFilename(const Spells::Enum E)
+    const std::string Spells::ImageFilename(const Spells::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(E) + ".png");
+        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+    }
+
+    const std::string Spells::ImageDirectory()
+    {
+        return misc::ConfigFile::Instance()->GetMediaPath("media-images-spells-dir");
+    }
+
+    const std::string Spells::ImagePath(const Enum ENUM)
+    {
+        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace spell

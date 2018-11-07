@@ -89,13 +89,13 @@ namespace creature
             Titles::DragonOfTheNightmareSky);
     }
 
-    const Achievement Achievements::Get(const AchievementType::Enum E) const
+    const Achievement Achievements::Get(const AchievementType::Enum ENUM) const
     {
-        const auto FOUND_ITER { map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(ENUM) };
         if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
-            ss << "creature::Achievements::Get(" << E << ") not found in the map_.";
+            ss << "creature::Achievements::Get(" << ENUM << ") not found in the map_.";
             throw std::runtime_error(ss.str());
         }
         else
@@ -104,13 +104,13 @@ namespace creature
         }
     }
 
-    TitlePtrOpt_t Achievements::Increment(const AchievementType::Enum E)
+    TitlePtrOpt_t Achievements::Increment(const AchievementType::Enum ENUM)
     {
-        const auto FOUND_ITER { map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(ENUM) };
         if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
-            ss << "creature::Achievements::Increment(which_enum=" << E
+            ss << "creature::Achievements::Increment(which_enum=" << ENUM
                << ", creature_name=" << name_
                << ") was given an AchievementType::Enum that was not found in the map.";
 
@@ -122,9 +122,9 @@ namespace creature
         }
     }
 
-    TitlePtrOpt_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
+    TitlePtrOpt_t Achievements::GetCurrentTitle(const AchievementType::Enum ENUM) const
     {
-        const auto FOUND_ITER { map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(ENUM) };
         if (FOUND_ITER == map_.end())
         {
             return boost::none;
@@ -135,9 +135,9 @@ namespace creature
         }
     }
 
-    TitlePtrOpt_t Achievements::GetNextTitle(const AchievementType::Enum E) const
+    TitlePtrOpt_t Achievements::GetNextTitle(const AchievementType::Enum ENUM) const
     {
-        const auto FOUND_ITER { map_.Find(E) };
+        const auto FOUND_ITER { map_.Find(ENUM) };
         if (FOUND_ITER == map_.end())
         {
             return boost::none;

@@ -21,8 +21,7 @@ namespace game
         if (stage::Stage::IsPlayable(NEW_CURRENT_STAGE) == false)
         {
             M_HP_LOG_ERR(
-                "Attempt to set new current stage to "
-                + stage::Stage::ToStringNoThrow(NEW_CURRENT_STAGE)
+                "Attempt to set new current stage to " + stage::Stage::ToString(NEW_CURRENT_STAGE)
                 + " which is not a valid playable stage.  Not setting this as the new current "
                   "stage.  Ignoring the request.");
 

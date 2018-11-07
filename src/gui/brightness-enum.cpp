@@ -11,6 +11,8 @@
 //
 #include "brightness-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
@@ -33,9 +35,13 @@ namespace gui
                 return "Dark";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(BRIGHTNESS, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(BRIGHTNESS));
+                return "";
             }
         }
     }

@@ -10,7 +10,7 @@
 // popup-response.hpp
 //
 #include "misc/boost-optional-that-throws.hpp"
-#include "popup/popup-response-enum.hpp"
+#include "popup/popup-enums.hpp"
 
 #include <sstream>
 #include <string>
@@ -34,7 +34,7 @@ namespace popup
             std ::ostringstream ss;
 
             ss << "PopupResonse(\"" << curently_open_popup_name << "\", "
-               << popup::ResponseTypes::ToStringNoThrow(type) << ", selected_index=";
+               << popup::PopupButtons::ToString(type) << ", selected_index=";
 
             if (selection_opt)
             {
@@ -51,7 +51,7 @@ namespace popup
         }
 
         std::string curently_open_popup_name;
-        ResponseTypes::Enum type = ResponseTypes::None;
+        PopupButtons::Enum type = PopupButtons::None;
         SizetOpt_t selection_opt = boost::none;
     };
 

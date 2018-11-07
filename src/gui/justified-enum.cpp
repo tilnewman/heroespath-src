@@ -11,8 +11,7 @@
 //
 #include "justified-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -36,9 +35,13 @@ namespace gui
                 return "Center";
             }
             case Justified::Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(JUSTIFICATION, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(JUSTIFICATION));
+                return "";
             }
         }
     }

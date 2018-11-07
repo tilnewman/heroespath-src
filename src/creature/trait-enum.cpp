@@ -11,6 +11,8 @@
 //
 #include "trait-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace creature
@@ -197,9 +199,13 @@ namespace creature
                 return "ShadowResist";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(TRAIT, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TRAIT));
+                return "";
             }
         }
     }
@@ -385,9 +391,13 @@ namespace creature
                 return "ShaRes";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(TRAIT, "Abbr");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TRAIT));
+                return "";
             }
         }
     }
@@ -573,14 +583,22 @@ namespace creature
                 return "Shadow Resistance";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(TRAIT, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TRAIT));
+                return "";
             }
         }
     }
 
-    const std::string Traits::Desc(const Enum) { return "(descriptions TODO)"; }
+    const std::string Traits::Desc(const Enum)
+    {
+        M_HP_LOG_ERR("called a function that is not implemented yet TODO");
+        return "(descriptions TODO)";
+    }
 
 } // namespace creature
 } // namespace heroespath

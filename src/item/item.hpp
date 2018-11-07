@@ -150,9 +150,9 @@ namespace item
 
         const creature::EnchantmentPVec_t & Enchantments() const { return enchantmentsPVec_; }
 
-        void AddCategory(const category::Enum E)
+        void AddCategory(const category::Enum ENUM)
         {
-            category_ = static_cast<category::Enum>(category_ | E);
+            category_ = static_cast<category::Enum>(category_ | ENUM);
         }
 
         const creature::SummonInfo & SummonInfo() const { return summonInfo_; }

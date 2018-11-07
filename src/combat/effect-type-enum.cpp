@@ -11,17 +11,16 @@
 //
 #include "effect-type-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string combat::EffectType::ToString(const Enum E)
+    const std::string combat::EffectType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case CreatureHarmDamage:
             {
@@ -60,18 +59,20 @@ namespace combat
                 return "Misc";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "EffectType::ToString(" << E << ")_InvalidValueError";
-                throw std::runtime_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string combat::EffectType::Name(const Enum E)
+    const std::string combat::EffectType::Name(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case CreatureHarmDamage:
             {
@@ -110,13 +111,16 @@ namespace combat
                 return "Misc";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "EffectType::Name(" << E << ")_InvalidValueError";
-                throw std::runtime_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace combat
 } // namespace heroespath

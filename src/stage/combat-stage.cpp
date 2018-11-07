@@ -466,7 +466,7 @@ namespace stage
         {
             const auto CREATURE_PTR { turnCreaturePtrOpt_.value() };
 
-            if ((PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            if ((PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
             {
                 const auto SONGS_PVEC { CREATURE_PTR->SongsPVec() };
 
@@ -504,7 +504,7 @@ namespace stage
         }
         else if (PACKET.curently_open_popup_name == POPUP_NAME_SPELLBOOK_)
         {
-            if ((PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            if ((PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
             {
                 const auto SPELLS_PVEC { turnCreaturePtrOpt_.value()->SpellsPVec() };
 

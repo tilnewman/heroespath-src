@@ -9,22 +9,18 @@
 //
 // interact-button-enum.hpp
 //
+#include "gui/text-button.hpp"
 #include "interact/interaction-button-enum.hpp"
+#include "misc/not-null.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace heroespath
 {
-namespace gui
-{
-    class TextButton;
-    using TextButtonPtr_t = misc::NotNull<TextButton *>;
-    using TextButtonPtrOpt_t = boost::optional<TextButtonPtr_t>;
-
-} // namespace gui
 namespace interact
 {
 

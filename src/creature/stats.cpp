@@ -159,7 +159,7 @@ namespace creature
             const auto RANK_BONUS { static_cast<int>(
                 CREATURE_PTR->Rank().As<float>()
                 * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                      "heroespath-fight-stats-rank-bonus-ratio")) };
+                    "heroespath-fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
         }
@@ -329,7 +329,7 @@ namespace creature
         return misc::random::Int(static_cast<int>(
             static_cast<float>(CREATURE_PTR->TraitWorking(Traits::Luck))
             / misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-fight-stats-luck-adj-ratio")));
+                "heroespath-fight-stats-luck-adj-ratio")));
     }
 
     Trait_t Stats::RollBonusByRace(
@@ -338,12 +338,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-stats-race-bonus-base-adj-ratio")) };
+                "heroespath-stats-race-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-stats-race-bonus-minor-adj-ratio")) };
+                "heroespath-stats-race-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {
@@ -436,11 +436,12 @@ namespace creature
         }
         else
         {
-            std::ostringstream ss;
-            ss << "creature::Stats::RollBonusByRace(stat_enum=" << Traits::ToString(TRAIT_ENUM)
-               << ", race_enum=" << RACE_ENUM << ")_InvalidValueError.";
+            M_HP_LOG_ERR(
+                "creature::Stats::RollBonusByRace(stat_enum="
+                << Traits::ToString(TRAIT_ENUM) << ", race_enum=" << RACE_ENUM
+                << ") but that trait value is invalid.");
 
-            throw std::range_error(ss.str());
+            return 0;
         }
     }
 
@@ -450,12 +451,12 @@ namespace creature
         const auto BASE { static_cast<Trait_t>(
             static_cast<float>(TRAIT_VALUE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-stats-role-bonus-base-adj-ratio")) };
+                "heroespath-stats-role-bonus-base-adj-ratio")) };
 
         const auto MINOR { static_cast<Trait_t>(
             static_cast<float>(BASE)
             * misc::ConfigFile::Instance()->ValueOrDefault<float>(
-                  "heroespath-stats-role-bonus-minor-adj-ratio")) };
+                "heroespath-stats-role-bonus-minor-adj-ratio")) };
 
         if (TRAIT_ENUM == Traits::Strength)
         {
@@ -507,15 +508,17 @@ namespace creature
                 return MINOR;
             else if (ROLE_ENUM == creature::role::Sylavin)
                 return MINOR;
+
             return 0;
         }
         else
         {
-            std::ostringstream ss;
-            ss << "creature::Stats::RollBonusByRole(stat_enum=" << Traits::ToString(TRAIT_ENUM)
-               << ", role_enum=" << ROLE_ENUM << ")_InvalidValueError.";
+            M_HP_LOG_ERR(
+                "creature::Stats::RollBonusByRole(stat_enum="
+                << Traits::ToString(TRAIT_ENUM) << ", role_enum=" << ROLE_ENUM
+                << ") but that trait value is invalid.");
 
-            throw std::range_error(ss.str());
+            return 0;
         }
     }
 

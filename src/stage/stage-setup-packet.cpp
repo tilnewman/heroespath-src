@@ -21,7 +21,7 @@ namespace stage
     const std::string InventorySetupPacket::ToString() const
     {
         return "cmd=inventory_stage_setup, inventory_stage_prev_calling_phase="
-            + game::Phase::ToStringNoThrow(prev_calling_phase) + ", inventory_stage_turn_creature="
+            + game::Phase::ToString(prev_calling_phase) + ", inventory_stage_turn_creature="
             + turn_creature_ptr->NameAndRaceAndRole() + ", inventory_stage_inventory_creature="
             + inventory_creature_ptr->NameAndRaceAndRole();
     }

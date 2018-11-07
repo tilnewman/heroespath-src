@@ -133,15 +133,15 @@ namespace creature
         return score;
     }
 
-    Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
+    Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum ENUM) const
     {
-        if ((E == item::set_type::Not) || (E == item::set_type::Count))
+        if ((ENUM == item::set_type::Not) || (ENUM == item::set_type::Count))
         {
             return 0_score;
         }
 
         // the additional 100 is to raise the score of all set items
-        return MakeFromSetType(E).TreasureScore() + MakeFromSetCompleteType(E).TreasureScore()
+        return MakeFromSetType(ENUM).TreasureScore() + MakeFromSetCompleteType(ENUM).TreasureScore()
             + 100_score;
     }
 
@@ -1602,14 +1602,14 @@ namespace creature
         }
     }
 
-    const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum E) const
+    const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum ENUM) const
     {
-        return Make(MakeFromSetType(E));
+        return Make(MakeFromSetType(ENUM));
     }
 
-    const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum E) const
+    const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum ENUM) const
     {
-        switch (E)
+        switch (ENUM)
         {
             case item::set_type::TheAssassins:
             {
@@ -2008,7 +2008,7 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "creature::EnchantmentFactory::NewFromSetType(set_type=" << E
+                ss << "creature::EnchantmentFactory::NewFromSetType(set_type=" << ENUM
                    << ") was unable to create with these arguments.";
 
                 throw std::runtime_error(ss.str());
@@ -2017,15 +2017,15 @@ namespace creature
     }
 
     const EnchantmentPtr_t
-        EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum E) const
+        EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum ENUM) const
     {
-        return Make(MakeFromSetCompleteType(E));
+        return Make(MakeFromSetCompleteType(ENUM));
     }
 
     const Enchantment
-        EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum E) const
+        EnchantmentFactory::MakeFromSetCompleteType(const item::set_type::Enum ENUM) const
     {
-        switch (E)
+        switch (ENUM)
         {
             case item::set_type::TheAssassins:
             {
@@ -2450,7 +2450,7 @@ namespace creature
             default:
             {
                 std::ostringstream ss;
-                ss << "creature::EnchantmentFactory::NewFromSetCompleteType(set_type=" << E
+                ss << "creature::EnchantmentFactory::NewFromSetCompleteType(set_type=" << ENUM
                    << ") was unable to create with these arguments.";
 
                 throw std::runtime_error(ss.str());
@@ -2459,24 +2459,24 @@ namespace creature
     }
 
     const EnchantmentPtr_t EnchantmentFactory::NewFromElementType(
-        const item::element_type::Enum E,
+        const item::element_type::Enum ENUM,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        return Make(MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY));
+        return Make(MakeFromElementType(ENUM, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY));
     }
 
     const Enchantment EnchantmentFactory::MakeFromElementType(
-        const item::element_type::Enum E,
+        const item::element_type::Enum ENUM,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        if (E == item::element_type::None)
+        if (ENUM == item::element_type::None)
         {
             std::ostringstream ss;
-            ss << "creature::EnchantmentFactory::NewFromElementType(element_type=" << E
+            ss << "creature::EnchantmentFactory::NewFromElementType(element_type=" << ENUM
                << ", is_weapon=" << std::boolalpha << IS_WEAPON << ", mat_pri="
                << ((MATERIAL_PRIMARY == item::material::Count)
                        ? "Count"
@@ -2499,22 +2499,22 @@ namespace creature
             {
                 const auto DAMAGE { 50 };
 
-                if (E & item::element_type::Fire)
+                if (ENUM & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Frost)
+                if (ENUM & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Honor)
+                if (ENUM & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Shadow)
+                if (ENUM & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowDamage).CurrentSet(DAMAGE);
                 }
@@ -2525,22 +2525,22 @@ namespace creature
 
                 const auto RESISTANCE { 13 };
 
-                if (E & item::element_type::Fire)
+                if (ENUM & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Frost)
+                if (ENUM & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Honor)
+                if (ENUM & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Shadow)
+                if (ENUM & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowResist).CurrentSet(RESISTANCE);
                 }
@@ -2557,22 +2557,22 @@ namespace creature
                 const auto DAMAGE_MULT { 5 };
                 const auto DAMAGE { DAMAGE_BASE + (MAT_BONUS * DAMAGE_MULT) };
 
-                if (E & item::element_type::Fire)
+                if (ENUM & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Frost)
+                if (ENUM & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Honor)
+                if (ENUM & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorDamage).CurrentSet(DAMAGE);
                 }
 
-                if (E & item::element_type::Shadow)
+                if (ENUM & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowDamage).CurrentSet(DAMAGE);
                 }
@@ -2585,22 +2585,22 @@ namespace creature
                 const auto RESISTANCE { static_cast<int>(
                     RES_BASE + (static_cast<float>(MAT_BONUS) * RES_MULT)) };
 
-                if (E & item::element_type::Fire)
+                if (ENUM & item::element_type::Fire)
                 {
                     traits.Get(Traits::FireResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Frost)
+                if (ENUM & item::element_type::Frost)
                 {
                     traits.Get(Traits::FrostResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Honor)
+                if (ENUM & item::element_type::Honor)
                 {
                     traits.Get(Traits::HonorResist).CurrentSet(RESISTANCE);
                 }
 
-                if (E & item::element_type::Shadow)
+                if (ENUM & item::element_type::Shadow)
                 {
                     traits.Get(Traits::ShadowResist).CurrentSet(RESISTANCE);
                 }

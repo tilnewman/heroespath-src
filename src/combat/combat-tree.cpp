@@ -16,18 +16,16 @@
 #include "misc/log-macros.hpp"
 
 #include <algorithm>
-#include <exception>
 #include <set>
-#include <sstream>
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string EdgeType::ToString(const Enum E)
+    const std::string EdgeType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case EdgeType::Blocking:
             {
@@ -38,11 +36,15 @@ namespace combat
                 return "Shoulder-To-Shoulder";
             }
             case EdgeType::All:
+            {
+                return "All";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "CombatTree::EdgeType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(
+                    "edge_type_enum=" << misc::EnumUnderlying_t(ENUM) << " was an invalid value.");
+
+                return "";
             }
         };
     }

@@ -123,7 +123,7 @@ namespace game
             const popup::PopupInfo & POPUP_INFO,
             const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR);
 
-        void SetPopupResponse(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
+        void SetPopupResponse(const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION);
 
     private:
         // returns true if focus was changed

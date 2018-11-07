@@ -18,7 +18,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Orientation : public misc::EnumBaseCounting<Orientation, misc::EnumFirstValueValid>
+    struct Orientation : public misc::EnumBaseCounting<Orientation, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

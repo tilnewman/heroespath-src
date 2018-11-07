@@ -16,6 +16,7 @@
 #include "gui/combat-image-enum.hpp"
 #include "gui/image-options.hpp"
 #include "gui/image-util.hpp"
+#include "misc/not-null.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 

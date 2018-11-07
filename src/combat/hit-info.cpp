@@ -19,8 +19,6 @@
 #include "spell/spell.hpp"
 
 #include <algorithm>
-#include <exception>
-#include <sstream>
 #include <tuple>
 
 namespace heroespath
@@ -28,30 +26,46 @@ namespace heroespath
 namespace combat
 {
 
-    const std::string HitType::ToString(const Enum E)
+    const std::string HitType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
-            case Weapon: { return "Weapon";
+            case Weapon:
+            {
+                return "Weapon";
             }
-            case Spell: { return "Spell";
+            case Spell:
+            {
+                return "Spell";
             }
-            case Song: { return "Song";
+            case Song:
+            {
+                return "Song";
             }
-            case Pounce: { return "Pounce";
+            case Pounce:
+            {
+                return "Pounce";
             }
-            case Roar: { return "Roar";
+            case Roar:
+            {
+                return "Roar";
             }
-            case Condition: { return "Condition";
+            case Condition:
+            {
+                return "Condition";
             }
-            case Trap: { return "Trap";
+            case Trap:
+            {
+                return "Trap";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "combat::HitType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
@@ -229,18 +243,19 @@ namespace combat
         , conditionPtrOpt_()
     {}
 
-    bool HitInfo::CondsAddedContains(const creature::Conditions::Enum E) const
+    bool HitInfo::CondsAddedContains(const creature::Conditions::Enum ENUM) const
     {
-        return (std::find(condsAddedVec_.begin(), condsAddedVec_.end(), E) != condsAddedVec_.end());
+        return (
+            std::find(condsAddedVec_.begin(), condsAddedVec_.end(), ENUM) != condsAddedVec_.end());
     }
 
-    bool HitInfo::CondsAddedRemove(const creature::Conditions::Enum E)
+    bool HitInfo::CondsAddedRemove(const creature::Conditions::Enum ENUM)
     {
         creature::CondEnumVec_t condsToRemoveVec;
 
         for (const auto NEXT_CONDITION_ENUM : condsAddedVec_)
         {
-            if (NEXT_CONDITION_ENUM == E)
+            if (NEXT_CONDITION_ENUM == ENUM)
             {
                 condsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
@@ -262,20 +277,20 @@ namespace combat
         return true;
     }
 
-    bool HitInfo::CondsRemovedContains(const creature::Conditions::Enum E) const
+    bool HitInfo::CondsRemovedContains(const creature::Conditions::Enum ENUM) const
     {
         return (
-            std::find(condsRemovedVec_.begin(), condsRemovedVec_.end(), E)
+            std::find(condsRemovedVec_.begin(), condsRemovedVec_.end(), ENUM)
             != condsRemovedVec_.end());
     }
 
-    bool HitInfo::CondsRemovedRemove(const creature::Conditions::Enum E)
+    bool HitInfo::CondsRemovedRemove(const creature::Conditions::Enum ENUM)
     {
         creature::CondEnumVec_t condsToRemoveVec;
 
         for (const auto NEXT_CONDITION_ENUM : condsRemovedVec_)
         {
-            if (NEXT_CONDITION_ENUM == E)
+            if (NEXT_CONDITION_ENUM == ENUM)
             {
                 condsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
@@ -303,7 +318,9 @@ namespace combat
     {
         switch (hitType_)
         {
-            case HitType::Weapon: { return !!weaponPtrOpt_;
+            case HitType::Weapon:
+            {
+                return !!weaponPtrOpt_;
             }
             case HitType::Spell:
             {
@@ -314,16 +331,22 @@ namespace combat
                 return (songPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Pounce:
-            case HitType::Roar: { return (actionPhraseCNP_.NamePos() != NamePosition::Count);
+            case HitType::Roar:
+            {
+                return (actionPhraseCNP_.NamePos() != NamePosition::Count);
             }
             case HitType::Condition:
             {
                 return (conditionPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
-            case HitType::Trap: { return ((actionVerb_.empty() == false) && damage_.IsNonZero());
+            case HitType::Trap:
+            {
+                return ((actionVerb_.empty() == false) && damage_.IsNonZero());
             }
             case HitType::Count:
-            default: { return false;
+            default:
+            {
+                return false;
             }
         }
     }
@@ -342,16 +365,16 @@ namespace combat
                 didArmorAbsorb_,
                 conditionPtrOpt_)
             != std::tie(
-                   HI.hitType_,
-                   HI.wasHit_,
-                   HI.weaponPtrOpt_,
-                   HI.damage_,
-                   HI.isCritical_,
-                   HI.isPower_,
-                   HI.spellPtrOpt_,
-                   HI.songPtrOpt_,
-                   HI.didArmorAbsorb_,
-                   HI.conditionPtrOpt_))
+                HI.hitType_,
+                HI.wasHit_,
+                HI.weaponPtrOpt_,
+                HI.damage_,
+                HI.isCritical_,
+                HI.isPower_,
+                HI.spellPtrOpt_,
+                HI.songPtrOpt_,
+                HI.didArmorAbsorb_,
+                HI.conditionPtrOpt_))
         {
             return false;
         }
@@ -406,7 +429,9 @@ namespace combat
             case HitType::Roar:
             case HitType::Trap:
             case HitType::Count:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
 

@@ -11,17 +11,16 @@
 //
 #include "pose-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace avatar
 {
 
-    const std::string Pose::ToString(const Pose::Enum E)
+    const std::string Pose::ToString(const Pose::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Standing:
             {
@@ -52,13 +51,16 @@ namespace avatar
                 return "Dead";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Pose::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace avatar
 } // namespace heroespath

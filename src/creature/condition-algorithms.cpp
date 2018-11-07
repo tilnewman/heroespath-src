@@ -39,8 +39,8 @@ namespace creature
                 tempVec,
                 MAX_COUNT,
                 JOIN_OPTIONS,
-                [](const Conditions::Enum & E) -> const std::string {
-                    return Conditions::Name(E);
+                [](const Conditions::Enum & ENUM) -> const std::string {
+                    return Conditions::Name(ENUM);
                 });
         }
 
@@ -81,10 +81,10 @@ namespace creature
                     std::remove_if(
                         conditionsVec.begin(),
                         conditionsVec.end(),
-                        [=](const Conditions::Enum E) {
+                        [=](const Conditions::Enum ENUM) {
                             return (
                                 (MIN_SEVERITY != 0)
-                                && (condition::Severity::Get(E) <= MIN_SEVERITY));
+                                && (condition::Severity::Get(ENUM) <= MIN_SEVERITY));
                         }),
                     conditionsVec.end());
             }

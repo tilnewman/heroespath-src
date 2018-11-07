@@ -11,6 +11,8 @@
 //
 #include "misc/enum-util.hpp"
 
+#include <string>
+
 namespace heroespath
 {
 namespace misc
@@ -29,16 +31,20 @@ namespace misc
             Last = Namespace
         };
 
-        static void ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR)
+        static const std::string
+            ToStringPopulate(const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
-            AppendNameIfBitIsSet(
-                ss, ENUM_VALUE, ToStringPrefix::SimpleName, "SimpleName", SEPARATOR);
+            std::string str;
 
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, ToStringPrefix::Typename, "Typename", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, ToStringPrefix::Namespace, "Namespace", SEPARATOR);
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, ToStringPrefix::SimpleName, "SimpleName", SEPARATOR);
+
+            AppendNameIfBitIsSet(str, ENUM_VALUE, ToStringPrefix::Typename, "Typename", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, ToStringPrefix::Namespace, "Namespace", SEPARATOR);
+
+            return str;
         }
     };
 

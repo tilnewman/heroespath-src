@@ -28,9 +28,6 @@
 #include "popup/popup-stage-generic.hpp"
 #include "stage/i-stage.hpp"
 
-#include <exception>
-#include <sstream>
-
 namespace heroespath
 {
 namespace popup
@@ -149,10 +146,11 @@ namespace popup
             case PopupImage::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::PopupManager::BackgroundImagePath(" << IMAGE << ")_InvalidValueError.";
+                M_HP_LOG_ERR(
+                    "gui::PopupManager::BackgroundImagePath(" << popup::PopupImage::ToString(
+                        IMAGE) << ") but that popup::PopupImage::Enum value was invalid.");
 
-                throw std::range_error(ss.str());
+                return "";
             }
         }
 

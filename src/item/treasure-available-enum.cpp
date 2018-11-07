@@ -7,21 +7,20 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// treasure-available-state.cpp
+// treasure-available-enum.cpp
 //
 #include "treasure-available-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace item
 {
 
-    const std::string TreasureAvailable::ToString(const Enum E)
+    const std::string TreasureAvailable::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case NoTreasure:
             {
@@ -40,13 +39,16 @@ namespace item
                 return "HeldAndLockbox";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "item::TreasureAvailable::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace item
 } // namespace heroespath

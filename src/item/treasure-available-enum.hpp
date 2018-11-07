@@ -7,8 +7,10 @@
 #ifndef HEROESPATH_ITEM_TREASUREAVAILABLEENUM_HPP_INCLUDED
 #define HEROESPATH_ITEM_TREASUREAVAILABLEENUM_HPP_INCLUDED
 //
-// treasure-available-state.hpp
+// treasure-available-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -17,8 +19,9 @@ namespace item
 {
 
     struct TreasureAvailable
+        : public misc::EnumBaseCounting<TreasureAvailable, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             NoTreasure = 0,
             HeldOnly,
@@ -29,6 +32,7 @@ namespace item
 
         static const std::string ToString(const Enum);
     };
+
 } // namespace item
 } // namespace heroespath
 

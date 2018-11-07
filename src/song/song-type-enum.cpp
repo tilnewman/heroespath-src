@@ -11,17 +11,16 @@
 //
 #include "song-type-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace song
 {
 
-    const std::string SongType::ToString(const Enum E)
+    const std::string SongType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Guitar:
             {
@@ -32,13 +31,16 @@ namespace song
                 return "Drum";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "song::SongType::ToString(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace song
 } // namespace heroespath

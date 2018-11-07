@@ -30,7 +30,7 @@ namespace creature
     //      interactions in fight.cpp
     //      testing code in conditions.cpp creature::condition::Warehouse::Fill()
     //
-    struct Conditions : public misc::EnumBaseCounting<Conditions, misc::EnumFirstValueValid>
+    struct Conditions : public misc::EnumBaseCounting<Conditions, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -55,6 +55,8 @@ namespace creature
         static const std::string ToString(const Enum);
         static const std::string Desc(const Enum);
         static const std::string ImageFilename(const Enum);
+        static const std::string ImageDirectory();
+        static const std::string ImagePath(const Enum);
     };
 
     using CondEnumVec_t = std::vector<Conditions::Enum>;

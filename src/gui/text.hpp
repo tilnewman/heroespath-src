@@ -94,7 +94,7 @@ namespace gui
         }
 
         const std::string getFontFamilyName() const;
-        const std::string getFontName() const { return GuiFont::ToStringNoThrow(font_); }
+        const std::string getFontName() const { return GuiFont::ToString(font_); }
         const std::string getString() const { return text_; }
         GuiFont::Enum getFont() const { return font_; }
         unsigned int getCharacterSize() const { return sfText_.getCharacterSize(); }

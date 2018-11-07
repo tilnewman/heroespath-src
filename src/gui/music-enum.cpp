@@ -12,6 +12,7 @@
 #include "music-enum.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -71,9 +72,13 @@ namespace gui
                 return "All";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
         }
     }
@@ -122,16 +127,22 @@ namespace gui
             }
             case All:
             {
-                ThrowInvalidValueForFunction(MUSIC, "Directory(All)");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
             case None:
             {
-                ThrowInvalidValueForFunction(MUSIC, "Directory(None)");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "Directory");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
         }
     }
@@ -157,17 +168,12 @@ namespace gui
                 return false;
             }
             case All:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "IsLooped(All)");
-            }
             case None:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "IsLooped(None)");
-            }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "IsLooped");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return false;
             }
         }
     }
@@ -205,17 +211,12 @@ namespace gui
                 return "Marcelo Fernandez";
             }
             case All:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "ArtistName(All)");
-            }
             case None:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "ArtistName(None)");
-            }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "ArtistName");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
         }
     }
@@ -253,17 +254,12 @@ namespace gui
                 return "CC-BY 4.0";
             }
             case All:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle(All)");
-            }
             case None:
-            {
-                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle(None)");
-            }
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "LicenseTitle");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
         }
     }
@@ -312,18 +308,22 @@ namespace gui
             {
                 return "PYC";
             }
-            case All:
+            case Count:
             {
-                ThrowInvalidValueForFunction(MUSIC, "SongName(All)");
+                return "(Count)";
             }
             case None:
             {
-                ThrowInvalidValueForFunction(MUSIC, "SongName(None)");
+                return "None";
             }
-            case Count:
+            case All:
+            {
+                return "All";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(MUSIC, "SongName");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                return "";
             }
         }
     }

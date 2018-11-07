@@ -20,7 +20,7 @@ namespace creature
 {
 
     struct AchievementType
-        : public misc::EnumBaseCounting<AchievementType, misc::EnumFirstValueValid>
+        : public misc::EnumBaseCounting<AchievementType, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

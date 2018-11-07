@@ -749,29 +749,29 @@ namespace combat
         return refinedTargetsPVec;
     }
 
-    float TurnDecider::ChanceFromFrequency(const strategy::FrequencyType::Enum E) const
+    float TurnDecider::ChanceFromFrequency(const strategy::FrequencyType::Enum ENUM) const
     {
-        if (E == strategy::FrequencyType::Commonly)
+        if (ENUM == strategy::FrequencyType::Commonly)
         {
             return 0.75f;
         }
-        else if (E == strategy::FrequencyType::Neutral)
+        else if (ENUM == strategy::FrequencyType::Neutral)
         {
             return 0.5f;
         }
-        else if (E == strategy::FrequencyType::Often)
+        else if (ENUM == strategy::FrequencyType::Often)
         {
             return 0.9f;
         }
-        else if (E == strategy::FrequencyType::Rarely)
+        else if (ENUM == strategy::FrequencyType::Rarely)
         {
             return 0.1f;
         }
-        else if (E == strategy::FrequencyType::Seldom)
+        else if (ENUM == strategy::FrequencyType::Seldom)
         {
             return 0.25f;
         }
-        else if (E == strategy::FrequencyType::Always)
+        else if (ENUM == strategy::FrequencyType::Always)
         {
             return 1.0f;
         }

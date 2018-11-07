@@ -20,7 +20,6 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -159,18 +158,18 @@ namespace creature
 
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
-            std::vector<std::string> strVec;
-            misc::SplitByChar(VALUE_STR, strVec, ',', true, true);
+            const std::vector<std::string> STR_VEC { misc::SplitByChars(
+                VALUE_STR, misc::SplitHow(',')) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (strVec.size() == 2),
+                (STR_VEC.size() == 2),
                 "nonplayerChanceFactory::Make_Coins() looked up \""
                     << KEY_STR << "\", retrieving \"" << VALUE_STR
                     << "\" which failed to be parsed into 2 comma sep strings.");
 
             try
             {
-                coinsMin_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(strVec[0]));
+                coinsMin_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(STR_VEC[0]));
             }
             catch (...)
             {
@@ -187,7 +186,7 @@ namespace creature
 
             try
             {
-                coinsMax_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(strVec[1]));
+                coinsMax_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(STR_VEC[1]));
             }
             catch (...)
             {
@@ -370,10 +369,10 @@ namespace creature
         {
             WeaponChances weaponChances(WeaponChances::NoWeapon());
 
-            WeaponSetVec_t weaponSetVec;
-            LookupPossibleWeaponsByRole(CHARACTER_PTR->Role(), weaponSetVec);
+            WeaponSetVec_t WEAPONS_SET_VEC;
+            LookupPossibleWeaponsByRole(CHARACTER_PTR->Role(), WEAPONS_SET_VEC);
 
-            for (const auto & NEXT_WEAPON_SET : weaponSetVec)
+            for (const auto & NEXT_WEAPON_SET : WEAPONS_SET_VEC)
             {
                 PopulateWeaponChances(weaponChances, NEXT_WEAPON_SET, PROFILE, CHARACTER_PTR);
             }
@@ -947,9 +946,9 @@ namespace creature
         }
 
         void ChanceFactory::LookupPossibleWeaponsByRole(
-            const role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam) const
+            const role::Enum ROLE, WeaponSetVec_t & WEAPONS_SET_VEC_OutParam) const
         {
-            const auto WAS_FOUND { roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
+            const auto WAS_FOUND { roleWeaponChanceMap_.Find(ROLE, WEAPONS_SET_VEC_OutParam) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (WAS_FOUND),
@@ -1731,29 +1730,29 @@ namespace creature
                 const auto KEY_STR { "heroespath-nonplayer-armor-chances-role-" + ROLE_STR };
                 const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
-                std::vector<std::string> armorChancesVec;
-                misc::SplitByChar(VALUE_STR, armorChancesVec, '|', true, true);
+                const std::vector<std::string> ARMOR_CHANCES_VEC { misc::SplitByChars(
+                    VALUE_STR, misc::SplitHow('|')) };
 
                 RoleArmorChanceVec_t roleArmorChanceVec;
 
-                for (const auto & NEXT_ARMOR_CHANCE_STR : armorChancesVec)
+                for (const auto & NEXT_ARMOR_CHANCE_STR : ARMOR_CHANCES_VEC)
                 {
-                    std::vector<std::string> piecesVec;
-                    misc::SplitByChar(NEXT_ARMOR_CHANCE_STR, piecesVec, ',', true, true);
+                    const std::vector<std::string> PIECES_VEC { misc::SplitByChars(
+                        NEXT_ARMOR_CHANCE_STR, misc::SplitHow(',')) };
 
                     M_HP_ASSERT_OR_LOG_AND_THROW(
-                        (piecesVec.size() >= 2),
+                        (PIECES_VEC.size() >= 2),
                         "nonplayerChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which failed to be parsed into the required 2  or more comma "
                                "sep "
                                "fields.");
 
-                    // note that since we skipped empties in SplitByChar() call above, this string
+                    // note that since we skipped empties in SplitByChars() call above, this string
                     // will not be empty
-                    const auto ARMOR_NAME_STR { piecesVec[0] };
+                    const auto ARMOR_NAME_STR { PIECES_VEC.front() };
 
-                    const auto ARMOR_CHANCE_STR { piecesVec[piecesVec.size() - 1] };
+                    const auto ARMOR_CHANCE_STR { PIECES_VEC.back() };
 
                     const auto INVALID_CHANCE { -1.0f };
                     auto armorChanceVal { INVALID_CHANCE };
@@ -1783,11 +1782,11 @@ namespace creature
                     }
 
                     item::armor::base_type::Enum baseType { item::armor::base_type::Count };
-                    const auto HAS_BASE_TYPE_STR { piecesVec.size() > 2 };
+                    const auto HAS_BASE_TYPE_STR { PIECES_VEC.size() > 2 };
 
                     if (HAS_BASE_TYPE_STR)
                     {
-                        baseType = item::armor::base_type::FromString(piecesVec[1]);
+                        baseType = item::armor::base_type::FromString(PIECES_VEC[1]);
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (baseType != item::armor::base_type::Count),
@@ -1850,20 +1849,20 @@ namespace creature
             const auto VALUE_STR_LOWER { ba::to_lower_copy(
                 misc::ConfigFile::Instance()->Value(KEY_STR)) };
 
-            std::vector<std::string> weaponSetVec;
-            misc::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
+            const std::vector<std::string> WEAPONS_SET_VEC { misc::SplitByChars(
+                VALUE_STR_LOWER, misc::SplitHow("{}")) };
 
             // Loop over each weapon set, denoted by curly brackets {} in the GameDataFile.
-            for (const auto & NEXT_WEAPON_SET_STR : weaponSetVec)
+            for (const auto & NEXT_WEAPON_SET_STR : WEAPONS_SET_VEC)
             {
                 WeaponSet nextWeaponSet;
 
-                std::vector<std::string> instructionsVec;
-                misc::SplitByChar(NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
+                const std::vector<std::string> INSTRUCTIONS_VEC { misc::SplitByChars(
+                    NEXT_WEAPON_SET_STR, misc::SplitHow('|')) };
 
                 // Loop over each instruction, denoted by the pipe character in the GameDataFile.
                 // A collection of instructions composes a WeaponSet
-                for (const auto & NEXT_INSTRUCTION_STR : instructionsVec)
+                for (const auto & NEXT_INSTRUCTION_STR : INSTRUCTIONS_VEC)
                 {
                     if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
                     {
@@ -1914,12 +1913,12 @@ namespace creature
                         // At this point, assume the instruction is in the form of:
                         // <weapon name>,<chance float> or (<weapon name>),<chance float>
                         //-so it must have two comma separated strings.
-                        std::vector<std::string> partsVec;
-                        misc::SplitByChar(NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
+                        const std::vector<std::string> PARTS_VEC { misc::SplitByChars(
+                            NEXT_INSTRUCTION_STR, misc::SplitHow(',')) };
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
-                            ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)
-                             && (partsVec.at(1).size() > 2)),
+                            ((PARTS_VEC.size() > 1) && (PARTS_VEC.at(0).size() > 2)
+                             && (PARTS_VEC.at(1).size() > 2)),
                             "nonplayerLookupPossibleWeaponsByRole(role="
                                 << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
                                 << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
@@ -1928,8 +1927,8 @@ namespace creature
                                    "by "
                                 << "a comma.");
 
-                        const auto WEAPON_NAME { partsVec[0] };
-                        const auto CHANCE_STR { partsVec[1] };
+                        const auto WEAPON_NAME { PARTS_VEC[0] };
+                        const auto CHANCE_STR { PARTS_VEC[1] };
 
                         const item::weapon::WeaponTypeWrapper WEAPON_INFO(WEAPON_NAME);
 

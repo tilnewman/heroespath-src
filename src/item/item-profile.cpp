@@ -106,7 +106,8 @@ namespace item
 
         if (category::None != category_)
         {
-            ss << "category=" << category::ToString(category_, misc::Wrap::Yes);
+            ss << "category="
+               << category::ToString(category_, misc::EnumStringHow(misc::Wrap::Yes));
         }
 
         if (ss.str().empty() == false)
@@ -148,7 +149,8 @@ namespace item
 
         if (element_type::None != element_)
         {
-            ss << ", element_type=" << element_type::ToString(element_, misc::Wrap::Yes);
+            ss << ", element_type="
+               << element_type::ToString(element_, misc::EnumStringHow(misc::Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
@@ -240,7 +242,8 @@ namespace item
                     << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
                     << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
                     << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                    << ", element_type=" << element_type::ToString(ELEMENT_TYPE, misc::Wrap::Yes)
+                    << ", element_type="
+                    << element_type::ToString(ELEMENT_TYPE, misc::EnumStringHow(misc::Wrap::Yes))
                     << ") element_type wasn't None but the misc_type was not equippable.");
 
             score_ += enchantmentFactory.TreasureScore(
@@ -818,10 +821,10 @@ namespace item
             return (
                 scoreHelper.Score(MATERIAL_PRI, MATERIAL_SEC)
                 + enchantmentFactory.TreasureScore(
-                      NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
+                    NAMED_TYPE, MATERIAL_PRI, MATERIAL_SEC, IS_WEAPON, !IS_WEAPON)
                 + enchantmentFactory.TreasureScore(SET_TYPE)
                 + enchantmentFactory.TreasureScore(
-                      ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
+                    ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI, MATERIAL_SEC));
         }
     }
 

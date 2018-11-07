@@ -10,7 +10,6 @@
 // texture-cache.hpp
 //
 #include "gui/image-options.hpp"
-#include "misc/enum-util.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 

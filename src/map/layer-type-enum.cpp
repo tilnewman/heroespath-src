@@ -11,8 +11,7 @@
 //
 #include "layer-type-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -23,14 +22,26 @@ namespace map
     {
         switch (LAYER)
         {
-            case Ground: { return "Ground";
+            case Ground:
+            {
+                return "Ground";
             }
-            case Object: { return "Object";
+            case Object:
+            {
+                return "Object";
             }
-            case Shadow: { return "Shadow";
+            case Shadow:
+            {
+                return "Shadow";
             }
             case Count:
-            default: { ThrowInvalidValueForFunction(LAYER, "ToString");
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LAYER));
+                return "";
             }
         }
     }

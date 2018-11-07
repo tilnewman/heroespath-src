@@ -102,7 +102,7 @@ namespace combat
         bool IsTransitionBackComplete() const { return isTransBackComplete_; }
 
         gui::Moving::Enum MovingDir() const { return movingDir_; }
-        void MovingDir(const gui::Moving::Enum E) { movingDir_ = E; }
+        void MovingDir(const gui::Moving::Enum ENUM) { movingDir_ = ENUM; }
 
         const CombatNodePtrOpt_t CombatNodePtrOpt() const { return combatNodePtrOpt_; }
 

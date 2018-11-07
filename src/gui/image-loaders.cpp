@@ -14,15 +14,10 @@
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
-#include "gui/combat-image-loader.hpp"
-#include "gui/condition-image-loader.hpp"
 #include "gui/creature-image-loader.hpp"
 #include "gui/item-image-loader.hpp"
 #include "gui/list-element.hpp"
-#include "gui/song-image-loader.hpp"
-#include "gui/spell-image-loader.hpp"
 #include "gui/text-region.hpp"
-#include "gui/title-image-loader.hpp"
 #include "item/item.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
@@ -71,9 +66,8 @@ namespace gui
     CachedTexture LoadAndCacheImage(
         const creature::Conditions::Enum WHICH_CONDITION, const gui::ImageOptions & OPTIONS)
     {
-        gui::ConditionImageLoader conditionImageLoader;
-
-        return CachedTexture(PathWrapper(conditionImageLoader.Path(WHICH_CONDITION)), OPTIONS);
+        return CachedTexture(
+            PathWrapper(creature::Conditions::ImagePath(WHICH_CONDITION)), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -93,9 +87,7 @@ namespace gui
     CachedTexture LoadAndCacheImage(
         const creature::Titles::Enum WHICH_TITLE, const gui::ImageOptions & OPTIONS)
     {
-        gui::TitleImageLoader titleImageLoader;
-
-        return CachedTexture(PathWrapper(titleImageLoader.Path(WHICH_TITLE)), OPTIONS);
+        return CachedTexture(PathWrapper(creature::Titles::ImagePath(WHICH_TITLE)), OPTIONS);
     }
 
     CachedTexture
@@ -107,9 +99,7 @@ namespace gui
     CachedTexture
         LoadAndCacheImage(const spell::Spells::Enum WHICH_SPELL, const gui::ImageOptions & OPTIONS)
     {
-        gui::SpellImageLoader spellImageLoader;
-
-        return CachedTexture(PathWrapper(spellImageLoader.Path(WHICH_SPELL)), OPTIONS);
+        return CachedTexture(PathWrapper(spell::Spells::ImagePath(WHICH_SPELL)), OPTIONS);
     }
 
     CachedTexture
@@ -121,9 +111,7 @@ namespace gui
     CachedTexture
         LoadAndCacheImage(const song::Songs::Enum WHICH_SONG, const gui::ImageOptions & OPTIONS)
     {
-        gui::SongImageLoader songImageLoader;
-
-        return CachedTexture(PathWrapper(songImageLoader.Path(WHICH_SONG)), OPTIONS);
+        return CachedTexture(PathWrapper(song::Songs::ImagePath(WHICH_SONG)), OPTIONS);
     }
 
     CachedTexture
@@ -135,9 +123,8 @@ namespace gui
     CachedTexture LoadAndCacheImage(
         const gui::CombatImageType::Enum WHICH_COMBAT_IMAGE, const gui::ImageOptions & OPTIONS)
     {
-        gui::CombatImageLoader combatImageLoader;
-
-        return CachedTexture(PathWrapper(combatImageLoader.Path(WHICH_COMBAT_IMAGE)), OPTIONS);
+        return CachedTexture(
+            PathWrapper(gui::CombatImageType::ImagePath(WHICH_COMBAT_IMAGE)), OPTIONS);
     }
 
 } // namespace gui

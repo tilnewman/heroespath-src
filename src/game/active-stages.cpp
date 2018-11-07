@@ -43,7 +43,7 @@ namespace game
 
     void ActiveStages::HandlePopupResponseCallback()
     {
-        if (!popupCallbackHandlerPtrOpt_ || (popup::ResponseTypes::None == popupResponse_.type))
+        if (!popupCallbackHandlerPtrOpt_ || (popup::PopupButtons::None == popupResponse_.type))
         {
             return;
         }
@@ -80,7 +80,7 @@ namespace game
     }
 
     void ActiveStages::SetPopupResponse(
-        const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION)
+        const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION)
     {
         popupResponse_.type = TYPE;
         popupResponse_.selection_opt = SELECTION;

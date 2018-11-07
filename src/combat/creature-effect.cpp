@@ -91,25 +91,25 @@ namespace combat
         return conditionsVec;
     }
 
-    bool CreatureEffect::GetAllCondsAddedContains(const creature::Conditions::Enum E) const
+    bool CreatureEffect::GetAllCondsAddedContains(const creature::Conditions::Enum ENUM) const
     {
         const auto VEC { GetAllCondsAdded() };
-        return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
+        return (std::find(VEC.begin(), VEC.end(), ENUM) != VEC.end());
     }
 
-    bool CreatureEffect::GetAllCondsRemovedContains(const creature::Conditions::Enum E) const
+    bool CreatureEffect::GetAllCondsRemovedContains(const creature::Conditions::Enum ENUM) const
     {
         const auto VEC { GetAllCondsRemoved() };
-        return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
+        return (std::find(VEC.begin(), VEC.end(), ENUM) != VEC.end());
     }
 
-    bool CreatureEffect::AllCondsAddedRemove(const creature::Conditions::Enum E)
+    bool CreatureEffect::AllCondsAddedRemove(const creature::Conditions::Enum ENUM)
     {
         auto wasCondRemoved { false };
 
         for (auto & nextHitInfo : hitInfoVec_)
         {
-            if (nextHitInfo.CondsAddedRemove(E))
+            if (nextHitInfo.CondsAddedRemove(ENUM))
             {
                 wasCondRemoved = true;
             }
@@ -118,13 +118,13 @@ namespace combat
         return wasCondRemoved;
     }
 
-    bool CreatureEffect::AllCondsRemovedRemove(const creature::Conditions::Enum E)
+    bool CreatureEffect::AllCondsRemovedRemove(const creature::Conditions::Enum ENUM)
     {
         auto wasCondRemoved { false };
 
         for (auto & nextHitInfo : hitInfoVec_)
         {
-            if (nextHitInfo.CondsRemovedRemove(E))
+            if (nextHitInfo.CondsRemovedRemove(ENUM))
             {
                 wasCondRemoved = true;
             }

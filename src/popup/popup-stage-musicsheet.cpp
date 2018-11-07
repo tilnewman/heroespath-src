@@ -209,7 +209,7 @@ namespace popup
             if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
             {
                 PlayValidKeypressSoundEffect();
-                RemovePopup(ResponseTypes::Cancel, 0);
+                RemovePopup(PopupButtons::Cancel, 0);
                 return true;
             }
             else if (
@@ -647,8 +647,7 @@ namespace popup
                     .PlayRandom();
             }
 
-            RemovePopup(ResponseTypes::Select, listBoxUPtr_->SelectionIndex());
-
+            RemovePopup(PopupButtons::Select, listBoxUPtr_->SelectionIndex());
             return true;
         }
         else

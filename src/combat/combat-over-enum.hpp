@@ -9,6 +9,8 @@
 //
 // combat-over-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct CombatEnd
+    struct CombatEnd : public misc::EnumBaseCounting<CombatEnd, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Win = 0,
             Lose,
@@ -28,6 +30,7 @@ namespace combat
 
         static const std::string ToString(const CombatEnd::Enum);
     };
+
 } // namespace combat
 } // namespace heroespath
 

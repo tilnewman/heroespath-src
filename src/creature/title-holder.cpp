@@ -1867,23 +1867,24 @@ namespace creature
 
         void Holder::Empty() { titleUVec_.clear(); }
 
-        TitlePtr_t Holder::Get(const Titles::Enum E)
+        TitlePtr_t Holder::Get(const Titles::Enum ENUM)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (titleUVec_.empty() == false),
-                "creature::Titles::Holder::Get(\"" << Titles::ToString(E)
+                "creature::Titles::Holder::Get(\"" << Titles::ToString(ENUM)
                                                    << "\") called when the Holder was empty.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (Titles::IsValid(E)),
-                "creature::Titles::Holder::Get(enum=" << E << ")_InvalidValueError.");
+                (Titles::IsValid(ENUM)),
+                "creature::Titles::Holder::Get(enum=" << Titles::ToString(ENUM)
+                                                      << ") but that enum value is invalid.");
 
-            const auto INDEX { static_cast<std::size_t>(E) };
+            const auto INDEX { static_cast<std::size_t>(ENUM) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < titleUVec_.size()),
                 "creature::Titles::Holder::Get(\""
-                    << Titles::ToString(E) << "\") enum given was " << E
+                    << Titles::ToString(ENUM) << "\") enum given was " << ENUM
                     << " but that was greater than (or equal to) "
                     << "the vec size of " << titleUVec_.size() << ".");
 

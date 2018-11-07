@@ -11,8 +11,7 @@
 //
 #include "interaction-text-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -25,13 +24,11 @@ namespace interact
         {
             case Text::System: return "System";
             case Text::Dialog: return "Dialog";
-            case Text::Count:
+            case Text::Count: return "(Count)";
             default:
             {
-                std::ostringstream ss;
-                ss << "interact::Text::Enum::ToString(" << TEXT_TYPE << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TEXT_TYPE));
+                return "";
             }
         }
     }
@@ -45,10 +42,8 @@ namespace interact
             case Text::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "interact::Text::Enum::Font(" << TEXT_TYPE << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TEXT_TYPE));
+                return gui::GuiFont::Count;
             }
         }
     }

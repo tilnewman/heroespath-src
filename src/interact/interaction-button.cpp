@@ -11,7 +11,6 @@
 //
 #include "interaction-button.hpp"
 
-#include "gui/text-button.hpp"
 #include "sfutil/keyboard.hpp"
 
 #include <memory>

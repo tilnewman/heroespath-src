@@ -11,17 +11,16 @@
 //
 #include "name-position-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string NamePosition::ToString(const Enum E)
+    const std::string NamePosition::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case NoName:
             {
@@ -52,11 +51,13 @@ namespace combat
                 return "TargetThenSource";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "game::NamePosition::ToString(" << E << ")_InvalidValueError";
-                throw std::runtime_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }

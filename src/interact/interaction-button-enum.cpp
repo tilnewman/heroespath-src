@@ -10,8 +10,8 @@
 // interation-button-enum.cpp
 //
 #include "interaction-button-enum.hpp"
-#include <exception>
-#include <sstream>
+
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -22,26 +22,20 @@ namespace interact
     {
         switch (BUTTON_TYPE)
         {
-            case Ignore:
-                return "Ignore";
-            case Continue:
-                return "Continue";
-            case Goodbye:
-                return "Goodbye";
-            case Yes:
-                return "Yes";
-            case No:
-                return "No";
-            case Unlock:
-                return "Unlock";
+            case Ignore: return "Ignore";
+            case Continue: return "Continue";
+            case Goodbye: return "Goodbye";
+            case Yes: return "Yes";
+            case No: return "No";
+            case Unlock: return "Unlock";
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Interaction_::Buttons::Enum::ToString(" << BUTTON_TYPE
-                   << ")_InvalidValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(BUTTON_TYPE));
+                return "";
             }
         }
     }
@@ -50,24 +44,17 @@ namespace interact
     {
         switch (BUTTON_TYPE)
         {
-            case Ignore:
-                return sf::Keyboard::I;
-            case Continue:
-                return sf::Keyboard::C;
-            case Goodbye:
-                return sf::Keyboard::G;
-            case Yes:
-                return sf::Keyboard::Y;
-            case No:
-                return sf::Keyboard::N;
-            case Unlock:
-                return sf::Keyboard::U;
+            case Ignore: return sf::Keyboard::I;
+            case Continue: return sf::Keyboard::C;
+            case Goodbye: return sf::Keyboard::G;
+            case Yes: return sf::Keyboard::Y;
+            case No: return sf::Keyboard::N;
+            case Unlock: return sf::Keyboard::U;
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "map::Interact::Buttons::Enum::Key(" << BUTTON_TYPE << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(BUTTON_TYPE));
+                return sf::Keyboard::KeyCount;
             }
         }
     }

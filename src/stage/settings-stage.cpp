@@ -104,9 +104,9 @@ namespace stage
         /*
         M_HP_LOG(
             GetStageName() << " HandlePopupCallback(response=\""
-                           << popup::ResponseTypes::ToString(PACKET_PTR->type) << "\")");
+                           << popup::PopupButtons::ToString(PACKET_PTR->type) << "\")");
 
-        if (PACKET_PTR->type == popup::ResponseTypes::No)
+        if (PACKET_PTR->type == popup::PopupButtons::No)
         {
             M_HP_LOG(
                 GetStageName() << " Stage.  User rejected the new antialias level.  "
@@ -118,7 +118,7 @@ namespace stage
             HandleResolutionChange();
             return false;
         }
-        else if (PACKET_PTR->type == popup::ResponseTypes::Okay)
+        else if (PACKET_PTR->type == popup::PopupButtons::Okay)
         {
             // case where the antialiasing mode was not supported and
             // need to revert back to original value

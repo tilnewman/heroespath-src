@@ -151,9 +151,7 @@ namespace popup
             if (ProcessSelectNumber())
             {
                 PlayValidKeypressSoundEffect();
-
-                RemovePopup(ResponseTypes::Select, static_cast<std::size_t>(GetSelectNumber()));
-
+                RemovePopup(PopupButtons::Select, static_cast<std::size_t>(GetSelectNumber()));
                 return true;
             }
             else

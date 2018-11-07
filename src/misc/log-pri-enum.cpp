@@ -9,6 +9,7 @@
 //
 #include "log-pri-enum.hpp"
 
+#include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
 
 namespace heroespath
@@ -41,9 +42,13 @@ namespace misc
                 return "Fatal";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(PRIORITY, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(PRIORITY));
+                return "";
             }
         }
     }
@@ -73,9 +78,13 @@ namespace misc
                 return "FAT";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(PRIORITY, "ToStringAcronym");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(PRIORITY));
+                return "";
             }
         }
     }
@@ -108,6 +117,9 @@ namespace misc
             }
             case Default:
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
                 return "";

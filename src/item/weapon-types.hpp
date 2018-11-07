@@ -21,7 +21,7 @@ namespace item
     namespace weapon
     {
 
-        struct sword_type : public misc::EnumBaseCounting<sword_type, misc::EnumFirstValueValid>
+        struct sword_type : public misc::EnumBaseCounting<sword_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -43,7 +43,7 @@ namespace item
             static const std::string Name(const sword_type::Enum);
         };
 
-        struct axe_type : public misc::EnumBaseCounting<axe_type, misc::EnumFirstValueValid>
+        struct axe_type : public misc::EnumBaseCounting<axe_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -58,7 +58,7 @@ namespace item
             static const std::string Name(const axe_type::Enum);
         };
 
-        struct club_type : public misc::EnumBaseCounting<club_type, misc::EnumFirstValueValid>
+        struct club_type : public misc::EnumBaseCounting<club_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -72,7 +72,7 @@ namespace item
             static const std::string ToString(const club_type::Enum);
         };
 
-        struct whip_type : public misc::EnumBaseCounting<whip_type, misc::EnumFirstValueValid>
+        struct whip_type : public misc::EnumBaseCounting<whip_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -87,7 +87,7 @@ namespace item
         };
 
         struct projectile_type
-            : public misc::EnumBaseCounting<projectile_type, misc::EnumFirstValueValid>
+            : public misc::EnumBaseCounting<projectile_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -105,7 +105,7 @@ namespace item
         };
 
         struct bladedstaff_type
-            : public misc::EnumBaseCounting<bladedstaff_type, misc::EnumFirstValueValid>
+            : public misc::EnumBaseCounting<bladedstaff_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {

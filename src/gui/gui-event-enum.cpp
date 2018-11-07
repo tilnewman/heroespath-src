@@ -11,25 +11,27 @@
 //
 #include "gui-event-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
 {
 
-    void GuiEvent::ToStringPopulate(
-        std::ostringstream & ss,
-        const misc::EnumUnderlying_t ENUM_VALUE,
-        const std::string & SEPARATOR)
+    const std::string GuiEvent::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::Click, "Click", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::DoubleClick, "DoubleClick", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::MouseWheel, "MouseWheel", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::Click, "Click", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::DoubleClick, "DoubleClick", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::MouseWheel, "MouseWheel", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, GuiEvent::SelectionChange, "SelectionChange", SEPARATOR);
+            str, ENUM_VALUE, GuiEvent::SelectionChange, "SelectionChange", SEPARATOR);
 
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::Keypress, "Keypress", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, GuiEvent::FocusChange, "FocusChange", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::Keypress, "Keypress", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::FocusChange, "FocusChange", SEPARATOR);
+        return str;
     }
 
 } // namespace gui

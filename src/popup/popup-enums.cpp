@@ -11,8 +11,7 @@
 //
 #include "popup-enums.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -72,83 +71,39 @@ namespace popup
                 return "TreasureTrap";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(POPUP_STAGE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(POPUP_STAGE));
+                return "";
             }
         }
     }
 
-    const std::string PopupButtons::ToString(const PopupButtons::Enum E)
+    const std::string PopupButtons::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        switch (E)
-        {
-            case None:
-            {
-                return "None";
-            }
-            case Okay:
-            {
-                return "Okay";
-            }
-            case Select:
-            {
-                return "Select";
-            }
-            case Cancel:
-            {
-                return "Cancel";
-            }
-            case SelectCancel:
-            {
-                return "SelectCancel";
-            }
-            case Continue:
-            {
-                return "Continue";
-            }
-            case YesNo:
-            {
-                return "YesNo";
-            }
-            case YesNoCancel:
-            {
-                return "YesNoCancel";
-            }
-            default:
-            {
-                std::ostringstream ss;
-                ss << "popup::PopupButtons::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::None, "None", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Okay, "Okay", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Continue, "Continue", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Yes, "Yes", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::No, "No", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Cancel, "Cancel", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::Select, "Select", SEPARATOR);
+        return str;
     }
 
-    bool PopupButtons::IsValid(const PopupButtons::Enum E)
+    bool PopupButtons::IsAffirmative(const PopupButtons::Enum BUTTON)
     {
-        switch (E)
-        {
-            case None:
-            case Okay:
-            case Select:
-            case Cancel:
-            case SelectCancel:
-            case Continue:
-            case YesNo:
-            case YesNoCancel:
-            {
-                return true;
-            }
-            default:
-            {
-                return false;
-            }
-        }
+        return (BUTTON & (Okay | Continue | Yes | Select));
     }
 
-    const std::string PopupButtonColor::ToString(const PopupButtonColor::Enum E)
+    const std::string PopupButtonColor::ToString(const PopupButtonColor::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Light:
             {
@@ -159,35 +114,20 @@ namespace popup
                 return "Dark";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::PopupButtonColor::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    bool PopupButtonColor::IsValid(const PopupButtonColor::Enum E)
+    const std::string PopupImage::ToString(const PopupImage::Enum ENUM)
     {
-        switch (E)
-        {
-            case Light:
-            case Dark:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
-
-    const std::string PopupImage::ToString(const PopupImage::Enum E)
-    {
-        switch (E)
+        switch (ENUM)
         {
             case Banner:
             {
@@ -218,35 +158,16 @@ namespace popup
                 return "MusicSheet";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "popup::PopupImage::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    bool PopupImage::IsValid(const PopupImage::Enum E)
-    {
-        switch (E)
-        {
-            case Banner:
-            case Regular:
-            case RegularSidebar:
-            case Large:
-            case LargeSidebar:
-            case Spellbook:
-            case MusicSheet:
-            {
-                return true;
-            }
-            case Count:
-            default:
-            {
-                return false;
-            }
-        }
-    }
 } // namespace popup
 } // namespace heroespath

@@ -15,7 +15,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
 #include <vector>
@@ -62,26 +61,26 @@ namespace item
             const std::string VALUE_STR(misc::ConfigFile::Instance()->Value(KEY_STR));
 
             // break the line of text into comma separated field strings
-            std::vector<std::string> fieldsVec;
-            misc::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
+            const std::vector<std::string> FIELDS_VEC { misc::SplitByChars(
+                VALUE_STR, misc::SplitHow(',')) };
 
             // verify there are eight fields
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (fieldsVec.size() == 6),
+                (FIELDS_VEC.size() == 6),
                 "item::armor::ArmorDetailsLoader::LoadDetailsForKey(armor_name=\""
                     << ARMOR_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
                     << VALUE_STR << "\" but failed to find the required 7 comma separated fields.");
 
-            armorDetails.name = CleanStringField(fieldsVec[0], false);
+            armorDetails.name = CleanStringField(FIELDS_VEC[0], false);
 
             armorDetails.complexity = static_cast<creature::nonplayer::complexity_type::Enum>(
                 creature::nonplayer::complexity_type::FromString(
-                    CleanStringField(fieldsVec[1], false)));
+                    CleanStringField(FIELDS_VEC[1], false)));
 
-            armorDetails.price = Coin_t(StringFieldToInt("Price", fieldsVec[2]));
-            armorDetails.weight = Weight_t(StringFieldToInt("Weight", fieldsVec[3]));
-            armorDetails.armor_rating = Armor_t(StringFieldToInt("ArmorRating", fieldsVec[4]));
-            armorDetails.description = CleanStringField(fieldsVec[5], false);
+            armorDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
+            armorDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));
+            armorDetails.armor_rating = Armor_t(StringFieldToInt("ArmorRating", FIELDS_VEC[4]));
+            armorDetails.description = CleanStringField(FIELDS_VEC[5], false);
 
             // store details in the map
             armorDetailsMap_[ARMOR_NAME] = armorDetails;

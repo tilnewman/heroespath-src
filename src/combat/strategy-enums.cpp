@@ -12,6 +12,7 @@
 #include "strategy-enums.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -19,56 +20,59 @@ namespace combat
 {
     namespace strategy
     {
-        void SelectType::ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR)
+        const std::string SelectType::ToStringPopulate(
+            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Pixie, "Pixie", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Dragon, "Dragon", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Human, "Human", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Gnome, "Gnome", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Wolfen, "Wolfen", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Archer, "Archer", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Sorcerer, "Sorcerer", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Knight, "Knight", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Beastmaster, "Beastmaster", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Cleric, "Cleric", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Theif, "Theif", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Bard, "Bard", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::FireBrand, "FireBrand", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Sylavin, "Sylavin", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Projectile, "Projectile", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Caster, "Caster", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::CanFly, "CanFly", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::CantFly, "CantFly", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::Beast, "Beast", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, SelectType::NotBeast, "NotBeast", SEPARATOR);
+            std::string str;
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Pixie, "Pixie", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Dragon, "Dragon", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Human, "Human", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Gnome, "Gnome", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Wolfen, "Wolfen", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Archer, "Archer", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Sorcerer, "Sorcerer", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Knight, "Knight", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, SelectType::Beastmaster, "Beastmaster", SEPARATOR);
+
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Cleric, "Cleric", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Theif, "Theif", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Bard, "Bard", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::FireBrand, "FireBrand", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Sylavin, "Sylavin", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Projectile, "Projectile", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Caster, "Caster", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::CanFly, "CanFly", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::CantFly, "CantFly", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Beast, "Beast", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::NotBeast, "NotBeast", SEPARATOR);
+            return str;
         }
 
-        void RefineType::ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR)
+        const std::string RefineType::ToStringPopulate(
+            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Murderer, "Murderer", SEPARATOR);
+            std::string str;
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Murderer, "Murderer", SEPARATOR);
 
             AppendNameIfBitIsSet(
-                ss, ENUM_VALUE, RefineType::Bloodthirsty, "Bloodthirsty", SEPARATOR);
+                str, ENUM_VALUE, RefineType::Bloodthirsty, "Bloodthirsty", SEPARATOR);
 
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Coward, "Coward", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Hit, "Hit", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Attack, "Attack", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::MusicMaker, "MusicMaker", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Caster, "Caster", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Enchanted, "Enchanted", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Coward, "Coward", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Hit, "Hit", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Attack, "Attack", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::MusicMaker, "MusicMaker", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Caster, "Caster", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Enchanted, "Enchanted", SEPARATOR);
 
             AppendNameIfBitIsSet(
-                ss, ENUM_VALUE, RefineType::NotEnchanted, "NotEnchanted", SEPARATOR);
+                str, ENUM_VALUE, RefineType::NotEnchanted, "NotEnchanted", SEPARATOR);
 
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::Steadfast, "Steadfast", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::LastTo, "LastTo", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, RefineType::MostDamage, "MostDamage", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Steadfast, "Steadfast", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::LastTo, "LastTo", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::MostDamage, "MostDamage", SEPARATOR);
+            return str;
         }
 
         const std::string AdvanceType::ToString(const AdvanceType::Enum ADVANCE_TYPE)
@@ -92,9 +96,13 @@ namespace combat
                     return "Charger";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(ADVANCE_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(ADVANCE_TYPE));
+                    return "";
                 }
             }
         }
@@ -116,9 +124,13 @@ namespace combat
                     return "Coward";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(RETREAT_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(RETREAT_TYPE));
+                    return "";
                 }
             }
         }
@@ -168,9 +180,13 @@ namespace combat
                     return "Always";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(FREQ_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(FREQ_TYPE));
+                    return "";
                 }
             }
         }

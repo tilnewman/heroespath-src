@@ -11,6 +11,8 @@
 //
 #include "sex-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace creature
@@ -33,9 +35,13 @@ namespace creature
                 return "Female";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(SEX_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SEX_TYPE));
+                return "";
             }
         }
     }
@@ -66,9 +72,13 @@ namespace creature
                     return "she";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(SEX_TYPE, "HeSheIt");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SEX_TYPE));
+                return "";
             }
         }
     }
@@ -100,9 +110,13 @@ namespace creature
                     return std::string("her").append((WILL_POSSESSIVE_HER) ? "s" : "");
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(SEX_TYPE, "HisHersIts");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SEX_TYPE));
+                return "";
             }
         }
     }
@@ -133,9 +147,13 @@ namespace creature
                     return "her";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(SEX_TYPE, "HimHerIt");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SEX_TYPE));
+                return "";
             }
         }
     }

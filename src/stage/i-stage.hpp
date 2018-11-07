@@ -14,7 +14,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
-#include "popup/popup-response-enum.hpp"
+#include "popup/popup-enums.hpp"
 #include "stage/stage-enum.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -120,7 +120,7 @@ namespace stage
             const popup::PopupInfo & POPUP_INFO) const = 0;
 
         virtual void RemovePopup(
-            const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0) const = 0;
+            const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION = 0) const = 0;
 
         virtual void TransitionTo(const stage::Stage::Enum NEW_STAGE) const = 0;
         virtual void TransitionTo(const stage::SetupPacket & SETUP_PACKET) const = 0;

@@ -19,7 +19,7 @@ namespace heroespath
 namespace stage
 {
 
-    struct Stage : public misc::EnumBaseCounting<Stage, misc::EnumFirstValueNone>
+    struct Stage : public misc::EnumBaseCounting<Stage, misc::EnumFirstValue::None>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -51,11 +51,6 @@ namespace stage
         static bool HasFadedImage(const Enum);
         static bool IsPlayable(const Enum);
         static bool IsPlayableAndNotPopup(const Enum);
-
-        static void TestHelper()
-        {
-            misc::EnumBaseCounting<Stage, misc::EnumFirstValueNone>::Test();
-        }
     };
 
 } // namespace stage

@@ -26,8 +26,8 @@ namespace creature
     public:
         explicit TraitSet(const TraitValueVec_t & TRAITS_VEC = TraitValueVec_t());
 
-        Trait & Get(const Traits::Enum E);
-        const Trait & GetCopy(const Traits::Enum E) const;
+        Trait & Get(const Traits::Enum);
+        const Trait & GetCopy(const Traits::Enum ENUM) const;
 
         const std::string ToString(
             const bool WILL_WRAP,

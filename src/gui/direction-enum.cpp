@@ -11,17 +11,16 @@
 //
 #include "direction-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string Direction::ToString(const Direction::Enum E)
+    const std::string Direction::ToString(const Direction::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Left:
             {
@@ -40,18 +39,20 @@ namespace gui
                 return "Down";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::Direction::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    gui::Direction::Enum Direction::Opposite(const Direction::Enum E)
+    gui::Direction::Enum Direction::Opposite(const Direction::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Left:
             {
@@ -70,16 +71,13 @@ namespace gui
                 return Direction::Up;
             }
             case Count:
-            {
-                return Direction::Count;
-            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::Direction::Opposite(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return Direction::Count;
             }
         }
     }
+
 } // namespace gui
 } // namespace heroespath

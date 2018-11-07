@@ -27,8 +27,9 @@ namespace gui
 {
 
     struct music_update_status
+        : public misc::EnumBaseCounting<music_update_status, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Stopped = 0,
             Playing,
@@ -40,7 +41,7 @@ namespace gui
             Count
         };
 
-        static const std::string ToString(const music_update_status::Enum);
+        static const std::string ToString(const Enum);
     };
 
     // Responsible for storing sf::Muisc objects, information about them,

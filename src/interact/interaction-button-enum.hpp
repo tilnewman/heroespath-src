@@ -9,7 +9,7 @@
 //
 // interact-button-enum.hpp
 //
-#include "gui/text-button.hpp"
+#include "misc/enum-util.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
 
@@ -21,9 +21,9 @@ namespace heroespath
 namespace interact
 {
 
-    struct Buttons
+    struct Buttons : public misc::EnumBaseCounting<Buttons, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Ignore = 0,
             Continue,

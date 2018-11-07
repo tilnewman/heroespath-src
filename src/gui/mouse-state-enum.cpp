@@ -11,8 +11,7 @@
 //
 #include "mouse-state-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -40,9 +39,13 @@ namespace gui
                 return "Disabled";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(MOUSE_STATE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MOUSE_STATE));
+                return "";
             }
         }
     }

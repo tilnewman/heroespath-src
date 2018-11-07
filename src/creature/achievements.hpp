@@ -40,10 +40,10 @@ namespace creature
             const creature::role::Enum & OWNING_CREATURE_ROLE = creature::role::Count);
 
         // these functions will throw on invalid enum or if a valid enum was not found in the map
-        const Achievement Get(const AchievementType::Enum E) const;
-        TitlePtrOpt_t Increment(const AchievementType::Enum E);
-        TitlePtrOpt_t GetCurrentTitle(const AchievementType::Enum E) const;
-        TitlePtrOpt_t GetNextTitle(const AchievementType::Enum E) const;
+        const Achievement Get(const AchievementType::Enum ENUM) const;
+        TitlePtrOpt_t Increment(const AchievementType::Enum);
+        TitlePtrOpt_t GetCurrentTitle(const AchievementType::Enum ENUM) const;
+        TitlePtrOpt_t GetNextTitle(const AchievementType::Enum ENUM) const;
 
         friend bool operator<(const Achievements & L, const Achievements & R);
         friend bool operator==(const Achievements & L, const Achievements & R);

@@ -13,6 +13,7 @@
 
 #include "game/game-controller.hpp"
 #include "gui/text-info.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
 

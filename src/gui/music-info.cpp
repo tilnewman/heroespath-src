@@ -37,7 +37,7 @@ namespace gui
 
     void MusicInfo::AutoSetup()
     {
-        if ((which_ != music::Count) && (which_ != music::All) && (which_ != music::None))
+        if (music::IsValid(which_))
         {
             isLooped_ = music::IsLooped(which_);
             artistName_ = music::ArtistName(which_);

@@ -9,6 +9,8 @@
 //
 // turn-action-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct TurnAction
+    struct TurnAction : public misc::EnumBaseCounting<TurnAction, misc::EnumFirstValue::Nothing>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Nothing = 0,
             Attack,
@@ -40,9 +42,9 @@ namespace combat
 
         static const std::string ToString(const TurnAction::Enum);
         static const std::string Name(const TurnAction::Enum);
-
-        static bool IsMove(const Enum E) { return ((E == Advance) || (E == Retreat)); }
+        static bool IsMove(const Enum ENUM) { return ((ENUM == Advance) || (ENUM == Retreat)); }
     };
+
 } // namespace combat
 } // namespace heroespath
 

@@ -19,7 +19,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct sex : misc::EnumBaseCounting<sex, misc::EnumFirstValueValid>
+    struct sex : misc::EnumBaseCounting<sex, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -29,14 +29,14 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const sex::Enum E);
+        static const std::string ToString(const sex::Enum);
 
-        static const std::string HeSheIt(const sex::Enum E, const bool WILL_CAPITALIZE);
+        static const std::string HeSheIt(const sex::Enum ENUM, const bool WILL_CAPITALIZE);
 
         static const std::string HisHerIts(
-            const sex::Enum E, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
+            const sex::Enum ENUM, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
 
-        static const std::string HimHerIt(const sex::Enum E, const bool WILL_CAPITALIZE);
+        static const std::string HimHerIt(const sex::Enum ENUM, const bool WILL_CAPITALIZE);
     };
 
 } // namespace creature

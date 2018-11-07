@@ -9,27 +9,30 @@
 //
 #include "image-option-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
 {
 
-    void ImageOpt::ToStringPopulate(
-        std::ostringstream & ss,
-        const misc::EnumUnderlying_t ENUM_VALUE,
-        const std::string & SEPARATOR)
+    const std::string ImageOpt::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Smooth, "Smooth", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::FlipHoriz, "FlipHoriz", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::FlipVert, "FlipVert", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Repeated, "Repeated", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, ImageOpt::Invert, "Invert", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::Smooth, "Smooth", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::FlipHoriz, "FlipHoriz", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::FlipVert, "FlipVert", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::Repeated, "Repeated", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::Invert, "Invert", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, ImageOpt::InvertAfterMask, "InvertAfterMask", SEPARATOR);
+            str, ENUM_VALUE, ImageOpt::InvertAfterMask, "InvertAfterMask", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, ImageOpt::InvertIncludesAlpha, "InvertIncludesAlpha", SEPARATOR);
+            str, ENUM_VALUE, ImageOpt::InvertIncludesAlpha, "InvertIncludesAlpha", SEPARATOR);
+
+        return str;
     }
 
 } // namespace gui

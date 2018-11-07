@@ -15,15 +15,17 @@
 #include "creature/title.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string Titles::ToString(const Titles::Enum E)
+    const std::string Titles::ToString(const Titles::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case ProtectorOfThornberry:
             {
@@ -664,18 +666,21 @@ namespace creature
             {
                 return "DragonOfTheNightmareSky";
             }
-            //
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Titles::Name(const Titles::Enum E)
+    const std::string Titles::Name(const Titles::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case ProtectorOfThornberry:
             {
@@ -1318,23 +1323,37 @@ namespace creature
             }
             //
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Titles::Desc(const Titles::Enum E)
+    const std::string Titles::Desc(const Titles::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-creature-title-" << ToString(E) << "-desc";
+        keySS << "heroespath-creature-title-" << ToString(ENUM) << "-desc";
         return boost::algorithm::trim_copy(misc::ConfigFile::Instance()->Value(keySS.str()));
     }
 
-    const std::string Titles::ImageFilename(const Titles::Enum E)
+    const std::string Titles::ImageFilename(const Titles::Enum ENUM)
     {
-        return title::Holder::Get(E)->ImageFilename();
+        return title::Holder::Get(ENUM)->ImageFilename();
+    }
+
+    const std::string Titles::ImageDirectory()
+    {
+        return misc::ConfigFile::Instance()->GetMediaPath("media-images-titles-dir");
+    }
+
+    const std::string Titles::ImagePath(const Enum ENUM)
+    {
+        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace creature

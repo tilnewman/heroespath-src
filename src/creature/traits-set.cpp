@@ -32,20 +32,23 @@ namespace creature
         }
     }
 
-    Trait & TraitSet::Get(const Traits::Enum E)
+    Trait & TraitSet::Get(const Traits::Enum ENUM)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Traits::IsValid(E)), "TraitSet::Get(" << E << ")_InvalidValueError");
+            (Traits::IsValid(ENUM)),
+            "TraitSet::Get(trait_enun=" << Traits::ToString(ENUM)
+                                        << ") but that trait value is invalid.");
 
-        return traitVec_[static_cast<std::size_t>(E)];
+        return traitVec_[static_cast<std::size_t>(ENUM)];
     }
 
-    const Trait & TraitSet::GetCopy(const Traits::Enum E) const
+    const Trait & TraitSet::GetCopy(const Traits::Enum ENUM) const
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Traits::IsValid(E)), "TraitSet::GetCopy(" << E << ")_InvalidValueError");
+            (Traits::IsValid(ENUM)),
+            "TraitSet::GetCopy(" << Traits::ToString(ENUM) << ") but that trait value is invalid.");
 
-        return traitVec_[static_cast<std::size_t>(E)];
+        return traitVec_[static_cast<std::size_t>(ENUM)];
     }
 
     const std::string TraitSet::ToString(
@@ -120,7 +123,8 @@ namespace creature
         }
     }
 
-    const std::string TraitSet::StatStringHelper(const Traits::Enum E, const bool WILL_PREFIX) const
+    const std::string
+        TraitSet::StatStringHelper(const Traits::Enum ENUM, const bool WILL_PREFIX) const
     {
         std::ostringstream ss;
 
@@ -129,9 +133,9 @@ namespace creature
             ss << ", ";
         }
 
-        const auto TRAIT { traitVec_[static_cast<std::size_t>(E)] };
+        const auto TRAIT { traitVec_[static_cast<std::size_t>(ENUM)] };
 
-        ss << Traits::Abbr(E) << "=";
+        ss << Traits::Abbr(ENUM) << "=";
 
         if (TRAIT.Current() != TRAIT.Normal())
         {

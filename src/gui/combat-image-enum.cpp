@@ -11,17 +11,18 @@
 //
 #include "combat-image-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string CombatImageType::ToString(const Enum E)
+    const std::string CombatImageType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Wing:
             {
@@ -64,18 +65,20 @@ namespace gui
                 return "Stone4";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::CombatImageType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string CombatImageType::ImageFilename(const Enum E)
+    const std::string CombatImageType::ImageFilename(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Wing:
             {
@@ -118,13 +121,26 @@ namespace gui
                 return "stone4.png";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::CombatImageType::ImageFilename(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
+    const std::string CombatImageType::ImageDirectory()
+    {
+        return misc::ConfigFile::Instance()->GetMediaPath("media-images-combat-dir");
+    }
+
+    const std::string CombatImageType::ImagePath(const Enum ENUM)
+    {
+        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
+    }
+
 } // namespace gui
 } // namespace heroespath

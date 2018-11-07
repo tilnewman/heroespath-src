@@ -11,7 +11,8 @@
 //
 #include "body-type.hpp"
 
-#include <exception>
+#include "misc/log-macros.hpp"
+
 #include <sstream>
 #include <tuple>
 
@@ -419,7 +420,7 @@ namespace creature
             }
             case creature::race::Ghoul:
             {
-                BodyType ghoulBodyType{ Make_Humanoid() };
+                BodyType ghoulBodyType { Make_Humanoid() };
 
                 if (ROLE == role::Spike)
                 {
@@ -435,7 +436,7 @@ namespace creature
             }
             case creature::race::Giant:
             {
-                BodyType giantBodyType{ Make_Humanoid() };
+                BodyType giantBodyType { Make_Humanoid() };
 
                 if (ROLE == role::Warlord)
                 {
@@ -456,12 +457,11 @@ namespace creature
             }
         }
 
-        std::ostringstream ss;
+        M_HP_LOG_ERR(
+            "creature::BodyType::Make_FromRace(race="
+            << RACE << ", role=" << ROLE << ") -these values failed to create a BodyType.");
 
-        ss << "creature::BodyType::Make_FromRace(race=" << RACE << ", role=" << ROLE
-           << ") -these values failed to create a BodyType.";
-
-        throw std::range_error(ss.str());
+        return BodyType();
     }
 
     bool operator<(const BodyType & L, const BodyType & R)

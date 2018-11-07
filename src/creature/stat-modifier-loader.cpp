@@ -12,7 +12,6 @@
 #include "stat-modifier-loader.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
 #include "boost/lexical_cast.hpp"
@@ -27,12 +26,11 @@ namespace creature
     const StatSet
         StatModifierLoader::ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR)
     {
-        std::vector<std::string> statValuesStrVec;
-
-        misc::SplitByChar(DATA_FILE_VALUE_STR, statValuesStrVec, ',', true, true);
+        const std::vector<std::string> STAT_VALUES_STR_VEC { misc::SplitByChars(
+            DATA_FILE_VALUE_STR, misc::SplitHow(',')) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (statValuesStrVec.size() == 6),
+            (STAT_VALUES_STR_VEC.size() == 6),
             "creature::StatModifierLoader::Load() was unable to extract exactly "
                 << "six comma sep values from \"" << DATA_FILE_VALUE_STR
                 << "\".  (There must be a typo in the game data file.)");
@@ -40,12 +38,12 @@ namespace creature
         const Trait_t ERROR_VALUE { -123456789 };
 
         StatSet statSet;
-        for (std::size_t i(0); i < statValuesStrVec.size(); ++i)
+        for (std::size_t i(0); i < STAT_VALUES_STR_VEC.size(); ++i)
         {
             Trait_t nextValue { ERROR_VALUE };
             try
             {
-                nextValue = boost::lexical_cast<Trait_t>(statValuesStrVec.at(i));
+                nextValue = boost::lexical_cast<Trait_t>(STAT_VALUES_STR_VEC.at(i));
             }
             catch (...)
             {
@@ -55,7 +53,7 @@ namespace creature
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (nextValue != ERROR_VALUE),
                 "creature::StatModifierLoader::Load() was unable to convert \""
-                    << statValuesStrVec.at(i) << "\" to an int value.");
+                    << STAT_VALUES_STR_VEC.at(i) << "\" to an int value.");
 
             const auto NEXT_STAT_ENUM { static_cast<Traits::Enum>(i) };
             statSet.Set(NEXT_STAT_ENUM, nextValue);

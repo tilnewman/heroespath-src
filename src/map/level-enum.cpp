@@ -13,6 +13,7 @@
 
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -40,9 +41,13 @@ namespace map
                 return "Realm";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(LEVEL_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL_TYPE));
+                return "";
             }
         }
     }
@@ -74,9 +79,13 @@ namespace map
                 return "ThornberryHighlands";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(LEVEL, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL));
+                return "";
             }
         }
     }
@@ -115,7 +124,8 @@ namespace map
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(LEVEL, "Type");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL));
+                return LevelType::Count;
             }
         }
     }

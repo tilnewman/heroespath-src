@@ -15,15 +15,15 @@ namespace heroespath
 {
 namespace gui
 {
-    void Side::ToStringPopulate(
-        std::ostringstream & ss,
-        const misc::EnumUnderlying_t ENUM_VALUE,
-        const std::string & SEPARATOR)
+    const std::string Side::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Side::Top, "Top", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Side::Bottom, "Bottom", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Side::Left, "Left", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Side::Right, "Right", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Top, "Top", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Bottom, "Bottom", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Left, "Left", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Right, "Right", SEPARATOR);
+        return str;
     }
 
 } // namespace gui

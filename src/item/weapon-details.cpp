@@ -15,7 +15,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -76,34 +75,34 @@ namespace item
             const auto VALUE_STR { misc::ConfigFile::Instance()->Value(KEY_STR) };
 
             // break the line of text into comma separated field strings
-            std::vector<std::string> fieldsVec;
-            misc::SplitByChar(VALUE_STR, fieldsVec, ',', true, true);
+            const std::vector<std::string> FIELDS_VEC { misc::SplitByChars(
+                VALUE_STR, misc::SplitHow(',')) };
 
             // verify there are eight fields
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (fieldsVec.size() == 8),
+                (FIELDS_VEC.size() == 8),
                 "item::weapon::WeaponDetailsLoader::LoadDetailsForKey(weapon_name=\""
                     << WEAPON_NAME << "\") using key=\"" << KEY_STR << "\" found value=\""
                     << VALUE_STR << "\" but failed to find the required 9 comma separated fields.");
 
-            weaponDetails.name = CleanStringField(fieldsVec[0], false);
+            weaponDetails.name = CleanStringField(FIELDS_VEC[0], false);
 
             weaponDetails.complexity = static_cast<creature::nonplayer::complexity_type::Enum>(
                 creature::nonplayer::complexity_type::FromString(
-                    CleanStringField(fieldsVec[1], false)));
+                    CleanStringField(FIELDS_VEC[1], false)));
 
-            weaponDetails.price = Coin_t(StringFieldToInt("Price", fieldsVec[2]));
-            weaponDetails.weight = Weight_t(StringFieldToInt("Weight", fieldsVec[3]));
+            weaponDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
+            weaponDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));
 
-            weaponDetails.damage_min = Health_t(StringFieldToInt("DamageMin", fieldsVec[4]));
-            weaponDetails.damage_max = Health_t(StringFieldToInt("DamageMax", fieldsVec[5]));
+            weaponDetails.damage_min = Health_t(StringFieldToInt("DamageMin", FIELDS_VEC[4]));
+            weaponDetails.damage_max = Health_t(StringFieldToInt("DamageMax", FIELDS_VEC[5]));
 
             weaponDetails.handedness
-                = ((CleanStringField(fieldsVec[6], true) == "two-handed")
+                = ((CleanStringField(FIELDS_VEC[6], true) == "two-handed")
                        ? item::category::TwoHanded
                        : item::category::OneHanded);
 
-            weaponDetails.description = CleanStringField(fieldsVec[7], false);
+            weaponDetails.description = CleanStringField(FIELDS_VEC[7], false);
 
             // store details in the map
             weaponDetailsMap_[WEAPON_NAME] = weaponDetails;

@@ -20,9 +20,9 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Avatar : public misc::EnumBaseCounting<Avatar, misc::EnumFirstValueValid>
+    struct Avatar : public misc::EnumBaseCounting<Avatar, misc::EnumFirstValue::Valid>
     {
-        enum class NameEnum
+        enum class NameEnum : misc::EnumUnderlying_t
         {
             // player avatars
             Metal,

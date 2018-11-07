@@ -11,17 +11,16 @@
 //
 #include "moving-enum.hpp"
 
-#include <exception>
-#include <sstream>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string Moving::ToString(const Moving::Enum E)
+    const std::string Moving::ToString(const Moving::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Still:
             {
@@ -36,13 +35,16 @@ namespace gui
                 return "Away";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::Moving::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         };
     }
+
 } // namespace gui
 } // namespace heroespath

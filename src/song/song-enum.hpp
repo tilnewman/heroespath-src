@@ -20,7 +20,7 @@ namespace song
 {
 
     // Responsible for identifying all songs that Bards can play in the game
-    struct Songs : public misc::EnumBaseCounting<Songs, misc::EnumFirstValueValid>
+    struct Songs : public misc::EnumBaseCounting<Songs, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -41,6 +41,8 @@ namespace song
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
         static const std::string ImageFilename(const Enum);
+        static const std::string ImageDirectory();
+        static const std::string ImagePath(const Enum);
     };
 
     using SongEnumVec_t = std::vector<Songs::Enum>;

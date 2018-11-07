@@ -89,6 +89,8 @@ namespace gui
 
         void DrawStage(stage::IStagePtr_t &);
 
+        void TestDraw(const sf::Drawable &);
+
         const std::vector<sf::Event> PollEvents();
 
         void TakeScreenshot();

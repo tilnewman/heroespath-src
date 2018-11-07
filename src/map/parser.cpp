@@ -56,10 +56,10 @@ namespace map
         {
             Parse_Implementation(packet);
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_ERR(
-                "map::Parser::Parse(" << packet.file_path << ") threw '" << E.what()
+                "map::Parser::Parse(" << packet.file_path << ") threw '" << EXCEPTION.what()
                                       << "' exception.");
 
             throw;
@@ -161,12 +161,12 @@ namespace map
         {
             boost::property_tree::read_xml(MAP_FILE_PATH_STR, xmlPropertyTree);
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_ERR(
-                "map::Parser::Parse_XML(\""
-                << MAP_FILE_PATH_STR << "\") boost::property_tree::read_xml() threw '" << E.what()
-                << "' exception.");
+                "map::Parser::Parse_XML(\"" << MAP_FILE_PATH_STR
+                                            << "\") boost::property_tree::read_xml() threw '"
+                                            << EXCEPTION.what() << "' exception.");
 
             throw;
         }
@@ -193,11 +193,11 @@ namespace map
             layout.tile_count_v.x = FetchXMLAttribute<int>(MAP_PTREE, "width");
             layout.tile_count_v.y = FetchXMLAttribute<int>(MAP_PTREE, "height");
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
                 "map::Parser::Parse_MapSizes() threw exception when parsing \""
-                << FetchXMLAttributeName(MAP_PTREE) << "\".  what=\"" << E.what() << "\".");
+                << FetchXMLAttributeName(MAP_PTREE) << "\".  what=\"" << EXCEPTION.what() << "\".");
 
             throw;
         }
@@ -281,13 +281,14 @@ namespace map
                     // std::stoi tested faster than boost::lexical_cast 2018-3-19
                     mapIDs.emplace_back(std::stoi(nextValStr));
                 }
-                catch (const std::exception & E)
+                catch (const std::exception & EXCEPTION)
                 {
                     M_HP_LOG(
                         "map::Parser::Parse_Layer_Generic_Tiles("
                         << nextLine << ") "
                         << "boost::lexical_cast<int>("
-                        << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
+                        << "\"" << nextValStr << "\") threw '" << EXCEPTION.what()
+                        << "' exception.");
 
                     throw;
                 }
@@ -329,12 +330,12 @@ namespace map
                     rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
                     rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
                 }
-                catch (const std::exception & E)
+                catch (const std::exception & EXCEPTION)
                 {
                     M_HP_LOG_FAT(
                         "map::Parser::Parse_Layer_WalkBounds() threw "
                         << "std::exception when parsing the rect from a node named \""
-                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << EXCEPTION.what()
                         << "\".");
 
                     throw;
@@ -377,12 +378,12 @@ namespace map
                     rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
                     rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
                 }
-                catch (const std::exception & E)
+                catch (const std::exception & EXCEPTION)
                 {
                     M_HP_LOG_FAT(
                         "map::Parser::Parse_Layer_Animations() threw "
                         << "std::exception when parsing the rect from a node named \""
-                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << EXCEPTION.what()
                         << "\".");
 
                     throw;
@@ -420,12 +421,12 @@ namespace map
             rect.width = FetchXMLAttribute<float>(PTREE, "width");
             rect.height = FetchXMLAttribute<float>(PTREE, "height");
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
                 "map::Parser::Parse_Transition() threw "
                 << "std::exception when parsing the rect from a node named \""
-                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
+                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << EXCEPTION.what() << "\".");
 
             throw;
         }
@@ -556,12 +557,12 @@ namespace map
             rect.height = FetchXMLAttribute<float>(PTREE, "height");
             footstepName = FetchXMLAttributeName(PTREE);
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
                 "map::Parser::Parse_WalkSfx() threw "
                 << "std::exception when parsing the rect from a node named \""
-                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
+                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << EXCEPTION.what() << "\".");
 
             throw;
         }
@@ -655,12 +656,12 @@ namespace map
                 const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
                 rectsVec.emplace_back(RECT);
             }
-            catch (const std::exception & E)
+            catch (const std::exception & EXCEPTION)
             {
                 M_HP_LOG_FAT(
                     "map::Parser::Parse_Rects() threw "
                     << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
-                    << "\".  what=\"" << E.what() << "\".");
+                    << "\".  what=\"" << EXCEPTION.what() << "\".");
 
                 throw;
             }

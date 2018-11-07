@@ -9,6 +9,8 @@
 //
 // treasure-image-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace item
 {
 
-    struct TreasureImage
+    struct TreasureImage : public misc::EnumBaseCounting<TreasureImage, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             BonePile = 0,
             ChestClosed,
@@ -34,6 +36,7 @@ namespace item
         static const std::string
             ToContainerName(const TreasureImage::Enum, const bool WILL_CAPITALIZE = false);
     };
+
 } // namespace item
 } // namespace heroespath
 

@@ -9,6 +9,8 @@
 //
 // pose-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Pose
+    struct Pose : public misc::EnumBaseCounting<Pose, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Standing = 0,
             Walking,
@@ -30,8 +32,9 @@ namespace avatar
             Count
         };
 
-        static const std::string ToString(const Pose::Enum E);
+        static const std::string ToString(const Enum);
     };
+
 } // namespace avatar
 } // namespace heroespath
 

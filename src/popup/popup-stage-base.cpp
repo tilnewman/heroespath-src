@@ -93,31 +93,31 @@ namespace popup
         else if (&PACKET == buttonYesUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Yes);
+            RemovePopup(PopupButtons::Yes);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "yes text button clicked");
         }
         else if (&PACKET == buttonNoUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::No);
+            RemovePopup(PopupButtons::No);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "no text button clicked");
         }
         else if (&PACKET == buttonCancelUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Cancel);
+            RemovePopup(PopupButtons::Cancel);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "cancel text button clicked");
         }
         else if (&PACKET == buttonContinueUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Continue);
+            RemovePopup(PopupButtons::Continue);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "continue text button clicked");
         }
         else if (&PACKET == buttonOkayUPtr_.get())
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Okay);
+            RemovePopup(PopupButtons::Okay);
             return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "okay text button clicked");
         }
 
@@ -159,7 +159,7 @@ namespace popup
 
     bool PopupStageBase::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (popupInfo_.Buttons() & ResponseTypes::Continue)
+        if (popupInfo_.Buttons() & PopupButtons::Continue)
         {
             if ((KEY_EVENT.code == sf::Keyboard::C) || (KEY_EVENT.code == sf::Keyboard::Space)
                 || (KEY_EVENT.code == sf::Keyboard::Return)
@@ -167,12 +167,12 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                RemovePopup(ResponseTypes::Continue);
+                RemovePopup(PopupButtons::Continue);
                 return true;
             }
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Okay)
+        if (popupInfo_.Buttons() & PopupButtons::Okay)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Space) || (KEY_EVENT.code == sf::Keyboard::O)
                 || (KEY_EVENT.code == sf::Keyboard::Return)
@@ -180,28 +180,28 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                RemovePopup(ResponseTypes::Okay);
+                RemovePopup(PopupButtons::Okay);
                 return true;
             }
         }
 
-        if ((popupInfo_.Buttons() & ResponseTypes::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
+        if ((popupInfo_.Buttons() & PopupButtons::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
         {
             EndKeepAliveTimer();
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Yes);
+            RemovePopup(PopupButtons::Yes);
             return true;
         }
 
-        if ((popupInfo_.Buttons() & ResponseTypes::No)
+        if ((popupInfo_.Buttons() & PopupButtons::No)
             && ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::No);
+            RemovePopup(PopupButtons::No);
             return true;
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Cancel)
+        if (popupInfo_.Buttons() & PopupButtons::Cancel)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape)
                 || ((KEY_EVENT.code == sf::Keyboard::C) && WillPressingCKeyClosePopup())
@@ -210,12 +210,12 @@ namespace popup
             {
                 EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
-                RemovePopup(ResponseTypes::Cancel);
+                RemovePopup(PopupButtons::Cancel);
                 return true;
             }
         }
 
-        if ((popupInfo_.Buttons() & ResponseTypes::Select)
+        if ((popupInfo_.Buttons() & PopupButtons::Select)
             && ((KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::S)))
         {
             // sound effects played by HandleSelect()
@@ -234,7 +234,7 @@ namespace popup
             keepAliveTimerSec_ -= ELAPSED_TIME_SECONDS;
             if (keepAliveTimerSec_ < 0.0f)
             {
-                RemovePopup(ResponseTypes::Continue);
+                RemovePopup(PopupButtons::Continue);
             }
         }
     }
@@ -249,7 +249,7 @@ namespace popup
         else
         {
             PlayValidKeypressSoundEffect();
-            RemovePopup(ResponseTypes::Select, static_cast<std::size_t>(selection_));
+            RemovePopup(PopupButtons::Select, static_cast<std::size_t>(selection_));
             return true;
         }
     }
@@ -315,7 +315,7 @@ namespace popup
 
     void PopupStageBase::SetupButtons()
     {
-        if (popupInfo_.Buttons() & ResponseTypes::Yes)
+        if (popupInfo_.Buttons() & PopupButtons::Yes)
         {
             buttonYesUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sYes",
@@ -327,7 +327,7 @@ namespace popup
             EntityAdd(buttonYesUPtr_);
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::No)
+        if (popupInfo_.Buttons() & PopupButtons::No)
         {
             buttonNoUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sNo",
@@ -340,7 +340,7 @@ namespace popup
             EntityAdd(buttonNoUPtr_);
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Cancel)
+        if (popupInfo_.Buttons() & PopupButtons::Cancel)
         {
             buttonCancelUPtr_ = std::make_unique<gui::TextButton>(
                 "PopupStage'sCancel",
@@ -353,7 +353,7 @@ namespace popup
             EntityAdd(buttonCancelUPtr_);
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Continue)
+        if (popupInfo_.Buttons() & PopupButtons::Continue)
         {
             const auto MIDDLE { StageRegion().left + innerRegion_.left
                                 + (innerRegion_.width * 0.5f) };
@@ -368,7 +368,7 @@ namespace popup
             EntityAdd(buttonContinueUPtr_);
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Okay)
+        if (popupInfo_.Buttons() & PopupButtons::Okay)
         {
             const float MIDDLE(
                 StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
@@ -383,7 +383,7 @@ namespace popup
             EntityAdd(buttonOkayUPtr_);
         }
 
-        if (popupInfo_.Buttons() & ResponseTypes::Select)
+        if (popupInfo_.Buttons() & PopupButtons::Select)
         {
             const float MIDDLE(
                 StageRegion().left + innerRegion_.left + (innerRegion_.width * 0.5f));
@@ -489,28 +489,30 @@ namespace popup
             case PopupImage::Spellbook:
             case PopupImage::MusicSheet:
             {
-                std::ostringstream ss;
-                ss << "popup::PopupStageBase::BackgroundImageRect(" << PI
-                   << ") was given Spellbook or MusicSheet, which are fullscreen"
-                   << " popups and have no rects to setup.";
+                M_HP_LOG_ERR(
+                    "gui::PopupManager::BackgroundImagePath("
+                    << popup::PopupImage::ToString(PI)
+                    << ") was given Spellbook or MusicSheet, which are fullscreen"
+                    << " popups and have no rects to setup.");
 
-                throw std::invalid_argument(ss.str());
+                return sf::IntRect();
             }
             case PopupImage::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "popup::PopupStageBase::BackgroundImageRect(" << PI << ")_InvalidValueError.";
+                M_HP_LOG_ERR(
+                    "gui::PopupManager::BackgroundImagePath(" << popup::PopupImage::ToString(
+                        PI) << ") but that popup::PopupImage::Enum value was invalid.");
 
-                throw std::range_error(ss.str());
+                return sf::IntRect();
             }
         }
     }
 
-    float PopupStageBase::calcBackgroundImageScale(const PopupImage::Enum E) const
+    float PopupStageBase::calcBackgroundImageScale(const PopupImage::Enum ENUM) const
     {
         // These values found by experiment to look good at various resolutions.
-        switch (E)
+        switch (ENUM)
         {
             case PopupImage::Banner:
             {
@@ -542,5 +544,6 @@ namespace popup
             }
         }
     }
+
 } // namespace popup
 } // namespace heroespath

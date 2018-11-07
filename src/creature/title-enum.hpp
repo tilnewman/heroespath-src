@@ -20,7 +20,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct Titles : public misc::EnumBaseCounting<Titles, misc::EnumFirstValueValid>
+    struct Titles : public misc::EnumBaseCounting<Titles, misc::EnumFirstValue::Valid>
     {
         // Note:  Keep order in sync with creature::title::Warehouse::Fill()
         enum Enum : misc::EnumUnderlying_t
@@ -203,17 +203,12 @@ namespace creature
             Count
         };
 
-        // returns the straight name with no spaces that matches the enum name
         static const std::string ToString(const Enum);
-
-        // returns the human readable (GUI) version with spaces
         static const std::string Name(const Enum);
-
-        // returns the value from the game data file
         static const std::string Desc(const Enum);
-
-        // returns the filename and extension only, not a complete path
         static const std::string ImageFilename(const Enum);
+        static const std::string ImageDirectory();
+        static const std::string ImagePath(const Enum);
     };
 
     using TitleEnumVec_t = std::vector<Titles::Enum>;

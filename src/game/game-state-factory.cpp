@@ -122,12 +122,12 @@ namespace game
                 boost::archive::text_iarchive inputTextArchive(inputFileStream);
                 inputTextArchive >> *gameStatePtr;
             }
-            catch (const std::exception & E)
+            catch (const std::exception & EXCEPTION)
             {
                 M_HP_LOG_ERR(
                     "GameStateFactory::LoadAllGames() while trying to "
                     << "de-serialize saved game file \"" << FILE_PATH_STR
-                    << "\", threw exception \"" << E.what()
+                    << "\", threw exception \"" << EXCEPTION.what()
                     << "\".  That saved game file is somehow invalid and cannot be loaded.");
 
                 delete gameStatePtr;
@@ -171,12 +171,12 @@ namespace game
                 boost::archive::text_iarchive inputTextArchive(inputFileStream);
                 inputTextArchive >> *CREATURE_PTR;
             }
-            catch (const std::exception & E)
+            catch (const std::exception & EXCEPTION)
             {
                 M_HP_LOG_ERR(
                     "GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
                     << "de-serialize/load saved unplayed character file \"" << FILE_PATH_STR
-                    << "\" threw exception \"" << E.what()
+                    << "\" threw exception \"" << EXCEPTION.what()
                     << "\".  That character file is somehow invalid and cannot be loaded.");
 
                 creature::CreatureWarehouse::Access().Free(CREATURE_PTR);
@@ -308,12 +308,12 @@ namespace game
                 CHARACTER_PTR_OPT.value()->AfterSerialize();
             }
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             std::ostringstream ss;
 
             ss << makeFunctionDescStr() << " while trying to serialize file \""
-               << NEXT_AVAILABLE_FILE_PATH_STR << "\", threw exception \"" << E.what()
+               << NEXT_AVAILABLE_FILE_PATH_STR << "\", threw exception \"" << EXCEPTION.what()
                << "\".  Save failed.";
 
             throw std::runtime_error(ss.str());

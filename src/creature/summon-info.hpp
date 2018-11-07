@@ -31,12 +31,15 @@ namespace creature
             : type_(TYPE)
             , race_(RACE)
             , role_(ROLE)
-            , count_(origin_type::UseCount(TYPE))
+            , count_(((origin_type::IsValid(TYPE)) ? origin_type::UseCount(TYPE) : 0))
         {}
 
         origin_type::Enum Type() const { return type_; }
+
         race::Enum Race() const { return race_; }
+
         role::Enum Role() const { return role_; }
+
         std::size_t Count() const { return count_; }
 
         bool IsValid() const

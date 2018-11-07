@@ -51,7 +51,7 @@ namespace combat
 
     struct EdgeType
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             // This is the left/right or horizontal or blocking position
             // connection between nodes or creatures on the battlefield.
@@ -152,7 +152,7 @@ namespace combat
         const std::string EdgesString(const bool WILL_WRAP = true) const;
 
         // throws std::invalid_argument if edge already exists, or if the Verticies do not exist
-        void AddEdge(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum E);
+        void AddEdge(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum);
 
         // order independant matching
         // returns a vector of vertex IDs that were left without edges

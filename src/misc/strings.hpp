@@ -103,12 +103,24 @@ namespace misc
 
     inline bool IsAlphaOrDigit(const char CHAR) { return (IsAlpha(CHAR) || IsDigit(CHAR)); }
 
-    // result is all lowercase, SEPARATOR can be empty
-    const std::string CamelTo(const std::string & STRING, const std::string & SEPARATOR);
-
-    inline const std::string CamelTo(const std::string & STRING, const char SEPARATOR)
+    enum class CaseChange
     {
-        return CamelTo(STRING, std::string(1, SEPARATOR));
+        LowerToUpper,
+        UpperToLower,
+        Both
+    };
+
+    const std::string CamelTo(
+        const std::string & STRING,
+        const std::string & SEPARATOR,
+        const CaseChange CASE_CHANGES = CaseChange::Both);
+
+    inline const std::string CamelTo(
+        const std::string & STRING,
+        const char SEPARATOR,
+        const CaseChange CASE_CHANGES = CaseChange::Both)
+    {
+        return CamelTo(STRING, std::string(1, SEPARATOR), CASE_CHANGES);
     }
 
     template <typename T>
@@ -396,6 +408,43 @@ namespace misc
 
         return finalStr;
     }
+
+    struct SplitHow
+    {
+        explicit SplitHow(
+            const std::string SEPARATOR_CHARS = ",",
+            const bool WILL_SKIP_EMPTY = true,
+            const bool WILL_TRIM_EACH = true)
+            : separator_chars(SEPARATOR_CHARS)
+            , will_skip_empty(WILL_SKIP_EMPTY)
+            , will_trim_each(WILL_TRIM_EACH)
+        {}
+
+        explicit SplitHow(
+            const char SEPARATOR_CHAR,
+            const bool WILL_SKIP_EMPTY = true,
+            const bool WILL_TRIM_EACH = true)
+            : separator_chars(1, SEPARATOR_CHAR)
+            , will_skip_empty(WILL_SKIP_EMPTY)
+            , will_trim_each(WILL_TRIM_EACH)
+        {}
+
+        SplitHow(const SplitHow &) = default;
+        SplitHow(SplitHow &&) = default;
+        SplitHow & operator=(const SplitHow &) = default;
+        SplitHow & operator=(SplitHow &&) = default;
+
+        std::string separator_chars;
+        bool will_skip_empty;
+        bool will_trim_each;
+    };
+
+    // TO_SPLIT is split into pieces by any of the chars in HOW.separator_chars and NOT by that
+    // string as a whole.  The resulting pieces will NOT contain any of the separator_chars. If
+    // trimming makes a piece empty then HOW.will_skip_empty applies. If HOW.separator_chars is
+    // empty then TO_SPLIT is the only string returned.
+    const std::vector<std::string>
+        SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW = SplitHow());
 
 } // namespace misc
 } // namespace heroespath

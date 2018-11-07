@@ -18,7 +18,7 @@ namespace heroespath
 namespace misc
 {
 
-    struct LogPriority : public misc::EnumBaseCounting<LogPriority, misc::EnumFirstValueValid>
+    struct LogPriority : public misc::EnumBaseCounting<LogPriority, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

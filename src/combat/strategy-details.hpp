@@ -13,7 +13,6 @@
 #include "combat/strategy-enums.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 
@@ -70,10 +69,10 @@ namespace combat
                 const std::string & SUB_STR,
                 misc::VectorMap<EnumType, float> & OutParam_EnumChanceMap) const
             {
-                std::vector<std::string> enumColonChanceStrVec;
-                misc::SplitByChar(SUB_STR, enumColonChanceStrVec, ':', true, true);
+                const std::vector<std::string> ENUM_CHANCE_STR_VEC { misc::SplitByChars(
+                    SUB_STR, misc::SplitHow(':')) };
 
-                if (enumColonChanceStrVec.size() != 2)
+                if (ENUM_CHANCE_STR_VEC.size() != 2)
                 {
                     std::ostringstream ss;
                     ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
@@ -86,7 +85,7 @@ namespace combat
                 try
                 {
                     typeEnum
-                        = static_cast<EnumType>(BaseType::FromString(enumColonChanceStrVec.at(0)));
+                        = static_cast<EnumType>(BaseType::FromString(ENUM_CHANCE_STR_VEC.at(0)));
                 }
                 catch (const std::exception & EX)
                 {
@@ -95,20 +94,20 @@ namespace combat
                     exceptionSS
                         << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
                         << "()  Threw exceptionn calling T::FromString(\""
-                        << enumColonChanceStrVec.at(0)
+                        << ENUM_CHANCE_STR_VEC.at(0)
                         << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
                         << EX.what() << "].";
 
                     throw std::runtime_error(exceptionSS.str());
                 }
 
-                const auto CHANCE { ParseChanceString(enumColonChanceStrVec.at(1)) };
+                const auto CHANCE { ParseChanceString(ENUM_CHANCE_STR_VEC.at(1)) };
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
                     std::ostringstream ss;
 
                     ss << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
-                       << "()  Failed to parse \"" << enumColonChanceStrVec.at(1)
+                       << "()  Failed to parse \"" << ENUM_CHANCE_STR_VEC.at(1)
                        << "\" into a valid 'enum:float'.  Resulting float (chance) was: " << CHANCE
                        << ".";
 

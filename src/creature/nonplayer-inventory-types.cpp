@@ -323,9 +323,13 @@ namespace creature
                     return "Royal";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(WEALTH_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(WEALTH_TYPE));
+                    return "";
                 }
             }
         }
@@ -396,16 +400,22 @@ namespace creature
             return FromRank(CHARACTER_PTR->Rank());
         }
 
-        void collector_type::ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR)
+        const std::string collector_type::ToStringPopulate(
+            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
+            std::string str;
+
             AppendNameIfBitIsSet(
-                ss, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Practical, "Practical", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
-            AppendNameIfBitIsSet(ss, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
+                str, ENUM_VALUE, collector_type::Minimalist, "Minimalist", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, collector_type::Practical, "Practical", SEPARATOR);
+
+            AppendNameIfBitIsSet(
+                str, ENUM_VALUE, collector_type::Collector, "Collector", SEPARATOR);
+
+            AppendNameIfBitIsSet(str, ENUM_VALUE, collector_type::Hoarder, "Hoarder", SEPARATOR);
+            return str;
         }
 
         collector_type::Enum collector_type::FromCreature(const CreaturePtr_t CHARACTER_PTR)
@@ -423,19 +433,26 @@ namespace creature
 
             const auto RACE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(RACE_KEY) };
 
-            std::vector<std::string> racePartsVec;
-            misc::SplitByChar(RACE_COLLECTOR_PARTS_STR, racePartsVec, ',', true, true);
+            const std::vector<std::string> RACE_PARTS_STR_VEC { misc::SplitByChars(
+                RACE_COLLECTOR_PARTS_STR) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (racePartsVec.size() == 4),
+                (RACE_PARTS_STR_VEC.size() == 4),
                 "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
                     << ") failed to read four values from the key=" << RACE_KEY);
 
-            float chanceMinimalist(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[0]));
-            float chancePractical(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[1]));
-            float chanceCollector(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[2]));
-            float chanceHoarder(CHANCE_BASE + ConvertStringToFloat(RACE_KEY, racePartsVec[3]));
+            float chanceMinimalist(
+                CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[0]));
+
+            float chancePractical(
+                CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[1]));
+
+            float chanceCollector(
+                CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[2]));
+
+            float chanceHoarder(
+                CHANCE_BASE + ConvertStringToFloat(RACE_KEY, RACE_PARTS_STR_VEC[3]));
 
             // adjust for roles
             const auto ROLE_STR { role::ToString(CHARACTER_PTR->Role()) };
@@ -447,19 +464,19 @@ namespace creature
 
             const auto ROLE_COLLECTOR_PARTS_STR { misc::ConfigFile::Instance()->Value(ROLE_KEY) };
 
-            std::vector<std::string> rolePartsVec;
-            misc::SplitByChar(ROLE_COLLECTOR_PARTS_STR, rolePartsVec, ',', true, true);
+            const std::vector<std::string> ROLE_PARTS_STR_VEC { misc::SplitByChars(
+                ROLE_COLLECTOR_PARTS_STR) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (rolePartsVec.size() == 4),
+                (ROLE_PARTS_STR_VEC.size() == 4),
                 "creature::nonplayer::collector_type::FromCreature("
                     << CHARACTER_PTR->NameAndRaceAndRole()
                     << ") failed to read four values from the key=" << ROLE_KEY);
 
-            chanceMinimalist += ConvertStringToFloat(ROLE_KEY, rolePartsVec[0]);
-            chancePractical += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
-            chanceCollector += ConvertStringToFloat(ROLE_KEY, rolePartsVec[2]);
-            chanceHoarder += ConvertStringToFloat(ROLE_KEY, rolePartsVec[3]);
+            chanceMinimalist += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[0]);
+            chancePractical += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[1]);
+            chanceCollector += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[2]);
+            chanceHoarder += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[3]);
 
             // enforce min
             {
@@ -552,9 +569,14 @@ namespace creature
             {
                 return "Magical";
             }
+            else if (OWNS_MAGIC_TYPE == Count)
+            {
+                return "(Count)";
+            }
             else
             {
-                ThrowInvalidValueForFunction(OWNS_MAGIC_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(OWNS_MAGIC_TYPE));
+                return "";
             }
         }
 
@@ -575,18 +597,23 @@ namespace creature
                 const auto RACE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     RACE_KEY) };
 
-                std::vector<std::string> racePartsVec;
-                misc::SplitByChar(RACE_OWNSMAGIC_PARTS_STR, racePartsVec, ',', true, true);
+                const std::vector<std::string> RACE_PARTS_STR_VEC { misc::SplitByChars(
+                    RACE_OWNSMAGIC_PARTS_STR) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (racePartsVec.size() == 3),
+                    (RACE_PARTS_STR_VEC.size() == 3),
                     "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << RACE_KEY);
 
-                const auto RARELY_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[0]) };
-                const auto RELIGIOUS_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[1]) };
-                const auto MAGICAL_RACE_ADJ { ConvertStringToFloat(RACE_KEY, racePartsVec[2]) };
+                const auto RARELY_RACE_ADJ { ConvertStringToFloat(
+                    RACE_KEY, RACE_PARTS_STR_VEC[0]) };
+
+                const auto RELIGIOUS_RACE_ADJ { ConvertStringToFloat(
+                    RACE_KEY, RACE_PARTS_STR_VEC[1]) };
+
+                const auto MAGICAL_RACE_ADJ { ConvertStringToFloat(
+                    RACE_KEY, RACE_PARTS_STR_VEC[2]) };
 
                 // Why do these values have to add up to one?
                 // After the role adjustments below the values most definitely don't sum to 1.0...?
@@ -618,18 +645,18 @@ namespace creature
                 const auto ROLE_OWNSMAGIC_PARTS_STR { misc::ConfigFile::Instance()->Value(
                     ROLE_KEY) };
 
-                std::vector<std::string> rolePartsVec;
-                misc::SplitByChar(ROLE_OWNSMAGIC_PARTS_STR, rolePartsVec, ',', true, true);
+                const std::vector<std::string> ROLE_PARTS_STR_VEC { misc::SplitByChars(
+                    ROLE_OWNSMAGIC_PARTS_STR) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (rolePartsVec.size() == 3),
+                    (ROLE_PARTS_STR_VEC.size() == 3),
                     "creature::nonplayer::owns_magic_type::FromCreature("
                         << CHARACTER_PTR->NameAndRaceAndRole()
                         << ") failed to read three values from the key=" << ROLE_KEY);
 
-                chanceRarely += ConvertStringToFloat(ROLE_KEY, rolePartsVec[0]);
-                chanceReligious += ConvertStringToFloat(ROLE_KEY, rolePartsVec[1]);
-                chanceMagical += ConvertStringToFloat(ROLE_KEY, rolePartsVec[2]);
+                chanceRarely += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[0]);
+                chanceReligious += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[1]);
+                chanceMagical += ConvertStringToFloat(ROLE_KEY, ROLE_PARTS_STR_VEC[2]);
             }
 
             // enforce min
@@ -716,9 +743,13 @@ namespace creature
                     return "Complex";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(COMPLEXITY_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(COMPLEXITY_TYPE));
+                    return "";
                 }
             }
         }

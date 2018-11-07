@@ -741,7 +741,7 @@ namespace misc
 
         for (std::size_t charIndex(0); charIndex < (PATH_STR_TRIMMED.size() - 1); ++charIndex)
         {
-            if (std::isalpha(static_cast<int>(PATH_STR_TRIMMED.at(charIndex))) == false)
+            if (misc::IsAlpha(PATH_STR_TRIMMED.at(charIndex)) == false)
             {
                 return false;
             }

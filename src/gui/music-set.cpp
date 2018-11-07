@@ -65,12 +65,7 @@ namespace gui
         willLoop_ = ORIG_LOOP_SETTING;
     }
 
-    bool MusicSet::IsValid() const
-    {
-        return (
-            (whichVec_.empty() == false) && (Contains(music::None) == false)
-            && (Contains(music::All) == false) && (Contains(music::Count) == false));
-    }
+    bool MusicSet::IsValid() const { return (!whichVec_.empty() && !ContainsInvalid()); }
 
     music::Enum MusicSet::Advance()
     {

@@ -12,6 +12,7 @@
 #include "wolfen-class-enum.hpp"
 
 #include "misc/config-file.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -47,9 +48,13 @@ namespace creature
                 return "Elder";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(WOLFEN_CLASS_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(WOLFEN_CLASS_TYPE));
+                return "";
             }
         }
     }
@@ -63,31 +68,31 @@ namespace creature
     wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-wolfen-class-rank-min-Elder")))
+                "heroespath-creature-wolfen-class-rank-min-Elder")))
         {
             return wolfen_class::Elder;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-wolfen-class-rank-min-Highborn")))
+                "heroespath-creature-wolfen-class-rank-min-Highborn")))
         {
             return wolfen_class::Highborn;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-wolfen-class-rank-min-Noble")))
+                "heroespath-creature-wolfen-class-rank-min-Noble")))
         {
             return wolfen_class::Noble;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-wolfen-class-rank-min-Adult")))
+                "heroespath-creature-wolfen-class-rank-min-Adult")))
         {
             return wolfen_class::Adult;
         }
         else if (
             RANK >= Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                        "heroespath-creature-wolfen-class-rank-min-Juvenile")))
+                "heroespath-creature-wolfen-class-rank-min-Juvenile")))
         {
             return wolfen_class::Juvenile;
         }

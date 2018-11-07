@@ -23,7 +23,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Animations : public misc::EnumBaseCounting<Animations, misc::EnumFirstValueValid>
+    struct Animations : public misc::EnumBaseCounting<Animations, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

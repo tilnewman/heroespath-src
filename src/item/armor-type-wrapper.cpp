@@ -51,15 +51,15 @@ namespace item
 
             if (false
                 == SetupWithSpecificTypeName<cover_type>(
-                       SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
+                    SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
             {
                 if (false
                     == SetupWithSpecificTypeName<helm_type>(
-                           SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
+                        SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
                 {
                     if (false
                         == SetupWithSpecificTypeName<shield_type>(
-                               SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
+                            SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
                     {
                         if (SYSTEM_NAME == GLOVES_NAME_)
                         {
@@ -261,7 +261,8 @@ namespace item
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE, misc::Wrap::Yes, "&", misc::NoneEmpty::No);
+                            ELEMENT_TYPE,
+                            misc::EnumStringHow(misc::Wrap::Yes, "&", misc::NoneEmpty::No));
                     }
                 }
 
@@ -448,7 +449,9 @@ namespace item
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 
@@ -490,7 +493,9 @@ namespace item
                 case armor_type::Bracers:
                 case armor_type::Shirt:
                 case armor_type::Boots:
-                case armor_type::Pants: { return (base_type::Count != base_);
+                case armor_type::Pants:
+                {
+                    return (base_type::Count != base_);
                 }
 
                 case armor_type::Shield:
@@ -514,12 +519,16 @@ namespace item
                         && (boost::get<cover_type::Enum>(variant_) != cover_type::Count));
                 }
 
-                case armor_type::Skin: { return true;
+                case armor_type::Skin:
+                {
+                    return true;
                 }
 
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { return false;
+                default:
+                {
+                    return false;
                 }
             }
         }
@@ -583,7 +592,9 @@ namespace item
                         }
                         case shield_type::Buckler:
                         case shield_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -620,7 +631,9 @@ namespace item
                         }
                         case helm_type::Leather:
                         case helm_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -648,7 +661,9 @@ namespace item
                 case armor_type::Skin:
                 case armor_type::Not:
                 case armor_type::Count:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 

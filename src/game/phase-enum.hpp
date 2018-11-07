@@ -31,10 +31,8 @@ namespace game
             Last = Inventory
         };
 
-        static void ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR);
+        static const std::string ToStringPopulate(
+            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace game

@@ -12,15 +12,16 @@
 #include "animation-enum.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string Animations::ToString(const Enum E)
+    const std::string Animations::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Burst:
             {
@@ -143,16 +144,20 @@ namespace gui
                 return "SymbolReduce";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Animations::MediaPathKey(const Enum E)
+    const std::string Animations::MediaPathKey(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Burst:
             {
@@ -275,16 +280,20 @@ namespace gui
                 return "media-anim-images-dir-symbolreduce";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "MediaPathKey");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    bool Animations::IsMultiTexture(const Enum E)
+    bool Animations::IsMultiTexture(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Burst:
             case CandleFlame:
@@ -325,14 +334,15 @@ namespace gui
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "IsMultiTexture");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return false;
             }
         }
     }
 
-    const sf::Vector2f Animations::SizePair(const Enum E)
+    const sf::Vector2f Animations::SizePair(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Burst:
             {
@@ -457,14 +467,15 @@ namespace gui
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "SizePair");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return sf::Vector2(0.0f, 0.0f);
             }
         }
     }
 
-    float Animations::TimePerFrameSec(const Animations::Enum E)
+    float Animations::TimePerFrameSec(const Animations::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case CandleFlame2:
             {
@@ -505,14 +516,15 @@ namespace gui
             case Count:
             default:
             {
-                ThrowInvalidValueForFunction(E, "TimePerFrameSec");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return 0.0f;
             }
         }
     }
 
-    const MusicEnumVec_t Animations::Sfx(const Animations::Enum E)
+    const MusicEnumVec_t Animations::Sfx(const Animations::Enum ENUM)
     {
-        if (E == Animations::Campfire)
+        if (ENUM == Animations::Campfire)
         {
             return { music::FireIndoorLarge };
         }

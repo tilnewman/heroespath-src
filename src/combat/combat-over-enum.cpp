@@ -10,17 +10,17 @@
 // combat-over-enum.cpp
 //
 #include "combat-over-enum.hpp"
-#include <exception>
-#include <sstream>
+
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string CombatEnd::ToString(const CombatEnd::Enum E)
+    const std::string CombatEnd::ToString(const CombatEnd::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Win:
             {
@@ -35,13 +35,16 @@ namespace combat
                 return "Ran";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "combat::CombatEnd::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace combat
 } // namespace heroespath

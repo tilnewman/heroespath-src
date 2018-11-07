@@ -129,7 +129,7 @@ namespace stage
             const popup::PopupInfo & POPUP_INFO) const override;
 
         void RemovePopup(
-            const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0) const override;
+            const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION = 0) const override;
 
         void TransitionTo(const stage::Stage::Enum NEW_STAGE) const override;
 

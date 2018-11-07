@@ -664,8 +664,12 @@ namespace item
             (ITEM_PROFILE.WeaponType() == ITEM_PTR->WeaponType()),
             makeErrorReportPrefix()
                 << " weapon_types did not match.  profile="
-                << weapon_type::ToString(ITEM_PROFILE.WeaponType(), misc::Wrap::Yes) << " but item="
-                << weapon_type::ToString(ITEM_PTR->WeaponType(), misc::Wrap::Yes) << ".");
+                << weapon_type::ToString(
+                       ITEM_PROFILE.WeaponType(), misc::EnumStringHow(misc::Wrap::Yes))
+                << " but item="
+                << weapon_type::ToString(
+                       ITEM_PTR->WeaponType(), misc::EnumStringHow(misc::Wrap::Yes))
+                << ".");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),

@@ -12,6 +12,7 @@
 #include "stage-enum.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -22,50 +23,98 @@ namespace stage
     {
         switch (STAGE)
         {
-            case None: { return "None";
+            case None:
+            {
+                return "None";
             }
-            case Intro: { return "Intro";
+            case Intro:
+            {
+                return "Intro";
             }
-            case Menu: { return "Menu";
+            case Menu:
+            {
+                return "Menu";
             }
-            case Load: { return "Load";
+            case Load:
+            {
+                return "Load";
             }
-            case Character: { return "Character";
+            case Character:
+            {
+                return "Character";
             }
-            case Party: { return "Party";
+            case Party:
+            {
+                return "Party";
             }
-            case Adventure: { return "Adventure";
+            case Adventure:
+            {
+                return "Adventure";
             }
-            case Combat: { return "Combat";
+            case Combat:
+            {
+                return "Combat";
             }
-            case Camp: { return "Camp";
+            case Camp:
+            {
+                return "Camp";
             }
-            case Inn: { return "Inn";
+            case Inn:
+            {
+                return "Inn";
             }
-            case Popup: { return "Popup";
+            case Popup:
+            {
+                return "Popup";
             }
-            case Credits: { return "Credits";
+            case Credits:
+            {
+                return "Credits";
             }
-            case Settings: { return "Settings";
+            case Settings:
+            {
+                return "Settings";
             }
-            case Exit: { return "Exit";
+            case Exit:
+            {
+                return "Exit";
             }
-            case Inventory: { return "Inventory";
+            case Inventory:
+            {
+                return "Inventory";
             }
-            case Treasure: { return "Treasure";
+            case Treasure:
+            {
+                return "Treasure";
             }
-            case Test: { return "Test";
+            case Test:
+            {
+                return "Test";
             }
-            case Previous: { return "Previous";
+            case Previous:
+            {
+                return "Previous";
             }
-            case Next: { return "Next";
+            case Next:
+            {
+                return "Next";
             }
-            case Save: { return "Save";
+            case Save:
+            {
+                return "Save";
             }
-            case Help: { return "Help";
+            case Help:
+            {
+                return "Help";
             }
             case Count:
-            default: { ThrowInvalidValueForFunction(STAGE, "ToString");
+            {
+                return "(Count)";
+            }
+            default:
+            {
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(STAGE));
+                return "";
             }
         }
     }

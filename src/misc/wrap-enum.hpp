@@ -22,11 +22,13 @@ namespace heroespath
 {
 namespace misc
 {
+
     enum class Wrap : bool
     {
         No = false,
         Yes = true
     };
+
 }
 } // namespace heroespath
 

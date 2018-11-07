@@ -9,6 +9,8 @@
 //
 // interact-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,17 +18,17 @@ namespace heroespath
 namespace interact
 {
 
-    struct Interact
+    struct Interact : public misc::EnumBaseCounting<Interact, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Lock = 0,
             Conversation,
             Count
         };
 
-        static const std::string ToString(const Interact::Enum);
-        static const std::string ImageKey(const Interact::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string ImageKey(const Enum);
     };
 
 } // namespace interact

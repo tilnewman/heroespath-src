@@ -154,22 +154,22 @@ namespace song
         return true;
     }
 
-    const SongPtr_t Holder::Get(const Songs::Enum E)
+    const SongPtr_t Holder::Get(const Songs::Enum ENUM)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (songsUVec_.empty() == false),
-            "song::Holder::Get(" << Songs::ToString(E)
+            "song::Holder::Get(" << Songs::ToString(ENUM)
                                  << ") was called when the holder was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Songs::IsValid(E)), "song::Holder::Get(" << E << ") but that value is invalid.");
+            (Songs::IsValid(ENUM)), "song::Holder::Get(" << ENUM << ") but that value is invalid.");
 
-        const auto INDEX { static_cast<std::size_t>(E) };
+        const auto INDEX { static_cast<std::size_t>(ENUM) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < songsUVec_.size()),
             "song::Holder::Get(" << Songs::ToString(
-                E) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
+                ENUM) << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return SongPtr_t(songsUVec_[INDEX].get());
     }

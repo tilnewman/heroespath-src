@@ -14,8 +14,6 @@
 #include "misc/config-file.hpp"
 
 #include <algorithm>
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
@@ -24,8 +22,11 @@ namespace creature
 
     rank_class::Enum rank_class::FromRank(const Rank_t & RANK_PARAM)
     {
+        const auto HIGHEST_RANK_CLASS_INT { static_cast<int>(rank_class::Count - 1) };
+
+        // loop over ranks starting at the first but only going up to the second highest
         Rank_t rankCumulative { 0_rank };
-        for (int i(0); i < (rank_class::Count - 1); ++i)
+        for (int i(0); i < HIGHEST_RANK_CLASS_INT; ++i)
         {
             const rank_class::Enum RANK_ENUM { static_cast<rank_class::Enum>(i) };
 
@@ -40,22 +41,22 @@ namespace creature
             }
         }
 
-        return static_cast<rank_class::Enum>(rank_class::Count - 1);
+        return static_cast<rank_class::Enum>(HIGHEST_RANK_CLASS_INT);
     }
 
-    const RankRange_t rank_class::RankRangeByClass(const rank_class::Enum E)
+    const RankRange_t rank_class::RankRangeByClass(const rank_class::Enum ENUM)
     {
         Rank_t min { 0_rank };
         Rank_t max { 0_rank };
 
-        if (E == GrandMaster)
+        if (ENUM == GrandMaster)
         {
             min = Rank_t(
                 misc::ConfigFile::Instance()->ValueOrDefault<int>(
                     "heroespath-rankclass-" + ToString(Master) + "-rankmax")
                 + 1);
         }
-        else if (E == Novice)
+        else if (ENUM == Novice)
         {
             min = 1_rank;
 
@@ -66,20 +67,20 @@ namespace creature
         {
             min = Rank_t(
                 misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                    "heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(E - 1))
+                    "heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(ENUM - 1))
                     + "-rankmax")
                 + 1);
 
             max = Rank_t(misc::ConfigFile::Instance()->ValueOrDefault<int>(
-                "heroespath-rankclass-" + ToString(E) + "-rankmax"));
+                "heroespath-rankclass-" + ToString(ENUM) + "-rankmax"));
         }
 
         return RankRange_t(min, max);
     }
 
-    const std::string rank_class::ToString(const rank_class::Enum E)
+    const std::string rank_class::ToString(const rank_class::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Novice:
             {
@@ -106,13 +107,16 @@ namespace creature
                 return "GrandMaster";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "creature::rank_class::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace creature
 } // namespace heroespath

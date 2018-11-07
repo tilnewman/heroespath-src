@@ -37,37 +37,30 @@ namespace popup
         if ((KEY_EVENT.code == sf::Keyboard::I) && popupInfo_.WillIncludeItems())
         {
             PlayValidKeypressSoundEffect();
-
-            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Item());
-
+            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Item());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
             PlayValidKeypressSoundEffect();
-
-            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Coins());
-
+            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Coins());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::G)
         {
             PlayValidKeypressSoundEffect();
-
-            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_Gems());
-
+            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_Gems());
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
             PlayValidKeypressSoundEffect();
-
-            RemovePopup(ResponseTypes::Select, PopupInfo::ContentNum_MeteorShards());
-
+            RemovePopup(PopupButtons::Select, PopupInfo::ContentNum_MeteorShards());
             return true;
         }
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
+
 } // namespace popup
 } // namespace heroespath

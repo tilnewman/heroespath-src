@@ -248,37 +248,18 @@ namespace game
                 }
             };
 
-            auto musicToString = [](const gui::music::Enum MUSIC) -> std::string {
-                if (MUSIC == gui::music::Count)
-                {
-                    return "Count";
-                }
-                else if (MUSIC == gui::music::All)
-                {
-                    return "All";
-                }
-                else if (MUSIC == gui::music::None)
-                {
-                    return "None";
-                }
-                else
-                {
-                    return gui::music::ToStringNoThrow(MUSIC);
-                }
-            };
-
             ss << "cmd=music";
 
-            if ((to_stop <= gui::music::All) && (to_stop != gui::music::Count))
+            if (gui::music::IsValid(to_stop) || (gui::music::All == to_stop))
             {
                 prefixSeparatorString();
-                ss << "music_stop=" << musicToString(to_stop);
+                ss << "music_stop=" << gui::music::ToString(to_stop);
             }
 
-            if (to_start < gui::music::Count)
+            if (gui::music::IsValid(to_start))
             {
                 prefixSeparatorString();
-                ss << "music_start=" << musicToString(to_start);
+                ss << "music_start=" << gui::music::ToString(to_start);
             }
 
             if (volume_min > 0.0f)

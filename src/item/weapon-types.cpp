@@ -11,6 +11,8 @@
 //
 #include "weapon-types.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace item
@@ -67,9 +69,13 @@ namespace item
                     return "Shortsword";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(SWORD_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(SWORD_TYPE));
+                    return "";
                 }
             }
         }
@@ -107,9 +113,13 @@ namespace item
                     return "Waraxe";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(AXE_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(AXE_TYPE));
+                    return "";
                 }
             }
         }
@@ -135,9 +145,13 @@ namespace item
                     return "War";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(AXE_TYPE, "Name");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(AXE_TYPE));
+                    return "";
                 }
             }
         }
@@ -163,9 +177,13 @@ namespace item
                     return "Warhammer";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(CLUB_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(CLUB_TYPE));
+                    return "";
                 }
             }
         }
@@ -187,9 +205,13 @@ namespace item
                     return "MaceAndChain";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(WHIP_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(WHIP_TYPE));
+                    return "";
                 }
             }
         }
@@ -235,9 +257,13 @@ namespace item
                     return "Crossbow";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(PROJECTILE_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(PROJECTILE_TYPE));
+                    return "";
                 }
             }
         }
@@ -283,9 +309,13 @@ namespace item
                     return "Halberd";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(BSTAFF_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(BSTAFF_TYPE));
+                    return "";
                 }
             }
         }

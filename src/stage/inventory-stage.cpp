@@ -493,7 +493,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_DROPCONFIRM_)
-            && (PACKET.type == popup::ResponseTypes::Yes))
+            && (PACKET.type == popup::PopupButtons::Yes))
         {
             HandleDropActual();
 
@@ -503,7 +503,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_GIVE_)
-            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            && (PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
         {
             if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Item())
             {
@@ -540,7 +540,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_CHAR_SELECT_)
-            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            && (PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
         {
             creatureToGiveToPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(
                 PACKET.selection_opt.value());
@@ -607,7 +607,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_NUMBER_SELECT_)
-            && (PACKET.type == popup::ResponseTypes::Select) && creatureToGiveToPtrOpt_
+            && (PACKET.type == popup::PopupButtons::Select) && creatureToGiveToPtrOpt_
             && PACKET.selection_opt)
         {
             const auto CREATURE_TO_GIVE_TO_PTR { creatureToGiveToPtrOpt_.value() };
@@ -650,7 +650,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_CONTENTSELECTION_)
-            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            && (PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
         {
             if (PACKET.selection_opt.value() == popup::PopupInfo::ContentNum_Coins())
             {
@@ -720,7 +720,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_SPELLBOOK_)
-            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            && (PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
         {
             const spell::SpellPVec_t SPELLS_PVEC { creaturePtr_->SpellsPVec() };
 
@@ -750,7 +750,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_MUSICSHEET_)
-            && (PACKET.type == popup::ResponseTypes::Select) && PACKET.selection_opt)
+            && (PACKET.type == popup::PopupButtons::Select) && PACKET.selection_opt)
         {
             const auto SONGS_PVEC { creaturePtr_->SongsPVec() };
             const auto RESPONSE_SELECTION_INDEX { PACKET.selection_opt.value() };
@@ -3712,7 +3712,8 @@ namespace stage
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n"
            << ITEM_PTR->Desc() << "\n\n"
-           << item::category::ToString(ITEM_PTR->Category(), misc::Wrap::Yes) << "\n";
+           << item::category::ToString(ITEM_PTR->Category(), misc::EnumStringHow(misc::Wrap::Yes))
+           << "\n";
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {

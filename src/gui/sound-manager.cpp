@@ -14,10 +14,10 @@
 #include "gui/loaders.hpp"
 #include "gui/music-info.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
-#include "misc/strings-split-by-char.hpp"
 #include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 #include "stage/i-stage.hpp"
@@ -468,14 +468,14 @@ namespace gui
         }
     }
 
-    const SfxSet & SoundManager::GetSoundEffectSet(const sound_effect_set::Enum E) const
+    const SfxSet & SoundManager::GetSoundEffectSet(const sound_effect_set::Enum ENUM) const
     {
-        const auto INDEX { static_cast<std::size_t>(E) };
+        const auto INDEX { static_cast<std::size_t>(ENUM) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (INDEX < sfxSetVec_.size()),
             "SoundManager::GetSoundEffectSet(enum="
-                << E << ", index=" << INDEX
+                << ENUM << ", index=" << INDEX
                 << ") index was out of range with sfxSetVec_.size()=" << sfxSetVec_.size());
 
         return sfxSetVec_[INDEX];
@@ -643,18 +643,19 @@ namespace gui
         {
             const auto FILE_NAME_STR { misc::filesystem::Filename(MUSIC_FILE_PATH_STR) };
 
-            std::vector<std::string> filenamePartsVec;
-            misc::SplitByChar(FILE_NAME_STR, filenamePartsVec, '_', true, true);
-            if (filenamePartsVec.size() != 4)
+            const std::vector<std::string> FILE_NAME_PARTS_VEC { misc::SplitByChars(
+                FILE_NAME_STR, misc::SplitHow('_')) };
+            ;
+            if (FILE_NAME_PARTS_VEC.size() != 4)
             {
                 continue;
             }
 
-            const auto NEXT_ARTIST_NAME { filenamePartsVec.at(1) };
-            const auto NEXT_TRACK_NAME { filenamePartsVec.at(2) };
+            const auto NEXT_ARTIST_NAME { FILE_NAME_PARTS_VEC.at(1) };
+            const auto NEXT_TRACK_NAME { FILE_NAME_PARTS_VEC.at(2) };
 
             const auto NEXT_LICENSE_NAME { boost::algorithm::erase_all_copy(
-                filenamePartsVec.at(3), music::FileExt()) };
+                FILE_NAME_PARTS_VEC.at(3), music::FileExt()) };
 
             combatIntroMusicInfoVec_.emplace_back(MusicInfo(
                 music::CombatIntro,

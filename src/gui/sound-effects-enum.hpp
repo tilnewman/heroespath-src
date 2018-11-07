@@ -20,7 +20,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct Footstep : public misc::EnumBaseCounting<Footstep, misc::EnumFirstValueValid>
+    struct Footstep : public misc::EnumBaseCounting<Footstep, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -35,7 +35,7 @@ namespace gui
         static const std::string ToString(const Enum);
     };
 
-    struct sound_effect : public misc::EnumBaseCounting<sound_effect, misc::EnumFirstValueValid>
+    struct sound_effect : public misc::EnumBaseCounting<sound_effect, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

@@ -11,8 +11,13 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <SFML/System/Clock.hpp>
+
+#include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
+#include "misc/vectors.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -98,6 +103,202 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
     BOOST_CHECK(misc::ToLowerCopy(LOWER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
 }
 
+BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
+{
+    auto makeRandomChar = []() { return static_cast<char>(misc::random::Int(32, 90)); };
+
+    auto makeRandomString = [makeRandomChar](const std::size_t LENGTH) {
+        std::string str;
+        for (std::size_t index(0); index < LENGTH; ++index)
+        {
+            str += makeRandomChar();
+        }
+        return str;
+    };
+
+    const std::size_t REPEAT_TEST_COUNT { 200 };
+    const std::size_t MAX_STRING_LENGTH { 257 };
+    const std::size_t RAND_STR_PER_TEST_COUNT { 2000 };
+
+    struct TestResult
+    {
+        TestResult(const std::size_t STR_LENGTH)
+            : str_length(STR_LENGTH)
+            , my_times()
+            , boost_times()
+        {
+            my_times.reserve(REPEAT_TEST_COUNT);
+            boost_times.reserve(REPEAT_TEST_COUNT);
+        }
+
+        std::size_t str_length;
+        std::vector<float> my_times;
+        std::vector<float> boost_times;
+    };
+
+    std::vector<TestResult> testResults;
+
+    std::vector<std::string> strings;
+    strings.reserve(RAND_STR_PER_TEST_COUNT);
+
+    std::vector<std::string> trash;
+    trash.reserve(strings.size() * 4);
+
+    for (std::size_t strLength(32); strLength <= MAX_STRING_LENGTH;)
+    {
+        // M_HP_LOG_WRN("test #" << strLength);
+        TestResult result(strLength);
+
+        strings.clear();
+        for (std::size_t randIndex(0); randIndex <= RAND_STR_PER_TEST_COUNT; ++randIndex)
+        {
+            strings.emplace_back(makeRandomString(strLength));
+        }
+
+        for (std::size_t testIteration(0); testIteration <= REPEAT_TEST_COUNT; ++testIteration)
+        {
+            // misc::Vector::ShuffleVec(strings);
+
+            trash.clear();
+
+            for (const std::string & STR_TO_TEST : strings)
+            {
+                trash.emplace_back(boost::algorithm::to_lower_copy(STR_TO_TEST));
+            }
+            sf::Clock clock;
+            for (const std::string & STR_TO_TEST : strings)
+            {
+                trash.emplace_back(boost::algorithm::to_lower_copy(STR_TO_TEST));
+            }
+            result.boost_times.emplace_back(clock.getElapsedTime().asMilliseconds());
+
+            for (const std::string & STR_TO_TEST : strings)
+            {
+                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+            }
+            clock.restart();
+            for (const std::string & STR_TO_TEST : strings)
+            {
+                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
+            }
+            result.my_times.emplace_back(clock.getElapsedTime().asMilliseconds());
+        }
+
+        testResults.emplace_back(result);
+
+        strLength += 64;
+    }
+
+    float boostTotalWins { 0.0f };
+    float myTotalWins { 0.0f };
+
+    float boostTotalTimeMS { 0.0f };
+    float myTotalTimeMS { 0.0f };
+
+    std::ostringstream ssFinal;
+
+    ssFinal << "\nToLower Speed Tests:";
+
+    for (const auto & TEST_RESULT : testResults)
+    {
+        auto makeTestReportString =
+            [&](const std::string & WHICH_RESULTS, const std::vector<float> & TIMES, float & sum) {
+                auto min { TIMES.at(0) };
+                auto max { 0.0f };
+                sum = 0.0f;
+
+                for (const float TIME_MS : TIMES)
+                {
+                    sum += TIME_MS;
+
+                    if (TIME_MS < min)
+                    {
+                        min = TIME_MS;
+                    }
+
+                    if (TIME_MS > max)
+                    {
+                        max = TIME_MS;
+                    }
+                }
+
+                const auto AVERAGE { sum / static_cast<float>(TIMES.size()) };
+
+                const float STANDARD_DEVIATION { misc::Vector::StandardDeviation(
+                    TIMES, TIMES.size(), AVERAGE, false) };
+
+                std::ostringstream ssReport;
+
+                ssReport << "\n\t\t" << WHICH_RESULTS << "\tx" << TIMES.size() << "\tsum=" << sum
+                         << "\t[" << min << ", " << AVERAGE << ", " << max << "] ("
+                         << STANDARD_DEVIATION << ")";
+
+                return ssReport.str();
+            };
+
+        float sum { 0.0f };
+
+        const auto BOOST_TEST_STR { makeTestReportString("boost", TEST_RESULT.boost_times, sum) };
+        const auto BOOST_TEST_SUM { sum };
+        boostTotalTimeMS += BOOST_TEST_SUM;
+
+        const auto MY_TEST_STR { makeTestReportString(" mine", TEST_RESULT.my_times, sum) };
+        const auto MY_TEST_SUM { sum };
+        myTotalTimeMS += MY_TEST_SUM;
+
+        if ((BOOST_TEST_SUM > 0.0f) && (MY_TEST_SUM > 0.0f))
+        {
+            ssFinal << "\n\t length=" << TEST_RESULT.str_length << BOOST_TEST_STR << MY_TEST_STR
+                    << "\n\t\t";
+
+            if (BOOST_TEST_SUM > MY_TEST_SUM)
+            {
+                ssFinal << "MINE wins by " << (BOOST_TEST_SUM - MY_TEST_SUM) << "ms or "
+                        << (BOOST_TEST_SUM / MY_TEST_SUM) << "x";
+
+                myTotalWins += 1.0f;
+            }
+            else
+            {
+                ssFinal << "BOOST wins by " << (MY_TEST_SUM - BOOST_TEST_SUM) << "ms or "
+                        << (MY_TEST_SUM / BOOST_TEST_SUM) << "x";
+
+                boostTotalWins += 1.0f;
+            }
+        }
+
+        ssFinal << "\n\n";
+    }
+
+    ssFinal << "\n\t Total Time BOOST=" << boostTotalTimeMS
+            << "\n\t Total Time MINE=" << myTotalTimeMS;
+
+    if (boostTotalTimeMS > myTotalTimeMS)
+    {
+        ssFinal << "\n\tI win by " << (boostTotalTimeMS - myTotalTimeMS) << "ms or "
+                << (boostTotalTimeMS / myTotalTimeMS) << "x";
+    }
+    else
+    {
+        ssFinal << "\n\tBOOST wins by " << (myTotalTimeMS - boostTotalTimeMS) << "ms or "
+                << (myTotalTimeMS / boostTotalTimeMS) << "x";
+    }
+
+    ssFinal << "\n\t Total Score BOOST=" << boostTotalWins
+            << "\n\t Total Score MINE=" << myTotalWins;
+
+    if (boostTotalWins > myTotalWins)
+    {
+        ssFinal << "\n\tBOOST wins by " << (boostTotalWins - myTotalWins);
+    }
+    else
+    {
+        ssFinal << "\n\tI win by " << (myTotalWins - boostTotalWins);
+    }
+
+    M_HP_LOG(ssFinal.str());
+}
+
 BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
 {
     // test empty cases
@@ -120,50 +321,77 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
 
     auto test = [](const std::string & INPUT,
                    const std::string & SEPARATOR,
+                   const misc::CaseChange CASE_CHANGE,
                    const std::string & EXPECTED_OUTPUT,
                    const std::string & CASE_MESSAGE = "normal") {
         //
         auto makeErrorMessage = [&](const std::string & ACTUAL_OUTPUT) {
+            const auto CASE_CHAGE_STR = [CASE_CHANGE]() {
+                if (CASE_CHANGE == misc::CaseChange::Both)
+                {
+                    return "Both";
+                }
+                else if (CASE_CHANGE == misc::CaseChange::UpperToLower)
+                {
+                    return "UpperToLower";
+                }
+                else
+                {
+                    return "LowerToUpper";
+                }
+            }();
+
             return "(" + misc::Quoted(CASE_MESSAGE) + " case)  CamelTo(\"" + INPUT
-                + "\", sep=" + misc::Quoted(SEPARATOR) + ")!=" + misc::Quoted(EXPECTED_OUTPUT)
-                + "\"  actual=" + misc::Quoted(ACTUAL_OUTPUT);
+                + "\", sep=" + misc::Quoted(SEPARATOR) + ", case_change=" + CASE_CHAGE_STR + ")!="
+                + misc::Quoted(EXPECTED_OUTPUT) + "\"  actual=" + misc::Quoted(ACTUAL_OUTPUT);
         };
 
-        const auto ACTUAL_OUTPUT { misc::CamelTo(INPUT, SEPARATOR) };
-
+        const auto ACTUAL_OUTPUT { misc::CamelTo(INPUT, SEPARATOR, CASE_CHANGE) };
         BOOST_TEST(ACTUAL_OUTPUT == EXPECTED_OUTPUT, makeErrorMessage(ACTUAL_OUTPUT));
     };
 
-    auto testAllCasesTheSame = [test, SEPARATOR_STR](
+    auto testEachCaseChange = [test](
+                                  const std::string & INPUT,
+                                  const std::string & SEPARATOR,
+                                  const std::string & EXPECTED_OUTPUT,
+                                  const std::string & CASE_MESSAGE) {
+        test(INPUT, SEPARATOR, CaseChange::LowerToUpper, EXPECTED_OUTPUT, CASE_MESSAGE);
+        test(INPUT, SEPARATOR, CaseChange::UpperToLower, EXPECTED_OUTPUT, CASE_MESSAGE);
+        test(INPUT, SEPARATOR, CaseChange::Both, EXPECTED_OUTPUT, CASE_MESSAGE);
+    };
+
+    auto testAllCasesTheSame = [testEachCaseChange, SEPARATOR_STR](
                                    const std::string & INPUT,
                                    const std::string & CASE_MESSAGE = "input should equal output") {
-        test(INPUT, SEPARATOR_STR, INPUT, CASE_MESSAGE);
+        testEachCaseChange(INPUT, SEPARATOR_STR, INPUT, CASE_MESSAGE);
 
-        test(
+        testEachCaseChange(INPUT, SEPARATOR_STR, INPUT, CASE_MESSAGE + ", as is");
+
+        testEachCaseChange(
             misc::ToLowerCopy(INPUT),
             SEPARATOR_STR,
-            INPUT,
-            CASE_MESSAGE + " with input lower case");
+            misc::ToLowerCopy(INPUT),
+            CASE_MESSAGE + ", with input lower case");
 
-        test(
+        testEachCaseChange(
             misc::ToUpperCopy(INPUT),
             SEPARATOR_STR,
-            INPUT,
-            CASE_MESSAGE + " with input upper case");
+            misc::ToUpperCopy(INPUT),
+            CASE_MESSAGE + ", with input upper case");
 
-        test(INPUT, "", INPUT, CASE_MESSAGE + " with empty separator");
+        testEachCaseChange(INPUT, "", INPUT, CASE_MESSAGE + ", with empty separator");
 
-        test(
+        testEachCaseChange(
             misc::ToLowerCopy(INPUT),
             "",
-            INPUT,
-            CASE_MESSAGE + " with input lower case" + " with empty separator");
+            misc::ToLowerCopy(INPUT),
+            CASE_MESSAGE + ", with input lower case" + " with empty separator");
 
-        test(
+        testEachCaseChange(
             misc::ToUpperCopy(INPUT),
             "",
-            INPUT,
-            CASE_MESSAGE + " with input upper case" + " with empty separator");
+            misc::ToUpperCopy(INPUT),
+            CASE_MESSAGE + ", with input upper case" + " with empty separator");
     };
 
     testAllCasesTheSame("");
@@ -188,17 +416,29 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
     testAllCasesTheSame("_a _");
     testAllCasesTheSame("a_ _");
 
+    // in this test, all letters are separated by numbers so there should be no changes
+    testAllCasesTheSame("A a1B A1b x1Y1z X1y1Z x1Y1Z X1yz a1B1c1D A1b1C1d A");
+
     test(
         "A aB Ab xYz XyZ xYZ Xyz aBcD AbCd A",
         SEPARATOR_STR,
-        "a ab a_b xy_z x_yz xyz x_yz ab_cd a_bc_d a",
-        "complex");
+        CaseChange::LowerToUpper,
+        "A a_B Ab x_Yz Xy_Z x_YZ Xyz a_Bc_D Ab_Cd A",
+        "complex, LowerToUpper");
 
     test(
-        "A a1B A1b x1Y1z X1y1Z x1Y1Z X1yz a1B1c1D A1b1C1d A",
+        "A aB Ab xYz XyZ xYZ Xyz aBcD AbCd A",
         SEPARATOR_STR,
-        "a a1b a1b x1y1z x1y1z x1y1z x1yz a1b1c1d a1b1c1d a",
-        "complex with numbers canceling out separators");
+        CaseChange::UpperToLower,
+        "A aB A_b xY_z X_yZ xYZ X_yz aB_cD A_bC_d A",
+        "complex, UpperToLower");
+
+    test(
+        "A aB Ab xYz XyZ xYZ Xyz aBcD AbCd A",
+        SEPARATOR_STR,
+        CaseChange::Both,
+        "A a_B A_b x_Y_z X_y_Z x_YZ X_yz a_B_c_D A_b_C_d A",
+        "complex, Both");
 }
 
 BOOST_AUTO_TEST_CASE(misc_strings__ToString_and_ToNumber)
@@ -364,7 +604,9 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
     // strings with no numbers tests
     {
         const std::string TEST_STRING_TO_SEARCH_WITHOUT_NUMBERS {
-            "The numbers are , , and , the one in this filename log-.txt, and finally a large one ."
+            "The numbers are , , and , the one in this filename log-.txt, and finally a large "
+            "one "
+            "."
         };
 
         BOOST_CHECK(
@@ -394,7 +636,8 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
     {
         const std::string TEST_STRING_TO_SEARCH_WITH_NUMBERS {
             "The numbers are 0.1, and inside the filename log-234.txt, an impossibly "
-            "large one 9999999999999999999999999999999, and a more plausible large one 123456789."
+            "large one 9999999999999999999999999999999, and a more plausible large one "
+            "123456789."
         };
 
         BOOST_CHECK(FindNumber(0, TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 0);

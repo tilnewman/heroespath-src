@@ -243,7 +243,7 @@ namespace gui
             ss << misc::MakeLoggableString(text_);
         }
 
-        ss << SEPARATOR << GuiFont::ToStringNoThrow(font_);
+        ss << SEPARATOR << GuiFont::ToString(font_);
         ss << SEPARATOR << size();
         ss << SEPARATOR << sfutil::ToString(getFillColor(), misc::ToStringPrefix::SimpleName);
 

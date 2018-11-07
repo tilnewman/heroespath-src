@@ -11,6 +11,8 @@
 //
 #include "armor-types.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace item
@@ -39,9 +41,13 @@ namespace item
                     return "Pavis";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(SHEILD_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(SHEILD_TYPE));
+                    return "";
                 }
             }
         }
@@ -75,9 +81,13 @@ namespace item
                     return "Great";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(HELM_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(HELM_TYPE));
+                    return "";
                 }
             };
         }
@@ -115,9 +125,13 @@ namespace item
                     return "Plate";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(BASE_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(BASE_TYPE));
+                    return "";
                 }
             };
         }
@@ -143,9 +157,13 @@ namespace item
                     return "Cloak";
                 }
                 case Count:
+                {
+                    return "(Count)";
+                }
                 default:
                 {
-                    ThrowInvalidValueForFunction(COVER_TYPE, "ToString");
+                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(COVER_TYPE));
+                    return "";
                 }
             };
         }

@@ -9,6 +9,8 @@
 //
 // size-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -16,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Size
+    struct Size : public misc::EnumBaseCounting<Size, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Small = 0,
             Medium,

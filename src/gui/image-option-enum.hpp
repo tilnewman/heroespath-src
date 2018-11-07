@@ -19,7 +19,7 @@ namespace gui
 {
 
     // Responsible for enumerating all possible alterations for a cached texture.
-    struct ImageOpt : public misc::EnumBaseBitField<ImageOpt, misc::NoneEmpty::No>
+    struct ImageOpt : public misc::EnumBaseBitField<ImageOpt>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -36,17 +36,13 @@ namespace gui
         };
 
         static const std::string ToString(
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
-            const std::string & SEPARATOR = "/")
+            const Enum ENUM_VALUE, const misc::EnumStringHow & HOW = misc::EnumStringHow("/"))
         {
-            return EnumBaseBitField::ToString(ENUM_VALUE, WILL_WRAP, SEPARATOR);
+            return EnumBaseBitField::ToString(ENUM_VALUE, HOW);
         }
 
-        static void ToStringPopulate(
-            std::ostringstream & ss,
-            const misc::EnumUnderlying_t ENUM_VALUE,
-            const std::string & SEPARATOR = "/");
+        static const std::string ToStringPopulate(
+            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
     };
 
 } // namespace gui

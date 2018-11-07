@@ -18,7 +18,7 @@ namespace heroespath
 namespace combat
 {
 
-    struct TargetType : public misc::EnumBaseCounting<TargetType, misc::EnumFirstValueNone>
+    struct TargetType : public misc::EnumBaseCounting<TargetType, misc::EnumFirstValue::None>
     {
         enum Enum : misc::EnumUnderlying_t
         {

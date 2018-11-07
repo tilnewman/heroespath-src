@@ -124,7 +124,7 @@ namespace interact
         const misc::PopupCallback_t::Packet_t & PACKET,
         stage::IStagePtr_t iStagePtr)
     {
-        if (PACKET.type == popup::ResponseTypes::Select)
+        if (PACKET.type == popup::PopupButtons::Select)
         {
             const auto SELECTION_OPT { PACKET.selection_opt };
 

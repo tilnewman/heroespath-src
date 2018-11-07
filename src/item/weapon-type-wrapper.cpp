@@ -11,6 +11,7 @@
 //
 #include "weapon-type-wrapper.hpp"
 
+#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
 
@@ -67,27 +68,27 @@ namespace item
             {
                 if (false
                     == SetupWithSpecificTypeName<sword_type>(
-                           SYSTEM_NAME_LOWERCASE, weapon_type::Sword))
+                        SYSTEM_NAME_LOWERCASE, weapon_type::Sword))
                 {
                     if (false
                         == SetupWithSpecificTypeName<axe_type>(
-                               SYSTEM_NAME_LOWERCASE, weapon_type::Axe))
+                            SYSTEM_NAME_LOWERCASE, weapon_type::Axe))
                     {
                         if (false
                             == SetupWithSpecificTypeName<club_type>(
-                                   SYSTEM_NAME_LOWERCASE, weapon_type::Club))
+                                SYSTEM_NAME_LOWERCASE, weapon_type::Club))
                         {
                             if (false
                                 == SetupWithSpecificTypeName<whip_type>(
-                                       SYSTEM_NAME_LOWERCASE, weapon_type::Whip))
+                                    SYSTEM_NAME_LOWERCASE, weapon_type::Whip))
                             {
                                 if (false
                                     == SetupWithSpecificTypeName<body_part>(
-                                           SYSTEM_NAME_LOWERCASE, weapon_type::BodyPart))
+                                        SYSTEM_NAME_LOWERCASE, weapon_type::BodyPart))
                                 {
                                     if (false
                                         == SetupWithSpecificTypeName<projectile_type>(
-                                               SYSTEM_NAME_LOWERCASE, weapon_type::Projectile))
+                                            SYSTEM_NAME_LOWERCASE, weapon_type::Projectile))
                                     {
                                         SetupWithSpecificTypeName<bladedstaff_type>(
                                             SYSTEM_NAME_LOWERCASE, weapon_type::BladedStaff);
@@ -286,8 +287,9 @@ namespace item
                 ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
             }
 
-            ss << "type=" << weapon_type::ToString(type_, misc::Wrap::Yes) << std::boolalpha << ", "
-               << ((IsStaff()) ? "Staff," : "") << ((IsQuarterstaff()) ? "Quarterstaff," : "")
+            ss << "type=" << weapon_type::ToString(type_, misc::EnumStringHow(misc::Wrap::Yes))
+               << std::boolalpha << ", " << ((IsStaff()) ? "Staff," : "")
+               << ((IsQuarterstaff()) ? "Quarterstaff," : "")
                << ((IsBodyPart()) ? (body_part::ToString(BodyPartType()) + ",") : "")
                << ((IsBite()) ? "Bite," : "") << ((IsFists()) ? "Fists," : "")
                << ((IsKnife()) ? "Knife," : "") << ((IsDagger()) ? "Dagger," : "")
@@ -319,7 +321,8 @@ namespace item
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE, misc::Wrap::Yes, "&", misc::NoneEmpty::No);
+                            ELEMENT_TYPE,
+                            misc::EnumStringHow(misc::Wrap::Yes, "&", misc::NoneEmpty::No));
                     }
                 }
 
@@ -564,7 +567,9 @@ namespace item
                         }
                         case sword_type::Shortsword:
                         case sword_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -614,7 +619,9 @@ namespace item
                         }
                         case axe_type::Handaxe:
                         case axe_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -646,7 +653,9 @@ namespace item
                         }
                         case whip_type::Bullwhip:
                         case whip_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -696,7 +705,9 @@ namespace item
                         }
                         case club_type::Maul:
                         case club_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -746,7 +757,9 @@ namespace item
                             break;
                         }
                         case projectile_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -833,7 +846,9 @@ namespace item
                         case bladedstaff_type::Spear:
                         case bladedstaff_type::ShortSpear:
                         case bladedstaff_type::Count:
-                        default: { break;
+                        default:
+                        {
+                            break;
                         }
                     }
 
@@ -858,7 +873,9 @@ namespace item
                 case weapon_type::Melee:
                 case weapon_type::Bladed:
                 case weapon_type::Pointed:
-                default: { break;
+                default:
+                {
+                    break;
                 }
             }
 

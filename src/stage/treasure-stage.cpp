@@ -24,7 +24,6 @@
 #include "gui/font-manager.hpp"
 #include "gui/list-element.hpp"
 #include "gui/text-region.hpp"
-#include "gui/title-image-loader.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
@@ -44,7 +43,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
-#include <exception>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -140,7 +138,7 @@ namespace stage
         if ((PACKET.curently_open_popup_name == POPUP_NAME_LOCKBOX_ONLY_)
             || (PACKET.curently_open_popup_name == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (PACKET.type == popup::ResponseTypes::Yes)
+            if (PACKET.type == popup::PopupButtons::Yes)
             {
                 lockPicking_.PopupCharacterSelection(
                     misc::MakeNotNull(this), misc::MakeNotNull(this));
@@ -163,7 +161,7 @@ namespace stage
 
         if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
-            if (PACKET.type == popup::ResponseTypes::Select)
+            if (PACKET.type == popup::PopupButtons::Select)
             {
                 if (lockPicking_.HandleCharacterSelectionPopupResponse(
                         misc::MakeNotNull(this), PACKET, misc::MakeNotNull(this)))
@@ -672,11 +670,13 @@ namespace stage
             case item::TreasureAvailable::Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "stage::TreasureStage::PromptUserBasedOnTreasureAvailability("
-                   << treasureAvailable_ << ")_InvalidValueError.";
+                M_HP_LOG_ERR(
+                    "stage::TreasureStage::PromptUserBasedOnTreasureAvailability(treasure_"
+                    "available_enum="
+                    << item::TreasureAvailable::ToString(TREASURE_AVAILABLE)
+                    << ") but that enum valid was invalid.");
 
-                throw std::range_error(ss.str());
+                return;
             }
         }
     }

@@ -11,14 +11,16 @@
 //
 #include "achievement-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string AchievementType::ToString(const AchievementType::Enum E)
+    const std::string AchievementType::ToString(const AchievementType::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case None:
             {
@@ -101,16 +103,20 @@ namespace creature
                 return "HealthTraded";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string AchievementType::Name(const AchievementType::Enum E)
+    const std::string AchievementType::Name(const AchievementType::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case None:
             {
@@ -193,9 +199,13 @@ namespace creature
                 return "Health Traded";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }

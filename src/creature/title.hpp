@@ -67,9 +67,9 @@ namespace creature
         void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
         const RoleVec_t RolesCopy() const { return rolesVec_; }
 
-        bool IsRoleInList(const role::Enum E) const
+        bool IsRoleInList(const role::Enum ENUM) const
         {
-            return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end());
+            return (std::find(rolesVec_.begin(), rolesVec_.end(), ENUM) != rolesVec_.end());
         }
 
         const std::string ImageFilename() const { return fileName_; }

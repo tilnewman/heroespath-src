@@ -11,41 +11,29 @@
 //
 #include "testing-stage.hpp"
 
-#include "avatar/avatar-enum.hpp"
 #include "combat/strategy-enums.hpp"
-#include "combat/target-enum.hpp"
 #include "creature/condition-holder.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
 #include "gui/animation-factory.hpp"
-#include "gui/brightness-enum.hpp"
-#include "gui/combat-image-loader.hpp"
-#include "gui/condition-image-loader.hpp"
-#include "gui/corner-enum.hpp"
 #include "gui/creature-image-loader.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
-#include "gui/gui-event-enum.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/image-loaders.hpp"
 #include "gui/image-option-enum.hpp"
 #include "gui/item-image-loader.hpp"
 #include "gui/ouroboros.hpp"
-#include "gui/side-enum.hpp"
-#include "gui/song-image-loader.hpp"
 #include "gui/sound-manager.hpp"
-#include "gui/spell-image-loader.hpp"
-#include "gui/title-image-loader.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
-#include "map/layer-type-enum.hpp"
-#include "map/level-enum.hpp"
 #include "map/map.hpp"
 #include "misc/config-file.hpp"
+#include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
@@ -58,7 +46,6 @@
 #include "sfutil/size-and-scale.hpp"
 #include "song/song-holder.hpp"
 #include "spell/spell-holder.hpp"
-#include "stage/stage-enum.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -395,7 +382,6 @@ namespace stage
         M_TESTING_STAGE_TEST_WAIT(GoldBar2);
         M_TESTING_STAGE_TEST_WAIT(Border);
 
-        M_TESTING_STAGE_TEST(Enums);
         M_TESTING_STAGE_TEST(Fonts);
         M_TESTING_STAGE_TEST(Maps);
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemFactory, item::ItemFactory);
@@ -406,27 +392,12 @@ namespace stage
         M_TESTING_STAGE_TEST(DirectoryImages);
         M_TESTING_STAGE_TEST(CharacterImageSet);
         M_TESTING_STAGE_TEST(Spells);
-
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SpellsImageLoader, gui::SpellImageLoader);
-
         M_TESTING_STAGE_TEST(Songs);
-
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(SongsImageLoader, gui::SongImageLoader);
-
         M_TESTING_STAGE_TEST(Conditions);
-
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(ConditionImageLoader, gui::ConditionImageLoader);
-
         M_TESTING_STAGE_TEST(Titles);
-
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(TitleImageLoader, gui::TitleImageLoader);
-
         M_TESTING_STAGE_TEST(PopupManager);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(CombatImageLoader, gui::CombatImageLoader);
-
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemImageLoader, gui::ItemImageLoader);
-
         M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(CreatureImageLoader, gui::CreatureImageLoader);
 
         M_TESTING_STAGE_TEST(Animations);
@@ -780,13 +751,13 @@ namespace stage
             {
                 mapUPtr->Load(LEVEL_ENUM, map::Level::Count, true);
             }
-            catch (const std::exception & E)
+            catch (const std::exception &)
             {
                 M_HP_LOG_FAT(
                     "TestingStage::TestMaps() threw an exception while \""
                     << ERROR_MSG << "\" for map \"" << map::Level::ToString(LEVEL_ENUM) << "\"");
 
-                throw E;
+                throw;
             }
 
             MapLevelVec_t entryLevels;
@@ -1287,77 +1258,6 @@ namespace stage
         exit(1);
     }
     */
-
-    bool TestingStage::PerformTest_Enums()
-    {
-        item::category::Test();
-        item::material::Test();
-        item::element_type::Test();
-        item::misc_type::Test();
-        item::set_type::Test();
-        item::named_type::Test();
-        item::weapon_type::Test();
-        item::armor_type::Test();
-        item::body_part::Test();
-        item::name_material_type::Test();
-        item::armor::shield_type::Test();
-        item::armor::helm_type::Test();
-        item::armor::base_type::Test();
-        item::armor::cover_type::Test();
-        item::weapon::sword_type::Test();
-        item::weapon::axe_type::Test();
-        item::weapon::club_type::Test();
-        item::weapon::whip_type::Test();
-        item::weapon::projectile_type::Test();
-        item::weapon::bladedstaff_type::Test();
-        map::Level::Test();
-        map::LevelType::Test();
-        creature::origin_type::Test();
-        creature::race::Test();
-        creature::role::Test();
-        creature::EnchantmentType::Test();
-        creature::AchievementType::Test();
-        creature::Conditions::Test();
-        creature::Titles::Test();
-        creature::sex::Test();
-        creature::dragon_class::Test();
-        creature::wolfen_class::Test();
-        creature::Traits::Test();
-        // combat::strategy::SelectType::Test(); //this one takes too long
-        combat::strategy::RefineType::Test();
-        combat::strategy::AdvanceType::Test();
-        combat::strategy::RetreatType::Test();
-        combat::strategy::FrequencyType::Test();
-        combat::TargetType::Test();
-        game::Phase::Test();
-        creature::nonplayer::wealth_type::Test();
-        creature::nonplayer::collector_type::Test();
-        creature::nonplayer::owns_magic_type::Test();
-        creature::nonplayer::complexity_type::Test();
-        popup::ResponseTypes::Test();
-        gui::Brightness::Test();
-        gui::Corner::Test();
-        gui::GuiEvent::Test();
-        gui::Side::Test();
-        gui::Animations::Test();
-        stage::Stage::TestHelper();
-        gui::Footstep::Test();
-        gui::music::Test();
-        gui::sound_effect::Test();
-        gui::sound_effect_set::Test();
-        gui::Footstep::Test();
-        gui::GuiFont::Test();
-        gui::ImageOpt::Test();
-        gui::Justified::Test();
-        // gui::text_render::engine::StopReason::Test();
-        avatar::Avatar::Test();
-        spell::Spells::Test();
-        song::Songs::Test();
-        map::LayerType::Test();
-        popup::PopupStage::Test();
-        misc::LogPriority::Test();
-        return true;
-    }
 
     bool TestingStage::PerformTest_Fonts()
     {

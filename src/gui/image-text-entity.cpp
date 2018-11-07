@@ -42,9 +42,13 @@ namespace gui
                 return "Text";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(FOLLOW_TYPE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FOLLOW_TYPE));
+                return "";
             }
         }
     }

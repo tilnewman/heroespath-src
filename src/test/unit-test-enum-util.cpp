@@ -11,6 +11,72 @@
 
 #include "misc/enum-util.hpp"
 
+// all of the enum includes
+#include "avatar/avatar-enum.hpp"
+#include "avatar/pose-enum.hpp"
+#include "combat/blocking-pos-type-enum.hpp"
+#include "combat/combat-over-enum.hpp"
+#include "combat/effect-type-enum.hpp"
+#include "combat/hit-info.hpp"
+#include "combat/name-position-enum.hpp"
+#include "combat/strategy-enums.hpp"
+#include "combat/target-enum.hpp"
+#include "combat/turn-action-enum.hpp"
+#include "creature/achievement-enum.hpp"
+#include "creature/condition-enum.hpp"
+#include "creature/dragon-class-enum.hpp"
+#include "creature/enchantment-type.hpp"
+#include "creature/nonplayer-inventory-types.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
+#include "creature/sex-enum.hpp"
+#include "creature/title-enum.hpp"
+#include "creature/trait-enum.hpp"
+#include "creature/wolfen-class-enum.hpp"
+#include "game/phase-enum.hpp"
+#include "gui/animation-enum.hpp"
+#include "gui/brightness-enum.hpp"
+#include "gui/combat-image-enum.hpp"
+#include "gui/corner-enum.hpp"
+#include "gui/direction-enum.hpp"
+#include "gui/display-change-result.hpp"
+#include "gui/font-enum.hpp"
+#include "gui/gui-event-enum.hpp"
+#include "gui/image-option-enum.hpp"
+#include "gui/image-text-entity.hpp"
+#include "gui/justified-enum.hpp"
+#include "gui/mouse-state-enum.hpp"
+#include "gui/moving-enum.hpp"
+#include "gui/music-enum.hpp"
+#include "gui/music-operator.hpp"
+#include "gui/orientation-enum.hpp"
+#include "gui/sfx-set-enum.hpp"
+#include "gui/side-enum.hpp"
+#include "gui/size-enum.hpp"
+#include "gui/sound-effects-enum.hpp"
+#include "interact/interact-enum.hpp"
+#include "interact/interaction-button-enum.hpp"
+#include "interact/interaction-button.hpp"
+#include "interact/interaction-text-enum.hpp"
+#include "interact/statement.hpp"
+#include "item/armor-types.hpp"
+#include "item/item-type-enum.hpp"
+#include "item/treasure-available-enum.hpp"
+#include "item/treasure-image-enum.hpp"
+#include "item/weapon-types.hpp"
+#include "map/layer-type-enum.hpp"
+#include "map/level-enum.hpp"
+#include "misc/log-pri-enum.hpp"
+#include "misc/to-string-prefix-enum.hpp"
+#include "popup/popup-enums.hpp"
+#include "song/song-enum.hpp"
+#include "song/song-type-enum.hpp"
+#include "spell/spell-enum.hpp"
+#include "stage/stage-enum.hpp"
+
+#include "misc/assertlogandthrow.hpp"
+#include "misc/log-macros.hpp"
+
 #include "misc/platform.hpp"
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #pragma warning(push)
@@ -29,8 +95,190 @@
 using namespace heroespath;
 using namespace heroespath::misc;
 
+template <typename EnumWrapper_t>
+void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
+{
+    std::ostringstream msgSS;
+    msgSS << "EnumTest<" << EnumWrapper_t::TypeName() << ", "
+          << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name()
+          << ">(last_valid_value=" << LAST_VALID_VALUE << ", must_first_be_empty=" << std::boolalpha
+          << MUST_FIRST_STRING_TO_BE_EMPTY << ") ";
+
+    M_HP_LOG(msgSS.str() + "Starting...");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (LAST_VALID_VALUE > 0), msgSS.str() << "was given a last_valid_value that was not > zero.");
+
+    static EnumUnderlying_t flagValue { 0 };
+
+    // this is used to verify ToString() returns a unique string for each unique enum
+    static std::vector<std::string> alreadyGeneratedStrings;
+    if (alreadyGeneratedStrings.capacity() < static_cast<std::size_t>(LAST_VALID_VALUE))
+    {
+        alreadyGeneratedStrings.reserve(static_cast<std::size_t>(LAST_VALID_VALUE));
+    }
+
+    while (flagValue <= LAST_VALID_VALUE)
+    {
+        const auto FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
+
+        if (EnumWrapper_t::IsValid(
+                static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT))
+            == false)
+        {
+            M_HP_LOG(msgSS.str() << " skipping invalid value=" << FLAG_VALUE_TO_TEST_AND_REPORT);
+            continue;
+        }
+
+        const auto STRING { EnumWrapper_t::ToString(
+            static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
+
+        if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (STRING.empty()),
+                msgSS.str() << "ToString() returned non-empty string (\"" << STRING
+                            << "\") on first value.");
+        }
+        else
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (STRING.empty() == false),
+                msgSS.str() << "ToString() returned an empty string on value "
+                            << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
+        }
+
+        const auto IS_DUPLICATE {
+            std::find(
+                std::begin(alreadyGeneratedStrings), std::end(alreadyGeneratedStrings), STRING)
+            != std::end(alreadyGeneratedStrings)
+        };
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (IS_DUPLICATE == false),
+            msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
+                        << "\" is a duplicate of a previous generated string.");
+
+        const auto FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
+            msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
+                        << "!=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (EnumWrapper_t::IsValid(static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
+            msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
+                        << "=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT
+                        << " -but that value was not valid.  (IsValid() returned false)");
+    }
+
+    M_HP_LOG(msgSS.str() + "  Done testing all " << flagValue << " values.");
+}
+
+template <typename EnumWrapper_t>
+void TestBitFieldEnum()
+{
+    using UnderlyingTypeActual_t =
+        typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+        EnumWrapper_t::TypeName()
+            << "Underlying type was: "
+            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
+            << " instead of what it should be: "
+            << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name() << ".");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::None == 0), EnumWrapper_t::TypeName() << "::None was not zero.");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::Last > 0),
+        EnumWrapper_t::TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+                                  << " is not > zero.");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::Last <= EnumWrapper_t::LargestValidValue()),
+        EnumWrapper_t::TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+                                  << " is not <= the largest valid value="
+                                  << EnumWrapper_t::LargestValidValue() << ".");
+
+    EnumTest<EnumWrapper_t>(EnumWrapper_t::LargestValidValue(), true);
+}
+
+template <typename EnumWrapper_t>
+void TestCountingEnum()
+{
+    using UnderlyingTypeActual_t =
+        typename std::underlying_type<typename EnumWrapper_t::Enum>::type;
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
+        EnumWrapper_t::TypeName()
+            << "Underlying type was: "
+            << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
+            << " instead of what it should be: "
+            << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name() << ".");
+
+    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Not)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (EnumWrapper_t::Not == 0),
+            EnumWrapper_t::TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
+    }
+
+    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Nothing)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (EnumWrapper_t::Nothing == 0),
+            EnumWrapper_t::TypeName()
+                << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
+    }
+
+    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Never)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (EnumWrapper_t::Never == 0),
+            EnumWrapper_t::TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
+    }
+
+    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::None)
+    {
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (EnumWrapper_t::None == 0),
+            EnumWrapper_t::TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
+    }
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::Count > 0),
+        EnumWrapper_t::TypeName() << "::Count="
+                                  << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+                                  << " is not > zero.");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+         == (EnumWrapper_t::LargestValidValue() + 1)),
+        EnumWrapper_t::TypeName() << "::Count(" << EnumWrapper_t::ToString(EnumWrapper_t::Count)
+                                  << ")=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+                                  << " is not one less than the largest valid value="
+                                  << EnumWrapper_t::LargestValidValue() << ".");
+
+    EnumTest<EnumWrapper_t>(EnumWrapper_t::LargestValidValue(), false);
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::ToString(EnumWrapper_t::Count) == "(Count)"),
+        EnumWrapper_t::TypeName() << "::ToString(Count) != \"(Count)\"");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (EnumWrapper_t::ToString(
+             static_cast<typename EnumWrapper_t::Enum>(EnumWrapper_t::Count + 10))
+             .empty()),
+        EnumWrapper_t::TypeName() << "::ToString(Count+10) != \"\"");
+}
+
 // a counting enum to test with
-struct Counting : public EnumBaseCounting<Counting, EnumFirstValueNone>
+struct Counting : public EnumBaseCounting<Counting, EnumFirstValue::None>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -57,9 +305,13 @@ struct Counting : public EnumBaseCounting<Counting, EnumFirstValueNone>
                 return "Two";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(ENUM_VALUE, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM_VALUE));
+                return "";
             }
         }
     }
@@ -76,26 +328,28 @@ struct Bitfield : public EnumBaseBitField<Bitfield>
         Last = B
     };
 
-    static const std::string ToString(const EnumUnderlying_t ENUM_VALUE)
+    static const std::string ToStringTest(const EnumUnderlying_t ENUM_VALUE)
     {
-        return EnumBaseBitField::ToString(ENUM_VALUE, Wrap::Yes, "/");
+        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::Yes));
     }
 
-    static const std::string ToStringNoneNotEmpty(const EnumUnderlying_t ENUM_VALUE)
+    static const std::string ToStringTestNoneNotEmpty(const EnumUnderlying_t ENUM_VALUE)
     {
-        return EnumBaseBitField::ToString(ENUM_VALUE, Wrap::Yes, "/", NoneEmpty::No);
+        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::No));
     }
 
-    static void ToStringPopulate(
-        std::ostringstream & ss, const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    static const std::string
+        ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Enum::A, "A", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Enum::B, "B", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::A, "A", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::B, "B", SEPARATOR);
+        return str;
     }
 };
 
 // a bitfield enum to test with
-struct Bitfield2 : public EnumBaseBitField<Bitfield, NoneEmpty::No>
+struct Bitfield2 : public EnumBaseBitField<Bitfield>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -105,27 +359,29 @@ struct Bitfield2 : public EnumBaseBitField<Bitfield, NoneEmpty::No>
         Last = B
     };
 
-    static const std::string ToString(const EnumUnderlying_t ENUM_VALUE)
+    static const std::string ToStringTest(const EnumUnderlying_t ENUM_VALUE)
     {
-        return EnumBaseBitField::ToString(ENUM_VALUE, Wrap::Yes, "/");
+        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::No));
     }
 
-    static const std::string ToStringNoneEmpty(const EnumUnderlying_t ENUM_VALUE)
+    static const std::string ToStringTestNoneEmpty(const EnumUnderlying_t ENUM_VALUE)
     {
-        return EnumBaseBitField::ToString(ENUM_VALUE, Wrap::Yes, "/", NoneEmpty::Yes);
+        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::Yes));
     }
 
-    static void ToStringPopulate(
-        std::ostringstream & ss, const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    static const std::string
+        ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Enum::A, "A", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Enum::B, "B", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::A, "A", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Enum::B, "B", SEPARATOR);
+        return str;
     }
 };
 
-BOOST_AUTO_TEST_CASE(MiscEnumUtil_Counting_Tests)
+BOOST_AUTO_TEST_CASE(Case_1_MiscEnumUtil_Counting_Tests)
 {
-    Counting::Test(false);
+    TestCountingEnum<Counting>();
 
     BOOST_CHECK(
         (std::is_same<std::underlying_type<Counting::Enum>::type, EnumUnderlying_t>::value));
@@ -133,11 +389,17 @@ BOOST_AUTO_TEST_CASE(MiscEnumUtil_Counting_Tests)
     BOOST_CHECK(Counting::None == static_cast<Counting::Enum>(0));
     BOOST_CHECK(Counting::One == static_cast<Counting::Enum>(1));
     BOOST_CHECK(Counting::Two == static_cast<Counting::Enum>(2));
+    BOOST_CHECK(Counting::Count == static_cast<Counting::Enum>(3));
+
+    BOOST_CHECK(Counting::ToString(Counting::None) == "None");
+    BOOST_CHECK(Counting::ToString(Counting::One) == "One");
+    BOOST_CHECK(Counting::ToString(Counting::Two) == "Two");
+    BOOST_CHECK(Counting::ToString(Counting::Count) == "(Count)");
 }
 
-BOOST_AUTO_TEST_CASE(MiscEnumUtil_BitField_Tests)
+BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 {
-    Bitfield::Test(false);
+    TestBitFieldEnum<Bitfield>();
 
     //
 
@@ -159,11 +421,11 @@ BOOST_AUTO_TEST_CASE(MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(Bitfield::ToString(Bitfield::None) == "");
-    BOOST_CHECK(Bitfield::ToStringNoneNotEmpty(Bitfield::None) == "(None)");
-    BOOST_CHECK(Bitfield::ToString(Bitfield::A) == "(A)");
-    BOOST_CHECK(Bitfield::ToString(Bitfield::B) == "(B)");
-    BOOST_CHECK(Bitfield::ToString((Bitfield::A | Bitfield::B)) == "(A/B)");
+    BOOST_CHECK(Bitfield::ToStringTest(Bitfield::None) == "");
+    BOOST_CHECK(Bitfield::ToStringTestNoneNotEmpty(Bitfield::None) == "(None)");
+    BOOST_CHECK(Bitfield::ToStringTest(Bitfield::A) == "(A)");
+    BOOST_CHECK(Bitfield::ToStringTest(Bitfield::B) == "(B)");
+    BOOST_CHECK(Bitfield::ToStringTest((Bitfield::A | Bitfield::B)) == "(A/B)");
 
     //
 
@@ -251,13 +513,13 @@ BOOST_AUTO_TEST_CASE(MiscEnumUtil_BitField_Tests)
 
     //
 
-    Bitfield2::Test(false);
+    TestBitFieldEnum<Bitfield2>();
 
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::None) == "(None)");
-    BOOST_CHECK(Bitfield2::ToStringNoneEmpty(Bitfield2::None) == "");
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::A) == "(A)");
-    BOOST_CHECK(Bitfield2::ToString(Bitfield2::B) == "(B)");
-    BOOST_CHECK(Bitfield2::ToString((Bitfield2::A | Bitfield2::B)) == "(A/B)");
+    BOOST_CHECK(Bitfield2::ToStringTest(Bitfield2::None) == "(None)");
+    BOOST_CHECK(Bitfield2::ToStringTestNoneEmpty(Bitfield2::None) == "");
+    BOOST_CHECK(Bitfield2::ToStringTest(Bitfield2::A) == "(A)");
+    BOOST_CHECK(Bitfield2::ToStringTest(Bitfield2::B) == "(B)");
+    BOOST_CHECK(Bitfield2::ToStringTest((Bitfield2::A | Bitfield2::B)) == "(A/B)");
 
     using Under_t = std::underlying_type<Bitfield::Enum>::type;
 
@@ -473,4 +735,104 @@ BOOST_AUTO_TEST_CASE(MiscEnumUtil_BitField_Tests)
         BitToggle(b, Bitfield::A);
         BOOST_CHECK(b == ab);
     }
+}
+
+BOOST_AUTO_TEST_CASE(Case_3_MiscEnumUtil_ActualEnums_Counting_Tests)
+{
+    TestCountingEnum<avatar::Avatar>();
+    TestCountingEnum<avatar::Pose>();
+    TestCountingEnum<combat::BlockingPosType>();
+    TestCountingEnum<combat::CombatEnd>();
+    TestCountingEnum<combat::EffectType>();
+    TestCountingEnum<combat::HitType>();
+    TestCountingEnum<combat::NamePosition>();
+    TestCountingEnum<combat::strategy::AdvanceType>();
+    TestCountingEnum<combat::strategy::RetreatType>();
+    TestCountingEnum<combat::strategy::FrequencyType>();
+    TestCountingEnum<combat::TargetType>();
+    TestCountingEnum<combat::TurnAction>();
+    TestCountingEnum<creature::AchievementType>();
+    TestCountingEnum<creature::Conditions>();
+    TestCountingEnum<creature::dragon_class>();
+    TestCountingEnum<creature::nonplayer::wealth_type>();
+    TestCountingEnum<creature::nonplayer::owns_magic_type>();
+    TestCountingEnum<creature::nonplayer::complexity_type>();
+    TestCountingEnum<creature::origin_type>();
+    TestCountingEnum<creature::race>();
+    TestCountingEnum<creature::rank_class>();
+    TestCountingEnum<creature::role>();
+    TestCountingEnum<creature::sex>();
+    TestCountingEnum<creature::Titles>();
+    TestCountingEnum<creature::Traits>();
+    TestCountingEnum<creature::wolfen_class>();
+    TestCountingEnum<gui::Animations>();
+    TestCountingEnum<gui::Brightness>();
+    TestCountingEnum<gui::CombatImageType>();
+    TestCountingEnum<gui::Direction>();
+    TestCountingEnum<gui::GuiFont>();
+    TestCountingEnum<gui::ImageTextEntity::MouseStateSync>();
+    TestCountingEnum<gui::Justified>();
+    TestCountingEnum<gui::MouseState>();
+    TestCountingEnum<gui::Moving>();
+    TestCountingEnum<gui::music>();
+    TestCountingEnum<gui::music_update_status>();
+    TestCountingEnum<gui::Orientation>();
+    TestCountingEnum<gui::sound_effect_set>();
+    TestCountingEnum<gui::Size>();
+    TestCountingEnum<gui::Footstep>();
+    TestCountingEnum<gui::sound_effect>();
+    TestCountingEnum<interact::Interact>();
+    TestCountingEnum<interact::Buttons>();
+    TestCountingEnum<interact::Text>();
+    TestCountingEnum<item::armor::shield_type>();
+    TestCountingEnum<item::armor::helm_type>();
+    TestCountingEnum<item::armor::base_type>();
+    TestCountingEnum<item::armor::cover_type>();
+    TestCountingEnum<item::material>();
+    TestCountingEnum<item::misc_type>();
+    TestCountingEnum<item::set_type>();
+    TestCountingEnum<item::named_type>();
+    TestCountingEnum<item::armor_type>();
+    TestCountingEnum<item::body_part>();
+    TestCountingEnum<item::name_material_type>();
+    TestCountingEnum<item::TreasureAvailable>();
+    TestCountingEnum<item::TreasureImage>();
+    TestCountingEnum<item::weapon::sword_type>();
+    TestCountingEnum<item::weapon::axe_type>();
+    TestCountingEnum<item::weapon::club_type>();
+    TestCountingEnum<item::weapon::whip_type>();
+    TestCountingEnum<item::weapon::projectile_type>();
+    TestCountingEnum<item::weapon::bladedstaff_type>();
+    TestCountingEnum<map::LayerType>();
+    TestCountingEnum<map::LevelType>();
+    TestCountingEnum<map::Level>();
+    TestCountingEnum<misc::LogPriority>();
+    TestCountingEnum<popup::PopupStage>();
+    TestCountingEnum<popup::PopupButtonColor>();
+    TestCountingEnum<popup::PopupImage>();
+    TestCountingEnum<song::Songs>();
+    TestCountingEnum<song::SongType>();
+    TestCountingEnum<spell::Spells>();
+    TestCountingEnum<stage::Stage>();
+}
+
+BOOST_AUTO_TEST_CASE(Case_4_MiscEnumUtil_ActualEnums_Bitfield_Tests)
+{
+    TestBitFieldEnum<combat::strategy::RefineType>();
+    TestBitFieldEnum<creature::EnchantmentType>();
+    TestBitFieldEnum<creature::nonplayer::collector_type>();
+    TestBitFieldEnum<game::Phase>();
+    TestBitFieldEnum<gui::Corner>();
+    TestBitFieldEnum<gui::GuiEvent>();
+    TestBitFieldEnum<gui::ImageOpt>();
+    TestBitFieldEnum<gui::Side>();
+    TestBitFieldEnum<item::category>();
+    TestBitFieldEnum<item::element_type>();
+    TestBitFieldEnum<item::weapon_type>();
+    TestBitFieldEnum<misc::ToStringPrefix>();
+    TestBitFieldEnum<popup::PopupButtons>();
+
+    M_HP_LOG_WRN("The big long bitfield enum test: combat::strategy::SelectType:  START");
+    TestBitFieldEnum<combat::strategy::SelectType>();
+    M_HP_LOG_WRN("The big long bitfield enum test: combat::strategy::SelectType:  FINISHED");
 }

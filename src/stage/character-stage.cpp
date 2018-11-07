@@ -157,7 +157,7 @@ namespace stage
         const misc::PopupCallback_t::Packet_t & PACKET, const std::string & PACKET_DESCRIPTION)
     {
         if ((PACKET.curently_open_popup_name == POPUP_NAME_CREATECONFIRM_)
-            && (popup::ResponseTypes::IsAffirmative(PACKET.type)))
+            && (popup::PopupButtons::IsAffirmative(PACKET.type)))
         {
             CreateCharacter();
 
@@ -168,7 +168,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET.type))
+            && popup::PopupButtons::IsAffirmative(PACKET.type))
         {
             TransitionTo(stage::Stage::Menu);
 
@@ -179,7 +179,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_)
-            && popup::ResponseTypes::IsAffirmative(PACKET.type))
+            && popup::PopupButtons::IsAffirmative(PACKET.type))
         {
             TransitionTo(stage::Stage::Party);
 
@@ -206,7 +206,7 @@ namespace stage
         }
         else if (
             (PACKET.curently_open_popup_name == POPUP_NAME_IMAGE_SELECTION_)
-            && (PACKET.type != popup::ResponseTypes::Cancel) && PACKET.selection_opt)
+            && (PACKET.type != popup::PopupButtons::Cancel) && PACKET.selection_opt)
         {
             CharacterCreationConfirmPopup(PACKET.selection_opt.value());
 
@@ -1121,7 +1121,7 @@ namespace stage
                 popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
-                    popup::PopupButtons::YesNo,
+                    (popup::PopupButtons::Yes | popup::PopupButtons::No),
                     popup::PopupImage::Regular,
                     gui::Justified::Center,
                     gui::sound_effect::PromptWarn));

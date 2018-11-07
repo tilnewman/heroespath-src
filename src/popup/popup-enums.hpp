@@ -10,7 +10,6 @@
 // popup-enums.hpp
 //
 #include "misc/enum-util.hpp"
-#include "popup/popup-response-enum.hpp"
 
 #include <string>
 
@@ -19,7 +18,7 @@ namespace heroespath
 namespace popup
 {
 
-    struct PopupStage : public misc::EnumBaseCounting<PopupStage, misc::EnumFirstValueValid>
+    struct PopupStage : public misc::EnumBaseCounting<PopupStage, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -41,25 +40,32 @@ namespace popup
         static const std::string ToString(const Enum);
     };
 
-    struct PopupButtons
+    struct PopupButtons : public misc::EnumBaseBitField<PopupButtons>
     {
         enum Enum : misc::EnumUnderlying_t
         {
             None = 0,
-            Okay = ResponseTypes::Okay,
-            Select = ResponseTypes::Select,
-            Cancel = ResponseTypes::Cancel,
-            SelectCancel = ResponseTypes::Select | ResponseTypes::Cancel,
-            Continue = ResponseTypes::Continue,
-            YesNo = ResponseTypes::Yes | ResponseTypes::No,
-            YesNoCancel = ResponseTypes::Yes | ResponseTypes::No | ResponseTypes::Cancel
+            Okay = 1 << 0,
+            Continue = 1 << 1,
+            Yes = 1 << 2,
+            No = 1 << 3,
+            Cancel = 1 << 4,
+            Select = 1 << 5,
+            Last = Select
         };
 
-        static const std::string ToString(const PopupButtons::Enum E);
-        static bool IsValid(const PopupButtons::Enum E);
+        static const Enum YesNo = (Yes | No);
+        static const Enum YesNoCancel = (Yes | No | Cancel);
+        static const Enum SelectCancel = (Select | Cancel);
+
+        static const std::string ToStringPopulate(
+            const misc::EnumUnderlying_t BUTTONS, const std::string & SEPARATOR = "/");
+
+        static bool IsAffirmative(const Enum);
     };
 
     struct PopupButtonColor
+        : public misc::EnumBaseCounting<PopupButtonColor, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -69,10 +75,9 @@ namespace popup
         };
 
         static const std::string ToString(const PopupButtonColor::Enum);
-        static bool IsValid(const PopupButtonColor::Enum);
     };
 
-    struct PopupImage
+    struct PopupImage : public misc::EnumBaseCounting<PopupImage, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -87,7 +92,6 @@ namespace popup
         };
 
         static const std::string ToString(const PopupImage::Enum);
-        static bool IsValid(const PopupImage::Enum);
     };
 
 } // namespace popup

@@ -11,6 +11,8 @@
 //
 #include "orientation-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace gui
@@ -30,9 +32,14 @@ namespace gui
         {
             return "HorizAndVert";
         }
+        else if (ORIENTATION == Orientation::Count)
+        {
+            return "(Count)";
+        }
         else
         {
-            ThrowInvalidValueForFunction(ORIENTATION, "ToString");
+            M_HP_LOG_ERR(ValueOutOfRangeErrorString(ORIENTATION));
+            return "";
         }
     }
 

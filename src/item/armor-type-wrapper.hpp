@@ -12,6 +12,7 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <boost/variant.hpp>
 

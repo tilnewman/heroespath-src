@@ -21,7 +21,7 @@ namespace item
     namespace armor
     {
 
-        struct shield_type : public misc::EnumBaseCounting<shield_type, misc::EnumFirstValueValid>
+        struct shield_type : public misc::EnumBaseCounting<shield_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -35,7 +35,7 @@ namespace item
             static const std::string ToString(const shield_type::Enum);
         };
 
-        struct helm_type : public misc::EnumBaseCounting<helm_type, misc::EnumFirstValueValid>
+        struct helm_type : public misc::EnumBaseCounting<helm_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -49,10 +49,10 @@ namespace item
             };
 
             static const std::string ToString(const helm_type::Enum);
-            static const std::string Name(const helm_type::Enum E);
+            static const std::string Name(const helm_type::Enum);
         };
 
-        struct base_type : public misc::EnumBaseCounting<base_type, misc::EnumFirstValueValid>
+        struct base_type : public misc::EnumBaseCounting<base_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -70,7 +70,7 @@ namespace item
             }
         };
 
-        struct cover_type : public misc::EnumBaseCounting<cover_type, misc::EnumFirstValueValid>
+        struct cover_type : public misc::EnumBaseCounting<cover_type, misc::EnumFirstValue::Valid>
         {
             enum Enum : misc::EnumUnderlying_t
             {

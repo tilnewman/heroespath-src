@@ -24,16 +24,11 @@
 #include "game/game.hpp"
 #include "game/loop.hpp"
 #include "game/npc-warehouse.hpp"
-#include "gui/combat-image-loader.hpp"
-#include "gui/condition-image-loader.hpp"
 #include "gui/creature-image-loader.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
-#include "gui/song-image-loader.hpp"
 #include "gui/sound-manager.hpp"
-#include "gui/spell-image-loader.hpp"
 #include "gui/texture-cache.hpp"
-#include "gui/title-image-loader.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-ratings.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -129,11 +124,11 @@ namespace game
         {
             misc::SettingsFile::Instance()->AcquireAndSave();
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
-                "StartupShutdown::Teardown_SettingsFile() threw std::exception \"" << E.what()
-                                                                                   << "\"");
+                "StartupShutdown::Teardown_SettingsFile() threw std::exception \""
+                << EXCEPTION.what() << "\"");
         }
         catch (...)
         {
@@ -148,11 +143,11 @@ namespace game
         {
             gui::Display::Instance()->Close();
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
-                "StartupShutdown::Teardown_CloseDisplay() threw std::exception \"" << E.what()
-                                                                                   << "\"");
+                "StartupShutdown::Teardown_CloseDisplay() threw std::exception \""
+                << EXCEPTION.what() << "\"");
         }
         catch (...)
         {
@@ -171,11 +166,11 @@ namespace game
             creature::condition::Holder::Empty();
             creature::title::Holder::Empty();
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
-                "StartupShutdown::Teardown_EmptyHolders() threw std::exception \"" << E.what()
-                                                                                   << "\"");
+                "StartupShutdown::Teardown_EmptyHolders() threw std::exception \""
+                << EXCEPTION.what() << "\"");
         }
         catch (...)
         {
@@ -234,11 +229,11 @@ namespace game
             // these two are needed almost everywhere so release them last
             misc::ConfigFile::Release();
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
-                "StartupShutdown::Teardown_ReleaseSubsystems() threw std::exception \"" << E.what()
-                                                                                        << "\"");
+                "StartupShutdown::Teardown_ReleaseSubsystems() threw std::exception \""
+                << EXCEPTION.what() << "\"");
         }
         catch (...)
         {
@@ -254,10 +249,11 @@ namespace game
         {
             misc::Log::Release();
         }
-        catch (const std::exception & E)
+        catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
-                "StartupShutdown::Teardown_Logger() threw std::exception \"" << E.what() << "\"");
+                "StartupShutdown::Teardown_Logger() threw std::exception \"" << EXCEPTION.what()
+                                                                             << "\"");
         }
         catch (...)
         {

@@ -9,6 +9,8 @@
 //
 // combat-image-enum.hpp
 //
+#include "misc/enum-util.hpp"
+
 #include <string>
 
 namespace heroespath
@@ -17,8 +19,9 @@ namespace gui
 {
 
     struct CombatImageType
+        : public misc::EnumBaseCounting<CombatImageType, misc::EnumFirstValue::Valid>
     {
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Wing = 0,
             Arrow1,
@@ -35,7 +38,10 @@ namespace gui
 
         static const std::string ToString(const Enum);
         static const std::string ImageFilename(const Enum);
+        static const std::string ImageDirectory();
+        static const std::string ImagePath(const Enum);
     };
+
 } // namespace gui
 } // namespace heroespath
 

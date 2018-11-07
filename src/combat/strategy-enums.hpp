@@ -49,10 +49,8 @@ namespace combat
                 Last = NotBeast
             };
 
-            static void ToStringPopulate(
-                std::ostringstream & ss,
-                const misc::EnumUnderlying_t ENUM_VALUE,
-                const std::string & SEPARATOR);
+            static const std::string ToStringPopulate(
+                const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
         struct RefineType : public misc::EnumBaseBitField<RefineType>
@@ -77,13 +75,11 @@ namespace combat
                 Last = MostDamage
             };
 
-            static void ToStringPopulate(
-                std::ostringstream & ss,
-                const misc::EnumUnderlying_t ENUM_VALUE,
-                const std::string & SEPARATOR);
+            static const std::string ToStringPopulate(
+                const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
-        struct AdvanceType : public misc::EnumBaseCounting<AdvanceType, misc::EnumFirstValueNone>
+        struct AdvanceType : public misc::EnumBaseCounting<AdvanceType, misc::EnumFirstValue::None>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -97,7 +93,7 @@ namespace combat
             static const std::string ToString(const Enum);
         };
 
-        struct RetreatType : public misc::EnumBaseCounting<RetreatType, misc::EnumFirstValueNone>
+        struct RetreatType : public misc::EnumBaseCounting<RetreatType, misc::EnumFirstValue::None>
         {
             enum Enum : misc::EnumUnderlying_t
             {
@@ -111,7 +107,7 @@ namespace combat
         };
 
         struct FrequencyType
-            : public misc::EnumBaseCounting<FrequencyType, misc::EnumFirstValueNever>
+            : public misc::EnumBaseCounting<FrequencyType, misc::EnumFirstValue::Never>
         {
             enum Enum : misc::EnumUnderlying_t
             {

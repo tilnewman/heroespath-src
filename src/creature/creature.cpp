@@ -212,14 +212,14 @@ namespace creature
         return healthNormal_;
     }
 
-    void Creature::TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES)
+    void Creature::TitleAdd(const Titles::Enum ENUM, const bool ALLOW_CHANGES)
     {
         if (ALLOW_CHANGES)
         {
-            title::Holder::Get(E)->Change(CreaturePtr_t(this));
+            title::Holder::Get(ENUM)->Change(CreaturePtr_t(this));
         }
 
-        titlesVec_.emplace_back(E);
+        titlesVec_.emplace_back(ENUM);
     }
 
     const TitlePVec_t Creature::TitlesPVec() const
@@ -269,13 +269,13 @@ namespace creature
         return ss.str();
     }
 
-    bool Creature::ConditionAdd(const Conditions::Enum E, const bool ALLOW_CHANGES)
+    bool Creature::ConditionAdd(const Conditions::Enum ENUM, const bool ALLOW_CHANGES)
     {
         if (std::find(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good)
             != conditionsVec_.end())
         {
             // prevent multiple 'Good' conditions
-            if (E == Conditions::Good)
+            if (ENUM == Conditions::Good)
             {
                 return false;
             }
@@ -289,14 +289,14 @@ namespace creature
         }
 
         // verify the condition is not already in the list
-        if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), E))
+        if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), ENUM))
         {
-            conditionsVec_.emplace_back(E);
+            conditionsVec_.emplace_back(ENUM);
 
             // make the change to the creature
             if (ALLOW_CHANGES)
             {
-                condition::Holder::Get(E)->InitialChange(CreaturePtr_t(this));
+                condition::Holder::Get(ENUM)->InitialChange(CreaturePtr_t(this));
                 ReCalculateTraitBonuses();
             }
 
@@ -306,12 +306,12 @@ namespace creature
         return false;
     }
 
-    bool Creature::ConditionRemove(const Conditions::Enum E)
+    bool Creature::ConditionRemove(const Conditions::Enum ENUM)
     {
         CondEnumVec_t conditionsToRemoveVec;
         for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            if (NEXT_CONDITION_ENUM == E)
+            if (NEXT_CONDITION_ENUM == ENUM)
             {
                 conditionsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
@@ -373,11 +373,11 @@ namespace creature
         return conditionPVec;
     }
 
-    bool Creature::HasCondition(const Conditions::Enum E) const
+    bool Creature::HasCondition(const Conditions::Enum ENUM) const
     {
         for (const auto NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            if (NEXT_CONDITION_ENUM == E)
+            if (NEXT_CONDITION_ENUM == ENUM)
             {
                 return true;
             }
@@ -1296,9 +1296,9 @@ namespace creature
         return "";
     }
 
-    bool Creature::CanCastSpellByEffectType(const combat::EffectType::Enum E) const
+    bool Creature::CanCastSpellByEffectType(const combat::EffectType::Enum ENUM) const
     {
-        return CanCastSpellByEffectType(combat::EffectTypeVec_t(1, E));
+        return CanCastSpellByEffectType(combat::EffectTypeVec_t(1, ENUM));
     }
 
     bool Creature::CanCastSpellByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
@@ -1331,11 +1331,11 @@ namespace creature
         return spellsPVec;
     }
 
-    bool Creature::SpellAdd(const spell::Spells::Enum E)
+    bool Creature::SpellAdd(const spell::Spells::Enum ENUM)
     {
-        if (std::find(spellsVec_.begin(), spellsVec_.end(), E) == spellsVec_.end())
+        if (std::find(spellsVec_.begin(), spellsVec_.end(), ENUM) == spellsVec_.end())
         {
-            spellsVec_.emplace_back(E);
+            spellsVec_.emplace_back(ENUM);
             return true;
         }
         else
@@ -1344,9 +1344,9 @@ namespace creature
         }
     }
 
-    bool Creature::SpellRemove(const spell::Spells::Enum E)
+    bool Creature::SpellRemove(const spell::Spells::Enum ENUM)
     {
-        const auto FOUND_ITER { std::find(spellsVec_.begin(), spellsVec_.end(), E) };
+        const auto FOUND_ITER { std::find(spellsVec_.begin(), spellsVec_.end(), ENUM) };
 
         if (FOUND_ITER == spellsVec_.end())
         {
@@ -1399,9 +1399,9 @@ namespace creature
         return "";
     }
 
-    bool Creature::CanPlaySongsByEffectType(const combat::EffectType::Enum E) const
+    bool Creature::CanPlaySongsByEffectType(const combat::EffectType::Enum ENUM) const
     {
-        return CanPlaySongsByEffectType(combat::EffectTypeVec_t(1, E));
+        return CanPlaySongsByEffectType(combat::EffectTypeVec_t(1, ENUM));
     }
 
     bool Creature::CanPlaySongsByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
@@ -1434,11 +1434,11 @@ namespace creature
         return songsPVec;
     }
 
-    bool Creature::SongAdd(const song::Songs::Enum E)
+    bool Creature::SongAdd(const song::Songs::Enum ENUM)
     {
-        if (std::find(songsVec_.begin(), songsVec_.end(), E) == songsVec_.end())
+        if (std::find(songsVec_.begin(), songsVec_.end(), ENUM) == songsVec_.end())
         {
-            songsVec_.emplace_back(E);
+            songsVec_.emplace_back(ENUM);
             return true;
         }
         else
@@ -1447,9 +1447,9 @@ namespace creature
         }
     }
 
-    bool Creature::SongRemove(const song::Songs::Enum E)
+    bool Creature::SongRemove(const song::Songs::Enum ENUM)
     {
-        const auto FOUND_ITER { std::find(songsVec_.begin(), songsVec_.end(), E) };
+        const auto FOUND_ITER { std::find(songsVec_.begin(), songsVec_.end(), ENUM) };
 
         if (FOUND_ITER == songsVec_.end())
         {
@@ -1582,24 +1582,25 @@ namespace creature
         }
     }
 
-    Trait_t Creature::TraitWorking(const Traits::Enum E) const
+    Trait_t Creature::TraitWorking(const Traits::Enum ENUM) const
     {
-        const auto ACTUAL { static_cast<float>(TraitCurrent(E))
-                            + (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
+        const auto ACTUAL { static_cast<float>(TraitCurrent(ENUM))
+                            + (TraitBonusActualAsRatio(ENUM)
+                               * static_cast<float>(TraitCurrent(ENUM))) };
 
         return (ACTUAL < 0.0f) ? 0 : static_cast<Trait_t>(ACTUAL);
     }
 
-    Trait_t Creature::TraitBonusNormalAdj(const Traits::Enum E, const Trait_t ADJ)
+    Trait_t Creature::TraitBonusNormalAdj(const Traits::Enum ENUM, const Trait_t ADJ)
     {
-        const auto NEW_NORMAL { bonusSet_.Get(E).NormalAdj(ADJ) };
+        const auto NEW_NORMAL { bonusSet_.Get(ENUM).NormalAdj(ADJ) };
         ReCalculateTraitBonuses();
         return NEW_NORMAL;
     }
 
-    bool Creature::TraitBonusTest(const Traits::Enum E) const
+    bool Creature::TraitBonusTest(const Traits::Enum ENUM) const
     {
-        return (misc::random::Int(100) < bonusSet_.GetCopy(E).Current());
+        return (misc::random::Int(100) < bonusSet_.GetCopy(ENUM).Current());
     }
 
     const TraitSet Creature::TraitsWorking() const
@@ -1616,10 +1617,10 @@ namespace creature
     }
 
     const std::string
-        Creature::TraitModifiedString(const Traits::Enum E, const bool WILL_WRAP) const
+        Creature::TraitModifiedString(const Traits::Enum ENUM, const bool WILL_WRAP) const
     {
-        const auto WORKING { TraitWorking(E) };
-        const auto NORMAL { TraitNormal(E) };
+        const auto WORKING { TraitWorking(ENUM) };
+        const auto NORMAL { TraitNormal(ENUM) };
 
         if (WORKING == NORMAL)
         {

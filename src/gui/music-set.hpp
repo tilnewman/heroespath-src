@@ -65,9 +65,16 @@ namespace gui
 
         music::Enum PickNextSong();
 
-        bool Contains(const music::Enum E) const
+        bool Contains(const music::Enum ENUM) const
         {
-            return std::find(whichVec_.begin(), whichVec_.end(), E) != whichVec_.end();
+            return std::find(whichVec_.begin(), whichVec_.end(), ENUM) != whichVec_.end();
+        }
+
+        bool ContainsInvalid() const
+        {
+            return std::any_of(whichVec_.begin(), whichVec_.end(), [](const auto ENUM) {
+                return (music::IsValid(ENUM) == false);
+            });
         }
 
         friend bool operator==(const MusicSet & L, const MusicSet & R);

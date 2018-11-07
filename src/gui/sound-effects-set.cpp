@@ -70,14 +70,14 @@ namespace gui
                                          << ") resulted in an empty sfxEnums_ vector.");
     }
 
-    void SfxSet::Play(const sound_effect::Enum E) const
+    void SfxSet::Play(const sound_effect::Enum ENUM) const
     {
         if (sfxEnums_.empty())
         {
             return;
         }
 
-        if (E == sound_effect::Random)
+        if (ENUM == sound_effect::Random)
         {
             PlayRandom();
         }
@@ -86,7 +86,7 @@ namespace gui
             const std::size_t NUM_SOUNDS(sfxEnums_.size());
             for (std::size_t i(0); i < NUM_SOUNDS; ++i)
             {
-                if (E == sfxEnums_[i])
+                if (ENUM == sfxEnums_[i])
                 {
                     PlayAt(i);
                     return;
@@ -94,7 +94,7 @@ namespace gui
             }
 
             std::ostringstream ssErr;
-            ssErr << "gui::SfxSet::Play(" << sound_effect::ToString(E)
+            ssErr << "gui::SfxSet::Play(" << sound_effect::ToString(ENUM)
                   << ") did not find that sound effect amoung the static sounds.";
             throw std::range_error(ssErr.str());
         }

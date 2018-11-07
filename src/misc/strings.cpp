@@ -11,25 +11,36 @@
 
 #include "misc/boost-string-includes.hpp"
 
+#include <boost/tokenizer.hpp>
+#include <boost/type_index.hpp>
+
 namespace heroespath
 {
 namespace misc
 {
 
-    const std::string CamelTo(const std::string & STRING_ORIG, const std::string & SEPARATOR)
+    const std::string CamelTo(
+        const std::string & STRING_ORIG,
+        const std::string & SEPARATOR,
+        const CaseChange CASE_CHANGES)
     {
         char prevChar { 0 };
         std::string result;
 
         for (const char CURR_CHAR : STRING_ORIG)
         {
-            if (misc::IsAlpha(prevChar) && misc::IsAlpha(CURR_CHAR) && IsUpper(prevChar)
-                && IsLower(CURR_CHAR))
+            if (IsAlpha(prevChar) && IsAlpha(CURR_CHAR)
+                && (IsUpper(prevChar) != IsUpper(CURR_CHAR)))
             {
-                result += SEPARATOR;
+                if ((CASE_CHANGES == CaseChange::Both)
+                    || ((CASE_CHANGES == CaseChange::LowerToUpper) && IsLower(prevChar))
+                    || ((CASE_CHANGES == CaseChange::UpperToLower) && IsUpper(prevChar)))
+                {
+                    result += SEPARATOR;
+                }
             }
 
-            result += ToLowerCopy(CURR_CHAR);
+            result += CURR_CHAR;
             prevChar = CURR_CHAR;
         }
 
@@ -88,6 +99,44 @@ namespace misc
         }
 
         return false;
+    }
+
+    const std::vector<std::string> SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW)
+    {
+        std::vector<std::string> results;
+
+        if (TO_SPLIT.empty())
+        {
+            return results;
+        }
+
+        if (HOW.separator_chars.empty())
+        {
+            results.emplace_back(TO_SPLIT);
+            return results;
+        }
+
+        const auto EMPTY_TOKEN_POLICY { (
+            (HOW.will_skip_empty) ? boost::drop_empty_tokens : boost::keep_empty_tokens) };
+
+        using CharSeparator_t = boost::char_separator<char>;
+        const CharSeparator_t CHAR_SEPARATOR(HOW.separator_chars.c_str(), "", EMPTY_TOKEN_POLICY);
+
+        const boost::tokenizer<CharSeparator_t> TOKENIZER(TO_SPLIT, CHAR_SEPARATOR);
+
+        for (const auto & PIECE_STR_ORIG : TOKENIZER)
+        {
+            const auto PIECE_STR_FINAL { (
+                (HOW.will_trim_each) ? boost::algorithm::trim_copy(PIECE_STR_ORIG)
+                                     : PIECE_STR_ORIG) };
+
+            if ((HOW.will_skip_empty == false) || (PIECE_STR_FINAL.empty() == false))
+            {
+                results.emplace_back(PIECE_STR_FINAL);
+            }
+        }
+
+        return results;
     }
 
 } // namespace misc

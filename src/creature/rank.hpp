@@ -11,9 +11,9 @@
 //  Code that gives meaning to all possible rank values.
 //
 #include "creature/trait.hpp"
-#include "misc/types.hpp"
-
+#include "misc/enum-util.hpp"
 #include "misc/range.hpp"
+#include "misc/types.hpp"
 
 #include <string>
 #include <utility>
@@ -25,10 +25,9 @@ namespace creature
 
     using RankRange_t = misc::Range<Rank_t>;
 
-    class rank_class
+    struct rank_class : public misc::EnumBaseCounting<rank_class, misc::EnumFirstValue::Valid>
     {
-    public:
-        enum Enum
+        enum Enum : misc::EnumUnderlying_t
         {
             Novice = 0,
             Trainee,
@@ -42,10 +41,11 @@ namespace creature
         static rank_class::Enum FromRank(const Rank_t & RANK);
 
         // returns a second/max of zero to represent limitless
-        static const RankRange_t RankRangeByClass(const rank_class::Enum E);
+        static const RankRange_t RankRangeByClass(const rank_class::Enum);
 
-        static const std::string ToString(const rank_class::Enum E);
+        static const std::string ToString(const rank_class::Enum);
     };
+
 } // namespace creature
 } // namespace heroespath
 

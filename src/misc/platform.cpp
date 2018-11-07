@@ -11,20 +11,16 @@
 //
 #include "platform.hpp"
 
-#include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
-
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    const std::string platform_type::ToString(const platform_type::Enum E)
+    const std::string platform_type::ToString(const platform_type::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Unknown:
             {
@@ -47,11 +43,16 @@ namespace misc
                 return "Unsupported";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "misc::Platform::ToString(" << E << ")_InvalidValueError.";
-                throw std::runtime_error(ss.str());
+                M_HP_LOG_ERR(
+                    "misc::Platform::ToString(platform_type_enum="
+                    << ENUM << ") but that enum value is invalid.");
+
+                return "";
             }
         }
     }

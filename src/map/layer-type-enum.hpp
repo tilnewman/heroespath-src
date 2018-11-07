@@ -18,7 +18,7 @@ namespace heroespath
 namespace map
 {
 
-    struct LayerType : public misc::EnumBaseCounting<LayerType, misc::EnumFirstValueValid>
+    struct LayerType : public misc::EnumBaseCounting<LayerType, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -30,6 +30,7 @@ namespace map
 
         static const std::string ToString(const Enum);
     };
+
 } // namespace map
 } // namespace heroespath
 

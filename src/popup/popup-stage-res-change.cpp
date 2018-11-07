@@ -58,10 +58,11 @@ namespace popup
                 }
                 else
                 {
-                    RemovePopup(ResponseTypes::No);
+                    RemovePopup(PopupButtons::No);
                 }
             }
         }
     }
+
 } // namespace popup
 } // namespace heroespath

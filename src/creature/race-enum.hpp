@@ -27,7 +27,7 @@ namespace heroespath
 namespace creature
 {
 
-    struct origin_type : public misc::EnumBaseCounting<origin_type, misc::EnumFirstValueValid>
+    struct origin_type : public misc::EnumBaseCounting<origin_type, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -44,7 +44,7 @@ namespace creature
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
 
-    struct race : public misc::EnumBaseCounting<race, misc::EnumFirstValueValid>
+    struct race : public misc::EnumBaseCounting<race, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

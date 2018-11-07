@@ -12,6 +12,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <boost/type_index.hpp>
 #include <boost/variant.hpp>

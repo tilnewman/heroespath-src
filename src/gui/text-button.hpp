@@ -11,6 +11,7 @@
 //  Drawing and handling code for buttons that are only text.
 //
 #include "gui/text-entity.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
 
@@ -60,6 +61,8 @@ namespace gui
         Callback_t::IHandlerPtrOpt_t callbackHandlerPtrOpt_;
     };
 
+    using TextButtonPtr_t = misc::NotNull<TextButton *>;
+    using TextButtonPtrOpt_t = boost::optional<TextButtonPtr_t>;
     using TextButtonUPtr_t = std::unique_ptr<TextButton>;
     using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
 

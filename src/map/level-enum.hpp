@@ -18,7 +18,7 @@ namespace heroespath
 namespace map
 {
 
-    struct LevelType : public misc::EnumBaseCounting<LevelType, misc::EnumFirstValueValid>
+    struct LevelType : public misc::EnumBaseCounting<LevelType, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {
@@ -32,7 +32,7 @@ namespace map
         static const std::string ToString(const Enum);
     };
 
-    struct Level : public misc::EnumBaseCounting<Level, misc::EnumFirstValueValid>
+    struct Level : public misc::EnumBaseCounting<Level, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

@@ -62,7 +62,7 @@ namespace gui
 
         MouseState::Enum GetMouseState() const override { return entityMouseState_; }
 
-        bool SetMouseState(const MouseState::Enum E) override;
+        bool SetMouseState(const MouseState::Enum ENUM) override;
 
         bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
         bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;

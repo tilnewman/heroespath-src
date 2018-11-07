@@ -212,9 +212,8 @@ BOOST_AUTO_TEST_CASE(Vector_Add_AB_NoSort)
 
     BOOST_CHECK_MESSAGE(
         (AB_NOSORT_RESULT == AB_NOSORT_EXPECTED),
-        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(AB_NOSORT_RESULT)
-                                                         << ", expected="
-                                                         << ts::vectorToString(AB_NOSORT_EXPECTED));
+        "add 1,1,2,3 + 4,5,6,6 No_SortAndUnique result=" << ts::vectorToString(
+            AB_NOSORT_RESULT) << ", expected=" << ts::vectorToString(AB_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(Vector_Add_AB_SortAndUnique)
@@ -242,9 +241,8 @@ BOOST_AUTO_TEST_CASE(Vector_Add_BA_NoSort)
 
     BOOST_CHECK_MESSAGE(
         (BA_NOSORT_RESULT == BA_NOSORT_EXPECTED),
-        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(BA_NOSORT_RESULT)
-                                                         << ", expected="
-                                                         << ts::vectorToString(BA_NOSORT_EXPECTED));
+        "add 4,5,6,6 + 1,1,2,3 No_SortAndUnique result=" << ts::vectorToString(
+            BA_NOSORT_RESULT) << ", expected=" << ts::vectorToString(BA_NOSORT_EXPECTED));
 }
 
 BOOST_AUTO_TEST_CASE(Vector_Add_BA_SortAndUnique)

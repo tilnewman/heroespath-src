@@ -19,7 +19,7 @@ namespace heroespath
 namespace gui
 {
 
-    struct GuiFont : public misc::EnumBaseCounting<GuiFont, misc::EnumFirstValueValid>
+    struct GuiFont : public misc::EnumBaseCounting<GuiFont, misc::EnumFirstValue::Valid>
     {
         enum Enum : misc::EnumUnderlying_t
         {

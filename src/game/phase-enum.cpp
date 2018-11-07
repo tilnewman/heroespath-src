@@ -11,21 +11,23 @@
 //
 #include "phase-enum.hpp"
 
+#include "misc/log-macros.hpp"
+
 namespace heroespath
 {
 namespace game
 {
 
-    void Phase::ToStringPopulate(
-        std::ostringstream & ss,
-        const misc::EnumUnderlying_t ENUM_VALUE,
-        const std::string & SEPARATOR)
+    const std::string Phase::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Combat, "Combat", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Exploring, "Exploring", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Conversation, "Conversation", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Quest, "Quest", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, Phase::Inventory, "Inventory", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Combat, "Combat", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Exploring, "Exploring", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Conversation, "Conversation", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Quest, "Quest", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Inventory, "Inventory", SEPARATOR);
+        return str;
     }
 
 } // namespace game

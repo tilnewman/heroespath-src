@@ -121,7 +121,7 @@ namespace creature
             const UseEffectType EFFECT_TYPE = UseEffectType::None);
 
         EnchantmentType::Enum Type() const { return type_; }
-        bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
+        bool IsType(const EnchantmentType::Enum ENUM) const { return (ENUM & type_); }
         const TraitSet & Traits() const { return traitSet_; }
         const UseInfo & Use() const { return useInfo_; }
         void UseCountConsume() { useInfo_.CountConsume(); }

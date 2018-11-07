@@ -13,109 +13,122 @@
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
-
-#include <exception>
-#include <sstream>
+#include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace creature
 {
 
-    const std::string Conditions::ToString(const Conditions::Enum E)
+    const std::string Conditions::ToString(const Conditions::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
-            case Conditions::Good:
+            case Good:
             {
                 return "Good";
             }
-            case Conditions::Bold:
+            case Bold:
             {
                 return "Bold";
             }
-            case Conditions::Heroic:
+            case Heroic:
             {
                 return "Heroic";
             }
-            case Conditions::Daunted:
+            case Daunted:
             {
                 return "Daunted";
             }
-            case Conditions::Panic:
+            case Panic:
             {
                 return "Panic";
             }
-            case Conditions::Dazed:
+            case Dazed:
             {
                 return "Dazed";
             }
-            case Conditions::Tripped:
+            case Tripped:
             {
                 return "Tripped";
             }
-            case Conditions::AsleepNatural:
+            case AsleepNatural:
             {
                 return "AsleepNatural";
             }
-            case Conditions::Poisoned:
+            case Poisoned:
             {
                 return "Poisoned";
             }
-            case Conditions::Pounced:
+            case Pounced:
             {
                 return "Pounced";
             }
-            case Conditions::AsleepMagical:
+            case AsleepMagical:
             {
                 return "AsleepMagical";
             }
-            case Conditions::Unconscious:
+            case Unconscious:
             {
                 return "Unconscious";
             }
-            case Conditions::Stone:
+            case Stone:
             {
                 return "Stone";
             }
-            case Conditions::Dead:
+            case Dead:
             {
                 return "Dead";
             }
-            case Conditions::Count:
+            case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Conditions::Name(const Conditions::Enum E)
+    const std::string Conditions::Name(const Conditions::Enum ENUM)
     {
-        if (E == Conditions::AsleepNatural)
+        if (ENUM == AsleepNatural)
         {
             return "Asleep";
         }
-        else if (E == Conditions::AsleepMagical)
+        else if (ENUM == AsleepMagical)
         {
             return "Magical Sleep";
         }
         else
         {
-            return ToString(E);
+            return ToString(ENUM);
         }
     }
 
-    const std::string Conditions::Desc(const Conditions::Enum E)
+    const std::string Conditions::Desc(const Conditions::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-creature-condition-" << ToString(E) << "-desc";
+        keySS << "heroespath-creature-condition-" << ToString(ENUM) << "-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
-    const std::string Conditions::ImageFilename(const Conditions::Enum E)
+    const std::string Conditions::ImageFilename(const Conditions::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(E) + ".png");
+        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+    }
+
+    const std::string Conditions::ImageDirectory()
+    {
+        return misc::ConfigFile::Instance()->GetMediaPath("media-images-conditions-dir");
+    }
+
+    const std::string Conditions::ImagePath(const Enum ENUM)
+    {
+        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
     }
 
     namespace condition
@@ -129,9 +142,9 @@ namespace creature
         const std::size_t Severity::MOST_HARMFUL { 2000 };
 
         // see comments in header
-        std::size_t Severity::Get(const Conditions::Enum E)
+        std::size_t Severity::Get(const Conditions::Enum ENUM)
         {
-            switch (E)
+            switch (ENUM)
             {
                 case Conditions::Good:
                 {
@@ -192,13 +205,12 @@ namespace creature
                 case Conditions::Count:
                 default:
                 {
-                    std::ostringstream ss;
-                    ss << "creature::Conditions::Enum::Severity(" << E << ")_InvalidValueError.";
-
-                    throw std::range_error(ss.str());
+                    M_HP_LOG_ERR(Conditions::ValueOutOfRangeErrorString(ENUM));
+                    return 0;
                 }
             }
         }
+
     } // namespace condition
 } // namespace creature
 } // namespace heroespath

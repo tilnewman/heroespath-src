@@ -15,47 +15,48 @@ namespace heroespath
 {
 namespace creature
 {
-    void EnchantmentType::ToStringPopulate(
-        std::ostringstream & ss,
-        const misc::EnumUnderlying_t ENUM_VALUE,
-        const std::string & SEPARATOR)
+    const std::string EnchantmentType::ToStringPopulate(
+        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, EnchantmentType::WhenUsed, "when used:", SEPARATOR);
-        AppendNameIfBitIsSet(ss, ENUM_VALUE, EnchantmentType::WhenHeld, "when held:", SEPARATOR);
+        std::string str;
+        AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenUsed, "when used:", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenHeld, "when held:", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, EnchantmentType::WhenEquipped, "when equipped:", SEPARATOR);
+            str, ENUM_VALUE, EnchantmentType::WhenEquipped, "when equipped:", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, EnchantmentType::RemoveAfterUse, "RemoveAfterUse", SEPARATOR);
+            str, ENUM_VALUE, EnchantmentType::RemoveAfterUse, "RemoveAfterUse", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, EnchantmentType::BoundToNothing, "item not required", SEPARATOR);
+            str, ENUM_VALUE, EnchantmentType::BoundToNothing, "item not required", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, EnchantmentType::BoundToItem, "bound to the item", SEPARATOR);
+            str, ENUM_VALUE, EnchantmentType::BoundToItem, "bound to the item", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss, ENUM_VALUE, EnchantmentType::AllowsFlight, "allows flying", SEPARATOR);
+            str, ENUM_VALUE, EnchantmentType::AllowsFlight, "allows flying", SEPARATOR);
 
         AppendNameIfBitIsSet(
-            ss,
+            str,
             ENUM_VALUE,
             EnchantmentType::CurseWithoutItem,
             "allows casting curse without a cursed item",
             SEPARATOR);
         AppendNameIfBitIsSet(
-            ss,
+            str,
             ENUM_VALUE,
             EnchantmentType::BlessWithoutItem,
             "allows casting bless without a blessed item",
             SEPARATOR);
         AppendNameIfBitIsSet(
-            ss,
+            str,
             ENUM_VALUE,
             EnchantmentType::OnlyIfSetIsComplete,
             "only if all items in the set are equipped",
             SEPARATOR);
+
+        return str;
     }
 
 } // namespace creature

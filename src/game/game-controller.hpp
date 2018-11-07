@@ -18,7 +18,7 @@
 #include "game/status.hpp"
 #include "gui/display-change-result.hpp"
 #include "misc/not-null.hpp"
-#include "popup/popup-response-enum.hpp"
+#include "popup/popup-enums.hpp"
 #include "stage/stage-enum.hpp"
 #include "stage/stage-setup-packet.hpp"
 
@@ -66,7 +66,7 @@ namespace game
 
         const std::string GetStageName() const
         {
-            return stage::Stage::ToStringNoThrow(stageTracker_.GetCurrent());
+            return stage::Stage::ToString(stageTracker_.GetCurrent());
         }
 
         Phase::Enum GetPhase() const { return stageTracker_.GetPhase(); }
@@ -77,7 +77,7 @@ namespace game
             const misc::PopupCallback_t::IHandlerPtr_t POPUP_HANDLER_PTR,
             const popup::PopupInfo & POPUP_INFO);
 
-        void RemovePopup(const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION = 0);
+        void RemovePopup(const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION = 0);
         void TransitionTo(const stage::Stage::Enum NEW_STAGE);
         void TransitionTo(const stage::SetupPacket & SETUP_PACKET);
 
@@ -113,7 +113,7 @@ namespace game
         void StageChangePostPopupSpawn(const PopupReplaceCommand & POPUP_ADD_COMMAND);
 
         void StageChangePostPopupRemove(
-            const popup::ResponseTypes::Enum TYPE, const std::size_t SELECTION);
+            const popup::PopupButtons::Enum TYPE, const std::size_t SELECTION);
 
         void StageChangePostNonPopupReplace(const StageReplaceCommand & STAGE_SETUP_COMMAND);
 

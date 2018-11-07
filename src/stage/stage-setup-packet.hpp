@@ -95,7 +95,7 @@ namespace stage
         {
             std::ostringstream ss;
 
-            ss << "cmd=stage_setup=" << stage::Stage::ToStringNoThrow(stage);
+            ss << "cmd=stage_setup=" << stage::Stage::ToString(stage);
 
             if (will_advance_turn)
             {

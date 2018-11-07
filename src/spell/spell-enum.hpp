@@ -19,7 +19,7 @@ namespace heroespath
 namespace spell
 {
 
-    struct Spells : public misc::EnumBaseCounting<Spells, misc::EnumFirstValueValid>
+    struct Spells : public misc::EnumBaseCounting<Spells, misc::EnumFirstValue::Valid>
     {
         // Note:  Keep in sync with:
         //          spell::Warehouse::Fill()
@@ -51,6 +51,8 @@ namespace spell
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
         static const std::string ImageFilename(const Enum);
+        static const std::string ImageDirectory();
+        static const std::string ImagePath(const Enum);
     };
 
     using SpellEnumVec_t = std::vector<Spells::Enum>;

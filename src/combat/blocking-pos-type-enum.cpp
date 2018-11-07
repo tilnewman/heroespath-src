@@ -10,17 +10,17 @@
 // combat-over-enum.cpp
 //
 #include "blocking-pos-type-enum.hpp"
-#include <exception>
-#include <sstream>
+
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string BlockingPosType::ToString(const Enum E)
+    const std::string BlockingPosType::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Front:
             {
@@ -47,13 +47,16 @@ namespace combat
                 return "Last";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "combat::BlockingPosType::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
+
 } // namespace combat
 } // namespace heroespath

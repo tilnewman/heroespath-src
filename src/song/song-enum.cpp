@@ -13,18 +13,17 @@
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
-
-#include <exception>
-#include <sstream>
+#include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
 namespace song
 {
 
-    const std::string Songs::ToString(const Enum E)
+    const std::string Songs::ToString(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case RallyDrum:
             {
@@ -51,16 +50,20 @@ namespace song
                 return "Lullaby";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Songs::Name(const Enum E)
+    const std::string Songs::Name(const Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case RallyDrum:
             {
@@ -87,30 +90,44 @@ namespace song
                 return "Lullaby";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string Songs::ShortDesc(const Songs::Enum E)
+    const std::string Songs::ShortDesc(const Songs::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-song-" << ToString(E) << "-short-desc";
+        keySS << "heroespath-song-" << ToString(ENUM) << "-short-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
-    const std::string Songs::ExtraDesc(const Songs::Enum E)
+    const std::string Songs::ExtraDesc(const Songs::Enum ENUM)
     {
         std::ostringstream keySS;
-        keySS << "heroespath-song-" << ToString(E) << "-extra-desc";
+        keySS << "heroespath-song-" << ToString(ENUM) << "-extra-desc";
         return misc::ConfigFile::Instance()->Value(keySS.str());
     }
 
-    const std::string Songs::ImageFilename(const Songs::Enum E)
+    const std::string Songs::ImageFilename(const Songs::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(E) + ".png");
+        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+    }
+
+    const std::string Songs::ImageDirectory()
+    {
+        return misc::ConfigFile::Instance()->GetMediaPath("media-images-songs-dir");
+    }
+
+    const std::string Songs::ImagePath(const Enum ENUM)
+    {
+        return misc::filesystem::CombinePathsThenClean(ImageDirectory(), ImageFilename(ENUM));
     }
 
 } // namespace song

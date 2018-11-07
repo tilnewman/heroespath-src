@@ -14,6 +14,7 @@
 #include "creature/creature.hpp"
 #include "creature/title-holder.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 
 #include <limits>
 #include <sstream>
@@ -103,9 +104,9 @@ namespace creature
         return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
     }
 
-    bool Achievement::IsRoleInList(const role::Enum E) const
+    bool Achievement::IsRoleInList(const role::Enum ENUM) const
     {
-        return title::Holder::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
+        return title::Holder::Get(titleCountMap_.begin()->second)->IsRoleInList(ENUM);
     }
 
     TitlePtrOpt_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)

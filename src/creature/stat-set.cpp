@@ -11,9 +11,7 @@
 //
 #include "stat-set.hpp"
 
-#include <exception>
-#include <sstream>
-#include <string>
+#include "misc/log-macros.hpp"
 
 namespace heroespath
 {
@@ -35,76 +33,75 @@ namespace creature
         , int_(INT)
     {}
 
-    Trait_t StatSet::Get(const Traits::Enum E) const
+    Trait_t StatSet::Get(const Traits::Enum ENUM) const
     {
-        if (E == Traits::Strength)
+        if (ENUM == Traits::Strength)
         {
             return str_.Get();
         }
-        if (E == Traits::Accuracy)
+        if (ENUM == Traits::Accuracy)
         {
             return acc_.Get();
         }
-        if (E == Traits::Charm)
+        if (ENUM == Traits::Charm)
         {
             return cha_.Get();
         }
-        if (E == Traits::Luck)
+        if (ENUM == Traits::Luck)
         {
             return lck_.Get();
         }
-        if (E == Traits::Speed)
+        if (ENUM == Traits::Speed)
         {
             return spd_.Get();
         }
-        if (E == Traits::Intelligence)
+        if (ENUM == Traits::Intelligence)
         {
             return int_.Get();
         }
 
-        std::ostringstream ss;
-        ss << "StatSet::Get(" << E << ")_InvalidValueError.";
-        throw std::range_error(ss.str());
+        M_HP_LOG_ERR(
+            "StatSet::Get(trait_enum=" << Traits::ToString(ENUM) << ") but that value is invalid.");
+
+        return 0;
     }
 
-    void StatSet::Set(const Traits::Enum E, const Trait_t NEW_VALUE)
+    void StatSet::Set(const Traits::Enum ENUM, const Trait_t NEW_VALUE)
     {
-        if (E == Traits::Strength)
+        if (ENUM == Traits::Strength)
         {
             str_ = Strength_t(NEW_VALUE);
             return;
         }
-        if (E == Traits::Accuracy)
+        if (ENUM == Traits::Accuracy)
         {
             acc_ = Accuracy_t(NEW_VALUE);
             return;
         }
-        if (E == Traits::Charm)
+        if (ENUM == Traits::Charm)
         {
             cha_ = Charm_t(NEW_VALUE);
             return;
         }
-        if (E == Traits::Luck)
+        if (ENUM == Traits::Luck)
         {
             lck_ = Luck_t(NEW_VALUE);
             return;
         }
-        if (E == Traits::Speed)
+        if (ENUM == Traits::Speed)
         {
             spd_ = Speed_t(NEW_VALUE);
             return;
         }
-        if (E == Traits::Intelligence)
+        if (ENUM == Traits::Intelligence)
         {
             int_ = Intell_t(NEW_VALUE);
             return;
         }
 
-        std::ostringstream ss;
-
-        ss << "StatSet::Set(" << E << ", new_value=" << NEW_VALUE << ")_InvalidValueError.";
-
-        throw std::range_error(ss.str());
+        M_HP_LOG_ERR(
+            "StatSet::Set(" << ENUM << ", new_value=" << NEW_VALUE
+                            << ") but that trait value is invalid.");
     }
 
     const std::string StatSet::ToString(const bool WILL_WRAP) const

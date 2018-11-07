@@ -12,19 +12,17 @@
 #include "sound-effects-enum.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/log-macros.hpp"
 #include "misc/vectors.hpp"
-
-#include <exception>
-#include <sstream>
 
 namespace heroespath
 {
 namespace gui
 {
 
-    const std::string Footstep::ToString(const Footstep::Enum E)
+    const std::string Footstep::ToString(const Footstep::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Grass:
             {
@@ -47,16 +45,20 @@ namespace gui
                 return "Wood";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string sound_effect::ToString(const sound_effect::Enum E)
+    const std::string sound_effect::ToString(const sound_effect::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case WindGust1:
             {
@@ -1359,24 +1361,31 @@ namespace gui
                 return "None";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             case Random:
+            {
+                return "(Random)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    const std::string sound_effect::Filename(const sound_effect::Enum E)
+    const std::string sound_effect::Filename(const sound_effect::Enum ENUM)
     {
-        if (E == RoarDragonSylavinWhelp)
+        if (ENUM == RoarDragonSylavinWhelp)
         {
             // There is no sylavin whelp sfx yet, so re-use the hatchling sfx.  zTn 2017-7-6
             return ToString(RoarDragonSylavinHatchling) + ".ogg";
         }
         else
         {
-            return ToString(E) + ".ogg";
+            return ToString(ENUM) + ".ogg";
         }
     }
 
@@ -1814,11 +1823,21 @@ namespace gui
                 return "sound-effects/footstep";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             case None:
+            {
+                return "(None)";
+            }
             case Random:
+            {
+                return "(Random)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(SFX_ENUM, "Directory");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SFX_ENUM));
+                return "";
             }
         }
     }
@@ -1894,13 +1913,20 @@ namespace gui
                 break;
             }
             case MapTransition::Count:
+            {
+                M_HP_LOG_ERR(
+                    "type=Count, action=" << static_cast<int>(ACTION)
+                                          << ") but that type is invalid");
+
+                return sound_effect::Count;
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::sound_effect::RandomDoor(type=" << static_cast<int>(TYPE)
-                   << ", action=" << static_cast<int>(ACTION) << ")_Invalid(Type)ValueError.";
+                M_HP_LOG_ERR(
+                    "type=" << static_cast<int>(TYPE) << ", action=" << static_cast<int>(ACTION)
+                            << ") but that type is invalid");
 
-                throw std::range_error(ss.str());
+                return sound_effect::Count;
             }
         }
 
@@ -1932,13 +1958,13 @@ namespace gui
                 return "Stairs";
             }
             case MapTransition::Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                std::ostringstream ss;
-                ss << "gui::sound_effect::MapTransitionToString(" << static_cast<int>(TYPE)
-                   << ")_Invalid(Type)ValueError.";
-
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR("type=" << static_cast<int>(TYPE) << ") but that type is invalid");
+                return "";
             }
         }
     }
@@ -1957,30 +1983,31 @@ namespace gui
             }
         }
 
-        std::ostringstream ss;
-        ss << "map::Level::Enum::MapTransitionFromString(\"" << NAME << "\")_InvalidValueError.";
-        throw std::runtime_error(ss.str());
+        M_HP_LOG_ERR(
+            "The name \"" << NAME << "\" failed to match any sound_effect::MapTransitions.");
+
+        return sound_effect::MapTransition::Count;
     }
 
-    sound_effect::Enum sound_effect::FootstepToSfx(const Footstep::Enum E)
+    sound_effect::Enum sound_effect::FootstepToSfx(const Footstep::Enum ENUM)
     {
-        if (E == Footstep::Grass)
+        if (ENUM == Footstep::Grass)
         {
             return sound_effect::FootstepGrass;
         }
-        else if (E == Footstep::Gravel)
+        else if (ENUM == Footstep::Gravel)
         {
             return sound_effect::FootstepGravel;
         }
-        else if (E == Footstep::Leaves)
+        else if (ENUM == Footstep::Leaves)
         {
             return sound_effect::FootstepLeaves;
         }
-        else if (E == Footstep::Solid)
+        else if (ENUM == Footstep::Solid)
         {
             return sound_effect::FootstepSolid;
         }
-        else if (E == Footstep::Wood)
+        else if (ENUM == Footstep::Wood)
         {
             return sound_effect::FootstepWood;
         }

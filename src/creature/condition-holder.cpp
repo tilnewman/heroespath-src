@@ -199,19 +199,20 @@ namespace creature
             return true;
         }
 
-        const ConditionPtr_t Holder::Get(const Conditions::Enum E)
+        const ConditionPtr_t Holder::Get(const Conditions::Enum ENUM)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (conditionsUVec_.empty() == false),
-                "creature::condition::Holder::Get(" << Conditions::ToString(E)
+                "creature::condition::Holder::Get(" << Conditions::ToString(ENUM)
                                                     << ") was called when Holder was empty.");
 
-            const auto INDEX { static_cast<std::size_t>(E) };
+            const auto INDEX { static_cast<std::size_t>(ENUM) };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < conditionsUVec_.size()),
-                "creature::condition::Holder::Get(" << Conditions::ToString(
-                    E) << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
+                "creature::condition::Holder::Get("
+                    << Conditions::ToString(ENUM)
+                    << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
             return ConditionPtr_t(conditionsUVec_[INDEX].get());
         }

@@ -14,6 +14,7 @@
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 #include <exception>
 #include <sstream>
@@ -23,9 +24,9 @@ namespace heroespath
 namespace avatar
 {
 
-    const std::string Avatar::ToString(const NameEnum E)
+    const std::string Avatar::ToString(const NameEnum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case NameEnum::Metal:
             {
@@ -141,22 +142,24 @@ namespace avatar
             }
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Avatar::ToString(NameEnum=" << static_cast<int>(E)
-                   << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
+                    static_cast<misc::EnumUnderlying_t>(ENUM),
+                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
+                    0));
+
+                return "";
             }
         }
     }
 
-    bool Avatar::IsPlayer(const NameEnum E)
+    bool Avatar::IsPlayer(const NameEnum ENUM)
     {
-        return ((E == NameEnum::Metal) || (E == NameEnum::Puck) || (E == NameEnum::Sara));
+        return ((ENUM == NameEnum::Metal) || (ENUM == NameEnum::Puck) || (ENUM == NameEnum::Sara));
     }
 
-    const std::vector<Avatar::Enum> Avatar::Avatars(const NameEnum E)
+    const std::vector<Avatar::Enum> Avatar::Avatars(const NameEnum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case NameEnum::Metal:
             {
@@ -633,17 +636,19 @@ namespace avatar
             }
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Avatar::Animations(NameEnum=" << static_cast<int>(E)
-                   << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
+                    static_cast<misc::EnumUnderlying_t>(ENUM),
+                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
+                    0));
+
+                return {};
             }
         }
     }
 
-    float Avatar::Scale(const Avatar::NameEnum E)
+    float Avatar::Scale(const Avatar::NameEnum ENUM)
     {
-        if (NameEnum::Girl == E)
+        if (NameEnum::Girl == ENUM)
         {
             return 0.75f;
         }
@@ -673,10 +678,8 @@ namespace avatar
             case NameEnum::ManAtArms:
             case NameEnum::Gladiator:
             case NameEnum::Iron:
-            case NameEnum::Sara:
-                return interact::talk::Category::Common;
-            case NameEnum::Girl:
-                return interact::talk::Category::Child;
+            case NameEnum::Sara: return interact::talk::Category::Common;
+            case NameEnum::Girl: return interact::talk::Category::Child;
             case NameEnum::Private:
             case NameEnum::Private2nd:
             case NameEnum::Private1st:
@@ -685,23 +688,23 @@ namespace avatar
             case NameEnum::Sergeant:
             case NameEnum::Major:
             case NameEnum::Knight:
-            case NameEnum::KnightGold:
-                return interact::talk::Category::Guard;
-            case NameEnum::Monk:
-                return interact::talk::Category::Monk;
+            case NameEnum::KnightGold: return interact::talk::Category::Guard;
+            case NameEnum::Monk: return interact::talk::Category::Monk;
             default:
             {
-                std::ostringstream ss;
-                ss << "avatar::Avatar::TalkCategory(NameEnum=" << static_cast<int>(TYPE)
-                   << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
+                    static_cast<misc::EnumUnderlying_t>(TYPE),
+                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
+                    0));
+
+                return interact::talk::Category::Common;
             }
         }
     }
 
-    const std::string Avatar::ToString(const Avatar::Enum E)
+    const std::string Avatar::ToString(const Avatar::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Metal_Female_Dark:
             {
@@ -2444,33 +2447,37 @@ namespace avatar
                 return "Tunic-Female-Light-Unkempt-LightBlonde2";
             }
             case Count:
+            {
+                return "(Count)";
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "ToString");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return "";
             }
         }
     }
 
-    bool Avatar::IsPlayer(const Avatar::Enum E)
+    bool Avatar::IsPlayer(const Avatar::Enum ENUM)
     {
-        return ((E >= Avatar::Player_First) && (E <= Avatar::Player_Last));
+        return ((ENUM >= Avatar::Player_First) && (ENUM <= Avatar::Player_Last));
     }
 
-    const std::string Avatar::ImagePath(const Avatar::Enum E)
+    const std::string Avatar::ImagePath(const Avatar::Enum ENUM)
     {
         std::string dirPathStr { (
-            (Avatar::IsPlayer(E))
+            (Avatar::IsPlayer(ENUM))
                 ? misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-player-dir")
                 : misc::ConfigFile::Instance()->GetMediaPath(
-                      "media-images-avatar-nonplayer-dir")) };
+                    "media-images-avatar-nonplayer-dir")) };
 
         return misc::filesystem::CombinePathsThenClean(
-            dirPathStr, boost::algorithm::to_lower_copy(Avatar::ToString(E)) + ".png");
+            dirPathStr, boost::algorithm::to_lower_copy(Avatar::ToString(ENUM)) + ".png");
     }
 
-    Avatar::NameEnum Avatar::Name(const Avatar::Enum E)
+    Avatar::NameEnum Avatar::Name(const Avatar::Enum ENUM)
     {
-        switch (E)
+        switch (ENUM)
         {
             case Metal_Female_Dark:
             case Metal_Female_Light:
@@ -2992,9 +2999,14 @@ namespace avatar
                 return NameEnum::Tunic;
             }
             case Count:
+            {
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM) + "(Count)");
+                return NameEnum::Monk;
+            }
             default:
             {
-                ThrowInvalidValueForFunction(E, "Name");
+                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                return NameEnum::Monk;
             }
         }
     }
