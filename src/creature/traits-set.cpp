@@ -12,6 +12,7 @@
 #include "traits-set.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 
 #include <sstream>
 #include <string>
@@ -35,7 +36,7 @@ namespace creature
     Trait & TraitSet::Get(const Traits::Enum ENUM)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Traits::IsValid(ENUM)),
+            (EnumUtil<Traits>::IsValid(ENUM)),
             "TraitSet::Get(trait_enun=" << Traits::ToString(ENUM)
                                         << ") but that trait value is invalid.");
 
@@ -45,7 +46,7 @@ namespace creature
     const Trait & TraitSet::GetCopy(const Traits::Enum ENUM) const
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Traits::IsValid(ENUM)),
+            (EnumUtil<Traits>::IsValid(ENUM)),
             "TraitSet::GetCopy(" << Traits::ToString(ENUM) << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];
@@ -59,7 +60,7 @@ namespace creature
     {
         std::ostringstream ss;
 
-        for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
+        for (EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
             const auto NEXT_ENUM { static_cast<Traits::Enum>(i) };
             const auto NEXT_CURR { traitVec_[static_cast<std::size_t>(i)].Current() };

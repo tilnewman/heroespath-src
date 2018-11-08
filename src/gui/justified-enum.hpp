@@ -9,7 +9,7 @@
 //
 // justified-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Justified : public misc::EnumBaseCounting<Justified, misc::EnumFirstValue::Valid>
+    struct Justified : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Left = 0,
             Right,

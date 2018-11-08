@@ -9,7 +9,7 @@
 //
 // gui-event-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct GuiEvent : misc::EnumBaseBitField<GuiEvent>
+    struct GuiEvent : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Click = 1 << 0,
@@ -32,8 +32,10 @@ namespace gui
             Last = FocusChange
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace gui

@@ -9,7 +9,7 @@
 //
 // spell-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -19,14 +19,14 @@ namespace heroespath
 namespace spell
 {
 
-    struct Spells : public misc::EnumBaseCounting<Spells, misc::EnumFirstValue::Valid>
+    struct Spells : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         // Note:  Keep in sync with:
         //          spell::Warehouse::Fill()
         //          CombatAnimation::SpellAnimStart()
         //          CombatSoundEffects::PlaySpell()
         //          Initial::SetupInventory()
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Sparks = 0,
             Bandage,

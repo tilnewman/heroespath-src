@@ -17,6 +17,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
@@ -361,8 +362,7 @@ namespace map
                 const auto ANIM_NAME { FetchXMLAttribute<std::string>(
                     OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
-                const auto ANIM_ENUM { static_cast<gui::Animations::Enum>(
-                    gui::Animations::FromString(ANIM_NAME)) };
+                const auto ANIM_ENUM { EnumUtil<gui::Animations>::FromString(ANIM_NAME) };
 
                 M_HP_ASSERT_OR_LOG_AND_THROW(
                     (ANIM_ENUM != gui::Animations::Count),
@@ -486,7 +486,7 @@ namespace map
             {
                 try
                 {
-                    level = static_cast<Level::Enum>(Level::FromString(VALUE_STR));
+                    level = EnumUtil<Level>::FromString(VALUE_STR);
                 }
                 catch (...)
                 {
@@ -568,7 +568,7 @@ namespace map
         }
 
         const auto SFX { gui::sound_effect::FootstepToSfx(
-            static_cast<gui::Footstep::Enum>(gui::Footstep::FromString(footstepName))) };
+            EnumUtil<gui::Footstep>::FromString(footstepName)) };
 
         if (SFX == gui::sound_effect::Count)
         {

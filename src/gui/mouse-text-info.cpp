@@ -12,6 +12,7 @@
 #include "mouse-text-info.hpp"
 
 #include "gui/font-manager.hpp"
+#include "misc/enum-util.hpp"
 #include "popup/popup-info.hpp"
 
 #include <tuple>
@@ -96,22 +97,42 @@ namespace gui
             FontManager::Color_PopupButtonDisabled(popup::PopupButtonColor::Dark));
     }
 
+    const TextInfo & MouseTextInfo::FromMouseState(const MouseState::Enum MOUSE_STATE) const
+    {
+        if ((MOUSE_STATE == MouseState::Up)
+            || (EnumUtil<MouseState>::IsValid(MOUSE_STATE) == false))
+        {
+            return up;
+        }
+        else if (MOUSE_STATE == MouseState::Over)
+        {
+            return over;
+        }
+        else if (MOUSE_STATE == MouseState::Down)
+        {
+            return down;
+        }
+        else
+        {
+            return disabled;
+        }
+    }
+
     const std::string MouseTextInfo::ToString(
-        const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
+        const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
         std::ostringstream ss;
 
-        ss << "Up=" << up.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Down=" << down.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Over=" << over.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Disabled=" << disabled.ToString(false, misc::Wrap::Yes);
+        ss << "Up=" << up.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Down=" << down.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Over=" << over.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Disabled=" << disabled.ToString(false, Wrap::Yes);
 
-        const auto PARTS_STR { (
-            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            return std::string("MouseTextInfo").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
+            return std::string("MouseTextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
                 + PARTS_STR;
         }
         else

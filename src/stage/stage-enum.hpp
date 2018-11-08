@@ -10,7 +10,7 @@
 // stage-enum.hpp
 //  An enum describing the game loop state.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,9 +19,9 @@ namespace heroespath
 namespace stage
 {
 
-    struct Stage : public misc::EnumBaseCounting<Stage, misc::EnumFirstValue::None>
+    struct Stage : public EnumBaseCounting<EnumFirstValue::None>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Intro,

@@ -74,7 +74,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(SWORD_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(SWORD_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -118,7 +122,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(AXE_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(AXE_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -150,7 +158,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(AXE_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(AXE_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -182,7 +194,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(CLUB_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(CLUB_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -210,7 +226,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(WHIP_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(WHIP_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -262,7 +282,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(PROJECTILE_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(PROJECTILE_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -314,7 +338,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(BSTAFF_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(BSTAFF_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }

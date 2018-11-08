@@ -13,7 +13,7 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/trait.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -25,9 +25,9 @@ namespace heroespath
 namespace item
 {
 
-    struct category : public misc::EnumBaseBitField<category>
+    struct category : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
 
@@ -45,13 +45,15 @@ namespace item
             Last = ShowsEnemyInfo
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
-    struct material : public misc::EnumBaseCounting<material, misc::EnumFirstValue::Nothing>
+    struct material : public EnumBaseCounting<EnumFirstValue::Nothing>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             // Use Nothing as default instead of Error so that an Item's
             // materialSec_ can be Nothing.
@@ -184,9 +186,9 @@ namespace item
     using MaterialPair_t = std::pair<material::Enum, material::Enum>;
     using MaterialPairVec_t = std::vector<MaterialPair_t>;
 
-    struct element_type : public misc::EnumBaseBitField<element_type>
+    struct element_type : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Fire = 1 << 0,
@@ -196,8 +198,7 @@ namespace item
             Last = Shadow
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
 
         static bool IsValid(const Enum);
 
@@ -270,13 +271,16 @@ namespace item
                 element_type::Fire | element_type::Frost | element_type::Honor
                 | element_type::Shadow);
         }
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
     using ElementEnumVec_t = std::vector<element_type::Enum>;
 
-    struct misc_type : public misc::EnumBaseCounting<misc_type, misc::EnumFirstValue::Not>
+    struct misc_type : public EnumBaseCounting<EnumFirstValue::Not>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Not = 0,
 
@@ -468,9 +472,9 @@ namespace item
         static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
-    struct set_type : public misc::EnumBaseCounting<set_type, misc::EnumFirstValue::Not>
+    struct set_type : public EnumBaseCounting<EnumFirstValue::Not>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Not = 0,
             TheAssassins,
@@ -513,9 +517,9 @@ namespace item
         static creature::role::Enum Role(const Enum);
     };
 
-    struct named_type : public misc::EnumBaseCounting<named_type, misc::EnumFirstValue::Not>
+    struct named_type : public EnumBaseCounting<EnumFirstValue::Not>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Not = 0,
             Arctic,
@@ -585,9 +589,9 @@ namespace item
         static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
-    struct weapon_type : public misc::EnumBaseBitField<weapon_type>
+    struct weapon_type : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
 
@@ -614,15 +618,17 @@ namespace item
             Last = BladedStaff
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
 
         static const std::string Name(const weapon_type::Enum);
+
+        static const std::string ToStringPopulate(
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
     };
 
-    struct armor_type : public misc::EnumBaseCounting<armor_type, misc::EnumFirstValue::Not>
+    struct armor_type : public EnumBaseCounting<EnumFirstValue::Not>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Not,
             Shield,
@@ -651,9 +657,9 @@ namespace item
         static bool DoesRequireBaseType(const armor_type::Enum);
     };
 
-    struct body_part : public misc::EnumBaseCounting<body_part, misc::EnumFirstValue::Valid>
+    struct body_part : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Fists = 0,
             Claws,
@@ -668,10 +674,9 @@ namespace item
     };
 
     // Responsible for defining the relationship between an item's name and materials.
-    struct name_material_type
-        : public misc::EnumBaseCounting<name_material_type, misc::EnumFirstValue::Valid>
+    struct name_material_type : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Misc = 0,
             BodyPart,

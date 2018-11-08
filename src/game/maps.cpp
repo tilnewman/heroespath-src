@@ -9,8 +9,8 @@
 //
 // maps.cpp
 //
-#include "maps.hpp"
 #include "game/world-factory.hpp"
+#include "maps.hpp"
 
 namespace heroespath
 {
@@ -27,7 +27,7 @@ namespace game
         level_ = map::Level::Thornberry;
         levels_.clear();
 
-        for (misc::EnumUnderlying_t i(0); i < map::Level::Count; ++i)
+        for (EnumUnderlying_t i(0); i < map::Level::Count; ++i)
         {
             levels_.emplace_back(Level(static_cast<map::Level::Enum>(i)));
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);

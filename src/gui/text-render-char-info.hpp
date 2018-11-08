@@ -26,39 +26,13 @@ namespace gui
             CharInfo(
                 const char CHAR,
                 const TextInfo & TEXT_INFO,
-                const GuiFont::Enum PREV_FONT = GuiFont::Count)
-                : CharInfo(CHAR, TEXT_INFO.font_letters, TEXT_INFO.font_numbers, PREV_FONT)
-            {}
+                const GuiFont::Enum PREV_FONT = GuiFont::Count);
 
             explicit CharInfo(
                 const char CHAR,
                 const GuiFont::Enum LETTER_FONT = GuiFont::Count,
                 const GuiFont::Enum NUMBER_FONT = GuiFont::Count,
-                const GuiFont::Enum PREV_FONT = GuiFont::Count)
-                : which_char(CHAR)
-                , is_newline(CHAR == '\n')
-                , is_whitespace((CHAR == ' ') || (CHAR == '\t'))
-                , is_dash(CHAR == '-')
-                , is_word_break(is_newline || is_whitespace || is_dash)
-                , is_renderable(is_word_break || ((CHAR >= 32) && (CHAR <= 126)))
-                , requires_neither_font(is_word_break || (CHAR == '.') || (CHAR == '+'))
-                , requires_number_font(misc::IsDigit(CHAR))
-                , requires_letter_font(!requires_number_font && !requires_neither_font)
-                , font(GuiFont::Count)
-            {
-                if (requires_letter_font && GuiFont::IsValid(LETTER_FONT))
-                {
-                    font = LETTER_FONT;
-                }
-                else if (requires_number_font && GuiFont::IsValid(NUMBER_FONT))
-                {
-                    font = NUMBER_FONT;
-                }
-                else
-                {
-                    font = PREV_FONT;
-                }
-            }
+                const GuiFont::Enum PREV_FONT = GuiFont::Count);
 
             CharInfo(const CharInfo &) = default;
             CharInfo(CharInfo &&) = default;

@@ -11,7 +11,7 @@
 //  An enumeration of all animations.
 //
 #include "gui/music-enum.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -23,9 +23,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Animations : public misc::EnumBaseCounting<Animations, misc::EnumFirstValue::Valid>
+    struct Animations : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Burst = 0,
             Campfire,

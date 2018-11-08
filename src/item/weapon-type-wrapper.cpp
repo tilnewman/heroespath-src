@@ -287,7 +287,7 @@ namespace item
                 ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
             }
 
-            ss << "type=" << weapon_type::ToString(type_, misc::EnumStringHow(misc::Wrap::Yes))
+            ss << "type=" << weapon_type::ToString(type_, EnumStringHow(Wrap::Yes))
                << std::boolalpha << ", " << ((IsStaff()) ? "Staff," : "")
                << ((IsQuarterstaff()) ? "Quarterstaff," : "")
                << ((IsBodyPart()) ? (body_part::ToString(BodyPartType()) + ",") : "")
@@ -321,8 +321,7 @@ namespace item
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE,
-                            misc::EnumStringHow(misc::Wrap::Yes, "&", misc::NoneEmpty::No));
+                            ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }
 

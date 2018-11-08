@@ -12,6 +12,7 @@
 #include "item-type-enum.hpp"
 
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 #include <utility>
@@ -21,8 +22,13 @@ namespace heroespath
 namespace item
 {
 
-    const std::string category::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    const std::string category::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<category>::ToString(ENUM, HOW);
+    }
+
+    const std::string
+        category::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Broken, "broken", SEPARATOR);
@@ -42,8 +48,13 @@ namespace item
         return str;
     }
 
+    const std::string element_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<element_type>::ToString(ENUM, HOW);
+    }
+
     const std::string element_type::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, element_type::Fire, "Fire", SEPARATOR);
@@ -711,7 +722,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MISC_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MISC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -1331,7 +1346,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MISC_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MISC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -1640,7 +1659,11 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MISC_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MISC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return 0_weight;
             }
         }
@@ -1849,7 +1872,10 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MISC_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MISC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
                 return category::None;
             }
         }
@@ -2049,7 +2075,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SET_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(SET_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -2197,7 +2227,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SET_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(SET_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -2267,7 +2301,11 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SET_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(SET_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return creature::role::Count;
             }
         }
@@ -2523,7 +2561,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(NAMED_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(NAMED_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -2635,7 +2677,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(NAMED_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(NAMED_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -2892,7 +2938,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MATERIAL));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MATERIAL)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -3052,7 +3102,11 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MATERIAL_PRI));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MATERIAL_PRI)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return 0_armor;
             }
         }
@@ -3249,7 +3303,11 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MATERIAL_PRI));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MATERIAL_PRI)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return 0_coin;
             }
         }
@@ -3440,7 +3498,11 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MATERIAL_PRI));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MATERIAL_PRI)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return 0.0f;
             }
         }
@@ -3536,7 +3598,8 @@ namespace item
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MATERIAL));
+                M_HP_LOG_ERR("enum_value=" << static_cast<EnumUnderlying_t>(MATERIAL) << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return 0.0f;
             }
         }
@@ -3838,7 +3901,10 @@ namespace item
             case material::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(PRI));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(PRI) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return 0.0f;
             }
         }
@@ -4053,7 +4119,10 @@ namespace item
             case material::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(SEC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(SEC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return 0.0f;
             }
         }
@@ -4120,8 +4189,13 @@ namespace item
             || (MATERIAL == Emerald));
     }
 
+    const std::string weapon_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<weapon_type>::ToString(ENUM, HOW);
+    }
+
     const std::string weapon_type::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, weapon_type::BodyPart, "BodyPart", SEPARATOR);
@@ -4206,7 +4280,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ARMOR_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ARMOR_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -4272,7 +4350,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(BODY_PART));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(BODY_PART)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -4325,7 +4407,11 @@ namespace item
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(NAME_MATERIAL_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(NAME_MATERIAL_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

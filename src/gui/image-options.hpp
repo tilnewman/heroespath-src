@@ -51,7 +51,7 @@ namespace gui
 
         // intentionally can be used for implicit conversions
         ImageOptions(
-            const misc::EnumUnderlying_t OPTION_ENUM_VALUE,
+            const EnumUnderlying_t OPTION_ENUM_VALUE,
             const ColorOpt_t & MASK_COLOR_OPT = boost::none,
             const sf::Uint8 MASK_ALPHA = 0)
             : option_enum(ImageOpt::Enum(OPTION_ENUM_VALUE))
@@ -87,7 +87,7 @@ namespace gui
         // lists the options in the order they will be appied
         const std::string ToString(
             const bool WILL_PREFIX = true,
-            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+            const Wrap WILL_WRAP = Wrap::Yes,
             const std::string & SEPARATOR = "/") const;
 
         static const ImageOptions NoOptions() { return ImageOptions(ImageOpt::None); }

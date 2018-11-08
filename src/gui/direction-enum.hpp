@@ -9,7 +9,7 @@
 //
 // direction-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Direction : public misc::EnumBaseCounting<Direction, misc::EnumFirstValue::Valid>
+    struct Direction : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Left = 0,
             Right,

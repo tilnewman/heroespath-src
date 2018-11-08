@@ -10,7 +10,7 @@
 // interaction-text-enum.hpp
 //
 #include "gui/font-enum.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/not-null.hpp"
 
 #include <string>
@@ -27,9 +27,9 @@ using FontPtr_t = misc::NotNull<sf::Font *>;
 namespace interact
 {
 
-    struct Text : public misc::EnumBaseCounting<Text, misc::EnumFirstValue::Valid>
+    struct Text : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             System = 0,
             Dialog,

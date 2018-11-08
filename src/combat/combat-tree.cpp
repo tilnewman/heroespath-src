@@ -42,7 +42,7 @@ namespace combat
             default:
             {
                 M_HP_LOG_ERR(
-                    "edge_type_enum=" << misc::EnumUnderlying_t(ENUM) << " was an invalid value.");
+                    "edge_type_enum=" << EnumUnderlying_t(ENUM) << " was an invalid value.");
 
                 return "";
             }

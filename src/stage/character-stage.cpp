@@ -446,7 +446,7 @@ namespace stage
         /*if ((initialRollCounter_ >= 6) && (false == AreAnyAnimNumStillMoving()))
         {
             auto isNumberHeldDown { false };
-            for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+            for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
             {
                 if (fixedStatsSVec_[i]->MouseDown(MOUSE_POS_V.x, MOUSE_POS_V.y))
                 {
@@ -504,7 +504,7 @@ namespace stage
             gui::Justified::Left);
 
         std::vector<std::string> raceNameVec;
-        for (misc::EnumUnderlying_t i(0); i < creature::race::Count_PlayerRaces; ++i)
+        for (EnumUnderlying_t i(0); i < creature::race::Count_PlayerRaces; ++i)
         {
             raceNameVec.emplace_back(creature::race::Name(static_cast<creature::race::Enum>(i)));
         }
@@ -1142,7 +1142,7 @@ namespace stage
         ss << "The following attributes are blank: ";
 
         /*bool foundAnyToIgnore(false);
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IgnoreMe())
             {
@@ -1328,7 +1328,7 @@ namespace stage
 
         // setup the final StatSet for the character
         creature::StatSet statSetFinal;
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             const auto NEXT_ENUM { static_cast<creature::Traits::Enum>(i) };
             statSetFinal.Set(NEXT_ENUM, fixedStatsSVec_[NEXT_ENUM]->Value());
@@ -1882,7 +1882,7 @@ namespace stage
 
     void CharacterStage::SetVisibleStatsToStatSetBase()
     {
-        /*for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        /*for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
             const auto NEW_VAL { statSetBase_.Get(NEXT_TRAIT_ENUM) };
@@ -1927,7 +1927,7 @@ namespace stage
 
         std::vector<creature::Traits::Enum> preExistingStatVec;
 
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
             const auto NEXT_STAT_VAL { RACE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
@@ -1959,7 +1959,7 @@ namespace stage
 
         const auto ROLE_STAT_MODIFIERS{ creature::RoleStatModifier::Get(ROLE_ENUM) };
 
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
             const auto NEXT_STAT_VAL { ROLE_STAT_MODIFIERS.Get(NEXT_TRAIT_ENUM) };
@@ -2028,7 +2028,7 @@ namespace stage
 
         // clear isHeldDown status from all stat anim objects, and see if any were
         auto wereAnyHeldDown { false };
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IsHeldDown())
             {
@@ -2078,7 +2078,7 @@ namespace stage
 
     bool CharacterStage::AreAnyStatsIgnored() const
     {
-        /*for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        /*for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             if (fixedStatsSVec_[i]->IgnoreMe())
             {
@@ -2484,7 +2484,7 @@ namespace stage
         nameTextEntryBoxUPtr_->SetText("");
         statModifierTextVec_.clear();
 
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             fixedStatsSVec_[i]->SetIgnoreMe();
         }

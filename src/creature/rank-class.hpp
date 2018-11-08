@@ -4,14 +4,13 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_CREATURE_RANK_HPP_INCLUDED
-#define HEROESPATH_CREATURE_RANK_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_RANK_CLASS_HPP_INCLUDED
+#define HEROESPATH_CREATURE_RANK_CLASS_HPP_INCLUDED
 //
-// rank.hpp
-//  Code that gives meaning to all possible rank values.
+// rank-class.hpp
 //
 #include "creature/trait.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/range.hpp"
 #include "misc/types.hpp"
 
@@ -25,9 +24,9 @@ namespace creature
 
     using RankRange_t = misc::Range<Rank_t>;
 
-    struct rank_class : public misc::EnumBaseCounting<rank_class, misc::EnumFirstValue::Valid>
+    struct rank_class : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Novice = 0,
             Trainee,
@@ -49,4 +48,4 @@ namespace creature
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_CREATURE_RANK_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_RANK_CLASS_HPP_INCLUDED

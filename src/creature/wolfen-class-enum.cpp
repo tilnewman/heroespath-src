@@ -53,7 +53,11 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(WOLFEN_CLASS_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(WOLFEN_CLASS_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

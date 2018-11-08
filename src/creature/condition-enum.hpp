@@ -10,7 +10,7 @@
 // condition-enum.hpp
 //  An enumeration defining each type of Condition.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -30,9 +30,9 @@ namespace creature
     //      interactions in fight.cpp
     //      testing code in conditions.cpp creature::condition::Warehouse::Fill()
     //
-    struct Conditions : public misc::EnumBaseCounting<Conditions, misc::EnumFirstValue::Valid>
+    struct Conditions : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Good = 0,
             Bold,

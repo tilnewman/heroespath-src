@@ -3712,8 +3712,7 @@ namespace stage
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n"
            << ITEM_PTR->Desc() << "\n\n"
-           << item::category::ToString(ITEM_PTR->Category(), misc::EnumStringHow(misc::Wrap::Yes))
-           << "\n";
+           << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {

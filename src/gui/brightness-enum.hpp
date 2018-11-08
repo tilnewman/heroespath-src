@@ -9,7 +9,7 @@
 //
 // brightness.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Brightness : public misc::EnumBaseCounting<Brightness, misc::EnumFirstValue::Valid>
+    struct Brightness : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Bright = 0, // Default
             Medium,

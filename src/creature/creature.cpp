@@ -1557,7 +1557,7 @@ namespace creature
 
     void Creature::ReCalculateTraitBonuses()
     {
-        for (misc::EnumUnderlying_t i(0); i < Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < Traits::StatCount; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
 
@@ -1606,7 +1606,7 @@ namespace creature
     const TraitSet Creature::TraitsWorking() const
     {
         TraitSet set;
-        for (misc::EnumUnderlying_t i(0); i < Traits::Count; ++i)
+        for (EnumUnderlying_t i(0); i < Traits::Count; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<Traits::Enum>(i) };
             set.Get(NEXT_TRAIT_ENUM).NormalSet(TraitNormal(NEXT_TRAIT_ENUM));

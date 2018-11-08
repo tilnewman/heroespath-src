@@ -252,8 +252,7 @@ namespace stage
             (PACKET.curently_open_popup_name == POPUP_NAME_STR_PARTY_IMAGE_SELECT_)
             && (PACKET.type != popup::PopupButtons::Cancel) && PACKET.selection_opt)
         {
-            const auto SELECTED_NUM { static_cast<misc::EnumUnderlying_t>(
-                PACKET.selection_opt.value()) };
+            const auto SELECTED_NUM { static_cast<EnumUnderlying_t>(PACKET.selection_opt.value()) };
 
             const auto ANIM_NUM { avatar::Avatar::Player_First + SELECTED_NUM };
             const auto ANIM_ENUM { static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
@@ -876,8 +875,7 @@ namespace stage
     {
         gui::CachedTextureVec_t partyCachedTextures;
 
-        for (misc::EnumUnderlying_t i(avatar::Avatar::Player_First);
-             i <= avatar::Avatar::Player_Last;
+        for (EnumUnderlying_t i(avatar::Avatar::Player_First); i <= avatar::Avatar::Player_Last;
              ++i)
         {
             const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(i) };

@@ -71,29 +71,11 @@ namespace gui
         }
 
         // returns 'up' if MOUSE_STATE is invalid
-        const TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE) const
-        {
-            if ((MOUSE_STATE == MouseState::Up) || (MouseState::IsValid(MOUSE_STATE) == false))
-            {
-                return up;
-            }
-            else if (MOUSE_STATE == MouseState::Over)
-            {
-                return over;
-            }
-            else if (MOUSE_STATE == MouseState::Down)
-            {
-                return down;
-            }
-            else
-            {
-                return disabled;
-            }
-        }
+        const TextInfo & FromMouseState(const MouseState::Enum MOUSE_STATE) const;
 
         const std::string ToString(
             const bool WILL_PREFIX = true,
-            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+            const Wrap WILL_WRAP = Wrap::Yes,
             const std::string & SEPARATOR = "_") const;
 
         TextInfo up;

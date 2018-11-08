@@ -129,22 +129,21 @@ namespace gui
     }
 
     const std::string MouseImageInfo::ToString(
-        const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
+        const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
         std::ostringstream ss;
 
-        ss << "Up=" << up.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Down=" << down.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Over=" << over.ToString(false, misc::Wrap::Yes) << SEPARATOR
-           << "Disabled=" << disabled.ToString(false, misc::Wrap::Yes) << SEPARATOR
+        ss << "Up=" << up.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Down=" << down.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Over=" << over.ToString(false, Wrap::Yes) << SEPARATOR
+           << "Disabled=" << disabled.ToString(false, Wrap::Yes) << SEPARATOR
            << "will_draw_up_if_missing=" << std::boolalpha << will_draw_up_if_missing;
 
-        const auto PARTS_STR { (
-            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            return std::string("MouseImageInfo").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
+            return std::string("MouseImageInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
                 + PARTS_STR;
         }
         else

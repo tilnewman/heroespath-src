@@ -10,7 +10,7 @@
 // music-enum.hpp
 //  An enum defining the various background music files
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <set>
 #include <string>
@@ -21,9 +21,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct music : public misc::EnumBaseCounting<music, misc::EnumFirstValue::Valid>
+    struct music : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Theme = 0,
             Wind,

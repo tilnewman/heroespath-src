@@ -237,39 +237,7 @@ namespace game
             return MusicCommand(gui::music::All, gui::music::None);
         }
 
-        const std::string ToString() const
-        {
-            std::ostringstream ss;
-
-            auto prefixSeparatorString = [&]() {
-                if (ss.str().empty() == false)
-                {
-                    ss << ", ";
-                }
-            };
-
-            ss << "cmd=music";
-
-            if (gui::music::IsValid(to_stop) || (gui::music::All == to_stop))
-            {
-                prefixSeparatorString();
-                ss << "music_stop=" << gui::music::ToString(to_stop);
-            }
-
-            if (gui::music::IsValid(to_start))
-            {
-                prefixSeparatorString();
-                ss << "music_start=" << gui::music::ToString(to_start);
-            }
-
-            if (volume_min > 0.0f)
-            {
-                prefixSeparatorString();
-                ss << "music_vol_min=" << volume_min;
-            }
-
-            return ss.str();
-        }
+        const std::string ToString() const;
 
         gui::music::Enum to_stop;
         gui::music::Enum to_start;

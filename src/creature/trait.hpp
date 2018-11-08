@@ -16,7 +16,6 @@
 //  and the current will return to 'normal'.
 //
 #include "creature/trait-enum.hpp"
-#include "creature/trait.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/real.hpp"
@@ -29,8 +28,6 @@ namespace heroespath
 {
 namespace creature
 {
-
-    using Trait_t = int;
 
     // Maintains a creature variable or 'trait' as a current and normal value.
     // This class is also used to store trait percent bonuses.

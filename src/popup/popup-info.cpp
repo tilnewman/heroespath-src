@@ -13,6 +13,7 @@
 
 #include "creature/creature.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/vectors.hpp"
 
 #include <sstream>
@@ -74,7 +75,7 @@ namespace popup
                                        << "\") was given TEXT_INFO.text that was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (PopupImage::IsValid(IMAGE)),
+            (EnumUtil<PopupImage>::IsValid(IMAGE)),
             "popup::PopupInfo(name=\""
                 << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
                 << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text

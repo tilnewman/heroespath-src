@@ -19,7 +19,6 @@
 #include "map/shadow-masker.hpp"
 #include "map/tile-offsets.hpp"
 #include "map/tiles-panel.hpp"
-#include "misc/types.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

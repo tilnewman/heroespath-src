@@ -178,7 +178,7 @@ namespace gui
         willDraw_ = false;
 
         // make sure all text is rendered and cached
-        for (misc::EnumUnderlying_t mouseStateIndex(0); mouseStateIndex < MouseState::Count;
+        for (EnumUnderlying_t mouseStateIndex(0); mouseStateIndex < MouseState::Count;
              ++mouseStateIndex)
         {
             const auto LOOP_MOUSE_STATE { static_cast<MouseState::Enum>(mouseStateIndex) };

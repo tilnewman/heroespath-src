@@ -167,7 +167,7 @@ namespace spell
             iStagePtr->TestingStrAppend("spell::Holder::Test() Starting Tests...");
         }
 
-        static misc::EnumUnderlying_t spellIndex { 0 };
+        static EnumUnderlying_t spellIndex { 0 };
         if (spellIndex < Spells::Count)
         {
             const auto NEXT_ENUM { static_cast<Spells::Enum>(spellIndex) };

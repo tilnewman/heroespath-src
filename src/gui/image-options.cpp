@@ -73,7 +73,7 @@ namespace gui
     }
 
     const std::string ImageOptions::ToString(
-        const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
+        const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
         std::ostringstream ss;
 
@@ -127,12 +127,11 @@ namespace gui
             ss << ((ss.str().empty()) ? "" : SEPARATOR) << "FlipVert";
         }
 
-        const auto PARTS_STR { (
-            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            return std::string("ImageOptions").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
+            return std::string("ImageOptions").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
                 + PARTS_STR;
         }
         else

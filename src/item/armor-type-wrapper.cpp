@@ -69,7 +69,7 @@ namespace item
                         }
                         else
                         {
-                            for (misc::EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
+                            for (EnumUnderlying_t i(0); i <= armor_type::Skin; ++i)
                             {
                                 const auto ARMOR_TYPE_ENUM { static_cast<armor_type::Enum>(i) };
                                 if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
@@ -261,8 +261,7 @@ namespace item
                         const auto ELEMENT_TYPE { elementTypes_.at(i) };
 
                         ss << element_type::ToString(
-                            ELEMENT_TYPE,
-                            misc::EnumStringHow(misc::Wrap::Yes, "&", misc::NoneEmpty::No));
+                            ELEMENT_TYPE, EnumStringHow(Wrap::Yes, "&", NoneEmpty::No));
                     }
                 }
 
@@ -356,13 +355,13 @@ namespace item
         void
             ArmorTypeWrapper::MakeSpecificSetsWithBaseType(std::vector<ArmorTypeWrapper> & wrappers)
         {
-            for (misc::EnumUnderlying_t a(0); a < armor_type::Count; ++a)
+            for (EnumUnderlying_t a(0); a < armor_type::Count; ++a)
             {
                 const auto ARMOR_ENUM { static_cast<armor_type::Enum>(a) };
 
                 if (armor_type::DoesRequireBaseType(ARMOR_ENUM))
                 {
-                    for (misc::EnumUnderlying_t b(0); b < base_type::Count; ++b)
+                    for (EnumUnderlying_t b(0); b < base_type::Count; ++b)
                     {
                         const auto BASE_ENUM { static_cast<base_type::Enum>(b) };
                         wrappers.emplace_back(ArmorTypeWrapper(ARMOR_ENUM, BASE_ENUM));

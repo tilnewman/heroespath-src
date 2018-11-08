@@ -40,7 +40,10 @@ namespace map
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LAYER));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(LAYER) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

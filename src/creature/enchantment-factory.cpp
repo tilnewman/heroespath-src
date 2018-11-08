@@ -15,6 +15,7 @@
 #include "creature/enchantment.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 #include <exception>
@@ -178,7 +179,7 @@ namespace creature
         // the additional 750 is to raise the score of all elemental items
         return MakeFromElementType(ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
                    .TreasureScore()
-            + (750_score * Score_t::Make(item::element_type::CountBitsSet(ELEMENT_TYPE)));
+            + (750_score * Score_t::Make(EnumUtil<item::element_type>::CountBitsSet(ELEMENT_TYPE)));
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(

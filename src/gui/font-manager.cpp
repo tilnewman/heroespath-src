@@ -14,6 +14,7 @@
 #include "gui/loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
@@ -93,8 +94,8 @@ namespace gui
     const FontPtr_t FontManager::GetFont(const GuiFont::Enum FONT)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (GuiFont::IsValid(FONT)),
-            "gui::FontManager::GetFont(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+            (EnumUtil<GuiFont>::IsValid(FONT)),
+            "gui::FontManager::GetFont(font_enum=" << static_cast<EnumUnderlying_t>(FONT)
                                                    << ") given an invalid font enum.");
 
         if (IsLoaded(FONT) == false)
@@ -113,8 +114,8 @@ namespace gui
     void FontManager::Load(const GuiFont::Enum FONT)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (GuiFont::IsValid(FONT)),
-            "gui::FontManager::Load(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+            (EnumUtil<GuiFont>::IsValid(FONT)),
+            "gui::FontManager::Load(font_enum=" << static_cast<EnumUnderlying_t>(FONT)
                                                 << ") given an invalid font enum.");
 
         if (IsLoaded(FONT) == false)
@@ -138,8 +139,8 @@ namespace gui
     void FontManager::Unload(const GuiFont::Enum FONT)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (GuiFont::IsValid(FONT)),
-            "gui::FontManager::Unload(font_enum=" << static_cast<misc::EnumUnderlying_t>(FONT)
+            (EnumUtil<GuiFont>::IsValid(FONT)),
+            "gui::FontManager::Unload(font_enum=" << static_cast<EnumUnderlying_t>(FONT)
                                                   << ") given an invalid font enum.");
 
         GetFontRef(FONT).reset();
@@ -163,7 +164,7 @@ namespace gui
 
     bool FontManager::IsLoaded(const GuiFont::Enum FONT) const
     {
-        if (GuiFont::IsValid(FONT))
+        if (EnumUtil<GuiFont>::IsValid(FONT))
         {
             return !!fontUVec_.at(static_cast<std::size_t>(FONT));
         }

@@ -19,7 +19,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"

@@ -46,7 +46,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(SHEILD_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(SHEILD_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -86,7 +90,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(HELM_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(HELM_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             };
@@ -130,7 +138,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(BASE_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(BASE_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             };
@@ -162,7 +174,11 @@ namespace item
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(COVER_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(COVER_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             };

@@ -9,7 +9,7 @@
 //
 //  strategy-enums.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/vector-map.hpp"
 
 #include <string>
@@ -21,9 +21,9 @@ namespace combat
     namespace strategy
     {
 
-        struct SelectType : public misc::EnumBaseBitField<SelectType>
+        struct SelectType : public EnumBaseBitField
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 None = 0,
                 Pixie = 1 << 0,
@@ -49,13 +49,16 @@ namespace combat
                 Last = NotBeast
             };
 
-            static const std::string ToStringPopulate(
-                const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+            static const std::string
+                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+            static const std::string
+                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
-        struct RefineType : public misc::EnumBaseBitField<RefineType>
+        struct RefineType : public EnumBaseBitField
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 None = 0,
                 Murderer = 1 << 0, // selects whoever is unconcious
@@ -75,13 +78,16 @@ namespace combat
                 Last = MostDamage
             };
 
-            static const std::string ToStringPopulate(
-                const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+            static const std::string
+                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+            static const std::string
+                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
-        struct AdvanceType : public misc::EnumBaseCounting<AdvanceType, misc::EnumFirstValue::None>
+        struct AdvanceType : public EnumBaseCounting<EnumFirstValue::None>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 None = 0, // advances toward most desired target but stops whenever able to attack
                 Cowardly, // Never advances
@@ -93,9 +99,9 @@ namespace combat
             static const std::string ToString(const Enum);
         };
 
-        struct RetreatType : public misc::EnumBaseCounting<RetreatType, misc::EnumFirstValue::None>
+        struct RetreatType : public EnumBaseCounting<EnumFirstValue::None>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 None = 0, // never retreats
                 Wary, // retreats if melee is outnumbered
@@ -106,10 +112,9 @@ namespace combat
             static const std::string ToString(const Enum);
         };
 
-        struct FrequencyType
-            : public misc::EnumBaseCounting<FrequencyType, misc::EnumFirstValue::Never>
+        struct FrequencyType : public EnumBaseCounting<EnumFirstValue::Never>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Never = 0,
                 Once,

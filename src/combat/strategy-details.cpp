@@ -44,7 +44,7 @@ namespace combat
         {
             misc::VectorMap<creature::race::Enum, Chances> raceChancesMap;
 
-            for (misc::EnumUnderlying_t i(0); i < creature::race::Count; ++i)
+            for (EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {
                 const auto RACE_ENUM(static_cast<creature::race::Enum>(i));
                 const auto RACE_STR(creature::race::ToString(RACE_ENUM));
@@ -160,7 +160,7 @@ namespace combat
             }
 
             misc::VectorMap<creature::role::Enum, Chances> roleChancesMap;
-            for (misc::EnumUnderlying_t i(0); i < creature::role::Count; ++i)
+            for (EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
                 const auto ROLE_ENUM(static_cast<creature::role::Enum>(i));
                 const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));

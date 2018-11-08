@@ -9,7 +9,7 @@
 //
 // image-option-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,9 +19,9 @@ namespace gui
 {
 
     // Responsible for enumerating all possible alterations for a cached texture.
-    struct ImageOpt : public misc::EnumBaseBitField<ImageOpt>
+    struct ImageOpt : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Smooth = 1 << 0,
@@ -35,14 +35,11 @@ namespace gui
             Last = InvertIncludesAlpha
         };
 
-        static const std::string ToString(
-            const Enum ENUM_VALUE, const misc::EnumStringHow & HOW = misc::EnumStringHow("/"))
-        {
-            return EnumBaseBitField::ToString(ENUM_VALUE, HOW);
-        }
+        static const std::string
+            ToString(const Enum ENUM_VALUE, const EnumStringHow & HOW = EnumStringHow("/"));
 
         static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR = "/");
     };
 
 } // namespace gui

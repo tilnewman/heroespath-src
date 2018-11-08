@@ -27,7 +27,11 @@ namespace interact
             case Text::Count: return "(Count)";
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TEXT_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(TEXT_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -42,7 +46,11 @@ namespace interact
             case Text::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(TEXT_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(TEXT_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return gui::GuiFont::Count;
             }
         }

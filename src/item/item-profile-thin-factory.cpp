@@ -1150,7 +1150,7 @@ namespace item
     {
         ItemProfileThinVec_t thinProfiles;
 
-        for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
+        for (EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
             const auto BASE_TYPE { static_cast<armor::base_type::Enum>(i) };
             thinProfiles.emplace_back(MakeArmorNonSpecific(ARMOR_TYPE, BASE_TYPE));
@@ -1176,7 +1176,7 @@ namespace item
     {
         ItemProfileThinVec_t thinProfiles;
 
-        for (misc::EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
+        for (EnumUnderlying_t i(0); i < armor::base_type::Count; ++i)
         {
             const auto BASE_TYPE { static_cast<armor::base_type::Enum>(i) };
 

@@ -1390,8 +1390,7 @@ namespace combat
         const auto WILL_BLOCKING_POSITIONS_INCREASE { !WILL_POSITION_PLAYERS };
         auto blockingPos { 0 };
 
-        for (misc::EnumUnderlying_t typeNumber(0); typeNumber < BlockingPosType::Count;
-             ++typeNumber)
+        for (EnumUnderlying_t typeNumber(0); typeNumber < BlockingPosType::Count; ++typeNumber)
         {
             // move all combat_nodes with a role that matches the blocking type into a new vector
             const auto BLOCKING_POS_TYPE { static_cast<BlockingPosType::Enum>(typeNumber) };

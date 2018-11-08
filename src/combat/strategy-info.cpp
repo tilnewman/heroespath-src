@@ -50,10 +50,8 @@ namespace combat
             std::ostringstream ss;
 
             ss << "StrategyInfo:"
-               << " Select="
-               << SelectType::ToString(selectType_, misc::EnumStringHow(misc::Wrap::Yes))
-               << ", Refine="
-               << RefineType::ToString(refineType_, misc::EnumStringHow(misc::Wrap::Yes))
+               << " Select=" << SelectType::ToString(selectType_, EnumStringHow(Wrap::Yes))
+               << ", Refine=" << RefineType::ToString(refineType_, EnumStringHow(Wrap::Yes))
                << ", Advance=" << AdvanceType::ToString(advanceType_)
                << ", Retreat=" << RetreatType::ToString(retreatType_)
                << ", RetreatCount=" << outnumberRetreatCount_

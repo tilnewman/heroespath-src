@@ -17,6 +17,7 @@
 #include "gui/resolution.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
@@ -85,7 +86,7 @@ namespace game
             (instanceUPtr_), "GameController::Initialize() found instanceUPtr that was null.");
 
         const auto STARTUP_STAGE_ENUM { static_cast<stage::Stage::Enum>(
-            stage::Stage::FromString(startupStageName_)) };
+            EnumUtil<stage::Stage>::FromString(startupStageName_)) };
 
         if (stage::Stage::IsPlayableAndNotPopup(STARTUP_STAGE_ENUM))
         {
@@ -192,14 +193,14 @@ namespace game
             {
                 const auto MUSIC_COMMAND { COMMAND.music_opt.value() };
 
-                if (gui::music::IsValid(MUSIC_COMMAND.to_stop)
+                if (EnumUtil<gui::music>::IsValid(MUSIC_COMMAND.to_stop)
                     || (gui::music::All == MUSIC_COMMAND.to_stop))
                 {
                     gui::SoundManager::Instance()->MusicStop(
                         MUSIC_COMMAND.to_stop, gui::MusicOperator::FADE_MULT_DEFAULT_OUT_);
                 }
 
-                if (gui::music::IsValid(MUSIC_COMMAND.to_start))
+                if (EnumUtil<gui::music>::IsValid(MUSIC_COMMAND.to_start))
                 {
                     auto volume { gui::SoundManager::Instance()->MusicVolume() };
                     if (volume < MUSIC_COMMAND.volume_min)

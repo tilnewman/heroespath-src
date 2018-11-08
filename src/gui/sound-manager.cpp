@@ -722,7 +722,7 @@ namespace gui
                 hasSFXPromptedStart = true;
             }
 
-            static misc::EnumUnderlying_t sfxIndex { 0 };
+            static EnumUnderlying_t sfxIndex { 0 };
             if (sfxIndex < sound_effect::Count)
             {
                 const auto ENUM { static_cast<sound_effect::Enum>(sfxIndex) };
@@ -755,7 +755,7 @@ namespace gui
                 hasStaticSFXPromptedStart = true;
             }
 
-            static misc::EnumUnderlying_t sfxSetIndex { 0 };
+            static EnumUnderlying_t sfxSetIndex { 0 };
             if (sfxSetIndex < sfxSetVec_.size())
             {
                 static std::size_t sfxSetInnerIndex { 0 };
@@ -798,7 +798,7 @@ namespace gui
         }
 
         // test regular music
-        static misc::EnumUnderlying_t musicIndex { 0 };
+        static EnumUnderlying_t musicIndex { 0 };
         {
             if (musicIndex < music::Count)
             {

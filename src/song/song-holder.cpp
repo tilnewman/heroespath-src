@@ -12,6 +12,7 @@
 #include "song-holder.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "song/song.hpp"
 #include "stage/i-stage.hpp"
 
@@ -162,7 +163,8 @@ namespace song
                                  << ") was called when the holder was empty.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (Songs::IsValid(ENUM)), "song::Holder::Get(" << ENUM << ") but that value is invalid.");
+            (EnumUtil<Songs>::IsValid(ENUM)),
+            "song::Holder::Get(" << ENUM << ") but that value is invalid.");
 
         const auto INDEX { static_cast<std::size_t>(ENUM) };
 

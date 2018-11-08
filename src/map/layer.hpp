@@ -11,7 +11,6 @@
 //
 #include "map/layer-type-enum.hpp"
 #include "map/tiles-panel.hpp"
-#include "misc/types.hpp"
 
 #include <SFML/Graphics/VertexArray.hpp>
 

@@ -10,6 +10,7 @@
 #include "text-render-rendered-line.hpp"
 
 #include "gui/text-render-parsing.hpp"
+#include "misc/enum-util.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
@@ -131,8 +132,9 @@ namespace gui
             {
                 for (const auto & TEXT : texts)
                 {
-                    ss << ((TEXT.IsValid()) ? "" : "I") << GuiFont::ToUnderlyingType(TEXT.getFont())
-                       << "(" << TEXT.getGlobalBounds() << ")\"" << TEXT.getString()
+                    ss << ((TEXT.IsValid()) ? "" : "I")
+                       << EnumUtil<GuiFont>::ToUnderlyingType(TEXT.getFont()) << "("
+                       << TEXT.getGlobalBounds() << ")\"" << TEXT.getString()
                        << "\"dsfch=" << calcDownShiftForCharHeight(TEXT) << "   ";
                 }
             }

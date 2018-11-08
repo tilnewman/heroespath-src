@@ -9,7 +9,7 @@
 //
 // trait-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <utility>
@@ -19,11 +19,12 @@ namespace heroespath
 {
 namespace creature
 {
+    using Trait_t = int;
 
     // Defines one effect an Enchantment can have.
-    struct Traits : public misc::EnumBaseCounting<Traits, misc::EnumFirstValue::Valid>
+    struct Traits : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             // Keep stats starting at zero and in order.
             Strength = 0,

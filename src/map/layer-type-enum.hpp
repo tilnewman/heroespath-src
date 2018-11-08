@@ -9,7 +9,7 @@
 //
 // layer-type-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace map
 {
 
-    struct LayerType : public misc::EnumBaseCounting<LayerType, misc::EnumFirstValue::Valid>
+    struct LayerType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Ground = 0,
             Object,

@@ -10,10 +10,9 @@
 // strong-numeric-type.hpp
 //
 #include "misc/real.hpp"
-#include "strong-type.hpp"
-#include <cmath>
+#include "misc/strong-type.hpp"
+
 #include <ostream>
-#include <type_traits>
 
 namespace heroespath
 {
@@ -55,7 +54,7 @@ namespace misc
 
         const StrongNumericType Abs() const
         {
-            return StrongNumericType<T, Parameter_t>(std::abs(this->m_value));
+            return StrongNumericType<T, Parameter_t>(misc::ABS(this->m_value));
         }
 
         StrongNumericType & operator=(const StrongNumericType & RHS)
@@ -146,7 +145,7 @@ namespace misc
 
         StrongNumericType operator++(int)
         {
-            StrongNumericType temp{ *this };
+            StrongNumericType temp { *this };
             operator++();
             return temp;
         }
@@ -159,7 +158,7 @@ namespace misc
 
         StrongNumericType operator--(int)
         {
-            StrongNumericType temp{ *this };
+            StrongNumericType temp { *this };
             operator--();
             return temp;
         }

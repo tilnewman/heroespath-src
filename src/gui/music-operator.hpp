@@ -26,10 +26,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct music_update_status
-        : public misc::EnumBaseCounting<music_update_status, misc::EnumFirstValue::Valid>
+    struct music_update_status : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Stopped = 0,
             Playing,

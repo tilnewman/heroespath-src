@@ -9,7 +9,7 @@
 //
 // log-pri-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace misc
 {
 
-    struct LogPriority : public misc::EnumBaseCounting<LogPriority, misc::EnumFirstValue::Valid>
+    struct LogPriority : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Debug = 0,
             Default,

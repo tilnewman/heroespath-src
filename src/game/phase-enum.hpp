@@ -9,7 +9,7 @@
 //
 // phase-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace game
 {
 
-    struct Phase : misc::EnumBaseBitField<Phase>
+    struct Phase : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Combat = 1 << 0,
@@ -31,8 +31,10 @@ namespace game
             Last = Inventory
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace game

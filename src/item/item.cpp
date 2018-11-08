@@ -148,8 +148,7 @@ namespace item
 
         if (category::None != category_)
         {
-            ss << ", category="
-               << category::ToString(category_, misc::EnumStringHow(misc::Wrap::Yes));
+            ss << ", category=" << category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
         if (IsUnique())
@@ -210,7 +209,7 @@ namespace item
         if (element_type::None != elementType_)
         {
             ss << ", element_type="
-               << element_type::ToString(elementType_, misc::EnumStringHow(misc::Wrap::Yes));
+               << element_type::ToString(elementType_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())

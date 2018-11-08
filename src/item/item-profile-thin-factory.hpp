@@ -48,7 +48,7 @@ namespace item
             ItemProfileThinVec_t thinProfiles;
             thinProfiles.reserve(static_cast<std::size_t>(SpecificArmorEnum_t::Count));
 
-            for (misc::EnumUnderlying_t i(0); i < SpecificArmorEnum_t::Count; ++i)
+            for (EnumUnderlying_t i(0); i < SpecificArmorEnum_t::Count; ++i)
             {
                 thinProfiles.emplace_back(MakeArmorSpecific<typename SpecificArmorEnum_t::Enum>(
                     static_cast<typename SpecificArmorEnum_t::Enum>(i)));
@@ -96,7 +96,7 @@ namespace item
             ItemProfileThinVec_t thinProfiles;
             thinProfiles.reserve(static_cast<std::size_t>(SpecificWeaponEnum_t::Count));
 
-            for (misc::EnumUnderlying_t i(0); i < SpecificWeaponEnum_t::Count; ++i)
+            for (EnumUnderlying_t i(0); i < SpecificWeaponEnum_t::Count; ++i)
             {
                 thinProfiles.emplace_back(MakeWeaponSpecific<typename SpecificWeaponEnum_t::Enum>(
                     static_cast<typename SpecificWeaponEnum_t::Enum>(i)));

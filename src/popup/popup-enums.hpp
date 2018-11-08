@@ -9,7 +9,7 @@
 //
 // popup-enums.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace popup
 {
 
-    struct PopupStage : public misc::EnumBaseCounting<PopupStage, misc::EnumFirstValue::Valid>
+    struct PopupStage : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Generic = 0,
             CharacterSelect,
@@ -40,9 +40,9 @@ namespace popup
         static const std::string ToString(const Enum);
     };
 
-    struct PopupButtons : public misc::EnumBaseBitField<PopupButtons>
+    struct PopupButtons : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Okay = 1 << 0,
@@ -58,16 +58,17 @@ namespace popup
         static const Enum YesNoCancel = (Yes | No | Cancel);
         static const Enum SelectCancel = (Select | Cancel);
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t BUTTONS, const std::string & SEPARATOR = "/");
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
 
         static bool IsAffirmative(const Enum);
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t BUTTONS, const std::string & SEPARATOR = "/");
     };
 
-    struct PopupButtonColor
-        : public misc::EnumBaseCounting<PopupButtonColor, misc::EnumFirstValue::Valid>
+    struct PopupButtonColor : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Light = 0,
             Dark,
@@ -77,9 +78,9 @@ namespace popup
         static const std::string ToString(const PopupButtonColor::Enum);
     };
 
-    struct PopupImage : public misc::EnumBaseCounting<PopupImage, misc::EnumFirstValue::Valid>
+    struct PopupImage : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Banner = 0,
             Regular,

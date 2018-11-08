@@ -47,7 +47,11 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FOLLOW_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(FOLLOW_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

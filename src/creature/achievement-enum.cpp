@@ -108,7 +108,10 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -204,7 +207,10 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

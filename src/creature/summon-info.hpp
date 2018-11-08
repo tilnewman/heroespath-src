@@ -27,12 +27,7 @@ namespace creature
         explicit SummonInfo(
             const origin_type::Enum TYPE = origin_type::Count,
             const race::Enum RACE = creature::race::Count,
-            const role::Enum ROLE = creature::role::Count)
-            : type_(TYPE)
-            , race_(RACE)
-            , role_(ROLE)
-            , count_(((origin_type::IsValid(TYPE)) ? origin_type::UseCount(TYPE) : 0))
-        {}
+            const role::Enum ROLE = creature::role::Count);
 
         origin_type::Enum Type() const { return type_; }
 
@@ -52,25 +47,7 @@ namespace creature
 
         bool IsDefaultAndCompletelyInvalid() const { return (*this == SummonInfo()); }
 
-        const std::string ToString() const
-        {
-            if (IsDefaultAndCompletelyInvalid())
-            {
-                return "SummonInfo{None}";
-            }
-            else
-            {
-                std::ostringstream ss;
-
-                ss << "SummonInfo{type="
-                   << ((type_ != origin_type::Count) ? origin_type::ToString(type_) : "None")
-                   << ", race=" << ((race_ != race::Count) ? race::ToString(race_) : "None")
-                   << ", role=" << ((role_ != role::Count) ? role::ToString(role_) : "None")
-                   << ", charges_remaining=" << count_ << "}";
-
-                return ss.str();
-            }
-        }
+        const std::string ToString() const;
 
         friend bool operator==(const SummonInfo & L, const SummonInfo & R);
         friend bool operator<(const SummonInfo & L, const SummonInfo & R);

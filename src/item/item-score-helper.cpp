@@ -20,7 +20,7 @@ namespace item
     {
         auto score { 0_score };
 
-        for (misc::EnumUnderlying_t i(1); i < creature::Traits::Count; ++i)
+        for (EnumUnderlying_t i(1); i < creature::Traits::Count; ++i)
         {
             const auto NEXT_TRAIT_ENUM { static_cast<creature::Traits::Enum>(i) };
             const auto NEXT_TRAIT_VALUE { TRAIT_SET.GetCopy(NEXT_TRAIT_ENUM).Current() };

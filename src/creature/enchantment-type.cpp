@@ -11,12 +11,20 @@
 //
 #include "enchantment-type.hpp"
 
+#include "misc/enum-util.hpp"
+
 namespace heroespath
 {
 namespace creature
 {
+
+    const std::string EnchantmentType::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<EnchantmentType>::ToString(ENUM, HOW);
+    }
+
     const std::string EnchantmentType::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, EnchantmentType::WhenUsed, "when used:", SEPARATOR);

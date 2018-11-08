@@ -64,19 +64,14 @@ namespace gui
         TextInfo & operator=(TextInfo &&) = default;
 
         // returns true if size and fonts are valid and if text is not empty
-        bool IsValid() const
-        {
-            return (
-                (text.empty() == false) && GuiFont::IsValid(font_letters)
-                && GuiFont::IsValid(font_numbers) && (size > 0));
-        }
+        bool IsValid() const;
 
         // returns true if IsValid() and color is not transparent
         bool WillDraw() const { return (IsValid() && (color.a > 0)); }
 
         const std::string ToString(
             const bool WILL_PREFIX = true,
-            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+            const Wrap WILL_WRAP = Wrap::Yes,
             const std::string & SEPARATOR = "/") const;
 
         std::string text;

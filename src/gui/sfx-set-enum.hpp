@@ -9,7 +9,7 @@
 //
 // sfx-set-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,10 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct sound_effect_set
-        : public misc::EnumBaseCounting<sound_effect_set, misc::EnumFirstValue::Valid>
+    struct sound_effect_set : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Prompt = 0,
             Switch,

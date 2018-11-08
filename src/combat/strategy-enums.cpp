@@ -12,6 +12,7 @@
 #include "strategy-enums.hpp"
 
 #include "misc/boost-string-includes.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -20,8 +21,13 @@ namespace combat
 {
     namespace strategy
     {
+        const std::string SelectType::ToString(const Enum ENUM, const EnumStringHow & HOW)
+        {
+            return EnumUtil<SelectType>::ToString(ENUM, HOW);
+        }
+
         const std::string SelectType::ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Pixie, "Pixie", SEPARATOR);
@@ -50,8 +56,13 @@ namespace combat
             return str;
         }
 
+        const std::string RefineType::ToString(const Enum ENUM, const EnumStringHow & HOW)
+        {
+            return EnumUtil<RefineType>::ToString(ENUM, HOW);
+        }
+
         const std::string RefineType::ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
             AppendNameIfBitIsSet(str, ENUM_VALUE, RefineType::Murderer, "Murderer", SEPARATOR);
@@ -101,7 +112,11 @@ namespace combat
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(ADVANCE_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(ADVANCE_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -129,7 +144,11 @@ namespace combat
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(RETREAT_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(RETREAT_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -185,7 +204,11 @@ namespace combat
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(FREQ_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(FREQ_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }

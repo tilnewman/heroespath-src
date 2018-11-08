@@ -9,7 +9,7 @@
 //
 // turn-action-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct TurnAction : public misc::EnumBaseCounting<TurnAction, misc::EnumFirstValue::Nothing>
+    struct TurnAction : public EnumBaseCounting<EnumFirstValue::Nothing>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Nothing = 0,
             Attack,

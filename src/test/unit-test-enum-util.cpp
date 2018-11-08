@@ -9,7 +9,22 @@
 
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc_EnumUtil"
 
+#include "misc/platform.hpp"
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4266)
+#endif
+
+#include <boost/test/unit_test.hpp>
+
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+#pragma warning(pop)
+#endif
+
+#include "misc/assertlogandthrow.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/enum-util.hpp"
+#include "misc/log-macros.hpp"
 
 // all of the enum includes
 #include "avatar/avatar-enum.hpp"
@@ -74,21 +89,6 @@
 #include "spell/spell-enum.hpp"
 #include "stage/stage-enum.hpp"
 
-#include "misc/assertlogandthrow.hpp"
-#include "misc/log-macros.hpp"
-
-#include "misc/platform.hpp"
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(push)
-#pragma warning(disable : 4266)
-#endif
-
-#include <boost/test/unit_test.hpp>
-
-#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
-#pragma warning(pop)
-#endif
-
 #include <iostream>
 #include <type_traits>
 
@@ -99,8 +99,8 @@ template <typename EnumWrapper_t>
 void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STRING_TO_BE_EMPTY)
 {
     std::ostringstream msgSS;
-    msgSS << "EnumTest<" << EnumWrapper_t::TypeName() << ", "
-          << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name()
+    msgSS << "EnumTest<" << EnumUtil<EnumWrapper_t>::TypeName() << ", "
+          << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name()
           << ">(last_valid_value=" << LAST_VALID_VALUE << ", must_first_be_empty=" << std::boolalpha
           << MUST_FIRST_STRING_TO_BE_EMPTY << ") ";
 
@@ -122,7 +122,7 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
     {
         const auto FLAG_VALUE_TO_TEST_AND_REPORT { flagValue++ };
 
-        if (EnumWrapper_t::IsValid(
+        if (EnumUtil<EnumWrapper_t>::IsValid(
                 static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT))
             == false)
         {
@@ -130,7 +130,7 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
             continue;
         }
 
-        const auto STRING { EnumWrapper_t::ToString(
+        const auto STRING { EnumUtil<EnumWrapper_t>::ToString(
             static_cast<typename EnumWrapper_t::Enum>(FLAG_VALUE_TO_TEST_AND_REPORT)) };
 
         if ((FLAG_VALUE_TO_TEST_AND_REPORT == 0) && MUST_FIRST_STRING_TO_BE_EMPTY)
@@ -159,7 +159,7 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
             msgSS.str() << "value=" << FLAG_VALUE_TO_TEST_AND_REPORT << "=\"" << STRING
                         << "\" is a duplicate of a previous generated string.");
 
-        const auto FROM_STRING_RESULT { EnumWrapper_t::FromString(STRING) };
+        const auto FROM_STRING_RESULT { EnumUtil<EnumWrapper_t>::FromString(STRING) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FROM_STRING_RESULT == FLAG_VALUE_TO_TEST_AND_REPORT),
@@ -167,7 +167,8 @@ void EnumTest(const EnumUnderlying_t LAST_VALID_VALUE, const bool MUST_FIRST_STR
                         << "!=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT << ".");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (EnumWrapper_t::IsValid(static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
+            (EnumUtil<EnumWrapper_t>::IsValid(
+                static_cast<typename EnumWrapper_t::Enum>(FROM_STRING_RESULT))),
             msgSS.str() << "FromString(\"" << STRING << "\")=" << FROM_STRING_RESULT
                         << "=(expected)=" << FLAG_VALUE_TO_TEST_AND_REPORT
                         << " -but that value was not valid.  (IsValid() returned false)");
@@ -184,27 +185,29 @@ void TestBitFieldEnum()
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
-        EnumWrapper_t::TypeName()
+        EnumUtil<EnumWrapper_t>::TypeName()
             << "Underlying type was: "
             << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
             << " instead of what it should be: "
-            << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name() << ".");
+            << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name() << ".");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
-        (EnumWrapper_t::None == 0), EnumWrapper_t::TypeName() << "::None was not zero.");
+        (EnumWrapper_t::None == 0), EnumUtil<EnumWrapper_t>::TypeName() << "::None was not zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Last > 0),
-        EnumWrapper_t::TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
-                                  << " is not > zero.");
+        EnumUtil<EnumWrapper_t>::TypeName()
+            << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+            << " is not > zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
-        (EnumWrapper_t::Last <= EnumWrapper_t::LargestValidValue()),
-        EnumWrapper_t::TypeName() << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
-                                  << " is not <= the largest valid value="
-                                  << EnumWrapper_t::LargestValidValue() << ".");
+        (EnumWrapper_t::Last <= EnumUtil<EnumWrapper_t>::LargestValidValue()),
+        EnumUtil<EnumWrapper_t>::TypeName()
+            << "::Last=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Last)
+            << " is not <= the largest valid value=" << EnumUtil<EnumWrapper_t>::LargestValidValue()
+            << ".");
 
-    EnumTest<EnumWrapper_t>(EnumWrapper_t::LargestValidValue(), true);
+    EnumTest<EnumWrapper_t>(EnumUtil<EnumWrapper_t>::LargestValidValue(), true);
 }
 
 template <typename EnumWrapper_t>
@@ -215,70 +218,74 @@ void TestCountingEnum()
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (std::is_same<EnumUnderlying_t, UnderlyingTypeActual_t>::value),
-        EnumWrapper_t::TypeName()
+        EnumUtil<EnumWrapper_t>::TypeName()
             << "Underlying type was: "
             << boost::typeindex::type_id<UnderlyingTypeActual_t>().pretty_name()
             << " instead of what it should be: "
-            << boost::typeindex::type_id<misc::EnumUnderlying_t>().pretty_name() << ".");
+            << boost::typeindex::type_id<EnumUnderlying_t>().pretty_name() << ".");
 
-    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Not)
+    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Not)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Not == 0),
-            EnumWrapper_t::TypeName() << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
+            EnumUtil<EnumWrapper_t>::TypeName()
+                << "::Not=" << EnumWrapper_t::Not << " instead of zero.");
     }
 
-    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Nothing)
+    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Nothing)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Nothing == 0),
-            EnumWrapper_t::TypeName()
+            EnumUtil<EnumWrapper_t>::TypeName()
                 << "::Nothing=" << EnumWrapper_t::Nothing << " instead of zero.");
     }
 
-    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::Never)
+    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::Never)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::Never == 0),
-            EnumWrapper_t::TypeName() << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
+            EnumUtil<EnumWrapper_t>::TypeName()
+                << "::Never=" << EnumWrapper_t::Never << " instead of zero.");
     }
 
-    if constexpr (EnumWrapper_t::first_value_type == EnumFirstValue::None)
+    if constexpr (EnumWrapper_t::first_value_t == EnumFirstValue::None)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumWrapper_t::None == 0),
-            EnumWrapper_t::TypeName() << "::None=" << EnumWrapper_t::None << " instead of zero.");
+            EnumUtil<EnumWrapper_t>::TypeName()
+                << "::None=" << EnumWrapper_t::None << " instead of zero.");
     }
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::Count > 0),
-        EnumWrapper_t::TypeName() << "::Count="
-                                  << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
-                                  << " is not > zero.");
+        EnumUtil<EnumWrapper_t>::TypeName()
+            << "::Count=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+            << " is not > zero.");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
-         == (EnumWrapper_t::LargestValidValue() + 1)),
-        EnumWrapper_t::TypeName() << "::Count(" << EnumWrapper_t::ToString(EnumWrapper_t::Count)
-                                  << ")=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
-                                  << " is not one less than the largest valid value="
-                                  << EnumWrapper_t::LargestValidValue() << ".");
+         == (EnumUtil<EnumWrapper_t>::LargestValidValue() + 1)),
+        EnumUtil<EnumWrapper_t>::TypeName()
+            << "::Count(" << EnumWrapper_t::ToString(EnumWrapper_t::Count)
+            << ")=" << static_cast<EnumUnderlying_t>(EnumWrapper_t::Count)
+            << " is not one less than the largest valid value="
+            << EnumUtil<EnumWrapper_t>::LargestValidValue() << ".");
 
-    EnumTest<EnumWrapper_t>(EnumWrapper_t::LargestValidValue(), false);
+    EnumTest<EnumWrapper_t>(EnumUtil<EnumWrapper_t>::LargestValidValue(), false);
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::ToString(EnumWrapper_t::Count) == "(Count)"),
-        EnumWrapper_t::TypeName() << "::ToString(Count) != \"(Count)\"");
+        EnumUtil<EnumWrapper_t>::TypeName() << "::ToString(Count) != \"(Count)\"");
 
     M_HP_ASSERT_OR_LOG_AND_THROW(
         (EnumWrapper_t::ToString(
              static_cast<typename EnumWrapper_t::Enum>(EnumWrapper_t::Count + 10))
              .empty()),
-        EnumWrapper_t::TypeName() << "::ToString(Count+10) != \"\"");
+        EnumUtil<EnumWrapper_t>::TypeName() << "::ToString(Count+10) != \"\"");
 }
 
 // a counting enum to test with
-struct Counting : public EnumBaseCounting<Counting, EnumFirstValue::None>
+struct Counting : public EnumBaseCounting<EnumFirstValue::None>
 {
     enum Enum : EnumUnderlying_t
     {
@@ -310,7 +317,11 @@ struct Counting : public EnumBaseCounting<Counting, EnumFirstValue::None>
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM_VALUE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM_VALUE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -318,7 +329,7 @@ struct Counting : public EnumBaseCounting<Counting, EnumFirstValue::None>
 };
 
 // a bitfield enum to test with
-struct Bitfield : public EnumBaseBitField<Bitfield>
+struct Bitfield : public EnumBaseBitField
 {
     enum Enum : EnumUnderlying_t
     {
@@ -330,12 +341,14 @@ struct Bitfield : public EnumBaseBitField<Bitfield>
 
     static const std::string ToStringTest(const EnumUnderlying_t ENUM_VALUE)
     {
-        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::Yes));
+        return EnumUtil<Bitfield>::ToString(
+            ENUM_VALUE, EnumStringHow(Wrap::Yes, "/", NoneEmpty::Yes));
     }
 
     static const std::string ToStringTestNoneNotEmpty(const EnumUnderlying_t ENUM_VALUE)
     {
-        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::No));
+        return EnumUtil<Bitfield>::ToString(
+            ENUM_VALUE, EnumStringHow(Wrap::Yes, "/", NoneEmpty::No));
     }
 
     static const std::string
@@ -349,7 +362,7 @@ struct Bitfield : public EnumBaseBitField<Bitfield>
 };
 
 // a bitfield enum to test with
-struct Bitfield2 : public EnumBaseBitField<Bitfield>
+struct Bitfield2 : public EnumBaseBitField
 {
     enum Enum : EnumUnderlying_t
     {
@@ -361,12 +374,14 @@ struct Bitfield2 : public EnumBaseBitField<Bitfield>
 
     static const std::string ToStringTest(const EnumUnderlying_t ENUM_VALUE)
     {
-        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::No));
+        return EnumUtil<Bitfield2>::ToString(
+            ENUM_VALUE, EnumStringHow(Wrap::Yes, "/", NoneEmpty::No));
     }
 
     static const std::string ToStringTestNoneEmpty(const EnumUnderlying_t ENUM_VALUE)
     {
-        return ToString(ENUM_VALUE, misc::EnumStringHow(misc::Wrap::Yes, "/", NoneEmpty::Yes));
+        return EnumUtil<Bitfield2>::ToString(
+            ENUM_VALUE, EnumStringHow(Wrap::Yes, "/", NoneEmpty::Yes));
     }
 
     static const std::string
@@ -403,21 +418,21 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(Bitfield::IsValid(0));
-    BOOST_CHECK(Bitfield::IsValid(Bitfield::None));
-    BOOST_CHECK(Bitfield::IsValid(Bitfield::A));
-    BOOST_CHECK(Bitfield::IsValid(Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::IsValid(Bitfield::Last));
-    BOOST_CHECK(Bitfield::IsValid(Bitfield::Last << 1) == false);
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(0));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(Bitfield::None));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(Bitfield::A));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(Bitfield::Last));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValid(Bitfield::Last << 1) == false);
 
     //
 
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(0) == false);
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::None) == false);
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::A));
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::Last));
-    BOOST_CHECK(Bitfield::IsValidAndNonZero(Bitfield::Last << 1) == false);
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(0) == false);
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(Bitfield::None) == false);
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(Bitfield::A));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(Bitfield::Last));
+    BOOST_CHECK(EnumUtil<Bitfield>::IsValidAndNonZero(Bitfield::Last << 1) == false);
 
     //
 
@@ -429,87 +444,87 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
 
     //
 
-    BOOST_CHECK(Bitfield::FromString("") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString(" ") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("()") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("(),(),(,),,, , ") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString(" ") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("()") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),(),(,),,, , ") == Bitfield::None);
 
-    BOOST_CHECK(Bitfield::FromString("None") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("B") == Bitfield::B);
-    BOOST_CHECK(Bitfield::FromString("Last") != Bitfield::B);
-    BOOST_CHECK(Bitfield::FromString("Last") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("None") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("B") == Bitfield::B);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("Last") != Bitfield::B);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("Last") == Bitfield::None);
 
-    BOOST_CHECK(Bitfield::FromString("none") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("a") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("b") == Bitfield::B);
-    BOOST_CHECK(Bitfield::FromString("last") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("none") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("a") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("b") == Bitfield::B);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("last") == Bitfield::None);
 
-    BOOST_CHECK(Bitfield::FromString("(A)") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(A)") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(),(),(,),,, , A") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("A(),(),(,),,, ,") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(),(A),(,),,, ,") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(),()A,(,),,, ,") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString(" A") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("A ") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString(" A ") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),(),(,),,, , A") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A(),(),(,),,, ,") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),(A),(,),,, ,") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),()A,(,),,, ,") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString(" A") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A ") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString(" A ") == Bitfield::A);
 
     // spaces are not valid separators because some names will have spaces
-    BOOST_CHECK(Bitfield::FromString("A A") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A B") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("B A") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("a b") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A C") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A None") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A A") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A B") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("B A") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("a b") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A C") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A None") == Bitfield::None);
 
-    BOOST_CHECK(Bitfield::FromString("AA") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A,A") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("A/A") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(A)(A)") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("AA") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A,A") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A/A") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)(A)") == Bitfield::A);
 
-    BOOST_CHECK(Bitfield::FromString("AB") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A,B") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("A/B") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("(A)(B)") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("AB") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A,B") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A/B") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)(B)") == (Bitfield::A | Bitfield::B));
 
-    BOOST_CHECK(Bitfield::FromString("ab") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("a,B") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("a/b") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("(a)(b)") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("ab") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("a,B") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("a/b") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(a)(b)") == (Bitfield::A | Bitfield::B));
 
-    BOOST_CHECK(Bitfield::FromString("AC") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A,C") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("A/C") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(A)(C)") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("AC") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A,C") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A/C") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)(C)") == Bitfield::A);
 
-    BOOST_CHECK(Bitfield::FromString("BA") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("B,A") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("B/A") == (Bitfield::A | Bitfield::B));
-    BOOST_CHECK(Bitfield::FromString("(B)(A)") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("BA") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("B,A") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("B/A") == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(B)(A)") == (Bitfield::A | Bitfield::B));
 
-    BOOST_CHECK(Bitfield::FromString("ANone") == Bitfield::None);
-    BOOST_CHECK(Bitfield::FromString("A,None") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("A/None") == Bitfield::A);
-    BOOST_CHECK(Bitfield::FromString("(A)(None)") == Bitfield::A);
-
-    //
-
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::None) == 0);
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::A) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::B) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::Last) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::None | Bitfield::A) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(Bitfield::A | Bitfield::B) == 2);
-
-    BOOST_CHECK(Bitfield::CountBitsSet(0) == 0);
-    BOOST_CHECK(Bitfield::CountBitsSet(1) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(2) == 1);
-    BOOST_CHECK(Bitfield::CountBitsSet(3) == 2);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("ANone") == Bitfield::None);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A,None") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A/None") == Bitfield::A);
+    BOOST_CHECK(EnumUtil<Bitfield>::FromString("(A)(None)") == Bitfield::A);
 
     //
 
-    BOOST_CHECK(Bitfield::LargestValidValue() == (Bitfield::A | Bitfield::B));
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::None) == 0);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::A) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::B) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::Last) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::None | Bitfield::A) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(Bitfield::A | Bitfield::B) == 2);
+
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(0) == 0);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(1) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(2) == 1);
+    BOOST_CHECK(EnumUtil<Bitfield>::CountBitsSet(3) == 2);
+
+    //
+
+    BOOST_CHECK(EnumUtil<Bitfield>::LargestValidValue() == (Bitfield::A | Bitfield::B));
 
     //
 

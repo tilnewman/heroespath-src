@@ -8,10 +8,7 @@
 #define HEROESPATH_MISC_TYPES_HPP_INCLUDED
 //
 // types.hpp
-//  Strong types used by the game.
 //
-#include "creature/trait.hpp"
-
 #include "misc/strong-numeric-type.hpp"
 #include "misc/strong-type.hpp"
 
@@ -21,6 +18,11 @@
 
 namespace heroespath
 {
+
+namespace creature
+{
+    using Trait_t = int;
+}
 
 // phantom type tags
 struct NameTag

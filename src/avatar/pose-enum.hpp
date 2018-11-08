@@ -9,7 +9,7 @@
 //
 // pose-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Pose : public misc::EnumBaseCounting<Pose, misc::EnumFirstValue::Valid>
+    struct Pose : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Standing = 0,
             Walking,

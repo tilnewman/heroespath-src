@@ -70,12 +70,7 @@ namespace gui
             return std::find(whichVec_.begin(), whichVec_.end(), ENUM) != whichVec_.end();
         }
 
-        bool ContainsInvalid() const
-        {
-            return std::any_of(whichVec_.begin(), whichVec_.end(), [](const auto ENUM) {
-                return (music::IsValid(ENUM) == false);
-            });
-        }
+        bool ContainsInvalid() const;
 
         friend bool operator==(const MusicSet & L, const MusicSet & R);
 
@@ -94,6 +89,7 @@ namespace gui
     bool operator==(const MusicSet & L, const MusicSet & R);
 
     inline bool operator!=(const MusicSet & L, const MusicSet & R) { return !(L == R); }
+
 } // namespace gui
 } // namespace heroespath
 

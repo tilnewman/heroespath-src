@@ -479,9 +479,9 @@ namespace creature
         };
 
         // defines the value of items owned by a creature
-        struct wealth_type : public misc::EnumBaseCounting<wealth_type, misc::EnumFirstValue::Valid>
+        struct wealth_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Destitute = 0,
                 Poor,
@@ -500,9 +500,9 @@ namespace creature
         };
 
         // defines the number of items a creature owns
-        struct collector_type : misc::EnumBaseBitField<collector_type>
+        struct collector_type : public EnumBaseBitField
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 // pure random chance to carry items, should not be used
                 None = 0,
@@ -522,17 +522,19 @@ namespace creature
                 Last = Hoarder
             };
 
-            static const std::string ToStringPopulate(
-                const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+            static const std::string
+                ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
 
             static collector_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
+
+            static const std::string
+                ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
         };
 
         // defines the frequency/power of magical items owned by the creature
-        struct owns_magic_type
-            : public misc::EnumBaseCounting<owns_magic_type, misc::EnumFirstValue::Valid>
+        struct owns_magic_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Rarely = 0, // rarely carries magic items
                 Religious, // often carries religous items and only occasionally magic items
@@ -545,10 +547,9 @@ namespace creature
         };
 
         // define the complexity of items owned by the creature
-        struct complexity_type
-            : public misc::EnumBaseCounting<complexity_type, misc::EnumFirstValue::Valid>
+        struct complexity_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 //...nothing
                 Animal = 0,
@@ -566,7 +567,7 @@ namespace creature
                 Count
             };
 
-            static const std::string ToString(const complexity_type::Enum);
+            static const std::string ToString(const Enum);
             static complexity_type::Enum FromCreature(const CreaturePtr_t CHARACTER_PTR);
         };
 

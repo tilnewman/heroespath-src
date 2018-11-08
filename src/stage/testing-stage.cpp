@@ -523,7 +523,7 @@ namespace stage
 
         auto isMismatchCurrent{ false };
         auto isMismatchNormal{ false };
-        for (misc::EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
+        for (EnumUnderlying_t i(0); i < creature::Traits::StatCount; ++i)
         {
             const auto NEXT_ENUM{ static_cast<creature::Traits::Enum>(i) };
 
@@ -690,7 +690,7 @@ namespace stage
             return false;
         }
 
-        static misc::EnumUnderlying_t imageIndex { 0 };
+        static EnumUnderlying_t imageIndex { 0 };
         if (imageIndex < avatar::Avatar::Count)
         {
             const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(imageIndex) };
@@ -769,7 +769,7 @@ namespace stage
         static auto hasFirstPassLoad { false };
         if (false == hasFirstPassLoad)
         {
-            static misc::EnumUnderlying_t mapIndex { 0 };
+            static EnumUnderlying_t mapIndex { 0 };
             if (mapIndex < map::Level::Count)
             {
                 const auto WHICH_LEVEL { static_cast<map::Level::Enum>(mapIndex) };
@@ -973,8 +973,8 @@ namespace stage
 
         static creature::nonplayer::InventoryFactory inventoryFactory;
 
-        static misc::EnumUnderlying_t raceIndex { 0 };
-        static misc::EnumUnderlying_t roleIndex { 0 };
+        static EnumUnderlying_t raceIndex { 0 };
+        static EnumUnderlying_t roleIndex { 0 };
 
         if (raceIndex < static_cast<int>(creature::race::Count))
         {
@@ -982,7 +982,7 @@ namespace stage
             const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
             const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
-            if (roleIndex < static_cast<misc::EnumUnderlying_t>(ROLE_VEC.size()))
+            if (roleIndex < static_cast<EnumUnderlying_t>(ROLE_VEC.size()))
             {
                 const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                 const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
@@ -1269,7 +1269,7 @@ namespace stage
             return false;
         }
 
-        static misc::EnumUnderlying_t fontIndex { 0 };
+        static EnumUnderlying_t fontIndex { 0 };
 
         if (fontIndex < gui::GuiFont::Count)
         {
@@ -1476,7 +1476,7 @@ namespace stage
         auto createGoldBarsOfAllSides = [&](const sf::Vector2f & POS_V,
                                             const gui::Orientation::Enum ORIENTATION) {
             sf::Vector2f posV { POS_V };
-            misc::EnumUnderlying_t flag(1);
+            EnumUnderlying_t flag(1);
             while (flag <= gui::Side::Last)
             {
                 posV = createGoldBars(posV.x, posV.y, ORIENTATION, gui::Side::Enum(flag), false);

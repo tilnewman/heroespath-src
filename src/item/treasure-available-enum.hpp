@@ -9,7 +9,7 @@
 //
 // treasure-available-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,10 +18,9 @@ namespace heroespath
 namespace item
 {
 
-    struct TreasureAvailable
-        : public misc::EnumBaseCounting<TreasureAvailable, misc::EnumFirstValue::Valid>
+    struct TreasureAvailable : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             NoTreasure = 0,
             HeldOnly,

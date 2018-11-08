@@ -15,7 +15,6 @@
 #include "map/transition.hpp"
 #include "map/walk-bounds.hpp"
 #include "map/walk-sfx.hpp"
-#include "misc/types.hpp"
 
 #include <string>
 #include <vector>

@@ -17,7 +17,6 @@
 #include "creature/role-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/types.hpp"
 
 #include <list>
 #include <memory>
@@ -51,7 +50,7 @@ namespace combat
 
     struct EdgeType
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             // This is the left/right or horizontal or blocking position
             // connection between nodes or creatures on the battlefield.

@@ -64,7 +64,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(FONT) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -116,7 +119,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(FONT) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -168,7 +174,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(FONT));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(FONT) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

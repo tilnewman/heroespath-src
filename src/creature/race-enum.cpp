@@ -46,7 +46,11 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ORIGIN_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ORIGIN_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -72,7 +76,11 @@ namespace creature
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ORIGIN_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ORIGIN_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return 0;
             }
         }
@@ -264,7 +272,10 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(RACE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(RACE) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -380,7 +391,10 @@ namespace creature
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return false;
             }
         }
@@ -443,7 +457,10 @@ namespace creature
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return false;
             }
         }
@@ -656,7 +673,10 @@ namespace creature
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return {};
             }
         }
@@ -2386,7 +2406,10 @@ namespace creature
             case race::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return {};
             }
         }

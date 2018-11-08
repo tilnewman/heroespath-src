@@ -10,6 +10,7 @@
 #include "text-render-rendering.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/size-and-scale.hpp"
@@ -27,7 +28,7 @@ namespace gui
         {
             const auto CAN_USE_QUICK_RENDER {
                 (CONTEXT.HasWidthLimit() == false) && (CONTEXT.text_cleaner.newline_count == 0)
-                && GuiFont::IsValid(CONTEXT.text_cleaner.uniform_font)
+                && EnumUtil<GuiFont>::IsValid(CONTEXT.text_cleaner.uniform_font)
             };
 
             RenderedLines renderedLines;

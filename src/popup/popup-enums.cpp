@@ -11,6 +11,7 @@
 //
 #include "popup-enums.hpp"
 
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -76,14 +77,23 @@ namespace popup
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(POPUP_STAGE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(POPUP_STAGE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
     }
 
+    const std::string PopupButtons::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<PopupButtons>::ToString(ENUM, HOW);
+    }
+
     const std::string PopupButtons::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+        const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, PopupButtons::None, "None", SEPARATOR);
@@ -119,7 +129,10 @@ namespace popup
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -163,7 +176,10 @@ namespace popup
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

@@ -9,7 +9,7 @@
 //
 // mouse-state-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct MouseState : public misc::EnumBaseCounting<MouseState, misc::EnumFirstValue::Valid>
+    struct MouseState : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Up = 0,
             Down,

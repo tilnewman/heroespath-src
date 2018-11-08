@@ -19,6 +19,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 
@@ -1722,7 +1723,7 @@ namespace creature
         {
             roleArmorChanceMap_.Clear();
 
-            for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
+            for (EnumUnderlying_t i(0); i < role::Count; ++i)
             {
                 const auto ROLE { static_cast<role::Enum>(i) };
 
@@ -1786,7 +1787,7 @@ namespace creature
 
                     if (HAS_BASE_TYPE_STR)
                     {
-                        baseType = item::armor::base_type::FromString(PIECES_VEC[1]);
+                        baseType = EnumUtil<item::armor::base_type>::FromString(PIECES_VEC[1]);
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (baseType != item::armor::base_type::Count),
@@ -1829,7 +1830,7 @@ namespace creature
         {
             roleWeaponChanceMap_.Clear();
 
-            for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
+            for (EnumUnderlying_t i(0); i < role::Count; ++i)
             {
                 const auto ROLE { static_cast<role::Enum>(i) };
                 roleWeaponChanceMap_[ROLE] = GetRoleWeaponChances(ROLE);

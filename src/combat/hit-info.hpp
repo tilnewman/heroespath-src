@@ -12,7 +12,7 @@
 #include "creature/condition-enum.hpp"
 #include "creature/trait.hpp"
 #include "misc/boost-optional-that-throws.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "name-position-enum.hpp"
@@ -51,9 +51,9 @@ namespace item
 namespace combat
 {
 
-    struct HitType : public misc::EnumBaseCounting<HitType, misc::EnumFirstValue::Valid>
+    struct HitType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Weapon = 0,
             Spell,

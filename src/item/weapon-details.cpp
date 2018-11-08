@@ -15,6 +15,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -87,9 +88,8 @@ namespace item
 
             weaponDetails.name = CleanStringField(FIELDS_VEC[0], false);
 
-            weaponDetails.complexity = static_cast<creature::nonplayer::complexity_type::Enum>(
-                creature::nonplayer::complexity_type::FromString(
-                    CleanStringField(FIELDS_VEC[1], false)));
+            weaponDetails.complexity = EnumUtil<creature::nonplayer::complexity_type>::FromString(
+                CleanStringField(FIELDS_VEC[1], false));
 
             weaponDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
             weaponDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));

@@ -17,7 +17,7 @@
 #include "creature/dragon-class-enum.hpp"
 #include "creature/enchantment-type.hpp"
 #include "creature/race-enum.hpp"
-#include "creature/rank.hpp"
+#include "creature/rank-class.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/stat-set.hpp"

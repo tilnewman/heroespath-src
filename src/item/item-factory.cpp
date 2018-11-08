@@ -23,6 +23,7 @@
 #include "item/weapon-details.hpp"
 #include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/vector-map.hpp"
@@ -423,7 +424,7 @@ namespace item
             makeErrorReportPrefix() << "element_types did not match.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            (element_type::IsValid(ITEM_PTR->ElementType())),
+            (EnumUtil<element_type>::IsValid(ITEM_PTR->ElementType())),
             makeErrorReportPrefix() << "invalid element_type.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -664,12 +665,9 @@ namespace item
             (ITEM_PROFILE.WeaponType() == ITEM_PTR->WeaponType()),
             makeErrorReportPrefix()
                 << " weapon_types did not match.  profile="
-                << weapon_type::ToString(
-                       ITEM_PROFILE.WeaponType(), misc::EnumStringHow(misc::Wrap::Yes))
+                << weapon_type::ToString(ITEM_PROFILE.WeaponType(), EnumStringHow(Wrap::Yes))
                 << " but item="
-                << weapon_type::ToString(
-                       ITEM_PTR->WeaponType(), misc::EnumStringHow(misc::Wrap::Yes))
-                << ".");
+                << weapon_type::ToString(ITEM_PTR->WeaponType(), EnumStringHow(Wrap::Yes)) << ".");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PROFILE.ArmorType() == ITEM_PTR->ArmorType()),

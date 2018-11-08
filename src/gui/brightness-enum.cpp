@@ -40,7 +40,11 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(BRIGHTNESS));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(BRIGHTNESS)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

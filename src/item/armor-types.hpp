@@ -10,7 +10,7 @@
 // armor-types.hpp
 //  A set of enumerations that define a piece of armor.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -21,9 +21,9 @@ namespace item
     namespace armor
     {
 
-        struct shield_type : public misc::EnumBaseCounting<shield_type, misc::EnumFirstValue::Valid>
+        struct shield_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Buckler = 0,
                 Kite,
@@ -35,9 +35,9 @@ namespace item
             static const std::string ToString(const shield_type::Enum);
         };
 
-        struct helm_type : public misc::EnumBaseCounting<helm_type, misc::EnumFirstValue::Valid>
+        struct helm_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Leather = 0,
                 MailCoif,
@@ -52,9 +52,9 @@ namespace item
             static const std::string Name(const helm_type::Enum);
         };
 
-        struct base_type : public misc::EnumBaseCounting<base_type, misc::EnumFirstValue::Valid>
+        struct base_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Plain = 0,
                 Mail,
@@ -64,15 +64,11 @@ namespace item
             };
 
             static const std::string ToString(const base_type::Enum);
-            static Enum FromString(const std::string & S)
-            {
-                return static_cast<Enum>(EnumBaseCounting::FromString(S));
-            }
         };
 
-        struct cover_type : public misc::EnumBaseCounting<cover_type, misc::EnumFirstValue::Valid>
+        struct cover_type : public EnumBaseCounting<EnumFirstValue::Valid>
         {
-            enum Enum : misc::EnumUnderlying_t
+            enum Enum : EnumUnderlying_t
             {
                 Cape = 0,
                 Vest,

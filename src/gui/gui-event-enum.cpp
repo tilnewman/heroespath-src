@@ -11,6 +11,7 @@
 //
 #include "gui-event-enum.hpp"
 
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -18,8 +19,13 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string GuiEvent::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    const std::string GuiEvent::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<GuiEvent>::ToString(ENUM, HOW);
+    }
+
+    const std::string
+        GuiEvent::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, GuiEvent::Click, "Click", SEPARATOR);

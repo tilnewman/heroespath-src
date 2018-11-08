@@ -13,6 +13,7 @@
 
 #include "gui/font-manager.hpp"
 #include "gui/text.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/font.hpp"
@@ -102,8 +103,15 @@ namespace gui
     //          NEW_NUMBERS_FONT)
     //{}
 
+    bool TextInfo::IsValid() const
+    {
+        return (
+            (text.empty() == false) && EnumUtil<GuiFont>::IsValid(font_letters)
+            && EnumUtil<GuiFont>::IsValid(font_numbers) && (size > 0));
+    }
+
     const std::string TextInfo::ToString(
-        const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
+        const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
         auto appendWithSeparator = [&](std::ostringstream & strstrm, const auto & THING) {
             if (strstrm.str().empty() == false)
@@ -140,7 +148,7 @@ namespace gui
             appendWithSeparator(ssInfo, misc::Quoted(misc::MakeLoggableString(text)));
         }
 
-        if (GuiFont::IsValid(font_letters))
+        if (EnumUtil<GuiFont>::IsValid(font_letters))
         {
             appendWithSeparator(ssInfo, GuiFont::ToString(font_letters));
         }
@@ -148,12 +156,12 @@ namespace gui
         {
             appendWithSeparator(
                 ssInvalid,
-                "letter_font=" + misc::ToString(GuiFont::ToUnderlyingType(font_letters)));
+                "letter_font=" + misc::ToString(EnumUtil<GuiFont>::ToUnderlyingType(font_letters)));
         }
 
         if (GuiFont::Number != font_numbers)
         {
-            if (GuiFont::IsValid(font_numbers))
+            if (EnumUtil<GuiFont>::IsValid(font_numbers))
             {
                 appendWithSeparator(ssInfo, GuiFont::ToString(font_numbers));
             }
@@ -161,21 +169,23 @@ namespace gui
             {
                 appendWithSeparator(
                     ssInvalid,
-                    "letter_font=" + misc::ToString(GuiFont::ToUnderlyingType(font_numbers)));
+                    "letter_font="
+                        + misc::ToString(EnumUtil<GuiFont>::ToUnderlyingType(font_numbers)));
             }
         }
 
         appendWithSeparator(ssInfo, misc::ToString(size));
         appendWithSeparator(ssInfo, sfutil::ToString(color, misc::ToStringPrefix::SimpleName));
 
-        if (gui::Justified::IsValid(justified))
+        if (EnumUtil<gui::Justified>::IsValid(justified))
         {
             appendWithSeparator(ssInfo, gui::Justified::ToString(justified));
         }
         else
         {
             appendWithSeparator(
-                ssInvalid, "justify=" + misc::ToString(Justified::ToUnderlyingType(justified)));
+                ssInvalid,
+                "justify=" + misc::ToString(EnumUtil<Justified>::ToUnderlyingType(justified)));
         }
 
         if (0 != style)
@@ -214,7 +224,7 @@ namespace gui
 
         std::ostringstream ssFinal;
 
-        if (WILL_WRAP == misc::Wrap::Yes)
+        if (WILL_WRAP == Wrap::Yes)
         {
             ssFinal << "(";
         }
@@ -229,14 +239,14 @@ namespace gui
             appendWithSeparator(ssFinal, ssInvalid.str());
         }
 
-        if (WILL_WRAP == misc::Wrap::Yes)
+        if (WILL_WRAP == Wrap::Yes)
         {
             ssFinal << ")";
         }
 
         if (WILL_PREFIX)
         {
-            return std::string("TextInfo").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
+            return std::string("TextInfo").append((WILL_WRAP == Wrap::Yes) ? "" : "=")
                 + ssFinal.str();
         }
         else

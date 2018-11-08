@@ -12,6 +12,7 @@
 #include "role-enum.hpp"
 
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -222,7 +223,10 @@ namespace creature
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ROLE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ROLE) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -346,7 +350,10 @@ namespace creature
             case role::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return combat::BlockingPosType::Count;
             }
         }
@@ -356,7 +363,7 @@ namespace creature
         role::RolesOfBlockingPosType(const combat::BlockingPosType::Enum BLOCKING_POS_ENUM)
     {
         std::vector<role::Enum> rolesVec;
-        for (misc::EnumUnderlying_t i(0); i < role::Count; ++i)
+        for (EnumUnderlying_t i(0); i < role::Count; ++i)
         {
             const auto ROLE { static_cast<role::Enum>(i) };
             if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)

@@ -15,7 +15,6 @@
 #include "map/parse-packet.hpp"
 #include "map/transition.hpp"
 #include "map/walk-sfx.hpp"
-#include "misc/types.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 

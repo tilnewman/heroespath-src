@@ -172,7 +172,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_MiscItems()
     {
-        for (misc::EnumUnderlying_t i(1); i < misc_type::Count; ++i)
+        for (EnumUnderlying_t i(1); i < misc_type::Count; ++i)
         {
             const auto MISC_TYPE { static_cast<misc_type::Enum>(i) };
 
@@ -188,7 +188,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_NamedEquipment()
     {
-        for (misc::EnumUnderlying_t i(1); i < named_type::Count; ++i)
+        for (EnumUnderlying_t i(1); i < named_type::Count; ++i)
         {
             const auto NAMED_TYPE { static_cast<named_type::Enum>(i) };
 
@@ -202,7 +202,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_SetEquipment()
     {
-        for (misc::EnumUnderlying_t i(1); i < set_type::Count; ++i)
+        for (EnumUnderlying_t i(1); i < set_type::Count; ++i)
         {
             const auto SET_TYPE { static_cast<set_type::Enum>(i) };
 
@@ -216,7 +216,7 @@ namespace item
 
     void ItemProfileWarehouse::Setup_SummoningItems()
     {
-        for (misc::EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
+        for (EnumUnderlying_t raceIndex(0); raceIndex < creature::race::Count; ++raceIndex)
         {
             const auto RACE_TYPE { static_cast<creature::race::Enum>(raceIndex) };
 

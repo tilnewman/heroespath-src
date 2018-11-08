@@ -9,7 +9,7 @@
 //
 // combat-over-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct CombatEnd : public misc::EnumBaseCounting<CombatEnd, misc::EnumFirstValue::Valid>
+    struct CombatEnd : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Win = 0,
             Lose,

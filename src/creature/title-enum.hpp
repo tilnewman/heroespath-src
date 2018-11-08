@@ -10,7 +10,7 @@
 // title-enum.hpp
 //  An enumeration defining each type of Title.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -20,10 +20,10 @@ namespace heroespath
 namespace creature
 {
 
-    struct Titles : public misc::EnumBaseCounting<Titles, misc::EnumFirstValue::Valid>
+    struct Titles : public EnumBaseCounting<EnumFirstValue::Valid>
     {
         // Note:  Keep order in sync with creature::title::Warehouse::Fill()
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             ProtectorOfThornberry = 0,
             //

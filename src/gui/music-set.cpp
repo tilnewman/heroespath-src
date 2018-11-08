@@ -12,6 +12,7 @@
 #include "music-set.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
@@ -120,6 +121,13 @@ namespace gui
                 return *currentlyPlayingIter;
             }
         }
+    }
+
+    bool MusicSet::ContainsInvalid() const
+    {
+        return std::any_of(whichVec_.begin(), whichVec_.end(), [](const auto ENUM) {
+            return (EnumUtil<music>::IsValid(ENUM) == false);
+        });
     }
 
     bool operator==(const MusicSet & L, const MusicSet & R)

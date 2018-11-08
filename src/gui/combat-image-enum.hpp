@@ -9,7 +9,7 @@
 //
 // combat-image-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,10 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct CombatImageType
-        : public misc::EnumBaseCounting<CombatImageType, misc::EnumFirstValue::Valid>
+    struct CombatImageType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Wing = 0,
             Arrow1,

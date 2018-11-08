@@ -46,7 +46,11 @@ namespace map
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(LEVEL_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -84,7 +88,10 @@ namespace map
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(LEVEL) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -124,7 +131,10 @@ namespace map
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(LEVEL));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(LEVEL) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return LevelType::Count;
             }
         }

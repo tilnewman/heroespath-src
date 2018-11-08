@@ -9,7 +9,7 @@
 //
 // target-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct TargetType : public misc::EnumBaseCounting<TargetType, misc::EnumFirstValue::None>
+    struct TargetType : public EnumBaseCounting<EnumFirstValue::None>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             SingleOpponent,

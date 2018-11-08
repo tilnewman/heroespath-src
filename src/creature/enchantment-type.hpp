@@ -10,7 +10,7 @@
 // enchantment-type.hpp
 //  Defines special effects of an enchantment.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,9 +19,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct EnchantmentType : misc::EnumBaseBitField<EnchantmentType>
+    struct EnchantmentType : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             WhenUsed = 1 << 0,
@@ -37,8 +37,10 @@ namespace creature
             Last = OnlyIfSetIsComplete
         };
 
-        static const std::string ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
+        static const std::string ToString(const Enum, const EnumStringHow & HOW = EnumStringHow());
+
+        static const std::string
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR);
     };
 
 } // namespace creature

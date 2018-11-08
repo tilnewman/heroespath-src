@@ -36,7 +36,11 @@ namespace interact
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(INTERACTION_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(INTERACTION_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -57,7 +61,11 @@ namespace interact
             case Interact::Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(INTERACTION_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(INTERACTION_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

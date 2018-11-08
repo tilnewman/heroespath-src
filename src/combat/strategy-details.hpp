@@ -13,11 +13,13 @@
 #include "combat/strategy-enums.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 
 #include <algorithm>
 #include <exception>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -84,8 +86,7 @@ namespace combat
                 EnumType typeEnum;
                 try
                 {
-                    typeEnum
-                        = static_cast<EnumType>(BaseType::FromString(ENUM_CHANCE_STR_VEC.at(0)));
+                    typeEnum = EnumUtil<BaseType>::FromString(ENUM_CHANCE_STR_VEC.at(0));
                 }
                 catch (const std::exception & EX)
                 {
@@ -133,6 +134,8 @@ namespace combat
 
             RaceRoleChancesMap_t raceRoleChancesMap_;
         };
+
+        using CreatureStrategiesUPtr_t = std::unique_ptr<CreatureStrategies>;
 
     } // namespace strategy
 } // namespace combat

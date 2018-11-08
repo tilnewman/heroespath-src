@@ -289,8 +289,7 @@ namespace stage
         }
         else
         {
-            return static_cast<creature::Traits::Enum>(
-                static_cast<misc::EnumUnderlying_t>(TRAIT) - 1);
+            return static_cast<creature::Traits::Enum>(static_cast<EnumUnderlying_t>(TRAIT) - 1);
         }
     }
 
@@ -298,8 +297,7 @@ namespace stage
     {
         if (TRAIT < creature::Traits::Intelligence)
         {
-            return static_cast<creature::Traits::Enum>(
-                static_cast<misc::EnumUnderlying_t>(TRAIT) + 1);
+            return static_cast<creature::Traits::Enum>(static_cast<EnumUnderlying_t>(TRAIT) + 1);
         }
         else
         {

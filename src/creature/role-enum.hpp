@@ -11,7 +11,7 @@
 //  An enumeration defining each Role of creature, both player and non-player.
 //
 #include "combat/blocking-pos-type-enum.hpp"
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -21,9 +21,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct role : public misc::EnumBaseCounting<role, misc::EnumFirstValue::Valid>
+    struct role : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Archer = 0,
             Bard,
@@ -77,13 +77,14 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const role::Enum);
-        static const std::string Desc(const role::Enum);
-        static const std::string Abbr(const role::Enum);
-        static bool CanFly(const role::Enum);
-        static bool WillInitiallyFly(const role::Enum);
-        static combat::BlockingPosType::Enum BlockingPosType(const role::Enum);
-        static std::vector<role::Enum> RolesOfBlockingPosType(const combat::BlockingPosType::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
+        static const std::string Desc(const Enum);
+        static const std::string Abbr(const Enum);
+        static bool CanFly(const Enum);
+        static bool WillInitiallyFly(const Enum);
+        static combat::BlockingPosType::Enum BlockingPosType(const Enum);
+        static std::vector<Enum> RolesOfBlockingPosType(const combat::BlockingPosType::Enum);
     };
 
     using RoleVec_t = std::vector<role::Enum>;

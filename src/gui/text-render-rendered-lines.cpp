@@ -9,6 +9,7 @@
 //
 #include "text-render-rendered-lines.hpp"
 
+#include "misc/enum-util.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"
@@ -181,7 +182,8 @@ namespace gui
         {
             const auto ORIG_POS_V { sfutil::Position(region) };
 
-            if (Empty() || !Justified::IsValid(JUSTIFICATION) || (JUSTIFICATION == Justified::Left))
+            if (Empty() || !EnumUtil<Justified>::IsValid(JUSTIFICATION)
+                || (JUSTIFICATION == Justified::Left))
             {
                 return;
             }

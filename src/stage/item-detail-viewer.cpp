@@ -206,9 +206,7 @@ namespace stage
 
         if (ITEM_PTR->Category() != item::category::None)
         {
-            ss << item::category::ToString(
-                ITEM_PTR->Category(), misc::EnumStringHow(misc::Wrap::Yes))
-               << "\n";
+            ss << item::category::ToString(ITEM_PTR->Category(), EnumStringHow(Wrap::Yes)) << "\n";
         }
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)

@@ -103,6 +103,9 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case)
     BOOST_CHECK(misc::ToLowerCopy(LOWER_CASE_TEST_STR) == LOWER_CASE_TEST_STR);
 }
 
+/*
+ * only run this when checking speed of misc::strings functions
+  *
 BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 {
     auto makeRandomChar = []() { return static_cast<char>(misc::random::Int(32, 90)); };
@@ -298,6 +301,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
     M_HP_LOG(ssFinal.str());
 }
+*/
 
 BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
 {

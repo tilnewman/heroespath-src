@@ -10,7 +10,7 @@
 // text.hpp
 //
 #include "gui/font-enum.hpp"
-#include "misc/wrap-enum.hpp"
+#include "misc/enum-common.hpp"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -77,10 +77,7 @@ namespace gui
         void draw(sf::RenderTarget & target, sf::RenderStates states) const final;
 
         // returns true if size and font are valid and if text is not empty
-        bool IsValid() const
-        {
-            return (!text_.empty() && GuiFont::IsValid(font_) && (getCharacterSize() > 0));
-        }
+        bool IsValid() const;
 
         // returns true if IsValid() and color is not transparent
         bool WillDraw() const { return (IsValid() && (getFillColor().a > 0)); }
@@ -159,7 +156,7 @@ namespace gui
 
         const std::string ToString(
             const bool WILL_PREFIX = true,
-            const misc::Wrap WILL_WRAP = misc::Wrap::Yes,
+            const Wrap WILL_WRAP = Wrap::Yes,
             const std::string & SEPARATOR = "/") const;
 
     private:

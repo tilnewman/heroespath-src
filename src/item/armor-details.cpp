@@ -15,6 +15,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 
 #include <vector>
@@ -73,9 +74,8 @@ namespace item
 
             armorDetails.name = CleanStringField(FIELDS_VEC[0], false);
 
-            armorDetails.complexity = static_cast<creature::nonplayer::complexity_type::Enum>(
-                creature::nonplayer::complexity_type::FromString(
-                    CleanStringField(FIELDS_VEC[1], false)));
+            armorDetails.complexity = EnumUtil<creature::nonplayer::complexity_type>::FromString(
+                CleanStringField(FIELDS_VEC[1], false));
 
             armorDetails.price = Coin_t(StringFieldToInt("Price", FIELDS_VEC[2]));
             armorDetails.weight = Weight_t(StringFieldToInt("Weight", FIELDS_VEC[3]));

@@ -11,6 +11,7 @@
 //
 #include "phase-enum.hpp"
 
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath
@@ -18,8 +19,13 @@ namespace heroespath
 namespace game
 {
 
-    const std::string Phase::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    const std::string Phase::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<Phase>::ToString(ENUM, HOW);
+    }
+
+    const std::string
+        Phase::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, Phase::Combat, "Combat", SEPARATOR);

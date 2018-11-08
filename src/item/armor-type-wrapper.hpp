@@ -163,7 +163,7 @@ namespace item
             template <typename T>
             static void MakeSpecificSetWithoutBaseType(std::vector<ArmorTypeWrapper> & wrappers)
             {
-                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
+                for (EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     const auto SPECIFIC_ARMOR_ENUM { static_cast<typename T::Enum>(i) };
                     wrappers.emplace_back(ArmorTypeWrapper(SPECIFIC_ARMOR_ENUM));
@@ -194,7 +194,7 @@ namespace item
             {
                 const auto SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
 
-                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
+                for (EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     const auto SPECIFIC_TYPE_ENUM { static_cast<typename T::Enum>(i) };
 

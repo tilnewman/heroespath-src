@@ -11,6 +11,7 @@
 //
 #include "gui/text-render-context.hpp"
 
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -24,10 +25,7 @@ namespace gui
         struct ParsedTextSegment
         {
             explicit ParsedTextSegment(
-                const std::string & TEXT = "", const GuiFont::Enum FONT = GuiFont::Count)
-                : text(TEXT)
-                , font(FONT)
-            {}
+                const std::string & TEXT = "", const GuiFont::Enum FONT = GuiFont::Count);
 
             ParsedTextSegment(const ParsedTextSegment &) = default;
             ParsedTextSegment(ParsedTextSegment &&) = default;
@@ -35,8 +33,7 @@ namespace gui
             ParsedTextSegment & operator=(ParsedTextSegment &&) = default;
 
             bool Empty() const { return text.empty(); }
-
-            bool IsValid() const { return ((Empty() == false) && GuiFont::IsValid(font)); }
+            bool IsValid() const;
 
             std::string text;
             GuiFont::Enum font;
@@ -53,25 +50,8 @@ namespace gui
             ParsedTextLine & operator=(const ParsedTextLine &) = default;
             ParsedTextLine & operator=(ParsedTextLine &&) = default;
 
-            bool AppendAndResetIfValid(ParsedTextSegment & segment)
-            {
-                if (AppendIfValid(segment))
-                {
-                    segment = ParsedTextSegment();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            bool AppendAndResetIfValid(const ParsedTextSegment & SEGMENT)
-            {
-                ParsedTextSegment segmentTemp { SEGMENT };
-                return AppendAndResetIfValid(segmentTemp);
-            }
-
+            bool AppendAndResetIfValid(ParsedTextSegment & segment);
+            bool AppendAndResetIfValid(const ParsedTextSegment & SEGMENT);
             bool Empty() const { return segments.empty(); }
             bool IsBlankLine() const { return Empty(); }
 
@@ -89,18 +69,7 @@ namespace gui
             ParsedTextSegmentVec_t::const_iterator cend() const noexcept { return end(); }
 
         private:
-            bool AppendIfValid(const ParsedTextSegment & SEGMENT)
-            {
-                if (SEGMENT.IsValid())
-                {
-                    segments.emplace_back(SEGMENT);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            bool AppendIfValid(const ParsedTextSegment & SEGMENT);
 
             ParsedTextSegmentVec_t segments;
         };
@@ -123,34 +92,9 @@ namespace gui
             ParsedTextLines & operator=(ParsedTextLines &&) = default;
 
             bool Empty() const { return lines.empty(); }
-
             void AppendBlankLine() { lines.emplace_back(ParsedTextLine()); }
-
-            bool AppendAndResetToCurrentLineIfValid(ParsedTextSegment & segment)
-            {
-                bool didAppendBlankLine { false };
-
-                if (lines.empty())
-                {
-                    AppendBlankLine();
-                    didAppendBlankLine = true;
-                }
-
-                const auto DID_APPEND_AND_RESET { lines.back().AppendAndResetIfValid(segment) };
-
-                if ((DID_APPEND_AND_RESET == false) && didAppendBlankLine)
-                {
-                    lines.pop_back();
-                }
-
-                return DID_APPEND_AND_RESET;
-            }
-
-            bool AppendAndResetToCurrentLineIfValid(const ParsedTextSegment & SEGMENT)
-            {
-                ParsedTextSegment segmentTemp { SEGMENT };
-                return AppendAndResetToCurrentLineIfValid(segmentTemp);
-            }
+            bool AppendAndResetToCurrentLineIfValid(ParsedTextSegment & segment);
+            bool AppendAndResetToCurrentLineIfValid(const ParsedTextSegment & SEGMENT);
 
             ParsedTextLineVec_t::const_iterator begin() const noexcept { return std::begin(lines); }
             ParsedTextLineVec_t::const_iterator end() const noexcept { return std::end(lines); }

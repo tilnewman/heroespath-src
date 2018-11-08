@@ -77,7 +77,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -127,12 +130,18 @@ namespace gui
             }
             case All:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
             case None:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
             case Count:
@@ -141,7 +150,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -172,7 +184,10 @@ namespace gui
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return false;
             }
         }
@@ -215,7 +230,10 @@ namespace gui
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -258,7 +276,10 @@ namespace gui
             case Count:
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -322,7 +343,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MUSIC));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MUSIC) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

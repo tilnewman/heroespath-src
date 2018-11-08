@@ -10,7 +10,7 @@
 // sex-enum.hpp
 //  An enumeration of all sexes.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,9 +19,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct sex : misc::EnumBaseCounting<sex, misc::EnumFirstValue::Valid>
+    struct sex : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Unknown = 0, // some creatures are bizarre and don't have a sex
             Male,
@@ -29,14 +29,13 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const sex::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
+        static const std::string HeSheIt(const Enum ENUM, const bool WILL_CAPITALIZE);
+        static const std::string HimHerIt(const Enum ENUM, const bool WILL_CAPITALIZE);
 
-        static const std::string HeSheIt(const sex::Enum ENUM, const bool WILL_CAPITALIZE);
-
-        static const std::string HisHerIts(
-            const sex::Enum ENUM, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
-
-        static const std::string HimHerIt(const sex::Enum ENUM, const bool WILL_CAPITALIZE);
+        static const std::string
+            HisHerIts(const Enum ENUM, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
     };
 
 } // namespace creature

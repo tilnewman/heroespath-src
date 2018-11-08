@@ -38,7 +38,11 @@ namespace gui
         }
         else
         {
-            M_HP_LOG_ERR(ValueOutOfRangeErrorString(ORIENTATION));
+            M_HP_LOG_ERR(
+                "enum_value=" << static_cast<EnumUnderlying_t>(ORIENTATION)
+                              << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                              << ")");
+
             return "";
         }
     }

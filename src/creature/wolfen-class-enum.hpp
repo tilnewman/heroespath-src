@@ -10,7 +10,7 @@
 // wolfen-class-enum.hpp
 //  An enumeration of all Wolfen classes as determined by Rank.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -20,9 +20,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct wolfen_class : misc::EnumBaseCounting<wolfen_class, misc::EnumFirstValue::Valid>
+    struct wolfen_class : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Pup = 0,
             Juvenile,
@@ -33,9 +33,10 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const wolfen_class::Enum);
-        static const std::string Desc(const wolfen_class::Enum);
-        static wolfen_class::Enum ClassFromRank(const Rank_t &);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
+        static const std::string Desc(const Enum);
+        static Enum ClassFromRank(const Rank_t &);
     };
 
 } // namespace creature

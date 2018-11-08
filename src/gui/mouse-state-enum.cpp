@@ -44,7 +44,11 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(MOUSE_STATE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(MOUSE_STATE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

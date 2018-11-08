@@ -9,7 +9,7 @@
 //
 // orientation-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Orientation : public misc::EnumBaseCounting<Orientation, misc::EnumFirstValue::Valid>
+    struct Orientation : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Horiz = 0,
             Vert,

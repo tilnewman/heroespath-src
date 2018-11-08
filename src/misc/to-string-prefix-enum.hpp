@@ -9,7 +9,7 @@
 //
 // to-string-prefix-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,9 +19,9 @@ namespace misc
 {
 
     // Responsible for enumerating all possible sfutil::ToString() options
-    struct ToStringPrefix : public misc::EnumBaseBitField<ToStringPrefix>
+    struct ToStringPrefix : public EnumBaseBitField
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             Default = None,
@@ -32,7 +32,7 @@ namespace misc
         };
 
         static const std::string
-            ToStringPopulate(const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+            ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
 

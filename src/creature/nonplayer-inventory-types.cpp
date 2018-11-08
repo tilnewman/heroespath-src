@@ -13,6 +13,7 @@
 
 #include "creature/creature.hpp"
 #include "misc/config-file.hpp"
+#include "misc/enum-util.hpp"
 
 namespace heroespath
 {
@@ -328,7 +329,11 @@ namespace creature
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(WEALTH_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(WEALTH_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -400,8 +405,13 @@ namespace creature
             return FromRank(CHARACTER_PTR->Rank());
         }
 
+        const std::string collector_type::ToString(const Enum ENUM, const EnumStringHow & HOW)
+        {
+            return EnumUtil<collector_type>::ToString(ENUM, HOW);
+        }
+
         const std::string collector_type::ToStringPopulate(
-            const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+            const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
         {
             std::string str;
 
@@ -575,7 +585,11 @@ namespace creature
             }
             else
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(OWNS_MAGIC_TYPE));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(OWNS_MAGIC_TYPE)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -748,7 +762,11 @@ namespace creature
                 }
                 default:
                 {
-                    M_HP_LOG_ERR(ValueOutOfRangeErrorString(COMPLEXITY_TYPE));
+                    M_HP_LOG_ERR(
+                        "enum_value=" << static_cast<EnumUnderlying_t>(COMPLEXITY_TYPE)
+                                      << " is invalid. (count="
+                                      << static_cast<EnumUnderlying_t>(Count) << ")");
+
                     return "";
                 }
             }
@@ -762,14 +780,13 @@ namespace creature
 
             if (RACE_COMPLEXITY_STR == "based-on-role")
             {
-                return static_cast<complexity_type::Enum>(
-                    FromString(misc::ConfigFile::Instance()->Value(
-                        "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
-                        + role::ToString(CHARACTER_PTR->Role()))));
+                return EnumUtil<complexity_type>::FromString(misc::ConfigFile::Instance()->Value(
+                    "heroespath-nonplayer-ownershipprofile-complexitytype-role-"
+                    + role::ToString(CHARACTER_PTR->Role())));
             }
             else
             {
-                return static_cast<complexity_type::Enum>(FromString(RACE_COMPLEXITY_STR));
+                return EnumUtil<complexity_type>::FromString(RACE_COMPLEXITY_STR);
             }
         }
 

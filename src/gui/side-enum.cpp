@@ -11,12 +11,20 @@
 //
 #include "side-enum.hpp"
 
+#include "misc/enum-util.hpp"
+
 namespace heroespath
 {
 namespace gui
 {
-    const std::string Side::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+
+    const std::string Side::ToString(const Enum ENUM, const EnumStringHow & HOW)
+    {
+        return EnumUtil<Side>::ToString(ENUM, HOW);
+    }
+
+    const std::string
+        Side::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, Side::Top, "Top", SEPARATOR);

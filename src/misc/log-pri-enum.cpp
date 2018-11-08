@@ -47,7 +47,11 @@ namespace misc
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(PRIORITY));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }
@@ -83,7 +87,11 @@ namespace misc
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(PRIORITY));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
+                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
+                                  << ")");
+
                 return "";
             }
         }

@@ -44,7 +44,7 @@ sf::Sprite DisplayStuff::sprite;
 template <typename EnumWrapper_t>
 void TestEnumImageLoading()
 {
-    for (misc::EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
+    for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
     {
         const auto ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(index) };
         const gui::CachedTexture CACHED_TEXTURE { gui::LoadAndCacheImage(ENUM_VALUE) };

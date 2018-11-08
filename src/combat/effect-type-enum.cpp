@@ -64,7 +64,10 @@ namespace combat
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -116,7 +119,10 @@ namespace combat
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }

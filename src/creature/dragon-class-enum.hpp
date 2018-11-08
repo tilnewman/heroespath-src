@@ -8,9 +8,8 @@
 #define HEROESPATH_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED
 //
 // dragon-class-enum.hpp
-//  An enumeration of all Dragon classes as determined by Rank.
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -20,9 +19,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct dragon_class : misc::EnumBaseCounting<dragon_class, misc::EnumFirstValue::Valid>
+    struct dragon_class : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Hatchling = 0,
             Whelp,
@@ -35,8 +34,9 @@ namespace creature
             Count
         };
 
-        static const std::string ToString(const dragon_class::Enum);
-        static const std::string Desc(const dragon_class::Enum);
+        static const std::string ToString(const Enum);
+        static const std::string Name(const Enum ENUM) { return ToString(ENUM); }
+        static const std::string Desc(const Enum);
         static dragon_class::Enum ClassFromRank(const Rank_t &);
     };
 

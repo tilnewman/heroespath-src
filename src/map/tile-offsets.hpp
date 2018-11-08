@@ -9,8 +9,6 @@
 //
 // tile-offsets.hpp
 //
-#include "misc/types.hpp"
-
 #include <SFML/System/Vector2.hpp>
 
 #include <tuple>

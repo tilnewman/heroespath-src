@@ -227,7 +227,7 @@ namespace item
             {
                 std::vector<WeaponTypeWrapper> wrappers;
 
-                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
+                for (EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
                     wrappers.emplace_back(WeaponTypeWrapper(SPECIFIC_WEAPON_ENUM));
@@ -271,7 +271,7 @@ namespace item
             bool SetupWithSpecificTypeName(
                 const std::string & SYSTEM_NAME_LOWERCASE, const weapon_type::Enum WEAPON_TYPE)
             {
-                for (misc::EnumUnderlying_t i(0); i < T::Count; ++i)
+                for (EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
 

@@ -74,8 +74,8 @@ namespace gui
             }
         }
 
-        const std::string ToString(
-            const bool WILL_PREFIX = true, const misc::Wrap WILL_WRAP = misc::Wrap::Yes) const;
+        const std::string
+            ToString(const bool WILL_PREFIX = true, const Wrap WILL_WRAP = Wrap::Yes) const;
 
         void SetRegion(const sf::FloatRect & NEW_GLOBAL_BOUNDS);
 

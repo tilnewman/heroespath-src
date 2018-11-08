@@ -9,7 +9,7 @@
 //
 // target-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -19,10 +19,9 @@ namespace combat
 {
 
     // Responsible for enumerating blocking position types.
-    struct BlockingPosType
-        : public misc::EnumBaseCounting<BlockingPosType, misc::EnumFirstValue::Valid>
+    struct BlockingPosType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Front = 0,
             Support,

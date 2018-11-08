@@ -9,7 +9,7 @@
 //
 // size-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 
@@ -18,9 +18,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Size : public misc::EnumBaseCounting<Size, misc::EnumFirstValue::Valid>
+    struct Size : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Small = 0,
             Medium,

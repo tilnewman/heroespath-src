@@ -142,10 +142,10 @@ namespace avatar
             }
             default:
             {
-                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
-                    static_cast<misc::EnumUnderlying_t>(ENUM),
-                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
-                    0));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM)
+                                  << " is invalid. (last=monk="
+                                  << static_cast<EnumUnderlying_t>(NameEnum::Monk) << ")");
 
                 return "";
             }
@@ -636,10 +636,10 @@ namespace avatar
             }
             default:
             {
-                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
-                    static_cast<misc::EnumUnderlying_t>(ENUM),
-                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
-                    0));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM)
+                                  << " is invalid. (last=monk="
+                                  << static_cast<EnumUnderlying_t>(NameEnum::Monk) << ")");
 
                 return {};
             }
@@ -692,10 +692,10 @@ namespace avatar
             case NameEnum::Monk: return interact::talk::Category::Monk;
             default:
             {
-                M_HP_LOG_ERR(misc::enum_helpers::ValueOutOfRangeErrorString(
-                    static_cast<misc::EnumUnderlying_t>(TYPE),
-                    static_cast<misc::EnumUnderlying_t>(NameEnum::Monk),
-                    0));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(TYPE)
+                                  << " is invalid. (last=monk="
+                                  << static_cast<EnumUnderlying_t>(NameEnum::Monk) << ")");
 
                 return interact::talk::Category::Common;
             }
@@ -2452,7 +2452,10 @@ namespace avatar
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -3000,12 +3003,18 @@ namespace avatar
             }
             case Count:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM) + "(Count)");
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return NameEnum::Monk;
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return NameEnum::Monk;
             }
         }

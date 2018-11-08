@@ -11,6 +11,7 @@
 
 #include "gui/date-time.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 
 #include <boost/algorithm/string/join.hpp>
@@ -45,7 +46,8 @@ namespace misc
         , consoleAppendCountSinceLastFlush_(0)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((FILE_NAME.empty() == false) && (LogPriority::IsValid(LOWEST_PRI_TO_CONSOLE_ECHO))),
+            ((FILE_NAME.empty() == false)
+             && (EnumUtil<LogPriority>::IsValid(LOWEST_PRI_TO_CONSOLE_ECHO))),
             "misc::Log::Log(file_name="
                 << FILE_NAME << ", lowest_pri_to_console_echo="
                 << LogPriority::ToString(LOWEST_PRI_TO_CONSOLE_ECHO)
@@ -108,7 +110,7 @@ namespace misc
                 fileStream_ << '\n';
             }
 
-            if (LogPriority::IsValid(PRIORITY) && (PRIORITY >= lowestPriToConsoleEcho_))
+            if (EnumUtil<LogPriority>::IsValid(PRIORITY) && (PRIORITY >= lowestPriToConsoleEcho_))
             {
                 EchoToConsole(PRIORITY, COMPLETE_MESSAGE);
             }

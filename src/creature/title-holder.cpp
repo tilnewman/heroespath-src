@@ -14,6 +14,7 @@
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/enum-util.hpp"
 #include "stage/i-stage.hpp"
 
 #include <exception>
@@ -1875,7 +1876,7 @@ namespace creature
                                                    << "\") called when the Holder was empty.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                (Titles::IsValid(ENUM)),
+                (EnumUtil<Titles>::IsValid(ENUM)),
                 "creature::Titles::Holder::Get(enum=" << Titles::ToString(ENUM)
                                                       << ") but that enum value is invalid.");
 
@@ -1900,7 +1901,7 @@ namespace creature
                 iStagePtr->TestingStrAppend("creature::Titles::Holder::Test() Starting Tests...");
             }
 
-            static misc::EnumUnderlying_t titleIndex { 0 };
+            static EnumUnderlying_t titleIndex { 0 };
             if (titleIndex < Titles::Count)
             {
                 const auto NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));

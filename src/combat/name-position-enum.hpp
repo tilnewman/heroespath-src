@@ -9,7 +9,7 @@
 //
 // name-position-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <tuple>
@@ -19,9 +19,9 @@ namespace heroespath
 namespace combat
 {
 
-    struct NamePosition : public misc::EnumBaseCounting<NamePosition, misc::EnumFirstValue::Valid>
+    struct NamePosition : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             NoName = 0,
             SourceBefore,

@@ -10,7 +10,7 @@
 // sound-effects-enum.hpp
 //  An enum defining the various sound effects
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -20,9 +20,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct Footstep : public misc::EnumBaseCounting<Footstep, misc::EnumFirstValue::Valid>
+    struct Footstep : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Grass = 0,
             Gravel,
@@ -35,9 +35,9 @@ namespace gui
         static const std::string ToString(const Enum);
     };
 
-    struct sound_effect : public misc::EnumBaseCounting<sound_effect, misc::EnumFirstValue::Valid>
+    struct sound_effect : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             WindGust1 = 0,
             WindGust2,

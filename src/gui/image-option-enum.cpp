@@ -16,8 +16,8 @@ namespace heroespath
 namespace gui
 {
 
-    const std::string ImageOpt::ToStringPopulate(
-        const misc::EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
+    const std::string
+        ImageOpt::ToStringPopulate(const EnumUnderlying_t ENUM_VALUE, const std::string & SEPARATOR)
     {
         std::string str;
         AppendNameIfBitIsSet(str, ENUM_VALUE, ImageOpt::Smooth, "Smooth", SEPARATOR);

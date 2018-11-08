@@ -9,7 +9,7 @@
 //
 // font-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -19,9 +19,9 @@ namespace heroespath
 namespace gui
 {
 
-    struct GuiFont : public misc::EnumBaseCounting<GuiFont, misc::EnumFirstValue::Valid>
+    struct GuiFont : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             // Euler, slightly dolphin, nice and round with ample spacing
             Default = 0,

@@ -11,6 +11,7 @@
 
 #include "gui/font-manager.hpp"
 #include "gui/text-info.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/strings.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/position.hpp"
@@ -69,7 +70,7 @@ namespace gui
         sfText_.setCharacterSize(SIZE);
         sfText_.setFillColor(COLOR);
 
-        if (GuiFont::IsValid(font_))
+        if (EnumUtil<GuiFont>::IsValid(font_))
         {
             sfText_.setFont(*gui::FontManager::Instance()->GetFont(font_));
         }
@@ -102,16 +103,16 @@ namespace gui
             text_ = TEXT;
         }
 
-        if (GuiFont::IsValid(FONT))
+        if (EnumUtil<GuiFont>::IsValid(FONT))
         {
             font_ = FONT;
         }
-        else if (GuiFont::IsValid(TEXT_INFO.font_letters))
+        else if (EnumUtil<GuiFont>::IsValid(TEXT_INFO.font_letters))
         {
             font_ = TEXT_INFO.font_letters;
         }
 
-        if (GuiFont::IsValid(font_))
+        if (EnumUtil<GuiFont>::IsValid(font_))
         {
             sfText_.setFont(*gui::FontManager::Instance()->GetFont(font_));
         }
@@ -135,6 +136,11 @@ namespace gui
     void Text::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(sfText_, states);
+    }
+
+    bool Text::IsValid() const
+    {
+        return (!text_.empty() && EnumUtil<GuiFont>::IsValid(font_) && (getCharacterSize() > 0));
     }
 
     const std::string Text::getFontFamilyName() const
@@ -220,7 +226,7 @@ namespace gui
     }
 
     const std::string Text::ToString(
-        const bool WILL_PREFIX, const misc::Wrap WILL_WRAP, const std::string & SEPARATOR) const
+        const bool WILL_PREFIX, const Wrap WILL_WRAP, const std::string & SEPARATOR) const
     {
         std::ostringstream ss;
 
@@ -294,13 +300,11 @@ namespace gui
             }
         }
 
-        const auto PARTS_STR { (
-            (WILL_WRAP == misc::Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
+        const auto PARTS_STR { ((WILL_WRAP == Wrap::Yes) ? ("(" + ss.str() + ")") : ss.str()) };
 
         if (WILL_PREFIX)
         {
-            return std::string("Text").append((WILL_WRAP == misc::Wrap::Yes) ? "" : "=")
-                + PARTS_STR;
+            return std::string("Text").append((WILL_WRAP == Wrap::Yes) ? "" : "=") + PARTS_STR;
         }
         else
         {

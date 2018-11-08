@@ -13,6 +13,7 @@
 
 #include "gui/sfml-audio.hpp"
 #include "gui/sound-manager.hpp"
+#include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/real.hpp"
 
@@ -61,7 +62,10 @@ namespace gui
             }
             default:
             {
-                M_HP_LOG_ERR(ValueOutOfRangeErrorString(ENUM));
+                M_HP_LOG_ERR(
+                    "enum_value=" << static_cast<EnumUnderlying_t>(ENUM) << " is invalid. (count="
+                                  << static_cast<EnumUnderlying_t>(Count) << ")");
+
                 return "";
             }
         }
@@ -91,7 +95,10 @@ namespace gui
         }
     }
 
-    bool MusicOperator::IsValid() const { return (music::IsValid(info_.Which()) && musicUPtr_); }
+    bool MusicOperator::IsValid() const
+    {
+        return (EnumUtil<music>::IsValid(info_.Which()) && musicUPtr_);
+    }
 
     MusicOperator::~MusicOperator()
     {

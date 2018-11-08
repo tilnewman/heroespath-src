@@ -10,8 +10,7 @@
 #include "text-render-parsing.hpp"
 
 #include "gui/text-render-char-info.hpp"
-
-#include <string>
+#include "misc/enum-util.hpp"
 
 namespace heroespath
 {
@@ -19,6 +18,74 @@ namespace gui
 {
     namespace text_rendering
     {
+
+        ParsedTextSegment::ParsedTextSegment(const std::string & TEXT, const GuiFont::Enum FONT)
+            : text(TEXT)
+            , font(FONT)
+        {}
+
+        bool ParsedTextSegment::IsValid() const
+        {
+            return ((Empty() == false) && EnumUtil<GuiFont>::IsValid(font));
+        }
+
+        bool ParsedTextLine::AppendAndResetIfValid(ParsedTextSegment & segment)
+        {
+            if (AppendIfValid(segment))
+            {
+                segment = ParsedTextSegment();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        bool ParsedTextLine::AppendAndResetIfValid(const ParsedTextSegment & SEGMENT)
+        {
+            ParsedTextSegment segmentTemp { SEGMENT };
+            return AppendAndResetIfValid(segmentTemp);
+        }
+
+        bool ParsedTextLine::AppendIfValid(const ParsedTextSegment & SEGMENT)
+        {
+            if (SEGMENT.IsValid())
+            {
+                segments.emplace_back(SEGMENT);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        bool ParsedTextLines::AppendAndResetToCurrentLineIfValid(ParsedTextSegment & segment)
+        {
+            bool didAppendBlankLine { false };
+
+            if (lines.empty())
+            {
+                AppendBlankLine();
+                didAppendBlankLine = true;
+            }
+
+            const auto DID_APPEND_AND_RESET { lines.back().AppendAndResetIfValid(segment) };
+
+            if ((DID_APPEND_AND_RESET == false) && didAppendBlankLine)
+            {
+                lines.pop_back();
+            }
+
+            return DID_APPEND_AND_RESET;
+        }
+
+        bool ParsedTextLines::AppendAndResetToCurrentLineIfValid(const ParsedTextSegment & SEGMENT)
+        {
+            ParsedTextSegment segmentTemp { SEGMENT };
+            return AppendAndResetToCurrentLineIfValid(segmentTemp);
+        }
 
         const ParsedTextLines Parser::Make(const Context & CONTEXT)
         {
@@ -53,7 +120,7 @@ namespace gui
             }
 
             // default to using the letters font if neither was required before reaching the end
-            if (GuiFont::IsValid(segment.font) == false)
+            if (EnumUtil<GuiFont>::IsValid(segment.font) == false)
             {
                 segment.font = CONTEXT.text_info.font_letters;
             }

@@ -106,8 +106,7 @@ namespace item
 
         if (category::None != category_)
         {
-            ss << "category="
-               << category::ToString(category_, misc::EnumStringHow(misc::Wrap::Yes));
+            ss << "category=" << category::ToString(category_, EnumStringHow(Wrap::Yes));
         }
 
         if (ss.str().empty() == false)
@@ -149,8 +148,7 @@ namespace item
 
         if (element_type::None != element_)
         {
-            ss << ", element_type="
-               << element_type::ToString(element_, misc::EnumStringHow(misc::Wrap::Yes));
+            ss << ", element_type=" << element_type::ToString(element_, EnumStringHow(Wrap::Yes));
         }
 
         if (summonInfo_.CanSummon())
@@ -243,7 +241,7 @@ namespace item
                     << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
                     << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
                     << ", element_type="
-                    << element_type::ToString(ELEMENT_TYPE, misc::EnumStringHow(misc::Wrap::Yes))
+                    << element_type::ToString(ELEMENT_TYPE, EnumStringHow(Wrap::Yes))
                     << ") element_type wasn't None but the misc_type was not equippable.");
 
             score_ += enchantmentFactory.TreasureScore(

@@ -9,7 +9,7 @@
 //
 // song-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -20,9 +20,9 @@ namespace song
 {
 
     // Responsible for identifying all songs that Bards can play in the game
-    struct Songs : public misc::EnumBaseCounting<Songs, misc::EnumFirstValue::Valid>
+    struct Songs : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             RallyDrum = 0,
             SpiritResonance,

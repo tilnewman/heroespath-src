@@ -11,6 +11,8 @@
 //
 #include "music-info.hpp"
 
+#include "misc/enum-util.hpp"
+
 namespace heroespath
 {
 namespace gui
@@ -37,7 +39,7 @@ namespace gui
 
     void MusicInfo::AutoSetup()
     {
-        if (music::IsValid(which_))
+        if (EnumUtil<music>::IsValid(which_))
         {
             isLooped_ = music::IsLooped(which_);
             artistName_ = music::ArtistName(which_);

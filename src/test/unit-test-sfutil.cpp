@@ -417,7 +417,7 @@ BOOST_AUTO_TEST_CASE(Vertex_Tests)
     };
     const std::vector<sf::Vector2f> POS_VEC_EMPTY;
 
-    for (heroespath::misc::EnumUnderlying_t i(0); i <= Orientation::Count; ++i)
+    for (heroespath::EnumUnderlying_t i(0); i <= Orientation::Count; ++i)
     {
         const Orientation::Enum ORIENTATION { i };
 

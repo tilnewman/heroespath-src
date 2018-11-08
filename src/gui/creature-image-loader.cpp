@@ -52,20 +52,20 @@ namespace gui
             boost::algorithm::to_lower(pathStr);
         }
 
-        static misc::EnumUnderlying_t raceIndex { 0 };
+        static EnumUnderlying_t raceIndex { 0 };
         if (raceIndex < creature::race::Count)
         {
             const auto RACE_ENUM { static_cast<creature::race::Enum>(raceIndex) };
             const auto RACE_STR { creature::race::ToString(RACE_ENUM) };
             const auto ROLE_VEC { creature::race::Roles(RACE_ENUM) };
 
-            static misc::EnumUnderlying_t roleIndex { 0 };
+            static EnumUnderlying_t roleIndex { 0 };
             if (roleIndex < ROLE_VEC.size())
             {
                 const auto ROLE_ENUM { ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                 const auto ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
-                static misc::EnumUnderlying_t sexIndex { 0 };
+                static EnumUnderlying_t sexIndex { 0 };
                 if (sexIndex < creature::sex::Count)
                 {
                     const auto SEX_ENUM { static_cast<creature::sex::Enum>(sexIndex) };
@@ -74,7 +74,7 @@ namespace gui
                     // test to ensure that BodyType maker will not throw
                     creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
 
-                    static misc::EnumUnderlying_t classIndex { 0 };
+                    static EnumUnderlying_t classIndex { 0 };
                     static std::size_t fileIndex { 0 };
                     if (RACE_ENUM == creature::race::Wolfen)
                     {

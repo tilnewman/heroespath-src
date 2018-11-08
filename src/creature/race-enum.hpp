@@ -11,12 +11,11 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
-#include "creature/rank.hpp"
+#include "creature/rank-class.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/trait.hpp"
 #include "item/treasure-scores.hpp"
-#include "misc/enum-util.hpp"
-#include "misc/types.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <tuple>
@@ -27,9 +26,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct origin_type : public misc::EnumBaseCounting<origin_type, misc::EnumFirstValue::Valid>
+    struct origin_type : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Statue = 0,
             Egg,
@@ -44,9 +43,9 @@ namespace creature
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
 
-    struct race : public misc::EnumBaseCounting<race, misc::EnumFirstValue::Valid>
+    struct race : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             Human = 0,
             Gnome,

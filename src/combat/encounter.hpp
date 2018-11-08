@@ -11,7 +11,6 @@
 //  Code that orchestrates an encounter from start to finish,
 //  and owns the pointers to the non-player party.
 //
-#include "combat/strategy-details.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-info.hpp"
 #include "item/item-cache.hpp"
@@ -35,6 +34,12 @@ namespace creature
 } // namespace creature
 namespace combat
 {
+
+    namespace strategy
+    {
+        class CreatureStrategies;
+        using CreatureStrategiesUPtr_t = std::unique_ptr<CreatureStrategies>;
+    } // namespace strategy
 
     // Manages an encounter with the player party
     class Encounter
@@ -173,7 +178,7 @@ namespace combat
         // this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtrOpt_t lockPickCreaturePtrOpt_;
 
-        strategy::CreatureStrategies creatureStrategies_;
+        strategy::CreatureStrategiesUPtr_t creatureStrategiesUPtr_;
 
         item::TreasureFactory treasureFactory_;
     };

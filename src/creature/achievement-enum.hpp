@@ -9,7 +9,7 @@
 //
 // achievement-enum.hpp
 //
-#include "misc/enum-util.hpp"
+#include "misc/enum-common.hpp"
 
 #include <string>
 #include <vector>
@@ -19,10 +19,9 @@ namespace heroespath
 namespace creature
 {
 
-    struct AchievementType
-        : public misc::EnumBaseCounting<AchievementType, misc::EnumFirstValue::Valid>
+    struct AchievementType : public EnumBaseCounting<EnumFirstValue::Valid>
     {
-        enum Enum : misc::EnumUnderlying_t
+        enum Enum : EnumUnderlying_t
         {
             None = 0,
             EnemiesFaced,
