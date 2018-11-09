@@ -33,7 +33,6 @@
 #include "stage/stage-base.hpp"
 
 #include <memory>
-#include <set>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -80,18 +79,23 @@ namespace stage
             , hit(HIT_INDEX)
         {}
 
+        ReportIndicies(const ReportIndicies &) = default;
+        ReportIndicies(ReportIndicies &&) = default;
+        ReportIndicies & operator=(const ReportIndicies &) = default;
+        ReportIndicies & operator=(ReportIndicies &&) = default;
+
         std::size_t effect;
         std::size_t hit;
-
-        friend bool operator<(const ReportIndicies &, const ReportIndicies &);
     };
 
-    inline bool operator<(const ReportIndicies & L, const ReportIndicies & R)
+    inline bool operator==(const ReportIndicies & L, const ReportIndicies & R)
     {
-        return std::tie(L.effect, L.hit) < std::tie(R.effect, R.hit);
+        return std::tie(L.effect, L.hit) == std::tie(R.effect, R.hit);
     }
 
-    using ReportIndexesSet_t = std::set<ReportIndicies>;
+    inline bool operator!=(const ReportIndicies & L, const ReportIndicies & R) { return !(L == R); }
+
+    using ReportIndexesVec_t = std::vector<ReportIndicies>;
 
     class CombatStage;
     using CombatStageListBox_t = gui::ListBox<CombatStage, gui::NoElement_t>;
@@ -480,7 +484,7 @@ namespace stage
         gui::BoxEntityUPtr_t turnBoxUPtr_;
         sf::FloatRect turnBoxRegion_;
         combat::CombatSoundEffects combatSoundEffects_;
-        ReportIndexesSet_t soundEffectsPlayedSet_;
+        ReportIndexesVec_t soundEffectsPlayedVec_;
         TurnPhase turnPhase_;
         PreTurnPhase preTurnPhase_;
         TurnActionPhase turnActionPhase_;

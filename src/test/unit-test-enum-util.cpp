@@ -466,9 +466,6 @@ BOOST_AUTO_TEST_CASE(Case_2_MiscEnumUtil_BitField_Tests)
     BOOST_CHECK(EnumUtil<Bitfield>::FromString("A(),(),(,),,, ,") == Bitfield::A);
     BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),(A),(,),,, ,") == Bitfield::A);
     BOOST_CHECK(EnumUtil<Bitfield>::FromString("(),()A,(,),,, ,") == Bitfield::A);
-    BOOST_CHECK(EnumUtil<Bitfield>::FromString(" A") == Bitfield::A);
-    BOOST_CHECK(EnumUtil<Bitfield>::FromString("A ") == Bitfield::A);
-    BOOST_CHECK(EnumUtil<Bitfield>::FromString(" A ") == Bitfield::A);
 
     // spaces are not valid separators because some names will have spaces
     BOOST_CHECK(EnumUtil<Bitfield>::FromString("A A") == Bitfield::None);

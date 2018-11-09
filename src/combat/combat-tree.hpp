@@ -86,6 +86,11 @@ namespace combat
                 , type(TYPE)
             {}
 
+            Edge(const Edge &) = default;
+            Edge(Edge &&) = default;
+            Edge & operator=(const Edge &) = default;
+            Edge & operator=(Edge &&) = default;
+
             ID_t a;
             ID_t b;
             EdgeType::Enum type;
@@ -99,6 +104,11 @@ namespace combat
                 : id(ID)
                 , node_sptr(NODE_SPTR)
             {}
+
+            Vertex(const Vertex &) = default;
+            Vertex(Vertex &&) = default;
+            Vertex & operator=(const Vertex &) = default;
+            Vertex & operator=(Vertex &&) = default;
 
             ID_t id;
             CombatNodeSPtr_t node_sptr;

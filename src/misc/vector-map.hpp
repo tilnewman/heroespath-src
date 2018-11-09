@@ -57,7 +57,9 @@ namespace misc
 
         VectorMap()
             : pairs_()
-        {}
+        {
+            pairs_.reserve(32); // found by experiment to be a good guess for the game
+        }
 
         // it is up to the caller to ensure that no duplicates are added, if you care...
         void Append(const value_type & PAIR) { pairs_.push_back(PAIR); }

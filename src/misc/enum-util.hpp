@@ -15,16 +15,14 @@
 //         creating and including enums as light-weight as possible.  So while you CAN include
 //         enum-util.hpp in a header file, it would defeat the design and slow down the build.
 //
-#include "misc/boost-string-includes.hpp"
 #include "misc/enum-common.hpp"
 #include "misc/log.hpp"
-#include "misc/strings.hpp"
+#include "misc/vector-map.hpp"
 
 #include <boost/type_index.hpp>
 
 #include <algorithm>
 #include <exception>
-#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -35,80 +33,20 @@ namespace heroespath
 namespace enum_helpers
 {
 
-    inline const std::string TrimAndMakeLowerCase(const std::string & STR)
-    {
-        return boost::algorithm::trim_copy(boost::algorithm::to_lower_copy(STR));
-    }
+    const std::string MakeLowerCaseCopy(const std::string & STR);
 
-    inline const std::vector<std::string> BitwiseEnumFromStringSplit(const std::string & STR_ORIG)
-    {
-        const auto STR_TRIMMED_AND_LOWERCASE { TrimAndMakeLowerCase(STR_ORIG) };
+    const std::vector<std::string> BitwiseEnumFromStringSplit(const std::string & STR_ORIG);
 
-        if (STR_TRIMMED_AND_LOWERCASE.empty())
-        {
-            return {};
-        }
-
-        std::string seperatorChars;
-
-        for (const auto CHAR : STR_TRIMMED_AND_LOWERCASE)
-        {
-            // spaces/dashes/colons are not valid separators because some names will have them
-            if ((misc::IsAlphaOrDigit(CHAR) == false) && (CHAR != ' ') && (CHAR != '-')
-                && (CHAR != ':'))
-            {
-                seperatorChars.push_back(CHAR);
-            }
-        }
-
-        return misc::SplitByChars(STR_TRIMMED_AND_LOWERCASE, misc::SplitHow(seperatorChars));
-    }
-
-    inline EnumUnderlying_t ReturnValueOfStringOr(
-        const std::map<std::string, EnumUnderlying_t> & STRING_TO_VALUE_MAP,
+    EnumUnderlying_t ReturnValueOfStringOr(
+        const misc::VectorMap<std::string, EnumUnderlying_t> & STRING_TO_VALUE_MAP,
         const std::string & STRING_TO_FIND,
-        const EnumUnderlying_t TO_RETURN_IF_NOT_FOUND)
-    {
-        const auto FOUND_ITER { std::find_if(
-            std::begin(STRING_TO_VALUE_MAP),
-            std::end(STRING_TO_VALUE_MAP),
-            [&](const auto & NAME_VALUE_PAIR) {
-                return (STRING_TO_FIND == NAME_VALUE_PAIR.first);
-            }) };
+        const EnumUnderlying_t TO_RETURN_IF_NOT_FOUND);
 
-        if (FOUND_ITER == std::end(STRING_TO_VALUE_MAP))
-        {
-            return TO_RETURN_IF_NOT_FOUND;
-        }
-        else
-        {
-            return FOUND_ITER->second;
-        }
-    }
-
-    inline EnumUnderlying_t WordsToBitFlags(
+    EnumUnderlying_t WordsToBitFlags(
         const std::vector<std::string> & WORDS_TO_FIND,
-        const std::map<std::string, EnumUnderlying_t> & WORDS_TO_BIT_FLAG_MAP)
-    {
-        EnumUnderlying_t result { 0 };
+        const misc::VectorMap<std::string, EnumUnderlying_t> & WORDS_TO_BIT_FLAG_MAP);
 
-        for (const auto & WORD_TO_FIND : WORDS_TO_FIND)
-        {
-            const auto FOUND_ITER { std::find_if(
-                std::begin(WORDS_TO_BIT_FLAG_MAP),
-                std::end(WORDS_TO_BIT_FLAG_MAP),
-                [&](const auto & NAME_VALUE_PAIR) {
-                    return (WORD_TO_FIND == NAME_VALUE_PAIR.first);
-                }) };
-
-            if (FOUND_ITER != std::end(WORDS_TO_BIT_FLAG_MAP))
-            {
-                result |= FOUND_ITER->second;
-            }
-        }
-
-        return result;
-    }
+    //
 
     template <typename EnumWrapper_t>
     class CountingEnum
@@ -120,9 +58,9 @@ namespace enum_helpers
 
         static typename EnumWrapper_t::Enum FromString(const std::string & STR_ORIG)
         {
-            const auto STR_TRIMMED_LOWER { TrimAndMakeLowerCase(STR_ORIG) };
+            const auto STR_TRIMMED_LOWER { MakeLowerCaseCopy(STR_ORIG) };
 
-            if (nameToValueMap_.empty())
+            if (nameToValueMap_.Empty())
             {
                 ClearAndPopulateNameToValueMap();
             }
@@ -134,22 +72,24 @@ namespace enum_helpers
     private:
         static void ClearAndPopulateNameToValueMap()
         {
-            nameToValueMap_.clear();
+            nameToValueMap_.Clear();
 
             for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
             {
-                const std::string ENUM_TRIMMED_LOWER_STRING { TrimAndMakeLowerCase(
+                const std::string ENUM_TRIMMED_LOWER_STRING { MakeLowerCaseCopy(
                     EnumWrapper_t::ToString(static_cast<typename EnumWrapper_t::Enum>(index))) };
 
-                nameToValueMap_[ENUM_TRIMMED_LOWER_STRING] = index;
+                nameToValueMap_.Append(std::make_pair(ENUM_TRIMMED_LOWER_STRING, index));
             }
+
+            std::sort(std::begin(nameToValueMap_), std::end(nameToValueMap_));
         }
 
-        static std::map<std::string, EnumUnderlying_t> nameToValueMap_;
+        static misc::VectorMap<std::string, EnumUnderlying_t> nameToValueMap_;
     };
 
     template <typename EnumWrapper_t>
-    std::map<std::string, EnumUnderlying_t> CountingEnum<EnumWrapper_t>::nameToValueMap_;
+    misc::VectorMap<std::string, EnumUnderlying_t> CountingEnum<EnumWrapper_t>::nameToValueMap_;
 
     //
 
@@ -216,7 +156,7 @@ namespace enum_helpers
                 return EnumWrapper_t::None;
             }
 
-            if (nameToBitFlagMap_.empty())
+            if (nameToBitFlagMap_.Empty())
             {
                 ClearAndPopulateNameToBitFlagMap();
             }
@@ -244,7 +184,7 @@ namespace enum_helpers
 
         static void ClearAndPopulateNameToBitFlagMap()
         {
-            nameToBitFlagMap_.clear();
+            nameToBitFlagMap_.Clear();
 
             EnumUnderlying_t flag { 1 };
 
@@ -254,27 +194,29 @@ namespace enum_helpers
                     static_cast<typename EnumWrapper_t::Enum>(flag),
                     EnumStringHow(Wrap::No, "", NoneEmpty::No)) };
 
-                const std::string SINGLE_BIT_TO_STRING_TRIMMED_LOWER { TrimAndMakeLowerCase(
+                const std::string SINGLE_BIT_TO_STRING_TRIMMED_LOWER { MakeLowerCaseCopy(
                     SINGLE_BIT_TO_STRING_ORIG) };
 
-                nameToBitFlagMap_[SINGLE_BIT_TO_STRING_TRIMMED_LOWER] = flag;
+                nameToBitFlagMap_.Append(std::make_pair(SINGLE_BIT_TO_STRING_TRIMMED_LOWER, flag));
 
                 flag <<= 1;
             }
+
+            std::sort(std::begin(nameToBitFlagMap_), std::end(nameToBitFlagMap_));
         }
 
         static EnumUnderlying_t largestValidValue_;
 
         // all the words (trimmed and lower-case) that correspond to one bit position in this
         // enum
-        static std::map<std::string, EnumUnderlying_t> nameToBitFlagMap_;
+        static misc::VectorMap<std::string, EnumUnderlying_t> nameToBitFlagMap_;
     };
 
     template <typename EnumWrapper_t>
     EnumUnderlying_t BitFieldEnum<EnumWrapper_t>::largestValidValue_ { 0 };
 
     template <typename EnumWrapper_t>
-    std::map<std::string, EnumUnderlying_t> BitFieldEnum<EnumWrapper_t>::nameToBitFlagMap_;
+    misc::VectorMap<std::string, EnumUnderlying_t> BitFieldEnum<EnumWrapper_t>::nameToBitFlagMap_;
 
 } // namespace enum_helpers
 

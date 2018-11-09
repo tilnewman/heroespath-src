@@ -669,3 +669,92 @@ BOOST_AUTO_TEST_CASE(misc_strings__FindNumber)
         BOOST_CHECK(FindLastNumber(TEST_STRING_TO_SEARCH_WITH_NUMBERS, ERROR_NUMBER) == 123456789);
     }
 }
+
+BOOST_AUTO_TEST_CASE(misc_strings__Trim)
+{
+    BOOST_CHECK(TrimWhitespaceCopy("") == "");
+    BOOST_CHECK(TrimWhitespaceCopy(" ") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("\t") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("\r") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("\n") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("  ") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("   ") == "");
+    BOOST_CHECK(TrimWhitespaceCopy("     ") == "");
+    BOOST_CHECK(TrimWhitespaceCopy(" \r \n\n\t\t \t \n\r ") == "");
+    BOOST_CHECK(TrimWhitespaceCopy(" \r \n\n\ta\t \t \n\r ") == "a");
+    BOOST_CHECK(TrimWhitespaceCopy(" \r \n\n\ta\tb \t \n\r ") == "a\tb");
+    BOOST_CHECK(TrimWhitespaceCopy("a \r \n\n\ta\t \t \n\r b") == "a \r \n\n\ta\t \t \n\r b");
+
+    BOOST_CHECK(TrimNonDisplayableCopy("") == "");
+    BOOST_CHECK(TrimNonDisplayableCopy(" ") == " ");
+    BOOST_CHECK(TrimNonDisplayableCopy("\t") == "\t");
+    BOOST_CHECK(TrimNonDisplayableCopy("\r") == "\r");
+    BOOST_CHECK(TrimNonDisplayableCopy("\n") == "\n");
+    BOOST_CHECK(TrimNonDisplayableCopy("  ") == "  ");
+    BOOST_CHECK(TrimNonDisplayableCopy("   ") == "   ");
+    BOOST_CHECK(TrimNonDisplayableCopy("     ") == "     ");
+    BOOST_CHECK(TrimNonDisplayableCopy(" \r \n\n\t\t \t \n\r ") == " \r \n\n\t\t \t \n\r ");
+    BOOST_CHECK(TrimNonDisplayableCopy(" \r \n\n\ta\t \t \n\r ") == " \r \n\n\ta\t \t \n\r ");
+    BOOST_CHECK(TrimNonDisplayableCopy(" \r \n\n\ta\tb \t \n\r ") == " \r \n\n\ta\tb \t \n\r ");
+    BOOST_CHECK(TrimNonDisplayableCopy("a \r \n\n\ta\t \t \n\r b") == "a \r \n\n\ta\t \t \n\r b");
+
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(" ") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("\t") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("\r") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("\n") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("  ") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("   ") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy("     ") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(" \r \n\n\t\t \t \n\r ") == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(" \r \n\n\ta\t \t \n\r ") == "a");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(" \r \n\n\ta\tb \t \n\r ") == "a\tb");
+
+    BOOST_CHECK(
+        TrimWhitespaceAndNonDisplayableCopy("a \r \n\n\ta\t \t \n\r b")
+        == "a \r \n\n\ta\t \t \n\r b");
+
+    std::string str;
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str += static_cast<char>(0);
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str += static_cast<char>(-1);
+    str += static_cast<char>(127);
+    str += static_cast<char>(31);
+    str += static_cast<char>(15);
+    str += static_cast<char>(0);
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str += 'a';
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str.pop_back();
+    str.insert(str.begin(), 'a');
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str += static_cast<char>(-1);
+    str += static_cast<char>(127);
+    str += static_cast<char>(31);
+    str += static_cast<char>(15);
+    str += static_cast<char>(0);
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == "a");
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+
+    str += 'b';
+    BOOST_CHECK(TrimNonDisplayableCopy(str) == str);
+    BOOST_CHECK(TrimWhitespaceAndNonDisplayableCopy(str) == str);
+    BOOST_CHECK(TrimWhitespaceCopy(str) == str);
+}

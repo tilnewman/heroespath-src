@@ -16,13 +16,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/type_index.hpp>
 
-#include <algorithm>
-#include <exception>
-#include <functional>
-#include <iomanip>
 #include <sstream>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 namespace heroespath
@@ -30,78 +25,42 @@ namespace heroespath
 namespace misc
 {
 
-    inline bool IsUpper(const char CHAR) { return ((CHAR >= 'A') && (CHAR <= 'Z')); }
-    inline bool IsLower(const char CHAR) { return ((CHAR >= 'a') && (CHAR <= 'z')); }
+    bool IsUpper(const char CH);
+    bool IsLower(const char CH);
 
-    // if !IsLower() then ch is not changed
-    inline void ToUpper(char & ch)
+    void ToUpper(char & ch);
+    char ToUpperCopy(const char CH);
+    void ToUpper(std::string & str);
+    const std::string ToUpperCopy(const std::string & STR);
+
+    void ToLower(char & ch);
+    char ToLowerCopy(const char CH);
+    void ToLower(std::string & str);
+    const std::string ToLowerCopy(const std::string & STR);
+
+    bool IsAlpha(const char CH);
+    bool IsDigit(const char CH);
+    bool IsAlphaOrDigit(const char CH);
+    bool IsWhitespace(const char CH);
+    bool IsDisplayable(const char CH);
+    bool IsWhitespaceOrNonDisplayable(const char CH);
+
+    // trims any char(s) for which the lambda returns false
+    template <typename Lambda_t>
+    void TrimIf(std::string & str, Lambda_t lambda)
     {
-        if (IsLower(ch))
-        {
-            ch -= 32;
-        }
+        str.erase(std::begin(str), std::find_if(std::begin(str), std::end(str), lambda));
+        str.erase(std::find_if(std::rbegin(str), std::rend(str), lambda).base(), std::end(str));
     }
 
-    // if !IsLower() then returns the given CHAR unchanged
-    inline char ToUpperCopy(const char CHAR)
-    {
-        auto copy { CHAR };
-        ToUpper(copy);
-        return copy;
-    }
+    void TrimWhitespace(std::string & str);
+    const std::string TrimWhitespaceCopy(const std::string & STR);
 
-    inline void ToUpper(std::string & str)
-    {
-        for (char & ch : str)
-        {
-            ToUpper(ch);
-        }
-    }
+    void TrimNonDisplayable(std::string & str);
+    const std::string TrimNonDisplayableCopy(const std::string & STR);
 
-    inline const std::string ToUpperCopy(const std::string & STRING)
-    {
-        auto copy { STRING };
-        ToUpper(copy);
-        return copy;
-    }
-
-    // if !IsUpper() then ch is not changed
-    inline void ToLower(char & ch)
-    {
-        if (IsUpper(ch))
-        {
-            ch += 32;
-        }
-    }
-
-    // if !IsUpper() then returns the given CHAR unchanged
-    inline char ToLowerCopy(const char CHAR)
-    {
-        auto copy { CHAR };
-        ToLower(copy);
-        return copy;
-    }
-
-    inline void ToLower(std::string & str)
-    {
-        for (char & ch : str)
-        {
-            ToLower(ch);
-        }
-    }
-
-    inline const std::string ToLowerCopy(const std::string & STRING)
-    {
-        auto copy { STRING };
-        ToLower(copy);
-        return copy;
-    }
-
-    inline bool IsAlpha(const char CHAR) { return (IsUpper(CHAR) || IsLower(CHAR)); }
-
-    inline bool IsDigit(const char CHAR) { return ((CHAR >= '0') && (CHAR <= '9')); }
-
-    inline bool IsAlphaOrDigit(const char CHAR) { return (IsAlpha(CHAR) || IsDigit(CHAR)); }
+    void TrimWhitespaceAndNonDisplayable(std::string & str);
+    const std::string TrimWhitespaceAndNonDisplayableCopy(const std::string & STR);
 
     enum class CaseChange
     {
@@ -111,16 +70,16 @@ namespace misc
     };
 
     const std::string CamelTo(
-        const std::string & STRING,
+        const std::string & STR,
         const std::string & SEPARATOR,
         const CaseChange CASE_CHANGES = CaseChange::Both);
 
     inline const std::string CamelTo(
-        const std::string & STRING,
+        const std::string & STR,
         const char SEPARATOR,
         const CaseChange CASE_CHANGES = CaseChange::Both)
     {
-        return CamelTo(STRING, std::string(1, SEPARATOR), CASE_CHANGES);
+        return CamelTo(STR, std::string(1, SEPARATOR), CASE_CHANGES);
     }
 
     template <typename T>
@@ -131,6 +90,7 @@ namespace misc
         try
         {
             ss << std::boolalpha << THING;
+            return ss.str();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -139,6 +99,8 @@ namespace misc
                                   << ">() threw std::exception=\"" << EXCEPTION.what()
                                   << "\".  Returning an empty string "
                                      "and continuing....");
+
+            return "";
         }
         catch (...)
         {
@@ -146,23 +108,23 @@ namespace misc
                 "misc::ToString<" << boost::typeindex::type_id<T>().pretty_name()
                                   << ">() threw an unknown exception.  Returning an empty string "
                                      "and continuing....");
-        }
 
-        return ss.str();
+            return "";
+        }
     }
 
     // empty strings always return RETURN_ON_ERROR
     template <typename T, typename = std::enable_if_t<is_number_v<T>>>
-    T ToNumber(const std::string & STRING, const T RETURN_ON_ERROR)
+    T ToNumber(const std::string & STR, const T RETURN_ON_ERROR)
     {
-        if (STRING.empty())
+        if (STR.empty())
         {
             return RETURN_ON_ERROR;
         }
 
         try
         {
-            return boost::lexical_cast<T>(STRING);
+            return boost::lexical_cast<T>(STR);
         }
         catch (...)
         {
@@ -170,10 +132,13 @@ namespace misc
         }
     }
 
-    inline const std::string Quoted(const std::string & STRING)
-    {
-        return ToString(std::quoted(STRING));
-    }
+    const std::string Quoted(const std::string & STR);
+
+    const std::string MakeToStringPrefixWithTypename(
+        const ToStringPrefix::Enum OPTIONS,
+        const std::string & CONTAINER_NAME,
+        const std::string & NAMESPACE_PREFIX_STR,
+        const std::string & TYPE_NAME);
 
     template <typename T = void>
     const std::string MakeToStringPrefix(
@@ -181,36 +146,17 @@ namespace misc
         const std::string & CONTAINER_NAME,
         const std::string & NAMESPACE_PREFIX_STR = "")
     {
-        std::ostringstream ss;
-
-        if (OPTIONS & ToStringPrefix::Namespace)
-        {
-            std::string namespacePrefixToUse { NAMESPACE_PREFIX_STR };
-
-            if ((NAMESPACE_PREFIX_STR.size() > 2)
-                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 1] != ':')
-                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 2] != ':'))
-            {
-                namespacePrefixToUse += "::";
-            }
-
-            ss << namespacePrefixToUse;
-        }
-
-        if (OPTIONS & ToStringPrefix::SimpleName)
-        {
-            ss << CONTAINER_NAME;
-        }
-
+        std::string typeName;
         if constexpr (std::is_same<T, void>::value == false)
         {
             if (OPTIONS & ToStringPrefix::Typename)
             {
-                ss << "<" << boost::typeindex::type_id<T>().pretty_name() << ">";
+                typeName = std::string("<") + boost::typeindex::type_id<T>().pretty_name() + ">";
             }
         }
 
-        return ss.str();
+        return MakeToStringPrefixWithTypename(
+            OPTIONS, CONTAINER_NAME, NAMESPACE_PREFIX_STR, typeName);
     }
 
     template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
@@ -242,12 +188,14 @@ namespace misc
     const std::string MakeLoggableString(const std::string &);
 
     // empty input always returns false, if the given vector is empty then returns false, any
-    // STRINGS_TO_FIND that are empty will be ignored, any STRINGS_TO_FIND that are longer than
-    // STRING_TO_SEARCH will be ignored, if all are empty/ignored then returns false
+    // STRS_TO_FIND that are empty will be ignored, any STRS_TO_FIND that are longer than
+    // STR_TO_SEARCH will be ignored, if all are empty/ignored then returns false
     bool ContainsAnyOf(
-        const std::string & STRING_TO_SEARCH,
-        const std::vector<std::string> & STRINGS_TO_FIND,
+        const std::string & STR_TO_SEARCH,
+        const std::vector<std::string> & STRS_TO_FIND,
         const bool IS_CASE_SENSITIVE);
+
+    const std::vector<std::string> MakeNumberStrings(const std::string & STR);
 
     // returns the n'th (zero indexed) (non-floating-point) (positive) number found in the string or
     // RETURN_ON_ERROR, if the string is empty or contains no digits then RETURN_ON_ERROR is
@@ -260,101 +208,50 @@ namespace misc
     //      Find(2, "...", -1)   returns 234
     //      Find(3, "...", -1)   returns -1
     template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
-    T FindNumber(const std::size_t NTH_NUMBER, const std::string & STRING, const T RETURN_ON_ERROR)
+    T FindNumber(const std::size_t NTH_NUMBER, const std::string & STR, const T RETURN_ON_ERROR)
     {
-        if (STRING.empty())
+        const auto NUMBER_STR_VEC { MakeNumberStrings(STR) };
+
+        if (NUMBER_STR_VEC.empty())
         {
             return RETURN_ON_ERROR;
         }
 
-        auto isNumber = [](const char CHAR) { return ((CHAR >= '0') && (CHAR <= '9')); };
-
-        std::vector<std::string> numberStrings(1, "");
-        numberStrings.reserve(10);
-
-        for (const char CHAR : STRING)
-        {
-            const auto IS_DIGIT { isNumber(CHAR) };
-
-            if ((numberStrings.back().empty() == false) && (IS_DIGIT == false))
-            {
-                numberStrings.emplace_back(std::string());
-            }
-            else if (IS_DIGIT)
-            {
-                numberStrings.back().push_back(CHAR);
-            }
-        }
-
-        while ((numberStrings.empty() == false) && numberStrings.back().empty())
-        {
-            numberStrings.pop_back();
-        }
-
-        if (numberStrings.empty())
+        if (NTH_NUMBER >= NUMBER_STR_VEC.size())
         {
             return RETURN_ON_ERROR;
         }
 
-        if (NTH_NUMBER >= numberStrings.size())
-        {
-            return RETURN_ON_ERROR;
-        }
-
-        return ToNumber<T>(numberStrings.at(NTH_NUMBER), RETURN_ON_ERROR);
+        return ToNumber<T>(NUMBER_STR_VEC.at(NTH_NUMBER), RETURN_ON_ERROR);
     }
 
     // handy version of the FindNumber() function above, see comments for FindNumber()
     template <typename T = int, typename = std::enable_if_t<is_number_non_floating_point_v<T>>>
-    T FindNumberLast(const std::string & STRING, const T RETURN_ON_ERROR)
+    T FindNumberLast(const std::string & STR, const T RETURN_ON_ERROR)
     {
-        if (STRING.empty())
-        {
-            return RETURN_ON_ERROR;
-        }
+        const auto NUMBER_STR_VEC { MakeNumberStrings(STR) };
 
-        auto isNumber = [](const char CHAR) { return ((CHAR >= '0') && (CHAR <= '9')); };
-
-        std::vector<std::string> numberStrings(1, "");
-        numberStrings.reserve(10);
-
-        for (const char CHAR : STRING)
-        {
-            const auto IS_DIGIT { isNumber(CHAR) };
-
-            if ((numberStrings.back().empty() == false) && (IS_DIGIT == false))
-            {
-                numberStrings.emplace_back(std::string());
-            }
-            else if (IS_DIGIT)
-            {
-                numberStrings.back().push_back(CHAR);
-            }
-        }
-
-        while ((numberStrings.empty() == false) && numberStrings.back().empty())
-        {
-            numberStrings.pop_back();
-        }
-
-        if (numberStrings.empty())
+        if (NUMBER_STR_VEC.empty())
         {
             return RETURN_ON_ERROR;
         }
         else
         {
-            return ToNumber<T>(numberStrings.back(), RETURN_ON_ERROR);
+            return ToNumber<T>(NUMBER_STR_VEC.back(), RETURN_ON_ERROR);
         }
     }
 
-    inline int FindFirstNumber(const std::string & STRING, const int RETURN_ON_ERROR = -1)
-    {
-        return FindNumber(0, STRING, RETURN_ON_ERROR);
-    }
+    int FindFirstNumber(const std::string & STR, const int RETURN_ON_ERROR = -1);
+    int FindLastNumber(const std::string & STR, const int RETURN_ON_ERROR = -1);
 
-    inline int FindLastNumber(const std::string & STRING, const int RETURN_ON_ERROR = -1)
+    namespace string_helpers
     {
-        return FindNumberLast(STRING, RETURN_ON_ERROR);
+        const std::string NameEqualsValueStr(
+            const std::string & NAME,
+            const std::string & VALUE_STR,
+            const bool WILL_WRAP,
+            const std::string & PREFIX,
+            const bool IS_STR_TYPE);
     }
 
     template <typename T>
@@ -364,49 +261,12 @@ namespace misc
         const bool WILL_WRAP = false,
         const std::string & PREFIX = "")
     {
-        if (NAME.empty())
-        {
-            return "";
-        }
-
-        std::string finalStr { PREFIX };
-
-        if (WILL_WRAP)
-        {
-            finalStr += "(";
-        }
-
-        finalStr += (NAME + '=');
-
-        const bool IS_STRING_TYPE { (
+        const bool IS_STR_TYPE { (
             std::is_same<std::remove_const_t<T>, char *>::value
             || std::is_same<std::remove_const_t<T>, std::string>::value) };
 
-        const auto VALUE_STR { ToString(VALUE) };
-
-        const bool ALREADY_STARTS_WITH_QUOTE { (
-            (VALUE_STR.empty() == false) && (VALUE_STR.front() == '\"')) };
-
-        const bool WILL_ADD_QUOTES { (IS_STRING_TYPE && (ALREADY_STARTS_WITH_QUOTE == false)) };
-
-        if (WILL_ADD_QUOTES)
-        {
-            finalStr += '\"';
-        }
-
-        finalStr += VALUE_STR;
-
-        if (WILL_ADD_QUOTES)
-        {
-            finalStr += '\"';
-        }
-
-        if (WILL_WRAP)
-        {
-            finalStr += ")";
-        }
-
-        return finalStr;
+        return string_helpers::NameEqualsValueStr(
+            NAME, ToString(VALUE), WILL_WRAP, PREFIX, IS_STR_TYPE);
     }
 
     struct SplitHow

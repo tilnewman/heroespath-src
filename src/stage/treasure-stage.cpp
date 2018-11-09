@@ -43,7 +43,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <algorithm>
-#include <set>
 #include <sstream>
 #include <vector>
 
@@ -517,7 +516,6 @@ namespace stage
         }
 
         // for each item to be taken, attempt to give it to each possible character
-        std::set<std::string> creatureNamesWhoTookItems;
         item::ItemPVec_t itemsToRemovePVec;
         for (const auto & ITEM_PTR : itemsPVec)
         {

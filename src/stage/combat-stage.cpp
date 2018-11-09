@@ -176,7 +176,7 @@ namespace stage
         , turnBoxUPtr_()
         , turnBoxRegion_()
         , combatSoundEffects_()
-        , soundEffectsPlayedSet_()
+        , soundEffectsPlayedVec_()
         , turnPhase_(TurnPhase::NotATurn)
         , preTurnPhase_(PreTurnPhase::Start)
         , turnActionPhase_(TurnActionPhase::None)
@@ -2325,7 +2325,7 @@ namespace stage
     {
         isFightResultCollapsed_ = false;
 
-        soundEffectsPlayedSet_.clear();
+        soundEffectsPlayedVec_.clear();
 
         conditionEffectsVec_.clear();
         conditionEffectsIndex_ = 0;
@@ -4192,9 +4192,13 @@ namespace stage
             const auto REPORT_INDICIES { ReportIndicies(
                 performReportEffectIndex_, performReportHitIndex_) };
 
-            if (soundEffectsPlayedSet_.find(REPORT_INDICIES) == soundEffectsPlayedSet_.end())
+            if (std::find(
+                    std::begin(soundEffectsPlayedVec_),
+                    std::end(soundEffectsPlayedVec_),
+                    REPORT_INDICIES)
+                == std::end(soundEffectsPlayedVec_))
             {
-                soundEffectsPlayedSet_.insert(REPORT_INDICIES);
+                soundEffectsPlayedVec_.emplace_back(REPORT_INDICIES);
                 combatSoundEffects_.PlayHitOrMiss(turnCreaturePtrOpt_.value(), HIT_INFO);
             }
         }

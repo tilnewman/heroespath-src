@@ -12,7 +12,6 @@
 //
 #include "misc/enum-common.hpp"
 
-#include <set>
 #include <string>
 #include <vector>
 
@@ -52,7 +51,6 @@ namespace gui
     };
 
     using MusicEnumVec_t = std::vector<music::Enum>;
-    using MusicEnumSet_t = std::set<music::Enum>;
 
 } // namespace gui
 } // namespace heroespath

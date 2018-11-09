@@ -11,23 +11,136 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <boost/tokenizer.hpp>
-#include <boost/type_index.hpp>
+#include <algorithm>
+#include <iomanip>
+#include <type_traits>
 
 namespace heroespath
 {
 namespace misc
 {
 
+    bool IsUpper(const char CH) { return !((CH < 'A') || (CH > 'Z')); }
+    bool IsLower(const char CH) { return !((CH < 'a') || (CH > 'z')); }
+
+    void ToUpper(char & ch)
+    {
+        if (IsLower(ch))
+        {
+            ch -= 32;
+        }
+    }
+
+    char ToUpperCopy(const char CH)
+    {
+        auto copy { CH };
+        ToUpper(copy);
+        return copy;
+    }
+
+    void ToUpper(std::string & str)
+    {
+        for (char & ch : str)
+        {
+            ToUpper(ch);
+        }
+    }
+
+    const std::string ToUpperCopy(const std::string & STR)
+    {
+        auto copy { STR };
+        ToUpper(copy);
+        return copy;
+    }
+
+    void ToLower(char & ch)
+    {
+        if (IsUpper(ch))
+        {
+            ch += 32;
+        }
+    }
+
+    char ToLowerCopy(const char CH)
+    {
+        auto copy { CH };
+        ToLower(copy);
+        return copy;
+    }
+
+    void ToLower(std::string & str)
+    {
+        for (char & ch : str)
+        {
+            ToLower(ch);
+        }
+    }
+
+    const std::string ToLowerCopy(const std::string & STR)
+    {
+        auto copy { STR };
+        ToLower(copy);
+        return copy;
+    }
+
+    bool IsAlpha(const char CH) { return (IsUpper(CH) || IsLower(CH)); }
+
+    bool IsDigit(const char CH) { return !((CH < '0') || (CH > '9')); }
+
+    bool IsAlphaOrDigit(const char CH) { return (IsAlpha(CH) || IsDigit(CH)); }
+
+    bool IsWhitespace(const char CH)
+    {
+        return ((CH == ' ') || (CH == '\t') || (CH == '\r') || (CH == '\n'));
+    }
+
+    bool IsDisplayable(const char CH) { return (((CH > 31) && (CH != 127)) || IsWhitespace(CH)); }
+
+    bool IsWhitespaceOrNonDisplayable(const char CH) { return ((CH < 33) || (CH == 127)); }
+
+    void TrimWhitespace(std::string & str)
+    {
+        TrimIf(str, [](const char CH) { return !IsWhitespace(CH); });
+    }
+
+    const std::string TrimWhitespaceCopy(const std::string & STR_ORIG)
+    {
+        std::string newStr { STR_ORIG };
+        TrimWhitespace(newStr);
+        return newStr;
+    }
+
+    void TrimNonDisplayable(std::string & str)
+    {
+        TrimIf(str, [](const char CH) { return IsDisplayable(CH); });
+    }
+
+    const std::string TrimNonDisplayableCopy(const std::string & STR_ORIG)
+    {
+        std::string newStr { STR_ORIG };
+        TrimNonDisplayable(newStr);
+        return newStr;
+    }
+
+    void TrimWhitespaceAndNonDisplayable(std::string & str)
+    {
+        TrimIf(str, [](const char CH) { return !IsWhitespaceOrNonDisplayable(CH); });
+    }
+
+    const std::string TrimWhitespaceAndNonDisplayableCopy(const std::string & STR_ORIG)
+    {
+        std::string newStr { STR_ORIG };
+        TrimWhitespaceAndNonDisplayable(newStr);
+        return newStr;
+    }
+
     const std::string CamelTo(
-        const std::string & STRING_ORIG,
-        const std::string & SEPARATOR,
-        const CaseChange CASE_CHANGES)
+        const std::string & STR_ORIG, const std::string & SEPARATOR, const CaseChange CASE_CHANGES)
     {
         char prevChar { 0 };
         std::string result;
 
-        for (const char CURR_CHAR : STRING_ORIG)
+        for (const char CURR_CHAR : STR_ORIG)
         {
             if (IsAlpha(prevChar) && IsAlpha(CURR_CHAR)
                 && (IsUpper(prevChar) != IsUpper(CURR_CHAR)))
@@ -47,6 +160,128 @@ namespace misc
         return result;
     }
 
+    const std::string Quoted(const std::string & STR) { return ToString(std::quoted(STR)); }
+
+    const std::string MakeToStringPrefixWithTypename(
+        const ToStringPrefix::Enum OPTIONS,
+        const std::string & CONTAINER_NAME,
+        const std::string & NAMESPACE_PREFIX_STR,
+        const std::string & TYPE_NAME)
+    {
+        std::ostringstream ss;
+
+        if (OPTIONS & ToStringPrefix::Namespace)
+        {
+            std::string namespacePrefixToUse { NAMESPACE_PREFIX_STR };
+
+            if ((NAMESPACE_PREFIX_STR.size() > 2)
+                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 1] != ':')
+                && (NAMESPACE_PREFIX_STR[NAMESPACE_PREFIX_STR.size() - 2] != ':'))
+            {
+                namespacePrefixToUse += "::";
+            }
+
+            ss << namespacePrefixToUse;
+        }
+
+        if (OPTIONS & ToStringPrefix::SimpleName)
+        {
+            ss << CONTAINER_NAME;
+        }
+
+        ss << TYPE_NAME;
+
+        return ss.str();
+    }
+
+    const std::vector<std::string> MakeNumberStrings(const std::string & STR)
+    {
+        if (STR.empty())
+        {
+            return {};
+        }
+
+        std::vector<std::string> numberStrings(1, "");
+        numberStrings.reserve(10);
+
+        for (const char CHAR : STR)
+        {
+            const auto IS_DIGIT { IsDigit(CHAR) };
+
+            if ((numberStrings.back().empty() == false) && (IS_DIGIT == false))
+            {
+                numberStrings.emplace_back(std::string());
+            }
+            else if (IS_DIGIT)
+            {
+                numberStrings.back().push_back(CHAR);
+            }
+        }
+
+        while ((numberStrings.empty() == false) && numberStrings.back().empty())
+        {
+            numberStrings.pop_back();
+        }
+
+        return numberStrings;
+    }
+
+    int FindFirstNumber(const std::string & STR, const int RETURN_ON_ERROR)
+    {
+        return FindNumber(0, STR, RETURN_ON_ERROR);
+    }
+
+    int FindLastNumber(const std::string & STR, const int RETURN_ON_ERROR)
+    {
+        return FindNumberLast(STR, RETURN_ON_ERROR);
+    }
+
+    const std::string string_helpers::NameEqualsValueStr(
+        const std::string & NAME,
+        const std::string & VALUE_STR,
+        const bool WILL_WRAP,
+        const std::string & PREFIX,
+        const bool IS_STR_TYPE)
+    {
+        if (NAME.empty())
+        {
+            return "";
+        }
+
+        std::string finalStr { PREFIX };
+
+        if (WILL_WRAP)
+        {
+            finalStr += "(";
+        }
+
+        finalStr += (NAME + '=');
+
+        const bool ALREADY_STARTS_WITH_QUOTE { (
+            (VALUE_STR.empty() == false) && (VALUE_STR.front() == '\"')) };
+
+        const bool WILL_ADD_QUOTES { (IS_STR_TYPE && (ALREADY_STARTS_WITH_QUOTE == false)) };
+
+        if (WILL_ADD_QUOTES)
+        {
+            finalStr += '\"';
+        }
+
+        finalStr += VALUE_STR;
+
+        if (WILL_ADD_QUOTES)
+        {
+            finalStr += '\"';
+        }
+
+        if (WILL_WRAP)
+        {
+            finalStr += ")";
+        }
+
+        return finalStr;
+    }
+
     const std::string MakeLoggableString(const std::string & ORIG_STR)
     {
         std::string newString(ORIG_STR);
@@ -64,34 +299,34 @@ namespace misc
     }
 
     bool ContainsAnyOf(
-        const std::string & STRING_TO_SEARCH,
-        const std::vector<std::string> & STRINGS_TO_FIND,
+        const std::string & STR_TO_SEARCH,
+        const std::vector<std::string> & STRS_TO_FIND,
         const bool IS_CASE_SENSITIVE)
     {
-        if (STRING_TO_SEARCH.empty() || STRINGS_TO_FIND.empty())
+        if (STR_TO_SEARCH.empty() || STRS_TO_FIND.empty())
         {
             return false;
         }
 
         namespace ba = boost::algorithm;
 
-        for (const auto & STRING_TO_FIND : STRINGS_TO_FIND)
+        for (const auto & STR_TO_FIND : STRS_TO_FIND)
         {
-            if (STRING_TO_FIND.empty() || (STRING_TO_FIND.size() > STRING_TO_SEARCH.size()))
+            if (STR_TO_FIND.empty() || (STR_TO_FIND.size() > STR_TO_SEARCH.size()))
             {
                 continue;
             }
 
             if (IS_CASE_SENSITIVE)
             {
-                if (ba::contains(STRING_TO_SEARCH, STRING_TO_FIND))
+                if (ba::contains(STR_TO_SEARCH, STR_TO_FIND))
                 {
                     return true;
                 }
             }
             else
             {
-                if (ba::icontains(STRING_TO_SEARCH, STRING_TO_FIND))
+                if (ba::icontains(STR_TO_SEARCH, STR_TO_FIND))
                 {
                     return true;
                 }
@@ -103,40 +338,68 @@ namespace misc
 
     const std::vector<std::string> SplitByChars(const std::string & TO_SPLIT, const SplitHow HOW)
     {
-        std::vector<std::string> results;
-
         if (TO_SPLIT.empty())
         {
-            return results;
+            return {};
         }
 
         if (HOW.separator_chars.empty())
         {
-            results.emplace_back(TO_SPLIT);
-            return results;
+            return { TO_SPLIT };
         }
 
-        const auto EMPTY_TOKEN_POLICY { (
-            (HOW.will_skip_empty) ? boost::drop_empty_tokens : boost::keep_empty_tokens) };
+        const bool IS_ONLY_ONE_SPLIT_CHAR { (HOW.separator_chars.size() == 1) };
 
-        using CharSeparator_t = boost::char_separator<char>;
-        const CharSeparator_t CHAR_SEPARATOR(HOW.separator_chars.c_str(), "", EMPTY_TOKEN_POLICY);
-
-        const boost::tokenizer<CharSeparator_t> TOKENIZER(TO_SPLIT, CHAR_SEPARATOR);
-
-        for (const auto & PIECE_STR_ORIG : TOKENIZER)
-        {
-            const auto PIECE_STR_FINAL { (
-                (HOW.will_trim_each) ? boost::algorithm::trim_copy(PIECE_STR_ORIG)
-                                     : PIECE_STR_ORIG) };
-
-            if ((HOW.will_skip_empty == false) || (PIECE_STR_FINAL.empty() == false))
+        auto isSplitChar = [&](const char CHAR_TO_CHECK) {
+            for (const char SPLIT_CHAR : HOW.separator_chars)
             {
-                results.emplace_back(PIECE_STR_FINAL);
+                if (CHAR_TO_CHECK == SPLIT_CHAR)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        std::vector<std::string> splitStrings;
+        splitStrings.reserve(16); // found by experiment to be a good guess for the game
+
+        auto appendCurrentString = [&](std::string & currentStrToAppend) {
+            if (HOW.will_trim_each && !currentStrToAppend.empty())
+            {
+                TrimWhitespace(currentStrToAppend);
+            }
+
+            if (HOW.will_skip_empty && currentStrToAppend.empty())
+            {
+                return;
+            }
+
+            splitStrings.emplace_back(currentStrToAppend);
+        };
+
+        std::string currentStr;
+
+        for (const char CH : TO_SPLIT)
+        {
+            if ((IS_ONLY_ONE_SPLIT_CHAR && (CH == HOW.separator_chars[0])) || isSplitChar(CH))
+            {
+                appendCurrentString(currentStr);
+                currentStr.clear();
+            }
+            else
+            {
+                currentStr += CH;
             }
         }
 
-        return results;
+        if (!currentStr.empty())
+        {
+            appendCurrentString(currentStr);
+        }
+
+        return splitStrings;
     }
 
 } // namespace misc
