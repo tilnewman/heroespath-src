@@ -9,6 +9,7 @@
 //
 #include "image-options.hpp"
 
+#include "map/shadow-masker.hpp"
 #include "sfutil/color.hpp"
 #include "sfutil/display.hpp"
 #include "sfutil/image-manip.hpp"
@@ -28,11 +29,13 @@ namespace gui
 
     void ImageOptions::Apply(sf::Texture & texture) const
     {
-        texture.setSmooth(option_enum & ImageOpt::Smooth);
+        if (WillApplyTextureChanges())
+        {
+            texture.setSmooth(option_enum & ImageOpt::Smooth);
+            texture.setRepeated(option_enum & ImageOpt::Repeated);
+        }
 
-        texture.setRepeated(option_enum & ImageOpt::Repeated);
-
-        if (BitClearCopy(option_enum, ImageOpt::Smooth) > 0)
+        if (WillApplyImageChanges())
         {
             sf::Image image(texture.copyToImage());
             Apply(image);
@@ -42,33 +45,40 @@ namespace gui
 
     void ImageOptions::Apply(sf::Image & image) const
     {
-        if (BitClearCopy(option_enum, ImageOpt::Smooth) > 0)
+        if (WillApplyImageChanges() == false)
         {
-            if ((option_enum & ImageOpt::Invert)
-                && ((option_enum & ImageOpt::InvertAfterMask) == 0))
-            {
-                sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
-            }
+            return;
+        }
 
-            if (HasMask())
-            {
-                image.createMaskFromColor(mask_color_opt.value(), mask_alpha);
-            }
+        if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) == 0))
+        {
+            sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
+        }
 
-            if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
-            {
-                sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
-            }
+        if (HasMask())
+        {
+            image.createMaskFromColor(mask_color_opt.value(), mask_alpha);
+        }
 
-            if (option_enum & ImageOpt::FlipHoriz)
-            {
-                image.flipHorizontally();
-            }
+        if (option_enum & (ImageOpt::ShadowMaskNormal | ImageOpt::ShadowMaskForShadowImage))
+        {
+            map::ShadowMasker::ChangeColors(
+                image, (option_enum & ImageOpt::ShadowMaskForShadowImage));
+        }
 
-            if (option_enum & ImageOpt::FlipVert)
-            {
-                image.flipVertically();
-            }
+        if ((option_enum & ImageOpt::Invert) && ((option_enum & ImageOpt::InvertAfterMask) > 0))
+        {
+            sfutil::Invert(image, (option_enum & ImageOpt::InvertIncludesAlpha));
+        }
+
+        if (option_enum & ImageOpt::FlipHoriz)
+        {
+            image.flipHorizontally();
+        }
+
+        if (option_enum & ImageOpt::FlipVert)
+        {
+            image.flipVertically();
         }
     }
 

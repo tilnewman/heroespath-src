@@ -7,20 +7,17 @@
 #ifndef HEROESPATH_GUI_CACHED_TEXTURE_HPP_INCLUDED
 #define HEROESPATH_GUI_CACHED_TEXTURE_HPP_INCLUDED
 //
-// caced-texture.hpp
+// cached-texture.hpp
 //
 #include "gui/image-options.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 
+#include <SFML/Graphics/Texture.hpp>
+
 #include <memory>
 #include <string>
 #include <vector>
-
-namespace sf
-{
-class Texture;
-}
 
 namespace heroespath
 {
@@ -70,8 +67,7 @@ namespace gui
 
         ~CachedTexture();
 
-        const sf::Texture & Get() const;
-
+        const sf::Texture & Get() const { return *texturePtr_; }
         std::size_t Index() const { return index_; }
         const std::string Path() const { return path_; }
         const ImageOptions Options() const { return options_; }
@@ -88,6 +84,9 @@ namespace gui
         std::string path_;
         std::size_t index_;
         ImageOptions options_;
+        misc::NotNull<const sf::Texture *> texturePtr_;
+
+        static const sf::Texture alwaysEmptyTexture_;
     };
 
     inline void swap(CachedTexture & l, CachedTexture & r)
@@ -98,6 +97,7 @@ namespace gui
         swap(l.path_, r.path_);
         swap(l.index_, r.index_);
         swap(l.options_, r.options_);
+        swap(l.texturePtr_, r.texturePtr_);
     }
 
     inline bool operator==(const CachedTexture & L, const CachedTexture & R)

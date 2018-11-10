@@ -11,7 +11,6 @@
 //
 #include "music-operator.hpp"
 
-#include "gui/sfml-audio.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"

@@ -121,7 +121,7 @@ namespace stage
               SCREEN_HEIGHT_ - (2.0f * INNER_PAD_))
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfutil::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfutil::MapByRes(0.75f, 3.25f))
-        , CREATURE_IMAGE_HEIGHT_MAX_(gui::StandardImageDimmension() * CREATURE_IMAGE_SCALE_)
+        , CREATURE_IMAGE_HEIGHT_MAX_(gui::ContentImage::Dimmension() * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfutil::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfutil::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfutil::MapByRes(65.0f, 200.0f))

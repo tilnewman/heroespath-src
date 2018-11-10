@@ -15,7 +15,7 @@
 #include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/title-holder.hpp"
-#include "gui/creature-image-loader.hpp"
+#include "gui/creature-image-paths.hpp"
 #include "item/algorithms.hpp"
 #include "item/armor-types.hpp"
 #include "item/item.hpp"
@@ -55,6 +55,7 @@ namespace creature
         : isPlayer_(IS_PLAYER)
         , name_(NAME)
         , imageFilename_(IMAGE_FILENAME)
+        , imageFullPath_("")
         , sex_(SEX)
         , bodyType_(BodyType::Make_FromRaceAndRole(RACE, ROLE))
         , race_(RACE)
@@ -77,12 +78,6 @@ namespace creature
         , bonusSet_()
         , enchantmentsPVec_()
     {
-        if (imageFilename_.empty())
-        {
-            gui::CreatureImageLoader creatureImageLoader;
-            imageFilename_ = creatureImageLoader.FilenameRandom(CreaturePtr_t(this));
-        }
-
         actualSet_.Get(Traits::Mana).CurrAndNormSet(MANA.As<int>());
         actualSet_.Get(Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
         actualSet_.Get(Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
@@ -100,6 +95,21 @@ namespace creature
              != std::end(VALID_ROLES)),
             "creature::Creature::Creature(creature={"
                 << ToString() << "}) had a race/role combination is invalid.");
+    }
+
+    const std::string Creature::ImagePath() const
+    {
+        if (imageFilename_.empty())
+        {
+            imageFilename_ = gui::CreatureImagePaths::FilenameRandom(*this);
+        }
+
+        if (imageFullPath_.empty())
+        {
+            imageFullPath_ = gui::CreatureImagePaths::PathFromFilename(imageFilename_);
+        }
+
+        return imageFullPath_;
     }
 
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
@@ -120,7 +130,7 @@ namespace creature
         }
         else
         {
-            return boost::algorithm::to_lower_copy(ss.str());
+            return misc::ToLowerCopy(ss.str());
         }
     }
 
@@ -143,7 +153,7 @@ namespace creature
         }
         else
         {
-            return boost::algorithm::to_lower_copy(ss.str());
+            return misc::ToLowerCopy(ss.str());
         }
     }
 
@@ -579,10 +589,10 @@ namespace creature
         {
             return "Can't equip because it is broken.";
         }
-        else if (ITEM_PTR->HasCategoryType(item::category::Equippable) == false)
+        else if (ITEM_PTR->HasCategoryType(item::category::Equipable) == false)
         {
             std::ostringstream ss;
-            ss << "Not an equippable item.";
+            ss << "Not an equipable item.";
 
             if (ITEM_PTR->HasCategoryType(item::category::Useable))
             {
@@ -1745,6 +1755,9 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R)
     {
+        // imageFilename_ can be random so don't include it in comparisons
+        // imageFullPath_ changes between load/save so don't include it in comparisons
+
         // short-circuit on the most likely member to differ
         if (L.dateTimeCreated_ != R.dateTimeCreated_)
         {
@@ -1753,7 +1766,6 @@ namespace creature
 
         if (std::tie(
                 L.name_,
-                L.imageFilename_,
                 L.sex_,
                 L.bodyType_,
                 L.race_,
@@ -1769,7 +1781,6 @@ namespace creature
                 L.bonusSet_)
             != std::tie(
                 R.name_,
-                R.imageFilename_,
                 R.sex_,
                 R.bodyType_,
                 R.race_,
@@ -1812,6 +1823,9 @@ namespace creature
 
     bool operator<(const Creature & L, const Creature & R)
     {
+        // imageFilename_ can be random so don't include it in comparisons
+        // imageFullPath_ changes between load/save so don't include it in comparisons
+
         // this function's compare is intentionally ordered to control the way creatures are sorted
         // in lists, so don't re-order these compares
 
@@ -1835,7 +1849,6 @@ namespace creature
                 L.actualSet_,
                 L.bonusSet_,
                 L.bodyType_,
-                L.imageFilename_,
                 L.dateTimeCreated_)
             < std::tie(
                 R.sex_,
@@ -1851,7 +1864,6 @@ namespace creature
                 R.actualSet_,
                 R.bonusSet_,
                 R.bodyType_,
-                R.imageFilename_,
                 R.dateTimeCreated_))
         {
             return true;

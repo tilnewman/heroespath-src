@@ -16,7 +16,6 @@
 #include "gui/text-render-rendered-lines.hpp"
 #include "gui/text-render-rendering.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/size-and-scale.hpp"
 #include "sfutil/vector-and-rect.hpp"

@@ -40,6 +40,7 @@
 #include "gui/text-entity.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
@@ -559,7 +560,8 @@ namespace stage
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION,
                 "player closed the combat-over-lose popup BUT THIS IS STILL TODO so transitioning "
-                "to credits when we really should transition to...i dont' know...what happens when "
+                "to credits when we really should transition to...i don't' know...what happens "
+                "when "
                 "players lose in combat?"
                     + makeStatusString());
         }
@@ -571,7 +573,8 @@ namespace stage
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION,
                 "player closed the combat-over-ran popup BUT THIS IS STILL TODO so transitioning "
-                "to credits when we really should transition to...i dont' know...what happens when "
+                "to credits when we really should transition to...i don't' know...what happens "
+                "when "
                 "players run away from combat?"
                     + makeStatusString());
         }

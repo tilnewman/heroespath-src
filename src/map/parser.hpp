@@ -40,6 +40,8 @@ namespace map
 
         Parser() = default;
 
+        static void SetupFilesystemPaths();
+
         void Parse(ParsePacket &) const;
 
     private:
@@ -119,6 +121,8 @@ namespace map
         static const std::string XML_ATTRIB_NAME_WALKBOUNDS_;
         static const std::string XML_ATTRIB_NAME_NAME_;
         static const std::string XML_ATTRIB_NAME_DOORSFX_;
+
+        static std::string tileTextureDirectoryPath_;
     };
 } // namespace map
 } // namespace heroespath

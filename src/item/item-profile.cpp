@@ -15,7 +15,6 @@
 #include "creature/race-enum.hpp"
 #include "item/item-profile-thin-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 
 #include <sstream>
@@ -234,7 +233,7 @@ namespace item
         if (ELEMENT_TYPE != element_type::None)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
-                ((misc_type::EquipCategory(MISC_TYPE) & category::Equippable) > 0),
+                ((misc_type::EquipCategory(MISC_TYPE) & category::Equipable) > 0),
                 "item::ItemProfile::SetMisc(misc_type="
                     << misc_type::ToString(MISC_TYPE) << ", is_pixie=" << std::boolalpha << IS_PIXIE
                     << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
@@ -242,7 +241,7 @@ namespace item
                     << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
                     << ", element_type="
                     << element_type::ToString(ELEMENT_TYPE, EnumStringHow(Wrap::Yes))
-                    << ") element_type wasn't None but the misc_type was not equippable.");
+                    << ") element_type wasn't None but the misc_type was not equipable.");
 
             score_ += enchantmentFactory.TreasureScore(
                 ELEMENT_TYPE, misc_type::IsWeapon(MISC_TYPE), MATERIAL_PRIMARY, MATERIAL_SECONDARY);
@@ -717,7 +716,7 @@ namespace item
         const bool IS_PIXIE)
     {
         category_
-            = static_cast<category::Enum>(category_ | category::Equippable | category::Wearable);
+            = static_cast<category::Enum>(category_ | category::Equipable | category::Wearable);
         thinProfile_ = THIN_PROFILE;
 
         SetHelperForWeaponsAndArmor(
@@ -746,7 +745,7 @@ namespace item
             THIN_PROFILE.WeaponInfo().DetailsKeyName()) };
 
         category_
-            = static_cast<category::Enum>(category_ | category::Equippable | DETAILS.handedness);
+            = static_cast<category::Enum>(category_ | category::Equipable | DETAILS.handedness);
 
         thinProfile_ = THIN_PROFILE;
 
@@ -770,12 +769,12 @@ namespace item
     {
         if ((BODY_PART == body_part::Bite) || (BODY_PART == body_part::Breath))
         {
-            return static_cast<category::Enum>(category::Equippable | category::BodyPart);
+            return static_cast<category::Enum>(category::Equipable | category::BodyPart);
         }
         else
         {
             return static_cast<category::Enum>(
-                category::Equippable | category::TwoHanded | category::BodyPart);
+                category::Equipable | category::TwoHanded | category::BodyPart);
         }
     }
 

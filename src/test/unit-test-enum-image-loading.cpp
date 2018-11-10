@@ -49,7 +49,7 @@ void TestEnumImageLoading()
         const auto ENUM_VALUE { static_cast<typename EnumWrapper_t::Enum>(index) };
         const gui::CachedTexture CACHED_TEXTURE { gui::LoadAndCacheImage(ENUM_VALUE) };
         const sf::Texture & TEXTURE { CACHED_TEXTURE.Get() };
-        const auto STANDARD_DIMMENSION_U { static_cast<unsigned>(gui::StandardImageDimmension()) };
+        const auto STANDARD_DIMMENSION_U { gui::ContentImage::DimmensionU() };
 
         std::ostringstream ss;
         ss << "TestImageLoading<" << boost::typeindex::type_id<EnumWrapper_t>().pretty_name()

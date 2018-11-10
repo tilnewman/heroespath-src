@@ -12,7 +12,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/boost-serialize-includes.hpp"
-#include "misc/boost-string-includes.hpp"
+#include "misc/strings.hpp"
 
 #include <boost/type_index.hpp>
 #include <boost/variant.hpp>
@@ -275,7 +275,7 @@ namespace item
                 {
                     const auto SPECIFIC_WEAPON_ENUM { static_cast<typename T::Enum>(i) };
 
-                    const auto SPECIFIC_WEAPON_STR_LOWERCASE { boost::algorithm::to_lower_copy(
+                    const auto SPECIFIC_WEAPON_STR_LOWERCASE { misc::ToLowerCopy(
                         T::ToString(SPECIFIC_WEAPON_ENUM)) };
 
                     if (SPECIFIC_WEAPON_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)

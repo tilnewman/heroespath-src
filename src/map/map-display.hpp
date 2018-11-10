@@ -11,12 +11,12 @@
 //
 #include "gui/animation-base.hpp"
 #include "gui/animation-factory.hpp"
+#include "gui/cached-texture.hpp"
 #include "gui/collision-quad-tree.hpp"
 #include "gui/direction-enum.hpp"
 #include "map/layer.hpp"
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
-#include "map/shadow-masker.hpp"
 #include "map/tile-offsets.hpp"
 #include "map/tiles-panel.hpp"
 
@@ -99,8 +99,6 @@ namespace map
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
-        void SetupNPCShadowImage();
-
     public:
         // how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
@@ -135,13 +133,11 @@ namespace map
         sf::RenderTexture offScreenTextureAbove_;
         sf::RenderTexture offScreenTextureBelow_;
         sf::Vector2f offScreenMapSize_;
-        sf::Texture npcShadowTexture_;
+        gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 
         MapAnimVec_t animInfoVec_;
         std::vector<gui::AnimationUPtr_t> animUPtrVec_;
-
-        ShadowMasker shadowMasker_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

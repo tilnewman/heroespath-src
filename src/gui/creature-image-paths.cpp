@@ -9,11 +9,11 @@
 //
 // creature-image-manager.cpp
 //
-#include "creature-image-loader.hpp"
+#include "creature-image-paths.hpp"
 
 #include "creature/body-type.hpp"
 #include "creature/creature.hpp"
-#include "gui/loaders.hpp"
+#include "gui/cached-texture.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
@@ -22,7 +22,6 @@
 #include "sfutil/image-manip.hpp"
 #include "stage/i-stage.hpp"
 
-#include <exception>
 #include <sstream>
 
 namespace heroespath
@@ -30,18 +29,26 @@ namespace heroespath
 namespace gui
 {
 
-    CreatureImageLoader::CreatureImageLoader()
-        : imageDirectoryPath_(misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir")))
-    {}
+    std::string CreatureImagePaths::imageDirectoryPath_ { "" };
 
-    bool CreatureImageLoader::Test(stage::IStagePtr_t iStagePtr) const
+    void CreatureImagePaths::SetupFilesystemPaths()
+    {
+        imageDirectoryPath_ = misc::filesystem::CleanPath(
+            misc::ConfigFile::Instance()->GetMediaPath("media-images-creatures-dir"));
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            misc::filesystem::ExistsAndIsDirectory(imageDirectoryPath_),
+            "Creature image directory does not exist or is not a directory."
+                + M_HP_VAR_STR(imageDirectoryPath_));
+    }
+
+    bool CreatureImagePaths::Test(stage::IStagePtr_t iStagePtr)
     {
         static auto didPostInitial { false };
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            iStagePtr->TestingStrAppend("gui::CreatureImageLoader::Test() Starting Tests...");
+            iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test() Starting Tests...");
         }
 
         static auto allPaths { misc::filesystem::FindFiles(
@@ -49,7 +56,7 @@ namespace gui
 
         for (auto & pathStr : allPaths)
         {
-            boost::algorithm::to_lower(pathStr);
+            misc::ToLower(pathStr);
         }
 
         static EnumUnderlying_t raceIndex { 0 };
@@ -94,7 +101,7 @@ namespace gui
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
-                                "gui::CreatureImageLoader() (wolfen_classes) race="
+                                "gui::CreatureImagePaths() (wolfen_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                     << ", wolfen_class=" << CLASS_STR
                                     << ", GetFilenames() failed to return anything.");
@@ -102,11 +109,8 @@ namespace gui
                             if (fileIndex < FILENAMES.size())
                             {
                                 const auto FILENAME { FILENAMES.at(fileIndex) };
-
-                                const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
-
-                                sf::Texture texture;
-                                Load(texture, FILENAME, false);
+                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                                CachedTexture cachedTexture { PathWrapper(PATH) };
 
                                 auto imagePathFoundIter { std::find(
                                     std::begin(allPaths), std::end(allPaths), PATH) };
@@ -118,7 +122,7 @@ namespace gui
                                 }
 
                                 std::ostringstream ss;
-                                ss << " CreatureImageLoader Tested race=" << RACE_STR
+                                ss << " CreatureImagePaths Tested race=" << RACE_STR
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
                                    << " wolfen_class=" << CLASS_STR << " filename=" << FILENAME;
 
@@ -155,7 +159,7 @@ namespace gui
 
                             M_HP_ASSERT_OR_LOG_AND_THROW(
                                 (FILENAMES.empty() == false),
-                                "gui::CreatureImageLoader() (dragon_classes) race="
+                                "gui::CreatureImagePaths() (dragon_classes) race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                     << ", dragon_class=" << CLASS_STR
                                     << ", GetFilenames() failed to return anything.");
@@ -163,11 +167,8 @@ namespace gui
                             if (fileIndex < FILENAMES.size())
                             {
                                 const auto FILENAME { FILENAMES.at(fileIndex) };
-
-                                const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
-
-                                sf::Texture texture;
-                                Load(texture, FILENAME, false);
+                                const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                                CachedTexture cachedTexture { PathWrapper(PATH) };
 
                                 auto imagePathFoundIter { std::find(
                                     std::begin(allPaths), std::end(allPaths), PATH) };
@@ -179,7 +180,7 @@ namespace gui
                                 }
 
                                 std::ostringstream ss;
-                                ss << " CreatureImageLoader Tested race=" << RACE_STR
+                                ss << " CreatureImagePaths Tested race=" << RACE_STR
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
                                    << " dragon_class=" << CLASS_STR << " filename=" << FILENAME;
 
@@ -209,18 +210,15 @@ namespace gui
 
                         M_HP_ASSERT_OR_LOG_AND_THROW(
                             (FILENAMES.empty() == false),
-                            "gui::CreatureImageLoader() race="
+                            "gui::CreatureImagePaths() race="
                                 << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                 << ", GetFilenames() failed to return anything.");
 
                         if (fileIndex < FILENAMES.size())
                         {
                             const auto FILENAME { FILENAMES.at(fileIndex) };
-
-                            const auto PATH { boost::algorithm::to_lower_copy(Path(FILENAME)) };
-
-                            sf::Texture texture;
-                            Load(texture, FILENAME, false);
+                            const auto PATH { misc::ToLowerCopy(PathFromFilename(FILENAME)) };
+                            CachedTexture cachedTexture { PathWrapper(PATH) };
 
                             auto imagePathFoundIter { std::find(
                                 std::begin(allPaths), std::end(allPaths), PATH) };
@@ -232,7 +230,7 @@ namespace gui
                             }
 
                             std::ostringstream ss;
-                            ss << " CreatureImageLoader Tested race=" << RACE_STR
+                            ss << " CreatureImagePaths Tested race=" << RACE_STR
                                << " role=" << ROLE_STR << " sex=" << SEX_STR
                                << " filename=" << FILENAME;
 
@@ -268,86 +266,49 @@ namespace gui
         for (const auto & PATH : allPaths)
         {
             M_HP_LOG_WRN(
-                "gui::CreatureImageLoader::Test() found the following item image "
+                "gui::CreatureImagePaths::Test() found the following item image "
                 "unused: "
                 << PATH);
         }
 
-        iStagePtr->TestingStrAppend("gui::CreatureImageLoader::Test()  ALL TESTS PASSED.");
+        iStagePtr->TestingStrAppend("gui::CreatureImagePaths::Test()  ALL TESTS PASSED.");
         return true;
     }
 
-    const std::string CreatureImageLoader::Path(const creature::CreaturePtr_t CREATURE_PTR) const
-    {
-        return Path(CREATURE_PTR->ImageFilename());
-    }
-
-    const std::string CreatureImageLoader::Path(const std::string & FILENAME) const
+    const std::string CreatureImagePaths::PathFromFilename(const std::string & FILENAME)
     {
         return misc::filesystem::CombinePathsThenClean(imageDirectoryPath_, FILENAME);
     }
 
-    void CreatureImageLoader::Load(
-        sf::Texture & texture, const creature::CreaturePtr_t CREATURE_PTR) const
-    {
-        return Load(texture, CREATURE_PTR->ImageFilename(), WillHorizFlipToFaceRight(CREATURE_PTR));
-    }
-
-    void CreatureImageLoader::Load(
-        sf::Texture & texture,
-        const std::string & FILENAME,
-        const bool WILL_HORIZ_FLIP_TO_FACE_RIGHT) const
-    {
-        gui::Loaders::Texture(texture, Path(FILENAME));
-
-        if (WILL_HORIZ_FLIP_TO_FACE_RIGHT)
-        {
-            sfutil::FlipHoriz(texture);
-        }
-    }
-
-    const std::string
-        CreatureImageLoader::FilenameRandom(const creature::CreaturePtr_t CREATURE_PTR) const
+    const std::string CreatureImagePaths::FilenameRandom(const creature::Creature & CREATURE)
     {
         const auto FILENAMES { Filenames(
-            CREATURE_PTR->Race(),
-            CREATURE_PTR->Role(),
-            CREATURE_PTR->Sex(),
-            CREATURE_PTR->WolfenClass(),
-            CREATURE_PTR->DragonClass()) };
+            CREATURE.Race(),
+            CREATURE.Role(),
+            CREATURE.Sex(),
+            CREATURE.WolfenClass(),
+            CREATURE.DragonClass()) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FILENAMES.empty() == false),
-            "gui::CreatureImageLoader::GetRandomFilename(creature={"
-                << CREATURE_PTR->ToString()
+            "gui::CreatureImagePaths::GetRandomFilename(creature={"
+                << CREATURE.ToString()
                 << "}) (which actually calls GetFilenames()) returned no filenames.");
 
         return misc::Vector::SelectRandom(FILENAMES);
     }
 
-    void CreatureImageLoader::EnsureFileExists(const std::string & FILENAME) const
+    bool CreatureImagePaths::WillHorizFlipToFaceRight(const creature::Creature & CREATURE)
     {
-        const auto FULL_PATH_STR { Path(FILENAME) };
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (misc::filesystem::ExistsAndIsFile(FULL_PATH_STR)),
-            "gui::CreatureImageLoader::EnsureFileExists(\""
-                << FULL_PATH_STR
-                << "\") but that file either does not exist or is not a regular file.");
+        return CREATURE.IsPlayerCharacter();
     }
 
-    bool CreatureImageLoader::WillHorizFlipToFaceRight(
-        const creature::CreaturePtr_t CREATURE_PTR) const
-    {
-        return CREATURE_PTR->IsPlayerCharacter();
-    }
-
-    const std::vector<std::string> CreatureImageLoader::Filenames(
+    const std::vector<std::string> CreatureImagePaths::Filenames(
         const creature::race::Enum RACE,
         const creature::role::Enum ROLE,
         const creature::sex::Enum SEX,
         const creature::wolfen_class::Enum WOLFEN_CLASS,
-        const creature::dragon_class::Enum DRAGON_CLASS) const
+        const creature::dragon_class::Enum DRAGON_CLASS)
     {
         if (RACE == creature::race::Troll)
         {
@@ -1694,7 +1655,7 @@ namespace gui
         }
 
         std::ostringstream ss;
-        ss << "gui::CreatureImageLoader::GetFilenames(race="
+        ss << "gui::CreatureImagePaths::GetFilenames(race="
            << ((RACE == creature::race::Count) ? "(count)" : creature::race::ToString(RACE))
            << ", role="
            << ((ROLE == creature::role::Count) ? "(count)" : creature::role::ToString(ROLE))

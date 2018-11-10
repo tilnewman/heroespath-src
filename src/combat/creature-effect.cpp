@@ -14,7 +14,6 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
 
 #include <algorithm>

@@ -11,10 +11,10 @@
 //
 #include "song-enum.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 
 namespace heroespath
 {
@@ -123,7 +123,7 @@ namespace song
 
     const std::string Songs::ImageFilename(const Songs::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+        return misc::ToLowerCopy(ToString(ENUM) + ".png");
     }
 
     const std::string Songs::ImageDirectory()

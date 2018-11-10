@@ -19,7 +19,6 @@
 #include "gui/font-manager.hpp"
 #include "gui/image-loaders.hpp"
 #include "gui/image-options.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"

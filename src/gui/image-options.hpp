@@ -80,6 +80,16 @@ namespace gui
                 (HasMask() == false) && (ImageOpt::None == option_enum) && IsMaskAlphaDefault());
         }
 
+        bool WillApplyImageChanges() const
+        {
+            return (BitClearCopy(option_enum, (ImageOpt::Smooth | ImageOpt::Repeated)) > 0);
+        }
+
+        bool WillApplyTextureChanges() const
+        {
+            return ((option_enum & (ImageOpt::Smooth | ImageOpt::Repeated)) > 0);
+        }
+
         void Apply(sf::Texture &) const;
 
         void Apply(sf::Image &) const;

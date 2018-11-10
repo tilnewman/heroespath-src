@@ -28,7 +28,7 @@ namespace map
 
     TilesPanel::TilesPanel(
         const std::string & NAME,
-        const std::string & RELATIVE_PATH, // path string relative to the .tmx map path
+        const std::string & FILE_PATH,
         const int & FIRST_ID,
         const int & TILE_COUNT,
         const int & COLUMN,
@@ -38,8 +38,7 @@ namespace map
         , tile_count(TILE_COUNT)
         , column(COLUMN)
         , texture_index(TEXTURE_INDEX)
-        , path_str(misc::filesystem::CombinePathsThenClean(
-              misc::ConfigFile::Instance()->GetMediaPath("media-maps-tile-dir"), RELATIVE_PATH))
+        , path_str(FILE_PATH)
     {}
 
     bool TilesPanel::OwnsId(const int ID) const

@@ -24,9 +24,11 @@
 #include "game/game.hpp"
 #include "game/loop.hpp"
 #include "game/npc-warehouse.hpp"
-#include "gui/creature-image-loader.hpp"
+#include "gui/content-images.hpp"
+#include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
+#include "gui/item-image-paths.hpp"
 #include "gui/sound-manager.hpp"
 #include "gui/texture-cache.hpp"
 #include "item/armor-details.hpp"
@@ -35,6 +37,7 @@
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/weapon-details.hpp"
+#include "map/parser.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/log.hpp"
@@ -92,7 +95,7 @@ namespace game
         item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
 
         Setup_Display(APPLICATION_NAME);
-        Setup_ManagerClassResourcePaths();
+        Setup_FilesystemPaths();
         Setup_SubsystemsAcquire();
         Setup_SubsystemsInitialize();
         Setup_HoldersFill();
@@ -292,8 +295,12 @@ namespace game
             misc::ConfigFile::Instance()->ValueOrDefault<bool>("system-window-sync"));
     }
 
-    void StartupShutdown::Setup_ManagerClassResourcePaths() const
+    void StartupShutdown::Setup_FilesystemPaths() const
     {
+        gui::ContentImage::SetupFilesystemPaths();
+
+        map::Parser::SetupFilesystemPaths();
+
         popup::PopupManager::SetTexturesDirectoryPaths(
             misc::ConfigFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             misc::ConfigFile::Instance()->GetMediaPath("media-images-accents-dir"));
@@ -301,6 +308,9 @@ namespace game
         gui::SoundManager::SetSoundsDirectory(
             misc::ConfigFile::Instance()->GetMediaPath("media-sounds-dir"),
             misc::ConfigFile::Instance()->GetMediaPath("media-music-dir"));
+
+        gui::CreatureImagePaths::SetupFilesystemPaths();
+        gui::ItemImagePaths::SetupFilesystemPaths();
     }
 
     void StartupShutdown::Setup_HoldersFill() const

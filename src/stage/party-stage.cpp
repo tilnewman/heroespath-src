@@ -11,7 +11,6 @@
 //
 #include "party-stage.hpp"
 
-#include "avatar/portrait-factory.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
@@ -22,6 +21,7 @@
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/gui-images.hpp"
+#include "gui/image-loaders.hpp"
 #include "gui/main-menu-buttons.hpp"
 #include "gui/sound-manager.hpp"
 #include "misc/config-file.hpp"
@@ -880,8 +880,8 @@ namespace stage
         {
             const auto WHICH_AVATAR { static_cast<avatar::Avatar::Enum>(i) };
 
-            partyCachedTextures.emplace_back(avatar::PortraitFactory::Make(
-                "PartyStageAvatar_" + avatar::Avatar::ToString(WHICH_AVATAR), WHICH_AVATAR));
+            partyCachedTextures.emplace_back(
+                gui::LoadAndCacheImage("PartyStageAvatarSelectionPopup", WHICH_AVATAR));
         }
 
         std::ostringstream ss;

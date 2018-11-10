@@ -68,7 +68,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 else()
 
-    message(FATAL_ERROR " Unknwon Compiler: ${CMAKE_CXX_COMPILER_ID}")
+    message(FATAL_ERROR " Unknown Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
 endif()
 

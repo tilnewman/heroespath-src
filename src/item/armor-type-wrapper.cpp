@@ -12,7 +12,9 @@
 #include "armor-type-wrapper.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 
 #include <exception>
@@ -300,7 +302,7 @@ namespace item
             }
 
             ss << EXTENSION;
-            return boost::algorithm::to_lower_copy(ss.str());
+            return misc::ToLowerCopy(ss.str());
         }
 
         bool ArmorTypeWrapper::IsGeneralNameAlmostSpecificName() const
@@ -308,8 +310,8 @@ namespace item
             namespace ba = boost::algorithm;
 
             return (
-                ba::to_lower_copy(ba::replace_all_copy(generalName_, " ", ""))
-                == ba::to_lower_copy(specificName_));
+                misc::ToLowerCopy(ba::replace_all_copy(generalName_, " ", ""))
+                == misc::ToLowerCopy(specificName_));
         }
 
         const std::vector<ArmorTypeWrapper> ArmorTypeWrapper::MakeCompleteSet()

@@ -12,7 +12,7 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
-#include "misc/boost-string-includes.hpp"
+#include "misc/strings.hpp"
 
 #include <boost/variant.hpp>
 
@@ -192,13 +192,13 @@ namespace item
                 const armor_type::Enum ARMOR_TYPE,
                 const base_type::Enum BASE_TYPE)
             {
-                const auto SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
+                const auto SYSTEM_NAME_LOWERCASE { misc::ToLowerCopy(SYSTEM_NAME) };
 
                 for (EnumUnderlying_t i(0); i < T::Count; ++i)
                 {
                     const auto SPECIFIC_TYPE_ENUM { static_cast<typename T::Enum>(i) };
 
-                    const auto SPECIFIC_TYPE_STR_LOWERCASE { boost::algorithm::to_lower_copy(
+                    const auto SPECIFIC_TYPE_STR_LOWERCASE { misc::ToLowerCopy(
                         T::ToString(SPECIFIC_TYPE_ENUM)) };
 
                     if (SPECIFIC_TYPE_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)

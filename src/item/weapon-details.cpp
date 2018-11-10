@@ -134,15 +134,16 @@ namespace item
         const std::string WeaponDetailLoader::CleanStringField(
             const std::string & FIELD_STR, const bool WILL_LOWERCASE)
         {
-            using namespace boost::algorithm;
+            namespace ba = boost::algorithm;
 
             if (WILL_LOWERCASE)
             {
-                return to_lower_copy(trim_copy(erase_all_copy(FIELD_STR, "\"")));
+                return misc::ToLowerCopy(
+                    misc::TrimWhitespaceCopy(ba::erase_all_copy(FIELD_STR, "\"")));
             }
             else
             {
-                return trim_copy(erase_all_copy(FIELD_STR, "\""));
+                return misc::ToLowerCopy(ba::erase_all_copy(FIELD_STR, "\""));
             }
         }
 

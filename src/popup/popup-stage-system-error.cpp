@@ -23,7 +23,7 @@ namespace popup
     PopupStageSystemError::PopupStageSystemError(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
         , bgCachedTexture_(
-              "media-images-misc-error",
+              "media-images-misc-eyetem-error",
               gui::ImageOptions(gui::ImageOpt::Default, sf::Color::White))
         , bgSprite_(bgCachedTexture_.Get())
     {}

@@ -37,7 +37,7 @@ namespace misc
 
     const std::string filesystem::CleanPath(const std::string & PATH_STR_ORIG)
     {
-        std::string pathStrToUse { boost::algorithm::trim_copy(PATH_STR_ORIG) };
+        std::string pathStrToUse { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
 
         if (pathStrToUse.empty())
         {
@@ -122,7 +122,7 @@ namespace misc
     const std::string
         filesystem::Filename(const std::string & PATH_STR_ORIG, const bool WILL_EXCLUDE_EXTENSION)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
+        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
 
         if (PATH_STR_TRIMMED.empty())
         {
@@ -430,7 +430,7 @@ namespace misc
         bfs::path path;
 
         auto addOrAppendPathIfNotEmpty = [&](const std::string & PATH_STR_ORIG) {
-            const auto PATH_STR_TRIMMED { boost::algorithm::trim_copy(PATH_STR_ORIG) };
+            const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
 
             if (PATH_STR_TRIMMED.empty() || (PATH_STR_TRIMMED == "."))
             {
@@ -727,7 +727,7 @@ namespace misc
 
     bool filesystem::IsWindowsDriveNameWithoutTrailingSlash(const std::string & PATH_STR_ORIG)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
+        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
 
         if (PATH_STR_TRIMMED.size() < 2)
         {
@@ -757,7 +757,7 @@ namespace misc
 
     const std::string filesystem::GetBoostFilename(const std::string & PATH_STR_ORIG)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
+        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
         return bfs::path(PATH_STR_TRIMMED).filename().string();
     }
 
@@ -805,7 +805,7 @@ namespace misc
 
     bool filesystem::EndsWithSeparatorFollowedByDots(const std::string & PATH_STR_ORIG)
     {
-        const auto PATH_STR_TRIMMED { boost::trim_copy(PATH_STR_ORIG) };
+        const auto PATH_STR_TRIMMED { misc::TrimWhitespaceCopy(PATH_STR_ORIG) };
 
         if (PATH_STR_TRIMMED.size() < 2 || (PATH_STR_TRIMMED.back() != '.'))
         {

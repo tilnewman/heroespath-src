@@ -1106,7 +1106,7 @@ namespace stage
         const sf::Vector2f POS_V(
             MEASUREMENTS.characterImageLeft,
             inventoryListboxUPtr_->GetEntityPos().y
-                - (gui::StandardImageDimmension() * MEASUREMENTS.characterImageScale));
+                - (gui::ContentImage::Dimmension() * MEASUREMENTS.characterImageScale));
 
         const gui::EntityImageInfo ENTITY_IMAGE_INFO(
             gui::LoadAndCacheImage(
@@ -1333,7 +1333,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (gui::StandardImageDimmension() * CreateDisplayMeasurements().characterImageScale);
+            + (gui::ContentImage::Dimmension() * CreateDisplayMeasurements().characterImageScale);
     }
 
     void TreasureDisplayStage::ItemViewerInterruption()

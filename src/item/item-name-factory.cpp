@@ -14,7 +14,6 @@
 #include "creature/creature.hpp"
 #include "item/item-profile.hpp"
 #include "item/item.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
 #include "misc/strings.hpp"
 
@@ -259,14 +258,22 @@ namespace item
     {
         switch (misc::random::Int(3))
         {
-            case 0: { return "covered";
+            case 0:
+            {
+                return "covered";
             }
-            case 1: { return "soaked";
+            case 1:
+            {
+                return "soaked";
             }
-            case 2: { return "coated";
+            case 2:
+            {
+                return "coated";
             }
             case 3:
-            default: { return "drenched";
+            default:
+            {
+                return "drenched";
             }
         }
     }
@@ -279,12 +286,18 @@ namespace item
     {
         switch (misc::random::Int(2))
         {
-            case 1: { return "clasp";
+            case 1:
+            {
+                return "clasp";
             }
-            case 2: { return "tether";
+            case 2:
+            {
+                return "tether";
             }
             case 0:
-            default: { return "fastener";
+            default:
+            {
+                return "fastener";
             }
         }
     }
@@ -442,7 +455,9 @@ namespace item
 
                 case name_material_type::BodyPart:
                 case name_material_type::Count:
-                default: { return "";
+                default:
+                {
+                    return "";
                 }
             }
         }

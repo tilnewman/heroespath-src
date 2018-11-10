@@ -9,7 +9,6 @@
 //
 // key-value-file.hpp
 //
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/strings.hpp"
 #include "misc/type-helpers.hpp"
@@ -124,8 +123,8 @@ namespace misc
             if constexpr (
                 std::is_same<std::remove_const_t<T>, bool>::value || std::is_same<T, bool>::value)
             {
-                const auto VALUE_STR_CLEANED { boost::algorithm::trim_copy(
-                    boost::algorithm::to_lower_copy(VALUE_STR)) };
+                const auto VALUE_STR_CLEANED { misc::TrimWhitespaceCopy(
+                    misc::ToLowerCopy(VALUE_STR)) };
 
                 if ((VALUE_STR_CLEANED == "yes") || (VALUE_STR_CLEANED == "1")
                     || (VALUE_STR_CLEANED == "true"))

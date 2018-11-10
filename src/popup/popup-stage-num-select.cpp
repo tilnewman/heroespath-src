@@ -14,8 +14,8 @@
 #include "gui/font-manager.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/sound-manager.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
+#include "misc/strings.hpp"
 #include "popup/popup-manager.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -198,7 +198,7 @@ namespace popup
             return NUMBER_SELECT_INVALID_;
         }
 
-        const auto TEXT { boost::algorithm::trim_copy(textEntryBoxUPtr_->GetText()) };
+        const auto TEXT { misc::TrimWhitespaceCopy(textEntryBoxUPtr_->GetText()) };
 
         int num(NUMBER_SELECT_INVALID_);
         try

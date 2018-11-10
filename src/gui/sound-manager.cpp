@@ -11,7 +11,6 @@
 //
 #include "sound-manager.hpp"
 
-#include "gui/loaders.hpp"
 #include "gui/music-info.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -617,10 +616,24 @@ namespace gui
     MusicUPtr_t SoundManager::OpenMusic(
         const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const
     {
-        const auto PATH_STR { misc::filesystem::CombinePathsThenClean(
+        const auto PATH_STR_COMPLETE { misc::filesystem::CombinePathsThenClean(
             musicDirectoryPath_, MUSIC_DIR_NAME, MUSIC_FILE_NAME) };
 
-        return gui::Loaders::Music(PATH_STR);
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
+            "SoundManager::OpenMusic(\""
+                << PATH_STR_COMPLETE
+                << "\") failed because that file either does not exist or is not a regular file.");
+
+        auto musicUPtr { std::make_unique<sf::Music>() };
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (musicUPtr->openFromFile(PATH_STR_COMPLETE)),
+            "SoundManager::OpenMusic(\"" << PATH_STR_COMPLETE
+                                         << "\"), sf::Music::OpenFromFile() returned false.  "
+                                         << "See console output for more information.");
+
+        return musicUPtr;
     }
 
     void SoundManager::CacheMusicInfo_CombatIntro()
@@ -949,5 +962,6 @@ namespace gui
 
         return bufferUPtr;
     }
+
 } // namespace gui
 } // namespace heroespath

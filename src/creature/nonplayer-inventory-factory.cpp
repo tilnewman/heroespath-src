@@ -54,7 +54,7 @@ namespace creature
                 }
                 else
                 {
-                    if (NEXT_ITEM_PTR->Category() & item::category::Equippable)
+                    if (NEXT_ITEM_PTR->Category() & item::category::Equipable)
                     {
                         const auto ITEM_EQUIP_RESULT(CREATURE_PTR->ItemEquip(NEXT_ITEM_PTR));
                         if (ITEM_EQUIP_RESULT.empty() == false)

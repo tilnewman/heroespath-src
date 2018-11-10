@@ -160,7 +160,9 @@ media-images-misc-note4                     image/misc/note4.png
 media-images-misc-note5                     image/misc/note5.png
 media-images-misc-note6                     image/misc/note6.png
 media-images-misc-x                         image/misc/x.png
+media-images-misc-todo                      image/misc/todo.png
 media-images-misc-error                     image/misc/error.png
+media-images-misc-syetem-error              image/misc/system-error.png
 media-images-misc-money-bag                 image/misc/money-bag.png
 media-images-misc-abc                       image/misc/abc.png
 media-images-misc-weight                    image/misc/weight.png

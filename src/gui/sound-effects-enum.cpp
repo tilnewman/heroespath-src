@@ -13,6 +13,7 @@
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "misc/vectors.hpp"
 
 namespace heroespath
@@ -1981,13 +1982,11 @@ namespace gui
 
     sound_effect::MapTransition sound_effect::MapTransitionFromString(const std::string & NAME)
     {
-        namespace ba = boost::algorithm;
-
         for (int i(0); i < static_cast<int>(sound_effect::MapTransition::Count); ++i)
         {
             const auto ENUM { static_cast<sound_effect::MapTransition>(i) };
 
-            if (ba::to_lower_copy(MapTransitionToString(ENUM)) == ba::to_lower_copy(NAME))
+            if (misc::ToLowerCopy(MapTransitionToString(ENUM)) == misc::ToLowerCopy(NAME))
             {
                 return ENUM;
             }

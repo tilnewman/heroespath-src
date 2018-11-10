@@ -18,13 +18,13 @@
 #include "creature/nonplayer-inventory-factory.hpp"
 #include "creature/title-holder.hpp"
 #include "gui/animation-factory.hpp"
-#include "gui/creature-image-loader.hpp"
+#include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
 #include "gui/gui-images.hpp"
 #include "gui/image-loaders.hpp"
 #include "gui/image-option-enum.hpp"
-#include "gui/item-image-loader.hpp"
+#include "gui/item-image-paths.hpp"
 #include "gui/ouroboros.hpp"
 #include "gui/sound-manager.hpp"
 #include "interact/interaction-manager.hpp"
@@ -32,6 +32,7 @@
 #include "item/item-factory.hpp"
 #include "item/item-profiles-reporter.hpp"
 #include "map/map.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -397,8 +398,8 @@ namespace stage
         M_TESTING_STAGE_TEST(Titles);
         M_TESTING_STAGE_TEST(PopupManager);
 
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(ItemImageLoader, gui::ItemImageLoader);
-        M_TESTING_STAGE_TEST_WITH_TYPE_AND_STAGECALL(CreatureImageLoader, gui::CreatureImageLoader);
+        M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, ItemImagePaths);
+        M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(gui, CreatureImagePaths);
 
         M_TESTING_STAGE_TEST(Animations);
 
@@ -1240,7 +1241,7 @@ namespace stage
             }
 
             sf::Texture texture;
-            gui::Loaders::Texture(texture, FILE_PATH_STR, false);
+            gui::Lo ad ers::T ext ure(texture, FILE_PATH_STR, false);
             sf::Image image{ texture.copyToImage() };
 
             const auto WIDTH{ texture.getSize().x };

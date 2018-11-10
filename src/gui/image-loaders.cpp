@@ -9,18 +9,21 @@
 //
 #include "image-loaders.hpp"
 
-#include "avatar/portrait-factory.hpp"
+#include "avatar/avatar-enum.hpp"
+#include "avatar/lpc-view.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "game/game-state.hpp"
-#include "gui/creature-image-loader.hpp"
-#include "gui/item-image-loader.hpp"
+#include "gui/creature-image-paths.hpp"
+#include "gui/item-image-paths.hpp"
 #include "gui/list-element.hpp"
 #include "gui/text-region.hpp"
 #include "item/item.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
+
+#include <SFML/Graphics/RenderTexture.hpp>
 
 namespace heroespath
 {
@@ -30,37 +33,49 @@ namespace gui
     CachedTexture LoadAndCacheImage(
         const creature::CreaturePtr_t & CREATURE_PTR, const gui::ImageOptions & OPTIONS)
     {
-        gui::CreatureImageLoader creatureImageLoader;
-
         auto imageOptions { OPTIONS };
 
-        if (creatureImageLoader.WillHorizFlipToFaceRight(CREATURE_PTR))
+        if (gui::CreatureImagePaths::WillHorizFlipToFaceRight(*CREATURE_PTR))
         {
             imageOptions.option_enum |= ImageOpt::FlipHoriz;
         }
 
-        return CachedTexture(PathWrapper(creatureImageLoader.Path(CREATURE_PTR)), imageOptions);
+        return CachedTexture(PathWrapper(CREATURE_PTR->ImagePath()), imageOptions);
     }
 
     CachedTexture LoadAndCacheImage(
-        const std::string & FAKE_PATH,
+        const std::string & REQUESTER_DESCRIPTION,
         const avatar::Avatar::Enum WHICH_AVATAR,
         const gui::ImageOptions & OPTIONS)
     {
-        return avatar::PortraitFactory::Make(
-            "FAKE_PATH_FOR_gui::image::Load(Avatar::Enum=" + avatar::Avatar::ToString(WHICH_AVATAR)
-                + ", fake_path=" + FAKE_PATH + ")",
-            WHICH_AVATAR,
+        auto cachedTextureOfAllFrames
+            = gui::CachedTexture(PathWrapper(avatar::Avatar::ImagePath(WHICH_AVATAR)));
+
+        sf::Sprite sprite(
+            cachedTextureOfAllFrames.Get(), avatar::LPCView::GetStandingRightFrameRect());
+
+        const sf::Vector2u SIZE_V(
+            static_cast<unsigned>(sprite.getLocalBounds().width),
+            static_cast<unsigned>(sprite.getLocalBounds().height));
+
+        sf::RenderTexture renderTexture;
+        renderTexture.create(SIZE_V.x, SIZE_V.y);
+        renderTexture.clear(sf::Color::Transparent);
+        renderTexture.draw(sprite);
+        renderTexture.display();
+
+        return gui::CachedTexture(
+            "FAKE_PATH_FOR_gui::ImageLoader::LoadAndCacheImage(avatar_enum="
+                + avatar::Avatar::ToString(WHICH_AVATAR) + ", image_options=" + OPTIONS.ToString()
+                + ") requested by " + REQUESTER_DESCRIPTION,
+            renderTexture.getTexture(),
             OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
         const game::GameStatePtr_t & GAMESTATE_PTR, const gui::ImageOptions & OPTIONS)
     {
-        return LoadAndCacheImage(
-            "FAKE_PATH_FOR_gui::image::Load(game::GameStatePtr_t)",
-            GAMESTATE_PTR->Party().Avatar(),
-            OPTIONS);
+        return LoadAndCacheImage("GameState", GAMESTATE_PTR->Party().Avatar(), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(
@@ -79,9 +94,7 @@ namespace gui
     CachedTexture
         LoadAndCacheImage(const item::ItemPtr_t & ITEM_PTR, const gui::ImageOptions & OPTIONS)
     {
-        gui::ItemImageLoader itemImageLoader;
-
-        return CachedTexture(PathWrapper(itemImageLoader.Path(ITEM_PTR)), OPTIONS);
+        return CachedTexture(PathWrapper(ITEM_PTR->ImagePath()), OPTIONS);
     }
 
     CachedTexture LoadAndCacheImage(

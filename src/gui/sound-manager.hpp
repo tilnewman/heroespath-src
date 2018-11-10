@@ -13,7 +13,6 @@
 #include "gui/music-enum.hpp"
 #include "gui/music-operator.hpp"
 #include "gui/music-set.hpp"
-#include "gui/sfml-audio.hpp"
 #include "gui/sfx-set-enum.hpp"
 #include "gui/sfx-wrapper.hpp"
 #include "gui/songs.hpp"

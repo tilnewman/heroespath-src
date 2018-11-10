@@ -9,9 +9,15 @@
 //
 // shadow-masker.hpp
 //
-#include "map/layout.hpp"
+#include <cstddef> //for std::size_t
 
-#include <string>
+#include <SFML/Graphics/Color.hpp>
+
+namespace sf
+{
+class Texture;
+class Image;
+} // namespace sf
 
 namespace heroespath
 {
@@ -22,15 +28,10 @@ namespace map
     class ShadowMasker
     {
     public:
-        ShadowMasker(const ShadowMasker &) = delete;
-        ShadowMasker(ShadowMasker &&) = delete;
-        ShadowMasker & operator=(const ShadowMasker &) = delete;
-        ShadowMasker & operator=(ShadowMasker &&) = delete;
+        ShadowMasker() = delete;
 
-        ShadowMasker() = default;
-
-        void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout) const;
-        void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE) const;
+        static void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE);
+        static void ChangeColors(sf::Image & image, const bool IS_SHADOW_IMAGE);
 
     private:
         // The tileset I found online uses this color as a background,

@@ -11,7 +11,6 @@
 //
 #include "avatar-enum.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -2475,7 +2474,7 @@ namespace avatar
                     "media-images-avatar-nonplayer-dir")) };
 
         return misc::filesystem::CombinePathsThenClean(
-            dirPathStr, boost::algorithm::to_lower_copy(Avatar::ToString(ENUM)) + ".png");
+            dirPathStr, misc::ToLowerCopy(Avatar::ToString(ENUM)) + ".png");
     }
 
     Avatar::NameEnum Avatar::Name(const Avatar::Enum ENUM)

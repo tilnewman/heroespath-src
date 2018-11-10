@@ -718,8 +718,8 @@ namespace item
             const category::Enum CATEGORY_TO_APPEND = category::None,
             const misc_type::Enum MISC_TYPE = misc_type::Not)
         {
-            category_ = static_cast<category::Enum>(
-                category_ | category::Equippable | CATEGORY_TO_APPEND);
+            category_
+                = static_cast<category::Enum>(category_ | category::Equipable | CATEGORY_TO_APPEND);
 
             thinProfile_ = THIN_PROFILE;
 

@@ -32,6 +32,16 @@ namespace gui
         AppendNameIfBitIsSet(
             str, ENUM_VALUE, ImageOpt::InvertIncludesAlpha, "InvertIncludesAlpha", SEPARATOR);
 
+        AppendNameIfBitIsSet(
+            str, ENUM_VALUE, ImageOpt::ShadowMaskNormal, "ShadowMaskNormal", SEPARATOR);
+
+        AppendNameIfBitIsSet(
+            str,
+            ENUM_VALUE,
+            ImageOpt::ShadowMaskForShadowImage,
+            "ShadowMaskForShadowImage",
+            SEPARATOR);
+
         return str;
     }
 

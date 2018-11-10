@@ -11,7 +11,6 @@
 //
 #include "spell-enum.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -171,7 +170,7 @@ namespace spell
 
     const std::string Spells::ImageFilename(const Spells::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+        return misc::ToLowerCopy(ToString(ENUM) + ".png");
     }
 
     const std::string Spells::ImageDirectory()

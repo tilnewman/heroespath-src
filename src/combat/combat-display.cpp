@@ -21,9 +21,9 @@
 #include "game/game-state.hpp"
 #include "game/game.hpp"
 #include "gui/box-entity.hpp"
+#include "gui/content-images.hpp"
 #include "gui/display.hpp"
 #include "gui/font-manager.hpp"
-#include "gui/image-util.hpp"
 #include "gui/text-info.hpp"
 #include "gui/text-region.hpp"
 #include "misc/config-file.hpp"
@@ -79,8 +79,8 @@ namespace combat
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))
         , POSITIONING_BETWEEN_SPACER_VERT_(sfutil::MapByRes(25.0f, 200.0f))
         , CELL_HEIGHT_(sfutil::MapByRes(
-              gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-              gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
+              gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+              gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
         , NAME_CHAR_SIZE_ORIG_(gui::FontManager::Instance()->Size_CombatCreatureLabels())
         , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
@@ -1239,8 +1239,8 @@ namespace combat
         }
 
         const float CELL_WIDTH_MIN(sfutil::MapByRes(
-            gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-            gui::StandardImageDimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
+            gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
+            gui::ContentImage::Dimmension() * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
 
         const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
 

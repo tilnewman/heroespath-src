@@ -32,7 +32,9 @@ namespace gui
             Invert = 1 << 4,
             InvertAfterMask = 1 << 5,
             InvertIncludesAlpha = 1 << 6,
-            Last = InvertIncludesAlpha
+            ShadowMaskNormal = 1 << 7,
+            ShadowMaskForShadowImage = 1 << 8,
+            Last = ShadowMaskForShadowImage
         };
 
         static const std::string

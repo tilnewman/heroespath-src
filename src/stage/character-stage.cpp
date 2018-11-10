@@ -25,7 +25,7 @@
 #include "creature/title.hpp"
 #include "gui/animation-factory.hpp"
 #include "gui/box-entity.hpp"
-#include "gui/creature-image-loader.hpp"
+#include "gui/creature-image-paths.hpp"
 #include "gui/display.hpp"
 #include "gui/even-spacer.hpp"
 #include "gui/font-manager.hpp"
@@ -311,7 +311,7 @@ namespace stage
         }
 
         // oscillate the spacebar instruction text's color to help players know what to do initially
-        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()) };
         if (CHARACTER_NAME.empty())
         {
             const auto NEW_COLOR_VAL { static_cast<sf::Uint8>(
@@ -1065,7 +1065,7 @@ namespace stage
         }
 
         // verify name is not blank/empty
-        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()) };
         if (CHARACTER_NAME.empty())
         {
             CharacterNameMissingPopup();
@@ -1084,7 +1084,7 @@ namespace stage
         }
         else
         {
-            LeaveStageConfirmPopup(boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()));
+            LeaveStageConfirmPopup(misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()));
             return true;
         }
     }
@@ -1097,7 +1097,7 @@ namespace stage
             return "but ignored because number anims are still moving around";
         }
 
-        const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto NAME { misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()) };
 
         // if it seems the user has been working on a character, prompt before losing the data
         if (false == NAME.empty())
@@ -1193,7 +1193,7 @@ namespace stage
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonUPtr_->GetSelectedNumber())) };
 
-        gui::CreatureImageLoader creatureImageLoader;
+        gui::CreatureImagePaths creatureImageLoader;
         characterImageFilenamesVec_ = creatureImageLoader.Filenames(RACE, ROLE, SEX);
 
         gui::CachedTextureVec_t characterTextureVec;
@@ -1314,7 +1314,7 @@ namespace stage
     {
         /*selectedImageIndex_ = IMAGE_INDEX;
 
-        const auto CHARACTER_NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto CHARACTER_NAME { misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()) };
 
         const bool IS_MALE { GetCurrentSelectedSex() == creature::sex::Male };
 
@@ -2518,7 +2518,7 @@ namespace stage
                 << selectedImageIndex_ << " but characterImageFilenamesVec_.size()="
                 << characterImageFilenamesVec_.size() << ".");
 
-        const auto NAME { boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
+        const auto NAME { misc::TrimWhitespaceCopy(nameTextEntryBoxUPtr_->GetText()) };
 
         const auto SEX_ENUM { static_cast<creature::sex::Enum>(
             sexRadioButtonUPtr_->GetSelectedNumber() + 1) };

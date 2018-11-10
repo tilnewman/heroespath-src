@@ -13,8 +13,8 @@
 
 #include "game/game-controller.hpp"
 #include "gui/text-info.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "sfutil/display.hpp"
 
 #include <string>
@@ -67,8 +67,7 @@ namespace gui
 
         const std::string IMAGE_PATH_KEY_PREFIX("media-images-buttons-mainmenu-");
 
-        const auto LOOPSTATE_NAME { boost::algorithm::to_lower_copy(
-            stage::Stage::ToString(TRANSITION_TO)) };
+        const auto LOOPSTATE_NAME { misc::ToLowerCopy(stage::Stage::ToString(TRANSITION_TO)) };
 
         MouseImageInfo mouseImageInfo(
             true,

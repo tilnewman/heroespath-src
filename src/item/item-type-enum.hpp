@@ -36,7 +36,7 @@ namespace item
 
             Useable = 1 << 1,
             BodyPart = 1 << 2,
-            Equippable = 1 << 3,
+            Equipable = 1 << 3,
             Wearable = 1 << 4,
             OneHanded = 1 << 5,
             TwoHanded = 1 << 6,

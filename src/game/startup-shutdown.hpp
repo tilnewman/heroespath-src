@@ -46,7 +46,7 @@ namespace game
 
         void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]) const;
         void Setup_Display(const std::string & APPLICATION_NAME) const;
-        void Setup_ManagerClassResourcePaths() const;
+        void Setup_FilesystemPaths() const;
         void Setup_HoldersFill() const;
         void Setup_SubsystemsAcquire() const;
         void Setup_SubsystemsInitialize() const;

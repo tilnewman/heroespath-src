@@ -1847,7 +1847,7 @@ namespace creature
             const auto ROLE_STR { role::ToString(ROLE) };
             const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
-            const auto VALUE_STR_LOWER { ba::to_lower_copy(
+            const auto VALUE_STR_LOWER { misc::ToLowerCopy(
                 misc::ConfigFile::Instance()->Value(KEY_STR)) };
 
             const std::vector<std::string> WEAPONS_SET_VEC { misc::SplitByChars(
@@ -1865,10 +1865,10 @@ namespace creature
                 // A collection of instructions composes a WeaponSet
                 for (const auto & NEXT_INSTRUCTION_STR : INSTRUCTIONS_VEC)
                 {
-                    if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
+                    if (ba::starts_with(NEXT_INSTRUCTION_STR, "["))
                     {
                         const auto PICK_CSTR { "[pick-" };
-                        if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
+                        if (ba::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
                         {
                             // assume the instruction takes the form: [pick-<number>],
                             // where <number> must be a positive integer greater than zero

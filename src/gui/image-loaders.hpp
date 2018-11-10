@@ -14,8 +14,8 @@
 #include "creature/title-enum.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/combat-image-enum.hpp"
+#include "gui/content-images.hpp"
 #include "gui/image-options.hpp"
-#include "gui/image-util.hpp"
 #include "misc/not-null.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
@@ -65,7 +65,7 @@ namespace gui
         const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 
     CachedTexture LoadAndCacheImage(
-        const std::string & FAKE_PATH,
+        const std::string & REQUESTER_DESCRIPTION,
         const avatar::Avatar::Enum WHICH_AVATAR,
         const gui::ImageOptions & OPTIONS = gui::ImageOptions());
 

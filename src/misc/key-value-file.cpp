@@ -12,6 +12,7 @@
 #include "key-value-file.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
 
@@ -45,7 +46,7 @@ namespace misc
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (SEPARATOR.empty() == false),
-            "The key/valye separator string was empty." + makeErrorString());
+            "The key/value separator string was empty." + makeErrorString());
     }
 
     bool KeyValueFile::Exists() const { return misc::filesystem::ExistsAndIsFile(path_); }
@@ -98,7 +99,7 @@ namespace misc
             {
                 boost::algorithm::erase_all(line, "\n");
                 boost::algorithm::erase_all(line, "\r");
-                boost::algorithm::trim(line);
+                misc::TrimWhitespace(line);
                 lines_.emplace_back(MakeKeyValueLine(line, lineCurrentlyProcessing));
                 ++lineCurrentlyProcessing;
                 line.clear();
@@ -260,7 +261,7 @@ namespace misc
             return false;
         }
 
-        auto commentFinal { boost::algorithm::trim_copy(COMMENT) };
+        auto commentFinal { misc::TrimWhitespaceCopy(COMMENT) };
 
         if (boost::algorithm::starts_with(commentFinal, commentPrefix_) == false)
         {
@@ -435,7 +436,7 @@ namespace misc
                 "That line starts with the key/value separator \"" + separator_ + "\".");
         }
 
-        const auto KEY { boost::trim_copy(LINE_STR.substr(0, SEPARATOR_POSITION)) };
+        const auto KEY { misc::TrimWhitespaceCopy(LINE_STR.substr(0, SEPARATOR_POSITION)) };
 
         if (KEY.empty())
         {
@@ -450,7 +451,7 @@ namespace misc
                 "That line starts with the key \"" + KEY + "\" but there is nothing after it.");
         }
 
-        const auto VALUE { boost::trim_copy(LINE_STR.substr(VALUE_BEGIN_POSITION)) };
+        const auto VALUE { misc::TrimWhitespaceCopy(LINE_STR.substr(VALUE_BEGIN_POSITION)) };
 
         if (VALUE.empty())
         {

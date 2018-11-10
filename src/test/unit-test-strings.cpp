@@ -13,7 +13,6 @@
 
 #include <SFML/System/Clock.hpp>
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/strings.hpp"
@@ -166,12 +165,12 @@ BOOST_AUTO_TEST_CASE(misc_strings__Case_SpeedTestsComparedToBoost)
 
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(boost::algorithm::to_lower_copy(STR_TO_TEST));
+                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
             }
             sf::Clock clock;
             for (const std::string & STR_TO_TEST : strings)
             {
-                trash.emplace_back(boost::algorithm::to_lower_copy(STR_TO_TEST));
+                trash.emplace_back(misc::ToLowerCopy(STR_TO_TEST));
             }
             result.boost_times.emplace_back(clock.getElapsedTime().asMilliseconds());
 

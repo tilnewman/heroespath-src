@@ -9,11 +9,11 @@
 //
 // layout.hpp
 //
+#include "gui/cached-texture.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/Texture.hpp>
 
 #include <string>
 #include <vector>
@@ -50,7 +50,7 @@ namespace map
         sf::Vector2i tile_count_v;
         LayerVec_t layer_vec;
         TilesPanelVec_t tiles_panel_vec;
-        std::vector<sf::Texture> texture_vec;
+        std::vector<gui::CachedTexture> texture_vec;
         sf::RenderTexture empty_texture;
     };
 

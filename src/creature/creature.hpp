@@ -85,11 +85,6 @@ namespace creature
     class Creature
     {
     public:
-        Creature(const Creature &) = delete;
-        Creature(Creature &&) = delete;
-        Creature & operator=(const Creature &) = delete;
-        Creature & operator=(Creature &&) = delete;
-
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
         explicit Creature(
             const bool IS_PLAYER = false,
@@ -104,6 +99,13 @@ namespace creature
             const Experience_t & EXPERIENCE = 0_exp,
             const Mana_t & MANA = 0_mana);
 
+        Creature(const Creature &) = delete;
+        Creature(Creature &&) = delete;
+        Creature & operator=(const Creature &) = delete;
+        Creature & operator=(Creature &&) = delete;
+
+        const std::string ImagePath() const;
+
         const BodyType Body() const { return bodyType_; }
 
         bool IsPlayerCharacter() const { return isPlayer_; }
@@ -113,9 +115,6 @@ namespace creature
 
         const std::string NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
         const std::string NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
-
-        const std::string ImageFilename() const { return imageFilename_; }
-        void ImageFilename(const std::string & S) { imageFilename_ = S; }
 
         sex::Enum Sex() const { return sex_; }
 
@@ -393,8 +392,6 @@ namespace creature
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
-        bool ShallowCompare(const Creature &);
-
     protected:
         const item::ItemPVecVec_t ComposeWeaponsList() const;
 
@@ -411,7 +408,12 @@ namespace creature
     protected:
         bool isPlayer_;
         std::string name_;
-        std::string imageFilename_;
+
+        // these are mutable so that we can set them when requested for the first time by a const
+        // getter functions (lazy evaluation)
+        mutable std::string imageFilename_;
+        mutable std::string imageFullPath_;
+
         sex::Enum sex_;
         BodyType bodyType_;
         race::Enum race_;
@@ -479,7 +481,12 @@ namespace creature
         {
             ar & isPlayer_;
             ar & name_;
+
+            // don't save imageFullPath_ because that might change when a game is loaded after a
+            // re-install, but the filename can be random so we want to keep that so each time
+            // a game loads the player sees the image they are familiar with
             ar & imageFilename_;
+
             ar & sex_;
             ar & bodyType_;
             ar & race_;

@@ -22,10 +22,10 @@
 
 #include "game/startup-shutdown.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/loaders.hpp"
 #include "gui/texture-cache.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
+#include "misc/log-macros.hpp"
 
 #include <cstdlib>
 #include <exception>
@@ -33,6 +33,28 @@
 using namespace heroespath;
 using namespace heroespath::gui;
 using namespace heroespath::misc;
+
+inline void
+    LoadTexture(sf::Texture & texture, const std::string & PATH_STR_ORIG, const bool WILL_SMOOTH)
+{
+    const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_STR_ORIG) };
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
+        "LoadTexture(\""
+            << PATH_STR_COMPLETE
+            << "\") failed because that file either does not exist or is not a regular file.");
+
+    M_HP_ASSERT_OR_LOG_AND_THROW(
+        texture.loadFromFile(PATH_STR_COMPLETE),
+        "LoadTexture(), sf::(Image or Texture).loadFromFile(\""
+            << PATH_STR_COMPLETE << "\") failed.  Check console output for information.");
+
+    if (WILL_SMOOTH)
+    {
+        texture.setSmooth(true);
+    }
+}
 
 inline bool areImagesEqual(const sf::Image & A, const sf::Image & B)
 {
@@ -65,7 +87,7 @@ inline const sf::Image
     quickLoadByPath(const std::string & PATH, const ImageOptions & OPTIONS = ImageOptions())
 {
     sf::Texture texture;
-    heroespath::gui::Loaders::Texture(texture, PATH);
+    LoadTexture(texture, PATH, (OPTIONS.option_enum & ImageOpt::Smooth));
     sf::Image image(texture.copyToImage());
     OPTIONS.Apply(image);
     return image;
@@ -113,7 +135,7 @@ BOOST_AUTO_TEST_CASE(HelperFunctionTests)
         == false);
 
     sf::Texture texture1;
-    heroespath::gui::Loaders::Texture(
+    LoadTexture(
         texture1, heroespath::misc::ConfigFile::Instance()->GetMediaPath(IMAGE1_PATH_KEY), false);
 
     BOOST_CHECK(areImagesEqual(texture1, quickLoadByKey(IMAGE1_PATH_KEY)));
@@ -185,8 +207,10 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
         BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
 
         BOOST_CHECK(areImagesEqual(tc.GetByIndex(IMAGE1_INDEX), quickLoadByKey(IMAGE1_PATH_KEY)));
+
         BOOST_CHECK(areImagesEqual(
             tc.GetByIndex(IMAGE1_INDEX), quickLoadByKey(IMAGE1_PATH_KEY, ImageOptions())));
+
         BOOST_CHECK(tc.GetRefCountByIndex(IMAGE1_INDEX) == 1);
 
         // BOOST_CHECK_THROW(tc.GetByIndex(IMAGE1_INDEX + 1), std::exception);
@@ -592,7 +616,9 @@ BOOST_AUTO_TEST_CASE(TextureCacheTests)
             BOOST_CHECK(areImagesEqual(ct1A.Get(), ct3.Get()) == false);
             BOOST_CHECK(areImagesEqual(ct1A.Get(), ct2.Get()) == false);
 
+            M_HP_LOG_WRN("ct2=" << &ct2.Get());
             ct2 = ct3;
+            M_HP_LOG_WRN("ct2=" << &ct2.Get());
 
             BOOST_CHECK(ct1A.Index() == 0);
 

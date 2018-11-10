@@ -16,29 +16,29 @@
 #include "misc/log-macros.hpp"
 
 #include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Texture.hpp>
 
 namespace heroespath
 {
 namespace gui
 {
 
+    const sf::Texture CachedTexture::alwaysEmptyTexture_;
+
     CachedTexture::CachedTexture(const CachedTexture & CT)
         : path_(CT.path_)
-        , index_(0) // set below
+        , index_(CT.index_)
         , options_(CT.options_)
+        , texturePtr_(CT.texturePtr_)
     {
-        if (CT.path_.empty() == false)
-        {
-            // this call is required because copying must always increment the ref_count
-            index_ = TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
-        }
+        // this call is required because copying must always increment the ref_count
+        TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
     }
 
     CachedTexture::CachedTexture(CachedTexture && ct)
         : path_(std::move(ct.path_))
         , index_(std::move(ct.index_))
         , options_(std::move(ct.options_))
+        , texturePtr_(std::move(ct.texturePtr_))
     {
         // empty ct's path_ so its destructor won't try to TextureCache::Remove()
         ct.path_.clear();
@@ -46,18 +46,17 @@ namespace gui
 
     CachedTexture & CachedTexture::operator=(const CachedTexture & CT)
     {
-        if ((this != &CT) && (CT.index_ != index_))
+        if ((this != &CT) && ((CT.index_ != index_) || (CT.texturePtr_ != texturePtr_)))
         {
             Release();
 
-            if (CT.path_.empty() == false)
-            {
-                // this call is required because copying must always increment the ref_count
-                index_ = TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
-            }
-
+            index_ = CT.index_;
             path_ = CT.path_;
             options_ = CT.options_;
+            texturePtr_ = CT.texturePtr_;
+
+            // this call is required because copying must always increment the ref_count
+            TextureCache::Instance()->AddByPath(CT.path_, CT.options_);
         }
 
         return *this;
@@ -65,58 +64,80 @@ namespace gui
 
     CachedTexture & CachedTexture::operator=(CachedTexture && ct)
     {
-        if (this != &ct)
+        if ((this != &ct) && ((texturePtr_ != ct.texturePtr_) || (index_ != ct.index_)))
         {
-            if (index_ != ct.index_)
-            {
-                Release();
+            Release();
 
-                path_ = std::move(ct.path_);
-                index_ = std::move(ct.index_);
-                options_ = std::move(ct.options_);
-            }
-
-            // zero the moved ct's index_ so it's destructor won't try to TextureCache::Remove...()
-            ct.path_.clear();
+            path_ = std::move(ct.path_);
+            index_ = std::move(ct.index_);
+            options_ = std::move(ct.options_);
+            texturePtr_ = std::move(ct.texturePtr_);
         }
+
+        // zero the moved ct's index_ so it's destructor won't try to TextureCache::Remove...()
+        ct.path_.clear();
 
         return *this;
     }
 
     CachedTexture::CachedTexture(const char * const GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
-        , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
+        : path_(misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
+        , index_(0)
         , options_(OPTIONS)
-    {}
+        , texturePtr_(misc::NotNull(&alwaysEmptyTexture_))
+    {
+        const auto [INDEX, TEXTURE_PTR]
+            = TextureCache::Instance()->AddByPathAndReturnIndexAndRef(path_, OPTIONS);
+
+        index_ = INDEX;
+        texturePtr_ = TEXTURE_PTR;
+    }
 
     CachedTexture::CachedTexture(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
-        , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
+        : path_(misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
+        , index_(0)
         , options_(OPTIONS)
-    {}
+        , texturePtr_(misc::NotNull(&alwaysEmptyTexture_))
+    {
+        const auto [INDEX, TEXTURE_PTR]
+            = TextureCache::Instance()->AddByPathAndReturnIndexAndRef(path_, OPTIONS);
+
+        index_ = INDEX;
+        texturePtr_ = TEXTURE_PTR;
+    }
 
     CachedTexture::CachedTexture(const PathWrapper & PATH_WRAPPER, const ImageOptions & OPTIONS)
         : path_(misc::filesystem::CleanPath(PATH_WRAPPER.path_str))
-        , index_(TextureCache::Instance()->AddByPath(path_, OPTIONS))
+        , index_(0)
         , options_(OPTIONS)
-    {}
+        , texturePtr_(misc::NotNull(&alwaysEmptyTexture_))
+    {
+        const auto [INDEX, TEXTURE_PTR]
+            = TextureCache::Instance()->AddByPathAndReturnIndexAndRef(path_, OPTIONS);
+
+        index_ = INDEX;
+        texturePtr_ = TEXTURE_PTR;
+    }
 
     CachedTexture::CachedTexture(
         const std::string & FAKE_PATH, const sf::Texture & TEXTURE, const ImageOptions & OPTIONS)
         : path_(FAKE_PATH)
-        , index_(TextureCache::Instance()->AddByPathFake(path_, TEXTURE, OPTIONS))
+        , index_(0)
         , options_(OPTIONS)
-    {}
+        , texturePtr_(misc::NotNull(&alwaysEmptyTexture_))
+    {
+        // make sure NOT to use the given/passed-in TEXTURE because TextureCache creates a copy and
+        // the original is eventually destroyed
+
+        const auto [INDEX, TEXTURE_PTR]
+            = TextureCache::Instance()->AddByPathFakeAndReturnIndexAndRef(path_, TEXTURE, OPTIONS);
+
+        index_ = INDEX;
+        texturePtr_ = TEXTURE_PTR;
+    }
 
     CachedTexture::~CachedTexture() { Release(); }
-
-    const sf::Texture & CachedTexture::Get() const
-    {
-        return TextureCache::Instance()->GetByIndex(index_);
-    }
 
     std::size_t CachedTexture::RefCount() const
     {
@@ -127,6 +148,7 @@ namespace gui
     {
         if (path_.empty() == false)
         {
+            texturePtr_ = misc::NotNull(&alwaysEmptyTexture_);
             TextureCache::Instance()->RemoveByPath(path_, options_);
 
             // clear path_ so that repeated calls to Release() are safe
@@ -196,8 +218,7 @@ namespace gui
 
     CachedTextures::CachedTextures(
         const std::string & GAME_DATAFILE_KEY, const ImageOptions & OPTIONS)
-        : path_(misc::filesystem::CleanPath(
-            misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY)))
+        : path_(misc::ConfigFile::Instance()->GetMediaPath(GAME_DATAFILE_KEY))
         , indexes_(TextureCache::Instance()->AddDirectoryByPath(path_, OPTIONS))
         , options_(OPTIONS)
     {}

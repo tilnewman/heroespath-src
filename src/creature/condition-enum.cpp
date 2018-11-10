@@ -11,7 +11,6 @@
 //
 #include "condition-enum.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -121,7 +120,7 @@ namespace creature
 
     const std::string Conditions::ImageFilename(const Conditions::Enum ENUM)
     {
-        return boost::algorithm::to_lower_copy(ToString(ENUM) + ".png");
+        return misc::ToLowerCopy(ToString(ENUM) + ".png");
     }
 
     const std::string Conditions::ImageDirectory()

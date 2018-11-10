@@ -11,8 +11,7 @@
 //
 #include "parser.hpp"
 
-#include "gui/loaders.hpp"
-#include "map/shadow-masker.hpp"
+#include "gui/cached-texture.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -20,6 +19,7 @@
 #include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -50,6 +50,19 @@ namespace map
     const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_ { "walk-bounds" };
     const std::string Parser::XML_ATTRIB_NAME_NAME_ { "name" };
     const std::string Parser::XML_ATTRIB_NAME_DOORSFX_ { "doorsfx" };
+
+    std::string Parser::tileTextureDirectoryPath_ { "" };
+
+    void Parser::SetupFilesystemPaths()
+    {
+        tileTextureDirectoryPath_ = misc::filesystem::CleanPath(
+            misc::ConfigFile::Instance()->GetMediaPath("media-maps-tile-dir"));
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            misc::filesystem::ExistsAndIsDirectory(tileTextureDirectoryPath_),
+            "Map tile images directory does not exist or is not a directory."
+                + M_HP_VAR_STR(tileTextureDirectoryPath_));
+    }
 
     void Parser::Parse(ParsePacket & packet) const
     {
@@ -98,11 +111,11 @@ namespace map
         for (const BPTreeValue_t & CHILD_PAIR : XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_))
         {
             namespace ba = boost::algorithm;
-            const auto NODENAME_LOWER { ba::to_lower_copy(CHILD_PAIR.first) };
+            const auto NODENAME_LOWER { misc::ToLowerCopy(CHILD_PAIR.first) };
 
             if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_OBJECTS_LAYER_))
             {
-                const auto OBJECT_LAYER_NAME_LOWER { ba::to_lower_copy(
+                const auto OBJECT_LAYER_NAME_LOWER { misc::ToLowerCopy(
                     FetchXMLAttributeName(CHILD_PAIR.second)) };
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
@@ -135,7 +148,7 @@ namespace map
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
             {
                 const auto LAYER_TYPE { LayerTypeFromName(
-                    ba::to_lower_copy(FetchXMLAttributeName(CHILD_PAIR.second))) };
+                    misc::ToLowerCopy(FetchXMLAttributeName(CHILD_PAIR.second))) };
 
                 Prase_Layer_Generic(CHILD_PAIR.second, packet.layout, LAYER_TYPE);
             }
@@ -149,9 +162,6 @@ namespace map
 
         std::sort(
             std::begin(packet.walkSfxLayers.top_layers), std::end(packet.walkSfxLayers.top_layers));
-
-        ShadowMasker shadowMasker;
-        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
     }
 
     const boost::property_tree::ptree Parser::Parse_XML(const std::string & MAP_FILE_PATH_STR) const
@@ -209,19 +219,37 @@ namespace map
     {
         const auto IMAGE_PROPTREE { TILESET_PTREE.get_child("image") };
 
-        layout.texture_vec.emplace_back(sf::Texture());
-        const auto TEXTURE_INDEX { layout.texture_vec.size() - 1 };
+        const std::string FILE_RELATIVE_PATH { misc::filesystem::Filename(
+            FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source")) };
+
+        const std::string FILE_COMPLETE_PATH { misc::filesystem::CombinePathsThenClean(
+            tileTextureDirectoryPath_, FILE_RELATIVE_PATH) };
+
+        const std::string TILES_PANEL_NAME { FetchXMLAttribute<std::string>(
+            TILESET_PTREE, "name") };
 
         layout.tiles_panel_vec.emplace_back(TilesPanel(
-            FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
-            misc::filesystem::Filename(FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source")),
+            TILES_PANEL_NAME,
+            FILE_COMPLETE_PATH,
             FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
             FetchXMLAttribute<int>(TILESET_PTREE, "tilecount"),
             FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
-            TEXTURE_INDEX));
+            layout.texture_vec.size()));
 
-        gui::Loaders::Texture(
-            layout.texture_vec[TEXTURE_INDEX], layout.tiles_panel_vec.back().path_str);
+        namespace ba = boost::algorithm;
+
+        const auto IS_SHADOW_IMAGE { ba::contains(
+            misc::ToLowerCopy(TILES_PANEL_NAME), misc::ToLowerCopy(XML_ATTRIB_NAME_SHADOW_)) };
+
+        gui::ImageOpt::Enum imageOptionsEnum { gui::ImageOpt::Default };
+
+        if (IS_SHADOW_IMAGE)
+        {
+            imageOptionsEnum |= gui::ImageOpt::ShadowMaskForShadowImage;
+        }
+
+        layout.texture_vec.emplace_back(
+            gui::CachedTexture(PathWrapper(FILE_COMPLETE_PATH), imageOptionsEnum));
     }
 
     void Parser::Parse_Layer_Collisions(
@@ -314,7 +342,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
                 const auto OBJECT_PTREE { CHILD_PAIR.second };
 
@@ -354,7 +382,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
                 const auto OBJECT_PTREE { CHILD_PAIR.second };
 
@@ -401,7 +429,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
                 transitionVec.emplace_back(Parse_Transition(CHILD_PAIR.second));
             }
@@ -438,7 +466,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTIES_))
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTIES_))
             {
                 Parse_Transition_Properties(CHILD_PAIR.second, isEntry, level, transSfxType);
             }
@@ -459,7 +487,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTY_) == false)
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTY_) == false)
             {
                 continue;
             }
@@ -534,7 +562,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
                 Parse_WalkSfx(CHILD_PAIR.second, walkSfxLayers);
             }
@@ -604,16 +632,19 @@ namespace map
         const auto TILE_WIDTH { static_cast<unsigned>(layout.tile_size_v.x) };
         const auto TILE_HEIGHT { static_cast<unsigned>(layout.tile_size_v.y) };
 
+        const std::string EMPTY_TEXTURE_NAME { "map::Parser::SetupEmptyTexture(width="
+                                               + misc::ToString(TILE_WIDTH)
+                                               + ", height=" + misc::ToString(TILE_HEIGHT) + ")" };
+
         M_HP_ASSERT_OR_LOG_AND_THROW(
             layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
-            "map::Parser::SetupEmptyTexture() sf::RenderTexture::create("
-                << layout.tile_size_v.x << "x" << layout.tile_size_v.y << ") failed.");
+            EMPTY_TEXTURE_NAME + " sf::RenderTexture::create() failed.");
 
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();
 
-        layout.texture_vec.resize(1);
-        layout.texture_vec[0] = layout.empty_texture.getTexture();
+        layout.texture_vec.emplace_back(gui::CachedTexture(
+            EMPTY_TEXTURE_NAME + " FAKE PATH", layout.empty_texture.getTexture()));
 
         layout.tiles_panel_vec.emplace_back(map::TilesPanel());
     }
@@ -639,7 +670,7 @@ namespace map
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), NODE_NAME) == false)
+            if (ba::contains(misc::ToLowerCopy(CHILD_PAIR.first), NODE_NAME) == false)
             {
                 continue;
             }

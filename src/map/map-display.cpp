@@ -12,12 +12,10 @@
 #include "map-display.hpp"
 
 #include "avatar/lpc-view.hpp"
-#include "gui/loaders.hpp"
 #include "gui/sound-manager.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/display.hpp"
@@ -59,14 +57,13 @@ namespace map
         , offScreenTextureAbove_()
         , offScreenTextureBelow_()
         , offScreenMapSize_(0.0f, 0.0f)
-        , npcShadowTexture_()
-        , npcShadowSprite_()
+        , npcShadowCachedTexture_(
+              "media-images-avatar-shadow",
+              (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
+        , npcShadowSprite_(npcShadowCachedTexture_.Get())
         , animInfoVec_()
         , animUPtrVec_()
-        , shadowMasker_()
-    {
-        SetupNPCShadowImage();
-    }
+    {}
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
 
@@ -394,7 +391,7 @@ namespace map
 
                 if (TILES_PANEL.is_empty == false)
                 {
-                    renderStates.texture = &layout_.texture_vec[TILES_PANEL.texture_index];
+                    renderStates.texture = &layout_.texture_vec[TILES_PANEL.texture_index].Get();
 
                     if (LAYER.type == LayerType::Ground)
                     {
@@ -524,7 +521,8 @@ namespace map
 
                 // find its position in the tileset texture
                 const auto TEXTURE_TILE_COUNT_HORIZ {
-                    static_cast<int>(layout_.texture_vec[TILES_PANEL.texture_index].getSize().x)
+                    static_cast<int>(
+                        layout_.texture_vec[TILES_PANEL.texture_index].Get().getSize().x)
                     / layout_.tile_size_v.x
                 };
 
@@ -743,16 +741,6 @@ namespace map
                             * layout_.tile_size_v.y };
 
         return sf::Vector2f(static_cast<float>(WIDTH), static_cast<float>(HEIGHT));
-    }
-
-    void MapDisplay::SetupNPCShadowImage()
-    {
-        gui::Loaders::Texture(
-            npcShadowTexture_,
-            misc::ConfigFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
-
-        shadowMasker_.ChangeColors(npcShadowTexture_, true);
-        npcShadowSprite_.setTexture(npcShadowTexture_, true);
     }
 
     void MapDisplay::SetupAnimations()

@@ -37,11 +37,6 @@ namespace item
     class Item
     {
     public:
-        Item(const Item &) = delete;
-        Item(Item &&) = delete;
-        Item & operator=(const Item &) = delete;
-        Item & operator=(Item &&) = delete;
-
         explicit Item(
             const std::string & NAME = "",
             const std::string & DESC = "",
@@ -61,6 +56,11 @@ namespace item
 
         ~Item();
 
+        Item(const Item &) = delete;
+        Item(Item &&) = delete;
+        Item & operator=(const Item &) = delete;
+        Item & operator=(Item &&) = delete;
+
         const std::string Name() const;
 
         // similar to Name() but without "Pixie" or materials.
@@ -71,7 +71,7 @@ namespace item
 
         const std::string Desc() const;
 
-        const std::string ImageFilename() const { return imageFilename_; }
+        const std::string ImagePath() const;
 
         const weapon::WeaponTypeWrapper WeaponInfo() const { return weaponInfo_; }
         const armor::ArmorTypeWrapper ArmorInfo() const { return armorInfo_; }
@@ -207,7 +207,10 @@ namespace item
         creature::EnchantmentPVec_t enchantmentsPVec_;
         std::vector<creature::Enchantment *> enchantmentsToSerializePVec_;
 
-        std::string imageFilename_;
+        // these are mutable so that we can set them when requested for the first time by a const
+        // getter functions (lazy evaluation)
+        mutable std::string imageFilename_;
+        mutable std::string imageFullPath_;
 
     private:
         friend class boost::serialization::access;
@@ -226,7 +229,12 @@ namespace item
             ar & miscType_;
             ar & materialPri_;
             ar & materialSec_;
+
+            // don't save imageFullPath_ because that might change when a game is loaded after a
+            // re-install, but the filename can be random so we want to keep that so each time
+            // a game loads the player sees the image they are familiar with
             ar & imageFilename_;
+
             ar & weaponInfo_;
             ar & armorInfo_;
             ar & isPixie_;

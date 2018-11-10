@@ -13,7 +13,6 @@
 
 #include "creature/creature.hpp"
 #include "creature/summon-info.hpp"
-#include "gui/item-image-loader.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-type-wrapper.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -154,7 +153,7 @@ namespace item
             {
                 auto itemPtr { Make(PROFILE) };
                 TestItem(itemPtr, PROFILE);
-                imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImageFilename(), PROFILE);
+                imageFilenameProfileMap.AppendIfKeyNotFound(itemPtr->ImagePath(), PROFILE);
                 ItemWarehouse::Access().Free(itemPtr);
             }
 
@@ -174,15 +173,10 @@ namespace item
 
             iStagePtr->TestingStrAppend(ss.str());
 
-            gui::ItemImageLoader itemImageLoader;
-
             for (const auto & FILENAME_PROFILE_PAIR : imageFilenameProfileMap)
             {
-                const auto DOES_FILE_EXIST { itemImageLoader.ExistsAndFile(
-                    FILENAME_PROFILE_PAIR.first) };
-
                 M_HP_ASSERT_OR_LOG_AND_THROW(
-                    (DOES_FILE_EXIST),
+                    (misc::filesystem::ExistsAndIsFile(FILENAME_PROFILE_PAIR.first)),
                     "item::ItemFactory::Test() Images Test found an image that did not exist:  "
                     "filename=\""
                         << FILENAME_PROFILE_PAIR.first << "\", profile={"
@@ -468,10 +462,6 @@ namespace item
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ITEM_PTR->IsBroken() == false), makeErrorReportPrefix() << "broken.");
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (ITEM_PTR->ImageFilename().empty() == false),
-            makeErrorReportPrefix() << "no/empty image filename.");
-
         if (ITEM_PTR->ArmorInfo().HelmType() == armor::helm_type::Leather)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
@@ -565,7 +555,7 @@ namespace item
                         (ITEM_PTR->ArmorInfo().SpecificName()
                          == armor::ArmorTypeWrapper::GLOVES_NAME_),
                         makeErrorReportPrefix()
-                            << "gauntles with primary material "
+                            << "gauntlets with primary material "
                             << material::ToString(ITEM_PTR->MaterialPrimary())
                             << " which means gloves but all the names did not equal \""
                             << armor::ArmorTypeWrapper::GLOVES_NAME_
@@ -577,7 +567,7 @@ namespace item
                     M_HP_ASSERT_OR_LOG_AND_THROW(
                         (ITEM_PTR->ArmorInfo().SpecificName()
                          != armor::ArmorTypeWrapper::GLOVES_NAME_),
-                        makeErrorReportPrefix() << "gauntles with primary material "
+                        makeErrorReportPrefix() << "gauntlets with primary material "
                                                 << material::ToString(ITEM_PTR->MaterialPrimary())
                                                 << " which means gauntlets and NOT gloves but the "
                                                    "ArmorTypeWrapper::SpecificName()=\""
@@ -676,7 +666,7 @@ namespace item
                 << armor_type::ToString(ITEM_PROFILE.ArmorType())
                 << " but item=" << armor_type::ToString(ITEM_PTR->ArmorType()) << ".");
 
-        const bool IS_ITEM_EQUIPPABLE { (ITEM_PTR->Category() & category::Equippable) > 0 };
+        const bool IS_ITEM_EQUIPPABLE { (ITEM_PTR->Category() & category::Equipable) > 0 };
 
         if (IS_ITEM_EQUIPPABLE)
         {
@@ -690,7 +680,7 @@ namespace item
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (EQUIP_TYPE_COUNT == 1),
                 makeErrorReportPrefix()
-                    << "equippable but not one and only one of the three equippable types:"
+                    << "equipable but not one and only one of the three equipable types:"
                        "is_wearable="
                     << std::boolalpha << IS_WEARABLE << ", is_one_handed=" << IS_ONE_HANDED
                     << ", is_two_handed=" << IS_TWO_HANDED << ".");
@@ -699,28 +689,28 @@ namespace item
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::Wearable) == false),
-                makeErrorReportPrefix() << "not equippable but is wearable.");
+                makeErrorReportPrefix() << "not equipable but is wearable.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::OneHanded) == false),
-                makeErrorReportPrefix() << "not equippable but is one-handed.");
+                makeErrorReportPrefix() << "not equipable but is one-handed.");
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 ((ITEM_PTR->Category() & category::TwoHanded) == false),
-                makeErrorReportPrefix() << "not equippable but is two-handed.");
+                makeErrorReportPrefix() << "not equipable but is two-handed.");
         }
 
         if (ITEM_PTR->IsMisc())
         {
             const bool IS_MISCTYPE_EQUIPPABLE {
-                (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equippable) > 0
+                (misc_type::EquipCategory(ITEM_PTR->MiscType()) & category::Equipable) > 0
             };
 
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (IS_MISCTYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
                 makeErrorReportPrefix()
-                    << "equippable, but the misc_type=" << misc_type::ToString(ITEM_PTR->MiscType())
-                    << " is NOT equippable.  misc_type_equip_category="
+                    << "equipable, but the misc_type=" << misc_type::ToString(ITEM_PTR->MiscType())
+                    << " is NOT equipable.  misc_type_equip_category="
                     << category::ToString(misc_type::EquipCategory(ITEM_PTR->MiscType())));
 
             // unique_types cannot be set
@@ -942,7 +932,7 @@ namespace item
         return ItemWarehouse::Access().Store(std::make_unique<Item>(
             nameFactory_.MakeArmorBodyPartName(MATERIALS_PAIR, CREATURE_PTR),
             nameFactory_.MakeArmorBodyPartDescription(MATERIALS_PAIR),
-            static_cast<category::Enum>(category::Equippable | category::BodyPart),
+            static_cast<category::Enum>(category::Equipable | category::BodyPart),
             MATERIALS_PAIR.first,
             MATERIALS_PAIR.second,
             0_coin,

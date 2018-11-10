@@ -13,7 +13,6 @@
 
 #include "creature/creature.hpp"
 #include "creature/player-party.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/strings.hpp"
 
 namespace heroespath

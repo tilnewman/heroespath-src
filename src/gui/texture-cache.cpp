@@ -12,9 +12,7 @@
 #include "texture-cache.hpp"
 
 #include "game/game-controller.hpp"
-#include "gui/loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/filesystem.hpp"
 #include "misc/log-macros.hpp"
@@ -98,7 +96,17 @@ namespace gui
     }
 
     std::size_t TextureCache::AddByPath(
-        const std::string & PATH_TO_TEXTURE_STR_ORIG, const ImageOptions & OPTIONS)
+        const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS)
+    {
+        const auto [INDEX, TEXTURE_PTR_NOT_USED]
+            = AddByPathAndReturnIndexAndRef(PATH_TO_TEXTURE_STR, OPTIONS);
+
+        return INDEX;
+    }
+
+    const std::tuple<std::size_t, misc::NotNull<const sf::Texture *>>
+        TextureCache::AddByPathAndReturnIndexAndRef(
+            const std::string & PATH_TO_TEXTURE_STR_ORIG, const ImageOptions & OPTIONS)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (PATH_TO_TEXTURE_STR_ORIG.empty() == false),
@@ -154,18 +162,31 @@ namespace gui
                        "textureUPtrs_[pathOptToIndexesMap_.indexes[0]].get()==null.");
 
             foundIter->second.ref_count += 1;
-            return INDEX;
+
+            return std::make_tuple(INDEX, misc::NotNull(textureUPtrs_[INDEX].get()));
         }
 
         const auto INDEX { AddByPathInternal(PATH_TO_TEXTURE_STR_FINAL, OPTIONS) };
         pathOptToIndexesMap_.Append(PATH_OPTIONS_PAIR, TextureIndexes(1, { INDEX }));
-        return INDEX;
+        return std::make_tuple(INDEX, misc::NotNull(textureUPtrs_[INDEX].get()));
     }
 
     std::size_t TextureCache::AddByPathFake(
         const std::string & FAKE_PATH_TO_TEXTURE_STR,
         const sf::Texture & TEXTURE,
         const ImageOptions & OPTIONS)
+    {
+        const auto [INDEX, TEXTURE_PTR_NOT_USED]
+            = AddByPathFakeAndReturnIndexAndRef(FAKE_PATH_TO_TEXTURE_STR, TEXTURE, OPTIONS);
+
+        return INDEX;
+    }
+
+    const std::tuple<std::size_t, misc::NotNull<const sf::Texture *>>
+        TextureCache::AddByPathFakeAndReturnIndexAndRef(
+            const std::string & FAKE_PATH_TO_TEXTURE_STR,
+            const sf::Texture & TEXTURE,
+            const ImageOptions & OPTIONS)
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (FAKE_PATH_TO_TEXTURE_STR.empty() == false),
@@ -217,12 +238,12 @@ namespace gui
                        "textureUPtrs_[pathOptToIndexesMap_.indexes[0]].get()==null.");
 
             foundIter->second.ref_count += 1;
-            return INDEX;
+            return std::make_tuple(INDEX, misc::NotNull(textureUPtrs_[INDEX].get()));
         }
 
         const auto INDEX { AddByPathInternalFake(TEXTURE, OPTIONS) };
         pathOptToIndexesMap_.Append(PATH_OPTIONS_PAIR, TextureIndexes(1, { INDEX }));
-        return INDEX;
+        return std::make_tuple(INDEX, misc::NotNull(textureUPtrs_[INDEX].get()));
     }
 
     const std::vector<std::size_t> TextureCache::AddDirectoryByKey(
@@ -540,7 +561,19 @@ namespace gui
 
         try
         {
-            gui::Loaders::Texture(*textureUPtr, PATH_TO_TEXTURE_STR, false);
+            const auto PATH_STR_COMPLETE { misc::filesystem::CleanPath(PATH_TO_TEXTURE_STR) };
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (misc::filesystem::ExistsAndIsFile(PATH_STR_COMPLETE)),
+                "Failed because that file either does not exist or is not a regular file."
+                    + M_HP_VAR_STR(PATH_TO_TEXTURE_STR) + M_HP_VAR_STR(PATH_STR_COMPLETE));
+
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                textureUPtr->loadFromFile(PATH_STR_COMPLETE),
+                "sf::Texture::loadFromFile(\""
+                    << PATH_STR_COMPLETE
+                    << "\") failed.  Check console output for information."
+                        + M_HP_VAR_STR(PATH_TO_TEXTURE_STR));
         }
         catch (...)
         {

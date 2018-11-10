@@ -9,8 +9,9 @@
 //
 // sfx-wrapper.hpp
 //
-#include "gui/sfml-audio.hpp"
 #include "gui/sound-effects-enum.hpp"
+
+#include <SFML/Audio.hpp>
 
 #include <memory>
 #include <tuple>
@@ -20,6 +21,9 @@ namespace heroespath
 {
 namespace gui
 {
+
+    using SoundUPtr_t = std::unique_ptr<sf::Sound>;
+    using SoundBufferUPtr_t = std::unique_ptr<sf::SoundBuffer>;
 
     // Responsible for storing all sfml objects relating to a single sound effect,
     // and presenting an interface for controlling it.

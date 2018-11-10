@@ -13,6 +13,7 @@
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
+#include "misc/strings.hpp"
 #include "misc/vector-map.hpp"
 
 #include <exception>
@@ -48,17 +49,16 @@ namespace item
                 return;
             }
 
-            const auto SYSTEM_NAME_LOWERCASE { boost::algorithm::to_lower_copy(SYSTEM_NAME) };
+            const auto SYSTEM_NAME_LOWERCASE { misc::ToLowerCopy(SYSTEM_NAME) };
 
-            if (SYSTEM_NAME_LOWERCASE == boost::algorithm::to_lower_copy(QUARTERSTAFF_NAME_))
+            if (SYSTEM_NAME_LOWERCASE == misc::ToLowerCopy(QUARTERSTAFF_NAME_))
             {
                 type_ = weapon_type::Staff;
                 variant_ = true;
                 SetNamesAndVerify("'name' constructor when name=Quarterstaff");
             }
             else if (
-                SYSTEM_NAME_LOWERCASE
-                == boost::algorithm::to_lower_copy(weapon_type::Name(weapon_type::Staff)))
+                SYSTEM_NAME_LOWERCASE == misc::ToLowerCopy(weapon_type::Name(weapon_type::Staff)))
             {
                 type_ = weapon_type::Staff;
                 variant_ = false;
@@ -348,7 +348,7 @@ namespace item
             }
 
             ss << EXTENSION;
-            return boost::algorithm::to_lower_copy(ss.str());
+            return misc::ToLowerCopy(ss.str());
         }
 
         bool WeaponTypeWrapper::IsGeneralNameAlmostSpecificName() const
@@ -356,8 +356,8 @@ namespace item
             namespace ba = boost::algorithm;
 
             return (
-                ba::to_lower_copy(ba::replace_all_copy(generalName_, " ", ""))
-                == ba::to_lower_copy(specificName_));
+                misc::ToLowerCopy(ba::replace_all_copy(generalName_, " ", ""))
+                == misc::ToLowerCopy(specificName_));
         }
 
         const std::vector<WeaponTypeWrapper> WeaponTypeWrapper::MakeCompleteSet()
@@ -422,11 +422,9 @@ namespace item
         {
             const auto KNIFE_NAME { weapon_type::ToString(weapon_type::Knife) };
 
-            const auto IS_KNIFE { SYSTEM_NAME_LOWERCASE
-                                  == boost::algorithm::to_lower_copy(KNIFE_NAME) };
+            const auto IS_KNIFE { SYSTEM_NAME_LOWERCASE == misc::ToLowerCopy(KNIFE_NAME) };
 
-            const auto IS_DAGGER { SYSTEM_NAME_LOWERCASE
-                                   == boost::algorithm::to_lower_copy(DAGGER_NAME_) };
+            const auto IS_DAGGER { SYSTEM_NAME_LOWERCASE == misc::ToLowerCopy(DAGGER_NAME_) };
 
             if (IS_KNIFE || IS_DAGGER)
             {

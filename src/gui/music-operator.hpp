@@ -11,7 +11,8 @@
 //  The only place that sf::Music objects are stored and controlled.
 //
 #include "gui/music-info.hpp"
-#include "gui/sfml-audio.hpp"
+
+#include <SFML/Audio.hpp>
 
 #include <memory>
 #include <string>
@@ -25,6 +26,8 @@ namespace heroespath
 {
 namespace gui
 {
+
+    using MusicUPtr_t = std::unique_ptr<sf::Music>;
 
     struct music_update_status : public EnumBaseCounting<EnumFirstValue::Valid>
     {

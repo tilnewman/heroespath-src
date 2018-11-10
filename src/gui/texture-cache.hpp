@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
@@ -70,6 +71,11 @@ namespace gui
         std::size_t AddByPath(
             const std::string & PATH_TO_TEXTURE_STR, const ImageOptions & OPTIONS = ImageOptions());
 
+        const std::tuple<std::size_t, misc::NotNull<const sf::Texture *>>
+            AddByPathAndReturnIndexAndRef(
+                const std::string & PATH_TO_TEXTURE_STR,
+                const ImageOptions & OPTIONS = ImageOptions());
+
         // if the given fake path and options ARE already in the cache then:
         //  - the texture given will be assumed identical with what is already in the cache
         //  - the options specified will NOT be applied
@@ -84,6 +90,12 @@ namespace gui
             const std::string & FAKE_PATH_TO_TEXTURE_STR,
             const sf::Texture &,
             const ImageOptions & OPTIONS = ImageOptions());
+
+        const std::tuple<std::size_t, misc::NotNull<const sf::Texture *>>
+            AddByPathFakeAndReturnIndexAndRef(
+                const std::string & FAKE_PATH_TO_TEXTURE_STR,
+                const sf::Texture &,
+                const ImageOptions & OPTIONS = ImageOptions());
 
         // not recursive
         const std::vector<std::size_t> AddDirectoryByKey(

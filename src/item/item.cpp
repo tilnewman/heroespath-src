@@ -13,7 +13,7 @@
 
 #include "creature/enchantment-factory.hpp"
 #include "creature/enchantment-warehouse.hpp"
-#include "gui/item-image-loader.hpp"
+#include "gui/item-image-paths.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
@@ -69,18 +69,13 @@ namespace item
         , elementType_(TYPE_WRAPPER.element)
         , summonInfo_(TYPE_WRAPPER.summon)
         , enchantmentsPVec_()
-        , imageFilename_("")
+        , imageFilename_()
+        , imageFullPath_()
     {
         creature::EnchantmentFactory enchantmentFactory;
 
         enchantmentsPVec_ = enchantmentFactory.MakeAndStore(
             TYPE_WRAPPER, MATERIAL_PRIMARY, MATERIAL_SECONDARY, IsWeapon(), IsArmor());
-
-        if (NAME.empty() == false)
-        {
-            gui::ItemImageLoader itemImageLoader;
-            imageFilename_ = itemImageLoader.Filename(misc::MakeNotNull(this), true);
-        }
     }
 
     Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }
@@ -104,6 +99,21 @@ namespace item
 
         ss << desc_ << ".";
         return ss.str();
+    }
+
+    const std::string Item::ImagePath() const
+    {
+        if (imageFilename_.empty())
+        {
+            imageFilename_ = gui::ItemImagePaths::Filename(*this, true);
+        }
+
+        if (imageFullPath_.empty())
+        {
+            imageFullPath_ = gui::ItemImagePaths::PathFromFilename(imageFilename_);
+        }
+
+        return imageFullPath_;
     }
 
     const std::string Item::ShortName() const
@@ -296,8 +306,8 @@ namespace item
 
     bool operator<(const Item & L, const Item & R)
     {
-        // name_ and desc_ contain random adjectives so don't include them in comparisons
-        // image filename is generated entirely by other members, so don't include in comparisons
+        // name_, desc_, and imageFilename_ are random so don't include them in comparisons
+        // imageFullPath_ changes between load/save so don't include in comparisons
 
         if (std::tie(
                 L.price_,
@@ -344,8 +354,8 @@ namespace item
 
     bool operator==(const Item & L, const Item & R)
     {
-        // name_ and desc_ contain random adjectives so don't include them in comparisons
-        // image filename is generated entirely by other members, so don't include in comparisons
+        // name_, desc_, and imageFilename_ are random so don't include them in comparisons
+        // imageFullPath_ changes between load/save so don't include in comparisons
 
         if (std::tie(
                 L.price_,

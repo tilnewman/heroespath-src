@@ -14,7 +14,6 @@
 #include "gui/box-entity.hpp"
 #include "gui/text-renderer.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 #include "sfutil/position.hpp"
 #include "sfutil/primitives.hpp"

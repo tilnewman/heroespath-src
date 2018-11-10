@@ -25,7 +25,7 @@ namespace map
 
         TilesPanel(
             const std::string & NAME,
-            const std::string & FILE_NAME,
+            const std::string & FILE_PATH,
             const int & FIRST_ID,
             const int & TILE_COUNT,
             const int & COLUMN,

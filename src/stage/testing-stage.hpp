@@ -41,12 +41,13 @@
         return;                                                                                    \
     }
 
-#define M_TESTING_STAGE_TEST_WITH_TYPE_AND_CALL(test_name, type_name)                              \
+#define M_TESTING_STAGE_TEST_WITH_STATIC_TYPE_AND_CALL(space_name, test_name)                      \
     static bool hasTestingTypeAndCallCompleted_##test_name { false };                              \
     if (false == hasTestingTypeAndCallCompleted_##test_name)                                       \
     {                                                                                              \
-        static type_name thing;                                                                    \
-        hasTestingTypeAndCallCompleted_##test_name = thing.Test();                                 \
+        hasTestingTypeAndCallCompleted_##test_name                                                 \
+            = space_name::test_name::Test(misc::MakeNotNull(this));                                \
+                                                                                                   \
         return;                                                                                    \
     }
 

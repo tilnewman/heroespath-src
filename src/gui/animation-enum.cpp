@@ -11,7 +11,6 @@
 //
 #include "animation-enum.hpp"
 
-#include "misc/boost-string-includes.hpp"
 #include "misc/log-macros.hpp"
 
 namespace heroespath

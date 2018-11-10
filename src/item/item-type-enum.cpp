@@ -11,6 +11,7 @@
 //
 #include "item-type-enum.hpp"
 
+#include "misc/boost-string-includes.hpp"
 #include "misc/config-file.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
@@ -34,7 +35,7 @@ namespace item
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Broken, "broken", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Useable, "useable", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::BodyPart, "bodypart", SEPARATOR);
-        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Equippable, "equippable", SEPARATOR);
+        AppendNameIfBitIsSet(str, ENUM_VALUE, category::Equipable, "equipable", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::Wearable, "wearable", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::OneHanded, "one-handed", SEPARATOR);
         AppendNameIfBitIsSet(str, ENUM_VALUE, category::TwoHanded, "two-handed", SEPARATOR);
@@ -1553,7 +1554,7 @@ namespace item
             case Icicle:                { return 26_weight;  }
             case UnicornHorn:           { return 27_weight;  }
             case DevilHorn:             { return 28_weight;  }
-            case Scepter:               { return 29_weight;  }//intentinoally set low
+            case Scepter:               { return 29_weight;  }//intentionally set low
             case FlagFanatics:          { return 30_weight;  }
             case FlagTribal:            { return 30_weight;  }
             case FlagRegalCaptains:     { return 30_weight;  }
@@ -1749,7 +1750,7 @@ namespace item
             case Pendant:
             case Ring:
             {
-                return static_cast<category::Enum>(category::Equippable | category::Wearable);
+                return static_cast<category::Enum>(category::Equipable | category::Wearable);
             }
 
             case AngelBraid:
@@ -1765,7 +1766,7 @@ namespace item
             case Wand:
             case Shard:
             {
-                return static_cast<category::Enum>(category::Equippable | category::OneHanded);
+                return static_cast<category::Enum>(category::Equipable | category::OneHanded);
             }
 
             case Crumhorn:
@@ -1778,7 +1779,7 @@ namespace item
             case ReaperScythe:
             case Staff:
             {
-                return static_cast<category::Enum>(category::Equippable | category::TwoHanded);
+                return static_cast<category::Enum>(category::Equipable | category::TwoHanded);
             }
 
             case BasiliskTonge:
@@ -3609,7 +3610,7 @@ namespace item
     // TODO move to MaterialFactory
     const MaterialPair_t material::SkinMaterial(const creature::race::Enum RACE)
     {
-        // keep in sync with ItemImageLoader::GetSkinImageFilename()
+        // keep in sync with ItemImagePaths::GetSkinImageFilename()
 
         if ((RACE == creature::race::Wolfen) || (RACE == creature::race::Troll)
             || (RACE == creature::race::Boar) || (RACE == creature::race::LionBoar)
