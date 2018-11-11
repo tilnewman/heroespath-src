@@ -8,7 +8,7 @@
 // ----------------------------------------------------------------------------
 //
 // Test-stuff.cpp
-//  Tests of the test_stuff helper functions functions()
+//  Tests of the test_stuff helper functions()
 //
 #include "unit-test-test-stuff.hpp"
 

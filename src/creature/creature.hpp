@@ -250,7 +250,7 @@ namespace creature
         bool MeteorShardsAdj(const MeteorShard_t & M) { return inventory_.MeteorShardsAdj(M); }
         bool GemsAdj(const Gem_t & G) { return inventory_.GemsAdj(G); }
 
-        // These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
+        // These functions return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         // On failure, the string will be an explanation of the failure that can be shown to the
         // player.
         const std::string ItemAdd(const item::ItemPtr_t);
@@ -445,8 +445,8 @@ namespace creature
         //                     unaffected by bonuses.  See TraitCurrent().
         //
         // bonusSet_.Normal    -The percent, bonus, standing value.  See TraitBonusNormal().
-        //                     This is a permenant bonus, not from a temporary source
-        //                     (enchantment or condition), but from a permenant source
+        //                     This is a permanent bonus, not from a temporary source
+        //                     (enchantment or condition), but from a permanent source
         //                     (rank increase or title).
         //
         // bonusSet_.Current   -The percent, sum of all bonuses from temp sources

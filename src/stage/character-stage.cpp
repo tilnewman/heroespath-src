@@ -1411,7 +1411,7 @@ namespace stage
         };
 
         const auto RECC_STRONG_STR {
-            "It is strongly reccomended that you increase this attribute."
+            "It is strongly recommended that you increase this attribute."
         };
 
         sf::Color reccNormalColor(DESC_TEXT_COLOR_);
@@ -1523,7 +1523,7 @@ namespace stage
 
             if (WHICH_STAT == creature::Traits::Intelligence)
             {
-                const auto REASON_STR { "Inteflligence is important to Bards for magical song." };
+                const auto REASON_STR { "Intelligence is important to Bards for magical song." };
 
                 if (STAT_VALUE < STAT_VALUE_MED)
                 {
@@ -2008,7 +2008,7 @@ namespace stage
             return boost::none;
         }*/
 
-        // process MouseUp() on all other entitys
+        // process MouseUp() on all other entity's
         auto entityWithFocusPtrOpt { StageBase::UpdateMouseUp(MOUSE_POS_V) };
 
         // remove animations that are finished from the vector

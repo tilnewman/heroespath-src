@@ -376,7 +376,7 @@ namespace stage
             (ELAPSED_TIME_SECONDS * SCROLL_SPEED_MULT_)
             + std::pow((1.0f + keyPressClock_.getElapsedTime().asSeconds()), 2.35f)) };
 
-        // accellerate/decellerate when pressing/releasing the down arrow key
+        // accelerate/decelerate when pressing/releasing the down arrow key
         if ((isKeyHeldArrowUp_ == false) && (isKeyHeldArrowDown_ == false)
             && (std::abs(scrollSpeed_ - DEFAULT_SCROLL_SPEED_) > 5.0f))
         {

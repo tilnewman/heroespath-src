@@ -206,7 +206,7 @@ namespace stage
                 "stage::StageBase("
                 << GetStageName() << ")::SetFocus(entity=" << ENTITY_PTR->GetEntityName()
                 << ")  Attempt to set focus with an IEntityPtr_t that was not in entityPVec_.  "
-                   "orig_enity_withfocus=\""
+                   "orig_entity_withfocus=\""
                 << ORIG_ENTITY_WITH_FOCUS_NAME << "\"");
         }
     }
@@ -286,7 +286,7 @@ namespace stage
                 text = entityWithFocusPtrOpt_.value()->GetMouseHoverText();
             }
 
-            // if focused entity is not hovered, then look for any entity the mouse is hoving over
+            // if focused entity is not hovered, then look for any entity the mouse is hovering over
             if (text.empty())
             {
                 for (const auto & NEXT_ENTITY_PTR : entityPVec_)

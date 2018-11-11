@@ -47,7 +47,7 @@ namespace gui
     TextureCache::~TextureCache()
     {
         M_HP_LOG_DBG(
-            "Subsystem Desstruction: TextureCache (total_loaded_bytes="
+            "Subsystem Destruction: TextureCache (total_loaded_bytes="
             << BytesToString(totalLoadedDataBytes_) << ")");
 
         DumpCacheToLog(LogDumpContext::Destruct);
@@ -522,7 +522,7 @@ namespace gui
         pathOptToIndexesMap_.Clear();
 
         // Any value greater than (about) a thousand will work here.
-        // Even an aggressize stage (like Credits) should not exceed 500.
+        // Even an aggressive stage (like Credits) should not exceed 500.
         textureUPtrs_.reserve(1024);
         pathOptToIndexesMap_.Reserve(1024);
 

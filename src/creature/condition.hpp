@@ -9,7 +9,7 @@
 //
 // condition.hpp
 //  Code that places a Creature under a temporary condition.
-//  Examples would be poisoned, unconcious, etc.
+//  Examples would be poisoned, unconscious, etc.
 //
 #include "combat/hit-info.hpp"
 #include "creature/condition-enum.hpp"

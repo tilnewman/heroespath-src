@@ -82,7 +82,7 @@ namespace interact
             }
         }
 
-        return "not handled by any of the buttons owned by this stage, packet_desription="
+        return "not handled by any of the buttons owned by this stage, packet_description="
             + PACKET_DESCRIPTION;
     }
 

@@ -290,8 +290,8 @@ namespace combat
             }
             else if (cretainOrHigherFreqTypeVec.size() > 1)
             {
-                // if there are multipe FrequencyTypes that are certain or higher then choose
-                // randomly amoung them
+                // if there are multiple FrequencyTypes that are certain or higher then choose
+                // randomly among them
                 const auto RAND(misc::random::Float(0.0f, cretainOrHigherChanceTotal));
                 auto subtotal { 0.0f };
                 for (const auto & NEXT_FREQCHANCE_PAIR : cretainOrHigherFreqTypeVec)

@@ -20,7 +20,7 @@ namespace heroespath
 namespace gui
 {
 
-    // Enapsulates everything about a screen resolution
+    // Encapsulates everything about a screen resolution
     struct Resolution
     {
         explicit Resolution(

@@ -1016,7 +1016,7 @@ namespace creature
             }
             case BardOfTheAracneAria:
             {
-                return "Bard of the Aracne Aria";
+                return "Bard of the Arcane Aria";
             }
             //
             case Targeter:

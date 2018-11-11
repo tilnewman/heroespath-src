@@ -81,7 +81,7 @@ namespace creature
         const std::string LongDesc() const;
 
         void Change(const CreaturePtr_t) const;
-        // titles are permenant, so no need for an UndoChange() function here
+        // titles are permanent, so no need for an UndoChange() function here
 
         friend bool operator<(const Title & L, const Title & R);
         friend bool operator==(const Title & L, const Title & R);

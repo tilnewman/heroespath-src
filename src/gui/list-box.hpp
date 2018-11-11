@@ -49,8 +49,8 @@ namespace gui
 
     // A class that manages a vertical list of elements with a sliderbar that can be scrolled
     // through, selected, and activated.  Each element is a type that can hold an observer
-    // pointer to a game resoure, an image, text, and a flag for if that element is invalid.
-    // Invalid elements are drawn with a red overlay, are selectable, but not activatable.
+    // pointer to a game resource, an image, text, and a flag for if that element is invalid.
+    // Invalid elements are drawn with a red overlay, are selectable, but not activate-able.
     // Callbacks to the callbackHandlerPtr_ will not occur if the listbox is empty.
     // If Empty()==false, then the selection index and element pointer must be valid.
     template <typename Stage_t, typename Element_t>

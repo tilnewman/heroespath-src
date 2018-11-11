@@ -230,11 +230,6 @@ namespace gui
                 const auto CELL_COUNT_MAX_HORIZ { cellCountVS_.x - 1 };
                 if (cellIndexPosV.x > CELL_COUNT_MAX_HORIZ)
                 {
-                    M_HP_LOG_ERR(
-                        "Tile Collider calculated the out of range horiz cell index="
-                        << cellIndexPosV << ".  The horiz_max=" << CELL_COUNT_MAX_HORIZ << "."
-                        << M_HP_VAR_STR(POS_VG));
-
                     cellIndexPosV.x = CELL_COUNT_MAX_HORIZ;
                 }
             }
@@ -243,11 +238,6 @@ namespace gui
                 const auto CELL_COUNT_MAX_VERT { cellCountVS_.y - 1 };
                 if (cellIndexPosV.y > CELL_COUNT_MAX_VERT)
                 {
-                    M_HP_LOG_ERR(
-                        "Tile Collider calculated the out of range vert cell index="
-                        << cellIndexPosV << ".  The vert_max=" << CELL_COUNT_MAX_VERT << "."
-                        << M_HP_VAR_STR(POS_VG));
-
                     cellIndexPosV.y = CELL_COUNT_MAX_VERT;
                 }
             }

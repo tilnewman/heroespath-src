@@ -218,7 +218,7 @@ namespace game
 
                 M_HP_LOG_ERR(
                     "Exception=\"" << EXCEPTION.what()
-                                   << "\" thrown during music comamnd processing.  This is not "
+                                   << "\" thrown during music command processing.  This is not "
                                       "considered fatal so the game will continue.");
             }
         }
@@ -235,7 +235,7 @@ namespace game
 
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
-                                   << "\" thrown during stage replace comamnd processing.  This "
+                                   << "\" thrown during stage replace command processing.  This "
                                       "means a Stage could not be constructed and setup, which is "
                                       "fatal.  Re-Throwing to kill the game.");
 
@@ -259,7 +259,7 @@ namespace game
                 M_HP_LOG_FAT(
                     "Exception=\""
                     << EXCEPTION.what()
-                    << "\" thrown during popup replace comamnd processing.  This "
+                    << "\" thrown during popup replace command processing.  This "
                        "means a Popup Stage could not be constructed and setup, which is "
                        "fatal.  Re-Throwing to kill the game.");
 
@@ -279,8 +279,8 @@ namespace game
 
                 M_HP_LOG_FAT(
                     "Exception=\"" << EXCEPTION.what()
-                                   << "\" thrown during popup remove comamnd processing.  This "
-                                      "means a Popup Stage could not be rmeoved, which is "
+                                   << "\" thrown during popup remove command processing.  This "
+                                      "means a Popup Stage could not be removed, which is "
                                       "fatal.  Re-Throwing to kill the game.");
 
                 throw;
@@ -309,7 +309,7 @@ namespace game
 
                     M_HP_LOG_ERR(
                         "Exception=\"" << EXCEPTION.what()
-                                       << "\" thrown during fade comamnd processing.  This is not "
+                                       << "\" thrown during fade command processing.  This is not "
                                           "considered fatal so the game will continue.");
                 }
             }
@@ -331,8 +331,8 @@ namespace game
                 M_HP_LOG_FAT(
                     "Exception=\""
                     << EXCEPTION.what()
-                    << "\" thrown during exeute comamnd processing (during the game loop).  This "
-                       "is considered fatal, at least untul zTn implements some kind of retry...  "
+                    << "\" thrown during execute command processing (during the game loop).  This "
+                       "is considered fatal, at least until zTn implements some kind of retry...  "
                        "Re-Throwing to kill the game.");
 
                 throw;

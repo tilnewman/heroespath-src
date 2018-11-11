@@ -38,7 +38,7 @@ namespace gui
             // (very similar to GentiumPlus but slightly more narrow)
             SystemCondensed,
 
-            // Quill-Sword, rigid caliggraphy with medieval tails, very condensed
+            // Quill-Sword, rigid calligraphy with medieval tails, very condensed
             // (good for signs) (great flavorful numbers)
             SignThinTallNarrow,
 

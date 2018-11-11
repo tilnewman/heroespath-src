@@ -63,7 +63,7 @@ namespace combat
     using ItemWithTextUPtr_t = std::unique_ptr<ItemWithText>;
     using ItemWithTextUVec_t = std::vector<ItemWithTextUPtr_t>;
 
-    // the infomation that displays when the mouse cursor is held over an enemy
+    // the information that displays when the mouse cursor is held over an enemy
     class SummaryView : public sf::Drawable
     {
     public:

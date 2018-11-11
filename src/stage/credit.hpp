@@ -42,7 +42,7 @@ namespace stage
         };
     };
 
-    // responsibe for drawing a credit on screen
+    // responsive for drawing a credit on screen
     class Credit : public sf::Drawable
     {
     public:

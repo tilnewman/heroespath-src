@@ -324,7 +324,7 @@ namespace combat
                     OutParam_SelectChanceMap[SelectType::Knight] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Beastmaster] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Cleric] = EVEN_DIST_RATIO;
-                    OutParam_SelectChanceMap[SelectType::Theif] = EVEN_DIST_RATIO;
+                    OutParam_SelectChanceMap[SelectType::Thief] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Bard] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::FireBrand] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Sylavin] = EVEN_DIST_RATIO;
@@ -342,7 +342,7 @@ namespace combat
                     OutParam_SelectChanceMap[SelectType::Knight] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Beastmaster] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Cleric] = EVEN_DIST_RATIO;
-                    OutParam_SelectChanceMap[SelectType::Theif] = EVEN_DIST_RATIO;
+                    OutParam_SelectChanceMap[SelectType::Thief] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Bard] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::FireBrand] = EVEN_DIST_RATIO;
                     OutParam_SelectChanceMap[SelectType::Sylavin] = EVEN_DIST_RATIO;
@@ -480,7 +480,7 @@ namespace combat
                     OutParam_FreqChanceMap[FrequencyType::Commonly] = CHANCE;
                     OutParam_FreqChanceMap[FrequencyType::Often] = CHANCE;
                 }
-                else if (NEXT_SUBSTRING == "even_dist_coun")
+                else if (NEXT_SUBSTRING == "even_dist_count")
                 {
                     const auto CHANCE(1.0f / 3.0f);
                     OutParam_FreqChanceMap[FrequencyType::Once] = CHANCE;

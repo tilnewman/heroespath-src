@@ -803,7 +803,7 @@ namespace stage
         game::Game::Instance()->MakeNewAndSet(partyFactory.Make(PARTY_AVATAR, characters));
 
         // Don't bother clearing the party ListBox because it flashes the
-        //"not engouh characters" text, and since we are immediately transitioning
+        //"not enough characters" text, and since we are immediately transitioning
         // to the Camp Stage anyway.
         // partyListBoxUPtr_->Clear();
 
@@ -944,7 +944,7 @@ namespace stage
             = ((StageBase::StageRegion().height * 0.5f)
                - (mouseOverBackgroundRectFinal_.height * 0.5f));
 
-        // temp scale the sprite to see what the final dimmensions will be so that the text can be
+        // temp scale the sprite to see what the final dimensions will be so that the text can be
         // positioned, see actual sprite scale set below
         sfutil::Fit(mouseOverCreatureSprite_, MOUSEOVER_CREATURE_IMAGE_WIDTH_MAX_, TEXT_HEIGHT);
 

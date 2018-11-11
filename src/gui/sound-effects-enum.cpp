@@ -912,17 +912,17 @@ namespace gui
             {
                 return "beast-huge-1b";
             }
-            case DeathBeastRaugh1:
+            case DeathBeastRough1:
             {
-                return "beast-raugh-1";
+                return "beast-rough-1";
             }
-            case DeathBeastRaugh2:
+            case DeathBeastRough2:
             {
-                return "beast-raugh-2";
+                return "beast-rough-2";
             }
-            case DeathBeastRaugh3:
+            case DeathBeastRough3:
             {
-                return "beast-raugh-3";
+                return "beast-rough-3";
             }
             case DeathBeastSmallRaspy1:
             {
@@ -1696,9 +1696,9 @@ namespace gui
             case DeathBeastCaveTroll3:
             case DeathBeastHuge1a:
             case DeathBeastHuge1b:
-            case DeathBeastRaugh1:
-            case DeathBeastRaugh2:
-            case DeathBeastRaugh3:
+            case DeathBeastRough1:
+            case DeathBeastRough2:
+            case DeathBeastRough3:
             case DeathBeastSmallRaspy1:
             case DeathBeastSmallRaspy2:
             case DeathBeastSmallRaspy3:

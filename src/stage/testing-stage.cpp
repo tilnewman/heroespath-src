@@ -373,7 +373,7 @@ namespace stage
 
         // See below (function ReSaveWithBlackBorder) for a comment explaining why
         // this code is commented out.
-        // ReSaveWithBlackBorder("media-images-creaturess-dir");
+        // ReSaveWithBlackBorder("media-images-creatures-dir");
         // ReSaveWithBlackBorder("media-images-items-dir");
 
         M_TESTING_STAGE_TEST(GameDataFile);
@@ -1305,7 +1305,7 @@ namespace stage
                 sf::Sprite sprite;
                 sprite.setTexture(rItr->Get());
 
-                // reduce size if any dimmension is greater than 256
+                // reduce size if any dimension is greater than 256
                 const auto MAX_DIMMENSION { 256.0f };
                 auto newHorizScale { 1.0f };
                 if (sprite.getGlobalBounds().width > MAX_DIMMENSION)

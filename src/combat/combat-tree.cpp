@@ -870,7 +870,7 @@ namespace combat
             "combat::CombatTree::FindNodesClosestOfType(orig_blocking_pos="
                 << ORIGIN_BLOCKING_POS << ", will_find_players=" << std::boolalpha
                 << WILL_FIND_PLAYERS
-                << ")  unbale to find any CombatNodes closest.  This should never happen.");
+                << ")  unable to find any CombatNodes closest.  This should never happen.");
 
         return closestCombatNodesPVec;
     }

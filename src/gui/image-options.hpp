@@ -94,7 +94,7 @@ namespace gui
 
         void Apply(sf::Image &) const;
 
-        // lists the options in the order they will be appied
+        // lists the options in the order they will be applied
         const std::string ToString(
             const bool WILL_PREFIX = true,
             const Wrap WILL_WRAP = Wrap::Yes,

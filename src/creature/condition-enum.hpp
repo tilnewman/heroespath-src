@@ -67,7 +67,7 @@ namespace creature
         struct Severity
         {
             // Note:  Keep the GOOD condition at a different Severity from
-            //       LEAST_BENEFITIAL, so that GOOD can be avoided when
+            //       LEAST_BENEFICIAL, so that GOOD can be avoided when
             //       displaying conditions on the battlefield.
             //
             //       Keep ALL equal to zero so that min severity works.

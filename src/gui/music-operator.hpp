@@ -46,8 +46,8 @@ namespace gui
         static const std::string ToString(const Enum);
     };
 
-    // Responsible for storing sf::Muisc objects, information about them,
-    // and for presenting an interface to controll them.  The primary feature
+    // Responsible for storing sf::Music objects, information about them,
+    // and for presenting an interface to control them.  The primary feature
     // added by MusicOperator is fading, which is easy to control with the
     // interface provided.  Set the FadeMult param to FADE_MULT_IMMEDIATE_
     // of any negative float if you want the fade to be instant.

@@ -95,7 +95,7 @@ namespace gui
 
             std::ostringstream ssErr;
             ssErr << "gui::SfxSet::Play(" << sound_effect::ToString(ENUM)
-                  << ") did not find that sound effect amoung the static sounds.";
+                  << ") did not find that sound effect among the static sounds.";
             throw std::range_error(ssErr.str());
         }
     }

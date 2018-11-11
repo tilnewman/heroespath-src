@@ -216,7 +216,7 @@ namespace item
             {
                 return MakePairs(material::Glass);
             }
-            case misc_type::LitchHand:
+            case misc_type::LichHand:
             {
                 return MakePairs(material::DriedFlesh);
             }
@@ -250,7 +250,7 @@ namespace item
             }
 
             // unique items, so again, be specific
-            case misc_type::BasiliskTonge:
+            case misc_type::BasiliskTongue:
             {
                 return MakePairs(material::DriedFlesh);
             }
@@ -967,7 +967,7 @@ namespace item
             else
             {
                 // at this point the weapon should be only staffs: Staff/Quarterstaff
-                // pri=hande, sec=standard fancy reinforced
+                // pri=hander, sec=standard fancy reinforced
                 materialPairs = MakePairs(corePole_, AppendNothingCopy(fancyReinforced_));
             }
         }
@@ -1508,7 +1508,7 @@ namespace item
 
                 break;
             }
-            case named_type::Heros:
+            case named_type::Heroes:
             {
                 excludeAnyOfSecondary({ material::Scales });
                 excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
@@ -1931,7 +1931,7 @@ namespace item
                     }
                     else if (SET_TYPE == set_type::TheLichKings)
                     {
-                        // LitchHand
+                        // LichHand
                         primary = material::DriedFlesh;
                         secondary = material::Diamond;
                     }

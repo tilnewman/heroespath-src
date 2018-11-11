@@ -417,7 +417,7 @@ namespace combat
             case combat::TurnAction::LandPounce:
             {
                 std::vector<std::string> strVec {
-                    "surges", "charages", "leaps", "rushes", "springs"
+                    "surges", "charges", "leaps", "rushes", "springs"
                 };
 
                 ss << misc::Vector::SelectRandom(strVec);
@@ -503,7 +503,7 @@ namespace combat
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!TURN_ACTION_INFO.Spell()),
-                "comabt::Text::ActionTextIndexed(creature_attacking="
+                "combat::Text::ActionTextIndexed(creature_attacking="
                     << CREATURE_ATTACKING_PTR->Name()
                     << ", turn_action_info=" << TURN_ACTION_INFO.ToString()
                     << ", will_use_name=" << std::boolalpha << WILL_USE_NAME
@@ -522,7 +522,7 @@ namespace combat
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (!!TURN_ACTION_INFO.Song()),
-                "comabt::Text::ActionTextIndexed(creature_attacking="
+                "combat::Text::ActionTextIndexed(creature_attacking="
                     << CREATURE_ATTACKING_PTR->Name()
                     << ", turn_action_info=" << TURN_ACTION_INFO.ToString()
                     << ", will_use_name=" << std::boolalpha << WILL_USE_NAME
@@ -1249,16 +1249,26 @@ namespace combat
     {
         switch (misc::random::Int(4))
         {
-            case 0: { return "You face";
+            case 0:
+            {
+                return "You face";
             }
-            case 1: { return "Before you rage";
+            case 1:
+            {
+                return "Before you rage";
             }
-            case 2: { return "Before you stand";
+            case 2:
+            {
+                return "Before you stand";
             }
-            case 3: { return "Attacking you are";
+            case 3:
+            {
+                return "Attacking you are";
             }
             case 4:
-            default: { return "You encounter";
+            default:
+            {
+                return "You encounter";
             }
         }
     }

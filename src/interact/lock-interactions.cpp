@@ -168,7 +168,7 @@ namespace interact
         const auto POPUP_INFO { popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_SUCCESS_,
             "\nThe " + NAME_OF_WHAT_OPENED + " Opens!",
-            4.0f, // number of seconds before the popup disapears
+            4.0f, // number of seconds before the popup disappears
             gui::FontManager::Instance()->Size_Large(),
             popup::PopupButtons::Continue,
             popup::PopupImage::Regular,

@@ -498,7 +498,7 @@ namespace stage
             const auto BOUNDS { (
                 (WHICH_BAR == WhichBar::Health) ? healthColumnRects_[i] : manaColumnRects_[i]) };
 
-            // eastblish the outer line (bounding box) coordinates
+            // establish the outer line (bounding box) coordinates
             const auto WIDTH { BOUNDS.width * 0.75f };
 
             const auto HEIGHT { BOUNDS.height * 0.5f };

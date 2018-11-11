@@ -333,7 +333,7 @@ namespace item
             }
             else if (IsCover())
             {
-                return name_material_type::Claspped;
+                return name_material_type::Clasped;
             }
             else if (IsShield() || IsHelm())
             {
@@ -345,7 +345,7 @@ namespace item
             }
             else if (IsBoots() || IsShirt() || IsPants() || IsBracers() || IsAventail())
             {
-                return name_material_type::ClasppedWithBase;
+                return name_material_type::ClaspedWithBase;
             }
             else
             {

@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
-#define HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_COMBAT_CREATURE_EFFECT_HPP_INCLUDED
+#define HEROESPATH_GAME_COMBAT_CREATURE_EFFECT_HPP_INCLUDED
 //
 // creature-effect.hpp
 //
@@ -73,4 +73,4 @@ namespace combat
 } // namespace combat
 } // namespace heroespath
 
-#endif // HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_CREATURE_EFFECT_HPP_INCLUDED

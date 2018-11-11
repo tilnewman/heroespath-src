@@ -26,7 +26,7 @@ namespace creature
 
     float NameInfo::DefaultTextEntryBoxWidth() const
     {
-        // The +1 is to accomodate the TextEntryBox's padding and margins
+        // The +1 is to accommodate the TextEntryBox's padding and margins
         return Size(gui::TextInfo(LargestName() + LargestLetter(), DefaultFont(), DefaultSize())).x;
     }
 

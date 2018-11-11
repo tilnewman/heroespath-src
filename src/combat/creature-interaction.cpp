@@ -1149,7 +1149,7 @@ namespace combat
 
             if (ATTACKER_LUCK_RAND == DEFENDER_LUCK_RAND)
             {
-                // In this case, attaker and defender tied on luck rolls,
+                // In this case, attacker and defender tied on luck rolls,
                 // so the hit is determined by who has the greater luck roll + rank.
                 const auto ATTACK_LCK_RANK_ADJ { ATTACKER_LUCK_RAND
                                                  + CREATURE_ATTACKING_PTR->Rank().As<int>() };
@@ -1260,7 +1260,7 @@ namespace combat
             }
         }
 
-        // If weapon is bite and creature has fangs, then tripple the damage.
+        // If weapon is bite and creature has fangs, then triple the damage.
         if (WEAPON_PTR->WeaponInfo().IsBite() && (CREATURE_ATTACKING_PTR->Body().HasFangs()))
         {
             extraDamage = DAMAGE_FROM_WEAPON_RAW;

@@ -285,7 +285,7 @@ namespace avatar
             {
                 return { 49 };
             }
-        } // namespace su=namespaceguiswitch(POSE)
+        }
     }
 
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM)

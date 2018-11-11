@@ -5,7 +5,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// commandd-factory.cpp
+// command-factory.cpp
 //
 #include "command-factory.hpp"
 

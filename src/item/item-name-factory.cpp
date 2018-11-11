@@ -150,7 +150,7 @@ namespace item
         // If non-body_part and non-misc_type, then BASE_DESC comes either from
         // WeaponDetails.description or ArmorDetails.description, which needs an "A " put in front
         // of it.  However, this is handled by Item::Description() so that it can prepend "magical"
-        // if needed.  Only Item class knows if an item is magical beccause only it has information
+        // if needed.  Only Item class knows if an item is magical because only it has information
         // on Enchantments, which are not in ItemProfile.  This Item::Description() function is also
         // responsible for putting a period at the end.
 
@@ -434,8 +434,8 @@ namespace item
                     return SecondaryMaterialPhraseTipped(
                         SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);
                 }
-                case name_material_type::Claspped:
-                case name_material_type::ClasppedWithBase:
+                case name_material_type::Clasped:
+                case name_material_type::ClaspedWithBase:
                 {
                     return SecondaryMaterialPhraseClasped(
                         SECONDARY_MATERIAL, SECONDARY_MATERIAL_NAME);

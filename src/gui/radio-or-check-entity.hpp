@@ -26,7 +26,7 @@ namespace gui
 
     // Responsible for being an ImageTextEntity that works like a radio button or check box,
     // with text just to the right of the image.  Mouse states have new meaning: not-selected
-    // (up), selected (down), invalid (unabe to be selected) (disabled).  The over state is only
+    // (up), selected (down), invalid (unable to be selected) (disabled).  The over state is only
     // used to set overlay colors. If invalid, the state cannot be changed except by calling
     // Invalid(false).  If you only call Invalid() and Select() you will never need to call
     // Sync(), it will be called automatically.  Use the MouseTextInfo.disabled.color to store

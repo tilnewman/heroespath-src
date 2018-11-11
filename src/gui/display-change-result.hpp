@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_GUI_DISPLAY_CHAGE_RESULT_HPP_INCLUDED
-#define HEROESPATH_GUI_DISPLAY_CHAGE_RESULT_HPP_INCLUDED
+#ifndef HEROESPATH_GUI_DISPLAY_CHANGE_RESULT_HPP_INCLUDED
+#define HEROESPATH_GUI_DISPLAY_CHANGE_RESULT_HPP_INCLUDED
 //
 // display-change-enum.hpp
 //
@@ -37,4 +37,4 @@ namespace gui
 } // namespace gui
 } // namespace heroespath
 
-#endif // HEROESPATH_GUI_DISPLAY_CHAGE_RESULT_HPP_INCLUDED
+#endif // HEROESPATH_GUI_DISPLAY_CHANGE_RESULT_HPP_INCLUDED

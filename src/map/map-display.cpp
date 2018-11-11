@@ -785,7 +785,7 @@ namespace map
         const auto DIFF_DISTANCE { ANIM_SFX_DISTANCE_MAX_ - ANIM_SFX_DISTANCE_MIN_ };
 
         // Sounds coming from animations are gui::music and not gui::sound_effects,
-        // but they are goverened by the SoundEffectsVolume and not the MusicVolume.
+        // but they are governed by the SoundEffectsVolume and not the MusicVolume.
         const auto MAX_VOLUME { gui::SoundManager::Instance()->SoundEffectVolume() };
         const auto MIN_VOLUME { MAX_VOLUME * ANIM_SFX_VOLUME_MIN_RATIO_ };
         const auto DIFF_VOLUME { MAX_VOLUME - MIN_VOLUME };

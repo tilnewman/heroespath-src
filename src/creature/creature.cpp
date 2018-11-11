@@ -628,7 +628,7 @@ namespace creature
         }
         else if ((IsPixie() == false) && ITEM_PTR->IsPixie())
         {
-            return "Can't equip because it is a mini verson made only for Pixies.";
+            return "Can't equip because it is a mini verso made only for Pixies.";
         }
         else if (ITEM_PTR->IsSet())
         {
@@ -749,13 +749,13 @@ namespace creature
             if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasFingers() == false))
             {
                 equipFailReasonSS << separatorIfNotEmpty(equipFailReasonSS)
-                                  << "Can't equip guantlets without fingers.";
+                                  << "Can't equip gauntlets without fingers.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasArms() == false))
             {
                 equipFailReasonSS << separatorIfNotEmpty(equipFailReasonSS)
-                                  << "Can't equip guantlets without arms.";
+                                  << "Can't equip gauntlets without arms.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHead() == false))
@@ -767,7 +767,7 @@ namespace creature
             if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHorns() == true))
             {
                 equipFailReasonSS << separatorIfNotEmpty(equipFailReasonSS) << RaceName()
-                                  << "'s can't equip helms becaus they have horns.";
+                                  << "'s can't equip helms beaus they have horns.";
             }
 
             if ((ARMOR_TYPE == item::armor_type::Aventail)
@@ -1161,7 +1161,7 @@ namespace creature
     {
         auto EQUIPPED_ITEMS_PVEC { Inventory().ItemsEquipped() };
 
-        // determine if the currrent weapon set is valid (equipped)
+        // determine if the current weapon set is valid (equipped)
         for (const auto & HELD_ITEM_PTR : heldWeaponsPVec_)
         {
             const auto IS_HELD_ITEM_EQUIPPED { std::find_if(

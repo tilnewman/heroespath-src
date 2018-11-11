@@ -291,7 +291,7 @@ namespace stage
                 std::ostringstream ss;
                 ss << "stage::StageFactory::MakePopup(popup_info={" << POPUP_INFO.ToStringShort()
                    << "}) but the stage=" << popup::PopupStage::ToString(POPUP_INFO.Stage())
-                   << ") is is invalid (out of bounds).";
+                   << ") is invalid (out of bounds).";
                 throw std::range_error(ss.str());
             }
         }

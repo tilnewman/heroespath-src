@@ -81,14 +81,14 @@ namespace stage
 
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION,
-                    "saw user decided which characcter will try to pick the lock and started all "
+                    "saw user decided which character will try to pick the lock and started all "
                     "the unlocking attempt stuff");
             }
             else
             {
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION,
-                    "saw user failed to choose a valid characcter to try and pick the lock");
+                    "saw user failed to choose a valid character to try and pick the lock");
             }
         }
         else if (PACKET.curently_open_popup_name == lockPicking_.POPUP_NAME_ATTEMPTING_)

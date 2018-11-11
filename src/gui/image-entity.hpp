@@ -29,7 +29,7 @@ namespace gui
     // Responsible for being an Entity that has different images for different MouseStates.
     // Use this class when you need different images for different MouseStates.  The
     // global bounds of each sprite could be different, but so far I have not found a situation
-    // where that is a good idea.  Sync() keeeps entityRegion_ equal to the current sprite's
+    // where that is a good idea.  Sync() keeps entityRegion_ equal to the current sprite's
     // global bounds, which might be different if the sprites do not line up.  If they don't,
     // you can use MinimallyEnclosingRegion() to find the rect that contains them all.
     class ImageEntity : public Entity

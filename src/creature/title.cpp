@@ -250,13 +250,13 @@ namespace creature
                 L.statBonus_,
                 L.fileName_)
             < std::tie(
-                  R.title_,
-                  R.achievementCount_,
-                  R.achievementIndex_,
-                  R.rankBonus_,
-                  R.expBonus_,
-                  R.statBonus_,
-                  R.fileName_))
+                R.title_,
+                R.achievementCount_,
+                R.achievementIndex_,
+                R.rankBonus_,
+                R.expBonus_,
+                R.statBonus_,
+                R.fileName_))
         {
             return true;
         }
@@ -277,13 +277,13 @@ namespace creature
                 L.statBonus_,
                 L.fileName_)
             != std::tie(
-                   R.title_,
-                   R.achievementCount_,
-                   R.achievementIndex_,
-                   R.rankBonus_,
-                   R.expBonus_,
-                   R.statBonus_,
-                   R.fileName_))
+                R.title_,
+                R.achievementCount_,
+                R.achievementIndex_,
+                R.rankBonus_,
+                R.expBonus_,
+                R.statBonus_,
+                R.fileName_))
         {
             return false;
         }
@@ -295,7 +295,7 @@ namespace creature
 
     void Title::Change(const CreaturePtr_t CREATURE_PTR) const
     {
-        // titles are permenant, so they effect both the normal and current stat values
+        // titles are permanent, so they effect both the normal and current stat values
         CREATURE_PTR->StatTraitsModify(statBonus_);
         CREATURE_PTR->IncreaseRank(rankBonus_);
         CREATURE_PTR->IncreaseExp(expBonus_);

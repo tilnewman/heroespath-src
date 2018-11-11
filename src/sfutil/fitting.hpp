@@ -27,7 +27,7 @@ namespace sfutil
 {
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either ORIG or LIMIT is <= zero then that dimmension is ignored during fitting, if both
+    // if either ORIG or LIMIT is <= zero then that dimension is ignored during fitting, if both
     // LIMITs are <= zero then fitting is skipped but SCALE is still applied
     template <typename T, typename = std::enable_if_t<std::is_same<T, float>::value>>
     constexpr const sf::Vector2<T>
@@ -91,7 +91,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -108,7 +108,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -129,7 +129,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -150,7 +150,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
-    // rescaled to SCALE, if either LIMIT is <= zero then that dimmension is ignored, if both LIMITs
+    // rescaled to SCALE, if either LIMIT is <= zero then that dimension is ignored, if both LIMITs
     // are <= zero then fitting is skipped
     template <
         typename T1,
@@ -164,7 +164,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
-    // if either LIMIT or orig is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -178,7 +178,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within the size of LIMIT and then
-    // applies SCALE, if either LIMIT or orig is <= zero then that dimmension is ignored, if both
+    // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -192,7 +192,7 @@ namespace sfutil
     }
 
     // returns a scale that would make ORIG the maximum size that fits within LIMIT, if either LIMIT
-    // or orig is <= zero then that dimmension is ignored, if both LIMITs are <= zero
+    // or orig is <= zero then that dimension is ignored, if both LIMITs are <= zero
     // then 1.0f is returned
     template <typename T1, typename T2>
     constexpr float ScaleThatFits(const sf::Vector2<T1> & ORIG, const sf::Vector2<T2> & LIMIT)
@@ -212,7 +212,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -229,7 +229,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE,
-    // if either LIMIT or ORIG is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or ORIG is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -250,7 +250,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
-    // rescaled to SCALE, if either LIMIT or ORIG is <= zero then that dimmension is ignored, if
+    // rescaled to SCALE, if either LIMIT or ORIG is <= zero then that dimension is ignored, if
     // both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -320,7 +320,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within LIMIT and then applies SCALE,
-    // if either LIMIT or orig is <= zero then that dimmension is ignored, if both LIMITs are <=
+    // if either LIMIT or orig is <= zero then that dimension is ignored, if both LIMITs are <=
     // zero or less then fitting is skipped
     template <
         typename T1,
@@ -334,7 +334,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within the size of LIMIT and then
-    // applies SCALE, if either LIMIT or orig is <= zero then that dimmension is ignored, if both
+    // applies SCALE, if either LIMIT or orig is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -347,11 +347,11 @@ namespace sfutil
     }
 
     // rescales s (local) to the maximum size that fits within LIMIT, if either LIMIT or Size(s) is
-    // <= zero then that dimmension is ignored, if both LIMITs are <= zero then fitting is skipped
+    // <= zero then that dimension is ignored, if both LIMITs are <= zero then fitting is skipped
     void Fit(sf::Sprite & s, const sf::Vector2f & LIMIT);
 
     // rescales s (local) to the maximum size that fits within LIMITs, if either LIMIT or Size(s) is
-    // zero then that dimmension is ignore, if both LIMITs are <= zero then fitting is skipped
+    // zero then that dimension is ignore, if both LIMITs are <= zero then fitting is skipped
     void Fit(sf::Sprite & s, const float WIDTH_LIMIT, const float HEIGHT_LIMIT);
 
     // returns a scale that would make ORIG the maximum size that fits within LIMIT, if both LIMITs
@@ -365,7 +365,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimmension is
+    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -392,7 +392,7 @@ namespace sfutil
     }
 
     // returns ORIG scaled to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimmension is
+    // and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -413,7 +413,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimmension is
+    // and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -427,7 +427,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within LIMIT and is then rescaled to SCALE
-    // and then recentered to orig, if either LIMIT or orig is <= zero then that dimmension is
+    // and then recentered to orig, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -449,7 +449,7 @@ namespace sfutil
 
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE and then recentered to ORIG, if either LIMIT or ORIG is <= zero then that
-    // dimmension is ignored, if both LIMITs are <= zero then fitting is skipped
+    // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
         typename T2,
@@ -476,7 +476,7 @@ namespace sfutil
 
     // returns ORIG scaled to the maximum size that fits within the size of LIMIT and is then
     // rescaled to SCALE and then centered to LIMIT, if either LIMIT or ORIG is <= zero then that
-    // dimmension is ignored, if both LIMITs are <= zero then fitting is skipped
+    // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
         typename T2,
@@ -502,7 +502,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
-    // SCALE and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimmension is
+    // SCALE and then recentered to ORIG, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -516,7 +516,7 @@ namespace sfutil
     }
 
     // rescales orig to the maximum size that fits within the size of LIMIT and is then rescaled to
-    // SCALE and then centered to LIMIT, if either LIMIT or orig is <= zero then that dimmension is
+    // SCALE and then centered to LIMIT, if either LIMIT or orig is <= zero then that dimension is
     // ignored, if both LIMITs are <= zero then fitting is skipped
     template <
         typename T1,
@@ -530,32 +530,32 @@ namespace sfutil
     }
 
     // rescales s (local) to the maximum size that fits within LIMIT and then recenters to s's
-    // original center, if either LIMIT or s is <= zero then that dimmension is ignored, if both
+    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     void FitAndReCenter(sf::Sprite & s, const sf::Vector2f & LIMIT);
 
     // rescales s (local) to the maximum size that fits within LIMIT and then recentered to s's
-    // original center, if either LIMIT or s is <= zero then that dimmension is ignored, if both
+    // original center, if either LIMIT or s is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     void FitAndReCenter(sf::Sprite & s, const float WIDTH_LIMIT, const float HEIGHT_LIMIT);
 
     // rescales s (local) to the maximum size that fits within the size of LIMIT and then recenters
-    // to s's original center, if either LIMIT or s is <= zero then that dimmension is ignored, if
+    // to s's original center, if either LIMIT or s is <= zero then that dimension is ignored, if
     // both LIMITs are <= zero then fitting is skipped
     void FitAndReCenter(sf::Sprite & s, const sf::FloatRect & LIMIT);
 
     // rescales s (local) to the maximum size that fits within the size (global) of LIMIT and then
-    // recenters to s's original center, if either dimmension of LIMIT is <= zero then that
-    // dimmension is ignored, if both LIMITs are <= zero then fitting is skipped
+    // recenters to s's original center, if either dimension of LIMIT is <= zero then that
+    // dimension is ignored, if both LIMITs are <= zero then fitting is skipped
     void FitAndReCenter(sf::Sprite & s, const sf::Sprite & LIMIT);
 
     // rescales s (local) to the maximum size that fits within the size of LIMIT and then centers s
-    // in LIMIT, if either LIMIT or s is <= zero then that dimmension is ignored, if both LIMITs are
+    // in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored, if both LIMITs are
     // <= zero then fitting is skipped
     void FitAndCenterTo(sf::Sprite & s, const sf::FloatRect & LIMIT);
 
     // rescales s (local) to the maximum size that fits within the size of LIMIT (global) and then
-    // centers s in LIMIT, if either LIMIT or s is <= zero then that dimmension is ignored, if both
+    // centers s in LIMIT, if either LIMIT or s is <= zero then that dimension is ignored, if both
     // LIMITs are <= zero then fitting is skipped
     void FitAndCenterTo(sf::Sprite & s, const sf::Sprite & LIMIT);
 

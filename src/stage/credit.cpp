@@ -143,7 +143,7 @@ namespace stage
         }
         else if (MEDIA_TYPE == MediaType::Anim)
         {
-            // inital size and pos are default (zeros)
+            // initial size and pos are default (zeros)
             animUPtr_
                 = gui::AnimationFactory::Make(ANIM_ENUM, sf::FloatRect(), ANIM_FRAME_TIME_SEC);
 

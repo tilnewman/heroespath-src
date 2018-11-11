@@ -20,7 +20,7 @@ namespace heroespath
 namespace creature
 {
 
-    // Convenience warpper for creature stat values.
+    // Convenience wrapper for creature stat values.
     // Because sometimes the TraitSet class is just cumbersome overkill.
     class StatSet
     {

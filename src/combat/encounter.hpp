@@ -172,7 +172,7 @@ namespace combat
         // contains all items the dead enemies were wearing or holding when killed
         item::ItemCache deadNonPlayerItemsHeld_;
 
-        // conatins all the items the dead enemies were holding in the chest/lockbox
+        // contains all the items the dead enemies were holding in the chest/lockbox
         item::ItemCache deadNonPlayerItemsLockbox_;
 
         // this member always stores a copy, and is never responsible for lifetime

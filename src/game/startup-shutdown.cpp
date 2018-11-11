@@ -117,7 +117,7 @@ namespace game
         Teardown_CloseDisplay();
         Teardown_ReleaseSubsystems();
         Teardown_EmptyHolders();
-        M_HP_LOG("game teardown (alomst) finished");
+        M_HP_LOG("game teardown (almost) finished");
         Teardown_Logger();
     }
 
@@ -217,7 +217,7 @@ namespace game
             // creature/item/enchantment/etc warehouses are released.
             combat::Encounter::Release();
 
-            // there are dependancies between these Warehouses so this release order is critical
+            // there are dependencies between these Warehouses so this release order is critical
             creature::CreatureWarehouse::Release();
             item::ItemProfileWarehouse::Release();
             item::ItemWarehouse::Release();

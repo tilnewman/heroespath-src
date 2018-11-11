@@ -27,7 +27,7 @@ namespace item
 {
 
     // Responsible for creating and storing an ItemProfile for each item in the game that can be
-    // found after comabt in the random assortment of things left behind by a group of enemy
+    // found after combat in the random assortment of things left behind by a group of enemy
     // creatures.
     //
     // Also responsible for calculating non-magical based scores for ItemProfiles.
@@ -120,7 +120,7 @@ namespace item
         ItemProfileThinFactory thinProfileFactory_;
 
         // these are the fat profiles that are stored here for use by the Treasure Stage when
-        // deciding which items to give the players after defeating creatures in combet.
+        // deciding which items to give the players after defeating creatures in combat.
         ItemProfileVec_t profiles_;
         ItemProfileVec_t religiousProfiles_;
 

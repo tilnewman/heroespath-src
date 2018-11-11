@@ -316,7 +316,7 @@ namespace stage
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION,
                 "item listbox callback ignored because it was not a double-click or "
-                "keypress-renturn event");
+                "keypress-return event");
         }
 
         if (PACKET.listbox_ptr == itemLeftListBoxUPtr_.get())

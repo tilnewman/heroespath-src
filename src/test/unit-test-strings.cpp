@@ -329,7 +329,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
                    const std::string & CASE_MESSAGE = "normal") {
         //
         auto makeErrorMessage = [&](const std::string & ACTUAL_OUTPUT) {
-            const auto CASE_CHAGE_STR = [CASE_CHANGE]() {
+            const auto CASE_CHANGE_STR = [CASE_CHANGE]() {
                 if (CASE_CHANGE == misc::CaseChange::Both)
                 {
                     return "Both";
@@ -345,7 +345,7 @@ BOOST_AUTO_TEST_CASE(misc_strings__CamelTo)
             }();
 
             return "(" + misc::Quoted(CASE_MESSAGE) + " case)  CamelTo(\"" + INPUT
-                + "\", sep=" + misc::Quoted(SEPARATOR) + ", case_change=" + CASE_CHAGE_STR + ")!="
+                + "\", sep=" + misc::Quoted(SEPARATOR) + ", case_change=" + CASE_CHANGE_STR + ")!="
                 + misc::Quoted(EXPECTED_OUTPUT) + "\"  actual=" + misc::Quoted(ACTUAL_OUTPUT);
         };
 

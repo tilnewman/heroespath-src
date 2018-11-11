@@ -36,7 +36,7 @@ namespace combat
                 Knight = 1 << 7,
                 Beastmaster = 1 << 8,
                 Cleric = 1 << 9,
-                Theif = 1 << 10,
+                Thief = 1 << 10,
                 Bard = 1 << 11,
                 FireBrand = 1 << 12,
                 Sylavin = 1 << 13,
@@ -61,7 +61,7 @@ namespace combat
             enum Enum : EnumUnderlying_t
             {
                 None = 0,
-                Murderer = 1 << 0, // selects whoever is unconcious
+                Murderer = 1 << 0, // selects whoever is unconscious
                 Bloodthirsty = 1 << 1, // selects whoever has the least health current
                 Coward = 1 << 2, // selects whoever can't fight back
                 Hit = 1 << 3, // selects whoever first hits him/her/it

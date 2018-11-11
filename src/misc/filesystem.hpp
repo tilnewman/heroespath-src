@@ -35,7 +35,7 @@ namespace misc
         //      - misc path junk is trimmed from both ends
         //      - redundant paths in the middle (i.e. "/foo/././../bar") are resolved
         //      - links/symlinks/etc are all resolved
-        //      - direectory separators are all converted to whatever the OS prefers
+        //      - directory separators are all converted to whatever the OS prefers
         //      - redundant trailing dots such as "\." or "/." are removed
         static const std::string CleanPath(const std::string & PATH_STR);
 
@@ -51,7 +51,7 @@ namespace misc
         // drive letter "c:" etc, otherwise returns false. Empty input returns false.
         static bool EndsWithDirectoryGuess(const std::string & PATH_STR);
 
-        // If PATH_STR exists and is a regular file then the file name is returened, if PATH_STR
+        // If PATH_STR exists and is a regular file then the file name is returned, if PATH_STR
         // does not exist then a best guess attempt is made that returns and empty string on
         // failure.
         static const std::string
@@ -68,7 +68,7 @@ namespace misc
         static bool ExistsAndIsFile(const std::string & FILE_PATH_STR);
         static bool ExistsAndIsDirectory(const std::string & DIR_PATH_STR);
 
-        // returns the full/cleaned/abslute paths of all matching files in DIR_PATH_STR or an empty
+        // returns the full/cleaned/absolute paths of all matching files in DIR_PATH_STR or an empty
         // vector, FILE_NAME_EXTENSION should start with a period unless it is empty, if
         // FILE_NAME_BASE or FILE_NAME_EXTENSION are empty then they are ignored, if both are empty
         // then all files are returned, if DIR_PATH_STR is empty, does not exist, or is not a
@@ -81,7 +81,7 @@ namespace misc
             const std::vector<std::string> & STRING_MATCHES_TO_EXCLUDE
             = std::vector<std::string>());
 
-        // returns the full/cleaned/abslute path of the first available numbered filename or an
+        // returns the full/cleaned/absolute path of the first available numbered filename or an
         // empty string, FILE_NAME_EXTENSION should start with a period unless it is empty, if
         // DIR_PATH_STR is empty or does not exist or is not a directory then the returned vector
         // will also be empty
@@ -107,7 +107,7 @@ namespace misc
             const std::string & PATH4 = "");
 
         // returns combined paths with CleanPath() called on the result, empty strings are ignored,
-        // if all strinsg are empty then an empty string is returned
+        // if all strings are empty then an empty string is returned
         static const std::string AppendPathsToCurrentThenClean(
             const std::string & PATH1,
             const std::string & PATH2 = "",

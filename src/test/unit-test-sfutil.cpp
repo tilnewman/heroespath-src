@@ -1494,7 +1494,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
     /*{
         // if FitAndCenterTo() to a rect with either width/height zero then only the other non-zero
-        // dimmension is used to scale
+        // dimension is used to scale
         BOOST_CHECK(
             FitAndCenterCopy(sf::IntRect(0, 0, 20, 40), sf::IntRect(10, 10, 20, 0))
             == sf::IntRect(0, 0, 100, 200));
@@ -1513,7 +1513,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0), 69.0f)
             == sf::IntRect(-10, -20, 0, 0));
 
-        // if FitAndCenterTo() with opposite dimmensions zero result in size of zero
+        // if FitAndCenterTo() with opposite dimensions zero result in size of zero
         BOOST_CHECK(
             FitAndCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 0, 200))
             == sf::IntRect(-10, -120, 0, 0));
@@ -1522,9 +1522,9 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 100, 0))
             == sf::IntRect(-60, -20, 0, 0));
 
-        // if FitAndCenterTo() with matching dimmensions zero results in a scale based on the
+        // if FitAndCenterTo() with matching dimensions zero results in a scale based on the
     non-zero
-        // dimmension
+        // dimension
         BOOST_CHECK(
             FitAndCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 100, 0))
             == sf::IntRect(-110, -120, 100, 200));
@@ -1541,7 +1541,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
 
     {
         // if FitAndReCenter() to a rect with either width/height zero then only the other non-zero
-        // dimmension is used to scale
+        // dimension is used to scale
         BOOST_CHECK(
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 100, 0))
             == sf::IntRect(-65, -130, 100, 200));
@@ -1560,7 +1560,7 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 100), sf::IntRect(-10, -20, 0, 0), 69.0f)
             == sf::IntRect(-15, -30, 0, 0));
 
-        // if FitAndReCenter() with opposite dimmensions zero result in size of zero
+        // if FitAndReCenter() with opposite dimensions zero result in size of zero
         BOOST_CHECK(
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 0, 200))
             == sf::IntRect(-15, 20, 0, 0));
@@ -1569,8 +1569,8 @@ BOOST_AUTO_TEST_CASE(FitTests)
             FitAndReCenterCopy(sf::IntRect(10, 20, 0, 100), sf::IntRect(-10, -20, 100, 0))
             == sf::IntRect(10, -30, 0, 0));
 
-        // if FitAndReCenter() with matching dimmensions zero results in a scale based on the
-        // non-zero dimmension
+        // if FitAndReCenter() with matching dimensions zero results in a scale based on the
+        // non-zero dimension
         BOOST_CHECK(
             FitAndReCenterCopy(sf::IntRect(10, 20, 50, 0), sf::IntRect(-10, -20, 100, 0))
             == sf::IntRect(-65, -80, 100, 200));

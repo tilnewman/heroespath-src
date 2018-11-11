@@ -43,9 +43,9 @@ namespace gui
     // be correct.  For more about when the direction changes, see the comments below.
     //
     // If IsAtFrom() then IsMovingToward() always returns true and Direction() always returns
-    // Toward, and conversly, if IsAtTo() then IsMovingToward() always returns false and Direction()
-    // always returns Away. This is why the ReverseDirection() and SetDirection() functions might do
-    // nothing and return false.
+    // Toward, and conversely, if IsAtTo() then IsMovingToward() always returns false and
+    // Direction() always returns Away. This is why the ReverseDirection() and SetDirection()
+    // functions might do nothing and return false.
     class SliderBase
     {
     protected:
@@ -306,7 +306,7 @@ namespace gui
         }
 
     protected:
-        // calculates and sets the new adjusted value_, returns true is the new value is diifferent
+        // calculates and sets the new adjusted value_, returns true is the new value is different
         virtual bool UpdateImpl() = 0;
 
         // sets value_ = from_

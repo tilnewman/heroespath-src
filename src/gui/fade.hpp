@@ -30,7 +30,7 @@ namespace sfml_util
         Fade & operator=(Fade &&) = delete;
 
     public:
-        Fade(); // must call Setup() before any other functinos if using this constructor
+        Fade(); // must call Setup() before any other functions if using this constructor
 
         Fade(
             const float REGION_LEFT,

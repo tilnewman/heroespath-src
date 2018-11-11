@@ -20,7 +20,7 @@ namespace heroespath
 namespace gui
 {
 
-    // An animtion class sourced from multiple textures.
+    // An animation class sourced from multiple textures.
     class AnimationMultiTexture : public Animation
     {
     public:

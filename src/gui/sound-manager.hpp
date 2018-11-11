@@ -8,7 +8,7 @@
 #define HEROESPATH_GUI_SOUNDMANAGER_HPP_INCLUDED
 //
 // sound-manager.hpp
-//  Aound managing class that handles both sf::Sound and sf::Music instances.
+//  Sound managing class that handles both sf::Sound and sf::Music instances.
 //
 #include "gui/music-enum.hpp"
 #include "gui/music-operator.hpp"

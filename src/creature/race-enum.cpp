@@ -2281,10 +2281,10 @@ namespace creature
             case race::Halfling:
             case race::Skeleton:
             {
-                return { "media-images-bones-skull-humaniod",
-                         "media-images-bones-skull-humaniod-pile-1",
-                         "media-images-bones-skull-humaniod-pile-2",
-                         "media-images-bones-skull-humaniod-pile-3" };
+                return { "media-images-bones-skull-humanoid",
+                         "media-images-bones-skull-humanoid-pile-1",
+                         "media-images-bones-skull-humanoid-pile-2",
+                         "media-images-bones-skull-humanoid-pile-3" };
             }
 
             case race::Wyvern:

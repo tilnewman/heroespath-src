@@ -145,7 +145,7 @@ namespace stage
                 return MakeCallbackHandlerMessage(
                     PACKET_DESCRIPTION,
                     "saw there was a lockbox and the user decided to try and open it so spawned "
-                    "the lock-pick-character-seletion popup");
+                    "the lock-pick-character-selection popup");
             }
             else
             {
@@ -374,7 +374,7 @@ namespace stage
             return MakeCallbackHandlerMessage(
                 PACKET_DESCRIPTION,
                 "after the player was told that a particular character could not take an item for "
-                "some reason, we um...went back to treausre collecting UI stage stuff");
+                "some reason, we um...went back to treasure collecting UI stage stuff");
         }
 
         return MakeCallbackHandlerMessage(PACKET_DESCRIPTION, "popup callback NOT HANDLED");

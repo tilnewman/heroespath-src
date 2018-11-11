@@ -71,7 +71,7 @@ namespace combat
             const bool CAN_ADD_CONDITIONS = true) const;
 
         // returns true if an effect consumed the current turn
-        // fightResult_OutParam is guaranteed to to only have one CreatureEffect
+        // fightResult_OutParam is guaranteed to only have one CreatureEffect
         // if hitInfoVec_OutParam is empty return value will be false
         bool ProcessConditionEffects(
             const game::Phase::Enum HEROESPATH_PHASE,
@@ -93,7 +93,7 @@ namespace combat
             HitInfoVec_t & hitInfoVec,
             creature::CondEnumVec_t & condsRemovedVec) const;
 
-        // returns true if a condition wwas removed from the creature,
+        // returns true if a condition was removed from the creature,
         // not from the hitInfoVec
         bool RemoveAddedCondition(
             const creature::Conditions::Enum COND_ENUM,

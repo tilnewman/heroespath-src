@@ -113,7 +113,7 @@ namespace interact
                     }
                     case 3:
                     {
-                        secondPart = "house borken";
+                        secondPart = "house broken";
                         break;
                     }
                     case 4:

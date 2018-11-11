@@ -34,7 +34,7 @@ namespace sfutil
 {
 
     // SIZE_LIMIT_V values that are negative, zero, or are greater than the corresponding
-    // SIZE_FULL_V value will mean that dimmension limit is ignored and the SIZE_FULL_V size will be
+    // SIZE_FULL_V value will mean that dimension limit is ignored and the SIZE_FULL_V size will be
     // used instead. This is because having either size restricted to <= 0.0f or restricted to
     // something greater than the full amount does not make any sense.
     const std::vector<sf::Vector2f> MakeQuadVertexPositions(

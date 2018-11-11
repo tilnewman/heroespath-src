@@ -49,7 +49,7 @@ namespace gui
             const GuiFont::Enum FONT = GuiFont::Count,
             const sf::Color & COLOR = sf::Color::Transparent);
 
-        // this constructor mimics the sf::Text contructor
+        // this constructor mimics the sf::Text constructor
         Text(
             const std::string & TEXT,
             const GuiFont::Enum FONT,

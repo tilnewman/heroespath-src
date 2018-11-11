@@ -715,9 +715,9 @@ namespace combat
             }
             case creature::race::Troll:
             {
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRaugh1);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRaugh2);
-                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRaugh3);
+                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough1);
+                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough2);
+                sfxVec_OutParam.emplace_back(gui::sound_effect::DeathBeastRough3);
                 return;
             }
             case creature::race::Orc:

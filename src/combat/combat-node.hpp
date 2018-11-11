@@ -50,7 +50,7 @@ namespace combat
 
         const std::string ToString() const;
 
-        // NEW_REGION replaces the postion and rect of the entity, also re-scales images
+        // NEW_REGION replaces the potion and rect of the entity, also re-scales images
         void SetRegion(const sf::FloatRect & NEW_REGION);
 
         // same as other SetRegion(), except this takes a float from 0.0f (%) to 1.0f (%)

@@ -334,12 +334,12 @@ namespace sfutil
     // multiplies s's scale (global) by SCALE and then re-centers
     void ScaleAndReCenter(sf::Sprite & s, const float SCALE);
 
-    // sets the size (global) of s to match V, if either V is <= zero then that dimmension is not
+    // sets the size (global) of s to match V, if either V is <= zero then that dimension is not
     // changed
     void SetSize(sf::Sprite & s, const sf::Vector2f & V_ORIG);
 
     // sets the size (global) of s to match R, then positions at R, if either size of R is <= zero
-    // then that dimmension is not changed
+    // then that dimension is not changed
     void SetSizeAndPos(sf::Sprite & s, const sf::FloatRect & R);
 
     // returns true if either width or height is <= 0
@@ -481,7 +481,7 @@ namespace sfutil
         const std::vector<gui::Text> & VEC,
         const bool WILL_EXCLUDE_IF_EITHER_SIZE_ZERO_OR_LESS = false);
 
-    // returns a copy of R that has the smaller dimmension set equal to the larger then scaled to
+    // returns a copy of R that has the smaller dimension set equal to the larger then scaled to
     // SCALE
     template <
         typename T,
@@ -495,7 +495,7 @@ namespace sfutil
         return { Position(R), sf::Vector2<T>(sf::Vector2f(NEW_SIZE, NEW_SIZE)) };
     }
 
-    // changes R so that the smaller dimmension is set equal to the larger then scaled to
+    // changes R so that the smaller dimension is set equal to the larger then scaled to
     // SCALE
     template <
         typename T,
@@ -506,7 +506,7 @@ namespace sfutil
         r = GrowToSquareCopy(r, SCALE);
     }
 
-    // returns a copy of R that has the larger dimmension set equal to the smaller then scaled to
+    // returns a copy of R that has the larger dimension set equal to the smaller then scaled to
     // SCALE
     template <
         typename T,
@@ -521,7 +521,7 @@ namespace sfutil
         return { Position(R), sf::Vector2<T>(sf::Vector2f(NEW_SIZE, NEW_SIZE)) };
     }
 
-    // changes r so that the larger dimmension is set equal to the smaller then scaled to
+    // changes r so that the larger dimension is set equal to the smaller then scaled to
     // SCALE
     template <
         typename T,
@@ -532,7 +532,7 @@ namespace sfutil
         r = ShrinkToSquareCopy(r, SCALE);
     }
 
-    // returns a copy of R that has the smaller dimmension set equal to the larger then scaled to
+    // returns a copy of R that has the smaller dimension set equal to the larger then scaled to
     // SCALE and then recentered
     template <
         typename T,
@@ -549,7 +549,7 @@ namespace sfutil
             sf::Vector2f(NEW_SIZE, NEW_SIZE)));
     }
 
-    // changes r so that the smaller dimmension is set equal to the larger then scaled to SCALE and
+    // changes r so that the smaller dimension is set equal to the larger then scaled to SCALE and
     // then recentered
     template <
         typename T,
@@ -560,7 +560,7 @@ namespace sfutil
         r = GrowToSquareAndReCenterCopy(r, SCALE);
     }
 
-    // returns a copy of R that has the larger dimmension set equal to the smaller then scaled to
+    // returns a copy of R that has the larger dimension set equal to the smaller then scaled to
     // SCALE and then recentered
     template <
         typename T,
@@ -577,7 +577,7 @@ namespace sfutil
             sf::Vector2f(NEW_SIZE, NEW_SIZE)));
     }
 
-    // changes r so that the larger dimmension is set equal to the smaller then scaled to
+    // changes r so that the larger dimension is set equal to the smaller then scaled to
     // SCALE and then recentered
     template <
         typename T,

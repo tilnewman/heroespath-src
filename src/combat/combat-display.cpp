@@ -766,7 +766,7 @@ namespace combat
         {
             std::ostringstream ss;
             ss << "Cannot " << ADVANCE_OR_RETREAT_STR << "because there are too many ("
-               << OBSTACLE_CREATURE_COUNT_AT_NEW_POS << ") opposing creatres in the way."
+               << OBSTACLE_CREATURE_COUNT_AT_NEW_POS << ") opposing creatures in the way."
                << "  The limit is " << SHOULDER_TO_SHOULDER_MAX_ << ".";
 
             return ss.str();

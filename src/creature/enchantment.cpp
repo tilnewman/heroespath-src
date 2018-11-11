@@ -170,7 +170,9 @@ namespace creature
                 break;
             }
             case UseEffectType::None:
-            default: { break;
+            default:
+            {
+                break;
             }
         }
     }
@@ -178,7 +180,7 @@ namespace creature
     const std::string Enchantment::ToString() const
     {
         std::ostringstream ss;
-        ss << "Echantment(name=" << creature::EnchantmentType::ToString(type_) << ", "
+        ss << "Enchantment(name=" << creature::EnchantmentType::ToString(type_) << ", "
            << EffectStr() << ")";
 
         return ss.str();

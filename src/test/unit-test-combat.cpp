@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID0) == false);
     BOOST_CHECK_THROW(combatTree.RemoveVertex(VERT_ID0), std::invalid_argument);
 
-    //whole set of checks to be sure the combatTree is back in its inital (empty) state
+    //whole set of checks to be sure the combatTree is back in its initial (empty) state
     BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
     BOOST_CHECK_THROW(combatTree.GetNodePtr(0_id), std::invalid_argument);

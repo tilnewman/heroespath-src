@@ -292,7 +292,7 @@ namespace item
             GolemFinger,
             HurdyGurdy,
             Icicle,
-            LitchHand,
+            LichHand,
             Lyre,
             MummyHand,
             PetrifiedSnake,
@@ -302,7 +302,7 @@ namespace item
             Viol,
 
             // unique items
-            BasiliskTonge,
+            BasiliskTongue,
             BerserkersBeard,
             BishopsHanky,
             BleedingTrophy,
@@ -545,7 +545,7 @@ namespace item
             Gladiator,
             Gloom,
             Glory,
-            Heros,
+            Heroes,
             Honest,
             Icy,
             Imposters,
@@ -685,8 +685,8 @@ namespace item
             Reinforced,
             ReinforcedWithBase,
             Tipped,
-            Claspped,
-            ClasppedWithBase,
+            Clasped,
+            ClaspedWithBase,
             Count
         };
 

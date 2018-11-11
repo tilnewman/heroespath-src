@@ -29,7 +29,7 @@ namespace creature
 {
 
     // Responsible for making all Enchantment objects and for calculating the treasure scores for
-    // combinations of Enchantments.  Only the ItemProfieFactory querries the treasure scores, and
+    // combinations of Enchantments.  Only the ItemProfieFactory queries the treasure scores, and
     // only the Item constructor calls MakeAndStore().
     //
     // Item types such as set_type, named_type, unique_type, and elemental_type are all distinct

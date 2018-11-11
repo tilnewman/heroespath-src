@@ -1112,8 +1112,8 @@ namespace item
         return BASE_ARMOR_RATING
             + material::ArmorRatingBonus(
                    PROFILE.MaterialPrimary(),
-                   (((PROFILE.NameMaterialType() == name_material_type::Claspped)
-                     || (PROFILE.NameMaterialType() == name_material_type::ClasppedWithBase))
+                   (((PROFILE.NameMaterialType() == name_material_type::Clasped)
+                     || (PROFILE.NameMaterialType() == name_material_type::ClaspedWithBase))
                         ? material::Nothing
                         : PROFILE.MaterialSecondary()));
     }

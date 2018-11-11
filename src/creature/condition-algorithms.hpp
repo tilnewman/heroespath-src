@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROSPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED
-#define HEROSPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED
+#define HEROESPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED
 //
 // condition-algorithms.hpp
 //
@@ -57,4 +57,4 @@ namespace creature
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROSPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED

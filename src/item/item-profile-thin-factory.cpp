@@ -506,7 +506,7 @@ namespace item
                 return thinProfiles;
             }
 
-            case named_type::Heros:
+            case named_type::Heroes:
             {
                 ItemProfileThinVec_t thinProfiles { MakeArmorSpecific(armor::shield_type::Pavis),
                                                     MakeArmorSpecific(armor::helm_type::Great),
@@ -770,7 +770,7 @@ namespace item
                          MakeArmorNonSpecific(armor_type::Shirt, armor::base_type::Plain),
                          MakeArmorNonSpecific(armor_type::Gauntlets, armor::base_type::Plain),
                          MakeArmorSpecific(armor::cover_type::Robe),
-                         MakeMisc(misc_type::LitchHand) };
+                         MakeMisc(misc_type::LichHand) };
             }
 
             case set_type::TheSages:

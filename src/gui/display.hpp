@@ -110,7 +110,7 @@ namespace gui
         static float GetWinWidthMin() { return 1280.0f; }
         static float GetWinHeightMin() { return 900.0f; }
 
-        // These are not enfoced.  They exist only to aid in setting screen positions
+        // These are not enforced.  They exist only to aid in setting screen positions
         // that are relative to min/max sizes.
         //
         // WARNING:  Changing these values will throw off all relative positions returned by

@@ -56,7 +56,7 @@ namespace gui
         const sf::Color HighlightColorInvalid() const { return highlightColorInvalid_; }
         const sf::Color HighlightImageColor() const { return highlightImageColor_; }
 
-        // max size of both dimmensions of an element image WITHOUT image pad
+        // max size of both dimensions of an element image WITHOUT image pad
         float ImageMaxLength(const bool WILL_INCLUDE_IMAGE_PAD = false) const;
 
         // max size of an element image WITHOUT image pad

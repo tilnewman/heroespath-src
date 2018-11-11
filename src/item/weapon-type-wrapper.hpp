@@ -42,7 +42,7 @@ namespace item
             struct StaffOrQuarterstaff
             {};
 
-            // use for default construction or to construct from a weapon's unqiue name ("Knife" and
+            // use for default construction or to construct from a weapon's unique name ("Knife" and
             // "Dagger" must also specify the size)
             explicit WeaponTypeWrapper(const std::string & SYSTEM_NAME = "");
 

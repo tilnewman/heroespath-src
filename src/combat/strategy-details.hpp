@@ -94,7 +94,7 @@ namespace combat
 
                     exceptionSS
                         << "combat::strategy::CreatureStrategies::" << FUNCTION_NAME
-                        << "()  Threw exceptionn calling T::FromString(\""
+                        << "()  Threw exception calling T::FromString(\""
                         << ENUM_CHANCE_STR_VEC.at(0)
                         << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
                         << EX.what() << "].";

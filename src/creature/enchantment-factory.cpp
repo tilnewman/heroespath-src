@@ -267,7 +267,7 @@ namespace creature
 
         switch (MISC_TYPE)
         {
-                // quest items (see below for AngelBraid and LitchHand)
+                // quest items (see below for AngelBraid and LichHand)
             case item::misc_type::Crumhorn:
             {
                 return { Enchantment(
@@ -434,7 +434,7 @@ namespace creature
             }
 
             // unique items
-            case item::misc_type::BasiliskTonge:
+            case item::misc_type::BasiliskTongue:
             {
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1592,7 +1592,7 @@ namespace creature
 
             // only a set_type so the set_type takes care of the enchantment
             case item::misc_type::AngelBraid:
-            case item::misc_type::LitchHand:
+            case item::misc_type::LichHand:
 
             case item::misc_type::Not:
             case item::misc_type::Count:
@@ -2794,7 +2794,7 @@ namespace creature
                                std::make_pair(Traits::ShadowResist, 28),
                                std::make_pair(Traits::HonorResist, 28) }));
             }
-            case item::named_type::Heros:
+            case item::named_type::Heroes:
             {
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(

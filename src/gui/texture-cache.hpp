@@ -48,7 +48,7 @@ namespace gui
     using PathOptToIndexesPair_t = PathOptToIndexesMap_t::value_type;
 
     // Responsible for storing references counted textures paired with image options (such as
-    // flip/invert/ect.) that can added and removed by the filesystem path but can be accessed by
+    // flip/invert/etc.) that can added and removed by the filesystem path but can be accessed by
     // simple/fast index lookup.
     class TextureCache
     {
@@ -85,7 +85,7 @@ namespace gui
         //
         // if the given fake path and options are NOT already in the cache then:
         //  - the options specified WILL be applied to the given texture
-        //  - the given given altered texture will be cached under the fake path and options given
+        //  - the given altered texture will be cached under the fake path and options given
         std::size_t AddByPathFake(
             const std::string & FAKE_PATH_TO_TEXTURE_STR,
             const sf::Texture &,

@@ -11,7 +11,7 @@
 //
 //  Maintains a current and normal value.  Sometimes the numbers are interpreted as
 //  percent bonus values, so ...Ratio() functions are provided.  Initially (and typically)
-//  the current_ value stays at normal_, until something temorary changes it to be
+//  the current_ value stays at normal_, until something temporarily changes it to be
 //  something other than normal.  Eventually, the temporary condition will expire
 //  and the current will return to 'normal'.
 //

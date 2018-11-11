@@ -180,7 +180,7 @@ namespace stage
             Count
         };
 
-        // definese what phase of the perform action animation is currently displaying
+        // defines what phase of the perform action animation is currently displaying
         enum class AnimPhase
         {
             NotAnimating = 0,

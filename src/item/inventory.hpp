@@ -8,7 +8,7 @@
 #define HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED
 //
 // inventory.hpp
-//  A class that encapsolates a collection of Items.
+//  A class that encapsulates a collection of Items.
 //
 #include "creature/trait.hpp"
 #include "item/armor-types.hpp"
@@ -27,12 +27,12 @@ namespace heroespath
 namespace item
 {
 
-    // foward declarations
+    // forward declarations
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
-    // A class that encapsolates a collection of Items.
+    // A class that encapsulates a collection of Items.
     class Inventory
     {
     public:

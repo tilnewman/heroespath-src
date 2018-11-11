@@ -37,7 +37,7 @@ namespace gui
     {
         TextRenderer() = delete;
 
-        // if returns true then then renderTextureUPtr and *renderTextureUPtr were not changed,
+        // if returns true then renderTextureUPtr and *renderTextureUPtr were not changed,
         // REGION.height is ignored/not-enforced, REGION.width is ignored/not-enforced if <=
         // 0.0f, the caller is responsible for checking if Result.region != REGION because
         // Justification can change position, the RenderTexture might have been re-used so its

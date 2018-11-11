@@ -40,10 +40,10 @@ namespace creature
 
         creature::CreaturePVec_t creaturesPVec;
 
-        const int STAT_BASE_HIGH{ 18 };
-        const int STAT_BASE_MED{ 9 };
-        const int STAT_BASE_LOW{ 5 };
-        const int STAT_RAND{ 6 };
+        const int STAT_BASE_HIGH { 18 };
+        const int STAT_BASE_MED { 9 };
+        const int STAT_BASE_LOW { 5 };
+        const int STAT_RAND { 6 };
 
         /*
         const StatSet KNIGHT_STATS(
@@ -134,7 +134,7 @@ namespace creature
             creature::role::Beastmaster,
             BEASTMASTER_STATS));
 
-        const StatSet THEIF_STATS(
+        const StatSet THIEF_STATS(
             Strength_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
             Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
             Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
@@ -146,7 +146,7 @@ namespace creature
             MakeCharacterNameForTesting("T"),
             creature::race::Gnome,
             creature::role::Thief,
-            THEIF_STATS));
+            THIEF_STATS));
 
         const StatSet CLERIC_STATS(
             Strength_t(1 + misc::random::Int(STAT_RAND)),

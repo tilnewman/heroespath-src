@@ -505,7 +505,7 @@ namespace combat
                 selectedPlayersPVec);
         }
 
-        if (SELECT_TYPE_ENUM & strategy::SelectType::Theif)
+        if (SELECT_TYPE_ENUM & strategy::SelectType::Thief)
         {
             misc::Vector::Append(
                 creature::Algorithms::FindByRole(SELECTABLE_PLAYERS_PVEC, creature::role::Thief),

@@ -139,7 +139,7 @@ namespace misc
                 }
             }
 
-            // lexical_cast<>() does not work as expeted with one byte arithmetic types, so
+            // lexical_cast<>() does not work as expected with one byte arithmetic types, so
             // this block is a work-around for that
             if constexpr (misc::is_number_non_floating_point_v<T> && (sizeof(T) == 1))
             {

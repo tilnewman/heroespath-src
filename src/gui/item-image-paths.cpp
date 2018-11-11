@@ -504,12 +504,12 @@ namespace gui
             case item::misc_type::DevilHorn:
             case item::misc_type::GolemFinger:
             case item::misc_type::HurdyGurdy:
-            case item::misc_type::LitchHand:
+            case item::misc_type::LichHand:
             case item::misc_type::MummyHand:
             case item::misc_type::PetrifiedSnake:
             case item::misc_type::PipeAndTabor:
             case item::misc_type::UnicornHorn:
-            case item::misc_type::BasiliskTonge:
+            case item::misc_type::BasiliskTongue:
             case item::misc_type::BerserkersBeard:
             case item::misc_type::BishopsHanky:
             case item::misc_type::BleedingTrophy:

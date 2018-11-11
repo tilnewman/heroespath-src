@@ -241,7 +241,7 @@ namespace popup
         titleSS << "New Title!";
 
         std::ostringstream descSS;
-        descSS << "Congradulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount() << " "
+        descSS << "Congratulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount() << " "
                << creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType()) << " "
                << CREATURE_PTR->Name();
 
@@ -376,7 +376,7 @@ namespace popup
 
         if (TITLE_MSG.empty())
         {
-            ss << "Congradulations, you have discovered a BUG!";
+            ss << "Congratulations, you have discovered a BUG!";
         }
         else
         {

@@ -21,7 +21,7 @@ namespace heroespath
 namespace item
 {
 
-    // Responsible for making and storing colections of materials that are commonly needed by the
+    // Responsible for making and storing collections of materials that are commonly needed by the
     // item system.
     class MaterialFactory
     {
@@ -41,7 +41,7 @@ namespace item
         const MaterialPairVec_t MakeForWeapon(const ItemProfileThin & THIN_PROFILE) const;
         const MaterialPairVec_t MakeForArmor(const ItemProfileThin & THIN_PROFILE) const;
 
-        // note that this function often returns nothin
+        // note that this function often returns nothing
         void LimitForNamedType(
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum NAMED_TYPE,

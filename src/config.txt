@@ -162,7 +162,7 @@ media-images-misc-note6                     image/misc/note6.png
 media-images-misc-x                         image/misc/x.png
 media-images-misc-todo                      image/misc/todo.png
 media-images-misc-error                     image/misc/error.png
-media-images-misc-syetem-error              image/misc/system-error.png
+media-images-misc-system-error              image/misc/system-error.png
 media-images-misc-money-bag                 image/misc/money-bag.png
 media-images-misc-abc                       image/misc/abc.png
 media-images-misc-weight                    image/misc/weight.png
@@ -197,10 +197,10 @@ media-images-bones-skull-dragon-3           image/treasure-stage/bones/skull-dra
 media-images-bones-skull-dragon-4           image/treasure-stage/bones/skull-dragon-4.png
 media-images-bones-skull-giant              image/treasure-stage/bones/skull-giant.png
 media-images-bones-skull-goblin             image/treasure-stage/bones/skull-goblin.png
-media-images-bones-skull-humaniod-pile-1    image/treasure-stage/bones/skull-humaniod-pile-1.png
-media-images-bones-skull-humaniod-pile-2    image/treasure-stage/bones/skull-humaniod-pile-2.png
-media-images-bones-skull-humaniod-pile-3    image/treasure-stage/bones/skull-humaniod-pile-3.png
-media-images-bones-skull-humaniod           image/treasure-stage/bones/skull-humaniod.png
+media-images-bones-skull-humanoid-pile-1    image/treasure-stage/bones/skull-humanoid-pile-1.png
+media-images-bones-skull-humanoid-pile-2    image/treasure-stage/bones/skull-humanoid-pile-2.png
+media-images-bones-skull-humanoid-pile-3    image/treasure-stage/bones/skull-humanoid-pile-3.png
+media-images-bones-skull-humanoid           image/treasure-stage/bones/skull-humanoid.png
 media-images-bones-skull-minotaur           image/treasure-stage/bones/skull-minotaur.png
 media-images-bones-skull-orc                image/treasure-stage/bones/skull-orc.png
 media-images-bones-skull-snake              image/treasure-stage/bones/skull-snake.png
@@ -976,7 +976,7 @@ heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-Ghost
 heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-Cat          0.9, -0.9, -0.9, -0.9
 heroespath-nonplayer-ownershipprofile-collectortype-chance-adjustment-role-Wolf         0.9, -0.9, -0.9, -0.9
 
-#rarely, religous, magical
+#rarely, religious, magical
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-Human           0.85, 0.1, 0.05
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-Gnome           0.4, 0.5, 0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-Pixie           0.01, 0.4, 0.59
@@ -1022,7 +1022,7 @@ heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-Golem           
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-Harpy           0.1, 0.2, 0.7
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-race-ThreeHeadedHound 0.99, 0.005, 0.005
 
-#rarely, religous, magical
+#rarely, religious, magical
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-Archer       0.1, -0.1, -0.1
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-Bard         -0.15, 0, 0.2
 heroespath-nonplayer-ownershipprofile-ownsmagictype-chance-adjustment-role-Beastmaster  -0.1, 0, 0.1

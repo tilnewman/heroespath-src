@@ -140,7 +140,7 @@ namespace gui
         renderTexture.setSmooth(true);
         renderTexture.clear(sf::Color::Transparent);
 
-        // if you draw text to a transparent texture using BlendAlpha the result will be fuzy
+        // if you draw text to a transparent texture using BlendAlpha the result will be fuzzy
         // so use BlendNone and it will look good
         sf::RenderStates states;
         states.blendMode = sf::BlendNone;

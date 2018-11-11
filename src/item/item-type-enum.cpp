@@ -141,9 +141,9 @@ namespace item
             {
                 return "Icicle";
             }
-            case LitchHand:
+            case LichHand:
             {
-                return "LitchHand";
+                return "LichHand";
             }
             case Lyre:
             {
@@ -173,9 +173,9 @@ namespace item
             {
                 return "Viol";
             }
-            case BasiliskTonge:
+            case BasiliskTongue:
             {
-                return "BasiliskTonge";
+                return "BasiliskTongue";
             }
             case BerserkersBeard:
             {
@@ -765,9 +765,9 @@ namespace item
             {
                 return "Icicle";
             }
-            case LitchHand:
+            case LichHand:
             {
-                return "Litch Hand";
+                return "Lich Hand";
             }
             case Lyre:
             {
@@ -797,9 +797,9 @@ namespace item
             {
                 return "Villain's Viol";
             }
-            case BasiliskTonge:
+            case BasiliskTongue:
             {
-                return "Basilisk Tonge";
+                return "Basilisk Tongue";
             }
             case BerserkersBeard:
             {
@@ -1362,7 +1362,7 @@ namespace item
         return (
             (MISC_TYPE == AngelBraid) || (MISC_TYPE == Crumhorn) || (MISC_TYPE == DevilHorn)
             || (MISC_TYPE == GolemFinger) || (MISC_TYPE == HurdyGurdy) || (MISC_TYPE == Icicle)
-            || (MISC_TYPE == LitchHand) || (MISC_TYPE == Lyre) || (MISC_TYPE == MummyHand)
+            || (MISC_TYPE == LichHand) || (MISC_TYPE == Lyre) || (MISC_TYPE == MummyHand)
             || (MISC_TYPE == PetrifiedSnake) || (MISC_TYPE == PipeAndTabor)
             || (MISC_TYPE == Recorder) || (MISC_TYPE == UnicornHorn) || (MISC_TYPE == Viol));
     }
@@ -1550,7 +1550,7 @@ namespace item
             case Seeds:                 { return 18_weight;  }
             case Wand:                  { return 20_weight;  }
             case MummyHand:             { return 25_weight;  }
-            case LitchHand:             { return 25_weight;  }
+            case LichHand:             { return 25_weight;  }
             case Icicle:                { return 26_weight;  }
             case UnicornHorn:           { return 27_weight;  }
             case DevilHorn:             { return 28_weight;  }
@@ -1585,7 +1585,7 @@ namespace item
             case DriedSalamander:       { return 38_weight;  }
             case DriedToad:             { return 38_weight;  }
             case PetrifiedSnake:        { return 38_weight;  }
-            case BasiliskTonge:         { return 38_weight;  }
+            case BasiliskTongue:         { return 38_weight;  }
             case VultureGizzard:        { return 38_weight;  }
             case ImpTail:               { return 39_weight;  }
             case BloodyDragonScale:     { return 39_weight;  }
@@ -1757,7 +1757,7 @@ namespace item
             case DevilHorn:
             case GolemFinger:
             case Icicle:
-            case LitchHand:
+            case LichHand:
             case MummyHand:
             case PetrifiedSnake:
             case UnicornHorn:
@@ -1782,7 +1782,7 @@ namespace item
                 return static_cast<category::Enum>(category::Equipable | category::TwoHanded);
             }
 
-            case BasiliskTonge:
+            case BasiliskTongue:
             case BishopsHanky:
             case BleedingTrophy:
             case BloodyDragonScale:
@@ -1886,7 +1886,7 @@ namespace item
     {
         return (
             (MISC_TYPE == AngelBraid) || (MISC_TYPE == DevilHorn) || (MISC_TYPE == GolemFinger)
-            || (MISC_TYPE == Icicle) || (MISC_TYPE == LitchHand) || (MISC_TYPE == MummyHand)
+            || (MISC_TYPE == Icicle) || (MISC_TYPE == LichHand) || (MISC_TYPE == MummyHand)
             || (MISC_TYPE == PetrifiedSnake) || (MISC_TYPE == UnicornHorn) || (MISC_TYPE == Orb)
             || (MISC_TYPE == Scepter) || (MISC_TYPE == Wand) || (MISC_TYPE == Shard)
             || (MISC_TYPE == Staff));
@@ -2412,9 +2412,9 @@ namespace item
             {
                 return "Glory";
             }
-            case Heros:
+            case Heroes:
             {
-                return "Heros";
+                return "Heroes";
             }
             case Honest:
             {
@@ -2522,7 +2522,7 @@ namespace item
             }
             case Thief:
             {
-                return "Theif";
+                return "Thief";
             }
             case Thors:
             {
@@ -2580,7 +2580,7 @@ namespace item
             {
                 return "Charlatan's";
             }
-            case Heros:
+            case Heroes:
             {
                 return "Hero's";
             }
@@ -2733,7 +2733,7 @@ namespace item
         else if (
             (NAMED_TYPE == named_type::Honest) || (NAMED_TYPE == named_type::Noble)
             || (NAMED_TYPE == named_type::Daring) || (NAMED_TYPE == named_type::Elite)
-            || (NAMED_TYPE == named_type::Valiant) || (NAMED_TYPE == named_type::Heros)
+            || (NAMED_TYPE == named_type::Valiant) || (NAMED_TYPE == named_type::Heroes)
             || (NAMED_TYPE == named_type::Gladiator) || (NAMED_TYPE == named_type::Proud)
             || (NAMED_TYPE == named_type::Glory) || (NAMED_TYPE == named_type::Pure)
             || (NAMED_TYPE == named_type::Samurai) || (NAMED_TYPE == named_type::Thors))
@@ -4394,13 +4394,13 @@ namespace item
             {
                 return "Tipped";
             }
-            case name_material_type::Claspped:
+            case name_material_type::Clasped:
             {
-                return "Claspped";
+                return "Clasped";
             }
-            case name_material_type::ClasppedWithBase:
+            case name_material_type::ClaspedWithBase:
             {
-                return "ClasppedWithBase";
+                return "ClaspedWithBase";
             }
             case name_material_type::Count:
             {

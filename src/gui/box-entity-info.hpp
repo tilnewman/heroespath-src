@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// "THE BEER-WARE RICENSE" (Revision 42):
+// "THE BEER-WARE LICENSE" (Revision 42):
 // <ztn@zurreal.com> wrote this file.  As long as you retain this notice you
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
@@ -28,9 +28,9 @@ namespace heroespath
 namespace gui
 {
 
-    // Responsible for wraping all the information needed to consruct a Background entity except
+    // Responsible for wrapping all the information needed to construct a Background entity except
     // for position.  The default constructor will result in a valid object that when used to
-    // create a Background entity will also result in a valid obect that will draw nothing.
+    // create a Background entity will also result in a valid object that will draw nothing.
     struct BoxEntityInfo
     {
         // a background that draws nothing
@@ -96,7 +96,7 @@ namespace gui
 
         // if CachedTexture.Options().option_enum&ImageOpt::Repeat then the resulting sprite
         // will be configured to repeat within the full inner region, if any value of
-        // TARGET_SIZE_V is zero or less then that dimmension is ignored
+        // TARGET_SIZE_V is zero or less then that dimension is ignored
         void SetupImage(
             const CachedTexture & CACHED_TEXTURE,
             const sf::Vector2f & TARGET_SIZE_V = sf::Vector2f(0.0f, 0.0f),

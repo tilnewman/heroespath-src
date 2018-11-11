@@ -4,8 +4,8 @@
 // can do whatever you want with this stuff. If we meet some day, and you think
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
-#ifndef HEROESPATH_CAMPTAGE_HPP_INCLUDED
-#define HEROESPATH_CAMPTAGE_HPP_INCLUDED
+#ifndef HEROESPATH_CAMP_STAGE_HPP_INCLUDED
+#define HEROESPATH_CAMP_STAGE_HPP_INCLUDED
 //
 // camp-stage.hpp
 //
@@ -86,4 +86,4 @@ namespace stage
 } // namespace stage
 } // namespace heroespath
 
-#endif // HEROESPATH_CAMPTAGE_HPP_INCLUDED
+#endif // HEROESPATH_CAMP_STAGE_HPP_INCLUDED

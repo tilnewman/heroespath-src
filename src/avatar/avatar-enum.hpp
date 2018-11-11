@@ -34,7 +34,7 @@ namespace avatar
 
             // commoners
             Circus,
-            Poor, // male only, leather scaps
+            Poor, // male only, leather scraps
             Rags, // leather tunic with ratty looking gray pants
             Common, // male only,
             Tunic, // female only, the only female in pants
@@ -46,7 +46,7 @@ namespace avatar
             // richer woman in a light blue dress
             Dress,
 
-            // millitary
+            // military
             Private,
             Private2nd,
             Private1st,

@@ -711,7 +711,7 @@ namespace stage
         SetupTreasure_ListboxSortIcons();
 
         // The -300.0f here works because it is (the negative of) anything over 256.0f,
-        // which is the max dimmension of all listbox sort icon images.
+        // which is the max dimension of all listbox sort icon images.
         const auto OFFSCREEN_POS_HORIZ { -300.0f };
 
         stageMoverUPtr_->AddTreasureObject(

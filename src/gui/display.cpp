@@ -838,7 +838,7 @@ namespace gui
             else
             {
                 M_HP_LOG(
-                    "Anoter supported video mode "
+                    "Another supported video mode "
                     << supportedResolutionsVec[0].ToString()
                     << " was found to be compatible with your hardware, and will be used.");
 

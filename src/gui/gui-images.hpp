@@ -26,7 +26,7 @@ namespace gui
         static const std::string PathKey() { return "media-images-gui-elements"; }
 
         // If the small line box is going to grow to fit inner contents, then these values
-        // specity how to grow or shrink each side.
+        // specify how to grow or shrink each side.
         static float GetLineSmallBoxPadLeft() { return 8.0f; } // subtract this amount from left
         static float GetLineSmallBoxPadRight() { return 9.0f; } // add this amount to right
         static float GetLineSmallBoxPadTop() { return 8.0f; } // subtract this amount from top

@@ -49,7 +49,7 @@ namespace sfutil
         return CenterCopy(sf::Vector2<T>(WIDTH, HEIGHT));
     }
 
-    // retruns a copy of R rescaled to SCALE_V and then repositioned to the center of the screen
+    // returns a copy of R rescaled to SCALE_V and then repositioned to the center of the screen
     template <
         typename T,
         typename Scale_t,
@@ -59,7 +59,7 @@ namespace sfutil
         return CenterToCopy(sf::FloatRect(R), DisplayRect(), SCALE_V);
     }
 
-    // retruns a copy of R rescaled to SCALE and then repositioned to the center of the screen
+    // returns a copy of R rescaled to SCALE and then repositioned to the center of the screen
     template <
         typename T,
         typename Scale_t = float,

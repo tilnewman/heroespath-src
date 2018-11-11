@@ -11,7 +11,7 @@
 //  A class that manages an undirected graph of verticies with ID_t IDs called the combat tree.
 //  Boost Graph was considered but rejected because the graphs required will be very small and
 //  because Boost Graph would not provide required features.  So this implementation may be slower
-//  than Boost Graph, but not in a noticable way, and will have a much simpler interface.
+//  than Boost Graph, but not in a noticeable way, and will have a much simpler interface.
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
@@ -124,7 +124,7 @@ namespace combat
 
         CombatTree();
 
-        // reuses IDs that were preveiously removed
+        // reuses IDs that were previously removed
         ID_t NextAvailableId() const;
 
         // throws std::invalid_argument if ID does not exist
@@ -163,7 +163,7 @@ namespace combat
         // throws std::invalid_argument if edge already exists, or if the Verticies do not exist
         void AddEdge(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum);
 
-        // order independant matching
+        // order independent matching
         // returns a vector of vertex IDs that were left without edges
         // if DRY_RUN == true, then no edges will be removed
         // throws std::invalid_argument if the edge does not exist
@@ -172,7 +172,7 @@ namespace combat
         // verticies may exist without edges
         bool DoesVertexExist(const ID_t & ID) const;
 
-        // order independant matching
+        // order independent matching
         bool DoesEdgeExist(
             const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum TYPE = EdgeType::All) const;
 

@@ -110,7 +110,7 @@ namespace gui
         inline auto end(const ParsedTextLines & PTL) noexcept { return PTL.end(); }
         inline auto cend(const ParsedTextLines & PTL) noexcept { return end(PTL); }
 
-        // Parsing takes a std::string and makes ParsedText objects, wich are required by the
+        // Parsing takes a std::string and makes ParsedText objects, which are required by the
         // Rendering code.
         struct Parser
         {

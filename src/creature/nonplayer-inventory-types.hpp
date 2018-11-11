@@ -510,7 +510,7 @@ namespace creature
                 // rarely carries duplicates, usually only carries essential items
                 Minimalist = 1 << 0,
 
-                // often carries items that can be used (torche/lantern/healingherbs/etc.)
+                // often carries items that can be used (torch/lantern/healingherbs/etc.)
                 Practical = 1 << 1,
 
                 // often carries rare items or items of unique/cool materials
@@ -537,8 +537,8 @@ namespace creature
             enum Enum : EnumUnderlying_t
             {
                 Rarely = 0, // rarely carries magic items
-                Religious, // often carries religous items and only occasionally magic items
-                Magical, // often carries religous and magic items
+                Religious, // often carries religious items and only occasionally magic items
+                Magical, // often carries religious and magic items
                 Count
             };
 
@@ -561,7 +561,7 @@ namespace creature
                 // composite bow, medallion, scale material, iron/steel/tin metals only
                 Moderate,
 
-                // crossbow, lantern, necklas, work with all metals
+                // crossbow, lantern, necklace, work with all metals
                 Complex,
 
                 Count

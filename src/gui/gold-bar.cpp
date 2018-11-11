@@ -215,7 +215,7 @@ namespace gui
         sf::FloatRect botOrRightRect;
         sf::FloatRect middleRect;
 
-        // which spirtes to use, and the length calculations
+        // which sprites to use, and the length calculations
         if (ORIENTATION == Orientation::Horiz)
         {
             if (SIDE == Side::Top)

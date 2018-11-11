@@ -83,7 +83,7 @@ namespace gui
             // shift down to a vert pos that is appropriate for the height of this text
             texts.back().move(0.0f, calcDownShiftForCharHeight(TEXT));
 
-            // stretch the bounding region of this line to accomodate for the shift above
+            // stretch the bounding region of this line to accommodate for the shift above
             const auto TOP_BEFORE { region.top };
             region = sfutil::MinimallyEnclosing(region, texts.back().getGlobalBounds(), true);
             const auto BOTTOM_AFTER { sfutil::Bottom(region) };

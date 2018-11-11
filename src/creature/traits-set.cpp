@@ -37,7 +37,7 @@ namespace creature
     {
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (EnumUtil<Traits>::IsValid(ENUM)),
-            "TraitSet::Get(trait_enun=" << Traits::ToString(ENUM)
+            "TraitSet::Get(trait_enum=" << Traits::ToString(ENUM)
                                         << ") but that trait value is invalid.");
 
         return traitVec_[static_cast<std::size_t>(ENUM)];

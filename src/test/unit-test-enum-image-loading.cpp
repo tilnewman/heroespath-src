@@ -60,7 +60,7 @@ void TestEnumImageLoading()
             ((TEXTURE.getSize().x == STANDARD_DIMMENSION_U)
              || (TEXTURE.getSize().y == STANDARD_DIMMENSION_U)),
             ss.str() << ", found the image was an incorrect size=" << TEXTURE.getSize().x << "x"
-                     << TEXTURE.getSize().y << ".  Both dimmensions should have been "
+                     << TEXTURE.getSize().y << ".  Both dimensions should have been "
                      << STANDARD_DIMMENSION_U << ".");
 
         M_HP_LOG(ss.str() << ".");

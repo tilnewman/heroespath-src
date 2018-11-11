@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToMultiple)
 
         BOOST_CHECK_MESSAGE(
             multipleValues == MULTIPLE_VALUES_BEFORE,
-            "mutliple values vec before=" << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
+            "multiple values vec before=" << ts::vectorToString(MULTIPLE_VALUES_BEFORE)
                                           << ", multiple values vec after="
                                           << ts::vectorToString(multipleValues));
 
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
             reverseDuplicatedCountingValues == REV_DUP_COUNT_VALUES_BEFORE,
             "(no sorting) reverse duplicated counting values vec before="
                 << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
-                << ", reverse duplicated coutning values vec after="
+                << ", reverse duplicated counting values vec after="
                 << ts::vectorToString(reverseDuplicatedCountingValues));
 
         ts::IntVec_t sortedAndUniqued { reverseDuplicatedCountingValues };
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
             reverseDuplicatedCountingValues == sortedAndUniqued,
             "(with sort and unique) reverse duplicated counting values vec before="
                 << ts::vectorToString(REV_DUP_COUNT_VALUES_BEFORE)
-                << ", reverse duplicated coutning values vec after="
+                << ", reverse duplicated counting values vec after="
                 << ts::vectorToString(reverseDuplicatedCountingValues)
                 << ", sortedAndUniqued vec=" << ts::vectorToString(sortedAndUniqued));
     }
@@ -373,7 +373,7 @@ BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Multiple)
 
         BOOST_CHECK_MESSAGE(
             (MULT_RESULT == 1) || (MULT_RESULT == 2) || (MULT_RESULT == 3),
-            "SelectRandom mutliple, result=" << MULT_RESULT);
+            "SelectRandom multiple, result=" << MULT_RESULT);
     }
 }
 

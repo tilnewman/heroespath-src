@@ -31,7 +31,7 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 
-    // Creates fuly equipped and setup (and warehoused) creatures, both player and non-player.
+    // Creates fully equipped and setup (and warehoused) creatures, both player and non-player.
     class CreatureFactory
     {
     public:

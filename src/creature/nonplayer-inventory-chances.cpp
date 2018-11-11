@@ -319,7 +319,7 @@ namespace creature
 
             if (BODY_TYPE.IsBiped())
             {
-                // In this game, every 'humaniod' gets pants...Deal with it.
+                // In this game, every 'humanoid' gets pants...Deal with it.
                 clothingChances.pants.SetCountChanceSingleCertain();
             }
             else
@@ -505,7 +505,7 @@ namespace creature
                     continue;
                 }
 
-                // At this point numberSelectedVec contians a value of false
+                // At this point numberSelectedVec contains a value of false
 
                 if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBite())
                 {
@@ -1087,7 +1087,7 @@ namespace creature
             leatherChance += RANK_RATIO * 0.5f;
             clothChance -= RANK_RATIO;
 
-            // enfore the min/max after all adjustments
+            // enforce the min/max after all adjustments
             ChanceFactory::ForceMinMax(clothChance, CHANCE_MIN, CHANCE_MAX);
             ChanceFactory::ForceMinMax(leatherChance, CHANCE_MIN, CHANCE_MAX);
             ChanceFactory::ForceMinMax(silkChance, CHANCE_MIN, CHANCE_MAX);
@@ -1222,7 +1222,7 @@ namespace creature
             ForceMin(chanceMetal);
             ForceMin(chancePrecious);
 
-            // adjust material chances based on creture PROFILE.complexity
+            // adjust material chances based on creature PROFILE.complexity
             RestrictMaterialsByComplexity(
                 PROFILE.complexityType,
                 chanceCool,

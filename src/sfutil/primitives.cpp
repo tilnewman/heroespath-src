@@ -31,7 +31,7 @@ namespace sfutil
     {
         sf::RectangleShape rs;
 
-        // RectangleShape's thickness starts at the given region and grows outwanrd
+        // RectangleShape's thickness starts at the given region and grows outward
         if (WILL_GROW_BORDER_TO_CONTAIN_REGION)
         {
             rs.setPosition(Position(REGION));

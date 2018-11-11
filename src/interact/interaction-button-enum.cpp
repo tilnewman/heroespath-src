@@ -7,7 +7,7 @@
 // this stuff is worth it, you can buy me a beer in return.  Ziesche Til Newman
 // ----------------------------------------------------------------------------
 //
-// interation-button-enum.cpp
+// interaction-button-enum.cpp
 //
 #include "interaction-button-enum.hpp"
 

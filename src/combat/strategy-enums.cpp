@@ -42,7 +42,7 @@ namespace combat
                 str, ENUM_VALUE, SelectType::Beastmaster, "Beastmaster", SEPARATOR);
 
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Cleric, "Cleric", SEPARATOR);
-            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Theif, "Theif", SEPARATOR);
+            AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Thief, "Thief", SEPARATOR);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Bard, "Bard", SEPARATOR);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::FireBrand, "FireBrand", SEPARATOR);
             AppendNameIfBitIsSet(str, ENUM_VALUE, SelectType::Sylavin, "Sylavin", SEPARATOR);
