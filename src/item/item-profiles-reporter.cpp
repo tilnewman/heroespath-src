@@ -391,15 +391,12 @@ namespace item
                 {
                     std::sort(std::begin(scores), std::end(scores));
 
-                    misc::Vector::MinMaxAvgSum<std::size_t> stats(scores);
+                    const auto STATS { misc::Vector::MinMaxAvgStdDev<std::size_t>(scores) };
 
                     ss << '\n'
-                       << std::setw(10) << NAME << "count=" << std::setw(8) << scores.size()
-                       << PercentToString(scores.size(), SOURCE_PROFILES.normal_count, true) << "["
-                       << std::setw(4) << stats.min << ", " << std::setw(4) << stats.avg << ", "
-                       << std::setw(4) << stats.max << "]("
-                       << misc::Vector::StandardDeviation(scores, scores.size(), stats.avg)
-                       << "std)";
+                       << std::setw(10) << NAME << "count=" << std::setw(8) << STATS.count
+                       << PercentToString(scores.size(), SOURCE_PROFILES.normal_count, true)
+                       << STATS.ToString(false, false, 4);
                 }
             } };
 

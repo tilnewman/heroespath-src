@@ -156,44 +156,30 @@ namespace game
 
     void Loop::OncePerSecondTaskLogFrameRate()
     {
-        if (frameRateSampleCount_ < 3)
+        if (frameRateVec_.size() < 3)
         {
+            frameRateSampleCount_ = 0;
             return;
         }
 
-        // find min, max, and average framerate
-        auto min { frameRateVec_[0] };
-        auto max { 0.0f };
-        auto sum { 0.0f };
-
-        // Skip the first framerate number because it includes time spent
-        // logging the prev framerate.
-        for (std::size_t i(1); i < frameRateSampleCount_; ++i)
+        if (frameRateSampleCount_ < 3)
         {
-            const auto NEXT_FRAMERATE { frameRateVec_[i] };
-
-            sum += NEXT_FRAMERATE;
-
-            if (NEXT_FRAMERATE < min)
-            {
-                min = NEXT_FRAMERATE;
-            }
-
-            if (NEXT_FRAMERATE > max)
-            {
-                max = NEXT_FRAMERATE;
-            }
+            M_HP_LOG(
+                "Framerate in the last second: (only " << frameRateSampleCount_ << " frames!)");
         }
+        else
+        {
+            // the first framerate in the vector includes the last time this function ran and lots
+            // of time was spent in calculations and logging, so don't count that first framerate
+            // because it is not representative, but don't set it to zero because that would skew
+            // the results in the other direction
+            frameRateVec_[0] = frameRateVec_[1];
 
-        const auto AVERAGE_FRAMERATE { sum / static_cast<float>(frameRateSampleCount_) };
+            const misc::Vector::MinMaxAvgStdDev<float> FRAME_RATE_STATS(
+                frameRateVec_, frameRateSampleCount_);
 
-        const float STANDARD_DEVIATION { misc::Vector::StandardDeviation(
-            frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE, true) };
-
-        M_HP_LOG(
-            "Framerate: " << (frameRateSampleCount_ - 1) << " frames in the last second: [" << min
-                          << ", " << AVERAGE_FRAMERATE << ", " << max
-                          << "], std_dev=" << STANDARD_DEVIATION);
+            M_HP_LOG("Framerate in the last second: " + FRAME_RATE_STATS.ToString(true, false, 4));
+        }
 
         frameRateSampleCount_ = 0;
     }
@@ -442,7 +428,7 @@ namespace game
         }
     }
 
-    // I had problems getting smooth mousewheel motion so I'm pausing this code
+    // I had problems getting smooth mouse wheel motion so I'm pausing this code
     // void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i &
     // NEW_MOUSE_POS)
     //{

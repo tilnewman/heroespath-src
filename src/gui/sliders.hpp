@@ -47,7 +47,7 @@ namespace gui
     // to Update().  All slider are also designed to work with speed values typically between [1,
     // 10]. Since the first thing that the Update() function does is multiply ADJUSTMENT*SPEED, that
     // reveals that sliders are designed to work in increments of approximately [0.016, 0.33], which
-    // will result the the following number of iterations required to slide Value() from From() to
+    // will result the following number of iterations required to slide Value() from From() to
     // To(): [16, 300].  So if you will be calling Update() with values outside of [0.016, 0.033]
     // then you can simply adjust your speed to compensate.
 

@@ -208,19 +208,16 @@ namespace item
         static const std::string SumPhrase(
             const std::string & NAME, const std::vector<T> & VALUES, const U SUM_COMPARED_WITH = 0)
         {
-            const auto MIN_MAX_AVG_SUM { misc::Vector::MinMaxAvgSum<T>(VALUES) };
+            const auto STATS { misc::Vector::MinMaxAvgStdDev<T>(VALUES) };
 
             std::ostringstream ss;
 
-            ss << ", " << std::setw(12) << NAME << "=[" << std::setw(4) << MIN_MAX_AVG_SUM.min
-               << ", " << std::setw(4) << MIN_MAX_AVG_SUM.avg << ", " << std::setw(4)
-               << MIN_MAX_AVG_SUM.max << "](" << std::setw(9) << MIN_MAX_AVG_SUM.sum << "sum)("
-               << misc::Vector::StandardDeviation(VALUES, VALUES.size(), MIN_MAX_AVG_SUM.avg)
-               << "std)";
+            ss << ", " << std::setw(12) << NAME << std::setw(0) << "="
+               << STATS.ToString(false, true, 4);
 
             if (SUM_COMPARED_WITH > 0)
             {
-                ss << PercentToString(MIN_MAX_AVG_SUM.sum, SUM_COMPARED_WITH);
+                ss << PercentToString(STATS.sum, SUM_COMPARED_WITH);
             }
 
             return ss.str();

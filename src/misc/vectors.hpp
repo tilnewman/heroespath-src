@@ -14,6 +14,7 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
+#include <iomanip>
 #include <numeric>
 #include <sstream>
 #include <string>
@@ -250,28 +251,26 @@ namespace misc
 
         template <typename T>
         static T StandardDeviation(
-            const std::vector<T> & VALUES,
-            const std::size_t COUNT,
-            const T AVERAGE_ORIG,
-            const bool WILL_IGNORE_FIRST_VALUE = false)
+            const std::vector<T> & VALUES, const std::size_t COUNT, const T AVERAGE_ORIG)
         {
-            if ((COUNT <= 1) || ((COUNT - 1) > VALUES.size()))
+            if ((VALUES.size() < 3) || (COUNT < 3) || ((COUNT - 1) > VALUES.size()))
             {
                 return 0;
             }
 
-            const auto AVERAGE_DOUBLE { static_cast<double>(AVERAGE_ORIG) };
+            using Math_t = long double;
 
-            double deviationSum { 0.0 };
+            const auto AVERAGE { static_cast<Math_t>(AVERAGE_ORIG) };
 
-            std::size_t i { ((WILL_IGNORE_FIRST_VALUE) ? 1U : 0U) };
-            for (; i < (COUNT - 1); ++i)
-            {
-                const auto NEXT_VALUE { static_cast<double>(VALUES[i]) };
-                deviationSum += std::pow((NEXT_VALUE - AVERAGE_DOUBLE), 2);
-            }
+            const Math_t DEVIATION_SUM { std::accumulate(
+                std::begin(VALUES),
+                std::begin(VALUES) + static_cast<std::ptrdiff_t>(COUNT),
+                0.0L,
+                [&](const Math_t SUM_SO_FAR, const auto VALUE) {
+                    return SUM_SO_FAR + std::pow((static_cast<Math_t>(VALUE) - AVERAGE), 2);
+                }) };
 
-            return static_cast<T>(std::sqrt(deviationSum / static_cast<double>(COUNT - 1)));
+            return static_cast<T>(std::sqrt(DEVIATION_SUM / static_cast<Math_t>(COUNT - 1)));
         }
 
         template <typename T>
@@ -304,52 +303,145 @@ namespace misc
         }
 
         template <typename T>
-        struct MinMaxAvgSum
+        struct MinMaxAvgStdDev
         {
-            MinMaxAvgSum(const T MIN, const T MAX, const T AVG, const T SUM)
-                : min(MIN)
-                , max(MAX)
-                , avg(AVG)
-                , sum(SUM)
-            {}
-
-            explicit MinMaxAvgSum(const std::vector<T> & VALUES)
-                : min(0)
+            MinMaxAvgStdDev(const std::vector<T> & VALUES, const std::size_t COUNT)
+                : count(0)
+                , min(0)
                 , max(0)
                 , avg(0)
                 , sum(0)
+                , stddev(0)
             {
-                if (VALUES.empty() == false)
-                {
-                    min = VALUES.front();
-                    max = min;
-
-                    for (const auto VALUE : VALUES)
-                    {
-                        if (VALUE < min)
-                        {
-                            min = VALUE;
-                        }
-
-                        if (VALUE > max)
-                        {
-                            max = VALUE;
-                        }
-
-                        sum += VALUE;
-                    }
-
-                    avg = static_cast<T>(
-                        static_cast<double>(sum) / static_cast<double>(VALUES.size()));
-                }
+                Setup(VALUES, COUNT);
             }
 
+            explicit MinMaxAvgStdDev(const std::vector<T> & VALUES)
+                : count(0)
+                , min(0)
+                , max(0)
+                , avg(0)
+                , sum(0)
+                , stddev(0)
+            {
+                Setup(VALUES, VALUES.size());
+            }
+
+            MinMaxAvgStdDev(const MinMaxAvgStdDev &) = default;
+            MinMaxAvgStdDev(MinMaxAvgStdDev &&) = default;
+            MinMaxAvgStdDev & operator=(const MinMaxAvgStdDev &) = default;
+            MinMaxAvgStdDev & operator=(MinMaxAvgStdDev &&) = default;
+
+            void Reset()
+            {
+                count = 0;
+                min = T(0);
+                max = T(0);
+                avg = T(0);
+                sum = T(0);
+                stddev = T(0);
+            }
+
+            void Setup(const std::vector<T> & VALUES) { Setup(VALUES, VALUES.size()); }
+
+            void Setup(const std::vector<T> & VALUES, const std::size_t COUNT)
+            {
+                Reset();
+
+                if ((VALUES.size() < 3) || (COUNT < 3) || ((COUNT - 1) > VALUES.size()))
+                {
+                    return;
+                }
+
+                count = COUNT;
+                min = VALUES.front();
+                max = min;
+
+                using Math_t = long double;
+
+                Math_t tempSum { 0.0L };
+
+                for (std::size_t index { 0 }; index < COUNT; ++index)
+                {
+                    const auto VALUE { VALUES.at(index) };
+
+                    if (VALUE < min)
+                    {
+                        min = VALUE;
+                    }
+
+                    if (VALUE > max)
+                    {
+                        max = VALUE;
+                    }
+
+                    tempSum += static_cast<Math_t>(VALUE);
+                }
+
+                avg = static_cast<T>(tempSum / static_cast<Math_t>(COUNT));
+                sum = static_cast<T>(tempSum);
+
+                stddev = StandardDeviation<T>(VALUES, COUNT, avg);
+            }
+
+            const std::string ToString(
+                const bool WILL_INCLUDE_COUNT = false,
+                const bool WILL_INCLUDE_SUM = false,
+                const std::size_t WIDTH = 0) const
+            {
+                std::ostringstream ss;
+
+                const auto WIDTH_INT { static_cast<int>(WIDTH) };
+
+                auto streamNumber = [&](const auto NUMBER) {
+                    if (WIDTH != 0)
+                    {
+                        ss << std::fixed << std::setfill(' ') << std::setw(WIDTH_INT)
+                           << std::setprecision(WIDTH_INT);
+                    }
+
+                    ss << NUMBER;
+
+                    if (WIDTH != 0)
+                    {
+                        ss << std::setfill(' ') << std::setw(0) << std::setprecision(0);
+                    }
+                };
+
+                if (WILL_INCLUDE_COUNT)
+                {
+                    ss << "x";
+                    streamNumber(count);
+                    ss << " ";
+                }
+
+                ss << "[";
+                streamNumber(min);
+                ss << ", ";
+                streamNumber(avg);
+                ss << ", ";
+                streamNumber(max);
+                ss << "] (";
+                streamNumber(stddev);
+                ss << ")";
+
+                if (WILL_INCLUDE_SUM)
+                {
+                    ss << " (sum=" << std::fixed << sum << ")";
+                }
+
+                return ss.str();
+            }
+
+            std::size_t count;
             T min;
             T max;
             T avg;
             T sum;
+            T stddev;
         };
     };
+
 } // namespace misc
 } // namespace heroespath
 

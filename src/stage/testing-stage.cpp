@@ -548,7 +548,7 @@ namespace stage
 
             if (isMismatchCurrent)
             {
-                ss << "(Currrent Value Incorrect)";
+                ss << "(Current Value Incorrect)";
             }
 
             if (isMismatchNormal)

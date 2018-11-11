@@ -67,6 +67,13 @@ namespace gui
             {
                 quad.coll_rects_vec.emplace_back(COLL_RECT);
             }
+            // if ((TOTAL_RECT.left <= sfutil::Right(COLL_RECT))
+            //    && (sfutil::Right(TOTAL_RECT) >= COLL_RECT.left)
+            //    && (TOTAL_RECT.top <= sfutil::Bottom(COLL_RECT))
+            //    && (sfutil::Bottom(TOTAL_RECT) >= COLL_RECT.top))
+            //{
+            //    quad.coll_rects_vec.emplace_back(COLL_RECT);
+            //}
         }
 
         if ((quad.coll_rects_vec.empty() == false) && (TOTAL_RECT.width >= MIN_QUAD_SIZE_)

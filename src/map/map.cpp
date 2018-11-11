@@ -31,6 +31,7 @@
 
 #include <exception>
 #include <sstream>
+#include <utility>
 
 namespace heroespath
 {
@@ -47,6 +48,7 @@ namespace map
         , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(*this, REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
+        , collisionGrid_()
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -106,6 +108,8 @@ namespace map
         }
 
         player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
+
+        collisionGrid_.Setup(mapDisplayUPtr_->MapSizeInMapCoordinatesf(), collisionVec_);
     }
 
     bool Map::MovePlayer(const gui::Direction::Enum DIRECTION)
@@ -136,6 +140,7 @@ namespace map
 
                 const auto DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(
                     DIRECTION, PLAYER_MOVE_DISTANCE_) };
+
                 player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
                 return DID_ACTUALLY_MOVE;
             }
@@ -351,9 +356,20 @@ namespace map
             ADJ_FOR_COLLISIONS_V.x * 2.0f,
             ADJ_FOR_COLLISIONS_V.y * 1.4f);
 
-        for (const auto & COLLISION_RECT : collisionVec_)
+        // determine if the player's new position collides with a map object
+        // use naive algorithm if the collision rect count is low enough
+        if (collisionVec_.size() < 40)
         {
-            if (COLLISION_RECT.intersects(PLAYER_RECT_FOR_MAP_COLLISIONS))
+            if (DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
+                    PLAYER_RECT_FOR_MAP_COLLISIONS))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(
+                    PLAYER_RECT_FOR_MAP_COLLISIONS))
             {
                 return true;
             }
@@ -692,7 +708,7 @@ namespace map
 
         } while (++attemptCounter < ATTEMPT_COUNT_MAX);
 
-        // no position found so set everything ot invalid
+        // no position found so set everything to invalid
         walkRectsIndex = WALK_RECTS.size();
         startingPosV = sf::Vector2f(-1.0f, -1.0f);
     }
@@ -703,6 +719,24 @@ namespace map
         {
             gui::SoundManager::Instance()->SoundEffectStop(walkSfx_);
         }
+    }
+
+    bool Map::DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(const sf::FloatRect & MAP_RECT)
+    {
+        for (const auto & COLLISION_RECT : collisionVec_)
+        {
+            if (COLLISION_RECT.intersects(MAP_RECT))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool Map::DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(const sf::FloatRect & MAP_RECT)
+    {
+        return collisionGrid_.DoesRectCollide(MAP_RECT);
     }
 
 } // namespace map

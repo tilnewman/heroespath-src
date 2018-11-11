@@ -247,6 +247,10 @@ namespace map
         {
             imageOptionsEnum |= gui::ImageOpt::ShadowMaskForShadowImage;
         }
+        else
+        {
+            imageOptionsEnum |= gui::ImageOpt::ShadowMaskNormal;
+        }
 
         layout.texture_vec.emplace_back(
             gui::CachedTexture(PathWrapper(FILE_COMPLETE_PATH), imageOptionsEnum));

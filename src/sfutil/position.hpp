@@ -71,6 +71,24 @@ namespace sfutil
     float Bottom(const gui::Text &);
 
     template <typename T>
+    const sf::Vector2<T> TopLeft(const sf::Rect<T> & R)
+    {
+        return sf::Vector2<T>(Left(R), Top(R));
+    }
+
+    template <typename T>
+    const sf::Vector2<T> TopRight(const sf::Rect<T> & R)
+    {
+        return sf::Vector2<T>(Right(R), Top(R));
+    }
+
+    template <typename T>
+    const sf::Vector2<T> BottomLeft(const sf::Rect<T> & R)
+    {
+        return sf::Vector2<T>(Left(R), Bottom(R));
+    }
+
+    template <typename T>
     const sf::Vector2<T> BottomRight(const sf::Rect<T> & R)
     {
         return sf::Vector2<T>(Right(R), Bottom(R));

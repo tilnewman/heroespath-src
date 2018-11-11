@@ -17,12 +17,34 @@ namespace heroespath
 {
 namespace gui
 {
-    using FloatRectVec_t = std::vector<sf::FloatRect>;
+    using IntRectVec_t = std::vector<sf::IntRect>;
 
     struct Quad
     {
-        FloatRectVec_t coll_rects_vec;
-        FloatRectVec_t quad_rects_vec;
+        Quad(const std::size_t RESERVE_COUNT = 32)
+            : coll_rects_vec()
+            , child_rect_top_left()
+            , child_rect_top_right()
+            , child_rect_bot_left()
+            , child_rect_bot_right()
+            , child_quads_vec()
+        {
+            coll_rects_vec.reserve(RESERVE_COUNT);
+            child_quads_vec.reserve(4);
+        }
+
+        Quad(const Quad &) = default;
+        Quad(Quad &&) = default;
+        Quad & operator=(const Quad &) = default;
+        Quad & operator=(Quad &&) = default;
+
+        IntRectVec_t coll_rects_vec;
+
+        sf::IntRect child_rect_top_left;
+        sf::IntRect child_rect_top_right;
+        sf::IntRect child_rect_bot_left;
+        sf::IntRect child_rect_bot_right;
+
         std::vector<Quad> child_quads_vec;
     };
 
@@ -30,30 +52,33 @@ namespace gui
     class QuadTree
     {
     public:
+        QuadTree();
+
         QuadTree(const QuadTree &) = delete;
         QuadTree(QuadTree &&) = delete;
         QuadTree & operator=(const QuadTree &) = delete;
         QuadTree & operator=(QuadTree &&) = delete;
 
-        QuadTree() = default;
+        void Setup(const sf::IntRect & TOTAL_RECT, const IntRectVec_t & COLL_RECTS_VEC);
 
-        void Setup(
-            const float MAP_WIDTH, const float MAP_HEIGHT, const FloatRectVec_t & COLL_RECTS_VEC);
+        bool DoesPointCollide(const sf::Vector2i &) const;
+        bool DoesRectCollide(const sf::IntRect &) const;
 
-        bool IsPointWithinCollisionRect(const sf::Vector2f &) const;
-
-        void Clear();
+        std::size_t GetLastOperationCount() const { return opCount_; }
 
     private:
         void PopulateQuadAndRecurse(
-            Quad & quad, const sf::FloatRect & RECT, const FloatRectVec_t & COLL_RECTS_VEC);
+            Quad & quad, const sf::IntRect & RECT, const IntRectVec_t & COLL_RECTS_VEC);
 
-        bool IsPointWithinCollisionRect_Impl(const Quad &, const sf::Vector2f &) const;
+        bool DoesPointCollideImpl(const Quad &, const sf::Vector2i &) const;
+        bool DoesRectCollideImpl(const Quad &, const sf::IntRect &) const;
 
     private:
-        static const float MIN_QUAD_SIZE_;
+        static const int MIN_QUAD_SIZE_;
         Quad headQuad_;
+        mutable std::size_t opCount_;
     };
+
 } // namespace gui
 } // namespace heroespath
 

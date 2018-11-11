@@ -10,6 +10,7 @@
 // map.hpp
 //
 #include "avatar/model.hpp"
+#include "gui/collision-grid.hpp"
 #include "gui/direction-enum.hpp"
 #include "interact/interaction-manager.hpp"
 #include "map/level-enum.hpp"
@@ -121,6 +122,10 @@ namespace map
 
         void StopWalkSfxIfValid();
 
+        bool DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(const sf::FloatRect & MAP_RECT);
+
+        bool DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(const sf::FloatRect & MAP_RECT);
+
     private:
         static const float PLAYER_MOVE_DISTANCE_;
         static const float NONPLAYER_MOVE_DISTANCE_;
@@ -130,6 +135,7 @@ namespace map
         MapDisplayUPtr_t mapDisplayUPtr_;
         interact::InteractionManager & interactionManager_;
         std::vector<sf::FloatRect> collisionVec_;
+        gui::CollisionGrid collisionGrid_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
 

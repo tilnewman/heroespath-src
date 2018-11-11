@@ -12,7 +12,6 @@
 #include "gui/animation-base.hpp"
 #include "gui/animation-factory.hpp"
 #include "gui/cached-texture.hpp"
-#include "gui/collision-quad-tree.hpp"
 #include "gui/direction-enum.hpp"
 #include "map/layer.hpp"
 #include "map/layout.hpp"
@@ -58,6 +57,18 @@ namespace map
 
         void Update(const float TIME_ELAPSED);
         void UpdateAnimMusicVolume();
+
+        const sf::Vector2i MapSizeInMapCoordinatesi() const
+        {
+            return sf::Vector2i(
+                (layout_.tile_count_v.x * layout_.tile_size_v.x),
+                (layout_.tile_count_v.y * layout_.tile_size_v.y));
+        }
+
+        const sf::Vector2f MapSizeInMapCoordinatesf() const
+        {
+            return sf::Vector2f(MapSizeInMapCoordinatesi());
+        }
 
     private:
         bool MoveUp(const float ADJUSTMENT);
