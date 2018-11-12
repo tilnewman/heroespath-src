@@ -19,7 +19,7 @@
 #include "map/walk-sfx.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
-#include "misc/timer.hpp"
+#include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
@@ -151,7 +151,7 @@ namespace map
         WalkSfxRegionLayers walkSfxLayers_;
         gui::sound_effect::Enum walkSfx_;
         bool walkSfxIsWalking_;
-        misc::Timer sfxTimer_;
+        misc::IntervalTimer sfxTimer_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

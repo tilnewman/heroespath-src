@@ -375,6 +375,28 @@ namespace map
             }
         }
 
+        // static misc::TimeContest timeContest("Collision Detection", TimeRes::Nano, 100000, 0.1);
+        // static const auto jonIndex = timeContest.AddCollecter("Jon");
+        // static const auto janeIndex = timeContest.AddCollecter("Jane");
+        // static const auto robotIndex = timeContest.AddCollecter("Robot");
+        //
+        //{
+        //    misc::ScopedContestTimer scopedTimer(timeContest, jonIndex);
+        //}
+        //
+        //{
+        //    misc::ScopedContestTimer scopedTimerJane(timeContest, janeIndex);
+        //    {
+        //        misc::ScopedContestTimer scopedTimerRobot(timeContest, robotIndex);
+        //    }
+        //}
+        //
+        // if ((timeContest.DurationCount() > 0) && ((timeContest.DurationCount() % 50) == 0))
+        //{
+        //    M_HP_LOG_WRN("jon=" << jonIndex << ", jane=" << janeIndex << ", robot=" <<
+        //    robotIndex); M_HP_LOG_WRN(timeContest.ToString(5)); timeContest.Reset();
+        //}
+
         const auto ADJ_FOR_NPC_COLLISIONS_V { [&]() {
             return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
         }() };
