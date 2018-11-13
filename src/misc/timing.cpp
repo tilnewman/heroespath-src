@@ -10,59 +10,31 @@
 #include "timing.hpp"
 
 #include "misc/log-macros.hpp"
+#include "misc/log.hpp"
 #include "misc/strings.hpp"
+#include "misc/vector-map.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 #include <sstream>
 #include <utility>
 
 namespace heroespath
 {
-
-const std::string TimeRes::ToString(const Enum RES)
-{
-    switch (RES)
-    {
-        case Nano:
-        {
-            return "ns";
-        }
-        case Milli:
-        {
-            return "ms";
-        }
-        case Second:
-        {
-            return "sec";
-        }
-        case Count:
-        {
-            return "(Count)";
-        }
-        default:
-        {
-            M_HP_LOG_ERR(
-                "enum_value=" << static_cast<EnumUnderlying_t>(RES) << " is invalid. (count="
-                              << static_cast<EnumUnderlying_t>(Count) << ")");
-
-            return "";
-        }
-    }
-}
-
 namespace misc
 {
 
     const TimeMoment_t TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME {};
-
-    const TimeMoment_t TimeSampler::Now() { return std::chrono::high_resolution_clock::now(); }
+    const TimeCount_t TimeSampler::NOT_A_TIME_DURATION_COUNT { -1 }; // any negative will work here
 
     TimeCount_t TimeSampler::Duration(
         const TimeRes::Enum RES, const TimeMoment_t & THEN, const TimeMoment_t & ACTUAL_STOP_TIME)
     {
         const auto NOW { (
-            (ACTUAL_STOP_TIME == DEFAULT_EMPTY_MOMENT_IN_TIME) ? Now() : ACTUAL_STOP_TIME) };
+            (ACTUAL_STOP_TIME == DEFAULT_EMPTY_MOMENT_IN_TIME)
+                ? std::chrono::high_resolution_clock::now()
+                : ACTUAL_STOP_TIME) };
 
         TimeCount_t durationCount;
 
@@ -70,6 +42,11 @@ namespace misc
         {
             durationCount
                 = std::chrono::duration_cast<std::chrono::nanoseconds>(NOW - THEN).count();
+        }
+        else if (RES == TimeRes::Micro)
+        {
+            durationCount
+                = std::chrono::duration_cast<std::chrono::microseconds>(NOW - THEN).count();
         }
         else if (RES == TimeRes::Milli)
         {
@@ -83,7 +60,7 @@ namespace misc
 
         if (durationCount < 0)
         {
-            return 0;
+            return NOT_A_TIME_DURATION_COUNT;
         }
         else
         {
@@ -93,8 +70,11 @@ namespace misc
 
     TimeStats::TimeStats(
         const std::vector<TimeCount_t> & DURATION_COUNT_VEC_ORIG,
-        const double OUTLIERS_IGNORE_RATIO)
+        const double OUTLIERS_IGNORE_RATIO,
+        const std::size_t CANCELED_DUE_TO_LOGGING)
     {
+        cancelOnLogCount_ = CANCELED_DUE_TO_LOGGING;
+
         // all the code below depends on the collection being sorted from smallest to largest
         auto durationCountsToUse { DURATION_COUNT_VEC_ORIG };
         std::sort(std::begin(durationCountsToUse), std::end(durationCountsToUse));
@@ -244,6 +224,7 @@ namespace misc
             sums.sum += STATS.sum;
             sums.avg += STATS.avg;
             sums.dev += STATS.dev;
+            sums.cancelOnLogCount_ += STATS.cancelOnLogCount_;
 
             if (STATS.longest_stat_string_length > longest_stat_string_length)
             {
@@ -265,6 +246,8 @@ namespace misc
                 outlier_max = STATS.outlier_max;
             }
         }
+
+        cancelOnLogCount_ = sums.cancelOnLogCount_;
 
         const auto TOTAL_COUNT_DOUBLE { static_cast<double>(STATS_VEC.size()) };
 
@@ -294,7 +277,6 @@ namespace misc
         const bool WILL_INCLUDE_SUM,
         const std::size_t FORCE_MIN_WIDTH) const
     {
-
         std::ostringstream ss;
 
         auto streamNumber = [&](const auto NUMBER, const std::size_t LONGEST_LENGTH) {
@@ -346,6 +328,11 @@ namespace misc
                << outlier_min << ", " << outlier_max << "])";
         }
 
+        if (cancelOnLogCount_ > 0)
+        {
+            ss << " (" << cancelOnLogCount_ << " canceled due to logging)";
+        }
+
         return ss.str();
     }
 
@@ -392,38 +379,34 @@ namespace misc
         }
     }
 
-    ScopedLogTimer::ScopedLogTimer(const TimeRes::Enum RES, const std::string & MESSAGE)
-        : resolution_(RES)
-        , message_(MESSAGE)
-        , startTime_(std::chrono::high_resolution_clock::now())
-    {}
+#if !defined(HEROESPATH_MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_TIMING)
 
-    ScopedLogTimer::~ScopedLogTimer()
-    {
-        const auto DURATION { TimeSampler::Duration(resolution_, startTime_) };
-
-        M_HP_LOG_DBG(
-            "ScopedLogTimer \"" << message_ << "\" took " << DURATION
-                                << TimeRes::ToString(resolution_));
-    }
-
-    Timer::Timer(const TimeRes::Enum RES)
+    Timer::Timer(const TimeRes::Enum RES, const bool WILL_CANCEL_ON_LOG)
         : isStarted_(false)
         , resolution_(RES)
         , startTime_()
-        , durationCount_(0)
+        , durationCount_(TimeSampler::NOT_A_TIME_DURATION_COUNT) // any negative works here
+        , willCancelOnLog_(WILL_CANCEL_ON_LOG)
+        , longCountBeforeStart_(0)
+        , canceledDueToLogCount_(0)
+        , isDoingBusyWork_(false)
     {}
 
     void Timer::Start()
     {
         if (false == isStarted_)
         {
+            if (willCancelOnLog_ && !isDoingBusyWork_)
+            {
+                longCountBeforeStart_ = misc::Log::Instance()->LineCount();
+            }
+
             // busy work only to heat the cache
             startTime_ = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME;
 
             isStarted_ = true;
-            durationCount_ = 0;
-            startTime_ = TimeSampler::Now();
+            durationCount_ = TimeSampler::NOT_A_TIME_DURATION_COUNT;
+            startTime_ = std::chrono::high_resolution_clock::now();
         }
     }
 
@@ -432,9 +415,18 @@ namespace misc
         if (isStarted_)
         {
             isStarted_ = false;
-            durationCount_ = 0;
             startTime_ = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME;
+            durationCount_ = TimeSampler::NOT_A_TIME_DURATION_COUNT;
         }
+    }
+
+    void Timer::Reset()
+    {
+        isStarted_ = false;
+        startTime_ = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME;
+        durationCount_ = TimeSampler::NOT_A_TIME_DURATION_COUNT;
+        longCountBeforeStart_ = 0;
+        // canceledDueToLogCount_ = 0;
     }
 
     void Timer::Stop(const TimeMoment_t & ACTUAL_STOP_TIME)
@@ -442,34 +434,27 @@ namespace misc
         if (isStarted_)
         {
             durationCount_ = TimeSampler::Duration(resolution_, startTime_, ACTUAL_STOP_TIME);
+
+            if (willCancelOnLog_ && !isDoingBusyWork_)
+            {
+                if (misc::Log::Instance()->LineCount() != longCountBeforeStart_)
+                {
+                    Cancel();
+                    ++canceledDueToLogCount_;
+                }
+            }
+
             isStarted_ = false;
         }
-    }
-
-    TimeCount_t Timer::StopAndReport(const TimeMoment_t & ACTUAL_STOP_TIME)
-    {
-        Stop(ACTUAL_STOP_TIME);
-        return durationCount_;
-    }
-
-    void Timer::Restart(const TimeMoment_t & ACTUAL_STOP_TIME)
-    {
-        Stop(ACTUAL_STOP_TIME);
-        Start();
-    }
-
-    TimeCount_t Timer::RestartAndReport(const TimeMoment_t & ACTUAL_STOP_TIME)
-    {
-        Restart(ACTUAL_STOP_TIME);
-        return durationCount_;
     }
 
     TimeCollecter::TimeCollecter(
         const std::string & NAME,
         const TimeRes::Enum RES,
+        const bool WILL_CANCEL_ON_LOG,
         const std::size_t EXPECTED_COUNT,
         const double OUTLIERS_IGNORE_RATIO)
-        : Timer(RES)
+        : Timer(RES, WILL_CANCEL_ON_LOG)
         , name_(NAME)
         , durationCounts_()
         , outliersIgnoreRatio_(OUTLIERS_IGNORE_RATIO)
@@ -477,9 +462,9 @@ namespace misc
         durationCounts_.reserve(EXPECTED_COUNT);
     }
 
-    void TimeCollecter::Clear()
+    void TimeCollecter::Reset()
     {
-        Cancel();
+        Timer::Reset();
         const auto RESERVED { durationCounts_.capacity() };
         durationCounts_.clear();
         durationCounts_.reserve(RESERVED);
@@ -487,11 +472,13 @@ namespace misc
 
     void TimeCollecter::Start()
     {
-        if (IsStarted() == false)
+        if (IsStarted())
         {
-            BusyWorkOnlyToHeatCache();
-            Timer::Start();
+            Cancel();
         }
+
+        BusyWorkOnlyToHeatCache();
+        Timer::Start();
     }
 
     void TimeCollecter::Stop(const TimeMoment_t & ACTUAL_STOP_TIME)
@@ -499,21 +486,35 @@ namespace misc
         if (IsStarted())
         {
             Timer::Stop(ACTUAL_STOP_TIME);
-            durationCounts_.emplace_back(Report());
+
+            const auto TIME_DURATION_COUNT { Report() };
+
+            if (TIME_DURATION_COUNT > 0)
+            {
+                durationCounts_.emplace_back(TIME_DURATION_COUNT);
+            }
         }
+    }
+
+    const TimeStats TimeCollecter::Stats() const
+    {
+        return TimeStats(durationCounts_, outliersIgnoreRatio_, CancelOnLogCount());
     }
 
     void TimeCollecter::BusyWorkOnlyToHeatCache()
     {
+        SetIsDoingBusyWork(true);
         durationCounts_.emplace_back(0);
         Timer::Start();
         Timer::Stop();
         durationCounts_.pop_back();
+        SetIsDoingBusyWork(false);
     }
 
     TimeTrials::TimeTrials(
         const std::string & NAME,
         const TimeRes::Enum RES,
+        const bool WILL_CANCEL_ON_LOG,
         const std::size_t TIME_SAMPLES_PER_CONTEST,
         const double OUTLIERS_IGNORE_RATIO)
         : name_(NAME)
@@ -521,11 +522,15 @@ namespace misc
         , timeSamplesPerContest_(TIME_SAMPLES_PER_CONTEST)
         , collectors_()
         , outliersIgnoreRatio_(OUTLIERS_IGNORE_RATIO)
-        , contestResultsHistoryMap_()
+        , contestResultsHistoryMapUPtr_(
+              std::make_unique<misc::VectorMap<std::string, TimeStatsVec_t>>())
         , contestWinnerNamesHistory_()
+        , willCancelOnLong_(WILL_CANCEL_ON_LOG)
     {
         collectors_.reserve(10);
     }
+
+    TimeTrials::~TimeTrials() = default;
 
     std::size_t TimeTrials::TimeSampleCount() const
     {
@@ -541,14 +546,14 @@ namespace misc
     {
         for (auto & collector : collectors_)
         {
-            collector.Clear();
+            collector.Reset();
         }
     }
 
     std::size_t TimeTrials::AddCollecter(const std::string & NAME)
     {
-        collectors_.emplace_back(
-            TimeCollecter(NAME, resolution_, timeSamplesPerContest_, outliersIgnoreRatio_));
+        collectors_.emplace_back(TimeCollecter(
+            NAME, resolution_, willCancelOnLong_, timeSamplesPerContest_, outliersIgnoreRatio_));
 
         return collectors_.size() - 1;
     }
@@ -648,7 +653,8 @@ namespace misc
         // add all the collecter's end-of-contest stats to the history
         for (const auto & STATS_NAME_PAIR : statsNamePairs)
         {
-            contestResultsHistoryMap_[STATS_NAME_PAIR.second].emplace_back(STATS_NAME_PAIR.first);
+            (*contestResultsHistoryMapUPtr_)[STATS_NAME_PAIR.second].emplace_back(
+                STATS_NAME_PAIR.first);
         }
 
         // find the longest string length
@@ -696,20 +702,24 @@ namespace misc
                       true, false, static_cast<std::size_t>(longestStatStringLength));
         }
 
-        M_HP_LOG_DBG(ss.str());
+        // can't use normal log macros because they can cause endless recursion in the timing code
+        LogMacroHelper::Append(LogPriority::Default, ss.str(), __FILE__, __func__, __LINE__);
+
         ResetCurrentContest();
     }
 
     void TimeTrials::ResetAllContests()
     {
         ResetCurrentContest();
-        contestResultsHistoryMap_.Clear();
+        contestResultsHistoryMapUPtr_->Clear();
         contestWinnerNamesHistory_.clear();
     }
 
     void TimeTrials::EndAllContests()
     {
-        if (contestResultsHistoryMap_.Empty())
+        EndContest();
+
+        if (contestResultsHistoryMapUPtr_->Empty())
         {
             ResetAllContests();
             return;
@@ -744,7 +754,7 @@ namespace misc
                 std::end(contestWinnerNamesHistory_),
                 summary.name));
 
-            summary.stats = TimeStats(contestResultsHistoryMap_[summary.name]);
+            summary.stats = TimeStats((*contestResultsHistoryMapUPtr_)[summary.name]);
 
             summaries.emplace_back(summary);
         }
@@ -786,7 +796,7 @@ namespace misc
         std::ostringstream ss;
         ss << std::setfill(' ');
         ss << name_ << " Time Contests Final Results in " << TimeRes::ToString(resolution_)
-           << " after " << contestResultsHistoryMap_.Size() << " contests:";
+           << " after " << contestResultsHistoryMapUPtr_->Size() << " contests:";
 
         const auto MAX_NAME_LENGTH_INT { static_cast<int>(maxNameLength) };
 
@@ -808,9 +818,13 @@ namespace misc
                       true, true, static_cast<std::size_t>(longestStatStringLength));
         }
 
-        M_HP_LOG_WRN(ss.str());
+        // can't use normal log macros because they can cause endless recursion in the timing code
+        LogMacroHelper::Append(LogPriority::Warn, ss.str(), __FILE__, __func__, __LINE__);
+
         ResetAllContests();
     }
+
+#endif
 
 } // namespace misc
 } // namespace heroespath

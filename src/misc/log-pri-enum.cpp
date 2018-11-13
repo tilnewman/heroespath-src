@@ -9,8 +9,10 @@
 //
 #include "log-pri-enum.hpp"
 
-#include "misc/log-macros.hpp"
 #include "misc/platform.hpp"
+
+#include <iostream>
+#include <sstream>
 
 namespace heroespath
 {
@@ -47,10 +49,14 @@ namespace misc
             }
             default:
             {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
+                // can't use log or assert macros inside the logging code
+                std::ostringstream ss;
+
+                ss << __FILE__ << ":" << __func__ << "():" << __LINE__
+                   << "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
+                   << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count) << ")";
+
+                std::cerr << ss.str() << std::endl;
 
                 return "";
             }
@@ -87,10 +93,14 @@ namespace misc
             }
             default:
             {
-                M_HP_LOG_ERR(
-                    "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
-                                  << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count)
-                                  << ")");
+                // can't use log or assert macros inside the logging code
+                std::ostringstream ss;
+
+                ss << __FILE__ << ":" << __func__ << "():" << __LINE__
+                   << "enum_value=" << static_cast<EnumUnderlying_t>(PRIORITY)
+                   << " is invalid. (count=" << static_cast<EnumUnderlying_t>(Count) << ")";
+
+                std::cerr << ss.str() << std::endl;
 
                 return "";
             }

@@ -57,7 +57,7 @@ namespace game
         {
             ConsumeAndIgnoreStrayEvents();
 
-            misc::TimeTrials framerateTrials("Framerate", TimeRes::Milli, 200, 0.0);
+            misc::TimeTrials framerateTrials("Framerate", TimeRes::Micro, true, 200, 0.0);
 
             const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
                 flags_.ToString()) };
@@ -65,8 +65,7 @@ namespace game
             while (!iStatus_.IsLoopStopRequested())
             {
                 {
-                    misc::ScopedContestTimer scopedFramerateTimer(
-                        framerateTrials, FRAMERATE_COLLECTER_INDEX);
+                    M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
 
                     gui::Display::Instance()->ClearToBlack();
 
@@ -97,18 +96,18 @@ namespace game
                     gui::Display::Instance()->DisplayFrameBuffer();
                 }
 
-                if (toLogEvents_.empty() == false)
-                {
-                    for (const auto & EVENT : toLogEvents_)
-                    {
-                        M_HP_LOG_DEF("Event: " << ToString(EVENT));
-                    }
-                    toLogEvents_.clear();
-                }
+                // if (toLogEvents_.empty() == false)
+                //{
+                //    for (const auto & EVENT : toLogEvents_)
+                //    {
+                //        M_HP_LOG_DEF("Event: " << ToString(EVENT));
+                //    }
+                //    toLogEvents_.clear();
+                //}
             }
 
             framerateTrials.EndAllContests();
-        }
+        } // namespace game
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
@@ -241,7 +240,7 @@ namespace game
 
     void Loop::HandleEvent(const sf::Event & EVENT)
     {
-        toLogEvents_.emplace_back(EVENT);
+        // toLogEvents_.emplace_back(EVENT);
 
         if (HandleEventIfWindowClosed(EVENT))
         {
@@ -367,7 +366,7 @@ namespace game
     {
         if (EVENT.type == sf::Event::Closed)
         {
-            toLogEvents_.emplace_back(EVENT);
+            // toLogEvents_.emplace_back(EVENT);
             iStatus_.GameExitRequest();
             iStatus_.LoopStopRequest();
             return true;

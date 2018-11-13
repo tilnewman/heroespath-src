@@ -10,12 +10,30 @@
 // log-macros.hpp
 //
 #include "misc/log-pri-enum.hpp"
+#include "misc/timing-scoped.hpp"
 
+#include <cstddef> //for std::size_t
+#include <memory>
 #include <sstream>
 #include <string>
 
+//
+
+#define M_HP_FILE_FUNC_LINE_STR                                                                    \
+    (std::string(__FILE__) + ":" + std::string(__func__) + "():" + std::to_string(__LINE__))
+
+#define M_HP_FILE_FUNC_LINE_STR_VAR                                                                \
+    const std::string FILE_FUNC_LINE_STR { M_HP_FILE_FUNC_LINE_STR };
+
+//
+
 namespace heroespath
 {
+namespace misc
+{
+    class TimeTrials;
+}
+
 struct LogMacroHelper
 {
     static void Append(
@@ -24,30 +42,22 @@ struct LogMacroHelper
         const std::string & FILE,
         const std::string & FUNCTION,
         const int LINE);
+
+    static void LogTimingStart();
+    static void LogTimingStop();
+    static misc::TimeTrials * GetLoggingTimeTrialsPtr();
+
+private:
+    static std::unique_ptr<misc::TimeTrials> loggingTimeTrialsUPtr_;
 };
+
 } // namespace heroespath
 
-#define M_HP_FILE_FUNC_LINE_STR                                                                    \
-    (std::string(__FILE__) + ":" + std::string(__func__) + "():" + std::to_string(__LINE__))
+//
 
-#define M_HP_FILE_FUNC_LINE_STR_VAR                                                                \
-    const std::string FILE_FUNC_LINE_STR { M_HP_FILE_FUNC_LINE_STR };
+#if !defined(MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_LOG)
 
-// these defines will disable these macros
-#if defined(MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_LOG)
-
-// if disabled by HEROESPATH_MACRO_DISABLE_LOG, then produce no code
-#define M_HP_LOG_PRI(str_stuff) ;
-#define M_HP_LOG_DBG(str_stuff) ;
-#define M_HP_LOG_DEF(str_stuff) ;
-#define M_HP_LOG_WRN(str_stuff) ;
-#define M_HP_LOG_ERR(str_stuff) ;
-#define M_HP_LOG_FAT(str_stuff) ;
-#define M_HP_LOG(str_stuff) ;
-
-#else
-
-#define M_HP_LOG_PRI(priority, str_stuff)                                                          \
+#define M_HP_LOG_PRI_ACTUAL(priority, str_stuff)                                                   \
     {                                                                                              \
         {                                                                                          \
             std::ostringstream _m_oss_hp_log_temp;                                                 \
@@ -58,6 +68,19 @@ struct LogMacroHelper
         }                                                                                          \
     }
 
+#define M_HP_LOG_PRI(priority, str_stuff)                                                          \
+    {                                                                                              \
+        if (LogMacroHelper::GetLoggingTimeTrialsPtr() != nullptr)                                  \
+        {                                                                                          \
+            M_HP_SCOPED_TIME_TRIAL(*LogMacroHelper::GetLoggingTimeTrialsPtr(), 0);                 \
+            M_HP_LOG_PRI_ACTUAL(priority, str_stuff);                                              \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            M_HP_LOG_PRI_ACTUAL(priority, str_stuff);                                              \
+        }                                                                                          \
+    }
+
 #define M_HP_LOG_DBG(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Debug, str_stuff)
 #define M_HP_LOG_DEF(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Default, str_stuff)
 #define M_HP_LOG_WRN(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Warn, str_stuff)
@@ -65,6 +88,16 @@ struct LogMacroHelper
 #define M_HP_LOG_FAT(str_stuff) M_HP_LOG_PRI(heroespath::misc::LogPriority::Fatal, str_stuff)
 #define M_HP_LOG(str_stuff) M_HP_LOG_DEF(str_stuff)
 
-#endif //#if defined(MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_LOG)
+#else
+
+#define M_HP_LOG_PRI(str_stuff) ;
+#define M_HP_LOG_DBG(str_stuff) ;
+#define M_HP_LOG_DEF(str_stuff) ;
+#define M_HP_LOG_WRN(str_stuff) ;
+#define M_HP_LOG_ERR(str_stuff) ;
+#define M_HP_LOG_FAT(str_stuff) ;
+#define M_HP_LOG(str_stuff) ;
+
+#endif // end check if logging macros enabled
 
 #endif // HEROESPATH_MISC_LOG_MACROS_HPP_INCLUDED

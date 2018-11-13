@@ -9,8 +9,7 @@
 //
 // timing.hpp
 //
-#include "misc/enum-common.hpp"
-#include "misc/vector-map.hpp"
+#include "misc/timing-scoped.hpp"
 
 #include <chrono>
 #include <string>
@@ -18,38 +17,20 @@
 
 namespace heroespath
 {
-
-// these types chosen to match what the <chrono> library uses
-using TimeCount_t = long long;
-using TimeMoment_t = std::chrono::high_resolution_clock::time_point;
-
-struct TimeRes : public EnumBaseCounting<EnumFirstValue::Valid>
-{
-    enum Enum : EnumUnderlying_t
-    {
-        Nano = 0,
-        Milli,
-        Second,
-        Count,
-    };
-
-    static const std::string ToString(const Enum RES);
-};
-
 namespace misc
 {
 
     struct TimeSampler
     {
-        static const TimeMoment_t Now();
-
-        // if the time duration between THEN and NOW is negative then zero will be returned
+        // If the times got mixed up and the resulting count is negative then
+        // NOT_A_TIME_DURATION_COUNT is returned.
         static TimeCount_t Duration(
             const TimeRes::Enum RES,
             const TimeMoment_t & THEN,
             const TimeMoment_t & ACTUAL_STOP_TIME = DEFAULT_EMPTY_MOMENT_IN_TIME);
 
         static const TimeMoment_t DEFAULT_EMPTY_MOMENT_IN_TIME;
+        static const TimeCount_t NOT_A_TIME_DURATION_COUNT;
     };
 
     // Wraps various statistics about a collection of time durations.  Negative time duration counts
@@ -61,7 +42,8 @@ namespace misc
         // use this constructor to gather time statistics for a given vector of time duration counts
         TimeStats(
             const std::vector<TimeCount_t> & DURATION_COUNT_VEC_ORIG,
-            const double OUTLIERS_IGNORE_RATIO);
+            const double OUTLIERS_IGNORE_RATIO,
+            const std::size_t CANCELED_DUE_TO_LOGGING);
 
         TimeStats(const std::vector<TimeStats> & STATS_VEC);
 
@@ -89,9 +71,15 @@ namespace misc
         std::size_t longest_sum_string_length = 1;
         TimeCount_t outlier_min = 0;
         TimeCount_t outlier_max = 0;
+        std::size_t cancelOnLogCount_ = 0;
     };
 
     using TimeStatsVec_t = std::vector<TimeStats>;
+
+    template <typename Key_t, typename Value_t>
+    class VectorMap;
+
+    using NameStatsVecMap_t = VectorMap<std::string, TimeStatsVec_t>;
 
     // Use with the game engine's UpdateTime(float ELAPSED_TIME_SEC) functions to repeatedly check
     // if a given amount of time in seconds has elapsed.
@@ -111,38 +99,13 @@ namespace misc
         float durationSec_;
     };
 
-    // Construct one of these to log how long it takes from that moment until the end of the current
-    // scope.  Time duration counts will never be negative.
-    //
-    // Tested 100 times inside an empty scope resulting in durations of [100, 900] nanoseconds
-    // averaging 230, with only ten above 300, only five above 500, and only two above 800.
-    class ScopedLogTimer
-    {
-    public:
-        ScopedLogTimer(const TimeRes::Enum RES, const std::string & MESSAGE);
+#if !defined(HEROESPATH_MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_TIMING)
 
-        ~ScopedLogTimer();
-
-        ScopedLogTimer(const ScopedLogTimer &) = delete;
-        ScopedLogTimer(ScopedLogTimer &&) = delete;
-        ScopedLogTimer & operator=(const ScopedLogTimer &) = delete;
-        ScopedLogTimer & operator=(ScopedLogTimer &&) = delete;
-
-    private:
-        const TimeRes::Enum resolution_;
-        const std::string message_;
-        const TimeMoment_t startTime_;
-    };
-
-    // Use to find how many seconds/milliseconds/nanoseconds passes between Start() and Stop(). Time
-    // duration counts will never be negative.
-    //
-    // Tested 100 times with nothing in between Start() and Stop() resulted in [50, 250] nanoseconds
-    // averaging 92, with only three above 120 and all of those were [200, 250].
+    // Use to find how many seconds/milliseconds/nanoseconds passes between Start() and Stop().
     class Timer
     {
     public:
-        explicit Timer(const TimeRes::Enum RES);
+        explicit Timer(const TimeRes::Enum RES, const bool WILL_CANCEL_ON_LOG);
 
         virtual ~Timer() = default;
 
@@ -157,37 +120,45 @@ namespace misc
 
         virtual void Cancel();
 
+        void Reset();
+
         virtual void
             Stop(const TimeMoment_t & ACTUAL_STOP_TIME = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME);
-
-        TimeCount_t StopAndReport(
-            const TimeMoment_t & ACTUAL_STOP_TIME = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME);
-
-        void Restart(
-            const TimeMoment_t & ACTUAL_STOP_TIME = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME);
-
-        TimeCount_t RestartAndReport(
-            const TimeMoment_t & ACTUAL_STOP_TIME = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME);
 
         TimeRes::Enum Resolution() const { return resolution_; }
 
         TimeCount_t Report() const { return durationCount_; }
+
+        std::size_t CancelOnLogCount() const { return canceledDueToLogCount_; }
+
+        void SetIsDoingBusyWork(const bool IS_DOING_BUSY_WORK)
+        {
+            isDoingBusyWork_ = IS_DOING_BUSY_WORK;
+        }
 
     private:
         bool isStarted_;
         TimeRes::Enum resolution_;
         TimeMoment_t startTime_;
         TimeCount_t durationCount_;
+        bool willCancelOnLog_;
+        std::size_t longCountBeforeStart_;
+        std::size_t canceledDueToLogCount_;
+        bool isDoingBusyWork_;
     };
 
     // Same as Timer (above) except that whenever Stop() is called the duration is saved in a
     // collection that you can get statistical information about.
+    //
+    // 2018-11-11 Tested how many nanoseconds are reported if there is no code between Start() and
+    // Stop() and it averaged about 160ns.
     class TimeCollecter : public Timer
     {
     public:
         TimeCollecter(
             const std::string & NAME,
             const TimeRes::Enum RES,
+            const bool WILL_CANCEL_ON_LOG,
             const std::size_t EXPECTED_COUNT,
             const double OUTLIERS_IGNORE_RATIO);
 
@@ -199,19 +170,16 @@ namespace misc
         TimeCollecter & operator=(TimeCollecter &&) = default;
 
         const std::string Name() const { return name_; }
-
         bool Empty() const { return durationCounts_.empty(); }
-
         std::size_t Size() const { return durationCounts_.size(); }
 
-        void Clear();
-
+        void Reset();
         void Start() override;
 
         void Stop(const TimeMoment_t & ACTUAL_STOP_TIME = TimeSampler::DEFAULT_EMPTY_MOMENT_IN_TIME)
             override;
 
-        const TimeStats Stats() const { return TimeStats(durationCounts_, outliersIgnoreRatio_); }
+        const TimeStats Stats() const;
 
         void BusyWorkOnlyToHeatCache();
 
@@ -219,27 +187,6 @@ namespace misc
         std::string name_;
         std::vector<TimeCount_t> durationCounts_;
         double outliersIgnoreRatio_;
-    };
-
-    // If the scope is empty then this averages about 500 nanoseconds.
-    class ScopedCollecterTimer
-    {
-    public:
-        explicit ScopedCollecterTimer(TimeCollecter & timeCollecter)
-            : timeCollecter_(timeCollecter)
-        {
-            timeCollecter_.Start();
-        }
-
-        ~ScopedCollecterTimer() { timeCollecter_.Stop(); }
-
-        ScopedCollecterTimer(const ScopedCollecterTimer &) = delete;
-        ScopedCollecterTimer(ScopedCollecterTimer &&) = delete;
-        ScopedCollecterTimer & operator=(const ScopedCollecterTimer &) = delete;
-        ScopedCollecterTimer & operator=(ScopedCollecterTimer &&) = delete;
-
-    private:
-        TimeCollecter & timeCollecter_;
     };
 
     // Keeps tracks a set of TimeCollecters over multiple contests and creates summaries of each and
@@ -250,8 +197,11 @@ namespace misc
         TimeTrials(
             const std::string & NAME,
             const TimeRes::Enum RES,
+            const bool WILL_CANCEL_ON_LOG,
             const std::size_t TIME_SAMPLES_PER_CONTEST,
             const double OUTLIERS_IGNORE_RATIO);
+
+        ~TimeTrials();
 
         const std::string Name() const { return name_; }
         std::size_t CollectorCount() const { return collectors_.size(); }
@@ -281,40 +231,64 @@ namespace misc
         std::size_t timeSamplesPerContest_;
         std::vector<TimeCollecter> collectors_;
         double outliersIgnoreRatio_;
-        misc::VectorMap<std::string, TimeStatsVec_t> contestResultsHistoryMap_;
+        std::unique_ptr<NameStatsVecMap_t> contestResultsHistoryMapUPtr_;
         std::vector<std::string> contestWinnerNamesHistory_;
+        bool willCancelOnLong_;
     };
 
-    // If the scope is empty then this averages about 500 nanoseconds.
-    class ScopedContestTimer
+#else
+
+    class Timer
     {
     public:
-        ScopedContestTimer(TimeTrials & timeContest, const std::size_t COLLECTER_INDEX)
-            : timeContest_(timeContest)
-            , collecterIndex_(COLLECTER_INDEX)
-        {
-            timeContest_.Start(collecterIndex_);
-        }
-
-        ~ScopedContestTimer()
-        {
-            // capture the current (stop) time now because the distance between this point in the
-            // code and where the stop time would normally be captured is longer than I would like
-            // and might incur cache misses that throw the timing off.
-            const auto ACTUAL_STOP_TIME { TimeSampler::Now() };
-
-            timeContest_.Stop(collecterIndex_, ACTUAL_STOP_TIME);
-        }
-
-        ScopedContestTimer(const ScopedContestTimer &) = delete;
-        ScopedContestTimer(ScopedContestTimer &&) = delete;
-        ScopedContestTimer & operator=(const ScopedContestTimer &) = delete;
-        ScopedContestTimer & operator=(ScopedContestTimer &&) = delete;
-
-    private:
-        TimeTrials & timeContest_;
-        std::size_t collecterIndex_;
+        explicit Timer(const TimeRes::Enum) {}
+        virtual ~Timer() = default;
+        bool IsStarted() const { return false; }
+        virtual void Start() {}
+        virtual void Cancel() {}
+        virtual void Stop(const TimeMoment_t &) {}
+        TimeCount_t StopAndReport(const TimeMoment_t & JUNK) { return JUNK; }
+        void Restart(const TimeMoment_t &) {}
+        TimeCount_t RestartAndReport(const TimeMoment_t & JUNK) { return JUNK; }
+        TimeRes::Enum Resolution() const { return TimeRes::Count; }
+        TimeCount_t Report() const { return TimeCount_t(); }
     };
+
+    class TimeCollecter : public Timer
+    {
+    public:
+        TimeCollecter(const std::string &, const TimeRes::Enum, const std::size_t, const double) {}
+        virtual ~TimeCollecter() = default;
+        const std::string Name() const { return ""; }
+        bool Empty() const { return true; }
+        std::size_t Size() const { return 0; }
+        void Clear() {}
+        void Start() override {}
+        void Stop(const TimeMoment_t &) override {}
+        const TimeStats Stats() const { return TimeStats(); }
+        void BusyWorkOnlyToHeatCache() {}
+    };
+
+    class TimeTrials
+    {
+    public:
+        TimeTrials(const std::string &, const TimeRes::Enum, const std::size_t, const double) {}
+        const std::string Name() const { return ""; }
+        std::size_t CollectorCount() const { return 0; }
+        std::size_t TimeSampleCount() const { return 0; }
+        std::size_t ContestCount() const { return 0; }
+        void ResetCurrentContest() {}
+        std::size_t AddCollecter(const std::string &) { return 0; }
+        void Start(const std::size_t) {}
+        void Stop(const std::size_t, const TimeMoment_t &) {}
+        void BusyWorkOnlyToHeatTheCache() {}
+        bool HasContestEnded() { return false; }
+        void EndContest() {}
+        void ResetAllContests() {}
+        void EndAllContests() {}
+    };
+
+#endif
 
 } // namespace misc
 } // namespace heroespath

@@ -10,13 +10,13 @@
 #include "log.hpp"
 
 #include "gui/date-time.hpp"
-#include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/filesystem.hpp"
 
 #include <boost/algorithm/string/join.hpp>
 
 #include <algorithm>
+#include <exception>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -44,14 +44,21 @@ namespace misc
         , fileAppendCountSinceLastFlush_(0)
         , consoleAppendCountBeforeFlush_(CONSOLE_APPEND_COUNT_BEFORE_FLUSH)
         , consoleAppendCountSinceLastFlush_(0)
+        , lineCount_(0)
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((FILE_NAME.empty() == false)
-             && (EnumUtil<LogPriority>::IsValid(LOWEST_PRI_TO_CONSOLE_ECHO))),
-            "misc::Log::Log(file_name="
-                << FILE_NAME << ", lowest_pri_to_console_echo="
-                << LogPriority::ToString(LOWEST_PRI_TO_CONSOLE_ECHO)
-                << ") was given an empty file_name or an invalid lowest_pri_to_console_echo.");
+        if (FILE_NAME.empty() || !EnumUtil<LogPriority>::IsValid(LOWEST_PRI_TO_CONSOLE_ECHO))
+        {
+            // can't use log or assert macros or Enum::ToString() inside the logger
+            std::ostringstream ss;
+
+            ss << __FILE__ << ":" << __func__ << "():" << __LINE__
+               << "misc::Log::Log(file_name=" << FILE_NAME
+               << ", lowest_pri_to_console_echo=" << int(LOWEST_PRI_TO_CONSOLE_ECHO)
+               << ") was given an empty file_name or an invalid lowest_pri_to_console_echo.";
+
+            std::cerr << ss.str() << std::endl;
+            throw std::runtime_error(ss.str());
+        }
 
         OpenFile();
 
@@ -80,8 +87,17 @@ namespace misc
 
     void Log::Release()
     {
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (instanceUPtr_), "misc::Log::Release() found instanceUPtr that was null.");
+        if (!instanceUPtr_)
+        {
+            // can't use log or assert macros or Enum::ToString() inside the logger
+            std::ostringstream ss;
+
+            ss << __FILE__ << ":" << __func__ << "():" << __LINE__
+               << "misc::Log::Release() found instanceUPtr that was null.";
+
+            std::cerr << ss.str() << std::endl;
+            throw std::runtime_error(ss.str());
+        }
 
         instanceUPtr_.reset();
     }
@@ -93,6 +109,8 @@ namespace misc
         const std::string & FUNCTION_NAME,
         const int LINE)
     {
+        ++lineCount_;
+
         const auto COMPLETE_MESSAGE { MakeCompleteMessage(
             PRIORITY, MSG, FILE_PATH, FUNCTION_NAME, LINE) };
 
@@ -154,16 +172,24 @@ namespace misc
                 "\n" + boost::algorithm::join(ALL_FILE_NAMES_IN_DIR_VEC, "\n")
             };
 
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (IsFileReadyForWriting()),
-                "misc::Log::OpenFile() failed to open the file.  (file_name="
-                    << fileName_ << ", file_ext=" << fileNameExtension_
-                    << ", did_exist_prior=" << std::boolalpha << DID_EXIST_PRIOR
-                    << ", "
-                       "misc::filesystem::FindFirstAvailableNumberedFilePath()=full_path_attempted="
-                    << FILE_PATH_STR << ""
-                    << ", current_path=" << CURRENT_DIR_PATH_STR
-                    << ", all_files_in_that_current_dir=" << ALL_FILE_NAMES_IN_DIR_STR << ")");
+            if (IsFileReadyForWriting() == false)
+            {
+                // can't use log or assert macros or Enum::ToString() inside the logger
+                std::ostringstream ss;
+
+                ss << __FILE__ << ":" << __func__ << "():" << __LINE__
+                   << "misc::Log::OpenFile() failed to open the file.  (file_name=" << fileName_
+                   << ", file_ext=" << fileNameExtension_ << ", did_exist_prior=" << std::boolalpha
+                   << DID_EXIST_PRIOR
+                   << ", "
+                      "misc::filesystem::FindFirstAvailableNumberedFilePath()=full_path_attempted="
+                   << FILE_PATH_STR << ""
+                   << ", current_path=" << CURRENT_DIR_PATH_STR
+                   << ", all_files_in_that_current_dir=" << ALL_FILE_NAMES_IN_DIR_STR << ")";
+
+                std::cerr << ss.str() << std::endl;
+                throw std::runtime_error(ss.str());
+            }
         }
     }
 

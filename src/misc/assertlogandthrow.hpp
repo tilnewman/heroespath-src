@@ -15,14 +15,9 @@
 #include <exception>
 #include <sstream>
 
-// these defines will disable these macros
-#if defined(HEROESPATH_MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_ASSERTORTHROW)
+#if !defined(HEROESPATH_MACRO_DISABLE_ALL) && !defined(HEROESPATH_MACRO_DISABLE_ASSERT)
 
-// if disabled by ASSERT_OR_THROW_DISABLED, then produce no code
-#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff) ;
-#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff) ;
-
-#elif defined(NDEBUG)
+#if defined(NDEBUG)
 
 // in release builds use throw
 
@@ -84,6 +79,14 @@
         }                                                                                          \
     }
 
-#endif //#if defined(MACRO_DISABLE_ALL) || defined(MACRO_DISABLE_ASSERTORTHROW)
+#endif // end if debug or not
+
+#else
+
+// if disabled by ASSERT_OR_THROW_DISABLED, then produce no code
+#define M_HP_ASSERT_OR_LOG_AND_THROW(exp, str_stuff) ;
+#define M_HP_ASSERT_OR_LOG_AND_THROW_CONSTEXPR(exp, str_stuff) ;
+
+#endif // end if assert macros enabled
 
 #endif // MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED

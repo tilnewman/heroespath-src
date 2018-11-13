@@ -73,7 +73,7 @@ namespace game
 
         // initialize the log first so that all Setup() actions can be logged
         misc::Log::Acquire();
-
+        heroespath::LogMacroHelper::LogTimingStart();
         M_HP_LOG("game setup starting");
 
         platform_.Log();
@@ -112,6 +112,7 @@ namespace game
 
     void StartupShutdown::Teardown() const
     {
+        heroespath::LogMacroHelper::LogTimingStop();
         M_HP_LOG("game teardown starting");
         Teardown_SettingsFile();
         Teardown_CloseDisplay();

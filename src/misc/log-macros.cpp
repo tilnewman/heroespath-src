@@ -10,11 +10,15 @@
 #include "log-macros.hpp"
 
 #include "misc/log.hpp"
+#include "misc/timing.hpp"
 
+#include <iostream>
 #include <sstream>
 
 namespace heroespath
 {
+
+std::unique_ptr<misc::TimeTrials> LogMacroHelper::loggingTimeTrialsUPtr_;
 
 void LogMacroHelper::Append(
     const misc::LogPriority::Enum PRIORITY,
@@ -24,6 +28,28 @@ void LogMacroHelper::Append(
     const int LINE)
 {
     misc::Log::Instance()->Append(PRIORITY, MSG, FILE, FUNCTION, LINE);
+}
+
+void LogMacroHelper::LogTimingStart()
+{
+    loggingTimeTrialsUPtr_
+        = std::make_unique<misc::TimeTrials>("Log Macro", TimeRes::Micro, false, 10, 0.0);
+
+    loggingTimeTrialsUPtr_->AddCollecter("LogMacro");
+}
+
+void LogMacroHelper::LogTimingStop()
+{
+    if (loggingTimeTrialsUPtr_)
+    {
+        loggingTimeTrialsUPtr_->EndAllContests();
+        loggingTimeTrialsUPtr_.reset();
+    }
+}
+
+misc::TimeTrials * LogMacroHelper::GetLoggingTimeTrialsPtr()
+{
+    return loggingTimeTrialsUPtr_.get();
 }
 
 } // namespace heroespath

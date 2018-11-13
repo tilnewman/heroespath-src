@@ -59,6 +59,8 @@ namespace misc
             const std::string & FUNCTION_NAME = "",
             const int LINE = LINE_NUMBER_INVALID_);
 
+        std::size_t LineCount() const { return lineCount_; }
+
     private:
         void OpenFile();
 
@@ -96,6 +98,7 @@ namespace misc
         std::size_t fileAppendCountSinceLastFlush_;
         std::size_t consoleAppendCountBeforeFlush_;
         std::size_t consoleAppendCountSinceLastFlush_;
+        std::size_t lineCount_;
     };
 
 } // namespace misc

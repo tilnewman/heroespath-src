@@ -50,7 +50,7 @@ namespace map
         , collisionVec_()
         , quadTree_()
         , collisionGrid_()
-        , collisionTimeContest_("Collision Detection", TimeRes::Nano, 50, 0.1)
+        , collisionTimeContest_("Collision Detection", TimeRes::Nano, true, 50, 0.1)
         , collisionNaiveIndex_(collisionTimeContest_.AddCollecter("Naive"))
         , collisionQuadIndex_(collisionTimeContest_.AddCollecter("Quad"))
         , collisionGridIndex_(collisionTimeContest_.AddCollecter("Grid"))
