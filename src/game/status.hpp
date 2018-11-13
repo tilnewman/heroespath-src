@@ -73,7 +73,7 @@ namespace game
         void SetLoopRunning(const bool IS_LOOP_RUNNING) final
         {
             is_loop_running = IS_LOOP_RUNNING;
-            M_HP_LOG_DBG("game loop " << ((IS_LOOP_RUNNING) ? "starting" : "stopped"));
+            // M_HP_LOG_DBG("game loop " << ((IS_LOOP_RUNNING) ? "starting" : "stopped"));
         }
 
         bool IsLoopStopRequested() const final { return is_loop_stop_requested; }
@@ -81,13 +81,13 @@ namespace game
         void LoopStopRequest() final
         {
             is_loop_stop_requested = true;
-            M_HP_LOG_DBG("game loop stop requested");
+            // M_HP_LOG_DBG("game loop stop requested");
         }
 
         void LoopStopRequestReset()
         {
             is_loop_stop_requested = false;
-            M_HP_LOG_DBG("game loop stop request reset");
+            // M_HP_LOG_DBG("game loop stop request reset");
         }
 
         const FadeStatus GetFadeStatus() const final { return fade_status; }
@@ -105,17 +105,17 @@ namespace game
             fade_status.target_color = COLOR;
             fade_status.direction = FadeDirection::Out;
 
-            std::string drawUnderMessage;
+            // std::string drawUnderMessage;
             if (SET_WILL_DRAW_UNDER_POPUP_OPT)
             {
                 fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
 
-                drawUnderMessage = " (will_draw_under_popup set to "
-                    + misc::ToString(fade_status.will_draw_under_popup) + ")";
+                // drawUnderMessage = " (will_draw_under_popup set to "
+                //    + misc::ToString(fade_status.will_draw_under_popup) + ")";
             }
 
-            M_HP_LOG_DBG(
-                "fade out to " << fade_status.target_color << " started" << drawUnderMessage);
+            // M_HP_LOG_DBG(
+            //    "fade out to " << fade_status.target_color << " started" << drawUnderMessage);
         }
 
         void StartFadeIn(const BoolOpt_t & SET_WILL_DRAW_UNDER_POPUP_OPT)
@@ -129,25 +129,25 @@ namespace game
             {
                 fade_status.will_draw_under_popup = SET_WILL_DRAW_UNDER_POPUP_OPT.value();
 
-                drawUnderMessage = " (will_draw_under_popup set to "
-                    + misc::ToString(fade_status.will_draw_under_popup) + ")";
+                // drawUnderMessage = " (will_draw_under_popup set to "
+                //    + misc::ToString(fade_status.will_draw_under_popup) + ")";
             }
 
-            M_HP_LOG_DBG("fade in started" << drawUnderMessage);
+            // M_HP_LOG_DBG("fade in started" << drawUnderMessage);
         }
 
-        bool IsGameExitRequested() const final { return will_exit_game; }
+        bool IsGameExitRequested() const final { return is_game_exit_requested; }
 
         void GameExitRequest() final
         {
-            will_exit_game = true;
-            M_HP_LOG_DBG("game exit requested");
+            is_game_exit_requested = true;
+            // M_HP_LOG_DBG("game exit requested");
         }
 
         void GameExitRequestReset()
         {
-            will_exit_game = false;
-            M_HP_LOG_DBG("game exit request reset");
+            is_game_exit_requested = false;
+            // M_HP_LOG_DBG("game exit request reset");
         }
 
         const std::string ToString() const
@@ -173,7 +173,7 @@ namespace game
                 ss << "loop_exit_requested";
             }
 
-            if (will_exit_game)
+            if (is_game_exit_requested)
             {
                 prefixSeparatorString();
                 ss << "game_exit_requested";
@@ -192,10 +192,14 @@ namespace game
             }
         }
 
+        bool IsGameExiting() const { return is_game_exiting; }
+        void SetGameIsExiting() { is_game_exiting = true; }
+
     private:
         bool is_loop_running = false;
         bool is_loop_stop_requested = false;
-        bool will_exit_game = false;
+        bool is_game_exit_requested = false;
+        bool is_game_exiting = false;
         FadeStatus fade_status = FadeStatus();
     };
 

@@ -338,9 +338,10 @@ namespace game
                 throw;
             }
 
-            if (status_.IsGameExitRequested())
+            if (status_.IsGameExitRequested() && !status_.IsGameExiting())
             {
                 status_.GameExitRequestReset();
+                status_.SetGameIsExiting();
 
                 M_HP_LOG("GameController acknowledging the GameExitRequested flag and "
                          "transitioning Stage to Exit.");

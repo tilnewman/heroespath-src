@@ -26,11 +26,12 @@ namespace gui
         , opCount_(0)
     {}
 
-    void QuadTree::Setup(const sf::IntRect & TOTAL_RECT, const IntRectVec_t & COLL_RECTS_VEC)
+    void
+        QuadTree::Setup(const sf::FloatRect & TOTAL_RECT_F, const FloatRectVec_t & COLL_RECTS_F_VEC)
     {
         headQuad_ = Quad();
 
-        sf::IntRect finalTotalRect { TOTAL_RECT };
+        sf::IntRect finalTotalRect { TOTAL_RECT_F };
 
         // add one to width and height to account for rounding errors
         ++finalTotalRect.width;
@@ -47,13 +48,20 @@ namespace gui
             ++finalTotalRect.height;
         }
 
+        IntRectVec_t intRects;
+        intRects.reserve(COLL_RECTS_F_VEC.size());
+        for (const auto & COLL_RECT_F : COLL_RECTS_F_VEC)
+        {
+            intRects.emplace_back(sf::IntRect { COLL_RECT_F });
+        }
+
         opCount_ = 0;
-        PopulateQuadAndRecurse(headQuad_, finalTotalRect, COLL_RECTS_VEC);
+        PopulateQuadAndRecurse(headQuad_, finalTotalRect, intRects);
 
         // TEMP TODO REMOVE WHEN DONE TESTING
         M_HP_LOG_DBG(
-            "QuadTree orig=" << TOTAL_RECT << ", final=" << finalTotalRect << ", with rect_count="
-                             << COLL_RECTS_VEC.size() << ", recurse_count=" << opCount_);
+            "QuadTree orig=" << TOTAL_RECT_F << ", final=" << finalTotalRect << ", with rect_count="
+                             << COLL_RECTS_F_VEC.size() << ", recurse_count=" << opCount_);
     }
 
     void QuadTree::PopulateQuadAndRecurse(
@@ -106,16 +114,16 @@ namespace gui
         }
     }
 
-    bool QuadTree::DoesPointCollide(const sf::Vector2i & POINT) const
+    bool QuadTree::DoesPointCollide(const sf::Vector2f & POINT_F) const
     {
         opCount_ = 0;
-        return DoesPointCollideImpl(headQuad_, POINT);
+        return DoesPointCollideImpl(headQuad_, sf::Vector2i { POINT_F });
     }
 
-    bool QuadTree::DoesRectCollide(const sf::IntRect & RECT) const
+    bool QuadTree::DoesRectCollide(const sf::FloatRect & RECT_F) const
     {
         opCount_ = 0;
-        return DoesRectCollideImpl(headQuad_, RECT);
+        return DoesRectCollideImpl(headQuad_, sf::IntRect { RECT_F });
     }
 
     bool QuadTree::DoesPointCollideImpl(const Quad & QUAD, const sf::Vector2i & POINT) const

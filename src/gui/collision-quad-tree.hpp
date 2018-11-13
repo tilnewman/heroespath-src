@@ -17,6 +17,7 @@ namespace heroespath
 {
 namespace gui
 {
+    using FloatRectVec_t = std::vector<sf::FloatRect>;
     using IntRectVec_t = std::vector<sf::IntRect>;
 
     struct Quad
@@ -59,10 +60,10 @@ namespace gui
         QuadTree & operator=(const QuadTree &) = delete;
         QuadTree & operator=(QuadTree &&) = delete;
 
-        void Setup(const sf::IntRect & TOTAL_RECT, const IntRectVec_t & COLL_RECTS_VEC);
+        void Setup(const sf::FloatRect & TOTAL_RECT, const FloatRectVec_t & COLL_RECTS_VEC);
 
-        bool DoesPointCollide(const sf::Vector2i &) const;
-        bool DoesRectCollide(const sf::IntRect &) const;
+        bool DoesPointCollide(const sf::Vector2f &) const;
+        bool DoesRectCollide(const sf::FloatRect &) const;
 
         std::size_t GetLastOperationCount() const { return opCount_; }
 

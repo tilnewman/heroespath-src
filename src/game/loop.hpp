@@ -71,7 +71,6 @@ namespace game
 
         void UpdateTimeStages(const float FRAME_TIME_SEC);
         void UpdateTimeFade(const float FRAME_TIME_SEC);
-        void UpdateTimeRecordFramerate(const float FRAME_TIME_SEC);
         void UpdateTimeAudio(const float FRAME_TIME_SEC);
         void HandleMouseMove();
 
@@ -79,7 +78,6 @@ namespace game
         void StopMouseHoverImpl();
 
         void OncePerSecondTasks(sf::Clock & secondClock);
-        void OncePerSecondTaskLogFrameRate();
         void OncePerSecondTaskStartMouseHover();
         void OncePerSecondTaskCheckIfDisplayOpen();
 
@@ -101,10 +99,9 @@ namespace game
         sf::Event::EventType prevKeyStrokeEventType_;
         sf::Keyboard::Key prevKeyStrokeEventKey_;
         bool isMouseHovering_;
-        std::vector<float> frameRateVec_;
-        std::size_t frameRateSampleCount_;
         sf::Vector2i prevMousePosV_;
         MouseThisFrame frameMouseInfo_;
+        std::vector<sf::Event> toLogEvents_;
     };
 
 } // namespace game

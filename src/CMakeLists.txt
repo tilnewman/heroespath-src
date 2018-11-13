@@ -58,10 +58,10 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     file (READ ../build-flags/clang.txt custom_compile_flags)
 
     #Clang's Address Sanitizer stuff here
-    option(ADDRESS_SANITIZER "Using Clang's Address Sanitizer" OFF)
+    option(ADDRESS_SANITIZER "Clang's Address Sanitizer" OFF)
 
     if(ADDRESS_SANITIZER)
-	    message("Using Clang's Address Sanitizer")
+	    message("Clang's Address Sanitizer ENABLED")
 	    set(custom_compile_flags ${custom_compile_flags} -fsanitize=address -fno-omit-frame-pointer)
 	    set(custom_link_flags ${custom_link_flags} -fsanitize=address -fno-omit-frame-pointer)
     endif()

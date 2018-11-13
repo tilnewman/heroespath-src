@@ -28,7 +28,7 @@ namespace game
 
     void ActiveStages::SetIsFadingForAllStages(const bool IS_FADING)
     {
-        M_HP_LOG_DBG("fade flag being set for all stages to " << std::boolalpha << IS_FADING);
+        // M_HP_LOG_DBG("fade flag being set for all stages to " << std::boolalpha << IS_FADING);
 
         for (auto & iStageUPtr : nonPopupUVec_)
         {

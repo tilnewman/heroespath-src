@@ -17,7 +17,7 @@
 #include "gui/sound-manager.hpp"
 #include "misc/callback.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/vectors.hpp"
+#include "misc/timing.hpp"
 #include "sfutil/event.hpp"
 #include "stage/stage-base.hpp"
 
@@ -36,11 +36,11 @@ namespace game
         , prevKeyStrokeEventType_(sf::Event::EventType::Count)
         , prevKeyStrokeEventKey_(sf::Keyboard::Key::Unknown)
         , isMouseHovering_(false)
-        , frameRateVec_(4096, 0.0f) // any number over 1000 should work here
-        , frameRateSampleCount_(0)
         , prevMousePosV_(gui::Display::Instance()->GetMousePosition())
         , frameMouseInfo_(false, sf::Vector2i())
+        , toLogEvents_()
     {
+        toLogEvents_.reserve(10);
         iStatus_.SetLoopRunning(true);
     }
 
@@ -57,38 +57,57 @@ namespace game
         {
             ConsumeAndIgnoreStrayEvents();
 
+            misc::TimeTrials framerateTrials("Framerate", TimeRes::Milli, 200, 0.0);
+
+            const std::size_t FRAMERATE_COLLECTER_INDEX { framerateTrials.AddCollecter(
+                flags_.ToString()) };
+
             while (!iStatus_.IsLoopStopRequested())
             {
-                gui::Display::Instance()->ClearToBlack();
+                {
+                    misc::ScopedContestTimer scopedFramerateTimer(
+                        framerateTrials, FRAMERATE_COLLECTER_INDEX);
 
-                frameMouseInfo_ = UpdateMouseInfo();
+                    gui::Display::Instance()->ClearToBlack();
 
-                // TODO TEMP REMOVE remove this crap once all testing is in unit tests
-                ExecuteNextTest();
+                    // TODO TEMP REMOVE remove this crap once all testing is in unit tests
+                    ExecuteNextTest();
 
-                StopMouseHover(frameMouseInfo_.has_moved);
+                    frameMouseInfo_ = UpdateMouseInfo();
+                    StopMouseHover(frameMouseInfo_.has_moved);
+                    HandleMouseMove();
+                    HandleEvents();
 
-                HandleMouseMove();
-                HandleEvents();
+                    const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
+                    frameClock.restart();
 
-                const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
-                frameClock.restart();
+                    UpdateTimeFade(FRAME_TIME_SEC);
+                    UpdateTimeAudio(FRAME_TIME_SEC);
+                    UpdateTimeStages(FRAME_TIME_SEC);
 
-                UpdateTimeFade(FRAME_TIME_SEC);
-                UpdateTimeRecordFramerate(FRAME_TIME_SEC);
-                UpdateTimeAudio(FRAME_TIME_SEC);
-                UpdateTimeStages(FRAME_TIME_SEC);
+                    OncePerSecondTasks(secondClock_);
 
-                OncePerSecondTasks(secondClock_);
+                    Draw();
 
-                Draw();
+                    // this must remain last (just before display) so that any of the code above
+                    // can set a popup response and it will always be handled before the loop
+                    // exits
+                    stages_.HandlePopupResponseCallback();
 
-                // this must remain last (just before display) so that any of the code above can set
-                // a popup response and it will always be handled before the loop exits
-                stages_.HandlePopupResponseCallback();
+                    gui::Display::Instance()->DisplayFrameBuffer();
+                }
 
-                gui::Display::Instance()->DisplayFrameBuffer();
+                if (toLogEvents_.empty() == false)
+                {
+                    for (const auto & EVENT : toLogEvents_)
+                    {
+                        M_HP_LOG_DEF("Event: " << ToString(EVENT));
+                    }
+                    toLogEvents_.clear();
+                }
             }
+
+            framerateTrials.EndAllContests();
         }
         catch (const std::exception & EXCEPTION)
         {
@@ -149,39 +168,8 @@ namespace game
 
         secondClock.restart();
 
-        OncePerSecondTaskLogFrameRate();
         OncePerSecondTaskStartMouseHover();
         OncePerSecondTaskCheckIfDisplayOpen();
-    }
-
-    void Loop::OncePerSecondTaskLogFrameRate()
-    {
-        if (frameRateVec_.size() < 3)
-        {
-            frameRateSampleCount_ = 0;
-            return;
-        }
-
-        if (frameRateSampleCount_ < 3)
-        {
-            M_HP_LOG(
-                "Framerate in the last second: (only " << frameRateSampleCount_ << " frames!)");
-        }
-        else
-        {
-            // the first framerate in the vector includes the last time this function ran and lots
-            // of time was spent in calculations and logging, so don't count that first framerate
-            // because it is not representative, but don't set it to zero because that would skew
-            // the results in the other direction
-            frameRateVec_[0] = frameRateVec_[1];
-
-            const misc::Vector::MinMaxAvgStdDev<float> FRAME_RATE_STATS(
-                frameRateVec_, frameRateSampleCount_);
-
-            M_HP_LOG("Framerate in the last second: " + FRAME_RATE_STATS.ToString(true, false, 4));
-        }
-
-        frameRateSampleCount_ = 0;
     }
 
     void Loop::OncePerSecondTaskStartMouseHover()
@@ -253,6 +241,8 @@ namespace game
 
     void Loop::HandleEvent(const sf::Event & EVENT)
     {
+        toLogEvents_.emplace_back(EVENT);
+
         if (HandleEventIfWindowClosed(EVENT))
         {
             return;
@@ -277,11 +267,6 @@ namespace game
             HandleEventMouseButtonLeftReleased();
             return;
         }
-
-        if (EVENT.type != sf::Event::EventType::MouseMoved)
-        {
-            M_HP_LOG_WRN("unhandled " << ToString(EVENT));
-        }
     }
 
     void Loop::HandleEventKeyStroke(const sf::Event & EVENT)
@@ -298,16 +283,10 @@ namespace game
             prevKeyStrokeEventKey_ = EVENT.key.code;
         }
 
-        auto makeLogString = [&]() {
-            return std::string("Key-") + ((IS_KEYPRESS) ? "Press" : "Release") + ": "
-                + sfutil::ToString(EVENT.key.code);
-        };
-
         // allow screenshots even if keystrokes are ignored
         if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
             && (EVENT.key.code == sf::Keyboard::F12))
         {
-            M_HP_LOG(makeLogString() + " causing screenshot save.");
             gui::Display::Instance()->TakeScreenshot();
             return;
         }
@@ -317,7 +296,6 @@ namespace game
         if (IS_KEY_STROKE_EVENT_DIFFERENT_FROM_PREV && (IS_KEYPRESS == false)
             && (EVENT.key.code == sf::Keyboard::F1))
         {
-            M_HP_LOG(makeLogString() + " forcing the game to exit.");
             iStatus_.GameExitRequest();
             iStatus_.LoopStopRequest();
             return;
@@ -325,13 +303,11 @@ namespace game
 
         if (flags_.will_keystroke_exit)
         {
-            M_HP_LOG(makeLogString() + " forcing game loop to exit.");
             iStatus_.LoopStopRequest();
         }
 
         if (flags_.will_keystroke_ignore)
         {
-            M_HP_LOG("Ignored " + makeLogString());
             return;
         }
 
@@ -354,19 +330,14 @@ namespace game
     {
         if (flags_.will_mouse_click_exit)
         {
-            M_HP_LOG("mouse click forcing game loop to exit");
             iStatus_.LoopStopRequest();
             return;
         }
 
         if (flags_.will_mouse_ignore)
         {
-            M_HP_LOG("left mouse button press ignored");
             return;
         }
-
-        M_HP_LOG_DBG(
-            "mouse button (left) pressed at " << frameMouseInfo_.pos_vf << " (before handling)");
 
         auto handleMouseButtonPressed
             = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](stage::IStagePtr_t iStagePtr) {
@@ -375,21 +346,14 @@ namespace game
               };
 
         stages_.ExecuteOnForegroundStages(handleMouseButtonPressed);
-
-        M_HP_LOG_DBG(
-            "mouse button (left) pressed at " << frameMouseInfo_.pos_vf << " (after handling)");
     }
 
     void Loop::HandleEventMouseButtonLeftReleased()
     {
         if (flags_.will_mouse_ignore)
         {
-            M_HP_LOG("left mouse button release ignored");
             return;
         }
-
-        M_HP_LOG_DBG(
-            "mouse button (left) released at " << frameMouseInfo_.pos_vf << " (before handling)");
 
         auto handleLeftMouseButtonRelease
             = [MOUSE_POS_VF = frameMouseInfo_.pos_vf](stage::IStagePtr_t iStagePtr) {
@@ -397,16 +361,13 @@ namespace game
               };
 
         stages_.ExecuteOnForegroundStages(handleLeftMouseButtonRelease);
-
-        M_HP_LOG_DBG(
-            "mouse button (left) released at " << frameMouseInfo_.pos_vf << " (after handling)");
     }
 
     bool Loop::HandleEventIfWindowClosed(const sf::Event & EVENT)
     {
         if (EVENT.type == sf::Event::Closed)
         {
-            M_HP_LOG_ERR("unexpected window close event");
+            toLogEvents_.emplace_back(EVENT);
             iStatus_.GameExitRequest();
             iStatus_.LoopStopRequest();
             return true;
@@ -489,19 +450,6 @@ namespace game
         };
 
         stages_.ExecuteOnNonPopupStages(handlePerformNextTest);
-    }
-
-    void Loop::UpdateTimeRecordFramerate(const float FRAME_TIME_SEC)
-    {
-        const float FRAME_TIME_MIN_SEC { 0.000001f };
-        const auto FRAME_TIME_SEC_TO_USE { std::max(FRAME_TIME_SEC, FRAME_TIME_MIN_SEC) };
-
-        frameRateVec_[frameRateSampleCount_++] = (1.0f / FRAME_TIME_SEC_TO_USE);
-
-        if (frameRateSampleCount_ >= frameRateVec_.size())
-        {
-            frameRateVec_.resize(frameRateSampleCount_ * 2);
-        }
     }
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)
