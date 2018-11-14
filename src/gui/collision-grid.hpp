@@ -9,6 +9,7 @@
 //
 // collision-grid.hpp
 //
+#include "misc/timing.hpp"
 #include "misc/vectors.hpp"
 #include "sfutil/vector-and-rect.hpp"
 
@@ -26,26 +27,25 @@ namespace gui
     // Assumes the map starts at zero,zero and that call values given are >= zero.
     class CollisionGrid
     {
-        using Grid_t = int;
+        using Pos_t = int; // needs to be signed
+        using Index_t = std::size_t;
 
-        using Vector2g_t = sf::Vector2<Grid_t>;
-        using Vector2s_t = sf::Vector2<std::size_t>;
+        using PosV_t = sf::Vector2<Pos_t>;
+        using IndexV_t = sf::Vector2<Index_t>;
 
-        using GridRect_t = sf::Rect<Grid_t>;
-        using GridRectVec_t = std::vector<GridRect_t>;
-
-        using CellIndexPos_t = Vector2s_t;
-        using CellIndexPosVec_t = std::vector<CellIndexPos_t>;
+        using PosRect_t = sf::Rect<Pos_t>;
+        using PosRectVec_t = std::vector<PosRect_t>;
 
     public:
         CollisionGrid()
             : cellSize_(0.0f)
-            , cellCountVS_(0, 0)
+            , cellCountV_(0, 0)
             , collRectVecs_()
-            , cellIndexPosVec_()
-            , cellIndexPosCount_(0)
+            , collRectVecIndexes_()
         {
-            cellIndexPosVec_.resize(128, CellIndexPos_t(0, 0)); // this value found by experiment
+            // no player/npc character rect will ever match more than four grids at once, but
+            // collision rects being added might hit many grid cells
+            collRectVecIndexes_.reserve(1024);
         }
 
         CollisionGrid(const CollisionGrid &) = delete;
@@ -57,90 +57,262 @@ namespace gui
             const sf::Vector2f & TOTAL_SIZE_VF,
             const std::vector<sf::FloatRect> & COLL_RECTS_TO_ADD)
         {
+            // erase old values
             collRectVecs_.clear();
-            cellIndexPosCount_ = 0;
+            collRectVecIndexes_.clear();
 
             // initial calculations
-            cellSize_ = Grid_t(100);
+            cellSize_ = Pos_t(100);
+            const auto CELL_SIZE_F { static_cast<float>(cellSize_) };
 
-            const auto CELL_COUNT_VF { TOTAL_SIZE_VF / static_cast<float>(cellSize_) };
+            // use ceil() to make sure we round up on the total size of the map
+            const sf::Vector2f CELL_COUNT_VF_CEIL(
+                (std::ceil(TOTAL_SIZE_VF.x) / CELL_SIZE_F),
+                (std::ceil(TOTAL_SIZE_VF.y) / CELL_SIZE_F));
 
-            const auto CELL_COUNT_CEIL_VF { sf::Vector2f(
-                std::ceil(CELL_COUNT_VF.x), std::ceil(CELL_COUNT_VF.y)) };
+            // use ceil()+1 to make sure we round up on the number of cells in the map grid
+            const auto CELL_COUNT_VF_FINAL {
+                sf::Vector2f(std::ceil(CELL_COUNT_VF_CEIL.x), std::ceil(CELL_COUNT_VF_CEIL.y))
+                + sf::Vector2f(1.0f, 1.0f)
+            };
 
-            cellCountVS_ = Vector2s_t { CELL_COUNT_CEIL_VF };
+            // convert the final cell counts to Index_t (std::size_t)
+            cellCountV_ = IndexV_t { CELL_COUNT_VF_FINAL };
 
-            // create cells
-            std::vector<std::vector<GridRectVec_t>> vecVecTemp;
-            vecVecTemp.resize(cellCountVS_.y);
-            for (auto & rectVecVec : vecVecTemp)
-            {
-                rectVecVec.resize(cellCountVS_.x);
+            // use the final (overestimated) cell counts to get the total size of the map grid
+            gridSizeV_.x = (cellSize_ * static_cast<Pos_t>(cellCountV_.x));
+            gridSizeV_.y = (cellSize_ * static_cast<Pos_t>(cellCountV_.y));
 
-                for (auto & rectVec : rectVecVec)
-                {
-                    // found by experiment to be a good guess for most game maps
-                    rectVec.reserve(64);
-                }
-            }
-
-            collRectVecs_.resize(
-                (cellCountVS_.x * cellCountVS_.y)); // + (cellCountVS_.x + cellCountVS_.y) + 1);
-
+            // create cells/collision_rects
+            collRectVecs_.resize((cellCountV_.x * cellCountV_.y));
             for (auto & rectVec : collRectVecs_)
             {
                 rectVec.reserve(64);
             }
 
-            // populate cells into vecVecTemp
+            std::vector<TimeCount_t> cellsPerCollRectVec;
+
+            // populate cells/collision_rects
             for (const auto & COLL_RECT_TO_ADD : COLL_RECTS_TO_ADD)
             {
-                SetupCellIndexPositionsForRect(GridRect_t { COLL_RECT_TO_ADD });
+                SetupCollRectVecIndexesForRect(PosRect_t { COLL_RECT_TO_ADD }, true);
 
-                for (std::size_t index(0); index < cellIndexPosCount_; ++index)
+                cellsPerCollRectVec.emplace_back(
+                    static_cast<TimeCount_t>(collRectVecIndexes_.size()));
+
+                for (const auto INDEX : collRectVecIndexes_)
                 {
-                    const auto & CELL_INDEX_POS_V { cellIndexPosVec_.at(index) };
-
-                    vecVecTemp.at(CELL_INDEX_POS_V.y)
-                        .at(CELL_INDEX_POS_V.x)
-                        .emplace_back(COLL_RECT_TO_ADD);
+                    collRectVecs_.at(INDEX).emplace_back(COLL_RECT_TO_ADD);
                 }
             }
 
-            // copy collision rects into collRectVecs_
-            for (std::size_t vertIndex(0); vertIndex < cellCountVS_.y; ++vertIndex)
+            M_HP_LOG_WRN(
+                "Collision Grid Setup: " + M_HP_VAR_STR(TOTAL_SIZE_VF) + M_HP_VAR_STR(gridSizeV_)
+                + M_HP_VAR_STR(cellSize_) + M_HP_VAR_STR(cellCountV_)
+                + M_HP_VAR_STR(collRectVecs_.size()));
+
+            misc::TimeStats cellsPerCollRectStats(cellsPerCollRectVec, 0.0, 0);
+            M_HP_LOG_WRN("cellsPerCollRectStats=" << cellsPerCollRectStats.ToString(true, false));
+
+            std::vector<TimeCount_t> collRectsPerCellVec;
+            for (const auto & COLL_RECT_VEC : collRectVecs_)
             {
-                for (std::size_t horizIndex(0); horizIndex < cellCountVS_.x; ++horizIndex)
+                collRectsPerCellVec.emplace_back(static_cast<TimeCount_t>(COLL_RECT_VEC.size()));
+            }
+
+            misc::TimeStats collRectsPerCellStats(collRectsPerCellVec, 0.0, 0);
+            M_HP_LOG_WRN("collRectsPerCellStats=" << collRectsPerCellStats.ToString(true, false));
+
+            TestingMaddnessPoints();
+            TestingMaddnessRects();
+        }
+
+        void TestingMaddnessPoints()
+        {
+            M_HP_LOG_WRN("TestingMaddnessPoints");
+
+            auto prevIndex = Index_t(9999999);
+            auto posRect = PosRect_t(0, 0, 0, 0);
+            for (Pos_t i(0); i <= gridSizeV_.x; ++i)
+            {
+                posRect.left = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+
+                if (collRectVecIndexes_.size() != 1)
                 {
-                    const CellIndexPos_t CELL_INDEX_POS_V(horizIndex, vertIndex);
+                    M_HP_LOG_ERR(
+                        "\t point_rect=" << posRect
+                                         << " point test ended up with something other than one ="
+                                         << collRectVecIndexes_.size());
+                }
 
-                    const auto FROM_GRID {
-                        vecVecTemp.at(CELL_INDEX_POS_V.y).at(CELL_INDEX_POS_V.x)
-                    };
+                const auto CURRENT_INDEX { collRectVecIndexes_.at(0) };
+                if (CURRENT_INDEX != prevIndex)
+                {
+                    M_HP_LOG_DBG("\t point_rect=" << posRect << ", index=" << CURRENT_INDEX);
+                    prevIndex = CURRENT_INDEX;
+                }
+            }
 
-                    const auto OTHER_INDEX { CalcIndexFromCellPos(CELL_INDEX_POS_V) };
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, gridSizeV_.y, 0, 0);
+            for (Pos_t i(0); i <= gridSizeV_.x; ++i)
+            {
+                posRect.left = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
 
-                    collRectVecs_.at(OTHER_INDEX) = FROM_GRID;
-                    collRectVecs_.at(OTHER_INDEX).reserve(128);
+                if (collRectVecIndexes_.size() != 1)
+                {
+                    M_HP_LOG_ERR(
+                        "\t point_rect=" << posRect
+                                         << " point test ended up with something other than one ="
+                                         << collRectVecIndexes_.size());
+                }
+
+                const auto CURRENT_INDEX { collRectVecIndexes_.at(0) };
+                if (CURRENT_INDEX != prevIndex)
+                {
+                    M_HP_LOG_DBG("\t  point_rect=" << posRect << ", index=" << CURRENT_INDEX);
+                    prevIndex = CURRENT_INDEX;
+                }
+            }
+
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, 0, 0, 0);
+            for (Pos_t i(0); i <= gridSizeV_.y; ++i)
+            {
+                posRect.top = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+
+                if (collRectVecIndexes_.size() != 1)
+                {
+                    M_HP_LOG_ERR(
+                        "\t point_rect=" << posRect
+                                         << " point test ended up with something other than one ="
+                                         << collRectVecIndexes_.size());
+                }
+
+                const auto CURRENT_INDEX { collRectVecIndexes_.at(0) };
+                if (CURRENT_INDEX != prevIndex)
+                {
+                    M_HP_LOG_DBG("\t  point_rect=" << posRect << ", index=" << CURRENT_INDEX);
+                    prevIndex = CURRENT_INDEX;
+                }
+            }
+
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(gridSizeV_.x, 0, 0, 0);
+            for (Pos_t i(0); i <= gridSizeV_.y; ++i)
+            {
+                posRect.top = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+
+                if (collRectVecIndexes_.size() != 1)
+                {
+                    M_HP_LOG_ERR(
+                        "\t point_rect=" << posRect
+                                         << " point test ended up with something other than one ="
+                                         << collRectVecIndexes_.size());
+                }
+
+                const auto CURRENT_INDEX { collRectVecIndexes_.at(0) };
+                if (CURRENT_INDEX != prevIndex)
+                {
+                    M_HP_LOG_DBG("\t  point_rect=" << posRect << ", index=" << CURRENT_INDEX);
+                    prevIndex = CURRENT_INDEX;
+                }
+            }
+
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, 0, 0, 0);
+            for (Pos_t i(0); i <= std::max(gridSizeV_.x, gridSizeV_.y); ++i)
+            {
+                posRect.left = std::min(i, gridSizeV_.x);
+                posRect.top = std::min(i, gridSizeV_.y);
+
+                SetupCollRectVecIndexesForRect(posRect, false);
+
+                if (collRectVecIndexes_.size() != 1)
+                {
+                    M_HP_LOG_ERR(
+                        "\t point_rect=" << posRect
+                                         << " point test ended up with something other than one ="
+                                         << collRectVecIndexes_.size());
+                }
+
+                const auto CURRENT_INDEX { collRectVecIndexes_.at(0) };
+                if (CURRENT_INDEX != prevIndex)
+                {
+                    M_HP_LOG_DBG("\t  point_rect=" << posRect << ", index=" << CURRENT_INDEX);
+                    prevIndex = CURRENT_INDEX;
                 }
             }
         }
 
-        bool DoesPointCollide(const sf::Vector2f & POS_VF)
+        void TestingMaddnessRects()
         {
-            const Vector2g_t POS_VG { POS_VF };
-            SetupCellIndexPositionsForPoint(POS_VG);
+            M_HP_LOG_WRN("TestingMaddnessRects");
 
-            for (std::size_t index(0); index < cellIndexPosCount_; ++index)
+            auto prevIndex = Index_t(9999999);
+            auto posRect = PosRect_t(0, 0, 90, 90);
+            for (Pos_t i(0); i <= gridSizeV_.x; ++i)
             {
-                const auto & CELL_INDEX_POS_V { cellIndexPosVec_.at(index) };
+                posRect.left = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+            }
 
-                const auto & COLL_RECTS { collRectVecs_.at(
-                    CalcIndexFromCellPos(CELL_INDEX_POS_V)) };
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, gridSizeV_.y, 90, 90);
+            for (Pos_t i(0); i <= gridSizeV_.x; ++i)
+            {
+                posRect.left = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+            }
 
-                for (const auto & COLL_RECT : COLL_RECTS)
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, 0, 90, 90);
+            for (Pos_t i(0); i <= gridSizeV_.y; ++i)
+            {
+                posRect.top = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+            }
+
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(gridSizeV_.x, 0, 90, 90);
+            for (Pos_t i(0); i <= gridSizeV_.y; ++i)
+            {
+                posRect.top = i;
+                SetupCollRectVecIndexesForRect(posRect, false);
+            }
+
+            M_HP_LOG_WRN("spacer")
+            prevIndex = Index_t(9999999);
+            posRect = PosRect_t(0, 0, 90, 90);
+            for (Pos_t i(0); i <= std::max(gridSizeV_.x, gridSizeV_.y); ++i)
+            {
+                posRect.left = std::min(i, gridSizeV_.x);
+                posRect.top = std::min(i, gridSizeV_.y);
+                SetupCollRectVecIndexesForRect(posRect, false);
+            }
+        }
+
+        bool DoesPointCollide(const sf::Vector2f & POS_VF_ORIG)
+        {
+            const PosV_t POS_V_FINAL { POS_VF_ORIG };
+            SetupCollRectVecIndexesForPoint(POS_V_FINAL);
+
+            for (const auto INDEX : collRectVecIndexes_)
+            {
+                for (const auto & COLL_RECT : collRectVecs_.at(INDEX))
                 {
-                    if (COLL_RECT.contains(POS_VG))
+                    if (COLL_RECT.contains(POS_V_FINAL))
                     {
                         return true;
                     }
@@ -150,21 +322,17 @@ namespace gui
             return false;
         }
 
-        bool DoesRectCollide(const sf::FloatRect & RECT_TO_CHECK_FR)
+        bool DoesRectCollide(const sf::FloatRect & RECT_TO_CHECK_F_ORIG)
         {
-            const GridRect_t RECT_TO_CHECK_GR { RECT_TO_CHECK_FR };
-            SetupCellIndexPositionsForRect(RECT_TO_CHECK_GR);
+            const PosRect_t RECT_TO_CHECK_FINAL { RECT_TO_CHECK_F_ORIG };
 
-            for (std::size_t index(0); index < cellIndexPosCount_; ++index)
+            SetupCollRectVecIndexesForRect(RECT_TO_CHECK_FINAL, false);
+
+            for (const auto INDEX : collRectVecIndexes_)
             {
-                const auto & CELL_INDEX_POS_V { cellIndexPosVec_.at(index) };
-
-                const auto & COLL_RECTS { collRectVecs_.at(
-                    CalcIndexFromCellPos(CELL_INDEX_POS_V)) };
-
-                for (const auto & COLL_RECT : COLL_RECTS)
+                for (const auto & COLL_RECT : collRectVecs_.at(INDEX))
                 {
-                    if (COLL_RECT.intersects(RECT_TO_CHECK_GR))
+                    if (COLL_RECT.intersects(RECT_TO_CHECK_FINAL))
                     {
                         return true;
                     }
@@ -175,82 +343,85 @@ namespace gui
         }
 
     private:
-        std::size_t CalcIndexFromCellPos(const CellIndexPos_t & CELL_INDEX_POS_V) const
+        Index_t CalcCollRectVecIndexFromIndexV(const IndexV_t & CELL_INDEX_POS_V) const
         {
-            return ((CELL_INDEX_POS_V.y * cellCountVS_.y) + CELL_INDEX_POS_V.x);
+            return ((CELL_INDEX_POS_V.y * cellCountV_.y) + CELL_INDEX_POS_V.x);
         }
 
-        void SetupCellIndexPositionsForPoint(const Vector2g_t & POS_VG)
+        void SetupCollRectVecIndexesForPoint(const PosV_t & POS_VG)
         {
-            cellIndexPosVec_.at(0) = CalcCellIndexPosition(POS_VG);
-            cellIndexPosCount_ = 1;
+            collRectVecIndexes_.clear();
+
+            collRectVecIndexes_.emplace_back(
+                CalcCollRectVecIndexFromIndexV(CalcCellIndexFromPosV(POS_VG)));
         }
 
-        void SetupCellIndexPositionsForRect(const GridRect_t & RECT_G)
+        void SetupCollRectVecIndexesForRect(const PosRect_t & POS_RECT, const bool IS_COLL_RECT)
         {
-            cellIndexPosCount_ = 0;
+            collRectVecIndexes_.clear();
 
-            const auto TOP_LEFT { CalcCellIndexPosition(sfutil::TopLeft(RECT_G)) };
-            const auto BOT_RIGHT { CalcCellIndexPosition(sfutil::BottomRight(RECT_G)) };
+            const auto GRID_POS_V_TOP_LEFT { CalcCellIndexFromPosV(sfutil::TopLeft(POS_RECT)) };
 
-            const auto VERT_ITER_COUNT { (BOT_RIGHT.y - TOP_LEFT.y) + 1 };
-            const auto HORIZ_ITER_COUNT { (BOT_RIGHT.x - TOP_LEFT.x) + 1 };
+            const auto GRID_POS_V_BOT_RIGHT { CalcCellIndexFromPosV(
+                sfutil::BottomRight(POS_RECT)) };
 
-            if ((VERT_ITER_COUNT > 1) || (HORIZ_ITER_COUNT > 1))
+            if (GRID_POS_V_TOP_LEFT == GRID_POS_V_BOT_RIGHT)
             {
-                const auto ITER_COUNT_TOTAL { (VERT_ITER_COUNT * HORIZ_ITER_COUNT) };
-
-                if (ITER_COUNT_TOTAL > cellIndexPosVec_.size())
-                {
-                    cellIndexPosVec_.resize(ITER_COUNT_TOTAL, CellIndexPos_t(0, 0));
-                }
-
-                for (std::size_t vertIndex(0); vertIndex < VERT_ITER_COUNT; ++vertIndex)
-                {
-                    for (std::size_t horizIndex(0); horizIndex < HORIZ_ITER_COUNT; ++horizIndex)
-                    {
-                        cellIndexPosVec_.at(cellIndexPosCount_++)
-                            = CellIndexPos_t((TOP_LEFT.x + horizIndex), (TOP_LEFT.y + vertIndex));
-                    }
-                }
+                collRectVecIndexes_.emplace_back(
+                    CalcCollRectVecIndexFromIndexV(GRID_POS_V_TOP_LEFT));
             }
             else
             {
-                cellIndexPosVec_.at(0) = TOP_LEFT;
-                cellIndexPosVec_.at(1) = BOT_RIGHT;
-                cellIndexPosCount_ = 2;
+                const auto VERT_CELL_COUNT { (GRID_POS_V_BOT_RIGHT.y - GRID_POS_V_TOP_LEFT.y) + 1 };
+
+                const auto HORIZ_CELL_COUNT { (GRID_POS_V_BOT_RIGHT.x - GRID_POS_V_TOP_LEFT.x)
+                                              + 1 };
+
+                const auto CELL_COUNT_TOTAL { (VERT_CELL_COUNT * HORIZ_CELL_COUNT) };
+
+                if ((IS_COLL_RECT == false) && ((CELL_COUNT_TOTAL != 2) && (CELL_COUNT_TOTAL != 4)))
+                {
+                    M_HP_LOG_ERR(
+                        "CELL_COUNT_TOTAL is invalid." + M_HP_VAR_STR(CELL_COUNT_TOTAL)
+                        + M_HP_VAR_STR(POS_RECT) + M_HP_VAR_STR(GRID_POS_V_TOP_LEFT)
+                        + M_HP_VAR_STR(GRID_POS_V_BOT_RIGHT) + M_HP_VAR_STR(HORIZ_CELL_COUNT)
+                        + M_HP_VAR_STR(VERT_CELL_COUNT));
+                }
+
+                for (Index_t vertIndex(0); vertIndex < VERT_CELL_COUNT; ++vertIndex)
+                {
+                    for (Index_t horizIndex(0); horizIndex < HORIZ_CELL_COUNT; ++horizIndex)
+                    {
+                        const IndexV_t GRID_POS_V_NEXT(
+                            (GRID_POS_V_TOP_LEFT.x + horizIndex),
+                            (GRID_POS_V_TOP_LEFT.y + vertIndex));
+
+                        collRectVecIndexes_.emplace_back(
+                            CalcCollRectVecIndexFromIndexV(GRID_POS_V_NEXT));
+                    }
+                }
             }
         }
 
-        const CellIndexPos_t CalcCellIndexPosition(const Vector2g_t & POS_VG)
+        const IndexV_t CalcCellIndexFromPosV(const PosV_t & POS_V)
         {
-            CellIndexPos_t cellIndexPosV { (POS_VG / cellSize_) };
+            const IndexV_t INDEX_V_RAW { PosV_t((POS_V.x / cellSize_), (POS_V.y / cellSize_)) };
 
-            {
-                const auto CELL_COUNT_MAX_HORIZ { cellCountVS_.x - 1 };
-                if (cellIndexPosV.x > CELL_COUNT_MAX_HORIZ)
-                {
-                    cellIndexPosV.x = CELL_COUNT_MAX_HORIZ;
-                }
-            }
+            // clamp cell indexes to valid values since they will be used to directly index a vector
+            const IndexV_t GRID_POS_V_FINAL {
+                std::clamp(INDEX_V_RAW.x, Index_t(0), (cellCountV_.x - 1)),
+                std::clamp(INDEX_V_RAW.y, Index_t(0), (cellCountV_.y - 1))
+            };
 
-            {
-                const auto CELL_COUNT_MAX_VERT { cellCountVS_.y - 1 };
-                if (cellIndexPosV.y > CELL_COUNT_MAX_VERT)
-                {
-                    cellIndexPosV.y = CELL_COUNT_MAX_VERT;
-                }
-            }
-
-            return cellIndexPosV;
+            return GRID_POS_V_FINAL;
         }
 
     private:
-        Grid_t cellSize_;
-        Vector2s_t cellCountVS_;
-        std::vector<GridRectVec_t> collRectVecs_;
-        CellIndexPosVec_t cellIndexPosVec_;
-        std::size_t cellIndexPosCount_;
+        Pos_t cellSize_;
+        PosV_t gridSizeV_;
+        IndexV_t cellCountV_;
+        std::vector<PosRectVec_t> collRectVecs_;
+        std::vector<Index_t> collRectVecIndexes_;
     };
 
 } // namespace gui

@@ -138,7 +138,7 @@ namespace map
         std::vector<sf::FloatRect> collisionVec_;
         gui::QuadTree quadTree_;
         gui::CollisionGrid collisionGrid_;
-        misc::TimeTrials collisionTimeContest_;
+        misc::TimeTrials collisionTimeTrials_;
         const std::size_t collisionNaiveIndex_;
         const std::size_t collisionQuadIndex_;
         const std::size_t collisionGridIndex_;

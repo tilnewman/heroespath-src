@@ -50,10 +50,10 @@ namespace map
         , collisionVec_()
         , quadTree_()
         , collisionGrid_()
-        , collisionTimeContest_("Collision Detection", TimeRes::Nano, true, 50, 0.1)
-        , collisionNaiveIndex_(collisionTimeContest_.AddCollecter("Naive"))
-        , collisionQuadIndex_(collisionTimeContest_.AddCollecter("Quad"))
-        , collisionGridIndex_(collisionTimeContest_.AddCollecter("Grid"))
+        , collisionTimeTrials_("Collision Detection", TimeRes::Nano, true, 50, 0.1)
+        , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
+        , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
+        , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -120,7 +120,7 @@ namespace map
 
         collisionGrid_.Setup(mapDisplayUPtr_->MapSizeInMapCoordinatesf(), collisionVec_);
 
-        collisionTimeContest_.EndAllContests();
+        collisionTimeTrials_.EndAllContests();
     }
 
     bool Map::MovePlayer(const gui::Direction::Enum DIRECTION)
@@ -368,27 +368,27 @@ namespace map
             ADJ_FOR_COLLISIONS_V.y * 1.4f);
 
         bool didCollideWithMap { false };
-        //{
-        //    misc::ScopedContestTimer scopedTimerJane(collisionTimeContest_, collisionQuadIndex_);
-        //    DoesMapCoordinateRectCollideWithMapUsingQuadAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
-        //}
-
-        //{
-        //    misc::ScopedContestTimer scopedTimerRobot(collisionTimeContest_, collisionGridIndex_);
-        //    DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
-        //}
+        {
+            misc::ScopedTimeTrial scopedTimerJane(collisionTimeTrials_, collisionQuadIndex_);
+            DoesMapCoordinateRectCollideWithMapUsingQuadAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
+        }
 
         {
-            // misc::ScopedContestTimer scopedTimer(collisionTimeContest_, collisionNaiveIndex_);
+            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionGridIndex_);
+            DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
+        }
+
+        {
+            misc::ScopedTimeTrial scopedTimer(collisionTimeTrials_, collisionNaiveIndex_);
 
             didCollideWithMap = DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
                 PLAYER_RECT_FOR_MAP_COLLISIONS);
         }
 
-        // if (collisionTimeContest_.ContestCount() == 4)
-        //{
-        //    collisionTimeContest_.EndAllContests();
-        //}
+        if (collisionTimeTrials_.ContestCount() == 4)
+        {
+            collisionTimeTrials_.EndAllContests();
+        }
 
         if (didCollideWithMap)
         {
