@@ -761,9 +761,9 @@ namespace misc
 
         // sort contest summaries by highest win_count or lowest average time duration
         std::sort(std::begin(summaries), std::end(summaries), [](const auto & A, const auto & B) {
-            if (A.win_count != B.win_count)
+            if (misc::IsRealClose(A.stats.avg, B.stats.avg))
             {
-                return (A.win_count > B.win_count);
+                return (A.stats.sum < B.stats.sum);
             }
             else
             {

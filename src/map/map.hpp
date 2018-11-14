@@ -142,7 +142,8 @@ namespace map
         const std::size_t collisionNaiveIndex_;
         const std::size_t collisionQuadIndex_;
         const std::size_t collisionGridIndex_;
-        const std::size_t collisionNpcIndex_;
+        const std::size_t collisionPlayerToNpcIndex_;
+        const std::size_t collisionNpcToNpcIndex_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
 

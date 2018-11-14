@@ -54,7 +54,8 @@ namespace map
         , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
         , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
         , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
-        , collisionNpcIndex_(collisionTimeTrials_.AddCollecter("Npc"))
+        , collisionPlayerToNpcIndex_(collisionTimeTrials_.AddCollecter("PlyNpc"))
+        , collisionNpcToNpcIndex_(collisionTimeTrials_.AddCollecter("NpcNpc"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -176,6 +177,8 @@ namespace map
                 PLAYER_ADJ_POS_V.x * 0.05f,
                 PLAYER_ADJ_POS_V.y * 1.45f);
         }() };
+
+        misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionNpcToNpcIndex_);
 
         for (auto & npcPtrModelPair : nonPlayers_)
         {
@@ -420,7 +423,8 @@ namespace map
         bool didCollideWithNpc { false };
 
         {
-            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionNpcIndex_);
+            misc::ScopedTimeTrial scopedTimerRobot(
+                collisionTimeTrials_, collisionPlayerToNpcIndex_);
 
             for (auto & npcPtrModelPair : nonPlayers_)
             {
