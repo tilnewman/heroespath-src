@@ -9,9 +9,10 @@
 //
 // world-factory.cpp
 //
-#include "world-factory.hpp"
 #include "game/level.hpp"
 #include "game/world.hpp"
+#include "misc/random.hpp"
+#include "world-factory.hpp"
 
 namespace heroespath
 {
@@ -20,7 +21,7 @@ namespace game
 
     WorldUPtr_t WorldFactory::MakeForNewGame()
     {
-        auto worldUPtr{ std::make_unique<World>() };
+        auto worldUPtr { std::make_unique<World>() };
         worldUPtr->GetMaps().SetupForNewGame();
         return worldUPtr;
     }
@@ -44,6 +45,21 @@ namespace game
         if (level.Which() == map::Level::Thornberry)
         {
             level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
+
+            level.AddRandomNpcPlaceholder(NpcPlaceholder(
+                20,
+                20,
+                { avatar::Avatar::NameEnum::Dress,
+                  avatar::Avatar::NameEnum::Girl,
+                  avatar::Avatar::NameEnum::Knight,
+                  avatar::Avatar::NameEnum::KnightGold,
+                  avatar::Avatar::NameEnum::Maid,
+                  avatar::Avatar::NameEnum::Monk,
+                  avatar::Avatar::NameEnum::Pants,
+                  avatar::Avatar::NameEnum::Thug,
+                  avatar::Avatar::NameEnum::Whitebeard },
+                0, // misc::random::SizeT(0, 3),
+                false));
         }
     }
 

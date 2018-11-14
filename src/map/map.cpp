@@ -54,6 +54,7 @@ namespace map
         , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
         , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
         , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
+        , collisionNpcIndex_(collisionTimeTrials_.AddCollecter("Npc"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
@@ -70,9 +71,9 @@ namespace map
 
     void Map::TransitionLevel(const Transition & TRANSITION)
     {
-        PlayTransitionSfx(TRANSITION.TransType(), true);
+        PlayTransitionSfx(TRANSITION.SfxType(), true);
         Load(TRANSITION.WhichLevel(), level_);
-        PlayTransitionSfx(TRANSITION.TransType(), false);
+        PlayTransitionSfx(TRANSITION.SfxType(), false);
     }
 
     void Map::Load(
@@ -109,7 +110,7 @@ namespace map
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(
-                FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
+                FindPlayerStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
         }
 
         player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
@@ -136,10 +137,12 @@ namespace map
         }
         else
         {
-            Transition transition;
-            if (CheckIfEnteringTransition(DIRECTION, PLAYER_MOVE_DISTANCE_, transition))
+            const auto TRANSITION_OPT { CheckIfEnteringTransition(
+                DIRECTION, PLAYER_MOVE_DISTANCE_) };
+
+            if (TRANSITION_OPT)
             {
-                HandleEnteringTransition(transition);
+                HandleEnteringTransition(TRANSITION_OPT.value());
                 return true;
             }
             else
@@ -385,16 +388,6 @@ namespace map
                 PLAYER_RECT_FOR_MAP_COLLISIONS);
         }
 
-        if (collisionTimeTrials_.ContestCount() == 4)
-        {
-            collisionTimeTrials_.EndAllContests();
-        }
-
-        if (didCollideWithMap)
-        {
-            return true;
-        }
-
         //// determine if the player's new position collides with a map object
         //// use naive algorithm if the collision rect count is low enough
         // if (collisionVec_.size() < 40)
@@ -424,52 +417,112 @@ namespace map
             ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
             ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
 
-        for (auto & npcPtrModelPair : nonPlayers_)
+        bool didCollideWithNpc { false };
+
         {
-            if (sfutil::intersects(
-                    npcPtrModelPair.second.GetView().SpriteRef(), PLAYER_RECT_FOR_NPC_COLLISIONS))
+            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionNpcIndex_);
+
+            for (auto & npcPtrModelPair : nonPlayers_)
             {
-                player_.MovingIntoSet(npcPtrModelPair.first);
-                npcPtrModelPair.second.SetIsNextToPlayer(true, player_.GetCenteredMapPos(), true);
-                return true;
+                const auto DID_COLLIDE_WITH_NPC { sfutil::intersects(
+                    npcPtrModelPair.second.GetView().SpriteRef(), PLAYER_RECT_FOR_NPC_COLLISIONS) };
+
+                if (DID_COLLIDE_WITH_NPC)
+                {
+                    player_.MovingIntoSet(npcPtrModelPair.first);
+
+                    npcPtrModelPair.second.SetIsNextToPlayer(
+                        true, player_.GetCenteredMapPos(), true);
+
+                    didCollideWithNpc = true;
+                    break;
+                }
+                else
+                {
+                    npcPtrModelPair.second.SetIsNextToPlayer(
+                        false, player_.GetCenteredMapPos(), false);
+                }
             }
-            else
-            {
-                npcPtrModelPair.second.SetIsNextToPlayer(false, player_.GetCenteredMapPos(), false);
-            }
+        }
+
+        if (collisionTimeTrials_.ContestCount() == 4)
+        {
+            M_HP_LOG_WRN("forcing end to collision timing trials");
+            collisionTimeTrials_.EndAllContests();
+        }
+
+        if (didCollideWithMap)
+        {
+            return true;
+        }
+
+        if (didCollideWithNpc)
+        {
+            return true;
         }
 
         player_.MovingIntoReset();
         return false;
     }
 
-    const sf::Vector2f Map::FindStartPos(
+    const sf::Vector2f Map::FindPlayerStartPos(
         const TransitionVec_t & TRANS_VEC,
         const Level::Enum LEVEL_TO_LOAD,
         const Level::Enum LEVEL_FROM)
     {
-        sf::Vector2f startPos(-1.0f, -1.0f);
+        TransitionOpt_t firstEntryTransitionFound(boost::none);
 
         for (const auto & TRANSITION : TRANS_VEC)
         {
-            if (TRANSITION.IsEntry() && (TRANSITION.WhichLevel() == LEVEL_FROM))
+            if (TRANSITION.IsEntry())
             {
-                startPos = TRANSITION.Center();
-                break;
+                if (TRANSITION.WhichLevel() == LEVEL_FROM)
+                {
+                    return sfutil::CenterOf(TRANSITION.Rect());
+                }
+
+                if (!firstEntryTransitionFound)
+                {
+                    firstEntryTransitionFound = TRANSITION;
+                }
             }
         }
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            ((startPos.x > 0.0f) && (startPos.y > 0.0f)),
-            "map::Map::FindStartPos(level_to_load="
-                << Level::ToString(LEVEL_TO_LOAD) << ", level_from=" << Level::ToString(LEVEL_FROM)
-                << ") unable to find an entry transition.");
+        std::ostringstream errorSS;
 
-        return startPos;
+        errorSS << "Tried to find where to place the player in the new map but failed to find the "
+                   "matching entry transition among "
+                << TRANS_VEC.size()
+                << " possibilities. Transitioning from map=" << Level::ToString(LEVEL_FROM)
+                << " to " << Level::ToString(LEVEL_TO_LOAD)
+                << ".  You probably need to break out the Tiled app "
+                   "and add or fix some transitions...";
+
+        sf::Vector2f startPosV;
+        if (!firstEntryTransitionFound)
+        {
+            startPosV = { 100.0f, 100.0f };
+
+            errorSS << "  In fact no entry transitions were found at all.  This is definitely a "
+                       "problem with the map file.  Use the Tiled app to add all the entry "
+                       "transitions required.  Placing the player at a default location of "
+                    << startPosV << ".  Good luck with that.";
+        }
+        else
+        {
+            startPosV = sfutil::CenterOf(firstEntryTransitionFound->Rect());
+            errorSS << "  Placing the player into the first entry transition point found at "
+                    << startPosV << " for map "
+                    << map::Level::ToString(firstEntryTransitionFound->WhichLevel())
+                    << ", which is better than crashing I guess.";
+        }
+
+        M_HP_LOG_ERR(errorSS.str());
+        return startPosV;
     }
 
-    bool Map::CheckIfEnteringTransition(
-        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT, Transition & transition) const
+    const TransitionOpt_t Map::CheckIfEnteringTransition(
+        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const
     {
         const auto ADJ_PLAYER_POS_V { CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
 
@@ -477,12 +530,11 @@ namespace map
         {
             if ((TRANSITION.IsEntry() == false) && (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
             {
-                transition = TRANSITION;
-                return true;
+                return TRANSITION;
             }
         }
 
-        return false;
+        return boost::none;
     }
 
     void Map::HandleEnteringTransition(const Transition & TRANSITION)

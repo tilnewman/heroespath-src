@@ -44,6 +44,8 @@ namespace map
 
     using NpcModelMap_t = misc::VectorMap<game::NpcPtr_t, avatar::Model>;
 
+    using TransitionOpt_t = boost::optional<map::Transition>;
+
     // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
     {
@@ -85,13 +87,11 @@ namespace map
     private:
         bool DoesAdjPlayerPosCollide(const gui::Direction::Enum DIR, const float ADJ);
 
-        const sf::Vector2f FindStartPos(
+        const sf::Vector2f FindPlayerStartPos(
             const TransitionVec_t &, const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
-        bool CheckIfEnteringTransition(
-            const gui::Direction::Enum DIRECTION,
-            const float ADJUSTMENT,
-            Transition & transition) const;
+        const TransitionOpt_t CheckIfEnteringTransition(
+            const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
 
         void HandleEnteringTransition(const Transition &);
 
@@ -142,6 +142,7 @@ namespace map
         const std::size_t collisionNaiveIndex_;
         const std::size_t collisionQuadIndex_;
         const std::size_t collisionGridIndex_;
+        const std::size_t collisionNpcIndex_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
 

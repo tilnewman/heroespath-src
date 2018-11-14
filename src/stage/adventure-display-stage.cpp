@@ -131,7 +131,7 @@ namespace stage
 
     void AdventureDisplayStage::Setup_Map()
     {
-        mapUPtr_->Load(map::Level::Thornberry_GuardPostWest, map::Level::Thornberry);
+        mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
     }
 
     void AdventureDisplayStage::HandleMovementKeypresses(

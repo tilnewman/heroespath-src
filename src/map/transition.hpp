@@ -25,28 +25,26 @@ namespace map
     class Transition
     {
     public:
-        explicit Transition(
-            const bool IS_ENTRY = true,
-            const Level::Enum LEVEL = Level::Count,
-            const sf::FloatRect & RECT = sf::FloatRect(),
-            const gui::sound_effect::MapTransition TRANS_TYPE
-            = gui::sound_effect::MapTransition::Count)
+        Transition(
+            const bool IS_ENTRY,
+            const Level::Enum LEVEL,
+            const sf::FloatRect & RECT,
+            const gui::sound_effect::MapTransition TRANS_TYPE)
             : isEntry_(IS_ENTRY)
             , level_(LEVEL)
             , rect_(RECT)
             , transSfxType_(TRANS_TYPE)
         {}
 
+        Transition(const Transition &) = default;
+        Transition(Transition &&) = default;
+        Transition & operator=(const Transition &) = default;
+        Transition & operator=(Transition &&) = default;
+
         bool IsEntry() const { return isEntry_; }
         Level::Enum WhichLevel() const { return level_; }
         const sf::FloatRect Rect() const { return rect_; }
-        gui::sound_effect::MapTransition TransType() const { return transSfxType_; }
-
-        const sf::Vector2f Center() const
-        {
-            return sf::Vector2f(
-                rect_.left + (rect_.width * 0.5f), rect_.top + (rect_.height * 0.5f));
-        }
+        gui::sound_effect::MapTransition SfxType() const { return transSfxType_; }
 
     private:
         bool isEntry_;
@@ -56,6 +54,7 @@ namespace map
     };
 
     using TransitionVec_t = std::vector<Transition>;
+
 } // namespace map
 } // namespace heroespath
 
