@@ -56,7 +56,7 @@ namespace avatar
 
         bool IsPlayer() const { return walkRects_.empty(); }
 
-        void MoveIfWalking(const float AMOUNT) { view_.MoveIfWalking(AMOUNT); }
+        void Move(const sf::Vector2f & MOVE_V) { view_.Move(MOVE_V); }
 
         void StopWalking();
 
@@ -86,12 +86,9 @@ namespace avatar
         void TurnToFacePos(const sf::Vector2f &);
 
         // see comment below in LPCView about these coordinates
-        const sf::Vector2f GetCenteredMapPos() const { return view_.GetCenteredMapPos(); }
+        const sf::Vector2f CenteredMapPos() const { return view_.CenteredMapPos(); }
 
-        void SetCenteredMapPos(const sf::Vector2f & NEW_POS_V)
-        {
-            view_.SetCenteredMapPos(NEW_POS_V);
-        }
+        void CenteredMapPos(const sf::Vector2f & NEW_POS_V) { view_.CenteredMapPos(NEW_POS_V); }
 
     private:
         float RandomBlinkDelay() const;

@@ -42,7 +42,6 @@ namespace gui
             , cellCountV_(0, 0)
             , collRectVecs_()
             , collRectVecIndexes_()
-            , isDuringSetup_(false)
         {
             // no player/npc character rect will ever match more than four grids at once, but
             // collision rects being added might hit many grid cells
@@ -58,8 +57,6 @@ namespace gui
             const sf::Vector2f & TOTAL_SIZE_VF,
             const std::vector<sf::FloatRect> & COLL_RECTS_TO_ADD)
         {
-            isDuringSetup_ = true;
-
             // erase old values
             collRectVecs_.clear();
             collRectVecIndexes_.clear();
@@ -125,8 +122,6 @@ namespace gui
 
             misc::TimeStats collRectsPerCellStats(collRectsPerCellVec, 0.0, 0);
             M_HP_LOG_WRN("collRectsPerCellStats=" << collRectsPerCellStats.ToString(true, false));
-
-            isDuringSetup_ = false;
 
             // TestingMaddnessPoints();
             // TestingMaddnessRects();
@@ -308,7 +303,7 @@ namespace gui
             }
         }
 
-        bool DoesPointCollide(const sf::Vector2f & POS_VF_ORIG)
+        bool DoesPointCollide(const sf::Vector2f & POS_VF_ORIG) const
         {
             const PosV_t POS_V_FINAL { POS_VF_ORIG };
             SetupCollRectVecIndexesForPoint(POS_V_FINAL);
@@ -327,7 +322,7 @@ namespace gui
             return false;
         }
 
-        bool DoesRectCollide(const sf::FloatRect & RECT_TO_CHECK_F_ORIG)
+        bool DoesRectCollide(const sf::FloatRect & RECT_TO_CHECK_F_ORIG) const
         {
             const PosRect_t RECT_TO_CHECK_FINAL { RECT_TO_CHECK_F_ORIG };
 
@@ -353,7 +348,7 @@ namespace gui
             return ((CELL_INDEX_POS_V.y * cellCountV_.y) + CELL_INDEX_POS_V.x);
         }
 
-        void SetupCollRectVecIndexesForPoint(const PosV_t & POS_VG)
+        void SetupCollRectVecIndexesForPoint(const PosV_t & POS_VG) const
         {
             collRectVecIndexes_.clear();
 
@@ -361,7 +356,7 @@ namespace gui
                 CalcCollRectVecIndexFromIndexV(CalcCellIndexFromPosV(POS_VG)));
         }
 
-        void SetupCollRectVecIndexesForRect(const PosRect_t & POS_RECT)
+        void SetupCollRectVecIndexesForRect(const PosRect_t & POS_RECT) const
         {
             collRectVecIndexes_.clear();
 
@@ -382,17 +377,6 @@ namespace gui
                 const auto HORIZ_CELL_COUNT { (GRID_POS_V_BOT_RIGHT.x - GRID_POS_V_TOP_LEFT.x)
                                               + 1 };
 
-                const auto CELL_COUNT_TOTAL { (VERT_CELL_COUNT * HORIZ_CELL_COUNT) };
-
-                if (!isDuringSetup_ && ((CELL_COUNT_TOTAL != 2) && (CELL_COUNT_TOTAL != 4)))
-                {
-                    M_HP_LOG_ERR(
-                        "CELL_COUNT_TOTAL is invalid." + M_HP_VAR_STR(CELL_COUNT_TOTAL)
-                        + M_HP_VAR_STR(POS_RECT) + M_HP_VAR_STR(GRID_POS_V_TOP_LEFT)
-                        + M_HP_VAR_STR(GRID_POS_V_BOT_RIGHT) + M_HP_VAR_STR(HORIZ_CELL_COUNT)
-                        + M_HP_VAR_STR(VERT_CELL_COUNT));
-                }
-
                 for (Index_t vertIndex(0); vertIndex < VERT_CELL_COUNT; ++vertIndex)
                 {
                     for (Index_t horizIndex(0); horizIndex < HORIZ_CELL_COUNT; ++horizIndex)
@@ -408,7 +392,7 @@ namespace gui
             }
         }
 
-        const IndexV_t CalcCellIndexFromPosV(const PosV_t & POS_V)
+        const IndexV_t CalcCellIndexFromPosV(const PosV_t & POS_V) const
         {
             const IndexV_t INDEX_V_RAW { PosV_t((POS_V.x / cellSize_), (POS_V.y / cellSize_)) };
 
@@ -426,8 +410,7 @@ namespace gui
         PosV_t gridSizeV_;
         IndexV_t cellCountV_;
         std::vector<PosRectVec_t> collRectVecs_;
-        std::vector<Index_t> collRectVecIndexes_;
-        bool isDuringSetup_;
+        mutable std::vector<Index_t> collRectVecIndexes_;
     };
 
 } // namespace gui

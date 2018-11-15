@@ -22,7 +22,6 @@
 #include "misc/not-null.hpp"
 #include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
-#include "sfutil/vector-and-rect.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 
@@ -43,8 +42,6 @@ namespace map
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
 
     using NpcModelMap_t = misc::VectorMap<game::NpcPtr_t, avatar::Model>;
-
-    using TransitionOpt_t = boost::optional<map::Transition>;
 
     // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
@@ -69,6 +66,11 @@ namespace map
 
         void MoveNonPlayers();
 
+        void MoveNonPlayer(
+            avatar::Model & npcAvatar,
+            const float MOVE_AMOUNT,
+            const sf::FloatRect & PLAYER_RECT_FOR_COLL_DET);
+
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         Level::Enum WhichLevel() const { return level_; }
@@ -79,24 +81,22 @@ namespace map
 
         const avatar::Model & Player() const { return player_; }
 
-        const NpcModelMap_t & NonPlayers() const { return nonPlayers_; }
+        const NpcModelMap_t & NonPlayers() const { return nonPlayersPtrModelMap_; }
 
         void EntryAndExitLevels(
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
 
     private:
-        bool DoesAdjPlayerPosCollide(const gui::Direction::Enum DIR, const float ADJ);
+        bool DoesPlayerCollideAfterMove(
+            const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT);
 
         const sf::Vector2f FindPlayerStartPos(
             const TransitionVec_t &, const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
-        const TransitionOpt_t CheckIfEnteringTransition(
-            const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
+        bool DetectCollisionWithExitTransitionAndHandle(
+            const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT);
 
-        void HandleEnteringTransition(const Transition &);
-
-        const sf::Vector2f
-            CalcAdjPlayerPos(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
+        void HandleExitTransition(const Transition &);
 
         void PlayTransitionSfx(
             const gui::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
@@ -123,9 +123,32 @@ namespace map
 
         void StopWalkSfxIfValid();
 
-        bool DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(const sf::FloatRect & MAP_RECT);
-        bool DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(const sf::FloatRect & MAP_RECT);
-        bool DoesMapCoordinateRectCollideWithMapUsingQuadAlgorithm(const sf::FloatRect & MAP_RECT);
+        bool DoesRectCollideWithMap(const sf::FloatRect & RECT) const;
+        bool DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const;
+        bool DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const;
+        bool DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const;
+
+        bool DoesAvatarAtRectCollideWithNPCs(
+            const avatar::Model & AVATAR, const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const;
+
+        const sf::Vector2f
+            MoveVector(const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT) const;
+
+        const sf::FloatRect AvatarCenteredMapRect(const avatar::Model & AVATAR) const;
+
+        // Both the images used to draw the map and the lpc avatar images used to draw the
+        // avatars have empty/transparent borders.  Taken together they cause avatars to
+        // collide with stuff on the map before they actually touch it.  So this is corrected here
+        // by shrinking the size of the bounding rect used in collision detection.
+        const sf::FloatRect
+            ResizeAvatarRectForCollisionDetection(const sf::FloatRect & RECT_ORIG) const;
+
+        const sf::FloatRect AvatarRectForCollisionDetection(const avatar::Model & AVATAR) const;
+
+        const sf::FloatRect AvatarRectForCollisionDetectionAfterMove(
+            const avatar::Model & AVATAR,
+            const gui::Direction::Enum DIRECTION,
+            const float MOVE_AMOUNT) const;
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;
@@ -138,12 +161,10 @@ namespace map
         std::vector<sf::FloatRect> collisionVec_;
         gui::QuadTree quadTree_;
         gui::CollisionGrid collisionGrid_;
-        misc::TimeTrials collisionTimeTrials_;
+        mutable misc::TimeTrials collisionTimeTrials_;
         const std::size_t collisionNaiveIndex_;
         const std::size_t collisionQuadIndex_;
         const std::size_t collisionGridIndex_;
-        const std::size_t collisionPlayerToNpcIndex_;
-        const std::size_t collisionNpcToNpcIndex_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
 
@@ -151,9 +172,10 @@ namespace map
         // AdventureStage is destructed and everything in the TextureCache is cleared.
         avatar::Model player_;
 
+        // TEMP TODO - make sure this comment still applies and makes sense after CachedTextures
         // the textures of these Model's LPCViews should be removed from the TextureCache each time
         // this map is cleared before a new level loads.
-        NpcModelMap_t nonPlayers_;
+        NpcModelMap_t nonPlayersPtrModelMap_;
 
         WalkRectMap_t walkRectVecMap_;
         WalkSfxRegionLayers walkSfxLayers_;

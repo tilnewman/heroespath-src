@@ -54,12 +54,10 @@ namespace map
         , collisionNaiveIndex_(collisionTimeTrials_.AddCollecter("Naive"))
         , collisionQuadIndex_(collisionTimeTrials_.AddCollecter("Quad"))
         , collisionGridIndex_(collisionTimeTrials_.AddCollecter("Grid"))
-        , collisionPlayerToNpcIndex_(collisionTimeTrials_.AddCollecter("PlyNpc"))
-        , collisionNpcToNpcIndex_(collisionTimeTrials_.AddCollecter("NpcNpc"))
         , transitionVec_()
         , level_(Level::Count)
         , player_(game::Game::Instance()->State().Party().Avatar())
-        , nonPlayers_()
+        , nonPlayersPtrModelMap_()
         , walkRectVecMap_()
         , walkSfxLayers_()
         , walkSfx_(gui::sound_effect::Count)
@@ -114,7 +112,7 @@ namespace map
                 FindPlayerStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
         }
 
-        player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
+        player_.CenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
 
         quadTree_.Setup(
             sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSizeInMapCoordinatesf()),
@@ -132,168 +130,78 @@ namespace map
             return false;
         }
 
-        if (DoesAdjPlayerPosCollide(DIRECTION, PLAYER_MOVE_DISTANCE_))
+        if (DoesPlayerCollideAfterMove(DIRECTION, PLAYER_MOVE_DISTANCE_))
         {
             return false;
         }
-        else
+
+        if (DetectCollisionWithExitTransitionAndHandle(DIRECTION, PLAYER_MOVE_DISTANCE_))
         {
-            const auto TRANSITION_OPT { CheckIfEnteringTransition(
-                DIRECTION, PLAYER_MOVE_DISTANCE_) };
-
-            if (TRANSITION_OPT)
-            {
-                HandleEnteringTransition(TRANSITION_OPT.value());
-                return true;
-            }
-            else
-            {
-                if (interactionManager_.Current())
-                {
-                    interactionManager_.RemoveCurrent();
-                }
-
-                const auto DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(
-                    DIRECTION, PLAYER_MOVE_DISTANCE_) };
-
-                player_.SetCenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
-                return DID_ACTUALLY_MOVE;
-            }
+            return true;
         }
+
+        if (interactionManager_.Current())
+        {
+            interactionManager_.RemoveCurrent();
+        }
+
+        // at this point failure to move means the player hit the edges of the map
+        const auto DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_) };
+        player_.CenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
+        return DID_ACTUALLY_MOVE;
     }
 
     void Map::MoveNonPlayers()
     {
-        const auto PLAYER_ADJ_POS_V { [&]() {
-            return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
-        }() };
+        const auto PLAYER_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(player_) };
 
-        const auto PLAYER_RECT_FOR_NPC_COLLISIONS { [&]() {
-            const auto PLAYER_POS_V { mapDisplayUPtr_->PlayerPosMap() };
-
-            return sf::FloatRect(
-                PLAYER_POS_V.x + (PLAYER_ADJ_POS_V.x * 1.2f),
-                PLAYER_POS_V.y + (PLAYER_ADJ_POS_V.x * 0.8f),
-                PLAYER_ADJ_POS_V.x * 0.05f,
-                PLAYER_ADJ_POS_V.y * 1.45f);
-        }() };
-
-        misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionNpcToNpcIndex_);
-
-        for (auto & npcPtrModelPair : nonPlayers_)
+        for (auto & npcPtrModelPair : nonPlayersPtrModelMap_)
         {
-            if (npcPtrModelPair.second.IsWalking() == false)
-            {
-                continue;
-            }
+            MoveNonPlayer(
+                npcPtrModelPair.second, NONPLAYER_MOVE_DISTANCE_, PLAYER_RECT_FOR_COLL_DET);
+        }
+    }
 
-            // check if NPC move will collide with the player
-            const auto & NPC_VIEW { npcPtrModelPair.second.GetView() };
+    void Map::MoveNonPlayer(
+        avatar::Model & npcAvatar,
+        const float MOVE_AMOUNT,
+        const sf::FloatRect & PLAYER_RECT_FOR_COLL_DET)
+    {
+        if (npcAvatar.IsWalking() == false)
+        {
+            return;
+        }
 
-            const auto NPC_RECT_ADJ { [&]() {
-                auto rect { NPC_VIEW.SpriteRef().getGlobalBounds() };
+        const auto DIRECTION { npcAvatar.GetView().Direction() };
 
-                switch (NPC_VIEW.Direction())
-                {
-                    case gui::Direction::Left:
-                    {
-                        rect.left -= NONPLAYER_MOVE_DISTANCE_;
-                        break;
-                    }
-                    case gui::Direction::Right:
-                    {
-                        rect.left += NONPLAYER_MOVE_DISTANCE_;
-                        break;
-                    }
-                    case gui::Direction::Up:
-                    {
-                        rect.top -= NONPLAYER_MOVE_DISTANCE_;
-                        break;
-                    }
-                    case gui::Direction::Down:
-                    case gui::Direction::Count:
-                    default:
-                    {
-                        rect.top += NONPLAYER_MOVE_DISTANCE_;
-                        break;
-                    }
-                }
+        const auto MOVED_NPC_REC_FOR_COLL_DET { AvatarRectForCollisionDetectionAfterMove(
+            npcAvatar, DIRECTION, MOVE_AMOUNT) };
 
-                return rect;
-            }() };
+        // const auto NPC_RECT_FOR_PLAYER_COLLISIONS { [&]() {
+        //    auto rect { NPC_RECT_ADJ };
+        //    rect.left -= PLAYER_ADJ_POS_V.x * 0.25f;
+        //    rect.width *= 1.75f;
+        //    rect.height *= 1.75f;
+        //    return rect;
+        //}() };
 
-            const auto NPC_RECT_FOR_PLAYER_COLLISIONS { [&]() {
-                auto rect { NPC_RECT_ADJ };
-                rect.left -= PLAYER_ADJ_POS_V.x * 0.25f;
-                rect.width *= 1.75f;
-                rect.height *= 1.75f;
-                return rect;
-            }() };
+        if (MOVED_NPC_REC_FOR_COLL_DET.intersects(PLAYER_RECT_FOR_COLL_DET))
+        {
+            npcAvatar.StopWalking();
+            npcAvatar.SetIsNextToPlayer(true, player_.CenteredMapPos(), false);
+            return;
+        }
 
-            if (NPC_RECT_FOR_PLAYER_COLLISIONS.intersects(PLAYER_RECT_FOR_NPC_COLLISIONS))
-            {
-                npcPtrModelPair.second.StopWalking();
-                npcPtrModelPair.second.SetIsNextToPlayer(true, player_.GetCenteredMapPos(), false);
-                return;
-            }
+        const auto DID_COLLIDE_WTIH_OTHER_NPC { DoesAvatarAtRectCollideWithNPCs(
+            npcAvatar, MOVED_NPC_REC_FOR_COLL_DET) };
 
-            // check if NPC move will collide with other NPCs
-            const auto NPC_POS_V { NPC_VIEW.SpriteRef().getPosition() };
-            auto didNPCsCollide { false };
-            for (const auto & SUB_NPC_PTR_MODEL_PAIR : nonPlayers_)
-            {
-                if (npcPtrModelPair.first == SUB_NPC_PTR_MODEL_PAIR.first)
-                {
-                    continue;
-                }
-
-                if (NPC_RECT_ADJ.intersects(
-                        SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getGlobalBounds()))
-                {
-                    const auto SUB_POS_V {
-                        SUB_NPC_PTR_MODEL_PAIR.second.GetView().SpriteRef().getPosition()
-                    };
-
-                    const auto IS_IN_THE_WAY { [&]() {
-                        switch (NPC_VIEW.Direction())
-                        {
-                            case gui::Direction::Left:
-                            {
-                                return (SUB_POS_V.x < NPC_POS_V.x);
-                            }
-                            case gui::Direction::Right:
-                            {
-                                return (SUB_POS_V.x > NPC_POS_V.x);
-                            }
-                            case gui::Direction::Up:
-                            {
-                                return (SUB_POS_V.y < NPC_POS_V.y);
-                            }
-                            case gui::Direction::Down:
-                            case gui::Direction::Count:
-                            default:
-                            {
-                                return (SUB_POS_V.y > NPC_POS_V.y);
-                            }
-                        }
-                    }() };
-
-                    if (IS_IN_THE_WAY)
-                    {
-                        didNPCsCollide = true;
-                        break;
-                    }
-                }
-            }
-
-            if (didNPCsCollide)
-            {
-                npcPtrModelPair.second.StopWalking();
-            }
-            else
-            {
-                npcPtrModelPair.second.MoveIfWalking(NONPLAYER_MOVE_DISTANCE_);
-            }
+        if (DID_COLLIDE_WTIH_OTHER_NPC)
+        {
+            npcAvatar.StopWalking();
+        }
+        else
+        {
+            npcAvatar.Move(MoveVector(DIRECTION, MOVE_AMOUNT));
         }
     }
 
@@ -325,7 +233,7 @@ namespace map
             }
         }
 
-        for (auto & npcPtrModelPair : nonPlayers_)
+        for (auto & npcPtrModelPair : nonPlayersPtrModelMap_)
         {
             npcPtrModelPair.second.Update(TIME_ELAPSED);
         }
@@ -359,114 +267,40 @@ namespace map
         }
     }
 
-    bool Map::DoesAdjPlayerPosCollide(const gui::Direction::Enum DIR, const float ADJ)
+    bool Map::DoesPlayerCollideAfterMove(
+        const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT)
     {
-        const auto PLAYER_POS_V { CalcAdjPlayerPos(DIR, ADJ) };
+        const auto MOVED_PLAYER_RECT_FOR_COLL_DET { AvatarRectForCollisionDetectionAfterMove(
+            player_, DIRECTION, MOVE_AMOUNT) };
 
-        const auto ADJ_FOR_COLLISIONS_V { [&]() {
-            return sfutil::Size(player_.GetView().SpriteRef(), sf::Vector2f(0.3f, 0.5f));
-        }() };
-
-        const sf::FloatRect PLAYER_RECT_FOR_MAP_COLLISIONS(
-            PLAYER_POS_V.x - ADJ_FOR_COLLISIONS_V.x,
-            PLAYER_POS_V.y - (ADJ_FOR_COLLISIONS_V.y * 0.6f),
-            ADJ_FOR_COLLISIONS_V.x * 2.0f,
-            ADJ_FOR_COLLISIONS_V.y * 1.4f);
-
-        bool didCollideWithMap { false };
-        {
-            misc::ScopedTimeTrial scopedTimerJane(collisionTimeTrials_, collisionQuadIndex_);
-            DoesMapCoordinateRectCollideWithMapUsingQuadAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
-        }
-
-        {
-            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionGridIndex_);
-            DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(PLAYER_RECT_FOR_MAP_COLLISIONS);
-        }
-
-        {
-            misc::ScopedTimeTrial scopedTimer(collisionTimeTrials_, collisionNaiveIndex_);
-
-            didCollideWithMap = DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
-                PLAYER_RECT_FOR_MAP_COLLISIONS);
-        }
-
-        //// determine if the player's new position collides with a map object
-        //// use naive algorithm if the collision rect count is low enough
-        // if (collisionVec_.size() < 40)
-        //{
-        //    if (DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
-        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
-        //    {
-        //        return true;
-        //    }
-        //}
-        // else
-        //{
-        //    if (DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(
-        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
-        //    {
-        //        return true;
-        //    }
-        //}
-
-        const auto ADJ_FOR_NPC_COLLISIONS_V { [&]() {
-            return sfutil::Size(player_.GetView().SpriteRef(), 0.5f);
-        }() };
-
-        const sf::FloatRect PLAYER_RECT_FOR_NPC_COLLISIONS(
-            PLAYER_POS_V.x + (ADJ_FOR_NPC_COLLISIONS_V.x * 1.0f),
-            PLAYER_POS_V.y + (ADJ_FOR_NPC_COLLISIONS_V.x * 0.5f),
-            ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
-            ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
-
-        bool didCollideWithNpc { false };
-
-        {
-            misc::ScopedTimeTrial scopedTimerRobot(
-                collisionTimeTrials_, collisionPlayerToNpcIndex_);
-
-            for (auto & npcPtrModelPair : nonPlayers_)
-            {
-                const auto DID_COLLIDE_WITH_NPC { sfutil::intersects(
-                    npcPtrModelPair.second.GetView().SpriteRef(), PLAYER_RECT_FOR_NPC_COLLISIONS) };
-
-                if (DID_COLLIDE_WITH_NPC)
-                {
-                    player_.MovingIntoSet(npcPtrModelPair.first);
-
-                    npcPtrModelPair.second.SetIsNextToPlayer(
-                        true, player_.GetCenteredMapPos(), true);
-
-                    didCollideWithNpc = true;
-                    break;
-                }
-                else
-                {
-                    npcPtrModelPair.second.SetIsNextToPlayer(
-                        false, player_.GetCenteredMapPos(), false);
-                }
-            }
-        }
-
-        if (collisionTimeTrials_.ContestCount() == 4)
-        {
-            M_HP_LOG_WRN("forcing end to collision timing trials");
-            collisionTimeTrials_.EndAllContests();
-        }
-
-        if (didCollideWithMap)
+        if (DoesRectCollideWithMap(MOVED_PLAYER_RECT_FOR_COLL_DET))
         {
             return true;
         }
 
-        if (didCollideWithNpc)
+        const auto COLLIDING_ITER { std::find_if(
+            std::begin(nonPlayersPtrModelMap_),
+            std::end(nonPlayersPtrModelMap_),
+            [&](const auto & NPC_PTR_MODEL_PAIR) {
+                const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
+                    NPC_PTR_MODEL_PAIR.second) };
+
+                return MOVED_PLAYER_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET);
+            }) };
+
+        if (COLLIDING_ITER == std::end(nonPlayersPtrModelMap_))
         {
+            COLLIDING_ITER->second.SetIsNextToPlayer(false, player_.CenteredMapPos(), false);
+            player_.MovingIntoReset();
+            return false;
+        }
+        else
+        {
+
+            player_.MovingIntoSet(COLLIDING_ITER->first);
+            COLLIDING_ITER->second.SetIsNextToPlayer(true, player_.CenteredMapPos(), true);
             return true;
         }
-
-        player_.MovingIntoReset();
-        return false;
     }
 
     const sf::Vector2f Map::FindPlayerStartPos(
@@ -474,21 +308,11 @@ namespace map
         const Level::Enum LEVEL_TO_LOAD,
         const Level::Enum LEVEL_FROM)
     {
-        TransitionOpt_t firstEntryTransitionFound(boost::none);
-
         for (const auto & TRANSITION : TRANS_VEC)
         {
-            if (TRANSITION.IsEntry())
+            if (TRANSITION.IsEntry() && (TRANSITION.WhichLevel() == LEVEL_FROM))
             {
-                if (TRANSITION.WhichLevel() == LEVEL_FROM)
-                {
-                    return sfutil::CenterOf(TRANSITION.Rect());
-                }
-
-                if (!firstEntryTransitionFound)
-                {
-                    firstEntryTransitionFound = TRANSITION;
-                }
+                return sfutil::CenterOf(TRANSITION.Rect());
             }
         }
 
@@ -502,46 +326,49 @@ namespace map
                 << ".  You probably need to break out the Tiled app "
                    "and add or fix some transitions...";
 
-        sf::Vector2f startPosV;
-        if (!firstEntryTransitionFound)
-        {
-            startPosV = { 100.0f, 100.0f };
+        const auto FOUND_ITER { std::find_if(
+            std::begin(TRANS_VEC), std::end(TRANS_VEC), [&](const auto & TRANSITION) {
+                return TRANSITION.IsEntry();
+            }) };
 
-            errorSS << "  In fact no entry transitions were found at all.  This is definitely a "
-                       "problem with the map file.  Use the Tiled app to add all the entry "
-                       "transitions required.  Placing the player at a default location of "
-                    << startPosV << ".  Good luck with that.";
-        }
-        else
-        {
-            startPosV = sfutil::CenterOf(firstEntryTransitionFound->Rect());
-            errorSS << "  Placing the player into the first entry transition point found at "
-                    << startPosV << " for map "
-                    << map::Level::ToString(firstEntryTransitionFound->WhichLevel())
-                    << ", which is better than crashing I guess.";
-        }
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            (FOUND_ITER != std::end(TRANS_VEC)),
+            errorSS.str()
+                << "  In fact no entry transitions were found at all.  This is definitely a "
+                   "problem with the map file.  Use the Tiled app to add all the entry "
+                   "transitions required and use the live/instrumented test mode to make sure "
+                   "they are all there and correct.  Since there is no known valid point in "
+                   "the map to place the player, crashing.");
 
-        M_HP_LOG_ERR(errorSS.str());
-        return startPosV;
+        M_HP_LOG_ERR(
+            errorSS.str() << "  Placing the player into the first entry transition point found, "
+                             "which is for map "
+                          << map::Level::ToString(FOUND_ITER->WhichLevel())
+                          << ", which is better than crashing I guess.");
+
+        return sfutil::CenterOf(FOUND_ITER->Rect());
     }
 
-    const TransitionOpt_t Map::CheckIfEnteringTransition(
-        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const
+    bool Map::DetectCollisionWithExitTransitionAndHandle(
+        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT)
     {
-        const auto ADJ_PLAYER_POS_V { CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
+        const auto PLAYER_MOVED_CENTERED_MAP_POS_V { player_.CenteredMapPos()
+                                                     + MoveVector(DIRECTION, ADJUSTMENT) };
 
         for (const auto & TRANSITION : transitionVec_)
         {
-            if ((TRANSITION.IsEntry() == false) && (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
+            if ((TRANSITION.IsEntry() == false)
+                && (TRANSITION.Rect().contains(PLAYER_MOVED_CENTERED_MAP_POS_V)))
             {
-                return TRANSITION;
+                HandleExitTransition(TRANSITION);
+                return true;
             }
         }
 
-        return boost::none;
+        return false;
     }
 
-    void Map::HandleEnteringTransition(const Transition & TRANSITION)
+    void Map::HandleExitTransition(const Transition & TRANSITION)
     {
         player_.StopWalking();
 
@@ -570,43 +397,6 @@ namespace map
         }
     }
 
-    const sf::Vector2f
-        Map::CalcAdjPlayerPos(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT) const
-    {
-        auto posToTest { mapDisplayUPtr_->PlayerPosMap() };
-
-        switch (DIRECTION)
-        {
-            case gui::Direction::Left:
-            {
-                posToTest.x -= ADJUSTMENT;
-                break;
-            }
-            case gui::Direction::Right:
-            {
-                posToTest.x += ADJUSTMENT;
-                break;
-            }
-            case gui::Direction::Up:
-            {
-                posToTest.y -= ADJUSTMENT;
-                break;
-            }
-            case gui::Direction::Down:
-            {
-                posToTest.y += ADJUSTMENT;
-                break;
-            }
-            case gui::Direction::Count:
-            default:
-            {
-                break;
-            }
-        }
-
-        return posToTest;
-    }
-
     void Map::PlayTransitionSfx(
         const gui::sound_effect::MapTransition TRANS_TYPE, const bool IS_DOOR_OPENING) const
     {
@@ -619,7 +409,7 @@ namespace map
             const auto TRANS_SFX { gui::sound_effect::RandomMapTransitionSfx(
                 TRANS_TYPE, DOOR_ACTION) };
 
-            if ((TRANS_SFX == gui::sound_effect::Stairs) && (IS_DOOR_OPENING))
+            if ((TRANS_SFX == gui::sound_effect::Stairs) && IS_DOOR_OPENING)
             {
                 return;
             }
@@ -640,8 +430,8 @@ namespace map
 
     void Map::UpdateWalkSfx()
     {
-        const auto NEW_IS_WALKING { (Player().GetView().WhichPose() == avatar::Pose::Walking) };
-        const auto NEW_WALK_SFX { walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
+        const auto NEW_IS_WALKING { (player_.GetView().WhichPose() == avatar::Pose::Walking) };
+        const auto NEW_WALK_SFX { walkSfxLayers_.FindSfx(player_.CenteredMapPos()) };
 
         if (NEW_IS_WALKING && ((NEW_WALK_SFX != walkSfx_) || (NEW_IS_WALKING != walkSfxIsWalking_)))
         {
@@ -664,7 +454,7 @@ namespace map
 
     void Map::ResetNonPlayers()
     {
-        nonPlayers_.Clear();
+        nonPlayersPtrModelMap_.Clear();
 
         for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
@@ -727,14 +517,14 @@ namespace map
         }
         else
         {
-            nonPlayers_.Append(
+            nonPlayersPtrModelMap_.Append(
                 NPC_PTR, avatar::Model(AVATAR_IMAGE_ENUM, walkRects, walkRectsIndex, startingPosV));
         }
     }
 
     const sf::Sprite Map::GetNpcDefaultPoseSprite(const game::NpcPtr_t NPC_PTR) const
     {
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
         {
             if (NPC_PTR_MODEL_PAIR.first == NPC_PTR)
             {
@@ -750,8 +540,8 @@ namespace map
         const avatar::Model & AVATAR,
         const float DISTANCE_TOO_CLOSE) const
     {
-        const auto DISTANCE_HORIZ { std::abs(AVATAR.GetCenteredMapPos().x - POS_V.x) };
-        const auto DISTANCE_VERT { std::abs(AVATAR.GetCenteredMapPos().y - POS_V.y) };
+        const auto DISTANCE_HORIZ { std::abs(AVATAR.CenteredMapPos().x - POS_V.x) };
+        const auto DISTANCE_VERT { std::abs(AVATAR.CenteredMapPos().y - POS_V.y) };
         return ((DISTANCE_HORIZ < DISTANCE_TOO_CLOSE) && (DISTANCE_VERT < DISTANCE_TOO_CLOSE));
     }
 
@@ -768,7 +558,7 @@ namespace map
             return true;
         }
 
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayers_)
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
         {
             if (IsPosTooCloseToAvatar(POS_V, NPC_PTR_MODEL_PAIR.second, DISTANCE_TOO_CLOSE))
             {
@@ -816,11 +606,60 @@ namespace map
         }
     }
 
-    bool Map::DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(const sf::FloatRect & MAP_RECT)
+    bool Map::DoesRectCollideWithMap(const sf::FloatRect & RECT) const
+    {
+        // TEMP TODO REMOVE AFTER TESTING run all three collision detection algorithms so that each
+        // can be timed
+
+        //// determine if the player's new position collides with a map object
+        //// use naive algorithm if the collision rect count is low enough
+        // if (collisionVec_.size() < 40)
+        //{
+        //    if (DoesMapCoordinateRectCollideWithMapUsingNaiveAlgorithm(
+        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
+        //    {
+        //        return true;
+        //    }
+        //}
+        // else
+        //{
+        //    if (DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(
+        //            PLAYER_RECT_FOR_MAP_COLLISIONS))
+        //    {
+        //        return true;
+        //    }
+        //}
+
+        bool didCollideWithMap { false };
+
+        {
+            misc::ScopedTimeTrial scopedTimer(collisionTimeTrials_, collisionQuadIndex_);
+            DoesRectCollideWithMap_UsingAlgorithm_Quad(RECT);
+        }
+
+        {
+            misc::ScopedTimeTrial scopedTimerJane(collisionTimeTrials_, collisionNaiveIndex_);
+            DoesRectCollideWithMap_UsingAlgorithm_Naive(RECT);
+        }
+
+        {
+            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionGridIndex_);
+            didCollideWithMap = DoesRectCollideWithMap_UsingAlgorithm_Grid(RECT);
+        }
+
+        if (collisionTimeTrials_.ContestCount() == 6)
+        {
+            collisionTimeTrials_.EndAllContests();
+        }
+
+        return didCollideWithMap;
+    }
+
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const
     {
         for (const auto & COLLISION_RECT : collisionVec_)
         {
-            if (COLLISION_RECT.intersects(MAP_RECT))
+            if (COLLISION_RECT.intersects(RECT))
             {
                 return true;
             }
@@ -829,14 +668,84 @@ namespace map
         return false;
     }
 
-    bool Map::DoesMapCoordinateRectCollideWithMapUsingGridAlgorithm(const sf::FloatRect & MAP_RECT)
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const
     {
-        return collisionGrid_.DoesRectCollide(MAP_RECT);
+        return collisionGrid_.DoesRectCollide(RECT);
     }
 
-    bool Map::DoesMapCoordinateRectCollideWithMapUsingQuadAlgorithm(const sf::FloatRect & MAP_RECT)
+    bool Map::DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const
     {
-        return quadTree_.DoesRectCollide(MAP_RECT);
+        return quadTree_.DoesRectCollide(RECT);
+    }
+
+    bool Map::DoesAvatarAtRectCollideWithNPCs(
+        const avatar::Model & AVATAR, const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const
+    {
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
+        {
+            if (&AVATAR == &NPC_PTR_MODEL_PAIR.second)
+            {
+                continue;
+            }
+
+            const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
+                NPC_PTR_MODEL_PAIR.second) };
+
+            if (AVATAR_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    const sf::Vector2f
+        Map::MoveVector(const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT) const
+    {
+        sf::Vector2f moveV(0.0f, 0.0f);
+
+        if ((DIRECTION == gui::Direction::Left) || (DIRECTION == gui::Direction::Right))
+        {
+            moveV.x = MOVE_AMOUNT;
+        }
+        else
+        {
+            moveV.y = MOVE_AMOUNT;
+        }
+
+        if ((DIRECTION == gui::Direction::Left) || (DIRECTION == gui::Direction::Up))
+        {
+            moveV *= -1.0f;
+        }
+
+        return moveV;
+    }
+
+    const sf::FloatRect Map::AvatarCenteredMapRect(const avatar::Model & AVATAR) const
+    {
+        const sf::Vector2f AVATAR_SIZE_V { AVATAR.GetView().MapSize() };
+        return sf::FloatRect((AVATAR.CenteredMapPos() - (AVATAR_SIZE_V * 0.5f)), AVATAR_SIZE_V);
+    }
+
+    const sf::FloatRect
+        Map::ResizeAvatarRectForCollisionDetection(const sf::FloatRect & RECT_ORIG) const
+    {
+        return sfutil::ScaleAndReCenterCopy(RECT_ORIG, sf::Vector2f(0.5f, 0.7f));
+    }
+
+    const sf::FloatRect Map::AvatarRectForCollisionDetection(const avatar::Model & AVATAR) const
+    {
+        return ResizeAvatarRectForCollisionDetection(AvatarCenteredMapRect(AVATAR));
+    }
+
+    const sf::FloatRect Map::AvatarRectForCollisionDetectionAfterMove(
+        const avatar::Model & AVATAR,
+        const gui::Direction::Enum DIRECTION,
+        const float MOVE_AMOUNT) const
+    {
+        return ResizeAvatarRectForCollisionDetection(
+            sfutil::MoveCopy(AvatarCenteredMapRect(AVATAR), MoveVector(DIRECTION, MOVE_AMOUNT)));
     }
 
 } // namespace map

@@ -46,6 +46,7 @@ namespace game
         {
             level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
 
+            // TEMP TODO REMOVE AFTTER TESTING many npcs
             level.AddRandomNpcPlaceholder(NpcPlaceholder(
                 20,
                 20,

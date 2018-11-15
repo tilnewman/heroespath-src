@@ -28,26 +28,20 @@ namespace avatar
     public:
         explicit LPCView(const Avatar::Enum, const sf::Vector2f & CENTERED_MAP_POS_V);
 
-        void Set(const Pose::Enum, const gui::Direction::Enum);
-
-        bool Update(const float TIME_ELAPSED);
-
         gui::Direction::Enum Direction() const { return animation_.direction; }
-
-        void MoveIfWalking(const float AMOUNT);
-
         Pose::Enum WhichPose() const { return animation_.pose; }
-
         const sf::Sprite & SpriteRef() const { return sprite_; }
-
         Avatar::Enum WhichAvatar() const { return whichAvatar_; }
 
-        const sf::Sprite DefaultPoseSprite() const;
-
         // see comment below on sf::Sprite member variable about these coordinates
-        const sf::Vector2f GetCenteredMapPos() const { return sprite_.getPosition(); }
+        const sf::Vector2f CenteredMapPos() const { return sprite_.getPosition(); }
+        void CenteredMapPos(const sf::Vector2f & NEW_POS_V) { sprite_.setPosition(NEW_POS_V); }
+        const sf::Vector2f MapSize() const;
 
-        void SetCenteredMapPos(const sf::Vector2f & NEW_POS_V) { sprite_.setPosition(NEW_POS_V); }
+        void Set(const Pose::Enum, const gui::Direction::Enum);
+        bool Update(const float TIME_ELAPSED);
+        void Move(const sf::Vector2f & MOVE_V);
+        const sf::Sprite DefaultPoseSprite() const;
 
         static const sf::IntRect GetStandingRightFrameRect()
         {
@@ -56,13 +50,9 @@ namespace avatar
 
     private:
         static const FrameNumVec_t FrameNumbers(const Pose::Enum, const gui::Direction::Enum);
-
         static const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM);
-
         const Animation CreateAnimation(const Pose::Enum, const gui::Direction::Enum) const;
-
         float FrameDuration(const Pose::Enum) const;
-
         void SetupSprite();
 
     private:
@@ -77,10 +67,10 @@ namespace avatar
         Avatar::Enum whichAvatar_;
         gui::CachedTexture cachedTexture_;
 
-        // note that sprite_.getPosition() does not hold the actual top-left corner position of the
-        // sprite, instead this holds the centered map coordinates position, see
-        // MapDisplay::DrawCharacterImages() where the translation from centered map coordinates to
-        // top-left offscreen coordinates occurs
+        // sprite_.getPosition() is not top-left corner in screen/offscreen/map coordinates.
+        // Instead, sprite_.getPosition() is the centered map coordinates position.  See
+        // MapDisplay::DrawCharacterImages() for where the translation from centered map coordinates
+        // to top-left offscreen coordinates occurs.
         sf::Sprite sprite_;
 
         Animation animation_;

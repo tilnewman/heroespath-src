@@ -177,7 +177,7 @@ namespace avatar
 
     void Model::TurnToFacePos(const sf::Vector2f & POS_V)
     {
-        const auto DIRECTION { sfutil::DirectionFromAToB(GetCenteredMapPos(), POS_V) };
+        const auto DIRECTION { sfutil::DirectionFromAToB(CenteredMapPos(), POS_V) };
 
         if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
         {
@@ -289,7 +289,7 @@ namespace avatar
         }
         else
         {
-            const auto CURRENT_POS_V { GetCenteredMapPos() };
+            const auto CURRENT_POS_V { CenteredMapPos() };
 
             std::vector<std::size_t> possibleWalkRectIndexes_;
             for (std::size_t i(0); i < walkRects_.size(); ++i)
@@ -345,7 +345,7 @@ namespace avatar
     gui::Direction::Enum
         Model::WalkDirection(const gui::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
-        const auto CURRENT_POS_V { GetCenteredMapPos() };
+        const auto CURRENT_POS_V { CenteredMapPos() };
 
         if (DIRECTION_TO_MAINTAIN == gui::Direction::Count)
         {

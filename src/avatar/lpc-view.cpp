@@ -14,6 +14,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/log-macros.hpp"
 #include "misc/random.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 namespace heroespath
 {
@@ -51,6 +52,8 @@ namespace avatar
         SetupSprite();
         sprite_.setPosition(CENTERED_MAP_POS_V);
     }
+
+    const sf::Vector2f LPCView::MapSize() const { return sfutil::Size(sprite_); }
 
     void LPCView::Set(const Pose::Enum POSE, const gui::Direction::Enum DIRECTION)
     {
@@ -91,37 +94,7 @@ namespace avatar
         return false;
     }
 
-    void LPCView::MoveIfWalking(const float AMOUNT)
-    {
-        if (Pose::Walking == animation_.pose)
-        {
-            switch (Direction())
-            {
-                case gui::Direction::Left:
-                {
-                    sprite_.move(AMOUNT * -1.0f, 0.0f);
-                    break;
-                }
-                case gui::Direction::Right:
-                {
-                    sprite_.move(AMOUNT, 0.0f);
-                    break;
-                }
-                case gui::Direction::Up:
-                {
-                    sprite_.move(0.0f, AMOUNT * -1.0f);
-                    break;
-                }
-                case gui::Direction::Down:
-                case gui::Direction::Count:
-                default:
-                {
-                    sprite_.move(0.0f, AMOUNT);
-                    break;
-                }
-            }
-        }
-    }
+    void LPCView::Move(const sf::Vector2f & MOVE_V) { sprite_.move(MOVE_V); }
 
     const sf::Sprite LPCView::DefaultPoseSprite() const
     {

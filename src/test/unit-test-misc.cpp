@@ -162,6 +162,7 @@ BOOST_AUTO_TEST_CASE(Real_IsRealOne)
 BOOST_AUTO_TEST_CASE(Real_IsRealClose)
 {
     BOOST_CHECK(IsRealClose(0.0, 0.0));
+    BOOST_CHECK(IsRealClose(0.0, -0.0));
     BOOST_CHECK(IsRealClose(1.0, 1.0));
     BOOST_CHECK(IsRealClose(123.456, 123.456));
 

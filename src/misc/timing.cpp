@@ -721,7 +721,6 @@ namespace misc
 
         if (contestResultsHistoryMapUPtr_->Empty())
         {
-            ResetAllContests();
             return;
         }
 
