@@ -101,16 +101,19 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
-        // the order of these three is critical
+        // the order of these four is critical
         game::Game::Instance()->State().GetWorld().HandleLevelUnload(LEVEL_FROM);
         game::Game::Instance()->State().GetWorld().HandleLevelLoad(LEVEL_TO_LOAD);
-        ResetNonPlayers();
+
+        const auto PLAYER_START_POS_V { FindPlayerStartPos(
+            transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) };
 
         if (IS_TEST_LOAD == false)
         {
-            mapDisplayUPtr_->Load(
-                FindPlayerStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
+            mapDisplayUPtr_->Load(PLAYER_START_POS_V, animInfoVec);
         }
+
+        ResetNonPlayers(PLAYER_START_POS_V);
 
         player_.CenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
 
@@ -452,73 +455,76 @@ namespace map
         walkSfxIsWalking_ = NEW_IS_WALKING;
     }
 
-    void Map::ResetNonPlayers()
+    void Map::ResetNonPlayers(const sf::Vector2f & PLAYER_START_POS_V)
     {
         nonPlayersPtrModelMap_.Clear();
 
         for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
         {
-            AddNonPlayerAvatar(NPC_PTR);
+            AddNonPlayerAvatar(NPC_PTR, PLAYER_START_POS_V);
         }
 
         for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().RandomNPCs())
         {
-            AddNonPlayerAvatar(NPC_PTR);
+            AddNonPlayerAvatar(NPC_PTR, PLAYER_START_POS_V);
         }
     }
 
-    void Map::AddNonPlayerAvatar(const game::NpcPtr_t NPC_PTR)
+    void Map::AddNonPlayerAvatar(
+        const game::NpcPtr_t NPC_PTR, const sf::Vector2f & PLAYER_START_POS_V)
     {
-        const auto WALK_BOUNDS_INDEX { NPC_PTR->WalkBoundsIndex() };
-        const auto AVATAR_IMAGE_ENUM { NPC_PTR->AvatarImage() };
+        const auto NPC_WALK_BOUNDS_SET_INDEX { NPC_PTR->WalkBoundsSetIndex() };
+        const auto NPC_AVATAR_IMAGE_ENUM { NPC_PTR->AvatarImage() };
 
         std::vector<sf::FloatRect> walkRects;
-        const auto WAS_FOUND { walkRectVecMap_.Find(WALK_BOUNDS_INDEX, walkRects) };
+        const auto WAS_FOUND { walkRectVecMap_.Find(NPC_WALK_BOUNDS_SET_INDEX, walkRects) };
 
         if (WAS_FOUND == false)
         {
             std::ostringstream ss;
-            ss << "map::Map::AddNonPlayerAvatar(avatar="
-               << avatar::Avatar::ToString(AVATAR_IMAGE_ENUM)
-               << ", walkBoundsIndex=" << WALK_BOUNDS_INDEX
-               << ") but that walkBoundsIndex was not found in all the walk bounds loaded from the "
-                  "map file.  Valid indexes are: [";
+            ss << " That walkBoundsSetIndex was not found in the map file. (npc="
+               << NPC_PTR->ToString() << ")" << M_HP_VAR_STR(NPC_WALK_BOUNDS_SET_INDEX)
+               << "  Valid set indexes are: [";
 
             for (const auto & WALK_BOUNDS_PAIR : walkRectVecMap_)
             {
                 ss << WALK_BOUNDS_PAIR.first << ", ";
             }
 
-            ss << "]";
+            ss << "].  So this npc will not be placed in the map.";
 
-            throw std::runtime_error(ss.str());
+            M_HP_LOG_ERR(ss.str());
+            return;
         }
 
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            (walkRects.empty() == false),
-            "map::Map::AddNonPlayerAvatar(avatar="
-                << avatar::Avatar::ToString(AVATAR_IMAGE_ENUM)
-                << ", walkBoundsIndex=" << WALK_BOUNDS_INDEX
-                << ") but that walkBoundsIndex, while valid, was "
-                   "not associated with any actual walk bounds.  "
-                   "The vector was empty.");
-
-        sf::Vector2f startingPosV(-1.0f, -1.0f);
-        std::size_t walkRectsIndex { walkRects.size() };
-        FindLocationToPlaceAvatar(walkRects, walkRectsIndex, startingPosV);
-        if ((walkRectsIndex >= walkRects.size()) || (startingPosV.x < 0.0f)
-            || (startingPosV.y < 0.0f))
+        if (walkRects.empty())
         {
             M_HP_LOG_ERR(
-                "map::Map::FindLocationToPlaceAvatar() failed to find an open spot to put an "
-                "NPC, so it will not be added to the map at all.");
+                "That walkBoundsSetIndex, while valid, was "
+                "not associated with any actual walk bounds.  "
+                "The vector was empty.  So this npc will not be placed in the map."
+                << NPC_PTR->ToString() << ")" << M_HP_VAR_STR(NPC_WALK_BOUNDS_SET_INDEX));
+
+            return;
+        }
+
+        const auto [WAS_VALID_LOCATION_FOUND, WALK_BOUNDS_RECT_INDEX, MAP_POS_V]
+            = PickRandomLocationToPlaceAvatar(walkRects, PLAYER_START_POS_V);
+
+        if (WAS_VALID_LOCATION_FOUND)
+        {
+            nonPlayersPtrModelMap_.Append(
+                NPC_PTR,
+                avatar::Model(NPC_AVATAR_IMAGE_ENUM, walkRects, WALK_BOUNDS_RECT_INDEX, MAP_POS_V));
         }
         else
         {
-            nonPlayersPtrModelMap_.Append(
-                NPC_PTR, avatar::Model(AVATAR_IMAGE_ENUM, walkRects, walkRectsIndex, startingPosV));
+            M_HP_LOG_ERR(
+                "After thousands of attempts, no free space (not already taken up by another NPC) "
+                "could be found to place this NPC, so it will not be placed in the map."
+                << NPC_PTR->ToString() << ")" << M_HP_VAR_STR(NPC_WALK_BOUNDS_SET_INDEX));
         }
     }
 
@@ -535,67 +541,65 @@ namespace map
         return sf::Sprite();
     }
 
-    bool Map::IsPosTooCloseToAvatar(
-        const sf::Vector2f & POS_V,
-        const avatar::Model & AVATAR,
-        const float DISTANCE_TOO_CLOSE) const
+    const std::tuple<bool, std::size_t, sf::Vector2f> Map::PickRandomLocationToPlaceAvatar(
+        const FloatRectVec_t & WALK_RECTS, const sf::Vector2f & PLAYER_START_POS_V) const
     {
-        const auto DISTANCE_HORIZ { std::abs(AVATAR.CenteredMapPos().x - POS_V.x) };
-        const auto DISTANCE_VERT { std::abs(AVATAR.CenteredMapPos().y - POS_V.y) };
-        return ((DISTANCE_HORIZ < DISTANCE_TOO_CLOSE) && (DISTANCE_VERT < DISTANCE_TOO_CLOSE));
-    }
-
-    bool Map::IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const
-    {
-        const auto PLAYER_GLOBAL_BOUNDS_RECT { player_.GetView().SpriteRef().getGlobalBounds() };
-
-        const auto DISTANCE_TOO_CLOSE {
-            std::max(PLAYER_GLOBAL_BOUNDS_RECT.width, PLAYER_GLOBAL_BOUNDS_RECT.height) * 1.25f
+        struct WalkRegion
+        {
+            sf::FloatRect rect;
+            std::size_t index;
         };
 
-        if (IsPosTooCloseToAvatar(POS_V, player_, DISTANCE_TOO_CLOSE))
+        std::vector<WalkRegion> walkRegions;
+
+        for (std::size_t index(0); index < WALK_RECTS.size(); ++index)
         {
-            return true;
+            WalkRegion walkRegion;
+            walkRegion.index = index;
+            walkRegion.rect = WALK_RECTS.at(index);
+            walkRegions.emplace_back(walkRegion);
         }
 
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
+        // shuffle so that each NPC likely starts in a random walk rect
+        misc::Vector::ShuffleVec(walkRegions);
+
+        // we have not yet made this NPC's avatar::Model yet so we don't technically know the size
+        // of it's sprite, which we need to check for collisions with other NPCs.  However, all the
+        // avatar images are the same size so we can cheat and use the player's avatar sprite size
+        // instead.
+        const auto AVATAR_IMAGE_SIZE_V { player_.GetView().MapSize() };
+
+        const sf::FloatRect PLAYERC_MAP_POS_RECT(
+            (PLAYER_START_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)), AVATAR_IMAGE_SIZE_V);
+
+        for (const auto & WALK_REGION : walkRegions)
         {
-            if (IsPosTooCloseToAvatar(POS_V, NPC_PTR_MODEL_PAIR.second, DISTANCE_TOO_CLOSE))
+            const auto ATTEMPTS_PER_WALK_RECT { 1000 };
+            for (int attemptCounter(0); attemptCounter < ATTEMPTS_PER_WALK_RECT; ++attemptCounter)
             {
-                return true;
+                const sf::Vector2f PROPOSED_NPC_CENTERED_MAP_POS_V(
+                    misc::random::Float(WALK_REGION.rect.left, sfutil::Right(WALK_REGION.rect)),
+                    misc::random::Float(WALK_REGION.rect.top, sfutil::Bottom(WALK_REGION.rect)));
+
+                const sf::FloatRect PROPOSED_NPC_MAP_POS_RECT(
+                    (PROPOSED_NPC_CENTERED_MAP_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)),
+                    AVATAR_IMAGE_SIZE_V);
+
+                if (PROPOSED_NPC_MAP_POS_RECT.intersects(PLAYERC_MAP_POS_RECT))
+                {
+                    continue;
+                }
+
+                if (DoesRectCollideWithNPCs(PROPOSED_NPC_MAP_POS_RECT))
+                {
+                    continue;
+                }
+
+                return std::make_tuple(true, WALK_REGION.index, PROPOSED_NPC_CENTERED_MAP_POS_V);
             }
         }
 
-        return false;
-    }
-
-    void Map::FindLocationToPlaceAvatar(
-        const FloatRectVec_t & WALK_RECTS,
-        std::size_t & walkRectsIndex,
-        sf::Vector2f & startingPosV)
-    {
-        const auto ATTEMPT_COUNT_MAX { 10000 };
-
-        auto attemptCounter { 0 };
-
-        do
-        {
-            walkRectsIndex = misc::random::SizeT(WALK_RECTS.size() - 1);
-            const auto RECT { WALK_RECTS.at(walkRectsIndex) };
-            const auto X { misc::random::Float(RECT.left, RECT.left + RECT.width) };
-            const auto Y { misc::random::Float(RECT.top, RECT.top + RECT.height) };
-            startingPosV = sf::Vector2f(X, Y);
-
-            if (IsPosTooCloseToAnyAvatars(startingPosV) == false)
-            {
-                return;
-            }
-
-        } while (++attemptCounter < ATTEMPT_COUNT_MAX);
-
-        // no position found so set everything to invalid
-        walkRectsIndex = WALK_RECTS.size();
-        startingPosV = sf::Vector2f(-1.0f, -1.0f);
+        return std::make_tuple(false, 0, sf::Vector2f());
     }
 
     void Map::StopWalkSfxIfValid()
@@ -608,8 +612,8 @@ namespace map
 
     bool Map::DoesRectCollideWithMap(const sf::FloatRect & RECT) const
     {
-        // TEMP TODO REMOVE AFTER TESTING run all three collision detection algorithms so that each
-        // can be timed
+        // TEMP TODO REMOVE AFTER TESTING run all three collision detection algorithms so that
+        // each can be timed
 
         //// determine if the player's new position collides with a map object
         //// use naive algorithm if the collision rect count is low enough
@@ -676,6 +680,22 @@ namespace map
     bool Map::DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const
     {
         return quadTree_.DoesRectCollide(RECT);
+    }
+
+    bool Map::DoesRectCollideWithNPCs(const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const
+    {
+        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
+        {
+            const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
+                NPC_PTR_MODEL_PAIR.second) };
+
+            if (AVATAR_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool Map::DoesAvatarAtRectCollideWithNPCs(

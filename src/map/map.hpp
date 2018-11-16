@@ -26,6 +26,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 
 #include <memory>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
@@ -103,23 +104,14 @@ namespace map
 
         void UpdateWalkSfx();
 
-        void ResetNonPlayers();
+        void ResetNonPlayers(const sf::Vector2f & PLAYER_START_POS_V);
 
-        void AddNonPlayerAvatar(const game::NpcPtr_t);
+        void AddNonPlayerAvatar(const game::NpcPtr_t, const sf::Vector2f & PLAYER_START_POS_V);
 
         const sf::Sprite GetNpcDefaultPoseSprite(const game::NpcPtr_t) const;
 
-        bool IsPosTooCloseToAvatar(
-            const sf::Vector2f & POS_V,
-            const avatar::Model & AVATAR,
-            const float DISTANCE_TOO_CLOSE) const;
-
-        bool IsPosTooCloseToAnyAvatars(const sf::Vector2f & POS_V) const;
-
-        void FindLocationToPlaceAvatar(
-            const FloatRectVec_t & WALK_RECTS,
-            std::size_t & walkRectsIndex,
-            sf::Vector2f & startingPosV);
+        const std::tuple<bool, std::size_t, sf::Vector2f> PickRandomLocationToPlaceAvatar(
+            const FloatRectVec_t & WALK_RECTS, const sf::Vector2f & PLAYER_START_POS_V) const;
 
         void StopWalkSfxIfValid();
 
@@ -127,6 +119,8 @@ namespace map
         bool DoesRectCollideWithMap_UsingAlgorithm_Naive(const sf::FloatRect & RECT) const;
         bool DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const;
         bool DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const;
+
+        bool DoesRectCollideWithNPCs(const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const;
 
         bool DoesAvatarAtRectCollideWithNPCs(
             const avatar::Model & AVATAR, const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const;

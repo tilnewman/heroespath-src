@@ -24,23 +24,23 @@ namespace game
         const avatar::Avatar::Enum AVATAR,
         const interact::talk::CategoryVec_t & CONV_CATEGORIES,
         const interact::talk::Mood CONV_MOOD,
-        const std::size_t WALK_BOUNDS_INDEX)
+        const std::size_t WALK_BOUNDS_SET_INDEX)
         : avatar_(AVATAR)
         , conversationCategories_(CONV_CATEGORIES)
         , conversationMood_(CONV_MOOD)
         , conversation_(MakeNewRandomConversation())
-        , walkBoundsIndex_(WALK_BOUNDS_INDEX)
+        , walkBoundsSetIndex_(WALK_BOUNDS_SET_INDEX)
     {}
 
     Npc::Npc(
         const avatar::Avatar::Enum AVATAR,
         const interact::NpcConversation & CONVERSATION,
-        const std::size_t WALK_BOUNDS_INDEX)
+        const std::size_t WALK_BOUNDS_SET_INDEX)
         : avatar_(AVATAR)
         , conversationCategories_()
         , conversationMood_(interact::talk::Mood::Kind)
         , conversation_(CONVERSATION)
-        , walkBoundsIndex_(WALK_BOUNDS_INDEX)
+        , walkBoundsSetIndex_(WALK_BOUNDS_SET_INDEX)
     {}
 
     bool Npc::ApplyConversationResponse(const interact::Buttons::Enum BUTTON)
@@ -77,7 +77,7 @@ namespace game
 
         ss << "Npc={avatar=" << avatar::Avatar::ToString(avatar_) << ", conv_mood="
            << ((conversationMood_ == interact::talk::Mood::Kind) ? "kind" : "mean")
-           << ", walk_bounds_index=" << walkBoundsIndex_ << ", conv_categories=";
+           << ", walk_bounds_set_index=" << walkBoundsSetIndex_ << ", conv_categories=";
 
         for (const auto CONV_CAT : conversationCategories_)
         {

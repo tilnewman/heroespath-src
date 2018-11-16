@@ -33,11 +33,11 @@ namespace game
             const avatar::Avatar::Enum AVATAR = avatar::Avatar::Count,
             const interact::talk::CategoryVec_t & CONV_CATEGORIES = interact::talk::CategoryVec_t(),
             const interact::talk::Mood CONV_MOOD = interact::talk::Mood::Kind,
-            const std::size_t WALK_BOUNDS_INDEX = 0);
+            const std::size_t WALK_BOUNDS_SET_INDEX = 0);
 
         Npc(const avatar::Avatar::Enum,
             const interact::NpcConversation &,
-            const std::size_t WALK_BOUNDS_INDEX);
+            const std::size_t WALK_BOUNDS_SET_INDEX);
 
         avatar::Avatar::Enum AvatarImage() const { return avatar_; }
 
@@ -46,7 +46,7 @@ namespace game
         // returns true if the conversation ended or restarted
         bool ApplyConversationResponse(const interact::Buttons::Enum);
 
-        std::size_t WalkBoundsIndex() const { return walkBoundsIndex_; }
+        std::size_t WalkBoundsSetIndex() const { return walkBoundsSetIndex_; }
 
         void RemakeConversationIfRandom();
 
@@ -65,7 +65,7 @@ namespace game
         interact::talk::CategoryVec_t conversationCategories_;
         interact::talk::Mood conversationMood_;
         interact::NpcConversation conversation_;
-        std::size_t walkBoundsIndex_;
+        std::size_t walkBoundsSetIndex_;
 
     private:
         friend class boost::serialization::access;
@@ -76,7 +76,7 @@ namespace game
             ar & conversationCategories_;
             ar & conversation_;
             ar & conversationMood_;
-            ar & walkBoundsIndex_;
+            ar & walkBoundsSetIndex_;
         }
     };
 
