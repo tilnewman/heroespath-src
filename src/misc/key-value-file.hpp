@@ -16,7 +16,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/type_index.hpp>
 
-#include <iostream> //for std::ios
 #include <string>
 #include <vector>
 
