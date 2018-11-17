@@ -98,6 +98,10 @@ namespace misc
         outlier_ratio = OUTLIERS_IGNORE_RATIO;
         if ((OUTLIERS_IGNORE_RATIO > 0.0) && (durationCountsToUse.size() > 2))
         {
+            // find min/max of outliers to be removed
+            outlier_min = durationCountsToUse.front();
+            outlier_max = durationCountsToUse.back();
+
             // start with the outlierThrowOutCount based only on the ratio
             auto outlierThrowOutCount = static_cast<std::size_t>(
                 OUTLIERS_IGNORE_RATIO * static_cast<double>(durationCountsToUse.size()));
@@ -115,25 +119,21 @@ namespace misc
                 outlierThrowOutCount = 1;
             }
 
+            // remove outliers
             const auto ITER_TO_FIRST_KEPT { std::begin(durationCountsToUse)
                                             + static_cast<std::ptrdiff_t>(outlierThrowOutCount) };
 
-            const auto ITER_TO_LOWEST_OUTLIER_REMOVED { std::begin(durationCountsToUse)
-                                                        + static_cast<std::ptrdiff_t>(
-                                                            (durationCountsToUse.size() - 1)
-                                                            - outlierThrowOutCount) };
-
-            // find min/max of outliers to be removed
-            outlier_min = *std::min_element(std::begin(durationCountsToUse), ITER_TO_FIRST_KEPT);
-
-            outlier_max
-                = *std::max_element(ITER_TO_LOWEST_OUTLIER_REMOVED, std::end(durationCountsToUse));
-
-            // remove outliers
             durationCountsToUse.erase(std::begin(durationCountsToUse), ITER_TO_FIRST_KEPT);
 
-            durationCountsToUse.erase(
-                ITER_TO_LOWEST_OUTLIER_REMOVED, std::end(durationCountsToUse));
+            while (!durationCountsToUse.empty())
+            {
+                durationCountsToUse.pop_back();
+
+                if (--outlierThrowOutCount == 0)
+                {
+                    break;
+                }
+            }
         }
 
         num = durationCountsToUse.size();
