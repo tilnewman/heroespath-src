@@ -16,6 +16,7 @@
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/callback.hpp"
 #include "misc/not-null.hpp"
+#include "misc/timing.hpp"
 
 #include <SFML/System/Clock.hpp>
 
@@ -91,6 +92,7 @@ namespace game
         void ConsumeAndIgnoreStrayEvents();
 
         void Draw();
+        void Display();
 
     private:
         ActiveStages & stages_;
@@ -102,6 +104,11 @@ namespace game
         sf::Vector2i prevMousePosV_;
         MouseThisFrame frameMouseInfo_;
         std::vector<sf::Event> toLogEvents_;
+        misc::TimeTrials componentFramerateTrials_;
+        std::size_t componentFrameRateTrialsIndexAudio_;
+        std::size_t componentFrameRateTrialsIndexUpdate_;
+        std::size_t componentFrameRateTrialsIndexDraw_;
+        std::size_t componentFrameRateTrialsIndexDisplay_;
     };
 
 } // namespace game

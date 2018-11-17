@@ -17,7 +17,6 @@
 #include "gui/sound-manager.hpp"
 #include "misc/callback.hpp"
 #include "misc/log-macros.hpp"
-#include "misc/timing.hpp"
 #include "sfutil/event.hpp"
 #include "stage/stage-base.hpp"
 
@@ -39,6 +38,11 @@ namespace game
         , prevMousePosV_(gui::Display::Instance()->GetMousePosition())
         , frameMouseInfo_(false, sf::Vector2i())
         , toLogEvents_()
+        , componentFramerateTrials_("ComponentFramerate", TimeRes::Micro, true, 200, 0.0)
+        , componentFrameRateTrialsIndexAudio_(componentFramerateTrials_.AddCollecter("Audio"))
+        , componentFrameRateTrialsIndexUpdate_(componentFramerateTrials_.AddCollecter("Update"))
+        , componentFrameRateTrialsIndexDraw_(componentFramerateTrials_.AddCollecter("Draw"))
+        , componentFrameRateTrialsIndexDisplay_(componentFramerateTrials_.AddCollecter("Display"))
     {
         toLogEvents_.reserve(10);
         iStatus_.SetLoopRunning(true);
@@ -93,7 +97,7 @@ namespace game
                     // exits
                     stages_.HandlePopupResponseCallback();
 
-                    gui::Display::Instance()->DisplayFrameBuffer();
+                    Display();
                 }
 
                 // if (toLogEvents_.empty() == false)
@@ -107,7 +111,8 @@ namespace game
             }
 
             framerateTrials.EndAllContests();
-        } // namespace game
+            componentFramerateTrials_.EndAllContests();
+        }
         catch (const std::exception & EXCEPTION)
         {
             M_HP_LOG_FAT(
@@ -410,6 +415,8 @@ namespace game
 
     void Loop::UpdateTimeStages(const float FRAME_TIME_SEC)
     {
+        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexUpdate_);
+
         auto handleTimeUpdate = [FRAME_TIME_SEC](stage::IStagePtr_t iStagePtr) {
             iStagePtr->UpdateTime(FRAME_TIME_SEC);
             return boost::none;
@@ -421,6 +428,8 @@ namespace game
 
     void Loop::Draw()
     {
+        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDraw_);
+
         auto handleDrawing = [](stage::IStagePtr_t iStagePtr) {
             gui::Display::Instance()->DrawStage(iStagePtr);
             return boost::none;
@@ -441,6 +450,12 @@ namespace game
         }
     }
 
+    void Loop::Display()
+    {
+        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexDisplay_);
+        gui::Display::Instance()->DisplayFrameBuffer();
+    }
+
     void Loop::ExecuteNextTest()
     {
         auto handlePerformNextTest = [](stage::IStagePtr_t iStagePtr) {
@@ -453,6 +468,7 @@ namespace game
 
     void Loop::UpdateTimeAudio(const float FRAME_TIME_SEC)
     {
+        M_HP_SCOPED_TIME_TRIAL(componentFramerateTrials_, componentFrameRateTrialsIndexAudio_);
         gui::SoundManager::Instance()->UpdateTime(FRAME_TIME_SEC);
     }
 
