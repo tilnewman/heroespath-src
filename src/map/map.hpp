@@ -65,12 +65,8 @@ namespace map
 
         bool MovePlayer(const gui::Direction::Enum);
 
+        // does not check for collision with map elements because NPCs stay within their walk bounds
         void MoveNonPlayers();
-
-        void MoveNonPlayer(
-            avatar::Model & npcAvatar,
-            const float MOVE_AMOUNT,
-            const sf::FloatRect & PLAYER_RECT_FOR_COLL_DET);
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -88,14 +84,11 @@ namespace map
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
 
     private:
-        bool DoesPlayerCollideAfterMove(
-            const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT);
+        // returns true on collision
+        bool UpdatePlayerToNonPlayerCollisionStatus(const sf::FloatRect & MOVED_PLAYER_RECT);
 
         const sf::Vector2f FindPlayerStartPos(
             const TransitionVec_t &, const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
-
-        bool DetectCollisionWithExitTransitionAndHandle(
-            const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT);
 
         void HandleExitTransition(const Transition &);
 
@@ -104,14 +97,14 @@ namespace map
 
         void UpdateWalkSfx();
 
-        void ResetNonPlayers(const sf::Vector2f & PLAYER_START_POS_V);
+        void ResetNonPlayers();
 
-        void AddNonPlayerAvatar(const game::NpcPtr_t, const sf::Vector2f & PLAYER_START_POS_V);
+        void AddNonPlayerAvatar(const game::NpcPtr_t);
 
         const sf::Sprite GetNpcDefaultPoseSprite(const game::NpcPtr_t) const;
 
-        const std::tuple<bool, std::size_t, sf::Vector2f> PickRandomLocationToPlaceAvatar(
-            const FloatRectVec_t & WALK_RECTS, const sf::Vector2f & PLAYER_START_POS_V) const;
+        const std::tuple<bool, std::size_t, sf::Vector2f>
+            PickRandomLocationToPlaceAvatar(const FloatRectVec_t & WALK_RECTS) const;
 
         void StopWalkSfxIfValid();
 
@@ -120,29 +113,26 @@ namespace map
         bool DoesRectCollideWithMap_UsingAlgorithm_Quad(const sf::FloatRect & RECT) const;
         bool DoesRectCollideWithMap_UsingAlgorithm_Grid(const sf::FloatRect & RECT) const;
 
-        bool DoesRectCollideWithNPCs(const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const;
-
-        bool DoesAvatarAtRectCollideWithNPCs(
-            const avatar::Model & AVATAR, const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const;
-
         const sf::Vector2f
             MoveVector(const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT) const;
-
-        const sf::FloatRect AvatarCenteredMapRect(const avatar::Model & AVATAR) const;
 
         // Both the images used to draw the map and the lpc avatar images used to draw the
         // avatars have empty/transparent borders.  Taken together they cause avatars to
         // collide with stuff on the map before they actually touch it.  So this is corrected here
         // by shrinking the size of the bounding rect used in collision detection.
         const sf::FloatRect
-            ResizeAvatarRectForCollisionDetection(const sf::FloatRect & RECT_ORIG) const;
+            AdjustRectForCollisionDetectionWithMap(const sf::FloatRect & RECT) const;
 
-        const sf::FloatRect AvatarRectForCollisionDetection(const avatar::Model & AVATAR) const;
+        // Avatars can walk in front and behind each other so only the bottom of the rect counts
+        // when detecting this kind of collision
+        const sf::FloatRect
+            AdjustRectForCollisionDetectionWithNonPlayers(const sf::FloatRect & RECT) const;
 
-        const sf::FloatRect AvatarRectForCollisionDetectionAfterMove(
-            const avatar::Model & AVATAR,
-            const gui::Direction::Enum DIRECTION,
-            const float MOVE_AMOUNT) const;
+        void SetupAvatarSpritesForDrawing();
+
+        bool DoesAvatarAtRectCollideWithAnyNonPlayers(
+            const std::size_t AVATAR_ID,
+            const sf::FloatRect & RECT_ADJ_FOR_COLL_DET_WITH_NPCS) const;
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;
@@ -176,6 +166,8 @@ namespace map
         gui::sound_effect::Enum walkSfx_;
         bool walkSfxIsWalking_;
         misc::IntervalTimer sfxTimer_;
+
+        const float AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

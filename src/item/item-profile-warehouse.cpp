@@ -42,6 +42,7 @@ namespace item
         , hasInitialized_(false)
     {
         M_HP_LOG_DBG("Subsystem Construction: ItemProfileWarehouse");
+        questItemProfilesMap_.Reserve(1024);
     }
 
     ItemProfileWarehouse::~ItemProfileWarehouse()

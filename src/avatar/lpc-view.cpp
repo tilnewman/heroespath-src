@@ -29,7 +29,7 @@ namespace avatar
     const float LPCView::FRAME_DURATION_SEC_BLINK_MIN_ { 0.025f };
     const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_ { 0.20f };
 
-    LPCView::LPCView(const Avatar::Enum WHICH_AVATAR, const sf::Vector2f & CENTERED_MAP_POS_V)
+    LPCView::LPCView(const Avatar::Enum WHICH_AVATAR)
         : whichAvatar_(WHICH_AVATAR)
         , cachedTexture_(PathWrapper(Avatar::ImagePath(whichAvatar_)))
         , sprite_(cachedTexture_.Get())
@@ -45,15 +45,12 @@ namespace avatar
         M_HP_ASSERT_OR_LOG_AND_THROW(
             (ACTUAL_SIZE_V == REQUIRED_SIZE_V),
             "avatar::LPCView::LPCView(avatar_enum="
-                << WHICH_AVATAR << ", centered_map_pos=" << CENTERED_MAP_POS_V
-                << ") but the image loaded was not the required size of " << REQUIRED_SIZE_V
-                << ", instead it was " << ACTUAL_SIZE_V << ".");
+                << WHICH_AVATAR << ") but the image loaded was not the required size of "
+                << REQUIRED_SIZE_V << ", instead it was " << ACTUAL_SIZE_V << ".");
 
         SetupSprite();
-        sprite_.setPosition(CENTERED_MAP_POS_V);
+        SetupDefaultPoseSprite();
     }
-
-    const sf::Vector2f LPCView::MapSize() const { return sfutil::Size(sprite_); }
 
     void LPCView::Set(const Pose::Enum POSE, const gui::Direction::Enum DIRECTION)
     {
@@ -94,13 +91,15 @@ namespace avatar
         return false;
     }
 
-    void LPCView::Move(const sf::Vector2f & MOVE_V) { sprite_.move(MOVE_V); }
-
-    const sf::Sprite LPCView::DefaultPoseSprite() const
+    void LPCView::SetCenteredPos(const sf::Vector2f & NEW_POS_V)
     {
-        return sf::Sprite(
-            cachedTexture_.Get(),
-            FrameRect(FrameNumbers(Pose::Standing, gui::Direction::Right).at(0)));
+        sprite_.setPosition(NEW_POS_V);
+        sprite_.move(sfutil::Size(sprite_) * -0.5f);
+    }
+
+    const sf::IntRect LPCView::GetStandingRightFrameRect()
+    {
+        return FrameRect(FrameNumbers(Pose::Standing, gui::Direction::Right).at(0));
     }
 
     const FrameNumVec_t
@@ -340,6 +339,16 @@ namespace avatar
 
         const auto SCALE { Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
+    }
+
+    void LPCView::SetupDefaultPoseSprite()
+    {
+        defaultPoseSprite_ = sf::Sprite(
+            cachedTexture_.Get(),
+            FrameRect(FrameNumbers(Pose::Standing, gui::Direction::Right).at(0)));
+
+        const auto SCALE { Avatar::Scale(Avatar::Name(whichAvatar_)) };
+        defaultPoseSprite_.setScale(SCALE, SCALE);
     }
 
 } // namespace avatar

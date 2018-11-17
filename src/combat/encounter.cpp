@@ -61,6 +61,7 @@ namespace combat
         , treasureFactory_()
     {
         M_HP_LOG_DBG("Subsystem Construction: Encounter");
+        turnInfoMap_.Reserve(1024);
     }
 
     Encounter::~Encounter()

@@ -26,27 +26,23 @@ namespace avatar
     class LPCView
     {
     public:
-        explicit LPCView(const Avatar::Enum, const sf::Vector2f & CENTERED_MAP_POS_V);
+        explicit LPCView(const Avatar::Enum);
+
+        LPCView(const LPCView &) = default;
+        LPCView(LPCView &&) = default;
+        LPCView & operator=(const LPCView &) = default;
+        LPCView & operator=(LPCView &&) = default;
 
         gui::Direction::Enum Direction() const { return animation_.direction; }
         Pose::Enum WhichPose() const { return animation_.pose; }
-        const sf::Sprite & SpriteRef() const { return sprite_; }
+        const sf::Sprite & CurrentSprite() const { return sprite_; }
         Avatar::Enum WhichAvatar() const { return whichAvatar_; }
-
-        // see comment below on sf::Sprite member variable about these coordinates
-        const sf::Vector2f CenteredMapPos() const { return sprite_.getPosition(); }
-        void CenteredMapPos(const sf::Vector2f & NEW_POS_V) { sprite_.setPosition(NEW_POS_V); }
-        const sf::Vector2f MapSize() const;
+        const sf::Sprite & DefaultPoseSprite() const { return defaultPoseSprite_; }
 
         void Set(const Pose::Enum, const gui::Direction::Enum);
         bool Update(const float TIME_ELAPSED);
-        void Move(const sf::Vector2f & MOVE_V);
-        const sf::Sprite DefaultPoseSprite() const;
-
-        static const sf::IntRect GetStandingRightFrameRect()
-        {
-            return FrameRect(FrameNumbers(Pose::Standing, gui::Direction::Right).at(0));
-        }
+        void SetCenteredPos(const sf::Vector2f & NEW_POS_V);
+        static const sf::IntRect GetStandingRightFrameRect();
 
     private:
         static const FrameNumVec_t FrameNumbers(const Pose::Enum, const gui::Direction::Enum);
@@ -54,6 +50,7 @@ namespace avatar
         const Animation CreateAnimation(const Pose::Enum, const gui::Direction::Enum) const;
         float FrameDuration(const Pose::Enum) const;
         void SetupSprite();
+        void SetupDefaultPoseSprite();
 
     private:
         static const int CELL_SIZE_;
@@ -67,11 +64,8 @@ namespace avatar
         Avatar::Enum whichAvatar_;
         gui::CachedTexture cachedTexture_;
 
-        // sprite_.getPosition() is not top-left corner in screen/offscreen/map coordinates.
-        // Instead, sprite_.getPosition() is the centered map coordinates position.  See
-        // MapDisplay::DrawCharacterImages() for where the translation from centered map coordinates
-        // to top-left offscreen coordinates occurs.
         sf::Sprite sprite_;
+        sf::Sprite defaultPoseSprite_;
 
         Animation animation_;
         float frameTimerSec_;

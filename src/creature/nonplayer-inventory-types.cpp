@@ -32,6 +32,10 @@ namespace creature
             , mat_map_pri(MAT_CH_MAP_PRI)
             , mat_map_sec(MAT_CH_MAP_SEC)
         {
+            num_owned_map.Reserve(32);
+            mat_map_pri.Reserve(32);
+            mat_map_sec.Reserve(32);
+
             if (num_owned_map.Empty())
             {
                 num_owned_map[0] = 1.0f;
@@ -48,6 +52,10 @@ namespace creature
             , mat_map_pri(MAT_CH_MAP_PRI)
             , mat_map_sec(MAT_CH_MAP_SEC)
         {
+            num_owned_map.Reserve(32);
+            mat_map_pri.Reserve(32);
+            mat_map_sec.Reserve(32);
+
             SetCountChanceSingle(CHANCE_OWNED);
         }
 
@@ -61,6 +69,10 @@ namespace creature
             , mat_map_pri()
             , mat_map_sec()
         {
+            num_owned_map.Reserve(32);
+            mat_map_pri.Reserve(32);
+            mat_map_sec.Reserve(32);
+
             SetCountChanceSingle(CHANCE_OWNED);
             mat_map_pri[MATERIAL_PRIMARY] = 1.0f;
             mat_map_sec[MATERIAL_SECONDARY] = 1.0f;
@@ -148,7 +160,9 @@ namespace creature
             , boots(BOOTS, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
             , vest(VEST, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
             , cover_map(COVER_CHANCE_MAP)
-        {}
+        {
+            cover_map.Reserve(32);
+        }
 
         item::armor::cover_type::Enum ClothingChances::RandomCoverType() const
         {
@@ -193,7 +207,9 @@ namespace creature
             const MaterialChanceMap_t & MAT_CH_MAP_SEC)
             : ItemChances(CHANCE_OWNED, 1.0f, MAT_CH_MAP_PRI, MAT_CH_MAP_SEC)
             , type_map(ARMOR_TYPE_CH_MAP)
-        {}
+        {
+            type_map.Reserve(32);
+        }
 
         ArmorItemChances::ArmorItemChances(
             const float CHANCE_OWNED,
@@ -203,6 +219,7 @@ namespace creature
             : ItemChances(CHANCE_OWNED, 1.0f, MATERIAL_PRIMARY, MATERIAL_SECONDARY)
             , type_map()
         {
+            type_map.Reserve(32);
             type_map[ARMOR_BASE_TYPE] = 1.0f;
         }
 
@@ -225,7 +242,11 @@ namespace creature
             , helm_map(HELM_MAP)
             , cover_map(COVER_MAP)
             , shield_map(SHIELD_MAP)
-        {}
+        {
+            helm_map.Reserve(32);
+            cover_map.Reserve(32);
+            shield_map.Reserve(32);
+        }
 
         KnifeItemChances::KnifeItemChances(
             const float CHANCE_OWNED,
@@ -260,7 +281,9 @@ namespace creature
             , weapon(WEAPON_CHANCES)
             , clothes(CLOTHES_CHANCES)
             , misc_items(MISC_ITEM_CHANCES)
-        {}
+        {
+            misc_items.Reserve(32);
+        }
 
         WeaponChances::WeaponChances(
             const bool HAS_CLAWS,
@@ -289,7 +312,14 @@ namespace creature
             , sword_map(SWORD_MAP)
             , projectile_map(PROJECTILE_MAP)
             , bladedstaff_map(BLADEDSTAFF_MAP)
-        {}
+        {
+            axe_map.Reserve(32);
+            club_map.Reserve(32);
+            whip_map.Reserve(32);
+            sword_map.Reserve(32);
+            projectile_map.Reserve(32);
+            bladedstaff_map.Reserve(32);
+        }
 
         const std::string wealth_type::ToString(const wealth_type::Enum WEALTH_TYPE)
         {

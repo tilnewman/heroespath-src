@@ -27,6 +27,8 @@ namespace heroespath
 {
 namespace avatar
 {
+    const std::size_t Model::ID_INVALID_ { 0 };
+    std::size_t Model::nextValidId_ { 1 };
 
     const float Model::NUM_BLINKS_TIME_WINDOW_SEC_ { 1.5f };
     const std::size_t Model::NUM_BLINKS_WITHIN_TIME_WINDOW_ { 3 };
@@ -38,10 +40,7 @@ namespace avatar
     const float Model::WALKING_INTO_DURATION_SEC_ { 0.5f };
 
     Model::Model(const Avatar::Enum AVATAR_ENUM)
-        : view_(
-            AVATAR_ENUM,
-            sf::Vector2f(
-                0.0f, 0.0f)) // see Map::Load() and Map::Move() for where player model pos is set
+        : view_(AVATAR_ENUM)
         , blinkTimerSec_(0.0f)
         , timeUntilNextBlinkSec_(RandomBlinkDelay())
         , blinkTimes_()
@@ -55,14 +54,16 @@ namespace avatar
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
+        , mapPosV_(0.0f, 0.0f) // see Map::Load() and Map::Move() for where player's map pos is set
+        , id_(nextValidId_++)
     {}
 
     Model::Model(
         const Avatar::Enum AVATAR_ENUM,
         const std::vector<sf::FloatRect> & WALK_RECTS,
         const std::size_t CURRENT_WALK_RECT_INDEX,
-        const sf::Vector2f & CURRENT_CENTERED_MAP_POS_V)
-        : view_(AVATAR_ENUM, CURRENT_CENTERED_MAP_POS_V)
+        const sf::Vector2f & CENTERED_MAP_POS_V)
+        : view_(AVATAR_ENUM)
         , blinkTimerSec_(0.0f)
         , timeUntilNextBlinkSec_(RandomBlinkDelay())
         , blinkTimes_()
@@ -76,7 +77,11 @@ namespace avatar
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
-    {}
+        , mapPosV_(CENTERED_MAP_POS_V)
+        , id_(nextValidId_++)
+    {
+        view_.SetCenteredPos(mapPosV_);
+    }
 
     void Model::Update(const float TIME_ELAPSED)
     {
@@ -87,6 +92,18 @@ namespace avatar
         {
             UpdateWalkingAction(TIME_ELAPSED);
         }
+    }
+
+    void Model::MapPos(const sf::Vector2f & NEW_POS_V)
+    {
+        mapPosV_ = NEW_POS_V;
+        UpdateSpritePos();
+    }
+
+    void Model::Move(const sf::Vector2f & MOVE_V)
+    {
+        mapPosV_ += MOVE_V;
+        UpdateSpritePos();
     }
 
     void Model::SetWalkAnim(const gui::Direction::Enum DIRECTION, const bool WILL_START)
@@ -107,8 +124,7 @@ namespace avatar
         };
 
         dirVec.erase(
-            std::remove(std::begin(dirVec), std::end(dirVec), GetView().Direction()),
-            std::end(dirVec));
+            std::remove(std::begin(dirVec), std::end(dirVec), view_.Direction()), std::end(dirVec));
 
         const auto NEW_DIRECTION { misc::Vector::SelectRandom(dirVec) };
 
@@ -175,9 +191,23 @@ namespace avatar
         return boost::none;
     }
 
+    void Model::SetIsNextToPlayer(
+        const bool IS_NEXT_TO_PLAYER,
+        const sf::Vector2f & PLAYER_POS_V,
+        const bool WILL_FORCE_TURN_TO_FACE_PLAYER)
+    {
+        if (WILL_FORCE_TURN_TO_FACE_PLAYER
+            || ((isNextToPlayer_ == false) && (IS_NEXT_TO_PLAYER == true)))
+        {
+            TurnToFacePos(PLAYER_POS_V);
+        }
+
+        isNextToPlayer_ = IS_NEXT_TO_PLAYER;
+    }
+
     void Model::TurnToFacePos(const sf::Vector2f & POS_V)
     {
-        const auto DIRECTION { sfutil::DirectionFromAToB(CenteredMapPos(), POS_V) };
+        const auto DIRECTION { sfutil::DirectionFromAToB(mapPosV_, POS_V) };
 
         if ((Pose::Standing == action_) && (view_.Direction() != DIRECTION))
         {
@@ -289,12 +319,10 @@ namespace avatar
         }
         else
         {
-            const auto CURRENT_POS_V { CenteredMapPos() };
-
             std::vector<std::size_t> possibleWalkRectIndexes_;
             for (std::size_t i(0); i < walkRects_.size(); ++i)
             {
-                if (walkRects_[i].contains(CURRENT_POS_V))
+                if (walkRects_[i].contains(mapPosV_))
                 {
                     possibleWalkRectIndexes_.emplace_back(i);
                 }
@@ -345,7 +373,7 @@ namespace avatar
     gui::Direction::Enum
         Model::WalkDirection(const gui::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
-        const auto CURRENT_POS_V { CenteredMapPos() };
+        const auto CURRENT_POS_V { mapPosV_ };
 
         if (DIRECTION_TO_MAINTAIN == gui::Direction::Count)
         {
@@ -427,6 +455,8 @@ namespace avatar
             }
         }
     }
+
+    void Model::UpdateSpritePos() { view_.SetCenteredPos(mapPosV_); }
 
 } // namespace avatar
 } // namespace heroespath

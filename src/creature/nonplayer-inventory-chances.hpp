@@ -68,7 +68,9 @@ namespace creature
                     : count(0)
                     , // this default value intentionally invalid
                     chanceMap()
-                {}
+                {
+                    chanceMap.Reserve(32);
+                }
 
                 std::size_t count;
                 misc::VectorMap<item::weapon::WeaponTypeWrapper, float> chanceMap;

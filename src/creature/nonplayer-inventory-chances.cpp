@@ -86,6 +86,8 @@ namespace creature
             , roleWeaponChanceMap_()
         {
             M_HP_LOG_DBG("Subsystem Construction: ChanceFactory");
+            roleArmorChanceMap_.Reserve(4096);
+            roleWeaponChanceMap_.Reserve(4096);
         }
 
         ChanceFactory::~ChanceFactory() { M_HP_LOG_DBG("Subsystem Destruction: ChanceFactory"); }
@@ -543,6 +545,7 @@ namespace creature
                     weaponChances.knife.is_dagger = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger();
 
                     MaterialChanceMap_t typicalKnifePrimaryMaterials;
+                    typicalKnifePrimaryMaterials.Reserve(32);
                     if (PROFILE.complexityType == complexity_type::Simple)
                     {
                         typicalKnifePrimaryMaterials[item::material::Stone] = 0.75f;
@@ -583,6 +586,7 @@ namespace creature
                         = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsQuarterstaff();
 
                     MaterialChanceMap_t typicalStaffPrimaryMaterials;
+                    typicalStaffPrimaryMaterials.Reserve(32);
                     typicalStaffPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     PopulateWeaponMaterials(
@@ -596,6 +600,7 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalAxePrimaryMaterials;
+                    typicalAxePrimaryMaterials.Reserve(32);
                     typicalAxePrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsAxe())
@@ -633,6 +638,7 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
+                    typicalBladedStaffPrimaryMaterials.Reserve(32);
                     typicalBladedStaffPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBladedStaff())
@@ -671,6 +677,7 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalClubPrimaryMaterials;
+                    typicalClubPrimaryMaterials.Reserve(32);
                     typicalClubPrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsClub())
@@ -708,6 +715,7 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalProjectilePrimaryMaterials;
+                    typicalProjectilePrimaryMaterials.Reserve(32);
                     typicalProjectilePrimaryMaterials[item::material::Wood] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsProjectile())
@@ -746,6 +754,7 @@ namespace creature
 
                 {
                     MaterialChanceMap_t typicalSwordPrimaryMaterials;
+                    typicalSwordPrimaryMaterials.Reserve(32);
                     typicalSwordPrimaryMaterials[item::material::Steel] = 1.0f;
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsSword())
@@ -785,6 +794,7 @@ namespace creature
                     auto whipMaterialChanceMapMaker {
                         [](const item::weapon::whip_type::Enum WHIP_TYPE) {
                             MaterialChanceMap_t typicalWhipPrimaryMaterials;
+                            typicalWhipPrimaryMaterials.Reserve(32);
 
                             if (WHIP_TYPE == item::weapon::whip_type::Bullwhip)
                             {
@@ -1413,6 +1423,7 @@ namespace creature
         {
             auto cumulativeChance { 0.0f };
             MaterialChanceMap_t materialChanceMap;
+            materialChanceMap.Reserve(64);
             auto materialWithRemainingChance(item::material::Nothing);
 
             for (const auto NEXT_MATERIAL : MATERIALS_VEC)
@@ -1634,6 +1645,7 @@ namespace creature
             const Profile &, const CreaturePtr_t, const bool INCLUDE_WOOD) const
         {
             MaterialChanceMap_t materialChanceMap;
+            materialChanceMap.Reserve(64);
 
             if (INCLUDE_WOOD)
             {

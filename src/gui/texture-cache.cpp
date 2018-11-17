@@ -41,6 +41,8 @@ namespace gui
         , stageName_("")
     {
         M_HP_LOG_DBG("Subsystem Construction: TextureCache");
+        pathOptToIndexesMap_.Reserve(4096);
+        stageToCountDataMap_.Reserve(16);
         Reset();
     }
 

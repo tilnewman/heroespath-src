@@ -39,6 +39,11 @@ namespace game
             const interact::NpcConversation &,
             const std::size_t WALK_BOUNDS_SET_INDEX);
 
+        Npc(const Npc &) = default;
+        Npc(Npc &&) = default;
+        Npc & operator=(const Npc &) = default;
+        Npc & operator=(Npc &&) = default;
+
         avatar::Avatar::Enum AvatarImage() const { return avatar_; }
 
         const interact::NpcConversationPoint ConversationPoint() { return conversation_.Current(); }

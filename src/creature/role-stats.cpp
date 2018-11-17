@@ -25,6 +25,8 @@ namespace creature
     {
         if (roleStatSetMap_.Empty())
         {
+            roleStatSetMap_.Reserve(64);
+
             for (EnumUnderlying_t i(0); i < role::PlayerRoleCount; ++i)
             {
                 const auto NEXT_ENUM { static_cast<role::Enum>(i) };

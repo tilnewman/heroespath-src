@@ -73,6 +73,7 @@ namespace enum_helpers
         static void ClearAndPopulateNameToValueMap()
         {
             nameToValueMap_.Clear();
+            nameToValueMap_.Reserve(256);
 
             for (EnumUnderlying_t index(0); index < EnumWrapper_t::Count; ++index)
             {
@@ -185,6 +186,7 @@ namespace enum_helpers
         static void ClearAndPopulateNameToBitFlagMap()
         {
             nameToBitFlagMap_.Clear();
+            nameToBitFlagMap_.Reserve(4096);
 
             EnumUnderlying_t flag { 1 };
 

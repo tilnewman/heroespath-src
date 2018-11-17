@@ -107,7 +107,9 @@ namespace combat
         , runAnimCombatNodePtrOpt_()
         , runAnimPosVTarget_(0.0f, 0.0f)
         , runAnimPosVOrig_(0.0f, 0.0f)
-    {}
+    {
+        shakeAnimInfoMap_.Reserve(32);
+    }
 
     void CombatAnimation::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {

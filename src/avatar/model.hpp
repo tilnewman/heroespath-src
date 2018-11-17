@@ -15,6 +15,7 @@
 #include "gui/direction-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
+#include "sfutil/size-and-scale.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -41,27 +42,33 @@ namespace avatar
         // use to create player Models
         explicit Model(const Avatar::Enum);
 
-        // use to create non-player Models
+        // use to create non-player (NPC) Models
         Model(
             const Avatar::Enum,
             const std::vector<sf::FloatRect> & WALK_RECTS,
             const std::size_t CURRENT_WALK_RECT_INDEX,
-            const sf::Vector2f & CURRENT_CENTERED_MAP_POS_V);
+            const sf::Vector2f & MAP_POS_V);
+
+        Model(const Model &) = default;
+        Model(Model &&) = default;
+        Model & operator=(const Model &) = default;
+        Model & operator=(Model &&) = default;
 
         void Update(const float TIME_ELAPSED);
 
-        const LPCView & GetView() const { return view_; }
-
-        void SetWalkAnim(const gui::Direction::Enum, const bool WILL_START_OR_STOP);
-
         bool IsPlayer() const { return walkRects_.empty(); }
+        bool IsWalking() const { return (Pose::Walking == action_); }
+        Pose::Enum WhichPose() const { return view_.WhichPose(); }
+        gui::Direction::Enum Direction() const { return view_.Direction(); }
+        const sf::Sprite & CurrentSprite() const { return view_.CurrentSprite(); }
+        const sf::Sprite & DefaultPoseSprite() const { return view_.DefaultPoseSprite(); }
+        const sf::Vector2f MapPos() const { return mapPosV_; }
 
-        void Move(const sf::Vector2f & MOVE_V) { view_.Move(MOVE_V); }
-
+        void MapPos(const sf::Vector2f & NEW_POS_V);
+        void Move(const sf::Vector2f & MOVE_V);
+        void SetWalkAnim(const gui::Direction::Enum, const bool WILL_START_OR_STOP);
         void StopWalking();
-
         void ChangeDirection();
-
         void MovingIntoSet(const game::NpcPtr_t);
         void MovingIntoReset();
         const game::NpcPtrOpt_t MovingIntoUpdate(const float TIME_ELAPSED);
@@ -69,44 +76,25 @@ namespace avatar
         void SetIsNextToPlayer(
             const bool IS_NEXT_TO_PLAYER,
             const sf::Vector2f & PLAYER_POS_V,
-            const bool WILL_FORCE_TURN_TO_FACE_PLAYER)
-        {
-            if (WILL_FORCE_TURN_TO_FACE_PLAYER
-                || ((isNextToPlayer_ == false) && (IS_NEXT_TO_PLAYER == true)))
-            {
-                TurnToFacePos(PLAYER_POS_V);
-            }
-
-            isNextToPlayer_ = IS_NEXT_TO_PLAYER;
-        }
-
-        bool IsWalking() const { return (Pose::Walking == action_); }
+            const bool WILL_FORCE_TURN_TO_FACE_PLAYER);
 
         // the pos given must be in centered map coordinates
         void TurnToFacePos(const sf::Vector2f &);
 
-        // see comment below in LPCView about these coordinates
-        const sf::Vector2f CenteredMapPos() const { return view_.CenteredMapPos(); }
-
-        void CenteredMapPos(const sf::Vector2f & NEW_POS_V) { view_.CenteredMapPos(NEW_POS_V); }
+        static const std::size_t ID_INVALID_;
+        std::size_t Id() const { return id_; }
 
     private:
         float RandomBlinkDelay() const;
         float RandomWalkDelay() const;
-
         void ExtendTimeUntilNextBlinkIfNeeded(const float PREV_BLINK_DELAY);
-
         void UpdateAnimationAndStopIfNeeded(const float TIME_ELAPSED);
-
         void UpdateBlinking(const float TIME_ELAPSED);
-
         void UpdateWalkingAction(const float TIME_ELAPSED);
-
         std::size_t RandomWalkRectIndex() const;
-
         const sf::Vector2f RandomWalkTarget() const;
-
         gui::Direction::Enum WalkDirection(const gui::Direction::Enum DIRECTION_TO_MAINTAIN) const;
+        void UpdateSpritePos();
 
     private:
         static const float NUM_BLINKS_TIME_WINDOW_SEC_;
@@ -132,6 +120,12 @@ namespace avatar
         float walkingIntoTimerSec_;
         game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
         bool isNextToPlayer_;
+        sf::Vector2f mapPosV_;
+
+        // comparing avatar::Models by their member variables won't work so we need a unique id
+        // number to tell them apart, and there needs to be an invalid or not-an-id number as well.
+        std::size_t id_;
+        static std::size_t nextValidId_;
     };
 
 } // namespace avatar

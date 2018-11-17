@@ -38,7 +38,9 @@ namespace gui
         , willCache_(WILL_CACHE)
         , willPlayMouseOverTickSfx_(WILL_PLAY_MOUSEOVER_TICK_SFX)
         , willDraw_(false)
-    {}
+    {
+        cacheMap_.Reserve(16);
+    }
 
     TextEntity::TextEntity(
         const std::string & NAME,
@@ -57,6 +59,8 @@ namespace gui
         , willPlayMouseOverTickSfx_(WILL_PLAY_MOUSEOVER_TICK_SFX)
         , willDraw_(false)
     {
+        cacheMap_.Reserve(16);
+
         Setup(
             POS_LEFT,
             POS_TOP,

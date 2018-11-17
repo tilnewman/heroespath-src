@@ -55,10 +55,31 @@ namespace misc
         using reverse_iterator = std::reverse_iterator<iterator>;
         using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-        VectorMap()
+        explicit VectorMap()
             : pairs_()
+        {}
+
+        VectorMap(const VectorMap &) = default;
+        VectorMap(VectorMap &&) = default;
+        VectorMap & operator=(const VectorMap &) = default;
+        VectorMap & operator=(VectorMap &&) = default;
+
+        Value_t & At(const std::size_t INDEX)
         {
-            pairs_.reserve(32); // found by experiment to be a good guess for the game
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (INDEX < pairs_.size()),
+                "misc::VectorMap::At() non-const, called with out of range index=" << INDEX << ".");
+
+            return pairs_[INDEX].second;
+        }
+
+        const Value_t & At(const std::size_t INDEX) const
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (INDEX < pairs_.size()),
+                "misc::VectorMap::At() const, called with out of range index=" << INDEX << ".");
+
+            return pairs_[INDEX].second;
         }
 
         // it is up to the caller to ensure that no duplicates are added, if you care...

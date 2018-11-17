@@ -31,6 +31,11 @@ namespace interact
         // use to create a non-random specific conversation that is unique to an NPC
         explicit NpcConversation(const ConvPointVec_t & CONVERSATION_POINTS = ConvPointVec_t());
 
+        NpcConversation(const NpcConversation &) = default;
+        NpcConversation(NpcConversation &&) = default;
+        NpcConversation & operator=(const NpcConversation &) = default;
+        NpcConversation & operator=(NpcConversation &&) = default;
+
         // use to create a random conversation
         NpcConversation(const std::string & TEXT, const Buttons::Enum BUTTON);
 

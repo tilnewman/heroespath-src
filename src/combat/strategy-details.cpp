@@ -37,15 +37,52 @@ namespace combat
         CreatureStrategies::CreatureStrategies()
             : raceRoleChancesMap_()
         {
+            raceRoleChancesMap_.Reserve(4096);
             Setup();
         }
 
         void CreatureStrategies::Setup()
         {
+            const std::size_t MAP_RESERVE_COUNT { 4096 };
             misc::VectorMap<creature::race::Enum, Chances> raceChancesMap;
+            raceChancesMap.Reserve(MAP_RESERVE_COUNT);
+
+            SelectChanceMap_t selectChanceMap;
+            RefineChanceMap_t refineChanceMap;
+            AdvanceChanceMap_t advanceChanceMap;
+            RetreatChanceMap_t retreatChanceMap;
+            OutnumberRetreatChanceMap_t outnumberRetreatChanceMap;
+            FrequencyChanceMap_t roarFreqChanceMap;
+            FrequencyChanceMap_t castFreqChanceMap;
+            FrequencyChanceMap_t flyFreqChanceMap;
+            FrequencyChanceMap_t flyPounceFreqChanceMap;
+            FrequencyChanceMap_t standPounceFreqChanceMap;
+
+            const std::size_t SUB_MAP_RESERVE_COUNT { 1024 };
+            selectChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            refineChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            advanceChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            retreatChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            outnumberRetreatChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            roarFreqChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            castFreqChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            flyFreqChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            flyPounceFreqChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
+            standPounceFreqChanceMap.Reserve(SUB_MAP_RESERVE_COUNT);
 
             for (EnumUnderlying_t i(0); i < creature::race::Count; ++i)
             {
+                selectChanceMap.Clear();
+                refineChanceMap.Clear();
+                advanceChanceMap.Clear();
+                retreatChanceMap.Clear();
+                outnumberRetreatChanceMap.Clear();
+                roarFreqChanceMap.Clear();
+                castFreqChanceMap.Clear();
+                flyFreqChanceMap.Clear();
+                flyPounceFreqChanceMap.Clear();
+                standPounceFreqChanceMap.Clear();
+
                 const auto RACE_ENUM(static_cast<creature::race::Enum>(i));
                 const auto RACE_STR(creature::race::ToString(RACE_ENUM));
 
@@ -62,17 +99,6 @@ namespace combat
 
                 const std::vector<std::string> PARTS_VEC { misc::SplitByChars(
                     VALUE, misc::SplitHow("|")) };
-
-                SelectChanceMap_t selectChanceMap;
-                RefineChanceMap_t refineChanceMap;
-                AdvanceChanceMap_t advanceChanceMap;
-                RetreatChanceMap_t retreatChanceMap;
-                OutnumberRetreatChanceMap_t outnumberRetreatChanceMap;
-                FrequencyChanceMap_t roarFreqChanceMap;
-                FrequencyChanceMap_t castFreqChanceMap;
-                FrequencyChanceMap_t flyFreqChanceMap;
-                FrequencyChanceMap_t flyPounceFreqChanceMap;
-                FrequencyChanceMap_t standPounceFreqChanceMap;
 
                 for (const auto & NEXT_PART_STR : PARTS_VEC)
                 {
@@ -160,8 +186,21 @@ namespace combat
             }
 
             misc::VectorMap<creature::role::Enum, Chances> roleChancesMap;
+            roleChancesMap.Reserve(MAP_RESERVE_COUNT);
+
             for (EnumUnderlying_t i(0); i < creature::role::Count; ++i)
             {
+                selectChanceMap.Clear();
+                refineChanceMap.Clear();
+                advanceChanceMap.Clear();
+                retreatChanceMap.Clear();
+                outnumberRetreatChanceMap.Clear();
+                roarFreqChanceMap.Clear();
+                castFreqChanceMap.Clear();
+                flyFreqChanceMap.Clear();
+                flyPounceFreqChanceMap.Clear();
+                standPounceFreqChanceMap.Clear();
+
                 const auto ROLE_ENUM(static_cast<creature::role::Enum>(i));
                 const auto ROLE_STR(creature::role::ToString(ROLE_ENUM));
 
@@ -178,17 +217,6 @@ namespace combat
 
                 const std::vector<std::string> PARTS_VEC { misc::SplitByChars(
                     VALUE, misc::SplitHow("|")) };
-
-                SelectChanceMap_t selectChanceMap;
-                RefineChanceMap_t refineChanceMap;
-                AdvanceChanceMap_t advanceChanceMap;
-                RetreatChanceMap_t retreatChanceMap;
-                OutnumberRetreatChanceMap_t outnumberRetreatChanceMap;
-                FrequencyChanceMap_t roarFreqChanceMap;
-                FrequencyChanceMap_t castFreqChanceMap;
-                FrequencyChanceMap_t flyFreqChanceMap;
-                FrequencyChanceMap_t flyPounceFreqChanceMap;
-                FrequencyChanceMap_t standPounceFreqChanceMap;
 
                 for (const auto & NEXT_PART_STR : PARTS_VEC)
                 {

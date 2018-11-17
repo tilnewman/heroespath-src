@@ -29,6 +29,8 @@ namespace creature
         , role_(OWNING_CREATURE_ROLE)
         , map_()
     {
+        map_.Reserve(64);
+
         AchievementMapInsertPair(
             AchievementType::DodgedStanding, Titles::Dodger, Titles::MeleeShadow);
 

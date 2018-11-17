@@ -44,6 +44,11 @@ namespace interact
             , transitionMap_()
         {}
 
+        NpcConversationPoint(const NpcConversationPoint &) = default;
+        NpcConversationPoint(NpcConversationPoint &&) = default;
+        NpcConversationPoint & operator=(const NpcConversationPoint &) = default;
+        NpcConversationPoint & operator=(NpcConversationPoint &&) = default;
+
         const std::string Text() const { return text_; }
         const ButtonEnumVec_t Buttons() const { return buttons_; }
 

@@ -528,6 +528,7 @@ namespace misc
         , willCancelOnLong_(WILL_CANCEL_ON_LOG)
     {
         collectors_.reserve(10);
+        contestResultsHistoryMapUPtr_->Reserve(64);
     }
 
     TimeTrials::~TimeTrials() = default;

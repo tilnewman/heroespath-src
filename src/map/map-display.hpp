@@ -31,8 +31,6 @@ namespace heroespath
 namespace map
 {
 
-    class Map;
-
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
@@ -42,7 +40,7 @@ namespace map
         MapDisplay & operator=(const MapDisplay &) = delete;
         MapDisplay & operator=(MapDisplay &&) = delete;
 
-        MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
+        MapDisplay(const sf::FloatRect & REGION);
         virtual ~MapDisplay();
 
         void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
@@ -70,6 +68,8 @@ namespace map
             return sf::Vector2f(MapSizeInMapCoordinatesi());
         }
 
+        std::vector<sf::Sprite> & AvatarSprites() { return avatarSprites_; }
+
     private:
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -95,7 +95,10 @@ namespace map
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
+        const sf::FloatRect ScreenRectFromMapRect(const sf::FloatRect &) const;
+
         const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
+        const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
 
         const TilesPanel & TilesPanelFromId(const int) const;
 
@@ -116,15 +119,14 @@ namespace map
         static const std::size_t VERTS_PER_QUAD_;
 
     private:
-        const Map & MAP_;
+        // these members define where the map is onscreen
+        const sf::Vector2f WIN_POS_V_;
+        const sf::Vector2f WIN_SIZE_V_;
+        const sf::FloatRect WIN_RECT_;
 
         // This is how close the player position can get to
         // the edge of the map before being forced to stop.
-        const float BORDER_PAD_;
-
-        const sf::Vector2f WIN_POS_V_;
-        const sf::Vector2f WIN_SIZE_V_;
-        const sf::Vector2f WIN_CENTER_V_;
+        const sf::FloatRect WIN_RECT_INNER_;
 
         // These distances are in offscreen coordinates.
         const float ANIM_SFX_DISTANCE_MIN_;
@@ -149,6 +151,12 @@ namespace map
 
         MapAnimVec_t animInfoVec_;
         std::vector<gui::AnimationUPtr_t> animUPtrVec_;
+
+        // MAP_ is responsible for keeping these populated and positioned in map coordinates every
+        // frame before Update()/ReDraw() is called. This class is responsible or changing these
+        // positions to offscreen coordinates before every draw.
+        std::vector<sf::Sprite> avatarSprites_;
+        std::vector<std::size_t> avatarSpriteIndexes_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

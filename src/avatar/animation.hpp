@@ -38,6 +38,11 @@ namespace avatar
             , will_loop(WILL_LOOP)
         {}
 
+        Animation(const Animation &) = default;
+        Animation(Animation &&) = default;
+        Animation & operator=(const Animation &) = default;
+        Animation & operator=(Animation &&) = default;
+
         Pose::Enum pose;
         gui::Direction::Enum direction;
         FrameNumVec_t frame_num_vec;

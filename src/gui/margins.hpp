@@ -19,7 +19,14 @@ namespace gui
     // Responsible for holding the amounts of empty space that surround a region.
     struct Margins
     {
-        explicit Margins(const float HORIZ = 0.0f, const float VERT = 0.0f)
+        explicit Margins(const float PAD = 0.0f)
+            : left(PAD)
+            , right(PAD)
+            , top(PAD)
+            , bottom(PAD)
+        {}
+
+        explicit Margins(const float HORIZ, const float VERT)
             : left(HORIZ)
             , right(HORIZ)
             , top(VERT)
@@ -75,7 +82,7 @@ namespace gui
             rect.height += (top + bottom);
         }
 
-        const sf::FloatRect ApplyGrow(const sf::FloatRect & RECT) const
+        const sf::FloatRect ApplyGrowCopy(const sf::FloatRect & RECT) const
         {
             sf::FloatRect newRect { RECT };
             ApplyGrow(newRect);

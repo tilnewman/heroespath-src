@@ -37,7 +37,6 @@ namespace heroespath
 {
 namespace map
 {
-
     // These are different so that players can always move faster than, and catch, NPCs.
     const float Map::PLAYER_MOVE_DISTANCE_ { 3.5f };
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
@@ -45,7 +44,7 @@ namespace map
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
         : WALK_SFX_VOLUME_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
             "heroespath-sound-map-walk-sfx-volume-ratio"))
-        , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(*this, REGION))
+        , mapDisplayUPtr_(std::make_unique<map::MapDisplay>(REGION))
         , interactionManager_(interactionManager)
         , collisionVec_()
         , quadTree_()
@@ -64,6 +63,8 @@ namespace map
         , walkSfxIsWalking_(false)
         , sfxTimer_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-sfx-time-between-updates"))
+        , AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_(
+              player_.CurrentSprite().getGlobalBounds().height * 0.333f)
     {}
 
     Map::~Map() { StopWalkSfxIfValid(); }
@@ -101,7 +102,8 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
-        // the order of these four is critical
+        // the order of everything below is critical so be careful making changes
+
         game::Game::Instance()->State().GetWorld().HandleLevelUnload(LEVEL_FROM);
         game::Game::Instance()->State().GetWorld().HandleLevelLoad(LEVEL_TO_LOAD);
 
@@ -113,9 +115,9 @@ namespace map
             mapDisplayUPtr_->Load(PLAYER_START_POS_V, animInfoVec);
         }
 
-        ResetNonPlayers(PLAYER_START_POS_V);
+        player_.MapPos(mapDisplayUPtr_->PlayerPosMap());
 
-        player_.CenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
+        ResetNonPlayers();
 
         quadTree_.Setup(
             sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSizeInMapCoordinatesf()),
@@ -133,14 +135,42 @@ namespace map
             return false;
         }
 
-        if (DoesPlayerCollideAfterMove(DIRECTION, PLAYER_MOVE_DISTANCE_))
+        // calculate the new player position and map rect
+        const auto MOVE_V { MoveVector(DIRECTION, PLAYER_MOVE_DISTANCE_) };
+        const auto MOVED_PLAYER_POS_V { (player_.MapPos() + MOVE_V) };
+
+        const auto MOVED_PLAYER_RECT { sfutil::MoveCopy(
+            player_.CurrentSprite().getGlobalBounds(), MOVE_V) };
+
+        if (DoesRectCollideWithMap(AdjustRectForCollisionDetectionWithMap(MOVED_PLAYER_RECT)))
         {
             return false;
         }
 
-        if (DetectCollisionWithExitTransitionAndHandle(DIRECTION, PLAYER_MOVE_DISTANCE_))
+        if (UpdatePlayerToNonPlayerCollisionStatus(
+                AdjustRectForCollisionDetectionWithNonPlayers(MOVED_PLAYER_RECT)))
         {
-            return true;
+            return false;
+        }
+
+        // check if the player just walked into an exit transition
+        const auto COLLIDING_EXIT_TRANSITION_ITER { std::find_if(
+            std::begin(transitionVec_), std::end(transitionVec_), [&](const auto & TRANSITION) {
+                return (
+                    (TRANSITION.IsEntry() == false)
+                    && (TRANSITION.Rect().contains(MOVED_PLAYER_POS_V)));
+            }) };
+
+        if (COLLIDING_EXIT_TRANSITION_ITER != std::end(transitionVec_))
+        {
+            HandleExitTransition(*COLLIDING_EXIT_TRANSITION_ITER);
+            return false;
+        }
+
+        // at this point failure to move means the player hit the edges of the map or screen
+        if (mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_) == false)
+        {
+            return false;
         }
 
         if (interactionManager_.Current())
@@ -148,63 +178,48 @@ namespace map
             interactionManager_.RemoveCurrent();
         }
 
-        // at this point failure to move means the player hit the edges of the map
-        const auto DID_ACTUALLY_MOVE { mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_) };
-        player_.CenteredMapPos(mapDisplayUPtr_->PlayerPosMap());
-        return DID_ACTUALLY_MOVE;
+        player_.MapPos(mapDisplayUPtr_->PlayerPosMap());
+        return true;
     }
 
     void Map::MoveNonPlayers()
     {
-        const auto PLAYER_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(player_) };
+        const auto PLAYER_RECT_FOR_COLL_DET_WITH_NPCS {
+            AdjustRectForCollisionDetectionWithNonPlayers(player_.CurrentSprite().getGlobalBounds())
+        };
 
         for (auto & npcPtrModelPair : nonPlayersPtrModelMap_)
         {
-            MoveNonPlayer(
-                npcPtrModelPair.second, NONPLAYER_MOVE_DISTANCE_, PLAYER_RECT_FOR_COLL_DET);
-        }
-    }
+            auto & avatar { npcPtrModelPair.second };
 
-    void Map::MoveNonPlayer(
-        avatar::Model & npcAvatar,
-        const float MOVE_AMOUNT,
-        const sf::FloatRect & PLAYER_RECT_FOR_COLL_DET)
-    {
-        if (npcAvatar.IsWalking() == false)
-        {
-            return;
-        }
+            if (avatar.IsWalking() == false)
+            {
+                continue;
+            }
 
-        const auto DIRECTION { npcAvatar.GetView().Direction() };
+            const auto MOVE_V { MoveVector(avatar.Direction(), NONPLAYER_MOVE_DISTANCE_) };
 
-        const auto MOVED_NPC_REC_FOR_COLL_DET { AvatarRectForCollisionDetectionAfterMove(
-            npcAvatar, DIRECTION, MOVE_AMOUNT) };
+            const auto MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC { sfutil::MoveCopy(
+                AdjustRectForCollisionDetectionWithNonPlayers(
+                    avatar.CurrentSprite().getGlobalBounds()),
+                MOVE_V) };
 
-        // const auto NPC_RECT_FOR_PLAYER_COLLISIONS { [&]() {
-        //    auto rect { NPC_RECT_ADJ };
-        //    rect.left -= PLAYER_ADJ_POS_V.x * 0.25f;
-        //    rect.width *= 1.75f;
-        //    rect.height *= 1.75f;
-        //    return rect;
-        //}() };
+            if (MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC.intersects(
+                    PLAYER_RECT_FOR_COLL_DET_WITH_NPCS))
+            {
+                avatar.StopWalking();
+                avatar.SetIsNextToPlayer(true, player_.MapPos(), false);
+                continue;
+            }
 
-        if (MOVED_NPC_REC_FOR_COLL_DET.intersects(PLAYER_RECT_FOR_COLL_DET))
-        {
-            npcAvatar.StopWalking();
-            npcAvatar.SetIsNextToPlayer(true, player_.CenteredMapPos(), false);
-            return;
-        }
+            if (DoesAvatarAtRectCollideWithAnyNonPlayers(
+                    avatar.Id(), MOVED_RECT_FOR_COLL_DET_WITH_OTHER_NPC))
+            {
+                avatar.StopWalking();
+                continue;
+            }
 
-        const auto DID_COLLIDE_WTIH_OTHER_NPC { DoesAvatarAtRectCollideWithNPCs(
-            npcAvatar, MOVED_NPC_REC_FOR_COLL_DET) };
-
-        if (DID_COLLIDE_WTIH_OTHER_NPC)
-        {
-            npcAvatar.StopWalking();
-        }
-        else
-        {
-            npcAvatar.Move(MoveVector(DIRECTION, MOVE_AMOUNT));
+            avatar.Move(MOVE_V);
         }
     }
 
@@ -215,9 +230,16 @@ namespace map
 
     void Map::Update(const float TIME_ELAPSED)
     {
-        mapDisplayUPtr_->Update(TIME_ELAPSED);
-
         player_.Update(TIME_ELAPSED);
+
+        for (auto & npcPtrModelPair : nonPlayersPtrModelMap_)
+        {
+            npcPtrModelPair.second.Update(TIME_ELAPSED);
+        }
+
+        SetupAvatarSpritesForDrawing();
+
+        mapDisplayUPtr_->Update(TIME_ELAPSED);
 
         auto movingIntoNpcPtrOpt { player_.MovingIntoUpdate(TIME_ELAPSED) };
         if (movingIntoNpcPtrOpt)
@@ -236,11 +258,6 @@ namespace map
             }
         }
 
-        for (auto & npcPtrModelPair : nonPlayersPtrModelMap_)
-        {
-            npcPtrModelPair.second.Update(TIME_ELAPSED);
-        }
-
         if (sfxTimer_.Update(TIME_ELAPSED))
         {
             mapDisplayUPtr_->UpdateAnimMusicVolume();
@@ -254,56 +271,37 @@ namespace map
         player_.MovingIntoReset();
     }
 
-    void Map::EntryAndExitLevels(
-        std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels)
+    bool Map::UpdatePlayerToNonPlayerCollisionStatus(const sf::FloatRect & MOVED_PLAYER_RECT)
     {
-        for (const auto & TRANSITION : transitionVec_)
+        bool hasAlreadyCollided { false };
+        for (auto & npcPtrAvatarPair : nonPlayersPtrModelMap_)
         {
-            if (TRANSITION.IsEntry())
+            auto & otherAvatar { npcPtrAvatarPair.second };
+
+            if (hasAlreadyCollided)
             {
-                entryLevels.emplace_back(TRANSITION.WhichLevel());
+                otherAvatar.SetIsNextToPlayer(false, player_.MapPos(), false);
             }
             else
             {
-                exitLevels.emplace_back(TRANSITION.WhichLevel());
+                const auto OTHER_AVATAR_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
+                    otherAvatar.CurrentSprite().getGlobalBounds()) };
+
+                if (MOVED_PLAYER_RECT.intersects(OTHER_AVATAR_RECT))
+                {
+                    hasAlreadyCollided = true;
+                    player_.MovingIntoSet(npcPtrAvatarPair.first);
+                    otherAvatar.SetIsNextToPlayer(true, player_.MapPos(), true);
+                }
             }
         }
-    }
 
-    bool Map::DoesPlayerCollideAfterMove(
-        const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT)
-    {
-        const auto MOVED_PLAYER_RECT_FOR_COLL_DET { AvatarRectForCollisionDetectionAfterMove(
-            player_, DIRECTION, MOVE_AMOUNT) };
-
-        if (DoesRectCollideWithMap(MOVED_PLAYER_RECT_FOR_COLL_DET))
+        if (!hasAlreadyCollided)
         {
-            return true;
-        }
-
-        const auto COLLIDING_ITER { std::find_if(
-            std::begin(nonPlayersPtrModelMap_),
-            std::end(nonPlayersPtrModelMap_),
-            [&](const auto & NPC_PTR_MODEL_PAIR) {
-                const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
-                    NPC_PTR_MODEL_PAIR.second) };
-
-                return MOVED_PLAYER_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET);
-            }) };
-
-        if (COLLIDING_ITER == std::end(nonPlayersPtrModelMap_))
-        {
-            COLLIDING_ITER->second.SetIsNextToPlayer(false, player_.CenteredMapPos(), false);
             player_.MovingIntoReset();
-            return false;
         }
-        else
-        {
 
-            player_.MovingIntoSet(COLLIDING_ITER->first);
-            COLLIDING_ITER->second.SetIsNextToPlayer(true, player_.CenteredMapPos(), true);
-            return true;
-        }
+        return hasAlreadyCollided;
     }
 
     const sf::Vector2f Map::FindPlayerStartPos(
@@ -352,25 +350,6 @@ namespace map
         return sfutil::CenterOf(FOUND_ITER->Rect());
     }
 
-    bool Map::DetectCollisionWithExitTransitionAndHandle(
-        const gui::Direction::Enum DIRECTION, const float ADJUSTMENT)
-    {
-        const auto PLAYER_MOVED_CENTERED_MAP_POS_V { player_.CenteredMapPos()
-                                                     + MoveVector(DIRECTION, ADJUSTMENT) };
-
-        for (const auto & TRANSITION : transitionVec_)
-        {
-            if ((TRANSITION.IsEntry() == false)
-                && (TRANSITION.Rect().contains(PLAYER_MOVED_CENTERED_MAP_POS_V)))
-            {
-                HandleExitTransition(TRANSITION);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     void Map::HandleExitTransition(const Transition & TRANSITION)
     {
         player_.StopWalking();
@@ -403,38 +382,41 @@ namespace map
     void Map::PlayTransitionSfx(
         const gui::sound_effect::MapTransition TRANS_TYPE, const bool IS_DOOR_OPENING) const
     {
-        if (TRANS_TYPE != gui::sound_effect::MapTransition::Count)
+        if (TRANS_TYPE == gui::sound_effect::MapTransition::Count)
         {
-            const auto DOOR_ACTION { (
-                (IS_DOOR_OPENING) ? gui::sound_effect::DoorAction::Open
-                                  : gui::sound_effect::DoorAction::Close) };
+            return;
+        }
 
-            const auto TRANS_SFX { gui::sound_effect::RandomMapTransitionSfx(
-                TRANS_TYPE, DOOR_ACTION) };
+        const auto DOOR_ACTION { (
+            (IS_DOOR_OPENING) ? gui::sound_effect::DoorAction::Open
+                              : gui::sound_effect::DoorAction::Close) };
 
-            if ((TRANS_SFX == gui::sound_effect::Stairs) && IS_DOOR_OPENING)
-            {
-                return;
-            }
+        const auto TRANS_SFX { gui::sound_effect::RandomMapTransitionSfx(TRANS_TYPE, DOOR_ACTION) };
 
-            if (TRANS_SFX != gui::sound_effect::Count)
-            {
-                if (IS_DOOR_OPENING)
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX);
-                }
-                else
-                {
-                    gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX, 1.0f);
-                }
-            }
+        if ((TRANS_SFX == gui::sound_effect::Stairs) && IS_DOOR_OPENING)
+        {
+            return;
+        }
+
+        if (TRANS_SFX == gui::sound_effect::Count)
+        {
+            return;
+        }
+
+        if (IS_DOOR_OPENING)
+        {
+            gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX);
+        }
+        else
+        {
+            gui::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX, 1.0f);
         }
     }
 
     void Map::UpdateWalkSfx()
     {
-        const auto NEW_IS_WALKING { (player_.GetView().WhichPose() == avatar::Pose::Walking) };
-        const auto NEW_WALK_SFX { walkSfxLayers_.FindSfx(player_.CenteredMapPos()) };
+        const auto NEW_IS_WALKING { (player_.WhichPose() == avatar::Pose::Walking) };
+        const auto NEW_WALK_SFX { walkSfxLayers_.FindSfx(player_.MapPos()) };
 
         if (NEW_IS_WALKING && ((NEW_WALK_SFX != walkSfx_) || (NEW_IS_WALKING != walkSfxIsWalking_)))
         {
@@ -455,25 +437,24 @@ namespace map
         walkSfxIsWalking_ = NEW_IS_WALKING;
     }
 
-    void Map::ResetNonPlayers(const sf::Vector2f & PLAYER_START_POS_V)
+    void Map::ResetNonPlayers()
     {
         nonPlayersPtrModelMap_.Clear();
 
         for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
         {
-            AddNonPlayerAvatar(NPC_PTR, PLAYER_START_POS_V);
+            AddNonPlayerAvatar(NPC_PTR);
         }
 
         for (const auto & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().RandomNPCs())
         {
-            AddNonPlayerAvatar(NPC_PTR, PLAYER_START_POS_V);
+            AddNonPlayerAvatar(NPC_PTR);
         }
     }
 
-    void Map::AddNonPlayerAvatar(
-        const game::NpcPtr_t NPC_PTR, const sf::Vector2f & PLAYER_START_POS_V)
+    void Map::AddNonPlayerAvatar(const game::NpcPtr_t NPC_PTR)
     {
         const auto NPC_WALK_BOUNDS_SET_INDEX { NPC_PTR->WalkBoundsSetIndex() };
         const auto NPC_AVATAR_IMAGE_ENUM { NPC_PTR->AvatarImage() };
@@ -511,7 +492,7 @@ namespace map
         }
 
         const auto [WAS_VALID_LOCATION_FOUND, WALK_BOUNDS_RECT_INDEX, MAP_POS_V]
-            = PickRandomLocationToPlaceAvatar(walkRects, PLAYER_START_POS_V);
+            = PickRandomLocationToPlaceAvatar(walkRects);
 
         if (WAS_VALID_LOCATION_FOUND)
         {
@@ -530,19 +511,20 @@ namespace map
 
     const sf::Sprite Map::GetNpcDefaultPoseSprite(const game::NpcPtr_t NPC_PTR) const
     {
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
-        {
-            if (NPC_PTR_MODEL_PAIR.first == NPC_PTR)
-            {
-                return NPC_PTR_MODEL_PAIR.second.GetView().DefaultPoseSprite();
-            }
-        }
+        const auto FOUND_ITER { nonPlayersPtrModelMap_.Find(NPC_PTR) };
 
-        return sf::Sprite();
+        if (FOUND_ITER == std::end(nonPlayersPtrModelMap_))
+        {
+            return sf::Sprite();
+        }
+        else
+        {
+            return FOUND_ITER->second.DefaultPoseSprite();
+        }
     }
 
-    const std::tuple<bool, std::size_t, sf::Vector2f> Map::PickRandomLocationToPlaceAvatar(
-        const FloatRectVec_t & WALK_RECTS, const sf::Vector2f & PLAYER_START_POS_V) const
+    const std::tuple<bool, std::size_t, sf::Vector2f>
+        Map::PickRandomLocationToPlaceAvatar(const FloatRectVec_t & WALK_RECTS) const
     {
         struct WalkRegion
         {
@@ -563,39 +545,44 @@ namespace map
         // shuffle so that each NPC likely starts in a random walk rect
         misc::Vector::ShuffleVec(walkRegions);
 
-        // we have not yet made this NPC's avatar::Model yet so we don't technically know the size
-        // of it's sprite, which we need to check for collisions with other NPCs.  However, all the
-        // avatar images are the same size so we can cheat and use the player's avatar sprite size
-        // instead.
-        const auto AVATAR_IMAGE_SIZE_V { player_.GetView().MapSize() };
+        const auto PLAYER_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
+            player_.CurrentSprite().getGlobalBounds()) };
 
-        const sf::FloatRect PLAYERC_MAP_POS_RECT(
-            (PLAYER_START_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)), AVATAR_IMAGE_SIZE_V);
+        // We have not yet made this NPC's avatar::Model yet so we don't technically know the size
+        // of it's sprite, and yes, some avatar sprites are scaled differently than others.  But we
+        // need to check for collisions with other NPCs, so we need that size.  Instead we will use
+        // the fact that the player's sprite size is as big or bigger than all others, and so we can
+        // use it as an overestimation.
+        const auto AVATAR_IMAGE_SIZE_V { sfutil::Size(PLAYER_RECT) };
 
         for (const auto & WALK_REGION : walkRegions)
         {
             const auto ATTEMPTS_PER_WALK_RECT { 1000 };
+
             for (int attemptCounter(0); attemptCounter < ATTEMPTS_PER_WALK_RECT; ++attemptCounter)
             {
-                const sf::Vector2f PROPOSED_NPC_CENTERED_MAP_POS_V(
+                const sf::Vector2f RAW_PROPOSED_NPC_POS_V(
                     misc::random::Float(WALK_REGION.rect.left, sfutil::Right(WALK_REGION.rect)),
                     misc::random::Float(WALK_REGION.rect.top, sfutil::Bottom(WALK_REGION.rect)));
 
-                const sf::FloatRect PROPOSED_NPC_MAP_POS_RECT(
-                    (PROPOSED_NPC_CENTERED_MAP_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)),
-                    AVATAR_IMAGE_SIZE_V);
+                const sf::FloatRect RAW_PROPOSED_NPC_RECT(
+                    (RAW_PROPOSED_NPC_POS_V - (AVATAR_IMAGE_SIZE_V * 0.5f)), AVATAR_IMAGE_SIZE_V);
 
-                if (PROPOSED_NPC_MAP_POS_RECT.intersects(PLAYERC_MAP_POS_RECT))
+                const auto FINAL_PROPOSED_NPC_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
+                    RAW_PROPOSED_NPC_RECT) };
+
+                if (FINAL_PROPOSED_NPC_RECT.intersects(PLAYER_RECT))
                 {
                     continue;
                 }
 
-                if (DoesRectCollideWithNPCs(PROPOSED_NPC_MAP_POS_RECT))
+                if (DoesAvatarAtRectCollideWithAnyNonPlayers(
+                        avatar::Model::ID_INVALID_, FINAL_PROPOSED_NPC_RECT))
                 {
                     continue;
                 }
 
-                return std::make_tuple(true, WALK_REGION.index, PROPOSED_NPC_CENTERED_MAP_POS_V);
+                return std::make_tuple(true, WALK_REGION.index, RAW_PROPOSED_NPC_POS_V);
             }
         }
 
@@ -682,44 +669,6 @@ namespace map
         return quadTree_.DoesRectCollide(RECT);
     }
 
-    bool Map::DoesRectCollideWithNPCs(const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const
-    {
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
-        {
-            const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
-                NPC_PTR_MODEL_PAIR.second) };
-
-            if (AVATAR_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool Map::DoesAvatarAtRectCollideWithNPCs(
-        const avatar::Model & AVATAR, const sf::FloatRect & AVATAR_RECT_FOR_COLL_DET) const
-    {
-        for (const auto & NPC_PTR_MODEL_PAIR : nonPlayersPtrModelMap_)
-        {
-            if (&AVATAR == &NPC_PTR_MODEL_PAIR.second)
-            {
-                continue;
-            }
-
-            const auto NPC_RECT_FOR_COLL_DET { AvatarRectForCollisionDetection(
-                NPC_PTR_MODEL_PAIR.second) };
-
-            if (AVATAR_RECT_FOR_COLL_DET.intersects(NPC_RECT_FOR_COLL_DET))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     const sf::Vector2f
         Map::MoveVector(const gui::Direction::Enum DIRECTION, const float MOVE_AMOUNT) const
     {
@@ -742,30 +691,108 @@ namespace map
         return moveV;
     }
 
-    const sf::FloatRect Map::AvatarCenteredMapRect(const avatar::Model & AVATAR) const
+    const sf::FloatRect
+        Map::AdjustRectForCollisionDetectionWithMap(const sf::FloatRect & RECT) const
     {
-        const sf::Vector2f AVATAR_SIZE_V { AVATAR.GetView().MapSize() };
-        return sf::FloatRect((AVATAR.CenteredMapPos() - (AVATAR_SIZE_V * 0.5f)), AVATAR_SIZE_V);
+        return sfutil::ScaleAndReCenterCopy(RECT, sf::Vector2f(0.5f, 0.7f));
     }
 
     const sf::FloatRect
-        Map::ResizeAvatarRectForCollisionDetection(const sf::FloatRect & RECT_ORIG) const
+        Map::AdjustRectForCollisionDetectionWithNonPlayers(const sf::FloatRect & RECT_ORIG) const
     {
-        return sfutil::ScaleAndReCenterCopy(RECT_ORIG, sf::Vector2f(0.5f, 0.7f));
+        sf::FloatRect rectNew { AdjustRectForCollisionDetectionWithMap(RECT_ORIG) };
+
+        if (rectNew.height > AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_)
+        {
+            rectNew.top
+                = sfutil::Bottom(rectNew) - AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_;
+
+            rectNew.height = AVATAR_TO_AVATAR_COLLISION_DETECTION_RECT_HEIGHT_;
+        }
+
+        return rectNew;
     }
 
-    const sf::FloatRect Map::AvatarRectForCollisionDetection(const avatar::Model & AVATAR) const
+    void Map::SetupAvatarSpritesForDrawing()
     {
-        return ResizeAvatarRectForCollisionDetection(AvatarCenteredMapRect(AVATAR));
+        auto & cachedAvatarSprites { mapDisplayUPtr_->AvatarSprites() };
+
+        if (cachedAvatarSprites.size()
+            != (nonPlayersPtrModelMap_.Size() + 1)) // plus one for the player
+        {
+            cachedAvatarSprites.clear();
+
+            for (const auto & NPCPTR_AVATAR_PAIR : nonPlayersPtrModelMap_)
+            {
+                cachedAvatarSprites.emplace_back(NPCPTR_AVATAR_PAIR.second.CurrentSprite());
+            }
+
+            cachedAvatarSprites.emplace_back(player_.CurrentSprite());
+            return;
+        }
+
+        const auto CURRENT_NONPLAYER_SPRITES_COUNT { nonPlayersPtrModelMap_.Size() };
+        const auto CACHED_SPRITES_COUNT { cachedAvatarSprites.size() };
+
+        if ((CURRENT_NONPLAYER_SPRITES_COUNT == 0) || (CACHED_SPRITES_COUNT == 0)
+            || (CACHED_SPRITES_COUNT != (CURRENT_NONPLAYER_SPRITES_COUNT + 1)))
+        {
+            return;
+        }
+
+        auto updateSprite = [&](sf::Sprite & cachedSprite, const sf::Sprite & CURRENT_SPRITE) {
+            cachedSprite.setPosition(CURRENT_SPRITE.getPosition());
+            cachedSprite.setTextureRect(CURRENT_SPRITE.getTextureRect());
+        };
+
+        std::size_t index { 0 };
+        for (; index < CURRENT_NONPLAYER_SPRITES_COUNT; ++index)
+        {
+            updateSprite(
+                cachedAvatarSprites.at(index), nonPlayersPtrModelMap_.At(index).CurrentSprite());
+        }
+
+        updateSprite(cachedAvatarSprites.at(index), player_.CurrentSprite());
     }
 
-    const sf::FloatRect Map::AvatarRectForCollisionDetectionAfterMove(
-        const avatar::Model & AVATAR,
-        const gui::Direction::Enum DIRECTION,
-        const float MOVE_AMOUNT) const
+    void Map::EntryAndExitLevels(
+        std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels)
     {
-        return ResizeAvatarRectForCollisionDetection(
-            sfutil::MoveCopy(AvatarCenteredMapRect(AVATAR), MoveVector(DIRECTION, MOVE_AMOUNT)));
+        for (const auto & TRANSITION : transitionVec_)
+        {
+            if (TRANSITION.IsEntry())
+            {
+                entryLevels.emplace_back(TRANSITION.WhichLevel());
+            }
+            else
+            {
+                exitLevels.emplace_back(TRANSITION.WhichLevel());
+            }
+        }
+    }
+
+    bool Map::DoesAvatarAtRectCollideWithAnyNonPlayers(
+        const std::size_t AVATAR_ID, const sf::FloatRect & RECT_ADJ_FOR_COLL_DET_WITH_NPCS) const
+    {
+        return std::any_of(
+            std::begin(nonPlayersPtrModelMap_),
+            std::end(nonPlayersPtrModelMap_),
+            [&](const auto & NPCPTR_AVATAR_PAIR) {
+                const auto & OTHER_AVATAR { NPCPTR_AVATAR_PAIR.second };
+
+                if (AVATAR_ID == OTHER_AVATAR.Id())
+                {
+                    return false;
+                }
+
+                const auto OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC {
+                    AdjustRectForCollisionDetectionWithNonPlayers(
+                        OTHER_AVATAR.CurrentSprite().getGlobalBounds())
+                };
+
+                return RECT_ADJ_FOR_COLL_DET_WITH_NPCS.intersects(
+                    OTHER_AVATAR_RECT_FOR_COLL_DET_WITH_OTHER_NPC);
+            });
     }
 
 } // namespace map

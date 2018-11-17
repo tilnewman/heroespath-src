@@ -44,6 +44,8 @@ namespace item
 
         void ArmorDetailLoader::LoadFromGameDataFile()
         {
+            armorDetailsMap_.Reserve(1024);
+
             for (const auto & ARMOR_TYPE_WRAPPER : ArmorTypeWrapper::MakeCompleteSet())
             {
                 if (ARMOR_TYPE_WRAPPER.IsSkin() == false)

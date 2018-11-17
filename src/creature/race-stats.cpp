@@ -25,6 +25,8 @@ namespace creature
     {
         if (raceStatSetMap_.Empty())
         {
+            raceStatSetMap_.Reserve(64);
+
             for (EnumUnderlying_t i(0); i < race::Count_PlayerRaces; ++i)
             {
                 const auto NEXT_ENUM { static_cast<race::Enum>(i) };
