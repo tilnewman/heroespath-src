@@ -102,6 +102,8 @@ namespace misc
         const std::size_t collecterIndex_;
     };
 
+    // the only reason for these macros is so that we can use a macros to vanish all timing easily
+
 #define M_HP_SCOPED_TIME_LOGGER(time_res, message_str, will_cancel_on_log)                         \
     misc::ScopedTimeLogger scopedTimeLogger_MadeByMacro(time_res, message_str, will_cancel_on_log);
 

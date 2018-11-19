@@ -18,7 +18,7 @@ namespace map
 {
 
     TilesPanel::TilesPanel()
-        : name(NameWithEmptyTexture())
+        : name("empty")
         , first_id(0)
         , tile_count(1)
         , column(1)

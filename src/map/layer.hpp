@@ -24,13 +24,20 @@ namespace map
     // Responsible for wrapping all data about a single map layer.
     struct Layer
     {
-        LayerType::Enum type;
+        Layer() = default;
+
+        Layer(const Layer &) = default;
+        Layer(Layer &&) = default;
+        Layer & operator=(const Layer &) = default;
+        Layer & operator=(Layer &&) = default;
+
+        LayerType::Enum type = LayerType::Count;
 
         // only stores verts for drawn map tiles
         sf::VertexArray vert_array;
 
         // copies of TileImages that are used by vert_array
-        TilesPanelForLayersVec_t tiles_panel_vec;
+        TilesPanelForLayersVec_t tiles_panel_for_layers_vec;
 
         // the map IDs that make up this panel
         std::vector<int> mapid_vec;
@@ -38,7 +45,7 @@ namespace map
         void ResetForReDraw()
         {
             vert_array.clear();
-            tiles_panel_vec.clear();
+            tiles_panel_for_layers_vec.clear();
         }
     };
 

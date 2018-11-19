@@ -18,18 +18,82 @@
 #include "map/map-anim.hpp"
 #include "map/tile-offsets.hpp"
 #include "map/tiles-panel.hpp"
+#include "misc/timing.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
 {
 namespace map
 {
+
+    struct TileDraw
+    {
+        TileDraw(
+            const std::size_t LAYER_INDEX,
+            const LayerType::Enum LAYER_TYPE,
+            const sf::Vector2i & TILE_INDEX_V,
+            const sf::Texture * texturePtr,
+            const sf::IntRect & TEXTURE_RECT)
+            : layer_index(LAYER_INDEX)
+            , layer_type(LAYER_TYPE)
+            , tile_index_v(TILE_INDEX_V)
+            , texture_ptr(texturePtr)
+            , texture_rect(TEXTURE_RECT)
+        {}
+
+        TileDraw(const TileDraw &) = default;
+        TileDraw(TileDraw &&) = default;
+        TileDraw & operator=(const TileDraw &) = default;
+        TileDraw & operator=(TileDraw &&) = default;
+
+        std::size_t layer_index;
+        LayerType::Enum layer_type;
+        sf::Vector2i tile_index_v;
+        const sf::Texture * texture_ptr;
+        sf::IntRect texture_rect;
+    };
+
+    inline bool operator<(const TileDraw & LHS, const TileDraw & RHS)
+    {
+        return std::tie(
+                   LHS.layer_index,
+                   LHS.layer_type,
+                   LHS.texture_ptr,
+                   LHS.texture_rect,
+                   LHS.tile_index_v)
+            < std::tie(
+                   RHS.layer_index,
+                   RHS.layer_type,
+                   RHS.texture_ptr,
+                   RHS.texture_rect,
+                   RHS.tile_index_v);
+    }
+
+    inline bool operator==(const TileDraw & LHS, const TileDraw & RHS)
+    {
+        return std::tie(
+                   LHS.texture_rect,
+                   LHS.tile_index_v,
+                   LHS.layer_index,
+                   LHS.texture_ptr,
+                   LHS.layer_type)
+            == std::tie(
+                   RHS.texture_rect,
+                   RHS.tile_index_v,
+                   RHS.layer_index,
+                   RHS.texture_ptr,
+                   RHS.layer_type);
+    }
+
+    inline bool operator!=(const TileDraw & LHS, const TileDraw & RHS) { return !(LHS == RHS); }
 
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
@@ -82,16 +146,16 @@ namespace map
         void UpdateAndDrawAnimations(const float TIME_ELAPSED);
         void ReDraw(const float TIME_ELAPSED);
         void ResetMapSubsections();
+        void ResetMapSubsectionsNew();
         void DrawMapSubsectionOffscreen();
 
         void PositionMapSpriteTextureRect();
-
         void SetupOffScreenTexture();
 
         void SetupMapLayerSubsection(Layer &, const TileOffsets &);
+        void AnalyzeLayers();
 
         const TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
-
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
@@ -101,11 +165,8 @@ namespace map
         const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
 
         const TilesPanel & TilesPanelFromId(const int) const;
-
         void IncrementTileOffsetsInDirection(const gui::Direction::Enum);
-
         const sf::Vector2f CalcOffScreenMapSize() const;
-
         void SetupAnimations();
 
         void StartAnimMusic();
@@ -157,6 +218,14 @@ namespace map
         // positions to offscreen coordinates before every draw.
         std::vector<sf::Sprite> avatarSprites_;
         std::vector<std::size_t> avatarSpriteIndexes_;
+
+        std::vector<TileDraw> tileDraws_;
+        std::vector<std::pair<const sf::Texture *, sf::VertexArray>> tileVertexVecBelow_;
+        std::vector<std::pair<const sf::Texture *, sf::VertexArray>> tileVertexVecAbove_;
+
+        // TEMP TODO REMOVE AFTER TESTING
+        mutable misc::TimeTrials timeTrials_;
+        const std::size_t timeTrialIndexRedDrawSub_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

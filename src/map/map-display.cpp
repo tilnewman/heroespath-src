@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <exception>
+#include <set>
 #include <sstream>
 
 namespace heroespath
@@ -65,15 +66,26 @@ namespace map
         , animUPtrVec_()
         , avatarSprites_()
         , avatarSpriteIndexes_()
+        , tileDraws_()
+        , tileVertexVecBelow_()
+        , tileVertexVecAbove_()
+        , timeTrials_("MapDisplay", TimeRes::Micro, true, 100, 0.0)
+        , timeTrialIndexRedDrawSub_(timeTrials_.AddCollecter("SubSection"))
+
     {
         avatarSprites_.reserve(64);
         avatarSpriteIndexes_.reserve(64);
+        tileDraws_.reserve(50000);
+        tileVertexVecBelow_.reserve(64);
+        tileVertexVecAbove_.reserve(64);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
 
     void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t & ANIM_INFO_VEC)
     {
+        timeTrials_.EndAllContests();
+
         StopAnimMusic();
         animInfoVec_ = ANIM_INFO_VEC;
         tileOffsets_ = map::TileOffsets();
@@ -87,6 +99,8 @@ namespace map
         ReDraw(0.0f);
         StartAnimMusic();
         UpdateAnimMusicVolume();
+
+        AnalyzeLayers();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIR, const float ADJUSTMENT)
@@ -373,47 +387,153 @@ namespace map
 
         offScreenTextureBelow_.display();
         offScreenTextureAbove_.display();
+
+        if (timeTrials_.ContestCount() >= 4)
+        {
+            timeTrials_.EndAllContests();
+        }
     }
 
     void MapDisplay::ResetMapSubsections()
     {
+        // reset the old way
         for (auto & nextMapLayer : layout_.layer_vec)
         {
             nextMapLayer.ResetForReDraw();
             SetupMapLayerSubsection(nextMapLayer, tileOffsets_);
         }
+
+        ResetMapSubsectionsNew();
+    }
+
+    void MapDisplay::ResetMapSubsectionsNew()
+    {
+        // reset the new way
+        tileVertexVecBelow_.clear();
+        tileVertexVecAbove_.clear();
+
+        auto appendQuad = [&](sf::VertexArray & vertexArray, const TileDraw & TILE_DRAW) {
+            const sf::Vector2i MAP_POS_V(
+                (TILE_DRAW.tile_index_v.x * layout_.tile_size_v.x),
+                (TILE_DRAW.tile_index_v.y * layout_.tile_size_v.y));
+
+            const sf::Vector2f OFFSCREEN_MAP_POS_V { OffScreenPosFromMapPos(
+                sf::Vector2f { MAP_POS_V }) };
+
+            const sf::Vector2f MAP_SIZE_V { layout_.tile_size_v };
+            const sf::FloatRect MAP_RECT(OFFSCREEN_MAP_POS_V, MAP_SIZE_V);
+
+            const sf::FloatRect TEXTURE_RECT { TILE_DRAW.texture_rect };
+
+            vertexArray.append(
+                sf::Vertex(sfutil::TopLeft(MAP_RECT), sfutil::TopLeft(TEXTURE_RECT)));
+
+            vertexArray.append(
+                sf::Vertex(sfutil::TopRight(MAP_RECT), sfutil::TopRight(TEXTURE_RECT)));
+
+            vertexArray.append(
+                sf::Vertex(sfutil::BottomRight(MAP_RECT), sfutil::BottomRight(TEXTURE_RECT)));
+
+            vertexArray.append(
+                sf::Vertex(sfutil::BottomLeft(MAP_RECT), sfutil::BottomLeft(TEXTURE_RECT)));
+        };
+
+        // this loop assumes tileDraws_ sorted by layer/layer_type/texture
+        const sf::Texture * currentTexturePtr { nullptr };
+        for (const auto & TILE_DRAW : tileDraws_)
+        {
+            if ((TILE_DRAW.tile_index_v.x < tileOffsets_.begin_v.x)
+                || (TILE_DRAW.tile_index_v.x > tileOffsets_.end_v.x)
+                || (TILE_DRAW.tile_index_v.y < tileOffsets_.begin_v.y)
+                || (TILE_DRAW.tile_index_v.y > tileOffsets_.end_v.y))
+            {
+                continue;
+            }
+
+            const auto IS_BELOW { (TILE_DRAW.layer_type == LayerType::Ground) };
+
+            if (TILE_DRAW.texture_ptr != currentTexturePtr)
+            {
+                currentTexturePtr = TILE_DRAW.texture_ptr;
+
+                sf::VertexArray vertexArray;
+                vertexArray.setPrimitiveType(sf::Quads);
+
+                tileVertexVecBelow_.emplace_back(std::make_pair(currentTexturePtr, vertexArray));
+                tileVertexVecAbove_.emplace_back(std::make_pair(currentTexturePtr, vertexArray));
+            }
+
+            if (IS_BELOW)
+            {
+                appendQuad(tileVertexVecBelow_.back().second, TILE_DRAW);
+            }
+            else
+            {
+                appendQuad(tileVertexVecAbove_.back().second, TILE_DRAW);
+            }
+        }
+
+        std::ostringstream ss;
+        ss << "ResetMapSubsections Below:";
+        std::size_t count { 0 };
+        for (auto & textureVertexsPair : tileVertexVecBelow_)
+        {
+            ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
+               << textureVertexsPair.first->getSize() << " with "
+               << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
+               << " tile draws (%="
+               << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
+        }
+        M_HP_LOG_WRN(ss.str());
+
+        ss.str("");
+        ss << "ResetMapSubsections Above:";
+        count = 0;
+        for (auto & textureVertexsPair : tileVertexVecAbove_)
+        {
+            ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
+               << textureVertexsPair.first->getSize() << " with "
+               << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
+               << " tile draws (%="
+               << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
+        }
+        M_HP_LOG_WRN(ss.str());
     }
 
     void MapDisplay::DrawMapSubsectionOffscreen()
     {
+        M_HP_SCOPED_TIME_TRIAL(timeTrials_, timeTrialIndexRedDrawSub_);
+
         offScreenTextureBelow_.clear(sf::Color::Transparent);
         offScreenTextureAbove_.clear(sf::Color::Transparent);
 
         sf::RenderStates renderStates { sf::RenderStates::Default };
 
-        for (const auto & LAYER : layout_.layer_vec)
+        for (const auto & TEXTURE_VERTS_PAIR : tileVertexVecBelow_)
         {
-            const auto NUM_VERTS { LAYER.vert_array.getVertexCount() };
-            for (std::size_t vertIndex(0), tilesPanelIndex { 0 }; vertIndex < NUM_VERTS;
-                 vertIndex += VERTS_PER_QUAD_, ++tilesPanelIndex)
+            if (TEXTURE_VERTS_PAIR.second.getVertexCount() > 0)
             {
-                const auto & TILES_PANEL { LAYER.tiles_panel_vec[tilesPanelIndex] };
+                renderStates.texture = TEXTURE_VERTS_PAIR.first;
 
-                if (TILES_PANEL.is_empty == false)
-                {
-                    renderStates.texture = &layout_.texture_vec[TILES_PANEL.texture_index].Get();
+                offScreenTextureBelow_.draw(
+                    &TEXTURE_VERTS_PAIR.second[0],
+                    TEXTURE_VERTS_PAIR.second.getVertexCount(),
+                    sf::Quads,
+                    renderStates);
+            }
+        }
 
-                    if (LAYER.type == LayerType::Ground)
-                    {
-                        offScreenTextureBelow_.draw(
-                            &LAYER.vert_array[vertIndex], VERTS_PER_QUAD_, sf::Quads, renderStates);
-                    }
-                    else
-                    {
-                        offScreenTextureAbove_.draw(
-                            &LAYER.vert_array[vertIndex], VERTS_PER_QUAD_, sf::Quads, renderStates);
-                    }
-                }
+        for (const auto & TEXTURE_VERTS_PAIR : tileVertexVecAbove_)
+        {
+            if (TEXTURE_VERTS_PAIR.second.getVertexCount() > 0)
+            {
+                renderStates.texture = TEXTURE_VERTS_PAIR.first;
+
+                offScreenTextureAbove_.draw(
+                    &TEXTURE_VERTS_PAIR.second[0],
+                    TEXTURE_VERTS_PAIR.second.getVertexCount(),
+                    sf::Quads,
+                    renderStates);
             }
         }
 
@@ -480,7 +600,10 @@ namespace map
         mapLayer.vert_array.resize(
             static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT) * VERTS_PER_QUAD_);
 
-        mapLayer.tiles_panel_vec.reserve(static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT));
+        mapLayer.tiles_panel_for_layers_vec.reserve(
+            static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT));
+
+        const auto EMPTY_TILES_PANEL_NAME_STR { TilesPanel().name };
 
         // populate the vertex array with one quad per tile
         std::size_t vertIndex { 0 };
@@ -498,9 +621,8 @@ namespace map
                 // get the texture/image this tile can be found in
                 const map::TilesPanel & TILES_PANEL { TilesPanelFromId(TILE_NUM_ORIG) };
 
-                mapLayer.tiles_panel_vec.emplace_back(map::TilesPanelForLayers(
-                    (TILES_PANEL.name == TilesPanel::NameWithEmptyTexture()),
-                    TILES_PANEL.texture_index));
+                mapLayer.tiles_panel_for_layers_vec.emplace_back(map::TilesPanelForLayers(
+                    (TILES_PANEL.name == EMPTY_TILES_PANEL_NAME_STR), TILES_PANEL.texture_index));
 
                 // get the actual tile number (id)
                 const auto TILE_NUM_FINAL { (TILE_NUM_ORIG - TILES_PANEL.first_id) };
@@ -571,6 +693,201 @@ namespace map
                     = sf::Vector2f(TEXTCOORD_WIDTH, TEXTCOORD_HEIGHT_PLUS_ONE_TILE);
             }
         }
+    }
+
+    void MapDisplay::AnalyzeLayers()
+    {
+        tileDraws_.clear();
+
+        const auto EMPTY_TILES_PANEL_NAME_STR { TilesPanel().name };
+
+        std::size_t layerIndex { 0 };
+        for (auto & mapLayer : layout_.layer_vec)
+        {
+            for (int x(0); x < layout_.tile_count_v.x; ++x)
+            {
+                for (int y(0); y < layout_.tile_count_v.y; ++y)
+                {
+                    // map tile number
+                    const auto TILE_NUMBER_IN_MAP { mapLayer.mapid_vec[static_cast<std::size_t>(
+                        x + (y * layout_.tile_count_v.x))] };
+
+                    // texture index and first tile number (first id)
+                    const auto INVALID_FIRST_ID { -999 };
+                    auto tilesPanelFromId = [&](const int ID) {
+                        for (const auto & TILES_PANEL : layout_.tiles_panel_vec)
+                        {
+                            if (TILES_PANEL.OwnsId(ID))
+                            {
+                                if (TILES_PANEL.name == EMPTY_TILES_PANEL_NAME_STR)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    return std::make_tuple(
+                                        TILES_PANEL.first_id, TILES_PANEL.texture_index);
+                                }
+                            }
+                        }
+
+                        return std::make_tuple(-INVALID_FIRST_ID, layout_.texture_vec.size());
+                    };
+
+                    const auto [FIRST_ID, TEXTURE_INDEX] = tilesPanelFromId(TILE_NUMBER_IN_MAP);
+                    if ((FIRST_ID == -INVALID_FIRST_ID)
+                        || (TEXTURE_INDEX >= layout_.texture_vec.size()))
+                    {
+                        continue;
+                    }
+
+                    // texture image
+                    const sf::Texture * texturePtr { &layout_.texture_vec[TEXTURE_INDEX].Get() };
+
+                    // texture coordinates (texture rect)
+                    const auto TILE_NUMBER_IN_TEXTURE { (TILE_NUMBER_IN_MAP - FIRST_ID) };
+
+                    const auto TEXTURE_WIDTH { static_cast<int>(texturePtr->getSize().x) };
+
+                    const auto TEXTURE_WIDTH_IN_TILES { TEXTURE_WIDTH / layout_.tile_size_v.x };
+
+                    const int TEXTURE_RECT_TILE_LEFT { (
+                        TILE_NUMBER_IN_TEXTURE % TEXTURE_WIDTH_IN_TILES) };
+
+                    const int TEXTURE_RECT_TILE_TOP { (
+                        TILE_NUMBER_IN_TEXTURE / TEXTURE_WIDTH_IN_TILES) };
+
+                    const int TEXTURE_RECT_LEFT { (
+                        TEXTURE_RECT_TILE_LEFT * layout_.tile_size_v.x) };
+
+                    const int TEXTURE_RECT_TOP { (TEXTURE_RECT_TILE_TOP * layout_.tile_size_v.y) };
+
+                    const auto TEXTURE_RECT { sf::IntRect(
+                        sf::Vector2i(TEXTURE_RECT_LEFT, TEXTURE_RECT_TOP), layout_.tile_size_v) };
+
+                    //
+
+                    tileDraws_.emplace_back(TileDraw(
+                        layerIndex, mapLayer.type, sf::Vector2i(x, y), texturePtr, TEXTURE_RECT));
+                }
+            }
+
+            ++layerIndex;
+        }
+
+        std::sort(std::begin(tileDraws_), std::end(tileDraws_));
+
+        const auto COUNT_ORIG { tileDraws_.size() };
+
+        tileDraws_.erase(
+            std::unique(std::begin(tileDraws_), std::end(tileDraws_)), std::end(tileDraws_));
+
+        const auto COUNT { tileDraws_.size() };
+
+        M_HP_LOG_WRN(
+            "\t" << COUNT << "  TileDraws (" << (COUNT_ORIG - COUNT)
+                 << " duplicates removed) (tiles_panel_count=" << layout_.tiles_panel_vec.size()
+                 << ")(map_tile_count=" << (layout_.tile_count_v.x * layout_.tile_count_v.y)
+                 << ", layer_count=" << layout_.layer_vec.size() << ", total_tiles_count="
+                 << (static_cast<std::size_t>(layout_.tile_count_v.x * layout_.tile_count_v.y)
+                     * layout_.layer_vec.size())
+                 << ")");
+
+        misc::VectorMap<
+            const sf::Texture *,
+            std::pair<std::vector<sf::IntRect>, std::vector<sf::Vector2i>>>
+            textureMap;
+
+        for (const auto & TILE_DRAW : tileDraws_)
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                ((TILE_DRAW.texture_rect.width == layout_.tile_size_v.x)
+                 && (TILE_DRAW.texture_rect.height == layout_.tile_size_v.y)),
+                "TILE_DRAW.texture_rect=" << TILE_DRAW.texture_rect
+                                          << " had an invalid size that should have been "
+                                          << layout_.tile_size_v << ".");
+
+            if (((TILE_DRAW.texture_rect.left % layout_.tile_size_v.x) != 0)
+                || ((TILE_DRAW.texture_rect.top % layout_.tile_size_v.y) != 0))
+            {
+                M_HP_LOG_WRN("Invalid texture rect position=" << TILE_DRAW.texture_rect);
+            }
+
+            textureMap[TILE_DRAW.texture_ptr].first.emplace_back(TILE_DRAW.texture_rect);
+            textureMap[TILE_DRAW.texture_ptr].second.emplace_back(TILE_DRAW.tile_index_v);
+        }
+
+        std::size_t unique { 0 };
+        std::size_t sum { 0 };
+        std::ostringstream ss;
+        std::size_t count { 0 };
+        for (auto & infoPair : textureMap)
+        {
+            ss << "\n\t#" << ++count << " Texture size=" << infoPair.first->getSize()
+               << ", map_tile_count=" << infoPair.second.second.size();
+
+            std::sort(std::begin(infoPair.second.first), std::end(infoPair.second.first));
+            std::sort(std::begin(infoPair.second.second), std::end(infoPair.second.second));
+
+            infoPair.second.second.erase(
+                std::unique(std::begin(infoPair.second.second), std::end(infoPair.second.second)),
+                std::end(infoPair.second.second));
+
+            ss << " (" << infoPair.second.second.size() << " unique) ("
+               << (layout_.tile_count_v.x * layout_.tile_count_v.y)
+               << " total), coords_count=" << infoPair.second.first.size();
+
+            infoPair.second.first.erase(
+                std::unique(std::begin(infoPair.second.first), std::end(infoPair.second.first)),
+                std::end(infoPair.second.first));
+
+            const auto UNIQUE { infoPair.second.first.size() };
+            unique += UNIQUE;
+
+            ss << " (" << UNIQUE << " unique)";
+
+            const auto TOTAL { (
+                (infoPair.first->getSize().x / static_cast<unsigned>(layout_.tile_size_v.x))
+                * (infoPair.first->getSize().y / static_cast<unsigned>(layout_.tile_size_v.y))) };
+            sum += TOTAL;
+
+            const auto RATIO_OF_COVERAGE { (
+                static_cast<double>(UNIQUE) / static_cast<double>(TOTAL)) };
+
+            ss << " (" << TOTAL << " total)";
+
+            ss << "(" << std::setprecision(3) << (RATIO_OF_COVERAGE * 100.0) << "% coverage)";
+        }
+
+        ss << "\n\tTotals: unique=" << unique << ", sum=" << sum << ", " << std::setprecision(3)
+           << ((static_cast<double>(unique) / static_cast<double>(sum)) * 100.0) << "%)";
+
+        M_HP_LOG_WRN(
+            "Texture Summary (tile_size=" << layout_.tile_size_v << ")(tile_counts="
+                                          << layout_.tile_count_v << "):" << ss.str());
+
+        misc::VectorMap<sf::Vector2i, std::size_t> posCountMap;
+        for (const auto & TILE_DRAW : tileDraws_)
+        {
+            posCountMap[TILE_DRAW.tile_index_v]++;
+        }
+
+        misc::VectorMap<std::size_t, std::vector<sf::Vector2i>> countPosMap;
+        for (const auto & POS_COUNT_PAIR : posCountMap)
+        {
+            countPosMap[POS_COUNT_PAIR.second].emplace_back(POS_COUNT_PAIR.first);
+        }
+
+        ss.str("");
+        ss << "Position Draw Counts (" << countPosMap.Size() << "):";
+        for (const auto & COUNT_POS_PAIR : countPosMap)
+        {
+            ss << "\n\t" << COUNT_POS_PAIR.first << "\t" << COUNT_POS_PAIR.second.size();
+        }
+
+        M_HP_LOG_WRN(ss.str());
+
+        ResetMapSubsectionsNew();
     }
 
     const map::TileOffsets MapDisplay::TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const

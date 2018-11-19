@@ -38,8 +38,6 @@ namespace map
 
         bool OwnsId(const int ID) const;
 
-        static const std::string NameWithEmptyTexture() { return "empty"; }
-
         std::string name;
         int first_id;
         int tile_count;
@@ -58,6 +56,11 @@ namespace map
             : is_empty(IS_EMPTY)
             , texture_index(TEXTURE_INDEX)
         {}
+
+        TilesPanelForLayers(const TilesPanelForLayers &) = default;
+        TilesPanelForLayers(TilesPanelForLayers &&) = default;
+        TilesPanelForLayers & operator=(const TilesPanelForLayers &) = default;
+        TilesPanelForLayers & operator=(TilesPanelForLayers &&) = default;
 
         bool is_empty;
         std::size_t texture_index;

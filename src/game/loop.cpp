@@ -68,46 +68,35 @@ namespace game
 
             while (!iStatus_.IsLoopStopRequested())
             {
-                {
-                    M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
+                M_HP_SCOPED_TIME_TRIAL(framerateTrials, FRAMERATE_COLLECTER_INDEX);
 
-                    gui::Display::Instance()->ClearToBlack();
+                gui::Display::Instance()->ClearToBlack();
 
-                    // TODO TEMP REMOVE remove this crap once all testing is in unit tests
-                    ExecuteNextTest();
+                // TODO TEMP REMOVE remove this crap once all testing is in unit tests
+                ExecuteNextTest();
 
-                    frameMouseInfo_ = UpdateMouseInfo();
-                    StopMouseHover(frameMouseInfo_.has_moved);
-                    HandleMouseMove();
-                    HandleEvents();
+                frameMouseInfo_ = UpdateMouseInfo();
+                StopMouseHover(frameMouseInfo_.has_moved);
+                HandleMouseMove();
+                HandleEvents();
 
-                    const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
-                    frameClock.restart();
+                const auto FRAME_TIME_SEC { frameClock.getElapsedTime().asSeconds() };
+                frameClock.restart();
 
-                    UpdateTimeFade(FRAME_TIME_SEC);
-                    UpdateTimeAudio(FRAME_TIME_SEC);
-                    UpdateTimeStages(FRAME_TIME_SEC);
+                UpdateTimeFade(FRAME_TIME_SEC);
+                UpdateTimeAudio(FRAME_TIME_SEC);
+                UpdateTimeStages(FRAME_TIME_SEC);
 
-                    OncePerSecondTasks(secondClock_);
+                OncePerSecondTasks(secondClock_);
 
-                    Draw();
+                Draw();
 
-                    // this must remain last (just before display) so that any of the code above
-                    // can set a popup response and it will always be handled before the loop
-                    // exits
-                    stages_.HandlePopupResponseCallback();
+                // this must remain last (just before display) so that any of the code above
+                // can set a popup response and it will always be handled before the loop
+                // exits
+                stages_.HandlePopupResponseCallback();
 
-                    Display();
-                }
-
-                // if (toLogEvents_.empty() == false)
-                //{
-                //    for (const auto & EVENT : toLogEvents_)
-                //    {
-                //        M_HP_LOG_DEF("Event: " << ToString(EVENT));
-                //    }
-                //    toLogEvents_.clear();
-                //}
+                Display();
             }
 
             framerateTrials.EndAllContests();

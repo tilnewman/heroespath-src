@@ -624,17 +624,17 @@ namespace map
         bool didCollideWithMap { false };
 
         {
-            misc::ScopedTimeTrial scopedTimer(collisionTimeTrials_, collisionQuadIndex_);
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionQuadIndex_);
             DoesRectCollideWithMap_UsingAlgorithm_Quad(RECT);
         }
 
         {
-            misc::ScopedTimeTrial scopedTimerJane(collisionTimeTrials_, collisionNaiveIndex_);
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionNaiveIndex_);
             DoesRectCollideWithMap_UsingAlgorithm_Naive(RECT);
         }
 
         {
-            misc::ScopedTimeTrial scopedTimerRobot(collisionTimeTrials_, collisionGridIndex_);
+            M_HP_SCOPED_TIME_TRIAL(collisionTimeTrials_, collisionGridIndex_);
             didCollideWithMap = DoesRectCollideWithMap_UsingAlgorithm_Grid(RECT);
         }
 

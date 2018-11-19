@@ -71,7 +71,6 @@ namespace misc
         , message_(MESSAGE)
         , logCountBeforeStarting_(((WILL_CANCEL_ON_LOG) ? Log::Instance()->LineCount() : 0))
         , startTime_(std::chrono::high_resolution_clock::now())
-
     {}
 
     ScopedTimeLogger::~ScopedTimeLogger()
