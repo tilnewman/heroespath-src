@@ -55,10 +55,11 @@ namespace map
         , layout_()
         , playerPosV_(0.0f, 0.0f)
         , playerPosOffsetV_(0.0f, 0.0f)
-        , offScreenVertexArrayAbove_()
-        , offScreenVertexArrayBelow_()
-        , offScreenTextureAbove_()
+        , offScreenVertexArray_(sf::Quads, VERTS_PER_QUAD_)
         , offScreenTextureBelow_()
+        , offScreenTextureAnim_()
+        , offScreenTextureAvatar_()
+        , offScreenTextureAbove_()
         , npcShadowCachedTexture_(
               "media-images-avatar-shadow",
               (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
@@ -70,19 +71,14 @@ namespace map
         , tileDraws_()
         , tileVertexVecBelow_()
         , tileVertexVecAbove_()
-        , timeTrials_("MapDisplay", TimeRes::Micro, true, 100, 0.0)
+        , timeTrials_("MapDisplay", TimeRes::Micro, true, 20, 0.0)
         , timeTrialIndexRedDrawSub_(timeTrials_.AddCollecter("SubSection"))
-
     {
         avatarSprites_.reserve(64);
         avatarSpriteIndexes_.reserve(64);
         tileDraws_.reserve(50000);
         tileVertexVecBelow_.reserve(64);
         tileVertexVecAbove_.reserve(64);
-        offScreenVertexArrayAbove_.setPrimitiveType(sf::Quads);
-        offScreenVertexArrayAbove_.resize(VERTS_PER_QUAD_);
-        offScreenVertexArrayBelow_.setPrimitiveType(sf::Quads);
-        offScreenVertexArrayBelow_.resize(VERTS_PER_QUAD_);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -110,19 +106,19 @@ namespace map
         offScreenTileRectI_ = CalcOffscreenTileSubRectForMapPos(
             offScreenRectI_, PlayerPosMap(), sfutil::Size(mapTileRectI_));
 
-        SetupOffScreenTexture();
-
-        ResetMapSubsections();
-        ReDraw(0.0f);
+        SetupOffScreenTextures();
 
         StopAnimMusic();
-        StartAnimMusic();
-        UpdateAnimMusicVolume();
 
         animInfoVec_ = ANIM_INFO_VEC;
         SetupAnimations();
 
+        StartAnimMusic();
+        UpdateAnimMusicVolume();
+
         AnalyzeLayers();
+        ResetMapSubsections();
+        ReDraw();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIR, const float ADJUSTMENT)
@@ -156,15 +152,33 @@ namespace map
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         states.texture = &offScreenTextureBelow_.getTexture();
-        target.draw(offScreenVertexArrayBelow_, states);
+        target.draw(offScreenVertexArray_, states);
+
+        states.texture = &offScreenTextureAnim_.getTexture();
+        target.draw(offScreenVertexArray_, states);
+
+        states.texture = &offScreenTextureAvatar_.getTexture();
+        target.draw(offScreenVertexArray_, states);
 
         states.texture = &offScreenTextureAbove_.getTexture();
-        target.draw(offScreenVertexArrayAbove_, states);
+        target.draw(offScreenVertexArray_, states);
 
         states.texture = nullptr;
     }
 
-    void MapDisplay::Update(const float TIME_ELAPSED) { ReDraw(TIME_ELAPSED); }
+    void MapDisplay::Update(const float TIME_ELAPSED)
+    {
+        for (auto & animUPtr : animUPtrVec_)
+        {
+            if (misc::IsRealZero(TIME_ELAPSED) == false)
+            {
+                animUPtr->UpdateTime(TIME_ELAPSED);
+            }
+        }
+
+        DrawAnimations();
+        DrawCharacterImages();
+    }
 
     void MapDisplay::UpdateAnimMusicVolume()
     {
@@ -200,7 +214,7 @@ namespace map
 
             const auto ACTUAL_ADJUSTMENT { OFFSCREEN_TOP_BEFORE - offScreenFollowRect_.top };
 
-            PositionMapSpriteTextureRect();
+            UpdateOffscreenTextureCoords();
             playerPosV_.y = std::max(0.0f, (playerPosV_.y - ACTUAL_ADJUSTMENT));
 
             if (misc::IsRealZero(offScreenFollowRect_.top))
@@ -234,7 +248,7 @@ namespace map
         }
 
         offScreenFollowRect_.top += ADJUSTMENT;
-        PositionMapSpriteTextureRect();
+        UpdateOffscreenTextureCoords();
         playerPosV_.y += ADJUSTMENT;
 
         if (sfutil::Bottom(offScreenFollowRect_) > sfutil::Bottom(offScreenRectI_))
@@ -261,7 +275,7 @@ namespace map
 
             const auto ACTUAL_ADJUSTMENT { OFFSCREEN_LEFT_BEFORE - offScreenFollowRect_.left };
 
-            PositionMapSpriteTextureRect();
+            UpdateOffscreenTextureCoords();
             playerPosV_.x = std::max(0.0f, (playerPosV_.x - ACTUAL_ADJUSTMENT));
 
             if (misc::IsRealZero(offScreenFollowRect_.left))
@@ -297,7 +311,7 @@ namespace map
         }
 
         offScreenFollowRect_.left += ADJUSTMENT;
-        PositionMapSpriteTextureRect();
+        UpdateOffscreenTextureCoords();
         playerPosV_.x += ADJUSTMENT;
 
         if (sfutil::Right(offScreenFollowRect_) > sfutil::Right(offScreenRectI_))
@@ -310,6 +324,8 @@ namespace map
 
     void MapDisplay::DrawCharacterImages()
     {
+        offScreenTextureAvatar_.clear(sf::Color::Transparent);
+
         avatarSpriteIndexes_.clear();
 
         // fill the indexes vector but only with indexes to avatars that are on screen
@@ -356,38 +372,41 @@ namespace map
             const auto & AVATAR_SPRITE { avatarSprites_.at(INDEX) };
             npcShadowSprite_.setPosition(AVATAR_SPRITE.getPosition());
             npcShadowSprite_.setScale(AVATAR_SPRITE.getScale());
-            offScreenTextureBelow_.draw(npcShadowSprite_);
+            offScreenTextureAvatar_.draw(npcShadowSprite_);
         }
 
         // draw all the avatar sprites
         for (const auto INDEX : avatarSpriteIndexes_)
         {
-            offScreenTextureBelow_.draw(avatarSprites_.at(INDEX));
+            offScreenTextureAvatar_.draw(avatarSprites_.at(INDEX));
         }
+
+        offScreenTextureAvatar_.display();
     }
 
-    void MapDisplay::UpdateAndDrawAnimations(const float TIME_ELAPSED)
+    void MapDisplay::DrawAnimations()
     {
+        offScreenTextureAnim_.clear(sf::Color::Transparent);
+
         for (auto & animUPtr : animUPtrVec_)
         {
-            if (TIME_ELAPSED > 0.0f)
-            {
-                animUPtr->UpdateTime(TIME_ELAPSED);
-            }
-
             animUPtr->SetEntityPos(OffScreenPosFromMapPos(animUPtr->GetEntityPos()));
-            offScreenTextureAbove_.draw(*animUPtr);
+
+            const auto OFFSCREEN_RECT { animUPtr->GetEntityRegion() };
+            if (offScreenFollowRect_.intersects(OFFSCREEN_RECT))
+            {
+                offScreenTextureAnim_.draw(*animUPtr);
+            }
         }
+
+        offScreenTextureAnim_.display();
     }
 
-    void MapDisplay::ReDraw(const float TIME_ELAPSED)
+    void MapDisplay::ReDraw()
     {
-        DrawMapSubsectionOffscreen();
-        UpdateAndDrawAnimations(TIME_ELAPSED);
+        DrawMapBelowAndAbove();
+        DrawAnimations();
         DrawCharacterImages();
-
-        offScreenTextureBelow_.display();
-        offScreenTextureAbove_.display();
 
         if (timeTrials_.ContestCount() >= 4)
         {
@@ -396,18 +415,6 @@ namespace map
     }
 
     void MapDisplay::ResetMapSubsections()
-    {
-        // reset the old way
-        // for (auto & nextMapLayer : layout_.layer_vec)
-        //{
-        //    nextMapLayer.ResetForReDraw();
-        //    SetupMapLayerSubsection(nextMapLayer);
-        //}
-
-        ResetMapSubsectionsNew();
-    }
-
-    void MapDisplay::ResetMapSubsectionsNew()
     {
         // reset the new way
         tileVertexVecBelow_.clear();
@@ -475,34 +482,34 @@ namespace map
             }
         }
 
-        std::ostringstream ss;
-        ss << "ResetMapSubsections Below:";
-        std::size_t count { 0 };
-        for (auto & textureVertexsPair : tileVertexVecBelow_)
-        {
-            ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
-               << textureVertexsPair.first->getSize() << " with "
-               << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
-               << " tile draws (%="
-               << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
-        }
-        M_HP_LOG_WRN(ss.str());
-
-        ss.str("");
-        ss << "ResetMapSubsections Above:";
-        count = 0;
-        for (auto & textureVertexsPair : tileVertexVecAbove_)
-        {
-            ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
-               << textureVertexsPair.first->getSize() << " with "
-               << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
-               << " tile draws (%="
-               << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
-        }
-        M_HP_LOG_WRN(ss.str());
+        // std::ostringstream ss;
+        // ss << "ResetMapSubsections Below:";
+        // std::size_t count { 0 };
+        // for (auto & textureVertexsPair : tileVertexVecBelow_)
+        //{
+        //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
+        //       << textureVertexsPair.first->getSize() << " with "
+        //       << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
+        //       << " tile draws (%="
+        //       << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
+        //}
+        // M_HP_LOG_WRN(ss.str());
+        //
+        // ss.str("");
+        // ss << "ResetMapSubsections Above:";
+        // count = 0;
+        // for (auto & textureVertexsPair : tileVertexVecAbove_)
+        //{
+        //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
+        //       << textureVertexsPair.first->getSize() << " with "
+        //       << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
+        //       << " tile draws (%="
+        //       << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
+        //}
+        // M_HP_LOG_WRN(ss.str());
     }
 
-    void MapDisplay::DrawMapSubsectionOffscreen()
+    void MapDisplay::DrawMapBelowAndAbove()
     {
         M_HP_SCOPED_TIME_TRIAL(timeTrials_, timeTrialIndexRedDrawSub_);
 
@@ -543,12 +550,12 @@ namespace map
         offScreenTextureAbove_.display();
     }
 
-    void MapDisplay::PositionMapSpriteTextureRect()
+    void MapDisplay::UpdateOffscreenTextureCoords()
     {
         OffScreenVertexTextureRect(offScreenFollowRect_);
     }
 
-    void MapDisplay::SetupOffScreenTexture()
+    void MapDisplay::SetupOffScreenTextures()
     {
         const auto WIDTH { static_cast<unsigned>(offScreenRectI_.width) };
         const auto HEIGHT { static_cast<unsigned>(offScreenRectI_.height) };
@@ -563,116 +570,26 @@ namespace map
             "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'above' texture.");
 
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            offScreenTextureAnim_.create(WIDTH, HEIGHT),
+            "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
+                << WIDTH << "x" << HEIGHT << ") for 'anim' texture.");
+
+        M_HP_ASSERT_OR_LOG_AND_THROW(
+            offScreenTextureAvatar_.create(WIDTH, HEIGHT),
+            "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
+                << WIDTH << "x" << HEIGHT << ") for 'avatar' texture.");
+
         // set the initial position of what is drawn on-screen from the off-screen texture
         offScreenFollowRect_.left = static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * tileSizeVI_.x);
+
         offScreenFollowRect_.top = static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * tileSizeVI_.y);
+
         offScreenFollowRect_.width = onScreenRect_.width;
         offScreenFollowRect_.height = onScreenRect_.height;
 
         OffScreenVertexMapRect(onScreenRect_);
-        PositionMapSpriteTextureRect();
-    }
-
-    void MapDisplay::SetupMapLayerSubsection(map::Layer & mapLayer)
-    {
-        // resize the vertex array to fit the level size
-        const auto TILE_WIDTH { offScreenTileRectI_.width };
-        const auto TILE_HEIGHT { offScreenTileRectI_.height };
-
-        mapLayer.vert_array.setPrimitiveType(sf::Quads);
-
-        mapLayer.vert_array.resize(
-            static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT) * VERTS_PER_QUAD_);
-
-        mapLayer.tiles_panel_for_layers_vec.reserve(
-            static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT));
-
-        const auto EMPTY_TILES_PANEL_NAME_STR { TilesPanel().name };
-
-        // populate the vertex array with one quad per tile
-        std::size_t vertIndex { 0 };
-        for (int x(offScreenTileRectI_.left); x < sfutil::Right(offScreenTileRectI_); ++x)
-        {
-            for (int y(offScreenTileRectI_.top); y < sfutil::Bottom(offScreenTileRectI_); ++y)
-            {
-                // get the current tile number
-                const auto TILE_INDEX { x + (y * mapTileRectI_.width) };
-
-                const auto TILE_NUM_ORIG {
-                    mapLayer.mapid_vec[static_cast<std::size_t>(TILE_INDEX)]
-                };
-
-                // get the texture/image this tile can be found in
-                const map::TilesPanel & TILES_PANEL { TilesPanelFromId(TILE_NUM_ORIG) };
-
-                mapLayer.tiles_panel_for_layers_vec.emplace_back(map::TilesPanelForLayers(
-                    (TILES_PANEL.name == EMPTY_TILES_PANEL_NAME_STR), TILES_PANEL.texture_index));
-
-                // get the actual tile number (id)
-                const auto TILE_NUM_FINAL { (TILE_NUM_ORIG - TILES_PANEL.first_id) };
-
-                // get a pointer to the current tile's quad
-                const auto VERT_ARRAY_INDEX { vertIndex++ * VERTS_PER_QUAD_ };
-                sf::Vertex * quadPtr { &mapLayer.vert_array[VERT_ARRAY_INDEX] };
-
-                // define its four corners on screen
-                const auto POS_WIDTH { static_cast<float>(
-                    (x - offScreenTileRectI_.left) * tileSizeVI_.x) };
-
-                const auto POS_WIDTH_PLUS_ONE_TILE { POS_WIDTH
-                                                     + static_cast<float>(tileSizeVI_.x) };
-
-                const auto POS_HEIGHT { static_cast<float>(
-                    (y - offScreenTileRectI_.top) * tileSizeVI_.y) };
-
-                const auto POS_HEIGHT_PLUS_ONE_TILE { POS_HEIGHT
-                                                      + static_cast<float>(tileSizeVI_.y) };
-
-                quadPtr[0].position = sf::Vector2f(POS_WIDTH, POS_HEIGHT);
-
-                quadPtr[1].position = sf::Vector2f(POS_WIDTH_PLUS_ONE_TILE, POS_HEIGHT);
-
-                quadPtr[2].position
-                    = sf::Vector2f(POS_WIDTH_PLUS_ONE_TILE, POS_HEIGHT_PLUS_ONE_TILE);
-
-                quadPtr[3].position = sf::Vector2f(POS_WIDTH, POS_HEIGHT_PLUS_ONE_TILE);
-
-                // find its position in the tileset texture
-                const auto TEXTURE_TILE_COUNT_HORIZ {
-                    static_cast<int>(
-                        layout_.texture_vec[TILES_PANEL.texture_index].Get().getSize().x)
-                    / tileSizeVI_.x
-                };
-
-                const auto TILE_COUNT_U { static_cast<float>(
-                    TILE_NUM_FINAL % TEXTURE_TILE_COUNT_HORIZ) };
-
-                const auto TILE_COUNT_V { static_cast<float>(
-                    TILE_NUM_FINAL / TEXTURE_TILE_COUNT_HORIZ) };
-
-                const auto TEXTCOORD_WIDTH { TILE_COUNT_U * static_cast<float>(tileSizeVI_.x) };
-
-                const auto TEXTCOORD_WIDTH_PLUS_ONE_TILE { TEXTCOORD_WIDTH
-                                                           + static_cast<float>(tileSizeVI_.x) };
-
-                const auto TEXTCOORD_HEIGHT { TILE_COUNT_V * static_cast<float>(tileSizeVI_.y) };
-
-                const auto TEXTCOORD_HEIGHT_PLUS_ONE_TILE { TEXTCOORD_HEIGHT
-                                                            + static_cast<float>(tileSizeVI_.y) };
-
-                // define its four texture coordinates
-                quadPtr[0].texCoords = sf::Vector2f(TEXTCOORD_WIDTH, TEXTCOORD_HEIGHT);
-
-                quadPtr[1].texCoords
-                    = sf::Vector2f(TEXTCOORD_WIDTH_PLUS_ONE_TILE, TEXTCOORD_HEIGHT);
-
-                quadPtr[2].texCoords
-                    = sf::Vector2f(TEXTCOORD_WIDTH_PLUS_ONE_TILE, TEXTCOORD_HEIGHT_PLUS_ONE_TILE);
-
-                quadPtr[3].texCoords
-                    = sf::Vector2f(TEXTCOORD_WIDTH, TEXTCOORD_HEIGHT_PLUS_ONE_TILE);
-            }
-        }
+        UpdateOffscreenTextureCoords();
     }
 
     void MapDisplay::AnalyzeLayers()
@@ -757,117 +674,115 @@ namespace map
 
         std::sort(std::begin(tileDraws_), std::end(tileDraws_));
 
-        const auto COUNT_ORIG { tileDraws_.size() };
-
-        tileDraws_.erase(
-            std::unique(std::begin(tileDraws_), std::end(tileDraws_)), std::end(tileDraws_));
-
-        const auto COUNT { tileDraws_.size() };
-
-        M_HP_LOG_WRN(
-            "\t" << COUNT << "  TileDraws (" << (COUNT_ORIG - COUNT)
-                 << " duplicates removed) (tiles_panel_count=" << layout_.tiles_panel_vec.size()
-                 << ")(map_tile_count=" << (mapTileRectI_.width * mapTileRectI_.height)
-                 << ", layer_count=" << layout_.layer_vec.size() << ", total_tiles_count="
-                 << (static_cast<std::size_t>(mapTileRectI_.width * mapTileRectI_.height)
-                     * layout_.layer_vec.size())
-                 << ")");
-
-        misc::VectorMap<
-            const sf::Texture *,
-            std::pair<std::vector<sf::IntRect>, std::vector<sf::Vector2i>>>
-            textureMap;
-
-        for (const auto & TILE_DRAW : tileDraws_)
-        {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                ((TILE_DRAW.texture_rect.width == tileSizeVI_.x)
-                 && (TILE_DRAW.texture_rect.height == tileSizeVI_.y)),
-                "TILE_DRAW.texture_rect=" << TILE_DRAW.texture_rect
-                                          << " had an invalid size that should have been "
-                                          << tileSizeVI_ << ".");
-
-            if (((TILE_DRAW.texture_rect.left % tileSizeVI_.x) != 0)
-                || ((TILE_DRAW.texture_rect.top % tileSizeVI_.y) != 0))
-            {
-                M_HP_LOG_WRN("Invalid texture rect position=" << TILE_DRAW.texture_rect);
-            }
-
-            textureMap[TILE_DRAW.texture_ptr].first.emplace_back(TILE_DRAW.texture_rect);
-            textureMap[TILE_DRAW.texture_ptr].second.emplace_back(TILE_DRAW.tile_index_v);
-        }
-
-        std::size_t unique { 0 };
-        std::size_t sum { 0 };
-        std::ostringstream ss;
-        std::size_t count { 0 };
-        for (auto & infoPair : textureMap)
-        {
-            ss << "\n\t#" << ++count << " Texture size=" << infoPair.first->getSize()
-               << ", map_tile_count=" << infoPair.second.second.size();
-
-            std::sort(std::begin(infoPair.second.first), std::end(infoPair.second.first));
-            std::sort(std::begin(infoPair.second.second), std::end(infoPair.second.second));
-
-            infoPair.second.second.erase(
-                std::unique(std::begin(infoPair.second.second), std::end(infoPair.second.second)),
-                std::end(infoPair.second.second));
-
-            ss << " (" << infoPair.second.second.size() << " unique) ("
-               << (mapTileRectI_.width * mapTileRectI_.height)
-               << " total), coords_count=" << infoPair.second.first.size();
-
-            infoPair.second.first.erase(
-                std::unique(std::begin(infoPair.second.first), std::end(infoPair.second.first)),
-                std::end(infoPair.second.first));
-
-            const auto UNIQUE { infoPair.second.first.size() };
-            unique += UNIQUE;
-
-            ss << " (" << UNIQUE << " unique)";
-
-            const auto TOTAL { (
-                (infoPair.first->getSize().x / static_cast<unsigned>(tileSizeVI_.x))
-                * (infoPair.first->getSize().y / static_cast<unsigned>(tileSizeVI_.y))) };
-            sum += TOTAL;
-
-            const auto RATIO_OF_COVERAGE { (
-                static_cast<double>(UNIQUE) / static_cast<double>(TOTAL)) };
-
-            ss << " (" << TOTAL << " total)";
-
-            ss << "(" << std::setprecision(3) << (RATIO_OF_COVERAGE * 100.0) << "% coverage)";
-        }
-
-        ss << "\n\tTotals: unique=" << unique << ", sum=" << sum << ", " << std::setprecision(3)
-           << ((static_cast<double>(unique) / static_cast<double>(sum)) * 100.0) << "%)";
-
-        M_HP_LOG_WRN(
-            "Texture Summary (tile_size=" << tileSizeVI_ << ")(tile_counts="
-                                          << sfutil::Size(mapTileRectI_) << "):" << ss.str());
-
-        misc::VectorMap<sf::Vector2i, std::size_t> posCountMap;
-        for (const auto & TILE_DRAW : tileDraws_)
-        {
-            posCountMap[TILE_DRAW.tile_index_v]++;
-        }
-
-        misc::VectorMap<std::size_t, std::vector<sf::Vector2i>> countPosMap;
-        for (const auto & POS_COUNT_PAIR : posCountMap)
-        {
-            countPosMap[POS_COUNT_PAIR.second].emplace_back(POS_COUNT_PAIR.first);
-        }
-
-        ss.str("");
-        ss << "Position Draw Counts (" << countPosMap.Size() << "):";
-        for (const auto & COUNT_POS_PAIR : countPosMap)
-        {
-            ss << "\n\t" << COUNT_POS_PAIR.first << "\t" << COUNT_POS_PAIR.second.size();
-        }
-
-        M_HP_LOG_WRN(ss.str());
-
-        ResetMapSubsectionsNew();
+        // const auto COUNT_ORIG { tileDraws_.size() };
+        //
+        // tileDraws_.erase(
+        //    std::unique(std::begin(tileDraws_), std::end(tileDraws_)), std::end(tileDraws_));
+        //
+        // const auto COUNT { tileDraws_.size() };
+        //
+        // M_HP_LOG_WRN(
+        //    "\t" << COUNT << "  TileDraws (" << (COUNT_ORIG - COUNT)
+        //         << " duplicates removed) (tiles_panel_count=" << layout_.tiles_panel_vec.size()
+        //         << ")(map_tile_count=" << (mapTileRectI_.width * mapTileRectI_.height)
+        //         << ", layer_count=" << layout_.layer_vec.size() << ", total_tiles_count="
+        //         << (static_cast<std::size_t>(mapTileRectI_.width * mapTileRectI_.height)
+        //             * layout_.layer_vec.size())
+        //         << ")");
+        //
+        // misc::VectorMap<
+        //    const sf::Texture *,
+        //    std::pair<std::vector<sf::IntRect>, std::vector<sf::Vector2i>>>
+        //    textureMap;
+        //
+        // for (const auto & TILE_DRAW : tileDraws_)
+        //{
+        //    M_HP_ASSERT_OR_LOG_AND_THROW(
+        //        ((TILE_DRAW.texture_rect.width == tileSizeVI_.x)
+        //         && (TILE_DRAW.texture_rect.height == tileSizeVI_.y)),
+        //        "TILE_DRAW.texture_rect=" << TILE_DRAW.texture_rect
+        //                                  << " had an invalid size that should have been "
+        //                                  << tileSizeVI_ << ".");
+        //
+        //    if (((TILE_DRAW.texture_rect.left % tileSizeVI_.x) != 0)
+        //        || ((TILE_DRAW.texture_rect.top % tileSizeVI_.y) != 0))
+        //    {
+        //        M_HP_LOG_WRN("Invalid texture rect position=" << TILE_DRAW.texture_rect);
+        //    }
+        //
+        //    textureMap[TILE_DRAW.texture_ptr].first.emplace_back(TILE_DRAW.texture_rect);
+        //    textureMap[TILE_DRAW.texture_ptr].second.emplace_back(TILE_DRAW.tile_index_v);
+        //}
+        //
+        // std::size_t unique { 0 };
+        // std::size_t sum { 0 };
+        // std::ostringstream ss;
+        // std::size_t count { 0 };
+        // for (auto & infoPair : textureMap)
+        //{
+        //    ss << "\n\t#" << ++count << " Texture size=" << infoPair.first->getSize()
+        //       << ", map_tile_count=" << infoPair.second.second.size();
+        //
+        //    std::sort(std::begin(infoPair.second.first), std::end(infoPair.second.first));
+        //    std::sort(std::begin(infoPair.second.second), std::end(infoPair.second.second));
+        //
+        //    infoPair.second.second.erase(
+        //        std::unique(std::begin(infoPair.second.second), std::end(infoPair.second.second)),
+        //        std::end(infoPair.second.second));
+        //
+        //    ss << " (" << infoPair.second.second.size() << " unique) ("
+        //       << (mapTileRectI_.width * mapTileRectI_.height)
+        //       << " total), coords_count=" << infoPair.second.first.size();
+        //
+        //    infoPair.second.first.erase(
+        //        std::unique(std::begin(infoPair.second.first), std::end(infoPair.second.first)),
+        //        std::end(infoPair.second.first));
+        //
+        //    const auto UNIQUE { infoPair.second.first.size() };
+        //    unique += UNIQUE;
+        //
+        //    ss << " (" << UNIQUE << " unique)";
+        //
+        //    const auto TOTAL { (
+        //        (infoPair.first->getSize().x / static_cast<unsigned>(tileSizeVI_.x))
+        //        * (infoPair.first->getSize().y / static_cast<unsigned>(tileSizeVI_.y))) };
+        //    sum += TOTAL;
+        //
+        //    const auto RATIO_OF_COVERAGE { (
+        //        static_cast<double>(UNIQUE) / static_cast<double>(TOTAL)) };
+        //
+        //    ss << " (" << TOTAL << " total)";
+        //
+        //    ss << "(" << std::setprecision(3) << (RATIO_OF_COVERAGE * 100.0) << "% coverage)";
+        //}
+        //
+        // ss << "\n\tTotals: unique=" << unique << ", sum=" << sum << ", " << std::setprecision(3)
+        //   << ((static_cast<double>(unique) / static_cast<double>(sum)) * 100.0) << "%)";
+        //
+        // M_HP_LOG_WRN(
+        //    "Texture Summary (tile_size=" << tileSizeVI_ << ")(tile_counts="
+        //                                  << sfutil::Size(mapTileRectI_) << "):" << ss.str());
+        //
+        // misc::VectorMap<sf::Vector2i, std::size_t> posCountMap;
+        // for (const auto & TILE_DRAW : tileDraws_)
+        //{
+        //    posCountMap[TILE_DRAW.tile_index_v]++;
+        //}
+        //
+        // misc::VectorMap<std::size_t, std::vector<sf::Vector2i>> countPosMap;
+        // for (const auto & POS_COUNT_PAIR : posCountMap)
+        //{
+        //    countPosMap[POS_COUNT_PAIR.second].emplace_back(POS_COUNT_PAIR.first);
+        //}
+        //
+        // ss.str("");
+        // ss << "Position Draw Counts (" << countPosMap.Size() << "):";
+        // for (const auto & COUNT_POS_PAIR : countPosMap)
+        //{
+        //    ss << "\n\t" << COUNT_POS_PAIR.first << "\t" << COUNT_POS_PAIR.second.size();
+        //}
+        //
+        // M_HP_LOG_WRN(ss.str());
     }
 
     const sf::IntRect MapDisplay::CalcOffscreenRect(
@@ -896,7 +811,6 @@ namespace map
 
         {
             const auto PLAYER_MAP_TILE_POS_X { static_cast<int>(MAP_POS_V.x) / tileSizeVI_.x };
-
             tileRect.left = std::max(0, (PLAYER_MAP_TILE_POS_X - (tileRect.width / 2)));
 
             if (sfutil::Right(tileRect) > MAP_SIZE_IN_TILES_V.x)
@@ -907,7 +821,6 @@ namespace map
 
         {
             const auto PLAYER_MAP_TILE_POS_Y { static_cast<int>(MAP_POS_V.y) / tileSizeVI_.y };
-
             tileRect.top = std::max(0, (PLAYER_MAP_TILE_POS_Y - (tileRect.height / 2)));
 
             if (sfutil::Bottom(tileRect) > MAP_SIZE_IN_TILES_V.y)
@@ -979,23 +892,6 @@ namespace map
         return sf::FloatRect(OFFSCREEN_TOP_LEFT_POS_V, OFFSCREEN_RECT_SIZE_V);
     }
 
-    const map::TilesPanel & MapDisplay::TilesPanelFromId(const int ID) const
-    {
-        for (const auto & TILES_PANEL : layout_.tiles_panel_vec)
-        {
-            if (TILES_PANEL.OwnsId(ID))
-            {
-                return TILES_PANEL;
-            }
-        }
-
-        std::ostringstream ss;
-        ss << "gui::MapDisplay::TilesPanelFromId(id=" << ID
-           << ") failed to find the owning TilesPanel.";
-
-        throw std::runtime_error(ss.str());
-    }
-
     void MapDisplay::IncrementTileOffsetsInDirection(const gui::Direction::Enum DIR)
     {
         auto wereChangesMade { false };
@@ -1063,9 +959,9 @@ namespace map
 
         if (wereChangesMade)
         {
-            PositionMapSpriteTextureRect();
+            UpdateOffscreenTextureCoords();
             ResetMapSubsections();
-            ReDraw(0.0f);
+            ReDraw();
         }
     }
 
@@ -1130,54 +1026,38 @@ namespace map
         }
     }
 
-    const sf::FloatRect MapDisplay::OffScreenVertexMapRect() const
+    const sf::FloatRect
+        MapDisplay::SingleQuadVertexArrayPosition(const sf::VertexArray & VERTEX_ARRAY) const
     {
-        const auto WIDTH { (
-            offScreenVertexArrayAbove_[1].position.x - offScreenVertexArrayAbove_[0].position.x) };
-
-        const auto HEIGHT { (
-            offScreenVertexArrayAbove_[3].position.y - offScreenVertexArrayAbove_[0].position.y) };
-
-        return { offScreenVertexArrayAbove_[0].position, sf::Vector2f(WIDTH, HEIGHT) };
+        const auto WIDTH { (VERTEX_ARRAY[1].position.x - VERTEX_ARRAY[0].position.x) };
+        const auto HEIGHT { (VERTEX_ARRAY[3].position.y - VERTEX_ARRAY[0].position.y) };
+        return { VERTEX_ARRAY[0].position, sf::Vector2f(WIDTH, HEIGHT) };
     }
 
-    const sf::FloatRect MapDisplay::OffScreenVertexTextureRect() const
+    const sf::FloatRect
+        MapDisplay::SingleQuadVertexArrayTextureCoords(const sf::VertexArray & VERTEX_ARRAY) const
     {
-        const auto WIDTH {
-            (offScreenVertexArrayAbove_[1].texCoords.x - offScreenVertexArrayAbove_[0].texCoords.x)
-        };
-
-        const auto HEIGHT {
-            (offScreenVertexArrayAbove_[3].texCoords.y - offScreenVertexArrayAbove_[0].texCoords.y)
-        };
-
-        return { offScreenVertexArrayAbove_[0].texCoords, sf::Vector2f(WIDTH, HEIGHT) };
+        const auto WIDTH { (VERTEX_ARRAY[1].texCoords.x - VERTEX_ARRAY[0].texCoords.x) };
+        const auto HEIGHT { (VERTEX_ARRAY[3].texCoords.y - VERTEX_ARRAY[0].texCoords.y) };
+        return { VERTEX_ARRAY[0].texCoords, sf::Vector2f(WIDTH, HEIGHT) };
     }
 
-    void MapDisplay::OffScreenVertexMapRect(const sf::FloatRect & RECT)
+    void MapDisplay::SingleQuadVertexArrayPosition(
+        sf::VertexArray & vertexArray, const sf::FloatRect & RECT)
     {
-        offScreenVertexArrayAbove_[0].position = sfutil::TopLeft(RECT);
-        offScreenVertexArrayAbove_[1].position = sfutil::TopRight(RECT);
-        offScreenVertexArrayAbove_[2].position = sfutil::BottomRight(RECT);
-        offScreenVertexArrayAbove_[3].position = sfutil::BottomLeft(RECT);
-
-        offScreenVertexArrayBelow_[0].position = sfutil::TopLeft(RECT);
-        offScreenVertexArrayBelow_[1].position = sfutil::TopRight(RECT);
-        offScreenVertexArrayBelow_[2].position = sfutil::BottomRight(RECT);
-        offScreenVertexArrayBelow_[3].position = sfutil::BottomLeft(RECT);
+        vertexArray[0].position = sfutil::TopLeft(RECT);
+        vertexArray[1].position = sfutil::TopRight(RECT);
+        vertexArray[2].position = sfutil::BottomRight(RECT);
+        vertexArray[3].position = sfutil::BottomLeft(RECT);
     }
 
-    void MapDisplay::OffScreenVertexTextureRect(const sf::FloatRect & RECT)
+    void MapDisplay::SingleQuadVertexArrayTextureCoords(
+        sf::VertexArray & vertexArray, const sf::FloatRect & RECT)
     {
-        offScreenVertexArrayAbove_[0].texCoords = sfutil::TopLeft(RECT);
-        offScreenVertexArrayAbove_[1].texCoords = sfutil::TopRight(RECT);
-        offScreenVertexArrayAbove_[2].texCoords = sfutil::BottomRight(RECT);
-        offScreenVertexArrayAbove_[3].texCoords = sfutil::BottomLeft(RECT);
-
-        offScreenVertexArrayBelow_[0].texCoords = sfutil::TopLeft(RECT);
-        offScreenVertexArrayBelow_[1].texCoords = sfutil::TopRight(RECT);
-        offScreenVertexArrayBelow_[2].texCoords = sfutil::BottomRight(RECT);
-        offScreenVertexArrayBelow_[3].texCoords = sfutil::BottomLeft(RECT);
+        vertexArray[0].texCoords = sfutil::TopLeft(RECT);
+        vertexArray[1].texCoords = sfutil::TopRight(RECT);
+        vertexArray[2].texCoords = sfutil::BottomRight(RECT);
+        vertexArray[3].texCoords = sfutil::BottomLeft(RECT);
     }
 
 } // namespace map

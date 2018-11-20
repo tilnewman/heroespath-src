@@ -139,17 +139,16 @@ namespace map
         bool MoveLeft(const float ADJUSTMENT);
         bool MoveRight(const float ADJUSTMENT);
 
+        void ReDraw();
         void DrawCharacterImages();
-        void UpdateAndDrawAnimations(const float TIME_ELAPSED);
-        void ReDraw(const float TIME_ELAPSED);
+        void DrawAnimations();
+        void DrawMapBelowAndAbove();
+
         void ResetMapSubsections();
-        void ResetMapSubsectionsNew();
-        void DrawMapSubsectionOffscreen();
 
-        void PositionMapSpriteTextureRect();
-        void SetupOffScreenTexture();
+        void UpdateOffscreenTextureCoords();
+        void SetupOffScreenTextures();
 
-        void SetupMapLayerSubsection(Layer &);
         void AnalyzeLayers();
 
         const sf::IntRect CalcOffscreenRect(
@@ -162,15 +161,20 @@ namespace map
 
         const sf::Vector2f PlayerPosScreen() const;
 
+        enum class OffScreenType
+        {
+            Avatar,
+            Animation,
+            AboveOrBelow
+        };
+
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
         const sf::FloatRect ScreenRectFromMapRect(const sf::FloatRect &) const;
-
         const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
         const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
 
-        const TilesPanel & TilesPanelFromId(const int) const;
         void IncrementTileOffsetsInDirection(const gui::Direction::Enum);
-        const sf::Vector2f CalcOffScreenMapSize() const;
+
         void SetupAnimations();
 
         void StartAnimMusic();
@@ -178,11 +182,37 @@ namespace map
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
-        const sf::FloatRect OffScreenVertexMapRect() const;
-        const sf::FloatRect OffScreenVertexTextureRect() const;
+        const sf::FloatRect
+            SingleQuadVertexArrayPosition(const sf::VertexArray & VERTEX_ARRAY) const;
 
-        void OffScreenVertexMapRect(const sf::FloatRect & RECT);
-        void OffScreenVertexTextureRect(const sf::FloatRect & RECT);
+        void SingleQuadVertexArrayPosition(
+            sf::VertexArray & vertexArray, const sf::FloatRect & RECT);
+
+        const sf::FloatRect
+            SingleQuadVertexArrayTextureCoords(const sf::VertexArray & VERTEX_ARRAY) const;
+
+        void SingleQuadVertexArrayTextureCoords(
+            sf::VertexArray & vertexArray, const sf::FloatRect & RECT);
+
+        const sf::FloatRect OffScreenVertexMapRect() const
+        {
+            return SingleQuadVertexArrayPosition(offScreenVertexArray_);
+        }
+
+        const sf::FloatRect OffScreenVertexTextureRect() const
+        {
+            return SingleQuadVertexArrayTextureCoords(offScreenVertexArray_);
+        }
+
+        void OffScreenVertexMapRect(const sf::FloatRect & RECT)
+        {
+            SingleQuadVertexArrayPosition(offScreenVertexArray_, RECT);
+        }
+
+        void OffScreenVertexTextureRect(const sf::FloatRect & RECT)
+        {
+            SingleQuadVertexArrayTextureCoords(offScreenVertexArray_, RECT);
+        }
 
     public:
         // how many extra tiles to draw offscreen that are outside the visible map area
@@ -228,11 +258,12 @@ namespace map
         sf::Vector2f playerPosOffsetV_;
 
         // verts that define what from offscreen is drawn onscreen
-        sf::VertexArray offScreenVertexArrayAbove_;
-        sf::VertexArray offScreenVertexArrayBelow_;
+        sf::VertexArray offScreenVertexArray_;
 
-        sf::RenderTexture offScreenTextureAbove_;
         sf::RenderTexture offScreenTextureBelow_;
+        sf::RenderTexture offScreenTextureAnim_;
+        sf::RenderTexture offScreenTextureAvatar_;
+        sf::RenderTexture offScreenTextureAbove_;
 
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
