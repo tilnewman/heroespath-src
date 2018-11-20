@@ -16,7 +16,6 @@
 #include "map/layer.hpp"
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
-#include "map/tile-offsets.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
 
@@ -140,8 +139,6 @@ namespace map
         bool MoveLeft(const float ADJUSTMENT);
         bool MoveRight(const float ADJUSTMENT);
 
-        void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
-        void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
         void DrawCharacterImages();
         void UpdateAndDrawAnimations(const float TIME_ELAPSED);
         void ReDraw(const float TIME_ELAPSED);
@@ -152,10 +149,17 @@ namespace map
         void PositionMapSpriteTextureRect();
         void SetupOffScreenTexture();
 
-        void SetupMapLayerSubsection(Layer &, const TileOffsets &);
+        void SetupMapLayerSubsection(Layer &);
         void AnalyzeLayers();
 
-        const TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
+        const sf::IntRect CalcOffscreenRect(
+            const sf::FloatRect & ONSCREEN_RECT, const sf::Vector2i & TILE_SIZE_V) const;
+
+        const sf::IntRect CalcOffscreenTileSubRectForMapPos(
+            const sf::IntRect & OFFSCREEN_RECT,
+            const sf::Vector2f & MAP_POS_V,
+            const sf::Vector2i & MAP_SIZE_IN_TILES_V) const;
+
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
@@ -180,14 +184,31 @@ namespace map
         static const std::size_t VERTS_PER_QUAD_;
 
     private:
-        // these members define where the map is onscreen
-        const sf::Vector2f WIN_POS_V_;
-        const sf::Vector2f WIN_SIZE_V_;
-        const sf::FloatRect WIN_RECT_;
+        // where the map is on screen in int pixels
+        const sf::FloatRect onScreenRect_;
 
-        // This is how close the player position can get to
-        // the edge of the map before being forced to stop.
-        const sf::FloatRect WIN_RECT_INNER_;
+        // sub-rect of onScreenRect_ defining how close the player can get to the edge of the map
+        const sf::FloatRect onScreenRectInner_;
+
+        // the full rect of both offScreenTextureAbove_ and offScreenTextureBelow_
+        sf::IntRect offScreenRectI_;
+
+        // the sub-rect of both offScreenTextureAbove_ and offScreenTextureBelow_ in tiles
+        // these are the tiles from the map that are drawn offscreen
+        sf::IntRect offScreenTileRectI_;
+
+        // sub-rect of offScreenRectI_ that defines what from the offScreenTextures is drawn to
+        // screen, and moves around the offScreenTextures as the player walks
+        sf::FloatRect offScreenFollowRect_;
+
+        // the full rect of the entire map in map coordinates
+        sf::IntRect mapRectI_;
+
+        // the full rect of the entire map in map tiles (get the full map tile counts here)
+        sf::IntRect mapTileRectI_;
+
+        // the size of the tiles of the currently loaded map
+        sf::Vector2i tileSizeVI_;
 
         // These distances are in offscreen coordinates.
         const float ANIM_SFX_DISTANCE_MIN_;
@@ -195,18 +216,17 @@ namespace map
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
 
         Layout layout_;
-        TileOffsets tileOffsets_;
 
         // these two variables are in centered map coordinates
         sf::Vector2f playerPosV_;
         sf::Vector2f playerPosOffsetV_;
 
-        sf::FloatRect offScreenRect_;
         sf::Sprite offScreenSpriteAbove_;
         sf::Sprite offScreenSpriteBelow_;
+
         sf::RenderTexture offScreenTextureAbove_;
         sf::RenderTexture offScreenTextureBelow_;
-        sf::Vector2f offScreenMapSize_;
+
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 

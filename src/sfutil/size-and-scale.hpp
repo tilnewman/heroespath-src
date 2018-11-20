@@ -51,6 +51,14 @@ namespace sfutil
     float Height(const sf::Sprite &);
     float Height(const gui::Text &);
 
+    template <typename T, typename U>
+    constexpr const sf::Vector2<T> VectorMult(const sf::Vector2<T> & VT, const sf::Vector2<U> & VU)
+    {
+        return sf::Vector2<T> { sf::Vector2f(
+            (static_cast<float>(VT.x) * static_cast<float>(VU.x)),
+            (static_cast<float>(VT.y) * static_cast<float>(VU.y))) };
+    }
+
     // returns a copy of V scaled by SCALE_V, same as (V.x * SCALE_V.x) and (V.y * SCALE_V.y)
     template <
         typename T,
