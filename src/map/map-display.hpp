@@ -178,6 +178,12 @@ namespace map
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
+        const sf::FloatRect OffScreenVertexMapRect() const;
+        const sf::FloatRect OffScreenVertexTextureRect() const;
+
+        void OffScreenVertexMapRect(const sf::FloatRect & RECT);
+        void OffScreenVertexTextureRect(const sf::FloatRect & RECT);
+
     public:
         // how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
@@ -221,8 +227,9 @@ namespace map
         sf::Vector2f playerPosV_;
         sf::Vector2f playerPosOffsetV_;
 
-        sf::Sprite offScreenSpriteAbove_;
-        sf::Sprite offScreenSpriteBelow_;
+        // verts that define what from offscreen is drawn onscreen
+        sf::VertexArray offScreenVertexArrayAbove_;
+        sf::VertexArray offScreenVertexArrayBelow_;
 
         sf::RenderTexture offScreenTextureAbove_;
         sf::RenderTexture offScreenTextureBelow_;

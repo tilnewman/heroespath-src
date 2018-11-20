@@ -55,8 +55,8 @@ namespace map
         , layout_()
         , playerPosV_(0.0f, 0.0f)
         , playerPosOffsetV_(0.0f, 0.0f)
-        , offScreenSpriteAbove_()
-        , offScreenSpriteBelow_()
+        , offScreenVertexArrayAbove_()
+        , offScreenVertexArrayBelow_()
         , offScreenTextureAbove_()
         , offScreenTextureBelow_()
         , npcShadowCachedTexture_(
@@ -79,6 +79,10 @@ namespace map
         tileDraws_.reserve(50000);
         tileVertexVecBelow_.reserve(64);
         tileVertexVecAbove_.reserve(64);
+        offScreenVertexArrayAbove_.setPrimitiveType(sf::Quads);
+        offScreenVertexArrayAbove_.resize(VERTS_PER_QUAD_);
+        offScreenVertexArrayBelow_.setPrimitiveType(sf::Quads);
+        offScreenVertexArrayBelow_.resize(VERTS_PER_QUAD_);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -87,9 +91,9 @@ namespace map
     {
         timeTrials_.EndAllContests();
 
-        StopAnimMusic();
-
-        animInfoVec_ = ANIM_INFO_VEC;
+        // set player position in map coordinates
+        playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
+        playerPosV_ = STARTING_POS_V;
 
         // tile size
         tileSizeVI_ = layout_.tile_size_v;
@@ -100,10 +104,6 @@ namespace map
 
         mapTileRectI_ = sf::IntRect(sf::Vector2i(), layout_.tile_count_v);
 
-        // set player position in map coordinates
-        playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
-        playerPosV_ = STARTING_POS_V;
-
         // set offscreen coordinates
         offScreenRectI_ = CalcOffscreenRect(onScreenRect_, tileSizeVI_);
 
@@ -111,23 +111,18 @@ namespace map
             offScreenRectI_, PlayerPosMap(), sfutil::Size(mapTileRectI_));
 
         SetupOffScreenTexture();
-        SetupAnimations();
+
         ResetMapSubsections();
         ReDraw(0.0f);
+
+        StopAnimMusic();
         StartAnimMusic();
         UpdateAnimMusicVolume();
 
-        AnalyzeLayers();
+        animInfoVec_ = ANIM_INFO_VEC;
+        SetupAnimations();
 
-        M_HP_LOG_WRN(
-            "MAP SETUP:  " + M_HP_VAR_STR(onScreenRect_) + M_HP_VAR_STR(onScreenRectInner_)
-            + M_HP_VAR_STR(mapRectI_) + M_HP_VAR_STR(mapTileRectI_) + M_HP_VAR_STR(offScreenRectI_)
-            + M_HP_VAR_STR(offScreenTileRectI_) + M_HP_VAR_STR(offScreenFollowRect_)
-            + M_HP_VAR_STR(mapRectI_) + M_HP_VAR_STR(mapTileRectI_) + M_HP_VAR_STR(tileSizeVI_)
-            + M_HP_VAR_STR(offScreenSpriteAbove_.getGlobalBounds())
-            + M_HP_VAR_STR(offScreenSpriteAbove_.getTextureRect())
-            + M_HP_VAR_STR(offScreenSpriteBelow_.getGlobalBounds())
-            + M_HP_VAR_STR(offScreenSpriteBelow_.getTextureRect()));
+        AnalyzeLayers();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIR, const float ADJUSTMENT)
@@ -160,8 +155,13 @@ namespace map
 
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(offScreenSpriteBelow_, states);
-        target.draw(offScreenSpriteAbove_, states);
+        states.texture = &offScreenTextureBelow_.getTexture();
+        target.draw(offScreenVertexArrayBelow_, states);
+
+        states.texture = &offScreenTextureAbove_.getTexture();
+        target.draw(offScreenVertexArrayAbove_, states);
+
+        states.texture = nullptr;
     }
 
     void MapDisplay::Update(const float TIME_ELAPSED) { ReDraw(TIME_ELAPSED); }
@@ -545,9 +545,7 @@ namespace map
 
     void MapDisplay::PositionMapSpriteTextureRect()
     {
-        const sf::IntRect INT_RECT { offScreenFollowRect_ };
-        offScreenSpriteBelow_.setTextureRect(INT_RECT);
-        offScreenSpriteAbove_.setTextureRect(INT_RECT);
+        OffScreenVertexTextureRect(offScreenFollowRect_);
     }
 
     void MapDisplay::SetupOffScreenTexture()
@@ -571,12 +569,7 @@ namespace map
         offScreenFollowRect_.width = onScreenRect_.width;
         offScreenFollowRect_.height = onScreenRect_.height;
 
-        offScreenSpriteBelow_.setTexture(offScreenTextureBelow_.getTexture());
-        offScreenSpriteAbove_.setTexture(offScreenTextureAbove_.getTexture());
-
-        offScreenSpriteBelow_.setPosition(sfutil::Position(onScreenRect_));
-        offScreenSpriteAbove_.setPosition(sfutil::Position(onScreenRect_));
-
+        OffScreenVertexMapRect(onScreenRect_);
         PositionMapSpriteTextureRect();
     }
 
@@ -963,17 +956,13 @@ namespace map
 
     const sf::Vector2f MapDisplay::OffScreenPosFromMapPos(const sf::Vector2f & MAP_POS_V) const
     {
-        const sf::Vector2f OS_TEXTURE_POS_V(
-            static_cast<float>(offScreenTileRectI_.left * tileSizeVI_.x),
-            static_cast<float>(offScreenTileRectI_.top * tileSizeVI_.y));
+        const sf::Vector2f TILE_TOP_LEFT_POS_V { sfutil::VectorMult(
+            sfutil::Position(offScreenTileRectI_), tileSizeVI_) };
 
-        const sf::Vector2f OS_TEXTURE_OFFSET_V(
-            static_cast<float>(offScreenSpriteAbove_.getTextureRect().left),
-            static_cast<float>(offScreenSpriteAbove_.getTextureRect().top));
+        const auto TEXTURE_OFFSET_V { sfutil::Position(OffScreenVertexTextureRect()) };
+        const auto FOLLOWER_POS_V { sfutil::Position(offScreenFollowRect_) };
 
-        const sf::Vector2f OS_RECT_POS_V(offScreenFollowRect_.left, offScreenFollowRect_.top);
-
-        return MAP_POS_V - ((OS_TEXTURE_POS_V + OS_TEXTURE_OFFSET_V) - OS_RECT_POS_V);
+        return MAP_POS_V - ((TILE_TOP_LEFT_POS_V + TEXTURE_OFFSET_V) - FOLLOWER_POS_V);
     }
 
     const sf::FloatRect MapDisplay::OffScreenRectFromMapRect(const sf::FloatRect & MAP_RECT) const
@@ -1140,5 +1129,56 @@ namespace map
             return MIN_VOLUME + ((1.0f - (DISTANCE_TO_PLAYER / DIFF_DISTANCE)) * DIFF_VOLUME);
         }
     }
+
+    const sf::FloatRect MapDisplay::OffScreenVertexMapRect() const
+    {
+        const auto WIDTH { (
+            offScreenVertexArrayAbove_[1].position.x - offScreenVertexArrayAbove_[0].position.x) };
+
+        const auto HEIGHT { (
+            offScreenVertexArrayAbove_[3].position.y - offScreenVertexArrayAbove_[0].position.y) };
+
+        return { offScreenVertexArrayAbove_[0].position, sf::Vector2f(WIDTH, HEIGHT) };
+    }
+
+    const sf::FloatRect MapDisplay::OffScreenVertexTextureRect() const
+    {
+        const auto WIDTH {
+            (offScreenVertexArrayAbove_[1].texCoords.x - offScreenVertexArrayAbove_[0].texCoords.x)
+        };
+
+        const auto HEIGHT {
+            (offScreenVertexArrayAbove_[3].texCoords.y - offScreenVertexArrayAbove_[0].texCoords.y)
+        };
+
+        return { offScreenVertexArrayAbove_[0].texCoords, sf::Vector2f(WIDTH, HEIGHT) };
+    }
+
+    void MapDisplay::OffScreenVertexMapRect(const sf::FloatRect & RECT)
+    {
+        offScreenVertexArrayAbove_[0].position = sfutil::TopLeft(RECT);
+        offScreenVertexArrayAbove_[1].position = sfutil::TopRight(RECT);
+        offScreenVertexArrayAbove_[2].position = sfutil::BottomRight(RECT);
+        offScreenVertexArrayAbove_[3].position = sfutil::BottomLeft(RECT);
+
+        offScreenVertexArrayBelow_[0].position = sfutil::TopLeft(RECT);
+        offScreenVertexArrayBelow_[1].position = sfutil::TopRight(RECT);
+        offScreenVertexArrayBelow_[2].position = sfutil::BottomRight(RECT);
+        offScreenVertexArrayBelow_[3].position = sfutil::BottomLeft(RECT);
+    }
+
+    void MapDisplay::OffScreenVertexTextureRect(const sf::FloatRect & RECT)
+    {
+        offScreenVertexArrayAbove_[0].texCoords = sfutil::TopLeft(RECT);
+        offScreenVertexArrayAbove_[1].texCoords = sfutil::TopRight(RECT);
+        offScreenVertexArrayAbove_[2].texCoords = sfutil::BottomRight(RECT);
+        offScreenVertexArrayAbove_[3].texCoords = sfutil::BottomLeft(RECT);
+
+        offScreenVertexArrayBelow_[0].texCoords = sfutil::TopLeft(RECT);
+        offScreenVertexArrayBelow_[1].texCoords = sfutil::TopRight(RECT);
+        offScreenVertexArrayBelow_[2].texCoords = sfutil::BottomRight(RECT);
+        offScreenVertexArrayBelow_[3].texCoords = sfutil::BottomLeft(RECT);
+    }
+
 } // namespace map
 } // namespace heroespath
