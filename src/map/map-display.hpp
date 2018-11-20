@@ -265,6 +265,11 @@ namespace map
         sf::RenderTexture offScreenTextureAvatar_;
         sf::RenderTexture offScreenTextureAbove_;
 
+        bool willDrawTextureBelow_;
+        bool willDrawTextureAnim_;
+        bool willDrawTextureAvatar_;
+        bool willDrawTextureAbove_;
+
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 

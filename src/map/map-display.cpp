@@ -60,6 +60,10 @@ namespace map
         , offScreenTextureAnim_()
         , offScreenTextureAvatar_()
         , offScreenTextureAbove_()
+        , willDrawTextureBelow_(false)
+        , willDrawTextureAnim_(false)
+        , willDrawTextureAvatar_(false)
+        , willDrawTextureAbove_(false)
         , npcShadowCachedTexture_(
               "media-images-avatar-shadow",
               (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
@@ -151,17 +155,29 @@ namespace map
 
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        states.texture = &offScreenTextureBelow_.getTexture();
-        target.draw(offScreenVertexArray_, states);
+        if (willDrawTextureBelow_)
+        {
+            states.texture = &offScreenTextureBelow_.getTexture();
+            target.draw(offScreenVertexArray_, states);
+        }
 
-        states.texture = &offScreenTextureAnim_.getTexture();
-        target.draw(offScreenVertexArray_, states);
+        if (willDrawTextureAnim_)
+        {
+            states.texture = &offScreenTextureAnim_.getTexture();
+            target.draw(offScreenVertexArray_, states);
+        }
 
-        states.texture = &offScreenTextureAvatar_.getTexture();
-        target.draw(offScreenVertexArray_, states);
+        if (willDrawTextureAvatar_)
+        {
+            states.texture = &offScreenTextureAvatar_.getTexture();
+            target.draw(offScreenVertexArray_, states);
+        }
 
-        states.texture = &offScreenTextureAbove_.getTexture();
-        target.draw(offScreenVertexArray_, states);
+        if (willDrawTextureAbove_)
+        {
+            states.texture = &offScreenTextureAbove_.getTexture();
+            target.draw(offScreenVertexArray_, states);
+        }
 
         states.texture = nullptr;
     }
@@ -324,6 +340,7 @@ namespace map
 
     void MapDisplay::DrawCharacterImages()
     {
+        willDrawTextureAvatar_ = false;
         offScreenTextureAvatar_.clear(sf::Color::Transparent);
 
         avatarSpriteIndexes_.clear();
@@ -382,10 +399,12 @@ namespace map
         }
 
         offScreenTextureAvatar_.display();
+        willDrawTextureAvatar_ = true;
     }
 
     void MapDisplay::DrawAnimations()
     {
+        willDrawTextureAnim_ = false;
         offScreenTextureAnim_.clear(sf::Color::Transparent);
 
         for (auto & animUPtr : animUPtrVec_)
@@ -396,6 +415,7 @@ namespace map
             if (offScreenFollowRect_.intersects(OFFSCREEN_RECT))
             {
                 offScreenTextureAnim_.draw(*animUPtr);
+                willDrawTextureAnim_ = true;
             }
         }
 
@@ -513,6 +533,9 @@ namespace map
     {
         M_HP_SCOPED_TIME_TRIAL(timeTrials_, timeTrialIndexRedDrawSub_);
 
+        willDrawTextureBelow_ = false;
+        willDrawTextureAbove_ = false;
+
         offScreenTextureBelow_.clear(sf::Color::Transparent);
         offScreenTextureAbove_.clear(sf::Color::Transparent);
 
@@ -529,6 +552,8 @@ namespace map
                     TEXTURE_VERTS_PAIR.second.getVertexCount(),
                     sf::Quads,
                     renderStates);
+
+                willDrawTextureBelow_ = true;
             }
         }
 
@@ -543,6 +568,8 @@ namespace map
                     TEXTURE_VERTS_PAIR.second.getVertexCount(),
                     sf::Quads,
                     renderStates);
+
+                willDrawTextureAbove_ = true;
             }
         }
 
