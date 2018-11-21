@@ -282,32 +282,43 @@ namespace map
         }
     }
 
-    bool MapDisplay::MoveUp(const float DISTANCE_ORIG)
+    bool MapDisplay::MoveUp(const float DISTANCE)
     {
-        // move within the view before moving the view
+        // player is not pushing on the edges of the map
+        // player will appear to move on screen but the surrounding map will hold still
         if (PlayerPosScreen().y > onScreenRectInner_.top)
         {
-            playerPosOffsetV_.y -= DISTANCE_ORIG;
+            playerPosOffsetV_.y -= DISTANCE;
+
+            if (PlayerPosScreen().y < onScreenRectInner_.top)
+            {
+                playerPosOffsetV_.y += (onScreenRectInner_.top - PlayerPosScreen().y);
+            }
+
             return true;
         }
 
-        const auto OFFSCREEN_TEXTURE_TOP_BEFORE { offScreenTextureRect_.top };
-        if (OFFSCREEN_TEXTURE_TOP_BEFORE > 0.0f)
+        // player pushing/moving the map
+        // player will appear to hold still while the surrounding map moves
+
+        // move the offScreenTextureRect_ only
+        if (((offScreenTextureRect_.top - DISTANCE) < 0.0f) == false)
         {
-            const auto OFFSCREEN_TEXTURE_TOP_AFTER { std::max(
-                0.0f, (OFFSCREEN_TEXTURE_TOP_BEFORE - DISTANCE_ORIG)) };
+            playerPosV_.y -= DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, -DISTANCE));
+            return true;
+        }
 
-            const auto DISTANCE_FINAL { OFFSCREEN_TEXTURE_TOP_BEFORE
-                                        - OFFSCREEN_TEXTURE_TOP_AFTER };
+        // move the offScreenTextureRect_ and change which tiles are drawn
+        if (offScreenTileRectI_.top > 0)
+        {
+            playerPosV_.y -= DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, -DISTANCE));
 
-            MoveOffscreenTextureRects(sf::Vector2f(0.0f, -DISTANCE_FINAL));
-            playerPosV_.y = std::max(0.0f, (playerPosV_.y - DISTANCE_FINAL));
-
-            if (misc::IsRealZero(OFFSCREEN_TEXTURE_TOP_AFTER))
-            {
-                IncrementTileOffsetsInDirection(gui::Direction::Up);
-            }
-
+            --offScreenTileRectI_.top;
+            UpdateOffScreenMapPosOffset();
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, tileSizeVI_.y));
+            ReDrawEverythingAfterOffScreenTileChange();
             return true;
         }
 
@@ -316,60 +327,85 @@ namespace map
 
     bool MapDisplay::MoveDown(const float DISTANCE)
     {
-        // move within the view before moving the view
+        // player is not pushing on the edges of the map
+        // player will appear to move on screen but the surrounding map will hold still
         if (PlayerPosScreen().y < sfutil::Bottom(onScreenRectInner_))
         {
             playerPosOffsetV_.y += DISTANCE;
-            return true;
-        }
 
-        const auto VERT_POS { offScreenTextureRect_.top
-                              + static_cast<float>(offScreenTileRectI_.top * tileSizeVI_.y) };
-
-        const auto VERT_LIMIT { static_cast<float>(mapRectI_.height) - onScreenRect_.height };
-
-        if (VERT_POS >= VERT_LIMIT)
-        {
-            return false;
-        }
-
-        MoveOffscreenTextureRects(sf::Vector2f(0.0f, DISTANCE));
-        playerPosV_.y += DISTANCE;
-
-        if (sfutil::Bottom(offScreenTextureRect_) > sfutil::Bottom(offScreenRectI_))
-        {
-            IncrementTileOffsetsInDirection(gui::Direction::Down);
-        }
-
-        return true;
-    }
-
-    bool MapDisplay::MoveLeft(const float DISTANCE_ORIG)
-    {
-        // move within the view before moving the view
-        if (PlayerPosScreen().x > onScreenRectInner_.left)
-        {
-            playerPosOffsetV_.x -= DISTANCE_ORIG;
-            return true;
-        }
-
-        const auto OFFSCREEN_TEXTURE_POS_LEFT_BEFORE { offScreenTextureRect_.left };
-        if (OFFSCREEN_TEXTURE_POS_LEFT_BEFORE > 0.0f)
-        {
-            const auto OFFSCREEN_TEXTURE_POS_LEFT_AFTER { std::max(
-                0.0f, OFFSCREEN_TEXTURE_POS_LEFT_BEFORE - DISTANCE_ORIG) };
-
-            const auto DISTANCE_FINAL { OFFSCREEN_TEXTURE_POS_LEFT_BEFORE
-                                        - OFFSCREEN_TEXTURE_POS_LEFT_AFTER };
-
-            MoveOffscreenTextureRects(sf::Vector2f(-DISTANCE_FINAL, 0.0f));
-            playerPosV_.x = std::max(0.0f, (playerPosV_.x - DISTANCE_FINAL));
-
-            if (misc::IsRealZero(offScreenTextureRect_.left))
+            if (PlayerPosScreen().y > sfutil::Bottom(onScreenRectInner_))
             {
-                IncrementTileOffsetsInDirection(gui::Direction::Left);
+                playerPosOffsetV_.y -= (PlayerPosScreen().y - sfutil::Bottom(onScreenRectInner_));
             }
 
+            return true;
+        }
+
+        // player pushing/moving the map
+        // player will appear to hold still while the surrounding map moves
+
+        // move the offScreenTextureRect_ only
+        if ((sfutil::Bottom(offScreenTextureRect_) + DISTANCE) > sfutil::Bottom(offScreenRectI_)
+            == false)
+        {
+            playerPosV_.y += DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, DISTANCE));
+            return true;
+        }
+
+        // move the offScreenTextureRect_ and change which tiles are drawn
+        if (sfutil::Bottom(offScreenTileRectI_) < sfutil::Bottom(mapTileRectI_))
+        {
+            playerPosV_.y += DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, DISTANCE));
+
+            ++offScreenTileRectI_.top;
+            UpdateOffScreenMapPosOffset();
+            MoveOffscreenTextureRects(sf::Vector2f(0.0f, -tileSizeVI_.y));
+            ReDrawEverythingAfterOffScreenTileChange();
+            return true;
+        }
+
+        return false;
+    }
+
+    bool MapDisplay::MoveLeft(const float DISTANCE)
+    {
+        // player is not pushing on the edges of the map
+        // player will appear to move on screen but the surrounding map will hold still
+        if (PlayerPosScreen().x > onScreenRectInner_.left)
+        {
+            playerPosOffsetV_.x -= DISTANCE;
+
+            if (PlayerPosScreen().x < onScreenRectInner_.left)
+            {
+                playerPosOffsetV_.x += (onScreenRectInner_.left - PlayerPosScreen().x);
+            }
+
+            return true;
+        }
+
+        // player pushing/moving the map
+        // player will appear to hold still while the surrounding map moves
+
+        // move the offScreenTextureRect_ only
+        if (((offScreenTextureRect_.left - DISTANCE) < 0.0f) == false)
+        {
+            playerPosV_.x -= DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(-DISTANCE, 0.0f));
+            return true;
+        }
+
+        // move the offScreenTextureRect_ and change which tiles are drawn
+        if (offScreenTileRectI_.left > 0)
+        {
+            playerPosV_.x -= DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(-DISTANCE, 0.0f));
+
+            --offScreenTileRectI_.left;
+            UpdateOffScreenMapPosOffset();
+            MoveOffscreenTextureRects(sf::Vector2f(tileSizeVI_.x, 0.0f));
+            ReDrawEverythingAfterOffScreenTileChange();
             return true;
         }
 
@@ -378,34 +414,46 @@ namespace map
 
     bool MapDisplay::MoveRight(const float DISTANCE)
     {
-        // move within the view before moving the view
+        // player is not pushing on the edges of the map
+        // player will appear to move on screen but the surrounding map will hold still
         if (PlayerPosScreen().x < sfutil::Right(onScreenRectInner_))
         {
             playerPosOffsetV_.x += DISTANCE;
+
+            if (PlayerPosScreen().x > sfutil::Right(onScreenRectInner_))
+            {
+                playerPosOffsetV_.x += (PlayerPosScreen().x - sfutil::Right(onScreenRectInner_));
+            }
+
             return true;
         }
 
-        const auto HORIZ_POS { (
-            offScreenTextureRect_.left
-            + static_cast<float>(offScreenTileRectI_.left * tileSizeVI_.x)) };
+        // player pushing/moving the map
+        // player will appear to hold still while the surrounding map moves
 
-        const auto HORIZ_LIMIT { static_cast<float>(
-            (mapRectI_.width) - static_cast<int>(onScreenRect_.width)) };
-
-        if (HORIZ_POS >= HORIZ_LIMIT)
+        // move the offScreenTextureRect_ only
+        if ((sfutil::Right(offScreenTextureRect_) + DISTANCE) > sfutil::Right(offScreenRectI_)
+            == false)
         {
-            return false;
+            playerPosV_.x += DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(DISTANCE, 0.0f));
+            return true;
         }
 
-        MoveOffscreenTextureRects(sf::Vector2f(DISTANCE, 0.0f));
-        playerPosV_.x += DISTANCE;
-
-        if (sfutil::Right(offScreenTextureRect_) > sfutil::Right(offScreenRectI_))
+        // move the offScreenTextureRect_ and change which tiles are drawn
+        if (sfutil::Right(offScreenTileRectI_) < sfutil::Right(mapTileRectI_))
         {
-            IncrementTileOffsetsInDirection(gui::Direction::Right);
+            playerPosV_.x += DISTANCE;
+            MoveOffscreenTextureRects(sf::Vector2f(DISTANCE, 0.0f));
+
+            ++offScreenTileRectI_.left;
+            UpdateOffScreenMapPosOffset();
+            MoveOffscreenTextureRects(sf::Vector2f(-tileSizeVI_.x, 0.0f));
+            ReDrawEverythingAfterOffScreenTileChange();
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     void MapDisplay::ReDrawEverythingAfterOffScreenTileChange()
