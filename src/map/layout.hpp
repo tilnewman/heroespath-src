@@ -13,9 +13,8 @@
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 
-#include <SFML/Graphics/RenderTexture.hpp>
-
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
@@ -32,7 +31,6 @@ namespace map
             , layer_vec()
             , tiles_panel_vec()
             , texture_vec()
-            , empty_texture()
         {}
 
         void Reset()
@@ -46,12 +44,37 @@ namespace map
             texture_vec.clear();
         }
 
+        int LayerTileNumber(const Layer & LAYER, const sf::Vector2i & TILE_INDEXES) const
+        {
+            const auto TILE_INDEX { (TILE_INDEXES.x + (TILE_INDEXES.y * tile_count_v.x)) };
+            return LAYER.mapid_vec.at(static_cast<std::size_t>(TILE_INDEX));
+        }
+
+        int LayerTileNumber(const std::size_t LAYER_INDEX, const sf::Vector2i & TILE_INDEXES) const
+        {
+            return LayerTileNumber(layer_vec.at(LAYER_INDEX), TILE_INDEXES);
+        }
+
+        // returns the first layer tile number (int) and texture index (std::size_t), returns an
+        // out-of-range texture index if not found
+        const std::tuple<int, std::size_t> FindTileTextureInfo(const int LAYER_TILE_NUMBER) const
+        {
+            for (const auto & TILES_PANEL : tiles_panel_vec)
+            {
+                if (TILES_PANEL.OwnsId(LAYER_TILE_NUMBER))
+                {
+                    return std::make_tuple(TILES_PANEL.first_id, TILES_PANEL.texture_index);
+                }
+            }
+
+            return std::make_tuple(-1, texture_vec.size());
+        }
+
         sf::Vector2i tile_size_v;
         sf::Vector2i tile_count_v;
         LayerVec_t layer_vec;
         TilesPanelVec_t tiles_panel_vec;
         std::vector<gui::CachedTexture> texture_vec;
-        sf::RenderTexture empty_texture;
     };
 
 } // namespace map

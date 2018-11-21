@@ -93,7 +93,7 @@ namespace map
         packet.collision_vec.reserve(1024); // found by experiment to be a good upper bound
 
         packet.transition_vec.clear();
-        packet.transition_vec.reserve(8); // found by experiment to be a good upper bound
+        packet.transition_vec.reserve(16); // found by experiment to be a good upper bound
 
         packet.walk_region_vecmap.Clear();
 
@@ -102,8 +102,6 @@ namespace map
         const auto XML_PTREE_ROOT { Parse_XML(packet.file_path) };
 
         Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
-
-        SetupEmptyTexture(packet.layout);
 
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
@@ -162,6 +160,12 @@ namespace map
 
         std::sort(
             std::begin(packet.walkSfxLayers.top_layers), std::end(packet.walkSfxLayers.top_layers));
+
+        std::size_t layerIndex { 0 };
+        for (auto & layer : packet.layout.layer_vec)
+        {
+            layer.index = layerIndex++;
+        }
     }
 
     const boost::property_tree::ptree Parser::Parse_XML(const std::string & MAP_FILE_PATH_STR) const
@@ -629,28 +633,6 @@ namespace map
         {
             walkSfxLayers.top_layers.emplace_back(WalkSfxRegion(rect, SFX));
         }
-    }
-
-    void Parser::SetupEmptyTexture(Layout & layout) const
-    {
-        const auto TILE_WIDTH { static_cast<unsigned>(layout.tile_size_v.x) };
-        const auto TILE_HEIGHT { static_cast<unsigned>(layout.tile_size_v.y) };
-
-        const std::string EMPTY_TEXTURE_NAME { "map::Parser::SetupEmptyTexture(width="
-                                               + misc::ToString(TILE_WIDTH)
-                                               + ", height=" + misc::ToString(TILE_HEIGHT) + ")" };
-
-        M_HP_ASSERT_OR_LOG_AND_THROW(
-            layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
-            EMPTY_TEXTURE_NAME + " sf::RenderTexture::create() failed.");
-
-        layout.empty_texture.clear(sf::Color::Transparent);
-        layout.empty_texture.display();
-
-        layout.texture_vec.emplace_back(gui::CachedTexture(
-            EMPTY_TEXTURE_NAME + " FAKE PATH", layout.empty_texture.getTexture()));
-
-        layout.tiles_panel_vec.emplace_back(map::TilesPanel());
     }
 
     const std::string Parser::FetchXMLAttributeName(const boost::property_tree::ptree & PTREE) const

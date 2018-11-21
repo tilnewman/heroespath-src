@@ -83,9 +83,7 @@ namespace map
 
         transitionVec_.clear();
 
-        Layout & layout { mapDisplayUPtr_->GetLayoutRef() };
-        layout.Reset();
-
+        Layout layout;
         MapAnimVec_t animInfoVec;
 
         ParsePacket packet(
@@ -112,7 +110,7 @@ namespace map
 
         if (IS_TEST_LOAD == false)
         {
-            mapDisplayUPtr_->Load(PLAYER_START_POS_V, animInfoVec);
+            mapDisplayUPtr_->Load(layout, PLAYER_START_POS_V, animInfoVec);
         }
 
         player_.MapPos(mapDisplayUPtr_->PlayerPosMap());

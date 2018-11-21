@@ -13,8 +13,8 @@
 #include "gui/animation-factory.hpp"
 #include "gui/cached-texture.hpp"
 #include "gui/direction-enum.hpp"
-#include "map/layer.hpp"
-#include "map/layout.hpp"
+#include "map/layer-type-enum.hpp"
+
 #include "map/map-anim.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
@@ -32,6 +32,8 @@ namespace heroespath
 {
 namespace map
 {
+    struct Layout;
+    struct Layer;
 
     struct TileDraw
     {
@@ -147,7 +149,10 @@ namespace map
         MapDisplay(const sf::FloatRect & REGION);
         virtual ~MapDisplay();
 
-        void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
+        void Load(
+            const map::Layout & MAP_LAYOUT,
+            const sf::Vector2f & PLAYER_STARTING_POS_V,
+            const MapAnimVec_t &);
         bool Move(const gui::Direction::Enum, const float ADJUSTMENT);
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -156,8 +161,6 @@ namespace map
 
         const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
         const sf::Vector2f PlayerPosScreen() const { return OnScreenPosFromMapPos(PlayerPosMap()); }
-
-        Layout & GetLayoutRef() { return layout_; }
 
         const sf::Vector2f MapSize() const;
 
@@ -184,7 +187,13 @@ namespace map
         void MoveOffscreenTextureRects(const sf::Vector2f & MOVE_V);
 
         void SetupOffScreenTextures();
-        void AnalyzeLayers();
+        void AnalyzeLayers(const map::Layout & LAYOUT);
+
+        void MakeAndAppendTileDraw(
+            const Layer & LAYER,
+            const sf::Texture * TEXTURE_PTR,
+            const int TEXTURE_TILE_NUMBER,
+            const sf::Vector2i & TILE_INDEXES);
 
         const sf::IntRect CalcOffscreenRect(
             const sf::FloatRect & ONSCREEN_RECT, const sf::Vector2i & TILE_SIZE_V) const;
@@ -267,8 +276,6 @@ namespace map
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
 
-        Layout layout_;
-
         // these two variables are in centered map coordinates
         sf::Vector2f playerPosV_;
         sf::Vector2f playerPosOffsetV_;
@@ -291,6 +298,8 @@ namespace map
         // coordinates every frame before Update()/ReDraw() is called.
         std::vector<sf::Sprite> avatarSprites_;
         std::vector<std::pair<std::size_t, sf::FloatRect>> avatarSpriteIndexAndMapRects_;
+
+        std::vector<gui::CachedTexture> mapTileTextures_;
 
         std::vector<TileDraw> tileDraws_;
         std::vector<std::pair<const sf::Texture *, sf::VertexArray>> tileVertexVecBelow_;

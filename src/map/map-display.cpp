@@ -14,6 +14,8 @@
 #include "avatar/lpc-view.hpp"
 #include "gui/margins.hpp"
 #include "gui/sound-manager.hpp"
+#include "map/layer.hpp"
+#include "map/layout.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -52,7 +54,6 @@ namespace map
               "heroespath-sound-map-animsfx-distance-max"))
         , ANIM_SFX_VOLUME_MIN_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-min-volume-ratio"))
-        , layout_()
         , playerPosV_(0.0f, 0.0f)
         , playerPosOffsetV_(0.0f, 0.0f)
         , offScreenImageBelow_()
@@ -67,6 +68,7 @@ namespace map
         , animUPtrVec_()
         , avatarSprites_()
         , avatarSpriteIndexAndMapRects_()
+        , mapTileTextures_()
         , tileDraws_()
         , tileVertexVecBelow_()
         , tileVertexVecAbove_()
@@ -82,22 +84,25 @@ namespace map
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
 
-    void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t & ANIM_INFO_VEC)
+    void MapDisplay::Load(
+        const map::Layout & MAP_LAYOUT,
+        const sf::Vector2f & PLAYER_STARTING_POS_V,
+        const MapAnimVec_t & ANIM_INFO_VEC)
     {
         timeTrials_.EndAllContests();
 
         // set player position in map coordinates
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
-        playerPosV_ = STARTING_POS_V;
+        playerPosV_ = PLAYER_STARTING_POS_V;
 
         // tile size
-        tileSizeVI_ = layout_.tile_size_v;
+        tileSizeVI_ = MAP_LAYOUT.tile_size_v;
 
         // set map coordinates
         mapRectI_
-            = sf::IntRect(sf::Vector2i(), sfutil::VectorMult(layout_.tile_count_v, tileSizeVI_));
+            = sf::IntRect(sf::Vector2i(), sfutil::VectorMult(MAP_LAYOUT.tile_count_v, tileSizeVI_));
 
-        mapTileRectI_ = sf::IntRect(sf::Vector2i(), layout_.tile_count_v);
+        mapTileRectI_ = sf::IntRect(sf::Vector2i(), MAP_LAYOUT.tile_count_v);
 
         // set offscreen coordinates
         offScreenRectI_ = CalcOffscreenRect(onScreenRect_, tileSizeVI_);
@@ -117,7 +122,8 @@ namespace map
         StartAnimMusic();
         UpdateAnimMusicVolume();
 
-        AnalyzeLayers();
+        AnalyzeLayers(MAP_LAYOUT);
+        mapTileTextures_ = MAP_LAYOUT.texture_vec;
 
         ReDrawEverythingAfterOffScreenTileChange();
     }
@@ -779,84 +785,55 @@ namespace map
             offScreenImageAbove_.vertex_array, onScreenRect_, offScreenTextureRect_);
     }
 
-    void MapDisplay::AnalyzeLayers()
+    void MapDisplay::MakeAndAppendTileDraw(
+        const Layer & LAYER,
+        const sf::Texture * TEXTURE_PTR,
+        const int TEXTURE_TILE_NUMBER,
+        const sf::Vector2i & TILE_INDEXES)
+    {
+        const auto TEXTURE_WIDTH { static_cast<int>(TEXTURE_PTR->getSize().x) };
+        const auto TEXTURE_WIDTH_IN_TILES { TEXTURE_WIDTH / tileSizeVI_.x };
+
+        const int TEXTURE_RECT_TILE_LEFT { (TEXTURE_TILE_NUMBER % TEXTURE_WIDTH_IN_TILES) };
+        const int TEXTURE_RECT_TILE_TOP { (TEXTURE_TILE_NUMBER / TEXTURE_WIDTH_IN_TILES) };
+
+        const int TEXTURE_RECT_LEFT { (TEXTURE_RECT_TILE_LEFT * tileSizeVI_.x) };
+        const int TEXTURE_RECT_TOP { (TEXTURE_RECT_TILE_TOP * tileSizeVI_.y) };
+
+        const auto TEXTURE_RECT { sf::IntRect(
+            sf::Vector2i(TEXTURE_RECT_LEFT, TEXTURE_RECT_TOP), tileSizeVI_) };
+
+        tileDraws_.emplace_back(
+            TileDraw(LAYER.index, LAYER.type, TILE_INDEXES, TEXTURE_PTR, TEXTURE_RECT));
+    }
+
+    void MapDisplay::AnalyzeLayers(const map::Layout & LAYOUT)
     {
         tileDraws_.clear();
 
-        const auto EMPTY_TILES_PANEL_NAME_STR { TilesPanel().name };
-
-        std::size_t layerIndex { 0 };
-        for (auto & mapLayer : layout_.layer_vec)
+        for (const auto & LAYER : LAYOUT.layer_vec)
         {
-            for (int x(0); x < mapTileRectI_.width; ++x)
+            for (int tileX(0); tileX < mapTileRectI_.width; ++tileX)
             {
-                for (int y(0); y < mapTileRectI_.height; ++y)
+                for (int tileY(0); tileY < mapTileRectI_.height; ++tileY)
                 {
-                    // map tile number
-                    const auto TILE_NUMBER_IN_MAP {
-                        mapLayer.mapid_vec[static_cast<std::size_t>(x + (y * mapTileRectI_.width))]
-                    };
+                    const auto TILE_INDEXES { sf::Vector2i(tileX, tileY) };
+                    const auto LAYER_TILE_NUMBER { LAYOUT.LayerTileNumber(LAYER, TILE_INDEXES) };
 
-                    // texture index and first tile number (first id)
-                    const auto INVALID_FIRST_ID { -999 };
-                    auto tilesPanelFromId = [&](const int ID) {
-                        for (const auto & TILES_PANEL : layout_.tiles_panel_vec)
-                        {
-                            if (TILES_PANEL.OwnsId(ID))
-                            {
-                                if (TILES_PANEL.name == EMPTY_TILES_PANEL_NAME_STR)
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    return std::make_tuple(
-                                        TILES_PANEL.first_id, TILES_PANEL.texture_index);
-                                }
-                            }
-                        }
+                    const auto [FIRST_ID, TEXTURE_INDEX]
+                        = LAYOUT.FindTileTextureInfo(LAYER_TILE_NUMBER);
 
-                        return std::make_tuple(-INVALID_FIRST_ID, layout_.texture_vec.size());
-                    };
-
-                    const auto [FIRST_ID, TEXTURE_INDEX] = tilesPanelFromId(TILE_NUMBER_IN_MAP);
-                    if ((FIRST_ID == -INVALID_FIRST_ID)
-                        || (TEXTURE_INDEX >= layout_.texture_vec.size()))
+                    if ((TEXTURE_INDEX < LAYOUT.texture_vec.size()))
                     {
-                        continue;
+                        const sf::Texture * texturePtr { &LAYOUT.texture_vec[TEXTURE_INDEX].Get() };
+                        const auto TEXTURE_TILE_NUMBER { (LAYER_TILE_NUMBER - FIRST_ID) };
+                        MakeAndAppendTileDraw(LAYER, texturePtr, TEXTURE_TILE_NUMBER, TILE_INDEXES);
                     }
-
-                    // texture image
-                    const sf::Texture * texturePtr { &layout_.texture_vec[TEXTURE_INDEX].Get() };
-
-                    // texture coordinates (texture rect)
-                    const auto TILE_NUMBER_IN_TEXTURE { (TILE_NUMBER_IN_MAP - FIRST_ID) };
-
-                    const auto TEXTURE_WIDTH { static_cast<int>(texturePtr->getSize().x) };
-
-                    const auto TEXTURE_WIDTH_IN_TILES { TEXTURE_WIDTH / tileSizeVI_.x };
-
-                    const int TEXTURE_RECT_TILE_LEFT { (
-                        TILE_NUMBER_IN_TEXTURE % TEXTURE_WIDTH_IN_TILES) };
-
-                    const int TEXTURE_RECT_TILE_TOP { (
-                        TILE_NUMBER_IN_TEXTURE / TEXTURE_WIDTH_IN_TILES) };
-
-                    const int TEXTURE_RECT_LEFT { (TEXTURE_RECT_TILE_LEFT * tileSizeVI_.x) };
-
-                    const int TEXTURE_RECT_TOP { (TEXTURE_RECT_TILE_TOP * tileSizeVI_.y) };
-
-                    const auto TEXTURE_RECT { sf::IntRect(
-                        sf::Vector2i(TEXTURE_RECT_LEFT, TEXTURE_RECT_TOP), tileSizeVI_) };
-
-                    tileDraws_.emplace_back(TileDraw(
-                        layerIndex, mapLayer.type, sf::Vector2i(x, y), texturePtr, TEXTURE_RECT));
                 }
             }
-
-            ++layerIndex;
         }
 
+        // other code in this class depends on the tileDraws_ being sorted by layer/texture
         std::sort(std::begin(tileDraws_), std::end(tileDraws_));
 
         // const auto COUNT_ORIG { tileDraws_.size() };

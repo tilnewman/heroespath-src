@@ -79,8 +79,6 @@ namespace map
 
         void Parse_WalkSfx(const boost::property_tree::ptree &, WalkSfxRegionLayers &) const;
 
-        void SetupEmptyTexture(Layout &) const;
-
         template <typename T>
         T FetchXMLAttribute(
             const boost::property_tree::ptree & PTREE, const std::string & NAME) const

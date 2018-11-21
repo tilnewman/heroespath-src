@@ -9,22 +9,10 @@
 //
 #include "tiles-panel.hpp"
 
-#include "misc/config-file.hpp"
-#include "misc/filesystem.hpp"
-
 namespace heroespath
 {
 namespace map
 {
-
-    TilesPanel::TilesPanel()
-        : name("empty")
-        , first_id(0)
-        , tile_count(1)
-        , column(1)
-        , texture_index(0)
-        , path_str("")
-    {}
 
     TilesPanel::TilesPanel(
         const std::string & NAME,

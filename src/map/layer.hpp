@@ -36,17 +36,13 @@ namespace map
         // only stores verts for drawn map tiles
         sf::VertexArray vert_array;
 
-        // copies of TileImages that are used by vert_array
-        TilesPanelForLayersVec_t tiles_panel_for_layers_vec;
-
         // the map IDs that make up this panel
         std::vector<int> mapid_vec;
 
-        void ResetForReDraw()
-        {
-            vert_array.clear();
-            tiles_panel_for_layers_vec.clear();
-        }
+        void ResetForReDraw() { vert_array.clear(); }
+
+        // zero is the bottom that must be drawn first
+        std::size_t index;
     };
 
     using LayerVec_t = std::vector<Layer>;

@@ -20,9 +20,6 @@ namespace map
     // Responsible for wrapping all the details about a single panel of map tile images.
     struct TilesPanel
     {
-        // creates a panel for the "empty" texture
-        TilesPanel();
-
         TilesPanel(
             const std::string & NAME,
             const std::string & FILE_PATH,
@@ -47,26 +44,6 @@ namespace map
     };
 
     using TilesPanelVec_t = std::vector<TilesPanel>;
-
-    // Responsible for wrapping only the details layers need about a single panel
-    // of map tiles images.
-    struct TilesPanelForLayers
-    {
-        TilesPanelForLayers(const bool IS_EMPTY, const std::size_t TEXTURE_INDEX)
-            : is_empty(IS_EMPTY)
-            , texture_index(TEXTURE_INDEX)
-        {}
-
-        TilesPanelForLayers(const TilesPanelForLayers &) = default;
-        TilesPanelForLayers(TilesPanelForLayers &&) = default;
-        TilesPanelForLayers & operator=(const TilesPanelForLayers &) = default;
-        TilesPanelForLayers & operator=(TilesPanelForLayers &&) = default;
-
-        bool is_empty;
-        std::size_t texture_index;
-    };
-
-    using TilesPanelForLayersVec_t = std::vector<TilesPanelForLayers>;
 
 } // namespace map
 } // namespace heroespath
