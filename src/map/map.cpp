@@ -38,7 +38,7 @@ namespace heroespath
 namespace map
 {
     // These are different so that players can always move faster than, and catch, NPCs.
-    const float Map::PLAYER_MOVE_DISTANCE_ { 3.5f };
+    const float Map::PLAYER_MOVE_DISTANCE_ { 7 }; //{ 3.5f };
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
@@ -119,11 +119,9 @@ namespace map
 
         ResetNonPlayers();
 
-        quadTree_.Setup(
-            sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSizeInMapCoordinatesf()),
-            collisionVec_);
+        quadTree_.Setup(sf::FloatRect(sf::Vector2f(), mapDisplayUPtr_->MapSize()), collisionVec_);
 
-        collisionGrid_.Setup(mapDisplayUPtr_->MapSizeInMapCoordinatesf(), collisionVec_);
+        collisionGrid_.Setup(mapDisplayUPtr_->MapSize(), collisionVec_);
 
         collisionTimeTrials_.EndAllContests();
     }

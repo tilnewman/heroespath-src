@@ -33,11 +33,15 @@ namespace map
         {}
 
         gui::Animations::Enum which_anim;
+
+        // this rect is in map coordinates
         sf::FloatRect rect;
+
         gui::MusicEnumVec_t music_vec;
     };
 
     using MapAnimVec_t = std::vector<MapAnim>;
+
 } // namespace map
 } // namespace heroespath
 

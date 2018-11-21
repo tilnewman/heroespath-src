@@ -26,11 +26,25 @@ namespace gui
             , bottom(PAD)
         {}
 
-        explicit Margins(const float HORIZ, const float VERT)
+        Margins(const float HORIZ, const float VERT)
             : left(HORIZ)
             , right(HORIZ)
             , top(VERT)
             , bottom(VERT)
+        {}
+
+        explicit Margins(const sf::Vector2f & MARGIN_V)
+            : left(MARGIN_V.x)
+            , right(MARGIN_V.x)
+            , top(MARGIN_V.y)
+            , bottom(MARGIN_V.y)
+        {}
+
+        Margins(const sf::Vector2f & LEFT_RIGHT_V, const sf::Vector2f & WIDTH_HEIGHT_V)
+            : left(LEFT_RIGHT_V.x)
+            , right(LEFT_RIGHT_V.y)
+            , top(WIDTH_HEIGHT_V.x)
+            , bottom(WIDTH_HEIGHT_V.y)
         {}
 
         Margins(const float LEFT, const float RIGHT, const float TOP, const float BOTTOM)

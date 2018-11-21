@@ -298,6 +298,61 @@ namespace sfutil
         return v;
     }
 
+    // returns all zeros if the two do not intersect, never returns sizes less than zero
+    template <typename T, typename U>
+    const sf::Rect<T> Intersection(const sf::Rect<T> & RECT_T, const sf::Rect<U> & RECT_U)
+    {
+        sf::FloatRect a { RECT_T };
+        const sf::FloatRect B { RECT_U };
+
+        if (a.intersects(B) == false)
+        {
+            return sf::Rect<T>(0, 0, 0, 0);
+        }
+
+        if (a.left < B.left)
+        {
+            const auto DIFF { B.left - a.left };
+            a.left += DIFF;
+            a.width -= DIFF;
+        }
+
+        if (a.top < B.top)
+        {
+            const auto DIFF { B.top - a.top };
+            a.top += DIFF;
+            a.height -= DIFF;
+        }
+
+        const auto A_RIGHT { sfutil::Right(a) };
+        const auto B_RIGHT { sfutil::Right(B) };
+        if (A_RIGHT > B_RIGHT)
+        {
+            const auto DIFF { A_RIGHT - B_RIGHT };
+            a.width -= DIFF;
+        }
+
+        const auto A_BOTTOM { sfutil::Bottom(a) };
+        const auto B_BOTTOM { sfutil::Bottom(B) };
+        if (A_BOTTOM > B_BOTTOM)
+        {
+            const auto DIFF { A_BOTTOM - B_BOTTOM };
+            a.height -= DIFF;
+        }
+
+        if (a.width < 0.0f)
+        {
+            a.width = 0.0f;
+        }
+
+        if (a.height < 0.0f)
+        {
+            a.height = 0.0f;
+        }
+
+        return a;
+    }
+
 } // namespace sfutil
 } // namespace heroespath
 
