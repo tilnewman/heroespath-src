@@ -69,17 +69,19 @@ namespace map
         , avatarSprites_()
         , avatarDraws_()
         , mapTileTextures_()
-        , tileDraws_()
-        , tileVertexVecBelow_()
-        , tileVertexVecAbove_()
+        , tileDrawsBelow_()
+        , tileDrawsAbove_()
+        , textureVertexesBelow_()
+        , textureVertexesAbove_()
         , timeTrials_("MapDisplay", TimeRes::Micro, true, 20, 0.0)
         , timeTrialIndexRedDrawSub_(timeTrials_.AddCollecter("SubSection"))
     {
         avatarSprites_.reserve(64);
         avatarDraws_.reserve(64);
-        tileDraws_.reserve(50000);
-        tileVertexVecBelow_.reserve(64);
-        tileVertexVecAbove_.reserve(64);
+        tileDrawsBelow_.reserve(20000);
+        tileDrawsAbove_.reserve(20000);
+        textureVertexesBelow_.reserve(64);
+        textureVertexesAbove_.reserve(64);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -122,10 +124,13 @@ namespace map
         StartAnimMusic();
         UpdateAnimMusicVolume();
 
-        AnalyzeLayers(MAP_LAYOUT);
         mapTileTextures_ = MAP_LAYOUT.texture_vec;
 
-        ReDrawEverythingAfterOffScreenTileChange();
+        PopulateTileDraws(MAP_LAYOUT);
+        CollapseNonOverlappingLayers(tileDrawsBelow_);
+        CollapseNonOverlappingLayers(tileDrawsAbove_);
+
+        SetupAndDrawAllOffScreen();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT)
@@ -243,7 +248,7 @@ namespace map
             --offScreenTileRectI_.top;
             UpdateOffScreenMapPosOffset();
             MoveOffscreenTextureRects(sf::Vector2f(0.0f, tileSizeVI_.y));
-            ReDrawEverythingAfterOffScreenTileChange();
+            SetupAndDrawAllOffScreen();
             return true;
         }
 
@@ -287,7 +292,7 @@ namespace map
             ++offScreenTileRectI_.top;
             UpdateOffScreenMapPosOffset();
             MoveOffscreenTextureRects(sf::Vector2f(0.0f, -tileSizeVI_.y));
-            ReDrawEverythingAfterOffScreenTileChange();
+            SetupAndDrawAllOffScreen();
             return true;
         }
 
@@ -330,7 +335,7 @@ namespace map
             --offScreenTileRectI_.left;
             UpdateOffScreenMapPosOffset();
             MoveOffscreenTextureRects(sf::Vector2f(tileSizeVI_.x, 0.0f));
-            ReDrawEverythingAfterOffScreenTileChange();
+            SetupAndDrawAllOffScreen();
             return true;
         }
 
@@ -374,16 +379,21 @@ namespace map
             ++offScreenTileRectI_.left;
             UpdateOffScreenMapPosOffset();
             MoveOffscreenTextureRects(sf::Vector2f(-tileSizeVI_.x, 0.0f));
-            ReDrawEverythingAfterOffScreenTileChange();
+            SetupAndDrawAllOffScreen();
             return true;
         }
 
         return false;
     }
 
-    void MapDisplay::ReDrawEverythingAfterOffScreenTileChange()
+    void MapDisplay::SetupAndDrawAllOffScreen()
     {
-        ResetMapSubsections();
+        SetupForMapDrawOffScreenAll();
+        DrawAllOffScreen();
+    }
+
+    void MapDisplay::DrawAllOffScreen()
+    {
         DrawAvatarsOffScreen();
         DrawAnimationsOffScreen();
         DrawMapOffScreen();
@@ -530,37 +540,21 @@ namespace map
         }
     }
 
-    void MapDisplay::ResetMapSubsections()
+    void MapDisplay::SetupForMapDrawOffScreenAll()
     {
-        // reset the new way
-        tileVertexVecBelow_.clear();
-        tileVertexVecAbove_.clear();
+        SetupForMapDrawOffScreen(tileDrawsBelow_, textureVertexesBelow_);
+        SetupForMapDrawOffScreen(tileDrawsAbove_, textureVertexesAbove_);
+    }
 
-        auto appendQuad = [&](sf::VertexArray & vertexArray, const TileDraw & TILE_DRAW) {
-            const auto MAP_POS_V { sfutil::VectorMult(TILE_DRAW.tile_index_v, tileSizeVI_) };
+    void MapDisplay::SetupForMapDrawOffScreen(
+        const std::vector<TileDraw> & TILE_DRAWS,
+        std::vector<std::pair<std::size_t, sf::VertexArray>> & textureVertexes)
+    {
+        textureVertexes.clear();
 
-            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(sf::Vector2f { MAP_POS_V }) };
-
-            const sf::FloatRect OFFSCREEN_RECT(OFFSCREEN_POS_V, sf::Vector2f { tileSizeVI_ });
-
-            const sf::FloatRect TEXTURE_RECT { TILE_DRAW.texture_rect };
-
-            vertexArray.append(
-                sf::Vertex(sfutil::TopLeft(OFFSCREEN_RECT), sfutil::TopLeft(TEXTURE_RECT)));
-
-            vertexArray.append(
-                sf::Vertex(sfutil::TopRight(OFFSCREEN_RECT), sfutil::TopRight(TEXTURE_RECT)));
-
-            vertexArray.append(
-                sf::Vertex(sfutil::BottomRight(OFFSCREEN_RECT), sfutil::BottomRight(TEXTURE_RECT)));
-
-            vertexArray.append(
-                sf::Vertex(sfutil::BottomLeft(OFFSCREEN_RECT), sfutil::BottomLeft(TEXTURE_RECT)));
-        };
-
-        // this loop assumes tileDraws_ sorted by layer/layer_type/texture
-        const sf::Texture * currentTexturePtr { nullptr };
-        for (const auto & TILE_DRAW : tileDraws_)
+        // this loop assumes tileDraws_ sorted by layer/layer_type/texture (see PopulateTileDraws())
+        std::size_t currentTextureIndex { mapTileTextures_.size() };
+        for (const auto & TILE_DRAW : TILE_DRAWS)
         {
             // TODO CLENAUP turn into an contains() call
             if ((TILE_DRAW.tile_index_v.x < offScreenTileRectI_.left)
@@ -571,33 +565,23 @@ namespace map
                 continue;
             }
 
-            const auto IS_BELOW { (TILE_DRAW.layer_type == LayerType::Ground) };
-
-            if (TILE_DRAW.texture_ptr != currentTexturePtr)
+            if (TILE_DRAW.texture_index != currentTextureIndex)
             {
-                currentTexturePtr = TILE_DRAW.texture_ptr;
+                currentTextureIndex = TILE_DRAW.texture_index;
 
                 sf::VertexArray vertexArray;
                 vertexArray.setPrimitiveType(sf::Quads);
 
-                tileVertexVecBelow_.emplace_back(std::make_pair(currentTexturePtr, vertexArray));
-                tileVertexVecAbove_.emplace_back(std::make_pair(currentTexturePtr, vertexArray));
+                textureVertexes.emplace_back(std::make_pair(currentTextureIndex, vertexArray));
             }
 
-            if (IS_BELOW)
-            {
-                appendQuad(tileVertexVecBelow_.back().second, TILE_DRAW);
-            }
-            else
-            {
-                appendQuad(tileVertexVecAbove_.back().second, TILE_DRAW);
-            }
+            VertexArrayQuadAppend(textureVertexes.back().second, TILE_DRAW);
         }
 
         // std::ostringstream ss;
         // ss << "ResetMapSubsections Below:";
         // std::size_t count { 0 };
-        // for (auto & textureVertexsPair : tileVertexVecBelow_)
+        // for (auto & textureVertexsPair : textureVertexesBelow_)
         //{
         //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
         //       << textureVertexsPair.first->getSize() << " with "
@@ -610,7 +594,7 @@ namespace map
         // ss.str("");
         // ss << "ResetMapSubsections Above:";
         // count = 0;
-        // for (auto & textureVertexsPair : tileVertexVecAbove_)
+        // for (auto & textureVertexsPair : textureVertexesAbove_)
         //{
         //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
         //       << textureVertexsPair.first->getSize() << " with "
@@ -632,11 +616,11 @@ namespace map
 
         sf::RenderStates renderStates { sf::RenderStates::Default };
 
-        for (const auto & TEXTURE_VERTS_PAIR : tileVertexVecBelow_)
+        for (const auto & TEXTURE_VERTS_PAIR : textureVertexesBelow_)
         {
             if (TEXTURE_VERTS_PAIR.second.getVertexCount() > 0)
             {
-                renderStates.texture = TEXTURE_VERTS_PAIR.first;
+                renderStates.texture = &mapTileTextures_.at(TEXTURE_VERTS_PAIR.first).Get();
 
                 offScreenImageBelow_.render_texture.draw(
                     &TEXTURE_VERTS_PAIR.second[0],
@@ -646,11 +630,11 @@ namespace map
             }
         }
 
-        for (const auto & TEXTURE_VERTS_PAIR : tileVertexVecAbove_)
+        for (const auto & TEXTURE_VERTS_PAIR : textureVertexesAbove_)
         {
             if (TEXTURE_VERTS_PAIR.second.getVertexCount() > 0)
             {
-                renderStates.texture = TEXTURE_VERTS_PAIR.first;
+                renderStates.texture = &mapTileTextures_.at(TEXTURE_VERTS_PAIR.first).Get();
 
                 offScreenImageAbove_.render_texture.draw(
                     &TEXTURE_VERTS_PAIR.second[0],
@@ -717,6 +701,7 @@ namespace map
 
     void MapDisplay::MakeAndAppendTileDraw(
         const Layer & LAYER,
+        const std::size_t TEXTURE_INDEX,
         const sf::Texture * TEXTURE_PTR,
         const int TEXTURE_TILE_NUMBER,
         const sf::Vector2i & TILE_INDEXES)
@@ -733,13 +718,22 @@ namespace map
         const auto TEXTURE_RECT { sf::IntRect(
             sf::Vector2i(TEXTURE_RECT_LEFT, TEXTURE_RECT_TOP), tileSizeVI_) };
 
-        tileDraws_.emplace_back(
-            TileDraw(LAYER.index, LAYER.type, TILE_INDEXES, TEXTURE_PTR, TEXTURE_RECT));
+        if (LAYER.type == LayerType::Ground)
+        {
+            tileDrawsBelow_.emplace_back(
+                TileDraw(LAYER.index, TILE_INDEXES, TEXTURE_INDEX, TEXTURE_RECT));
+        }
+        else
+        {
+            tileDrawsAbove_.emplace_back(
+                TileDraw(LAYER.index, TILE_INDEXES, TEXTURE_INDEX, TEXTURE_RECT));
+        }
     }
 
-    void MapDisplay::AnalyzeLayers(const map::Layout & LAYOUT)
+    void MapDisplay::PopulateTileDraws(const map::Layout & LAYOUT)
     {
-        tileDraws_.clear();
+        tileDrawsBelow_.clear();
+        tileDrawsAbove_.clear();
 
         for (const auto & LAYER : LAYOUT.layer_vec)
         {
@@ -753,18 +747,23 @@ namespace map
                     const auto [FIRST_ID, TEXTURE_INDEX]
                         = LAYOUT.FindTileTextureInfo(LAYER_TILE_NUMBER);
 
-                    if ((TEXTURE_INDEX < LAYOUT.texture_vec.size()))
+                    if (TEXTURE_INDEX >= LAYOUT.texture_vec.size())
                     {
-                        const sf::Texture * texturePtr { &LAYOUT.texture_vec[TEXTURE_INDEX].Get() };
-                        const auto TEXTURE_TILE_NUMBER { (LAYER_TILE_NUMBER - FIRST_ID) };
-                        MakeAndAppendTileDraw(LAYER, texturePtr, TEXTURE_TILE_NUMBER, TILE_INDEXES);
+                        continue;
                     }
+
+                    const sf::Texture * texturePtr { &LAYOUT.texture_vec[TEXTURE_INDEX].Get() };
+                    const auto TEXTURE_TILE_NUMBER { (LAYER_TILE_NUMBER - FIRST_ID) };
+
+                    MakeAndAppendTileDraw(
+                        LAYER, TEXTURE_INDEX, texturePtr, TEXTURE_TILE_NUMBER, TILE_INDEXES);
                 }
             }
         }
 
         // other code in this class depends on the tileDraws_ being sorted by layer/texture
-        std::sort(std::begin(tileDraws_), std::end(tileDraws_));
+        std::sort(std::begin(tileDrawsBelow_), std::end(tileDrawsBelow_));
+        std::sort(std::begin(tileDrawsAbove_), std::end(tileDrawsAbove_));
 
         // const auto COUNT_ORIG { tileDraws_.size() };
         //
@@ -1052,7 +1051,7 @@ namespace map
     }
 
     void MapDisplay::VertexArrayQuadOnScreenPos(
-        sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & ONSCREEN_RECT)
+        sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & ONSCREEN_RECT) const
     {
         quadVertexes[0].position = sfutil::TopLeft(ONSCREEN_RECT);
         quadVertexes[1].position = sfutil::TopRight(ONSCREEN_RECT);
@@ -1061,7 +1060,7 @@ namespace map
     }
 
     void MapDisplay::VertexArrayQuadTextureCoords(
-        sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & TEXTURE_RECT)
+        sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & TEXTURE_RECT) const
     {
         quadVertexes[0].texCoords = sfutil::TopLeft(TEXTURE_RECT);
         quadVertexes[1].texCoords = sfutil::TopRight(TEXTURE_RECT);
@@ -1072,7 +1071,7 @@ namespace map
     void MapDisplay::VertexArrayQuadAppend(
         sf::VertexArray & vertexArray,
         const sf::FloatRect & ONSCREEN_RECT,
-        const sf::FloatRect & TEXTURE_RECT)
+        const sf::FloatRect & TEXTURE_RECT) const
     {
         const auto FIRST_VERTEX_INDEX { vertexArray.getVertexCount() };
 
@@ -1083,6 +1082,191 @@ namespace map
 
         VertexArrayQuadOnScreenPos(&vertexArray[FIRST_VERTEX_INDEX], ONSCREEN_RECT);
         VertexArrayQuadTextureCoords(&vertexArray[FIRST_VERTEX_INDEX], TEXTURE_RECT);
+    }
+
+    void MapDisplay::VertexArrayQuadAppend(
+        sf::VertexArray & vertexArray, const TileDraw & TILE_DRAW) const
+    {
+        const auto MAP_POS_V { sfutil::VectorMult(TILE_DRAW.tile_index_v, tileSizeVI_) };
+
+        const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(sf::Vector2f { MAP_POS_V }) };
+
+        const sf::FloatRect OFFSCREEN_RECT(OFFSCREEN_POS_V, sf::Vector2f { tileSizeVI_ });
+
+        const sf::FloatRect TEXTURE_RECT { TILE_DRAW.texture_rect };
+
+        vertexArray.append(
+            sf::Vertex(sfutil::TopLeft(OFFSCREEN_RECT), sfutil::TopLeft(TEXTURE_RECT)));
+
+        vertexArray.append(
+            sf::Vertex(sfutil::TopRight(OFFSCREEN_RECT), sfutil::TopRight(TEXTURE_RECT)));
+
+        vertexArray.append(
+            sf::Vertex(sfutil::BottomRight(OFFSCREEN_RECT), sfutil::BottomRight(TEXTURE_RECT)));
+
+        vertexArray.append(
+            sf::Vertex(sfutil::BottomLeft(OFFSCREEN_RECT), sfutil::BottomLeft(TEXTURE_RECT)));
+    }
+
+    void MapDisplay::CollapseNonOverlappingLayers(std::vector<TileDraw> & tileDraws) const
+    {
+        if (tileDraws.empty())
+        {
+            return;
+        }
+
+        const auto LAYER_INDEX_MIN { tileDraws.front().layer_index };
+        auto currentLayerIndex { tileDraws.back().layer_index };
+
+        while (currentLayerIndex != LAYER_INDEX_MIN)
+        {
+            currentLayerIndex
+                = CollapseNonOverlappingLayersAtLayerIndex(currentLayerIndex, tileDraws);
+        }
+
+        // re-sort to ensure each layer uses each texture only once after collapsing
+        std::sort(std::begin(tileDraws), std::end(tileDraws));
+    }
+
+    std::size_t MapDisplay::CollapseNonOverlappingLayersAtLayerIndex(
+        const std::size_t OVER_LAYER_INDEX, std::vector<TileDraw> & tileDraws) const
+    {
+        if (OVER_LAYER_INDEX <= tileDraws.front().layer_index)
+        {
+            return 0;
+        }
+
+        if (tileDraws.empty())
+        {
+            return (OVER_LAYER_INDEX - 1);
+        }
+
+        // functor required by std::equal_range...ugly stuff in the standard library...
+        struct Comp
+        {
+            inline bool
+                operator()(const TileDraw & TILE_DRAW, const std::size_t LAYER_INDEX_TO_FIND) const
+            {
+                return (TILE_DRAW.layer_index < LAYER_INDEX_TO_FIND);
+            }
+
+            inline bool
+                operator()(const std::size_t LAYER_INDEX_TO_FIND, const TileDraw & TILE_DRAW) const
+            {
+                return (LAYER_INDEX_TO_FIND < TILE_DRAW.layer_index);
+            }
+        };
+
+        // get [first, last) iterators to all TileDraws in the over (.back) layer
+        const auto OVER_LAYER_ITER_PAIR { std::equal_range(
+            std::begin(tileDraws), std::end(tileDraws), OVER_LAYER_INDEX, Comp {}) };
+
+        if ((OVER_LAYER_ITER_PAIR.first == OVER_LAYER_ITER_PAIR.second)
+            || (OVER_LAYER_ITER_PAIR.first == std::end(tileDraws)))
+        {
+            return (OVER_LAYER_INDEX - 1);
+        }
+
+        // get [first, last) iterators to all TileDraws in the layer just under the over layer
+        // since the under layer might not have an index of (OVER_LAYER_INDEX-1) we need a loop
+        const auto UNDER_LAYER_ITER_PAIR = [&]() {
+            std::size_t layerIndex { OVER_LAYER_INDEX };
+
+            do
+            {
+                --layerIndex;
+
+                const auto ITER_PAIR { std::equal_range(
+                    std::begin(tileDraws), std::end(tileDraws), layerIndex, Comp {}) };
+
+                if ((ITER_PAIR.first != ITER_PAIR.second)
+                    && (ITER_PAIR.first != std::end(tileDraws)))
+                {
+                    return ITER_PAIR;
+                }
+
+            } while (layerIndex != 0);
+
+            return std::make_pair(std::end(tileDraws), std::end(tileDraws));
+        }();
+
+        if ((UNDER_LAYER_ITER_PAIR.first == UNDER_LAYER_ITER_PAIR.second)
+            || (UNDER_LAYER_ITER_PAIR.first == std::end(tileDraws))
+            || (UNDER_LAYER_ITER_PAIR.second == std::end(tileDraws))
+            || (UNDER_LAYER_ITER_PAIR.first->layer_index >= OVER_LAYER_INDEX)
+            || (UNDER_LAYER_ITER_PAIR.second->layer_index > OVER_LAYER_INDEX)
+            || (UNDER_LAYER_ITER_PAIR.second->layer_index
+                != OVER_LAYER_ITER_PAIR.first->layer_index))
+        {
+            return (OVER_LAYER_INDEX - 1);
+        }
+
+        const auto UNDER_LAYER_INDEX { UNDER_LAYER_ITER_PAIR.first->layer_index };
+
+        // build a collection of sorted and unique map tile indexes for both the over and under
+        // layers
+        std::vector<sf::Vector2i> tileIndexesOver;
+        tileIndexesOver.reserve(8192);
+
+        std::transform(
+            OVER_LAYER_ITER_PAIR.first,
+            OVER_LAYER_ITER_PAIR.second,
+            std::back_inserter(tileIndexesOver),
+            [](const auto & TILE_DRAW) { return TILE_DRAW.tile_index_v; });
+
+        std::sort(std::begin(tileIndexesOver), std::end(tileIndexesOver));
+
+        tileIndexesOver.erase(
+            std::unique(std::begin(tileIndexesOver), std::end(tileIndexesOver)),
+            std::end(tileIndexesOver));
+
+        std::vector<sf::Vector2i> tileIndexesUnder;
+        tileIndexesUnder.reserve(4096);
+
+        std::transform(
+            UNDER_LAYER_ITER_PAIR.first,
+            UNDER_LAYER_ITER_PAIR.second,
+            std::back_inserter(tileIndexesUnder),
+            [](const auto & TILE_DRAW) { return TILE_DRAW.tile_index_v; });
+
+        std::sort(std::begin(tileIndexesUnder), std::end(tileIndexesUnder));
+
+        tileIndexesUnder.erase(
+            std::unique(std::begin(tileIndexesUnder), std::end(tileIndexesUnder)),
+            std::end(tileIndexesUnder));
+
+        if (tileIndexesOver.empty() || tileIndexesUnder.empty())
+        {
+            return UNDER_LAYER_INDEX;
+        }
+
+        // combine and sort both collections (just re-use the over collection)
+        std::copy(
+            std::begin(tileIndexesUnder),
+            std::end(tileIndexesUnder),
+            std::back_inserter(tileIndexesOver));
+
+        std::sort(std::begin(tileIndexesOver), std::end(tileIndexesOver));
+
+        const auto ADJACENT_FIND_ITER { std::adjacent_find(
+            std::begin(tileIndexesOver), std::end(tileIndexesOver)) };
+
+        if (ADJACENT_FIND_ITER == std::end(tileIndexesOver))
+        {
+            // since there are no overlapping tile draws these two layers can be collapsed
+            for (auto iter { UNDER_LAYER_ITER_PAIR.first }; iter != UNDER_LAYER_ITER_PAIR.second;
+                 ++iter)
+            {
+                iter->layer_index = OVER_LAYER_INDEX;
+            }
+
+            // the layers were collapsed so recurse by returning over layer index
+            return OVER_LAYER_INDEX;
+        }
+        else
+        {
+            return UNDER_LAYER_INDEX;
+        }
     }
 
 } // namespace map

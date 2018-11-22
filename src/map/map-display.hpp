@@ -39,14 +39,12 @@ namespace map
     {
         TileDraw(
             const std::size_t LAYER_INDEX,
-            const LayerType::Enum LAYER_TYPE,
             const sf::Vector2i & TILE_INDEX_V,
-            const sf::Texture * texturePtr,
+            const std::size_t TEXTURE_INDEX,
             const sf::IntRect & TEXTURE_RECT)
             : layer_index(LAYER_INDEX)
-            , layer_type(LAYER_TYPE)
             , tile_index_v(TILE_INDEX_V)
-            , texture_ptr(texturePtr)
+            , texture_index(TEXTURE_INDEX)
             , texture_rect(TEXTURE_RECT)
         {}
 
@@ -56,42 +54,21 @@ namespace map
         TileDraw & operator=(TileDraw &&) = default;
 
         std::size_t layer_index;
-        LayerType::Enum layer_type;
         sf::Vector2i tile_index_v;
-        const sf::Texture * texture_ptr;
+        std::size_t texture_index;
         sf::IntRect texture_rect;
     };
 
     inline bool operator<(const TileDraw & LHS, const TileDraw & RHS)
     {
-        return std::tie(
-                   LHS.layer_index,
-                   LHS.layer_type,
-                   LHS.texture_ptr,
-                   LHS.texture_rect,
-                   LHS.tile_index_v)
-            < std::tie(
-                   RHS.layer_index,
-                   RHS.layer_type,
-                   RHS.texture_ptr,
-                   RHS.texture_rect,
-                   RHS.tile_index_v);
+        return std::tie(LHS.layer_index, LHS.texture_index, LHS.texture_rect, LHS.tile_index_v)
+            < std::tie(RHS.layer_index, RHS.texture_index, RHS.texture_rect, RHS.tile_index_v);
     }
 
     inline bool operator==(const TileDraw & LHS, const TileDraw & RHS)
     {
-        return std::tie(
-                   LHS.texture_rect,
-                   LHS.tile_index_v,
-                   LHS.layer_index,
-                   LHS.texture_ptr,
-                   LHS.layer_type)
-            == std::tie(
-                   RHS.texture_rect,
-                   RHS.tile_index_v,
-                   RHS.layer_index,
-                   RHS.texture_ptr,
-                   RHS.layer_type);
+        return std::tie(LHS.tile_index_v, LHS.texture_rect, LHS.layer_index, LHS.texture_index)
+            == std::tie(RHS.tile_index_v, RHS.texture_rect, RHS.layer_index, RHS.texture_index);
     }
 
     inline bool operator!=(const TileDraw & LHS, const TileDraw & RHS) { return !(LHS == RHS); }
@@ -164,6 +141,7 @@ namespace map
             const map::Layout & MAP_LAYOUT,
             const sf::Vector2f & PLAYER_STARTING_POS_V,
             const MapAnimVec_t &);
+
         bool Move(const gui::Direction::Enum, const float ADJUSTMENT);
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -185,21 +163,28 @@ namespace map
         bool MoveLeft(const float DISTANCE);
         bool MoveRight(const float DISTANCE);
 
-        void ReDrawEverythingAfterOffScreenTileChange();
+        void DrawAllOffScreen();
         void DrawAvatarsOffScreen();
         void DrawAnimationsOffScreen();
         void DrawMapOffScreen();
 
-        void ResetMapSubsections();
+        void SetupAndDrawAllOffScreen();
+
+        void SetupForMapDrawOffScreenAll();
+
+        void SetupForMapDrawOffScreen(
+            const std::vector<TileDraw> & TILE_DRAWS,
+            std::vector<std::pair<std::size_t, sf::VertexArray>> & textureVertexes);
 
         // this is the only place offScreenTextureRect_ is changed
         void MoveOffscreenTextureRects(const sf::Vector2f & MOVE_V);
 
         void SetupOffScreenTextures();
-        void AnalyzeLayers(const map::Layout & LAYOUT);
+        void PopulateTileDraws(const map::Layout & LAYOUT);
 
         void MakeAndAppendTileDraw(
             const Layer & LAYER,
+            const std::size_t TEXTURE_INDEX,
             const sf::Texture * TEXTURE_PTR,
             const int TEXTURE_TILE_NUMBER,
             const sf::Vector2i & TILE_INDEXES);
@@ -238,15 +223,23 @@ namespace map
             const sf::VertexArray & VERTEX_ARRAY, const std::size_t QUAD_INDEX = 0) const;
 
         void VertexArrayQuadOnScreenPos(
-            sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & ONSCREEN_RECT);
+            sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & ONSCREEN_RECT) const;
 
         void VertexArrayQuadTextureCoords(
-            sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & TEXTURE_RECT);
+            sf::Vertex quadVertexes[VERTS_PER_QUAD_], const sf::FloatRect & TEXTURE_RECT) const;
 
         void VertexArrayQuadAppend(
             sf::VertexArray & vertexArray,
             const sf::FloatRect & ONSCREEN_RECT,
-            const sf::FloatRect & TEXTURE_RECT);
+            const sf::FloatRect & TEXTURE_RECT) const;
+
+        void VertexArrayQuadAppend(sf::VertexArray & vertexArray, const TileDraw & TILE_DRAW) const;
+
+        void CollapseNonOverlappingLayers(std::vector<TileDraw> & tileDraws) const;
+
+        // returns the next layer index to try and collapse next
+        std::size_t CollapseNonOverlappingLayersAtLayerIndex(
+            const std::size_t TOP_LAYER_INDEX, std::vector<TileDraw> & tileDraws) const;
 
     private:
         // where the map is on screen in int pixels
@@ -310,9 +303,10 @@ namespace map
 
         std::vector<gui::CachedTexture> mapTileTextures_;
 
-        std::vector<TileDraw> tileDraws_;
-        std::vector<std::pair<const sf::Texture *, sf::VertexArray>> tileVertexVecBelow_;
-        std::vector<std::pair<const sf::Texture *, sf::VertexArray>> tileVertexVecAbove_;
+        std::vector<TileDraw> tileDrawsBelow_;
+        std::vector<TileDraw> tileDrawsAbove_;
+        std::vector<std::pair<std::size_t, sf::VertexArray>> textureVertexesBelow_;
+        std::vector<std::pair<std::size_t, sf::VertexArray>> textureVertexesAbove_;
 
         // TEMP TODO REMOVE AFTER TESTING
         mutable misc::TimeTrials timeTrials_;
