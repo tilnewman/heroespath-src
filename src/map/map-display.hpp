@@ -241,6 +241,10 @@ namespace map
         std::size_t CollapseNonOverlappingLayersAtLayerIndex(
             const std::size_t TOP_LAYER_INDEX, std::vector<TileDraw> & tileDraws) const;
 
+        void EliminateUnusedImages();
+
+        void LogLayerAndTextureInfo(const std::string & WHEN_STR);
+
     private:
         // where the map is on screen in int pixels
         const sf::FloatRect onScreenRect_;
