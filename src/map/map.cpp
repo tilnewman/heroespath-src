@@ -713,8 +713,11 @@ namespace map
     {
         auto & cachedAvatarSprites { mapDisplayUPtr_->AvatarSprites() };
 
-        if (cachedAvatarSprites.size()
-            != (nonPlayersPtrModelMap_.Size() + 1)) // plus one for the player
+        const auto CURRENT_NONPLAYER_SPRITES_COUNT { nonPlayersPtrModelMap_.Size() };
+        const auto CACHED_SPRITES_COUNT { cachedAvatarSprites.size() };
+
+        if (CACHED_SPRITES_COUNT
+            != (CURRENT_NONPLAYER_SPRITES_COUNT + 1)) // plus one for the player
         {
             cachedAvatarSprites.clear();
 
@@ -726,9 +729,6 @@ namespace map
             cachedAvatarSprites.emplace_back(player_.CurrentSprite());
             return;
         }
-
-        const auto CURRENT_NONPLAYER_SPRITES_COUNT { nonPlayersPtrModelMap_.Size() };
-        const auto CACHED_SPRITES_COUNT { cachedAvatarSprites.size() };
 
         if ((CURRENT_NONPLAYER_SPRITES_COUNT == 0) || (CACHED_SPRITES_COUNT == 0)
             || (CACHED_SPRITES_COUNT != (CURRENT_NONPLAYER_SPRITES_COUNT + 1)))

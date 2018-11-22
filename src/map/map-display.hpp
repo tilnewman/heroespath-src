@@ -129,6 +129,17 @@ namespace map
         sf::VertexArray vertex_array;
     };
 
+    struct AvatarDraw
+    {
+        std::size_t sprite_index = 0;
+
+        // original map coordinates
+        sf::FloatRect map_rect;
+
+        // where the sprite will be drawn offscreen
+        sf::Vector2f offscreen_draw_pos_v;
+    };
+
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
@@ -168,8 +179,6 @@ namespace map
 
     private:
         void UpdateOffScreenMapPosOffset();
-
-        void IncrementTileOffsetsInDirection(const gui::Direction::Enum DIRECTION);
 
         bool MoveUp(const float DISTANCE);
         bool MoveDown(const float DISTANCE);
@@ -297,7 +306,7 @@ namespace map
         // map::Map is responsible for keeping these sprites populated and positioned in map
         // coordinates every frame before Update()/ReDraw() is called.
         std::vector<sf::Sprite> avatarSprites_;
-        std::vector<std::pair<std::size_t, sf::FloatRect>> avatarSpriteIndexAndMapRects_;
+        std::vector<AvatarDraw> avatarDraws_;
 
         std::vector<gui::CachedTexture> mapTileTextures_;
 
