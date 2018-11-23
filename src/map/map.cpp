@@ -38,7 +38,7 @@ namespace heroespath
 namespace map
 {
     // These are different so that players can always move faster than, and catch, NPCs.
-    const float Map::PLAYER_MOVE_DISTANCE_ { 7 }; //{ 3.5f };
+    const float Map::PLAYER_MOVE_DISTANCE_ { 3.5f };
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
@@ -538,11 +538,11 @@ namespace map
             walkRegions.emplace_back(walkRegion);
         }
 
-        // shuffle so that each NPC likely starts in a random walk rect
         misc::Vector::ShuffleVec(walkRegions);
 
-        const auto PLAYER_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
-            player_.CurrentSprite().getGlobalBounds()) };
+        // Had problems with NPCs starting at positions that collided with the player so this rect
+        // is not adjust for collision detection with other avatars
+        const auto PLAYER_RECT { player_.CurrentSprite().getGlobalBounds() };
 
         // We have not yet made this NPC's avatar::Model yet so we don't technically know the size
         // of it's sprite, and yes, some avatar sprites are scaled differently than others.  But we
@@ -713,11 +713,10 @@ namespace map
     {
         auto & cachedAvatarSprites { mapDisplayUPtr_->AvatarSprites() };
 
-        const auto CURRENT_NONPLAYER_SPRITES_COUNT { nonPlayersPtrModelMap_.Size() };
+        const auto NONPLAYER_SPRITES_COUNT { nonPlayersPtrModelMap_.Size() };
         const auto CACHED_SPRITES_COUNT { cachedAvatarSprites.size() };
 
-        if (CACHED_SPRITES_COUNT
-            != (CURRENT_NONPLAYER_SPRITES_COUNT + 1)) // plus one for the player
+        if (CACHED_SPRITES_COUNT != (NONPLAYER_SPRITES_COUNT + 1)) // plus one for the player
         {
             cachedAvatarSprites.clear();
 
@@ -730,19 +729,13 @@ namespace map
             return;
         }
 
-        if ((CURRENT_NONPLAYER_SPRITES_COUNT == 0) || (CACHED_SPRITES_COUNT == 0)
-            || (CACHED_SPRITES_COUNT != (CURRENT_NONPLAYER_SPRITES_COUNT + 1)))
-        {
-            return;
-        }
-
         auto updateSprite = [&](sf::Sprite & cachedSprite, const sf::Sprite & CURRENT_SPRITE) {
             cachedSprite.setPosition(CURRENT_SPRITE.getPosition());
             cachedSprite.setTextureRect(CURRENT_SPRITE.getTextureRect());
         };
 
         std::size_t index { 0 };
-        for (; index < CURRENT_NONPLAYER_SPRITES_COUNT; ++index)
+        for (; index < NONPLAYER_SPRITES_COUNT; ++index)
         {
             updateSprite(
                 cachedAvatarSprites.at(index), nonPlayersPtrModelMap_.At(index).CurrentSprite());

@@ -128,7 +128,7 @@ namespace map
         mapTileTextures_ = MAP_LAYOUT.texture_vec;
 
         PopulateTileDraws(MAP_LAYOUT);
-        LogLayerAndTextureInfo("");
+        // LogLayerAndTextureInfo("");
 
         SetupAndDrawAllOffScreen();
     }
