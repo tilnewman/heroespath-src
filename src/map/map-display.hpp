@@ -235,14 +235,6 @@ namespace map
 
         void VertexArrayQuadAppend(sf::VertexArray & vertexArray, const TileDraw & TILE_DRAW) const;
 
-        void CollapseNonOverlappingLayers(std::vector<TileDraw> & tileDraws) const;
-
-        // returns the next layer index to try and collapse next
-        std::size_t CollapseNonOverlappingLayersAtLayerIndex(
-            const std::size_t TOP_LAYER_INDEX, std::vector<TileDraw> & tileDraws) const;
-
-        void EliminateUnusedImages();
-
         void LogLayerAndTextureInfo(const std::string & WHEN_STR);
 
     private:

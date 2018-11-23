@@ -128,14 +128,7 @@ namespace map
         mapTileTextures_ = MAP_LAYOUT.texture_vec;
 
         PopulateTileDraws(MAP_LAYOUT);
-        LogLayerAndTextureInfo("Initial");
-
-        CollapseNonOverlappingLayers(tileDrawsBelow_);
-        CollapseNonOverlappingLayers(tileDrawsAbove_);
-        LogLayerAndTextureInfo("After Collapse");
-
-        EliminateUnusedImages();
-        // LogLayerAndTextureInfo("After Elimination");
+        LogLayerAndTextureInfo("");
 
         SetupAndDrawAllOffScreen();
     }
@@ -1115,218 +1108,6 @@ namespace map
             sf::Vertex(sfutil::BottomLeft(OFFSCREEN_RECT), sfutil::BottomLeft(TEXTURE_RECT)));
     }
 
-    void MapDisplay::CollapseNonOverlappingLayers(std::vector<TileDraw> & tileDraws) const
-    {
-        if (tileDraws.empty())
-        {
-            return;
-        }
-
-        const auto LAYER_INDEX_MIN { tileDraws.front().layer_index };
-        auto currentLayerIndex { tileDraws.back().layer_index };
-
-        while (currentLayerIndex != LAYER_INDEX_MIN)
-        {
-            currentLayerIndex
-                = CollapseNonOverlappingLayersAtLayerIndex(currentLayerIndex, tileDraws);
-        }
-
-        // re-sort to ensure each layer uses each texture only once after collapsing
-        std::sort(std::begin(tileDraws), std::end(tileDraws));
-    }
-
-    std::size_t MapDisplay::CollapseNonOverlappingLayersAtLayerIndex(
-        const std::size_t OVER_LAYER_INDEX, std::vector<TileDraw> & tileDraws) const
-    {
-        if (OVER_LAYER_INDEX <= tileDraws.front().layer_index)
-        {
-            return 0;
-        }
-
-        if (tileDraws.empty())
-        {
-            return (OVER_LAYER_INDEX - 1);
-        }
-
-        // functor required by std::equal_range...ugly stuff in the standard library...
-        struct Comp
-        {
-            inline bool
-                operator()(const TileDraw & TILE_DRAW, const std::size_t LAYER_INDEX_TO_FIND) const
-            {
-                return (TILE_DRAW.layer_index < LAYER_INDEX_TO_FIND);
-            }
-
-            inline bool
-                operator()(const std::size_t LAYER_INDEX_TO_FIND, const TileDraw & TILE_DRAW) const
-            {
-                return (LAYER_INDEX_TO_FIND < TILE_DRAW.layer_index);
-            }
-        };
-
-        // get [first, last) iterators to all TileDraws in the over (.back) layer
-        const auto OVER_LAYER_ITER_PAIR { std::equal_range(
-            std::begin(tileDraws), std::end(tileDraws), OVER_LAYER_INDEX, Comp {}) };
-
-        if ((OVER_LAYER_ITER_PAIR.first == OVER_LAYER_ITER_PAIR.second)
-            || (OVER_LAYER_ITER_PAIR.first == std::end(tileDraws)))
-        {
-            return (OVER_LAYER_INDEX - 1);
-        }
-
-        // get [first, last) iterators to all TileDraws in the layer just under the over layer
-        // since the under layer might not have an index of (OVER_LAYER_INDEX-1) we need a loop
-        const auto UNDER_LAYER_ITER_PAIR = [&]() {
-            std::size_t layerIndex { OVER_LAYER_INDEX };
-
-            do
-            {
-                --layerIndex;
-
-                const auto ITER_PAIR { std::equal_range(
-                    std::begin(tileDraws), std::end(tileDraws), layerIndex, Comp {}) };
-
-                if ((ITER_PAIR.first != ITER_PAIR.second)
-                    && (ITER_PAIR.first != std::end(tileDraws)))
-                {
-                    return ITER_PAIR;
-                }
-
-            } while (layerIndex != 0);
-
-            return std::make_pair(std::end(tileDraws), std::end(tileDraws));
-        }();
-
-        if ((UNDER_LAYER_ITER_PAIR.first == UNDER_LAYER_ITER_PAIR.second)
-            || (UNDER_LAYER_ITER_PAIR.first == std::end(tileDraws))
-            || (UNDER_LAYER_ITER_PAIR.second == std::end(tileDraws))
-            || (UNDER_LAYER_ITER_PAIR.first->layer_index >= OVER_LAYER_INDEX)
-            || (UNDER_LAYER_ITER_PAIR.second->layer_index > OVER_LAYER_INDEX)
-            || (UNDER_LAYER_ITER_PAIR.second->layer_index
-                != OVER_LAYER_ITER_PAIR.first->layer_index))
-        {
-            return (OVER_LAYER_INDEX - 1);
-        }
-
-        const auto UNDER_LAYER_INDEX { UNDER_LAYER_ITER_PAIR.first->layer_index };
-
-        // build a collection of sorted and unique map tile indexes for both the over and under
-        // layers
-        std::vector<sf::Vector2i> tileIndexesOver;
-        tileIndexesOver.reserve(8192);
-
-        std::transform(
-            OVER_LAYER_ITER_PAIR.first,
-            OVER_LAYER_ITER_PAIR.second,
-            std::back_inserter(tileIndexesOver),
-            [](const auto & TILE_DRAW) { return TILE_DRAW.tile_index_v; });
-
-        std::sort(std::begin(tileIndexesOver), std::end(tileIndexesOver));
-
-        tileIndexesOver.erase(
-            std::unique(std::begin(tileIndexesOver), std::end(tileIndexesOver)),
-            std::end(tileIndexesOver));
-
-        std::vector<sf::Vector2i> tileIndexesUnder;
-        tileIndexesUnder.reserve(4096);
-
-        std::transform(
-            UNDER_LAYER_ITER_PAIR.first,
-            UNDER_LAYER_ITER_PAIR.second,
-            std::back_inserter(tileIndexesUnder),
-            [](const auto & TILE_DRAW) { return TILE_DRAW.tile_index_v; });
-
-        std::sort(std::begin(tileIndexesUnder), std::end(tileIndexesUnder));
-
-        tileIndexesUnder.erase(
-            std::unique(std::begin(tileIndexesUnder), std::end(tileIndexesUnder)),
-            std::end(tileIndexesUnder));
-
-        if (tileIndexesOver.empty() || tileIndexesUnder.empty())
-        {
-            return UNDER_LAYER_INDEX;
-        }
-
-        // combine and sort both collections (just re-use the over collection)
-        std::copy(
-            std::begin(tileIndexesUnder),
-            std::end(tileIndexesUnder),
-            std::back_inserter(tileIndexesOver));
-
-        std::sort(std::begin(tileIndexesOver), std::end(tileIndexesOver));
-
-        const auto ADJACENT_FIND_ITER { std::adjacent_find(
-            std::begin(tileIndexesOver), std::end(tileIndexesOver)) };
-
-        if (ADJACENT_FIND_ITER == std::end(tileIndexesOver))
-        {
-            // since there are no overlapping tile draws these two layers can be collapsed
-            for (auto iter { UNDER_LAYER_ITER_PAIR.first }; iter != UNDER_LAYER_ITER_PAIR.second;
-                 ++iter)
-            {
-                iter->layer_index = OVER_LAYER_INDEX;
-            }
-
-            // the layers were collapsed so recurse by returning over layer index
-            return OVER_LAYER_INDEX;
-        }
-        else
-        {
-            return UNDER_LAYER_INDEX;
-        }
-    }
-
-    void MapDisplay::EliminateUnusedImages()
-    {
-        const auto TEXTURE_COUNT_BEFORE { mapTileTextures_.size() };
-
-        // create a map of all image tiles
-        misc::VectorMap<std::size_t, misc::VectorMap<sf::IntRect, std::size_t>>
-            textureToRectCountMap;
-
-        for (const auto & TILE_DRAW : tileDrawsBelow_)
-        {
-            textureToRectCountMap[TILE_DRAW.texture_index][TILE_DRAW.texture_rect]++;
-        }
-
-        for (const auto & TILE_DRAW : tileDrawsAbove_)
-        {
-            textureToRectCountMap[TILE_DRAW.texture_index][TILE_DRAW.texture_rect]++;
-        }
-
-        const auto TEXTURE_COUNT_AFTER { textureToRectCountMap.Size() };
-
-        std::vector<std::pair<std::size_t, std::pair<std::size_t, sf::IntRect>>> countToImageVec;
-
-        for (const auto & RECT_COUNT_MAP : textureToRectCountMap)
-        {
-            for (const auto & RECT_COUNT_PAIR : RECT_COUNT_MAP.second)
-            {
-                countToImageVec.emplace_back(std::make_pair(
-                    RECT_COUNT_PAIR.second,
-                    std::make_pair(RECT_COUNT_MAP.first, RECT_COUNT_PAIR.first)));
-            }
-        }
-
-        const auto UNIQUE_IMAGE_COUNT { countToImageVec.size() };
-
-        std::sort(std::rbegin(countToImageVec), std::rend(countToImageVec));
-
-        misc::VectorMap<std::pair<std::size_t, sf::IntRect>, std::pair<std::size_t, sf::IntRect>>
-            transfersMap;
-
-        std::vector<gui::CachedTexture> newMapTileImages;
-
-        const auto PIXELS_PER_TILE { static_cast<std::size_t>(tileSizeVI_.x * tileSizeVI_.y) };
-
-        std::size_t pixelsLeftToTransfer { (UNIQUE_IMAGE_COUNT * PIXELS_PER_TILE) };
-
-        // const std::size_t MAX_PIXEL_DIMMENSION { 512 };
-        // while (pixelsLeftToTransfer != 0)
-        //{
-        //}
-    }
-
     void MapDisplay::LogLayerAndTextureInfo(const std::string & WHEN_STR)
     {
 
@@ -1374,6 +1155,7 @@ namespace map
                 layerTrans.back().textures.back().draw_count++;
             }
 
+            std::size_t uniqueCount { 0 };
             std::size_t textureTransitionCount { 0 };
             std::size_t prevTextureIndex { mapTileTextures_.size() };
             for (const auto & LAYER_INFO : layerTrans)
@@ -1384,6 +1166,7 @@ namespace map
                     {
                         ++textureTransitionCount;
                         prevTextureIndex = TEXTURE_INFO.index;
+                        uniqueCount += TEXTURE_INFO.unique_image_map.Size();
                     }
                 }
             }
@@ -1433,7 +1216,8 @@ namespace map
                << "):  layers=" << uniqueLayerCountMap.Size() << "/"
                << (layerTrans.back().index + 1) << ", textures=" << uniqueTextureCountMap.Size()
                << "/" << mapTileTextures_.size() << ", texture_trans=" << textureTransitionCount
-               << "/-" << textureTransitionsThatCanBeEliminatedWithReOrdering;
+               << "/-" << textureTransitionsThatCanBeEliminatedWithReOrdering
+               << ", total_unique=" << uniqueCount;
 
             for (const auto & LAYER_INFO : layerTrans)
             {
