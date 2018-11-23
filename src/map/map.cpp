@@ -38,7 +38,7 @@ namespace heroespath
 namespace map
 {
     // These are different so that players can always move faster than, and catch, NPCs.
-    const float Map::PLAYER_MOVE_DISTANCE_ { 3.5f };
+    const float Map::PLAYER_MOVE_DISTANCE_ { 6.0f }; //{ 3.5f };
     const float Map::NONPLAYER_MOVE_DISTANCE_ { 3.0f };
 
     Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)

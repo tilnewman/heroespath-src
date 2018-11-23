@@ -47,20 +47,20 @@ namespace game
             level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
 
             // TEMP TODO REMOVE AFTTER TESTING many npcs
-            // level.AddRandomNpcPlaceholder(NpcPlaceholder(
-            //    20,
-            //    20,
-            //    { avatar::Avatar::NameEnum::Dress,
-            //      avatar::Avatar::NameEnum::Girl,
-            //      avatar::Avatar::NameEnum::Knight,
-            //      avatar::Avatar::NameEnum::KnightGold,
-            //      avatar::Avatar::NameEnum::Maid,
-            //      avatar::Avatar::NameEnum::Monk,
-            //      avatar::Avatar::NameEnum::Pants,
-            //      avatar::Avatar::NameEnum::Thug,
-            //      avatar::Avatar::NameEnum::Whitebeard },
-            //    0, // misc::random::SizeT(0, 3),
-            //    false));
+            level.AddRandomNpcPlaceholder(NpcPlaceholder(
+                20,
+                20,
+                { avatar::Avatar::NameEnum::Dress,
+                  avatar::Avatar::NameEnum::Girl,
+                  avatar::Avatar::NameEnum::Knight,
+                  avatar::Avatar::NameEnum::KnightGold,
+                  avatar::Avatar::NameEnum::Maid,
+                  avatar::Avatar::NameEnum::Monk,
+                  avatar::Avatar::NameEnum::Pants,
+                  avatar::Avatar::NameEnum::Thug,
+                  avatar::Avatar::NameEnum::Whitebeard },
+                0, // misc::random::SizeT(0, 3),
+                false));
         }
     }
 

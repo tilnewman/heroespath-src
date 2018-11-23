@@ -128,7 +128,7 @@ namespace avatar
 
         const auto NEW_DIRECTION { misc::Vector::SelectRandom(dirVec) };
 
-        const auto RECT { walkRects_[walkRectIndex_] };
+        const auto RECT { walkRects_.at(walkRectIndex_) };
 
         switch (NEW_DIRECTION)
         {
@@ -313,7 +313,7 @@ namespace avatar
 
     std::size_t Model::RandomWalkRectIndex() const
     {
-        if (IsPlayer() || (walkRects_.size() == 1))
+        if (IsPlayer() || (walkRects_.size() <= 1))
         {
             return 0;
         }
@@ -322,7 +322,7 @@ namespace avatar
             std::vector<std::size_t> possibleWalkRectIndexes_;
             for (std::size_t i(0); i < walkRects_.size(); ++i)
             {
-                if (walkRects_[i].contains(mapPosV_))
+                if (walkRects_.at(i).contains(mapPosV_))
                 {
                     possibleWalkRectIndexes_.emplace_back(i);
                 }
@@ -362,7 +362,7 @@ namespace avatar
                     << walkRectIndex_ << ") was out of bounds with walkRects vector of size="
                     << walkRects_.size() << ".");
 
-            const auto RECT { walkRects_[walkRectIndex_] };
+            const auto RECT { walkRects_.at(walkRectIndex_) };
 
             return sf::Vector2f(
                 misc::random::Float(RECT.left, RECT.left + RECT.width),
