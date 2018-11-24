@@ -59,17 +59,19 @@ namespace map
               "heroespath-sound-map-animsfx-distance-max"))
         , ANIM_SFX_VOLUME_MIN_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-min-volume-ratio"))
-        , playerPosV_(0.0f, 0.0f)
-        , playerPosOffsetV_(0.0f, 0.0f)
+        , sourceToOffScreenDrawsPairsBelow_()
+        , sourceToOffScreenDrawPairsAvatar()
+        , sourceToOffScreenDrawsPairsAbove_()
+        , sourceToOffScreenDrawPairsAnim_()
         , offScreenImageBelow_()
-        , offScreenImageAnim_()
         , offScreenImageAvatar_()
         , offScreenImageAbove_()
+        , offScreenImageAnim_()
+        , playerPosV_(0.0f, 0.0f)
+        , playerPosOffsetV_(0.0f, 0.0f)
         , animInfoVec_()
         , animUPtrVec_()
-        , sourceToOffScreenDrawsAnim_()
         , avatarSprites_()
-        , sourceToOffScreenDrawsAvatar_()
         , npcShadowCachedTexture_(
               "media-images-avatar-shadow",
               (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
@@ -77,18 +79,18 @@ namespace map
         , mapTileTextures_()
         , tileDrawsBelow_()
         , tileDrawsAbove_()
-        , textureVertexesBelow_()
-        , textureVertexesAbove_()
         , timeTrials_("MapDisplay", TimeRes::Micro, true, 20, 0.0)
         , timeTrialIndexRedDrawSub_(timeTrials_.AddCollecter("SubSection"))
     {
         avatarSprites_.reserve(64);
-        sourceToOffScreenDrawsAvatar_.reserve(32);
-        sourceToOffScreenDrawsAnim_.reserve(32);
+        sourceToOffScreenDrawPairsAvatar.reserve(32);
+        sourceToOffScreenDrawPairsAnim_.reserve(32);
         tileDrawsBelow_.reserve(20000);
         tileDrawsAbove_.reserve(20000);
-        textureVertexesBelow_.reserve(64);
-        textureVertexesAbove_.reserve(64);
+        sourceToOffScreenDrawsPairsBelow_.reserve(1024);
+        sourceToOffScreenDrawPairsAvatar.reserve(64);
+        sourceToOffScreenDrawsPairsAbove_.reserve(1024);
+        sourceToOffScreenDrawPairsAnim_.reserve(32);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -178,10 +180,10 @@ namespace map
 
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(offScreenImageBelow_, states);
-        target.draw(offScreenImageAvatar_, states);
-        target.draw(offScreenImageAbove_, states);
-        target.draw(offScreenImageAnim_, states);
+        OffScreenToOnScreen_Draw_MapBelow(target, states);
+        OffScreenToOnScreen_Draw_Avatars(target, states);
+        OffScreenToOnScreen_Draw_MapAbove(target, states);
+        OffScreenToOnScreen_Draw_Animations(target, states);
     }
 
     void MapDisplay::Update(const float TIME_ELAPSED)
@@ -409,14 +411,14 @@ namespace map
 
     void MapDisplay::SourceToOffScreen_Update_MapBelow()
     {
-        SourceToOffScreen_Update_Map(tileDrawsBelow_, textureVertexesBelow_);
+        SourceToOffScreen_Update_Map(tileDrawsBelow_, sourceToOffScreenDrawsPairsBelow_);
     }
 
     void MapDisplay::SourceToOffScreen_Update_Avatars()
     {
         // the map::Map class keeps the avatarSprites_ vector populated and up to date
 
-        sourceToOffScreenDrawsAvatar_.clear();
+        sourceToOffScreenDrawPairsAvatar.clear();
 
         // populate avatarToOffScreenDrawMap_ with sprite_indexes of only the visible sprites
         const auto AVATAR_SPRITE_COUNT { avatarSprites_.size() };
@@ -432,7 +434,7 @@ namespace map
             if (offScreenTextureRect_.intersects(OFFSCREEN_RECT))
             {
                 // just need to add the index, the pos/texture coords set below
-                sourceToOffScreenDrawsAvatar_.emplace_back(
+                sourceToOffScreenDrawPairsAvatar.emplace_back(
                     std::make_pair(index, EMPTY_QUAD_VERT_ARRAY_));
 
                 // wait until the loop below to populate the shadow draws
@@ -442,11 +444,11 @@ namespace map
         // no need to sort the shadow draws
 
         // sort the avatar draws so that avatars in front will be drawn on top of those behind
-        if (sourceToOffScreenDrawsAvatar_.size() > 1)
+        if (sourceToOffScreenDrawPairsAvatar.size() > 1)
         {
             std::sort(
-                std::begin(sourceToOffScreenDrawsAvatar_),
-                std::end(sourceToOffScreenDrawsAvatar_),
+                std::begin(sourceToOffScreenDrawPairsAvatar),
+                std::end(sourceToOffScreenDrawPairsAvatar),
                 [&](const auto PAIR_A, const auto PAIR_B) {
                     return (
                         sfutil::Bottom(avatarSprites_.at(PAIR_A.first))
@@ -456,7 +458,7 @@ namespace map
 
         // The avatar shadows and sprites are drawn to the same offscreen pos but they can have
         // different sizes so this loop calculates a combined size for each
-        for (auto & drawPair : sourceToOffScreenDrawsAvatar_)
+        for (auto & drawPair : sourceToOffScreenDrawPairsAvatar)
         {
             const auto & SPRITE { avatarSprites_.at(drawPair.first) };
             const auto AVATAR_MAP_POS_V { SPRITE.getPosition() };
@@ -469,12 +471,12 @@ namespace map
 
     void MapDisplay::SourceToOffScreen_Update_MapAbove()
     {
-        SourceToOffScreen_Update_Map(tileDrawsAbove_, textureVertexesAbove_);
+        SourceToOffScreen_Update_Map(tileDrawsAbove_, sourceToOffScreenDrawsPairsAbove_);
     }
 
     void MapDisplay::SourceToOffScreen_Update_Animations()
     {
-        sourceToOffScreenDrawsAnim_.clear();
+        sourceToOffScreenDrawPairsAnim_.clear();
 
         const auto ANIM_COUNT { animUPtrVec_.size() };
         for (std::size_t index(0); index < ANIM_COUNT; ++index)
@@ -492,19 +494,19 @@ namespace map
             }
 
             // since the source is a sprite we use the first vertex to hold the offscreen position
-            sourceToOffScreenDrawsAnim_.emplace_back(std::make_pair(index, EMPTY_QUAD_VERT_ARRAY_));
-            sourceToOffScreenDrawsAnim_.back().second[0].position
+            sourceToOffScreenDrawPairsAnim_.emplace_back(
+                std::make_pair(index, EMPTY_QUAD_VERT_ARRAY_));
+
+            sourceToOffScreenDrawPairsAnim_.back().second[0].position
                 = sfutil::Position(OFFSCREEN_RECT);
         }
     }
 
     void MapDisplay::SourceToOffScreen_Update_Map(
-        const std::vector<TileDraw> & TILE_DRAWS,
-        std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> & textureVertexes)
+        const std::vector<TileDraw> & TILE_DRAWS, DrawsPairVec_t & drawsPairs)
     {
-        textureVertexes.clear();
+        drawsPairs.clear();
 
-        // this loop assumes tileDraws_ sorted by layer/layer_type/texture (see PopulateTileDraws())
         std::size_t currentTextureIndex { mapTileTextures_.size() };
         for (const auto & TILE_DRAW : TILE_DRAWS)
         {
@@ -521,18 +523,19 @@ namespace map
             {
                 currentTextureIndex = TILE_DRAW.texture_index;
 
-                std::vector<sf::Vertex> newVertexes;
-                newVertexes.reserve(32);
-                textureVertexes.emplace_back(std::make_pair(currentTextureIndex, newVertexes));
+                drawsPairs.emplace_back(
+                    std::make_pair(currentTextureIndex, std::vector<sf::Vertex>()));
+
+                drawsPairs.back().second.reserve(1024);
             }
 
-            QuadAppend(textureVertexes.back().second, TILE_DRAW);
+            QuadAppend(drawsPairs.back().second, TILE_DRAW);
         }
 
         // std::ostringstream ss;
         // ss << "ResetMapSubsections Below:";
         // std::size_t count { 0 };
-        // for (auto & textureVertexsPair : textureVertexesBelow_)
+        // for (auto & textureVertexsPair : sourceToOffScreenDrawsPairsBelow_)
         //{
         //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
         //       << textureVertexsPair.first->getSize() << " with "
@@ -545,7 +548,7 @@ namespace map
         // ss.str("");
         // ss << "ResetMapSubsections Above:";
         // count = 0;
-        // for (auto & textureVertexsPair : textureVertexesAbove_)
+        // for (auto & textureVertexsPair : sourceToOffScreenDrawsPairsAbove_)
         //{
         //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
         //       << textureVertexsPair.first->getSize() << " with "
@@ -558,45 +561,46 @@ namespace map
 
     void MapDisplay::SourceToOffScreen_Draw_MapBelow()
     {
-        SourceToOffScreen_Draw_Map(offScreenImageBelow_, textureVertexesBelow_);
+        SourceToOffScreen_Draw_Map(offScreenImageBelow_, sourceToOffScreenDrawsPairsBelow_);
     }
 
     void MapDisplay::SourceToOffScreen_Draw_Avatars()
     {
-        offScreenImageAvatar_.render_texture.clear(sf::Color::Transparent);
+        offScreenImageAvatar_.clear(sf::Color::Transparent);
 
         // draw all avatar shadows first
-        for (const auto & DRAW_PAIR : sourceToOffScreenDrawsAvatar_)
+        for (const auto & DRAW_PAIR : sourceToOffScreenDrawPairsAvatar)
         {
             const auto & AVATAR_SPRITE { avatarSprites_.at(DRAW_PAIR.first) };
             npcShadowSprite_.setScale(AVATAR_SPRITE.getScale());
             npcShadowSprite_.setPosition(DRAW_PAIR.second[0].position);
-            offScreenImageAvatar_.render_texture.draw(npcShadowSprite_);
+            offScreenImageAvatar_.draw(npcShadowSprite_);
         }
 
         // draw avatar sprites, remember to set the position back to map coordinates after
-        for (const auto & DRAW_PAIR : sourceToOffScreenDrawsAvatar_)
+        for (const auto & DRAW_PAIR : sourceToOffScreenDrawPairsAvatar)
         {
             auto & sprite { avatarSprites_.at(DRAW_PAIR.first) };
             const auto AVATAR_MAP_POS_V { sprite.getPosition() };
             sprite.setPosition(DRAW_PAIR.second[0].position);
-            offScreenImageAvatar_.render_texture.draw(sprite);
+            offScreenImageAvatar_.draw(sprite);
             sprite.setPosition(AVATAR_MAP_POS_V);
         }
 
-        offScreenImageAvatar_.render_texture.display();
+        offScreenImageAvatar_.display();
     }
 
     void MapDisplay::SourceToOffScreen_Draw_MapAbove()
     {
-        SourceToOffScreen_Draw_Map(offScreenImageAbove_, textureVertexesAbove_);
+        SourceToOffScreen_Draw_Map(offScreenImageAbove_, sourceToOffScreenDrawsPairsAbove_);
     }
 
     void MapDisplay::SourceToOffScreen_Draw_Animations()
     {
-        offScreenImageAnim_.render_texture.clear(sf::Color::Transparent);
+        offScreenImageAnim_.clear(sf::Color::Transparent);
 
-        for (const auto & DRAW_PAIR : sourceToOffScreenDrawsAnim_)
+        bool wereAnyAnimsDrawn { false };
+        for (const auto & DRAW_PAIR : sourceToOffScreenDrawPairsAnim_)
         {
             auto & anim { *animUPtrVec_.at(DRAW_PAIR.first) };
 
@@ -608,58 +612,53 @@ namespace map
                 continue;
             }
 
+            wereAnyAnimsDrawn = true;
             anim.SetEntityPos(sfutil::Position(OFFSCREEN_RECT_ORIG));
-            offScreenImageAnim_.render_texture.draw(anim);
+            offScreenImageAnim_.draw(anim);
             anim.SetEntityPos(sfutil::Position(MAP_RECT));
         }
 
-        if (offScreenImageAnim_.offscreen_to_onscreen_vertexes.empty() == false)
+        if (wereAnyAnimsDrawn)
         {
-            offScreenImageAnim_.render_texture.display();
+            offScreenImageAnim_.display();
         }
     }
 
     void MapDisplay::SourceToOffScreen_Draw_Map(
-        OffScreenImage & offScreenImage,
-        const std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> & TEXTURE_VERTEXES)
+        sf::RenderTexture & renderTexture, const DrawsPairVec_t & DRAWS_PAIRS)
     {
-        offScreenImage.render_texture.clear(sf::Color::Transparent);
+        renderTexture.clear(sf::Color::Transparent);
 
         sf::RenderStates renderStates { sf::RenderStates::Default };
 
-        for (const auto & TEXTURE_VERTS_PAIR : TEXTURE_VERTEXES)
+        for (const auto & DRAWS_PAIR : DRAWS_PAIRS)
         {
-            if (TEXTURE_VERTS_PAIR.second.empty() == false)
+            if (DRAWS_PAIR.second.empty() == false)
             {
-                renderStates.texture = &mapTileTextures_.at(TEXTURE_VERTS_PAIR.first).Get();
+                renderStates.texture = &mapTileTextures_.at(DRAWS_PAIR.first).Get();
 
-                offScreenImage.render_texture.draw(
-                    &TEXTURE_VERTS_PAIR.second[0],
-                    TEXTURE_VERTS_PAIR.second.size(),
-                    sf::Quads,
-                    renderStates);
+                renderTexture.draw(
+                    &DRAWS_PAIR.second[0], DRAWS_PAIR.second.size(), sf::Quads, renderStates);
             }
         }
 
-        offScreenImage.render_texture.display();
+        renderTexture.display();
     }
 
     void MapDisplay::OffScreenToOnScreen_Update_MapBelow()
     {
         // Below and Above always have the same single quad
-        offScreenImageBelow_.offscreen_to_onscreen_vertexes.clear();
-
-        QuadAppend(
-            offScreenImageBelow_.offscreen_to_onscreen_vertexes,
-            onScreenRect_,
-            offScreenTextureRect_);
+        if (offScreenToOnScreenVertsBelow_.empty())
+        {
+            QuadAppend(offScreenToOnScreenVertsBelow_, onScreenRect_, offScreenTextureRect_);
+        }
     }
 
     void MapDisplay::OffScreenToOnScreen_Update_Avatars()
     {
-        offScreenImageAvatar_.offscreen_to_onscreen_vertexes.clear();
+        offScreenToOnScreenVertsAvatar_.clear();
 
-        for (const auto & DRAW_PAIR : sourceToOffScreenDrawsAvatar_)
+        for (const auto & DRAW_PAIR : sourceToOffScreenDrawPairsAvatar)
         {
             const auto & SPRITE { avatarSprites_.at(DRAW_PAIR.first) };
 
@@ -693,29 +692,24 @@ namespace map
             const sf::FloatRect ONSCREEN_RECT(
                 ONSCREEN_POS_V, sfutil::Size(OFFSCREEN_RECT_INTERSECTION));
 
-            QuadAppend(
-                offScreenImageAvatar_.offscreen_to_onscreen_vertexes,
-                ONSCREEN_RECT,
-                OFFSCREEN_RECT_INTERSECTION);
+            QuadAppend(offScreenToOnScreenVertsAvatar_, ONSCREEN_RECT, OFFSCREEN_RECT_INTERSECTION);
         }
     }
 
     void MapDisplay::OffScreenToOnScreen_Update_MapAbove()
     {
         // Below and Above always have the same single quad
-        offScreenImageAbove_.offscreen_to_onscreen_vertexes.clear();
-
-        QuadAppend(
-            offScreenImageAbove_.offscreen_to_onscreen_vertexes,
-            onScreenRect_,
-            offScreenTextureRect_);
+        if (offScreenToOnScreenVertsAbove_.empty())
+        {
+            QuadAppend(offScreenToOnScreenVertsAbove_, onScreenRect_, offScreenTextureRect_);
+        }
     }
 
     void MapDisplay::OffScreenToOnScreen_Update_Animations()
     {
-        offScreenImageAnim_.offscreen_to_onscreen_vertexes.clear();
+        offScreenToOnScreenVertsAnim_.clear();
 
-        for (const auto & DRAW_PAIR : sourceToOffScreenDrawsAnim_)
+        for (const auto & DRAW_PAIR : sourceToOffScreenDrawPairsAnim_)
         {
             auto & anim { *animUPtrVec_.at(DRAW_PAIR.first) };
 
@@ -737,10 +731,65 @@ namespace map
             const sf::FloatRect ONSCREEN_RECT(
                 ONSCREEN_POS_FINAL_V, sfutil::Size(OFFSCREEN_RECT_INTERSECTION));
 
-            QuadAppend(
-                offScreenImageAnim_.offscreen_to_onscreen_vertexes,
-                ONSCREEN_RECT,
-                OFFSCREEN_RECT_INTERSECTION);
+            QuadAppend(offScreenToOnScreenVertsAnim_, ONSCREEN_RECT, OFFSCREEN_RECT_INTERSECTION);
+        }
+    }
+
+    void MapDisplay::OffScreenToOnScreen_Draw_MapBelow(
+        sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        OffScreenToOnScreen_Draw(
+            offScreenImageBelow_,
+            &offScreenToOnScreenVertsBelow_[0],
+            offScreenToOnScreenVertsBelow_.size(),
+            target,
+            states);
+    }
+
+    void MapDisplay::OffScreenToOnScreen_Draw_Avatars(
+        sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        OffScreenToOnScreen_Draw(
+            offScreenImageAvatar_,
+            &offScreenToOnScreenVertsAvatar_[0],
+            offScreenToOnScreenVertsAvatar_.size(),
+            target,
+            states);
+    }
+
+    void MapDisplay::OffScreenToOnScreen_Draw_MapAbove(
+        sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        OffScreenToOnScreen_Draw(
+            offScreenImageAbove_,
+            &offScreenToOnScreenVertsAbove_[0],
+            offScreenToOnScreenVertsAbove_.size(),
+            target,
+            states);
+    }
+
+    void MapDisplay::OffScreenToOnScreen_Draw_Animations(
+        sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        OffScreenToOnScreen_Draw(
+            offScreenImageAnim_,
+            &offScreenToOnScreenVertsAnim_[0],
+            offScreenToOnScreenVertsAnim_.size(),
+            target,
+            states);
+    }
+
+    void MapDisplay::OffScreenToOnScreen_Draw(
+        const sf::RenderTexture & RENDER_TEXTURE,
+        const sf::Vertex VERTEXES[],
+        const std::size_t VERTEX_COUNT,
+        sf::RenderTarget & target,
+        sf::RenderStates states) const
+    {
+        if (VERTEX_COUNT > 0)
+        {
+            states.texture = &RENDER_TEXTURE.getTexture();
+            target.draw(&VERTEXES[0], VERTEX_COUNT, sf::Quads, states);
         }
     }
 
@@ -778,10 +827,10 @@ namespace map
     {
         sfutil::Move(offScreenTextureRect_, MOVE_V);
 
-        offScreenImageBelow_.MoveTextureRects(MOVE_V);
-        offScreenImageAnim_.MoveTextureRects(MOVE_V);
-        offScreenImageAvatar_.MoveTextureRects(MOVE_V);
-        offScreenImageAbove_.MoveTextureRects(MOVE_V);
+        MoveTextureRects(offScreenToOnScreenVertsBelow_, MOVE_V);
+        MoveTextureRects(offScreenToOnScreenVertsAvatar_, MOVE_V);
+        MoveTextureRects(offScreenToOnScreenVertsAbove_, MOVE_V);
+        MoveTextureRects(offScreenToOnScreenVertsAnim_, MOVE_V);
     }
 
     void MapDisplay::SetupOffScreenTextures()
@@ -790,22 +839,22 @@ namespace map
         const auto HEIGHT { static_cast<unsigned>(offScreenRectI_.height) };
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            offScreenImageBelow_.render_texture.create(WIDTH, HEIGHT),
+            offScreenImageBelow_.create(WIDTH, HEIGHT),
             "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'below' texture.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            offScreenImageAbove_.render_texture.create(WIDTH, HEIGHT),
+            offScreenImageAbove_.create(WIDTH, HEIGHT),
             "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'above' texture.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            offScreenImageAnim_.render_texture.create(WIDTH, HEIGHT),
+            offScreenImageAnim_.create(WIDTH, HEIGHT),
             "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'anim' texture.");
 
         M_HP_ASSERT_OR_LOG_AND_THROW(
-            offScreenImageAvatar_.render_texture.create(WIDTH, HEIGHT),
+            offScreenImageAvatar_.create(WIDTH, HEIGHT),
             "gui::MapDisplay::Load(), failed to sf::RenderTexture::create("
                 << WIDTH << "x" << HEIGHT << ") for 'avatar' texture.");
     }
@@ -813,11 +862,10 @@ namespace map
     void MapDisplay::MakeAndAppendTileDraw(
         const Layer & LAYER,
         const std::size_t TEXTURE_INDEX,
-        const sf::Texture * TEXTURE_PTR,
+        const int TEXTURE_WIDTH,
         const int TEXTURE_TILE_NUMBER,
         const sf::Vector2i & TILE_INDEXES)
     {
-        const auto TEXTURE_WIDTH { static_cast<int>(TEXTURE_PTR->getSize().x) };
         const auto TEXTURE_WIDTH_IN_TILES { TEXTURE_WIDTH / tileSizeVI_.x };
 
         const int TEXTURE_RECT_TILE_LEFT { (TEXTURE_TILE_NUMBER % TEXTURE_WIDTH_IN_TILES) };
@@ -863,11 +911,12 @@ namespace map
                         continue;
                     }
 
-                    const sf::Texture * texturePtr { &LAYOUT.texture_vec[TEXTURE_INDEX].Get() };
+                    const sf::Texture & TEXTURE_REF { LAYOUT.texture_vec[TEXTURE_INDEX].Get() };
+                    const auto TEXTURE_WIDTH { static_cast<int>(TEXTURE_REF.getSize().x) };
                     const auto TEXTURE_TILE_NUMBER { (LAYER_TILE_NUMBER - FIRST_ID) };
 
                     MakeAndAppendTileDraw(
-                        LAYER, TEXTURE_INDEX, texturePtr, TEXTURE_TILE_NUMBER, TILE_INDEXES);
+                        LAYER, TEXTURE_INDEX, TEXTURE_WIDTH, TEXTURE_TILE_NUMBER, TILE_INDEXES);
                 }
             }
         }
@@ -1288,6 +1337,14 @@ namespace map
 
         logLayerAndTextureInfo(WHEN_STR, "BELOW", tileDrawsBelow_);
         logLayerAndTextureInfo(WHEN_STR, "ABOVE", tileDrawsAbove_);
+    }
+
+    void MapDisplay::MoveTextureRects(VertexVec_t & vertexes, const sf::Vector2f & MOVE_V) const
+    {
+        for (auto & vertex : vertexes)
+        {
+            vertex.texCoords += MOVE_V;
+        }
     }
 
 } // namespace map

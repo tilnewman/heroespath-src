@@ -72,39 +72,6 @@ namespace map
 
     inline bool operator!=(const TileDraw & LHS, const TileDraw & RHS) { return !(LHS == RHS); }
 
-    struct OffScreenImage : sf::Drawable
-    {
-        OffScreenImage()
-            : render_texture()
-            , offscreen_to_onscreen_vertexes()
-        {}
-
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const final
-        {
-            const auto VERTEX_COUNT { offscreen_to_onscreen_vertexes.size() };
-            if (VERTEX_COUNT > 0)
-            {
-                states.texture = &render_texture.getTexture();
-                target.draw(&offscreen_to_onscreen_vertexes[0], VERTEX_COUNT, sf::Quads, states);
-            }
-        }
-
-        void MoveTextureRects(const sf::Vector2f & MOVE_V)
-        {
-            const auto VERTEX_COUNT { offscreen_to_onscreen_vertexes.size() };
-            for (std::size_t vertexIndex(0); vertexIndex < VERTEX_COUNT; ++vertexIndex)
-            {
-                offscreen_to_onscreen_vertexes[vertexIndex].texCoords += MOVE_V;
-            }
-        }
-
-        sf::RenderTexture render_texture;
-        std::vector<sf::Vertex> offscreen_to_onscreen_vertexes;
-    };
-
-    struct SourceToOffScreenDraws
-    {};
-
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
@@ -120,10 +87,15 @@ namespace map
 
         static const VertQuadArray_t EMPTY_QUAD_VERT_ARRAY_;
 
+        using VertexVec_t = std::vector<sf::Vertex>;
+
         // combines a source (sprite/texture) index with a vert quad
         using DrawPair_t = std::pair<std::size_t, VertQuadArray_t>;
-
         using DrawPairVec_t = std::vector<DrawPair_t>;
+
+        // combines a source texture with a collection of vert quads
+        using DrawsPair_t = std::pair<std::size_t, VertexVec_t>;
+        using DrawsPairVec_t = std::vector<DrawsPair_t>;
 
     public:
         MapDisplay(const MapDisplay &) = delete;
@@ -167,8 +139,7 @@ namespace map
         void SourceToOffScreen_Update_Animations();
 
         void SourceToOffScreen_Update_Map(
-            const std::vector<TileDraw> & TILE_DRAWS,
-            std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> & textureVertexes);
+            const std::vector<TileDraw> & TILE_DRAWS, DrawsPairVec_t & drawsPairs);
 
         // these functions draw from source sprite/textures to offscreen
         void SourceToOffScreen_Draw_MapBelow();
@@ -177,14 +148,32 @@ namespace map
         void SourceToOffScreen_Draw_Animations();
 
         void SourceToOffScreen_Draw_Map(
-            OffScreenImage & offScreenImage,
-            const std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> & TEXTURE_VERTEXES);
+            sf::RenderTexture & renderTexture, const DrawsPairVec_t & DRAWS_PAIRS);
 
         // these functions set what from offscreen will be drawn onscreen
         void OffScreenToOnScreen_Update_MapBelow();
         void OffScreenToOnScreen_Update_Avatars();
         void OffScreenToOnScreen_Update_MapAbove();
         void OffScreenToOnScreen_Update_Animations();
+
+        void OffScreenToOnScreen_Draw_MapBelow(
+            sf::RenderTarget & target, sf::RenderStates states) const;
+
+        void OffScreenToOnScreen_Draw_Avatars(
+            sf::RenderTarget & target, sf::RenderStates states) const;
+
+        void OffScreenToOnScreen_Draw_MapAbove(
+            sf::RenderTarget & target, sf::RenderStates states) const;
+
+        void OffScreenToOnScreen_Draw_Animations(
+            sf::RenderTarget & target, sf::RenderStates states) const;
+
+        void OffScreenToOnScreen_Draw(
+            const sf::RenderTexture & RENDER_TEXTURE,
+            const sf::Vertex VERTEXES[],
+            const std::size_t VERTEX_COUNT,
+            sf::RenderTarget & target,
+            sf::RenderStates states) const;
 
         void UpdateAndReDrawAll();
         void UpdateAndReDrawAfterMapTileChange();
@@ -198,7 +187,7 @@ namespace map
         void MakeAndAppendTileDraw(
             const Layer & LAYER,
             const std::size_t TEXTURE_INDEX,
-            const sf::Texture * TEXTURE_PTR,
+            const int TEXTURE_WIDTH,
             const int TEXTURE_TILE_NUMBER,
             const sf::Vector2i & TILE_INDEXES);
 
@@ -230,6 +219,8 @@ namespace map
         void QuadAppend(std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
 
         void LogLayerAndTextureInfo(const std::string & WHEN_STR);
+
+        void MoveTextureRects(VertexVec_t & vertexes, const sf::Vector2f & MOVE_V) const;
 
     private:
         // where the map is on screen in int pixels
@@ -268,24 +259,30 @@ namespace map
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
 
+        DrawsPairVec_t sourceToOffScreenDrawsPairsBelow_;
+        DrawPairVec_t sourceToOffScreenDrawPairsAvatar;
+        DrawsPairVec_t sourceToOffScreenDrawsPairsAbove_;
+        DrawPairVec_t sourceToOffScreenDrawPairsAnim_;
+
+        // All of these share offScreenTextureRect_
+        sf::RenderTexture offScreenImageBelow_;
+        sf::RenderTexture offScreenImageAvatar_;
+        sf::RenderTexture offScreenImageAbove_;
+        sf::RenderTexture offScreenImageAnim_;
+
+        VertexVec_t offScreenToOnScreenVertsBelow_;
+        VertexVec_t offScreenToOnScreenVertsAvatar_;
+        VertexVec_t offScreenToOnScreenVertsAbove_;
+        VertexVec_t offScreenToOnScreenVertsAnim_;
+
         // these two variables are in centered map coordinates
         sf::Vector2f playerPosV_;
         sf::Vector2f playerPosOffsetV_;
 
-        // All of these share offScreenTextureRect_.
-        // Below_ and Above_ always have one quad that is always the same but Anim and Avatar keep a
-        // collection of quads for individual drawing.
-        OffScreenImage offScreenImageBelow_;
-        OffScreenImage offScreenImageAnim_;
-        OffScreenImage offScreenImageAvatar_;
-        OffScreenImage offScreenImageAbove_;
-
         MapAnimVec_t animInfoVec_;
         std::vector<gui::AnimationUPtr_t> animUPtrVec_;
-        DrawPairVec_t sourceToOffScreenDrawsAnim_;
 
         std::vector<sf::Sprite> avatarSprites_;
-        DrawPairVec_t sourceToOffScreenDrawsAvatar_;
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 
@@ -293,8 +290,6 @@ namespace map
 
         std::vector<TileDraw> tileDrawsBelow_;
         std::vector<TileDraw> tileDrawsAbove_;
-        std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> textureVertexesBelow_;
-        std::vector<std::pair<std::size_t, std::vector<sf::Vertex>>> textureVertexesAbove_;
 
         // TEMP TODO REMOVE AFTER TESTING
         mutable misc::TimeTrials timeTrials_;
