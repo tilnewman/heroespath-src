@@ -1198,22 +1198,62 @@ namespace map
 
     void MapDisplay::LogLayerAndTextureInfo(const std::string & WHEN_STR)
     {
+        auto tileTextureAreaPixels = [&](const sf::Texture & TEXTURE) {
+            return static_cast<std::size_t>(TEXTURE.getSize().x * TEXTURE.getSize().y);
+        };
+
+        auto tileTextureAreaTiles = [&](const sf::Texture & TEXTURE) {
+            return static_cast<std::size_t>(
+                (static_cast<int>(TEXTURE.getSize().x) / tileSizeVI_.x)
+                * (static_cast<int>(TEXTURE.getSize().y) / tileSizeVI_.y));
+        };
+
+        std::size_t totalTextureCountPixels { 0 };
+        std::size_t totalTextureCountTiles { 0 };
+        for (const auto & CACHED_TEXTURE : mapTileTextures_)
+        {
+            totalTextureCountPixels += tileTextureAreaPixels(CACHED_TEXTURE.Get());
+            totalTextureCountTiles += tileTextureAreaTiles(CACHED_TEXTURE.Get());
+        }
+        std::size_t totalTextureCountTilePixels { totalTextureCountTiles * 160 };
+
+        std::ostringstream ssPre;
+        ssPre << "\nLayer and Texture Usage: All Textures contain a total of "
+              << totalTextureCountTiles << " tiles with "
+              << (100
+                  - static_cast<int>(
+                      (static_cast<double>(totalTextureCountTilePixels)
+                       / static_cast<double>(totalTextureCountPixels))
+                      * 100.0))
+              << "% pixel waste and ";
+
+        misc::VectorMap<std::pair<std::size_t, sf::IntRect>, int> uniqueImages;
+
+        for (const auto & TILE_DRAW : tileDrawsBelow_)
+        {
+            uniqueImages[std::make_pair(TILE_DRAW.texture_index, TILE_DRAW.texture_rect)]++;
+        }
+
+        for (const auto & TILE_DRAW : tileDrawsAbove_)
+        {
+            uniqueImages[std::make_pair(TILE_DRAW.texture_index, TILE_DRAW.texture_rect)]++;
+        }
+
+        const auto TOTAL_UNIQUE_IMAGE_COUNT { uniqueImages.Size() };
+
+        ssPre
+            << (100
+                - static_cast<int>(
+                    (static_cast<double>(TOTAL_UNIQUE_IMAGE_COUNT)
+                     / static_cast<double>(totalTextureCountTiles))
+                    * 100.0))
+            << "% of all tiles actually drawn.";
+
+        M_HP_LOG_WRN(ssPre.str());
 
         auto logLayerAndTextureInfo = [&](const std::string & WHEN,
                                           const std::string & NAME,
                                           const std::vector<TileDraw> & DRAWS) {
-            auto tileTextureArea = [&](const sf::Texture & TEXTURE) {
-                return static_cast<std::size_t>(
-                    (static_cast<int>(TEXTURE.getSize().x) / tileSizeVI_.x)
-                    * (static_cast<int>(TEXTURE.getSize().y) / tileSizeVI_.y));
-            };
-
-            std::size_t totalTextureArea { 0 };
-            for (const auto & CACHED_TEXTURE : mapTileTextures_)
-            {
-                totalTextureArea += tileTextureArea(CACHED_TEXTURE.Get());
-            }
-
             misc::VectorMap<std::size_t, int> uniqueLayerCountMap;
             misc::VectorMap<std::size_t, int> uniqueTextureCountMap;
             misc::VectorMap<sf::Vector2i, int> uniqueTilePosMap;
@@ -1261,7 +1301,7 @@ namespace map
             for (const auto & INDEX_COUNT_PAIR : uniqueTextureCountMap)
             {
                 uniqueTextureArea
-                    += tileTextureArea(mapTileTextures_.at(INDEX_COUNT_PAIR.first).Get());
+                    += tileTextureAreaTiles(mapTileTextures_.at(INDEX_COUNT_PAIR.first).Get());
             }
 
             std::size_t overlappingDrawsCount { 0 };
