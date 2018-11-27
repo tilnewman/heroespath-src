@@ -44,7 +44,7 @@ namespace game
 
         if (level.Which() == map::Level::Thornberry)
         {
-            level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
+            // level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
 
             // TEMP TODO REMOVE AFTTER TESTING many npcs
             level.AddRandomNpcPlaceholder(NpcPlaceholder(

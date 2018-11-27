@@ -77,17 +77,13 @@ namespace map
     {
     private:
         static constexpr std::size_t VERTS_PER_QUAD_ = 4;
-
-        // how many extra tiles to draw offscreen that are outside the visible map area
         static constexpr int EXTRA_OFFSCREEN_TILE_COUNT_ = 2;
-
         static constexpr float ONSCREEN_WALK_PAD_RATIO_ = 0.2f;
 
         using VertQuadArray_t = std::array<sf::Vertex, VERTS_PER_QUAD_>;
+        using VertexVec_t = std::vector<sf::Vertex>;
 
         static const VertQuadArray_t EMPTY_QUAD_VERT_ARRAY_;
-
-        using VertexVec_t = std::vector<sf::Vertex>;
 
         // combines a source (sprite/texture) index with a vert quad
         using DrawPair_t = std::pair<std::size_t, VertQuadArray_t>;
@@ -217,16 +213,43 @@ namespace map
             const sf::FloatRect & TEXTURE_RECT) const;
 
         void QuadAppend(std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
-
-        void LogLayerAndTextureInfo(const std::string & WHEN_STR);
-
+        void LogLayerAndTextureInfo();
         void MoveTextureRects(VertexVec_t & vertexes, const sf::Vector2f & MOVE_V) const;
+
+        void OptimizeTextures(std::vector<TileDraw> & tileDraws);
+
+        const sf::Texture & MapTileTexture(const std::size_t INDEX) const
+        {
+            if (mapTileTexturesNew_.empty())
+            {
+                return mapTileTexturesOrig_.at(INDEX).Get();
+            }
+            else
+            {
+                return mapTileTexturesNew_.at(INDEX);
+            }
+        }
+
+        std::size_t MapTileTextureCount() const
+        {
+            if (mapTileTexturesNew_.empty())
+            {
+                return mapTileTexturesOrig_.size();
+            }
+            else
+            {
+                return mapTileTexturesNew_.size();
+            }
+        }
+
+        void OptimizeLayers(std::vector<TileDraw> & tileDraws);
 
     private:
         // where the map is on screen in int pixels
         const sf::FloatRect onScreenRect_;
 
-        // sub-rect of onScreenRect_ defining how close the player can get to the edge of the map
+        // sub-rect of onScreenRect_ defining how close the player can get to the edge of the
+        // map
         const sf::FloatRect onScreenRectInner_;
 
         // the full rect of both offScreenTextureAbove_ and offScreenTextureBelow_
@@ -286,7 +309,8 @@ namespace map
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 
-        std::vector<gui::CachedTexture> mapTileTextures_;
+        std::vector<gui::CachedTexture> mapTileTexturesOrig_;
+        std::vector<sf::Texture> mapTileTexturesNew_;
 
         std::vector<TileDraw> tileDrawsBelow_;
         std::vector<TileDraw> tileDrawsAbove_;
@@ -294,6 +318,9 @@ namespace map
         // TEMP TODO REMOVE AFTER TESTING
         mutable misc::TimeTrials timeTrials_;
         const std::size_t timeTrialIndexRedDrawSub_;
+
+        std::vector<TimeCount_t> drawCounts_;
+        std::vector<TimeCount_t> transitionCounts_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
