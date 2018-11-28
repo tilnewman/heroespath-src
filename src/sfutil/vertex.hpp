@@ -76,6 +76,12 @@ namespace sfutil
         const float OPPOSITE_ORIENTATION_SIZE_LIMIT = 0.0f,
         const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END = gui::Orientation::Count);
 
+    void AppendVertexesForQuad(
+        std::vector<sf::Vertex> & vertexes,
+        const sf::FloatRect & POSITION_RECT,
+        const sf::FloatRect & TEXTURE_RECT,
+        const sf::Color & COLOR = sf::Color::White);
+
 } // namespace sfutil
 } // namespace heroespath
 

@@ -294,5 +294,24 @@ namespace sfutil
         }
     }
 
+    void AppendVertexesForQuad(
+        std::vector<sf::Vertex> & vertexes,
+        const sf::FloatRect & POSITION_RECT,
+        const sf::FloatRect & TEXTURE_RECT,
+        const sf::Color & COLOR)
+    {
+        vertexes.emplace_back(
+            sf::Vertex(sfutil::TopLeft(POSITION_RECT), COLOR, sfutil::TopLeft(TEXTURE_RECT)));
+
+        vertexes.emplace_back(
+            sf::Vertex(sfutil::TopRight(POSITION_RECT), COLOR, sfutil::TopRight(TEXTURE_RECT)));
+
+        vertexes.emplace_back(sf::Vertex(
+            sfutil::BottomRight(POSITION_RECT), COLOR, sfutil::BottomRight(TEXTURE_RECT)));
+
+        vertexes.emplace_back(
+            sf::Vertex(sfutil::BottomLeft(POSITION_RECT), COLOR, sfutil::BottomLeft(TEXTURE_RECT)));
+    }
+
 } // namespace sfutil
 } // namespace heroespath

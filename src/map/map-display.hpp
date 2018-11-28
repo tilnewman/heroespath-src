@@ -15,6 +15,7 @@
 #include "gui/direction-enum.hpp"
 #include "map/layer-type-enum.hpp"
 #include "map/map-anim.hpp"
+#include "map/map-tile-draw.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
@@ -33,44 +34,6 @@ namespace map
 {
     struct Layout;
     struct Layer;
-
-    struct TileDraw
-    {
-        TileDraw(
-            const std::size_t LAYER_INDEX,
-            const sf::Vector2i & TILE_INDEX_V,
-            const std::size_t TEXTURE_INDEX,
-            const sf::IntRect & TEXTURE_RECT)
-            : layer_index(LAYER_INDEX)
-            , tile_index_v(TILE_INDEX_V)
-            , texture_index(TEXTURE_INDEX)
-            , texture_rect(TEXTURE_RECT)
-        {}
-
-        TileDraw(const TileDraw &) = default;
-        TileDraw(TileDraw &&) = default;
-        TileDraw & operator=(const TileDraw &) = default;
-        TileDraw & operator=(TileDraw &&) = default;
-
-        std::size_t layer_index;
-        sf::Vector2i tile_index_v;
-        std::size_t texture_index;
-        sf::IntRect texture_rect;
-    };
-
-    inline bool operator<(const TileDraw & LHS, const TileDraw & RHS)
-    {
-        return std::tie(LHS.layer_index, LHS.texture_index, LHS.texture_rect, LHS.tile_index_v)
-            < std::tie(RHS.layer_index, RHS.texture_index, RHS.texture_rect, RHS.tile_index_v);
-    }
-
-    inline bool operator==(const TileDraw & LHS, const TileDraw & RHS)
-    {
-        return std::tie(LHS.tile_index_v, LHS.texture_rect, LHS.layer_index, LHS.texture_index)
-            == std::tie(RHS.tile_index_v, RHS.texture_rect, RHS.layer_index, RHS.texture_index);
-    }
-
-    inline bool operator!=(const TileDraw & LHS, const TileDraw & RHS) { return !(LHS == RHS); }
 
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
@@ -103,7 +66,7 @@ namespace map
         virtual ~MapDisplay();
 
         void Load(
-            const map::Layout & MAP_LAYOUT,
+            const Layout & MAP_LAYOUT,
             const sf::Vector2f & PLAYER_STARTING_POS_V,
             const MapAnimVec_t &);
 
@@ -135,7 +98,7 @@ namespace map
         void SourceToOffScreen_Update_Animations();
 
         void SourceToOffScreen_Update_Map(
-            const std::vector<TileDraw> & TILE_DRAWS, DrawsPairVec_t & drawsPairs);
+            const TileDrawVec_t & TILE_DRAWS, DrawsPairVec_t & drawsPairs);
 
         // these functions draw from source sprite/textures to offscreen
         void SourceToOffScreen_Draw_MapBelow();
@@ -178,14 +141,6 @@ namespace map
         void MoveOffscreenTextureRects(const sf::Vector2f & MOVE_V);
 
         void SetupOffScreenTextures();
-        void PopulateTileDraws(const map::Layout & LAYOUT);
-
-        void MakeAndAppendTileDraw(
-            const Layer & LAYER,
-            const std::size_t TEXTURE_INDEX,
-            const int TEXTURE_WIDTH,
-            const int TEXTURE_TILE_NUMBER,
-            const sf::Vector2i & TILE_INDEXES);
 
         const sf::IntRect CalcOffscreenRect(
             const sf::FloatRect & ONSCREEN_RECT, const sf::Vector2i & TILE_SIZE_V) const;
@@ -207,40 +162,10 @@ namespace map
         void StopAnimMusic();
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
-        void QuadAppend(
-            std::vector<sf::Vertex> & vertexes,
-            const sf::FloatRect & POSITION_RECT,
-            const sf::FloatRect & TEXTURE_RECT) const;
+        void AppendVertexesForTileDrawQuad(
+            std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
 
-        void QuadAppend(std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
-        void LogLayerAndTextureInfo();
         void MoveTextureRects(VertexVec_t & vertexes, const sf::Vector2f & MOVE_V) const;
-
-        void OptimizeTextures(std::vector<TileDraw> & tileDraws);
-
-        const sf::Texture & MapTileTexture(const std::size_t INDEX) const
-        {
-            if (mapTileTexturesNew_.empty())
-            {
-                return mapTileTexturesOrig_.at(INDEX).Get();
-            }
-            else
-            {
-                return mapTileTexturesNew_.at(INDEX);
-            }
-        }
-
-        std::size_t MapTileTextureCount() const
-        {
-            if (mapTileTexturesNew_.empty())
-            {
-                return mapTileTexturesOrig_.size();
-            }
-            else
-            {
-                return mapTileTexturesNew_.size();
-            }
-        }
 
     private:
         // where the map is on screen in int pixels
@@ -307,11 +232,10 @@ namespace map
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 
-        std::vector<gui::CachedTexture> mapTileTexturesOrig_;
-        std::vector<sf::Texture> mapTileTexturesNew_;
+        std::vector<sf::Texture> mapTileTextures_;
 
-        std::vector<TileDraw> tileDrawsBelow_;
-        std::vector<TileDraw> tileDrawsAbove_;
+        TileDrawVec_t mapTileDrawsBelow_;
+        TileDrawVec_t mapTileDrawsAbove_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
