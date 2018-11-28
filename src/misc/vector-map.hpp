@@ -64,20 +64,40 @@ namespace misc
         VectorMap & operator=(const VectorMap &) = default;
         VectorMap & operator=(VectorMap &&) = default;
 
-        Value_t & At(const std::size_t INDEX)
+        value_type & At(const std::size_t INDEX)
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < pairs_.size()),
                 "misc::VectorMap::At() non-const, called with out of range index=" << INDEX << ".");
 
-            return pairs_[INDEX].second;
+            return pairs_[INDEX];
         }
 
-        const Value_t & At(const std::size_t INDEX) const
+        const value_type & At(const std::size_t INDEX) const
         {
             M_HP_ASSERT_OR_LOG_AND_THROW(
                 (INDEX < pairs_.size()),
                 "misc::VectorMap::At() const, called with out of range index=" << INDEX << ".");
+
+            return pairs_[INDEX];
+        }
+
+        Value_t & ValueAt(const std::size_t INDEX)
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (INDEX < pairs_.size()),
+                "misc::VectorMap::ValueAt() non-const, called with out of range index=" << INDEX
+                                                                                        << ".");
+
+            return pairs_[INDEX].second;
+        }
+
+        const Value_t & ValueAt(const std::size_t INDEX) const
+        {
+            M_HP_ASSERT_OR_LOG_AND_THROW(
+                (INDEX < pairs_.size()),
+                "misc::VectorMap::ValueAt() const, called with out of range index=" << INDEX
+                                                                                    << ".");
 
             return pairs_[INDEX].second;
         }
@@ -187,6 +207,13 @@ namespace misc
             const auto ORIG_SIZE { Size() };
             pairs_.erase(std::remove(std::begin(pairs_), std::end(pairs_), PAIR), std::end(pairs_));
             return ORIG_SIZE - Size();
+        }
+
+        iterator Erase(const const_iterator & ITER_TO_ERASE) { return pairs_.erase(ITER_TO_ERASE); }
+
+        iterator Erase(const const_iterator & ITER_FROM, const const_iterator & ITER_TO)
+        {
+            return pairs_.erase(ITER_FROM, ITER_TO);
         }
 
         std::size_t Size() const noexcept { return pairs_.size(); }

@@ -14,10 +14,10 @@
 #include "gui/cached-texture.hpp"
 #include "gui/direction-enum.hpp"
 #include "map/layer-type-enum.hpp"
-
 #include "map/map-anim.hpp"
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
+#include "misc/vector-map.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -242,8 +242,6 @@ namespace map
             }
         }
 
-        void OptimizeLayers(std::vector<TileDraw> & tileDraws);
-
     private:
         // where the map is on screen in int pixels
         const sf::FloatRect onScreenRect_;
@@ -314,13 +312,6 @@ namespace map
 
         std::vector<TileDraw> tileDrawsBelow_;
         std::vector<TileDraw> tileDrawsAbove_;
-
-        // TEMP TODO REMOVE AFTER TESTING
-        mutable misc::TimeTrials timeTrials_;
-        const std::size_t timeTrialIndexRedDrawSub_;
-
-        std::vector<TimeCount_t> drawCounts_;
-        std::vector<TimeCount_t> transitionCounts_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

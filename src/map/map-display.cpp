@@ -84,10 +84,6 @@ namespace map
         , mapTileTexturesNew_()
         , tileDrawsBelow_()
         , tileDrawsAbove_()
-        , timeTrials_("MapDisplay", TimeRes::Micro, true, 20, 0.0)
-        , timeTrialIndexRedDrawSub_(timeTrials_.AddCollecter("SubSection"))
-        , drawCounts_()
-        , transitionCounts_()
     {
         avatarSprites_.reserve(64);
         sourceToOffScreenDrawPairsAvatar.reserve(32);
@@ -102,9 +98,6 @@ namespace map
         offScreenToOnScreenVertsAvatar_.reserve(32);
         offScreenToOnScreenVertsAbove_.reserve(4096);
         offScreenToOnScreenVertsAnim_.reserve(32);
-
-        drawCounts_.reserve(4096);
-        transitionCounts_.reserve(4096);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -114,8 +107,6 @@ namespace map
         const sf::Vector2f & PLAYER_STARTING_POS_V,
         const MapAnimVec_t & ANIM_INFO_VEC)
     {
-        timeTrials_.EndAllContests();
-
         // set player position in map coordinates
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
         playerPosV_ = PLAYER_STARTING_POS_V;
@@ -161,25 +152,12 @@ namespace map
         PopulateTileDraws(MAP_LAYOUT);
         LogLayerAndTextureInfo();
 
-        // OptimizeLayers(tileDrawsBelow_);
-        // OptimizeLayers(tileDrawsAbove_);
-        // LogLayerAndTextureInfo();
-
         OptimizeTextures(tileDrawsBelow_);
         OptimizeTextures(tileDrawsAbove_);
         LogLayerAndTextureInfo();
 
         // TODO change this to a natural update system based on bool flags
         UpdateAndReDrawAll();
-
-        // TODO RMEOVE AFTER TESTING
-        misc::TimeStats drawStatsDrawCounts_(drawCounts_, 0.0, 0);
-        M_HP_LOG_WRN("DRAW COUNT STATS:  " << drawStatsDrawCounts_.ToString(true, true));
-        drawCounts_.clear();
-
-        misc::TimeStats drawStatsTransitionCounts_(transitionCounts_, 0.0, 0);
-        M_HP_LOG_WRN("TRANS COUNT STATS:  " << drawStatsTransitionCounts_.ToString(true, true));
-        transitionCounts_.clear();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT)
@@ -567,35 +545,6 @@ namespace map
 
             QuadAppend(drawsPairs.back().second, TILE_DRAW);
         }
-
-        drawCounts_.emplace_back(drawCounter);
-        transitionCounts_.emplace_back(transitionCounter);
-
-        // std::ostringstream ss;
-        // ss << "ResetMapSubsections Below:";
-        // std::size_t count { 0 };
-        // for (auto & textureVertexsPair : sourceToOffScreenDrawsPairsBelow_)
-        //{
-        //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
-        //       << textureVertexsPair.first->getSize() << " with "
-        //       << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
-        //       << " tile draws (%="
-        //       << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
-        //}
-        // M_HP_LOG_WRN(ss.str());
-        //
-        // ss.str("");
-        // ss << "ResetMapSubsections Above:";
-        // count = 0;
-        // for (auto & textureVertexsPair : sourceToOffScreenDrawsPairsAbove_)
-        //{
-        //    ss << "\n\t#" << ++count << " " << textureVertexsPair.first << " "
-        //       << textureVertexsPair.first->getSize() << " with "
-        //       << (textureVertexsPair.second.getVertexCount() / VERTS_PER_QUAD_)
-        //       << " tile draws (%="
-        //       << (textureVertexsPair.second.getVertexCount() % VERTS_PER_QUAD_) << ")";
-        //}
-        // M_HP_LOG_WRN(ss.str());
     }
 
     void MapDisplay::SourceToOffScreen_Draw_MapBelow()
@@ -942,8 +891,6 @@ namespace map
 
     void MapDisplay::PopulateTileDraws(const map::Layout & LAYOUT)
     {
-        M_HP_SCOPED_TIME_LOGGER(TimeRes::Micro, "TIMER PopulateTileDraws()", false);
-
         tileDrawsBelow_.clear();
         tileDrawsAbove_.clear();
 
@@ -1594,11 +1541,6 @@ namespace map
 
     void MapDisplay::OptimizeTextures(std::vector<TileDraw> & tileDraws)
     {
-        M_HP_SCOPED_TIME_LOGGER(
-            TimeRes::Micro,
-            "TIMER OptimizeTextures(tileDraws.size()=" + misc::ToString(tileDraws.size()) + ")",
-            false);
-
         if (tileDraws.empty() || mapTileTexturesOrig_.empty())
         {
             return;
@@ -1749,22 +1691,22 @@ namespace map
         using TextureRectsMap_t = misc::VectorMap<std::size_t, RectTileDrawIndexesMap_t>;
         using LayerTexturesMap_t = misc::VectorMap<std::size_t, TextureRectsMap_t>;
 
-        LayerTexturesMap_t layerTextureRectTilesMap;
+        LayerTexturesMap_t layerTilesMap;
 
         bool isFirstUnique { true };
         for (std::size_t index(0); index < tileDraws.size(); ++index)
         {
             const auto & DRAW { tileDraws.at(index) };
 
-            layerTextureRectTilesMap[DRAW.layer_index][DRAW.texture_index][DRAW.texture_rect]
-                .emplace_back(index);
+            layerTilesMap[DRAW.layer_index][DRAW.texture_index][DRAW.texture_rect].emplace_back(
+                index);
 
             if (isFirstUnique)
             {
                 isFirstUnique = false;
-                layerTextureRectTilesMap.Reserve(32);
-                layerTextureRectTilesMap.Front().second.Reserve(32);
-                layerTextureRectTilesMap.Front().second.Front().second.Reserve(1024);
+                layerTilesMap.Reserve(32);
+                layerTilesMap.Front().second.Reserve(32);
+                layerTilesMap.Front().second.Front().second.Reserve(1024);
             }
         }
 
@@ -1774,7 +1716,7 @@ namespace map
         tileDrawIndexVecsToTransferOrig.reserve(tileDraws.size());
 
         std::size_t tileDrawConfirmCount { 0 };
-        for (const auto & LAYER_TEXTURES_PAIR : layerTextureRectTilesMap)
+        for (const auto & LAYER_TEXTURES_PAIR : layerTilesMap)
         {
             for (const auto & TEXTURE_RECTS_PAIR : LAYER_TEXTURES_PAIR.second)
             {
@@ -1865,11 +1807,6 @@ namespace map
                 "\n\t\t****** After optimization tile draw count went from "
                 << TILE_DRAW_COUNT_BEFORE << " to " << TILE_DRAW_COUNT_AFTER);
         }
-    }
-
-    void MapDisplay::OptimizeLayers(std::vector<TileDraw> & tileDraws)
-    {
-        // TODO
     }
 
 } // namespace map

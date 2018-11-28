@@ -738,7 +738,8 @@ namespace map
         for (; index < NONPLAYER_SPRITES_COUNT; ++index)
         {
             updateSprite(
-                cachedAvatarSprites.at(index), nonPlayersPtrModelMap_.At(index).CurrentSprite());
+                cachedAvatarSprites.at(index),
+                nonPlayersPtrModelMap_.ValueAt(index).CurrentSprite());
         }
 
         updateSprite(cachedAvatarSprites.at(index), player_.CurrentSprite());
