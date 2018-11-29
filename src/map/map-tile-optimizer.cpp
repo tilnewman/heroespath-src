@@ -11,7 +11,6 @@
 
 #include "map/layer.hpp"
 #include "map/layout.hpp"
-#include "misc/vector-map.hpp"
 #include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -53,8 +52,9 @@ namespace map
     {
         packet.textures.clear();
         PopulateTileDraws(packet);
-        OptimizeTexturesAll(packet);
-        LogSummary(packet);
+        OptimizeTextures(packet);
+        OptimizeLayers(packet);
+        // LogSummary(packet);
     }
 
     void MapTileOptimizer::PopulateTileDraws(Packet & packet)
@@ -130,7 +130,7 @@ namespace map
         return TileDraw(LAYER.index, TILE_INDEXES, TEXTURE_INDEX, TEXTURE_RECT);
     }
 
-    void MapTileOptimizer::OptimizeTexturesAll(Packet & packet)
+    void MapTileOptimizer::OptimizeTextures(Packet & packet)
     {
         if (packet.layout.texture_vec.empty())
         {
@@ -209,21 +209,12 @@ namespace map
             }
         }
 
-        if (tileDraws.size() != tileDrawConfirmCount)
-        {
-            M_HP_LOG_ERR(
-                "****** tileDraws.size()(" << tileDraws.size() << ") != tileDrawConfirmCount("
-                                           << tileDrawConfirmCount << ")");
-        }
-
         // eliminate duplicates that will end up on the same texture
         using ImagePair_t = std::pair<std::size_t, sf::IntRect>;
         misc::VectorMap<ImagePair_t, std::size_t> alreadyTransferedImageToUniqueIndexMap;
 
         std::vector<std::vector<std::size_t>> tileDrawIndexVecsToTransferUnique;
 
-        std::size_t duplicateDetectionCount { 0 };
-        std::size_t duplicateImageCount { 0 };
         std::size_t newTextureImageCounter { 0 };
         for (const auto & TILE_DRAW_INDEXES_ORIG : tileDrawIndexVecsToTransferOrig)
         {
@@ -248,9 +239,6 @@ namespace map
                         std::end(tileDrawIndexesToTransferUnique),
                         std::begin(TILE_DRAW_INDEXES_ORIG),
                         std::end(TILE_DRAW_INDEXES_ORIG));
-
-                    duplicateImageCount += tileDrawIndexesToTransferUnique.size();
-                    ++duplicateDetectionCount;
                 }
             }
             else
@@ -261,10 +249,6 @@ namespace map
                 tileDrawIndexVecsToTransferUnique.emplace_back(TILE_DRAW_INDEXES_ORIG);
             }
         }
-
-        M_HP_LOG_WRN(
-            "\n\t*** " << duplicateDetectionCount << " duplicate detections totaling "
-                       << duplicateImageCount);
 
         // transfer all TileDraws to newly created textures
         while (tileDrawIndexVecsToTransferUnique.empty() == false)
@@ -283,22 +267,11 @@ namespace map
                     + static_cast<std::ptrdiff_t>(TILE_VEC_COUNT_IN_NEW_TEXTURE));
         }
 
-        const auto TILE_DRAW_COUNT_BEFORE { tileDraws.size() };
-
         // re-sort after transfer to ensure overlapping draws still work/look right
         std::sort(std::begin(tileDraws), std::end(tileDraws));
 
         tileDraws.erase(
             std::unique(std::begin(tileDraws), std::end(tileDraws)), std::end(tileDraws));
-
-        const auto TILE_DRAW_COUNT_AFTER { tileDraws.size() };
-
-        if (TILE_DRAW_COUNT_BEFORE != TILE_DRAW_COUNT_AFTER)
-        {
-            M_HP_LOG_WRN(
-                "\n\t\t######## After optimization tile draw count went from "
-                << TILE_DRAW_COUNT_BEFORE << " to " << TILE_DRAW_COUNT_AFTER);
-        }
     }
 
     std::size_t MapTileOptimizer::MakeOptimizedTexture(
@@ -371,13 +344,6 @@ namespace map
                 const sf::FloatRect DEST_POS_RECT(
                     sf::Vector2f { DEST_POS_V }, sf::Vector2f { TILE_SIZE_T_V });
 
-                if (tileDrawIndexVecsToPutInNewImage.at(transferVecIndex).empty())
-                {
-                    M_HP_LOG_ERR(
-                        "****** tileDrawIndexVecToTransfer was empty!  transferVecIndex="
-                        << transferVecIndex);
-                }
-
                 // all the TileDraws in tileDrawIndexVecsToPutInNewImage[transferVecIndex] have
                 // the same texture_index and texture_rect
                 const auto & FIRST_TILE_DRAW_TO_TRNANSER { tileDraws.at(
@@ -411,24 +377,160 @@ namespace map
             }
         }
 
-        if (NEW_TEXTURE_TILE_COUNT != transferVecIndex)
-        {
-            M_HP_LOG_ERR(
-                "****** NEW_TEXTURE_TILE_COUNT("
-                << NEW_TEXTURE_TILE_COUNT << ") != transferVecIndex(" << transferVecIndex << ")");
-        }
-
         renderTexture.display();
 
         texturesNew.emplace_back(sf::Texture());
         texturesNew.back().loadFromImage(renderTexture.getTexture().copyToImage());
 
-        M_HP_LOG_WRN(
-            "New optimized texture #" << (texturesNew.size() - 1)
-                                      << " created: " << renderTexture.getSize() << " holding "
-                                      << NEW_TEXTURE_TILE_COUNT << " tiles.");
-
         return NEW_TEXTURE_TILE_COUNT;
+    }
+
+    void MapTileOptimizer::OptimizeLayers(Packet & packet)
+    {
+        // TODO -Don't know why each of these calls needs to be repeated...
+        OptimizeLayersSet(packet.tile_draws_below);
+        OptimizeLayersSet(packet.tile_draws_below);
+
+        OptimizeLayersSet(packet.tile_draws_above);
+        OptimizeLayersSet(packet.tile_draws_above);
+    }
+
+    void MapTileOptimizer::OptimizeLayersSet(TileDrawVec_t & tileDraws)
+    {
+        if (tileDraws.empty())
+        {
+            return;
+        }
+
+        LayerInfoMap_t layerMap;
+
+        const auto TILE_DRAW_COUNT { tileDraws.size() };
+        for (std::size_t index(0); index < TILE_DRAW_COUNT; ++index)
+        {
+            const auto & TILE_DRAW { tileDraws.at(index) };
+
+            auto & layerInfo { layerMap[TILE_DRAW.layer_index] };
+
+            layerInfo.layer_index = TILE_DRAW.layer_index;
+            layerInfo.texture_count_map[TILE_DRAW.texture_index]++;
+            layerInfo.pos_indexes_map[TILE_DRAW.tile_index_v].emplace_back(index);
+        }
+
+        if (layerMap.Size() < 2)
+        {
+            return;
+        }
+
+        for (auto & indexInfoPair : layerMap)
+        {
+            // this sort is required so that layers can be compared by which textures they use
+            auto textureCountMap { indexInfoPair.second.texture_count_map };
+            std::sort(std::begin(textureCountMap), std::end(textureCountMap));
+
+            // this sort is only to speed up the loops below
+            auto posIndexesMap { indexInfoPair.second.pos_indexes_map };
+
+            std::sort(
+                std::begin(posIndexesMap),
+                std::end(posIndexesMap),
+                [](const auto & PAIR_A, const auto & PAIR_B) {
+                    return (PAIR_A.first < PAIR_B.first);
+                });
+        }
+
+        std::size_t layerMapIndex { layerMap.Size() - 1 };
+        for (; layerMapIndex--;)
+        {
+            auto const DID_ENTIRE_LAYER_DESCEND { DescendNonOverlappingTiles(
+                layerMap.ValueAt(layerMapIndex), layerMap.ValueAt(layerMapIndex + 1), tileDraws) };
+
+            if (DID_ENTIRE_LAYER_DESCEND)
+            {
+                layerMap.Erase(
+                    std::begin(layerMap) + static_cast<std::ptrdiff_t>(layerMapIndex + 1));
+
+                layerMapIndex = (layerMap.Size() - 1);
+            }
+        }
+
+        // re-number layer_indexes to eliminate skipped numbers
+        const auto MAP_SIZE_MINUS_ONE { layerMap.Size() - 1 };
+        for (std::size_t mapIndex(0); mapIndex < MAP_SIZE_MINUS_ONE; ++mapIndex)
+        {
+            auto & pairCurr { layerMap.At(mapIndex) };
+            auto & pairNext { layerMap.At(mapIndex + 1) };
+
+            const auto NEXT_LAYER_INDEX_EXPECTED { (pairCurr.first + 1) };
+
+            if (pairNext.first != NEXT_LAYER_INDEX_EXPECTED)
+            {
+                pairNext.first = NEXT_LAYER_INDEX_EXPECTED;
+                pairNext.second.layer_index = NEXT_LAYER_INDEX_EXPECTED;
+
+                for (auto & posIndexesPair : pairNext.second.pos_indexes_map)
+                {
+                    for (const auto TILE_DRAW_INDEX : posIndexesPair.second)
+                    {
+                        tileDraws.at(TILE_DRAW_INDEX).layer_index = NEXT_LAYER_INDEX_EXPECTED;
+                    }
+                }
+            }
+        }
+
+        std::sort(std::begin(tileDraws), std::end(tileDraws));
+    }
+
+    bool MapTileOptimizer::DescendNonOverlappingTiles(
+        LayerInfo & layerUnder, LayerInfo & layerOver, TileDrawVec_t & tileDraws)
+    {
+        if ((layerUnder.layer_index >= layerOver.layer_index)
+            || layerUnder.texture_count_map.Empty() || layerOver.texture_count_map.Empty()
+            || layerUnder.pos_indexes_map.Empty() || layerOver.pos_indexes_map.Empty())
+        {
+            return false;
+        }
+
+        // only descend tiles if all of the over textures are also in the under
+        for (const auto & OVER_TEXTURE_COUNT_PAIR : layerOver.texture_count_map)
+        {
+            const auto OVER_TEXTURE_INDEX { OVER_TEXTURE_COUNT_PAIR.first };
+
+            if (layerUnder.texture_count_map.Exists(OVER_TEXTURE_INDEX) == false)
+            {
+                return false;
+            }
+        }
+
+        std::size_t tilesDescendCount { 0 };
+        for (auto & overPosIndexesPair : layerOver.pos_indexes_map)
+        {
+            auto & overTileDrawIndexes { overPosIndexesPair.second };
+
+            if (overTileDrawIndexes.empty())
+            {
+                ++tilesDescendCount;
+                continue;
+            }
+
+            const auto & OVER_POS_V { overPosIndexesPair.first };
+
+            if ((layerUnder.pos_indexes_map.Exists(OVER_POS_V) == false)
+                || layerUnder.pos_indexes_map[OVER_POS_V].empty())
+            {
+                for (const auto TILE_DRAW_INDEX : overTileDrawIndexes)
+                {
+                    auto & tileDraw { tileDraws.at(TILE_DRAW_INDEX) };
+                    tileDraw.layer_index = layerUnder.layer_index;
+                    layerUnder.texture_count_map[tileDraw.texture_index]++;
+                }
+
+                std::swap(layerUnder.pos_indexes_map[OVER_POS_V], overTileDrawIndexes);
+
+                ++tilesDescendCount;
+            }
+        }
+
+        return (layerOver.pos_indexes_map.Size() == tilesDescendCount);
     }
 
     void MapTileOptimizer::LogSummary(const Packet & PACKET)

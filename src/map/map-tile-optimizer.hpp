@@ -11,6 +11,7 @@
 //
 #include "gui/cached-texture.hpp"
 #include "map/map-tile-draw.hpp"
+#include "misc/vector-map.hpp"
 
 #include <string>
 #include <vector>
@@ -63,6 +64,15 @@ namespace map
             TileDrawVec_t & tile_draws_above;
         };
 
+        // these are just two helper types used by OptimizeLayers()
+        struct LayerInfo
+        {
+            std::size_t layer_index;
+            misc::VectorMap<std::size_t, int> texture_count_map;
+            misc::VectorMap<sf::Vector2i, std::vector<std::size_t>> pos_indexes_map;
+        };
+        using LayerInfoMap_t = misc::VectorMap<std::size_t, LayerInfo>;
+
         static void Optimize(Packet & packet);
 
     private:
@@ -79,7 +89,7 @@ namespace map
             const sf::Vector2i & TILE_INDEXES,
             const int TEXTURE_TILE_NUMBER);
 
-        static void OptimizeTexturesAll(Packet & packet);
+        static void OptimizeTextures(Packet & packet);
 
         static void OptimizeTexturesSet(
             const std::size_t MAX_TILES_PER_NEW_TEXTURE,
@@ -97,6 +107,13 @@ namespace map
             TileDrawVec_t & tileDraws,
             std::vector<sf::Texture> & texturesNew,
             std::vector<std::vector<std::size_t>> & tileDrawIndexVecsToPutInNewImage);
+
+        static void OptimizeLayers(Packet & packet);
+
+        static void OptimizeLayersSet(TileDrawVec_t & draws);
+
+        static bool DescendNonOverlappingTiles(
+            LayerInfo & layerUnder, LayerInfo & layerOver, TileDrawVec_t & tileDraws);
 
         static void LogSummary(const Packet & PACKET);
 
