@@ -38,8 +38,7 @@ namespace stage
     InteractStage::InteractStage(interact::InteractionManager & interactionManager)
         : StageBase(
             "AdventureInteract",
-            { gui::GuiFont::DialogMedieval },
-            false) // Stage Region set in PreSetup() below
+            { gui::GuiFont::DialogMedieval }) // Stage Region set in PreSetup() below
         , mapPtrOpt_(boost::none)
         , regionPad_(sfutil::MapByRes(18.0f, 52.0f))
         , innerRect_() // set in PreSetup() below

@@ -60,8 +60,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , LISTBOX_FONT_ENUM_(gui::GuiFont::System)
         , LISTBOX_FONT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , LISTBOX_WIDTH_(sfutil::ScreenRatioToPixelsHoriz(0.33f))

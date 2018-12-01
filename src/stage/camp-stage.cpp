@@ -54,8 +54,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , stageTitle_("")
         , campfireCachedTexture_("media-images-campfire")
         , campfireSprite_(campfireCachedTexture_.Get())

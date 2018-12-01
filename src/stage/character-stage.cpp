@@ -91,8 +91,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , DESC_TEXT_FONT_SIZE_(gui::FontManager::Instance()->Size_Small())
         , RADIO_BUTTON_TEXT_SIZE_(gui::FontManager::Instance()->Size_Largeish())
         , statBox_(

@@ -40,7 +40,6 @@ namespace stage
     StageBase::StageBase(
         const std::string & NAME,
         const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
-        const bool WILL_CLEAR_CACHE_ON_EXIT,
         const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_StageBase"))
         , stageRegion_(gui::Display::Instance()->FullScreenRect())
@@ -52,7 +51,6 @@ namespace stage
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
-        , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
         gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
         gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
@@ -62,7 +60,6 @@ namespace stage
         const std::string & NAME,
         const sf::FloatRect & REGION,
         const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
-        const bool WILL_CLEAR_CACHE_ON_EXIT,
         const gui::SfxEnumVec_t & SFX_TO_PRELOAD)
         : STAGE_NAME_(std::string(NAME).append("_StageBase"))
         , stageRegion_(REGION)
@@ -74,21 +71,12 @@ namespace stage
         , isMouseHeldDown_(false)
         , isMouseHeldDownAndMoving_(false)
         , mouseDownPosV_(0.0f, 0.0f)
-        , willClearCachesOnExit_(WILL_CLEAR_CACHE_ON_EXIT)
     {
         gui::FontManager::Instance()->Load(FONTS_TO_PRELOAD);
         gui::SoundManager::Instance()->PreLoadSfx(SFX_TO_PRELOAD);
     }
 
-    StageBase::~StageBase()
-    {
-        if (willClearCachesOnExit_)
-        {
-            gui::SoundManager::Instance()->ClearSoundEffectsCache();
-            gui::TextureCache::Instance()->RemoveAll();
-            gui::FontManager::Instance()->UnloadAll();
-        }
-    }
+    StageBase::~StageBase() {}
 
     game::Phase::Enum StageBase::GetPhase() const
     {

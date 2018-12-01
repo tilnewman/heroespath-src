@@ -90,8 +90,7 @@ namespace stage
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
               gui::GuiFont::DefaultBoldFlavor,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , displayStagePtrOpt_(boost::none)
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()

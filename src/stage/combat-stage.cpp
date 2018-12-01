@@ -154,8 +154,7 @@ namespace stage
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
               gui::GuiFont::DefaultBoldFlavor,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , WILL_ADVANCE_TURN_(WILL_ADVANCE_TURN)
         , COMBAT_REGION_MARGIN_(25.0f)
         , STATUS_REGION_SLIDERBAR_WIDTH_(35.0f)

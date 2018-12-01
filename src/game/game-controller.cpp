@@ -16,6 +16,7 @@
 #include "gui/display.hpp"
 #include "gui/resolution.hpp"
 #include "gui/sound-manager.hpp"
+#include "gui/texture-cache.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/enum-util.hpp"
 #include "misc/log-macros.hpp"
@@ -163,8 +164,59 @@ namespace game
 
     void GameController::StageChangeActualNonPopupReplace(const stage::SetupPacket & SETUP_PACKET)
     {
+        const auto ALL_STAGE_NAMES_BEFORE { activeStages_.AllStageNames() };
+
         stageTracker_.SetCurrent(SETUP_PACKET.stage);
-        activeStages_.ReplaceStages(SETUP_PACKET);
+
+        activeStages_.RemoveNonPopupStages();
+        if (activeStages_.HasAnyStages() == false)
+        {
+            M_HP_LOG("GameController detected all stages destroyed.  Clearing caches...");
+
+            try
+            {
+                gui::SoundManager::Instance()->ClearSoundEffectsCache();
+            }
+            catch (const std::exception & EXCEPTION)
+            {
+                M_HP_LOG_ERR(
+                    "GameController::StageChangeActualNonPopupReplace("
+                    << SETUP_PACKET.ToString() << ") started with " << ALL_STAGE_NAMES_BEFORE
+                    << ", destroyed them all, and then attempted to clear caches but an exception "
+                       "was thrown by SoundManager::ClearSoundEffectsCache(): \""
+                    << EXCEPTION.what() << "\".  This will be ignored and the game will continue.");
+            }
+
+            try
+            {
+                gui::TextureCache::Instance()->RemoveAll();
+            }
+            catch (const std::exception & EXCEPTION)
+            {
+                M_HP_LOG_ERR(
+                    "GameController::StageChangeActualNonPopupReplace("
+                    << SETUP_PACKET.ToString() << ") started with " << ALL_STAGE_NAMES_BEFORE
+                    << ", destroyed them all, and then attempted to clear caches but an exception "
+                       "was thrown by TextureCache::RemoveAll(): \""
+                    << EXCEPTION.what() << "\".  This will be ignored and the game will continue.");
+            }
+
+            try
+            {
+                gui::FontManager::Instance()->UnloadAll();
+            }
+            catch (const std::exception & EXCEPTION)
+            {
+                M_HP_LOG_ERR(
+                    "GameController::StageChangeActualNonPopupReplace("
+                    << SETUP_PACKET.ToString() << ") started with " << ALL_STAGE_NAMES_BEFORE
+                    << ", destroyed them all, and then attempted to clear caches but an exception "
+                       "was thrown by FontManager::UnloadAll(): \""
+                    << EXCEPTION.what() << "\".  This will be ignored and the game will continue.");
+            }
+        }
+
+        activeStages_.AddNonPopupStages(SETUP_PACKET);
     }
 
     void GameController::StageChangeActualPopupReplace(

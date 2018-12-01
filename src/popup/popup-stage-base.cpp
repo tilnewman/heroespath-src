@@ -37,9 +37,7 @@ namespace popup
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
         : StageBase(
-            POPUP_INFO.Name() + "_PopupStage",
-            { gui::GuiFont::Handwriting, gui::GuiFont::Number },
-            false)
+            POPUP_INFO.Name() + "_PopupStage", { gui::GuiFont::Handwriting, gui::GuiFont::Number })
         , popupInfo_(POPUP_INFO)
         , innerRegion_()
         , backgroundTexture_(

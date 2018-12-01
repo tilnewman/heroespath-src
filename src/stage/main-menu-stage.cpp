@@ -39,8 +39,7 @@ namespace stage
                 gui::GuiFont::Default,
                 gui::GuiFont::System,
                 gui::GuiFont::Number,
-            },
-            true)
+            })
         , titleCachedTexture_("media-images-title-blacksymbol")
         , titleSprite_(titleCachedTexture_.Get())
         , resumeButtonUPtr_(std::make_unique<gui::MainMenuButton>(

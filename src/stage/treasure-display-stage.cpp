@@ -88,7 +88,7 @@ namespace stage
     const float TreasureDisplayStage::ITEM_DETAIL_TIMEOUT_SEC_ { 3.0f };
 
     TreasureDisplayStage::TreasureDisplayStage()
-        : StageBase("TreasureDisplay", {}, false)
+        : StageBase("TreasureDisplay", {})
         , treasureStagePtrOpt_(boost::none)
         , titleImage_("media-images-buttons-gui-treasure-normal", true, 1.0f, 0.75f)
         , bottomImage_(0.75f, true, sf::Color::White)

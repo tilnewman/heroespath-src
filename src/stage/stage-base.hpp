@@ -50,14 +50,12 @@ namespace stage
         StageBase(
             const std::string & NAME,
             const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
-            const bool WILL_CLEAR_CACHE_ON_EXIT,
             const gui::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
         StageBase(
             const std::string & NAME,
             const sf::FloatRect & REGION,
             const gui::FontEnumVec_t & FONTS_TO_PRELOAD,
-            const bool WILL_CLEAR_CACHE_ON_EXIT,
             const gui::SfxEnumVec_t & SFX_TO_PRELOAD = {});
 
         virtual ~StageBase();
@@ -160,7 +158,6 @@ namespace stage
         bool isMouseHeldDown_;
         bool isMouseHeldDownAndMoving_;
         sf::Vector2f mouseDownPosV_;
-        bool willClearCachesOnExit_;
     };
 
 } // namespace stage

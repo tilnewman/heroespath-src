@@ -116,8 +116,7 @@ namespace stage
                 gui::GuiFont::Handwriting,
                 gui::GuiFont::DialogModern,
                 gui::GuiFont::DialogMedieval,
-            },
-            true)
+            })
         , textures_()
         , ouroborosUPtr_(std::make_unique<gui::Ouroboros>("TestingStage's"))
         , testingBlurbsVec_()

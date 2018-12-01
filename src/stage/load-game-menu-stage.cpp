@@ -38,8 +38,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , stageTitle_("media-images-buttons-mainmenu-load-normal")
         , backgroundBox_(
               "LoadGameStage'sBackground",

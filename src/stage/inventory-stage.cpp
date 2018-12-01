@@ -109,8 +109,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            true)
+              gui::GuiFont::Handwriting })
         , SCREEN_WIDTH_(gui::Display::Instance()->GetWinWidth())
         , SCREEN_HEIGHT_(gui::Display::Instance()->GetWinHeight())
         , INNER_PAD_(sfutil::MapByRes(10.0f, 40.0f))

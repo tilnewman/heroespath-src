@@ -40,7 +40,6 @@ namespace stage
               gui::GuiFont::DialogModern,
               gui::GuiFont::DefaultBoldFlavor,
               gui::GuiFont::Handwriting },
-            true,
             { gui::sound_effect::FootstepGrass,
               gui::sound_effect::FootstepGravel,
               gui::sound_effect::FootstepLeaves,

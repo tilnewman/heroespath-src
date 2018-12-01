@@ -49,8 +49,7 @@ namespace stage
                 gui::GuiFont::Handwriting,
                 gui::GuiFont::DialogModern,
                 gui::GuiFont::DialogMedieval,
-            },
-            true)
+            })
         , titleCachedTexture_("media-images-title-blacksymbol")
         , bpTitleSprite_(titleCachedTexture_.Get())
         , boxUPtr_()

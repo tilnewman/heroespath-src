@@ -27,7 +27,7 @@ namespace stage
 {
 
     IntroStage::IntroStage()
-        : StageBase("Intro", {}, true)
+        : StageBase("Intro", {})
         , backgroundMusic_(gui::music::Theme)
         , musicVolumeOrig_(gui::SoundManager::Instance()->MusicVolume())
         , timeFromStartToMusicSec_(1.5f)

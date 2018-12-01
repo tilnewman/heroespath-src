@@ -43,8 +43,7 @@ namespace stage
               gui::GuiFont::System,
               gui::GuiFont::SystemCondensed,
               gui::GuiFont::Number,
-              gui::GuiFont::Handwriting },
-            false)
+              gui::GuiFont::Handwriting })
         , SLIDER_LENGTH_VERT_(160.0f)
         , hasStageAlreadyBeenSetup_(false)
         , prevAALevel_(gui::Display::Instance()->AntialiasLevel())

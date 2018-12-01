@@ -73,7 +73,7 @@ namespace combat
     const std::size_t CombatDisplay::SHOULDER_TO_SHOULDER_MAX_(10);
 
     CombatDisplay::CombatDisplay(const CombatAnimationPtr_t COMBAT_ANIM_PTR)
-        : StageBase("CombatDisplay", {}, false) // stage region set by
+        : StageBase("CombatDisplay", {}) // stage region set by
         , POSITIONING_MARGIN_HORIZ_(sfutil::MapByRes(50.0f, 300.0f))
         , POSITIONING_MARGIN_VERT_(sfutil::MapByRes(50.0f, 300.0f))
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfutil::MapByRes(5.0f, 200.0f))

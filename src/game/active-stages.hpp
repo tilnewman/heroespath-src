@@ -116,7 +116,8 @@ namespace game
         }
 
         void HandlePopupResponseCallback();
-        void ReplaceStages(const stage::SetupPacket & SETUP_PACKET);
+        void RemoveNonPopupStages();
+        void AddNonPopupStages(const stage::SetupPacket & SETUP_PACKET);
         void RemovePopupStage() { popupUPtr_.reset(); }
 
         void ReplacePopupStage(

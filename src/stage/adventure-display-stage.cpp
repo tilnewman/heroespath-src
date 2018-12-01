@@ -34,7 +34,7 @@ namespace stage
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_ { 0.0333f };
 
     AdventureDisplayStage::AdventureDisplayStage()
-        : StageBase("AdventureDisplay", {}, false)
+        : StageBase("AdventureDisplay", {})
         , interactionManager_()
         , stageTitle_("", true, 0.0f, sfutil::ScreenRatioToPixelsVert(0.12f))
         , bottomImage_(0.75f, true, sf::Color::White)

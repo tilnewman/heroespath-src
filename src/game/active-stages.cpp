@@ -61,9 +61,10 @@ namespace game
         ResetPopupResponse();
     }
 
-    void ActiveStages::ReplaceStages(const stage::SetupPacket & SETUP_PACKET)
+    void ActiveStages::RemoveNonPopupStages() { nonPopupUVec_.clear(); }
+
+    void ActiveStages::AddNonPopupStages(const stage::SetupPacket & SETUP_PACKET)
     {
-        nonPopupUVec_.clear();
         nonPopupUVec_ = stage::StageFactory::Make(SETUP_PACKET);
     }
 
