@@ -48,13 +48,13 @@ namespace map
 
         static const VertQuadArray_t EMPTY_QUAD_VERT_ARRAY_;
 
-        // combines a source (sprite/texture) index with a vert quad
-        using DrawPair_t = std::pair<std::size_t, VertQuadArray_t>;
-        using DrawPairVec_t = std::vector<DrawPair_t>;
+        // combines a sprite index with its offscreen position/rect
+        using IndexRectPair_t = std::pair<std::size_t, sf::FloatRect>;
+        using IndexRectPairVec_t = std::vector<IndexRectPair_t>;
 
         // combines a source texture with a collection of vert quads
-        using DrawsPair_t = std::pair<std::size_t, VertexVec_t>;
-        using DrawsPairVec_t = std::vector<DrawsPair_t>;
+        using IndexVertsPair_t = std::pair<std::size_t, VertexVec_t>;
+        using IndexVertsPairVec_t = std::vector<IndexVertsPair_t>;
 
     public:
         MapDisplay(const MapDisplay &) = delete;
@@ -98,7 +98,7 @@ namespace map
         void SourceToOffScreen_Update_Animations();
 
         void SourceToOffScreen_Update_Map(
-            const TileDrawVec_t & TILE_DRAWS, DrawsPairVec_t & drawsPairs);
+            const TileDrawVec_t & TILE_DRAWS, IndexVertsPairVec_t & drawsPairs);
 
         // these functions draw from source sprite/textures to offscreen
         void SourceToOffScreen_Draw_MapBelow();
@@ -107,7 +107,7 @@ namespace map
         void SourceToOffScreen_Draw_Animations();
 
         void SourceToOffScreen_Draw_Map(
-            sf::RenderTexture & renderTexture, const DrawsPairVec_t & DRAWS_PAIRS);
+            sf::RenderTexture & renderTexture, const IndexVertsPairVec_t & DRAWS_PAIRS);
 
         // these functions set what from offscreen will be drawn onscreen
         void OffScreenToOnScreen_Update_MapBelow();
@@ -205,10 +205,10 @@ namespace map
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
 
-        DrawsPairVec_t sourceToOffScreenDrawsPairsBelow_;
-        DrawPairVec_t sourceToOffScreenDrawPairsAvatar;
-        DrawsPairVec_t sourceToOffScreenDrawsPairsAbove_;
-        DrawPairVec_t sourceToOffScreenDrawPairsAnim_;
+        IndexVertsPairVec_t sourceToOffScreenDrawsPairsBelow_;
+        IndexRectPairVec_t sourceToOffScreenDrawPairsAvatar_;
+        IndexVertsPairVec_t sourceToOffScreenDrawsPairsAbove_;
+        IndexRectPairVec_t sourceToOffScreenDrawPairsAnim_;
 
         // All of these share offScreenTextureRect_
         sf::RenderTexture offScreenImageBelow_;
@@ -229,6 +229,11 @@ namespace map
         std::vector<gui::AnimationUPtr_t> animUPtrVec_;
 
         std::vector<sf::Sprite> avatarSprites_;
+
+        // the avatar shadow sprite has been created so that (1) it will match the opacity of all
+        // the map shadows (2) it can be drawn at the same top/left position as an avatar sprite and
+        // its position will be correct (3) it can/should be scaled to match the avatar sprite's
+        // scale
         gui::CachedTexture npcShadowCachedTexture_;
         sf::Sprite npcShadowSprite_;
 
