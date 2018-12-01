@@ -32,6 +32,7 @@ namespace heroespath
 {
 namespace sfutil
 {
+    constexpr std::size_t VERTS_PER_QUAD = 4;
 
     // SIZE_LIMIT_V values that are negative, zero, or are greater than the corresponding
     // SIZE_FULL_V value will mean that dimension limit is ignored and the SIZE_FULL_V size will be
@@ -81,6 +82,20 @@ namespace sfutil
         const sf::FloatRect & POSITION_RECT,
         const sf::FloatRect & TEXTURE_RECT,
         const sf::Color & COLOR = sf::Color::White);
+
+    void SetVertexesForQuad(
+        sf::Vertex vertexes[],
+        const sf::FloatRect & POSITION_RECT,
+        const sf::FloatRect & TEXTURE_RECT,
+        const sf::Color & COLOR = sf::Color::White);
+
+    void MoveVertexPositions(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V);
+
+    void MoveVertexPositionsForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V);
+
+    void MoveVertexTextures(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V);
+
+    void MoveVertexTexturesForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V);
 
 } // namespace sfutil
 } // namespace heroespath

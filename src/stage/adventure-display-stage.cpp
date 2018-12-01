@@ -79,8 +79,6 @@ namespace stage
     {
         interactionManager_.Update();
 
-        mapUPtr_->Update(ELAPSED_TIME_SECONDS);
-
         // don't process map moves every frame to save resources
         moveTimerSec_ += ELAPSED_TIME_SECONDS;
         if (moveTimerSec_ > TIME_BETWEEN_MAP_MOVES_SEC_)
@@ -107,6 +105,8 @@ namespace stage
 
             mapUPtr_->MoveNonPlayers();
         }
+
+        mapUPtr_->Update(ELAPSED_TIME_SECONDS);
     }
 
     void AdventureDisplayStage::Setup_CharacterList()

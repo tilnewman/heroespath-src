@@ -113,15 +113,15 @@ namespace sfutil
         const sf::Vector2f & SIZE_LIMIT_V,
         const gui::Orientation::Enum ORIENTATIONS_TO_DRAW_FROM_END)
     {
-        std::vector<sf::Vector2f> v;
+        std::vector<sf::Vector2f> positions;
 
         if ((SIZE_FULL_V.x < 0.0f) || (SIZE_FULL_V.y < 0.0f) || (SIZE_LIMIT_V.x < 0.0f)
             || (SIZE_LIMIT_V.y < 0.0f))
         {
-            return v;
+            return positions;
         }
 
-        v.reserve(4);
+        positions.resize(VERTS_PER_QUAD);
 
         const auto SIZE_ACTUAL_V { sf::Vector2f(
             ((SIZE_LIMIT_V.x > 0.0f) ? std::min(SIZE_LIMIT_V.x, SIZE_FULL_V.x) : SIZE_FULL_V.x),
@@ -129,10 +129,10 @@ namespace sfutil
 
         if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Count)
         {
-            v.emplace_back(POS_V);
-            v.emplace_back(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y);
-            v.emplace_back(POS_V + SIZE_ACTUAL_V);
-            v.emplace_back(POS_V.x, POS_V.y + SIZE_ACTUAL_V.y);
+            positions[0] = POS_V;
+            positions[1] = sf::Vector2f(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y);
+            positions[2] = (POS_V + SIZE_ACTUAL_V);
+            positions[3] = sf::Vector2f(POS_V.x, POS_V.y + SIZE_ACTUAL_V.y);
         }
         else if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Both)
         {
@@ -141,27 +141,32 @@ namespace sfutil
             const auto TOP_RIGHT_POS_V { BOT_RIGHT_POS_V - sf::Vector2f(0.0f, SIZE_ACTUAL_V.y) };
             const auto BOT_LEFT_POS_V { BOT_RIGHT_POS_V - sf::Vector2f(SIZE_ACTUAL_V.x, 0.0f) };
 
-            v.emplace_back(TOP_LEFT_POS_V);
-            v.emplace_back(TOP_RIGHT_POS_V);
-            v.emplace_back(BOT_RIGHT_POS_V);
-            v.emplace_back(BOT_LEFT_POS_V);
+            positions[0] = TOP_LEFT_POS_V;
+            positions[1] = TOP_RIGHT_POS_V;
+            positions[2] = BOT_RIGHT_POS_V;
+            positions[3] = BOT_LEFT_POS_V;
         }
         else if (ORIENTATIONS_TO_DRAW_FROM_END == gui::Orientation::Horiz)
         {
-            v.emplace_back(POS_V.x + (SIZE_FULL_V.x - SIZE_ACTUAL_V.x), POS_V.y);
-            v.emplace_back(POS_V.x + SIZE_FULL_V.x, POS_V.y);
-            v.emplace_back(POS_V.x + SIZE_FULL_V.x, POS_V.y + SIZE_ACTUAL_V.y);
-            v.emplace_back(POS_V.x + (SIZE_FULL_V.x - SIZE_ACTUAL_V.x), POS_V.y + SIZE_ACTUAL_V.y);
+            positions[0] = sf::Vector2f(POS_V.x + (SIZE_FULL_V.x - SIZE_ACTUAL_V.x), POS_V.y);
+            positions[1] = sf::Vector2f(POS_V.x + SIZE_FULL_V.x, POS_V.y);
+            positions[2] = sf::Vector2f(POS_V.x + SIZE_FULL_V.x, POS_V.y + SIZE_ACTUAL_V.y);
+
+            positions[3] = sf::Vector2f(
+                POS_V.x + (SIZE_FULL_V.x - SIZE_ACTUAL_V.x), POS_V.y + SIZE_ACTUAL_V.y);
         }
         else
         {
-            v.emplace_back(POS_V.x, POS_V.y + (SIZE_FULL_V.y - SIZE_ACTUAL_V.y));
-            v.emplace_back(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y + (SIZE_FULL_V.y - SIZE_ACTUAL_V.y));
-            v.emplace_back(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y + SIZE_FULL_V.y);
-            v.emplace_back(POS_V.x, POS_V.y + SIZE_FULL_V.y);
+            positions[0] = sf::Vector2f(POS_V.x, POS_V.y + (SIZE_FULL_V.y - SIZE_ACTUAL_V.y));
+
+            positions[1] = sf::Vector2f(
+                POS_V.x + SIZE_ACTUAL_V.x, POS_V.y + (SIZE_FULL_V.y - SIZE_ACTUAL_V.y));
+
+            positions[2] = sf::Vector2f(POS_V.x + SIZE_ACTUAL_V.x, POS_V.y + SIZE_FULL_V.y);
+            positions[3] = sf::Vector2f(POS_V.x, POS_V.y + SIZE_FULL_V.y);
         }
 
-        return v;
+        return positions;
     }
 
     void AppendVertexesForQuad(
@@ -187,15 +192,13 @@ namespace sfutil
             SIZE_LIMIT_V,
             ORIENTATIONS_TO_DRAW_FROM_END) };
 
-        const std::size_t COUNT_EXPECTED(4);
-
-        if ((VERTEX_POS_V_VEC.size() == COUNT_EXPECTED)
-            && (TEXTURE_POS_V_VEC.size() == COUNT_EXPECTED))
+        if ((VERTEX_POS_V_VEC.size() == VERTS_PER_QUAD)
+            && (TEXTURE_POS_V_VEC.size() == VERTS_PER_QUAD))
         {
-            for (std::size_t i(0); i < COUNT_EXPECTED; ++i)
-            {
-                vertexArray.append(sf::Vertex(VERTEX_POS_V_VEC[i], COLOR, TEXTURE_POS_V_VEC[i]));
-            }
+            vertexArray.append(sf::Vertex(VERTEX_POS_V_VEC[0], COLOR, TEXTURE_POS_V_VEC[0]));
+            vertexArray.append(sf::Vertex(VERTEX_POS_V_VEC[1], COLOR, TEXTURE_POS_V_VEC[1]));
+            vertexArray.append(sf::Vertex(VERTEX_POS_V_VEC[2], COLOR, TEXTURE_POS_V_VEC[2]));
+            vertexArray.append(sf::Vertex(VERTEX_POS_V_VEC[3], COLOR, TEXTURE_POS_V_VEC[3]));
         }
     }
 
@@ -300,17 +303,62 @@ namespace sfutil
         const sf::FloatRect & TEXTURE_RECT,
         const sf::Color & COLOR)
     {
-        vertexes.emplace_back(
-            sf::Vertex(sfutil::TopLeft(POSITION_RECT), COLOR, sfutil::TopLeft(TEXTURE_RECT)));
+        const auto FIRST_VERT_INDEX { vertexes.size() };
+        vertexes.resize(FIRST_VERT_INDEX + VERTS_PER_QUAD);
+        SetVertexesForQuad(&vertexes[FIRST_VERT_INDEX], POSITION_RECT, TEXTURE_RECT, COLOR);
+    }
 
-        vertexes.emplace_back(
-            sf::Vertex(sfutil::TopRight(POSITION_RECT), COLOR, sfutil::TopRight(TEXTURE_RECT)));
+    void SetVertexesForQuad(
+        sf::Vertex vertexes[],
+        const sf::FloatRect & POSITION_RECT,
+        const sf::FloatRect & TEXTURE_RECT,
+        const sf::Color & COLOR)
+    {
+        vertexes[0]
+            = sf::Vertex(sfutil::TopLeft(POSITION_RECT), COLOR, sfutil::TopLeft(TEXTURE_RECT));
 
-        vertexes.emplace_back(sf::Vertex(
-            sfutil::BottomRight(POSITION_RECT), COLOR, sfutil::BottomRight(TEXTURE_RECT)));
+        vertexes[1]
+            = sf::Vertex(sfutil::TopRight(POSITION_RECT), COLOR, sfutil::TopRight(TEXTURE_RECT));
 
-        vertexes.emplace_back(
-            sf::Vertex(sfutil::BottomLeft(POSITION_RECT), COLOR, sfutil::BottomLeft(TEXTURE_RECT)));
+        vertexes[2] = sf::Vertex(
+            sfutil::BottomRight(POSITION_RECT), COLOR, sfutil::BottomRight(TEXTURE_RECT));
+
+        vertexes[3] = sf::Vertex(
+            sfutil::BottomLeft(POSITION_RECT), COLOR, sfutil::BottomLeft(TEXTURE_RECT));
+    }
+
+    void MoveVertexPositions(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V)
+    {
+        const auto VERT_COUNT { vertexes.size() };
+        for (std::size_t index(0); index < VERT_COUNT; ++index)
+        {
+            vertexes[index].position += MOVE_V;
+        }
+    }
+
+    void MoveVertexPositionsForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V)
+    {
+        vertexes[0].position += MOVE_V;
+        vertexes[1].position += MOVE_V;
+        vertexes[2].position += MOVE_V;
+        vertexes[3].position += MOVE_V;
+    }
+
+    void MoveVertexTextures(std::vector<sf::Vertex> & vertexes, const sf::Vector2f & MOVE_V)
+    {
+        const auto VERT_COUNT { vertexes.size() };
+        for (std::size_t index(0); index < VERT_COUNT; ++index)
+        {
+            vertexes[index].texCoords += MOVE_V;
+        }
+    }
+
+    void MoveVertexTexturesForQuad(sf::Vertex vertexes[], const sf::Vector2f & MOVE_V)
+    {
+        vertexes[0].texCoords += MOVE_V;
+        vertexes[1].texCoords += MOVE_V;
+        vertexes[2].texCoords += MOVE_V;
+        vertexes[3].texCoords += MOVE_V;
     }
 
 } // namespace sfutil

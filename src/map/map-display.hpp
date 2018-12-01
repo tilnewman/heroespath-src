@@ -19,6 +19,7 @@
 #include "map/tiles-panel.hpp"
 #include "misc/timing.hpp"
 #include "misc/vector-map.hpp"
+#include "sfutil/vertex.hpp"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -39,11 +40,10 @@ namespace map
     class MapDisplay : public sf::Drawable
     {
     private:
-        static constexpr std::size_t VERTS_PER_QUAD_ = 4;
         static constexpr int EXTRA_OFFSCREEN_TILE_COUNT_ = 2;
         static constexpr float ONSCREEN_WALK_PAD_RATIO_ = 0.2f;
 
-        using VertQuadArray_t = std::array<sf::Vertex, VERTS_PER_QUAD_>;
+        using VertQuadArray_t = std::array<sf::Vertex, sfutil::VERTS_PER_QUAD>;
         using VertexVec_t = std::vector<sf::Vertex>;
 
         static const VertQuadArray_t EMPTY_QUAD_VERT_ARRAY_;
@@ -97,7 +97,7 @@ namespace map
         void SourceToOffScreen_Update_MapAbove();
         void SourceToOffScreen_Update_Animations();
 
-        void SourceToOffScreen_Update_Map(
+        bool SourceToOffScreen_Update_Map(
             const TileDrawVec_t & TILE_DRAWS, IndexVertsPairVec_t & drawsPairs);
 
         // these functions draw from source sprite/textures to offscreen
@@ -150,9 +150,12 @@ namespace map
             const sf::Vector2f & MAP_POS_V,
             const sf::Vector2i & MAP_SIZE_IN_TILES_V) const;
 
-        // coordinate conversions
         const sf::Vector2f OnScreenPosFromMapPos(const sf::Vector2f &) const;
         const sf::FloatRect OnScreenRectFromMapRect(const sf::FloatRect &) const;
+
+        const sf::Vector2f OnScreenPosFromOffScreenPos(const sf::Vector2f &) const;
+        const sf::FloatRect OnScreenRectFromOffScreenRect(const sf::FloatRect &) const;
+
         const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
         const sf::FloatRect OffScreenRectFromMapRect(const sf::FloatRect &) const;
 
@@ -164,8 +167,6 @@ namespace map
 
         void AppendVertexesForTileDrawQuad(
             std::vector<sf::Vertex> & vertexes, const TileDraw & TILE_DRAW) const;
-
-        void MoveTextureRects(VertexVec_t & vertexes, const sf::Vector2f & MOVE_V) const;
 
     private:
         // where the map is on screen in int pixels
@@ -216,10 +217,20 @@ namespace map
         sf::RenderTexture offScreenImageAbove_;
         sf::RenderTexture offScreenImageAnim_;
 
-        VertexVec_t offScreenToOnScreenVertsBelow_;
-        VertexVec_t offScreenToOnScreenVertsAvatar_;
-        VertexVec_t offScreenToOnScreenVertsAbove_;
-        VertexVec_t offScreenToOnScreenVertsAnim_;
+        VertQuadArray_t offScreenToOnScreenVertsBelow_;
+        VertQuadArray_t offScreenToOnScreenVertsAvatar_;
+        VertQuadArray_t offScreenToOnScreenVertsAbove_;
+        VertQuadArray_t offScreenToOnScreenVertsAnim_;
+
+        bool willDrawOffScreenBelow_;
+        bool willDrawOffScreenAvatar_;
+        bool willDrawOffScreenAbove_;
+        bool willDrawOffScreenAnim_;
+
+        bool willDrawOnScreenBelow_;
+        bool willDrawOnScreenAvatar_;
+        bool willDrawOnScreenAbove_;
+        bool willDrawOnScreenAnim_;
 
         // these two variables are in centered map coordinates
         sf::Vector2f playerPosV_;
