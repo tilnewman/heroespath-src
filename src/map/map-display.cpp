@@ -37,9 +37,6 @@ namespace heroespath
 {
 namespace map
 {
-    const std::array<sf::Vertex, sfutil::VERTS_PER_QUAD> MapDisplay::EMPTY_QUAD_VERT_ARRAY_ {
-        sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()
-    };
 
     MapDisplay::MapDisplay(const sf::FloatRect & REGION)
         : onScreenRect_(REGION)
@@ -612,29 +609,19 @@ namespace map
 
         offScreenImageAnim_.clear(sf::Color::Transparent);
 
-        bool wereAnyAnimsDrawn { false };
         for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAnim_)
         {
             auto & anim { *animUPtrVec_.at(INDEX_RECT_PAIR.first) };
 
-            const auto MAP_RECT { anim.GetEntityRegion() };
-            const auto OFFSCREEN_RECT_ORIG { OffScreenRectFromMapRect(MAP_RECT) };
+            const auto MAP_POS_ORIG_V { anim.GetEntityPos() };
+            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(MAP_POS_ORIG_V) };
 
-            if (offScreenTextureRect_.intersects(OFFSCREEN_RECT_ORIG) == false)
-            {
-                continue;
-            }
-
-            wereAnyAnimsDrawn = true;
-            anim.SetEntityPos(sfutil::Position(OFFSCREEN_RECT_ORIG));
+            anim.SetEntityPos(OFFSCREEN_POS_V);
             offScreenImageAnim_.draw(anim);
-            anim.SetEntityPos(sfutil::Position(MAP_RECT));
+            anim.SetEntityPos(MAP_POS_ORIG_V);
         }
 
-        if (wereAnyAnimsDrawn)
-        {
-            offScreenImageAnim_.display();
-        }
+        offScreenImageAnim_.display();
     }
 
     void MapDisplay::SourceToOffScreen_Draw_Map(

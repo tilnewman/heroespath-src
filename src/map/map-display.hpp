@@ -36,17 +36,59 @@ namespace map
     struct Layout;
     struct Layer;
 
+    using VertexVec_t = std::vector<sf::Vertex>;
+    using VertQuadArray_t = std::array<sf::Vertex, sfutil::VERTS_PER_QUAD>;
+
+    // Respobsible for a source image, an offscreen RenderTexture where that soure image is drawn
+    // to, and for drawing from that offscreen image to the screen.
+    // class ThreeStageImageManagerBase
+    //{
+    // public:
+    //    void SourceToOffScreen_Update() { willDrawOffScreen_ = SourceToOffScreen_Update_Impl(); }
+    //
+    //    void SourceToOffScreen_Draw()
+    //    {
+    //        if (willDrawOffScreen_)
+    //        {
+    //            SourceToOffScreen_Draw_Impl();
+    //        }
+    //    }
+    //
+    //    void OffScreenToOnScreen_Update() { willDrawOnScreen_ = OffScreenToOnScreen_Update_Impl();
+    //    }
+    //
+    //    void OffScreenToOnScreen_Draw(sf::RenderTarget & target, sf::RenderStates states) const
+    //    {
+    //        if (willDrawOnScreen_)
+    //        {
+    //            states.texture = &offScreenTexture_.getTexture();
+    //
+    //            target.draw(
+    //                &offScreenToOnScreenQuadVerts_[0],
+    //                offScreenToOnScreenQuadVerts_.size(),
+    //                sf::Quads,
+    //                states);
+    //        }
+    //    }
+    //
+    // protected:
+    //    virtual bool SourceToOffScreen_Update_Impl() = 0;
+    //    virtual void SourceToOffScreen_Draw_Impl() = 0;
+    //    virtual bool OffScreenToOnScreen_Update_Impl() = 0;
+    //
+    //    bool willDrawOffScreen_;
+    //    bool willDrawOnScreen_;
+    //
+    //    sf::RenderTexture offScreenTexture_;
+    //    VertQuadArray_t offScreenToOnScreenQuadVerts_;
+    //};
+
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
     private:
         static constexpr int EXTRA_OFFSCREEN_TILE_COUNT_ = 2;
         static constexpr float ONSCREEN_WALK_PAD_RATIO_ = 0.2f;
-
-        using VertQuadArray_t = std::array<sf::Vertex, sfutil::VERTS_PER_QUAD>;
-        using VertexVec_t = std::vector<sf::Vertex>;
-
-        static const VertQuadArray_t EMPTY_QUAD_VERT_ARRAY_;
 
         // combines a sprite index with its offscreen position/rect
         using IndexRectPair_t = std::pair<std::size_t, sf::FloatRect>;
