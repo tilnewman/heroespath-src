@@ -87,7 +87,7 @@ namespace map
         , npcShadowCachedTexture_(
               "media-images-avatar-shadow",
               (gui::ImageOpt::Smooth | gui::ImageOpt::ShadowMaskForShadowImage))
-        , npcShadowSprite_(npcShadowCachedTexture_.Get()) //, sf::IntRect(0, 0, 56, 84))
+        , npcShadowSprite_(npcShadowCachedTexture_.Get(), sf::IntRect(0, 0, 56, 84))
         , mapTileTextures_()
         , mapTileDrawsBelow_()
         , mapTileDrawsAbove_()
@@ -161,8 +161,7 @@ namespace map
 
         MapTileOptimizer::Optimize(optimizerPacket);
 
-        // TODO change this to a natural update system based on bool flags
-        UpdateAndReDrawAll();
+        UpdateAndReDrawAfterMapTileChange();
     }
 
     bool MapDisplay::Move(const gui::Direction::Enum DIRECTION, const float ADJUSTMENT)
@@ -203,22 +202,16 @@ namespace map
 
     void MapDisplay::Update(const float TIME_ELAPSED)
     {
-        for (auto & animUPtr : animUPtrVec_)
+        if (UpdateAnimations(TIME_ELAPSED))
         {
-            if (misc::IsRealZero(TIME_ELAPSED) == false)
-            {
-                animUPtr->UpdateTime(TIME_ELAPSED);
-            }
+            SourceToOffScreen_Update_Animations();
+            SourceToOffScreen_Draw_Animations();
+            OffScreenToOnScreen_Update_Animations();
         }
 
-        // TODO change this to a natural update system based on bool flags
         SourceToOffScreen_Update_Avatars();
         SourceToOffScreen_Draw_Avatars();
         OffScreenToOnScreen_Update_Avatars();
-
-        SourceToOffScreen_Update_Animations();
-        SourceToOffScreen_Draw_Animations();
-        OffScreenToOnScreen_Update_Animations();
     }
 
     void MapDisplay::UpdateAnimMusicVolume()
@@ -237,6 +230,24 @@ namespace map
                     ANIM_INFO.music_vec, CalcAnimationVolume(DISTANCE_TO_PLAYER));
             }
         }
+    }
+
+    bool MapDisplay::UpdateAnimations(const float TIME_ELAPSED)
+    {
+        auto didAnimationChange { false };
+        for (auto & animUPtr : animUPtrVec_)
+        {
+            const auto FRAME_BEFORE { animUPtr->CurrentFrame() };
+            animUPtr->UpdateTime(TIME_ELAPSED);
+            const auto FRAME_AFTER { animUPtr->CurrentFrame() };
+
+            if (FRAME_BEFORE != FRAME_AFTER)
+            {
+                didAnimationChange = true;
+            }
+        }
+
+        return didAnimationChange;
     }
 
     const sf::Vector2f MapDisplay::MapSize() const
@@ -806,25 +817,6 @@ namespace map
             states.texture = &RENDER_TEXTURE.getTexture();
             target.draw(&VERTEXES[0], VERTEX_COUNT, sf::Quads, states);
         }
-    }
-
-    void MapDisplay::UpdateAndReDrawAll()
-    {
-        SourceToOffScreen_Update_MapBelow();
-        SourceToOffScreen_Draw_MapBelow();
-        OffScreenToOnScreen_Update_MapBelow();
-
-        SourceToOffScreen_Update_Avatars();
-        SourceToOffScreen_Draw_Avatars();
-        OffScreenToOnScreen_Update_Avatars();
-
-        SourceToOffScreen_Update_MapAbove();
-        SourceToOffScreen_Draw_MapAbove();
-        OffScreenToOnScreen_Update_MapAbove();
-
-        SourceToOffScreen_Update_Animations();
-        SourceToOffScreen_Draw_Animations();
-        OffScreenToOnScreen_Update_Animations();
     }
 
     void MapDisplay::UpdateAndReDrawAfterMapTileChange()

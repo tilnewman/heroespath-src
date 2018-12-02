@@ -76,10 +76,6 @@ namespace map
 
         void SetPlayerWalkAnim(const gui::Direction::Enum, const bool);
 
-        const avatar::Model & Player() const { return player_; }
-
-        const NpcModelMap_t & NonPlayers() const { return nonPlayersPtrModelMap_; }
-
         void EntryAndExitLevels(
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
 
@@ -156,7 +152,7 @@ namespace map
         // AdventureStage is destructed and everything in the TextureCache is cleared.
         avatar::Model player_;
 
-        // TEMP TODO - make sure this comment still applies and makes sense after CachedTextures
+        // TODO - make sure this comment still applies and makes sense after CachedTextures
         // the textures of these Model's LPCViews should be removed from the TextureCache each time
         // this map is cleared before a new level loads.
         NpcModelMap_t nonPlayersPtrModelMap_;

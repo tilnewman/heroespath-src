@@ -84,6 +84,9 @@ namespace map
         std::vector<sf::Sprite> & AvatarSprites() { return avatarSprites_; }
 
     private:
+        // returns true if any animations changed and need to be re-drawn
+        bool UpdateAnimations(const float TIME_ELAPSED);
+
         void UpdateOffScreenMapPosOffset();
 
         bool MoveUp(const float DISTANCE);
@@ -134,7 +137,6 @@ namespace map
             sf::RenderTarget & target,
             sf::RenderStates states) const;
 
-        void UpdateAndReDrawAll();
         void UpdateAndReDrawAfterMapTileChange();
 
         // this is the only place offScreenTextureRect_ is changed
