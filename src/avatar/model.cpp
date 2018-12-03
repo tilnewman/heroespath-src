@@ -38,6 +38,7 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_ { 5.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_ { 5.0f };
     const float Model::WALKING_INTO_DURATION_SEC_ { 0.5f };
+    const float Model::NEXT_TO_PLAYER_PAUSE_DURATION_SEC_ { 6.0f };
 
     Model::Model(const Avatar::Enum AVATAR_ENUM)
         : view_(AVATAR_ENUM)
@@ -55,6 +56,7 @@ namespace avatar
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
         , mapPosV_(0.0f, 0.0f) // see Map::Load() and Map::Move() for where player's map pos is set
+        , nextToPlayerPauseTimerSec_(0.0f)
         , id_(nextValidId_++)
     {}
 
@@ -78,8 +80,27 @@ namespace avatar
         , walkingIntoNpcPtrOpt_()
         , isNextToPlayer_(false)
         , mapPosV_(CENTERED_MAP_POS_V)
+        , nextToPlayerPauseTimerSec_(0.0f)
         , id_(nextValidId_++)
     {
+        if (WALK_RECTS.empty())
+        {
+            M_HP_LOG_ERR(
+                "Given an empty WALK_RECTS." + M_HP_VAR_STR(CURRENT_WALK_RECT_INDEX)
+                + M_HP_VAR_STR(WALK_RECTS.size()));
+
+            walkRectIndex_ = 0;
+        }
+
+        if (CURRENT_WALK_RECT_INDEX >= WALK_RECTS.size())
+        {
+            M_HP_LOG_ERR(
+                "Given an out of bounds CURRENT_WALK_RECT_INDEX."
+                + M_HP_VAR_STR(CURRENT_WALK_RECT_INDEX) + M_HP_VAR_STR(WALK_RECTS.size()));
+
+            walkRectIndex_ = 0;
+        }
+
         view_.SetCenteredPos(mapPosV_);
     }
 
@@ -87,6 +108,17 @@ namespace avatar
     {
         UpdateAnimationAndStopIfNeeded(TIME_ELAPSED);
         UpdateBlinking(TIME_ELAPSED);
+
+        if (isNextToPlayer_)
+        {
+            nextToPlayerPauseTimerSec_ += TIME_ELAPSED;
+
+            if (nextToPlayerPauseTimerSec_ > NEXT_TO_PLAYER_PAUSE_DURATION_SEC_)
+            {
+                nextToPlayerPauseTimerSec_ = 0.0f;
+                isNextToPlayer_ = false;
+            }
+        }
 
         if ((IsPlayer() == false) && (false == isNextToPlayer_))
         {
@@ -115,49 +147,6 @@ namespace avatar
     {
         SetWalkAnim(prevWalkDirection_, false);
         action_ = Pose::Standing;
-    }
-
-    void Model::ChangeDirection()
-    {
-        std::vector<gui::Direction::Enum> dirVec {
-            gui::Direction::Left, gui::Direction::Right, gui::Direction::Up, gui::Direction::Down
-        };
-
-        dirVec.erase(
-            std::remove(std::begin(dirVec), std::end(dirVec), view_.Direction()), std::end(dirVec));
-
-        const auto NEW_DIRECTION { misc::Vector::SelectRandom(dirVec) };
-
-        const auto RECT { walkRects_.at(walkRectIndex_) };
-
-        switch (NEW_DIRECTION)
-        {
-            case gui::Direction::Left:
-            {
-                walkTargetPosV_.x = RECT.left;
-                break;
-            }
-            case gui::Direction::Right:
-            {
-                walkTargetPosV_.x = RECT.left + RECT.width;
-                break;
-            }
-            case gui::Direction::Up:
-            {
-                walkTargetPosV_.y = RECT.top;
-                break;
-            }
-            case gui::Direction::Down:
-            case gui::Direction::Count:
-            default:
-            {
-                walkTargetPosV_.y = RECT.top + RECT.height;
-                break;
-            }
-        }
-
-        SetWalkAnim(NEW_DIRECTION, true);
-        prevWalkDirection_ = NEW_DIRECTION;
     }
 
     void Model::MovingIntoSet(const game::NpcPtr_t NPC_PTR)
@@ -213,6 +202,19 @@ namespace avatar
         {
             view_.Set(Pose::Standing, DIRECTION);
         }
+    }
+
+    bool Model::IsPosWithinWalkRects(const sf::Vector2f & POS_V) const
+    {
+        for (const auto & RECT : walkRects_)
+        {
+            if (RECT.contains(POS_V))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     float Model::RandomBlinkDelay() const
@@ -317,35 +319,48 @@ namespace avatar
         {
             return 0;
         }
-        else
+
+        std::vector<std::size_t> possibleWalkRectIndexes_;
+        for (std::size_t i(0); i < walkRects_.size(); ++i)
         {
-            std::vector<std::size_t> possibleWalkRectIndexes_;
-            for (std::size_t i(0); i < walkRects_.size(); ++i)
+            if (walkRects_.at(i).contains(mapPosV_))
             {
-                if (walkRects_.at(i).contains(mapPosV_))
-                {
-                    possibleWalkRectIndexes_.emplace_back(i);
-                }
+                possibleWalkRectIndexes_.emplace_back(i);
             }
-
-            if (possibleWalkRectIndexes_.empty())
-            {
-                return misc::random::SizeT(walkRects_.size() - 1);
-            }
-            else if (possibleWalkRectIndexes_.size() > 1)
-            {
-                // if there is more than one option, then remove the current index
-                // from the list of possibilities
-                possibleWalkRectIndexes_.erase(
-                    std::remove(
-                        std::begin(possibleWalkRectIndexes_),
-                        std::end(possibleWalkRectIndexes_),
-                        walkRectIndex_),
-                    std::end(possibleWalkRectIndexes_));
-            }
-
-            return misc::Vector::SelectRandom(possibleWalkRectIndexes_);
         }
+
+        if (possibleWalkRectIndexes_.empty())
+        {
+            M_HP_LOG_ERR(
+                "Avatar/Model/NPC was not standing in any of the valid walk rects."
+                + M_HP_VAR_STR(mapPosV_) + M_HP_VAR_STR(walkRects_.size()));
+
+            return 0;
+        }
+
+        if (possibleWalkRectIndexes_.size() > 1)
+        {
+            // if there is more than one option, then remove the current index
+            // from the list of possibilities
+            possibleWalkRectIndexes_.erase(
+                std::remove(
+                    std::begin(possibleWalkRectIndexes_),
+                    std::end(possibleWalkRectIndexes_),
+                    walkRectIndex_),
+                std::end(possibleWalkRectIndexes_));
+        }
+
+        if (possibleWalkRectIndexes_.empty())
+        {
+            M_HP_LOG_ERR(
+                "Avatar/Model/NPC has no valid walk rects after removing current walkRectIndex_."
+                + M_HP_VAR_STR(walkRectIndex_) + M_HP_VAR_STR(mapPosV_)
+                + M_HP_VAR_STR(walkRects_.size()));
+
+            return walkRectIndex_;
+        }
+
+        return misc::Vector::SelectRandom(possibleWalkRectIndexes_);
     }
 
     const sf::Vector2f Model::RandomWalkTarget() const
@@ -354,20 +369,33 @@ namespace avatar
         {
             return sf::Vector2f(0.0f, 0.0f);
         }
-        else
+
+        if (walkRectIndex_ >= walkRects_.size())
         {
-            M_HP_ASSERT_OR_LOG_AND_THROW(
-                (walkRectIndex_ < walkRects_.size()),
-                "avatar::Model::RandomWalkTarget() was called when walkRectIndex_ ("
-                    << walkRectIndex_ << ") was out of bounds with walkRects vector of size="
-                    << walkRects_.size() << ".");
+            M_HP_LOG_ERR(
+                "walkRectIndex_ was out of bounds." + M_HP_VAR_STR(walkRectIndex_)
+                + M_HP_VAR_STR(walkRects_.size()));
 
-            const auto RECT { walkRects_.at(walkRectIndex_) };
-
-            return sf::Vector2f(
-                misc::random::Float(RECT.left, RECT.left + RECT.width),
-                misc::random::Float(RECT.top, RECT.top + RECT.height));
+            return mapPosV_;
         }
+
+        const auto RECT { walkRects_.at(walkRectIndex_) };
+
+        const sf::Vector2f NEW_WALK_TARGET_POS_V(
+            misc::random::Float(RECT.left, RECT.left + RECT.width),
+            misc::random::Float(RECT.top, RECT.top + RECT.height));
+
+        if (RECT.contains(NEW_WALK_TARGET_POS_V) == false)
+        {
+            M_HP_LOG_ERR(
+                "NEW_WALK_TARGET_POS_V was not contained by the RECT it came from."
+                + M_HP_VAR_STR(walkRectIndex_) + M_HP_VAR_STR(walkRects_.size())
+                + M_HP_VAR_STR(NEW_WALK_TARGET_POS_V) + M_HP_VAR_STR(RECT));
+
+            return mapPosV_;
+        }
+
+        return NEW_WALK_TARGET_POS_V;
     }
 
     gui::Direction::Enum

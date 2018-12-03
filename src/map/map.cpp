@@ -215,6 +215,12 @@ namespace map
                 continue;
             }
 
+            if (npcPtrModelPair.second.IsPosWithinWalkRects() == false)
+            {
+                avatar.StopWalking();
+                continue;
+            }
+
             avatar.Move(MOVE_V);
         }
     }
@@ -269,35 +275,23 @@ namespace map
 
     bool Map::UpdatePlayerToNonPlayerCollisionStatus(const sf::FloatRect & MOVED_PLAYER_RECT)
     {
-        bool hasAlreadyCollided { false };
         for (auto & npcPtrAvatarPair : nonPlayersPtrModelMap_)
         {
             auto & otherAvatar { npcPtrAvatarPair.second };
 
-            if (hasAlreadyCollided)
-            {
-                otherAvatar.SetIsNextToPlayer(false, player_.MapPos(), false);
-            }
-            else
-            {
-                const auto OTHER_AVATAR_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
-                    otherAvatar.CurrentSprite().getGlobalBounds()) };
+            const auto OTHER_AVATAR_RECT { AdjustRectForCollisionDetectionWithNonPlayers(
+                otherAvatar.CurrentSprite().getGlobalBounds()) };
 
-                if (MOVED_PLAYER_RECT.intersects(OTHER_AVATAR_RECT))
-                {
-                    hasAlreadyCollided = true;
-                    player_.MovingIntoSet(npcPtrAvatarPair.first);
-                    otherAvatar.SetIsNextToPlayer(true, player_.MapPos(), true);
-                }
+            if (MOVED_PLAYER_RECT.intersects(OTHER_AVATAR_RECT))
+            {
+                player_.MovingIntoSet(npcPtrAvatarPair.first);
+                otherAvatar.SetIsNextToPlayer(true, player_.MapPos(), true);
+                return true;
             }
         }
 
-        if (!hasAlreadyCollided)
-        {
-            player_.MovingIntoReset();
-        }
-
-        return hasAlreadyCollided;
+        player_.MovingIntoReset();
+        return false;
     }
 
     const sf::Vector2f Map::FindPlayerStartPos(

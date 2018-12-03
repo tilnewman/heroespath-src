@@ -68,7 +68,6 @@ namespace avatar
         void Move(const sf::Vector2f & MOVE_V);
         void SetWalkAnim(const gui::Direction::Enum, const bool WILL_START_OR_STOP);
         void StopWalking();
-        void ChangeDirection();
         void MovingIntoSet(const game::NpcPtr_t);
         void MovingIntoReset();
         const game::NpcPtrOpt_t MovingIntoUpdate(const float TIME_ELAPSED);
@@ -83,6 +82,10 @@ namespace avatar
 
         static const std::size_t ID_INVALID_;
         std::size_t Id() const { return id_; }
+
+        bool IsPosWithinWalkRects(const sf::Vector2f & POS_V) const;
+
+        bool IsPosWithinWalkRects() const { return IsPosWithinWalkRects(mapPosV_); }
 
     private:
         float RandomBlinkDelay() const;
@@ -105,6 +108,7 @@ namespace avatar
         static const float TIME_BETWEEN_WALK_MAX_SEC_;
         static const float WALK_TARGET_CLOSE_ENOUGH_;
         static const float WALKING_INTO_DURATION_SEC_;
+        static const float NEXT_TO_PLAYER_PAUSE_DURATION_SEC_;
 
         LPCView view_;
         float blinkTimerSec_;
@@ -121,6 +125,7 @@ namespace avatar
         game::NpcPtrOpt_t walkingIntoNpcPtrOpt_;
         bool isNextToPlayer_;
         sf::Vector2f mapPosV_;
+        float nextToPlayerPauseTimerSec_;
 
         // comparing avatar::Models by their member variables won't work so we need a unique id
         // number to tell them apart, and there needs to be an invalid or not-an-id number as well.
