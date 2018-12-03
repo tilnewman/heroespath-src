@@ -53,7 +53,15 @@ namespace map
         packet.textures.clear();
         PopulateTileDraws(packet);
         OptimizeTextures(packet);
-        OptimizeLayers(packet);
+
+        // This pulls as many draws as possible down to the lowest layer possible resulting in the
+        // lowest layer having almost all of the draws and then the other upper layers only have
+        // whatever draws overlap.  I thought this would speed up MapDisplay, but I've run the
+        // numbers and it just doesn't.  So, since this optimization does not actually optimize
+        // anything, and since it adds 5-10 seconds to map loads during debug runs on windows, I'm
+        // commenting this out. zTn 2018-12-3
+        // OptimizeLayers(packet);
+
         // LogSummary(packet);
     }
 
@@ -387,11 +395,7 @@ namespace map
 
     void MapTileOptimizer::OptimizeLayers(Packet & packet)
     {
-        // TODO -Don't know why each of these calls needs to be repeated...
         OptimizeLayersSet(packet.tile_draws_below);
-        OptimizeLayersSet(packet.tile_draws_below);
-
-        OptimizeLayersSet(packet.tile_draws_above);
         OptimizeLayersSet(packet.tile_draws_above);
     }
 
@@ -403,6 +407,13 @@ namespace map
         }
 
         LayerInfoMap_t layerMap;
+
+        // this loop is only to call reserve to speed up the loop below
+        const auto LAYER_INDEX_HIGHEST { tileDraws.back().layer_index };
+        for (std::size_t index(0); index <= LAYER_INDEX_HIGHEST; ++index)
+        {
+            layerMap[index].pos_indexes_map.Reserve(tileDraws.size());
+        }
 
         const auto TILE_DRAW_COUNT { tileDraws.size() };
         for (std::size_t index(0); index < TILE_DRAW_COUNT; ++index)
@@ -421,39 +432,55 @@ namespace map
             return;
         }
 
-        for (auto & indexInfoPair : layerMap)
+        MinimizeLayerOverlap(layerMap, tileDraws);
+        EliminateSkippedLayerIndexes(layerMap, tileDraws);
+        std::sort(std::begin(tileDraws), std::end(tileDraws));
+    }
+
+    void
+        MapTileOptimizer::MinimizeLayerOverlap(LayerInfoMap_t & layerMap, TileDrawVec_t & tileDraws)
+    {
+        if (layerMap.Size() < 2)
         {
-            // this sort is required so that layers can be compared by which textures they use
-            auto textureCountMap { indexInfoPair.second.texture_count_map };
-            std::sort(std::begin(textureCountMap), std::end(textureCountMap));
-
-            // this sort is only to speed up the loops below
-            auto posIndexesMap { indexInfoPair.second.pos_indexes_map };
-
-            std::sort(
-                std::begin(posIndexesMap),
-                std::end(posIndexesMap),
-                [](const auto & PAIR_A, const auto & PAIR_B) {
-                    return (PAIR_A.first < PAIR_B.first);
-                });
+            return;
         }
 
-        std::size_t layerMapIndex { layerMap.Size() - 1 };
-        for (; layerMapIndex--;)
+        auto iter { std::begin(layerMap) };
+
+        while ((iter + 1) != std::end(layerMap))
         {
-            auto const DID_ENTIRE_LAYER_DESCEND { DescendNonOverlappingTiles(
-                layerMap.ValueAt(layerMapIndex), layerMap.ValueAt(layerMapIndex + 1), tileDraws) };
+            auto const DID_ANY_TILE_POSITIONS_DESCEND { DescendNonOverlappingTiles(
+                iter->second, (iter + 1)->second, tileDraws) };
 
-            if (DID_ENTIRE_LAYER_DESCEND)
+            if (DID_ANY_TILE_POSITIONS_DESCEND && (iter != std::begin(layerMap)))
             {
-                layerMap.Erase(
-                    std::begin(layerMap) + static_cast<std::ptrdiff_t>(layerMapIndex + 1));
+                auto backTrackIter { iter };
 
-                layerMapIndex = (layerMap.Size() - 1);
+                while (--backTrackIter != std::begin(layerMap))
+                {
+                    if (DescendNonOverlappingTiles(
+                            backTrackIter->second, (backTrackIter + 1)->second, tileDraws)
+                        == false)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if ((iter + 1)->second.pos_indexes_map.Empty())
+            {
+                iter = (layerMap.Erase((iter + 1)) - 1);
+            }
+            else
+            {
+                ++iter;
             }
         }
+    }
 
-        // re-number layer_indexes to eliminate skipped numbers
+    void MapTileOptimizer::EliminateSkippedLayerIndexes(
+        LayerInfoMap_t & layerMap, TileDrawVec_t & tileDraws)
+    {
         const auto MAP_SIZE_MINUS_ONE { layerMap.Size() - 1 };
         for (std::size_t mapIndex(0); mapIndex < MAP_SIZE_MINUS_ONE; ++mapIndex)
         {
@@ -476,8 +503,6 @@ namespace map
                 }
             }
         }
-
-        std::sort(std::begin(tileDraws), std::end(tileDraws));
     }
 
     bool MapTileOptimizer::DescendNonOverlappingTiles(
@@ -508,29 +533,58 @@ namespace map
 
             if (overTileDrawIndexes.empty())
             {
-                ++tilesDescendCount;
                 continue;
             }
 
             const auto & OVER_POS_V { overPosIndexesPair.first };
 
-            if ((layerUnder.pos_indexes_map.Exists(OVER_POS_V) == false)
-                || layerUnder.pos_indexes_map[OVER_POS_V].empty())
+            auto posIndexesIter { layerUnder.pos_indexes_map.Find(OVER_POS_V) };
+
+            if ((std::end(layerUnder.pos_indexes_map) != posIndexesIter)
+                && (posIndexesIter->second.empty() == false))
             {
-                for (const auto TILE_DRAW_INDEX : overTileDrawIndexes)
-                {
-                    auto & tileDraw { tileDraws.at(TILE_DRAW_INDEX) };
-                    tileDraw.layer_index = layerUnder.layer_index;
-                    layerUnder.texture_count_map[tileDraw.texture_index]++;
-                }
-
-                std::swap(layerUnder.pos_indexes_map[OVER_POS_V], overTileDrawIndexes);
-
-                ++tilesDescendCount;
+                continue;
             }
+
+            for (const auto TILE_DRAW_INDEX : overTileDrawIndexes)
+            {
+                auto & tileDraw { tileDraws.at(TILE_DRAW_INDEX) };
+                tileDraw.layer_index = layerUnder.layer_index;
+                layerUnder.texture_count_map[tileDraw.texture_index]++;
+            }
+
+            if (std::end(layerUnder.pos_indexes_map) == posIndexesIter)
+            {
+                layerUnder.pos_indexes_map.Append(
+                    std::make_pair(OVER_POS_V, std::vector<std::size_t>()));
+
+                layerUnder.pos_indexes_map.Back().second = std::move(overTileDrawIndexes);
+            }
+            else
+            {
+                posIndexesIter->second = std::move(overTileDrawIndexes);
+            }
+
+            overTileDrawIndexes.clear();
+
+            ++tilesDescendCount;
         }
 
-        return (layerOver.pos_indexes_map.Size() == tilesDescendCount);
+        if (tilesDescendCount > 0)
+        {
+            layerOver.pos_indexes_map.Erase(
+                std::remove_if(
+                    std::begin(layerOver.pos_indexes_map),
+                    std::end(layerOver.pos_indexes_map),
+                    [](const auto & POS_INDEXES_PAIR) { return POS_INDEXES_PAIR.second.empty(); }),
+                std::end(layerOver.pos_indexes_map));
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     void MapTileOptimizer::LogSummary(const Packet & PACKET)

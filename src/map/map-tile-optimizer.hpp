@@ -110,8 +110,14 @@ namespace map
 
         static void OptimizeLayers(Packet & packet);
 
-        static void OptimizeLayersSet(TileDrawVec_t & draws);
+        static void OptimizeLayersSet(TileDrawVec_t & tileDraws);
 
+        static void MinimizeLayerOverlap(LayerInfoMap_t & layerMap, TileDrawVec_t & tileDraws);
+
+        static void
+            EliminateSkippedLayerIndexes(LayerInfoMap_t & layerMap, TileDrawVec_t & tileDraws);
+
+        // returns true if any tile positions were descended
         static bool DescendNonOverlappingTiles(
             LayerInfo & layerUnder, LayerInfo & layerOver, TileDrawVec_t & tileDraws);
 
