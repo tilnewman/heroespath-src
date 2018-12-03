@@ -51,6 +51,8 @@ namespace map
 
         void Parse_MapSizes(const boost::property_tree::ptree &, Layout &) const;
 
+        void Parse_MapBackgroundColor(const boost::property_tree::ptree &, Layout &) const;
+
         void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout &) const;
 
         void Parse_Layer_Collisions(

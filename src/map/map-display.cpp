@@ -66,6 +66,7 @@ namespace map
         , imageManagerMapAbove_(mapTileTextures_)
         , imageManagerAvatars_()
         , imageManagerAnimations_(animUPtrVec_)
+        , backgroundColorVertexes_()
     {}
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -76,6 +77,12 @@ namespace map
         const MapAnimVec_t & ANIM_INFO_VEC)
     {
         mapTileTextures_.clear();
+
+        sfutil::SetVertexesForQuad(
+            &backgroundColorVertexes_[0],
+            onScreenRect_,
+            sf::FloatRect(),
+            MAP_LAYOUT.background_color);
 
         // set player position in map coordinates
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
@@ -165,6 +172,9 @@ namespace map
 
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
+        target.draw(
+            &backgroundColorVertexes_[0], backgroundColorVertexes_.size(), sf::Quads, states);
+
         imageManagerMapBelow_.OffScreenToOnScreen_Draw(target, states);
         imageManagerAvatars_.OffScreenToOnScreen_Draw(target, states);
         imageManagerMapAbove_.OffScreenToOnScreen_Draw(target, states);

@@ -103,6 +103,8 @@ namespace map
 
         Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
 
+        Parse_MapBackgroundColor(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
+
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
         // loop over all layers in the map file and parse them separately
@@ -216,6 +218,42 @@ namespace map
 
             throw;
         }
+    }
+
+    void Parser::Parse_MapBackgroundColor(
+        const boost::property_tree::ptree & MAP_PTREE, Layout & layout) const
+    {
+        layout.background_color = sf::Color::Transparent;
+
+        std::string hexColorString;
+
+        try
+        {
+            hexColorString = FetchXMLAttribute<std::string>(MAP_PTREE, "backgroundcolor");
+        }
+        catch (...)
+        {
+            return;
+        }
+
+        if ((hexColorString.size() != 7) || (hexColorString[0] != '#'))
+        {
+            return;
+        }
+
+        // remove the hash symbol that the Tiled app prefixes
+        hexColorString.erase(0, 1);
+
+        // add 255 to the end for the alpha value
+        hexColorString += "ff";
+
+        std::stringstream ss;
+        ss << std::hex << hexColorString;
+
+        unsigned colorNumber { 0 };
+        ss >> colorNumber;
+
+        layout.background_color = sf::Color(colorNumber);
     }
 
     void Parser::Parse_Layer_Tileset(

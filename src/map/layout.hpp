@@ -31,6 +31,7 @@ namespace map
             , layer_vec()
             , tiles_panel_vec()
             , texture_vec()
+            , background_color(sf::Color::Transparent)
         {}
 
         void Reset()
@@ -42,6 +43,7 @@ namespace map
             layer_vec.clear();
             tiles_panel_vec.clear();
             texture_vec.clear();
+            background_color = sf::Color::Transparent;
         }
 
         int LayerTileNumber(const Layer & LAYER, const sf::Vector2i & TILE_INDEXES) const
@@ -75,6 +77,7 @@ namespace map
         LayerVec_t layer_vec;
         TilesPanelVec_t tiles_panel_vec;
         std::vector<gui::CachedTexture> texture_vec;
+        sf::Color background_color;
     };
 
 } // namespace map

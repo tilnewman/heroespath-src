@@ -36,9 +36,6 @@ namespace map
     struct Layout;
     struct Layer;
 
-    using VertexVec_t = std::vector<sf::Vertex>;
-    using VertQuadArray_t = std::array<sf::Vertex, sfutil::VERTS_PER_QUAD>;
-
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
@@ -174,6 +171,8 @@ namespace map
         ThreeStageImageManagerMapLayer imageManagerMapAbove_;
         ThreeStageImageManagerAvatarSprites imageManagerAvatars_;
         ThreeStageImageManagerAnimations imageManagerAnimations_;
+
+        VertQuadArray_t backgroundColorVertexes_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
