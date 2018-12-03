@@ -26,7 +26,6 @@
 #include "sfutil/display.hpp"
 #include "sfutil/distance.hpp"
 #include "sfutil/primitives.hpp"
-#include "sfutil/size-and-scale.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -57,9 +56,9 @@ namespace map
         , ANIM_SFX_VOLUME_MIN_RATIO_(misc::ConfigFile::Instance()->ValueOrDefault<float>(
               "heroespath-sound-map-animsfx-min-volume-ratio"))
         , sourceToOffScreenDrawsPairsBelow_()
-        , sourceToOffScreenDrawPairsAvatar_()
+        , sourceToOffScreenDrawsPairsAvatar_()
         , sourceToOffScreenDrawsPairsAbove_()
-        , sourceToOffScreenDrawPairsAnim_()
+        , sourceToOffScreenDrawsPairsAnim_()
         , offScreenImageBelow_()
         , offScreenImageAvatar_()
         , offScreenImageAbove_()
@@ -90,14 +89,14 @@ namespace map
         , mapTileDrawsAbove_()
     {
         avatarSprites_.reserve(64);
-        sourceToOffScreenDrawPairsAvatar_.reserve(32);
-        sourceToOffScreenDrawPairsAnim_.reserve(32);
+        sourceToOffScreenDrawsPairsAvatar_.reserve(32);
+        sourceToOffScreenDrawsPairsAnim_.reserve(32);
         mapTileDrawsBelow_.reserve(20000);
         mapTileDrawsAbove_.reserve(20000);
         sourceToOffScreenDrawsPairsBelow_.reserve(1024);
-        sourceToOffScreenDrawPairsAvatar_.reserve(64);
+        sourceToOffScreenDrawsPairsAvatar_.reserve(64);
         sourceToOffScreenDrawsPairsAbove_.reserve(1024);
-        sourceToOffScreenDrawPairsAnim_.reserve(32);
+        sourceToOffScreenDrawsPairsAnim_.reserve(32);
     }
 
     MapDisplay::~MapDisplay() { StopAnimMusic(); }
@@ -442,11 +441,11 @@ namespace map
     {
         // the map::Map class keeps the avatarSprites_ vector populated and up to date
 
-        sourceToOffScreenDrawPairsAvatar_.clear();
+        sourceToOffScreenDrawsPairsAvatar_.clear();
 
-        // populate sourceToOffScreenDrawPairsAvatar_ with only the visible avatars, and the shadows
-        // make the visible rect of each avatar bigger so be sure to set the shadow sprite's scale
-        // to match each avatar and get the full size of their sprites combined
+        // populate sourceToOffScreenDrawsPairsAvatar_ with only the visible avatars, and the
+        // shadows make the visible rect of each avatar bigger so be sure to set the shadow sprite's
+        // scale to match each avatar and get the full size of their sprites combined
         const auto AVATAR_SPRITE_COUNT { avatarSprites_.size() };
         for (std::size_t index(0); index < AVATAR_SPRITE_COUNT; ++index)
         {
@@ -471,17 +470,17 @@ namespace map
 
             if (offScreenTextureRect_.intersects(COMBINED_OFFSCREEN_RECT))
             {
-                sourceToOffScreenDrawPairsAvatar_.emplace_back(
-                    std::make_pair(index, COMBINED_OFFSCREEN_RECT));
+                sourceToOffScreenDrawsPairsAvatar_.emplace_back(
+                    std::make_pair(index, SpriteRectToVertexVec(COMBINED_OFFSCREEN_RECT)));
             }
         }
 
         // sort the avatar draws so that avatars in front will be drawn on top of those behind
-        if (sourceToOffScreenDrawPairsAvatar_.size() > 1)
+        if (sourceToOffScreenDrawsPairsAvatar_.size() > 1)
         {
             std::sort(
-                std::begin(sourceToOffScreenDrawPairsAvatar_),
-                std::end(sourceToOffScreenDrawPairsAvatar_),
+                std::begin(sourceToOffScreenDrawsPairsAvatar_),
+                std::end(sourceToOffScreenDrawsPairsAvatar_),
                 [&](const auto PAIR_A, const auto PAIR_B) {
                     return (
                         sfutil::Bottom(avatarSprites_.at(PAIR_A.first))
@@ -489,7 +488,7 @@ namespace map
                 });
         }
 
-        willDrawOffScreenAvatar_ = (sourceToOffScreenDrawPairsAvatar_.empty() == false);
+        willDrawOffScreenAvatar_ = (sourceToOffScreenDrawsPairsAvatar_.empty() == false);
     }
 
     void MapDisplay::SourceToOffScreen_Update_MapAbove()
@@ -500,7 +499,7 @@ namespace map
 
     void MapDisplay::SourceToOffScreen_Update_Animations()
     {
-        sourceToOffScreenDrawPairsAnim_.clear();
+        sourceToOffScreenDrawsPairsAnim_.clear();
 
         const auto ANIM_COUNT { animUPtrVec_.size() };
         for (std::size_t index(0); index < ANIM_COUNT; ++index)
@@ -511,11 +510,12 @@ namespace map
 
             if (offScreenTextureRect_.intersects(OFFSCREEN_RECT))
             {
-                sourceToOffScreenDrawPairsAnim_.emplace_back(std::make_pair(index, OFFSCREEN_RECT));
+                sourceToOffScreenDrawsPairsAnim_.emplace_back(
+                    std::make_pair(index, SpriteRectToVertexVec(OFFSCREEN_RECT)));
             }
         }
 
-        willDrawOffScreenAnim_ = (sourceToOffScreenDrawPairsAnim_.empty() == false);
+        willDrawOffScreenAnim_ = (sourceToOffScreenDrawsPairsAnim_.empty() == false);
     }
 
     bool MapDisplay::SourceToOffScreen_Update_Map(
@@ -568,23 +568,31 @@ namespace map
         offScreenImageAvatar_.clear(sf::Color::Transparent);
 
         // draw all avatar shadows first
-        for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAvatar_)
+        for (const auto & INDEX_VERTEXES_PAIR : sourceToOffScreenDrawsPairsAvatar_)
         {
-            const auto & AVATAR_SPRITE { avatarSprites_.at(INDEX_RECT_PAIR.first) };
+            const auto & AVATAR_SPRITE { avatarSprites_.at(INDEX_VERTEXES_PAIR.first) };
+
+            const auto MAP_POS_V { AVATAR_SPRITE.getPosition() };
+            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(MAP_POS_V) };
+
             npcShadowSprite_.setScale(AVATAR_SPRITE.getScale());
-            npcShadowSprite_.setPosition(sfutil::Position(INDEX_RECT_PAIR.second));
+            npcShadowSprite_.setPosition(OFFSCREEN_POS_V);
+
             offScreenImageAvatar_.draw(npcShadowSprite_);
         }
 
         // draw avatar sprites
         // set the sprite position to offscreen coordinates but remember to set it back after
-        for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAvatar_)
+        for (const auto & INDEX_VERTEXES_PAIR : sourceToOffScreenDrawsPairsAvatar_)
         {
-            auto & sprite { avatarSprites_.at(INDEX_RECT_PAIR.first) };
-            const auto AVATAR_ORIG_MAP_POS_V { sprite.getPosition() };
-            sprite.setPosition(sfutil::Position(INDEX_RECT_PAIR.second));
+            auto & sprite { avatarSprites_.at(INDEX_VERTEXES_PAIR.first) };
+
+            const auto MAP_POS_V { sprite.getPosition() };
+            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(MAP_POS_V) };
+
+            sprite.setPosition(OFFSCREEN_POS_V);
             offScreenImageAvatar_.draw(sprite);
-            sprite.setPosition(AVATAR_ORIG_MAP_POS_V);
+            sprite.setPosition(MAP_POS_V);
         }
 
         offScreenImageAvatar_.display();
@@ -609,16 +617,16 @@ namespace map
 
         offScreenImageAnim_.clear(sf::Color::Transparent);
 
-        for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAnim_)
+        for (const auto & INDEX_VERTEXES_PAIR : sourceToOffScreenDrawsPairsAnim_)
         {
-            auto & anim { *animUPtrVec_.at(INDEX_RECT_PAIR.first) };
+            auto & anim { *animUPtrVec_.at(INDEX_VERTEXES_PAIR.first) };
 
-            const auto MAP_POS_ORIG_V { anim.GetEntityPos() };
-            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(MAP_POS_ORIG_V) };
+            const auto MAP_POS_V { anim.GetEntityPos() };
+            const auto OFFSCREEN_POS_V { OffScreenPosFromMapPos(MAP_POS_V) };
 
             anim.SetEntityPos(OFFSCREEN_POS_V);
             offScreenImageAnim_.draw(anim);
-            anim.SetEntityPos(MAP_POS_ORIG_V);
+            anim.SetEntityPos(MAP_POS_V);
         }
 
         offScreenImageAnim_.display();
@@ -659,7 +667,7 @@ namespace map
 
     void MapDisplay::OffScreenToOnScreen_Update_Avatars()
     {
-        if (sourceToOffScreenDrawPairsAvatar_.empty())
+        if (sourceToOffScreenDrawsPairsAvatar_.empty())
         {
             willDrawOnScreenAvatar_ = false;
         }
@@ -668,16 +676,18 @@ namespace map
             willDrawOnScreenAvatar_ = true;
 
             sf::FloatRect minEnclosingOffScreenSourceRect;
-            for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAvatar_)
+            for (const auto & INDEX_VERTEXES_PAIR : sourceToOffScreenDrawsPairsAvatar_)
             {
+                const auto OFFSCREEN_RECT { VertexVecToSpriteRect(INDEX_VERTEXES_PAIR.second) };
+
                 if (minEnclosingOffScreenSourceRect.width > 0.0f)
                 {
                     minEnclosingOffScreenSourceRect = sfutil::MinimallyEnclosing(
-                        minEnclosingOffScreenSourceRect, INDEX_RECT_PAIR.second);
+                        minEnclosingOffScreenSourceRect, OFFSCREEN_RECT);
                 }
                 else
                 {
-                    minEnclosingOffScreenSourceRect = INDEX_RECT_PAIR.second;
+                    minEnclosingOffScreenSourceRect = OFFSCREEN_RECT;
                 }
             }
 
@@ -703,7 +713,7 @@ namespace map
 
     void MapDisplay::OffScreenToOnScreen_Update_Animations()
     {
-        if (sourceToOffScreenDrawPairsAnim_.empty())
+        if (sourceToOffScreenDrawsPairsAnim_.empty())
         {
             willDrawOnScreenAnim_ = false;
         }
@@ -712,16 +722,18 @@ namespace map
             willDrawOnScreenAnim_ = true;
 
             sf::FloatRect minEnclosingOffScreenSourceRect;
-            for (const auto & INDEX_RECT_PAIR : sourceToOffScreenDrawPairsAnim_)
+            for (const auto & INDEX_VERTEXES_PAIR : sourceToOffScreenDrawsPairsAnim_)
             {
+                const auto OFFSCREEN_RECT { VertexVecToSpriteRect(INDEX_VERTEXES_PAIR.second) };
+
                 if (minEnclosingOffScreenSourceRect.width > 0.0f)
                 {
                     minEnclosingOffScreenSourceRect = sfutil::MinimallyEnclosing(
-                        minEnclosingOffScreenSourceRect, INDEX_RECT_PAIR.second);
+                        minEnclosingOffScreenSourceRect, OFFSCREEN_RECT);
                 }
                 else
                 {
-                    minEnclosingOffScreenSourceRect = INDEX_RECT_PAIR.second;
+                    minEnclosingOffScreenSourceRect = OFFSCREEN_RECT;
                 }
             }
 
