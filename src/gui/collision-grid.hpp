@@ -38,7 +38,7 @@ namespace gui
 
     public:
         CollisionGrid()
-            : cellSize_(0.0f)
+            : cellSize_(0)
             , cellCountV_(0, 0)
             , collRectVecs_()
             , collRectVecIndexes_()
